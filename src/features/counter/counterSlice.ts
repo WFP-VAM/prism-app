@@ -1,35 +1,35 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk, RootState } from "../../app/store";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppThunk, RootState } from '../../app/store';
 
 interface CounterState {
   value: number;
 }
 
 const initialState: CounterState = {
-  value: 0
+  value: 0,
 };
 
 export const slice = createSlice({
-  name: "counter",
+  name: 'counter',
   initialState,
   reducers: {
     increment: ({ value, ...state }) => ({
       ...state,
-      value: value + 1
+      value: value + 1,
     }),
     decrement: ({ value, ...state }) => ({
       ...state,
-      value: value + 1
+      value: value + 1,
     }),
     // Use the PayloadAction type to declare the contents of `action.payload`
     incrementByAmount: (
       { value, ...state },
-      action: PayloadAction<number>
+      action: PayloadAction<number>,
     ) => ({
       ...state,
-      value: value + action.payload
-    })
-  }
+      value: value + action.payload,
+    }),
+  },
 });
 
 export const { increment, decrement, incrementByAmount } = slice.actions;
