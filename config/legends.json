@@ -1,0 +1,19 @@
+{
+  "crops_ha":
+  [
+    { "value": "< 1000", "color": "#fff7f8" },
+    { "value": "1001 - 5000", "color": "#ffe5e9" },
+    { "value": "5001 - 10000", "color": "#ff99a7" },
+    { "value": "10001 - 20001", "color": "#d14b5d" },
+    { "value": "20001 - 50000", "color": "#840f1f" },
+    { "value": "> 50000", "color": "#47000a" }
+  ],
+  "population": [
+    { "value": "< 1000", "color": "#edf0f9" },
+    { "value": "1001 - 5000", "color": "#c3d1f7" },
+    { "value": "5001 - 10000", "color": "#6d8adb" },
+    { "value": "10001 - 20000", "color": "#3556b2" },
+    { "value": "20001 - 50000", "color": "#163384" },
+    { "value": "> 50000", "color": "#000a26" }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "popupaltion_below_poverty": {
+    "title": "Population below national poverty line (%)",
+    "type": "wms",
+    "server": "geoserver",
+    "hasdate": false,
+    "opacity": 0.3,
+    "path": "",
+    "legendnote": "Source: Susenas"
+  },
+  "population_density": {
+    "title": "Population Density",
+    "type": "wms",
+    "server": "geoserver",
+    "hasdate": false,
+    "opacity": 0.3,
+    "path": "",
+    "legendnote": "Population counts at 1km resolution (LandScan, 2015) - Source: Susenas"
+  },
+  "rainfall_anomaly": {
+    "title": "Monthly Rainfall Anomaly",
+    "type": "wms",
+    "server": "geoserver",
+    "hasdate": true,
+    "date_interval": "month",
+    "opacity": 0.3,
+    "path": "https://localhost:8080/geoserver/vampire/wms?layers=rainfall_anomaly",
+    "legendnote": "Percentage of monthly rainfall compared to a long-term average. (CHIRPS)"
+  },
+  "dslr": {
+    "title": "Days Since Last Rain",
+    "type": "wms",
+    "server": "geoserver",
+    "hasdate": true,
+    "date_interval": "day",
+    "opacity": 0.3,
+    "path": "https://localhost:8080/geoserver/vampire/wms?layers=dslr",
+    "legendnote": "IMERG Data with 1 mm threshold"
+  },
+  "flood_forecast": {
+    "title": "Flood  Hazard Forecast (magnitude)",
+    "type": "wms",
+    "server": "geoserver",
+    "hasdate": true,
+    "date_interval": "day",
+    "opacity": 0.3,
+    "path": "https://localhost:8080/geoserver/vampire/wms?layers=dslr",
+    "legendnote": ""
+  },
+  "spi": {
+    "title": "Standardized Precipitation Index (SPI)",
+    "type": "wms",
+    "server": "geoserver",
+    "hasdate": true,
+    "date_interval": "month",
+    "opacity": 0.3,
+    "path": "https://localhost:8080/geoserver/vampire/wms?layers=spi",
+    "legendnote": "Indicates the probability of occurrence of an observed rainfall amount compared with long-term period (Data Source : CHIRPS)"
+  },
+  "vhi": {
+    "title": "Vegetation Health Index (VHI)",
+    "type": "wms",
+    "server": "geoserver",
+    "hasdate": true,
+    "date_interval": "month",
+    "opacity": 0.3,
+    "path": "https://localhost:8080/geoserver/vampire/wms?layers=spi",
+    "legendnote": "Data Source: MODIS vegetation and land surface temperature data"
+  },
+  "crops_drought_impact": {
+    "title": "Crops Affected by Drought",
+    "type": "choropleth",
+    "hasdate": true,
+    "date_interval": "month",
+    "opacity": 0.3,
+    "path": "",
+    "legend": "crops_ha",
+    "legendnote": "(ha)"
+  },
+  "population_drought_impact": {
+    "title": "Population Affected by Drought",
+    "type": "choropleth",
+    "hasdate": true,
+    "date_interval": "month",
+    "opacity": 0.3,
+    "path": "",
+    "legend": "population",
+    "legendnote": "Number of people exposed to extreme drought."
+  }
+}
