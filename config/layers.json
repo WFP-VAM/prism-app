@@ -2,7 +2,7 @@
   "popupaltion_below_poverty": {
     "title": "Population below national poverty line (%)",
     "server_type": "wms",
-    "server_path": "geoserver_path",
+    "server_uri": "geoserver_path",
     "has_date": false,
     "opacity": 0.3,
     "legend_text": "Source: Susenas"
@@ -10,7 +10,7 @@
   "population_density": {
     "title": "Population Density",
     "server_type": "wms",
-    "server_path": "geoserver_path",
+    "server_uri": "geoserver_path",
     "has_date": false,
     "opacity": 0.3,
     "legend_text": "Population counts at 1km resolution (LandScan, 2015) - Source: Susenas"
@@ -18,7 +18,7 @@
   "rainfall_anomaly": {
     "title": "Monthly Rainfall Anomaly",
     "server_type": "wms",
-    "server_path": "geoserver_path",
+    "server_uri": "geoserver_path",
     "has_date": true,
     "date_interval": "month",
     "opacity": 0.3,
@@ -28,7 +28,7 @@
   "dslr": {
     "title": "Days Since Last Rain",
     "server_type": "wms",
-    "server_path": "geoserver_path",
+    "server_uri": "geoserver_path",
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
@@ -38,7 +38,7 @@
   "flood_forecast": {
     "title": "Flood  Hazard Forecast (magnitude)",
     "server_type": "wms",
-    "server_path": "geoserver_path",
+    "server_uri": "geoserver_path",
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
@@ -48,7 +48,7 @@
   "spi": {
     "title": "Standardized Precipitation Index (SPI)",
     "server_type": "wms",
-    "server_path": "geoserver_path",
+    "server_uri": "geoserver_path",
     "has_date": true,
     "date_interval": "month",
     "opacity": 0.3,
@@ -58,7 +58,7 @@
   "vhi": {
     "title": "Vegetation Health Index (VHI)",
     "server_type": "wms",
-    "server_path": "geoserver_path",
+    "server_uri": "geoserver_path",
     "has_date": true,
     "date_interval": "month",
     "opacity": 0.3,
