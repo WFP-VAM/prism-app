@@ -10,9 +10,7 @@ exports[`renders as expected 1`] = `
       style="outline: none;"
       tabindex="-1"
     >
-      <div>
-        hello
-      </div>
+      <mock-mapview />
     </div>
   </div>
 </div>

@@ -3,9 +3,12 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { Router, RouteComponentProps } from '@reach/router';
 
 import NavBar from '../NavBar';
+import MapView from '../MapView';
 import muiTheme from '../../muiTheme';
 
-const Hello = (props: RouteComponentProps) => <div>hello</div>;
+const RouterPage = (
+  props: { pageComponent: JSX.Element } & RouteComponentProps,
+) => props.pageComponent;
 
 function App() {
   return (
@@ -13,7 +16,7 @@ function App() {
       <NavBar />
       <div className="App">
         <Router>
-          <Hello path="*" />
+          <RouterPage path="*" pageComponent={<MapView />} />
         </Router>
       </div>
     </ThemeProvider>
