@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`examples of some things 1`] = `
+<div>
+  <button
+    aria-haspopup="true"
+    class="MuiButtonBase-root MuiButton-root MuiButton-text MenuItem-title-1"
+    tabindex="0"
+    type="button"
+  >
+    <span
+      class="MuiButton-label"
+    >
+      <img
+        alt="title"
+        class="MenuItem-icon-2"
+        src="icon.png"
+      />
+      <p
+        class="MuiTypography-root MuiTypography-body2"
+      >
+        title
+      </p>
+    </span>
+    <span
+      class="MuiTouchRipple-root"
+    />
+  </button>
+</div>
+`;

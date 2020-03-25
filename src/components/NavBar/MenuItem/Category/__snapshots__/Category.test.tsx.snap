@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`examples of some things 1`] = `
+<div>
+  <div
+    class="Category-container-1"
+  >
+    <p
+      class="MuiTypography-root Category-title-3 MuiTypography-body2"
+    >
+      Category 1
+    </p>
+    <hr />
+    <div
+      class="Category-listContainer-2"
+    >
+      <span
+        class="MuiSwitch-root MuiSwitch-sizeSmall"
+      >
+        <span
+          aria-disabled="false"
+          class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-46 MuiSwitch-switchBase"
+        >
+          <span
+            class="MuiIconButton-label"
+          >
+            <input
+              aria-label="checkbox with default color"
+              class="PrivateSwitchBase-input-49 MuiSwitch-input"
+              type="checkbox"
+              value=""
+            />
+            <span
+              class="MuiSwitch-thumb"
+            />
+          </span>
+          <span
+            class="MuiTouchRipple-root"
+          />
+        </span>
+        <span
+          class="MuiSwitch-track"
+        />
+      </span>
+       
+      <p
+        class="MuiTypography-root MuiTypography-body1"
+      >
+        layer
+      </p>
+    </div>
+  </div>
+</div>
+`;
