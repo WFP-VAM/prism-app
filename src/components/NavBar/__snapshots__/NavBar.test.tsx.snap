@@ -19,7 +19,7 @@ exports[`renders as expected 1`] = `
             class="MuiTypography-root NavBar-logo-3 MuiTypography-h6"
             href="/"
           >
-            VAMPIRE
+            PRISM
           </a>
         </div>
         <div

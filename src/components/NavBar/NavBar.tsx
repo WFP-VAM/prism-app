@@ -30,7 +30,7 @@ function NavBar({ classes }: INavBarProps) {
               component={Link}
               to="/"
             >
-              VAMPIRE
+              PRISM
             </Typography>
           </Grid>
 
