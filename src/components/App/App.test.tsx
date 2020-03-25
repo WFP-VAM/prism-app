@@ -4,7 +4,7 @@ import App from './App';
 
 jest.mock('../NavBar/NavBar', () => 'mock-NavBar');
 
-test('examples of some things', () => {
+test('renders as expected', () => {
   const { container } = render(<App />);
   expect(container).toMatchSnapshot();
 });

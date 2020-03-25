@@ -4,7 +4,7 @@ import NavBar from './NavBar';
 
 jest.mock('./MenuItem/MenuItem', () => 'mock-MenuItem');
 
-test('examples of some things', () => {
+test('renders as expected', () => {
   const { container } = render(<NavBar />);
   expect(container).toMatchSnapshot();
 });

@@ -16,7 +16,7 @@ const props = {
   ],
 };
 
-test('examples of some things', () => {
+test('renders as expected', () => {
   const { container } = render(<Category {...props} />);
   expect(container).toMatchSnapshot();
 });

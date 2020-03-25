@@ -24,7 +24,7 @@ const props = {
   ],
 };
 
-test('examples of some things', () => {
+test('renders as expected', () => {
   const { container } = render(<MenuItem {...props} />);
   expect(container).toMatchSnapshot();
 });
