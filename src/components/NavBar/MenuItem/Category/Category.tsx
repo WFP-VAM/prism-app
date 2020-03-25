@@ -1,13 +1,15 @@
 import React from 'react';
-import { Switch, Typography, withStyles } from '@material-ui/core';
+import {
+  Switch,
+  Typography,
+  withStyles,
+  createStyles,
+  WithStyles,
+} from '@material-ui/core';
 
-import { ILayer } from '../../utils';
+import { LayerType } from '../../../../config/types';
 
-export interface ICategoryProps extends ILayer {
-  classes: { [key: string]: string };
-}
-
-function Category({ classes, title, layers }: ICategoryProps) {
+function Category({ classes, title, layers }: CategoryProps) {
   return (
     <div className={classes.container}>
       <Typography variant="body2" className={classes.title}>
@@ -28,20 +30,23 @@ function Category({ classes, title, layers }: ICategoryProps) {
   );
 }
 
-const styles: any = () => ({
-  container: {
-    marginBottom: 16,
-  },
+const styles = () =>
+  createStyles({
+    container: {
+      marginBottom: 16,
+    },
 
-  listContainer: {
-    display: 'flex',
-    marginBottom: 8,
-  },
+    listContainer: {
+      display: 'flex',
+      marginBottom: 8,
+    },
 
-  title: {
-    fontWeight: 'bold',
-    textAlign: 'left',
-  },
-});
+    title: {
+      fontWeight: 'bold',
+      textAlign: 'left',
+    },
+  });
+
+export interface CategoryProps extends LayerType, WithStyles<typeof styles> {}
 
 export default withStyles(styles)(Category);

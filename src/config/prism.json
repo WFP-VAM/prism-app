@@ -7,7 +7,7 @@
   },
   "categories": {
     "baseline": {
-      "baseline": ["popupaltion_below_poverty", "population_density"]
+      "baseline": ["population_below_poverty", "population_density"]
     },
     "climate": {
       "meteorological_drought": ["rainfall_anomaly", "spi", "dslr"],

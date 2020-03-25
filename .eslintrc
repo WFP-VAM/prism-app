@@ -7,20 +7,22 @@
     "prettier/react"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "jsx-a11y",
-    "fp",
-    "@typescript-eslint",
-    "prettier"
-  ],
+  "plugins": ["jsx-a11y", "fp", "@typescript-eslint", "prettier"],
   "rules": {
     // Allow JSX within .js files
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
+    "react/jsx-filename-extension": [
+      1,
+      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+    ],
     // Allow props spreading in React
     "react/jsx-props-no-spreading": 0,
     // Allow named exports only files
     "import/prefer-default-export": 0,
-    "object-curly-spacing": ["error", "always", { "arraysInObjects": false, "objectsInObjects": false}],
+    "object-curly-spacing": [
+      "error",
+      "always",
+      { "arraysInObjects": false, "objectsInObjects": false }
+    ],
     // More verbose prettier suggestions
     "prettier/prettier": ["warn"],
     "import/extensions": ["error", "never"],
@@ -38,9 +40,14 @@
       {
         "commonjs": true,
         "allowThis": true,
-        "exceptions": [{"property": "propTypes"}, {"property": "defaultProps"}, {"property": "current"}]
+        "exceptions": [
+          { "property": "propTypes" },
+          { "property": "defaultProps" },
+          { "property": "current" }
+        ]
       }
-    ]
+    ],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^props$" }]
   },
   "settings": {
     "import/resolver": {

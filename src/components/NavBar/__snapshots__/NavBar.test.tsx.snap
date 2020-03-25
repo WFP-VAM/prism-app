@@ -2,11 +2,12 @@
 
 exports[`renders as expected 1`] = `
 <div>
-  <header
-    class="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary NavBar-appBar-1 MuiPaper-elevation4"
+  <mock-appbar
+    classname="NavBar-appBar-1"
+    position="static"
   >
-    <div
-      class="MuiToolbar-root MuiToolbar-dense MuiToolbar-gutters"
+    <mock-toolbar
+      variant="dense"
     >
       <div
         class="MuiGrid-root MuiGrid-container"
@@ -14,13 +15,14 @@ exports[`renders as expected 1`] = `
         <div
           class="MuiGrid-root NavBar-logoContainer-2 MuiGrid-item MuiGrid-grid-xs-3"
         >
-          <a
-            aria-current="page"
-            class="MuiTypography-root NavBar-logo-3 MuiTypography-h6"
-            href="/"
+          <mock-typography
+            classname="NavBar-logo-3"
+            component="[object Object]"
+            to="/"
+            variant="h6"
           >
-            PRISM
-          </a>
+            Prism
+          </mock-typography>
         </div>
         <div
           class="MuiGrid-root NavBar-menuContainer-4 MuiGrid-item MuiGrid-grid-xs-6"
@@ -47,10 +49,10 @@ exports[`renders as expected 1`] = `
           <div
             class="MuiGrid-root MuiGrid-item"
           >
-            <a
-              aria-current="page"
-              class="MuiTypography-root MuiTypography-body2"
-              href="/"
+            <mock-typography
+              component="[object Object]"
+              to="/"
+              variant="body2"
             >
               <svg
                 aria-hidden="true"
@@ -67,16 +69,16 @@ exports[`renders as expected 1`] = `
                   fill="currentColor"
                 />
               </svg>
-               ABOUT
-            </a>
+               About
+            </mock-typography>
           </div>
           <div
             class="MuiGrid-root MuiGrid-item"
           >
-            <a
-              aria-current="page"
-              class="MuiTypography-root MuiTypography-body2"
-              href="/"
+            <mock-typography
+              component="[object Object]"
+              to="/"
+              variant="body2"
             >
               <svg
                 aria-hidden="true"
@@ -93,12 +95,12 @@ exports[`renders as expected 1`] = `
                   fill="currentColor"
                 />
               </svg>
-               GITHUB
-            </a>
+               Github
+            </mock-typography>
           </div>
         </div>
       </div>
-    </div>
-  </header>
+    </mock-toolbar>
+  </mock-appbar>
 </div>
 `;

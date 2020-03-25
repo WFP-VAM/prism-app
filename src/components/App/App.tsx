@@ -5,7 +5,6 @@ import { Router, RouteComponentProps } from '@reach/router';
 import NavBar from '../NavBar/NavBar';
 import muiTheme from '../../muiTheme';
 
-// eslint-disable-next-line no-unused-vars
 const Hello = (props: RouteComponentProps) => <div>hello</div>;
 
 function App() {

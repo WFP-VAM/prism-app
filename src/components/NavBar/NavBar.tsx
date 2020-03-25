@@ -4,8 +4,11 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  withStyles,
   Grid,
+  Theme,
+  withStyles,
+  WithStyles,
+  createStyles,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -14,11 +17,7 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import MenuItem from './MenuItem/MenuItem';
 import { categories } from './utils';
 
-export interface INavBarProps {
-  classes: { [key: string]: string };
-}
-
-function NavBar({ classes }: INavBarProps) {
+function NavBar({ classes }: NavBarProps) {
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
@@ -30,7 +29,7 @@ function NavBar({ classes }: INavBarProps) {
               component={Link}
               to="/"
             >
-              PRISM
+              Prism
             </Typography>
           </Grid>
 
@@ -56,13 +55,13 @@ function NavBar({ classes }: INavBarProps) {
           >
             <Grid item>
               <Typography variant="body2" component={Link} to="/">
-                <FontAwesomeIcon icon={faInfoCircle} /> ABOUT
+                <FontAwesomeIcon icon={faInfoCircle} /> About
               </Typography>
             </Grid>
 
             <Grid item>
               <Typography variant="body2" component={Link} to="/">
-                <FontAwesomeIcon icon={faGithub} /> GITHUB
+                <FontAwesomeIcon icon={faGithub} /> Github
               </Typography>
             </Grid>
           </Grid>
@@ -72,28 +71,32 @@ function NavBar({ classes }: INavBarProps) {
   );
 }
 
-const styles: any = (theme: any) => ({
-  appBar: {
-    backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
-  },
+const styles = (theme: Theme) =>
+  createStyles({
+    appBar: {
+      backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+    },
 
-  logoContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+    logoContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
 
-  logo: {
-    letterSpacing: '.3rem',
-    fontSize: '1.25rem',
-    padding: 0,
-  },
+    logo: {
+      letterSpacing: '.3rem',
+      fontSize: '1.25rem',
+      textTransform: 'uppercase',
+      padding: 0,
+    },
 
-  menuContainer: {
-    textAlign: 'center',
-  },
+    menuContainer: {
+      textAlign: 'center',
+    },
 
-  aboutSectionContainer: {},
-});
+    aboutSectionContainer: {},
+  });
+
+export interface NavBarProps extends WithStyles<typeof styles> {}
 
 export default withStyles(styles)(NavBar);

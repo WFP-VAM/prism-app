@@ -5,49 +5,27 @@ exports[`renders as expected 1`] = `
   <div
     class="Category-container-1"
   >
-    <p
-      class="MuiTypography-root Category-title-3 MuiTypography-body2"
+    <mock-typography
+      classname="Category-title-3"
+      variant="body2"
     >
       Category 1
-    </p>
+    </mock-typography>
     <hr />
     <div
       class="Category-listContainer-2"
     >
-      <span
-        class="MuiSwitch-root MuiSwitch-sizeSmall"
-      >
-        <span
-          aria-disabled="false"
-          class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-46 MuiSwitch-switchBase"
-        >
-          <span
-            class="MuiIconButton-label"
-          >
-            <input
-              aria-label="checkbox with default color"
-              class="PrivateSwitchBase-input-49 MuiSwitch-input"
-              type="checkbox"
-              value=""
-            />
-            <span
-              class="MuiSwitch-thumb"
-            />
-          </span>
-          <span
-            class="MuiTouchRipple-root"
-          />
-        </span>
-        <span
-          class="MuiSwitch-track"
-        />
-      </span>
+      <mock-switch
+        color="default"
+        inputprops="[object Object]"
+        size="small"
+      />
        
-      <p
-        class="MuiTypography-root MuiTypography-body1"
+      <mock-typography
+        variant="body1"
       >
         layer
-      </p>
+      </mock-typography>
     </div>
   </div>
 </div>
