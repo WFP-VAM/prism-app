@@ -2,99 +2,35 @@
   "popupaltion_below_poverty": {
     "title": "Population below national poverty line (%)",
     "server_type": "wms",
-    "server_uri": "geoserver_path",
+    "server_uri": "http://3.136.214.209:8080/geoserver/prism/wms?service=WMS&layers=poverty_HC",
     "has_date": false,
     "opacity": 0.3,
     "legend_text": "Source: Susenas"
   },
-  "population_density": {
-    "title": "Population Density",
+  "population_total": {
+    "title": "Population Total",
     "server_type": "wms",
-    "server_uri": "geoserver_path",
+    "server_uri": "http://3.136.214.209:8080/geoserver/prism/wms?service=WMS&layers=NSO-pop-2018",
     "has_date": false,
     "opacity": 0.3,
-    "legend_text": "Population counts at 1km resolution (LandScan, 2015) - Source: Susenas"
+    "legend_text": "Population counts NSO 2018"
   },
-  "rainfall_anomaly": {
-    "title": "Monthly Rainfall Anomaly",
+  "ndvi": {
+    "title": "Modis NDVI",
     "server_type": "wms",
-    "server_uri": "geoserver_path",
+    "server_uri": "http://185.30.8.6:5000/wms?styles=ndvi&layers=ModisIndices",
     "has_date": true,
     "date_interval": "month",
     "opacity": 0.3,
-    "path": "https://localhost:8080/geoserver/vampire/wms?layers=rainfall_anomaly",
-    "legend_text": "Percentage of monthly rainfall compared to a long-term average. (CHIRPS)"
+    "legend_text": "Modis NDVI"
   },
-  "dslr": {
+  "ModisLST": {
     "title": "Days Since Last Rain",
     "server_type": "wms",
-    "server_uri": "geoserver_path",
+    "server_uri": "http://185.30.8.6:5000/wms?layers=ModisLST",
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
-    "path": "https://localhost:8080/geoserver/vampire/wms?layers=dslr",
-    "legend_text": "IMERG Data with 1 mm threshold"
-  },
-  "flood_forecast": {
-    "title": "Flood  Hazard Forecast (magnitude)",
-    "server_type": "wms",
-    "server_uri": "geoserver_path",
-    "has_date": true,
-    "date_interval": "day",
-    "opacity": 0.3,
-    "path": "https://localhost:8080/geoserver/vampire/wms?layers=dslr",
-    "legend_text": ""
-  },
-  "spi": {
-    "title": "Standardized Precipitation Index (SPI)",
-    "server_type": "wms",
-    "server_uri": "geoserver_path",
-    "has_date": true,
-    "date_interval": "month",
-    "opacity": 0.3,
-    "path": "https://localhost:8080/geoserver/vampire/wms?layers=spi",
-    "legend_text": "Indicates the probability of occurrence of an observed rainfall amount compared with long-term period (Data Source : CHIRPS)"
-  },
-  "vhi": {
-    "title": "Vegetation Health Index (VHI)",
-    "server_type": "wms",
-    "server_uri": "geoserver_path",
-    "has_date": true,
-    "date_interval": "month",
-    "opacity": 0.3,
-    "path": "https://localhost:8080/geoserver/vampire/wms?layers=spi",
-    "legend_text": "Data Source: MODIS vegetation and land surface temperature data"
-  },
-  "crops_drought_impact": {
-    "title": "Crops Affected by Drought",
-    "server_type": "choropleth",
-    "has_date": true,
-    "date_interval": "month",
-    "opacity": 0.3,
-    "legend": [
-      { "value": "< 1000", "color": "#fff7f8" },
-      { "value": "1001 - 5000", "color": "#ffe5e9" },
-      { "value": "5001 - 10000", "color": "#ff99a7" },
-      { "value": "10001 - 20001", "color": "#d14b5d" },
-      { "value": "20001 - 50000", "color": "#840f1f" },
-      { "value": "> 50000", "color": "#47000a" }
-    ],
-    "legend_text": "(ha)"
-  },
-  "population_drought_impact": {
-    "title": "Population Affected by Drought",
-    "server_type": "choropleth",
-    "has_date": true,
-    "date_interval": "month",
-    "opacity": 0.3,
-    "legend": [
-      { "value": "< 1000", "color": "#edf0f9" },
-      { "value": "1001 - 5000", "color": "#c3d1f7" },
-      { "value": "5001 - 10000", "color": "#6d8adb" },
-      { "value": "10001 - 20000", "color": "#3556b2" },
-      { "value": "20001 - 50000", "color": "#163384" },
-      { "value": "> 50000", "color": "#000a26" }
-    ],
-    "legend_text": "Number of people exposed to extreme drought"
+    "legend_text": "ModisLST"
   }
 }
