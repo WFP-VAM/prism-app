@@ -1,18 +1,18 @@
 {
-  "country": "Indonesia",
+  "country": "Mongolia",
   "map": {
-    "latitude": -3.88927,
-    "longitude": 118.621,
+    "latitude": 48.91,
+    "longitude": 107.5,
     "zoom": 5
   },
   "categories": {
     "baseline": {
-      "baseline": ["population_below_poverty", "population_density"]
+      "baseline": ["population_below_poverty", "population_total"]
     },
     "climate": {
-      "meteorological_drought": ["rainfall_anomaly", "spi", "dslr"],
-      "agricultural_drought": ["vhi"],
-      "forecast": ["flood_forecast"]
+      "meteorological_drought": ["ndvi"],
+      "agricultural_drought": ["ndvi", "ModisLST"],
+      "forecast": []
     },
     "impact": {}
   }
