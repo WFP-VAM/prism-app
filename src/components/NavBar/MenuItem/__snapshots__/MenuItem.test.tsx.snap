@@ -3,7 +3,6 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-button
-    aria-haspopup="true"
     classname="MenuItem-title-1"
   >
     <img
@@ -17,5 +16,17 @@ exports[`renders as expected 1`] = `
       title
     </mock-typography>
   </mock-button>
+  <mock-popover
+    anchororigin="[object Object]"
+    classname="MenuItem-popover-3"
+    open="false"
+    paperprops="[object Object]"
+    transformorigin="[object Object]"
+  >
+    <mock-category
+      layers="[object Object]"
+      title="Category 1"
+    />
+  </mock-popover>
 </div>
 `;

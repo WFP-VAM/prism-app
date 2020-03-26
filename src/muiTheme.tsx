@@ -10,6 +10,9 @@ const theme: any = createMuiTheme({
       main: greyBlue,
       dark: darkGreyBlue,
     },
+    text: {
+      primary: white,
+    },
   },
   overrides: {
     MuiToolbar: {

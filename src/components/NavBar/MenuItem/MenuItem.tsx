@@ -1,10 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Typography,
-  Popper,
-  ClickAwayListener,
-  Paper,
+  Popover,
   withStyles,
   WithStyles,
   createStyles,
@@ -15,38 +13,52 @@ import Category from './Category/Category';
 import { CategoryType } from '../../../config/types';
 
 function MenuItem({ classes, title, icon, layersList }: MenuItemProps) {
-  const [open, setOpen] = useState(false);
-  const anchorRef = useRef<any>();
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'menu-item-popover' : undefined;
 
   return (
     <>
       <Button
-        ref={anchorRef}
         className={classes.title}
-        onClick={() => setOpen(prevOpen => !prevOpen)}
-        aria-controls={open ? 'menu-list-grow' : undefined}
-        aria-haspopup="true"
+        onClick={handleClick}
+        aria-describedby={id}
       >
         <img className={classes.icon} src={icon} alt={title} />
         <Typography variant="body2">{title}</Typography>
       </Button>
 
-      <Popper
+      <Popover
+        id={id}
         open={open}
-        anchorEl={anchorRef.current}
-        className={classes.popper}
-        placement="bottom-start"
-        transition
-        disablePortal
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        className={classes.popover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        PaperProps={{
+          className: classes.paper,
+        }}
       >
-        <ClickAwayListener onClickAway={() => setOpen(false)}>
-          <Paper className={classes.paper}>
-            {layersList.map(layers => (
-              <Category key={layers.title} {...layers} />
-            ))}
-          </Paper>
-        </ClickAwayListener>
-      </Popper>
+        {layersList.map(layers => (
+          <Category key={layers.title} {...layers} />
+        ))}
+      </Popover>
     </>
   );
 }
@@ -77,7 +89,7 @@ const styles = (theme: Theme) =>
       marginRight: 6,
     },
 
-    popper: {
+    popover: {
       marginTop: 8,
     },
 
