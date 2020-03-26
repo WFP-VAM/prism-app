@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { Link } from '@reach/router';
 import {
   AppBar,
@@ -35,7 +35,6 @@ const rightSideLinks = [
 
 function NavBar({ classes }: NavBarProps) {
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
-  const anchorRef = useRef<any>();
 
   const menu = categories.map(({ title, icon, layersList }) => (
     <MenuItem key={title} title={title} icon={icon} layersList={layersList} />
@@ -89,7 +88,6 @@ function NavBar({ classes }: NavBarProps) {
           <Hidden mdUp>
             <Grid item xs={9} className={classes.mobileMenuContainer}>
               <Button
-                ref={anchorRef}
                 onClick={() => setOpenMobileMenu(prevOpen => !prevOpen)}
                 aria-controls={openMobileMenu ? 'mobile-menu-list' : undefined}
                 aria-haspopup="true"
