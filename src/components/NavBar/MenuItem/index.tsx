@@ -7,12 +7,12 @@ import {
   WithStyles,
   createStyles,
   Theme,
+  Switch,
 } from '@material-ui/core';
 
-import Category from './Category';
-import { CategoryType } from '../../../config/types';
+import { MenuItemType } from '../../../config/types';
 
-function MenuItem({ classes, title, icon, layersList }: MenuItemProps) {
+function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -55,8 +55,26 @@ function MenuItem({ classes, title, icon, layersList }: MenuItemProps) {
           className: classes.paper,
         }}
       >
-        {layersList.map(layers => (
-          <Category key={layers.title} {...layers} />
+        {layersCategories.map(({ title: categoryTitle, layers }) => (
+          <div key={categoryTitle} className={classes.categoryContainer}>
+            <Typography variant="body2" className={classes.categoryTitle}>
+              {categoryTitle}
+            </Typography>
+            <hr />
+
+            {layers.map(({ id: layerId, title: layerTitle }) => {
+              return (
+                <div key={layerId} className={classes.layersContainer}>
+                  <Switch
+                    size="small"
+                    color="default"
+                    inputProps={{ 'aria-label': layerTitle }}
+                  />{' '}
+                  <Typography variant="body1">{layerTitle}</Typography>
+                </div>
+              );
+            })}
+          </div>
         ))}
       </Popover>
     </>
@@ -98,10 +116,24 @@ const styles = (theme: Theme) =>
       backgroundColor: `${theme.palette.primary.main}f9`,
       borderRadius: 4,
     },
+
+    categoryContainer: {
+      marginBottom: 16,
+    },
+
+    categoryTitle: {
+      fontWeight: 'bold',
+      textAlign: 'left',
+    },
+
+    layersContainer: {
+      display: 'flex',
+      marginBottom: 8,
+    },
   });
 
 export interface MenuItemProps
-  extends CategoryType,
+  extends MenuItemType,
     WithStyles<typeof styles> {}
 
 export default withStyles(styles)(MenuItem);

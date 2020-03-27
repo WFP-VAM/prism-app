@@ -23,10 +23,32 @@ exports[`renders as expected 1`] = `
     paperprops="[object Object]"
     transformorigin="[object Object]"
   >
-    <mock-category
-      layers="[object Object]"
-      title="Category 1"
-    />
+    <div
+      class="MenuItem-categoryContainer-5"
+    >
+      <mock-typography
+        classname="MenuItem-categoryTitle-6"
+        variant="body2"
+      >
+        Category 1
+      </mock-typography>
+      <hr />
+      <div
+        class="MenuItem-layersContainer-7"
+      >
+        <mock-switch
+          color="default"
+          inputprops="[object Object]"
+          size="small"
+        />
+         
+        <mock-typography
+          variant="body1"
+        >
+          layer
+        </mock-typography>
+      </div>
+    </div>
   </mock-popover>
 </div>
 `;

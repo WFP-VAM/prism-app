@@ -2,12 +2,10 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import MenuItem from '.';
 
-jest.mock('./Category', () => 'mock-Category');
-
 const props = {
   title: 'title',
   icon: 'icon.png',
-  layersList: [
+  layersCategories: [
     {
       title: 'Category 1',
       layers: [

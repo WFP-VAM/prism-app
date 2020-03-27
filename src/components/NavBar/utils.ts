@@ -2,7 +2,7 @@ import { chain, map, startCase, camelCase, mapKeys } from 'lodash';
 
 import appJSON from '../../config/prism.json';
 import layersJSON from '../../config/layers.json';
-import { LayerType, CategoryType } from '../../config/types';
+import { LayersCategoryType, MenuItemType } from '../../config/types';
 
 import baseline from '../images/icon_basemap.png';
 import climate from '../images/icon_climate.png';
@@ -14,12 +14,14 @@ const icons: { [key: string]: string } = {
   impact,
 };
 
-type LayersType = LayerType[];
+type LayersCategoriesType = LayersCategoryType[];
 
-type CategoriesType = CategoryType[];
+type MenuItemsType = MenuItemType[];
 
-function formatLayersList(layersList: { [key: string]: String[] }): LayersType {
-  const formattedLayersList: any = map(
+function formatLayersCategories(layersList: {
+  [key: string]: String[];
+}): LayersCategoriesType {
+  const formattedLayersCategories: any = map(
     layersList,
     (layersKey, layersListKey) => ({
       title: startCase(layersListKey),
@@ -32,14 +34,14 @@ function formatLayersList(layersList: { [key: string]: String[] }): LayersType {
         .value(),
     }),
   );
-  return formattedLayersList as LayersType;
+  return formattedLayersCategories as LayersCategoriesType;
 }
 
-export const categories: CategoriesType = chain(appJSON)
+export const menuList: MenuItemsType = chain(appJSON)
   .get('categories')
-  .map((layersList, categoryKey) => ({
+  .map((layersCategories, categoryKey) => ({
     title: startCase(categoryKey),
     icon: icons[categoryKey],
-    layersList: formatLayersList(layersList),
+    layersCategories: formatLayersCategories(layersCategories),
   }))
   .value();
