@@ -9,7 +9,7 @@ import {
   Theme,
 } from '@material-ui/core';
 
-import Category from './Category/Category';
+import Category from './Category';
 import { CategoryType } from '../../../config/types';
 
 function MenuItem({ classes, title, icon, layersList }: MenuItemProps) {

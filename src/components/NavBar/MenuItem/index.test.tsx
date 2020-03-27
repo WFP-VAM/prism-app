@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import MenuItem from './MenuItem';
+import MenuItem from '.';
 
-jest.mock('./Category/Category', () => 'mock-Category');
+jest.mock('./Category', () => 'mock-Category');
 
 const props = {
   title: 'title',

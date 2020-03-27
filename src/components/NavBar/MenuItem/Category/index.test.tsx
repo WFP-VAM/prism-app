@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import Category from './Category';
+import Category from '.';
 
 const props = {
   title: 'Category 1',

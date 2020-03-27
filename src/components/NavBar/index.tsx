@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
-import MenuItem from './MenuItem/MenuItem';
+import MenuItem from './MenuItem';
 import { categories } from './utils';
 
 const rightSideLinks = [

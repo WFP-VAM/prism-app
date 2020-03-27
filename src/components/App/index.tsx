@@ -2,7 +2,7 @@ import React from 'react';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { Router, RouteComponentProps } from '@reach/router';
 
-import NavBar from '../NavBar/NavBar';
+import NavBar from '../NavBar';
 import muiTheme from '../../muiTheme';
 
 const Hello = (props: RouteComponentProps) => <div>hello</div>;

@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import NavBar from './NavBar';
+import NavBar from '.';
 
-jest.mock('./MenuItem/MenuItem', () => 'mock-MenuItem');
+jest.mock('./MenuItem', () => 'mock-MenuItem');
 
 test('renders as expected', () => {
   const { container } = render(<NavBar />);
