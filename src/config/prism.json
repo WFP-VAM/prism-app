@@ -1,9 +1,9 @@
 {
   "country": "Mongolia",
   "map": {
-    "latitude": 48.91,
-    "longitude": 107.5,
-    "zoom": 5
+    "latitude": 46.810021,
+    "longitude": 103.111657,
+    "zoom": 4
   },
   "categories": {
     "baseline": {
