@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Button,
   Typography,
@@ -10,10 +11,18 @@ import {
   Switch,
 } from '@material-ui/core';
 
-import { MenuItemType } from '../../../config/types';
+import { MenuItemType, LayerType } from '../../../config/types';
+import {
+  selectlayers,
+  addLayer,
+  removeLayer,
+} from '../../../context/filters/filtersSlice';
 
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const selectedLayers = useSelector(selectlayers);
+  const dispatch = useDispatch();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -21,6 +30,14 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const toogleLayerValue = (prevChecked: boolean, layer: LayerType) => {
+    if (prevChecked) {
+      dispatch(removeLayer(layer));
+    } else {
+      dispatch(addLayer(layer));
+    }
   };
 
   const open = Boolean(anchorEl);
@@ -62,12 +79,16 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
             </Typography>
             <hr />
 
-            {layers.map(({ id: layerId, title: layerTitle }) => {
+            {layers.map(layer => {
+              const { id: layerId, title: layerTitle } = layer;
+              const value = selectedLayers.has(layer);
               return (
                 <div key={layerId} className={classes.layersContainer}>
                   <Switch
                     size="small"
                     color="default"
+                    checked={value}
+                    onChange={() => toogleLayerValue(value, layer)}
                     inputProps={{ 'aria-label': layerTitle }}
                   />{' '}
                   <Typography variant="body1">{layerTitle}</Typography>

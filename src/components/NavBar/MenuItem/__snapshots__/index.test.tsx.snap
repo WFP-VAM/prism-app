@@ -37,6 +37,7 @@ exports[`renders as expected 1`] = `
         class="MenuItem-layersContainer-7"
       >
         <mock-switch
+          checked="false"
           color="default"
           inputprops="[object Object]"
           size="small"

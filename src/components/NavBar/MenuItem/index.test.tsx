@@ -1,6 +1,9 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
+
 import MenuItem from '.';
+import { store } from '../../../context/store';
 
 const props = {
   title: 'title',
@@ -23,6 +26,10 @@ const props = {
 };
 
 test('renders as expected', () => {
-  const { container } = render(<MenuItem {...props} />);
+  const { container } = render(
+    <Provider store={store}>
+      <MenuItem {...props} />
+    </Provider>,
+  );
   expect(container).toMatchSnapshot();
 });
