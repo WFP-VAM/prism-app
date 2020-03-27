@@ -1,0 +1,19 @@
+{
+  "country": "Mongolia",
+  "map": {
+    "latitude": 48.91,
+    "longitude": 107.5,
+    "zoom": 5
+  },
+  "categories": {
+    "baseline": {
+      "baseline": ["population_below_poverty", "population_total"]
+    },
+    "climate": {
+      "meteorological_drought": ["ndvi"],
+      "agricultural_drought": ["ndvi", "ModisLST"],
+      "forecast": []
+    },
+    "impact": {}
+  }
+}

@@ -7,23 +7,34 @@
     "prettier/react"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "jsx-a11y",
-    "fp",
-    "@typescript-eslint",
-    "prettier"
-  ],
+  "plugins": ["jsx-a11y", "fp", "@typescript-eslint", "prettier", "import"],
   "rules": {
     // Allow JSX within .js files
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
+    "react/jsx-filename-extension": [
+      1,
+      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+    ],
     // Allow props spreading in React
     "react/jsx-props-no-spreading": 0,
     // Allow named exports only files
     "import/prefer-default-export": 0,
-    "object-curly-spacing": ["error", "always", { "arraysInObjects": false, "objectsInObjects": false}],
+    "object-curly-spacing": [
+      "error",
+      "always",
+      { "arraysInObjects": false, "objectsInObjects": false }
+    ],
     // More verbose prettier suggestions
     "prettier/prettier": ["warn"],
-    "import/extensions": ["error", "never"],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
     // Warnings to enforce functional programming styles - e.g. no unintended mutations
     "fp/no-delete": "warn",
     "fp/no-mutating-assign": "warn",
@@ -38,15 +49,27 @@
       {
         "commonjs": true,
         "allowThis": true,
-        "exceptions": [{"property": "propTypes"}, {"property": "defaultProps"}, {"property": "current"}]
+        "exceptions": [
+          { "property": "propTypes" },
+          { "property": "defaultProps" },
+          { "property": "current" }
+        ]
       }
-    ]
+    ],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^props$" }]
   },
   "settings": {
     "import/resolver": {
       "node": {
         "moduleDirectory": ["node_modules", "./src"],
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "import/parsers": {
+        "@typescript-eslint/parser": [".ts", ".tsx"]
+      },
+      "typescript": {
+        // always try to resolve types under `<roo/>@types` directory even it doesn't contain any source code, like `@types/unist`
+        "alwaysTryTypes": true
       }
     }
   }
