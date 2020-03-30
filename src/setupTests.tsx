@@ -4,6 +4,17 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
 
+// Based on https://github.com/mapbox/mapbox-gl-js/issues/3436#issuecomment-485535598
+jest.mock('mapbox-gl/dist/mapbox-gl', () => ({
+  GeolocateControl: jest.fn(),
+  Map: jest.fn(() => ({
+    addControl: jest.fn(),
+    on: jest.fn(),
+    remove: jest.fn(),
+  })),
+  NavigationControl: jest.fn(),
+}));
+
 function stubMuiComponent(componentName: string) {
   jest.doMock(
     `@material-ui/core/${componentName}/${componentName}`,

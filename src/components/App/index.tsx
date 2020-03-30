@@ -1,11 +1,10 @@
 import React from 'react';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { Router, RouteComponentProps } from '@reach/router';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import NavBar from '../NavBar';
+import MapView from '../MapView';
 import muiTheme from '../../muiTheme';
-
-const Hello = (props: RouteComponentProps) => <div>hello</div>;
 
 function App() {
   return (
@@ -13,7 +12,7 @@ function App() {
       <NavBar />
       <div className="App">
         <Router>
-          <Hello path="*" />
+          <Route path="*" component={MapView} />
         </Router>
       </div>
     </ThemeProvider>

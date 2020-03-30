@@ -18,7 +18,7 @@ import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import MenuItem from './MenuItem';
-import { categories } from './utils';
+import { menuList } from './utils';
 
 const rightSideLinks = [
   {
@@ -36,8 +36,8 @@ const rightSideLinks = [
 function NavBar({ classes }: NavBarProps) {
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
 
-  const menu = categories.map(({ title, icon, layersList }) => (
-    <MenuItem key={title} title={title} icon={icon} layersList={layersList} />
+  const menu = menuList.map(({ title, ...category }) => (
+    <MenuItem key={title} title={title} {...category} />
   ));
 
   const buttons = rightSideLinks.map(({ title, icon, link }) => (

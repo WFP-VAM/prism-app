@@ -32,17 +32,17 @@ exports[`renders as expected 1`] = `
           >
             <mock-menuitem
               icon="icon_basemap.png"
-              layerslist="[object Object]"
+              layerscategories="[object Object]"
               title="Baseline"
             />
             <mock-menuitem
               icon="icon_climate.png"
-              layerslist="[object Object],[object Object],[object Object]"
+              layerscategories="[object Object],[object Object],[object Object]"
               title="Climate"
             />
             <mock-menuitem
               icon="icon_impact.png"
-              layerslist=""
+              layerscategories=""
               title="Impact"
             />
           </div>
@@ -204,17 +204,17 @@ exports[`renders as expected 1`] = `
                   >
                     <mock-menuitem
                       icon="icon_basemap.png"
-                      layerslist="[object Object]"
+                      layerscategories="[object Object]"
                       title="Baseline"
                     />
                     <mock-menuitem
                       icon="icon_climate.png"
-                      layerslist="[object Object],[object Object],[object Object]"
+                      layerscategories="[object Object],[object Object],[object Object]"
                       title="Climate"
                     />
                     <mock-menuitem
                       icon="icon_impact.png"
-                      layerslist=""
+                      layerscategories=""
                       title="Impact"
                     />
                   </div>

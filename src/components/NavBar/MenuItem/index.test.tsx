@@ -1,13 +1,14 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-import MenuItem from '.';
 
-jest.mock('./Category', () => 'mock-Category');
+import MenuItem from '.';
+import { store } from '../../../context/store';
 
 const props = {
   title: 'title',
   icon: 'icon.png',
-  layersList: [
+  layersCategories: [
     {
       title: 'Category 1',
       layers: [
@@ -25,6 +26,10 @@ const props = {
 };
 
 test('renders as expected', () => {
-  const { container } = render(<MenuItem {...props} />);
+  const { container } = render(
+    <Provider store={store}>
+      <MenuItem {...props} />
+    </Provider>,
+  );
   expect(container).toMatchSnapshot();
 });

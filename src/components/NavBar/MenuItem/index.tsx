@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Button,
   Typography,
@@ -7,13 +8,21 @@ import {
   WithStyles,
   createStyles,
   Theme,
+  Switch,
 } from '@material-ui/core';
 
-import Category from './Category';
-import { CategoryType } from '../../../config/types';
+import { MenuItemType, LayerType } from '../../../config/types';
+import {
+  selectlayers,
+  addLayer,
+  removeLayer,
+} from '../../../context/filters/filtersSlice';
 
-function MenuItem({ classes, title, icon, layersList }: MenuItemProps) {
+function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const selectedLayers = useSelector(selectlayers);
+  const dispatch = useDispatch();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -21,6 +30,14 @@ function MenuItem({ classes, title, icon, layersList }: MenuItemProps) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const toogleLayerValue = (prevChecked: boolean, layer: LayerType) => {
+    if (prevChecked) {
+      dispatch(removeLayer(layer));
+    } else {
+      dispatch(addLayer(layer));
+    }
   };
 
   const open = Boolean(anchorEl);
@@ -55,8 +72,30 @@ function MenuItem({ classes, title, icon, layersList }: MenuItemProps) {
           className: classes.paper,
         }}
       >
-        {layersList.map(layers => (
-          <Category key={layers.title} {...layers} />
+        {layersCategories.map(({ title: categoryTitle, layers }) => (
+          <div key={categoryTitle} className={classes.categoryContainer}>
+            <Typography variant="body2" className={classes.categoryTitle}>
+              {categoryTitle}
+            </Typography>
+            <hr />
+
+            {layers.map(layer => {
+              const { id: layerId, title: layerTitle } = layer;
+              const value = selectedLayers.has(layer);
+              return (
+                <div key={layerId} className={classes.layersContainer}>
+                  <Switch
+                    size="small"
+                    color="default"
+                    checked={value}
+                    onChange={() => toogleLayerValue(value, layer)}
+                    inputProps={{ 'aria-label': layerTitle }}
+                  />{' '}
+                  <Typography variant="body1">{layerTitle}</Typography>
+                </div>
+              );
+            })}
+          </div>
         ))}
       </Popover>
     </>
@@ -98,10 +137,24 @@ const styles = (theme: Theme) =>
       backgroundColor: `${theme.palette.primary.main}f9`,
       borderRadius: 4,
     },
+
+    categoryContainer: {
+      marginBottom: 16,
+    },
+
+    categoryTitle: {
+      fontWeight: 'bold',
+      textAlign: 'left',
+    },
+
+    layersContainer: {
+      display: 'flex',
+      marginBottom: 8,
+    },
   });
 
 export interface MenuItemProps
-  extends CategoryType,
+  extends MenuItemType,
     WithStyles<typeof styles> {}
 
 export default withStyles(styles)(MenuItem);
