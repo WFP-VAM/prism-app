@@ -25,7 +25,7 @@
     "legend_text": "Modis NDVI"
   },
   "ModisLST": {
-    "title": "Days Since Last Rain",
+    "title": "Modis LST",
     "server_type": "wms",
     "server_uri": "http://185.30.8.6:5000/wms?layers=ModisLST",
     "has_date": true,
