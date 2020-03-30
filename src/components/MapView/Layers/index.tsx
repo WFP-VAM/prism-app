@@ -1,11 +1,12 @@
 import React, { Fragment } from 'react';
 import { Source, Layer } from 'react-mapbox-gl';
 import { useSelector } from 'react-redux';
-import { chain } from 'lodash';
+import { merge, unset } from 'lodash';
+import { format, parse } from 'url';
 
 import { selectlayers } from '../../../context/filters/filtersSlice';
 
-const wmsParams = chain({
+const wmsCommonQuery = {
   version: '1.1.1',
   request: 'GetMap',
   format: 'image/png',
@@ -17,10 +18,19 @@ const wmsParams = chain({
   height: 256,
   srs: 'EPSG:3857',
   bbox: '{bbox-epsg-3857}',
-})
-  .map((value, key) => `${key}=${value}`)
-  .join('&')
-  .value();
+};
+
+function formatServerUri(serverUri: string) {
+  // The second arg of 'parse' allows us to have query as an object
+  const { query, ...parsedUrl } = parse(serverUri, true);
+
+  // Removing 'search' to be able to format by 'query'
+  unset(parsedUrl, 'search');
+
+  return decodeURI(
+    format({ ...parsedUrl, query: merge(query, wmsCommonQuery) }),
+  );
+}
 
 function Layers() {
   const layers = useSelector(selectlayers);
@@ -33,7 +43,7 @@ function Layers() {
             id={`source-${id}`}
             tileJsonSource={{
               type: 'raster',
-              tiles: [`${serverUri}&${wmsParams}`],
+              tiles: [formatServerUri(serverUri)],
               tileSize: 256,
             }}
           />
