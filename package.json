@@ -37,7 +37,6 @@
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.25.0",
     "babel-eslint": "10.0.3",
-    "env-cmd": "^10.1.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
@@ -70,7 +69,7 @@
     "url": "^0.11.0"
   },
   "scripts": {
-    "start": "EXTEND_ESLINT=true env-cmd react-scripts start",
+    "start": "EXTEND_ESLINT=true react-scripts start",
     "build": "EXTEND_ESLINT=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
