@@ -3,7 +3,12 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    style="height: 100vh; width: 100vw;"
-  />
+    class="MapView-container-1"
+  >
+    <div
+      style="height: 100vh; width: 100vw;"
+    />
+    <mock-dateselector />
+  </div>
 </div>
 `;

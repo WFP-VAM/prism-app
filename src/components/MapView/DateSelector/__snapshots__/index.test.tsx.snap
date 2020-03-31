@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="DateSelector-container-1"
+  >
+    <div
+      class="DateSelector-datePickerContainer-2"
+    >
+      <div
+        class="react-datepicker-wrapper"
+      >
+        <div
+          class="react-datepicker__input-container"
+        >
+          <mock-button
+            variant="outlined"
+          >
+            03/31/2020
+          </mock-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
