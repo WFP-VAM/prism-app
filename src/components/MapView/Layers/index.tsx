@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { merge, unset } from 'lodash';
 import { format, parse } from 'url';
 
-import { selectlayers } from '../../../context/filters/filtersSlice';
+import { selectLayers } from '../../../context/filters/filtersSlice';
 
 const wmsCommonQuery = {
   version: '1.1.1',
@@ -33,7 +33,7 @@ function formatServerUri(serverUri: string) {
 }
 
 function Layers() {
-  const layers = useSelector(selectlayers);
+  const layers = useSelector(selectLayers);
 
   return (
     <>

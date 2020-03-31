@@ -1,4 +1,5 @@
-import React, { useState, forwardRef, Ref } from 'react';
+import React, { forwardRef, Ref } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Button,
   createStyles,
@@ -9,6 +10,11 @@ import {
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+
+import {
+  selectCurrentDate,
+  updateDate,
+} from '../../../context/filters/filtersSlice';
 
 interface InputProps {
   value?: string;
@@ -26,7 +32,8 @@ const Input = forwardRef(
 );
 
 function DateSelector({ unavailableDates = [], classes }: DateSelectorProps) {
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const selectedDate = useSelector(selectCurrentDate);
+  const dispatch = useDispatch();
 
   function isUnavailableDate(date: Date) {
     return Boolean(
@@ -36,7 +43,7 @@ function DateSelector({ unavailableDates = [], classes }: DateSelectorProps) {
 
   function updateStartDate(date: Date) {
     if (!isUnavailableDate(date)) {
-      setStartDate(date);
+      dispatch(updateDate(date));
     }
   }
 
@@ -45,7 +52,7 @@ function DateSelector({ unavailableDates = [], classes }: DateSelectorProps) {
       <div className={classes.datePickerContainer}>
         <DatePicker
           className={classes.datePickerInput}
-          selected={startDate}
+          selected={selectedDate}
           onChange={updateStartDate}
           maxDate={new Date()}
           todayButton="Today"
