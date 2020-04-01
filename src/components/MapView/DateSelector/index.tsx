@@ -11,10 +11,7 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import {
-  selectCurrentDate,
-  updateDate,
-} from '../../../context/filters/filtersSlice';
+import { selectCurrentDate, updateDate } from '../../../context/mapStateSlice';
 
 interface InputProps {
   value?: string;
@@ -31,18 +28,18 @@ const Input = forwardRef(
   },
 );
 
-function DateSelector({ unavailableDates = [], classes }: DateSelectorProps) {
+function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const selectedDate = useSelector(selectCurrentDate);
   const dispatch = useDispatch();
 
-  function isUnavailableDate(date: Date) {
+  function isAvailableDate(date: Date) {
     return Boolean(
-      unavailableDates.find(dateIt => moment(date).isSame(dateIt, 'day')),
+      availableDates.find(dateIt => moment(date).isSame(dateIt, 'day')),
     );
   }
 
   function updateStartDate(date: Date) {
-    if (!isUnavailableDate(date)) {
+    if (isAvailableDate(date)) {
       dispatch(updateDate(date));
     }
   }
@@ -62,7 +59,7 @@ function DateSelector({ unavailableDates = [], classes }: DateSelectorProps) {
           dropdownMode="select"
           customInput={<Input />}
           dayClassName={date =>
-            isUnavailableDate(date) ? classes.unavailableDate : null
+            isAvailableDate(date) ? null : classes.unavailableDate
           }
         />
       </div>
@@ -107,7 +104,7 @@ const styles = (theme: Theme) =>
   });
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
-  unavailableDates?: Date[];
+  availableDates?: Date[];
 }
 
 export default withStyles(styles)(DateSelector);

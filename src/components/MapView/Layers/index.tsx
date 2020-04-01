@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { merge, unset } from 'lodash';
 import { format, parse } from 'url';
 
-import { selectLayers } from '../../../context/filters/filtersSlice';
+import { selectLayers } from '../../../context/mapStateSlice';
 
 const wmsCommonQuery = {
   version: '1.1.1',

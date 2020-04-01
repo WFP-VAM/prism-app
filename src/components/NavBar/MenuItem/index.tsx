@@ -16,7 +16,7 @@ import {
   selectLayers,
   addLayer,
   removeLayer,
-} from '../../../context/filters/filtersSlice';
+} from '../../../context/mapStateSlice';
 
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
