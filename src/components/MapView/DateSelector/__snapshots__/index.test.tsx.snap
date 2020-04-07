@@ -20,13 +20,13 @@ exports[`renders as expected 1`] = `
             <mock-button
               variant="outlined"
             >
-              04/02/2020
+              04/07/2020
             </mock-button>
           </div>
         </div>
       </div>
       <div
-        class="MuiGrid-root DateSelector-slider-5 MuiGrid-item MuiGrid-grid-xs-10"
+        class="MuiGrid-root DateSelector-slider-4 MuiGrid-item MuiGrid-grid-xs-10"
       >
         <mock-button>
           <svg
@@ -52,7 +52,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >
@@ -60,7 +60,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -68,7 +68,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >
@@ -76,7 +76,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -84,7 +84,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >
@@ -92,7 +92,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -100,7 +100,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="contained"
             >
@@ -108,7 +108,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -116,7 +116,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >
@@ -124,7 +124,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -132,7 +132,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >
@@ -140,7 +140,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -148,7 +148,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >
@@ -156,7 +156,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -164,7 +164,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >
@@ -172,7 +172,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -180,7 +180,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >
@@ -188,7 +188,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -196,7 +196,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >
@@ -204,7 +204,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -212,7 +212,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >
@@ -220,7 +220,7 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
           <mock-divider
-            classname="DateSelector-divider-7"
+            classname="DateSelector-divider-6"
             flexitem="true"
             orientation="vertical"
           />
@@ -228,7 +228,7 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root MuiGrid-item"
           >
             <mock-button
-              classname="DateSelector-monthButton-6"
+              classname="DateSelector-monthButton-5"
               disabled="true"
               variant="text"
             >

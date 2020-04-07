@@ -1,5 +1,6 @@
-import React, { Fragment, forwardRef, Ref } from 'react';
+import React, { useState, useEffect, Fragment, forwardRef, Ref } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import moment from 'moment';
 import {
   Divider,
   Grid,
@@ -9,17 +10,19 @@ import {
   WithStyles,
   Theme,
 } from '@material-ui/core';
-import moment from 'moment';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faAngleDoubleRight,
   faAngleDoubleLeft,
 } from '@fortawesome/free-solid-svg-icons';
+import 'react-datepicker/dist/react-datepicker.css';
 
-import { selectCurrentDate, updateDate } from '../../../context/mapStateSlice';
-import { months, findAvailableDayInMonth } from './utils';
+import {
+  dateRangeSelector,
+  updateDateRange,
+} from '../../../context/mapStateSlice';
+import { months, getMonthStartAndEnd, isAvailableMonth } from './utils';
 
 interface InputProps {
   value?: string;
@@ -37,46 +40,34 @@ const Input = forwardRef(
 );
 
 function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
-  const selectedDate = useSelector(selectCurrentDate);
-  const selectedMonth = selectedDate.getMonth();
-  const selectedYear = selectedDate.getFullYear();
   const dispatch = useDispatch();
+  const { startDate: stateStartDate } = useSelector(dateRangeSelector);
+  const stateStartDateYear = moment(stateStartDate).year();
 
-  function isAvailableDate(date: Date) {
-    return Boolean(
-      availableDates.find(dateIt => moment(date).isSame(dateIt, 'day')),
-    );
-  }
+  const [selectedDate, setSelectedDate] = useState(moment(stateStartDate));
+  const selectedMonth = selectedDate.month();
+  const selectedYear = selectedDate.year();
 
-  function isAvailableMonth(month: number) {
-    return Boolean(
-      findAvailableDayInMonth(new Date(selectedYear, month, 1), availableDates),
-    );
-  }
+  useEffect(() => {
+    setSelectedDate(moment(stateStartDate));
+  }, [stateStartDate]);
 
   function updateMonth(month: number) {
-    // Fetching the first available day in the month
-    const date = findAvailableDayInMonth(
-      new Date(selectedYear, month, 1),
-      availableDates,
-    );
-    if (date) {
-      dispatch(updateDate(date));
-    }
+    const { startDate, endDate } = getMonthStartAndEnd(month, selectedYear);
+    dispatch(updateDateRange({ startDate, endDate }));
   }
 
   function incrementYear() {
-    dispatch(updateDate(new Date(selectedYear + 1, selectedMonth, 1)));
+    setSelectedDate(selectedDate.year(selectedYear + 1).clone());
   }
 
   function decrementYear() {
-    dispatch(updateDate(new Date(selectedYear - 1, selectedMonth, 1)));
+    setSelectedDate(selectedDate.year(selectedYear - 1).clone());
   }
 
   function updateStartDate(date: Date) {
-    if (isAvailableDate(date)) {
-      dispatch(updateDate(date));
-    }
+    const time = date.getTime();
+    dispatch(updateDateRange({ startDate: time, endDate: time }));
   }
 
   return (
@@ -89,7 +80,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         <Grid item xs={2}>
           <DatePicker
             className={classes.datePickerInput}
-            selected={selectedDate}
+            selected={selectedDate.toDate()}
             onChange={updateStartDate}
             maxDate={new Date()}
             todayButton="Today"
@@ -98,9 +89,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
             showYearDropdown
             dropdownMode="select"
             customInput={<Input />}
-            dayClassName={date =>
-              isAvailableDate(date) ? null : classes.unavailableDate
-            }
+            includeDates={availableDates}
           />
         </Grid>
 
@@ -122,9 +111,16 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
 
                 <Grid item>
                   <Button
-                    variant={index === selectedMonth ? 'contained' : 'text'}
+                    variant={
+                      index === selectedMonth &&
+                      stateStartDateYear === selectedYear
+                        ? 'contained'
+                        : 'text'
+                    }
                     onClick={() => updateMonth(index)}
-                    disabled={!isAvailableMonth(index)}
+                    disabled={
+                      !isAvailableMonth(index, selectedYear, availableDates)
+                    }
                     className={classes.monthButton}
                   >
                     {month}
@@ -163,19 +159,6 @@ const styles = (theme: Theme) =>
 
     datePickerInput: {
       backgroundColor: theme.palette.primary.main,
-    },
-
-    unavailableDate: {
-      color: theme.palette.grey[500],
-      cursor: 'default',
-
-      '&:hover': {
-        backgroundColor: 'inherit',
-      },
-
-      '&:focus': {
-        outline: 'none',
-      },
     },
 
     slider: {

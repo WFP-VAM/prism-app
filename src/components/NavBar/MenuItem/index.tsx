@@ -13,7 +13,7 @@ import {
 
 import { MenuItemType, LayerType } from '../../../config/types';
 import {
-  selectLayers,
+  layersSelector,
   addLayer,
   removeLayer,
 } from '../../../context/mapStateSlice';
@@ -21,7 +21,7 @@ import {
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const selectedLayers = useSelector(selectLayers);
+  const selectedLayers = useSelector(layersSelector);
   const dispatch = useDispatch();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {

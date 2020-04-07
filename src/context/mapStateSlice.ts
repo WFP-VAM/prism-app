@@ -5,11 +5,15 @@ import { RootState } from './store';
 import { LayerType } from '../config/types';
 
 interface LayersSet extends Set<LayerType> {}
-interface MapState extends Map<string, LayersSet | Date> {}
+interface DateRange {
+  startDate?: number;
+  endDate?: number;
+}
+interface MapState extends Map<string, any> {}
 
 const initialState: MapState = Map({
   layers: Set<LayerType>(),
-  currentDate: new Date(),
+  dateRange: {},
 });
 
 export const mapStateSlice = createSlice({
@@ -22,18 +26,18 @@ export const mapStateSlice = createSlice({
     removeLayer: (state, { payload }: PayloadAction<LayerType>) =>
       state.update('layers', layers => (layers as LayersSet).delete(payload)),
 
-    updateDate: (state, { payload }: PayloadAction<Date>) =>
-      state.set('currentDate', payload),
+    updateDateRange: (state, { payload }: PayloadAction<DateRange>) =>
+      state.set('dateRange', payload),
   },
 });
 
 // Getters
-export const selectLayers = (state: RootState) =>
+export const layersSelector = (state: RootState) =>
   state.mapState.get('layers') as LayersSet;
-export const selectCurrentDate = (state: RootState) =>
-  state.mapState.get('currentDate') as Date;
+export const dateRangeSelector = (state: RootState) =>
+  state.mapState.get('dateRange') as DateRange;
 
 // Setters
-export const { addLayer, removeLayer, updateDate } = mapStateSlice.actions;
+export const { addLayer, removeLayer, updateDateRange } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;
