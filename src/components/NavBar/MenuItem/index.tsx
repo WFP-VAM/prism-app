@@ -13,15 +13,15 @@ import {
 
 import { MenuItemType, LayerType } from '../../../config/types';
 import {
-  selectlayers,
+  layersSelector,
   addLayer,
   removeLayer,
-} from '../../../context/filters/filtersSlice';
+} from '../../../context/mapStateSlice';
 
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const selectedLayers = useSelector(selectlayers);
+  const selectedLayers = useSelector(layersSelector);
   const dispatch = useDispatch();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -135,7 +135,7 @@ const styles = (theme: Theme) =>
     paper: {
       padding: '8px 16px',
       backgroundColor: `${theme.palette.primary.main}f9`,
-      borderRadius: 4,
+      borderRadius: theme.shape.borderRadius,
     },
 
     categoryContainer: {

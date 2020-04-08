@@ -1,9 +1,9 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import filtersReduce from './filters/filtersSlice';
+import mapStateReduce from './mapStateSlice';
 
 export const store = configureStore({
   reducer: {
-    filters: filtersReduce,
+    mapState: mapStateReduce,
   },
   // TODO: Instead of snoozing this check, we might want to
   // serialize the state

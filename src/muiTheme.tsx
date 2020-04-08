@@ -3,6 +3,7 @@ import { createMuiTheme } from '@material-ui/core/styles';
 const greyBlue: string = '#5A686C';
 const darkGreyBlue: string = '#2D3436';
 const white: string = '#FFFFFF';
+const lightGray = '#CCCCCC';
 
 const theme: any = createMuiTheme({
   palette: {
@@ -12,6 +13,9 @@ const theme: any = createMuiTheme({
     },
     text: {
       primary: white,
+    },
+    grey: {
+      500: lightGray,
     },
   },
   overrides: {
