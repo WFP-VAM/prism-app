@@ -9934,6 +9934,11 @@ redeyed@~0.4.0:
   dependencies:
     esprima "~1.0.4"
 
+redux-async-initial-state@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/redux-async-initial-state/-/redux-async-initial-state-0.3.0.tgz#65cff4e4761e3f43df6da5dff84eb5477f09f8a3"
+  integrity sha512-Is+i60mt0eDG64xICQFej7nueSF0ZHozPLINr7KqQk2Yp04zTmPEIY6xJmBEyaz7tmWtFoVeYqfKqt7gMSSKhA==
+
 redux-devtools-extension@^2.13.8:
   version "2.13.8"
   resolved "https://registry.yarnpkg.com/redux-devtools-extension/-/redux-devtools-extension-2.13.8.tgz#37b982688626e5e4993ff87220c9bbb7cd2d96e1"
@@ -12161,6 +12166,13 @@ ws@^6.1.2, ws@^6.2.1:
   integrity sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==
   dependencies:
     async-limiter "~1.0.0"
+
+xml-js@^1.6.11:
+  version "1.6.11"
+  resolved "https://registry.yarnpkg.com/xml-js/-/xml-js-1.6.11.tgz#927d2f6947f7f1c19a316dd8eea3614e8b18f8e9"
+  integrity sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==
+  dependencies:
+    sax "^1.2.4"
 
 xml-name-validator@^3.0.0:
   version "3.0.0"
