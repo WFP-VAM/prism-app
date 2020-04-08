@@ -58,11 +58,11 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   }
 
   function incrementYear() {
-    setSelectedDate(selectedDate.year(selectedYear + 1).clone());
+    setSelectedDate(selectedDate.clone().year(selectedYear + 1));
   }
 
   function decrementYear() {
-    setSelectedDate(selectedDate.year(selectedYear - 1).clone());
+    setSelectedDate(selectedDate.clone().year(selectedYear - 1));
   }
 
   function updateStartDate(date: Date) {

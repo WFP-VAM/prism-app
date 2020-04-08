@@ -58,5 +58,5 @@ export function isAvailableMonth(
   year: number,
   availableDates: Date[],
 ) {
-  return findAvailableDayInMonth(month, year, availableDates).length;
+  return Boolean(findAvailableDayInMonth(month, year, availableDates).length);
 }
