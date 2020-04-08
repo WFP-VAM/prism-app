@@ -6,11 +6,12 @@ exports[`renders as expected 1`] = `
   <div
     class="App"
   >
-    <mock-mapview
-      history="[object Object]"
-      location="[object Object]"
-      match="[object Object]"
-    />
+    <mock-mapview />
   </div>
+  <mock-notfound
+    history="[object Object]"
+    location="[object Object]"
+    match="[object Object]"
+  />
 </div>
 `;

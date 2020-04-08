@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="NotFound-container-1"
+  >
+    <div
+      class="MuiGrid-root NotFound-content-2 MuiGrid-container MuiGrid-spacing-xs-3"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <mock-typography
+          color="textPrimary"
+          gutterbottom="true"
+          variant="h3"
+        >
+          404 Page Not Found
+        </mock-typography>
+        <mock-typography
+          color="textPrimary"
+          gutterbottom="true"
+          variant="h5"
+        >
+          Sorry, it seems we ran into a problem. We already collected information about this error.
+        </mock-typography>
+        <mock-typography
+          gutterbottom="true"
+          variant="body1"
+        >
+          If you have typed the address of this web page, you may misspelled it or if you redirected to this page, it may be moved to another location. Please go back to the website home page and try to find your page from the website navigation.
+        </mock-typography>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <mock-button
+          component="[object Object]"
+          to="/"
+          variant="contained"
+        >
+          Back To Home
+        </mock-button>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <img
+          alt="World Food Programme logo"
+          class="NotFound-image-3"
+          src="wfp_logo.png"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
