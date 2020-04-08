@@ -76,7 +76,7 @@
     "build": "EXTEND_ESLINT=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./ --ignore-path .gitignore",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src --ignore-path .gitignore",
     "precommit": "lint-staged"
   },
   "jest": {
