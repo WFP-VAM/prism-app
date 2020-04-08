@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Fragment, forwardRef, Ref } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
+import { flatten } from 'lodash';
+import { Map } from 'immutable';
 import {
   Divider,
   Grid,
@@ -23,6 +25,7 @@ import {
   updateDateRange,
 } from '../../../context/mapStateSlice';
 import { months, getMonthStartAndEnd, isAvailableMonth } from './utils';
+import { AvailableDates } from '../../../config/types';
 
 interface InputProps {
   value?: string;
@@ -39,7 +42,7 @@ const Input = forwardRef(
   },
 );
 
-function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
+function DateSelector({ availableDates = Map(), classes }: DateSelectorProps) {
   const dispatch = useDispatch();
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
   const stateStartDateYear = moment(stateStartDate).year();
@@ -89,7 +92,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
             showYearDropdown
             dropdownMode="select"
             customInput={<Input />}
-            includeDates={availableDates}
+            includeDates={flatten(availableDates.valueSeq().toJS())}
           />
         </Grid>
 
@@ -176,7 +179,7 @@ const styles = (theme: Theme) =>
   });
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
-  availableDates?: Date[];
+  availableDates?: AvailableDates;
 }
 
 export default withStyles(styles)(DateSelector);

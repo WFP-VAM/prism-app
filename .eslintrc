@@ -56,7 +56,8 @@
         ]
       }
     ],
-    "no-unused-vars": ["error", { "argsIgnorePattern": "^props$" }]
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^props$" }],
+    "no-console": ["warn", { "allow": ["warn", "error"] }]
   },
   "settings": {
     "import/resolver": {

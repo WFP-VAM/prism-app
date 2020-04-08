@@ -8,7 +8,9 @@ exports[`renders as expected 1`] = `
     <div
       style="height: 100vh; width: 100vw;"
     />
-    <mock-dateselector />
+    <mock-dateselector
+      availabledates="Map {}"
+    />
   </div>
 </div>
 `;
