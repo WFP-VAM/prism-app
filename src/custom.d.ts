@@ -17,3 +17,5 @@ declare module '*.css' {
 }
 
 declare module '*.png';
+
+declare module 'redux-async-initial-state';

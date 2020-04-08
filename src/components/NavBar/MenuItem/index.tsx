@@ -32,7 +32,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
     setAnchorEl(null);
   };
 
-  const toogleLayerValue = (prevChecked: boolean, layer: LayerType) => {
+  const toggleLayerValue = (prevChecked: boolean, layer: LayerType) => {
     if (prevChecked) {
       dispatch(removeLayer(layer));
     } else {
@@ -81,14 +81,14 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
 
             {layers.map(layer => {
               const { id: layerId, title: layerTitle } = layer;
-              const value = selectedLayers.has(layer);
+              const value = selectedLayers.has(layerId);
               return (
                 <div key={layerId} className={classes.layersContainer}>
                   <Switch
                     size="small"
                     color="default"
                     checked={value}
-                    onChange={() => toogleLayerValue(value, layer)}
+                    onChange={() => toggleLayerValue(value, layer)}
                     inputProps={{ 'aria-label': layerTitle }}
                   />{' '}
                   <Typography variant="body1">{layerTitle}</Typography>

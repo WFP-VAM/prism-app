@@ -77,13 +77,14 @@ async function getWMSCapabilities(serverUri: string) {
       .then(response => response.text())
       .then(responseText => xml2js(responseText, xml2jsOptions))
       .then(responseJs => {
-        const rawLayers = get(
-          responseJs,
-          'WMS_Capabilities.Capability.Layer.Layer',
-        );
+        const rawLayers = get(responseJs, 'WMS_Capabilities.Capability.Layer');
+
+        const flattenLayers = Array.isArray(rawLayers)
+          ? rawLayers.reduce((acc, { Layer }) => acc.concat(Layer), [])
+          : get(rawLayers, 'Layer', []);
 
         const layers = formatCapabilitiesInfo(
-          rawLayers,
+          flattenLayers,
           'Name._text',
           'Dimension._text',
         );
@@ -140,12 +141,12 @@ async function getWCSCoverage(serverUri: string) {
  * @return a Promise of Map<layerId, availableDate[]>
  */
 export async function getLayersAvailableDates() {
-  const wmsServerUrl = get(config, 'serversUrls.wms', '');
-  const wcsServerUrl = get(config, 'serversUrls.wcs', '');
+  const wmsServerUrls: string[] = get(config, 'serversUrls.wms', []);
+  const wcsServerUrls: string[] = get(config, 'serversUrls.wcs', []);
 
   const [wmsAvailableDates, wcsAvailableDates] = await Promise.all([
-    getWMSCapabilities(wmsServerUrl),
-    getWCSCoverage(wcsServerUrl),
+    ...wmsServerUrls.map(url => getWMSCapabilities(url)),
+    ...wcsServerUrls.map(url => getWCSCoverage(url)),
   ]);
 
   return Promise.resolve(wmsAvailableDates.merge(wcsAvailableDates)) as Promise<

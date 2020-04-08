@@ -1,10 +1,8 @@
 import React, { Fragment } from 'react';
 import { Source, Layer } from 'react-mapbox-gl';
-import { useSelector } from 'react-redux';
-import { merge, unset } from 'lodash';
-import { format, parse } from 'url';
 
-import { layersSelector } from '../../../context/mapStateSlice';
+import { formatServerUri } from '../../../utils/server-utils';
+import { LayersMap } from '../../../config/types';
 
 const wmsCommonQuery = {
   version: '1.1.1',
@@ -20,44 +18,37 @@ const wmsCommonQuery = {
   bbox: '{bbox-epsg-3857}',
 };
 
-function formatServerUri(serverUri: string) {
-  // The second arg of 'parse' allows us to have query as an object
-  const { query, ...parsedUrl } = parse(serverUri, true);
+function Layers({ layers }: LayersProps) {
+  return (
+    <>
+      {layers
+        .valueSeq()
+        .toJS()
+        .map(({ id, serverUri, opacity }) => (
+          <Fragment key={id}>
+            <Source
+              id={`source-${id}`}
+              tileJsonSource={{
+                type: 'raster',
+                tiles: [formatServerUri(serverUri, wmsCommonQuery)],
+                tileSize: 256,
+              }}
+            />
 
-  // Removing 'search' to be able to format by 'query'
-  unset(parsedUrl, 'search');
-
-  return decodeURI(
-    format({ ...parsedUrl, query: merge(query, wmsCommonQuery) }),
+            <Layer
+              type="raster"
+              id={`layer-${id}`}
+              sourceId={`source-${id}`}
+              paint={{ 'raster-opacity': opacity }}
+            />
+          </Fragment>
+        ))}
+    </>
   );
 }
 
-function Layers() {
-  const layers = useSelector(layersSelector);
-
-  return (
-    <>
-      {layers.toJS().map(({ id, serverUri, opacity }) => (
-        <Fragment key={id}>
-          <Source
-            id={`source-${id}`}
-            tileJsonSource={{
-              type: 'raster',
-              tiles: [formatServerUri(serverUri)],
-              tileSize: 256,
-            }}
-          />
-
-          <Layer
-            type="raster"
-            id={`layer-${id}`}
-            sourceId={`source-${id}`}
-            paint={{ 'raster-opacity': opacity }}
-          />
-        </Fragment>
-      ))}
-    </>
-  );
+export interface LayersProps {
+  layers: LayersMap;
 }
 
 export default Layers;
