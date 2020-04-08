@@ -1,5 +1,9 @@
 {
   "country": "Mongolia",
+  "serversUrls": {
+    "wcs": "http://185.30.8.6:5000",
+    "wms": "http://3.136.214.209:8080/geoserver/prism/wms"
+  },
   "map": {
     "latitude": 46.810021,
     "longitude": 103.111657,
