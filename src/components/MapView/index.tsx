@@ -2,6 +2,7 @@ import React from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
+import Boundaries from './Boundaries';
 import Layers from './Layers';
 import DateSelector from './DateSelector';
 import appConfig from '../../config/prism.json';
@@ -27,6 +28,7 @@ function MapView({ classes }: MapViewProps) {
           width: '100vw',
         }}
       >
+        <Boundaries />
         <Layers />
       </Map>
       <DateSelector />
