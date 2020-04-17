@@ -12,6 +12,7 @@ import {
   createStyles,
   Button,
   Drawer,
+  Link as MuiLink,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
@@ -24,12 +25,12 @@ const rightSideLinks = [
   {
     title: 'About',
     icon: faInfoCircle,
-    link: '/',
+    href: 'https://innovation.wfp.org/project/prism',
   },
   {
     title: 'Github',
     icon: faGithub,
-    link: '/',
+    href: 'https://github.com/oviohub/prism-frontend',
   },
 ];
 
@@ -44,8 +45,8 @@ function NavBar({ classes }: NavBarProps) {
     <Grid item key={title}>
       <Typography
         variant="body2"
-        component={Link}
-        to={link}
+        component={MuiLink}
+        href={link}
         onClick={() => setOpenMobileMenu(false)}
       >
         <FontAwesomeIcon icon={icon} /> {title}
