@@ -8,7 +8,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 - **Styling & UI Library** Use [Material UI](https://material-ui.com/). Note that to use the [styles API](https://material-ui.com/styles/basics/) you can `import @material-ui/core/styles`.
 - **Routing** Uses [React Router](https://reacttraining.com/react-router/web/guides/quick-start).
-- **Mapping** Uses [MapBox](https://docs.mapbox.com/mapbox.js/api/v3.2.1/).
+- **Mapping** Uses [MapBox](https://docs.mapbox.com/mapbox.js/api/v3.2.1/). To use the app, you will need to create a token and add it as `REACT_APP_MAPBOX_TOKEN` in a `.env` file at the root folder.
 - **State Management** Uses [Redux](https://redux.js.org/introduction/getting-started)
 - **Testing** Uses [Jest](https://jestjs.io/) with [Enzyme](https://enzymejs.github.io/enzyme/)
 
