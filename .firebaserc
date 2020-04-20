@@ -1,7 +1,6 @@
 {
   "projects": {
     "default": "prism-frontend",
-    "staging": "staging-prism-frontend"
   },
   "targets": {
     "prism-frontend": {
