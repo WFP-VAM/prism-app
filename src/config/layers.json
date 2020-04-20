@@ -2,7 +2,7 @@
   "population_below_poverty": {
     "title": "Population below national poverty line (%)",
     "server_type": "wms",
-    "server_uri": "http://3.136.214.209:8080/geoserver/prism/wms?service=WMS&layers=poverty_HC",
+    "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=poverty_HC",
     "has_date": false,
     "opacity": 0.3,
     "legend_text": "Source: Susenas"
@@ -10,7 +10,7 @@
   "population_total": {
     "title": "Population Total",
     "server_type": "wms",
-    "server_uri": "http://3.136.214.209:8080/geoserver/prism/wms?service=WMS&layers=NSO-pop-2018",
+    "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=NSO-pop-2018",
     "has_date": false,
     "opacity": 0.3,
     "legend_text": "Population counts NSO 2018"
