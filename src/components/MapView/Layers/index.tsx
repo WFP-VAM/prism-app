@@ -18,7 +18,7 @@ const wmsCommonQuery = {
   bbox: '{bbox-epsg-3857}',
 };
 
-function Layers({ layers }: LayersProps) {
+function Layers({ layers, selectedDate }: LayersProps) {
   return (
     <>
       {layers
@@ -30,7 +30,9 @@ function Layers({ layers }: LayersProps) {
               id={`source-${id}`}
               tileJsonSource={{
                 type: 'raster',
-                tiles: [formatServerUri(serverUri, wmsCommonQuery)],
+                tiles: [
+                  formatServerUri(serverUri, wmsCommonQuery, selectedDate),
+                ],
                 tileSize: 256,
               }}
             />
@@ -49,6 +51,7 @@ function Layers({ layers }: LayersProps) {
 
 export interface LayersProps {
   layers: LayersMap;
+  selectedDate?: number;
 }
 
 export default Layers;
