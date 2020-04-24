@@ -21,30 +21,31 @@ const wmsCommonQuery = {
 function Layers({ layers, selectedDate }: LayersProps) {
   return (
     <>
-      {layers
-        .valueSeq()
-        .toJS()
-        .map(({ id, serverUri, opacity }) => (
-          <Fragment key={id}>
-            <Source
-              id={`source-${id}`}
-              tileJsonSource={{
-                type: 'raster',
-                tiles: [
-                  formatServerUri(serverUri, wmsCommonQuery, selectedDate),
-                ],
-                tileSize: 256,
-              }}
-            />
+      {layers &&
+        layers
+          .valueSeq()
+          .toJS()
+          .map(({ id, serverUri, opacity }) => (
+            <Fragment key={id}>
+              <Source
+                id={`source-${id}`}
+                tileJsonSource={{
+                  type: 'raster',
+                  tiles: [
+                    formatServerUri(serverUri, wmsCommonQuery, selectedDate),
+                  ],
+                  tileSize: 256,
+                }}
+              />
 
-            <Layer
-              type="raster"
-              id={`layer-${id}`}
-              sourceId={`source-${id}`}
-              paint={{ 'raster-opacity': opacity }}
-            />
-          </Fragment>
-        ))}
+              <Layer
+                type="raster"
+                id={`layer-${id}`}
+                sourceId={`source-${id}`}
+                paint={{ 'raster-opacity': opacity }}
+              />
+            </Fragment>
+          ))}
     </>
   );
 }
