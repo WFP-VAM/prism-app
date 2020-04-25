@@ -53,8 +53,7 @@ exports[`renders as expected 1`] = `
               class="MuiGrid-root MuiGrid-item"
             >
               <mock-typography
-                component="[object Object]"
-                to="/"
+                component="mock-Link"
                 variant="body2"
               >
                 <svg
@@ -80,8 +79,7 @@ exports[`renders as expected 1`] = `
               class="MuiGrid-root MuiGrid-item"
             >
               <mock-typography
-                component="[object Object]"
-                to="/"
+                component="mock-Link"
                 variant="body2"
               >
                 <svg
@@ -148,8 +146,7 @@ exports[`renders as expected 1`] = `
                       class="MuiGrid-root MuiGrid-item"
                     >
                       <mock-typography
-                        component="[object Object]"
-                        to="/"
+                        component="mock-Link"
                         variant="body2"
                       >
                         <svg
@@ -175,8 +172,7 @@ exports[`renders as expected 1`] = `
                       class="MuiGrid-root MuiGrid-item"
                     >
                       <mock-typography
-                        component="[object Object]"
-                        to="/"
+                        component="mock-Link"
                         variant="body2"
                       >
                         <svg
