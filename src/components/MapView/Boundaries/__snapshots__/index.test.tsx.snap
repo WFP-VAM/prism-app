@@ -1,3 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders as expected 1`] = `<div />`;
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="MapView-container-1"
+  >
+    <div
+      style="height: 100vh; width: 100vw;"
+    />
+    <mock-dateselector />
+  </div>
+</div>
+`;
