@@ -20,7 +20,7 @@ exports[`renders as expected 1`] = `
             <mock-button
               variant="outlined"
             >
-              04/08/2020
+              07/02/2018
             </mock-button>
           </div>
         </div>
@@ -102,7 +102,7 @@ exports[`renders as expected 1`] = `
             <mock-button
               classname="DateSelector-monthButton-5"
               disabled="true"
-              variant="contained"
+              variant="text"
             >
               Apr
             </mock-button>
@@ -150,7 +150,7 @@ exports[`renders as expected 1`] = `
             <mock-button
               classname="DateSelector-monthButton-5"
               disabled="true"
-              variant="text"
+              variant="contained"
             >
               Jul
             </mock-button>
