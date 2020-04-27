@@ -4,7 +4,7 @@ export interface LayerType {
   id: string;
   title: string;
   serverType: string;
-  serverLayer: string;
+  serverLayer?: string;
   serverUri?: string;
   hasDate: boolean;
   dateInterval?: string;
