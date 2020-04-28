@@ -1,14 +1,27 @@
 import React from 'react';
+import ReactMapboxGl from 'react-mapbox-gl';
 import { render } from '@testing-library/react';
 
-import MapView from '..';
+import Boundaries from '.';
 
-// Boundaries need to live in a "Map", so we
-// mock sub-components except for Boundaries
-jest.mock('../Layers', () => 'mock-Layers');
-jest.mock('../DateSelector', () => 'mock-DateSelector');
+const Map = ReactMapboxGl({
+  accessToken: 'TOKEN',
+});
 
 test('renders as expected', () => {
-  const { container } = render(<MapView />);
+  const { container } = render(
+    <Map
+      // eslint-disable-next-line react/style-prop-object
+      style="mapbox://styles/mapbox/light-v10"
+      center={[90, 90]}
+      zoom={[5]}
+      containerStyle={{
+        height: '100vh',
+        width: '100vw',
+      }}
+    >
+      <Boundaries />
+    </Map>,
+  );
   expect(container).toMatchSnapshot();
 });
