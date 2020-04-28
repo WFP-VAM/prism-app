@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "prism-frontend",
+  },
+  "targets": {
+    "prism-frontend": {
+      "hosting": {
+        "staging-target": [
+          "staging-prism-frontend"
+        ],
+        "prod-target": [
+          "prism-frontend"
+        ]
+      }
+    }
+  }
+}
