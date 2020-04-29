@@ -54,6 +54,7 @@ exports[`renders as expected 1`] = `
             >
               <mock-typography
                 component="mock-Link"
+                href="https://innovation.wfp.org/project/prism"
                 variant="body2"
               >
                 <svg
@@ -80,6 +81,7 @@ exports[`renders as expected 1`] = `
             >
               <mock-typography
                 component="mock-Link"
+                href="https://github.com/oviohub/prism-frontend"
                 variant="body2"
               >
                 <svg
@@ -147,6 +149,7 @@ exports[`renders as expected 1`] = `
                     >
                       <mock-typography
                         component="mock-Link"
+                        href="https://innovation.wfp.org/project/prism"
                         variant="body2"
                       >
                         <svg
@@ -173,6 +176,7 @@ exports[`renders as expected 1`] = `
                     >
                       <mock-typography
                         component="mock-Link"
+                        href="https://github.com/oviohub/prism-frontend"
                         variant="body2"
                       >
                         <svg

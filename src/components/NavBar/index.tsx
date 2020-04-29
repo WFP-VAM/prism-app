@@ -41,12 +41,12 @@ function NavBar({ classes }: NavBarProps) {
     <MenuItem key={title} title={title} {...category} />
   ));
 
-  const buttons = rightSideLinks.map(({ title, icon, link }) => (
+  const buttons = rightSideLinks.map(({ title, icon, href }) => (
     <Grid item key={title}>
       <Typography
         variant="body2"
         component={MuiLink}
-        href={link}
+        href={href}
         onClick={() => setOpenMobileMenu(false)}
       >
         <FontAwesomeIcon icon={icon} /> {title}
