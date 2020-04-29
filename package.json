@@ -12,6 +12,18 @@
       "yarn run lint --fix"
     ]
   },
+  "scripts": {
+    "start": "EXTEND_ESLINT=true react-scripts start",
+    "build": "EXTEND_ESLINT=true react-scripts build",
+    "test": "react-scripts test",
+    "predeploy:prod": "yarn build",
+    "predeploy:staging": "yarn build",
+    "deploy:prod": "firebase deploy --only hosting:prod-target",
+    "deploy:staging": "firebase deploy --only hosting:staging-target",
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src --ignore-path .gitignore",
+    "precommit": "lint-staged"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-brands-svg-icons": "^5.13.0",
@@ -69,18 +81,6 @@
     "redux": "^4.0.5",
     "typescript": "~3.8.2",
     "url": "^0.11.0"
-  },
-  "scripts": {
-    "start": "EXTEND_ESLINT=true react-scripts start",
-    "build": "EXTEND_ESLINT=true react-scripts build",
-    "test": "react-scripts test",
-    "predeploy:prod": "yarn build",
-    "predeploy:staging": "yarn build",
-    "deploy:prod": "firebase deploy --project default --only hosting:prod-target",
-    "deploy:staging": "firebase deploy --project default --only hosting:staging-target",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src --ignore-path .gitignore",
-    "precommit": "lint-staged"
   },
   "jest": {
     "snapshotSerializers": [
