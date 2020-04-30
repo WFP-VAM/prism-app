@@ -27,6 +27,9 @@ function Boundaries() {
       data={adminBoundaries}
       linePaint={linePaint}
       fillPaint={fillPaint}
+      fillOnClick={(evt: any) => {
+        getAdminData(evt);
+      }}
     />
   );
 }
