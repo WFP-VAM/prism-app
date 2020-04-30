@@ -12,6 +12,5 @@ exports[`renders as expected 1`] = `
       availabledates="Map {}"
     />
   </div>
-  );
 </div>
 `;
