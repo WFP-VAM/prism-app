@@ -15,6 +15,12 @@ const linePaint: MapboxGL.LinePaint = {
  */
 const fillPaint: MapboxGL.FillPaint = { 'fill-opacity': 0 };
 
+// Get admin data to process.
+function getAdminData(evt: any) {
+  // eslint-disable-next-line
+  console.log(get(evt.features[0], 'properties.ADM2_PCODE'));
+}
+
 function Boundaries() {
   return (
     <GeoJSONLayer
