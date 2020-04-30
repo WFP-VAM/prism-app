@@ -1,4 +1,5 @@
 import React from 'react';
+import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import adminBoundaries from '../../../config/admin_boundaries.json';
