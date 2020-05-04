@@ -15,22 +15,86 @@
     "opacity": 0.3,
     "legend_text": "Population counts NSO 2018"
   },
+  "pasture_anomaly": {
+      "title": "Pasture anomaly",
+      "server_type": "wms",
+      "server_layer": "ModisAnomaly",
+      "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisAnomaly",
+      "has_date": true,
+      "date_interval": "days",
+      "opacity": 0.3,
+      "legend_text": "Converts  NDVI to pasture (kg/ha) values and divides the current period by the long term average to calculate pasture anomaly.",
+      "legend": [
+          {"value": 12000.0, "color": "#ff0000"},
+          {"value": 14000.0, "color": "#ff5900"},
+          {"value": 16000.0, "color": "#ff8400"},
+          {"value": 18000.0, "color": "#ffce63"},
+          {"value": 19000.0, "color": "#ffdd94"},
+          {"value": 20000.0, "color": "#ffffbf"},
+          {"value": 21000.0, "color": "#dee09f"},
+          {"value": 22000.0, "color": "#bbbf7c"},
+          {"value": 24000.0, "color": "#9da360"},
+          {"value": 26000.0, "color": "#7e8745"},
+          {"value": 28000.0, "color": "#5b6e00"}
+      ]
+    },
   "ndvi": {
-    "title": "Modis NDVI",
-    "server_type": "wms",
-    "server_uri": "http://185.30.8.6:5000/wms?styles=ndvi&layers=ModisIndices",
-    "has_date": true,
-    "date_interval": "month",
-    "opacity": 0.3,
-    "legend_text": "Modis NDVI"
-  },
+      "title": "NDVI",
+      "server_type": "wms",
+      "server_layer": "ModisIndices",
+      "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?styles=ndvi&layers=ModisIndices",
+      "has_date": true,
+      "date_interval": "days",
+      "opacity": 0.3,
+      "legend_text": "MODIS NDVI",
+      "legend": [
+        { "value": "20000", "color": "#000000" },
+        { "value": "20001", "color": "#B0E2FF" },
+        { "value": "30000", "color": "#FFFFFF" }
+      ]
+    },  
   "ModisLST": {
-    "title": "Modis LST",
+    "title": "Surface temperature",
     "server_type": "wms",
-    "server_uri": "http://185.30.8.6:5000/wms?layers=ModisLST",
+    "server_layer": "ModisLST",
+    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisLST",
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
     "legend_text": "ModisLST"
+  },
+  "ModisVHI": {
+    "title": "Vegetation Health Index",
+    "server_type": "wms",
+    "server_layer": "ModisVHI",
+    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisVHI",
+    "has_date": true,
+    "date_interval": "day",
+    "opacity": 0.3,
+    "legend_text": "Vegetation Health Index for a 10day period. The VHI is a combination of VCI and TCI, and it is mainly used for monitoring drought."
+  },
+  "ModisSnowPercentage": {
+    "title": "Snow cover (%)",
+    "server_type": "wms",
+    "server_layer": "ModisSnowPercentage",
+    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisSnowPercentage",
+    "has_date": true,
+    "date_interval": "day",
+    "opacity": 0.3,
+    "legend_text": "Snow Percentage for a 10day period, where the value represent the percentage of times that a pixel had snow"
+  }, 
+  "DzudRiskMap": {
+    "title": "Dzud risk map",
+    "server_type": "wms",
+    "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=DZUDRM12311",
+    "has_date": true,
+    "date_interval": "month",
+    "opacity": 0.3,
+    "legend_text": "Dzud risk map",
+    "legend": [
+      { "value": "20000", "color": "#000000" },
+      { "value": "20001", "color": "#B0E2FF" },
+      { "value": "30000", "color": "#FFFFFF" }
+    ]
   }
 }
