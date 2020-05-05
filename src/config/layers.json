@@ -16,50 +16,50 @@
     "legend_text": "Population counts NSO 2018"
   },
   "pasture_anomaly": {
-      "title": "Pasture anomaly",
-      "server_type": "wms",
-      "server_layer": "ModisAnomaly",
-      "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisAnomaly",
-      "has_date": true,
-      "date_interval": "days",
-      "opacity": 0.3,
-      "legend_text": "Converts  NDVI to pasture (kg/ha) values and divides the current period by the long term average to calculate pasture anomaly.",
-      "legend": [
-          {"value": 12000.0, "color": "#ff0000"},
-          {"value": 14000.0, "color": "#ff5900"},
-          {"value": 16000.0, "color": "#ff8400"},
-          {"value": 18000.0, "color": "#ffce63"},
-          {"value": 19000.0, "color": "#ffdd94"},
-          {"value": 20000.0, "color": "#ffffbf"},
-          {"value": 21000.0, "color": "#dee09f"},
-          {"value": 22000.0, "color": "#bbbf7c"},
-          {"value": 24000.0, "color": "#9da360"},
-          {"value": 26000.0, "color": "#7e8745"},
-          {"value": 28000.0, "color": "#5b6e00"}
-      ]
-    },
+    "title": "Pasture anomaly",
+    "server_type": "wms",
+    "server_layer": "ModisAnomaly",
+    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisAnomaly",
+    "has_date": true,
+    "date_interval": "days",
+    "opacity": 0.3,
+    "legend_text": "Converts  NDVI to pasture (kg/ha) values and divides the current period by the long term average to calculate pasture anomaly.",
+    "legend": [
+      { "value": "12000.0", "color": "#ff0000" },
+      { "value": "14000.0", "color": "#ff5900" },
+      { "value": "16000.0", "color": "#ff8400" },
+      { "value": "18000.0", "color": "#ffce63" },
+      { "value": "19000.0", "color": "#ffdd94" },
+      { "value": "20000.0", "color": "#ffffbf" },
+      { "value": "21000.0", "color": "#dee09f" },
+      { "value": "22000.0", "color": "#bbbf7c" },
+      { "value": "24000.0", "color": "#9da360" },
+      { "value": "26000.0", "color": "#7e8745" },
+      { "value": "28000.0", "color": "#5b6e00" }
+    ]
+  },
   "ndvi": {
-      "title": "NDVI",
-      "server_type": "wms",
-      "server_layer": "ModisIndices",
-      "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?styles=ndvi&layers=ModisIndices",
-      "has_date": true,
-      "date_interval": "days",
-      "opacity": 0.3,
-      "legend_text": "Median averaged NDVI image from composite Landsat & Sentinel imagery",
-      "legend": [
-        { "value": "20000", "color": "#ece0d7" },
-        { "value": "21054.6875", "color": "#d7c8b1" },
-        { "value": "22187.5", "color": "#bfb186" },
-        { "value": "23281.25", "color": "#a59e59" },
-        { "value": "24375", "color": "#878a31" },
-        { "value": "25507.8125", "color": "#69761f" },
-        { "value": "26601.5625", "color": "#4f6021" },
-        { "value": "27695.3125", "color": "#374b1b" },
-        { "value": "28828.125", "color": "#1c3800" },
-        { "value": "29960.9375", "color": "#000000" }
-      ]
-    },  
+    "title": "NDVI",
+    "server_type": "wms",
+    "server_layer": "ModisIndices",
+    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?styles=ndvi&layers=ModisIndices",
+    "has_date": true,
+    "date_interval": "days",
+    "opacity": 0.3,
+    "legend_text": "Median averaged NDVI image from composite Landsat & Sentinel imagery",
+    "legend": [
+      { "value": "20000", "color": "#ece0d7" },
+      { "value": "21054.6875", "color": "#d7c8b1" },
+      { "value": "22187.5", "color": "#bfb186" },
+      { "value": "23281.25", "color": "#a59e59" },
+      { "value": "24375", "color": "#878a31" },
+      { "value": "25507.8125", "color": "#69761f" },
+      { "value": "26601.5625", "color": "#4f6021" },
+      { "value": "27695.3125", "color": "#374b1b" },
+      { "value": "28828.125", "color": "#1c3800" },
+      { "value": "29960.9375", "color": "#000000" }
+    ]
+  },
   "ModisLST": {
     "title": "Surface temperature",
     "server_type": "wms",
@@ -101,7 +101,7 @@
     "date_interval": "day",
     "opacity": 0.3,
     "legend_text": "Snow Percentage for a 10day period, where the value represent the percentage of times that a pixel had snow"
-  }, 
+  },
   "DzudRiskMap": {
     "title": "Dzud risk map",
     "server_type": "wms",
