@@ -10,17 +10,17 @@
   "map": {
     "latitude": 46.810021,
     "longitude": 103.111657,
-    "zoom": 4
+    "zoom": 4.5
   },
   "categories": {
     "baseline": {
       "baseline": ["population_below_poverty", "population_total"]
     },
     "climate": {
-      "meteorological_drought": ["ndvi"],
-      "agricultural_drought": ["ModisLST"],
-      "forecast": []
+      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisLST", "ModisVHI"],
+      "dzud_risk": ["DzudRiskMap", "ModisSnowPercentage"]
     },
-    "impact": {}
+    "impact": {
+    }
   }
 }
