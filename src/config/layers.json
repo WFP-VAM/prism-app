@@ -46,11 +46,18 @@
       "has_date": true,
       "date_interval": "days",
       "opacity": 0.3,
-      "legend_text": "MODIS NDVI",
+      "legend_text": "Median averaged NDVI image from composite Landsat & Sentinel imagery",
       "legend": [
-        { "value": "20000", "color": "#000000" },
-        { "value": "20001", "color": "#B0E2FF" },
-        { "value": "30000", "color": "#FFFFFF" }
+        { "value": "20000", "color": "#ece0d7" },
+        { "value": "21054.6875", "color": "#d7c8b1" },
+        { "value": "22187.5", "color": "#bfb186" },
+        { "value": "23281.25", "color": "#a59e59" },
+        { "value": "24375", "color": "#878a31" },
+        { "value": "25507.8125", "color": "#69761f" },
+        { "value": "26601.5625", "color": "#4f6021" },
+        { "value": "27695.3125", "color": "#374b1b" },
+        { "value": "28828.125", "color": "#1c3800" },
+        { "value": "29960.9375", "color": "#000000" }
       ]
     },  
   "ModisLST": {
@@ -61,7 +68,19 @@
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
-    "legend_text": "ModisLST"
+    "legend_text": "MODIS Median value of Land Surface Temperature in a 10-day period",
+    "legend": [
+      { "value": "11000", "color": "#5c9fc8" },
+      { "value": "11568", "color": "#7ab1c0" },
+      { "value": "12136", "color": "#9fc3b3" },
+      { "value": "12704", "color": "#d9e79a" },
+      { "value": "13272", "color": "#f3f88e" },
+      { "value": "13840", "color": "#f0d779" },
+      { "value": "14408", "color": "#eeb563" },
+      { "value": "14976", "color": "#e98f51" },
+      { "value": "15544", "color": "#e2633e" },
+      { "value": "16115", "color": "#da402e" }
+    ]
   },
   "ModisVHI": {
     "title": "Vegetation Health Index",
