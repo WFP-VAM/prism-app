@@ -1,8 +1,11 @@
 {
   "country": "Mongolia",
   "serversUrls": {
-    "wcs": ["http://185.30.8.6:5000"],
-    "wms": ["http://185.30.8.6:5000/wms"]
+    "wcs": ["https://185.30.8.6:5000/wcs"],
+    "wms": [
+      "https://mng-wfp.ovio.org:8443/geoserver/prism/wms",
+      "https://185.30.8.6:5000/wms"
+    ]
   },
   "map": {
     "latitude": 46.810021,

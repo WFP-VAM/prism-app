@@ -149,7 +149,7 @@ export async function getLayersAvailableDates() {
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
   ]);
 
-  return Promise.resolve(wmsAvailableDates.merge(wcsAvailableDates)) as Promise<
-    AvailableDates
-  >;
+  return Promise.resolve(
+    wmsAvailableDates.mergeDeep(wcsAvailableDates),
+  ) as Promise<AvailableDates>;
 }
