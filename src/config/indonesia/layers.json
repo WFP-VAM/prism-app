@@ -22,6 +22,7 @@
     "has_date": true,
     "date_interval": "month",
     "opacity": 0.3,
+    "server_layer": "rainfall_anomaly",
     "path": "https://localhost:8080/geoserver/vampire/wms?layers=rainfall_anomaly",
     "legend_text": "Percentage of monthly rainfall compared to a long-term average. (CHIRPS)"
   },
@@ -32,6 +33,7 @@
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
+    "server_layer": "dslr",
     "path": "https://localhost:8080/geoserver/vampire/wms?layers=dslr",
     "legend_text": "IMERG Data with 1 mm threshold"
   },
@@ -42,7 +44,8 @@
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
-    "path": "https://localhost:8080/geoserver/vampire/wms?layers=dslr",
+    "server_layer": "flood",
+    "path": "https://localhost:8080/geoserver/vampire/wms?layers=flood",
     "legend_text": ""
   },
   "spi": {
@@ -52,6 +55,7 @@
     "has_date": true,
     "date_interval": "month",
     "opacity": 0.3,
+    "server_layer": "spi",
     "path": "https://localhost:8080/geoserver/vampire/wms?layers=spi",
     "legend_text": "Indicates the probability of occurrence of an observed rainfall amount compared with long-term period (Data Source : CHIRPS)"
   },
@@ -62,7 +66,8 @@
     "has_date": true,
     "date_interval": "month",
     "opacity": 0.3,
-    "path": "https://localhost:8080/geoserver/vampire/wms?layers=spi",
+    "server_layer": "vhi",
+    "path": "https://localhost:8080/geoserver/vampire/wms?layers=vhi",
     "legend_text": "Data Source: MODIS vegetation and land surface temperature data"
   },
   "crops_drought_impact": {

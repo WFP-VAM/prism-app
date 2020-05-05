@@ -18,7 +18,8 @@
   "ndvi": {
     "title": "Modis NDVI",
     "server_type": "wms",
-    "server_uri": "https://185.30.8.6:5000/wms?styles=ndvi&layers=ModisIndices",
+    "server_layer": "ModisIndices",
+    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?styles=ndvi&layers=ModisIndices",
     "has_date": true,
     "date_interval": "month",
     "opacity": 0.3,
@@ -27,7 +28,8 @@
   "ModisLST": {
     "title": "Modis LST",
     "server_type": "wms",
-    "server_uri": "https://185.30.8.6:5000/wms?layers=ModisLST",
+    "server_layer": "ModisLST",
+    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisLST",
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,

@@ -16,6 +16,7 @@ const xml2jsOptions = {
 export function formatServerUri(
   serverUri: string,
   queryProp: { [key: string]: string | boolean | number },
+  selectedDate?: number,
 ) {
   // The second arg of 'parse' allows us to have 'query' as an object
   const { query, ...parsedUrl } = parse(serverUri, true);
@@ -23,7 +24,16 @@ export function formatServerUri(
   // Removing 'search' to be able to format by 'query'
   unset(parsedUrl, 'search');
 
-  return decodeURI(format({ ...parsedUrl, query: merge(query, queryProp) }));
+  const selectedDateString = selectedDate
+    ? moment(selectedDate).format('YYYY-MM-DD')
+    : '';
+
+  return decodeURI(
+    format({
+      ...parsedUrl,
+      query: merge(query, queryProp, { time: selectedDateString }),
+    }),
+  );
 }
 
 /**

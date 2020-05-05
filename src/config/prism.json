@@ -1,10 +1,10 @@
 {
   "country": "Mongolia",
   "serversUrls": {
-    "wcs": ["https://185.30.8.6:5000/wcs"],
+    "wcs": ["https://mongolia.sibelius-datacube.org:5000"],
     "wms": [
-      "https://mng-wfp.ovio.org:8443/geoserver/prism/wms",
-      "https://185.30.8.6:5000/wms"
+      "https://mongolia.sibelius-datacube.org:5000/wms",
+      "https://mng-wfp.ovio.org:8443/geoserver/prism/wms"
     ]
   },
   "map": {

@@ -18,37 +18,41 @@ const wmsCommonQuery = {
   bbox: '{bbox-epsg-3857}',
 };
 
-function Layers({ layers }: LayersProps) {
+function Layers({ layers, selectedDate }: LayersProps) {
   return (
     <>
-      {layers
-        .valueSeq()
-        .toJS()
-        .map(({ id, serverUri, opacity }) => (
-          <Fragment key={id}>
-            <Source
-              id={`source-${id}`}
-              tileJsonSource={{
-                type: 'raster',
-                tiles: [formatServerUri(serverUri, wmsCommonQuery)],
-                tileSize: 256,
-              }}
-            />
+      {layers &&
+        layers
+          .valueSeq()
+          .toJS()
+          .map(({ id, serverUri, opacity }) => (
+            <Fragment key={id}>
+              <Source
+                id={`source-${id}`}
+                tileJsonSource={{
+                  type: 'raster',
+                  tiles: [
+                    formatServerUri(serverUri, wmsCommonQuery, selectedDate),
+                  ],
+                  tileSize: 256,
+                }}
+              />
 
-            <Layer
-              type="raster"
-              id={`layer-${id}`}
-              sourceId={`source-${id}`}
-              paint={{ 'raster-opacity': opacity }}
-            />
-          </Fragment>
-        ))}
+              <Layer
+                type="raster"
+                id={`layer-${id}`}
+                sourceId={`source-${id}`}
+                paint={{ 'raster-opacity': opacity }}
+              />
+            </Fragment>
+          ))}
     </>
   );
 }
 
 export interface LayersProps {
   layers: LayersMap;
+  selectedDate?: number;
 }
 
 export default Layers;
