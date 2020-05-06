@@ -8,10 +8,5 @@ exports[`renders as expected 1`] = `
   >
     <mock-mapview />
   </div>
-  <mock-notfound
-    history="[object Object]"
-    location="[object Object]"
-    match="[object Object]"
-  />
 </div>
 `;
