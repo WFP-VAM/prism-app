@@ -11,6 +11,9 @@ exports[`renders as expected 1`] = `
     <mock-dateselector
       availabledates="Map {}"
     />
+    <mock-legends
+      layers="Map {}"
+    />
   </div>
 </div>
 `;

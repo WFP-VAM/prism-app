@@ -16,6 +16,7 @@ const theme: any = createMuiTheme({
     },
     text: {
       primary: white,
+      secondary: darkGreyBlue,
     },
     grey: {
       500: lightGray,
@@ -28,6 +29,15 @@ const theme: any = createMuiTheme({
       },
     },
     MuiTypography: {
+      h4: {
+        fontSize: 13,
+        color: darkGreyBlue,
+        fontWeight: 400,
+      },
+      h5: {
+        fontSize: 11,
+        color: greyBlue,
+      },
       body1: {
         color: white,
         fontSize: 13,

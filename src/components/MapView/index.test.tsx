@@ -7,6 +7,7 @@ import { store } from '../../context/store';
 
 jest.mock('./Layers', () => 'mock-Layers');
 jest.mock('./Boundaries', () => 'mock-Boundaries');
+jest.mock('./Legends', () => 'mock-Legends');
 jest.mock('./DateSelector', () => 'mock-DateSelector');
 
 test('renders as expected', () => {
