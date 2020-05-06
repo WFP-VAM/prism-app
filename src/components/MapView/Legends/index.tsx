@@ -82,7 +82,7 @@ const styles = (theme: Theme) =>
     },
     list: {
       overflow: 'auto',
-      maxHeight: '80vh',
+      maxHeight: '70vh',
     },
     paper: {
       padding: 8,
