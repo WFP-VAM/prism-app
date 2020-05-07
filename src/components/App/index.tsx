@@ -2,6 +2,8 @@ import React from 'react';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
+// Basic CSS Layout for the whole page
+import './app.css';
 import NavBar from '../NavBar';
 import MapView from '../MapView';
 import NotFound from '../404Page';
@@ -11,16 +13,15 @@ function App() {
   return (
     <ThemeProvider theme={muiTheme}>
       <Router>
-        <Switch>
-          <Route exact path="/">
-            <NavBar />
-            <div className="App">
+        <NavBar />
+        <div id="app">
+          <Switch>
+            <Route exact path="/">
               <MapView />
-            </div>
-          </Route>
-
-          <Route default component={NotFound} />
-        </Switch>
+            </Route>
+            <Route default component={NotFound} />
+          </Switch>
+        </div>
       </Router>
     </ThemeProvider>
   );
