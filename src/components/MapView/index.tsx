@@ -104,8 +104,7 @@ function MapView({ classes }: MapViewProps) {
         center={[longitude, latitude]}
         zoom={[zoom]}
         containerStyle={{
-          height: '100vh',
-          width: '100vw',
+          height: '100%',
         }}
         onClick={() => {
           dispatch(hidePopup());
@@ -133,7 +132,7 @@ function MapView({ classes }: MapViewProps) {
 const styles = () =>
   createStyles({
     container: {
-      position: 'relative',
+      height: '100%',
     },
     loading: {
       position: 'absolute',
