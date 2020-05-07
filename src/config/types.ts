@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import { Map, List } from 'immutable';
 
 export interface LayerType {
   id: string;
@@ -30,4 +30,4 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
-export interface AvailableDates extends Map<string, number[]> {}
+export interface AvailableDates extends Map<string, List<number>> {}

@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import { fromJS } from 'immutable';
 import {
   configureStore,
   getDefaultMiddleware,
@@ -38,7 +38,7 @@ const initializeStore = async (getCurrentState: any) => {
       ...currentState,
       serverState: serverState.set(
         'availableDates',
-        Map(layersAvailableDates) as AvailableDates,
+        fromJS(layersAvailableDates) as AvailableDates,
       ),
     });
   });

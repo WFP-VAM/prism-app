@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment, forwardRef, Ref } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
-import { flatten } from 'lodash';
 import { Map } from 'immutable';
 import {
   Divider,
@@ -92,7 +91,12 @@ function DateSelector({ availableDates = Map(), classes }: DateSelectorProps) {
             showYearDropdown
             dropdownMode="select"
             customInput={<Input />}
-            includeDates={flatten(availableDates.valueSeq().toJS())}
+            includeDates={
+              availableDates
+                .valueSeq()
+                .flatten()
+                .toJS() as Date[]
+            }
           />
         </Grid>
 

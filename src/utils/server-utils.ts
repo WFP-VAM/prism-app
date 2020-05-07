@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import { merge, unset, get, isString, union, isEmpty } from 'lodash';
 import { format, parse } from 'url';
 
@@ -99,7 +99,7 @@ async function getWMSCapabilities(serverUri: string) {
           'Dimension._text',
         );
 
-        resolve(Map(layers));
+        resolve(fromJS(layers));
       })
       .catch(error => {
         console.error(
@@ -135,7 +135,7 @@ async function getWCSCoverage(serverUri: string) {
           'domainSet.temporalDomain.gml:timePosition',
         );
 
-        resolve(Map(layers));
+        resolve(fromJS(layers));
       })
       .catch(error => {
         console.error(

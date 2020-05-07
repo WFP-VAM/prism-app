@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from './store';
@@ -8,7 +8,7 @@ import { LAYERS_AVAILABLE_DATES } from '../constants';
 interface ServerState extends Map<string, any> {}
 
 const initialState: ServerState = Map({
-  availableDates: Map(
+  availableDates: fromJS(
     JSON.parse(localStorage.getItem(LAYERS_AVAILABLE_DATES) || '[]'),
   ) as AvailableDates,
 });

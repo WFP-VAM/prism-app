@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { List } from 'immutable';
 import { AvailableDates } from '../../../config/types';
 
 export const months = [
@@ -44,11 +45,9 @@ export function findAvailableDayInMonth(
   availableDates: AvailableDates,
 ) {
   const date = new Date(year, month);
-  const filterDates = (dates: number[]) =>
+  const filterDates = (dates: List<number>) =>
     dates.filter(dateIt => moment(dateIt).isSame(date, 'month'));
-  return availableDates
-    .map(filterDates)
-    .filter(layerDates => layerDates.length);
+  return availableDates.map(filterDates).filter(layerDates => layerDates.size);
 }
 
 /**
