@@ -1,48 +1,29 @@
 import React from 'react';
-import ReactMapboxGl from 'react-mapbox-gl';
-import { createStyles, WithStyles, withStyles } from '@material-ui/core';
+import { Box } from '@material-ui/core';
+import OSM from 'ol/source/OSM';
+import TileLayer from 'ol/layer/Tile';
 
-import Boundaries from './Boundaries';
-import Layers from './Layers';
+// import Boundaries from './Boundaries';
+// import Layers from './Layers';
 import DateSelector from './DateSelector';
 import appConfig from '../../config/prism.json';
+import { Layer, Map } from './OLWrappers';
 
-const Map = ReactMapboxGl({
-  accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
-});
+const baseMapLayer = new TileLayer({ source: new OSM() });
 
-function MapView({ classes }: MapViewProps) {
+function MapView() {
   const {
     map: { latitude, longitude, zoom },
   } = appConfig;
 
   return (
-    <div className={classes.container}>
-      <Map
-        // eslint-disable-next-line react/style-prop-object
-        style="mapbox://styles/mapbox/light-v10"
-        center={[longitude, latitude]}
-        zoom={[zoom]}
-        containerStyle={{
-          height: '100vh',
-          width: '100vw',
-        }}
-      >
-        <Boundaries />
-        <Layers />
+    <Box height="100%">
+      <Map view={{ center: [longitude, latitude], zoom }}>
+        <Layer layer={baseMapLayer} />
       </Map>
       <DateSelector />
-    </div>
+    </Box>
   );
 }
 
-const styles = () =>
-  createStyles({
-    container: {
-      position: 'relative',
-    },
-  });
-
-export interface MapViewProps extends WithStyles<typeof styles> {}
-
-export default withStyles(styles)(MapView);
+export default MapView;
