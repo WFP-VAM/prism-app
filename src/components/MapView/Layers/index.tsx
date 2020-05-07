@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
-import { Source, Layer } from 'react-mapbox-gl';
+import React, { createElement } from 'react';
 import { useSelector } from 'react-redux';
-import { merge, unset } from 'lodash';
-import { format, parse } from 'url';
 
+import TileLayer from 'ol/layer/Tile';
+import TileWMS from 'ol/source/TileWMS';
 import { layersSelector } from '../../../context/mapStateSlice';
+import { Layer } from '../OLWrappers';
 
 const wmsCommonQuery = {
   version: '1.1.1',
@@ -20,42 +20,24 @@ const wmsCommonQuery = {
   bbox: '{bbox-epsg-3857}',
 };
 
-function formatServerUri(serverUri: string) {
-  // The second arg of 'parse' allows us to have query as an object
-  const { query, ...parsedUrl } = parse(serverUri, true);
-
-  // Removing 'search' to be able to format by 'query'
-  unset(parsedUrl, 'search');
-
-  return decodeURI(
-    format({ ...parsedUrl, query: merge(query, wmsCommonQuery) }),
-  );
-}
-
 function Layers() {
   const layers = useSelector(layersSelector);
 
+  // Note - we should be able to return an array here, but there's a bug in React's Typescript typings.
+  // See https://stackoverflow.com/questions/46643517/return-react-16-array-elements-in-typescript
   return (
     <>
-      {layers.toJS().map(({ id, serverUri, opacity }) => (
-        <Fragment key={id}>
-          <Source
-            id={`source-${id}`}
-            tileJsonSource={{
-              type: 'raster',
-              tiles: [formatServerUri(serverUri)],
-              tileSize: 256,
-            }}
-          />
-
-          <Layer
-            type="raster"
-            id={`layer-${id}`}
-            sourceId={`source-${id}`}
-            paint={{ 'raster-opacity': opacity }}
-          />
-        </Fragment>
-      ))}
+      {layers.map(({ id, serverUri, opacity }) => {
+        const layer = new TileLayer({
+          opacity,
+          source: new TileWMS({
+            url: serverUri,
+            params: wmsCommonQuery,
+            serverType: 'geoserver',
+          }),
+        });
+        return createElement(Layer, { key: id, layer });
+      })}
     </>
   );
 }
