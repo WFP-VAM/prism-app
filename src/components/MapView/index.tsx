@@ -3,7 +3,7 @@ import { Box } from '@material-ui/core';
 import OSM from 'ol/source/OSM';
 import TileLayer from 'ol/layer/Tile';
 
-// import Boundaries from './Boundaries';
+import AdminBoundaries from './Boundaries';
 import PrismLayers from './Layers';
 import DateSelector from './DateSelector';
 import appConfig from '../../config/prism.json';
@@ -23,6 +23,7 @@ function MapView() {
       <Map view={{ center: [longitude, latitude], zoom }}>
         <Layer layer={baseMapLayer} />
         <PrismLayers />
+        <AdminBoundaries />
       </Map>
       <DateSelector />
     </Box>

@@ -1,6 +1,5 @@
 import React, { createElement } from 'react';
 import { useSelector } from 'react-redux';
-
 import TileLayer from 'ol/layer/Tile';
 import TileWMS from 'ol/source/TileWMS';
 import { layersSelector } from '../../../context/mapStateSlice';

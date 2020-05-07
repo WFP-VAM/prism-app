@@ -1,4 +1,4 @@
-import Map from './Map';
+import Map, { useMap } from './Map';
 import Layer from './Layer';
 
-export { Map, Layer };
+export { Map, Layer, useMap };

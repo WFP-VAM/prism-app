@@ -1,4 +1,10 @@
-import React, { createRef, useEffect, createContext, ReactNode } from 'react';
+import React, {
+  createRef,
+  useEffect,
+  createContext,
+  ReactNode,
+  useContext,
+} from 'react';
 import 'ol/ol.css';
 import OLMap from 'ol/Map';
 import View, { ViewOptions } from 'ol/View';
@@ -11,7 +17,8 @@ export interface MapContextValues {
 
 const mapId = 'main-map';
 const map = new OLMap({});
-export const mapContext = createContext<MapContextValues>({ map });
+
+const mapContext = createContext<MapContextValues>({ map });
 
 const Map = ({ classes, view, children }: MapProps) => {
   const mapDiv = createRef<HTMLDivElement>();
@@ -45,5 +52,10 @@ interface MapProps extends WithStyles<typeof styles> {
   children: ReactNode;
   view?: ViewOptions;
 }
+
+export const useMap = () => {
+  const { map: mapObj } = useContext(mapContext);
+  return mapObj;
+};
 
 export default withStyles(styles)(Map);

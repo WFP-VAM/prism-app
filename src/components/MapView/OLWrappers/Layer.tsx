@@ -1,10 +1,10 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import BaseLayer from 'ol/layer/Base';
 
-import { mapContext } from './Map';
+import { useMap } from './Map';
 
 const Layer = ({ layer }: { layer: BaseLayer }) => {
-  const { map } = useContext(mapContext);
+  const map = useMap();
 
   useEffect(() => {
     map.addLayer(layer);
