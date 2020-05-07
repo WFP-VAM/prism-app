@@ -53,8 +53,9 @@ exports[`renders as expected 1`] = `
               class="MuiGrid-root MuiGrid-item"
             >
               <mock-typography
-                component="mock-Link"
+                component="a"
                 href="https://innovation.wfp.org/project/prism"
+                target="_blank"
                 variant="body2"
               >
                 <svg
@@ -80,8 +81,9 @@ exports[`renders as expected 1`] = `
               class="MuiGrid-root MuiGrid-item"
             >
               <mock-typography
-                component="mock-Link"
+                component="a"
                 href="https://github.com/oviohub/prism-frontend"
+                target="_blank"
                 variant="body2"
               >
                 <svg
@@ -148,8 +150,9 @@ exports[`renders as expected 1`] = `
                       class="MuiGrid-root MuiGrid-item"
                     >
                       <mock-typography
-                        component="mock-Link"
+                        component="a"
                         href="https://innovation.wfp.org/project/prism"
+                        target="_blank"
                         variant="body2"
                       >
                         <svg
@@ -175,8 +178,9 @@ exports[`renders as expected 1`] = `
                       class="MuiGrid-root MuiGrid-item"
                     >
                       <mock-typography
-                        component="mock-Link"
+                        component="a"
                         href="https://github.com/oviohub/prism-frontend"
+                        target="_blank"
                         variant="body2"
                       >
                         <svg

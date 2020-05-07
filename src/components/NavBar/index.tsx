@@ -12,7 +12,6 @@ import {
   createStyles,
   Button,
   Drawer,
-  Link as MuiLink,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
@@ -45,7 +44,8 @@ function NavBar({ classes }: NavBarProps) {
     <Grid item key={title}>
       <Typography
         variant="body2"
-        component={MuiLink}
+        component="a"
+        target="_blank"
         href={href}
         onClick={() => setOpenMobileMenu(false)}
       >
