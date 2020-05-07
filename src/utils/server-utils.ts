@@ -16,7 +16,6 @@ const xml2jsOptions = {
 export function formatServerUri(
   serverUri: string,
   queryProp: { [key: string]: string | boolean | number },
-  selectedDate?: number,
 ) {
   // The second arg of 'parse' allows us to have 'query' as an object
   const { query, ...parsedUrl } = parse(serverUri, true);
@@ -24,14 +23,10 @@ export function formatServerUri(
   // Removing 'search' to be able to format by 'query'
   unset(parsedUrl, 'search');
 
-  const selectedDateString = selectedDate
-    ? moment(selectedDate).format('YYYY-MM-DD')
-    : '';
-
   return decodeURI(
     format({
       ...parsedUrl,
-      query: merge(query, queryProp, { time: selectedDateString }),
+      query: merge(query, queryProp),
     }),
   );
 }
@@ -60,17 +55,10 @@ function formatCapabilitiesInfo(
       .filter(date => !isEmpty(date))
       .map(date => moment(get(date, '_text', date)).valueOf());
 
-    if (Object.prototype.hasOwnProperty.call(acc, layerId)) {
-      const { [layerId]: oldLayerDates } = acc;
-      return {
-        ...acc,
-        [layerId]: union(availableDates, oldLayerDates),
-      };
-    }
-
+    const { [layerId]: oldLayerDates } = acc;
     return {
       ...acc,
-      [layerId]: availableDates,
+      [layerId]: union(availableDates, oldLayerDates),
     };
   }, {});
 }
@@ -82,32 +70,30 @@ function formatCapabilitiesInfo(
 async function getWMSCapabilities(serverUri: string) {
   const requestUri = formatServerUri(serverUri, { request: 'GetCapabilities' });
 
-  return new Promise(resolve => {
-    fetch(requestUri)
-      .then(response => response.text())
-      .then(responseText => xml2js(responseText, xml2jsOptions))
-      .then(responseJs => {
-        const rawLayers = get(responseJs, 'WMS_Capabilities.Capability.Layer');
+  try {
+    const response = await fetch(requestUri);
+    const responseText = await response.text();
+    const responseJS = xml2js(responseText, xml2jsOptions);
 
-        const flattenLayers = Array.isArray(rawLayers)
-          ? rawLayers.reduce((acc, { Layer }) => acc.concat(Layer), [])
-          : get(rawLayers, 'Layer', []);
+    const rawLayers = get(responseJS, 'WMS_Capabilities.Capability.Layer');
 
-        const layers = formatCapabilitiesInfo(
-          flattenLayers,
-          'Name._text',
-          'Dimension._text',
-        );
+    const flattenLayers = Array.isArray(rawLayers)
+      ? rawLayers.reduce((acc, { Layer }) => acc.concat(Layer), [])
+      : get(rawLayers, 'Layer', []);
 
-        resolve(fromJS(layers));
-      })
-      .catch(error => {
-        console.error(
-          `Server returns an error for request GET/${requestUri}, error: ${error}`,
-        );
-        resolve(Map());
-      });
-  }) as Promise<AvailableDates>;
+    const layers = formatCapabilitiesInfo(
+      flattenLayers,
+      'Name._text',
+      'Dimension._text',
+    );
+
+    return fromJS(layers) as AvailableDates;
+  } catch (error) {
+    console.error(
+      `Server returned an error for request GET/${requestUri}, error: ${error}`,
+    );
+    return Map() as AvailableDates;
+  }
 }
 
 /**
@@ -119,31 +105,26 @@ async function getWCSCoverage(serverUri: string) {
     request: 'DescribeCoverage',
   });
 
-  return new Promise(resolve => {
-    fetch(requestUri)
-      .then(response => response.text())
-      .then(responseText => xml2js(responseText, xml2jsOptions))
-      .then(responseJs => {
-        const rawLayers = get(
-          responseJs,
-          'CoverageDescription.CoverageOffering',
-        );
+  try {
+    const response = await fetch(requestUri);
+    const responseText = await response.text();
+    const responseJS = xml2js(responseText, xml2jsOptions);
 
-        const layers = formatCapabilitiesInfo(
-          rawLayers,
-          'name._text',
-          'domainSet.temporalDomain.gml:timePosition',
-        );
+    const rawLayers = get(responseJS, 'CoverageDescription.CoverageOffering');
 
-        resolve(fromJS(layers));
-      })
-      .catch(error => {
-        console.error(
-          `Server returns an error for request GET/${requestUri}, error: ${error}`,
-        );
-        resolve(Map());
-      });
-  }) as Promise<AvailableDates>;
+    const layers = formatCapabilitiesInfo(
+      rawLayers,
+      'name._text',
+      'domainSet.temporalDomain.gml:timePosition',
+    );
+
+    return fromJS(layers) as AvailableDates;
+  } catch (error) {
+    console.error(
+      `Server returned an error for request GET/${requestUri}, error: ${error}`,
+    );
+    return Map() as AvailableDates;
+  }
 }
 
 /**
@@ -159,7 +140,5 @@ export async function getLayersAvailableDates() {
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
   ]);
 
-  return Promise.resolve(
-    wmsAvailableDates.mergeDeep(wcsAvailableDates),
-  ) as Promise<AvailableDates>;
+  return wmsAvailableDates.mergeDeep(wcsAvailableDates) as AvailableDates;
 }

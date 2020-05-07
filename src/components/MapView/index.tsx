@@ -10,17 +10,21 @@ import { dateRangeSelector, layersSelector } from '../../context/mapStateSlice';
 import { availableDatesSelector } from '../../context/serverStateSlice';
 
 import appConfig from '../../config/prism.json';
+import { AvailableDates } from '../../config/types';
 
-const Map = ReactMapboxGl({
+const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
 });
 
 function MapView({ classes }: MapViewProps) {
   const layers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const selectedLayersDates = serverAvailableDates.filter((_, layerId) =>
-    layers.map(l => l.serverLayer).includes(layerId),
-  );
+
+  const selectedLayerDates = layers
+    .map(({ serverLayer }) =>
+      serverLayer ? serverAvailableDates.get(serverLayer) : undefined,
+    )
+    .filter(value => value) as AvailableDates;
 
   const { startDate } = useSelector(dateRangeSelector);
 
@@ -30,7 +34,7 @@ function MapView({ classes }: MapViewProps) {
 
   return (
     <div className={classes.container}>
-      <Map
+      <MapboxMap
         // eslint-disable-next-line react/style-prop-object
         style="mapbox://styles/mapbox/light-v10"
         center={[longitude, latitude]}
@@ -42,8 +46,8 @@ function MapView({ classes }: MapViewProps) {
       >
         <Boundaries />
         <Layers layers={layers} selectedDate={startDate} />
-      </Map>
-      <DateSelector availableDates={selectedLayersDates} />
+      </MapboxMap>
+      <DateSelector availableDates={selectedLayerDates} />
     </div>
   );
 }

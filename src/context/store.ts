@@ -13,25 +13,12 @@ import {
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
 import { getLayersAvailableDates } from '../utils/server-utils';
-import { LAYERS_AVAILABLE_DATES } from '../constants';
 import { AvailableDates } from '../config/types';
 
 const initializeStore = async (getCurrentState: any) => {
-  const isStorageSet = localStorage.getItem(LAYERS_AVAILABLE_DATES) !== null;
-
-  if (isStorageSet) {
-    // Aborting the initialization
-    return Promise.reject();
-  }
-
   const layersAvailableDates = await getLayersAvailableDates();
   const currentState = getCurrentState();
   const { serverState } = currentState;
-
-  localStorage.setItem(
-    LAYERS_AVAILABLE_DATES,
-    JSON.stringify(layersAvailableDates),
-  );
 
   return new Promise(resolve => {
     resolve({

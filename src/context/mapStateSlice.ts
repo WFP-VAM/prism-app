@@ -20,14 +20,10 @@ export const mapStateSlice = createSlice({
   initialState,
   reducers: {
     addLayer: (state, { payload }: PayloadAction<LayerType>) =>
-      state.update('layers', layers =>
-        (layers as LayersMap).set(payload.id, payload),
-      ),
+      state.setIn(['layers', payload.id], payload),
 
     removeLayer: (state, { payload }: PayloadAction<LayerType>) =>
-      state.update('layers', layers =>
-        (layers as LayersMap).delete(payload.id),
-      ),
+      state.deleteIn(['layers', payload.id]),
 
     updateDateRange: (state, { payload }: PayloadAction<DateRange>) =>
       state.set('dateRange', payload),

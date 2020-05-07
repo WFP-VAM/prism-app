@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react';
+import moment from 'moment';
 import { Source, Layer } from 'react-mapbox-gl';
 
 import { formatServerUri } from '../../../utils/server-utils';
 import { LayersMap } from '../../../config/types';
 
-const wmsCommonQuery = {
+const commonQueryParam = {
   version: '1.1.1',
   request: 'GetMap',
   format: 'image/png',
@@ -19,33 +20,41 @@ const wmsCommonQuery = {
 };
 
 function Layers({ layers, selectedDate }: LayersProps) {
+  if (!layers) {
+    return null;
+  }
+
+  const queryParam = {
+    ...commonQueryParam,
+    ...(selectedDate && {
+      time: moment(selectedDate).format('YYYY-MM-DD'),
+    }),
+  };
+
   return (
     <>
-      {layers &&
-        layers
-          .valueSeq()
-          .toJS()
-          .map(({ id, serverUri, opacity }) => (
-            <Fragment key={id}>
-              <Source
-                id={`source-${id}`}
-                tileJsonSource={{
-                  type: 'raster',
-                  tiles: [
-                    formatServerUri(serverUri, wmsCommonQuery, selectedDate),
-                  ],
-                  tileSize: 256,
-                }}
-              />
+      {layers
+        .valueSeq()
+        .toJS()
+        .map(({ id, serverUri, opacity }) => (
+          <Fragment key={id}>
+            <Source
+              id={`source-${id}`}
+              tileJsonSource={{
+                type: 'raster',
+                tiles: [formatServerUri(serverUri, queryParam)],
+                tileSize: 256,
+              }}
+            />
 
-              <Layer
-                type="raster"
-                id={`layer-${id}`}
-                sourceId={`source-${id}`}
-                paint={{ 'raster-opacity': opacity }}
-              />
-            </Fragment>
-          ))}
+            <Layer
+              type="raster"
+              id={`layer-${id}`}
+              sourceId={`source-${id}`}
+              paint={{ 'raster-opacity': opacity }}
+            />
+          </Fragment>
+        ))}
     </>
   );
 }
