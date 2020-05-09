@@ -1,10 +1,9 @@
-import { Map, Set } from 'immutable';
+import { Map } from 'immutable';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from './store';
-import { LayerType } from '../config/types';
+import { LayersMap, LayerType } from '../config/types';
 
-interface LayersSet extends Set<LayerType> {}
 interface DateRange {
   startDate?: number;
   endDate?: number;
@@ -12,8 +11,8 @@ interface DateRange {
 interface MapState extends Map<string, any> {}
 
 const initialState: MapState = Map({
-  layers: Set<LayerType>(),
-  dateRange: {},
+  layers: Map() as LayersMap,
+  dateRange: {} as DateRange,
 });
 
 export const mapStateSlice = createSlice({
@@ -21,10 +20,10 @@ export const mapStateSlice = createSlice({
   initialState,
   reducers: {
     addLayer: (state, { payload }: PayloadAction<LayerType>) =>
-      state.update('layers', layers => (layers as LayersSet).add(payload)),
+      state.setIn(['layers', payload.id], payload),
 
     removeLayer: (state, { payload }: PayloadAction<LayerType>) =>
-      state.update('layers', layers => (layers as LayersSet).delete(payload)),
+      state.deleteIn(['layers', payload.id]),
 
     updateDateRange: (state, { payload }: PayloadAction<DateRange>) =>
       state.set('dateRange', payload),
@@ -33,7 +32,7 @@ export const mapStateSlice = createSlice({
 
 // Getters
 export const layersSelector = (state: RootState) =>
-  state.mapState.get('layers') as LayersSet;
+  state.mapState.get('layers') as LayersMap;
 export const dateRangeSelector = (state: RootState) =>
   state.mapState.get('dateRange') as DateRange;
 

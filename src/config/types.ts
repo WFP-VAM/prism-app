@@ -1,7 +1,10 @@
+import { Map, List } from 'immutable';
+
 export interface LayerType {
   id: string;
   title: string;
   serverType: string;
+  serverLayer?: string;
   serverUri?: string;
   hasDate: boolean;
   dateInterval?: string;
@@ -14,6 +17,8 @@ export interface LayerType {
   legendText: string;
 }
 
+export interface LayersMap extends Map<string, LayerType> {}
+
 export interface LayersCategoryType {
   title: string;
   layers: LayerType[];
@@ -24,3 +29,5 @@ export interface MenuItemType {
   icon: string;
   layersCategories: LayersCategoryType[];
 }
+
+export interface AvailableDates extends Map<string, List<number>> {}

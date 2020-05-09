@@ -1,5 +1,12 @@
 {
   "country": "Mongolia",
+  "serversUrls": {
+    "wcs": ["https://mongolia.sibelius-datacube.org:5000"],
+    "wms": [
+      "https://mongolia.sibelius-datacube.org:5000/wms",
+      "https://mng-wfp.ovio.org:8443/geoserver/prism/wms"
+    ]
+  },
   "map": {
     "latitude": 46.810021,
     "longitude": 103.111657,

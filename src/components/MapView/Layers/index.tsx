@@ -1,12 +1,11 @@
 import React, { Fragment } from 'react';
+import moment from 'moment';
 import { Source, Layer } from 'react-mapbox-gl';
-import { useSelector } from 'react-redux';
-import { merge, unset } from 'lodash';
-import { format, parse } from 'url';
 
-import { layersSelector } from '../../../context/mapStateSlice';
+import { formatServerUri } from '../../../utils/server-utils';
+import { LayersMap } from '../../../config/types';
 
-const wmsCommonQuery = {
+const commonQueryParam = {
   version: '1.1.1',
   request: 'GetMap',
   format: 'image/png',
@@ -20,44 +19,49 @@ const wmsCommonQuery = {
   bbox: '{bbox-epsg-3857}',
 };
 
-function formatServerUri(serverUri: string) {
-  // The second arg of 'parse' allows us to have query as an object
-  const { query, ...parsedUrl } = parse(serverUri, true);
+function Layers({ layers, selectedDate }: LayersProps) {
+  if (!layers) {
+    return null;
+  }
 
-  // Removing 'search' to be able to format by 'query'
-  unset(parsedUrl, 'search');
-
-  return decodeURI(
-    format({ ...parsedUrl, query: merge(query, wmsCommonQuery) }),
-  );
-}
-
-function Layers() {
-  const layers = useSelector(layersSelector);
+  const queryParam = {
+    ...commonQueryParam,
+    ...(selectedDate && {
+      time: moment(selectedDate).format('YYYY-MM-DD'),
+    }),
+  };
 
   return (
     <>
-      {layers.toJS().map(({ id, serverUri, opacity }) => (
-        <Fragment key={id}>
-          <Source
-            id={`source-${id}`}
-            tileJsonSource={{
-              type: 'raster',
-              tiles: [formatServerUri(serverUri)],
-              tileSize: 256,
-            }}
-          />
+      {layers
+        .valueSeq()
+        .toJS()
+        .map(({ id, serverUri, opacity }) => (
+          <Fragment key={id}>
+            <Source
+              id={`source-${id}`}
+              tileJsonSource={{
+                type: 'raster',
+                tiles: [formatServerUri(serverUri, queryParam)],
+                tileSize: 256,
+              }}
+            />
 
-          <Layer
-            type="raster"
-            id={`layer-${id}`}
-            sourceId={`source-${id}`}
-            paint={{ 'raster-opacity': opacity }}
-          />
-        </Fragment>
-      ))}
+            <Layer
+              type="raster"
+              id={`layer-${id}`}
+              sourceId={`source-${id}`}
+              paint={{ 'raster-opacity': opacity }}
+            />
+          </Fragment>
+        ))}
     </>
   );
+}
+
+export interface LayersProps {
+  layers: LayersMap;
+  selectedDate?: number;
 }
 
 export default Layers;

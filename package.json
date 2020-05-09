@@ -78,8 +78,10 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "redux": "^4.0.5",
+    "redux-async-initial-state": "^0.3.0",
     "typescript": "~3.8.2",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "xml-js": "^1.6.11"
   },
   "jest": {
     "snapshotSerializers": [

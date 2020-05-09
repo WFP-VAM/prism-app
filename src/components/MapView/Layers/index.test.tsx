@@ -1,15 +1,11 @@
 import React from 'react';
-import { Provider } from 'react-redux';
+import { Map } from 'immutable';
 import { render } from '@testing-library/react';
 
 import Layers from '.';
-import { store } from '../../../context/store';
 
 test('renders as expected', () => {
-  const { container } = render(
-    <Provider store={store}>
-      <Layers />
-    </Provider>,
-  );
+  // TODO: Mock layers
+  const { container } = render(<Layers layers={Map()} />);
   expect(container).toMatchSnapshot();
 });
