@@ -5,6 +5,7 @@ import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
 import Boundaries from './Boundaries';
 import Layers from './Layers';
+import Legends from './Legends';
 import DateSelector from './DateSelector';
 import { dateRangeSelector, layersSelector } from '../../context/mapStateSlice';
 import { availableDatesSelector } from '../../context/serverStateSlice';
@@ -48,6 +49,7 @@ function MapView({ classes }: MapViewProps) {
         <Layers layers={layers} selectedDate={startDate} />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
+      <Legends layers={layers} />
     </div>
   );
 }
