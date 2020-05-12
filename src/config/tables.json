@@ -1,0 +1,7 @@
+{
+  "food_prices": {
+    "title": "World Food Programme Food Prices",
+    "table": "./data/tables/wfp_food_prices_mongolia.csv",
+    "legend_text": "Source: WFP. Covers foods such as maize, rice, beans, fish, and sugar."
+  }
+}

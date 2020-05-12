@@ -45,6 +45,11 @@ exports[`renders as expected 1`] = `
               layerscategories=""
               title="Impact"
             />
+            <mock-menuitem
+              icon="icon_impact.png"
+              layerscategories="[object Object]"
+              title="Tables"
+            />
           </div>
           <div
             class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 MuiGrid-item MuiGrid-align-items-xs-center MuiGrid-justify-xs-flex-end MuiGrid-grid-xs-3"
@@ -220,6 +225,11 @@ exports[`renders as expected 1`] = `
                       icon="icon_impact.png"
                       layerscategories=""
                       title="Impact"
+                    />
+                    <mock-menuitem
+                      icon="icon_impact.png"
+                      layerscategories="[object Object]"
+                      title="Tables"
                     />
                   </div>
                 </div>

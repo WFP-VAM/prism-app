@@ -21,6 +21,9 @@
       "dzud_risk": ["DzudRiskMap", "ModisSnowPercentage"]
     },
     "impact": {
+    },
+    "tables": {
+      "food_security": ["food_prices"]
     }
   }
 }

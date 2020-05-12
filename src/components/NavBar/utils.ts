@@ -12,6 +12,8 @@ const icons: { [key: string]: string } = {
   baseline,
   climate,
   impact,
+  // TODO - Update table icon
+  tables: impact,
 };
 
 type LayersCategoriesType = LayersCategoryType[];
