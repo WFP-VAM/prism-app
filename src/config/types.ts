@@ -17,11 +17,19 @@ export interface LayerType {
   legendText: string;
 }
 
+export interface TableType {
+  id: string;
+  title: string;
+  table: string;
+  legendText: string;
+}
+
 export interface LayersMap extends Map<string, LayerType> {}
 
 export interface LayersCategoryType {
   title: string;
   layers: LayerType[];
+  tables?: TableType[];
 }
 
 export interface MenuItemType {

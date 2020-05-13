@@ -12,6 +12,7 @@ import {
 
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
+import tableStateReduce from './tableStateSlice';
 import { getLayersAvailableDates } from '../utils/server-utils';
 import { AvailableDates } from '../config/types';
 
@@ -35,6 +36,7 @@ const reducer = outerReducer(
   combineReducers({
     mapState: mapStateReduce,
     serverState: serverStateReduce,
+    tableState: tableStateReduce,
     asyncInitialState: innerReducer,
   }),
 );

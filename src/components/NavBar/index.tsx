@@ -39,6 +39,7 @@ function NavBar({ classes }: NavBarProps) {
   const menu = menuList.map(({ title, ...category }) => (
     <MenuItem key={title} title={title} {...category} />
   ));
+  console.log({ menu });
 
   const buttons = rightSideLinks.map(({ title, icon, href }) => (
     <Grid item key={title}>

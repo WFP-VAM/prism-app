@@ -17,6 +17,7 @@ import {
   addLayer,
   removeLayer,
 } from '../../../context/mapStateSlice';
+import DataTable from '../DataTable';
 
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -38,6 +39,10 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
     } else {
       dispatch(addLayer(layer));
     }
+  };
+
+  const showTableClicked = () => {
+    console.log('show table clicked');
   };
 
   const open = Boolean(anchorEl);
@@ -72,7 +77,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
           className: classes.paper,
         }}
       >
-        {layersCategories.map(({ title: categoryTitle, layers }) => (
+        {layersCategories.map(({ title: categoryTitle, layers, tables }) => (
           <div key={categoryTitle} className={classes.categoryContainer}>
             <Typography variant="body2" className={classes.categoryTitle}>
               {categoryTitle}
@@ -95,6 +100,16 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
                 </div>
               );
             })}
+
+            {tables?.map(table => (
+              <Button
+                id={table.title}
+                key={table.title}
+                onClick={showTableClicked}
+              >
+                {table.title}
+              </Button>
+            ))}
           </div>
         ))}
       </Popover>
