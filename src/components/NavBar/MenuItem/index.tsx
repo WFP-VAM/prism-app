@@ -11,13 +11,13 @@ import {
   Switch,
 } from '@material-ui/core';
 
-import { MenuItemType, LayerType } from '../../../config/types';
+import { MenuItemType, LayerType, TableType } from '../../../config/types';
 import {
   layersSelector,
   addLayer,
   removeLayer,
 } from '../../../context/mapStateSlice';
-import DataTable from '../DataTable';
+import { setTable } from '../../../context/tableStateSlice';
 
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -41,8 +41,9 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
     }
   };
 
-  const showTableClicked = () => {
-    console.log('show table clicked');
+  const showTableClicked = (table: TableType) => {
+    console.log(`dispatching ${table.id}`);
+    dispatch(setTable(table));
   };
 
   const open = Boolean(anchorEl);
@@ -105,7 +106,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
               <Button
                 id={table.title}
                 key={table.title}
-                onClick={showTableClicked}
+                onClick={() => showTableClicked(table)}
               >
                 {table.title}
               </Button>
