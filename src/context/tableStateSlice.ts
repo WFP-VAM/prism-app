@@ -14,10 +14,8 @@ export const tableStateSlice = createSlice({
   name: 'tableState',
   initialState,
   reducers: {
-    setTable: (state, { payload }: PayloadAction<TableType>) => {
-      state.set('table', payload);
-      console.log({ state });
-    },
+    setTable: (state, { payload }: PayloadAction<TableType>) =>
+      state.set('table', payload),
   },
 });
 

@@ -1,12 +1,18 @@
 import React from 'react';
-import { TableType } from '../../../config/types';
+import { useSelector } from 'react-redux';
 
-const DataTable = ({ title, table, legendText }: TableType) => {
+import { getCurrTable } from '../../../context/tableStateSlice';
+
+const DataTable = () => {
+  const { title, table, legendText } = useSelector(getCurrTable);
+
   return (
     <div>
       <h2>{title}</h2>
       <p>{table}</p>
       <p>{legendText}</p>
+
+      {/* Table goes here! */}
     </div>
   );
 };
