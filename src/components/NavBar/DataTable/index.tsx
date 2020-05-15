@@ -1,7 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import csv from 'csv';
-
 import { getCurrTable } from '../../../context/tableStateSlice';
 
 const DataTable = () => {

@@ -42,7 +42,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   };
 
   const showTableClicked = (table: TableType) => {
-    console.log(`dispatching ${table.id}`);
+    console.log(table);
     dispatch(setTable(table));
   };
 
@@ -102,7 +102,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
               );
             })}
 
-            {tables?.map(table => (
+            {tables.map(table => (
               <Button
                 id={table.title}
                 key={table.title}
