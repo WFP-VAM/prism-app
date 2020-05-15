@@ -8,6 +8,7 @@ interface TableState extends Map<string, any> {}
 
 const initialState: TableState = Map({
   table: {} as TableType,
+  isShowing: false,
 });
 
 export const tableStateSlice = createSlice({
@@ -15,13 +16,17 @@ export const tableStateSlice = createSlice({
   initialState,
   reducers: {
     setTable: (state, { payload }: PayloadAction<TableType>) =>
-      state.set('table', payload),
+      state.set('table', payload).set('isShowing', true),
+    hideTable: state => state.set('isShowing', false),
   },
 });
 
-export const getCurrTable = (state: RootState) => {
-  console.log(state.tableState);
+export const getCurrTable = (state: RootState): TableType => {
   return state.tableState.get('table') as TableType;
+};
+
+export const getIsShowing = (state: RootState): boolean => {
+  return state.tableState.get('isShowing');
 };
 
 // export actions

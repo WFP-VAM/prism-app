@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   AppBar,
   Toolbar,
@@ -18,8 +19,10 @@ import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import MenuItem from './MenuItem';
-import DataTable from './DataTable';
 import { menuList } from './utils';
+import DataTable from './DataTable';
+
+import { getIsShowing } from '../../context/tableStateSlice';
 
 const rightSideLinks = [
   {
@@ -36,6 +39,8 @@ const rightSideLinks = [
 
 function NavBar({ classes }: NavBarProps) {
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
+  const tableIsShowing = useSelector(getIsShowing);
+  // console.log(`table is showing? ${tableIsShowing}`)
 
   const menu = menuList.map(({ title, ...category }) => (
     <MenuItem key={title} title={title} {...category} />
@@ -110,8 +115,7 @@ function NavBar({ classes }: NavBarProps) {
                     </Grid>
                     <Grid item>{menu}</Grid>
                   </Grid>
-
-                  <DataTable />
+                  {tableIsShowing && <DataTable />}
                 </div>
               </Drawer>
             </Grid>
