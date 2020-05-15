@@ -6,6 +6,7 @@ import { getCurrTable } from '../../../context/tableStateSlice';
 const DataTable = () => {
   const { title, table, legendText } = useSelector(getCurrTable);
 
+  console.log(title);
   return (
     <div>
       <h2>{title}</h2>

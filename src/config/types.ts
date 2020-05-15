@@ -29,7 +29,7 @@ export interface LayersMap extends Map<string, LayerType> {}
 export interface LayersCategoryType {
   title: string;
   layers: LayerType[];
-  tables?: TableType[];
+  tables: TableType[];
 }
 
 export interface MenuItemType {
