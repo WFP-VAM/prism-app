@@ -16,8 +16,11 @@ const fillPaint: MapboxGL.FillPaint = {
   'fill-opacity': 1,
   'fill-color': {
     property: 'data',
-    stops: [[20000, '#fff'], [120000, '#f00']]
-  }
+    stops: [
+      [20000, '#fff'],
+      [120000, '#f00'],
+    ],
+  },
 };
 
 // Get admin data to process.
@@ -33,37 +36,37 @@ const linePaint: MapboxGL.LinePaint = {
 };
 
 function matchingCode(boundaryCode: string, dataCode: string): boolean {
-  let tempCode = boundaryCode
-  while (tempCode && tempCode.length !==0) {
+  let tempCode = boundaryCode;
+  while (tempCode && tempCode.length !== 0) {
     if (tempCode === dataCode) {
-      return true
+      return true;
     }
     tempCode = tempCode.substring(0, tempCode.length - 1);
   }
-  return false
-};
+  return false;
+}
 
 // If a baselineLayer is selected, extract the data for each admin boundary.
-const mergedData: Feature[] = baselineBoundaries.features.map((boundary) => {
+const mergedData: Feature[] = baselineBoundaries.features.map(boundary => {
   // Admin boundaries contain an nso_code
-  if (!boundary.properties) {
-    return boundary
+  if (!boundary || !boundary.properties) {
+    return boundary;
   }
-  const nsoCode = boundary.properties ? boundary.properties.NSO_CODE : ''
+  const nsoCode = boundary.properties ? boundary.properties.NSO_CODE : '';
   let boundaryData: number | null = null;
-  nsoData.DataList.forEach((row) => {
+  nsoData.DataList.forEach(row => {
     if (matchingCode(nsoCode, row.CODE)) {
-      boundaryData = parseFloat(row.DTVAL_CO)
+      boundaryData = parseFloat(row.DTVAL_CO);
     }
-  })
-  boundary.properties.data = boundaryData
-  return boundary;
-  }
-)
+  });
+  const extendedBoundary = boundary;
+  extendedBoundary.properties.data = boundaryData;
+  return extendedBoundary;
+});
 
-baselineBoundaries.features = mergedData
+baselineBoundaries.features = mergedData;
 
-console.log(baselineBoundaries)
+console.log(baselineBoundaries);
 
 function Boundaries() {
   return (
