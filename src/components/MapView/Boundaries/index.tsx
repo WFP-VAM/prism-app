@@ -21,8 +21,10 @@ const fillPaint: MapboxGL.FillPaint = {
 // Get admin data to process.
 function getAdminData(evt: any) {
   // eslint-disable-next-line
-  console.log(get(evt.features[0], 'properties.ADM2_PCODE'));
-  console.log(get(evt.features[0], 'properties.data'));
+  console.log(
+    get(evt.features[0], 'properties.ADM2_PCODE'),
+    get(evt.features[0], 'properties.data'),
+  );
 }
 
 const linePaint: MapboxGL.LinePaint = {
@@ -89,8 +91,6 @@ function Boundaries({ layers }: { layers: LayersMap }) {
     mergedBaselineBoundaries = merge({}, baselineBoundaries, {
       features: mergedData,
     });
-
-    console.log(mergedBaselineBoundaries);
   }
 
   return (
