@@ -36,6 +36,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@types/geojson": "^7946.0.7",
     "@types/jest": "^24.0.0",
     "@types/lodash": "^4.14.149",
     "@types/mapbox-gl": "^1.8.0",
