@@ -7,7 +7,7 @@ export interface LayerType {
   title: string;
   type: string;
   data?: string;
-  admin_code?: BoundaryKey;
+  adminCode?: BoundaryKey;
   serverLayer?: string;
   serverUri?: string;
   hasDate: boolean;

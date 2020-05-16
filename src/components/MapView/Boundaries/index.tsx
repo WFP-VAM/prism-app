@@ -82,10 +82,13 @@ function Boundaries({ layers }: { layers: LayersMap }) {
         }
         const nsoCode = get(boundary, 'properties.NSO_CODE', '');
 
-        const matchingKey = layerConfig.admin_code !== null ? layerConfig.admin_code! : 'CODE';
+        const matchingKey =
+          layerConfig.adminCode !== null ? layerConfig.adminCode! : 'CODE';
 
         const { DTVAL_CO } =
-          DataList.find((data) => matchingCode(nsoCode, data[matchingKey])) || {};
+          DataList.find(data =>
+            matchingCode(nsoCode, data[matchingKey] || ''),
+          ) || {};
 
         const boundaryData: number | null = DTVAL_CO
           ? parseFloat(DTVAL_CO)
