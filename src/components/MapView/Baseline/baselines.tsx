@@ -14,9 +14,9 @@ const nsoDatasets = {
 
 type DatasetKeys = 'nsoDisabled' | 'nsoDisabled';
 
-export function getNSOData(dataset: DatasetKeys) {
-  if (dataset in nsoDatasets) {
-    return nsoDatasets[dataset];
+export function getNSOData(dataset: string | undefined) {
+  if (dataset && dataset in nsoDatasets) {
+    return nsoDatasets[dataset as DatasetKeys];
   }
   return nsoDisabled;
 }

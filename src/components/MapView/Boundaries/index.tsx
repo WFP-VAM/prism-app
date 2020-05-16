@@ -38,12 +38,17 @@ function matchingCode(boundaryCode: string, dataCode: string): boolean {
 }
 
 function legendToStops(
-  legend: {
-    value: string;
-    color: string;
-  }[],
+  legend:
+    | {
+        value: string;
+        color: string;
+      }[]
+    | undefined,
 ) {
-  return legend.map(({ value, color }: any) => [parseFloat(value), color]);
+  return (legend || []).map(({ value, color }: any) => [
+    parseFloat(value),
+    color,
+  ]);
 }
 
 function Boundaries({ layers }: { layers: LayersMap }) {
@@ -53,45 +58,46 @@ function Boundaries({ layers }: { layers: LayersMap }) {
    * NSO_CODE and CODE, the property used to match admin boundaries from both files.
    * DTVAL_CO, the column of data to extract
    */
-  let mergedBaselineBoundaries = baselineBoundaries;
-  let fillPaintData = fillPaint;
-  if (layers.size > 0) {
-    const layerConfig = layers.values().next().value;
+  const { features } = baselineBoundaries;
+  const layerConfig = layers.first(null);
 
-    // We use the legend values from the config to define "intervals".
-    fillPaintData = {
-      'fill-opacity': layerConfig.opacity || 0.3,
-      'fill-color': {
-        property: 'data',
-        stops: legendToStops(layerConfig.legend),
-      },
-    };
-
-    const mergedData: Feature[] = baselineBoundaries.features.map(boundary => {
-      // Admin boundaries contain an nso_code
-      if (!boundary || !boundary.properties) {
-        return boundary;
+  // We use the legend values from the config to define "intervals".
+  const fillPaintData = layerConfig
+    ? {
+        'fill-opacity': layerConfig.opacity || 0.3,
+        'fill-color': {
+          property: 'data',
+          stops: legendToStops(layerConfig.legend),
+        },
       }
-      const nsoCode = get(boundary, 'properties.NSO_CODE', '');
+    : fillPaint;
 
-      const nsoDataset = getNSOData(layerConfig.data);
-      const { DTVAL_CO } =
-        nsoDataset.DataList.find(({ CODE }) => matchingCode(nsoCode, CODE)) ||
-        {};
+  const mergedFeatures: Feature[] = layerConfig
+    ? features.map(boundary => {
+        // Admin boundaries contain an nso_code
+        if (!boundary || !boundary.properties) {
+          return boundary;
+        }
+        const nsoCode = get(boundary, 'properties.NSO_CODE', '');
 
-      const boundaryData: number | null = DTVAL_CO
-        ? parseFloat(DTVAL_CO)
-        : null;
+        const { DataList } = getNSOData(layerConfig.data);
+        const { DTVAL_CO } =
+          DataList.find(({ CODE }) => matchingCode(nsoCode, CODE)) || {};
 
-      return merge({}, boundary, {
-        properties: { data: boundaryData },
-      });
-    });
+        const boundaryData: number | null = DTVAL_CO
+          ? parseFloat(DTVAL_CO)
+          : null;
 
-    mergedBaselineBoundaries = merge({}, baselineBoundaries, {
-      features: mergedData,
-    });
-  }
+        return merge({}, boundary, {
+          properties: { data: boundaryData },
+        });
+      })
+    : features;
+
+  const mergedBaselineBoundaries = {
+    ...baselineBoundaries,
+    features: mergedFeatures,
+  };
 
   return (
     <GeoJSONLayer

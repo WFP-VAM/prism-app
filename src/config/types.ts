@@ -4,6 +4,7 @@ export interface LayerType {
   id: string;
   title: string;
   type: string;
+  data?: string;
   serverLayer?: string;
   serverUri?: string;
   hasDate: boolean;
