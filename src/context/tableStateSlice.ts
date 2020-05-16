@@ -21,10 +21,12 @@ export const tableStateSlice = createSlice({
   },
 });
 
+// TODO: memoize this to prevent repeat loading and parsing of CSV
 export const getCurrTable = (state: RootState): TableType => {
   return state.tableState.get('table') as TableType;
 };
 
+// prevent trying to load and display table on start of app
 export const getIsShowing = (state: RootState): boolean => {
   return state.tableState.get('isShowing');
 };
