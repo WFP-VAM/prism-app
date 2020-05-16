@@ -8,12 +8,11 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Theme,
-  createStyles,
   makeStyles,
   Paper,
 } from '@material-ui/core';
 import { getCurrTable } from '../../../context/tableStateSlice';
+import DataTableRow from './DataTableRow';
 
 const useStyles = makeStyles({
   root: {
@@ -66,29 +65,20 @@ const DataTable = () => {
           <TableContainer className={classes.container}>
             <Table stickyHeader aria-label={`table showing ${title}`}>
               <TableHead>
-                <TableRow>
-                  {Object.entries(tableJson[0]).map(([key, value]) => (
-                    <TableCell className={classes.headCells} key={key}>
-                      {' '}
-                      {value}{' '}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <DataTableRow
+                  className={classes.headCells}
+                  rowData={tableJson[0]}
+                />
               </TableHead>
               <TableBody>
-                {tableJson.slice(1).map(rowJson => (
-                  <TableRow
+                {tableJson.slice(1, 10).map(rowJson => (
+                  <DataTableRow
                     key={`${Object.values(rowJson)[0]} ${
                       Object.values(rowJson)[1]
                     }`}
-                  >
-                    {Object.entries(rowJson).map(([key, value]) => (
-                      <TableCell className={classes.tableCells} key={key}>
-                        {' '}
-                        {value}{' '}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+                    className={classes.tableCells}
+                    rowData={rowJson}
+                  />
                 ))}
               </TableBody>
             </Table>
