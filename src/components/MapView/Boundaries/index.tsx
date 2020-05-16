@@ -6,7 +6,7 @@ import * as MapboxGL from 'mapbox-gl';
 import { LayersMap } from '../../../config/types';
 
 import adminBoundariesJson from '../../../config/admin_boundaries.json';
-import { getNSOData } from '../Baseline/baselines';
+import { getNSOData } from '../../../config/baselines';
 
 const baselineBoundaries = adminBoundariesJson as FeatureCollection;
 
@@ -72,6 +72,8 @@ function Boundaries({ layers }: { layers: LayersMap }) {
       }
     : fillPaint;
 
+  const { DataList } = getNSOData(layerConfig ? layerConfig.data : undefined);
+
   const mergedFeatures: Feature[] = layerConfig
     ? features.map(boundary => {
         // Admin boundaries contain an nso_code
@@ -80,9 +82,10 @@ function Boundaries({ layers }: { layers: LayersMap }) {
         }
         const nsoCode = get(boundary, 'properties.NSO_CODE', '');
 
-        const { DataList } = getNSOData(layerConfig.data);
+        const matchingKey = layerConfig.admin_code !== null ? layerConfig.admin_code! : 'CODE';
+
         const { DTVAL_CO } =
-          DataList.find(({ CODE }) => matchingCode(nsoCode, CODE)) || {};
+          DataList.find((data) => matchingCode(nsoCode, data[matchingKey])) || {};
 
         const boundaryData: number | null = DTVAL_CO
           ? parseFloat(DTVAL_CO)
