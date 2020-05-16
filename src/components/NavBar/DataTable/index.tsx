@@ -4,10 +4,8 @@ import { useSelector } from 'react-redux';
 import {
   Table,
   TableBody,
-  TableCell,
   TableContainer,
   TableHead,
-  TableRow,
   makeStyles,
   Paper,
 } from '@material-ui/core';
@@ -30,7 +28,11 @@ const useStyles = makeStyles({
   },
 });
 
-const DataTable = () => {
+export interface DataTableConfig {
+  maxResults: number;
+}
+
+const DataTable = ({ maxResults }: DataTableConfig) => {
   const classes = useStyles();
 
   // get and destructure the currently open table
@@ -42,13 +44,13 @@ const DataTable = () => {
 
   // parse the csv, but only when we get a new table to parse
   useEffect(() => {
-    console.log(`parsing ${table} csv`);
+    // console.log(`parsing ${table} csv`);
     Papa.parse(tableUrl, {
       header: true,
       download: true,
       // step: row => console.log("Row: " , row.data),
-      complete: (results, file) => {
-        console.log(results.data);
+      complete: results => {
+        // console.log("complete!");
         setTableJson(results.data);
       },
     });
@@ -71,11 +73,11 @@ const DataTable = () => {
                 />
               </TableHead>
               <TableBody>
-                {tableJson.slice(1, 10).map(rowJson => (
+                {tableJson.slice(1, maxResults).map(rowJson => (
                   <DataTableRow
-                    key={`${Object.values(rowJson)[0]} ${
-                      Object.values(rowJson)[1]
-                    }`}
+                    // key={`${Object.values(rowJson)[0]} ${
+                    //   Object.values(rowJson)[1]
+                    // }`}
                     className={classes.tableCells}
                     rowData={rowJson}
                   />

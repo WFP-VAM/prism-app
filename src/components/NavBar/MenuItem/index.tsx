@@ -42,7 +42,6 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   };
 
   const showTableClicked = (table: TableType) => {
-    console.log(table);
     dispatch(setTable(table));
   };
 

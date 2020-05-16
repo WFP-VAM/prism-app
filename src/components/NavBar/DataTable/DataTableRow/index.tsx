@@ -6,8 +6,11 @@ export interface TableRowProps {
   rowData: any;
 }
 
+// not worth trying to put keys to this data unfortunately for now
 const DataTableRow = ({ className, rowData }: TableRowProps) => (
-  <TableRow key={`${Object.values(rowData)[0]} ${Object.values(rowData)[1]}`}>
+  <TableRow
+  // key={`${Object.values(rowData)[0]} ${Object.values(rowData)[1]}`}
+  >
     {Object.entries(rowData).map(([key, value]) => (
       <TableCell className={className} key={key}>
         {' '}

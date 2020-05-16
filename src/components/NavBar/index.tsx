@@ -115,7 +115,7 @@ function NavBar({ classes }: NavBarProps) {
                     </Grid>
                     <Grid item>{menu}</Grid>
                   </Grid>
-                  {tableIsShowing && <DataTable />}
+                  {tableIsShowing && <DataTable maxResults={1000} />}
                 </div>
               </Drawer>
             </Grid>

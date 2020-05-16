@@ -19,14 +19,14 @@
     // Allow named exports only files
     "import/prefer-default-export": 0,
     "object-curly-spacing": [
-      "warn",
+      "error",
       "always",
       { "arraysInObjects": false, "objectsInObjects": false }
     ],
     // More verbose prettier suggestions
     "prettier/prettier": ["warn"],
     "import/extensions": [
-      "warn",
+      "error",
       "ignorePackages",
       {
         "js": "never",
