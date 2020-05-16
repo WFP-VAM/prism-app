@@ -21,6 +21,13 @@ function MapView({ classes }: MapViewProps) {
   const layers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
+  const baselineLayers = layers.filter(layer => layer.type === 'json');
+  const serverLayers = layers.filter(layer => layer.type !== 'json');
+
+  // const [ baselineLayers, serverLayers ] = partition(layers, function(o) { return o ? o.type === 'json' : false; });
+
+  // console.log(baselineLayers)
+
   const selectedLayerDates = layers
     .map(({ serverLayer }) =>
       serverLayer ? serverAvailableDates.get(serverLayer) : undefined,
@@ -45,8 +52,8 @@ function MapView({ classes }: MapViewProps) {
           width: '100vw',
         }}
       >
-        <Boundaries />
-        <Layers layers={layers} selectedDate={startDate} />
+        <Boundaries layers={baselineLayers} />
+        <Layers layers={serverLayers} selectedDate={startDate} />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={layers} />

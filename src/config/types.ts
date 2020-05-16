@@ -3,7 +3,7 @@ import { Map, List } from 'immutable';
 export interface LayerType {
   id: string;
   title: string;
-  serverType: string;
+  type: string;
   serverLayer?: string;
   serverUri?: string;
   hasDate: boolean;

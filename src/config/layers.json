@@ -1,15 +1,22 @@
 {
   "population_below_poverty": {
     "title": "Population below national poverty line (%)",
-    "server_type": "wms",
-    "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=poverty_HC",
+    "type": "json",
+    "data": "nsoDisabled",
     "has_date": false,
     "opacity": 0.3,
-    "legend_text": "Source: Susenas"
+    "legend": [
+      { "value": "10000", "color": "#ff0000" },
+      { "value": "15000", "color": "#ff5900" },
+      { "value": "16000", "color": "#ff8400" },
+      { "value": "18000", "color": "#ffce63" },
+      { "value": "33000", "color": "#ffdd94" }
+    ],
+    "legend_text": "Source: NSO"
   },
   "population_total": {
     "title": "Population Total",
-    "server_type": "wms",
+    "type": "wms",
     "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=NSO-pop-2018",
     "has_date": false,
     "opacity": 0.3,
@@ -17,7 +24,7 @@
   },
   "pasture_anomaly": {
     "title": "Pasture anomaly",
-    "server_type": "wms",
+    "type": "wms",
     "server_layer": "ModisAnomaly",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisAnomaly",
     "has_date": true,
@@ -40,7 +47,7 @@
   },
   "ndvi": {
     "title": "NDVI",
-    "server_type": "wms",
+    "type": "wms",
     "server_layer": "ModisIndices",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?styles=ndvi&layers=ModisIndices",
     "has_date": true,
@@ -62,7 +69,7 @@
   },
   "ModisLST": {
     "title": "Surface temperature",
-    "server_type": "wms",
+    "type": "wms",
     "server_layer": "ModisLST",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisLST",
     "has_date": true,
@@ -84,7 +91,7 @@
   },
   "ModisVHI": {
     "title": "Vegetation Health Index",
-    "server_type": "wms",
+    "type": "wms",
     "server_layer": "ModisVHI",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisVHI",
     "has_date": true,
@@ -94,7 +101,7 @@
   },
   "ModisSnowPercentage": {
     "title": "Snow cover (%)",
-    "server_type": "wms",
+    "type": "wms",
     "server_layer": "ModisSnowPercentage",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisSnowPercentage",
     "has_date": true,
@@ -104,7 +111,7 @@
   },
   "DzudRiskMap": {
     "title": "Dzud risk map",
-    "server_type": "wms",
+    "type": "wms",
     "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=DZUDRM12311",
     "has_date": true,
     "date_interval": "month",
