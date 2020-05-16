@@ -24,10 +24,6 @@ function MapView({ classes }: MapViewProps) {
   const baselineLayers = layers.filter(layer => layer.type === 'json');
   const serverLayers = layers.filter(layer => layer.type !== 'json');
 
-  // const [ baselineLayers, serverLayers ] = partition(layers, function(o) { return o ? o.type === 'json' : false; });
-
-  // console.log(baselineLayers)
-
   const selectedLayerDates = layers
     .map(({ serverLayer }) =>
       serverLayer ? serverAvailableDates.get(serverLayer) : undefined,
