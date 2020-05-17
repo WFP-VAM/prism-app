@@ -65,17 +65,17 @@
     "opacity": 0.3,
     "legend_text": "Converts  NDVI to pasture (kg/ha) values and divides the current period by the long term average to calculate pasture anomaly.",
     "legend": [
-      { "value": "12000", "color": "#ff0000" },
-      { "value": "14000", "color": "#ff5900" },
-      { "value": "16000", "color": "#ff8400" },
-      { "value": "18000", "color": "#ffce63" },
-      { "value": "19000", "color": "#ffdd94" },
-      { "value": "20000", "color": "#ffffbf" },
-      { "value": "21000", "color": "#dee09f" },
-      { "value": "22000", "color": "#bbbf7c" },
-      { "value": "24000", "color": "#9da360" },
-      { "value": "26000", "color": "#7e8745" },
-      { "value": "28000", "color": "#5b6e00" }
+      { "value": "-80%", "color": "#ff0000" },
+      { "value": "-60%", "color": "#ff5900" },
+      { "value": "-40%", "color": "#ff8400" },
+      { "value": "-20%", "color": "#ffce63" },
+      { "value": "-10%", "color": "#ffdd94" },
+      { "value": "0", "color": "#ffffbf" },
+      { "value": "+10%", "color": "#dee09f" },
+      { "value": "+20%", "color": "#bbbf7c" },
+      { "value": "+40%", "color": "#9da360" },
+      { "value": "+60%", "color": "#7e8745" },
+      { "value": "+80%", "color": "#5b6e00" }
     ]
   },
   "ndvi": {
@@ -88,16 +88,16 @@
     "opacity": 0.3,
     "legend_text": "Median averaged NDVI image from composite Landsat & Sentinel imagery",
     "legend": [
-      { "value": "20000", "color": "#ece0d7" },
-      { "value": "21054", "color": "#d7c8b1" },
-      { "value": "22187", "color": "#bfb186" },
-      { "value": "23281", "color": "#a59e59" },
-      { "value": "24375", "color": "#878a31" },
-      { "value": "25507", "color": "#69761f" },
-      { "value": "26601", "color": "#4f6021" },
-      { "value": "27695", "color": "#374b1b" },
-      { "value": "28828", "color": "#1c3800" },
-      { "value": "29960", "color": "#000000" }
+      { "value": "0.00", "color": "#ece0d7" },
+      { "value": "0.11", "color": "#d7c8b1" },
+      { "value": "0.22", "color": "#bfb186" },
+      { "value": "0.33", "color": "#a59e59" },
+      { "value": "0.44", "color": "#878a31" },
+      { "value": "0.55", "color": "#69761f" },
+      { "value": "0.66", "color": "#4f6021" },
+      { "value": "0.77", "color": "#374b1b" },
+      { "value": "0.88", "color": "#1c3800" },
+      { "value": "1.00", "color": "#000000" }
     ]
   },
   "ModisLST": {
@@ -110,16 +110,16 @@
     "opacity": 0.3,
     "legend_text": "MODIS Median value of Land Surface Temperature in a 10-day period",
     "legend": [
-      { "value": "11000", "color": "#5c9fc8" },
-      { "value": "11568", "color": "#7ab1c0" },
-      { "value": "12136", "color": "#9fc3b3" },
-      { "value": "12704", "color": "#d9e79a" },
-      { "value": "13272", "color": "#f3f88e" },
-      { "value": "13840", "color": "#f0d779" },
-      { "value": "14408", "color": "#eeb563" },
-      { "value": "14976", "color": "#e98f51" },
-      { "value": "15544", "color": "#e2633e" },
-      { "value": "16115", "color": "#da402e" }
+      { "value": "-53", "color": "#5c9fc8" },
+      { "value": "-42", "color": "#7ab1c0" },
+      { "value": "-30", "color": "#9fc3b3" },
+      { "value": "-19", "color": "#d9e79a" },
+      { "value": "-8", "color": "#f3f88e" },
+      { "value": "4", "color": "#f0d779" },
+      { "value": "15", "color": "#eeb563" },
+      { "value": "26", "color": "#e98f51" },
+      { "value": "38", "color": "#e2633e" },
+      { "value": "49", "color": "#da402e" }
     ]
   },
   "ModisVHI": {
