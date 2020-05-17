@@ -5,6 +5,7 @@ import nsoChild from '../data/nso/NSO_Child_U5_Admin2.json';
 import nsoLivestock from '../data/nso/NSO_Livestock_Count_ths_Admin2.json';
 import nsoElderly from '../data/nso/NSO_Single_Elderly_Admin1_Total.json';
 import nsoPoverty from '../data/nso/NSO_Poverty_Headcount_Admin1.json';
+import nsoPop from '../data/nso/NSO_Population_Admin2_Total.json';
 
 export interface NsoData {
   TBL_ID: string;
@@ -33,6 +34,7 @@ const nsoDatasets = {
   nsoLivestock,
   nsoElderly,
   nsoPoverty,
+  nsoPop,
 };
 
 type DatasetKeys =
@@ -42,7 +44,8 @@ type DatasetKeys =
   | 'nsoHerdsize'
   | 'nsoLivestock'
   | 'nsoElderly'
-  | 'nsoPoverty';
+  | 'nsoPoverty'
+  | 'nsoPop';
 
 export function getNSOData(dataset: string | undefined) {
   if (dataset && dataset in nsoDatasets) {
