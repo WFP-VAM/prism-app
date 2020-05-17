@@ -1,51 +1,116 @@
 {
   "population_below_poverty": {
-    "title": "Population below national poverty line (%)",
+    "title": "Poverty headcount",
+    "type": "json",
+    "data": "nsoPoverty",
+    "admin_code": "CODE1",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "25", "color": "#fef0d9" },
+      { "value": "30", "color": "#fdcc8a" },
+      { "value": "35", "color": "#fc8d59" },
+      { "value": "40", "color": "#e34a33" },
+      { "value": "45", "color": "#b30000" }
+    ],
+    "legend_text": "The poverty headcount is the share of the population whose consumption / expenditure is below the poverty line. Source: National Statistics Office"
+  },
+  "disabled": {
+    "title": "Number of disabled people",
     "type": "json",
     "data": "nsoDisabled",
     "admin_code": "CODE",
     "has_date": false,
     "opacity": 0.3,
     "legend": [
-      { "value": "10000", "color": "#ff0000" },
-      { "value": "15000", "color": "#ff5900" },
-      { "value": "16000", "color": "#ff8400" },
-      { "value": "18000", "color": "#ffce63" },
-      { "value": "33000", "color": "#ffdd94" }
+      { "value": "2000", "color": "#fef0d9" },
+      { "value": "3000", "color": "#fdcc8a" },
+      { "value": "4000", "color": "#fc8d59" },
+      { "value": "5000", "color": "#e34a33" },
+      { "value": "6000", "color": "#b30000" }
     ],
-    "legend_text": "Source: NSO"
+    "legend_text": "Number of people whose ability was impaired for more than 12 months. Source: National Statistical Office"
+  },
+
+  "elderly": {
+    "title": "Number of single-headed elderly households",
+    "type": "json",
+    "data": "nsoElderly",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "1000", "color": "#fef0d9" },
+      { "value": "1500", "color": "#fdcc8a" },
+      { "value": "2000", "color": "#fc8d59" },
+      { "value": "2500", "color": "#e34a33" },
+      { "value": "3000", "color": "#b30000" }
+    ],
+    "legend_text": "Number of single-headed households with a female head over 55 years old or a male head over 60 years old. Source: National Statistics Office"
+  },
+  "herders": {
+    "title": "Number of herder households (in thousands)",
+    "type": "json",
+    "data": "nsoHerders",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "300", "color": "#fef0d9" },
+      { "value": "400", "color": "#fdcc8a" },
+      { "value": "500", "color": "#fc8d59" },
+      { "value": "600", "color": "#e34a33" },
+      { "value": "700", "color": "#b30000" }
+    ],
+    "legend_text": "Number of herder households, in thousands, per Soum defined as herding as the main source of income. Source: National Statistical Office"
+  },
+  "livestock": {
+    "title": "Number of livestock (in thousands)",
+    "type": "json",
+    "data": "nsoLivestock",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "100", "color": "#fef0d9" },
+      { "value": "150", "color": "#fdcc8a" },
+      { "value": "200", "color": "#fc8d59" },
+      { "value": "250", "color": "#e34a33" },
+      { "value": "300", "color": "#b30000" }
+    ],
+    "legend_text": "Number of livestock raised for agricultural purposes per Soum in thousands of heads. Source: National Statistical Office"
   },
   "child": {
-    "title": "Child",
+    "title": "Number of children under the age of 5",
     "type": "json",
     "data": "nsoChild",
     "admin_code": "CODE",
     "has_date": false,
     "opacity": 0.3,
     "legend": [
-      { "value": "10000", "color": "#ff0000" },
-      { "value": "15000", "color": "#ff5900" },
-      { "value": "16000", "color": "#ff8400" },
-      { "value": "18000", "color": "#ffce63" },
-      { "value": "33000", "color": "#ffdd94" }
+      { "value": "200", "color": "#fef0d9" },
+      { "value": "400", "color": "#fdcc8a" },
+      { "value": "600", "color": "#fc8d59" },
+      { "value": "800", "color": "#e34a33" },
+      { "value": "1000", "color": "#b30000" }
     ],
-    "legend_text": "Source: NSO"
+    "legend_text": "Number of children under five years of age by Soum. Source: National Statistics Office"
   },
   "herd_200": {
-    "title": "Herd data 200",
+    "title": "Households with less than 200 heads of livestock",
     "type": "json",
-    "data": "nsoHerd",
+    "data": "nsoHerdsize",
     "admin_code": "CODE1",
     "has_date": false,
     "opacity": 0.3,
     "legend": [
-      { "value": "10000", "color": "#ff0000" },
-      { "value": "15000", "color": "#ff5900" },
-      { "value": "16000", "color": "#ff8400" },
-      { "value": "18000", "color": "#ffce63" },
-      { "value": "33000", "color": "#ffdd94" }
+      { "value": "2000", "color": "#fef0d9" },
+      { "value": "4000", "color": "#fdcc8a" },
+      { "value": "6000", "color": "#fc8d59" },
+      { "value": "8000", "color": "#e34a33" },
+      { "value": "10000", "color": "#b30000" }
     ],
-    "legend_text": "Source: NSO"
+    "legend_text": "Number of households within an Aimag with less than 200 heads of livestock. Source: National Statistics Office"
   },
   "population_total": {
     "title": "Population Total",
@@ -108,7 +173,7 @@
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
-    "legend_text": "MODIS Median value of Land Surface Temperature in a 10-day period",
+    "legend_text": "Median value of Land Surface Temperature in degrees Celsius over a 10-day period (MODIS)",
     "legend": [
       { "value": "-53", "color": "#5c9fc8" },
       { "value": "-42", "color": "#7ab1c0" },
@@ -130,7 +195,14 @@
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
-    "legend_text": "Vegetation Health Index for a 10day period. The VHI is a combination of VCI and TCI, and it is mainly used for monitoring drought."
+    "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
+    "legend": [
+      { "value": "0.10", "color": "#ef1000" },
+      { "value": "0.17", "color": "#bf4000" },
+      { "value": "0.26", "color": "#ba7500" },
+      { "value": "0.34", "color": "#ead500" },
+      { "value": "1.00", "color": "#5ea100" }
+    ]
   },
   "ModisSnowPercentage": {
     "title": "Snow cover (%)",
