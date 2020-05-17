@@ -1,6 +1,6 @@
 {
   "population_below_poverty": {
-    "title": "Poverty headcount",
+    "title": "Poverty Headcount",
     "type": "json",
     "data": "nsoPoverty",
     "admin_code": "CODE1",
@@ -16,7 +16,7 @@
     "legend_text": "The poverty headcount is the share of the population whose consumption / expenditure is below the poverty line. Source: National Statistics Office"
   },
   "disabled": {
-    "title": "Number of disabled people",
+    "title": "Number of Disabled People",
     "type": "json",
     "data": "nsoDisabled",
     "admin_code": "CODE",
@@ -33,7 +33,7 @@
   },
 
   "elderly": {
-    "title": "Number of single-headed elderly households",
+    "title": "Number of Single-headed Elderly Households",
     "type": "json",
     "data": "nsoElderly",
     "admin_code": "CODE",
@@ -49,7 +49,7 @@
     "legend_text": "Number of single-headed households with a female head over 55 years old or a male head over 60 years old. Source: National Statistics Office"
   },
   "herders": {
-    "title": "Number of herder households (in thousands)",
+    "title": "Number of Herder Households (in thousands)",
     "type": "json",
     "data": "nsoHerders",
     "admin_code": "CODE",
@@ -65,7 +65,7 @@
     "legend_text": "Number of herder households, in thousands, per Soum defined as herding as the main source of income. Source: National Statistical Office"
   },
   "livestock": {
-    "title": "Number of livestock (in thousands)",
+    "title": "Number of Livestock (in thousands)",
     "type": "json",
     "data": "nsoLivestock",
     "admin_code": "CODE",
@@ -81,7 +81,7 @@
     "legend_text": "Number of livestock raised for agricultural purposes per Soum in thousands of heads. Source: National Statistical Office"
   },
   "child": {
-    "title": "Number of children under the age of 5",
+    "title": "Number of Children Under the Age of 5",
     "type": "json",
     "data": "nsoChild",
     "admin_code": "CODE",
@@ -97,7 +97,7 @@
     "legend_text": "Number of children under five years of age by Soum. Source: National Statistics Office"
   },
   "herd_200": {
-    "title": "Households with less than 200 heads of livestock",
+    "title": "Households with less than 200 Heads of Livestock",
     "type": "json",
     "data": "nsoHerdsize",
     "admin_code": "CODE1",
@@ -121,7 +121,7 @@
     "legend_text": "Population counts NSO 2018"
   },
   "pasture_anomaly": {
-    "title": "Pasture anomaly",
+    "title": "Pasture Anomaly",
     "type": "wms",
     "server_layer": "ModisAnomaly",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisAnomaly",
