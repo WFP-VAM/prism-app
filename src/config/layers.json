@@ -15,6 +15,22 @@
     ],
     "legend_text": "Source: NSO"
   },
+  "child": {
+    "title": "Child",
+    "type": "json",
+    "data": "nsoChild",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "10000", "color": "#ff0000" },
+      { "value": "15000", "color": "#ff5900" },
+      { "value": "16000", "color": "#ff8400" },
+      { "value": "18000", "color": "#ffce63" },
+      { "value": "33000", "color": "#ffdd94" }
+    ],
+    "legend_text": "Source: NSO"
+  },
   "herd_200": {
     "title": "Herd data 200",
     "type": "json",

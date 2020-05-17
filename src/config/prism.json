@@ -14,7 +14,7 @@
   },
   "categories": {
     "baseline": {
-      "baseline": ["population_below_poverty", "herd_200", "population_total"]
+      "baseline": ["population_below_poverty", "child", "herd_200", "population_total"]
     },
     "climate": {
       "drought_indicators": ["pasture_anomaly", "ndvi", "ModisLST", "ModisVHI"],
