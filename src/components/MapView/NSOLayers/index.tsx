@@ -21,28 +21,12 @@ function getAdminData(evt: any) {
   );
 }
 
-const linePaint: MapboxGL.LinePaint = {
-  'line-color': 'grey',
-  'line-width': 1,
-  'line-opacity': 0.3,
-};
-
 function matchingCode(boundaryCode: string, dataCode: string): boolean {
-  return RegExp(`^${dataCode}`).test(boundaryCode);
+  return boundaryCode.indexOf(dataCode) === 0;
 }
 
-function legendToStops(
-  legend:
-    | {
-        value: string;
-        color: string;
-      }[]
-    | undefined,
-) {
-  return (legend || []).map(({ value, color }: any) => [
-    parseFloat(value),
-    color,
-  ]);
+function legendToStops(legend: { value: string; color: string }[] = []) {
+  return legend.map(({ value, color }) => [parseFloat(value), color]);
 }
 
 function NSOLayers({ layers }: { layers: LayersMap }) {
@@ -72,13 +56,12 @@ function NSOLayers({ layers }: { layers: LayersMap }) {
 
   const mergedFeatures: Feature[] = features.map(boundary => {
     // Admin boundaries contain an nso_code
-    if (!boundary || !boundary.properties) {
+    if (!boundary.properties) {
       return boundary;
     }
     const nsoCode = get(boundary, 'properties.NSO_CODE', '');
 
-    const matchingKey =
-      layerConfig.adminCode !== null ? layerConfig.adminCode! : 'CODE';
+    const matchingKey = layerConfig.adminCode || 'CODE';
 
     const { DTVAL_CO } =
       DataList.find(data => matchingCode(nsoCode, data[matchingKey] || '')) ||
@@ -100,7 +83,6 @@ function NSOLayers({ layers }: { layers: LayersMap }) {
     <GeoJSONLayer
       data={mergedBaselineBoundaries}
       fillPaint={fillPaintData}
-      linePaint={linePaint}
       fillOnClick={(evt: any) => {
         getAdminData(evt);
       }}

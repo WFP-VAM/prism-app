@@ -37,6 +37,7 @@ const nsoDatasets = {
   nsoPop,
 };
 
+// TODO - Make this type definition dynamic based on nsoDatasets.keys()
 type DatasetKeys =
   | 'nsoDisabled'
   | 'nsoChild'
@@ -47,7 +48,7 @@ type DatasetKeys =
   | 'nsoPoverty'
   | 'nsoPop';
 
-export function getNSOData(dataset: string | undefined) {
+export function getNSOData(dataset?: string) {
   if (dataset && dataset in nsoDatasets) {
     return nsoDatasets[dataset as DatasetKeys] as NsoDataset;
   }
