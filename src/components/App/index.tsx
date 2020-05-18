@@ -9,10 +9,13 @@ import NotFound from '../404Page';
 import muiTheme from '../../muiTheme';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
-  Sentry.init({
-    dsn:
-      'https://a3cc5f470dac4b50b288851a0390f686@o213971.ingest.sentry.io/5242966',
-  });
+  if (process.env.REACT_SENTRY_URL) {
+    Sentry.init({ dsn: process.env.REACT_SENTRY_URL });
+  } else {
+    console.warn(
+      'Sentry could not start. Make sure the REACT_SENTRY_URL environment variable is set.',
+    );
+  }
 }
 
 function App() {
