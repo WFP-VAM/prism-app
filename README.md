@@ -85,6 +85,21 @@ The `data` field should point to a dataset defined in `baseline.ts`
 
 #### impact
 
+```
+"herd_pasture_impact": {
+    "title": "Number of herder households exposed to severe pasture anomaly",
+    "hazard_layer": "pasture_anomaly",
+    "baseline_layer": "nsoHerders",
+    "threshold": " <= 25000",
+    "opacity": 0.3,
+    "legend_text": "Number of herder households within ADMIN2 in an area where the median pasture anomaly is <= -50%",
+    "legend": [
+      { "value": "25", "color": "#ffeda0”" },
+      { "value": "30", "color": "#feb24c”" },
+      { "value": "35", "color": "#f03b20”" }
+    ]
+}
+```
 
 ### baseline.ts
 This file is used to pre-load datasets and make sure that they are formatted properly. Thanks to TypeScript, this is limitting the potential for mismatch and failed loads.
