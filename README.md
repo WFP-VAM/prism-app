@@ -14,7 +14,7 @@ The new PRISM frontend is built as a static website to minimize cross dependenci
 
 ## Configuration
 
-The configuration is split in four files that you can find in `src/config`:
+The configuration is split into four files that you can find in `src/config`:
 - 1. `prism.json`
 - 2. `layers.json`
 - 3. `tables.json`
