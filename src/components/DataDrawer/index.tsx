@@ -14,7 +14,7 @@ function DataDrawer({ classes }: DataDrawerProps) {
   const tableIsShowing = useSelector(getIsShowing);
 
   return (
-    <Drawer anchor="left" open={tableIsShowing}>
+    <Drawer anchor="left" open={tableIsShowing} className={classes.drawer}>
       <div className={classes.drawerContent}>
         <DataTable maxResults={1000} />
       </div>
@@ -24,6 +24,9 @@ function DataDrawer({ classes }: DataDrawerProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
+    drawer: {
+      zIndex: 1,
+    },
     drawerContent: {
       backgroundColor: theme.palette.primary.main,
       padding: 16,

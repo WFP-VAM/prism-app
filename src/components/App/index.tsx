@@ -16,9 +16,9 @@ function App() {
           <Route exact path="/">
             <NavBar />
             <div className="App">
-              <DataDrawer />
               <MapView />
             </div>
+            <DataDrawer />
           </Route>
 
           <Route default component={NotFound} />
