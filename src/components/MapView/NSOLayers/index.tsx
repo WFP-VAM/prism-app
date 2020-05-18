@@ -48,6 +48,7 @@ function NSOLayers({ layers }: { layers: LayersMap }) {
     'fill-opacity': layerConfig.opacity || 0.3,
     'fill-color': {
       property: 'data',
+      type: 'interval',
       stops: legendToStops(layerConfig.legend),
     },
   };
