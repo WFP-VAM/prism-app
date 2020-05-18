@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Theme,
   withStyles,
@@ -12,13 +12,13 @@ import { getIsShowing, hideTable } from '../../context/tableStateSlice';
 
 function DataDrawer({ classes }: DataDrawerProps) {
   const tableIsShowing = useSelector(getIsShowing);
+  const dispatch = useDispatch();
+  const handleClose = () => {
+    dispatch(hideTable());
+  };
 
   return (
-    <Drawer
-      anchor="left"
-      open={tableIsShowing}
-      ModalProps={{ onBackdropClick: hideTable }}
-    >
+    <Drawer anchor="left" open={tableIsShowing} onClose={handleClose}>
       <div className={classes.drawerContent}>
         <DataTable maxResults={1000} />
       </div>
