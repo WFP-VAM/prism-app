@@ -111,6 +111,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - **Styling & UI Library** Use [Material UI](https://material-ui.com/). Note that to use the [styles API](https://material-ui.com/styles/basics/) you can `import @material-ui/core/styles`.
 - **Routing** Uses [React Router](https://reacttraining.com/react-router/web/guides/quick-start).
 - **Mapping** Uses [MapBox](https://docs.mapbox.com/mapbox.js/api/v3.2.1/). To use the app, you will need to create a token and add it as `REACT_APP_MAPBOX_TOKEN` in a `.env` file at the root folder.
+- **Monitoring** Uses [Sentry.io](https://sentry.io). To send monitoring info to Sentry, simply set the `Sentry` url  by adding it as `REACT_SENTRY_URL` in a `.env` file at the root folder.
 - **State Management** Uses [Redux](https://redux.js.org/introduction/getting-started)
 - **Testing** Uses [Jest](https://jestjs.io/) with [Enzyme](https://enzymejs.github.io/enzyme/)
 
