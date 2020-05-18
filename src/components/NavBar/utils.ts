@@ -8,13 +8,13 @@ import { LayersCategoryType, MenuItemType } from '../../config/types';
 import baseline from '../images/icon_basemap.png';
 import climate from '../images/icon_climate.png';
 import impact from '../images/icon_impact.png';
+import table from '../images/icon_table.png';
 
 const icons: { [key: string]: string } = {
   baseline,
   climate,
   impact,
-  // TODO - Update table icon
-  tables: impact,
+  table,
 };
 
 type LayersCategoriesType = LayersCategoryType[];
