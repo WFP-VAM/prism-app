@@ -64,7 +64,27 @@ These layers are simply processed as raster images from a server.
 The layers are obtained by matching data from the `data` field with the administrative boundaries.
 The `data` field should point to a dataset defined in `baseline.ts`
 
+```
+"population_below_poverty": {
+    "title": "Population below national poverty line (%)",	    "title": "Poverty Headcount",
+    "server_type": "wms",	    "type": "json",
+    "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=poverty_HC",	    "data": "nsoPoverty",
+    "admin_code": "CODE1",
+    "has_date": false,	    "has_date": false,
+    "opacity": 0.3,	    "opacity": 0.3,
+    "legend_text": "Source: Susenas"	    "legend": [
+      { "value": "25", "color": "#fef0d9" },
+      { "value": "30", "color": "#fdcc8a" },
+      { "value": "35", "color": "#fc8d59" },
+      { "value": "40", "color": "#e34a33" },
+      { "value": "45", "color": "#b30000" }
+    ],
+    "legend_text": "The poverty headcount is the share of the population whose consumption / expenditure is below the poverty line by Aimag. Year: 2018. Source: National Statistics Office"
+}
+```
+
 #### impact
+
 
 ### baseline.ts
 This file is used to pre-load datasets and make sure that they are formatted properly. Thanks to TypeScript, this is limitting the potential for mismatch and failed loads.
