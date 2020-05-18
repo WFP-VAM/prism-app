@@ -3,7 +3,7 @@ import ReactMapboxGl from 'react-mapbox-gl';
 import { Map } from 'immutable';
 import { render } from '@testing-library/react';
 
-import Boundaries from '.';
+import NSOLayers from '.';
 
 const ReactMap = ReactMapboxGl({
   accessToken: 'TOKEN',
@@ -21,7 +21,7 @@ test('renders as expected', () => {
         width: '100vw',
       }}
     >
-      <Boundaries layers={Map()} />
+      <NSOLayers layers={Map()} />
     </ReactMap>,
   );
   expect(container).toMatchSnapshot();
