@@ -15,10 +15,11 @@ import DataTableRow from './DataTableRow';
 const useStyles = makeStyles({
   root: {
     width: '100%',
+    height: '70vh',
     color: 'black',
   },
   container: {
-    maxHeight: '60%',
+    maxHeight: '100%',
   },
   headCells: {
     color: 'black',
