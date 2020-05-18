@@ -19,7 +19,7 @@ const commonQueryParam = {
   bbox: '{bbox-epsg-3857}',
 };
 
-function Layers({ layers, selectedDate }: LayersProps) {
+function WMSLayers({ layers, selectedDate }: LayersProps) {
   if (!layers) {
     return null;
   }
@@ -64,4 +64,4 @@ export interface LayersProps {
   selectedDate?: number;
 }
 
-export default Layers;
+export default WMSLayers;
