@@ -77,7 +77,7 @@ const DataTable = ({ maxResults }: DataTableConfig) => {
               <TableBody>
                 {tableJson.slice(1, maxResults).map((rowJson, index) => (
                   <DataTableRow
-                    key={String(index)}
+                    key={`row_${String(index)}`}
                     className={classes.tableCells}
                     rowData={rowJson}
                   />
