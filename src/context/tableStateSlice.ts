@@ -32,6 +32,6 @@ export const getIsShowing = (state: RootState): boolean => {
 };
 
 // export actions
-export const { setTable } = tableStateSlice.actions;
+export const { hideTable, setTable } = tableStateSlice.actions;
 
 export default tableStateSlice.reducer;

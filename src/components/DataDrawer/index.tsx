@@ -8,13 +8,17 @@ import {
   Drawer,
 } from '@material-ui/core';
 import DataTable from './DataTable';
-import { getIsShowing } from '../../context/tableStateSlice';
+import { getIsShowing, hideTable } from '../../context/tableStateSlice';
 
 function DataDrawer({ classes }: DataDrawerProps) {
   const tableIsShowing = useSelector(getIsShowing);
 
   return (
-    <Drawer anchor="left" open={tableIsShowing}>
+    <Drawer
+      anchor="left"
+      open={tableIsShowing}
+      ModalProps={{ onBackdropClick: hideTable }}
+    >
       <div className={classes.drawerContent}>
         <DataTable maxResults={1000} />
       </div>
