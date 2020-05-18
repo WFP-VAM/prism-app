@@ -14,11 +14,11 @@ export interface NsoData {
   SCR_MN: string;
   SCR_ENG: string;
   CODE1?: string;
-  CODE2?: null;
+  CODE2?: string | null;
   SCR_MN1: string;
   SCR_ENG1: string;
-  SCR_MN2?: null;
-  SCR_ENG2?: null;
+  SCR_MN2?: string | null;
+  SCR_ENG2?: string | null;
   DTVAL_CO: string;
 }
 
@@ -37,16 +37,7 @@ const nsoDatasets = {
   nsoPop,
 };
 
-// TODO - Make this type definition dynamic based on nsoDatasets.keys()
-type DatasetKeys =
-  | 'nsoDisabled'
-  | 'nsoChild'
-  | 'nsoHerders'
-  | 'nsoHerdsize'
-  | 'nsoLivestock'
-  | 'nsoElderly'
-  | 'nsoPoverty'
-  | 'nsoPop';
+type DatasetKeys = keyof typeof nsoDatasets;
 
 export function getNSOData(dataset?: string) {
   if (dataset && dataset in nsoDatasets) {
