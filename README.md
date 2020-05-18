@@ -147,9 +147,3 @@ Runs `eslint` for all the source files. We use a custom Eslint configuration in 
 ### Committing Code
 
 By default, a pre-commit hook is defined to run linting tasks on all _staged_ code before allowing a commit. This occurs using the [lint-staged](https://github.com/okonet/lint-staged) package, and can be configured in `./package.json#lint-staged`. The precommit task can be run manually using `yarn precommit`.
-
-### Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
