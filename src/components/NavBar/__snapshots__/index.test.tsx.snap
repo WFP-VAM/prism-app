@@ -32,7 +32,7 @@ exports[`renders as expected 1`] = `
           >
             <mock-menuitem
               icon="icon_basemap.png"
-              layerscategories="[object Object]"
+              layerscategories="[object Object],[object Object]"
               title="Baseline"
             />
             <mock-menuitem
@@ -208,7 +208,7 @@ exports[`renders as expected 1`] = `
                   >
                     <mock-menuitem
                       icon="icon_basemap.png"
-                      layerscategories="[object Object]"
+                      layerscategories="[object Object],[object Object]"
                       title="Baseline"
                     />
                     <mock-menuitem
