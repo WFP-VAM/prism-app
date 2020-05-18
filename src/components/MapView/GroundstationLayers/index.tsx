@@ -4,6 +4,7 @@ import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { LayersMap } from '../../../config/types';
+import { legendToStops } from '../../../utils/layer-utils';
 
 import groundstationDataJson from '../../../data/groundstations/longterm_data.json';
 
@@ -12,13 +13,13 @@ declare module 'geojson' {
   export const defaults: Object;
   export function parse(
     data: Object,
-    propreties: Object,
+    properties: Object,
     callback?: Function,
   ): Object;
 }
 
 type GroundstationData = {
-  id: string;
+  id: number;
   index: number;
   lat: number;
   lon: number;
@@ -35,25 +36,11 @@ function onClickCircle(evt: any) {
 }
 
 const groundstationDataGeoJSON = GeoJSON.parse(
-  (groundstationDataJson as unknown) as GroundstationData,
+  groundstationDataJson as GroundstationData,
   {
     Point: ['lat', 'lon'],
   },
 );
-
-function legendToStops(
-  legend:
-    | {
-        value: string;
-        color: string;
-      }[]
-    | undefined,
-) {
-  return (legend || []).map(({ value, color }: any) => [
-    parseFloat(value),
-    color,
-  ]);
-}
 
 function GroundstationLayers({ layers }: { layers: LayersMap }) {
   const layerConfig = layers.first(null);
