@@ -69,16 +69,15 @@ const DataTable = ({ maxResults }: DataTableConfig) => {
             <Table stickyHeader aria-label={`table showing ${title}`}>
               <TableHead>
                 <DataTableRow
+                  key="head"
                   className={classes.headCells}
                   rowData={tableJson[0]}
                 />
               </TableHead>
               <TableBody>
-                {tableJson.slice(1, maxResults).map(rowJson => (
+                {tableJson.slice(1, maxResults).map((rowJson, index) => (
                   <DataTableRow
-                    // key={`${Object.values(rowJson)[0]} ${
-                    //   Object.values(rowJson)[1]
-                    // }`}
+                    key={String(index)}
                     className={classes.tableCells}
                     rowData={rowJson}
                   />
