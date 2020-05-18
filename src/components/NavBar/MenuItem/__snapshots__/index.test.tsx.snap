@@ -3,11 +3,11 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-button
-    classname="MenuItem-title-1"
+    classname="MenuItem-title-2"
   >
     <img
       alt="title"
-      class="MenuItem-icon-2"
+      class="MenuItem-icon-3"
       src="icon.png"
     />
     <mock-typography
@@ -18,23 +18,23 @@ exports[`renders as expected 1`] = `
   </mock-button>
   <mock-popover
     anchororigin="[object Object]"
-    classname="MenuItem-popover-3"
+    classname="MenuItem-popover-4"
     open="false"
     paperprops="[object Object]"
     transformorigin="[object Object]"
   >
     <div
-      class="MenuItem-categoryContainer-5"
+      class="MenuItem-categoryContainer-6"
     >
       <mock-typography
-        classname="MenuItem-categoryTitle-6"
+        classname="MenuItem-categoryTitle-7"
         variant="body2"
       >
         Category 1
       </mock-typography>
       <hr />
       <div
-        class="MenuItem-layersContainer-7"
+        class="MenuItem-layersContainer-8"
       >
         <mock-switch
           checked="false"

@@ -40,9 +40,9 @@ function formatLayersCategories(layersList: {
           .value(),
         tables: chain(tablesJSON)
           .pick(layersKey as any)
-          .map((value, layerKey) => {
+          .map((value, tableKey) => {
             return {
-              id: layerKey,
+              id: tableKey,
               ...mapKeys(value, (_value: string, key) => camelCase(key)),
             };
           })

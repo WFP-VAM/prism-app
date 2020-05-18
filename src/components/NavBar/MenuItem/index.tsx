@@ -103,11 +103,12 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
 
             {tables.map(table => (
               <Button
+                className={classes.button}
                 id={table.title}
                 key={table.title}
                 onClick={() => showTableClicked(table)}
               >
-                {table.title}
+                <Typography variant="body1">{table.title}</Typography>
               </Button>
             ))}
           </div>
@@ -119,6 +120,10 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
+    button: {
+      textTransform: 'none',
+    },
+
     title: {
       margin: '0px 14px',
       textTransform: 'uppercase',
