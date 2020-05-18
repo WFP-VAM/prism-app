@@ -4,11 +4,10 @@ exports[`renders as expected 1`] = `
 <div>
   <mock-drawer
     anchor="left"
-    classname="DataDrawer-drawer-1"
     open="false"
   >
     <div
-      class="DataDrawer-drawerContent-2"
+      class="DataDrawer-drawerContent-1"
     >
       <div>
         <h2 />
