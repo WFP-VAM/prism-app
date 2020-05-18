@@ -1,12 +1,10 @@
-import { Feature, FeatureCollection } from 'geojson';
+import { FeatureCollection } from 'geojson';
 import React from 'react';
-import { get, merge } from 'lodash';
+import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { LayersMap } from '../../../config/types';
 
 import adminBoundariesJson from '../../../config/admin_boundaries.json';
-import { getNSOData } from '../../../config/baselines';
 
 const baselineBoundaries = adminBoundariesJson as FeatureCollection;
 
@@ -25,7 +23,6 @@ function getAdminData(evt: any) {
     get(evt.features[0], 'properties.ADM1_EN'),
     get(evt.features[0], 'properties.ADM2_EN'),
     get(evt.features[0], 'properties.ADM2_PCODE'),
-    get(evt.features[0], 'properties.data'),
   );
 }
 
@@ -35,82 +32,11 @@ const linePaint: MapboxGL.LinePaint = {
   'line-opacity': 0.3,
 };
 
-function matchingCode(boundaryCode: string, dataCode: string): boolean {
-  return RegExp(`^${dataCode}`).test(boundaryCode);
-}
-
-function legendToStops(
-  legend:
-    | {
-        value: string;
-        color: string;
-      }[]
-    | undefined,
-) {
-  return (legend || []).map(({ value, color }: any) => [
-    parseFloat(value),
-    color,
-  ]);
-}
-
-function Boundaries({ layers }: { layers: LayersMap }) {
-  // If a baselineLayer is selected, extract the data for each admin boundary.
-  /**
-   * TODO, make it possible to configure:
-   * NSO_CODE and CODE, the property used to match admin boundaries from both files.
-   * DTVAL_CO, the column of data to extract
-   */
-  const { features } = baselineBoundaries;
-  const layerConfig = layers.first(null);
-
-  // We use the legend values from the config to define "intervals".
-  const fillPaintData = layerConfig
-    ? {
-        'fill-opacity': layerConfig.opacity || 0.3,
-        'fill-color': {
-          property: 'data',
-          stops: legendToStops(layerConfig.legend),
-        },
-      }
-    : fillPaint;
-
-  const { DataList } = getNSOData(layerConfig ? layerConfig.data : undefined);
-
-  const mergedFeatures: Feature[] = layerConfig
-    ? features.map(boundary => {
-        // Admin boundaries contain an nso_code
-        if (!boundary || !boundary.properties) {
-          return boundary;
-        }
-        const nsoCode = get(boundary, 'properties.NSO_CODE', '');
-
-        const matchingKey =
-          layerConfig.adminCode !== null ? layerConfig.adminCode! : 'CODE';
-
-        const { DTVAL_CO } =
-          DataList.find(data =>
-            matchingCode(nsoCode, data[matchingKey] || ''),
-          ) || {};
-
-        const boundaryData: number | null = DTVAL_CO
-          ? parseFloat(DTVAL_CO)
-          : null;
-
-        return merge({}, boundary, {
-          properties: { data: boundaryData },
-        });
-      })
-    : features;
-
-  const mergedBaselineBoundaries = {
-    ...baselineBoundaries,
-    features: mergedFeatures,
-  };
-
+function Boundaries() {
   return (
     <GeoJSONLayer
-      data={mergedBaselineBoundaries}
-      fillPaint={fillPaintData}
+      data={baselineBoundaries}
+      fillPaint={fillPaint}
       linePaint={linePaint}
       fillOnClick={(evt: any) => {
         getAdminData(evt);

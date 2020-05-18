@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
 import Boundaries from './Boundaries';
+import NSOLayers from './NSOLayers';
 import Layers from './Layers';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
@@ -21,8 +22,8 @@ function MapView({ classes }: MapViewProps) {
   const layers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
-  const baselineLayers = layers.filter(layer => layer.type === 'json');
-  const serverLayers = layers.filter(layer => layer.type !== 'json');
+  const baselineLayers = layers.filter(layer => layer.type === 'nso');
+  const serverLayers = layers.filter(layer => layer.type in ['wms']);
 
   const selectedLayerDates = layers
     .map(({ serverLayer }) =>
@@ -48,7 +49,8 @@ function MapView({ classes }: MapViewProps) {
           width: '100vw',
         }}
       >
-        <Boundaries layers={baselineLayers} />
+        <Boundaries />
+        <NSOLayers layers={baselineLayers} />
         <Layers layers={serverLayers} selectedDate={startDate} />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />

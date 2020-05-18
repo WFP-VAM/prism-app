@@ -1,7 +1,7 @@
 {
   "population_below_poverty": {
     "title": "Poverty Headcount",
-    "type": "json",
+    "type": "nso",
     "data": "nsoPoverty",
     "admin_code": "CODE1",
     "has_date": false,
@@ -17,7 +17,7 @@
   },
   "disabled": {
     "title": "Number of Disabled People",
-    "type": "json",
+    "type": "nso",
     "data": "nsoDisabled",
     "admin_code": "CODE",
     "has_date": false,
@@ -34,7 +34,7 @@
 
   "elderly": {
     "title": "Number of Single-headed Elderly Households",
-    "type": "json",
+    "type": "nso",
     "data": "nsoElderly",
     "admin_code": "CODE",
     "has_date": false,
@@ -50,7 +50,7 @@
   },
   "herders": {
     "title": "Number of herder households",
-    "type": "json",
+    "type": "nso",
     "data": "nsoHerders",
     "admin_code": "CODE",
     "has_date": false,
@@ -66,7 +66,7 @@
   },
   "livestock": {
     "title": "Number of Livestock (in thousands)",
-    "type": "json",
+    "type": "nso",
     "data": "nsoLivestock",
     "admin_code": "CODE",
     "has_date": false,
@@ -82,7 +82,7 @@
   },
   "child": {
     "title": "Number of Children Under the Age of 5",
-    "type": "json",
+    "type": "nso",
     "data": "nsoChild",
     "admin_code": "CODE",
     "has_date": false,
@@ -98,7 +98,7 @@
   },
   "herd_200": {
     "title": "Households with less than 200 Heads of Livestock",
-    "type": "json",
+    "type": "nso",
     "data": "nsoHerdsize",
     "admin_code": "CODE1",
     "has_date": false,
@@ -114,7 +114,7 @@
   },
   "population_total": {
     "title": "Total population",
-    "type": "json",
+    "type": "nso",
     "data": "nsoPop",
     "admin_code": "CODE",
     "has_date": false,
