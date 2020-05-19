@@ -24,7 +24,9 @@
     "impact": {
     },
     "tables": {
-      "food_security": ["food_prices"]
+      "poverty": ["poverty"],
+      "livestock": ["animal_deaths"],
+      "prices": ["food_prices", "hay_prices"]
     }
   }
 }

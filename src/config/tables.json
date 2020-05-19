@@ -3,5 +3,22 @@
     "title": "World Food Programme Food Prices",
     "table": "./data/tables/wfp_food_prices_mongolia.csv",
     "legend_text": "Source: WFP. Covers foods such as maize, rice, beans, fish, and sugar."
+  },
+  "animal_deaths": {
+    "title": "Animal deaths due to disease or natural hazards",
+    "table": "./data/tables/NSO_Animal_Deaths_Annual_Admin1.csv",
+    "legend_text": "Annual deaths of animals due to disease or natural hazards (including dzud). Source: National Statistics Office"
+  },
+  "hay_prices": {
+    "title": "Hay prices",
+    "table": "./data/tables/NSO_Bale_Hay_Price_Monthly_Admin1.csv",
+    "legend_text": "Price of a bail of hay by month. Source: National Statistics Office"
+  },
+  "poverty": {
+    "title": "Poverty headcount over time",
+    "table": "./data/tables/NSO_Poverty_Headcount_Admin1.csv",
+    "legend_text": "Poverty headcount over two periods. Source: National Statistics Office"
   }
 }
+
+
