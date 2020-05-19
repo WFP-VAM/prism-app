@@ -2,7 +2,6 @@ import React from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { useSelector } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
-
 import Boundaries from './Boundaries';
 import NSOLayers from './Layers/NSOLayers';
 import WMSLayers from './Layers/WMSLayers';
@@ -10,9 +9,13 @@ import Legends from './Legends';
 import DateSelector from './DateSelector';
 import { dateRangeSelector, layersSelector } from '../../context/mapStateSlice';
 import { availableDatesSelector } from '../../context/serverStateSlice';
-
 import appConfig from '../../config/prism.json';
-import { AvailableDates } from '../../config/types';
+import {
+  AvailableDates,
+  WMSLayerProps,
+  NSOLayerProps,
+  TypedStringMap,
+} from '../../config/types';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -22,13 +25,15 @@ function MapView({ classes }: MapViewProps) {
   const layers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
-  const baselineLayers = layers.filter(layer => layer.type === 'nso');
-  const serverLayers = layers.filter(layer => layer.type === 'wms');
+  const baselineLayers = layers.filter(
+    layer => layer.type === 'nso',
+  ) as TypedStringMap<NSOLayerProps>;
+  const serverLayers = layers.filter(
+    layer => layer.type === 'wms',
+  ) as TypedStringMap<WMSLayerProps>;
 
-  const selectedLayerDates = layers
-    .map(({ serverLayer }) =>
-      serverLayer ? serverAvailableDates.get(serverLayer) : undefined,
-    )
+  const selectedLayerDates = serverLayers
+    .map(({ serverLayerName }) => serverAvailableDates.get(serverLayerName))
     .filter(value => value) as AvailableDates;
 
   const { startDate } = useSelector(dateRangeSelector);

@@ -57,7 +57,9 @@
       }
     ],
     "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^props$" }]
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^props$" }],
+    "lines-between-class-members": "off",
+    "max-classes-per-file": "off"
   },
   "settings": {
     "import/resolver": {

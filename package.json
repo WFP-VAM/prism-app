@@ -88,6 +88,7 @@
     "react-scripts": "3.4.0",
     "redux": "^4.0.5",
     "redux-async-initial-state": "^0.3.0",
+    "reflect-metadata": "^0.1.13",
     "typescript": "~3.8.2",
     "url": "^0.11.0",
     "xml-js": "^1.6.11"

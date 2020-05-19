@@ -131,7 +131,7 @@
   "pasture_anomaly": {
     "title": "Pasture Anomaly",
     "type": "wms",
-    "server_layer": "ModisAnomaly",
+    "server_layer_name": "ModisAnomaly",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisAnomaly",
     "has_date": true,
     "date_interval": "days",
@@ -154,7 +154,7 @@
   "ndvi": {
     "title": "NDVI",
     "type": "wms",
-    "server_layer": "ModisIndices",
+    "server_layer_name": "ModisIndices",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?styles=ndvi&layers=ModisIndices",
     "has_date": true,
     "date_interval": "days",
@@ -176,7 +176,7 @@
   "ModisLST": {
     "title": "Surface temperature",
     "type": "wms",
-    "server_layer": "ModisLST",
+    "server_layer_name": "ModisLST",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisLST",
     "has_date": true,
     "date_interval": "day",
@@ -198,7 +198,7 @@
   "ModisVHI": {
     "title": "Vegetation Health Index",
     "type": "wms",
-    "server_layer": "ModisVHI",
+    "server_layer_name": "ModisVHI",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisVHI",
     "has_date": true,
     "date_interval": "day",
@@ -215,7 +215,7 @@
   "ModisSnowPercentage": {
     "title": "Snow cover (%)",
     "type": "wms",
-    "server_layer": "ModisSnowPercentage",
+    "server_layer_name": "ModisSnowPercentage",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisSnowPercentage",
     "has_date": true,
     "date_interval": "day",
@@ -226,6 +226,7 @@
     "title": "Dzud risk map",
     "type": "wms",
     "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=DZUDRM12311",
+    "server_layer_name": "DZUDRM12311",
     "has_date": true,
     "date_interval": "month",
     "opacity": 0.3,

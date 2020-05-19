@@ -8,6 +8,7 @@ import { store } from '../../../context/store';
 test('renders as expected', () => {
   const realDateNow = Date.now.bind(global.Date);
   const dateNowStub = jest.fn(() => 1530518207007);
+  // eslint-disable-next-line fp/no-mutation
   global.Date.now = dateNowStub;
 
   const { container } = render(
@@ -17,5 +18,6 @@ test('renders as expected', () => {
   );
   expect(container).toMatchSnapshot();
 
+  // eslint-disable-next-line fp/no-mutation
   global.Date.now = realDateNow;
 });

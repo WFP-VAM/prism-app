@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Source, Layer } from 'react-mapbox-gl';
 
 import { formatServerUri } from '../../../../utils/server-utils';
-import { LayersMap } from '../../../../config/types';
+import { TypedStringMap, WMSLayerProps } from '../../../../config/types';
 
 const commonQueryParam = {
   version: '1.1.1',
@@ -60,7 +60,7 @@ function WMSLayers({ layers, selectedDate }: LayersProps) {
 }
 
 export interface LayersProps {
-  layers: LayersMap;
+  layers: TypedStringMap<WMSLayerProps>;
   selectedDate?: number;
 }
 
