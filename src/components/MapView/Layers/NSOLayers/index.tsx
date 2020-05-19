@@ -7,6 +7,7 @@ import { NSOLayerProps, TypedStringMap } from '../../../../config/types';
 
 import adminBoundariesJson from '../../../../config/admin_boundaries.json';
 import { getNSOData } from '../../../../config/baselines';
+import { legendToStops } from '../layer-utils';
 
 const baselineBoundaries = adminBoundariesJson as FeatureCollection;
 
@@ -23,10 +24,6 @@ function getAdminData(evt: any) {
 
 function matchingCode(boundaryCode: string, dataCode: string): boolean {
   return boundaryCode.indexOf(dataCode) === 0;
-}
-
-function legendToStops(legend: { value: string; color: string }[] = []) {
-  return legend.map(({ value, color }) => [parseFloat(value), color]);
 }
 
 function NSOLayers({ layers }: { layers: TypedStringMap<NSOLayerProps> }) {

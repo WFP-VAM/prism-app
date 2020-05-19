@@ -6,6 +6,7 @@ import {
   checkRequiredKeys,
   NSOLayerProps,
   LayersMap,
+  AdminAggregateLayerProps,
 } from './types';
 
 export const LayerDefinitions: LayersMap = Map(rawLayers)
@@ -31,6 +32,11 @@ export const LayerDefinitions: LayersMap = Map(rawLayers)
         return throwInvalidLayer();
       case 'nso':
         if (checkRequiredKeys(NSOLayerProps, definition, true)) {
+          return definition;
+        }
+        return throwInvalidLayer();
+      case 'admin_district_aggregate':
+        if (checkRequiredKeys(AdminAggregateLayerProps, definition, true)) {
           return definition;
         }
         return throwInvalidLayer();

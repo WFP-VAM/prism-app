@@ -23,6 +23,16 @@ export function optional(target: any, propertyKey: string) {
   );
 }
 
+export function makeRequired(target: any, propertyKey: string) {
+  const existingKeys: string[] =
+    Reflect.getMetadata(optionalMetadataKey, target) || [];
+  return Reflect.defineMetadata(
+    optionalMetadataKey,
+    existingKeys.filter(v => v !== propertyKey),
+    target,
+  );
+}
+
 // Generic that verifies that type `T` is a class (basically that it has a constructor)
 export type ClassType<T> = { new (...args: any): T };
 
@@ -66,6 +76,11 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
+export type LegendDefinition = {
+  value: string | number;
+  color: string;
+}[];
+
 class CommonLayerProps {
   id: string;
   title: string;
@@ -77,10 +92,7 @@ class CommonLayerProps {
   dateInterval?: string;
 
   @optional
-  legend?: {
-    value: string;
-    color: string;
-  }[];
+  legend?: LegendDefinition;
 }
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -95,11 +107,27 @@ export class NSOLayerProps extends CommonLayerProps {
   adminCode: BoundaryKey;
 }
 
+export type AggregationOperations = 'mean' | 'median';
+export class AdminAggregateLayerProps extends CommonLayerProps {
+  type: 'admin_district_aggregate';
+  operation: AggregationOperations;
+  @optional
+  scale?: number;
+  @optional
+  offset?: number;
+
+  @makeRequired
+  legend: LegendDefinition;
+}
+
 export type RequiredKeys<T> = {
   [k in keyof T]: undefined extends T[k] ? never : k;
 }[keyof T];
 
-export type LayerType = WMSLayerProps | NSOLayerProps;
+export type LayerType =
+  | WMSLayerProps
+  | NSOLayerProps
+  | AdminAggregateLayerProps;
 
 export type TypedStringMap<T> = Map<string, T>;
 

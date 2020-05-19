@@ -236,5 +236,29 @@
       { "value": "20001", "color": "#B0E2FF" },
       { "value": "30000", "color": "#FFFFFF" }
     ]
+  },
+  "ModisLSTDistrictAvg": {
+    "title": "Median Surface Temperature by District",
+    "type": "admin_district_aggregate",
+    "server_layer_name": "ModisLST",
+    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisLST",
+    "date_interval": "day",
+    "opacity": 0.3,
+    "legend_text": "Median value of Land Surface Temperature in degrees Celsius over a 10-day period (MODIS)",
+    "operation": "median",
+    "scale": 0.02,
+    "offset": -273,
+    "legend": [
+      { "value": -53, "color": "#5c9fc8" },
+      { "value": -42, "color": "#7ab1c0" },
+      { "value": -30, "color": "#9fc3b3" },
+      { "value": -19, "color": "#d9e79a" },
+      { "value": -8, "color": "#f3f88e" },
+      { "value": 4, "color": "#f0d779" },
+      { "value": 15, "color": "#eeb563" },
+      { "value": 26, "color": "#e98f51" },
+      { "value": 38, "color": "#e2633e" },
+      { "value": 49, "color": "#da402e" }
+    ]
   }
 }

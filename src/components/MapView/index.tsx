@@ -14,8 +14,9 @@ import {
   AvailableDates,
   WMSLayerProps,
   NSOLayerProps,
-  TypedStringMap,
+  AdminAggregateLayerProps,
 } from '../../config/types';
+import ImpactLayer from './Layers/ImpactLayer';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -26,11 +27,11 @@ function MapView({ classes }: MapViewProps) {
   const serverAvailableDates = useSelector(availableDatesSelector);
 
   const baselineLayers = layers.filter(
-    layer => layer.type === 'nso',
-  ) as TypedStringMap<NSOLayerProps>;
+    (layer): layer is NSOLayerProps => layer.type === 'nso',
+  );
   const serverLayers = layers.filter(
-    layer => layer.type === 'wms',
-  ) as TypedStringMap<WMSLayerProps>;
+    (layer): layer is WMSLayerProps => layer.type === 'wms',
+  );
 
   const selectedLayerDates = serverLayers
     .map(({ serverLayerName }) => serverAvailableDates.get(serverLayerName))
@@ -57,6 +58,18 @@ function MapView({ classes }: MapViewProps) {
         <Boundaries />
         <NSOLayers layers={baselineLayers} />
         <WMSLayers layers={serverLayers} selectedDate={startDate} />
+        <>
+          {layers
+            .filter(
+              (layer): layer is AdminAggregateLayerProps =>
+                layer.type === 'admin_district_aggregate',
+            )
+            .valueSeq()
+            .toJS()
+            .map(layer => (
+              <ImpactLayer key={layer.id} layer={layer} />
+            ))}
+        </>
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={layers} />
