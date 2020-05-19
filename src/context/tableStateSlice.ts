@@ -19,7 +19,6 @@ function setTableState(state: any, table: TableType) {
     header: true,
     download: true,
     complete: results => {
-      console.log(results.data);
       state
         .set('table', table)
         .set('isShowing', true)

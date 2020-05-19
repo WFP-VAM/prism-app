@@ -42,8 +42,6 @@ const DataTable = ({ maxResults }: DataTableConfig) => {
   const { title, table, legendText } = useSelector(getCurrTable);
   const tableJson = useSelector(getCurrTableJson);
 
-  console.log(tableJson);
-
   if (!tableJson) {
     return <h2>Loading...</h2>;
   }
