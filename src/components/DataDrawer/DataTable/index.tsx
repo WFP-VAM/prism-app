@@ -45,13 +45,10 @@ const DataTable = ({ maxResults }: DataTableConfig) => {
 
   // parse the csv, but only when we get a new table to parse
   useEffect(() => {
-    // console.log(`parsing ${table} csv`);
     Papa.parse(tableUrl, {
       header: true,
       download: true,
-      // step: row => console.log("Row: " , row.data),
       complete: results => {
-        // console.log("complete!");
         setTableJson(results.data);
       },
     });
