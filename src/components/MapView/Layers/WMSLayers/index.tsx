@@ -2,8 +2,8 @@ import React, { Fragment } from 'react';
 import moment from 'moment';
 import { Source, Layer } from 'react-mapbox-gl';
 
-import { formatServerUri } from '../../../utils/server-utils';
-import { LayersMap } from '../../../config/types';
+import { formatServerUri } from '../../../../utils/server-utils';
+import { LayersMap } from '../../../../config/types';
 
 const commonQueryParam = {
   version: '1.1.1',

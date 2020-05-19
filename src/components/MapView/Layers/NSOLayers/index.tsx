@@ -3,10 +3,10 @@ import React from 'react';
 import { get, merge } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { LayersMap } from '../../../config/types';
+import { LayersMap } from '../../../../config/types';
 
-import adminBoundariesJson from '../../../config/admin_boundaries.json';
-import { getNSOData } from '../../../config/baselines';
+import adminBoundariesJson from '../../../../config/admin_boundaries.json';
+import { getNSOData } from '../../../../config/baselines';
 
 const baselineBoundaries = adminBoundariesJson as FeatureCollection;
 

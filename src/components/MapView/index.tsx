@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
 import Boundaries from './Boundaries';
-import NSOLayers from './NSOLayers';
-import WMSLayers from './WMSLayers';
+import NSOLayers from './Layers/NSOLayers';
+import WMSLayers from './Layers/WMSLayers';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
 import { dateRangeSelector, layersSelector } from '../../context/mapStateSlice';
