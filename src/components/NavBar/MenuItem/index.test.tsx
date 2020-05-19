@@ -15,7 +15,7 @@ const props = {
         {
           id: 'ID',
           title: 'layer',
-          serverType: 'wms',
+          type: 'wms',
           hasDate: false,
           opacity: 0.5,
           legendText: 'legendText',

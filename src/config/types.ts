@@ -1,9 +1,13 @@
 import { Map, List } from 'immutable';
 
+export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
+
 export interface LayerType {
   id: string;
   title: string;
-  serverType: string;
+  type: string;
+  data?: string;
+  adminCode?: BoundaryKey;
   serverLayer?: string;
   serverUri?: string;
   hasDate: boolean;
