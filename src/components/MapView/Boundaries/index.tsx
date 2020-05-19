@@ -22,7 +22,7 @@ function getAdminData(evt: any) {
   console.log(get(evt.features[0], 'properties.ADM2_PCODE'));
 }
 
-function Boundaries() {
+function Boundaries({ getCoordinates, getLocationName }: any) {
   return (
     <GeoJSONLayer
       data={adminBoundaries}
@@ -30,6 +30,12 @@ function Boundaries() {
       fillPaint={fillPaint}
       fillOnClick={(evt: any) => {
         getAdminData(evt);
+        getCoordinates(get(evt.features[0], 'geometry.coordinates[0][0]'));
+        getLocationName(
+          get(evt.features[0], 'properties.ADM1_EN')
+            .concat(', ')
+            .concat(get(evt.features[0], 'properties.ADM2_EN')),
+        );
       }}
     />
   );

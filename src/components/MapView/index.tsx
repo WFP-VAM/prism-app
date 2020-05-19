@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { useSelector } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
 import Boundaries from './Boundaries';
 import Layers from './Layers';
+import { MapTooltip } from './MapTooltip';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
 import { dateRangeSelector, layersSelector } from '../../context/mapStateSlice';
@@ -18,6 +19,8 @@ const MapboxMap = ReactMapboxGl({
 });
 
 function MapView({ classes }: MapViewProps) {
+  const [popupCoordinates, setpopupCoordinates] = useState();
+  const [popupLocation, setpopupLocation] = useState();
   const layers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
@@ -45,7 +48,20 @@ function MapView({ classes }: MapViewProps) {
           width: '100vw',
         }}
       >
-        <Boundaries />
+        <Boundaries
+          getCoordinates={(coordinates: any) => {
+            setpopupCoordinates(coordinates);
+          }}
+          getLocationName={(locationName: any) => {
+            setpopupLocation(locationName);
+          }}
+        />
+        {popupCoordinates && layers.size === 0 && (
+          <MapTooltip
+            coordinates={popupCoordinates}
+            locationName={popupLocation}
+          />
+        )}
         <Layers layers={layers} selectedDate={startDate} />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
