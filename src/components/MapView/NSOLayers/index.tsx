@@ -4,6 +4,7 @@ import { get, merge } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { LayersMap } from '../../../config/types';
+import { legendToStops } from '../../../utils/layer-utils';
 
 import adminBoundariesJson from '../../../config/admin_boundaries.json';
 import { getNSOData } from '../../../config/baselines';
@@ -25,10 +26,6 @@ function matchingCode(boundaryCode: string, dataCode: string): boolean {
   return boundaryCode.indexOf(dataCode) === 0;
 }
 
-function legendToStops(legend: { value: string; color: string }[] = []) {
-  return legend.map(({ value, color }) => [parseFloat(value), color]);
-}
-
 function NSOLayers({ layers }: { layers: LayersMap }) {
   // If a baselineLayer is selected, extract the data for each admin boundary.
   /**
@@ -48,6 +45,7 @@ function NSOLayers({ layers }: { layers: LayersMap }) {
     'fill-opacity': layerConfig.opacity || 0.3,
     'fill-color': {
       property: 'data',
+      type: 'interval',
       stops: legendToStops(layerConfig.legend),
     },
   };
