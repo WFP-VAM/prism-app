@@ -26,29 +26,23 @@ function formatLayersCategories(layersList: {
 }): LayersCategoriesType {
   const formattedLayersCategories: any = map(
     layersList,
-    (layersKey, layersListKey) => {
-      return {
-        title: startCase(layersListKey),
-        layers: chain(layersJSON)
-          .pick(layersKey as any)
-          .map((value, layerKey) => {
-            return {
-              id: layerKey,
-              ...mapKeys(value, (_value: string, key) => camelCase(key)),
-            };
-          })
-          .value(),
-        tables: chain(tablesJSON)
-          .pick(layersKey as any)
-          .map((value, tableKey) => {
-            return {
-              id: tableKey,
-              ...mapKeys(value, (_value: string, key) => camelCase(key)),
-            };
-          })
-          .value(),
-      };
-    },
+    (layersKey, layersListKey) => ({
+      title: startCase(layersListKey),
+      layers: chain(layersJSON)
+        .pick(layersKey as any)
+        .map((value, layerKey) => ({
+          id: layerKey,
+          ...mapKeys(value, (_value: string, key) => camelCase(key)),
+        }))
+        .value(),
+      tables: chain(tablesJSON)
+        .pick(layersKey as any)
+        .map((value, tableKey) => ({
+          id: tableKey,
+          ...mapKeys(value, (_value: string, key) => camelCase(key)),
+        }))
+        .value(),
+    }),
   );
   return formattedLayersCategories as LayersCategoriesType;
 }

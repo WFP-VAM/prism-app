@@ -3,7 +3,7 @@ import { TableRow, TableCell } from '@material-ui/core';
 
 export interface TableRowProps {
   className?: string;
-  rowData: any;
+  rowData: { key: string; value: string | number }[];
 }
 
 const DataTableRow = ({ className, rowData }: TableRowProps) => (
