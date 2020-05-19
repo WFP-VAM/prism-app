@@ -37,7 +37,7 @@ const linePaint: MapboxGL.LinePaint = {
   'line-opacity': 0.3,
 };
 
-function Boundaries() {
+function Boundaries({ getCoordinates, getLocationName }: any) {
   return (
     <GeoJSONLayer
       data={baselineBoundaries}
@@ -46,7 +46,12 @@ function Boundaries() {
       fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
       fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
       fillOnClick={(evt: any) => {
-        getAdminData(evt);
+        getCoordinates(evt.lngLat);
+        getLocationName(
+          get(evt.features[0], 'properties.ADM1_EN')
+            .concat(', ')
+            .concat(get(evt.features[0], 'properties.ADM2_EN')),
+        );
       }}
     />
   );
