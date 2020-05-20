@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
-import { FillPaint, LinePaint } from 'mapbox-gl';
+import { FillPaint, LinePaint, Map as MapboxMap } from 'mapbox-gl';
 import { FeatureCollection } from 'geojson';
 import adminBoundariesRaw from '../../../../config/admin_boundaries.json';
 import {
+  Extent,
   featureIntersectsImage,
   filterPointsByFeature,
   GeoJsonBoundary,
   indexToGeoCoords,
   loadGeoTiff,
+  WCSRequestUrl,
 } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { AdminAggregateLayerProps } from '../../../../config/types';
+import { mapSelector } from '../../../../context/mapStateSlice';
 
 const adminBoundaries = adminBoundariesRaw as FeatureCollection;
 
@@ -42,8 +46,11 @@ const scaleValueIfDefined = (
     : value;
 };
 
-async function operationByDistrict(layer: AdminAggregateLayerProps) {
-  const { image, rasters, transform } = await loadGeoTiff('./ModisLST.tif');
+async function operationByDistrict(
+  layer: AdminAggregateLayerProps,
+  tileUrl: string,
+) {
+  const { image, rasters, transform } = await loadGeoTiff(tileUrl);
   const allPoints = Array.from(rasters[0], (value, i) => ({
     ...indexToGeoCoords(i, rasters.width, transform),
     value,
@@ -84,14 +91,35 @@ interface ImpactLayerProps {
 }
 
 export const ImpactLayer = ({ layer }: ImpactLayerProps) => {
+  const getMap = useSelector(mapSelector);
   const [features, setFeatures] = useState<FeatureCollection>();
 
   useEffect(() => {
-    const load = async () => {
-      setFeatures(await operationByDistrict(layer));
+    const load = async (map: MapboxMap) => {
+      console.log('firing async event');
+      const bounds = map.getBounds();
+      const extent: Extent = [
+        bounds.getWest(),
+        bounds.getSouth(),
+        bounds.getEast(),
+        bounds.getNorth(),
+      ];
+
+      const tileUrl = WCSRequestUrl(
+        layer.baseUrl,
+        layer.coverageId,
+        '2019-08-01',
+        extent,
+        layer.pixelResolution,
+      );
+
+      setFeatures(await operationByDistrict(layer, tileUrl));
     };
-    load();
-  }, [layer]);
+    const map = getMap();
+    if (map) {
+      load(map);
+    }
+  }, [layer, getMap]);
 
   if (!features) {
     return null;

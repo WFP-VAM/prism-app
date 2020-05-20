@@ -1,13 +1,18 @@
 import React from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
+import { Map } from 'mapbox-gl';
 import Boundaries from './Boundaries';
 import NSOLayers from './Layers/NSOLayers';
 import WMSLayers from './Layers/WMSLayers';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
-import { dateRangeSelector, layersSelector } from '../../context/mapStateSlice';
+import {
+  dateRangeSelector,
+  layersSelector,
+  setMap,
+} from '../../context/mapStateSlice';
 import { availableDatesSelector } from '../../context/serverStateSlice';
 import appConfig from '../../config/prism.json';
 import {
@@ -24,6 +29,7 @@ const MapboxMap = ReactMapboxGl({
 
 function MapView({ classes }: MapViewProps) {
   const layers = useSelector(layersSelector);
+  const dispatch = useDispatch();
   const serverAvailableDates = useSelector(availableDatesSelector);
 
   const baselineLayers = layers.filter(
@@ -43,11 +49,15 @@ function MapView({ classes }: MapViewProps) {
     map: { latitude, longitude, zoom },
   } = appConfig;
 
+  // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers
+  const saveMap = (map: Map) => dispatch(setMap(() => map));
+
   return (
     <div className={classes.container}>
       <MapboxMap
         // eslint-disable-next-line react/style-prop-object
         style="mapbox://styles/mapbox/light-v10"
+        onStyleLoad={saveMap}
         center={[longitude, latitude]}
         zoom={[zoom]}
         containerStyle={{

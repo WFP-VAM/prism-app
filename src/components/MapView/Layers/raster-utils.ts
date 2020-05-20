@@ -21,6 +21,8 @@ export interface Rasters extends Array<TypedArray> {
 }
 
 export type GeoJsonBoundary = Feature<MultiPolygon, Properties>;
+
+// GDAL style extent: xmin ymin xmax ymax
 export type Extent = [number, number, number, number];
 
 // Placeholder for Geotiff image (since library doesn't contain types)
@@ -55,6 +57,133 @@ export type GeoTiffImage = {
     fillValue?: number | number[];
   }) => Promise<Rasters>;
 };
+
+function numberOfTiles(
+  min: number,
+  max: number,
+  resolution: number,
+  pixelsPerTile: number,
+) {
+  const range = max - min;
+  return Math.ceil((range * resolution) / pixelsPerTile);
+}
+
+export function getWCSUrl(
+  baseUrl: string,
+  layerName: string,
+  date: string,
+  xRange: readonly [number, number],
+  yRange: readonly [number, number],
+  width: number,
+  height?: number,
+) {
+  const url = new URL(baseUrl);
+
+  const params = {
+    service: 'WCS',
+    request: 'GetCoverage',
+    version: '1.0.0',
+    coverage: layerName,
+    crs: 'EPSG:4326',
+    bbox: [xRange[0], yRange[0], xRange[1], yRange[1]]
+      .map(v => v.toFixed(1))
+      .join(','),
+    time: date,
+    width: width.toString(),
+    height: (height || width).toString(),
+    format: 'GeoTIFF',
+  };
+
+  Object.keys(params).forEach(k =>
+    url.searchParams.append(k, params[k as keyof typeof params]),
+  );
+  return url.toString();
+}
+
+export function WCSRequestUrl(
+  baseUrl: string,
+  layerName: string,
+  date: string,
+  extent: Extent,
+  resolution = 256,
+  maxPixels = 5096,
+) {
+  const [minX, minY, maxX, maxY] = extent;
+  if (minX > maxX || minY > maxY) {
+    throw new Error(
+      `Could not generate WCS request for ${baseUrl}/${layerName}: the extent ${extent} seems malformed or else may contain "wrapping" which is not implemented in the function 'WCSRequestUrl'`,
+    );
+  }
+
+  // Get our image width & height at either the desired resolution or a down-sampled resolution if the resulting
+  // dimensions would exceed our `maxPixels` in height or width
+  const xRange = maxX - minX;
+  const yRange = maxY - minY;
+
+  const maxDim = Math.min(maxPixels, xRange * resolution, yRange * resolution);
+  const scale = maxDim / Math.max(xRange, yRange);
+
+  const width = Math.ceil(xRange * scale);
+  const height = Math.ceil(yRange * scale);
+
+  return getWCSUrl(
+    baseUrl,
+    layerName,
+    date,
+    [minX, maxX],
+    [minY, maxY],
+    width,
+    height,
+  );
+}
+
+/**
+ * Generates an array of WCS URLs to request GeoTiff tiles based on the given extent and pixel resolution.
+ *
+ * @param baseUrl Base resource URL
+ * @param layerName ID of coverage/layer to get on the server
+ * @param date
+ * @param extent Full extent of the area to get coverage images for
+ * @param resolution pixels per degree lat/long
+ * @param pixelsPerTile
+ */
+export function WCSTileUrls(
+  baseUrl: string,
+  layerName: string,
+  date: string,
+  extent: Extent,
+  resolution = 256,
+  pixelsPerTile = 512,
+): string[] {
+  // Set up tile grid in x/y.
+  const [minX, minY, maxX, maxY] = extent;
+  if (minX > maxX || minY > maxY) {
+    throw new Error(
+      `Could not generate tile grid for ${baseUrl}/${layerName}: the extent ${extent} seems malformed or else may contain "wrapping" which is not implemented in the function 'WCSTileUrls'`,
+    );
+  }
+
+  const degPerTile = pixelsPerTile / resolution;
+
+  const xTiles = numberOfTiles(minX, maxX, resolution, pixelsPerTile);
+  const yTiles = numberOfTiles(minY, maxY, resolution, pixelsPerTile);
+
+  return [...Array(xTiles)]
+    .map((_1, xIdx) => {
+      const x = [
+        xIdx * degPerTile + minX,
+        (xIdx + 1) * degPerTile + minX,
+      ] as const;
+      return [...Array(yTiles)].map((_2, yIdx) => {
+        const y = [
+          yIdx * degPerTile + minY,
+          (yIdx + 1) * degPerTile + minY,
+        ] as const;
+        return getWCSUrl(baseUrl, layerName, date, x, y, pixelsPerTile);
+      });
+    })
+    .flat();
+}
 
 export function getTransform(geoTiffImage: GeoTiffImage): TransformMatrix {
   const tiepoint = geoTiffImage.getTiePoints()[0];

@@ -111,10 +111,17 @@ export type AggregationOperations = 'mean' | 'median';
 export class AdminAggregateLayerProps extends CommonLayerProps {
   type: 'admin_district_aggregate';
   operation: AggregationOperations;
+  baseUrl: string;
+  coverageId: string;
+
   @optional
   scale?: number;
   @optional
   offset?: number;
+
+  // Geotiff pixel resolution, in pixels per degree lat/long
+  @optional
+  pixelResolution?: number;
 
   @makeRequired
   legend: LegendDefinition;
