@@ -14,19 +14,22 @@
   },
   "categories": {
     "baseline": {
-      "vulnerable_groups": ["population_below_poverty", "disabled", "elderly", "child", "population_total"],
-      "livestock_and_herders": ["herd_200", "herders", "livestock"]
+      "vulnerable_groups": ["population_below_poverty", "disabled", "elderly", "child"],
+      "livestock_and_herders": ["herd_200", "herders", "livestock"],
+      "total_population": ["population_total"]
     },
     "climate": {
-      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisLST", "ModisVHI"],
-      "dzud_risk": ["DzudRiskMap", "ModisSnowPercentage"]
+      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisVHI"],
+      "winter_conditions": ["ModisSnowPercentage","ModisLST"]
     },
-    "impact": {
+    "risk": {
+      "dzud_risk": ["DzudRiskMap"],
+      "impact_analysis": ["herd_pasture_impact", "small_herder_dzud_risk", "livestock_vhi", "livestock_dzud_risk"]
     },
     "tables": {
-      "poverty": ["poverty"],
-      "livestock": ["animal_deaths"],
-      "prices": ["food_prices", "hay_prices"]
+      "socioeconomic_data": ["poverty"],
+      "livestock_data": ["animal_deaths"],
+      "price_data": ["hay_prices"]
     }
   }
 }

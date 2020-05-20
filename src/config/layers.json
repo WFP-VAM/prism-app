@@ -1,6 +1,6 @@
 {
   "population_below_poverty": {
-    "title": "Poverty Headcount",
+    "title": "Poverty headcount",
     "type": "nso",
     "data": "nsoPoverty",
     "admin_code": "CODE1",
@@ -16,7 +16,7 @@
     "legend_text": "The poverty headcount is the share of the population whose consumption / expenditure is below the poverty line by Aimag. Year: 2018. Source: National Statistics Office"
   },
   "disabled": {
-    "title": "Number of Disabled People",
+    "title": "Number of disabled people",
     "type": "nso",
     "data": "nsoDisabled",
     "admin_code": "CODE",
@@ -33,7 +33,7 @@
   },
 
   "elderly": {
-    "title": "Number of Single-headed Elderly Households",
+    "title": "Single-headed elderly households",
     "type": "nso",
     "data": "nsoElderly",
     "admin_code": "CODE",
@@ -49,7 +49,7 @@
     "legend_text": "Number of single-headed households with a female head over 55 years old or a male head over 60 years old by Aimag. Year: 2018. Source: National Statistics Office"
   },
   "herders": {
-    "title": "Number of herder households",
+    "title": "Herder households",
     "type": "nso",
     "data": "nsoHerders",
     "admin_code": "CODE",
@@ -65,7 +65,7 @@
     "legend_text": "Number of herder households - defined as herding as the main source of income by Soum. Year: 2019. Source: National Statistical Office"
   },
   "livestock": {
-    "title": "Number of Livestock (in thousands)",
+    "title": "Number of livestock (in thousands)",
     "type": "nso",
     "data": "nsoLivestock",
     "admin_code": "CODE",
@@ -81,7 +81,7 @@
     "legend_text": "Number of livestock raised for agricultural purposes in thousands of heads by Soum. Year: 2019. Source: National Statistical Office"
   },
   "child": {
-    "title": "Number of Children Under the Age of 5",
+    "title": "Number of children under 5",
     "type": "nso",
     "data": "nsoChild",
     "admin_code": "CODE",
@@ -97,7 +97,7 @@
     "legend_text": "Number of children under five years of age by Soum. Year: 2019. Source: National Statistics Office"
   },
   "herd_200": {
-    "title": "Households with less than 200 Heads of Livestock",
+    "title": "Small herder households",
     "type": "nso",
     "data": "nsoHerdsize",
     "admin_code": "CODE1",
@@ -129,7 +129,7 @@
     "legend_text": "Total number of residents by Aimag. Year: 2019. Source: National Statistics Office"
   },
   "pasture_anomaly": {
-    "title": "Pasture Anomaly",
+    "title": "Pasture anomaly",
     "type": "wms",
     "server_layer": "ModisAnomaly",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisAnomaly",
@@ -152,7 +152,7 @@
     ]
   },
   "ndvi": {
-    "title": "NDVI",
+    "title": "Vegetation index (NDVI)",
     "type": "wms",
     "server_layer": "ModisIndices",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?styles=ndvi&layers=ModisIndices",
@@ -196,7 +196,7 @@
     ]
   },
   "ModisVHI": {
-    "title": "Vegetation Health Index",
+    "title": "Agricultural drought (VHI)",
     "type": "wms",
     "server_layer": "ModisVHI",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisVHI",
@@ -220,20 +220,81 @@
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
-    "legend_text": "Snow Percentage for a 10day period, where the value represent the percentage of times that a pixel had snow"
+    "legend_text": "Snow Percentage for a 10day period, where the value represent the percentage of times that a pixel had snow",
+    "legend": [
+      { "value": "0", "color": "#a8a8a8" },
+      { "value": "25", "color": "#c6c6c6" },
+      { "value": "50", "color": "#e0e0e0" },
+      { "value": "75", "color": "#f4f4f4" },
+      { "value": "100", "color": "#ffffff" }
+    ]
   },
   "DzudRiskMap": {
-    "title": "Dzud risk map",
+    "title": "Dzud risk",
     "type": "wms",
-    "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=DZUDRM12311",
+    "server_uri":"http://3.136.214.209:8080/geoserver/prism/wms?layers=DZUDRM12312",
     "has_date": true,
     "date_interval": "month",
-    "opacity": 0.3,
-    "legend_text": "Dzud risk map",
+    "opacity": 0.5,
+    "legend_text": "The dzud risk map is produced by the Mongolia Information and Research Institute of Meteorology, Hydrology and Environment (IRIMHE) and measures dzud risk based on a combination of climate hazards, pasture conditions and capacity, and risk exposure to livestock. Latest version: December 2019",
     "legend": [
-      { "value": "20000", "color": "#000000" },
-      { "value": "20001", "color": "#B0E2FF" },
-      { "value": "30000", "color": "#FFFFFF" }
+      { "value": "1 Very low", "color": "#9ba7dc" },
+      { "value": "2 Low", "color": "#606b57" },
+      { "value": "3 Medium", "color": "#d0ce67" },
+      { "value": "4 High", "color": "#93522f" },
+      { "value": "5 Very high", "color": "#4c1110" }
+    ]
+  },
+  "herd_pasture_impact": {
+    "title": "Herders exposed to severe pasture anomaly",
+    "hazard_layer": "pasture_anomaly",
+    "baseline_layer": "nsoHerders",
+    "threshold": 25000,
+    "opacity": 0.3,
+    "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -50%",
+    "legend": [
+      { "value": "250", "color": "#ffeda0" },
+      { "value": "300", "color": "#feb24c" },
+      { "value": "350", "color": "#f03b20" }
+    ]
+  },
+  "small_herder_dzud_risk": {
+    "title": "Small herders exposed to very high dzud risk",
+    "hazard_layer": "DzudRiskMap",
+    "baseline_layer": "nsoHerdsize",
+    "threshold": 25,
+    "opacity": 0.3,
+    "legend_text": "Number of small herder households within an aimag with very high risk of dzud",
+    "legend": [
+      { "value": "250", "color": "#ffeda0" },
+      { "value": "300", "color": "#feb24c" },
+      { "value": "350", "color": "#f03b20" }
+    ]
+  },
+  "livestock_dzud_risk": {
+    "title": "Livestock exposed to very high dzud risk",
+    "hazard_layer": "DzudRiskMap",
+    "baseline_layer": "nsoLivestock",
+    "threshold": 25,
+    "opacity": 0.3,
+    "legend_text": "Number of livestock within a soum with very high risk of dzud",
+    "legend": [
+      { "value": "5000", "color": "#ffeda0" },
+      { "value": "10000", "color": "#feb24c" },
+      { "value": "15000", "color": "#f03b20" }
+    ]
+  },
+  "livestock_vhi": {
+    "title": "Livestock exposed to drought (VHI)",
+    "hazard_layer": "ModisVHI",
+    "baseline_layer": "nsoLivestock",
+    "threshold": 25,
+    "opacity": 0.3,
+    "legend_text": "Number of livestock within a soum with drought conditions as measured through the Vegetation Health Index",
+    "legend": [
+      { "value": "5000", "color": "#ffeda0" },
+      { "value": "10000", "color": "#feb24c" },
+      { "value": "15000", "color": "#f03b20" }
     ]
   }
 }
