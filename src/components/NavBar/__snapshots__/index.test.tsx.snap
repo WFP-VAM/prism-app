@@ -32,22 +32,22 @@ exports[`renders as expected 1`] = `
           >
             <mock-menuitem
               icon="icon_basemap.png"
-              layerscategories="[object Object],[object Object]"
+              layerscategories="[object Object],[object Object],[object Object]"
               title="Baseline"
             />
             <mock-menuitem
               icon="icon_climate.png"
-              layerscategories="[object Object],[object Object],[object Object]"
+              layerscategories="[object Object],[object Object]"
               title="Climate"
             />
             <mock-menuitem
               icon="icon_impact.png"
-              layerscategories=""
-              title="Impact"
+              layerscategories="[object Object],[object Object]"
+              title="Risk"
             />
             <mock-menuitem
               icon="icon_table.png"
-              layerscategories="[object Object]"
+              layerscategories="[object Object],[object Object],[object Object]"
               title="Tables"
             />
           </div>
@@ -213,22 +213,22 @@ exports[`renders as expected 1`] = `
                   >
                     <mock-menuitem
                       icon="icon_basemap.png"
-                      layerscategories="[object Object],[object Object]"
+                      layerscategories="[object Object],[object Object],[object Object]"
                       title="Baseline"
                     />
                     <mock-menuitem
                       icon="icon_climate.png"
-                      layerscategories="[object Object],[object Object],[object Object]"
+                      layerscategories="[object Object],[object Object]"
                       title="Climate"
                     />
                     <mock-menuitem
                       icon="icon_impact.png"
-                      layerscategories=""
-                      title="Impact"
+                      layerscategories="[object Object],[object Object]"
+                      title="Risk"
                     />
                     <mock-menuitem
                       icon="icon_table.png"
-                      layerscategories="[object Object]"
+                      layerscategories="[object Object],[object Object],[object Object]"
                       title="Tables"
                     />
                   </div>

@@ -7,13 +7,15 @@ import { LayersCategoryType, MenuItemType } from '../../config/types';
 
 import baseline from '../images/icon_basemap.png';
 import climate from '../images/icon_climate.png';
-import impact from '../images/icon_impact.png';
+import risk from '../images/icon_impact.png';
+// note to Ovio: wanted to use risk_and_impact but this fails. riskandimpact works, but doesn't create spaces in nav
+
 import tables from '../images/icon_table.png';
 
 const icons: { [key: string]: string } = {
   baseline,
   climate,
-  impact,
+  risk,
   tables,
 };
 

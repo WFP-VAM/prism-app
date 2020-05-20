@@ -49,8 +49,10 @@ const DataTable = ({ maxResults }: DataTableConfig) => {
   return (
     <div>
       <h2>{title}</h2>
-      <p>{table}</p>
       <p>{legendText}</p>
+      <p>
+        <a href={process.env.PUBLIC_URL + table}>Download as CSV</a>
+      </p>
 
       {tableJson.length > 0 && (
         <Paper className={classes.root}>

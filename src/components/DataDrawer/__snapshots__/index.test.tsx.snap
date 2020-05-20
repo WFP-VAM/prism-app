@@ -12,7 +12,13 @@ exports[`renders as expected 1`] = `
       <div>
         <h2 />
         <p />
-        <p />
+        <p>
+          <a
+            href="undefined"
+          >
+            Download as CSV
+          </a>
+        </p>
       </div>
     </div>
   </mock-drawer>
