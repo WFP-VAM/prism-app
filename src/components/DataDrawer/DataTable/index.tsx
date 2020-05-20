@@ -51,7 +51,7 @@ const DataTable = ({ maxResults }: DataTableConfig) => {
       <h2>{title}</h2>
       <p>{legendText}</p>
       <p>
-        <a href={table}>Download as CSV</a>
+        <a href={process.env.PUBLIC_URL + table}>Download as CSV</a>
       </p>
 
       {tableJson.length > 0 && (
