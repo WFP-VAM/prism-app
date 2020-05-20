@@ -13,9 +13,7 @@ exports[`renders as expected 1`] = `
         <h2 />
         <p />
         <p>
-          <a
-            href="undefined"
-          >
+          <a>
             Download as CSV
           </a>
         </p>
