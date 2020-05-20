@@ -31,7 +31,6 @@
     ],
     "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
   },
-
   "elderly": {
     "title": "Single-headed elderly households",
     "type": "nso",
@@ -295,6 +294,17 @@
       { "value": "5000", "color": "#ffeda0" },
       { "value": "10000", "color": "#feb24c" },
       { "value": "15000", "color": "#f03b20" }
+    ]
+  },
+  "snow_groundstations": {
+    "title": "Snow Groundstations",
+    "type": "groundstation",
+    "data": "groundstationSnow",
+    "opacity": 0.3,
+    "legend_text": "Snow groundstations",
+    "legend": [
+      { "value": "1000", "color": "#bad500" },
+      { "value": "3000", "color": "#ff7500" }
     ]
   }
 }

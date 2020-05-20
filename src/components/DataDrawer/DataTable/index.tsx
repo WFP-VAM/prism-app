@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import Papa from 'papaparse';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   Table,
@@ -9,7 +8,10 @@ import {
   makeStyles,
   Paper,
 } from '@material-ui/core';
-import { getCurrTable } from '../../../context/tableStateSlice';
+import {
+  getCurrTable,
+  getCurrTableJson,
+} from '../../../context/tableStateSlice';
 import DataTableRow from './DataTableRow';
 
 const useStyles = makeStyles({
@@ -36,23 +38,13 @@ export interface DataTableConfig {
 const DataTable = ({ maxResults }: DataTableConfig) => {
   const classes = useStyles();
 
-  // get and destructure the currently open table
+  // Get and destructure the currently open table.
   const { title, table, legendText } = useSelector(getCurrTable);
-  // set up state to store results from parsing the CSV
-  const [tableJson, setTableJson] = useState<any[]>([]);
+  const tableJson = useSelector(getCurrTableJson);
 
-  const tableUrl = process.env.PUBLIC_URL + table;
-
-  // parse the csv, but only when we get a new table to parse
-  useEffect(() => {
-    Papa.parse(tableUrl, {
-      header: true,
-      download: true,
-      complete: results => {
-        setTableJson(results.data);
-      },
-    });
-  }, [table, tableUrl]);
+  if (!tableJson) {
+    return <h2>Loading...</h2>;
+  }
 
   return (
     <div>
