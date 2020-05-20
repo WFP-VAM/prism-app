@@ -1,23 +1,135 @@
 {
   "population_below_poverty": {
-    "title": "Population below national poverty line (%)",
-    "server_type": "wms",
-    "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=poverty_HC",
+    "title": "Poverty Headcount",
+    "type": "nso",
+    "data": "nsoPoverty",
+    "admin_code": "CODE1",
     "has_date": false,
     "opacity": 0.3,
-    "legend_text": "Source: Susenas"
+    "legend": [
+      { "value": "25", "color": "#fef0d9" },
+      { "value": "30", "color": "#fdcc8a" },
+      { "value": "35", "color": "#fc8d59" },
+      { "value": "40", "color": "#e34a33" },
+      { "value": "45", "color": "#b30000" }
+    ],
+    "legend_text": "The poverty headcount is the share of the population whose consumption / expenditure is below the poverty line by Aimag. Year: 2018. Source: National Statistics Office"
+  },
+  "disabled": {
+    "title": "Number of Disabled People",
+    "type": "nso",
+    "data": "nsoDisabled",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "2000", "color": "#fef0d9" },
+      { "value": "3000", "color": "#fdcc8a" },
+      { "value": "4000", "color": "#fc8d59" },
+      { "value": "5000", "color": "#e34a33" },
+      { "value": "6000", "color": "#b30000" }
+    ],
+    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
+  },
+  "elderly": {
+    "title": "Number of Single-headed Elderly Households",
+    "type": "nso",
+    "data": "nsoElderly",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "1000", "color": "#fef0d9" },
+      { "value": "1500", "color": "#fdcc8a" },
+      { "value": "2000", "color": "#fc8d59" },
+      { "value": "2500", "color": "#e34a33" },
+      { "value": "3000", "color": "#b30000" }
+    ],
+    "legend_text": "Number of single-headed households with a female head over 55 years old or a male head over 60 years old by Aimag. Year: 2018. Source: National Statistics Office"
+  },
+  "herders": {
+    "title": "Number of herder households",
+    "type": "nso",
+    "data": "nsoHerders",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "300", "color": "#fef0d9" },
+      { "value": "400", "color": "#fdcc8a" },
+      { "value": "500", "color": "#fc8d59" },
+      { "value": "600", "color": "#e34a33" },
+      { "value": "700", "color": "#b30000" }
+    ],
+    "legend_text": "Number of herder households - defined as herding as the main source of income by Soum. Year: 2019. Source: National Statistical Office"
+  },
+  "livestock": {
+    "title": "Number of Livestock (in thousands)",
+    "type": "nso",
+    "data": "nsoLivestock",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "100", "color": "#fef0d9" },
+      { "value": "150", "color": "#fdcc8a" },
+      { "value": "200", "color": "#fc8d59" },
+      { "value": "250", "color": "#e34a33" },
+      { "value": "300", "color": "#b30000" }
+    ],
+    "legend_text": "Number of livestock raised for agricultural purposes in thousands of heads by Soum. Year: 2019. Source: National Statistical Office"
+  },
+  "child": {
+    "title": "Number of Children Under the Age of 5",
+    "type": "nso",
+    "data": "nsoChild",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "200", "color": "#fef0d9" },
+      { "value": "400", "color": "#fdcc8a" },
+      { "value": "600", "color": "#fc8d59" },
+      { "value": "800", "color": "#e34a33" },
+      { "value": "1000", "color": "#b30000" }
+    ],
+    "legend_text": "Number of children under five years of age by Soum. Year: 2019. Source: National Statistics Office"
+  },
+  "herd_200": {
+    "title": "Households with less than 200 Heads of Livestock",
+    "type": "nso",
+    "data": "nsoHerdsize",
+    "admin_code": "CODE1",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "2000", "color": "#fef0d9" },
+      { "value": "4000", "color": "#fdcc8a" },
+      { "value": "6000", "color": "#fc8d59" },
+      { "value": "8000", "color": "#e34a33" },
+      { "value": "10000", "color": "#b30000" }
+    ],
+    "legend_text": "Number of households with less than 200 heads of livestock by Aimag. Year: 2019. Source: National Statistics Office"
   },
   "population_total": {
-    "title": "Population Total",
-    "server_type": "wms",
-    "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=NSO-pop-2018",
+    "title": "Total population",
+    "type": "nso",
+    "data": "nsoPop",
+    "admin_code": "CODE",
     "has_date": false,
     "opacity": 0.3,
-    "legend_text": "Population counts NSO 2018"
+    "legend": [
+      { "value": "2500", "color": "#fef0d9" },
+      { "value": "5000", "color": "#fdcc8a" },
+      { "value": "7500", "color": "#fc8d59" },
+      { "value": "10000", "color": "#e34a33" },
+      { "value": "12500", "color": "#b30000" }
+    ],
+    "legend_text": "Total number of residents by Aimag. Year: 2019. Source: National Statistics Office"
   },
   "pasture_anomaly": {
-    "title": "Pasture anomaly",
-    "server_type": "wms",
+    "title": "Pasture Anomaly",
+    "type": "wms",
     "server_layer": "ModisAnomaly",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisAnomaly",
     "has_date": true,
@@ -25,22 +137,22 @@
     "opacity": 0.3,
     "legend_text": "Converts  NDVI to pasture (kg/ha) values and divides the current period by the long term average to calculate pasture anomaly.",
     "legend": [
-      { "value": "12000", "color": "#ff0000" },
-      { "value": "14000", "color": "#ff5900" },
-      { "value": "16000", "color": "#ff8400" },
-      { "value": "18000", "color": "#ffce63" },
-      { "value": "19000", "color": "#ffdd94" },
-      { "value": "20000", "color": "#ffffbf" },
-      { "value": "21000", "color": "#dee09f" },
-      { "value": "22000", "color": "#bbbf7c" },
-      { "value": "24000", "color": "#9da360" },
-      { "value": "26000", "color": "#7e8745" },
-      { "value": "28000", "color": "#5b6e00" }
+      { "value": "-80%", "color": "#ff0000" },
+      { "value": "-60%", "color": "#ff5900" },
+      { "value": "-40%", "color": "#ff8400" },
+      { "value": "-20%", "color": "#ffce63" },
+      { "value": "-10%", "color": "#ffdd94" },
+      { "value": "0", "color": "#ffffbf" },
+      { "value": "+10%", "color": "#dee09f" },
+      { "value": "+20%", "color": "#bbbf7c" },
+      { "value": "+40%", "color": "#9da360" },
+      { "value": "+60%", "color": "#7e8745" },
+      { "value": "+80%", "color": "#5b6e00" }
     ]
   },
   "ndvi": {
     "title": "NDVI",
-    "server_type": "wms",
+    "type": "wms",
     "server_layer": "ModisIndices",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?styles=ndvi&layers=ModisIndices",
     "has_date": true,
@@ -48,53 +160,60 @@
     "opacity": 0.3,
     "legend_text": "Median averaged NDVI image from composite Landsat & Sentinel imagery",
     "legend": [
-      { "value": "20000", "color": "#ece0d7" },
-      { "value": "21054", "color": "#d7c8b1" },
-      { "value": "22187", "color": "#bfb186" },
-      { "value": "23281", "color": "#a59e59" },
-      { "value": "24375", "color": "#878a31" },
-      { "value": "25507", "color": "#69761f" },
-      { "value": "26601", "color": "#4f6021" },
-      { "value": "27695", "color": "#374b1b" },
-      { "value": "28828", "color": "#1c3800" },
-      { "value": "29960", "color": "#000000" }
+      { "value": "0.00", "color": "#ece0d7" },
+      { "value": "0.11", "color": "#d7c8b1" },
+      { "value": "0.22", "color": "#bfb186" },
+      { "value": "0.33", "color": "#a59e59" },
+      { "value": "0.44", "color": "#878a31" },
+      { "value": "0.55", "color": "#69761f" },
+      { "value": "0.66", "color": "#4f6021" },
+      { "value": "0.77", "color": "#374b1b" },
+      { "value": "0.88", "color": "#1c3800" },
+      { "value": "1.00", "color": "#000000" }
     ]
   },
   "ModisLST": {
     "title": "Surface temperature",
-    "server_type": "wms",
+    "type": "wms",
     "server_layer": "ModisLST",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisLST",
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
-    "legend_text": "MODIS Median value of Land Surface Temperature in a 10-day period",
+    "legend_text": "Median value of Land Surface Temperature in degrees Celsius over a 10-day period (MODIS)",
     "legend": [
-      { "value": "11000", "color": "#5c9fc8" },
-      { "value": "11568", "color": "#7ab1c0" },
-      { "value": "12136", "color": "#9fc3b3" },
-      { "value": "12704", "color": "#d9e79a" },
-      { "value": "13272", "color": "#f3f88e" },
-      { "value": "13840", "color": "#f0d779" },
-      { "value": "14408", "color": "#eeb563" },
-      { "value": "14976", "color": "#e98f51" },
-      { "value": "15544", "color": "#e2633e" },
-      { "value": "16115", "color": "#da402e" }
+      { "value": "-53", "color": "#5c9fc8" },
+      { "value": "-42", "color": "#7ab1c0" },
+      { "value": "-30", "color": "#9fc3b3" },
+      { "value": "-19", "color": "#d9e79a" },
+      { "value": "-8", "color": "#f3f88e" },
+      { "value": "4", "color": "#f0d779" },
+      { "value": "15", "color": "#eeb563" },
+      { "value": "26", "color": "#e98f51" },
+      { "value": "38", "color": "#e2633e" },
+      { "value": "49", "color": "#da402e" }
     ]
   },
   "ModisVHI": {
     "title": "Vegetation Health Index",
-    "server_type": "wms",
+    "type": "wms",
     "server_layer": "ModisVHI",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisVHI",
     "has_date": true,
     "date_interval": "day",
     "opacity": 0.3,
-    "legend_text": "Vegetation Health Index for a 10day period. The VHI is a combination of VCI and TCI, and it is mainly used for monitoring drought."
+    "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
+    "legend": [
+      { "value": "0.10", "color": "#ef1000" },
+      { "value": "0.17", "color": "#bf4000" },
+      { "value": "0.26", "color": "#ba7500" },
+      { "value": "0.34", "color": "#ead500" },
+      { "value": "1.00", "color": "#5ea100" }
+    ]
   },
   "ModisSnowPercentage": {
     "title": "Snow cover (%)",
-    "server_type": "wms",
+    "type": "wms",
     "server_layer": "ModisSnowPercentage",
     "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisSnowPercentage",
     "has_date": true,
@@ -104,7 +223,7 @@
   },
   "DzudRiskMap": {
     "title": "Dzud risk map",
-    "server_type": "wms",
+    "type": "wms",
     "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=DZUDRM12311",
     "has_date": true,
     "date_interval": "month",
@@ -114,6 +233,17 @@
       { "value": "20000", "color": "#000000" },
       { "value": "20001", "color": "#B0E2FF" },
       { "value": "30000", "color": "#FFFFFF" }
+    ]
+  },
+  "snow_groundstations": {
+    "title": "Snow Groundstations",
+    "type": "groundstation",
+    "data": "groundstationSnow",
+    "opacity": 0.3,
+    "legend_text": "Snow groundstations",
+    "legend": [
+      { "value": "1000", "color": "#bad500" },
+      { "value": "3000", "color": "#ff7500" }
     ]
   }
 }

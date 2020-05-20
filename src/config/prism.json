@@ -14,11 +14,13 @@
   },
   "categories": {
     "baseline": {
-      "baseline": ["population_below_poverty", "population_total"]
+      "vulnerable_groups": ["population_below_poverty", "disabled", "elderly", "child", "population_total"],
+      "livestock_and_herders": ["herd_200", "herders", "livestock"]
     },
     "climate": {
       "drought_indicators": ["pasture_anomaly", "ndvi", "ModisLST", "ModisVHI"],
-      "dzud_risk": ["DzudRiskMap", "ModisSnowPercentage"]
+      "dzud_risk": ["DzudRiskMap", "ModisSnowPercentage"],
+      "groundstation_data": ["snow_groundstations"]
     },
     "impact": {
     }

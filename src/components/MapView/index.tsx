@@ -4,8 +4,10 @@ import { useSelector } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
 import Boundaries from './Boundaries';
-import Layers from './Layers';
 import { MapTooltip } from './MapTooltip';
+import NSOLayers from './NSOLayers';
+import WMSLayers from './WMSLayers';
+import GroundstationLayers from './GroundstationLayers';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
 import { dateRangeSelector, layersSelector } from '../../context/mapStateSlice';
@@ -23,6 +25,12 @@ function MapView({ classes }: MapViewProps) {
   const [popupLocation, setpopupLocation] = useState();
   const layers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
+
+  const baselineLayers = layers.filter(layer => layer.type === 'nso');
+  const serverLayers = layers.filter(layer => layer.type === 'wms');
+  const groundstationLayers = layers.filter(
+    layer => layer.type === 'groundstation',
+  );
 
   const selectedLayerDates = layers
     .map(({ serverLayer }) =>
@@ -56,13 +64,15 @@ function MapView({ classes }: MapViewProps) {
             setpopupLocation(locationName);
           }}
         />
-        {popupCoordinates && layers.size === 0 && (
+        {popupCoordinates && (
           <MapTooltip
             coordinates={popupCoordinates}
             locationName={popupLocation}
           />
         )}
-        <Layers layers={layers} selectedDate={startDate} />
+        <NSOLayers layers={baselineLayers} />
+        <GroundstationLayers layers={groundstationLayers} />
+        <WMSLayers layers={serverLayers} selectedDate={startDate} />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={layers} />
