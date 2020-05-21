@@ -16,7 +16,6 @@ import {
 import { availableDatesSelector } from '../../context/serverStateSlice';
 import appConfig from '../../config/prism.json';
 import {
-  AvailableDates,
   WMSLayerProps,
   NSOLayerProps,
   AdminAggregateLayerProps,
@@ -39,9 +38,14 @@ function MapView({ classes }: MapViewProps) {
     (layer): layer is WMSLayerProps => layer.type === 'wms',
   );
 
-  const selectedLayerDates = serverLayers
-    .map(({ serverLayerName }) => serverAvailableDates.get(serverLayerName))
-    .filter(value => value) as AvailableDates;
+  const selectedLayerDates = [
+    ...new Set(
+      serverLayers
+        .map(({ serverLayerName }) => serverAvailableDates[serverLayerName])
+        .filter(value => value)
+        .flat(),
+    ),
+  ];
 
   const { startDate } = useSelector(dateRangeSelector);
 
@@ -74,8 +78,6 @@ function MapView({ classes }: MapViewProps) {
               (layer): layer is AdminAggregateLayerProps =>
                 layer.type === 'admin_district_aggregate',
             )
-            .valueSeq()
-            .toJS()
             .map(layer => (
               <ImpactLayer key={layer.id} layer={layer} />
             ))}

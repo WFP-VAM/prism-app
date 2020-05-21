@@ -3,7 +3,7 @@ import React from 'react';
 import { get, merge } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { NSOLayerProps, TypedStringMap } from '../../../../config/types';
+import { NSOLayerProps } from '../../../../config/types';
 
 import adminBoundariesJson from '../../../../config/admin_boundaries.json';
 import { getNSOData } from '../../../../config/baselines';
@@ -26,7 +26,7 @@ function matchingCode(boundaryCode: string, dataCode: string): boolean {
   return boundaryCode.indexOf(dataCode) === 0;
 }
 
-function NSOLayers({ layers }: { layers: TypedStringMap<NSOLayerProps> }) {
+function NSOLayers({ layers }: { layers: NSOLayerProps[] }) {
   // If a baselineLayer is selected, extract the data for each admin boundary.
   /**
    * TODO, make it possible to configure:
@@ -34,7 +34,7 @@ function NSOLayers({ layers }: { layers: TypedStringMap<NSOLayerProps> }) {
    * DTVAL_CO, the column of data to extract
    */
   const { features } = baselineBoundaries;
-  const layerConfig = layers.first(null);
+  const layerConfig = layers[0];
 
   if (!layerConfig) {
     return null;

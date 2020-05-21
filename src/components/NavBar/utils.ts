@@ -28,7 +28,7 @@ function formatLayersCategories(layersList: {
   return map(layersList, (layerKeys, layersListKey) => ({
     title: startCase(layersListKey),
     layers: layerKeys
-      .map(key => LayerDefinitions.get(key))
+      .map(key => LayerDefinitions[key])
       .filter((val): val is LayerType => Boolean(val)),
   }));
 }

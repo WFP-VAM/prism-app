@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Source, Layer } from 'react-mapbox-gl';
 
 import { formatServerUri } from '../../../../utils/server-utils';
-import { TypedStringMap, WMSLayerProps } from '../../../../config/types';
+import { WMSLayerProps } from '../../../../config/types';
 
 const commonQueryParam = {
   version: '1.1.1',
@@ -33,34 +33,31 @@ function WMSLayers({ layers, selectedDate }: LayersProps) {
 
   return (
     <>
-      {layers
-        .valueSeq()
-        .toJS()
-        .map(({ id, serverUri, opacity }) => (
-          <Fragment key={id}>
-            <Source
-              id={`source-${id}`}
-              tileJsonSource={{
-                type: 'raster',
-                tiles: [formatServerUri(serverUri, queryParam)],
-                tileSize: 256,
-              }}
-            />
+      {layers.map(({ id, serverUri, opacity }) => (
+        <Fragment key={id}>
+          <Source
+            id={`source-${id}`}
+            tileJsonSource={{
+              type: 'raster',
+              tiles: [formatServerUri(serverUri, queryParam)],
+              tileSize: 256,
+            }}
+          />
 
-            <Layer
-              type="raster"
-              id={`layer-${id}`}
-              sourceId={`source-${id}`}
-              paint={{ 'raster-opacity': opacity }}
-            />
-          </Fragment>
-        ))}
+          <Layer
+            type="raster"
+            id={`layer-${id}`}
+            sourceId={`source-${id}`}
+            paint={{ 'raster-opacity': opacity }}
+          />
+        </Fragment>
+      ))}
     </>
   );
 }
 
 export interface LayersProps {
-  layers: TypedStringMap<WMSLayerProps>;
+  layers: WMSLayerProps[];
   selectedDate?: number;
 }
 

@@ -1,4 +1,3 @@
-import { Map, List } from 'immutable';
 import 'reflect-metadata';
 
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
@@ -136,9 +135,9 @@ export type LayerType =
   | NSOLayerProps
   | AdminAggregateLayerProps;
 
-export type TypedStringMap<T> = Map<string, T>;
-
-export type LayersMap = Map<string, LayerType>;
+export interface LayersMap {
+  [key: string]: LayerType;
+}
 
 export interface LayersCategoryType {
   title: string;
@@ -151,4 +150,6 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
-export interface AvailableDates extends Map<string, List<number>> {}
+export interface AvailableDates {
+  [key: string]: number[];
+}

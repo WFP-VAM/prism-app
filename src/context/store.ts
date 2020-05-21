@@ -1,4 +1,3 @@
-import { fromJS } from 'immutable';
 import {
   configureStore,
   getDefaultMiddleware,
@@ -13,7 +12,6 @@ import {
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
 import { getLayersAvailableDates } from '../utils/server-utils';
-import { AvailableDates } from '../config/types';
 
 const initializeStore = async (getCurrentState: any) => {
   const layersAvailableDates = await getLayersAvailableDates();
@@ -23,10 +21,7 @@ const initializeStore = async (getCurrentState: any) => {
   return new Promise(resolve => {
     resolve({
       ...currentState,
-      serverState: serverState.set(
-        'availableDates',
-        fromJS(layersAvailableDates) as AvailableDates,
-      ),
+      serverState: serverState.set('availableDates', layersAvailableDates),
     });
   });
 };

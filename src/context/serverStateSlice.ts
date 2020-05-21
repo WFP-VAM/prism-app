@@ -1,14 +1,15 @@
-import { Map } from 'immutable';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from './store';
 import { AvailableDates } from '../config/types';
 
-interface ServerState extends Map<string, any> {}
+type ServerState = {
+  availableDates: AvailableDates;
+};
 
-const initialState: ServerState = Map({
-  availableDates: Map(),
-});
+const initialState: ServerState = {
+  availableDates: {},
+};
 
 export const serverStateSlice = createSlice({
   name: 'serverState',
@@ -17,13 +18,17 @@ export const serverStateSlice = createSlice({
     updateLayersCapabilities: (
       state,
       { payload }: PayloadAction<AvailableDates>,
-    ) => state.set('availableDates', payload),
+    ) => ({
+      ...state,
+      availableDates: payload,
+    }),
   },
 });
 
 // Getters
-export const availableDatesSelector = (state: RootState) =>
-  state.serverState.get('availableDates') as AvailableDates;
+export const availableDatesSelector = (
+  state: RootState,
+): ServerState['availableDates'] => state.serverState.availableDates;
 
 // Setters
 export const { updateLayersCapabilities } = serverStateSlice.actions;

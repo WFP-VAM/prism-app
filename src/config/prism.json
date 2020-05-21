@@ -20,6 +20,9 @@
     "climate": {
       "drought_indicators": ["pasture_anomaly", "ndvi", "ModisLST", "ModisVHI", "ModisLSTDistrictAvg"],
       "dzud_risk": ["DzudRiskMap", "ModisSnowPercentage"]
+    },
+    "impact": {
+
     }
   }
 }

@@ -9,10 +9,10 @@ exports[`renders as expected 1`] = `
       style="height: 100vh; width: 100vw;"
     />
     <mock-dateselector
-      availabledates="Map {}"
+      availabledates=""
     />
     <mock-legends
-      layers="Map {}"
+      layers=""
     />
   </div>
 </div>

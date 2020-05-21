@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
-import { FillPaint, LinePaint, Map as MapboxMap } from 'mapbox-gl';
+import { FillPaint, LinePaint } from 'mapbox-gl';
 import { FeatureCollection } from 'geojson';
 import adminBoundariesRaw from '../../../../config/admin_boundaries.json';
 import {
@@ -91,11 +91,11 @@ interface ImpactLayerProps {
 }
 
 export const ImpactLayer = ({ layer }: ImpactLayerProps) => {
-  const getMap = useSelector(mapSelector);
+  const map = useSelector(mapSelector);
   const [features, setFeatures] = useState<FeatureCollection>();
 
   useEffect(() => {
-    const load = async (map: MapboxMap) => {
+    const load = async () => {
       console.log('firing async event');
       const bounds = map.getBounds();
       const extent: Extent = [
@@ -115,11 +115,10 @@ export const ImpactLayer = ({ layer }: ImpactLayerProps) => {
 
       setFeatures(await operationByDistrict(layer, tileUrl));
     };
-    const map = getMap();
     if (map) {
-      load(map);
+      load();
     }
-  }, [layer, getMap]);
+  }, [layer, map]);
 
   if (!features) {
     return null;
