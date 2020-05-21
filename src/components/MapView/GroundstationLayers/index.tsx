@@ -32,6 +32,7 @@ function onClickCircle(evt: any) {
     get(evt.features[0], 'properties.aimagname'),
     get(evt.features[0], 'properties.sumname'),
     get(evt.features[0], 'properties.rasterheight'),
+    get(evt.features[0], 'properties.jan-01'),
   );
 }
 
@@ -52,7 +53,7 @@ function GroundstationLayers({ layers }: { layers: LayersMap }) {
   const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
   const circlePaint: MapboxGL.CirclePaint = {
     'circle-color': {
-      property: 'rasterheight',
+      property: 'jan-01',
       stops: legendToStops(layerConfig.legend),
     },
   };
