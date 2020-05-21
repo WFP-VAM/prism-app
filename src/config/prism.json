@@ -20,7 +20,7 @@
     },
     "climate": {
       "drought_indicators": ["pasture_anomaly", "ndvi", "ModisVHI"],
-      "winter_conditions": ["ModisSnowPercentage","ModisLST"]
+      "winter_conditions": ["ModisSnowPercentage","ModisLST", "snow_groundstations"]
     },
     "risk": {
       "dzud_risk": ["DzudRiskMap"],
