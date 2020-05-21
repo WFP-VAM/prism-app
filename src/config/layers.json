@@ -301,13 +301,13 @@
     "type": "groundstation",
     "data": "groundstationSnow",
     "opacity": 0.3,
-    "legend_text": "Temperature from ground station data",
+    "legend_text": "Temperature from ground station data reported in degrees celsius",
     "legend": [
-        { "value": "-40", "color": "#08519c" },
-        { "value": "-30", "color": "#3182bd" },
-        { "value": "-20", "color": "#6baed6" },
-        { "value": "-10", "color": "#bdd7e7" },
-        { "value": "0", "color": "#eff3ff"},
+        { "value": "-40", "color": "#7ab1c0" },
+        { "value": "-30", "color": "#9fc3b3" },
+        { "value": "-20", "color": "#d9e79a" },
+        { "value": "-10", "color": "#f3f88e" },
+        { "value": "0", "color": "#f0d779"},
         { "value": "10000 (no data)", "color": "#000000"}
     ]
   }
