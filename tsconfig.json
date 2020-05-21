@@ -19,7 +19,8 @@
     "noEmit": true,
     "jsx": "react",
     "strictPropertyInitialization": false,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "downlevelIteration": true
   },
   "include": [
     "src"

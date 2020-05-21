@@ -3,6 +3,7 @@ import ReactMapboxGl from 'react-mapbox-gl';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 import { Map } from 'mapbox-gl';
+import { uniq } from 'lodash';
 import Boundaries from './Boundaries';
 import NSOLayers from './Layers/NSOLayers';
 import WMSLayers from './Layers/WMSLayers';
@@ -38,14 +39,12 @@ function MapView({ classes }: MapViewProps) {
     (layer): layer is WMSLayerProps => layer.type === 'wms',
   );
 
-  const selectedLayerDates = [
-    ...new Set(
-      serverLayers
-        .map(({ serverLayerName }) => serverAvailableDates[serverLayerName])
-        .filter(value => value)
-        .flat(),
-    ),
-  ];
+  const selectedLayerDates = uniq(
+    serverLayers
+      .map(({ serverLayerName }) => serverAvailableDates[serverLayerName])
+      .filter(value => value)
+      .flat(),
+  );
 
   const { startDate } = useSelector(dateRangeSelector);
 

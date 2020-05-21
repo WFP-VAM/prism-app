@@ -94,7 +94,7 @@ export const layersSelector = (state: RootState): MapState['layers'] =>
   state.mapState.layers;
 export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
   state.mapState.dateRange;
-export const mapSelector = (state: RootState): MapBoxMap =>
+export const mapSelector = (state: RootState): MapBoxMap | undefined =>
   state.mapState.mapboxMap();
 export const layerDataSelector = (key: string) => (state: RootState) =>
   state.mapState.layersData[key];

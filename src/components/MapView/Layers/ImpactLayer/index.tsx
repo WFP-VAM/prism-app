@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FillPaint, LinePaint } from 'mapbox-gl';
 import { FeatureCollection } from 'geojson';
@@ -15,7 +15,11 @@ import {
 } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { AdminAggregateLayerProps } from '../../../../config/types';
-import { mapSelector } from '../../../../context/mapStateSlice';
+import {
+  mapSelector,
+  loadLayerData,
+  layerDataSelector,
+} from '../../../../context/mapStateSlice';
 
 const adminBoundaries = adminBoundariesRaw as FeatureCollection;
 
@@ -92,19 +96,19 @@ interface ImpactLayerProps {
 
 export const ImpactLayer = ({ layer }: ImpactLayerProps) => {
   const map = useSelector(mapSelector);
-  const [features, setFeatures] = useState<FeatureCollection>();
+  const features = useSelector(layerDataSelector(layer.id));
+  const dispatch = useDispatch();
+
+  const bounds = map && map.getBounds();
+  const minX = bounds ? bounds.getWest() : 0;
+  const maxX = bounds ? bounds.getEast() : 0;
+  const minY = bounds ? bounds.getSouth() : 0;
+  const maxY = bounds ? bounds.getNorth() : 0;
 
   useEffect(() => {
-    const load = async () => {
-      console.log('firing async event');
-      const bounds = map.getBounds();
-      const extent: Extent = [
-        bounds.getWest(),
-        bounds.getSouth(),
-        bounds.getEast(),
-        bounds.getNorth(),
-      ];
-
+    if (minX !== 0 && maxX !== 0) {
+      const extent: Extent = [minX, minY, maxX, maxY];
+      console.log('firing dispatch');
       const tileUrl = WCSRequestUrl(
         layer.baseUrl,
         layer.coverageId,
@@ -113,12 +117,14 @@ export const ImpactLayer = ({ layer }: ImpactLayerProps) => {
         layer.pixelResolution,
       );
 
-      setFeatures(await operationByDistrict(layer, tileUrl));
-    };
-    if (map) {
-      load();
+      dispatch(
+        loadLayerData({
+          key: layer.id,
+          action: operationByDistrict(layer, tileUrl),
+        }),
+      );
     }
-  }, [layer, map]);
+  }, [dispatch, layer, maxX, maxY, minX, minY]);
 
   if (!features) {
     return null;
