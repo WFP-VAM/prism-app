@@ -231,7 +231,7 @@
   "DzudRiskMap": {
     "title": "Dzud risk",
     "type": "wms",
-    "server_uri":"http://3.136.214.209:8080/geoserver/prism/wms?layers=DZUDRM12312",
+    "server_uri":"https://mng-wfp.ovio.org:8443/geoserver/prism/wms?layers=DZUDRM12312",
     "has_date": true,
     "date_interval": "month",
     "opacity": 0.5,
