@@ -6,7 +6,7 @@ import {
   NSOLayerProps,
   LayersMap,
   LayerType,
-  AdminAggregateLayerProps,
+  ImpactLayerProps,
 } from './types';
 
 type layerKeys = keyof typeof rawLayers;
@@ -36,8 +36,8 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
         return definition;
       }
       return throwInvalidLayer();
-    case 'admin_district_aggregate':
-      if (checkRequiredKeys(AdminAggregateLayerProps, definition, true)) {
+    case 'impact':
+      if (checkRequiredKeys(ImpactLayerProps, definition, true)) {
         return definition;
       }
       return throwInvalidLayer();
@@ -48,10 +48,35 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
   }
 };
 
-export const LayerDefinitions: LayersMap = Object.keys(rawLayers).reduce(
-  (acc, layerKey) => ({
-    ...acc,
-    [layerKey]: getLayerByKey(layerKey as layerKeys),
-  }),
-  {},
-);
+function verifyValidImpactLayer(
+  impactLayer: ImpactLayerProps,
+  layers: LayersMap,
+) {
+  const layerIds = Object.keys(layers);
+  const throwIfInvalid = (key: 'hazardLayer' | 'baselineLayer') => {
+    if (!layerIds.includes(impactLayer[key])) {
+      throw new Error(
+        `Found invalid impact layer definition for ${impactLayer.id}: ${key}: '${impactLayer[key]}' does not match any of the layer ids in the config.`,
+      );
+    }
+  };
+  throwIfInvalid('hazardLayer');
+  throwIfInvalid('baselineLayer');
+}
+
+export const LayerDefinitions: LayersMap = (() => {
+  const layers = Object.keys(rawLayers).reduce(
+    (acc, layerKey) => ({
+      ...acc,
+      [layerKey]: getLayerByKey(layerKey as layerKeys),
+    }),
+    {} as LayersMap,
+  );
+
+  // Verify that the layers referenced by impact layers actually exist
+  Object.values(layers)
+    .filter((layer): layer is ImpactLayerProps => layer.type === 'impact')
+    .forEach(layer => verifyValidImpactLayer(layer, layers));
+
+  return layers;
+})();

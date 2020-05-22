@@ -55,22 +55,36 @@ export function requiredKeysForClassType(constructor: ClassType<any>) {
  * @param classType
  * @param maybeType Object to check.
  * @param logErrors Flag to print out a verbose error message to the console if the object fails
+ * @param id
  */
 export function checkRequiredKeys<T>(
   classType: ClassType<T>,
   maybeType: Record<string, any>,
   logErrors = false,
+  id?: string,
 ): maybeType is T {
   const requiredKeys = requiredKeysForClassType(classType);
   const missingKey = requiredKeys.find(
     k => !Object.prototype.hasOwnProperty.call(maybeType, k),
   );
 
-  if (logErrors && missingKey) {
-    console.error(
-      `Object %o is invalid: Missing required property '${missingKey}'.`,
-      maybeType,
-    );
+  if (logErrors) {
+    if (missingKey) {
+      console.error(
+        `Object %o is invalid: Missing required property '${missingKey}'.`,
+        maybeType,
+      );
+    }
+
+    // Log warnings for keys that aren't a part of this definition
+    // eslint-disable-next-line new-cap
+    const target = new classType();
+    const allKeys = Object.getOwnPropertyNames(target);
+    Object.keys(maybeType)
+      .filter(key => !allKeys.includes(key))
+      .forEach(key =>
+        console.warn(`Found unknown key '${key}' on config for ${id}`),
+      );
   }
   return !missingKey;
 }
@@ -80,7 +94,15 @@ export type LegendDefinition = {
   color: string;
 }[];
 
-class CommonLayerProps {
+export type RawDataConfiguration = {
+  scale?: number;
+  offset?: number;
+  noData?: number;
+  // Geotiff pixel resolution, in pixels per degree lat/long
+  pixelResolution?: number;
+};
+
+export class CommonLayerProps {
   id: string;
   title: string;
   type: string;
@@ -96,31 +118,34 @@ class CommonLayerProps {
 
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
+  baseUrl: string;
   serverLayerName: string;
-  serverUri: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string };
+
+  @optional
+  wcsConfig?: RawDataConfiguration;
 }
 
 export class NSOLayerProps extends CommonLayerProps {
   type: 'nso';
-  data: string;
+  path: string;
   adminCode: BoundaryKey;
 }
 
 export type AggregationOperations = 'mean' | 'median';
-export class AdminAggregateLayerProps extends CommonLayerProps {
-  type: 'admin_district_aggregate';
-  operation: AggregationOperations;
-  baseUrl: string;
-  coverageId: string;
+export class ImpactLayerProps extends CommonLayerProps {
+  type: 'impact';
+  hazardLayer: string;
+  baselineLayer: string;
+  // Applied as an absolute value: if negative, will only look at districts that are "more negative", if positive,
+  // it looks for districts above this value.
+  threshold: number;
 
+  // defaults to 'median'
   @optional
-  scale?: number;
-  @optional
-  offset?: number;
-
-  // Geotiff pixel resolution, in pixels per degree lat/long
-  @optional
-  pixelResolution?: number;
+  operation?: AggregationOperations;
 
   @makeRequired
   legend: LegendDefinition;
@@ -130,10 +155,14 @@ export type RequiredKeys<T> = {
   [k in keyof T]: undefined extends T[k] ? never : k;
 }[keyof T];
 
-export type LayerType =
-  | WMSLayerProps
-  | NSOLayerProps
-  | AdminAggregateLayerProps;
+export type LayerType = WMSLayerProps | NSOLayerProps | ImpactLayerProps;
+
+// Get the type of a union based on the value (V) and lookup field (K)
+export type DiscriminateUnion<
+  T,
+  K extends keyof T,
+  V extends T[K]
+> = T extends Record<K, V> ? T : never;
 
 export interface LayersMap {
   [key: string]: LayerType;

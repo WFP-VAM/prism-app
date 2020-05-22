@@ -1,25 +1,21 @@
-import React from 'react';
+import React, { createElement, ComponentType } from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 import { Map } from 'mapbox-gl';
 import { uniq } from 'lodash';
 import Boundaries from './Boundaries';
-import NSOLayers from './Layers/NSOLayers';
-import WMSLayers from './Layers/WMSLayers';
+import NSOLayer from './Layers/NSOLayer';
+import WMSLayer from './Layers/WMSLayer';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
-import {
-  dateRangeSelector,
-  layersSelector,
-  setMap,
-} from '../../context/mapStateSlice';
+import { layersSelector, setMap } from '../../context/mapStateSlice';
 import { availableDatesSelector } from '../../context/serverStateSlice';
 import appConfig from '../../config/prism.json';
 import {
   WMSLayerProps,
-  NSOLayerProps,
-  AdminAggregateLayerProps,
+  LayerType,
+  DiscriminateUnion,
 } from '../../config/types';
 import ImpactLayer from './Layers/ImpactLayer';
 
@@ -27,14 +23,21 @@ const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
 });
 
+type LayerComponentsMap<U extends LayerType> = {
+  [T in U['type']]: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
+};
+
+const componentTypes: LayerComponentsMap<LayerType> = {
+  wms: WMSLayer,
+  nso: NSOLayer,
+  impact: ImpactLayer,
+};
+
 function MapView({ classes }: MapViewProps) {
   const layers = useSelector(layersSelector);
   const dispatch = useDispatch();
   const serverAvailableDates = useSelector(availableDatesSelector);
 
-  const baselineLayers = layers.filter(
-    (layer): layer is NSOLayerProps => layer.type === 'nso',
-  );
   const serverLayers = layers.filter(
     (layer): layer is WMSLayerProps => layer.type === 'wms',
   );
@@ -45,8 +48,6 @@ function MapView({ classes }: MapViewProps) {
       .filter(value => value)
       .flat(),
   );
-
-  const { startDate } = useSelector(dateRangeSelector);
 
   const {
     map: { latitude, longitude, zoom },
@@ -69,17 +70,15 @@ function MapView({ classes }: MapViewProps) {
         }}
       >
         <Boundaries />
-        <NSOLayers layers={baselineLayers} />
-        <WMSLayers layers={serverLayers} selectedDate={startDate} />
         <>
-          {layers
-            .filter(
-              (layer): layer is AdminAggregateLayerProps =>
-                layer.type === 'admin_district_aggregate',
-            )
-            .map(layer => (
-              <ImpactLayer key={layer.id} layer={layer} />
-            ))}
+          {layers.map(layer => {
+            const component: ComponentType<{ layer: any }> =
+              componentTypes[layer.type];
+            return createElement(component, {
+              key: layer.id,
+              layer,
+            });
+          })}
         </>
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />

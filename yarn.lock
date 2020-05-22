@@ -10267,11 +10267,6 @@ redeyed@~0.4.0:
   dependencies:
     esprima "~1.0.4"
 
-redux-async-initial-state@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/redux-async-initial-state/-/redux-async-initial-state-0.3.0.tgz#65cff4e4761e3f43df6da5dff84eb5477f09f8a3"
-  integrity sha512-Is+i60mt0eDG64xICQFej7nueSF0ZHozPLINr7KqQk2Yp04zTmPEIY6xJmBEyaz7tmWtFoVeYqfKqt7gMSSKhA==
-
 redux-thunk@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"

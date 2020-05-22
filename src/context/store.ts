@@ -3,47 +3,39 @@ import {
   getDefaultMiddleware,
   combineReducers,
 } from '@reduxjs/toolkit';
-import {
-  innerReducer,
-  outerReducer,
-  middleware,
-} from 'redux-async-initial-state';
 
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
-import { getLayersAvailableDates } from '../utils/server-utils';
 
-const initializeStore = async (getCurrentState: any) => {
-  const layersAvailableDates = await getLayersAvailableDates();
-  const currentState = getCurrentState();
-  const { serverState } = currentState;
-
-  return new Promise(resolve => {
-    resolve({
-      ...currentState,
-      serverState: serverState.set('availableDates', layersAvailableDates),
-    });
-  });
-};
-
-const reducer = outerReducer(
-  combineReducers({
-    mapState: mapStateReduce,
-    serverState: serverStateReduce,
-    asyncInitialState: innerReducer,
-  }),
-);
+const reducer = combineReducers({
+  mapState: mapStateReduce,
+  serverState: serverStateReduce,
+});
 
 export const store = configureStore({
   reducer,
   // TODO: Instead of snoozing this check, we might want to
   // serialize the state
   middleware: [
-    middleware(initializeStore),
     ...getDefaultMiddleware({
       serializableCheck: false,
     }),
   ],
 });
 
-export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof reducer>;
+
+export type ThunkApi = {
+  dispatch: AppDispatch;
+  getState: () => RootState;
+  // can add 'extra' and 'rejectValue' here if we ever need them
+  // https://redux-toolkit.js.org/usage/usage-with-typescript#createasyncthunk
+};
+
+// Used as the third type definition for typing createAsyncThunk
+// e.g. createAsyncThunk<ReturnType, HandlerType, CreateAsyncThunkTypes>
+export type CreateAsyncThunkTypes = {
+  dispatch: AppDispatch;
+  state: RootState;
+};

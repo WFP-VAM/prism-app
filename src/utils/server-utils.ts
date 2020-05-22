@@ -1,7 +1,6 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { merge, unset, get, isString, union, isEmpty } from 'lodash';
-import { format, parse } from 'url';
+import { merge, get, isString, union, isEmpty } from 'lodash';
 
 import config from '../config/prism.json';
 import { AvailableDates } from '../config/types';
@@ -12,22 +11,13 @@ const xml2jsOptions = {
   ignoreComment: true,
 };
 
-export function formatServerUri(
-  serverUri: string,
-  queryProp: { [key: string]: string | boolean | number },
-) {
-  // The second arg of 'parse' allows us to have 'query' as an object
-  const { query, ...parsedUrl } = parse(serverUri, true);
-
-  // Removing 'search' to be able to format by 'query'
-  unset(parsedUrl, 'search');
-
-  return decodeURI(
-    format({
-      ...parsedUrl,
-      query: merge(query, queryProp),
-    }),
-  );
+export function formatUrl(
+  baseUrl: string,
+  params: { [key: string]: any } = {},
+): string {
+  const url = new URL(baseUrl);
+  Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
+  return url.toString();
 }
 
 /**
@@ -67,7 +57,7 @@ function formatCapabilitiesInfo(
  * @param serverUri
  */
 async function getWMSCapabilities(serverUri: string) {
-  const requestUri = formatServerUri(serverUri, { request: 'GetCapabilities' });
+  const requestUri = formatUrl(serverUri, { request: 'GetCapabilities' });
 
   try {
     const response = await fetch(requestUri);
@@ -98,7 +88,7 @@ async function getWMSCapabilities(serverUri: string) {
  * @param serverUri
  */
 async function getWCSCoverage(serverUri: string) {
-  const requestUri = formatServerUri(serverUri, {
+  const requestUri = formatUrl(serverUri, {
     request: 'DescribeCoverage',
   });
 

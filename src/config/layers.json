@@ -2,9 +2,8 @@
   "population_below_poverty": {
     "title": "Poverty Headcount",
     "type": "nso",
-    "data": "nsoPoverty",
+    "path": "nsoPoverty",
     "admin_code": "CODE1",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "25", "color": "#fef0d9" },
@@ -18,9 +17,8 @@
   "disabled": {
     "title": "Number of Disabled People",
     "type": "nso",
-    "data": "nsoDisabled",
+    "path": "nsoDisabled",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "2000", "color": "#fef0d9" },
@@ -35,9 +33,8 @@
   "elderly": {
     "title": "Number of Single-headed Elderly Households",
     "type": "nso",
-    "data": "nsoElderly",
+    "path": "nsoElderly",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "1000", "color": "#fef0d9" },
@@ -51,9 +48,8 @@
   "herders": {
     "title": "Number of herder households",
     "type": "nso",
-    "data": "nsoHerders",
+    "path": "nsoHerders",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "300", "color": "#fef0d9" },
@@ -67,9 +63,8 @@
   "livestock": {
     "title": "Number of Livestock (in thousands)",
     "type": "nso",
-    "data": "nsoLivestock",
+    "path": "nsoLivestock",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "100", "color": "#fef0d9" },
@@ -83,9 +78,8 @@
   "child": {
     "title": "Number of Children Under the Age of 5",
     "type": "nso",
-    "data": "nsoChild",
+    "path": "nsoChild",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "200", "color": "#fef0d9" },
@@ -99,9 +93,8 @@
   "herd_200": {
     "title": "Households with less than 200 Heads of Livestock",
     "type": "nso",
-    "data": "nsoHerdsize",
+    "path": "nsoHerdsize",
     "admin_code": "CODE1",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "2000", "color": "#fef0d9" },
@@ -115,9 +108,8 @@
   "population_total": {
     "title": "Total population",
     "type": "nso",
-    "data": "nsoPop",
+    "path": "nsoPop",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "2500", "color": "#fef0d9" },
@@ -132,10 +124,15 @@
     "title": "Pasture Anomaly",
     "type": "wms",
     "server_layer_name": "ModisAnomaly",
-    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisAnomaly",
-    "has_date": true,
+    "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "days",
     "opacity": 0.3,
+    "wcsConfig": {
+      "no_data": 65535,
+      "scale": 0.01,
+      "pixelResolution": 64,
+      "offset": -200
+    },
     "legend_text": "Converts  NDVI to pasture (kg/ha) values and divides the current period by the long term average to calculate pasture anomaly.",
     "legend": [
       { "value": "-80%", "color": "#ff0000" },
@@ -155,8 +152,10 @@
     "title": "NDVI",
     "type": "wms",
     "server_layer_name": "ModisIndices",
-    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?styles=ndvi&layers=ModisIndices",
-    "has_date": true,
+    "additional_query_params": {
+      "styles": "ndvi"
+    },
+    "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "days",
     "opacity": 0.3,
     "legend_text": "Median averaged NDVI image from composite Landsat & Sentinel imagery",
@@ -177,8 +176,12 @@
     "title": "Surface temperature",
     "type": "wms",
     "server_layer_name": "ModisLST",
-    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisLST",
-    "has_date": true,
+    "base_url": "https://mongolia.sibelius-datacube.org:5000",
+    "wcsConfig": {
+      "scale": 0.02,
+      "offset": -273,
+      "pixelResolution": 64
+    },
     "date_interval": "day",
     "opacity": 0.3,
     "legend_text": "Median value of Land Surface Temperature in degrees Celsius over a 10-day period (MODIS)",
@@ -199,8 +202,7 @@
     "title": "Vegetation Health Index",
     "type": "wms",
     "server_layer_name": "ModisVHI",
-    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisVHI",
-    "has_date": true,
+    "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "day",
     "opacity": 0.3,
     "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
@@ -216,8 +218,7 @@
     "title": "Snow cover (%)",
     "type": "wms",
     "server_layer_name": "ModisSnowPercentage",
-    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisSnowPercentage",
-    "has_date": true,
+    "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "day",
     "opacity": 0.3,
     "legend_text": "Snow Percentage for a 10day period, where the value represent the percentage of times that a pixel had snow"
@@ -225,42 +226,29 @@
   "DzudRiskMap": {
     "title": "Dzud risk map",
     "type": "wms",
-    "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=DZUDRM12311",
+    "base_url": "https://mng-wfp.ovio.org:8443/geoserver/prism",
     "server_layer_name": "DZUDRM12311",
-    "has_date": true,
     "date_interval": "month",
     "opacity": 0.3,
     "legend_text": "Dzud risk map",
     "legend": [
-      { "value": "20000", "color": "#000000" },
       { "value": "20001", "color": "#B0E2FF" },
       { "value": "30000", "color": "#FFFFFF" }
     ]
   },
-  "ModisLSTDistrictAvg": {
-    "title": "Median Surface Temperature by District",
-    "type": "admin_district_aggregate",
-    "server_layer_name": "ModisLST",
-    "base_url": "https://mongolia.sibelius-datacube.org:5000",
-    "coverage_id": "ModisLST",
-    "date_interval": "day",
-    "opacity": 0.3,
-    "legend_text": "Median value of Land Surface Temperature in degrees Celsius over a 10-day period (MODIS)",
+  "herd_pasture_impact": {
+    "title": "Herders exposed to severe pasture anomaly",
+    "type": "impact",
+    "hazard_layer": "pasture_anomaly",
+    "baseline_layer": "herders",
     "operation": "median",
-    "scale": 0.02,
-    "offset": -273,
-    "pixelResolution": 64,
+    "threshold": -50,
+    "opacity": 0.3,
+    "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -50%",
     "legend": [
-      { "value": -53, "color": "#5c9fc8" },
-      { "value": -42, "color": "#7ab1c0" },
-      { "value": -30, "color": "#9fc3b3" },
-      { "value": -19, "color": "#d9e79a" },
-      { "value": -8, "color": "#f3f88e" },
-      { "value": 4, "color": "#f0d779" },
-      { "value": 15, "color": "#eeb563" },
-      { "value": 26, "color": "#e98f51" },
-      { "value": 38, "color": "#e2633e" },
-      { "value": 49, "color": "#da402e" }
+      { "value": 250, "color": "#ffeda0" },
+      { "value": 300, "color": "#feb24c" },
+      { "value": 350, "color": "#f03b20" }
     ]
   }
 }

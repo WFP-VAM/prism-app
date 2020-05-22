@@ -3,6 +3,7 @@ import bbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import * as GeoTIFF from 'geotiff';
 import { buffer } from 'd3-fetch';
+import { formatUrl } from '../../../utils/server-utils';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =
@@ -68,6 +69,28 @@ function numberOfTiles(
   return Math.ceil((range * resolution) / pixelsPerTile);
 }
 
+export function getWMSUrl(
+  baseUrl: string,
+  layerName: string,
+  override: { [key: string]: string } = {},
+) {
+  const params = {
+    version: '1.1.1',
+    request: 'GetMap',
+    format: 'image/png',
+    transparent: true,
+    exceptions: 'application/vnd.ogc.se_inimage',
+    bboxsr: 3857,
+    imagesr: 3857,
+    width: 256,
+    height: 256,
+    srs: 'EPSG:3857',
+    ...override,
+    layers: layerName,
+  };
+
+  return formatUrl(`${baseUrl}/wms`, params);
+}
 export function getWCSUrl(
   baseUrl: string,
   layerName: string,
@@ -77,8 +100,6 @@ export function getWCSUrl(
   width: number,
   height?: number,
 ) {
-  const url = new URL(baseUrl);
-
   const params = {
     service: 'WCS',
     request: 'GetCoverage',
@@ -93,11 +114,7 @@ export function getWCSUrl(
     height: (height || width).toString(),
     format: 'GeoTIFF',
   };
-
-  Object.keys(params).forEach(k =>
-    url.searchParams.append(k, params[k as keyof typeof params]),
-  );
-  return url.toString();
+  return formatUrl(baseUrl, params);
 }
 
 export function WCSRequestUrl(

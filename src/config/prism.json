@@ -22,7 +22,7 @@
       "dzud_risk": ["DzudRiskMap", "ModisSnowPercentage"]
     },
     "impact": {
-
+      "agriculture": ["herd_pasture_impact"]
     }
   }
 }

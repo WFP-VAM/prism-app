@@ -5,8 +5,8 @@ import { render } from '@testing-library/react';
 import MapView from '.';
 import { store } from '../../context/store';
 
-jest.mock('./Layers/WMSLayers', () => 'mock-WMSLayers');
-jest.mock('./Layers/NSOLayers', () => 'mock-NSOLayers');
+jest.mock('./Layers/WMSLayer', () => 'mock-WMSLayer');
+jest.mock('./Layers/NSOLayer', () => 'mock-NSOLayer');
 jest.mock('./Boundaries', () => 'mock-Boundaries');
 jest.mock('./Legends', () => 'mock-Legends');
 jest.mock('./DateSelector', () => 'mock-DateSelector');
