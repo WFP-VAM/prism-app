@@ -1,7 +1,12 @@
 import React, { createElement, ComponentType } from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { useSelector, useDispatch } from 'react-redux';
-import { createStyles, WithStyles, withStyles } from '@material-ui/core';
+import {
+  createStyles,
+  WithStyles,
+  CircularProgress,
+  withStyles,
+} from '@material-ui/core';
 import { Map } from 'mapbox-gl';
 import { uniq } from 'lodash';
 import Boundaries from './Boundaries';
@@ -9,7 +14,7 @@ import NSOLayer from './Layers/NSOLayer';
 import WMSLayer from './Layers/WMSLayer';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
-import { layersSelector, setMap } from '../../context/mapStateSlice';
+import { layersSelector, isLoading, setMap } from '../../context/mapStateSlice';
 import { availableDatesSelector } from '../../context/serverStateSlice';
 import appConfig from '../../config/prism.json';
 import {
@@ -35,6 +40,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 
 function MapView({ classes }: MapViewProps) {
   const layers = useSelector(layersSelector);
+  const loading = useSelector(isLoading);
   const dispatch = useDispatch();
   const serverAvailableDates = useSelector(availableDatesSelector);
 
@@ -58,6 +64,11 @@ function MapView({ classes }: MapViewProps) {
 
   return (
     <div className={classes.container}>
+      {loading && (
+        <div className={classes.loading}>
+          <CircularProgress size={100} />
+        </div>
+      )}
       <MapboxMap
         // eslint-disable-next-line react/style-prop-object
         style="mapbox://styles/mapbox/light-v10"
@@ -91,6 +102,17 @@ const styles = () =>
   createStyles({
     container: {
       position: 'relative',
+    },
+    loading: {
+      position: 'absolute',
+      height: '100%',
+      width: '100%',
+      backgroundColor: 'black',
+      opacity: 0.75,
+      zIndex: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   });
 
