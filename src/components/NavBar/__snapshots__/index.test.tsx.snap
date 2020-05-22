@@ -42,7 +42,7 @@ exports[`renders as expected 1`] = `
             />
             <mock-menuitem
               icon="icon_impact.png"
-              layerscategories=""
+              layerscategories="[object Object]"
               title="Impact"
             />
           </div>
@@ -218,7 +218,7 @@ exports[`renders as expected 1`] = `
                     />
                     <mock-menuitem
                       icon="icon_impact.png"
-                      layerscategories=""
+                      layerscategories="[object Object]"
                       title="Impact"
                     />
                   </div>
