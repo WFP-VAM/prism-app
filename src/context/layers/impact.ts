@@ -121,9 +121,10 @@ export async function fetchImpactLayerData(
     layerDataSelector(layer.hazardLayer)(getState())!,
   );
   const {
-    layer: { wcsConfig: { noData, scale, offset } = {}},
+    layer: { wcsConfig },
     data: { rasters, transform, image },
   } = hazardLayer;
+  const { noData, scale, offset } = wcsConfig || {};
 
   const allPoints = Array.from(rasters[0], (value, i) => ({
     ...indexToGeoCoords(i, rasters.width, transform),
@@ -166,12 +167,14 @@ export async function fetchImpactLayerData(
   if (!baselineLayer) {
     const baselineLayerDef = LayerDefinitions[layer.baselineLayer];
     const {
-      payload: { data: { data } = {}},
+      payload: { data: payloadData },
     } = (await dispatch(
       loadLayerData({ layer: baselineLayerDef, extent } as LayerDataParams<
         NSOLayerProps
       >),
     )) as { payload: { data?: { data: unknown } } };
+
+    const { data } = payloadData || {};
     // eslint-disable-next-line fp/no-mutation
     baselineData = checkBaselineDataLayer(layer.baselineLayer, data);
   } else {
