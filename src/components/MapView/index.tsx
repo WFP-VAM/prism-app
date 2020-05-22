@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
 import Boundaries from './Boundaries';
-import { MapTooltip } from './MapTooltip';
+import { MapTooltip, VectorTooltip, GroundstationTooltip } from './MapTooltip';
 import NSOLayers from './NSOLayers';
 import WMSLayers from './WMSLayers';
 import GroundstationLayers from './GroundstationLayers';
@@ -23,6 +23,7 @@ const MapboxMap = ReactMapboxGl({
 function MapView({ classes }: MapViewProps) {
   const [popupCoordinates, setpopupCoordinates] = useState();
   const [popupLocation, setpopupLocation] = useState();
+  const [vectorData, setvectorData] = useState();
   const layers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
@@ -64,14 +65,40 @@ function MapView({ classes }: MapViewProps) {
             setpopupLocation(locationName);
           }}
         />
-        {popupCoordinates && (
+        {popupCoordinates && !baselineLayers.size && (
           <MapTooltip
             coordinates={popupCoordinates}
             locationName={popupLocation}
           />
         )}
-        <NSOLayers layers={baselineLayers} />
-        <GroundstationLayers layers={groundstationLayers} />
+        {popupCoordinates && baselineLayers.size && (
+          <VectorTooltip
+            coordinates={popupCoordinates}
+            locationName={popupLocation}
+            vectorData={vectorData}
+            dataTitle={layers.valueSeq().map(({ title }) => title)}
+          />
+        )}
+        {popupCoordinates && groundstationLayers.size && (
+          <GroundstationTooltip
+            coordinates={popupCoordinates}
+            locationName={popupLocation}
+            vectorData={vectorData}
+            dataTitle={layers.valueSeq().map(({ title }) => title)}
+          />
+        )}
+        <NSOLayers
+          layers={baselineLayers}
+          getVectorData={(data: any) => {
+            setvectorData(data);
+          }}
+        />
+        <GroundstationLayers
+          layers={groundstationLayers}
+          getVectorData={(data: any) => {
+            setvectorData(data);
+          }}
+        />
         <WMSLayers layers={serverLayers} selectedDate={startDate} />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />

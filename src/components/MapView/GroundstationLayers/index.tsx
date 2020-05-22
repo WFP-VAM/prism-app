@@ -42,7 +42,13 @@ const groundstationDataGeoJSON = GeoJSON.parse(
   },
 );
 
-function GroundstationLayers({ layers }: { layers: LayersMap }) {
+function GroundstationLayers({
+  layers,
+  getVectorData,
+}: {
+  layers: LayersMap;
+  getVectorData: any;
+}) {
   const layerConfig = layers.first(null);
 
   if (!layerConfig) {
@@ -62,7 +68,10 @@ function GroundstationLayers({ layers }: { layers: LayersMap }) {
       data={groundstationDataGeoJSON}
       circleLayout={circleLayout}
       circlePaint={circlePaint}
-      circleOnClick={onClickCircle}
+      circleOnClick={(evt: any) => {
+        getVectorData(get(evt.features[0], 'properties.rasterheight'));
+        onClickCircle(evt);
+      }}
     />
   );
 }

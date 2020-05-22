@@ -19,10 +19,32 @@ export function RasterTooltip({ coordinates, locationName }: any) {
   );
 }
 
-export function VectorTooltip({ coordinates, locationName }: any) {
+export function VectorTooltip({
+  coordinates,
+  locationName,
+  vectorData,
+  dataTitle,
+}: any) {
   return (
     <MapTooltip coordinates={coordinates} locationName={locationName}>
-      <h4>Insert vector data here!</h4>
+      <h4>
+        {dataTitle}: {vectorData}
+      </h4>
+    </MapTooltip>
+  );
+}
+
+export function GroundstationTooltip({
+  coordinates,
+  locationName,
+  vectorData,
+  dataTitle,
+}: any) {
+  return (
+    <MapTooltip coordinates={coordinates} locationName={locationName}>
+      <h4>
+        {dataTitle}: {vectorData}
+      </h4>
     </MapTooltip>
   );
 }
