@@ -12,6 +12,7 @@ import { uniq } from 'lodash';
 import Boundaries from './Boundaries';
 import NSOLayer from './Layers/NSOLayer';
 import WMSLayer from './Layers/WMSLayer';
+import GroundstationLayer from './Layers/GroundstationLayer';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
 import { layersSelector, isLoading, setMap } from '../../context/mapStateSlice';
@@ -36,6 +37,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   wms: WMSLayer,
   nso: NSOLayer,
   impact: ImpactLayer,
+  groundstation: GroundstationLayer,
 };
 
 function MapView({ classes }: MapViewProps) {

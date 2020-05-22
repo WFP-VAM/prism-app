@@ -151,11 +151,22 @@ export class ImpactLayerProps extends CommonLayerProps {
   legend: LegendDefinition;
 }
 
+export class GroundstationLayerProps extends CommonLayerProps {
+  type: 'groundstation';
+  data: string;
+  @makeRequired
+  legend: LegendDefinition;
+}
+
 export type RequiredKeys<T> = {
   [k in keyof T]: undefined extends T[k] ? never : k;
 }[keyof T];
 
-export type LayerType = WMSLayerProps | NSOLayerProps | ImpactLayerProps;
+export type LayerType =
+  | WMSLayerProps
+  | NSOLayerProps
+  | ImpactLayerProps
+  | GroundstationLayerProps;
 
 // Get the type of a union based on the value (V) and lookup field (K)
 export type DiscriminateUnion<

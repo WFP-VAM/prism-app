@@ -5,11 +5,16 @@ import { CreateAsyncThunkTypes, ThunkApi } from '../store';
 import { fetchNsoLayerData, NSOLayerData } from './nso';
 import { ImpactLayerData, fetchImpactLayerData } from './impact';
 import { WMSLayerData, fetchWMSLayerData } from './wms';
+import {
+  fetchGroundstationData,
+  GroundstationLayerData,
+} from './groundstation';
 
 type LayerSpecificDataTypes = {
   wms: WMSLayerData;
   impact: ImpactLayerData;
   nso: NSOLayerData;
+  groundstation: GroundstationLayerData;
 };
 
 export interface LayerData<L extends LayerType> {
@@ -64,6 +69,7 @@ export const loadLayerData = createAsyncThunk<
     impact: fetchImpactLayerData,
     wms: fetchWMSLayerData,
     nso: fetchNsoLayerData,
+    groundstation: fetchGroundstationData,
   };
   const handler: HandlerType = layerLoaders[layer.type];
   const layerData = await handler(params, thunkApi);

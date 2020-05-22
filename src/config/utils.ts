@@ -7,6 +7,7 @@ import {
   LayersMap,
   LayerType,
   ImpactLayerProps,
+  GroundstationLayerProps,
 } from './types';
 
 type layerKeys = keyof typeof rawLayers;
@@ -38,6 +39,11 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
       return throwInvalidLayer();
     case 'impact':
       if (checkRequiredKeys(ImpactLayerProps, definition, true)) {
+        return definition;
+      }
+      return throwInvalidLayer();
+    case 'groundstation':
+      if (checkRequiredKeys(GroundstationLayerProps, definition, true)) {
         return definition;
       }
       return throwInvalidLayer();

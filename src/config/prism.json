@@ -18,8 +18,9 @@
       "livestock_and_herders": ["herd_200", "herders", "livestock"]
     },
     "climate": {
-      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisLST", "ModisVHI", "ModisLSTDistrictAvg"],
-      "dzud_risk": ["DzudRiskMap", "ModisSnowPercentage"]
+      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisLST", "ModisVHI"],
+      "dzud_risk": ["DzudRiskMap", "ModisSnowPercentage"],
+      "groundstation_data": ["snow_groundstations"]
     },
     "impact": {
       "agriculture": ["herd_pasture_impact"]
