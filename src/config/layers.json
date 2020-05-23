@@ -201,6 +201,12 @@
     "title": "Vegetation Health Index",
     "type": "wms",
     "server_layer_name": "ModisVHI",
+    "wcsConfig": {
+      "scale": 0.1,
+      "_todo": "Update with correct scale",
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "day",
     "opacity": 0.3,
