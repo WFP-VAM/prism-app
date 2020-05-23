@@ -2,7 +2,13 @@
   "animal_deaths": {
     "title": "Animal deaths due to disease or natural hazards",
     "table": "./data/tables/NSO_Animal_Deaths_Annual_Admin1.csv",
-    "legend_text": "Annual deaths of animals due to disease or natural hazards (including dzud). Source: National Statistics Office"
+    "legend_text": "Annual deaths of animals due to disease or natural hazards (including dzud). Source: National Statistics Office",
+    "chart": {
+      "dropColumn": 1,
+      "type": "stack",
+      "category": "Aimag",
+      "xAxis": "Year"
+    }
   },
   "hay_prices": {
     "title": "Monthly hay prices",
@@ -15,5 +21,3 @@
     "legend_text": "Poverty headcount over two periods. Source: National Statistics Office"
   }
 }
-
-
