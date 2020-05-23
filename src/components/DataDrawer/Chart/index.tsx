@@ -27,7 +27,7 @@ export function buildChart(
       label: row[chartConfig.category],
       stack: '1',
       fill: true,
-      fillColor: getRandomColor(),
+      backgroundColor: getRandomColor(),
       // lineTension: 0.5,
       // backgroundColor: 'rgba(75,192,192,1)',
       // borderColor: 'rgba(0,0,0,1)',
