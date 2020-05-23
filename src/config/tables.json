@@ -13,7 +13,15 @@
     "title": "Poverty headcount over time",
     "table": "./data/tables/NSO_Poverty_Headcount_Admin1.csv",
     "legend_text": "Poverty headcount over two periods. Source: National Statistics Office"
+  },
+  "pop_age": {
+    "title": "Population by age group",
+    "table": "./data/tables/NSO_Pop_Age_Group_Admin2.csv",
+    "legend_text": "Population by age group in 2019. Source: National Statistics Office"
+  },
+  "hay_fodder_harvest": {
+    "title": "Hay and fodder harvest",
+    "table": "./data/tables/NSO_Hay_Fodder_Harvest_Admin2.csv",
+    "legend_text": "Amount of hay and fodder harvested in 2019 (tonnes). Source: National Statistics Office"
   }
 }
-
-

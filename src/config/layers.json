@@ -31,6 +31,86 @@
     ],
     "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
   },
+  "hay_harvest": {
+    "title": "Hay harvest",
+    "type": "nso",
+    "data": "nsoHayHarvest",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "500", "color": "#edf8fb" },
+      { "value": "1000", "color": "#b2e2e2" },
+      { "value": "3000", "color": "#66c2a4" },
+      { "value": "5000", "color": "#2ca25f" },
+      { "value": "7000", "color": "#006d2c" }
+    ],
+    "legend_text": "Amount of hay harvested in tonnes by Soum. Year: 2019. Source: National Statistical Office"
+  },
+  "mvam_hay_reserves": {
+    "title": "Hay reserves",
+    "type": "nso",
+    "data": "mvamHayreserves",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "0%", "color": "#d7191c" },
+      { "value": "1%", "color": "#fdae61" },
+      { "value": "20%", "color": "#ffffbf" },
+      { "value": "40%", "color": "#a6d96a" },
+      { "value": "60%", "color": "#1a9641" }
+    ],
+    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+  },
+  "mvam_cash_reserves": {
+    "title": "Cash reserves",
+    "type": "nso",
+    "data": "mvamCash",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "0%", "color": "#d7191c" },
+      { "value": "10%", "color": "#fdae61" },
+      { "value": "20%", "color": "#ffffbf" },
+      { "value": "30%", "color": "#a6d96a" },
+      { "value": "40%", "color": "#1a9641" }
+    ],
+    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+  },
+  "mvam_fodder_reserves": {
+    "title": "Fodder reserves",
+    "type": "nso",
+    "data": "mvamFodder",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "0%", "color": "#d7191c" },
+      { "value": "1%", "color": "#fdae61" },
+      { "value": "11%", "color": "#ffffbf" },
+      { "value": "21%", "color": "#a6d96a" },
+      { "value": "31%", "color": "#1a9641" }
+    ],
+    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+  },
+  "mvam_hay_prices": {
+    "title": "Hay prices",
+    "type": "nso",
+    "data": "mvamHayprices",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "0%", "color": "#d7191c" },
+      { "value": "10%", "color": "#fdae61" },
+      { "value": "20%", "color": "#ffffbf" },
+      { "value": "30%", "color": "#a6d96a" },
+      { "value": "40%", "color": "#1a9641" }
+    ],
+    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+  },
   "elderly": {
     "title": "Single-headed elderly households",
     "type": "nso",

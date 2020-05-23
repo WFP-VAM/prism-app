@@ -13,12 +13,15 @@
     "zoom": 4.5
   },
   "categories": {
-    "baseline": {
-      "vulnerable_groups": ["population_below_poverty", "disabled", "elderly", "child"],
-      "livestock_and_herders": ["herd_200", "herders", "livestock"],
-      "total_population": ["population_total"]
+    "exposure": {
+      "demographics": ["population_total"],
+      "livestock_and_herders": ["herders", "livestock"]
     },
-    "climate": {
+    "vulnerability": {
+      "vulnerable_groups": ["population_below_poverty", "disabled", "elderly", "child"],
+      "herders": ["herd_200"]
+    },
+    "hazards": {
       "drought_indicators": ["pasture_anomaly", "ndvi", "ModisVHI"],
       "winter_conditions": ["ModisSnowPercentage","ModisLST"],
       "ground_station_data": ["snow_groundstations"]
@@ -27,9 +30,14 @@
       "dzud_risk": ["DzudRiskMap"],
       "impact_analysis": ["herd_pasture_impact", "small_herder_dzud_risk", "livestock_vhi", "livestock_dzud_risk"]
     },
+    "capacity": {
+      "livestock_and_crop_preparedness": ["hay_harvest", "mvam_hay_reserves", "mvam_cash_reserves", "mvam_fodder_reserves", "mvam_hay_prices"]
+    },
     "tables": {
+      "demographics": ["pop_age"],
       "socioeconomic_data": ["poverty"],
       "livestock_data": ["animal_deaths"],
+      "crops": ["hay_fodder_harvest"],
       "price_data": ["hay_prices"]
     }
   }
