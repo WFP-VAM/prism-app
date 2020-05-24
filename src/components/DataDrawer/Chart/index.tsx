@@ -4,10 +4,9 @@ import { ChartConfig } from '../../../config/types';
 
 function getRandomColor() {
   const letters = '0123456789ABCDEF'.split('');
-  let color = '#';
-  Array.from(Array(6)).forEach(() => {
-    color += letters[Math.floor(Math.random() * 16)];
-  });
+  const color = `#${Array.from(Array(6))
+    .map(() => letters[Math.floor(Math.random() * 16)])
+    .join('')}`;
   return color;
 }
 
@@ -16,9 +15,9 @@ export function buildChart(
   chartConfig: ChartConfig,
   title: string,
 ) {
-  const tableData = [...tableJson];
+  const header = tableJson[0];
+  const tableData = tableJson.slice(1, tableJson.length);
   try {
-    const header = tableData.shift();
     const indices = Object.keys(header).filter(key =>
       key.includes(chartConfig.xAxis || ''),
     );
@@ -29,7 +28,6 @@ export function buildChart(
       fill: true,
       backgroundColor: getRandomColor(),
       // lineTension: 0.5,
-      // backgroundColor: 'rgba(75,192,192,1)',
       // borderColor: 'rgba(0,0,0,1)',
       borderWidth: 2,
       data: indices.map(index => row[index]),
