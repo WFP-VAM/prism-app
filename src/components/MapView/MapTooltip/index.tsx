@@ -2,49 +2,20 @@ import React from 'react';
 import { Popup } from 'react-mapbox-gl';
 import styles from './styles.css';
 
-export function MapTooltip({ coordinates, locationName, children }: any) {
+export function MapTooltip({
+  coordinates,
+  locationName,
+  popupData,
+  dataTitle,
+}: any) {
   return (
     <Popup anchor="bottom" coordinates={coordinates} style={styles}>
       <h4>Location: {locationName}</h4>
-      {children}
+      {dataTitle.size && popupData ? (
+        <h4>
+          {dataTitle}: {popupData}
+        </h4>
+      ) : null}
     </Popup>
-  );
-}
-
-export function RasterTooltip({ coordinates, locationName }: any) {
-  return (
-    <MapTooltip coordinates={coordinates} locationName={locationName}>
-      <h4>Insert raster data here!</h4>
-    </MapTooltip>
-  );
-}
-
-export function VectorTooltip({
-  coordinates,
-  locationName,
-  vectorData,
-  dataTitle,
-}: any) {
-  return (
-    <MapTooltip coordinates={coordinates} locationName={locationName}>
-      <h4>
-        {dataTitle}: {vectorData}
-      </h4>
-    </MapTooltip>
-  );
-}
-
-export function GroundstationTooltip({
-  coordinates,
-  locationName,
-  vectorData,
-  dataTitle,
-}: any) {
-  return (
-    <MapTooltip coordinates={coordinates} locationName={locationName}>
-      <h4>
-        {dataTitle}: {vectorData}
-      </h4>
-    </MapTooltip>
   );
 }

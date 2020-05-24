@@ -28,10 +28,10 @@ function matchingCode(boundaryCode: string, dataCode: string): boolean {
 
 function NSOLayers({
   layers,
-  getVectorData,
+  getPopupData,
 }: {
   layers: LayersMap;
-  getVectorData: any;
+  getPopupData: any;
 }) {
   // If a baselineLayer is selected, extract the data for each admin boundary.
   /**
@@ -89,7 +89,7 @@ function NSOLayers({
       fillPaint={fillPaintData}
       fillOnClick={(evt: any) => {
         getAdminData(evt);
-        getVectorData(get(evt.features[0], 'properties.data'));
+        getPopupData(get(evt.features[0], 'properties.data'));
       }}
     />
   );

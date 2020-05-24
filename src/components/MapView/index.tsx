@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
 import Boundaries from './Boundaries';
-import { MapTooltip, VectorTooltip, GroundstationTooltip } from './MapTooltip';
+import { MapTooltip } from './MapTooltip';
 import NSOLayers from './NSOLayers';
 import WMSLayers from './WMSLayers';
 import GroundstationLayers from './GroundstationLayers';
@@ -23,7 +23,7 @@ const MapboxMap = ReactMapboxGl({
 function MapView({ classes }: MapViewProps) {
   const [popupCoordinates, setpopupCoordinates] = useState();
   const [popupLocation, setpopupLocation] = useState();
-  const [vectorData, setvectorData] = useState();
+  const [popupData, setpopupData] = useState();
   const layers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
@@ -59,44 +59,32 @@ function MapView({ classes }: MapViewProps) {
       >
         <Boundaries
           getCoordinates={(coordinates: any) => {
+            // Sets state to undefined so data will not show up on tooltip for Groundstation data if circle point is not clicked on.
+            setpopupData(undefined);
             setpopupCoordinates(coordinates);
           }}
           getLocationName={(locationName: any) => {
             setpopupLocation(locationName);
           }}
         />
-        {popupCoordinates && !baselineLayers.size && (
+        {popupCoordinates && (
           <MapTooltip
             coordinates={popupCoordinates}
             locationName={popupLocation}
-          />
-        )}
-        {popupCoordinates && baselineLayers.size && (
-          <VectorTooltip
-            coordinates={popupCoordinates}
-            locationName={popupLocation}
-            vectorData={vectorData}
-            dataTitle={layers.valueSeq().map(({ title }) => title)}
-          />
-        )}
-        {popupCoordinates && groundstationLayers.size && (
-          <GroundstationTooltip
-            coordinates={popupCoordinates}
-            locationName={popupLocation}
-            vectorData={vectorData}
+            popupData={popupData}
             dataTitle={layers.valueSeq().map(({ title }) => title)}
           />
         )}
         <NSOLayers
           layers={baselineLayers}
-          getVectorData={(data: any) => {
-            setvectorData(data);
+          getPopupData={(data: any) => {
+            setpopupData(data);
           }}
         />
         <GroundstationLayers
           layers={groundstationLayers}
-          getVectorData={(data: any) => {
-            setvectorData(data);
+          getPopupData={(data: any) => {
+            setpopupData(data);
           }}
         />
         <WMSLayers layers={serverLayers} selectedDate={startDate} />

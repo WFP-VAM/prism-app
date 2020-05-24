@@ -44,10 +44,10 @@ const groundstationDataGeoJSON = GeoJSON.parse(
 
 function GroundstationLayers({
   layers,
-  getVectorData,
+  getPopupData,
 }: {
   layers: LayersMap;
-  getVectorData: any;
+  getPopupData: any;
 }) {
   const layerConfig = layers.first(null);
 
@@ -69,7 +69,7 @@ function GroundstationLayers({
       circleLayout={circleLayout}
       circlePaint={circlePaint}
       circleOnClick={(evt: any) => {
-        getVectorData(get(evt.features[0], 'properties.rasterheight'));
+        getPopupData(get(evt.features[0], 'properties.rasterheight'));
         onClickCircle(evt);
       }}
     />
