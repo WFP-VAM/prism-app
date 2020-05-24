@@ -50,9 +50,26 @@ export function buildChart(
               fontSize: 20,
             },
             scales: {
+              xAxes: [
+                {
+                  gridLines: {
+                    display: false,
+                  },
+                  ticks: {
+                    fontColor: '#CCC', // this here
+                  },
+                },
+              ],
               yAxes: [
                 {
+                  display: true,
+                  ticks: {
+                    fontColor: '#CCC', // this here
+                  },
                   stacked: true,
+                  gridLines: {
+                    display: false,
+                  },
                 },
               ],
             },
