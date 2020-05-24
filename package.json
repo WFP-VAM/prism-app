@@ -58,6 +58,7 @@
     "babel-eslint": "10.0.3",
     "d3-fetch": "^1.1.2",
     "chart.js": "^2.9.3",
+    "colormap": "^2.3.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",

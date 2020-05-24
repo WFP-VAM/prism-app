@@ -1,14 +1,8 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
+import colormap from 'colormap';
+import { shuffle } from 'lodash';
 import { ChartConfig } from '../../../config/types';
-
-function getRandomColor() {
-  const letters = '0123456789ABCDEF'.split('');
-  const color = `#${Array.from(Array(6))
-    .map(() => letters[Math.floor(Math.random() * 16)])
-    .join('')}`;
-  return color;
-}
 
 export function buildChart(
   tableJson: any[],
@@ -17,18 +11,24 @@ export function buildChart(
 ) {
   const header = tableJson[0];
   const tableData = tableJson.slice(1, tableJson.length);
+  const colors = shuffle(
+    colormap({
+      colormap: 'rainbow-soft',
+      nshades: tableData.length,
+      format: 'hex',
+      alpha: 0.7,
+    }),
+  );
   try {
     const indices = Object.keys(header).filter(key =>
       key.includes(chartConfig.xAxis || ''),
     );
     const labels = indices.map(index => header[index]);
-    const datasets = tableData.map(row => ({
+    const datasets = tableData.map((row, i) => ({
       label: row[chartConfig.category],
       stack: '1',
       fill: true,
-      backgroundColor: getRandomColor(),
-      // lineTension: 0.5,
-      // borderColor: 'rgba(0,0,0,1)',
+      backgroundColor: colors[i],
       borderWidth: 2,
       data: indices.map(index => row[index]),
     }));
