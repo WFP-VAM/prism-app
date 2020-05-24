@@ -24,6 +24,7 @@ function MapView({ classes }: MapViewProps) {
   const [popupCoordinates, setpopupCoordinates] = useState();
   const [popupLocation, setpopupLocation] = useState();
   const [popupData, setpopupData] = useState();
+  const [showPopup, setshowPopup] = useState(false);
   const layers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
@@ -56,12 +57,16 @@ function MapView({ classes }: MapViewProps) {
           height: '100vh',
           width: '100vw',
         }}
+        onClick={() => {
+          setshowPopup(false);
+        }}
       >
         <Boundaries
           getCoordinates={(coordinates: any) => {
             // Sets state to undefined so data will not show up on tooltip for Groundstation data if circle point is not clicked on.
             setpopupData(undefined);
             setpopupCoordinates(coordinates);
+            setshowPopup(true);
           }}
           getLocationName={(locationName: any) => {
             setpopupLocation(locationName);
@@ -73,6 +78,7 @@ function MapView({ classes }: MapViewProps) {
             locationName={popupLocation}
             popupData={popupData}
             dataTitle={layers.valueSeq().map(({ title }) => title)}
+            showPopup={showPopup}
           />
         )}
         <NSOLayers

@@ -7,15 +7,20 @@ export function MapTooltip({
   locationName,
   popupData,
   dataTitle,
+  showPopup,
 }: any) {
   return (
-    <Popup anchor="bottom" coordinates={coordinates} style={styles}>
-      <h4>Location: {locationName}</h4>
-      {dataTitle.size && popupData ? (
-        <h4>
-          {dataTitle}: {popupData}
-        </h4>
-      ) : null}
-    </Popup>
+    <>
+      {showPopup && (
+        <Popup anchor="bottom" coordinates={coordinates} style={styles}>
+          <h4>Location: {locationName}</h4>
+          {dataTitle.size && popupData ? (
+            <h4>
+              {dataTitle}: {popupData}
+            </h4>
+          ) : null}
+        </Popup>
+      )}
+    </>
   );
 }
