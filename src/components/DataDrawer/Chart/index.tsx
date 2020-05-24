@@ -26,7 +26,6 @@ export function buildChart(
     const labels = indices.map(index => header[index]);
     const datasets = tableData.map((row, i) => ({
       label: row[chartConfig.category],
-      stack: '1',
       fill: true,
       backgroundColor: colors[i],
       borderWidth: 2,
@@ -40,11 +39,10 @@ export function buildChart(
     return (
       <div>
         <Bar
-          type="bar"
           data={chartData}
           options={{
             title: {
-              fontColor: 'white',
+              fontColor: '#CCC',
               display: true,
               text: title,
               fontSize: 20,
@@ -52,21 +50,21 @@ export function buildChart(
             scales: {
               xAxes: [
                 {
+                  stacked: chartConfig.stacked || false,
                   gridLines: {
                     display: false,
                   },
                   ticks: {
-                    fontColor: '#CCC', // this here
+                    fontColor: '#CCC',
                   },
                 },
               ],
               yAxes: [
                 {
-                  display: true,
                   ticks: {
-                    fontColor: '#CCC', // this here
+                    fontColor: '#CCC',
                   },
-                  stacked: true,
+                  stacked: chartConfig.stacked || false,
                   gridLines: {
                     display: false,
                   },

@@ -137,6 +137,7 @@ export class NSOLayerProps extends CommonLayerProps {
 export interface ChartConfig {
   type: string;
   category: string;
+  stacked?: boolean;
   exclude?: string[];
   xAxis?: string;
 }

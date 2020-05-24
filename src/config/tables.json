@@ -4,7 +4,8 @@
     "table": "./data/tables/NSO_Animal_Deaths_Annual_Admin1.csv",
     "legend_text": "Annual deaths of animals due to disease or natural hazards (including dzud). Source: National Statistics Office",
     "chart": {
-      "type": "stack",
+      "type": "bar",
+      "stacked": true,
       "category": "Aimag",
       "xAxis": "Year"
     }
