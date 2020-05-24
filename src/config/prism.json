@@ -23,7 +23,7 @@
       "groundstation_data": ["snow_groundstations"]
     },
     "impact": {
-      "agriculture": ["herd_pasture_impact"]
+      "risk_and_impact": ["herd_pasture_impact", "livestock_vhi"]
     }
   }
 }

@@ -201,6 +201,11 @@
     "title": "Vegetation Health Index",
     "type": "wms",
     "server_layer_name": "ModisVHI",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "day",
     "opacity": 0.3,
@@ -259,6 +264,49 @@
       { "value": 250, "color": "#ffeda0" },
       { "value": 300, "color": "#feb24c" },
       { "value": 350, "color": "#f03b20" }
+    ]
+  },
+  "small_herder_dzud_risk": {
+    "title": "Small herders exposed to very high dzud risk",
+    "type": "impact",
+    "hazard_layer": "DzudRiskMap",
+    "baseline_layer": "herd_200",
+    "operation": "median",
+    "threshold": 25,
+    "opacity": 0.3,
+    "legend_text": "Number of small herder households within an aimag with very high risk of dzud",
+    "legend": [
+      { "value": 250, "color": "#ffeda0" },
+      { "value": 300, "color": "#feb24c" },
+      { "value": 350, "color": "#f03b20" }
+    ]
+  },
+  "livestock_dzud_risk": {
+    "title": "Livestock exposed to very high dzud risk",
+    "type": "impact",
+    "hazard_layer": "DzudRiskMap",
+    "baseline_layer": "livestock",
+    "threshold": 25,
+    "opacity": 0.3,
+    "legend_text": "Number of livestock within a soum with very high risk of dzud",
+    "legend": [
+      { "value": 5000, "color": "#ffeda0" },
+      { "value": 10000, "color": "#feb24c" },
+      { "value": 15000, "color": "#f03b20" }
+    ]
+  },
+  "livestock_vhi": {
+    "title": "Livestock exposed to drought (VHI)",
+    "type": "impact",
+    "hazard_layer": "ModisVHI",
+    "baseline_layer": "livestock",
+    "threshold": 0.25,
+    "opacity": 0.3,
+    "legend_text": "Number of livestock within a soum with drought conditions as measured through the Vegetation Health Index",
+    "legend": [
+      { "value": 5000, "color": "#ffeda0" },
+      { "value": 10000, "color": "#feb24c" },
+      { "value": 15000, "color": "#f03b20" }
     ]
   }
 }
