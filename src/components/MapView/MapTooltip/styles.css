@@ -1,11 +1,9 @@
 .mapboxgl-popup-content {
     background: black !important;
     color: white;
-    padding: 10px 10px 10px !important;
+    /* padding: 10px 10px 10px !important; */
 }
   
 .mapboxgl-popup-tip {
-    width: 0px !important;
-    height: 0px !important;
-    border: 0px !important;
+    border-top-color: black !important;
 }
