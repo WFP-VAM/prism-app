@@ -103,14 +103,17 @@ export async function fetchImpactLayerData(
   api: ThunkApi,
 ) {
   const { getState, dispatch } = api;
-  const { layer, extent } = params;
+  const { layer, extent, date } = params;
 
-  const existingHazardLayer = layerDataSelector(layer.hazardLayer)(getState());
+  const existingHazardLayer = layerDataSelector(
+    layer.hazardLayer,
+    date,
+  )(getState());
 
   if (!existingHazardLayer) {
     const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
     await dispatch(
-      loadLayerData({ layer: hazardLayerDef, extent } as LayerDataParams<
+      loadLayerData({ layer: hazardLayerDef, extent, date } as LayerDataParams<
         WMSLayerProps
       >),
     );
@@ -118,7 +121,7 @@ export async function fetchImpactLayerData(
 
   // eslint-disable-next-line fp/no-mutation
   const hazardLayer = checkRasterLayerData(
-    layerDataSelector(layer.hazardLayer)(getState())!,
+    layerDataSelector(layer.hazardLayer, date)(getState())!,
   );
   const {
     layer: { wcsConfig },
@@ -161,6 +164,7 @@ export async function fetchImpactLayerData(
     };
   });
 
+  // TODO: add date support to baseline layers?
   const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
 
   let baselineData: BaselineLayerData;

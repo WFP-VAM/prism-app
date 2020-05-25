@@ -1,4 +1,4 @@
-import React, { createElement, ComponentType } from 'react';
+import React, { createElement, ComponentType, useEffect } from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -16,14 +16,20 @@ import GroundstationLayer from './Layers/GroundstationLayer';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
 import { layersSelector, isLoading, setMap } from '../../context/mapStateSlice';
-import { availableDatesSelector } from '../../context/serverStateSlice';
+import {
+  availableDatesSelector,
+  loadAvailableDates,
+  isLoading as areDatesLoading,
+} from '../../context/serverStateSlice';
 import appConfig from '../../config/prism.json';
 import {
   WMSLayerProps,
   LayerType,
   DiscriminateUnion,
+  ImpactLayerProps,
 } from '../../config/types';
 import ImpactLayer from './Layers/ImpactLayer';
+import { LayerDefinitions } from '../../config/utils';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -42,17 +48,31 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 
 function MapView({ classes }: MapViewProps) {
   const layers = useSelector(layersSelector);
-  const loading = useSelector(isLoading);
+  const layersLoading = useSelector(isLoading);
+  const datesLoading = useSelector(areDatesLoading);
   const dispatch = useDispatch();
   const serverAvailableDates = useSelector(availableDatesSelector);
 
-  const serverLayers = layers.filter(
-    (layer): layer is WMSLayerProps => layer.type === 'wms',
-  );
+  const loading = layersLoading || datesLoading;
+
+  useEffect(() => {
+    dispatch(loadAvailableDates());
+  }, [dispatch]);
+
+  const serverLayers = layers.filter((layer): layer is
+    | WMSLayerProps
+    | ImpactLayerProps => ['impact', 'wms'].includes(layer.type));
 
   const selectedLayerDates = uniq(
     serverLayers
-      .map(({ serverLayerName }) => serverAvailableDates[serverLayerName])
+      .map(layer =>
+        layer.type === 'wms'
+          ? serverAvailableDates[layer.serverLayerName]
+          : serverAvailableDates[
+              (LayerDefinitions[layer.hazardLayer] as WMSLayerProps)
+                .serverLayerName
+            ],
+      )
       .filter(value => value)
       .flat(),
   );

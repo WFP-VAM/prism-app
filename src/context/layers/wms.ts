@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import moment from 'moment';
 import { LayerDataParams } from './layer-data';
 import { WMSLayerProps } from '../../config/types';
 import {
@@ -18,6 +19,7 @@ export type WMSLayerData = {
 export async function fetchWMSLayerData({
   layer,
   extent,
+  date,
 }: LayerDataParams<WMSLayerProps>) {
   if (!extent) {
     throw new Error(
@@ -28,7 +30,7 @@ export async function fetchWMSLayerData({
   const tileUrl = WCSRequestUrl(
     layer.baseUrl,
     layer.serverLayerName,
-    '2017-08-01',
+    date ? moment(date).format('YYYY-MM-DD') : undefined,
     extent,
     get(layer, 'wcsConfig.pixelResolution'),
   );

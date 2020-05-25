@@ -9,6 +9,7 @@ import { loadLayerData } from '../../../../context/layers/layer-data';
 import {
   mapSelector,
   layerDataSelector,
+  dateRangeSelector,
 } from '../../../../context/mapStateSlice';
 
 const linePaint: LinePaint = {
@@ -19,7 +20,9 @@ const linePaint: LinePaint = {
 
 export const ImpactLayer = ({ layer }: { layer: ImpactLayerProps }) => {
   const map = useSelector(mapSelector);
-  const { data: features } = useSelector(layerDataSelector(layer.id)) || {};
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const { data: features, date } =
+    useSelector(layerDataSelector(layer.id, selectedDate)) || {};
   const dispatch = useDispatch();
 
   const bounds = map && map.getBounds();
@@ -32,11 +35,11 @@ export const ImpactLayer = ({ layer }: { layer: ImpactLayerProps }) => {
     // For now, assume that if we have layer data, we don't need to refetch. This could change down the line if we
     // want to dynamically re-fetch data based on changing map bounds.
     // Only fetch once we actually know the extent
-    if (!features && minX !== 0 && maxX !== 0) {
+    if ((!features || date !== selectedDate) && minX !== 0 && maxX !== 0) {
       const extent: Extent = [minX, minY, maxX, maxY];
-      dispatch(loadLayerData({ layer, extent }));
+      dispatch(loadLayerData({ layer, extent, date: selectedDate }));
     }
-  }, [dispatch, layer, maxX, maxY, minX, minY, features]);
+  }, [dispatch, layer, maxX, maxY, minX, minY, features, selectedDate, date]);
 
   if (!features) {
     return null;

@@ -6,6 +6,13 @@ exports[`renders as expected 1`] = `
     class="MapView-container-1"
   >
     <div
+      class="MapView-loading-2"
+    >
+      <mock-circularprogress
+        size="100"
+      />
+    </div>
+    <div
       style="height: 100vh; width: 100vw;"
     />
     <mock-dateselector

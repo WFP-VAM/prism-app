@@ -15,7 +15,7 @@ type MapState = {
   mapboxMap: MapGetter;
   loading: number;
   errors: string[];
-  layersData: { [key: string]: LayerData<any> };
+  layersData: LayerData<any>[];
 };
 
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -30,7 +30,7 @@ const initialState: MapState = {
   // Keep track of loading state with reference counting
   loading: 0,
   errors: [],
-  layersData: {},
+  layersData: [],
 };
 
 export const mapStateSlice = createSlice({
@@ -73,11 +73,11 @@ export const mapStateSlice = createSlice({
       loadLayerData.fulfilled,
       (
         { layersData, loading, ...rest },
-        { payload }: PayloadAction<{ key: string; data: any }>,
+        { payload }: PayloadAction<LayerDataTypes>,
       ) => ({
         ...rest,
         loading: loading - 1,
-        layersData: { ...layersData, [payload.key]: payload.data },
+        layersData: layersData.concat(payload),
       }),
     );
 
@@ -107,9 +107,13 @@ export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
 export const mapSelector = (state: RootState): MapBoxMap | undefined =>
   state.mapState.mapboxMap();
 // TODO: Improve the typing on this function
-export const layerDataSelector = (key: string) => (
+export const layerDataSelector = (id: string, date?: number) => (
   state: RootState,
-): LayerDataTypes | undefined => state.mapState.layersData[key];
+): LayerDataTypes | undefined =>
+  state.mapState.layersData.find(
+    ({ layer, date: dataDate }) =>
+      layer.id === id && (!date || date === dataDate),
+  );
 export const isLoading = (state: RootState): boolean =>
   state.mapState.loading > 0;
 

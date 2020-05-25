@@ -94,7 +94,7 @@ export function getWMSUrl(
 export function getWCSUrl(
   baseUrl: string,
   layerName: string,
-  date: string,
+  date: string | undefined,
   xRange: readonly [number, number],
   yRange: readonly [number, number],
   width: number,
@@ -109,10 +109,12 @@ export function getWCSUrl(
     bbox: [xRange[0], yRange[0], xRange[1], yRange[1]]
       .map(v => v.toFixed(1))
       .join(','),
-    time: date,
     width: width.toString(),
     height: (height || width).toString(),
     format: 'GeoTIFF',
+    ...(date && {
+      time: date,
+    }),
   };
   return formatUrl(baseUrl, params);
 }
@@ -120,7 +122,7 @@ export function getWCSUrl(
 export function WCSRequestUrl(
   baseUrl: string,
   layerName: string,
-  date: string,
+  date: string | undefined,
   extent: Extent,
   resolution = 256,
   maxPixels = 5096,

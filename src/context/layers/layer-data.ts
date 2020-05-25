@@ -19,6 +19,7 @@ type LayerSpecificDataTypes = {
 
 export interface LayerData<L extends LayerType> {
   layer: L;
+  date: number;
   extent?: Extent;
   data: LayerSpecificDataTypes[L['type']];
 }
@@ -26,6 +27,7 @@ export interface LayerData<L extends LayerType> {
 export interface LayerDataParams<T extends LayerType> {
   layer: T;
   extent?: Extent;
+  date?: number;
   [key: string]: any;
 }
 
@@ -60,11 +62,11 @@ type HandlerType = (
 ) => Promise<LayerSpecificDataTypes[keyof LayerSpecificDataTypes]>;
 
 export const loadLayerData = createAsyncThunk<
-  { key: string; data: LayerDataTypes },
+  LayerDataTypes,
   ParamTypes,
   CreateAsyncThunkTypes
->('maps/loadLayerData', async (params, thunkApi) => {
-  const { layer, extent } = params;
+>('mapState/loadLayerData', async (params, thunkApi) => {
+  const { layer, extent, date } = params;
   const layerLoaders: LayerLoaders = {
     impact: fetchImpactLayerData,
     wms: fetchWMSLayerData,
@@ -75,10 +77,10 @@ export const loadLayerData = createAsyncThunk<
   const layerData = await handler(params, thunkApi);
   // Need to cast this since TS isn't smart enough to match layer & layerData types based on the nested discrimator
   // field `layer.type`.
-  const data = {
+  return {
     layer,
     extent,
+    date,
     data: layerData,
   } as LayerDataTypes;
-  return { key: layer.id, data };
 });
