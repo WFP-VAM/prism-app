@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { useSelector } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
@@ -45,6 +45,10 @@ function MapView({ classes }: MapViewProps) {
   const {
     map: { latitude, longitude, zoom },
   } = appConfig;
+
+  useEffect(() => {
+    setpopupData(undefined);
+  }, [layers]);
 
   return (
     <div className={classes.container}>
