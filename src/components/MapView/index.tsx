@@ -23,7 +23,7 @@ const MapboxMap = ReactMapboxGl({
 function MapView({ classes }: MapViewProps) {
   const [popupCoordinates, setpopupCoordinates] = useState();
   const [popupLocation, setpopupLocation] = useState();
-  const [popupData, setpopupData] = useState();
+  const [popupData, setpopupData] = useState({});
   const [showPopup, setshowPopup] = useState(false);
   const layers = useSelector(layersSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -47,7 +47,7 @@ function MapView({ classes }: MapViewProps) {
   } = appConfig;
 
   useEffect(() => {
-    setpopupData(undefined);
+    setpopupData({});
   }, [layers]);
 
   return (
@@ -63,12 +63,13 @@ function MapView({ classes }: MapViewProps) {
         }}
         onClick={() => {
           setshowPopup(false);
+          setpopupData({});
         }}
       >
         <Boundaries
           getCoordinates={(coordinates: any) => {
             // Sets state to undefined so data will not show up on tooltip for Groundstation data if circle point is not clicked on.
-            setpopupData(undefined);
+            setpopupData({});
             setpopupCoordinates(coordinates);
             setshowPopup(true);
           }}
@@ -81,20 +82,27 @@ function MapView({ classes }: MapViewProps) {
             coordinates={popupCoordinates}
             locationName={popupLocation}
             popupData={popupData}
-            dataTitle={layers.valueSeq().map(({ title }) => title)}
             showPopup={showPopup}
           />
         )}
         <NSOLayers
           layers={baselineLayers}
           getPopupData={(data: any) => {
-            setpopupData(data);
+            const dataTitle = baselineLayers
+              .valueSeq()
+              .map(({ title }: any) => title)
+              .toJS()[0];
+            setpopupData(Object.assign(popupData, { [dataTitle]: data }));
           }}
         />
         <GroundstationLayers
           layers={groundstationLayers}
           getPopupData={(data: any) => {
-            setpopupData(data);
+            const dataTitle = groundstationLayers
+              .valueSeq()
+              .map(({ title }: any) => title)
+              .toJS()[0];
+            setpopupData(Object.assign(popupData, { [dataTitle]: data }));
           }}
         />
         <WMSLayers layers={serverLayers} selectedDate={startDate} />

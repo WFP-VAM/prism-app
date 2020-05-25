@@ -6,7 +6,6 @@ export function MapTooltip({
   coordinates,
   locationName,
   popupData,
-  dataTitle,
   showPopup,
 }: any) {
   return (
@@ -14,11 +13,13 @@ export function MapTooltip({
       {showPopup && (
         <Popup anchor="bottom" coordinates={coordinates} style={styles}>
           <h4>Location: {locationName}</h4>
-          {dataTitle.size && popupData ? (
-            <h4>
-              {dataTitle}: {popupData}
-            </h4>
-          ) : null}
+          {Object.keys(popupData).length
+            ? Object.keys(popupData).map((key: any) => (
+                <h4 key={key}>
+                  {key}: {popupData[key]}
+                </h4>
+              ))
+            : null}
         </Popup>
       )}
     </>
