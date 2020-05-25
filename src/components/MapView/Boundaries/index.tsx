@@ -40,7 +40,7 @@ function Boundaries({ getCoordinates, getLocationName }: any) {
       linePaint={linePaint}
       fillOnClick={(evt: any) => {
         getAdminData(evt);
-        getCoordinates(get(evt.features[0], 'geometry.coordinates[0][0]'));
+        getCoordinates(evt.lngLat);
         getLocationName(
           get(evt.features[0], 'properties.ADM1_EN')
             .concat(', ')
