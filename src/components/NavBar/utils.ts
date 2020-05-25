@@ -51,11 +51,9 @@ function formatLayersCategories(layersList: {
 
 export const menuList: MenuItemsType = chain(appJSON)
   .get('categories')
-  .map((layersCategories, categoryKey) => {
-    return {
-      title: startCase(categoryKey),
-      icon: icons[categoryKey],
-      layersCategories: formatLayersCategories(layersCategories),
-    };
-  })
+  .map((layersCategories, categoryKey) => ({
+    title: startCase(categoryKey),
+    icon: icons[categoryKey],
+    layersCategories: formatLayersCategories(layersCategories),
+  }))
   .value();
