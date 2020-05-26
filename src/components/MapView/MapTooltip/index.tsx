@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Popup } from 'react-mapbox-gl';
 import { merge } from 'lodash';
 import { createStyles, withStyles } from '@material-ui/core';
@@ -28,8 +28,6 @@ function MapTooltip({
   popupData,
   classes,
 }: MapTooltip) {
-  useEffect(() => {}, [popupData]);
-
   return (
     <Popup anchor="bottom" coordinates={coordinates!} className={classes.popup}>
       <h4>Location: {locationName}</h4>
