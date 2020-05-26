@@ -9,6 +9,7 @@ import nsoHerders from '../../data/nso/NSO_Herder_HHs_Admin2.json';
 import nsoHerdsize from '../../data/nso/NSO_Herd_Size_Admin1_LT_200.json';
 import nsoChild from '../../data/nso/NSO_Child_U5_Admin2.json';
 import nsoLivestock from '../../data/nso/NSO_Livestock_Count_ths_Admin2.json';
+import nsoHayHarvest from '../../data/nso/NSO_Hay_Harvest_Admin2.json';
 import nsoElderly from '../../data/nso/NSO_Single_Elderly_Admin1_Total.json';
 import nsoPoverty from '../../data/nso/NSO_Poverty_Headcount_Admin1.json';
 import nsoPop from '../../data/nso/NSO_Population_Admin2_Total.json';
@@ -22,6 +23,7 @@ const nsoDatasets = {
   nsoHerdsize,
   nsoChild,
   nsoLivestock,
+  nsoHayHarvest,
   nsoElderly,
   nsoPoverty,
   nsoPop,

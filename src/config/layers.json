@@ -1,6 +1,6 @@
 {
   "population_below_poverty": {
-    "title": "Poverty headcount",
+    "title": "Poverty headcount (aimag)",
     "type": "nso",
     "path": "nsoPoverty",
     "admin_code": "CODE1",
@@ -15,7 +15,7 @@
     "legend_text": "The poverty headcount is the share of the population whose consumption / expenditure is below the poverty line by Aimag. Year: 2018. Source: National Statistics Office"
   },
   "disabled": {
-    "title": "Number of disabled people",
+    "title": "Number of disabled people (aimag)",
     "type": "nso",
     "path": "nsoDisabled",
     "admin_code": "CODE",
@@ -29,8 +29,24 @@
     ],
     "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
   },
-  "elderly": {
-    "title": "Single-headed elderly households",
+  "hay_harvest": {
+    "title": "Hay harvest (soum)",
+    "type": "nso",
+    "data": "nsoHayHarvest",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "500", "color": "#edf8fb" },
+      { "value": "1000", "color": "#b2e2e2" },
+      { "value": "3000", "color": "#66c2a4" },
+      { "value": "5000", "color": "#2ca25f" },
+      { "value": "7000", "color": "#006d2c" }
+    ],
+    "legend_text": "Amount of hay harvested in tonnes by Soum. Year: 2019. Source: National Statistical Office"
+  },
+   "elderly": {
+    "title": "Single-headed elderly households (aimag)",
     "type": "nso",
     "path": "nsoElderly",
     "admin_code": "CODE",
@@ -45,7 +61,7 @@
     "legend_text": "Number of single-headed households with a female head over 55 years old or a male head over 60 years old by Aimag. Year: 2018. Source: National Statistics Office"
   },
   "herders": {
-    "title": "Herder households",
+    "title": "Herder households (soum)",
     "type": "nso",
     "path": "nsoHerders",
     "admin_code": "CODE",
@@ -60,7 +76,7 @@
     "legend_text": "Number of herder households - defined as herding as the main source of income by Soum. Year: 2019. Source: National Statistical Office"
   },
   "livestock": {
-    "title": "Number of livestock (in thousands)",
+    "title": "Number of livestock in thousands (soum)",
     "type": "nso",
     "path": "nsoLivestock",
     "admin_code": "CODE",
@@ -75,7 +91,7 @@
     "legend_text": "Number of livestock raised for agricultural purposes in thousands of heads by Soum. Year: 2019. Source: National Statistical Office"
   },
   "child": {
-    "title": "Number of children under 5",
+    "title": "Number of children under 5 (soum)",
     "type": "nso",
     "path": "nsoChild",
     "admin_code": "CODE",
@@ -90,7 +106,7 @@
     "legend_text": "Number of children under five years of age by Soum. Year: 2019. Source: National Statistics Office"
   },
   "herd_200": {
-    "title": "Small herder households",
+    "title": "Small herder households (aimag)",
     "type": "nso",
     "path": "nsoHerdsize",
     "admin_code": "CODE1",
@@ -105,7 +121,7 @@
     "legend_text": "Number of households with less than 200 heads of livestock by Aimag. Year: 2019. Source: National Statistics Office"
   },
   "population_total": {
-    "title": "Total population",
+    "title": "Total population (soum)",
     "type": "nso",
     "path": "nsoPop",
     "admin_code": "CODE",
@@ -117,7 +133,7 @@
       { "value": "10000", "color": "#e34a33" },
       { "value": "12500", "color": "#b30000" }
     ],
-    "legend_text": "Total number of residents by Aimag. Year: 2019. Source: National Statistics Office"
+    "legend_text": "Total number of residents by Soum. Year: 2019. Source: National Statistics Office"
   },
   "pasture_anomaly": {
     "title": "Pasture anomaly",
@@ -133,6 +149,29 @@
       "pixelResolution": 64,
       "offset": -200
     },
+    "legend": [
+      { "value": "-80%", "color": "#ff0000" },
+      { "value": "-60%", "color": "#ff5900" },
+      { "value": "-40%", "color": "#ff8400" },
+      { "value": "-20%", "color": "#ffce63" },
+      { "value": "-10%", "color": "#ffdd94" },
+      { "value": "0", "color": "#ffffbf" },
+      { "value": "+10%", "color": "#dee09f" },
+      { "value": "+20%", "color": "#bbbf7c" },
+      { "value": "+40%", "color": "#9da360" },
+      { "value": "+60%", "color": "#7e8745" },
+      { "value": "+80%", "color": "#5b6e00" }
+    ]
+  },
+  "pasture_biomass": {
+    "title": "Pasture biomass",
+    "type": "wms",
+    "server_layer": "ModisPastureBiomass",
+    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisPastureBiomass",
+    "has_date": true,
+    "date_interval": "days",
+    "opacity": 0.3,
+    "legend_text": "Pasture biomass. Converts the NDVI to pasture (kg/ha) values.",
     "legend": [
       { "value": "-80%", "color": "#ff0000" },
       { "value": "-60%", "color": "#ff5900" },
@@ -266,7 +305,7 @@
     ]
   },
   "herd_pasture_impact": {
-    "title": "Herders exposed to severe pasture anomaly",
+    "title": "Herders exposed to severe pasture anomaly (soum)",
     "type": "impact",
     "hazard_layer": "pasture_anomaly",
     "baseline_layer": "herders",
@@ -281,7 +320,7 @@
     ]
   },
   "small_herder_dzud_risk": {
-    "title": "Small herders exposed to very high dzud risk",
+    "title": "Small herders exposed to very high dzud risk (aimag)",
     "type": "impact",
     "hazard_layer": "DzudRiskMap",
     "baseline_layer": "herd_200",
@@ -296,7 +335,7 @@
     ]
   },
   "livestock_dzud_risk": {
-    "title": "Livestock exposed to very high dzud risk",
+    "title": "Livestock exposed to very high dzud risk (soum)",
     "type": "impact",
     "hazard_layer": "DzudRiskMap",
     "baseline_layer": "livestock",
@@ -310,7 +349,7 @@
     ]
   },
   "livestock_vhi": {
-    "title": "Livestock exposed to drought (VHI)",
+    "title": "Livestock exposed to drought (soum)",
     "type": "impact",
     "hazard_layer": "ModisVHI",
     "baseline_layer": "livestock",
@@ -322,5 +361,29 @@
       { "value": 10000, "color": "#feb24c" },
       { "value": 15000, "color": "#f03b20" }
     ]
+  },
+  "precip_groundstations": {
+    "title": "Precipitation: total over 10 days (coming soon)",
+    "type": "groundstation",
+    "data": "groundstationTemp",
+    "opacity": 0.3
+  },
+  "wind_groundstations": {
+    "title": "Maximum wind speed (coming soon)",
+    "type": "groundstation",
+    "data": "groundstationTemp",
+    "opacity": 0.3
+  },
+  "temp_anom_groundstations": {
+    "title": "Temperature anomaly (coming soon)",
+    "type": "groundstation",
+    "data": "groundstationTemp",
+    "opacity": 0.3
+  },
+  "precip_anom_groundstations": {
+    "title": "Precipitation anomaly (coming soon)",
+    "type": "groundstation",
+    "data": "groundstationTemp",
+    "opacity": 0.3
   }
 }

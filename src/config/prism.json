@@ -13,19 +13,25 @@
     "zoom": 4.5
   },
   "categories": {
-    "baseline": {
-      "vulnerable_groups": ["population_below_poverty", "disabled", "elderly", "child"],
-      "livestock_and_herders": ["herd_200", "herders", "livestock"],
-      "total_population": ["population_total"]
+    "exposure": {
+      "demographics": ["population_total"],
+      "livestock_and_herders": ["herders", "livestock"]
     },
-    "climate": {
-      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisVHI"],
+    "vulnerability": {
+      "vulnerable_groups": ["population_below_poverty", "disabled", "elderly", "child"],
+      "herders": ["herd_200"]
+    },
+    "hazards": {
+      "drought_indicators": ["pasture_anomaly", "pasture_biomass", "ndvi", "ModisVHI"],
       "winter_conditions": ["ModisSnowPercentage","ModisLST"],
-      "ground_station_data": ["snow_groundstations"]
+      "ground_station_data": ["temp_groundstations","snow_groundstations","precip_groundstations","wind_groundstations","temp_anom_groundstations", "precip_anom_groundstations"]
     },
     "risk": {
       "dzud_risk": ["DzudRiskMap"],
       "impact_analysis": ["herd_pasture_impact", "small_herder_dzud_risk", "livestock_vhi", "livestock_dzud_risk"]
+    },
+    "capacity": {
+      "livestock_and_crop_preparedness": ["hay_harvest"]
     },
     "tables": {
       "socioeconomic_data": [

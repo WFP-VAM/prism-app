@@ -6,18 +6,30 @@
     "chart": {
       "type": "bar",
       "stacked": true,
-      "category": "Aimag",
+      "category": "Category_EN",
       "xAxis": "Year"
     }
   },
   "hay_prices": {
     "title": "Monthly hay prices",
     "table": "./data/tables/NSO_Bale_Hay_Price_Monthly_Admin1.csv",
-    "legend_text": "Price of a bail of hay by month. Source: National Statistics Office"
+    "legend_text": "Price of a bail of hay by month. Source: National Statistics Office",
+    "chart": {
+      "type": "bar",
+      "stacked": false,
+      "category": "Category_EN",
+      "xAxis": "Month"
+    }
   },
   "poverty": {
     "title": "Poverty headcount over time",
     "table": "./data/tables/NSO_Poverty_Headcount_Admin1.csv",
-    "legend_text": "Poverty headcount over two periods. Source: National Statistics Office"
+    "legend_text": "Poverty headcount over two periods. Source: National Statistics Office",
+    "chart": {
+      "type": "bar",
+      "stacked": false,
+      "category": "Category_EN",
+      "xAxis": "Year"
+    }
   }
 }
