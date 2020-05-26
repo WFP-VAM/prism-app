@@ -1,5 +1,6 @@
 import { has, isString, isNull } from 'lodash';
 import { FeatureCollection } from 'geojson';
+import bbox from '@turf/bbox';
 import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
 import {
   ImpactLayerProps,
@@ -12,9 +13,8 @@ import { layerDataSelector } from '../mapStateSlice';
 import { LayerDefinitions } from '../../config/utils';
 import {
   featureIntersectsImage,
-  filterPointsByFeature,
   GeoJsonBoundary,
-  indexToGeoCoords,
+  pixelsInFeature,
 } from '../../components/MapView/Layers/raster-utils';
 import { NSOLayerData } from './nso';
 import { WMSLayerData } from './wms';
@@ -22,12 +22,14 @@ import adminBoundariesRaw from '../../config/admin_boundaries.json';
 
 const adminBoundaries = adminBoundariesRaw as FeatureCollection;
 
-export type ImpactLayerData = FeatureCollection;
+export type ImpactLayerData = {
+  boundaries: FeatureCollection;
+  impactFeatures: FeatureCollection;
+};
 
 type BaselineLayerData = NSOLayerData;
+type BaselineRecord = BaselineLayerData['layerData'][0];
 type RasterLayer = LayerData<WMSLayerProps>;
-
-type DataArray = { value: number }[];
 
 const hasKeys = (obj: any, keys: string[]): boolean =>
   !keys.find(key => !has(obj, key));
@@ -62,11 +64,11 @@ const checkBaselineDataLayer = (
 };
 
 const operations = {
-  mean: (data: DataArray) =>
-    data.reduce((sum, { value }) => sum + value, 0) / data.length,
-  median: (data: DataArray) => {
+  mean: (data: number[]) =>
+    data.reduce((sum, value) => sum + value, 0) / data.length,
+  median: (data: number[]) => {
     // eslint-disable-next-line fp/no-mutating-methods
-    const sortedValues = data.map(({ value }) => value).sort();
+    const sortedValues = data.sort();
     // Odd cases we use the middle value
     if (sortedValues.length % 2 !== 0) {
       return sortedValues[Math.floor(sortedValues.length / 2)];
@@ -96,6 +98,16 @@ function thresholdOrNaN(value: number, threshold?: number) {
     return value >= threshold ? value : NaN;
   }
   return value <= threshold ? value : NaN;
+}
+
+function getBaselineDataForFeature(
+  feature: GeoJsonBoundary,
+  baselineData: BaselineLayerData,
+): BaselineRecord | undefined {
+  const { NSO_CODE: nsoCode } = feature.properties!;
+  return baselineData.layerData.find(
+    ({ adminKey }) => nsoCode.indexOf(adminKey) === 0,
+  );
 }
 
 export async function fetchImpactLayerData(
@@ -129,41 +141,6 @@ export async function fetchImpactLayerData(
   } = hazardLayer;
   const { noData, scale, offset } = wcsConfig || {};
 
-  const allPoints = Array.from(rasters[0], (value, i) => ({
-    ...indexToGeoCoords(i, rasters.width, transform),
-    value,
-  }));
-
-  const operation = layer.operation || 'median';
-
-  const features = adminBoundaries.features.map(f => {
-    const feature = f as GeoJsonBoundary;
-    const { properties } = feature;
-    let aggregateValue;
-
-    if (featureIntersectsImage(feature, image)) {
-      const points = filterPointsByFeature(allPoints, feature);
-      const raw = operations[operation](
-        noData ? points.filter(({ value }) => value !== noData) : points,
-      );
-      const scaled = scaleValueIfDefined(raw, scale, offset);
-
-      // eslint-disable-next-line fp/no-mutation
-      aggregateValue = thresholdOrNaN(scaled, layer.threshold);
-    } else {
-      // eslint-disable-next-line fp/no-mutation
-      aggregateValue = NaN;
-    }
-
-    return {
-      ...feature,
-      properties: {
-        ...properties,
-        [operation]: aggregateValue,
-      },
-    };
-  });
-
   // TODO: add date support to baseline layers?
   const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
 
@@ -189,31 +166,93 @@ export async function fetchImpactLayerData(
     );
   }
 
-  return {
-    ...adminBoundaries,
-    features: features
-      .filter(f => !Number.isNaN(f.properties![operation]))
-      .map(feature => {
-        const { NSO_CODE: nsoCode } = feature.properties!;
-        let { value: baselineValue } =
-          baselineData.layerData.find(
-            ({ adminKey }) => nsoCode.indexOf(adminKey) === 0,
-          ) || {};
+  // Calculate a bounding box for each feature that we have baseline data for
+  const matchingFeatures = adminBoundaries.features.reduce(
+    (acc, f) => {
+      const feature = f as GeoJsonBoundary;
+      const baseline =
+        featureIntersectsImage(feature, image) &&
+        getBaselineDataForFeature(feature, baselineData);
+      return baseline
+        ? acc.concat({
+            id: baseline.adminKey,
+            baseline,
+            feature,
+            bounds: bbox(feature),
+          })
+        : acc;
+    },
+    [] as {
+      id: string;
+      baseline: BaselineRecord;
+      feature: GeoJsonBoundary;
+      bounds: ReturnType<typeof bbox>;
+    }[],
+  );
 
-        if (isString(baselineValue)) {
-          // eslint-disable-next-line fp/no-mutation
-          baselineValue = parseFloat(baselineValue);
-        } else if (isNull(baselineValue)) {
-          return feature;
+  // Loop over the features and grab pixels that are contained by the feature.
+  const buckets = matchingFeatures.reduce((acc, { id, feature }) => {
+    const contained = pixelsInFeature(
+      feature,
+      rasters[0],
+      rasters.width,
+      transform,
+    );
+    return contained.length > 0 ? { ...acc, [id]: contained } : acc;
+  }, {} as { [key: string]: number[] });
+
+  // const allPoints = Array.from(rasters[0], (value, i) => ({
+  //   ...indexToGeoCoords(i, rasters.width, transform),
+  //   value,
+  // }));
+  //
+  // const buckets = matchingFeatures.reduce((acc, { id, feature }) => {
+  //   const contained = filterPointsByFeature(allPoints, feature).map(
+  //     ({ value }) => value,
+  //   );
+  //   return contained.length > 0 ? { ...acc, [id]: contained } : acc;
+  // }, {} as { [key: string]: number[] });
+
+  const operation = layer.operation || 'median';
+
+  const activeFeatures = matchingFeatures.reduce(
+    (acc, { id, feature, baseline }) => {
+      const values = buckets[id];
+
+      if (values) {
+        const raw = operations[operation](
+          noData ? values.filter(value => value !== noData) : values,
+        );
+        const scaled = scaleValueIfDefined(raw, scale, offset);
+        const aggregateValue = thresholdOrNaN(scaled, layer.threshold);
+        if (!Number.isNaN(aggregateValue)) {
+          const { properties } = feature;
+
+          const baselineValue = isString(baseline.value)
+            ? parseFloat(baseline.value)
+            : baseline.value;
+          return isNull(baselineValue)
+            ? acc
+            : acc.concat({
+                ...feature,
+                properties: {
+                  ...properties,
+                  [operation]: aggregateValue,
+                  impactValue: baselineValue,
+                },
+              });
         }
+      }
+      return acc;
+    },
+    [] as GeoJsonBoundary[],
+  );
 
-        return {
-          ...feature,
-          properties: {
-            ...feature.properties,
-            impactValue: baselineValue,
-          },
-        };
-      }),
+  return {
+    boundaries: adminBoundaries,
+    impactFeatures: {
+      ...adminBoundaries,
+      features: activeFeatures,
+    },
   };
 }

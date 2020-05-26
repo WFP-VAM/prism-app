@@ -288,3 +288,37 @@ export function filterPointsByFeature(
     );
   });
 }
+
+export function pixelsInFeature(
+  feature: GeoJsonBoundary,
+  pixels: TypedArray,
+  width: number,
+  transform: TransformMatrix,
+): number[] {
+  const [minX, minY, maxX, maxY] = bbox(feature);
+
+  const { row: startRow, col: startCol } = geoCoordsToRowCol(
+    minX,
+    maxY,
+    transform,
+  );
+  const { row: endRow, col: endCol } = geoCoordsToRowCol(maxX, minY, transform);
+
+  // Loop through rows doing a row-wise slice of all the pixels contained within this feature's bounding box
+  return [...new Array(endRow - startRow)].reduce((acc, _v, idx) => {
+    const rowIdx = (startRow + idx) * width;
+    const row = pixels.slice(startCol + rowIdx, endCol + rowIdx);
+    return acc.concat(
+      Array.from(
+        row.filter((_pixel: any, innerIdx: number) => {
+          const { x, y } = indexToGeoCoords(
+            innerIdx + rowIdx + startCol,
+            width,
+            transform,
+          );
+          return booleanPointInPolygon(point([x, y]), feature);
+        }),
+      ),
+    );
+  }, [] as number[]);
+}
