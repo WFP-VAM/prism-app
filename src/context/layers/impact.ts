@@ -148,14 +148,13 @@ export async function fetchImpactLayerData(
   if (!baselineLayer) {
     const baselineLayerDef = LayerDefinitions[layer.baselineLayer];
     const {
-      payload: { data: payloadData },
+      payload: { data },
     } = (await dispatch(
       loadLayerData({ layer: baselineLayerDef, extent } as LayerDataParams<
         NSOLayerProps
       >),
-    )) as { payload: { data?: { data: unknown } } };
+    )) as { payload: { data: unknown } };
 
-    const { data } = payloadData || {};
     // eslint-disable-next-line fp/no-mutation
     baselineData = checkBaselineDataLayer(layer.baselineLayer, data);
   } else {
@@ -200,18 +199,6 @@ export async function fetchImpactLayerData(
     );
     return contained.length > 0 ? { ...acc, [id]: contained } : acc;
   }, {} as { [key: string]: number[] });
-
-  // const allPoints = Array.from(rasters[0], (value, i) => ({
-  //   ...indexToGeoCoords(i, rasters.width, transform),
-  //   value,
-  // }));
-  //
-  // const buckets = matchingFeatures.reduce((acc, { id, feature }) => {
-  //   const contained = filterPointsByFeature(allPoints, feature).map(
-  //     ({ value }) => value,
-  //   );
-  //   return contained.length > 0 ? { ...acc, [id]: contained } : acc;
-  // }, {} as { [key: string]: number[] });
 
   const operation = layer.operation || 'median';
 

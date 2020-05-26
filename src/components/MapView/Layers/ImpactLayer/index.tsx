@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FillPaint, LinePaint } from 'mapbox-gl';
+import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
 import { Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { ImpactLayerProps } from '../../../../config/types';
@@ -21,7 +22,7 @@ const linePaint: LinePaint = {
   'line-opacity': 0.3,
 };
 
-export const ImpactLayer = ({ layer }: { layer: ImpactLayerProps }) => {
+export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   const map = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { data, date } =
@@ -52,7 +53,13 @@ export const ImpactLayer = ({ layer }: { layer: ImpactLayerProps }) => {
   }, [dispatch, layer, maxX, maxY, minX, minY, data, selectedDate, date]);
 
   if (!data) {
-    return null;
+    return selectedDate ? null : (
+      <div className={classes.message}>
+        <div className={classes.messageContainer}>
+          <h2>Select an available date to view data</h2>
+        </div>
+      </div>
+    );
   }
 
   const { impactFeatures, boundaries } = data;
@@ -77,4 +84,27 @@ export const ImpactLayer = ({ layer }: { layer: ImpactLayerProps }) => {
   );
 };
 
-export default ImpactLayer;
+const styles = (theme: Theme) =>
+  createStyles({
+    message: {
+      position: 'absolute',
+      height: '100%',
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    messageContainer: {
+      fontSize: 24,
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      backgroundColor: theme.palette.grey.A100,
+      borderRadius: theme.spacing(2),
+    },
+  });
+
+interface ComponentProps extends WithStyles<typeof styles> {
+  layer: ImpactLayerProps;
+}
+
+export default withStyles(styles)(ImpactLayer);
