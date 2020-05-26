@@ -47,11 +47,11 @@ function MapTooltip({
 const styles = () =>
   createStyles({
     popup: {
-      'mapboxgl-popup-content': {
+      '& div.mapboxgl-popup-content': {
         background: 'black',
         color: 'white',
       },
-      'mapboxgl-popup-tip': {
+      '& div.mapboxgl-popup-tip': {
         'border-top-color': 'black',
       },
     },
