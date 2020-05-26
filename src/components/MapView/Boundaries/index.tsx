@@ -26,6 +26,11 @@ function getAdminData(evt: any) {
   );
 }
 
+function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
+  // eslint-disable-next-line no-param-reassign, fp/no-mutation
+  targetMap.getCanvas().style.cursor = cursor;
+}
+
 const linePaint: MapboxGL.LinePaint = {
   'line-color': 'grey',
   'line-width': 1,
@@ -38,6 +43,8 @@ function Boundaries() {
       data={baselineBoundaries}
       fillPaint={fillPaint}
       linePaint={linePaint}
+      fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
+      fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
       fillOnClick={(evt: any) => {
         getAdminData(evt);
       }}
