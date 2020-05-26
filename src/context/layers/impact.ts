@@ -6,6 +6,7 @@ import {
   ImpactLayerProps,
   LayerType,
   NSOLayerProps,
+  ThresholdDefinition,
   WMSLayerProps,
 } from '../../config/types';
 import { ThunkApi } from '../store';
@@ -90,14 +91,16 @@ const scaleValueIfDefined = (
     : value;
 };
 
-function thresholdOrNaN(value: number, threshold?: number) {
+function thresholdOrNaN(value: number, threshold?: ThresholdDefinition) {
   if (threshold === undefined) {
     return value;
   }
-  if (threshold >= 0) {
-    return value >= threshold ? value : NaN;
-  }
-  return value <= threshold ? value : NaN;
+
+  const isAbove =
+    threshold.above === undefined ? true : value >= threshold.above;
+  const isBelow =
+    threshold.below === undefined ? true : value <= threshold.below;
+  return isAbove && isBelow ? value : NaN;
 }
 
 function getBaselineDataForFeature(

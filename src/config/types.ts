@@ -135,13 +135,12 @@ export class NSOLayerProps extends CommonLayerProps {
 }
 
 export type AggregationOperations = 'mean' | 'median';
+export type ThresholdDefinition = { below?: number; above?: number };
 export class ImpactLayerProps extends CommonLayerProps {
   type: 'impact';
   hazardLayer: string;
   baselineLayer: string;
-  // Applied as an absolute value: if negative, will only look at districts that are "more negative", if positive,
-  // it looks for districts above this value.
-  threshold: number;
+  threshold: ThresholdDefinition;
 
   // defaults to 'median'
   @optional

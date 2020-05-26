@@ -257,7 +257,7 @@
     "hazard_layer": "pasture_anomaly",
     "baseline_layer": "herders",
     "operation": "median",
-    "threshold": -50,
+    "threshold": { "below": -50 },
     "opacity": 0.3,
     "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -50%",
     "legend": [
@@ -272,7 +272,7 @@
     "hazard_layer": "DzudRiskMap",
     "baseline_layer": "herd_200",
     "operation": "median",
-    "threshold": 25,
+    "threshold": { "above": 25 },
     "opacity": 0.3,
     "legend_text": "Number of small herder households within an aimag with very high risk of dzud",
     "legend": [
@@ -286,7 +286,7 @@
     "type": "impact",
     "hazard_layer": "DzudRiskMap",
     "baseline_layer": "livestock",
-    "threshold": 25,
+    "threshold": { "above": 25 },
     "opacity": 0.3,
     "legend_text": "Number of livestock within a soum with very high risk of dzud",
     "legend": [
@@ -300,7 +300,7 @@
     "type": "impact",
     "hazard_layer": "ModisVHI",
     "baseline_layer": "livestock",
-    "threshold": 0.25,
+    "threshold": { "above": 0.25 },
     "opacity": 0.3,
     "legend_text": "Number of livestock within a soum with drought conditions as measured through the Vegetation Health Index",
     "legend": [
