@@ -53,7 +53,7 @@ function MapView({ classes }: MapViewProps) {
           width: '100vw',
         }}
       >
-        <Boundaries />
+        <Boundaries map={this} />
         <NSOLayers layers={baselineLayers} />
         <GroundstationLayers layers={groundstationLayers} />
         <WMSLayers layers={serverLayers} selectedDate={startDate} />

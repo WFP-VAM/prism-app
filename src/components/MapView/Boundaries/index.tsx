@@ -26,18 +26,29 @@ function getAdminData(evt: any) {
   );
 }
 
+function onToggleHover(cursor: string, map: any) {
+  console.log(map);
+  // eslint-disable-next-line
+  map.getCanvas().style.cursor = cursor;
+}
+
 const linePaint: MapboxGL.LinePaint = {
   'line-color': 'grey',
   'line-width': 1,
   'line-opacity': 0.3,
 };
 
-function Boundaries() {
+function Boundaries(map: any) {
   return (
     <GeoJSONLayer
       data={baselineBoundaries}
       fillPaint={fillPaint}
       linePaint={linePaint}
+      onMouseEnter={onToggleHover('pointer', map)}
+      onMouseLeave={onToggleHover('', map)}
+      fillOnMouseEnter={(evt: any) => {
+        console.log(evt);
+      }}
       fillOnClick={(evt: any) => {
         getAdminData(evt);
       }}
