@@ -33,13 +33,21 @@ const initialState: MapState = {
   layersData: [],
 };
 
+function keepLayer(layer: LayerType, payload: LayerType) {
+  // Simple function to control which layers can overlap.
+  if (payload.dateInterval || false) {
+    return !(layer.dateInterval || false);
+  }
+  return layer.id !== payload.id;
+}
+
 export const mapStateSlice = createSlice({
   name: 'mapState',
   initialState,
   reducers: {
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => ({
       ...rest,
-      layers: layers.filter(({ id }) => id !== payload.id).concat(payload),
+      layers: layers.filter(layer => keepLayer(layer, payload)).concat(payload),
     }),
 
     removeLayer: (
