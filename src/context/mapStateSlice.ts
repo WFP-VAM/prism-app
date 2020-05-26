@@ -35,8 +35,8 @@ const initialState: MapState = {
 
 function keepLayer(layer: LayerType, payload: LayerType) {
   // Simple function to control which layers can overlap.
-  if (payload.dateInterval || false) {
-    return !(layer.dateInterval || false);
+  if (payload.type === layer.type) {
+    return false;
   }
   return layer.id !== payload.id;
 }
