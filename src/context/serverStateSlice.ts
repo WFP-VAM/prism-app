@@ -1,14 +1,24 @@
-import { Map } from 'immutable';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-import { RootState } from './store';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { CreateAsyncThunkTypes, RootState } from './store';
 import { AvailableDates } from '../config/types';
+import { getLayersAvailableDates } from '../utils/server-utils';
 
-interface ServerState extends Map<string, any> {}
+type ServerState = {
+  availableDates: AvailableDates;
+  loading: boolean;
+  error?: string;
+};
 
-const initialState: ServerState = Map({
-  availableDates: Map(),
-});
+const initialState: ServerState = {
+  availableDates: {},
+  loading: false,
+};
+
+export const loadAvailableDates = createAsyncThunk<
+  AvailableDates,
+  void,
+  CreateAsyncThunkTypes
+>('serverState/loadAvailableDates', () => getLayersAvailableDates());
 
 export const serverStateSlice = createSlice({
   name: 'serverState',
@@ -17,13 +27,43 @@ export const serverStateSlice = createSlice({
     updateLayersCapabilities: (
       state,
       { payload }: PayloadAction<AvailableDates>,
-    ) => state.set('availableDates', payload),
+    ) => ({
+      ...state,
+      availableDates: payload,
+    }),
+  },
+  extraReducers: builder => {
+    builder.addCase(
+      loadAvailableDates.fulfilled,
+      (state, { payload }: PayloadAction<AvailableDates>) => ({
+        ...state,
+        loading: false,
+        availableDates: payload,
+      }),
+    );
+
+    builder.addCase(loadAvailableDates.rejected, (state, action) => ({
+      ...state,
+      loading: false,
+      error: action.error.message
+        ? action.error.message
+        : action.error.toString(),
+    }));
+
+    builder.addCase(loadAvailableDates.pending, state => ({
+      ...state,
+      loading: true,
+    }));
   },
 });
 
 // Getters
-export const availableDatesSelector = (state: RootState) =>
-  state.serverState.get('availableDates') as AvailableDates;
+export const availableDatesSelector = (
+  state: RootState,
+): ServerState['availableDates'] => state.serverState.availableDates;
+
+export const isLoading = (state: RootState): ServerState['loading'] =>
+  state.serverState.loading;
 
 // Setters
 export const { updateLayersCapabilities } = serverStateSlice.actions;
