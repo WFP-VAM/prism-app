@@ -26,10 +26,9 @@ function getAdminData(evt: any) {
   );
 }
 
-function onToggleHover(cursor: string, map: any) {
-  console.log(map);
+function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line
-  map.getCanvas().style.cursor = cursor;
+  targetMap.getCanvas().style.cursor = cursor;
 }
 
 const linePaint: MapboxGL.LinePaint = {
@@ -38,17 +37,14 @@ const linePaint: MapboxGL.LinePaint = {
   'line-opacity': 0.3,
 };
 
-function Boundaries(map: any) {
+function Boundaries() {
   return (
     <GeoJSONLayer
       data={baselineBoundaries}
       fillPaint={fillPaint}
       linePaint={linePaint}
-      onMouseEnter={onToggleHover('pointer', map)}
-      onMouseLeave={onToggleHover('', map)}
-      fillOnMouseEnter={(evt: any) => {
-        console.log(evt);
-      }}
+      fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
+      fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
       fillOnClick={(evt: any) => {
         getAdminData(evt);
       }}
