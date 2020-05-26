@@ -27,7 +27,7 @@ function getAdminData(evt: any) {
 }
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-param-reassign, fp/no-mutation
   targetMap.getCanvas().style.cursor = cursor;
 }
 
