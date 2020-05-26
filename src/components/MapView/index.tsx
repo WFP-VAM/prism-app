@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 
 import Boundaries from './Boundaries';
-import { MapTooltip } from './MapTooltip';
+import MapTooltip, { PopupData, mergePopupData } from './MapTooltip';
 import NSOLayers from './NSOLayers';
 import WMSLayers from './WMSLayers';
 import GroundstationLayers from './GroundstationLayers';
@@ -48,6 +48,7 @@ function MapView({ classes }: MapViewProps) {
 
   useEffect(() => {
     setpopupData({});
+    setshowPopup(false);
   }, [layers]);
 
   return (
@@ -63,13 +64,31 @@ function MapView({ classes }: MapViewProps) {
         }}
         onClick={() => {
           setshowPopup(false);
-          setpopupData({});
         }}
       >
+        {popupCoordinates && showPopup && (
+          <MapTooltip
+            coordinates={popupCoordinates}
+            locationName={popupLocation}
+            popupData={popupData}
+          />
+        )}
+        <NSOLayers
+          layers={baselineLayers}
+          setPopupData={(data: PopupData) =>
+            mergePopupData(setpopupData, popupData, data)
+          }
+        />
+        <GroundstationLayers
+          layers={groundstationLayers}
+          setPopupData={(data: PopupData) =>
+            mergePopupData(setpopupData, popupData, data)
+          }
+        />
+        <WMSLayers layers={serverLayers} selectedDate={startDate} />
         <Boundaries
           getCoordinates={(coordinates: any) => {
             // Sets state to undefined so data will not show up on tooltip for Groundstation data if circle point is not clicked on.
-            setpopupData({});
             setpopupCoordinates(coordinates);
             setshowPopup(true);
           }}
@@ -77,35 +96,6 @@ function MapView({ classes }: MapViewProps) {
             setpopupLocation(locationName);
           }}
         />
-        {popupCoordinates && (
-          <MapTooltip
-            coordinates={popupCoordinates}
-            locationName={popupLocation}
-            popupData={popupData}
-            showPopup={showPopup}
-          />
-        )}
-        <NSOLayers
-          layers={baselineLayers}
-          getPopupData={(data: any) => {
-            const dataTitle = baselineLayers
-              .valueSeq()
-              .map(({ title }: any) => title)
-              .toJS()[0];
-            setpopupData(Object.assign(popupData, { [dataTitle]: data }));
-          }}
-        />
-        <GroundstationLayers
-          layers={groundstationLayers}
-          getPopupData={(data: any) => {
-            const dataTitle = groundstationLayers
-              .valueSeq()
-              .map(({ title }: any) => title)
-              .toJS()[0];
-            setpopupData(Object.assign(popupData, { [dataTitle]: data }));
-          }}
-        />
-        <WMSLayers layers={serverLayers} selectedDate={startDate} />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={layers} />

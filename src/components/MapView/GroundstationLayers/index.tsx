@@ -5,6 +5,7 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { LayersMap } from '../../../config/types';
 import { legendToStops } from '../../../utils/layer-utils';
+import { PopupData } from '../MapTooltip';
 
 import groundstationDataJson from '../../../data/groundstations/longterm_data.json';
 
@@ -25,16 +26,6 @@ type GroundstationData = {
   lon: number;
 }[];
 
-function onClickCircle(evt: any) {
-  // eslint-disable-next-line
-  console.log(
-    get(evt.features[0], 'properties.index'),
-    get(evt.features[0], 'properties.aimagname'),
-    get(evt.features[0], 'properties.sumname'),
-    get(evt.features[0], 'properties.rasterheight'),
-  );
-}
-
 const groundstationDataGeoJSON = GeoJSON.parse(
   groundstationDataJson as GroundstationData,
   {
@@ -44,10 +35,10 @@ const groundstationDataGeoJSON = GeoJSON.parse(
 
 function GroundstationLayers({
   layers,
-  getPopupData,
+  setPopupData,
 }: {
   layers: LayersMap;
-  getPopupData: any;
+  setPopupData: (data: PopupData) => void;
 }) {
   const layerConfig = layers.first(null);
 
@@ -69,8 +60,12 @@ function GroundstationLayers({
       circleLayout={circleLayout}
       circlePaint={circlePaint}
       circleOnClick={(evt: any) => {
-        getPopupData(get(evt.features[0], 'properties.rasterheight'));
-        onClickCircle(evt);
+        setPopupData({
+          [layerConfig.title]: {
+            data: get(evt.features[0], 'properties.rasterheight'),
+            coordinates: evt.lngLat,
+          },
+        });
       }}
     />
   );

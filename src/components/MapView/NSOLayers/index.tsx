@@ -5,22 +5,12 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { LayersMap } from '../../../config/types';
 import { legendToStops } from '../../../utils/layer-utils';
+import { PopupData } from '../MapTooltip';
 
 import adminBoundariesJson from '../../../config/admin_boundaries.json';
 import { getNSOData } from '../../../config/baselines';
 
 const baselineBoundaries = adminBoundariesJson as FeatureCollection;
-
-// Get admin data to process.
-function getAdminData(evt: any) {
-  // eslint-disable-next-line
-  console.log(
-    get(evt.features[0], 'properties.ADM1_EN'),
-    get(evt.features[0], 'properties.ADM2_EN'),
-    get(evt.features[0], 'properties.ADM2_PCODE'),
-    get(evt.features[0], 'properties.data'),
-  );
-}
 
 function matchingCode(boundaryCode: string, dataCode: string): boolean {
   return boundaryCode.indexOf(dataCode) === 0;
@@ -28,10 +18,10 @@ function matchingCode(boundaryCode: string, dataCode: string): boolean {
 
 function NSOLayers({
   layers,
-  getPopupData,
+  setPopupData,
 }: {
   layers: LayersMap;
-  getPopupData: any;
+  setPopupData: (data: PopupData) => void;
 }) {
   // If a baselineLayer is selected, extract the data for each admin boundary.
   /**
@@ -88,8 +78,12 @@ function NSOLayers({
       data={mergedBaselineBoundaries}
       fillPaint={fillPaintData}
       fillOnClick={(evt: any) => {
-        getAdminData(evt);
-        getPopupData(get(evt.features[0], 'properties.data'));
+        setPopupData({
+          [layerConfig.title]: {
+            data: get(evt.features[0], 'properties.data'),
+            coordinates: evt.lngLat,
+          },
+        });
       }}
     />
   );

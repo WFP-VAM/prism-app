@@ -16,16 +16,6 @@ const fillPaint: MapboxGL.FillPaint = {
   'fill-opacity': 0,
 };
 
-// Get admin data to process.
-function getAdminData(evt: any) {
-  // eslint-disable-next-line
-  console.log(
-    get(evt.features[0], 'properties.ADM1_EN'),
-    get(evt.features[0], 'properties.ADM2_EN'),
-    get(evt.features[0], 'properties.ADM2_PCODE'),
-  );
-}
-
 const linePaint: MapboxGL.LinePaint = {
   'line-color': 'grey',
   'line-width': 1,
@@ -39,7 +29,6 @@ function Boundaries({ getCoordinates, getLocationName }: any) {
       fillPaint={fillPaint}
       linePaint={linePaint}
       fillOnClick={(evt: any) => {
-        getAdminData(evt);
         getCoordinates(evt.lngLat);
         getLocationName(
           get(evt.features[0], 'properties.ADM1_EN')
