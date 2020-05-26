@@ -40,6 +40,7 @@ const linePaint: MapboxGL.LinePaint = {
 function Boundaries() {
   return (
     <GeoJSONLayer
+      id="boundaries"
       data={baselineBoundaries}
       fillPaint={fillPaint}
       linePaint={linePaint}
