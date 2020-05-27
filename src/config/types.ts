@@ -142,19 +142,6 @@ export interface ChartConfig {
   xAxis?: string;
 }
 
-export interface TableType {
-  id: string;
-  title: string;
-  table: string;
-  legendText: string;
-  chart?: {
-    dropColumn?: number;
-    type: string;
-    category: string;
-    xAxis?: string;
-  };
-}
-
 export type AggregationOperations = 'mean' | 'median';
 export type ThresholdDefinition = { below?: number; above?: number };
 export class ImpactLayerProps extends CommonLayerProps {
@@ -220,4 +207,7 @@ export class TableType {
   title: string;
   table: string;
   legendText: string;
+
+  @optional
+  chart?: ChartConfig;
 }
