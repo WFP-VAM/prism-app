@@ -32,9 +32,8 @@
   "hay_harvest": {
     "title": "Hay harvest (soum)",
     "type": "nso",
-    "data": "nsoHayHarvest",
+    "path": "nsoHayHarvest",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "500", "color": "#edf8fb" },
@@ -253,9 +252,8 @@
   "mvam_hay_reserves": {
     "title": "Hay reserves",
     "type": "nso",
-    "data": "mvamHayreserves",
+    "path": "mvamHayreserves",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "0", "color": "#d7191c" },
@@ -269,9 +267,8 @@
   "mvam_cash_reserves": {
     "title": "Cash reserves",
     "type": "nso",
-    "data": "mvamCash",
+    "path": "mvamCash",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "0%", "color": "#d7191c" },
@@ -285,9 +282,8 @@
   "mvam_fodder_reserves": {
     "title": "Fodder reserves",
     "type": "nso",
-    "data": "mvamFodder",
+    "path": "mvamFodder",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "0%", "color": "#d7191c" },
@@ -301,9 +297,8 @@
   "mvam_hay_prices": {
     "title": "Hay prices",
     "type": "nso",
-    "data": "mvamHayprices",
+    "path": "mvamHayprices",
     "admin_code": "CODE",
-    "has_date": false,
     "opacity": 0.3,
     "legend": [
       { "value": "0%", "color": "#d7191c" },
@@ -402,29 +397,5 @@
       { "value": 10000, "color": "#feb24c" },
       { "value": 15000, "color": "#f03b20" }
     ]
-  },
-  "precip_groundstations": {
-    "title": "Precipitation: total over 10 days (coming soon)",
-    "type": "groundstation",
-    "data": "groundstationTemp",
-    "opacity": 0.3
-  },
-  "wind_groundstations": {
-    "title": "Maximum wind speed (coming soon)",
-    "type": "groundstation",
-    "data": "groundstationTemp",
-    "opacity": 0.3
-  },
-  "temp_anom_groundstations": {
-    "title": "Temperature anomaly (coming soon)",
-    "type": "groundstation",
-    "data": "groundstationTemp",
-    "opacity": 0.3
-  },
-  "precip_anom_groundstations": {
-    "title": "Precipitation anomaly (coming soon)",
-    "type": "groundstation",
-    "data": "groundstationTemp",
-    "opacity": 0.3
   }
 }
