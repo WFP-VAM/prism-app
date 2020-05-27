@@ -5,7 +5,7 @@ import { TableType } from '../config/types';
 import { TableDefinitions } from '../config/utils';
 
 export type TableRowType = { [key: string]: string | number };
-type TableData = {
+export type TableData = {
   columns: string[];
   rows: TableRowType[];
 };

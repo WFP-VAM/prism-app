@@ -3,33 +3,36 @@ import { Bar } from 'react-chartjs-2';
 import colormap from 'colormap';
 import { shuffle } from 'lodash';
 import { ChartConfig } from '../../../config/types';
+import { TableData } from '../../../context/tableStateSlice';
 
-export function buildChart(
-  tableJson: any[],
-  chartConfig: ChartConfig,
-  title: string,
-) {
-  const header = tableJson[0];
-  const tableData = tableJson.slice(1, tableJson.length);
+type ChartProps = {
+  title: string;
+  data: TableData;
+  config: ChartConfig;
+};
+
+export function Chart({ title, data, config }: ChartProps) {
+  const header = data.rows[0];
+  const tableRows = data.rows.slice(1, data.rows.length);
   const colors = shuffle(
     colormap({
       colormap: 'rainbow-soft',
-      nshades: tableData.length,
+      nshades: tableRows.length,
       format: 'hex',
       alpha: 0.7,
     }),
   );
   try {
     const indices = Object.keys(header).filter(key =>
-      key.includes(chartConfig.xAxis || ''),
+      key.includes(config.xAxis || ''),
     );
     const labels = indices.map(index => header[index]);
-    const datasets = tableData.map((row, i) => ({
-      label: row[chartConfig.category],
+    const datasets = tableRows.map((row, i) => ({
+      label: (row[config.category] as string) || '',
       fill: true,
       backgroundColor: colors[i],
       borderWidth: 2,
-      data: indices.map(index => row[index]),
+      data: indices.map(index => row[index] as number),
     }));
     const chartData = {
       labels,
@@ -50,7 +53,7 @@ export function buildChart(
             scales: {
               xAxes: [
                 {
-                  stacked: chartConfig.stacked || false,
+                  stacked: config.stacked || false,
                   gridLines: {
                     display: false,
                   },
@@ -64,7 +67,7 @@ export function buildChart(
                   ticks: {
                     fontColor: '#CCC',
                   },
-                  stacked: chartConfig.stacked || false,
+                  stacked: config.stacked || false,
                   gridLines: {
                     display: false,
                   },
@@ -87,3 +90,5 @@ export function buildChart(
   }
   return null;
 }
+
+export default Chart;

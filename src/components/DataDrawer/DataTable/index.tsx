@@ -18,7 +18,7 @@ import {
   getCurrentData,
 } from '../../../context/tableStateSlice';
 import DataTableRow from './DataTableRow';
-import { buildChart } from '../Chart';
+import Chart from '../Chart';
 
 const styles = () =>
   createStyles({
@@ -53,9 +53,6 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
 
   const { table, title, legendText, chart } = definition;
 
-  const chartData =
-    chart && tableJson.length > 0 ? buildChart(tableJson, chart, title) : null;
-
   return (
     <div>
       <h2>{title}</h2>
@@ -74,8 +71,8 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
           <CircularProgress size={40} color="secondary" />
         </Box>
       ) : (
-        {chartData}
         <Paper className={classes.root}>
+          {chart && <Chart title={title} config={chart} data={data} />}
           <TableContainer className={classes.container}>
             <Table stickyHeader aria-label={`table showing ${title}`}>
               <TableHead>
