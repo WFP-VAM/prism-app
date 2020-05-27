@@ -1,7 +1,7 @@
 import GeoJSON from 'geojson';
 
 // FIXME: for now, directly import this file. This bloats the code bundle - it should be hosted externally.
-import groundstationDataJson from '../../data/groundstations/longterm_data.json';
+import groundstationDataJson from '../../data/groundstations/IRIMHE_temperature_2020-01-d1.json';
 
 declare module 'geojson' {
   export const version: string;
@@ -15,7 +15,7 @@ declare module 'geojson' {
 
 export type GroundstationLayerData = {
   rasterheight: number;
-  'jan-01': number;
+  tttAver: number;
   [key: string]: any;
 }[];
 

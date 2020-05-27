@@ -33,7 +33,7 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
   const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
   const circlePaint: MapboxGL.CirclePaint = {
     'circle-color': {
-      property: 'jan-01',
+      property: 'ttt_aver',
       stops: legendToStops(layer.legend),
     },
   };
@@ -45,10 +45,11 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
       circleLayout={circleLayout}
       circlePaint={circlePaint}
       circleOnClick={(evt: any) => {
+        console.log(get(evt.features[0], 'properties'));
         dispatch(
           addPopupData({
             [layer.title]: {
-              data: get(evt.features[0], 'properties.jan-01', 'No Data'),
+              data: get(evt.features[0], 'properties.ttt_aver', 'No Data'),
               coordinates: evt.lngLat,
             },
           }),
