@@ -34,7 +34,7 @@ function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
 const linePaint: MapboxGL.LinePaint = {
   'line-color': 'grey',
   'line-width': 1,
-  'line-opacity': 0.3,
+  'line-opacity': 0.8,
 };
 
 function Boundaries() {
