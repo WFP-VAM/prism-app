@@ -24,10 +24,11 @@ const styles = () =>
   createStyles({
     root: {
       width: '100%',
-      height: '70vh',
+      height: '100%',
       color: 'black',
     },
     container: {
+      height: '100%',
       maxHeight: '100%',
     },
     headCells: {
@@ -61,6 +62,8 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
         <a href={process.env.PUBLIC_URL + table}>Download as CSV</a>
       </p>
 
+      {!loading && chart && <Chart title={title} config={chart} data={data} />}
+
       {loading ? (
         <Box
           display="flex"
@@ -72,7 +75,6 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
         </Box>
       ) : (
         <Paper className={classes.root}>
-          {chart && <Chart title={title} config={chart} data={data} />}
           <TableContainer className={classes.container}>
             <Table stickyHeader aria-label={`table showing ${title}`}>
               <TableHead>
