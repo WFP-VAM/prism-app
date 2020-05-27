@@ -14,7 +14,6 @@ export interface MapTooltipState {
 }
 
 const initialState: MapTooltipState = {
-  coordinates: undefined,
   locationName: '',
   data: {},
   showing: false,
