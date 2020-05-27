@@ -94,6 +94,7 @@ export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
         );
         dispatch(
           addPopupData({
+            // TODO - Get a better title based on layer.baselineLayer and layer.operation
             'Raster Median for Impact Layer': {
               data: get(
                 evt.features[0].properties,
