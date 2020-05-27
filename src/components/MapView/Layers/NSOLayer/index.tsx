@@ -10,17 +10,7 @@ import {
   loadLayerData,
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice';
-
-// Get admin data to process.
-function getAdminData(evt: any) {
-  // eslint-disable-next-line
-  console.log(
-    get(evt.features[0], 'properties.ADM1_EN'),
-    get(evt.features[0], 'properties.ADM2_EN'),
-    get(evt.features[0], 'properties.ADM2_PCODE'),
-    get(evt.features[0], 'properties.data'),
-  );
-}
+import { addPopupData } from '../../../../context/tooltipStateSlice';
 
 function NSOLayers({ layer }: { layer: NSOLayerProps }) {
   const layerData = useSelector(layerDataSelector(layer.id)) as
@@ -56,7 +46,14 @@ function NSOLayers({ layer }: { layer: NSOLayerProps }) {
       data={features}
       fillPaint={fillPaintData}
       fillOnClick={(evt: any) => {
-        getAdminData(evt);
+        dispatch(
+          addPopupData({
+            [layer.title]: {
+              data: get(evt.features[0], 'properties.data', 'No Data'),
+              coordinates: evt.lngLat,
+            },
+          }),
+        );
       }}
     />
   );
