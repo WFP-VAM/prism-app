@@ -13,7 +13,7 @@ function MapTooltip({ classes }: TooltipProps) {
       coordinates={popup.coordinates}
       className={classes.popup}
     >
-      <h4>Location: {popup.locationName}</h4>
+      <h4>{popup.locationName}</h4>
       {Object.entries(popup.data)
         .filter(([, value]) => value.coordinates === popup.coordinates)
         .map(([key, value]) => (
@@ -31,6 +31,7 @@ const styles = () =>
       '& div.mapboxgl-popup-content': {
         background: 'black',
         color: 'white',
+        padding: '10px 10px 10px',
       },
       '& div.mapboxgl-popup-tip': {
         'border-top-color': 'black',

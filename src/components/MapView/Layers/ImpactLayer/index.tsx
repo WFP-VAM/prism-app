@@ -87,7 +87,19 @@ export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
         dispatch(
           addPopupData({
             [layer.title]: {
-              data: get(evt.features[0], 'properties.data'),
+              data: get(evt.features[0], 'properties.impactValue', 'No Data'),
+              coordinates: evt.lngLat,
+            },
+          }),
+        );
+        dispatch(
+          addPopupData({
+            'Raster Median for Impact Layer': {
+              data: get(
+                evt.features[0].properties,
+                layer.operation || 'median',
+                'No Data',
+              ),
               coordinates: evt.lngLat,
             },
           }),

@@ -48,7 +48,7 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
         dispatch(
           addPopupData({
             [layer.title]: {
-              data: get(evt.features[0], 'properties.rasterheight'),
+              data: get(evt.features[0], 'properties.rasterheight', 'No Data'),
               coordinates: evt.lngLat,
             },
           }),

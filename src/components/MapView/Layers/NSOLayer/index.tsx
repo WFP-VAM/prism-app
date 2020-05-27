@@ -49,7 +49,7 @@ function NSOLayers({ layer }: { layer: NSOLayerProps }) {
         dispatch(
           addPopupData({
             [layer.title]: {
-              data: get(evt.features[0], 'properties.data'),
+              data: get(evt.features[0], 'properties.data', 'No Data'),
               coordinates: evt.lngLat,
             },
           }),
