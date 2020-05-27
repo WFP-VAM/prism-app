@@ -29,7 +29,7 @@ export const tooltipStateSlice = createSlice({
       { payload }: PayloadAction<PopupData>,
     ) => ({
       ...rest,
-      data: merge(data, payload),
+      data: merge({}, data, payload),
     }),
 
     setPopupData: (state, { payload }: PayloadAction<PopupData>) => ({
