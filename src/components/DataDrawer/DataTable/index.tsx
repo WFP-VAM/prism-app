@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Papa from 'papaparse';
+import * as Papa from 'papaparse';
 import { useSelector } from 'react-redux';
 import {
   Table,
