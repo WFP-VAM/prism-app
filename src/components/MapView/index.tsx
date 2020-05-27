@@ -87,9 +87,9 @@ function MapView({ classes }: MapViewProps) {
   const saveMap = (map: Map) => dispatch(setMap(() => map));
 
   useEffect(() => {
-    setPopupData({});
-    setPopupShowing(false);
-  }, [layers]);
+    dispatch(setPopupData({}));
+    dispatch(setPopupShowing(false));
+  }, [dispatch, layers]);
 
   return (
     <div className={classes.container}>
