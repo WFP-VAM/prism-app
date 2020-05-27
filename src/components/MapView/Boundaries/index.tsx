@@ -4,11 +4,7 @@ import { useDispatch } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import {
-  setPopupCoordinates,
-  setPopupLocation,
-  setPopupShowing,
-} from '../../../context/tooltipStateSlice';
+import { showPopup } from '../../../context/tooltipStateSlice';
 
 import adminBoundariesJson from '../../../config/admin_boundaries.json';
 
@@ -44,15 +40,11 @@ function Boundaries() {
       fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
       fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
       fillOnClick={(evt: any) => {
-        dispatch(setPopupCoordinates(evt.lngLat));
-        dispatch(
-          setPopupLocation(
-            get(evt.features[0], 'properties.ADM1_EN', '')
-              .concat(', ')
-              .concat(get(evt.features[0], 'properties.ADM2_EN', '')),
-          ),
-        );
-        dispatch(setPopupShowing(true));
+        const coordinates = evt.lngLat;
+        const locationName = get(evt.features[0], 'properties.ADM1_EN', '')
+          .concat(', ')
+          .concat(get(evt.features[0], 'properties.ADM2_EN', ''));
+        dispatch(showPopup({ coordinates, locationName }));
       }}
     />
   );

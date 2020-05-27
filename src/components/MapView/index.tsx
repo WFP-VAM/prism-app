@@ -17,7 +17,7 @@ import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
 import { layersSelector, isLoading, setMap } from '../../context/mapStateSlice';
-import { setPopupData, setPopupShowing } from '../../context/tooltipStateSlice';
+import { hidePopup } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
   loadAvailableDates,
@@ -61,6 +61,10 @@ function MapView({ classes }: MapViewProps) {
     dispatch(loadAvailableDates());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(hidePopup());
+  }, [dispatch, layers]);
+
   const serverLayers = layers.filter((layer): layer is
     | WMSLayerProps
     | ImpactLayerProps => ['impact', 'wms'].includes(layer.type));
@@ -86,11 +90,6 @@ function MapView({ classes }: MapViewProps) {
   // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers
   const saveMap = (map: Map) => dispatch(setMap(() => map));
 
-  useEffect(() => {
-    dispatch(setPopupData({}));
-    dispatch(setPopupShowing(false));
-  }, [dispatch, layers]);
-
   return (
     <div className={classes.container}>
       {loading && (
@@ -109,7 +108,7 @@ function MapView({ classes }: MapViewProps) {
           width: '100vw',
         }}
         onClick={() => {
-          dispatch(setPopupShowing(false));
+          dispatch(hidePopup());
         }}
       >
         <>

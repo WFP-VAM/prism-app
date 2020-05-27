@@ -7,6 +7,7 @@ import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
 import { Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { ImpactLayerProps } from '../../../../config/types';
+import { LayerDefinitions } from '../../../../config/utils';
 import {
   LayerData,
   loadLayerData,
@@ -23,6 +24,12 @@ const linePaint: LinePaint = {
   'line-width': 1,
   'line-opacity': 0.3,
 };
+
+function getHazardData(evt: any, operation: string) {
+  const data = get(evt.features[0].properties, operation || 'median', null);
+
+  return data ? data.toFixed(2) : 'No Data';
+}
 
 export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   const map = useSelector(mapSelector);
@@ -77,6 +84,10 @@ export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
         },
   };
 
+  const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
+  const operation = layer.operation || 'median';
+  const hazardTitle = `${hazardLayerDef.title} (${operation})`;
+
   return (
     <GeoJSONLayer
       below="boundaries"
@@ -84,27 +95,17 @@ export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
       linePaint={linePaint}
       fillPaint={fillPaint}
       fillOnClick={(evt: any) => {
-        dispatch(
-          addPopupData({
-            [layer.title]: {
-              data: get(evt.features[0], 'properties.impactValue', 'No Data'),
-              coordinates: evt.lngLat,
-            },
-          }),
-        );
-        dispatch(
-          addPopupData({
-            // TODO - Get a better title based on layer.baselineLayer and layer.operation
-            'Raster Median for Impact Layer': {
-              data: get(
-                evt.features[0].properties,
-                layer.operation || 'median',
-                'No Data',
-              ),
-              coordinates: evt.lngLat,
-            },
-          }),
-        );
+        const popupData = {
+          [layer.title]: {
+            data: get(evt.features[0], 'properties.impactValue', 'No Data'),
+            coordinates: evt.lngLat,
+          },
+          [hazardTitle]: {
+            data: getHazardData(evt, operation),
+            coordinates: evt.lngLat,
+          },
+        };
+        dispatch(addPopupData(popupData));
       }}
     />
   );

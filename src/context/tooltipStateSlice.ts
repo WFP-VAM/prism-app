@@ -13,6 +13,11 @@ export interface MapTooltipState {
   showing: boolean;
 }
 
+type ShowPopupType = {
+  coordinates: GeoJSON.Position;
+  locationName: string;
+};
+
 const initialState: MapTooltipState = {
   locationName: '',
   data: {},
@@ -41,9 +46,17 @@ export const tooltipStateSlice = createSlice({
       showing: payload,
     }),
 
-    setPopupLocation: (state, { payload }: PayloadAction<string>) => ({
+    hidePopup: state => ({
       ...state,
-      locationName: payload,
+      showing: false,
+      data: {},
+    }),
+
+    showPopup: (state, { payload }: PayloadAction<ShowPopupType>) => ({
+      ...state,
+      showing: true,
+      locationName: payload.locationName,
+      coordinates: payload.coordinates,
     }),
 
     setPopupCoordinates: (
@@ -68,7 +81,8 @@ export const {
   addPopupData,
   setPopupData,
   setPopupShowing,
-  setPopupLocation,
+  hidePopup,
+  showPopup,
   setPopupCoordinates,
 } = tooltipStateSlice.actions;
 
