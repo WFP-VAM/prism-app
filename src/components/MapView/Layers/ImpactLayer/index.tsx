@@ -79,6 +79,7 @@ export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
 
   return (
     <GeoJSONLayer
+      below="boundaries"
       data={noMatchingDistricts ? boundaries : impactFeatures}
       linePaint={linePaint}
       fillPaint={fillPaint}
