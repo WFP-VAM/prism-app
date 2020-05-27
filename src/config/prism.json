@@ -28,9 +28,15 @@
       "impact_analysis": ["herd_pasture_impact", "small_herder_dzud_risk", "livestock_vhi", "livestock_dzud_risk"]
     },
     "tables": {
-      "socioeconomic_data": ["poverty"],
-      "livestock_data": ["animal_deaths"],
-      "price_data": ["hay_prices"]
+      "socioeconomic_data": [
+        "poverty"
+      ],
+      "livestock_data": [
+        "animal_deaths"
+      ],
+      "price_data": [
+        "hay_prices"
+      ]
     }
   }
 }

@@ -11,12 +11,11 @@ import {
   List,
   ListItem,
 } from '@material-ui/core';
-import { isEmpty } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import ColorIndicator from './ColorIndicator';
-import { LayersMap } from '../../../config/types';
+import { LayerType } from '../../../config/types';
 
 function Legends({ classes, layers }: LegendsProps) {
   const [open, setOpen] = React.useState(true);
@@ -29,42 +28,39 @@ function Legends({ classes, layers }: LegendsProps) {
 
       {open && (
         <List className={classes.list}>
-          {layers
-            .valueSeq()
-            .toJS()
-            .map(({ title, legend, legendText }) => (
-              <ListItem key={title} disableGutters dense>
-                <Paper className={classes.paper}>
-                  <Grid container direction="column" spacing={1}>
-                    <Grid item>
-                      <Typography variant="h4">{title}</Typography>
-                    </Grid>
-
-                    <Divider />
-
-                    {!isEmpty(legend) && (
-                      <Grid item>
-                        {legend.map(({ value, color }: any) => (
-                          <ColorIndicator
-                            key={value}
-                            value={value as string}
-                            color={color as string}
-                          />
-                        ))}
-                      </Grid>
-                    )}
-
-                    <Divider />
-
-                    {legendText && (
-                      <Grid item>
-                        <Typography variant="h5">{legendText}</Typography>
-                      </Grid>
-                    )}
+          {layers.map(({ title, legend, legendText }) => (
+            <ListItem key={title} disableGutters dense>
+              <Paper className={classes.paper}>
+                <Grid container direction="column" spacing={1}>
+                  <Grid item>
+                    <Typography variant="h4">{title}</Typography>
                   </Grid>
-                </Paper>
-              </ListItem>
-            ))}
+
+                  <Divider />
+
+                  {legend && (
+                    <Grid item>
+                      {legend.map(({ value, color }: any) => (
+                        <ColorIndicator
+                          key={value}
+                          value={value as string}
+                          color={color as string}
+                        />
+                      ))}
+                    </Grid>
+                  )}
+
+                  <Divider />
+
+                  {legendText && (
+                    <Grid item>
+                      <Typography variant="h5">{legendText}</Typography>
+                    </Grid>
+                  )}
+                </Grid>
+              </Paper>
+            </ListItem>
+          ))}
         </List>
       )}
     </div>
@@ -91,7 +87,7 @@ const styles = (theme: Theme) =>
   });
 
 export interface LegendsProps extends WithStyles<typeof styles> {
-  layers: LayersMap;
+  layers: LayerType[];
 }
 
 export default withStyles(styles)(Legends);

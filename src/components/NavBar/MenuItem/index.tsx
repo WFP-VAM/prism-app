@@ -86,14 +86,16 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
 
             {layers.map(layer => {
               const { id: layerId, title: layerTitle } = layer;
-              const value = selectedLayers.has(layerId);
+              const selected = Boolean(
+                selectedLayers.find(({ id: testId }) => testId === layerId),
+              );
               return (
                 <div key={layerId} className={classes.layersContainer}>
                   <Switch
                     size="small"
                     color="default"
-                    checked={value}
-                    onChange={() => toggleLayerValue(value, layer)}
+                    checked={selected}
+                    onChange={() => toggleLayerValue(selected, layer)}
                     inputProps={{ 'aria-label': layerTitle }}
                   />{' '}
                   <Typography variant="body1">{layerTitle}</Typography>
