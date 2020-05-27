@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FillPaint, LinePaint } from 'mapbox-gl';
+import { get } from 'lodash';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
 import { Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
@@ -15,6 +16,7 @@ import {
   layerDataSelector,
   dateRangeSelector,
 } from '../../../../context/mapStateSlice';
+import { addPopupData } from '../../../../context/tooltipStateSlice';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',
@@ -80,6 +82,16 @@ export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
       data={noMatchingDistricts ? boundaries : impactFeatures}
       linePaint={linePaint}
       fillPaint={fillPaint}
+      fillOnClick={(evt: any) => {
+        dispatch(
+          addPopupData({
+            [layer.title]: {
+              data: get(evt.features[0], 'properties.data'),
+              coordinates: evt.lngLat,
+            },
+          }),
+        );
+      }}
     />
   );
 };

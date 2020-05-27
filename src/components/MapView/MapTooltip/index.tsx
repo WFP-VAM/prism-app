@@ -1,45 +1,28 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Popup } from 'react-mapbox-gl';
-import { merge } from 'lodash';
-import { createStyles, withStyles } from '@material-ui/core';
+import { createStyles, withStyles, WithStyles } from '@material-ui/core';
+import { tooltipSelector } from '../../../context/tooltipStateSlice';
 
-export interface PopupData {
-  [key: string]: { data: number; coordinates: GeoJSON.Position };
-}
+function MapTooltip({ classes }: TooltipProps) {
+  const popup = useSelector(tooltipSelector);
 
-interface MapTooltip {
-  coordinates?: GeoJSON.Position;
-  locationName?: string;
-  popupData: PopupData;
-  classes: any;
-}
-
-export function mergePopupData(
-  setPopupData: any,
-  popupData: PopupData,
-  newData: PopupData,
-) {
-  setPopupData(merge(popupData, newData));
-}
-
-function MapTooltip({
-  coordinates,
-  locationName,
-  popupData,
-  classes,
-}: MapTooltip) {
-  return (
-    <Popup anchor="bottom" coordinates={coordinates!} className={classes.popup}>
-      <h4>Location: {locationName}</h4>
-      {Object.entries(popupData)
-        .filter(([, value]) => value.coordinates === coordinates)
+  return popup.showing && popup.coordinates ? (
+    <Popup
+      anchor="bottom"
+      coordinates={popup.coordinates}
+      className={classes.popup}
+    >
+      <h4>Location: {popup.locationName}</h4>
+      {Object.entries(popup.data)
+        .filter(([, value]) => value.coordinates === popup.coordinates)
         .map(([key, value]) => (
           <h4 key={key}>
             {key}: {value.data}
           </h4>
         ))}
     </Popup>
-  );
+  ) : null;
 }
 
 const styles = () =>
@@ -54,5 +37,7 @@ const styles = () =>
       },
     },
   });
+
+export interface TooltipProps extends WithStyles<typeof styles> {}
 
 export default withStyles(styles)(MapTooltip);

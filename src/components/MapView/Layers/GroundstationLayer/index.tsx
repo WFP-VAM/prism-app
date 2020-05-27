@@ -6,20 +6,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { legendToStops } from '../layer-utils';
 import { GroundstationLayerProps } from '../../../../config/types';
 import { layerDataSelector } from '../../../../context/mapStateSlice';
+import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-
-function onClickCircle(evt: any) {
-  // eslint-disable-next-line
-  console.log(
-    get(evt.features[0], 'properties.index'),
-    get(evt.features[0], 'properties.aimagname'),
-    get(evt.features[0], 'properties.sumname'),
-    get(evt.features[0], 'properties.rasterheight'),
-  );
-}
 
 function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
   const layerData = useSelector(layerDataSelector(layer.id)) as
@@ -52,7 +43,16 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
       data={data}
       circleLayout={circleLayout}
       circlePaint={circlePaint}
-      circleOnClick={onClickCircle}
+      circleOnClick={(evt: any) => {
+        dispatch(
+          addPopupData({
+            [layer.title]: {
+              data: get(evt.features[0], 'properties.rasterheight'),
+              coordinates: evt.lngLat,
+            },
+          }),
+        );
+      }}
     />
   );
 }

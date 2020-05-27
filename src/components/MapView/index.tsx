@@ -1,4 +1,4 @@
-import React, { createElement, ComponentType, useEffect, useState } from 'react';
+import React, { createElement, ComponentType, useEffect } from 'react';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -13,12 +13,11 @@ import Boundaries from './Boundaries';
 import NSOLayer from './Layers/NSOLayer';
 import WMSLayer from './Layers/WMSLayer';
 import GroundstationLayer from './Layers/GroundstationLayer';
-import Layers from './Layers';
-import { MapTooltip } from './MapTooltip';
-import MapTooltip, { PopupData, mergePopupData } from './MapTooltip';
+import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
 import { layersSelector, isLoading, setMap } from '../../context/mapStateSlice';
+import { setPopupData, setPopupShowing } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
   loadAvailableDates,
@@ -50,10 +49,6 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 };
 
 function MapView({ classes }: MapViewProps) {
-  const [popupCoordinates, setpopupCoordinates] = useState();
-  const [popupLocation, setpopupLocation] = useState();
-  const [popupData, setpopupData] = useState({});
-  const [showPopup, setshowPopup] = useState(false);
   const layers = useSelector(layersSelector);
   const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
@@ -92,8 +87,8 @@ function MapView({ classes }: MapViewProps) {
   const saveMap = (map: Map) => dispatch(setMap(() => map));
 
   useEffect(() => {
-    setpopupData({});
-    setshowPopup(false);
+    setPopupData({});
+    setPopupShowing(false);
   }, [layers]);
 
   return (
@@ -114,10 +109,9 @@ function MapView({ classes }: MapViewProps) {
           width: '100vw',
         }}
         onClick={() => {
-          setshowPopup(false);
+          dispatch(setPopupShowing(false));
         }}
       >
-        <Boundaries />
         <>
           {layers.map(layer => {
             const component: ComponentType<{ layer: any }> =
@@ -128,31 +122,8 @@ function MapView({ classes }: MapViewProps) {
             });
           })}
         </>
-        {popupCoordinates && layers.size === 0 && (
-          <MapTooltip
-            coordinates={popupCoordinates}
-            locationName={popupLocation}
-          />
-        )}
-        <Layers layers={layers} selectedDate={startDate} />
-        {popupCoordinates && showPopup && (
-          <MapTooltip
-            coordinates={popupCoordinates}
-            locationName={popupLocation}
-            popupData={popupData}
-          />
-        )}
-        <WMSLayers layers={serverLayers} selectedDate={startDate} />
-        <Boundaries
-          getCoordinates={(coordinates: any) => {
-            // Sets state to undefined so data will not show up on tooltip for Groundstation data if circle point is not clicked on.
-            setpopupCoordinates(coordinates);
-            setshowPopup(true);
-          }}
-          getLocationName={(locationName: any) => {
-            setpopupLocation(locationName);
-          }}
-        />
+        <MapTooltip />
+        <Boundaries />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={layers} />

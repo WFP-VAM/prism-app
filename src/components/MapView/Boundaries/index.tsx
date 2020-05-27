@@ -1,8 +1,14 @@
 import { FeatureCollection } from 'geojson';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
+import {
+  setPopupCoordinates,
+  setPopupLocation,
+  setPopupShowing,
+} from '../../../context/tooltipStateSlice';
 
 import adminBoundariesJson from '../../../config/admin_boundaries.json';
 
@@ -16,16 +22,6 @@ const fillPaint: MapboxGL.FillPaint = {
   'fill-opacity': 0,
 };
 
-// Get admin data to process.
-function getAdminData(evt: any) {
-  // eslint-disable-next-line
-  console.log(
-    get(evt.features[0], 'properties.ADM1_EN'),
-    get(evt.features[0], 'properties.ADM2_EN'),
-    get(evt.features[0], 'properties.ADM2_PCODE'),
-  );
-}
-
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
   targetMap.getCanvas().style.cursor = cursor;
@@ -37,7 +33,8 @@ const linePaint: MapboxGL.LinePaint = {
   'line-opacity': 0.3,
 };
 
-function Boundaries({ getCoordinates, getLocationName }: any) {
+function Boundaries() {
+  const dispatch = useDispatch();
   return (
     <GeoJSONLayer
       data={baselineBoundaries}
@@ -46,12 +43,15 @@ function Boundaries({ getCoordinates, getLocationName }: any) {
       fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
       fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
       fillOnClick={(evt: any) => {
-        getCoordinates(evt.lngLat);
-        getLocationName(
-          get(evt.features[0], 'properties.ADM1_EN')
-            .concat(', ')
-            .concat(get(evt.features[0], 'properties.ADM2_EN')),
+        dispatch(setPopupCoordinates(evt.lngLat));
+        dispatch(
+          setPopupLocation(
+            get(evt.features[0], 'properties.ADM1_EN', '')
+              .concat(', ')
+              .concat(get(evt.features[0], 'properties.ADM2_EN', '')),
+          ),
         );
+        dispatch(setPopupShowing(true));
       }}
     />
   );
