@@ -11,12 +11,13 @@ import {
   Switch,
 } from '@material-ui/core';
 
-import { MenuItemType, LayerType } from '../../../config/types';
+import { MenuItemType, LayerType, TableType } from '../../../config/types';
 import {
   layersSelector,
   addLayer,
   removeLayer,
 } from '../../../context/mapStateSlice';
+import { loadTable } from '../../../context/tableStateSlice';
 
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -38,6 +39,10 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
     } else {
       dispatch(addLayer(layer));
     }
+  };
+
+  const showTableClicked = (table: TableType) => {
+    dispatch(loadTable(table.id));
   };
 
   const open = Boolean(anchorEl);
@@ -72,7 +77,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
           className: classes.paper,
         }}
       >
-        {layersCategories.map(({ title: categoryTitle, layers }) => (
+        {layersCategories.map(({ title: categoryTitle, layers, tables }) => (
           <div key={categoryTitle} className={classes.categoryContainer}>
             <Typography variant="body2" className={classes.categoryTitle}>
               {categoryTitle}
@@ -97,6 +102,17 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
                 </div>
               );
             })}
+
+            {tables.map(table => (
+              <Button
+                className={classes.button}
+                id={table.title}
+                key={table.title}
+                onClick={() => showTableClicked(table)}
+              >
+                <Typography variant="body1">{table.title}</Typography>
+              </Button>
+            ))}
           </div>
         ))}
       </Popover>
@@ -106,6 +122,10 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
+    button: {
+      textTransform: 'none',
+    },
+
     title: {
       margin: '0px 14px',
       textTransform: 'uppercase',

@@ -4,6 +4,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import NavBar from '../NavBar';
+import DataDrawer from '../DataDrawer';
 import MapView from '../MapView';
 import NotFound from '../404Page';
 import muiTheme from '../../muiTheme';
@@ -28,6 +29,7 @@ function App() {
             <div className="App">
               <MapView />
             </div>
+            <DataDrawer />
           </Route>
 
           <Route default component={NotFound} />

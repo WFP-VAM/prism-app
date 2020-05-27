@@ -6,10 +6,12 @@ import {
 
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
+import tableStateReduce from './tableStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
   serverState: serverStateReduce,
+  tableState: tableStateReduce,
 });
 
 export const store = configureStore({

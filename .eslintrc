@@ -21,7 +21,7 @@
     "object-curly-spacing": [
       "error",
       "always",
-      { "arraysInObjects": false, "objectsInObjects": false }
+      { "arraysInObjects": true, "objectsInObjects": true }
     ],
     // More verbose prettier suggestions
     "prettier/prettier": ["warn"],
