@@ -60,7 +60,7 @@ export async function fetchNsoLayerData(
       if (!adminKey) {
         return undefined;
       }
-      const value = point.DTVAL_CO || null;
+      const value = point.DTVAL_CO !== undefined ? point.DTVAL_CO : null;
       return { adminKey, value };
     })
     .filter((v): v is DataRecord => v !== undefined);
