@@ -49,6 +49,7 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
 
   return (
     <GeoJSONLayer
+      below="boundaries"
       data={data}
       circleLayout={circleLayout}
       circlePaint={circlePaint}
