@@ -45,7 +45,6 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
       circleLayout={circleLayout}
       circlePaint={circlePaint}
       circleOnClick={(evt: any) => {
-        console.log(get(evt.features[0], 'properties'));
         dispatch(
           addPopupData({
             [layer.title]: {
