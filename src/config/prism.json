@@ -14,16 +14,29 @@
   },
   "categories": {
     "baseline": {
-      "vulnerable_groups": ["population_below_poverty", "disabled", "elderly", "child", "population_total"],
-      "livestock_and_herders": ["herd_200", "herders", "livestock"]
+      "vulnerable_groups": ["population_below_poverty", "disabled", "elderly", "child"],
+      "livestock_and_herders": ["herd_200", "herders", "livestock"],
+      "total_population": ["population_total"]
     },
     "climate": {
-      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisLST", "ModisVHI"],
-      "dzud_risk": ["DzudRiskMap", "ModisSnowPercentage"],
-      "groundstation_data": ["snow_groundstations"]
+      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisVHI"],
+      "winter_conditions": ["ModisSnowPercentage","ModisLST"],
+      "ground_station_data": ["snow_groundstations"]
     },
-    "impact": {
-      "risk_and_impact": ["herd_pasture_impact", "livestock_vhi"]
+    "risk": {
+      "dzud_risk": ["DzudRiskMap"],
+      "impact_analysis": ["herd_pasture_impact", "small_herder_dzud_risk", "livestock_vhi", "livestock_dzud_risk"]
+    },
+    "tables": {
+      "socioeconomic_data": [
+        "poverty"
+      ],
+      "livestock_data": [
+        "animal_deaths"
+      ],
+      "price_data": [
+        "hay_prices"
+      ]
     }
   }
 }

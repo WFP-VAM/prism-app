@@ -1,5 +1,6 @@
 import { mapKeys, camelCase } from 'lodash';
 import rawLayers from './layers.json';
+import rawTables from './tables.json';
 import {
   WMSLayerProps,
   checkRequiredKeys,
@@ -8,9 +9,11 @@ import {
   LayerType,
   ImpactLayerProps,
   GroundstationLayerProps,
+  TableType,
 } from './types';
 
 type layerKeys = keyof typeof rawLayers;
+type tableKeys = keyof typeof rawTables;
 
 // CamelCase the keys inside the layer definition & validate config
 const getLayerByKey = (layerKey: layerKeys): LayerType => {
@@ -86,3 +89,31 @@ export const LayerDefinitions: LayersMap = (() => {
 
   return layers;
 })();
+
+function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
+  return checkRequiredKeys(TableType, maybeTable, true);
+}
+
+function getTableByKey(key: tableKeys): TableType {
+  const rawDefinition = {
+    id: key,
+    ...mapKeys(rawTables[key], (v, k) => camelCase(k)),
+  };
+
+  if (isValidTableDefinition(rawDefinition)) {
+    return rawDefinition;
+  }
+  throw new Error(
+    `Found invalid table definition for table '${key}'. Check config/tables.json`,
+  );
+}
+
+export const TableDefinitions: { [key: string]: TableType } = Object.keys(
+  rawTables,
+).reduce(
+  (acc, tableKey) => ({
+    ...acc,
+    [tableKey]: getTableByKey(tableKey as tableKeys),
+  }),
+  {},
+);

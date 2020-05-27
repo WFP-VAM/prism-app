@@ -46,7 +46,7 @@ export type ClassType<T> = { new (...args: any): T };
 export function requiredKeysForClassType(constructor: ClassType<any>) {
   const target = new constructor();
   const allKeys = Object.getOwnPropertyNames(target);
-  const optionalKeys = Reflect.getMetadata(optionalMetadataKey, target);
+  const optionalKeys = Reflect.getMetadata(optionalMetadataKey, target) || [];
   return allKeys.filter(k => !optionalKeys.includes(k));
 }
 
@@ -181,6 +181,7 @@ export interface LayersMap {
 export interface LayersCategoryType {
   title: string;
   layers: LayerType[];
+  tables: TableType[];
 }
 
 export interface MenuItemType {
@@ -191,4 +192,11 @@ export interface MenuItemType {
 
 export interface AvailableDates {
   [key: string]: number[];
+}
+
+export class TableType {
+  id: string;
+  title: string;
+  table: string;
+  legendText: string;
 }

@@ -6,11 +6,13 @@ import {
 
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
+import tableStateReduce from './tableStateSlice';
 import tooltipStateReduce from './tooltipStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
   serverState: serverStateReduce,
+  tableState: tableStateReduce,
   tooltipState: tooltipStateReduce,
 });
 

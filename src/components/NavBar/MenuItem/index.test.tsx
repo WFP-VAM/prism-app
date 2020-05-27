@@ -21,6 +21,7 @@ const props = {
           legendText: 'legendText',
         },
       ],
+      tables: [],
     },
   ],
 };
