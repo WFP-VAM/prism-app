@@ -4,7 +4,7 @@
     "type": "nso",
     "path": "nsoPoverty",
     "admin_code": "CODE1",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
       { "value": "25", "color": "#fef0d9" },
       { "value": "30", "color": "#fdcc8a" },
@@ -19,7 +19,7 @@
     "type": "nso",
     "path": "nsoDisabled",
     "admin_code": "CODE",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
       { "value": "2000", "color": "#fef0d9" },
       { "value": "3000", "color": "#fdcc8a" },
@@ -34,7 +34,7 @@
     "type": "nso",
     "path": "nsoHayHarvest",
     "admin_code": "CODE",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
       { "value": "500", "color": "#edf8fb" },
       { "value": "1000", "color": "#b2e2e2" },
@@ -49,7 +49,7 @@
     "type": "nso",
     "path": "nsoElderly",
     "admin_code": "CODE",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
       { "value": "1000", "color": "#fef0d9" },
       { "value": "1500", "color": "#fdcc8a" },
@@ -64,7 +64,7 @@
     "type": "nso",
     "path": "nsoHerders",
     "admin_code": "CODE",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
       { "value": "300", "color": "#fef0d9" },
       { "value": "400", "color": "#fdcc8a" },
@@ -79,7 +79,7 @@
     "type": "nso",
     "path": "nsoLivestock",
     "admin_code": "CODE",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
       { "value": "100", "color": "#fef0d9" },
       { "value": "150", "color": "#fdcc8a" },
@@ -94,7 +94,7 @@
     "type": "nso",
     "path": "nsoChild",
     "admin_code": "CODE",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
       { "value": "200", "color": "#fef0d9" },
       { "value": "400", "color": "#fdcc8a" },
@@ -109,7 +109,7 @@
     "type": "nso",
     "path": "nsoHerdsize",
     "admin_code": "CODE1",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
       { "value": "2000", "color": "#fef0d9" },
       { "value": "4000", "color": "#fdcc8a" },
@@ -124,7 +124,7 @@
     "type": "nso",
     "path": "nsoPop",
     "admin_code": "CODE",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
       { "value": "2500", "color": "#fef0d9" },
       { "value": "5000", "color": "#fdcc8a" },
@@ -140,7 +140,7 @@
     "server_layer_name": "ModisAnomaly",
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "days",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend_text": "Compares the current pasture conditions to the long term average to calculate pasture anomaly",
     "wcsConfig": {
       "no_data": 65535,
@@ -171,7 +171,7 @@
     },
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "days",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend_text": "Median averaged Normalized Difference Vegetation Index (NDVI) from composite satellite imagery",
     "legend": [
       { "value": "0.00", "color": "#ece0d7" },
@@ -197,19 +197,19 @@
       "pixelResolution": 64
     },
     "date_interval": "day",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend_text": "Median value of Land Surface Temperature in degrees Celsius over a 10-day period (MODIS)",
     "legend": [
-      { "value": "-53", "color": "#5c9fc8" },
-      { "value": "-42", "color": "#7ab1c0" },
+      { "value": "-50", "color": "#5c9fc8" },
+      { "value": "-40", "color": "#7ab1c0" },
       { "value": "-30", "color": "#9fc3b3" },
-      { "value": "-19", "color": "#d9e79a" },
-      { "value": "-8", "color": "#f3f88e" },
-      { "value": "4", "color": "#f0d779" },
+      { "value": "-20", "color": "#d9e79a" },
+      { "value": "-10", "color": "#f3f88e" },
+      { "value": "5", "color": "#f0d779" },
       { "value": "15", "color": "#eeb563" },
-      { "value": "26", "color": "#e98f51" },
-      { "value": "38", "color": "#e2633e" },
-      { "value": "49", "color": "#da402e" }
+      { "value": "25", "color": "#e98f51" },
+      { "value": "40", "color": "#e2633e" },
+      { "value": "50", "color": "#da402e" }
     ]
   },
   "ModisVHI": {
@@ -223,7 +223,7 @@
     },
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "day",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
     "legend": [
       { "value": "0.10", "color": "#ef1000" },
@@ -239,7 +239,7 @@
     "server_layer_name": "ModisSnowPercentage",
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "day",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend_text": "Snow Percentage for a 10-day period, where the value represent the percentage of times that a pixel had snow",
     "legend": [
       { "value": "0", "color": "#a8a8a8" },
@@ -250,64 +250,65 @@
     ]
   },
   "mvam_hay_reserves": {
-    "title": "Hay reserves",
+    "title": "Hay reserves in metric tonnes (soum)",
     "type": "nso",
     "path": "mvamHayreserves",
     "admin_code": "CODE",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
       { "value": "0", "color": "#d7191c" },
-      { "value": "10", "color": "#fdae61" },
-      { "value": "20", "color": "#ffffbf" },
-      { "value": "40", "color": "#a6d96a" },
-      { "value": "60", "color": "#1a9641" }
+      { "value": "1 - 20", "color": "#fdae61" },
+      { "value": "21 - 40", "color": "#ffffbf" },
+      { "value": "41 - 60", "color": "#a6d96a" },
+      { "value": "60 +", "color": "#1a9641" }
     ],
-    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
-  },
-  "mvam_cash_reserves": {
-    "title": "Cash reserves",
-    "type": "nso",
-    "path": "mvamCash",
-    "admin_code": "CODE",
-    "opacity": 0.3,
-    "legend": [
-      { "value": "0%", "color": "#d7191c" },
-      { "value": "10%", "color": "#fdae61" },
-      { "value": "20%", "color": "#ffffbf" },
-      { "value": "30%", "color": "#a6d96a" },
-      { "value": "40%", "color": "#1a9641" }
-    ],
-    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+    "legend_text": "Average amount of hay stored in soum emergency reserves in metric tonnes (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
   },
   "mvam_fodder_reserves": {
-    "title": "Fodder reserves",
+    "title": "Fodder reserves in metric tonnes (soum)",
     "type": "nso",
     "path": "mvamFodder",
     "admin_code": "CODE",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
-      { "value": "0%", "color": "#d7191c" },
-      { "value": "1%", "color": "#fdae61" },
-      { "value": "11%", "color": "#ffffbf" },
-      { "value": "21%", "color": "#a6d96a" },
-      { "value": "31%", "color": "#1a9641" }
+      { "value": "0", "color": "#d7191c" },
+      { "value": "1 - 10", "color": "#fdae61" },
+      { "value": "11 - 20", "color": "#ffffbf" },
+      { "value": "21 - 30", "color": "#a6d96a" },
+      { "value": "30", "color": "#1a9641" }
     ],
-    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+    "legend_text": "Average amount of fodder stored in soum emergency reserves in metric tonnes (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
   },
+  "mvam_cash_reserves": {
+    "title": "Cash reserves in million MNT (soum)",
+    "type": "nso",
+    "path": "mvamCash",
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      { "value": "0", "color": "#d7191c" },
+      { "value": "1 - 5", "color": "#fdae61" },
+      { "value": "6 - 10", "color": "#ffffbf" },
+      { "value": "11 - 15", "color": "#a6d96a" },
+      { "value": "15 +", "color": "#1a9641" }
+    ],
+    "legend_text": "Average amount of cash dedicated for soum emergency hay and fodder reserves, in million MNT (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+  },
+
   "mvam_hay_prices": {
-    "title": "Hay prices",
+    "title": "Hay prices (soum)",
     "type": "nso",
     "path": "mvamHayprices",
     "admin_code": "CODE",
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend": [
-      { "value": "0%", "color": "#d7191c" },
-      { "value": "10%", "color": "#fdae61" },
-      { "value": "20%", "color": "#ffffbf" },
-      { "value": "30%", "color": "#a6d96a" },
-      { "value": "40%", "color": "#1a9641" }
+      { "value": "2000 - 4000", "color": "#1a9641" }, 
+      { "value": "4001 - 6000", "color": "#a6d96a" },
+      { "value": "6001 - 8000", "color": "#ffffbf" },
+      { "value": "8001 - 10000", "color": "#fdae61" },
+      { "value": "10001 and above", "color": "#d7191c" }
     ],
-    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+    "legend_text": "Average price of bale of hay (20kg) for sale in the soum emergency reserve (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
   },
   "DzudRiskMap": {
     "title": "Dzud risk",
@@ -326,19 +327,18 @@
     ]
   },
   "snow_groundstations": {
-    "title": "Temperature",
+    "title": "Temperature (example data for 1-11 January 2020)",
     "type": "groundstation",
     "data": "groundstationSnow",
-    "opacity": 0.3,
-    "legend_text": "Temperature from ground station data reported in degrees celsius",
+    "opacity": 0.5,
+    "legend_text": "Temperature from ground station data reported in degrees Celsius",
     "legend": [
         { "value": "-40", "color": "#7ab1c0" },
         { "value": "-30", "color": "#9fc3b3" },
         { "value": "-20", "color": "#d9e79a" },
         { "value": "-10", "color": "#f3f88e" },
-        { "value": "0", "color": "#f0d779"},
-        { "value": "10000 (no data)", "color": "#000000"}
-    ]
+        { "value": "0", "color": "#f0d779"}    
+      ]
   },
   "herd_pasture_impact": {
     "title": "Herders exposed to severe pasture anomaly (soum)",
@@ -346,13 +346,15 @@
     "hazard_layer": "pasture_anomaly",
     "baseline_layer": "herders",
     "operation": "median",
-    "threshold": { "below": -50 },
-    "opacity": 0.3,
-    "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -50%",
+    "threshold": { "below": -25 },
+    "opacity": 0.5,
+    "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -25%",
     "legend": [
-      { "value": 250, "color": "#ffeda0" },
-      { "value": 300, "color": "#feb24c" },
-      { "value": 350, "color": "#f03b20" }
+      { "value": 200, "color": "#fef0d9" },
+      { "value": 300, "color": "#fdcc8a" },
+      { "value": 400, "color": "#fc8d59" },
+      { "value": 500, "color": "#e34a33" },
+      { "value": 600, "color": "#b30000" }
     ]
   },
   "small_herder_dzud_risk": {
@@ -361,8 +363,8 @@
     "hazard_layer": "DzudRiskMap",
     "baseline_layer": "herd_200",
     "operation": "median",
-    "threshold": { "above": 25 },
-    "opacity": 0.3,
+    "threshold": { "above": 3 },
+    "opacity": 0.5,
     "legend_text": "Number of small herder households within an aimag with very high risk of dzud",
     "legend": [
       { "value": 250, "color": "#ffeda0" },
@@ -376,7 +378,7 @@
     "hazard_layer": "DzudRiskMap",
     "baseline_layer": "livestock",
     "threshold": { "above": 25 },
-    "opacity": 0.3,
+    "opacity": 0.5,
     "legend_text": "Number of livestock within a soum with very high risk of dzud",
     "legend": [
       { "value": 5000, "color": "#ffeda0" },
@@ -385,17 +387,35 @@
     ]
   },
   "livestock_vhi": {
-    "title": "Livestock exposed to drought (soum)",
+    "title": "Livestock exposed to drought in thousands (soum)",
     "type": "impact",
     "hazard_layer": "ModisVHI",
     "baseline_layer": "livestock",
-    "threshold": { "above": 0.25 },
-    "opacity": 0.3,
-    "legend_text": "Number of livestock within a soum with drought conditions as measured through the Vegetation Health Index",
+    "threshold": { "below": 0.25 },
+    "opacity": 0.5,
+    "legend_text": "Number of livestock (in thousands) within a soum with drought conditions as measured through the Vegetation Health Index",
     "legend": [
-      { "value": 5000, "color": "#ffeda0" },
-      { "value": 10000, "color": "#feb24c" },
-      { "value": 15000, "color": "#f03b20" }
+      { "value": 100, "color": "#fef0d9" },
+      { "value": 150, "color": "#fdcc8a" },
+      { "value": 200, "color": "#fc8d59" },
+      { "value": 250, "color": "#e34a33" },
+      { "value": 300, "color": "#b30000" }
+    ]
+  },
+  "livestock_cold": {
+    "title": "Livestock exposed to extreme cold temperatures in thousands (soum)",
+    "type": "impact",
+    "hazard_layer": "ModisLST",
+    "baseline_layer": "livestock",
+    "threshold": { "below": -25 },
+    "opacity": 0.5,
+    "legend_text": "Number of livestock (in thousands) within a soum with average temperatures below -25 Celsius",
+    "legend": [
+      { "value": 100, "color": "#f0f9e8" },
+      { "value": 150, "color": "#bae4bc" },
+      { "value": 200, "color": "#7bccc4" },
+      { "value": 250, "color": "#43a2ca" },
+      { "value": 300, "color": "#0868ac" }
     ]
   }
 }

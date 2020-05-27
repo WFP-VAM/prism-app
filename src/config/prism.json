@@ -27,11 +27,11 @@
       "herders": ["herd_200"]
     },
     "capacity": {
-      "livestock_and_crop_preparedness": ["hay_harvest", "mvam_hay_reserves", "mvam_cash_reserves", "mvam_fodder_reserves", "mvam_hay_prices"]
+      "livestock_and_crop_preparedness": ["hay_harvest", "mvam_hay_reserves", "mvam_fodder_reserves", "mvam_cash_reserves", "mvam_hay_prices"]
     },
     "risk": {
       "dzud_risk": ["DzudRiskMap"],
-      "impact_analysis": ["herd_pasture_impact", "small_herder_dzud_risk", "livestock_vhi", "livestock_dzud_risk"]
+      "impact_analysis": ["herd_pasture_impact", "livestock_vhi", "livestock_cold"]
     },
     "tables": {
       "socioeconomic_data": [
