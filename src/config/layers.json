@@ -163,29 +163,6 @@
       { "value": "+80%", "color": "#5b6e00" }
     ]
   },
-  "pasture_biomass": {
-    "title": "Pasture biomass",
-    "type": "wms",
-    "server_layer": "ModisPastureBiomass",
-    "server_uri": "https://mongolia.sibelius-datacube.org:5000/wms?layers=ModisPastureBiomass",
-    "has_date": true,
-    "date_interval": "days",
-    "opacity": 0.3,
-    "legend_text": "Pasture biomass. Converts the NDVI to pasture (kg/ha) values.",
-    "legend": [
-      { "value": "-80%", "color": "#ff0000" },
-      { "value": "-60%", "color": "#ff5900" },
-      { "value": "-40%", "color": "#ff8400" },
-      { "value": "-20%", "color": "#ffce63" },
-      { "value": "-10%", "color": "#ffdd94" },
-      { "value": "0", "color": "#ffffbf" },
-      { "value": "+10%", "color": "#dee09f" },
-      { "value": "+20%", "color": "#bbbf7c" },
-      { "value": "+40%", "color": "#9da360" },
-      { "value": "+60%", "color": "#7e8745" },
-      { "value": "+80%", "color": "#5b6e00" }
-    ]
-  },
   "ndvi": {
     "title": "Vegetation index (NDVI)",
     "type": "wms",
@@ -272,6 +249,70 @@
       { "value": "75", "color": "#f4f4f4" },
       { "value": "100", "color": "#ffffff" }
     ]
+  },
+  "mvam_hay_reserves": {
+    "title": "Hay reserves",
+    "type": "nso",
+    "data": "mvamHayreserves",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "0", "color": "#d7191c" },
+      { "value": "10", "color": "#fdae61" },
+      { "value": "20", "color": "#ffffbf" },
+      { "value": "40", "color": "#a6d96a" },
+      { "value": "60", "color": "#1a9641" }
+    ],
+    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+  },
+  "mvam_cash_reserves": {
+    "title": "Cash reserves",
+    "type": "nso",
+    "data": "mvamCash",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "0%", "color": "#d7191c" },
+      { "value": "10%", "color": "#fdae61" },
+      { "value": "20%", "color": "#ffffbf" },
+      { "value": "30%", "color": "#a6d96a" },
+      { "value": "40%", "color": "#1a9641" }
+    ],
+    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+  },
+  "mvam_fodder_reserves": {
+    "title": "Fodder reserves",
+    "type": "nso",
+    "data": "mvamFodder",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "0%", "color": "#d7191c" },
+      { "value": "1%", "color": "#fdae61" },
+      { "value": "11%", "color": "#ffffbf" },
+      { "value": "21%", "color": "#a6d96a" },
+      { "value": "31%", "color": "#1a9641" }
+    ],
+    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+  },
+  "mvam_hay_prices": {
+    "title": "Hay prices",
+    "type": "nso",
+    "data": "mvamHayprices",
+    "admin_code": "CODE",
+    "has_date": false,
+    "opacity": 0.3,
+    "legend": [
+      { "value": "0%", "color": "#d7191c" },
+      { "value": "10%", "color": "#fdae61" },
+      { "value": "20%", "color": "#ffffbf" },
+      { "value": "30%", "color": "#a6d96a" },
+      { "value": "40%", "color": "#1a9641" }
+    ],
+    "legend_text": "Average amount of hay stored in soum emergency reserves (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
   },
   "DzudRiskMap": {
     "title": "Dzud risk",
