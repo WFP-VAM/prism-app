@@ -32,7 +32,7 @@ export function Chart({ title, data, config }: ChartProps) {
       fill: true,
       backgroundColor: colors[i],
       borderWidth: 2,
-      data: indices.map(index => row[index] as number),
+      data: indices.map(index => (row[index] as number) || null),
     }));
     const chartData = {
       labels,
