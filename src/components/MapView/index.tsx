@@ -13,9 +13,11 @@ import Boundaries from './Boundaries';
 import NSOLayer from './Layers/NSOLayer';
 import WMSLayer from './Layers/WMSLayer';
 import GroundstationLayer from './Layers/GroundstationLayer';
+import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import DateSelector from './DateSelector';
 import { layersSelector, isLoading, setMap } from '../../context/mapStateSlice';
+import { hidePopup } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
   loadAvailableDates,
@@ -59,6 +61,10 @@ function MapView({ classes }: MapViewProps) {
     dispatch(loadAvailableDates());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(hidePopup());
+  }, [dispatch, layers]);
+
   const serverLayers = layers.filter((layer): layer is
     | WMSLayerProps
     | ImpactLayerProps => ['impact', 'wms'].includes(layer.type));
@@ -101,8 +107,10 @@ function MapView({ classes }: MapViewProps) {
           height: '100vh',
           width: '100vw',
         }}
+        onClick={() => {
+          dispatch(hidePopup());
+        }}
       >
-        <Boundaries />
         <>
           {layers.map(layer => {
             const component: ComponentType<{ layer: any }> =
@@ -113,6 +121,8 @@ function MapView({ classes }: MapViewProps) {
             });
           })}
         </>
+        <MapTooltip />
+        <Boundaries />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={layers} />

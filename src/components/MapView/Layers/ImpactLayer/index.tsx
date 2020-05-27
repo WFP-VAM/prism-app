@@ -2,10 +2,12 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FillPaint, LinePaint } from 'mapbox-gl';
+import { get } from 'lodash';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
 import { Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { ImpactLayerProps } from '../../../../config/types';
+import { LayerDefinitions } from '../../../../config/utils';
 import {
   LayerData,
   loadLayerData,
@@ -15,12 +17,19 @@ import {
   layerDataSelector,
   dateRangeSelector,
 } from '../../../../context/mapStateSlice';
+import { addPopupData } from '../../../../context/tooltipStateSlice';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',
   'line-width': 1,
   'line-opacity': 0.3,
 };
+
+function getHazardData(evt: any, operation: string) {
+  const data = get(evt.features[0].properties, operation || 'median', null);
+
+  return data ? data.toFixed(2) : 'No Data';
+}
 
 export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   const map = useSelector(mapSelector);
@@ -75,12 +84,29 @@ export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
         },
   };
 
+  const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
+  const operation = layer.operation || 'median';
+  const hazardTitle = `${hazardLayerDef.title} (${operation})`;
+
   return (
     <GeoJSONLayer
       below="boundaries"
       data={noMatchingDistricts ? boundaries : impactFeatures}
       linePaint={linePaint}
       fillPaint={fillPaint}
+      fillOnClick={(evt: any) => {
+        const popupData = {
+          [layer.title]: {
+            data: get(evt.features[0], 'properties.impactValue', 'No Data'),
+            coordinates: evt.lngLat,
+          },
+          [hazardTitle]: {
+            data: getHazardData(evt, operation),
+            coordinates: evt.lngLat,
+          },
+        };
+        dispatch(addPopupData(popupData));
+      }}
     />
   );
 };
