@@ -1,58 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import * as Papa from 'papaparse';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   Table,
   TableBody,
   TableContainer,
   TableHead,
-  makeStyles,
+  withStyles,
+  WithStyles,
+  createStyles,
+  CircularProgress,
   Paper,
+  Box,
 } from '@material-ui/core';
-import { getCurrTable } from '../../../context/tableStateSlice';
+import {
+  getCurrentDefinition,
+  isLoading,
+  getCurrentData,
+} from '../../../context/tableStateSlice';
 import DataTableRow from './DataTableRow';
 
-const useStyles = makeStyles({
-  root: {
-    width: '100%',
-    height: '70vh',
-    color: 'black',
-  },
-  container: {
-    maxHeight: '100%',
-  },
-  headCells: {
-    color: 'black',
-  },
-  tableCells: {
-    color: 'darkGrey',
-  },
-});
+const styles = () =>
+  createStyles({
+    root: {
+      width: '100%',
+      height: '70vh',
+      color: 'black',
+    },
+    container: {
+      maxHeight: '100%',
+    },
+    headCells: {
+      color: 'black',
+    },
+    tableCells: {
+      color: 'darkGrey',
+    },
+  });
 
-export interface DataTableConfig {
+export interface DataTableProps extends WithStyles<typeof styles> {
   maxResults: number;
 }
 
-const DataTable = ({ maxResults }: DataTableConfig) => {
-  const classes = useStyles();
+const DataTable = ({ classes, maxResults }: DataTableProps) => {
+  const loading = useSelector(isLoading);
+  const definition = useSelector(getCurrentDefinition);
+  const data = useSelector(getCurrentData);
 
-  // get and destructure the currently open table
-  const { title, table, legendText } = useSelector(getCurrTable);
-  // set up state to store results from parsing the CSV
-  const [tableJson, setTableJson] = useState<any[]>([]);
+  if (!definition) {
+    return null;
+  }
 
-  const tableUrl = process.env.PUBLIC_URL + table;
-
-  // parse the csv, but only when we get a new table to parse
-  useEffect(() => {
-    Papa.parse(tableUrl, {
-      header: true,
-      download: true,
-      complete: results => {
-        setTableJson(results.data);
-      },
-    });
-  }, [table, tableUrl]);
+  const { table, title, legendText } = definition;
 
   return (
     <div>
@@ -62,23 +60,34 @@ const DataTable = ({ maxResults }: DataTableConfig) => {
         <a href={process.env.PUBLIC_URL + table}>Download as CSV</a>
       </p>
 
-      {tableJson.length > 0 && (
+      {loading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height={300}
+        >
+          <CircularProgress size={40} color="secondary" />
+        </Box>
+      ) : (
         <Paper className={classes.root}>
           <TableContainer className={classes.container}>
             <Table stickyHeader aria-label={`table showing ${title}`}>
               <TableHead>
                 <DataTableRow
-                  key="head"
                   className={classes.headCells}
-                  rowData={tableJson[0]}
+                  columns={data.columns}
+                  rowData={data.rows[0]}
                 />
               </TableHead>
               <TableBody>
-                {tableJson.slice(1, maxResults).map((rowJson, index) => (
+                {data.rows.slice(1, maxResults).map((rowData, idx) => (
                   <DataTableRow
-                    key={`row_${String(index)}`}
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={idx}
                     className={classes.tableCells}
-                    rowData={rowJson}
+                    columns={data.columns}
+                    rowData={rowData}
                   />
                 ))}
               </TableBody>
@@ -90,4 +99,4 @@ const DataTable = ({ maxResults }: DataTableConfig) => {
   );
 };
 
-export default DataTable;
+export default withStyles(styles)(DataTable);

@@ -9,17 +9,9 @@ exports[`renders as expected 1`] = `
     <div
       class="DataDrawer-drawerContent-1"
     >
-      <div>
-        <h2 />
-        <p />
-        <p>
-          <a
-            href="undefined"
-          >
-            Download as CSV
-          </a>
-        </p>
-      </div>
+      <data-table
+        maxresults="1000"
+      />
     </div>
   </mock-drawer>
 </div>

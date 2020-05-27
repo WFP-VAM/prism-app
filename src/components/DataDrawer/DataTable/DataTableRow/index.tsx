@@ -1,17 +1,19 @@
 import React from 'react';
 import { TableRow, TableCell } from '@material-ui/core';
+import { TableRowType } from '../../../../context/tableStateSlice';
 
 export interface TableRowProps {
   className?: string;
-  rowData: { key: string; value: string | number }[];
+  columns: string[];
+  rowData?: TableRowType;
 }
 
-const DataTableRow = ({ className, rowData }: TableRowProps) => (
+const DataTableRow = ({ className, columns, rowData }: TableRowProps) => (
   <TableRow>
-    {Object.entries(rowData).map(([cellKey, value]) => (
-      <TableCell className={className} key={cellKey}>
+    {columns.map(column => (
+      <TableCell className={className} key={column}>
         {' '}
-        {value}{' '}
+        {rowData ? rowData[column] : column}{' '}
       </TableCell>
     ))}
   </TableRow>

@@ -17,7 +17,7 @@ import {
   addLayer,
   removeLayer,
 } from '../../../context/mapStateSlice';
-import { setTable } from '../../../context/tableStateSlice';
+import { loadTable } from '../../../context/tableStateSlice';
 
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -42,7 +42,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   };
 
   const showTableClicked = (table: TableType) => {
-    dispatch(setTable(table));
+    dispatch(loadTable(table.id));
   };
 
   const open = Boolean(anchorEl);
