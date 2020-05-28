@@ -1,6 +1,6 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
-import colormap from 'colormap';
+import * as colormap from 'colormap';
 import { shuffle } from 'lodash';
 import { ChartConfig } from '../../../config/types';
 import { TableData } from '../../../context/tableStateSlice';
