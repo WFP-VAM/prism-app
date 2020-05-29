@@ -59,7 +59,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
   const colors = shuffle(
     colormap({
       colormap: 'rainbow-soft',
-      nshades: transpose ? header.length : tableRows.length,
+      nshades: !transpose ? tableRows.length : header.length,
       format: 'hex',
       alpha: 0.5,
     }),
