@@ -20,7 +20,7 @@
       "stacked": false,
       "transpose": true,
       "category": "Month",
-      "data": "Average"
+      "data": "data"
     }
   },
   "poverty": {
