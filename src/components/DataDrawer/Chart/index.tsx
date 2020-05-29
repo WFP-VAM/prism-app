@@ -3,6 +3,8 @@ import * as colormap from 'colormap';
 import { Bar, Line } from 'react-chartjs-2';
 import { ChartOptions } from 'chart.js';
 import { shuffle } from 'lodash';
+import { ChartOptions } from 'chart.js';
+import { Bar, Line } from 'react-chartjs-2';
 import { ChartConfig } from '../../../config/types';
 import { TableData } from '../../../context/tableStateSlice';
 
