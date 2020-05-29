@@ -24,7 +24,7 @@
     }
   },
   "poverty": {
-    "title": "Poverty headcount over time",
+    "title": "Poverty headcount 2016 vs 2018",
     "table": "./data/tables/NSO_Poverty_Headcount_Admin1.csv",
     "legend_text": "Poverty headcount over two periods. Source: National Statistics Office",
     "chart": {
