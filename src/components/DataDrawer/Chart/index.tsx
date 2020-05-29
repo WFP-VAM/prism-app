@@ -11,6 +11,12 @@ type ChartProps = {
   config: ChartConfig;
 };
 
+function colorShuffle(colors: string[]) {
+  return colors.map((_, i) =>
+    (-1) ** i !== -1 ? colors[i] : colors[colors.length - i],
+  );
+}
+
 function getChartConfig(stacked: boolean, title: string) {
   return {
     title: {
@@ -90,12 +96,14 @@ function formatChartData(data: TableData, config: ChartConfig) {
   // rainbow-soft map requires nshades to be at least size 11
   const nshades = Math.max(11, !transpose ? tableRows.length : indices.length);
 
-  const colors = colormap({
-    colormap: 'rainbow-soft',
-    nshades,
-    format: 'hex',
-    alpha: 0.5,
-  });
+  const colors = colorShuffle(
+    colormap({
+      colormap: 'rainbow-soft',
+      nshades,
+      format: 'hex',
+      alpha: 0.5,
+    }),
+  );
 
   const labels = !transpose
     ? indices.map(index => header[index])
@@ -106,7 +114,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         label: (row[config.category] as string) || '',
         fill: config.fill || false,
         backgroundColor: colors[i],
-        borderColor: config.fill ? null : colors[i],
+        borderColor: colors[i],
         borderWidth: 2,
         data: indices.map(index => (row[index] as number) || null),
       }))
@@ -114,7 +122,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         label: header[index] as string,
         fill: config.fill || false,
         backgroundColor: colors[i],
-        borderColor: config.fill ? null : colors[i],
+        borderColor: colors[i],
         borderWidth: 2,
         data: tableRows.map(row => (row[index] as number) || null),
       }));
