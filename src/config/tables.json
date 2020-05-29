@@ -30,8 +30,8 @@
     "chart": {
       "type": "bar",
       "stacked": false,
-      "category": "Category_EN",
       "transpose": true,
+      "category": "Category_EN",
       "data": "Year"
     }
   }
