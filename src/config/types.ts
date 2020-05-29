@@ -139,7 +139,9 @@ export interface ChartConfig {
   category: string;
   stacked?: boolean;
   exclude?: string[];
-  xAxis?: string;
+  data?: string;
+  transpose?: boolean;
+  fill?: boolean;
 }
 
 export type AggregationOperations = 'mean' | 'median';
