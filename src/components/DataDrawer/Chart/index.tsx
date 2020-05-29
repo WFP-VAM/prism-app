@@ -51,6 +51,33 @@ function getChartConfig(stacked: boolean, title: string) {
 }
 
 function formatChartData(data: TableData, config: ChartConfig) {
+  /**
+   * This function assumes that the data is fomratted as follows:
+   * First Row -> "keys"
+   * Second Row -> "column names / headers"
+   *
+   * Example:
+   *  Month,data1,data2,data3
+   *  Month,Average,High,Low
+   *  Dec-18,6750,12000,3200
+   *  Jan-19,6955,10600,3600
+   *  Feb-19,6881,10300,3600
+   *  Mar-19,6505,10000,2700
+   *  Apr-19,6319,10200,3000
+   *
+   * The function uses the config fields:
+   *  - data: the identifier fot keys. Eg. config.data = data for the above dataset
+   *          will select columns data1, data2, data3
+   *
+   * - category: the key to use to identify categories. Eg. "Month" in the example above.
+   *
+   * - transpose: specify if rows or columns should be used to form datasets.
+   *               By default, the function uses each row as a dataset.
+   *               In the example above, we will need to transpose the data
+   *               using config.transpose = true.
+   *  - fill
+   */
+
   const transpose = config.transpose || false;
   const header = data.rows[0];
   const tableRows = data.rows.slice(1, data.rows.length);
