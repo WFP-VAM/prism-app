@@ -6,18 +6,19 @@
     "chart": {
       "type": "line",
       "stacked": true,
+      "fill": true,
       "category": "Category_EN",
       "data": "Year"
     }
   },
   "hay_prices": {
     "title": "Monthly hay prices",
-    "table": "./data/tables/NSO_Bale_Hay_Price_Monthly_Admin1.csv",
+    "table": "./data/tables/NSO_Bale_Hay_Price_Monthly_Avg2.csv",
     "legend_text": "Price of a bail of hay by month. Source: National Statistics Office",
     "chart": {
       "type": "line",
       "stacked": false,
-      "transpose": false,
+      "transpose": true,
       "category": "Month",
       "data": "Average"
     }
