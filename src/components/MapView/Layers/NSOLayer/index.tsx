@@ -37,6 +37,7 @@ function NSOLayers({ layer }: { layer: NSOLayerProps }) {
     'fill-color': {
       property: 'data',
       stops: legendToStops(layer.legend),
+      type: 'interval',
     },
   };
 
