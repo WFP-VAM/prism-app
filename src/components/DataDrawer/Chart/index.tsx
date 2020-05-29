@@ -1,8 +1,5 @@
 import React from 'react';
 import * as colormap from 'colormap';
-import { Bar, Line } from 'react-chartjs-2';
-import { ChartOptions } from 'chart.js';
-import { shuffle } from 'lodash';
 import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import { ChartConfig } from '../../../config/types';
@@ -58,19 +55,20 @@ function formatChartData(data: TableData, config: ChartConfig) {
   const header = data.rows[0];
   const tableRows = data.rows.slice(1, data.rows.length);
 
-  const colors = shuffle(
-    colormap({
-      colormap: 'rainbow-soft',
-      nshades: !transpose ? tableRows.length : header.length,
-      format: 'hex',
-      alpha: 0.5,
-    }),
-  );
-
   // Get the keys for the data of interest
   const indices = Object.keys(header).filter(key =>
     key.includes(config.data || ''),
   );
+
+  // rainbow-soft map requires nshades to be at least size 11
+  const nshades = Math.max(11, !transpose ? tableRows.length : indices.length);
+
+  const colors = colormap({
+    colormap: 'rainbow-soft',
+    nshades,
+    format: 'hex',
+    alpha: 0.5,
+  });
 
   const labels = !transpose
     ? indices.map(index => header[index])
@@ -81,6 +79,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         label: (row[config.category] as string) || '',
         fill: config.fill || false,
         backgroundColor: colors[i],
+        borderColor: config.fill ? null : colors[i],
         borderWidth: 2,
         data: indices.map(index => (row[index] as number) || null),
       }))
@@ -88,6 +87,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         label: header[index] as string,
         fill: config.fill || false,
         backgroundColor: colors[i],
+        borderColor: config.fill ? null : colors[i],
         borderWidth: 2,
         data: tableRows.map(row => (row[index] as number) || null),
       }));
