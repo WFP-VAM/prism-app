@@ -1,7 +1,6 @@
 import GeoJSON from 'geojson';
-
-// FIXME: for now, directly import this file. This bloats the code bundle - it should be hosted externally.
-import groundstationDataJson from '../../data/groundstations/IRIMHE_temperature_2020-01-d1.json';
+import { LayerDataParams } from './layer-data';
+import { GroundstationLayerProps } from '../../config/types';
 
 declare module 'geojson' {
   export const version: string;
@@ -19,8 +18,27 @@ export type GroundstationLayerData = {
   [key: string]: any;
 }[];
 
-export async function fetchGroundstationData() {
-  return GeoJSON.parse(groundstationDataJson, {
-    Point: ['lat', 'lon'],
-  });
+export async function fetchGroundstationData(
+  params: LayerDataParams<GroundstationLayerProps>,
+) {
+  // This function fetches groundstation data from the API
+  // endpoint defined in layer.data using a "POST".
+  // If this endpoint is not available or we run into an error,
+  // we should get the data from the local public file in layer.fallbackData
+
+  const { layer } = params;
+
+  const fallbackUrl = process.env.PUBLIC_URL + layer.fallbackData || '';
+  const options = {}; // layer.data.includes('119.40') ? { method: 'POST' } : {}
+  const url = fallbackUrl;
+
+  return new Promise<GroundstationLayerData>((resolve, reject) =>
+    fetch(url, options)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        resolve(GeoJSON.parse(data, { Point: ['lat', 'lon'] }));
+      })
+      .catch(error => reject(error)),
+  );
 }

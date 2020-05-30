@@ -26,6 +26,8 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
     }
   }, [data, dispatch, layer]);
 
+  console.log(data);
+
   if (!data) {
     return null;
   }
