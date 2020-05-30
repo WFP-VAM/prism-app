@@ -13,7 +13,7 @@ type ChartProps = {
 
 function colorShuffle(colors: string[]) {
   return colors.map((_, i) =>
-    (-1) ** i !== -1 ? colors[i] : colors[colors.length - i - 1],
+    i % 2 ? colors[i] : colors[colors.length - i - 1],
   );
 }
 
