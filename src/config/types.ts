@@ -163,6 +163,8 @@ export class ImpactLayerProps extends CommonLayerProps {
 export class GroundstationLayerProps extends CommonLayerProps {
   type: 'groundstation';
   data: string;
+  @optional
+  fallbackData?: string;
   @makeRequired
   legend: LegendDefinition;
 }
