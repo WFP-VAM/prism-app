@@ -28,7 +28,7 @@ export async function fetchGroundstationData(
 
   const { layer } = params;
 
-  const fallbackUrl = process.env.PUBLIC_URL + layer.fallbackData || '';
+  const fallbackUrl = process.env.PUBLIC_URL || `${layer.fallbackData}` || '';
   const options = {}; // layer.data.includes('119.40') ? { method: 'POST' } : {}
   const url = fallbackUrl;
 
