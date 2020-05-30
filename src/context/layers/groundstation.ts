@@ -27,16 +27,19 @@ export async function fetchGroundstationData(
 
   const { layer } = params;
 
-  // const fallbackUrl = process.env.PUBLIC_URL || `${layer.fallbackData}` || '';
-  const url = layer.data || ''; // "http://119.40.103.16/temp/Temperature?beginDateTime=2020-03-1&endDateTime=2020-03-2"
-
   return new Promise<GroundstationLayerData>((resolve, reject) =>
-    fetch(url, { mode: 'no-cors' })
+    fetch(layer.data, { mode: 'cors' })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         resolve(GeoJSON.parse(data, { Point: ['lat', 'lon'] }));
       })
-      .catch(error => reject(error)),
+      .catch(() =>
+        fetch(layer.fallbackData || '')
+          .then(response => response.json())
+          .then(data => {
+            resolve(GeoJSON.parse(data, { Point: ['lat', 'lon'] }));
+          })
+          .catch(error => reject(error)),
+      ),
   );
 }
