@@ -21,8 +21,7 @@ export type GroundstationLayerData = {
 export async function fetchGroundstationData(
   params: LayerDataParams<GroundstationLayerProps>,
 ) {
-  // This function fetches groundstation data from the API
-  // endpoint defined in layer.data using a "POST".
+  // This function fetches groundstation data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
 
