@@ -52,6 +52,21 @@ function formatCapabilitiesInfo(
   }, {});
 }
 
+// type flatLayer = {
+//   Name: {_text: string};
+//   Dimension: {_text: string};
+// }
+
+function flattenLayers(rawLayers: any): any[] {
+  if (rawLayers.Layer) {
+    return flattenLayers(get(rawLayers, 'Layer', []));
+  }
+  if (Array.isArray(rawLayers) && rawLayers.length > 0 && rawLayers[0].Layer) {
+    return rawLayers.reduce((acc, { Layer }) => acc.concat(Layer), []);
+  }
+  return rawLayers;
+}
+
 /**
  * List capabilities for a WMS layer.
  * @param serverUri
@@ -65,16 +80,9 @@ async function getWMSCapabilities(serverUri: string) {
     const responseJS = xml2js(responseText, xml2jsOptions);
 
     const rawLayers = get(responseJS, 'WMS_Capabilities.Capability.Layer');
+    const flatLayers = flattenLayers(rawLayers);
 
-    const flattenLayers = Array.isArray(rawLayers)
-      ? rawLayers.reduce((acc, { Layer }) => acc.concat(Layer), [])
-      : get(rawLayers, 'Layer', []);
-
-    return formatCapabilitiesInfo(
-      flattenLayers,
-      'Name._text',
-      'Dimension._text',
-    );
+    return formatCapabilitiesInfo(flatLayers, 'Name._text', 'Dimension._text');
   } catch (error) {
     console.error(
       `Server returned an error for request GET/${requestUri}, error: ${error}`,
