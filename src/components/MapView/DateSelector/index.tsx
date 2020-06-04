@@ -69,6 +69,10 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     dispatch(updateDateRange({ startDate: time, endDate: time }));
   }
 
+  // The DatePicker is timezone aware, so we trick it into
+  // displaying UTC dates.
+  const userOffset = new Date().getTimezoneOffset() * 60000;
+
   return (
     <div className={classes.container}>
       <Grid
@@ -79,7 +83,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         <Grid item xs={2}>
           <DatePicker
             className={classes.datePickerInput}
-            selected={selectedDate.toDate()}
+            selected={selectedDate.utc().toDate()}
             onChange={updateStartDate}
             maxDate={new Date()}
             todayButton="Today"
@@ -88,7 +92,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
             showYearDropdown
             dropdownMode="select"
             customInput={<Input />}
-            includeDates={availableDates.map(d => new Date(d))}
+            includeDates={availableDates.map(d => new Date(d + userOffset))}
           />
         </Grid>
 
