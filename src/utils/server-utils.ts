@@ -52,12 +52,19 @@ function formatCapabilitiesInfo(
   }, {});
 }
 
-// type flatLayer = {
-//   Name: {_text: string};
-//   Dimension: {_text: string};
-// }
+type flatLayer = {
+  Name: {
+    _text: string;
+    [key: string]: any;
+  };
+  Dimension: {
+    _text: string;
+    [key: string]: any;
+  };
+  [key: string]: any;
+};
 
-function flattenLayers(rawLayers: any): any[] {
+function flattenLayers(rawLayers: any): flatLayer[] {
   if (rawLayers.Layer) {
     return flattenLayers(get(rawLayers, 'Layer', []));
   }
