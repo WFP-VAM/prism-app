@@ -73,7 +73,7 @@ type LayerContainer =
 const isArrayOfFlatLayerContainers = (
   maybeArray: LayerContainer,
 ): maybeArray is FlatLayerContainer[] => {
-  return (<FlatLayerContainer[]>maybeArray)[0].Layer !== undefined;
+  return (maybeArray as FlatLayerContainer[])[0].Layer !== undefined;
 };
 
 function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
