@@ -52,7 +52,7 @@ function formatCapabilitiesInfo(
   }, {});
 }
 
-type flatLayer = {
+type FlatLayer = {
   Name: {
     _text: string;
     [key: string]: any;
@@ -64,14 +64,32 @@ type flatLayer = {
   [key: string]: any;
 };
 
-function flattenLayers(rawLayers: any): flatLayer[] {
-  if (rawLayers.Layer) {
-    return flattenLayers(get(rawLayers, 'Layer', []));
+type FlatLayerContainer = { Layer: FlatLayer; [key: string]: any };
+type LayerContainer =
+  | { Layer: LayerContainer; [key: string]: any }
+  | FlatLayerContainer[]
+  | FlatLayer[];
+
+const isArrayOfFlatLayerContainers = (
+  maybeArray: LayerContainer,
+): maybeArray is FlatLayerContainer[] => {
+  return (<FlatLayerContainer[]>maybeArray)[0].Layer !== undefined;
+};
+
+function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
+  if ('Layer' in rawLayers) {
+    return flattenLayers(rawLayers.Layer);
   }
-  if (Array.isArray(rawLayers) && rawLayers.length > 0 && rawLayers[0].Layer) {
-    return rawLayers.reduce((acc, { Layer }) => acc.concat(Layer), []);
+  if (!Array.isArray(rawLayers) || rawLayers.length === 0) {
+    return [];
   }
-  return rawLayers;
+  if (isArrayOfFlatLayerContainers(rawLayers)) {
+    return rawLayers.reduce(
+      (acc, { Layer }) => acc.concat(Layer),
+      [] as FlatLayer[],
+    );
+  }
+  return rawLayers as FlatLayer[];
 }
 
 /**
