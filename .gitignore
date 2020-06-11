@@ -31,3 +31,6 @@ yarn-error.log*
 # Editors
 .vscode/
 .idea/
+api/package/package.zip
+*.pyc
+*.cache
