@@ -50,7 +50,7 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
             [layer.title]: {
               data: get(
                 evt.features[0],
-                'properties.'.concat(layer.measure),
+                `properties.${layer.measure}`,
                 'No Data',
               ),
               coordinates: evt.lngLat,

@@ -14,7 +14,6 @@ declare module 'geojson' {
 
 export type GroundstationLayerData = {
   rasterheight: number;
-  measure: string;
   [key: string]: any;
 }[];
 
