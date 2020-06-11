@@ -2,7 +2,7 @@
   "population_below_poverty": {
     "title": "Poverty headcount (aimag)",
     "type": "nso",
-    "path": "nsoPoverty",
+    "path": "./data/nso/NSO_Poverty_Headcount_Admin1.json",
     "admin_code": "CODE1",
     "opacity": 0.5,
     "legend": [
@@ -17,7 +17,7 @@
   "disabled": {
     "title": "Number of disabled people (aimag)",
     "type": "nso",
-    "path": "nsoDisabled",
+    "path": "./data/nso/NSO_Disabled_Admin1_Total.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -32,7 +32,7 @@
   "hay_harvest": {
     "title": "Hay harvest (soum)",
     "type": "nso",
-    "path": "nsoHayHarvest",
+    "path": "./data/nso/NSO_Hay_Harvest_Admin2.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -47,7 +47,7 @@
    "elderly": {
     "title": "Single-headed elderly households (aimag)",
     "type": "nso",
-    "path": "nsoElderly",
+    "path": "./data/nso/NSO_Single_Elderly_Admin1_Total.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -62,7 +62,7 @@
   "herders": {
     "title": "Herder households (soum)",
     "type": "nso",
-    "path": "nsoHerders",
+    "path": "./data/nso/NSO_Herder_HHs_Admin2.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -77,7 +77,7 @@
   "livestock": {
     "title": "Number of livestock in thousands (soum)",
     "type": "nso",
-    "path": "nsoLivestock",
+    "path": "./data/nso/NSO_Livestock_Count_ths_Admin2.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -92,7 +92,7 @@
   "child": {
     "title": "Number of children under 5 (soum)",
     "type": "nso",
-    "path": "nsoChild",
+    "path": "./data/nso/NSO_Child_U5_Admin2.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -107,7 +107,7 @@
   "herd_200": {
     "title": "Small herder households (aimag)",
     "type": "nso",
-    "path": "nsoHerdsize",
+    "path": "./data/nso/NSO_Herd_Size_Admin1_LT_200.json",
     "admin_code": "CODE1",
     "opacity": 0.5,
     "legend": [
@@ -122,7 +122,7 @@
   "population_total": {
     "title": "Total population (soum)",
     "type": "nso",
-    "path": "nsoPop",
+    "path": "./data/nso/NSO_Population_Admin2_Total.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -252,7 +252,7 @@
   "mvam_hay_reserves": {
     "title": "Hay reserves in metric tonnes (soum)",
     "type": "nso",
-    "path": "mvamHayreserves",
+    "path": "./data/nso/mVAM_Hay_Reserves.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -267,7 +267,7 @@
   "mvam_fodder_reserves": {
     "title": "Fodder reserves in metric tonnes (soum)",
     "type": "nso",
-    "path": "mvamFodder",
+    "path": "./data/nso/mVAM_Fodder_Reserves.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -282,7 +282,7 @@
   "mvam_cash_reserves": {
     "title": "Cash reserves in million MNT (soum)",
     "type": "nso",
-    "path": "mvamCash",
+    "path": "./data/nso/mVAM_Cash_Reserves.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -298,11 +298,11 @@
   "mvam_hay_prices": {
     "title": "Hay prices (soum)",
     "type": "nso",
-    "path": "mvamHayprices",
+    "path": "./data/nso/mVAM_Hay_Price.json",
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      { "value": "2000 - 4000", "color": "#1a9641" }, 
+      { "value": "2000 - 4000", "color": "#1a9641" },
       { "value": "4001 - 6000", "color": "#a6d96a" },
       { "value": "6001 - 8000", "color": "#ffffbf" },
       { "value": "8001 - 10000", "color": "#fdae61" },
@@ -338,7 +338,7 @@
         { "value": "-30", "color": "#9fc3b3" },
         { "value": "-20", "color": "#d9e79a" },
         { "value": "-10", "color": "#f3f88e" },
-        { "value": "0", "color": "#f0d779"}    
+        { "value": "0", "color": "#f0d779"}
       ]
   },
   "herd_pasture_impact": {
