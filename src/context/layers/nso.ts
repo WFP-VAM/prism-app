@@ -61,10 +61,10 @@ export async function fetchNsoLayerData(
     throw new Error(`Unknown NSO dataset key '${path}' found.`);
   }
   const {
-    DataList: rawJSON,
+    DataList: rawJSONs,
   }: { DataList: { [key: string]: any }[] } = nsoDatasets[path];
 
-  const layerData = (rawJSON || [])
+  const layerData = (rawJSONs || [])
     .map(point => {
       const adminKey = point[adminCode];
       if (!adminKey) {

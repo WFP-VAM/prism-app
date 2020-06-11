@@ -3,8 +3,8 @@ import { DiscriminateUnion, LayerType } from '../../config/types';
 import { Extent } from '../../components/MapView/Layers/raster-utils';
 import { CreateAsyncThunkTypes, ThunkApi } from '../store';
 import { fetchNsoLayerData, NSOLayerData } from './nso';
-import { ImpactLayerData, fetchImpactLayerData } from './impact';
-import { WMSLayerData, fetchWMSLayerData } from './wms';
+import { fetchImpactLayerData, ImpactLayerData } from './impact';
+import { fetchWMSLayerData, WMSLayerData } from './wms';
 import {
   fetchGroundstationData,
   GroundstationLayerData,
@@ -28,6 +28,7 @@ export interface LayerDataParams<T extends LayerType> {
   layer: T;
   extent?: Extent;
   date?: number;
+
   [key: string]: any;
 }
 
@@ -56,7 +57,7 @@ type LayerLoaders = {
 };
 
 // Less restrictive handler type since Typescript doesn't support nested union discrimination
-type HandlerType = (
+type LazyLoader = (
   params: LayerDataParams<any>,
   api: ThunkApi,
 ) => Promise<LayerSpecificDataTypes[keyof LayerSpecificDataTypes]>;
@@ -73,8 +74,8 @@ export const loadLayerData = createAsyncThunk<
     nso: fetchNsoLayerData,
     groundstation: fetchGroundstationData,
   };
-  const handler: HandlerType = layerLoaders[layer.type];
-  const layerData = await handler(params, thunkApi);
+  const lazyLoad: LazyLoader = layerLoaders[layer.type];
+  const layerData = await lazyLoad(params, thunkApi);
   // Need to cast this since TS isn't smart enough to match layer & layerData types based on the nested discrimator
   // field `layer.type`.
   return {
