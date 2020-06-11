@@ -3,39 +3,9 @@ import { isNull, isString } from 'lodash';
 import { LayerDataParams } from './layer-data';
 import { NSOLayerProps } from '../../config/types';
 
-// FIXME: for now, directly import these files. This bloats the code bundle - they should be hosted externally.
-import nsoDisabled from '../../../public/data/nso/NSO_Disabled_Admin1_Total.json';
-import nsoHerders from '../../../public/data/nso/NSO_Herder_HHs_Admin2.json';
-import nsoHerdsize from '../../../public/data/nso/NSO_Herd_Size_Admin1_LT_200.json';
-import nsoChild from '../../../public/data/nso/NSO_Child_U5_Admin2.json';
-import nsoLivestock from '../../../public/data/nso/NSO_Livestock_Count_ths_Admin2.json';
-import nsoHayHarvest from '../../../public/data/nso/NSO_Hay_Harvest_Admin2.json';
-import nsoElderly from '../../../public/data/nso/NSO_Single_Elderly_Admin1_Total.json';
-import nsoPoverty from '../../../public/data/nso/NSO_Poverty_Headcount_Admin1.json';
-import nsoPop from '../../../public/data/nso/NSO_Population_Admin2_Total.json';
 import adminBoundariesRaw from '../../config/admin_boundaries.json';
-import mvamCash from '../../../public/data/nso/mVAM_Cash_Reserves.json';
-import mvamFodder from '../../../public/data/nso/mVAM_Fodder_Reserves.json';
-import mvamHayprices from '../../../public/data/nso/mVAM_Hay_Price.json';
-import mvamHayreserves from '../../../public/data/nso/mVAM_Hay_Reserves.json';
 
 const adminBoundaries = adminBoundariesRaw as FeatureCollection;
-
-const nsoDatasets = {
-  nsoDisabled,
-  nsoHerders,
-  nsoHerdsize,
-  nsoChild,
-  nsoLivestock,
-  nsoHayHarvest,
-  nsoElderly,
-  nsoPoverty,
-  nsoPop,
-  mvamCash,
-  mvamFodder,
-  mvamHayprices,
-  mvamHayreserves,
-} as const;
 
 type DataRecord = {
   adminKey: string;
@@ -47,22 +17,15 @@ export type NSOLayerData = {
   layerData: DataRecord[];
 };
 
-const isNSOKey = (maybeKey: string): maybeKey is keyof typeof nsoDatasets =>
-  Object.keys(nsoDatasets).includes(maybeKey);
-
 export async function fetchNsoLayerData(
   params: LayerDataParams<NSOLayerProps>,
 ) {
   const { layer } = params;
   const { path, adminCode } = layer;
 
-  // TODO: make async request for external data here.
-  if (!isNSOKey(path)) {
-    throw new Error(`Unknown NSO dataset key '${path}' found.`);
-  }
-  const {
-    DataList: rawJSONs,
-  }: { DataList: { [key: string]: any }[] } = nsoDatasets[path];
+  const { DataList: rawJSONs }: { DataList: { [key: string]: any }[] } = await (
+    await fetch(path, { mode: path.includes('http') ? 'cors' : 'same-origin' })
+  ).json();
 
   const layerData = (rawJSONs || [])
     .map(point => {
