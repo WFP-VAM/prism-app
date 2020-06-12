@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # For more configuration options, check out the documentation
+# Caching durations are in seconds.
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 

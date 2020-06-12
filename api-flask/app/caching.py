@@ -23,7 +23,7 @@ def cache_file(url, prefix):
     if os.path.isfile(cache_filepath):
         logger.warning('Returning cached file for {}.'.format(url))
         return cache_filepath
-    # If the file does not exist, calculate and write to the cache.
+    # If the file does not exist, download and return path.
     else:
         r = requests.get(url, verify=False)
 
