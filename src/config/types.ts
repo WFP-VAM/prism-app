@@ -4,6 +4,14 @@ export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
 
 const optionalMetadataKey = Symbol('optional_property');
 
+// Master Layer type definition. All types/classes looking to exhaust cover of all layers should extend upon this type via LayerType['type']
+export type LayerType =
+  | BoundaryLayerProps
+  | WMSLayerProps
+  | NSOLayerProps
+  | ImpactLayerProps
+  | GroundstationLayerProps;
+
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
  * runtime for type checking.
@@ -116,6 +124,11 @@ export class CommonLayerProps {
   legend?: LegendDefinition;
 }
 
+export class BoundaryLayerProps extends CommonLayerProps {
+  type: 'boundary';
+  path: string; // path to admin_boundries.json file - web or local.
+}
+
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
   baseUrl: string;
@@ -172,12 +185,6 @@ export class GroundstationLayerProps extends CommonLayerProps {
 export type RequiredKeys<T> = {
   [k in keyof T]: undefined extends T[k] ? never : k;
 }[keyof T];
-
-export type LayerType =
-  | WMSLayerProps
-  | NSOLayerProps
-  | ImpactLayerProps
-  | GroundstationLayerProps;
 
 // Get the type of a union based on the value (V) and lookup field (K)
 export type DiscriminateUnion<

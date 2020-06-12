@@ -1,5 +1,4 @@
 import React, { createElement, ComponentType, useEffect } from 'react';
-import ReactMapboxGl from 'react-mapbox-gl';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   createStyles,
@@ -7,14 +6,29 @@ import {
   CircularProgress,
   withStyles,
 } from '@material-ui/core';
-import { Map } from 'mapbox-gl';
 import { uniq } from 'lodash';
-import Boundaries from './Boundaries';
-import NSOLayer from './Layers/NSOLayer';
-import WMSLayer from './Layers/WMSLayer';
-import GroundstationLayer from './Layers/GroundstationLayer';
+
+// map
+import ReactMapboxGl from 'react-mapbox-gl';
+import { Map } from 'mapbox-gl';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
+
+// layers
+import {
+  BoundaryLayer,
+  WMSLayer,
+  NSOLayer,
+  ImpactLayer,
+  GroundstationLayer,
+} from './Layers';
+import {
+  WMSLayerProps,
+  LayerType,
+  DiscriminateUnion,
+  ImpactLayerProps,
+} from '../../config/types';
+import { LayerDefinitions } from '../../config/utils';
 import DateSelector from './DateSelector';
 import { layersSelector, isLoading, setMap } from '../../context/mapStateSlice';
 import { hidePopup } from '../../context/tooltipStateSlice';
@@ -23,15 +37,8 @@ import {
   loadAvailableDates,
   isLoading as areDatesLoading,
 } from '../../context/serverStateSlice';
+
 import appConfig from '../../config/prism.json';
-import {
-  WMSLayerProps,
-  LayerType,
-  DiscriminateUnion,
-  ImpactLayerProps,
-} from '../../config/types';
-import ImpactLayer from './Layers/ImpactLayer';
-import { LayerDefinitions } from '../../config/utils';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -42,6 +49,7 @@ type LayerComponentsMap<U extends LayerType> = {
 };
 
 const componentTypes: LayerComponentsMap<LayerType> = {
+  boundary: BoundaryLayer,
   wms: WMSLayer,
   nso: NSOLayer,
   impact: ImpactLayer,
@@ -122,7 +130,6 @@ function MapView({ classes }: MapViewProps) {
           })}
         </>
         <MapTooltip />
-        <Boundaries />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={layers} />

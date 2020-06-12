@@ -10,6 +10,7 @@ import {
   ImpactLayerProps,
   GroundstationLayerProps,
   TableType,
+  BoundaryLayerProps,
 } from './types';
 
 type layerKeys = keyof typeof rawLayers;
@@ -19,9 +20,9 @@ type tableKeys = keyof typeof rawTables;
 const getLayerByKey = (layerKey: layerKeys): LayerType => {
   const rawDefinition = rawLayers[layerKey];
 
-  const definition = {
+  const definition: { id: layerKeys; type: LayerType['type'] } = {
     id: layerKey,
-    type: rawDefinition.type,
+    type: rawDefinition.type as LayerType['type'],
     ...mapKeys(rawDefinition, (v, k) => camelCase(k)),
   };
 
@@ -29,6 +30,13 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
     throw new Error(`Found invalid layer definition for layer '${layerKey}'.`);
   };
 
+  const ll: 'dd' | 'ww' = 'dd';
+  switch (ll) {
+    case 'dd':
+      break;
+    default:
+      break;
+  }
   switch (definition.type) {
     case 'wms':
       if (checkRequiredKeys(WMSLayerProps, definition, true)) {
@@ -50,7 +58,16 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
         return definition;
       }
       return throwInvalidLayer();
+    case 'boundary':
+      if (true) {
+        // TODO check properly
+        return definition as BoundaryLayerProps;
+      }
+      return throwInvalidLayer();
     default:
+      // doesn't do anything, but it helps catch any layer type cases we forgot above compile time via TS.
+      // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
+      ((type: never) => {})(definition.type);
       throw new Error(
         `Found invalid layer definition for layer '${layerKey}' (Unknown type '${definition.type}'). Check config/layers.json.`,
       );

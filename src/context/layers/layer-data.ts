@@ -9,8 +9,10 @@ import {
   fetchGroundstationData,
   GroundstationLayerData,
 } from './groundstation';
+import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
 
 type LayerSpecificDataTypes = {
+  boundary: BoundaryLayerData;
   wms: WMSLayerData;
   impact: ImpactLayerData;
   nso: NSOLayerData;
@@ -69,6 +71,7 @@ export const loadLayerData = createAsyncThunk<
 >('mapState/loadLayerData', async (params, thunkApi) => {
   const { layer, extent, date } = params;
   const layerLoaders: LayerLoaders = {
+    boundary: fetchBoundaryLayerData,
     impact: fetchImpactLayerData,
     wms: fetchWMSLayerData,
     nso: fetchNsoLayerData,

@@ -3,7 +3,7 @@ import { isNull, isString } from 'lodash';
 import { LayerDataParams } from './layer-data';
 import { NSOLayerProps } from '../../config/types';
 
-import adminBoundariesRaw from '../../config/admin_boundaries.json';
+import adminBoundariesRaw from '../../../public/data/admin_boundaries.json';
 
 const adminBoundaries = adminBoundariesRaw as FeatureCollection;
 

@@ -4,9 +4,10 @@ import { useDispatch } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { showPopup } from '../../../context/tooltipStateSlice';
+import { showPopup } from '../../../../context/tooltipStateSlice';
 
-import adminBoundariesJson from '../../../config/admin_boundaries.json';
+import adminBoundariesJson from '../../../../../public/data/admin_boundaries.json';
+import { BoundaryLayerProps } from '../../../../config/types';
 
 const baselineBoundaries = adminBoundariesJson as FeatureCollection;
 
@@ -29,7 +30,7 @@ const linePaint: MapboxGL.LinePaint = {
   'line-opacity': 0.8,
 };
 
-function Boundaries() {
+function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   const dispatch = useDispatch();
   return (
     <GeoJSONLayer
@@ -50,4 +51,4 @@ function Boundaries() {
   );
 }
 
-export default Boundaries;
+export default BoundaryLayer;

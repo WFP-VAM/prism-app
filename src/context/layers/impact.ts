@@ -19,7 +19,7 @@ import {
 } from '../../components/MapView/Layers/raster-utils';
 import { NSOLayerData } from './nso';
 import { WMSLayerData } from './wms';
-import adminBoundariesRaw from '../../config/admin_boundaries.json';
+import adminBoundariesRaw from '../../../public/data/admin_boundaries.json';
 
 const adminBoundaries = adminBoundariesRaw as FeatureCollection;
 
