@@ -13,8 +13,8 @@
     ]
   },
   "scripts": {
-    "start": "EXTEND_ESLINT=true react-scripts start",
-    "build": "EXTEND_ESLINT=true react-scripts build",
+    "start": "cross-env EXTEND_ESLINT=true react-scripts start",
+    "build": "cross-env EXTEND_ESLINT=true react-scripts build",
     "test": "react-scripts test",
     "predeploy:prod": "yarn build",
     "predeploy:staging": "yarn build",
@@ -40,8 +40,8 @@
     "@turf/bbox": "^6.0.1",
     "@turf/boolean-point-in-polygon": "^6.0.1",
     "@turf/helpers": "^6.1.4",
-    "@types/d3": "^5.7.2",
     "@types/chart.js": "^2.9.21",
+    "@types/d3": "^5.7.2",
     "@types/geojson": "^7946.0.7",
     "@types/jest": "^24.0.0",
     "@types/lodash": "^4.14.149",
@@ -56,9 +56,9 @@
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.25.0",
     "babel-eslint": "10.0.3",
-    "d3-fetch": "^1.1.2",
     "chart.js": "^2.9.3",
     "colormap": "^2.3.1",
+    "d3-fetch": "^1.1.2",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
@@ -115,6 +115,7 @@
     ]
   },
   "devDependencies": {
+    "cross-env": "^7.0.2",
     "eslint-import-resolver-typescript": "^2.0.0"
   },
   "engines": {
