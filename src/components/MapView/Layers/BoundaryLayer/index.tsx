@@ -1,13 +1,13 @@
-import { FeatureCollection } from 'geojson';
+import {FeatureCollection} from 'geojson';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { get } from 'lodash';
-import { GeoJSONLayer } from 'react-mapbox-gl';
+import {useDispatch} from 'react-redux';
+import {get} from 'lodash';
+import {GeoJSONLayer} from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { showPopup } from '../../../../context/tooltipStateSlice';
+import {showPopup} from '../../../../context/tooltipStateSlice';
 
 import adminBoundariesJson from '../../../../../public/data/admin_boundaries.json';
-import { BoundaryLayerProps } from '../../../../config/types';
+import {BoundaryLayerProps} from '../../../../config/types';
 
 const baselineBoundaries = adminBoundariesJson as FeatureCollection;
 
@@ -24,10 +24,14 @@ function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   targetMap.getCanvas().style.cursor = cursor;
 }
 
-const linePaint: MapboxGL.LinePaint = {
-  'line-color': 'grey',
-  'line-width': 1,
-  'line-opacity': 0.8,
+const getLinePaintOptions: (
+  layer: BoundaryLayerProps,
+) => MapboxGL.LinePaint = layer => {
+  return {
+    'line-color': 'grey',
+    'line-width': 1,
+    'line-opacity': layer.opacity,
+  };
 };
 
 function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
@@ -37,7 +41,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       id="boundaries"
       data={baselineBoundaries}
       fillPaint={fillPaint}
-      linePaint={linePaint}
+      linePaint={getLinePaintOptions(layer)}
       fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
       fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
       fillOnClick={(evt: any) => {

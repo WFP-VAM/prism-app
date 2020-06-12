@@ -1,41 +1,23 @@
-import React, { createElement, ComponentType, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  createStyles,
-  WithStyles,
-  CircularProgress,
-  withStyles,
-} from '@material-ui/core';
-import { uniq } from 'lodash';
-
+import React, {ComponentType, createElement, useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {CircularProgress, createStyles, WithStyles, withStyles,} from '@material-ui/core';
+import {uniq} from 'lodash';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
-import { Map } from 'mapbox-gl';
+import {Map} from 'mapbox-gl';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
-
 // layers
-import {
-  BoundaryLayer,
-  WMSLayer,
-  NSOLayer,
-  ImpactLayer,
-  GroundstationLayer,
-} from './Layers';
-import {
-  WMSLayerProps,
-  LayerType,
-  DiscriminateUnion,
-  ImpactLayerProps,
-} from '../../config/types';
-import { LayerDefinitions } from '../../config/utils';
+import {BoundaryLayer, GroundstationLayer, ImpactLayer, NSOLayer, WMSLayer,} from './Layers';
+import {DiscriminateUnion, ImpactLayerProps, LayerType, WMSLayerProps,} from '../../config/types';
+import {LayerDefinitions} from '../../config/utils';
 import DateSelector from './DateSelector';
-import { layersSelector, isLoading, setMap } from '../../context/mapStateSlice';
-import { hidePopup } from '../../context/tooltipStateSlice';
+import {isLoading, layersSelector, setMap} from '../../context/mapStateSlice';
+import {hidePopup} from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
-  loadAvailableDates,
   isLoading as areDatesLoading,
+  loadAvailableDates,
 } from '../../context/serverStateSlice';
 
 import appConfig from '../../config/prism.json';
@@ -66,6 +48,7 @@ function MapView({ classes }: MapViewProps) {
   const loading = layersLoading || datesLoading;
 
   useEffect(() => {
+    // initial load, need available dates and boundary layer
     dispatch(loadAvailableDates());
   }, [dispatch]);
 

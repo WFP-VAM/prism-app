@@ -112,10 +112,10 @@ export type RawDataConfiguration = {
 
 export class CommonLayerProps {
   id: string;
-  title: string;
+  title?: string;
   type: string;
   opacity: number;
-  legendText: string;
+  legendText?: string;
 
   @optional
   dateInterval?: string;

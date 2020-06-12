@@ -2,6 +2,7 @@
   "admin_boundries": {
     "type": "boundary",
     "path": "./data/nso/NSO_Poverty_Headcount_Admin1.json",
+    "opacity": 0.8
   },
   "population_below_poverty": {
     "title": "Poverty headcount (aimag)",

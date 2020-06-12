@@ -1,16 +1,16 @@
-import { mapKeys, camelCase } from 'lodash';
+import {camelCase, mapKeys} from 'lodash';
 import rawLayers from './layers.json';
 import rawTables from './tables.json';
 import {
-  WMSLayerProps,
+  BoundaryLayerProps,
   checkRequiredKeys,
-  NSOLayerProps,
+  GroundstationLayerProps,
+  ImpactLayerProps,
   LayersMap,
   LayerType,
-  ImpactLayerProps,
-  GroundstationLayerProps,
+  NSOLayerProps,
   TableType,
-  BoundaryLayerProps,
+  WMSLayerProps,
 } from './types';
 
 type layerKeys = keyof typeof rawLayers;
@@ -59,8 +59,7 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
       }
       return throwInvalidLayer();
     case 'boundary':
-      if (true) {
-        // TODO check properly
+      if (checkRequiredKeys(BoundaryLayerProps, definition, true)) {
         return definition as BoundaryLayerProps;
       }
       return throwInvalidLayer();
@@ -106,6 +105,23 @@ export const LayerDefinitions: LayersMap = (() => {
 
   return layers;
 })();
+
+export function getBoundaryLayerSingleton(): BoundaryLayerProps {
+  const boundaryLayers: BoundaryLayerProps[] = Object.values(
+    LayerDefinitions,
+  ).filter(layer => layer.type === 'boundary') as BoundaryLayerProps[];
+  if (boundaryLayers.length > 1) {
+    throw new Error(
+      'More than one Boundary Layer defined! There should only be one boundary layer in layers.json',
+    );
+  }
+  if (boundaryLayers.length === 0) {
+    throw new Error(
+      'No Boundary Layer found! There should be exactly one boundary layer defined in layers.json.',
+    );
+  }
+  return boundaryLayers[0];
+}
 
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
