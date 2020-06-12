@@ -1,2 +1,3 @@
+Flask-Caching==1.9.0
 rasterstats==0.14.0
 requests==2.23.0

@@ -13,7 +13,7 @@ CACHE_DIRECTORY = '/cache/'
 
 
 @timed
-def cache(url, prefix):
+def cache_file(url, prefix):
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
         url=url,
@@ -46,9 +46,6 @@ def _get_cached_filepath(prefix, url):
 
 def _hash_value(value):
     """
-    Hash hint value to help identify what cached file to use.
-
-    Attempts to convert unhashable types to hashable equivalents.
+    Hash value to help identify what cached file to use.
     """
-    # TODO: Handle other unhashable objects.
     return hashlib.md5(value.encode('utf-8')).hexdigest()[:9]
