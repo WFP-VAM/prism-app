@@ -34,3 +34,4 @@ yarn-error.log*
 # Editors
 .vscode/
 .idea/
+api-flask/app/.flake8

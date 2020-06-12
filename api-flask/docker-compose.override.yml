@@ -1,6 +1,6 @@
 version: '3'
 services:
-  web:
+  api:
     volumes:
       - ./app:/app
     ports:

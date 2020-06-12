@@ -1,9 +1,9 @@
 """Methods to cache remote files."""
-import json
+import hashlib
 import logging
 import os
+
 import requests
-import hashlib
 
 from timer import timed
 
@@ -14,6 +14,7 @@ CACHE_DIRECTORY = '/cache/'
 
 @timed
 def cache_file(url, prefix):
+    """Locally caching files fetched from a url."""
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
         url=url,
@@ -45,7 +46,5 @@ def _get_cached_filepath(prefix, url):
 
 
 def _hash_value(value):
-    """
-    Hash value to help identify what cached file to use.
-    """
+    """Hash value to help identify what cached file to use."""
     return hashlib.md5(value.encode('utf-8')).hexdigest()[:9]

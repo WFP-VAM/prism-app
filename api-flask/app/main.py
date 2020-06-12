@@ -1,12 +1,16 @@
+"""Flask API for geospatial utils."""
 import logging
+
+from caching import cache_file
 
 from flask import Flask, jsonify, request
 from flask.logging import default_handler
-from rasterstats import zonal_stats
-from caching import cache_file
-from timer import timed
+
 from flask_caching import Cache
 
+from rasterstats import zonal_stats
+
+from timer import timed
 
 root = logging.getLogger()
 root.addHandler(default_handler)
@@ -17,12 +21,15 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # For more configuration options, check out the documentation
-cache = Cache(app, config={"CACHE_TYPE": "simple"})
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
+DEFAULT_STATS = ['min', 'max', 'mean', 'median']
 
 
 @timed
 @cache.memoize(50)
-def calculate_stats(zones, geotiff, stats, prefix="stats_", geojson_out=False):
+def calculate_stats(zones, geotiff, stats=DEFAULT_STATS, prefix='stats_', geojson_out=False):
+    """Calculate stats."""
     return zonal_stats(
         zones,
         geotiff,
@@ -32,22 +39,26 @@ def calculate_stats(zones, geotiff, stats, prefix="stats_", geojson_out=False):
     )
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route('/', methods=['GET', 'POST'])
 @timed
 def stats():
-
-    if request.method != "POST":
+    """Return zonal statistics."""
+    if request.method != 'POST':
         geotiff = cache_file(
-            prefix="test",
-            url="https://mongolia.sibelius-datacube.org:5000/?service=WCS&request=GetCoverage&version=1.0.0&coverage=ModisAnomaly&crs=EPSG%3A4326&bbox=86.5%2C36.7%2C119.7%2C55.3&width=1196&height=672&format=GeoTIFF&time=2020-03-01"
+            prefix='test',
+            url="""https://mongolia.sibelius-datacube.org:5000/?service=WCS&
+                    request=GetCoverage&version=1.0.0&coverage=ModisAnomaly&
+                    crs=EPSG%3A4326&bbox=86.5%2C36.7%2C119.7%2C55.3&width=1196&
+                    height=672&format=GeoTIFF&time=2020-03-01
+                """
         )
-        zones = "./admin_boundaries.json"
+        zones = './admin_boundaries.json'
 
-    if request.method == "POST":
+    if request.method == 'POST':
         geotiff_url = request.form['geotiff_url']
         zones_url = request.form['zones_url']
         geotiff = cache_file(
-            prefix="test",
+            prefix='test',
             url=geotiff_url
         )
         zones = zones_url
@@ -55,13 +66,13 @@ def stats():
     features = calculate_stats(
         zones,
         geotiff,
-        stats=["min", "max", "mean", "median", "sum", "std"],
-        prefix="stats_",
+        stats=['min', 'max', 'mean', 'median', 'sum', 'std'],
+        prefix='stats_',
         geojson_out=True
     )
     return jsonify(features)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # Only for debugging while developing
-    app.run(host="0.0.0.0", debug=True, port=80)
+    app.run(host='0.0.0.0', debug=True, port=80)
