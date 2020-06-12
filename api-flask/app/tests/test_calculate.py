@@ -1,18 +1,27 @@
 """Tests files for the analytics API."""
-from app.main import calculate_stats
+from app.zonal_stats import calculate_stats
 
 
-def test_calculate_stats():
+def test_calculate_stats_json_output():
     """
-    Test that _iterate_in_slices always stays below the given output size.
-
-    Specifically tests the case when the batch size foes not fit evenlty into the
-    total size. In addition, test that no extra iterations are required.
+    Test that calculate_stats given a geojson input and
     """
 
     zones = '/app/tests/small_admin_boundaries.json'
     geotiff = '/app/tests/raster_sample.tif'
-    features = calculate_stats(zones, geotiff)
-    print(features)
+    features = calculate_stats(zones, geotiff, geojson_out=False)
     assert len(features) == 26
+    assert True
+
+
+def test_calculate_stats_geojson_output():
+    """
+    Test that calculate_stats given a geojson input and
+    """
+
+    zones = '/app/tests/small_admin_boundaries.json'
+    geotiff = '/app/tests/raster_sample.tif'
+    features = calculate_stats(zones, geotiff, geojson_out=True)
+    assert len(features) == 26
+    assert features[0]['type'] == 'Feature'
     assert True

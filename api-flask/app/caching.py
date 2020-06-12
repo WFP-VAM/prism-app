@@ -14,7 +14,7 @@ CACHE_DIRECTORY = '/cache/'
 
 @timed
 def cache_file(url, prefix):
-    """Locally caching files fetched from a url."""
+    """Locally cache files fetched from a url."""
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
         url=url,
@@ -30,7 +30,6 @@ def cache_file(url, prefix):
         with open(cache_filepath, 'wb') as f:
             f.write(r.content)
 
-        # urllib.request.urlretrieve(url, cache_filepath)
         logger.warning('Caching file for {}.'.format(url))
         return cache_filepath
 

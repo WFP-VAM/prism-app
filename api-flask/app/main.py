@@ -8,9 +8,9 @@ from flask.logging import default_handler
 
 from flask_caching import Cache
 
-from rasterstats import zonal_stats
-
 from timer import timed
+
+from zonal_stats import calculate_stats
 
 root = logging.getLogger()
 root.addHandler(default_handler)
@@ -23,14 +23,12 @@ app = Flask(__name__)
 # For more configuration options, check out the documentation
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
-DEFAULT_STATS = ['min', 'max', 'mean', 'median']
-
 
 @timed
 @cache.memoize(50)
-def calculate_stats(zones, geotiff, stats=DEFAULT_STATS, prefix='stats_', geojson_out=False):
+def _calculate_stats(zones, geotiff, stats, prefix, geojson_out):
     """Calculate stats."""
-    return zonal_stats(
+    return calculate_stats(
         zones,
         geotiff,
         stats=stats,
@@ -43,14 +41,15 @@ def calculate_stats(zones, geotiff, stats=DEFAULT_STATS, prefix='stats_', geojso
 @timed
 def stats():
     """Return zonal statistics."""
+    geotiff_url = 'https://mongolia.sibelius-datacube.org:5000/?service=WCS&'\
+        'request=GetCoverage&version=1.0.0&coverage=ModisAnomaly&'\
+        'crs=EPSG%3A4326&bbox=86.5%2C36.7%2C119.7%2C55.3&width=1196&'\
+        'height=672&format=GeoTIFF&time=2020-03-01'
+
     if request.method != 'POST':
         geotiff = cache_file(
             prefix='test',
-            url="""https://mongolia.sibelius-datacube.org:5000/?service=WCS&
-                    request=GetCoverage&version=1.0.0&coverage=ModisAnomaly&
-                    crs=EPSG%3A4326&bbox=86.5%2C36.7%2C119.7%2C55.3&width=1196&
-                    height=672&format=GeoTIFF&time=2020-03-01
-                """
+            url=geotiff_url
         )
         zones = './admin_boundaries.json'
 
@@ -63,7 +62,7 @@ def stats():
         )
         zones = zones_url
 
-    features = calculate_stats(
+    features = _calculate_stats(
         zones,
         geotiff,
         stats=['min', 'max', 'mean', 'median', 'sum', 'std'],
