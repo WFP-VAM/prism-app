@@ -1,13 +1,13 @@
-import {FeatureCollection} from 'geojson';
+import { FeatureCollection } from 'geojson';
 import React from 'react';
-import {useDispatch} from 'react-redux';
-import {get} from 'lodash';
-import {GeoJSONLayer} from 'react-mapbox-gl';
+import { useDispatch } from 'react-redux';
+import { get } from 'lodash';
+import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import {showPopup} from '../../../../context/tooltipStateSlice';
+import { showPopup } from '../../../../context/tooltipStateSlice';
 
 import adminBoundariesJson from '../../../../../public/data/admin_boundaries.json';
-import {BoundaryLayerProps} from '../../../../config/types';
+import { BoundaryLayerProps } from '../../../../config/types';
 
 const baselineBoundaries = adminBoundariesJson as FeatureCollection;
 

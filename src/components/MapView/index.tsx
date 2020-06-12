@@ -1,19 +1,35 @@
-import React, {ComponentType, createElement, useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {CircularProgress, createStyles, WithStyles, withStyles,} from '@material-ui/core';
-import {uniq} from 'lodash';
+import React, { ComponentType, createElement, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  CircularProgress,
+  createStyles,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core';
+import { uniq } from 'lodash';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
-import {Map} from 'mapbox-gl';
+import { Map } from 'mapbox-gl';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 // layers
-import {BoundaryLayer, GroundstationLayer, ImpactLayer, NSOLayer, WMSLayer,} from './Layers';
-import {DiscriminateUnion, ImpactLayerProps, LayerType, WMSLayerProps,} from '../../config/types';
-import {LayerDefinitions} from '../../config/utils';
+import {
+  BoundaryLayer,
+  GroundstationLayer,
+  ImpactLayer,
+  NSOLayer,
+  WMSLayer,
+} from './Layers';
+import {
+  DiscriminateUnion,
+  ImpactLayerProps,
+  LayerType,
+  WMSLayerProps,
+} from '../../config/types';
+import { LayerDefinitions } from '../../config/utils';
 import DateSelector from './DateSelector';
-import {isLoading, layersSelector, setMap} from '../../context/mapStateSlice';
-import {hidePopup} from '../../context/tooltipStateSlice';
+import { isLoading, layersSelector, setMap } from '../../context/mapStateSlice';
+import { hidePopup } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
   isLoading as areDatesLoading,
