@@ -35,3 +35,6 @@ yarn-error.log*
 .vscode/
 .idea/
 api-flask/app/.flake8
+
+# Test files
+**.json.*

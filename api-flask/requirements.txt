@@ -1,6 +1,7 @@
 Flask-Caching==1.9.0
 rasterstats==0.14.0
 requests==2.23.0
+Shapely==1.7.0
 # Used by `make test` only:
 mock==4.0.2
 pytest==5.4.3
