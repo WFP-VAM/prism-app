@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build:
+  build_frontend:
     docker:
       - image: circleci/node:12.9.1-browsers
   
@@ -47,3 +47,10 @@ jobs:
         - run:
             name: Run tests
             command: make api-test
+
+workflows:
+  version: 2.1
+  build:
+      jobs:  # TODO figure out why `ignore` doesn't work.
+          - build_frontend
+          - build_api
