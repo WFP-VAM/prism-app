@@ -332,13 +332,89 @@
       { "value": "5 Very high", "color": "#4c1110" }
     ]
   },
-  "snow_groundstations": {
-    "title": "Temperature (example data for 1-11 January 2020)",
+  "avg_temperature_groundstations": {
+    "title": "10-day average temperature",
     "type": "groundstation",
-    "data": "http://119.40.103.16/temp/Temperature?beginDateTime=2020-03-01&endDateTime=2020-03-21",
+    "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2020-05-01&endDateTime=2020-05-01",
     "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
     "opacity": 0.5,
-    "legend_text": "Temperature from ground station data reported in degrees Celsius",
+    "measure": "ttt_aver",
+    "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
+    "legend": [
+        { "value": "-40", "color": "#7ab1c0" },
+        { "value": "-30", "color": "#9fc3b3" },
+        { "value": "-20", "color": "#d9e79a" },
+        { "value": "-10", "color": "#f3f88e" },
+        { "value": "0", "color": "#f0d779"},
+        { "value": "10", "color": "#fdae61"},
+        { "value": "20", "color": "#f46d43"},
+        { "value": "30", "color": "#d53e4f"},
+        { "value": "40", "color": "#9e0142"}             
+    ]
+  },
+  "min_temperature_groundstations": {
+    "title": "10-day minimum temperature",
+    "type": "groundstation",
+    "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2020-05-01&endDateTime=2020-05-01",
+    "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
+    "opacity": 0.5,
+    "measure": "ttt_min",
+    "legend_text": "Minimum temperature over a 10-day period from ground station data reported in degrees Celsius",
+    "legend": [
+        { "value": "-40", "color": "#7ab1c0" },
+        { "value": "-30", "color": "#9fc3b3" },
+        { "value": "-20", "color": "#d9e79a" },
+        { "value": "-10", "color": "#f3f88e" },
+        { "value": "0", "color": "#f0d779"},
+        { "value": "10", "color": "#fdae61"},
+        { "value": "20", "color": "#f46d43"},
+        { "value": "30", "color": "#d53e4f"},
+        { "value": "40", "color": "#9e0142"}             
+    ]
+  },
+  "max_temperature_groundstations": {
+    "title": "10-day maximum temperature",
+    "type": "groundstation",
+    "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2020-05-01&endDateTime=2020-05-01",
+    "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
+    "opacity": 0.5,
+    "measure": "ttt_max",
+    "legend_text": "Maximum temperature over a 10-day period from ground station data reported in degrees Celsius",
+    "legend": [
+        { "value": "-40", "color": "#7ab1c0" },
+        { "value": "-30", "color": "#9fc3b3" },
+        { "value": "-20", "color": "#d9e79a" },
+        { "value": "-10", "color": "#f3f88e" },
+        { "value": "0", "color": "#f0d779"},
+        { "value": "10", "color": "#fdae61"},
+        { "value": "20", "color": "#f46d43"},
+        { "value": "30", "color": "#d53e4f"},
+        { "value": "40", "color": "#9e0142"}             
+      ]
+  },
+  "total_precipitation_groundstations": {
+    "title": "Total 10-day precipitation",
+    "type": "groundstation",
+    "data": "https://mng.prism.services/temp/percipitation?beginDateTime=2020-05-01&endDateTime=2020-05-01",
+    "fallback_data": "./data/groundstations/IRIMHE_precipitation_2020-05-01.json",
+    "opacity": 0.5,
+    "measure": "sum_rrr",
+    "legend_text": "Total precipitation over a 10-day period from ground station data reported in centimeters",
+    "legend": [
+        { "value": "0", "color": "#f1eef6" },
+        { "value": "5", "color": "#bdc9e1" },
+        { "value": "10", "color": "#74a9cf" },
+        { "value": "15", "color": "#2b8cbe" },
+        { "value": "20", "color": "#045a8d"}    
+      ]
+  },
+  "avg_precipitation_groundstations": {
+    "title": "10-day average precipitation",
+    "type": "groundstation",
+    "data": "https://mng.prism.services/temp/soil?beginDateTime=2020-03-11&endDateTime=2020-03-11",
+    "opacity": 0.5,
+    "measure": "ttt_aver",
+    "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
     "legend": [
         { "value": "-40", "color": "#7ab1c0" },
         { "value": "-30", "color": "#9fc3b3" },

@@ -183,6 +183,7 @@ export class GroundstationLayerProps extends CommonLayerProps {
   type: 'groundstation';
   data: string;
   title: string;
+  measure: string;
   @optional
   fallbackData?: string;
   @makeRequired
