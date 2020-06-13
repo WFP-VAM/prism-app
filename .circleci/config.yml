@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build_frontend:
+  build:
     docker:
       - image: circleci/node:12.9.1-browsers
   
