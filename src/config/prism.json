@@ -15,7 +15,7 @@
     "hazards": {
       "drought_indicators": ["pasture_anomaly", "ndvi", "ModisVHI"],
       "winter_conditions": ["ModisSnowPercentage","ModisLST"],
-      "ground_station_data": ["temp_groundstations","snow_groundstations","precip_groundstations","wind_groundstations","temp_anom_groundstations", "precip_anom_groundstations"]
+      "ground_station_data": ["avg_temperature_groundstations", "min_temperature_groundstations", "max_temperature_groundstations", "total_precipitation_groundstations"]
     },
     "exposure": {
       "demographics": ["population_total"],
