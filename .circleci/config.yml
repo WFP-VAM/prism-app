@@ -51,6 +51,6 @@ jobs:
 workflows:
   version: 2.1
   build:
-      jobs:  # TODO figure out why `ignore` doesn't work.
+      jobs:
           - build_frontend
           - build_api
