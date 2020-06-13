@@ -1,7 +1,7 @@
 """Flask API for geospatial utils."""
 import logging
-
 from distutils.util import strtobool
+
 from caching import cache_file
 
 from flask import Flask, jsonify, request
@@ -86,6 +86,8 @@ def stats():
         group_by=group_by,
         geojson_out=geojson_out
     )
+
+    # TODO - Properly encode before returning. Mongolian characters are returned as hex.
     return jsonify(features)
 
 
