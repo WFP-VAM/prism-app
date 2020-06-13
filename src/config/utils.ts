@@ -30,13 +30,6 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
     throw new Error(`Found invalid layer definition for layer '${layerKey}'.`);
   };
 
-  const ll: 'dd' | 'ww' = 'dd';
-  switch (ll) {
-    case 'dd':
-      break;
-    default:
-      break;
-  }
   switch (definition.type) {
     case 'wms':
       if (checkRequiredKeys(WMSLayerProps, definition, true)) {
