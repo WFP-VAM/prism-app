@@ -43,10 +43,10 @@ jobs:
             command: cd api-flask && docker-compose build api
         - run:
             name: Run linters
-            command: make api-lint
+            command: cd api-flask && make api-lint
         - run:
             name: Run tests
-            command: make api-test
+            command: cd api-flask && make api-test
 
 workflows:
   version: 2.1
