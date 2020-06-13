@@ -26,7 +26,8 @@ jobs:
         - run: yarn build
 
   build_api:
-    machine
+    machine:
+      image: ubuntu-1604:201903-01 
     steps:
         - checkout
 
