@@ -1,6 +1,7 @@
 """Flask API for geospatial utils."""
 import logging
 
+from distutils.util import strtobool
 from caching import cache_file
 
 from flask import Flask, jsonify, request
@@ -49,8 +50,10 @@ def stats():
         if not (geotiff_url and zones_url):
             raise Exception('geotiff_url and zones_url are both required.')
 
-        geojson_out = request.form.get('geojson_out', False)
-        group_by = request.form.get('group_by', None)
+        geojson_out = request.form.get(
+            'geojson_out', False) or request.args.get('geojson_out', False)
+        group_by = request.form.get(
+            'group_by', None) or request.args.get('group_by', None)
 
         geotiff = cache_file(
             prefix='test',
@@ -70,8 +73,10 @@ def stats():
             url=geotiff_url
         )
         zones = './admin_boundaries.json'
-        geojson_out = False
-        group_by = None
+        geojson_out = request.args.get('geojson_out', False)
+        group_by = request.args.get('group_by', None)
+
+    geojson_out = strtobool(geojson_out)
 
     features = _calculate_stats(
         zones,
