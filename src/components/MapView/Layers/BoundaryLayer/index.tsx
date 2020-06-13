@@ -1,15 +1,12 @@
-import { FeatureCollection } from 'geojson';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { showPopup } from '../../../../context/tooltipStateSlice';
-
-import adminBoundariesJson from '../../../../../public/data/admin_boundaries.json';
 import { BoundaryLayerProps } from '../../../../config/types';
-
-const baselineBoundaries = adminBoundariesJson as FeatureCollection;
+import { layerDataSelector } from '../../../../context/mapStateSlice';
+import { LayerData } from '../../../../context/layers/layer-data';
 
 /**
  * To activate fillOnClick option, we "fill in"
@@ -36,10 +33,17 @@ const getLinePaintOptions: (
 
 function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   const dispatch = useDispatch();
+  const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+  const { data } = boundaryLayer || {};
+  if (!data) {
+    return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
+  }
   return (
     <GeoJSONLayer
       id="boundaries"
-      data={baselineBoundaries}
+      data={data}
       fillPaint={fillPaint}
       linePaint={getLinePaintOptions(layer)}
       fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}

@@ -127,6 +127,10 @@ export class CommonLayerProps {
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
   path: string; // path to admin_boundries.json file - web or local.
+  @optional
+  title?: undefined;
+  @optional
+  legendText?: undefined;
 }
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -144,6 +148,7 @@ export class WMSLayerProps extends CommonLayerProps {
 export class NSOLayerProps extends CommonLayerProps {
   type: 'nso';
   path: string;
+  title: string;
   adminCode: BoundaryKey;
 }
 
@@ -161,6 +166,7 @@ export type AggregationOperations = 'mean' | 'median';
 export type ThresholdDefinition = { below?: number; above?: number };
 export class ImpactLayerProps extends CommonLayerProps {
   type: 'impact';
+  title: string;
   hazardLayer: string;
   baselineLayer: string;
   threshold: ThresholdDefinition;
@@ -176,6 +182,7 @@ export class ImpactLayerProps extends CommonLayerProps {
 export class GroundstationLayerProps extends CommonLayerProps {
   type: 'groundstation';
   data: string;
+  title: string;
   @optional
   fallbackData?: string;
   @makeRequired

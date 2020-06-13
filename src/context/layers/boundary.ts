@@ -1,11 +1,6 @@
 import { FeatureCollection } from 'geojson';
-import { isNull, isString } from 'lodash';
 import { LayerDataParams } from './layer-data';
-import { BoundaryLayerProps, NSOLayerProps } from '../../config/types';
-
-import adminBoundariesRaw from '../../../public/data/admin_boundaries.json';
-
-const adminBoundaries = adminBoundariesRaw as FeatureCollection;
+import { BoundaryLayerProps } from '../../config/types';
 
 export interface BoundaryLayerData extends FeatureCollection {}
 
@@ -15,5 +10,5 @@ export async function fetchBoundaryLayerData(
   const { layer } = params;
   const { path } = layer;
 
-  return adminBoundaries;
+  return (await fetch(path)).json();
 }

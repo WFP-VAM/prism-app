@@ -66,6 +66,7 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
     default:
       // doesn't do anything, but it helps catch any layer type cases we forgot above compile time via TS.
       // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
+      // eslint-disable-next-line no-unused-vars
       ((type: never) => {})(definition.type);
       throw new Error(
         `Found invalid layer definition for layer '${layerKey}' (Unknown type '${definition.type}'). Check config/layers.json.`,
@@ -107,9 +108,9 @@ export const LayerDefinitions: LayersMap = (() => {
 })();
 
 export function getBoundaryLayerSingleton(): BoundaryLayerProps {
-  const boundaryLayers: BoundaryLayerProps[] = Object.values(
-    LayerDefinitions,
-  ).filter(layer => layer.type === 'boundary') as BoundaryLayerProps[];
+  const boundaryLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
+  );
   if (boundaryLayers.length > 1) {
     throw new Error(
       'More than one Boundary Layer defined! There should only be one boundary layer in layers.json',

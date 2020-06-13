@@ -1,11 +1,10 @@
 import { FeatureCollection } from 'geojson';
 import { isNull, isString } from 'lodash';
-import { LayerDataParams } from './layer-data';
-import { NSOLayerProps } from '../../config/types';
-
-import adminBoundariesRaw from '../../../public/data/admin_boundaries.json';
-
-const adminBoundaries = adminBoundariesRaw as FeatureCollection;
+import { LayerData, LayerDataParams } from './layer-data';
+import { BoundaryLayerProps, NSOLayerProps } from '../../config/types';
+import { layerDataSelector } from '../mapStateSlice';
+import { ThunkApi } from '../store';
+import { getBoundaryLayerSingleton } from '../../config/utils';
 
 type DataRecord = {
   adminKey: string;
@@ -19,9 +18,20 @@ export type NSOLayerData = {
 
 export async function fetchNsoLayerData(
   params: LayerDataParams<NSOLayerProps>,
+  api: ThunkApi,
 ) {
   const { layer } = params;
   const { path, adminCode } = layer;
+  const { getState } = api;
+
+  const adminBoundariesLayer = layerDataSelector(
+    getBoundaryLayerSingleton().id,
+  )(getState()) as LayerData<BoundaryLayerProps> | undefined;
+  if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
+    // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
+    throw new Error('Boundary Layer not loaded!');
+  }
+  const adminBoundaries = adminBoundariesLayer.data;
 
   const { DataList: rawJSONs }: { DataList: { [key: string]: any }[] } = await (
     await fetch(path, { mode: path.includes('http') ? 'cors' : 'same-origin' })

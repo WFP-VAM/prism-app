@@ -1,7 +1,8 @@
 {
-  "admin_boundries": {
+
+  "admin_boundaries": {
     "type": "boundary",
-    "path": "./data/nso/NSO_Poverty_Headcount_Admin1.json",
+    "path": "./data/admin_boundaries.json",
     "opacity": 0.8
   },
   "population_below_poverty": {

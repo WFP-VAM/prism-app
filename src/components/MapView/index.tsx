@@ -20,15 +20,26 @@ import {
   NSOLayer,
   WMSLayer,
 } from './Layers';
+
 import {
   DiscriminateUnion,
   ImpactLayerProps,
   LayerType,
   WMSLayerProps,
 } from '../../config/types';
-import { LayerDefinitions } from '../../config/utils';
+
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../config/utils';
+
 import DateSelector from './DateSelector';
-import { isLoading, layersSelector, setMap } from '../../context/mapStateSlice';
+import {
+  isLoading,
+  layersSelector,
+  setMap,
+  addLayer,
+} from '../../context/mapStateSlice';
 import { hidePopup } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
@@ -37,6 +48,7 @@ import {
 } from '../../context/serverStateSlice';
 
 import appConfig from '../../config/prism.json';
+import { loadLayerData } from '../../context/layers/layer-data';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -65,7 +77,10 @@ function MapView({ classes }: MapViewProps) {
 
   useEffect(() => {
     // initial load, need available dates and boundary layer
+    const boundaryLayer = getBoundaryLayerSingleton();
     dispatch(loadAvailableDates());
+    dispatch(addLayer(boundaryLayer));
+    dispatch(loadLayerData({ layer: boundaryLayer }));
   }, [dispatch]);
 
   useEffect(() => {
