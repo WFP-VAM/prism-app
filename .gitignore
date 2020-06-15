@@ -14,9 +14,6 @@
 # Misc
 .DS_Store
 
-*.pyc
-*.cache
-
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

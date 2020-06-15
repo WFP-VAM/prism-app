@@ -1,0 +1,5 @@
+# Python files
+*.pyc
+
+# Cached files
+*.cache
