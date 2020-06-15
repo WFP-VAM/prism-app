@@ -5,7 +5,6 @@ from distutils.util import strtobool
 from caching import cache_file
 
 from flask import Flask, jsonify, request
-from flask.logging import default_handler
 
 from flask_caching import Cache
 
