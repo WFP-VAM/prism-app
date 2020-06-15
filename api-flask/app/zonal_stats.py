@@ -10,7 +10,7 @@ from shapely.ops import cascaded_union
 
 from timer import timed
 
-logger = logging.getLogger('root')
+logger = logging.getLogger(__name__)
 
 
 DEFAULT_STATS = ['min', 'max', 'mean', 'median']

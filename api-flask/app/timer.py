@@ -3,7 +3,7 @@ import logging
 from functools import wraps
 from time import time
 
-logger = logging.getLogger('root')
+logger = logging.getLogger(__name__)
 
 
 def timed(f):
@@ -15,7 +15,6 @@ def timed(f):
         elapsed = time() * 1000 - start
 
         timer_message = '%s took %d ms to complete.' % (f.__name__, elapsed)
-        logger.warning(timer_message)
-        print(timer_message)
+        logger.info(timer_message)
         return result
     return wrapper

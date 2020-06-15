@@ -7,7 +7,7 @@ import requests
 
 from timer import timed
 
-logger = logging.getLogger('root')
+logger = logging.getLogger(__name__)
 
 CACHE_DIRECTORY = '/cache/'
 
@@ -21,7 +21,7 @@ def cache_file(url, prefix):
     )
     # If the file exists, return path.
     if os.path.isfile(cache_filepath):
-        logger.warning('Returning cached file for {}.'.format(url))
+        logger.info('Returning cached file for {}.'.format(url))
         return cache_filepath
     # If the file does not exist, download and return path.
     else:
@@ -30,7 +30,7 @@ def cache_file(url, prefix):
         with open(cache_filepath, 'wb') as f:
             f.write(r.content)
 
-        logger.warning('Caching file for {}.'.format(url))
+        logger.info('Caching file for {}.'.format(url))
         return cache_filepath
 
 
@@ -40,7 +40,7 @@ def _get_cached_filepath(prefix, url):
         prefix=prefix,
         hash_string=_hash_value(url),
     )
-    logger.warning('file ' + os.path.join(CACHE_DIRECTORY, filename))
+    logger.debug('Cached filepath: ' + os.path.join(CACHE_DIRECTORY, filename))
     return os.path.join(CACHE_DIRECTORY, filename)
 
 
