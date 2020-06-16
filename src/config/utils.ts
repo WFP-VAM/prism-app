@@ -27,7 +27,9 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
   };
 
   const throwInvalidLayer = () => {
-    throw new Error(`Found invalid layer definition for layer '${layerKey}'.`);
+    throw new Error(
+      `Found invalid layer definition for layer '${layerKey}'. Check console for more details.`,
+    );
   };
 
   switch (definition.type) {

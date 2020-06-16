@@ -112,31 +112,41 @@ export type RawDataConfiguration = {
 
 export class CommonLayerProps {
   id: string;
+
+  @optional // only optional for boundary layer
   title?: string;
+
   type: string;
   opacity: number;
-  legendText?: string;
 
   @optional
   dateInterval?: string;
 
-  @optional
+  @optional // only optional for boundary layer
   legend?: LegendDefinition;
+
+  @optional // only optional for boundary layer
+  legendText?: string;
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
   path: string; // path to admin_boundries.json file - web or local.
-  @optional
-  title?: undefined;
-  @optional
-  legendText?: undefined;
 }
 
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
   baseUrl: string;
   serverLayerName: string;
+
+  @makeRequired
+  title: string;
+
+  @makeRequired
+  legend: LegendDefinition;
+
+  @makeRequired
+  legendText: string;
 
   @optional
   additionalQueryParams?: { [key: string]: string };
@@ -148,25 +158,33 @@ export class WMSLayerProps extends CommonLayerProps {
 export class NSOLayerProps extends CommonLayerProps {
   type: 'nso';
   path: string;
-  title: string;
-  adminCode: BoundaryKey;
-}
 
-export interface ChartConfig {
-  type: string;
-  category: string;
-  stacked?: boolean;
-  exclude?: string[];
-  data?: string;
-  transpose?: boolean;
-  fill?: boolean;
+  @makeRequired
+  title: string;
+
+  @makeRequired
+  legend: LegendDefinition;
+
+  @makeRequired
+  legendText: string;
+
+  adminCode: BoundaryKey;
 }
 
 export type AggregationOperations = 'mean' | 'median';
 export type ThresholdDefinition = { below?: number; above?: number };
 export class ImpactLayerProps extends CommonLayerProps {
   type: 'impact';
+
+  @makeRequired
   title: string;
+
+  @makeRequired
+  legend: LegendDefinition;
+
+  @makeRequired
+  legendText: string;
+
   hazardLayer: string;
   baselineLayer: string;
   threshold: ThresholdDefinition;
@@ -174,20 +192,24 @@ export class ImpactLayerProps extends CommonLayerProps {
   // defaults to 'median'
   @optional
   operation?: AggregationOperations;
-
-  @makeRequired
-  legend: LegendDefinition;
 }
 
 export class GroundstationLayerProps extends CommonLayerProps {
   type: 'groundstation';
   data: string;
+
+  @makeRequired
   title: string;
+
+  @makeRequired
+  legend: LegendDefinition;
+
+  @makeRequired
+  legendText: string;
+
   measure: string;
   @optional
   fallbackData?: string;
-  @makeRequired
-  legend: LegendDefinition;
 }
 
 export type RequiredKeys<T> = {
@@ -219,6 +241,16 @@ export interface MenuItemType {
 
 export interface AvailableDates {
   [key: string]: number[];
+}
+
+export interface ChartConfig {
+  type: string;
+  category: string;
+  stacked?: boolean;
+  exclude?: string[];
+  data?: string;
+  transpose?: boolean;
+  fill?: boolean;
 }
 
 export class TableType {
