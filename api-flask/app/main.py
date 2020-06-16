@@ -18,7 +18,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)
+
+CORS(app, resources={r'/*': {'origins': '*'}})
 
 # For more configuration options, check out the documentation
 # Caching durations are in seconds.
