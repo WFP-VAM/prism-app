@@ -8,6 +8,8 @@ from flask import Flask, jsonify, request
 
 from flask_caching import Cache
 
+from flask_cors import CORS
+
 from timer import timed
 
 from zonal_stats import calculate_stats
@@ -16,6 +18,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+CORS(app)
 
 # For more configuration options, check out the documentation
 # Caching durations are in seconds.

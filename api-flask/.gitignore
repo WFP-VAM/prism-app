@@ -1,5 +1,10 @@
 # Python files
 *.pyc
+./app/.flake8
+./app/.coverage
 
 # Cached files
 *.cache
+
+# Test files
+**.json.*
