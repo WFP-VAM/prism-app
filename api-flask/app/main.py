@@ -51,10 +51,14 @@ def stats():
     group_by = request.form.get('group_by', None)
 
     geotiff = cache_file(
-        prefix='test',
+        prefix='raster',
         url=geotiff_url
     )
-    zones = zones_url
+
+    zones = cache_file(
+        prefix='zones',
+        url=zones_url
+    )
 
     features = _calculate_stats(
         zones,
@@ -79,11 +83,18 @@ def stats_demo():
         'crs=EPSG%3A4326&bbox=86.5%2C36.7%2C119.7%2C55.3&width=1196&'\
         'height=672&format=GeoTIFF&time=2020-03-01'
 
+    zones_url = 'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/'\
+                'mng_admin_boundaries.json'
+
     geotiff = cache_file(
-        prefix='test',
+        prefix='raster_test',
         url=geotiff_url
     )
-    zones = './admin_boundaries.json'
+
+    zones = cache_file(
+        prefix='zones_test',
+        url=zones_url
+    )
 
     geojson_out = request.args.get('geojson_out', 'False')
     group_by = request.args.get('group_by', None)
