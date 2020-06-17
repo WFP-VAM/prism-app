@@ -1,4 +1,4 @@
-import { has, isString, isNull } from 'lodash';
+import { get, has, isString, isNull } from 'lodash';
 import { FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
@@ -126,6 +126,13 @@ function getBaselineDataForFeature(
   );
 }
 
+const mergeFeaturesByProperty = (array1: {}[], array2: {}[], id: string) => (
+  array1.map((feature1) => {
+    const feature2 = array2.find((item) => (get(item, ['properties', id]) === get(feature1, ['properties', id]) && item))
+    const properties = { ...get(feature2, 'properties'), ...get(feature1, 'properties') };
+    return { ...feature1, properties }
+  }));
+
 export async function fetchImpactLayerData(
   params: LayerDataParams<ImpactLayerProps>,
   api: ThunkApi,
@@ -133,24 +140,68 @@ export async function fetchImpactLayerData(
   const { getState, dispatch } = api;
   const { layer, extent, date } = params;
 
-  if (2 * 2 === 1 * 4) {
-    const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
+  console.log(layer)
+
+  const hazardLayerDef = LayerDefinitions[layer.hazardLayer] as any;
+
+  const { wcsConfig } = hazardLayerDef;
+  const { noData, scale, offset } = wcsConfig || {};
+
+  console.log(wcsConfig)
+
+  if (layer.api) {
     const wcsUrl = getWCSLayerUrl({
       layer: hazardLayerDef,
       extent,
       date,
     } as LayerDataParams<WMSLayerProps>);
-    const apiUrl =
-      'http://ec2-18-188-224-11.us-east-2.compute.amazonaws.com/stats';
+    const apiUrl = layer.api.url;
 
     const apiData = {
       geotiff_url: wcsUrl,
-      zones_url:
-        'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/lka_admin_boundaries.json',
+      zones_url: layer.api.zonesUrl,
+      group_by: layer.api.groupBy,
       geojson_out: 'true',
     };
 
     const features = await fetchApiData(apiUrl, apiData);
+
+    console.log(features)
+
+    const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
+    let baselineData: BaselineLayerData;
+    if (!baselineLayer) {
+      const baselineLayerDef = LayerDefinitions[layer.baselineLayer];
+      const {
+        payload: { data },
+      } = (await dispatch(
+        loadLayerData({ layer: baselineLayerDef, extent } as LayerDataParams<
+          NSOLayerProps
+        >),
+      )) as { payload: { data: unknown } };
+
+      // eslint-disable-next-line fp/no-mutation
+      baselineData = checkBaselineDataLayer(layer.baselineLayer, data);
+    } else {
+      // eslint-disable-next-line fp/no-mutation
+      baselineData = checkBaselineDataLayer(
+        layer.baselineLayer,
+        baselineLayer.data,
+      );
+    }
+
+    const mergedFeatures = mergeFeaturesByProperty(
+      baselineData.features.features,
+      features,
+      layer.api.groupBy
+    )
+
+    const activeFeatures = mergedFeatures.filter((feature) => {
+      const scaled = scaleValueIfDefined(feature.properties.data, scale, offset);
+      return thresholdOrNaN(scaled, layer.threshold);
+    })
+
+    console.log(activeFeatures)
 
     return {
       boundaries: adminBoundaries,
@@ -167,7 +218,6 @@ export async function fetchImpactLayerData(
   )(getState());
 
   if (!existingHazardLayer) {
-    const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
     await dispatch(
       loadLayerData({ layer: hazardLayerDef, extent, date } as LayerDataParams<
         WMSLayerProps
@@ -218,11 +268,11 @@ export async function fetchImpactLayerData(
         getBaselineDataForFeature(feature, baselineData);
       return baseline
         ? acc.concat({
-            id: baseline.adminKey,
-            baseline,
-            feature,
-            bounds: bbox(feature),
-          })
+          id: baseline.adminKey,
+          baseline,
+          feature,
+          bounds: bbox(feature),
+        })
         : acc;
     },
     [] as {
@@ -265,13 +315,13 @@ export async function fetchImpactLayerData(
           return isNull(baselineValue)
             ? acc
             : acc.concat({
-                ...feature,
-                properties: {
-                  ...properties,
-                  [operation]: aggregateValue,
-                  impactValue: baselineValue,
-                },
-              });
+              ...feature,
+              properties: {
+                ...properties,
+                [operation]: aggregateValue,
+                impactValue: baselineValue,
+              },
+            });
         }
       }
       return acc;

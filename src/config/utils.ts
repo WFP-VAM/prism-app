@@ -9,6 +9,7 @@ import {
   LayerType,
   ImpactLayerProps,
   GroundstationLayerProps,
+  StatsApi,
   TableType,
 } from './types';
 
@@ -42,7 +43,8 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
       return throwInvalidLayer();
     case 'impact':
       if (checkRequiredKeys(ImpactLayerProps, definition, true)) {
-        return definition;
+        const apiConfig = definition.api ? mapKeys(definition.api, (v, k) => camelCase(k)) as StatsApi : undefined
+        return { ...definition, api: apiConfig };
       }
       return throwInvalidLayer();
     case 'groundstation':
