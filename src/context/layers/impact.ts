@@ -18,7 +18,7 @@ import {
   pixelsInFeature,
 } from '../../components/MapView/Layers/raster-utils';
 import { NSOLayerData } from './nso';
-import { WMSLayerData } from './wms';
+import { getWCSLayerUrl, WMSLayerData } from './wms';
 import adminBoundariesRaw from '../../config/admin_boundaries.json';
 
 const adminBoundaries = adminBoundariesRaw as FeatureCollection;
@@ -27,6 +27,19 @@ export type ImpactLayerData = {
   boundaries: FeatureCollection;
   impactFeatures: FeatureCollection;
 };
+
+const fetchApiData = async (url: string, apiData: any) =>
+  (
+    await fetch(url, {
+      method: 'POST',
+      cache: 'no-cache',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(apiData), // body data type must match "Content-Type" header
+    })
+  ).json();
 
 type BaselineLayerData = NSOLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -119,6 +132,34 @@ export async function fetchImpactLayerData(
 ) {
   const { getState, dispatch } = api;
   const { layer, extent, date } = params;
+
+  if (2 * 2 === 1 * 4) {
+    const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
+    const wcsUrl = getWCSLayerUrl({
+      layer: hazardLayerDef,
+      extent,
+      date,
+    } as LayerDataParams<WMSLayerProps>);
+    const apiUrl =
+      'http://ec2-18-188-224-11.us-east-2.compute.amazonaws.com/stats';
+
+    const apiData = {
+      geotiff_url: wcsUrl,
+      zones_url:
+        'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/lka_admin_boundaries.json',
+      geojson_out: 'true',
+    };
+
+    const features = await fetchApiData(apiUrl, apiData);
+
+    return {
+      boundaries: adminBoundaries,
+      impactFeatures: {
+        ...adminBoundaries,
+        features,
+      },
+    };
+  }
 
   const existingHazardLayer = layerDataSelector(
     layer.hazardLayer,

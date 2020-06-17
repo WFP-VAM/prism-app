@@ -4,7 +4,7 @@ import { Extent } from '../../components/MapView/Layers/raster-utils';
 import { CreateAsyncThunkTypes, ThunkApi } from '../store';
 import { fetchNsoLayerData, NSOLayerData } from './nso';
 import { ImpactLayerData, fetchImpactLayerData } from './impact';
-import { WMSLayerData, fetchWMSLayerData } from './wms';
+import { WMSLayerData, fetchWCSLayerData } from './wms';
 import {
   fetchGroundstationData,
   GroundstationLayerData,
@@ -69,7 +69,7 @@ export const loadLayerData = createAsyncThunk<
   const { layer, extent, date } = params;
   const layerLoaders: LayerLoaders = {
     impact: fetchImpactLayerData,
-    wms: fetchWMSLayerData,
+    wms: fetchWCSLayerData,
     nso: fetchNsoLayerData,
     groundstation: fetchGroundstationData,
   };
