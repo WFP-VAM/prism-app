@@ -27,7 +27,7 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 
 @timed
-@cache.memoize(50)
+@cache.memoize(60 * 30)
 def _calculate_stats(zones, geotiff, stats, prefix, group_by, geojson_out):
     """Calculate stats."""
     return calculate_stats(
