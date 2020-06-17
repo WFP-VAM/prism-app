@@ -1,7 +1,7 @@
 # Python files
 *.pyc
-./app/.flake8
-./app/.coverage
+app/.flake8
+app/.coverage
 
 # Cached files
 *.cache
