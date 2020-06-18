@@ -4,7 +4,7 @@ from distutils.util import strtobool
 
 from caching import cache_file
 
-from flask import Flask, jsonify, request, Response
+from flask import Flask, Response, jsonify, request
 
 from flask_caching import Cache
 
