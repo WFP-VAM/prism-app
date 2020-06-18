@@ -4,7 +4,7 @@ from distutils.util import strtobool
 
 from caching import cache_file
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 
 from flask_caching import Cache
 
@@ -49,8 +49,11 @@ def stats():
     geotiff_url = data.get('geotiff_url', None)
     zones_url = data.get('zones_url', None)
     if not (geotiff_url and zones_url):
-        logger.warning('Received {}'.format(data))
-        raise Exception('geotiff_url and zones_url are both required.')
+        logger.error('Received {}'.format(data))
+        return Response(
+            response='501: geotiff_url and zones_url are both required.',
+            status=501
+        )
 
     geojson_out = strtobool(data.get('geojson_out', 'False'))
     group_by = data.get('group_by', None)
