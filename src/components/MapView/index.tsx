@@ -80,10 +80,14 @@ function MapView({ classes }: MapViewProps) {
     const boundaryLayer = getBoundaryLayerSingleton();
     dispatch(loadAvailableDates());
     dispatch(addLayer(boundaryLayer));
+    // we must load boundary layer here for two reasons
+    // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer
+    // 2. Prevent situations where a user can toggle a layer like NSO (a dependent of Boundaries) before Boundaries finish loading.
     dispatch(loadLayerData({ layer: boundaryLayer }));
   }, [dispatch]);
 
   useEffect(() => {
+    // when we switch layers, close any active pop-ups
     dispatch(hidePopup());
   }, [dispatch, layers]);
 
