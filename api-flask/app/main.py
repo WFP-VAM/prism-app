@@ -51,8 +51,8 @@ def stats():
     if not (geotiff_url and zones_url):
         logger.error('Received {}'.format(data))
         return Response(
-            response='501: geotiff_url and zones_url are both required.',
-            status=501
+            response='400: geotiff_url and zones_url are both required.',
+            status=400
         )
 
     geojson_out = strtobool(data.get('geojson_out', 'False'))
