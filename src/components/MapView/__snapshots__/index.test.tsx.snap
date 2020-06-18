@@ -13,7 +13,7 @@ exports[`renders as expected 1`] = `
       />
     </div>
     <div
-      style="height: 100vh; width: 100vw;"
+      style="height: 100%;"
     />
     <mock-dateselector
       availabledates=""
