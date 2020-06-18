@@ -3,6 +3,7 @@
 # https://medium.com/@tiangolo/docker-swarm-mode-and-traefik-for-a-https-cluster-20328dba6232
 
 export USE_HOSTNAME=$(hostname)
+export USE_DOMAIN=ovio.org
 
 docker swarm init
 
@@ -38,7 +39,7 @@ docker service create \
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
     --mount type=volume,source=traefik-public-certificates,target=/certificates \
     --network traefik-public \
-    --label "traefik.frontend.rule=Host:traefik.$USE_HOSTNAME" \
+    --label "traefik.frontend.rule=Host:traefik.$USE_DOMAIN" \
     --label "traefik.enable=true" \
     --label "traefik.port=8080" \
     --label "traefik.tags=traefik-public" \
