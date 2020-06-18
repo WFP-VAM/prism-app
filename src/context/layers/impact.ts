@@ -1,8 +1,9 @@
-import { has, isString, isNull } from 'lodash';
+import { has, isNull, isString } from 'lodash';
 import { FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
 import {
+  BoundaryLayerProps,
   ImpactLayerProps,
   LayerType,
   NSOLayerProps,
@@ -11,7 +12,10 @@ import {
 } from '../../config/types';
 import { ThunkApi } from '../store';
 import { layerDataSelector } from '../mapStateSlice';
-import { LayerDefinitions } from '../../config/utils';
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../config/utils';
 import {
   featureIntersectsImage,
   GeoJsonBoundary,
@@ -19,9 +23,6 @@ import {
 } from '../../components/MapView/Layers/raster-utils';
 import { NSOLayerData } from './nso';
 import { WMSLayerData } from './wms';
-import adminBoundariesRaw from '../../config/admin_boundaries.json';
-
-const adminBoundaries = adminBoundariesRaw as FeatureCollection;
 
 export type ImpactLayerData = {
   boundaries: FeatureCollection;
@@ -119,6 +120,15 @@ export async function fetchImpactLayerData(
 ) {
   const { getState, dispatch } = api;
   const { layer, extent, date } = params;
+
+  const adminBoundariesLayer = layerDataSelector(
+    getBoundaryLayerSingleton().id,
+  )(getState()) as LayerData<BoundaryLayerProps> | undefined;
+  if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
+    // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
+    throw new Error('Boundary Layer not loaded!');
+  }
+  const adminBoundaries = adminBoundariesLayer.data;
 
   const existingHazardLayer = layerDataSelector(
     layer.hazardLayer,
