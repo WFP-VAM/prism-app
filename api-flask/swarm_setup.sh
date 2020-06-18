@@ -66,3 +66,15 @@ docker service create \
     --logLevel=INFO \
     --accessLog \
     --api
+
+# Build the image
+docker-compose -f docker-compose.yml -f docker-compose.override.yml build
+
+# Add it as a new service
+docker service create \
+    --name "api" \
+    --label "traefik.port=80" \
+    --label "traefik.enable=true" \
+    --label "traefik.frontend.rule=PathPrefix:/" \
+    --network "traefik-public" \
+    apiflask_api
