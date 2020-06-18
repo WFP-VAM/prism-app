@@ -75,6 +75,6 @@ docker service create \
     --name "api" \
     --label "traefik.port=80" \
     --label "traefik.enable=true" \
-    --label "traefik.frontend.rule=PathPrefix:/" \
+    --label "traefik.http.routers.rule=Host:$USE_HOSTNAME" \
     --network "traefik-public" \
     apiflask_api
