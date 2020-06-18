@@ -208,6 +208,7 @@ export async function fetchImpactLayerData(
       operation,
     );
 
+    // eslint-disable-next-line fp/no-mutation
     activeFeatures = mergedFeatures.filter(feature => {
       const scaled = scaleValueIfDefined(
         feature.properties.stats_median,
@@ -275,6 +276,7 @@ export async function fetchImpactLayerData(
       return contained.length > 0 ? { ...acc, [id]: contained } : acc;
     }, {} as { [key: string]: number[] });
 
+    // eslint-disable-next-line fp/no-mutation
     activeFeatures = matchingFeatures.reduce(
       (acc, { id, feature, baseline }) => {
         const values = buckets[id];
