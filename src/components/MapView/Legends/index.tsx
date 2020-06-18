@@ -28,39 +28,45 @@ function Legends({ classes, layers }: LegendsProps) {
 
       {open && (
         <List className={classes.list}>
-          {layers.map(({ title, legend, legendText }) => (
-            <ListItem key={title} disableGutters dense>
-              <Paper className={classes.paper}>
-                <Grid container direction="column" spacing={1}>
-                  <Grid item>
-                    <Typography variant="h4">{title}</Typography>
+          {layers.map(({ title, legend, legendText }) => {
+            if (!legend || !legendText) {
+              // this layer doesn't have a legend (likely boundary), so lets ignore.
+              return null;
+            }
+            return (
+              <ListItem key={title} disableGutters dense>
+                <Paper className={classes.paper}>
+                  <Grid container direction="column" spacing={1}>
+                    <Grid item>
+                      <Typography variant="h4">{title}</Typography>
+                    </Grid>
+
+                    <Divider />
+
+                    {legend && (
+                      <Grid item>
+                        {legend.map(({ value, color }: any) => (
+                          <ColorIndicator
+                            key={value}
+                            value={value as string}
+                            color={color as string}
+                          />
+                        ))}
+                      </Grid>
+                    )}
+
+                    <Divider />
+
+                    {legendText && (
+                      <Grid item>
+                        <Typography variant="h5">{legendText}</Typography>
+                      </Grid>
+                    )}
                   </Grid>
-
-                  <Divider />
-
-                  {legend && (
-                    <Grid item>
-                      {legend.map(({ value, color }: any) => (
-                        <ColorIndicator
-                          key={value}
-                          value={value as string}
-                          color={color as string}
-                        />
-                      ))}
-                    </Grid>
-                  )}
-
-                  <Divider />
-
-                  {legendText && (
-                    <Grid item>
-                      <Typography variant="h5">{legendText}</Typography>
-                    </Grid>
-                  )}
-                </Grid>
-              </Paper>
-            </ListItem>
-          ))}
+                </Paper>
+              </ListItem>
+            );
+          })}
         </List>
       )}
     </div>

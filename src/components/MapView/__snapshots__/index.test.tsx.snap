@@ -19,7 +19,7 @@ exports[`renders as expected 1`] = `
       availabledates=""
     />
     <mock-legends
-      layers=""
+      layers="[object Object]"
     />
   </div>
 </div>
