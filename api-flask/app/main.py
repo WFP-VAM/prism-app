@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-
+app.config['JSON_AS_ASCII'] = False
 CORS(app)
 
 # For more configuration options, check out the documentation
@@ -76,8 +76,6 @@ def stats():
         group_by=group_by,
         geojson_out=geojson_out
     )
-
-    # TODO - Properly encode before returning. Mongolian characters are returned as hex.
     return jsonify(features)
 
 
