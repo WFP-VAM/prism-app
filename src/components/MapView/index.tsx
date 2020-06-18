@@ -158,6 +158,7 @@ const styles = () =>
   createStyles({
     container: {
       height: '100%',
+      position: 'relative',
     },
     loading: {
       position: 'absolute',
