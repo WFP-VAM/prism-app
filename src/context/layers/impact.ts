@@ -126,12 +126,24 @@ function getBaselineDataForFeature(
   );
 }
 
-const mergeFeaturesByProperty = (array1: {}[], array2: {}[], id: string) => (
-  array1.map((feature1) => {
-    const feature2 = array2.find((item) => (get(item, ['properties', id]) === get(feature1, ['properties', id]) && item))
-    const properties = { ...get(feature2, 'properties'), ...get(feature1, 'properties') };
-    return { ...feature1, properties }
-  }));
+const mergeFeaturesByProperty = (
+  baselineFeatures: {}[],
+  aggregateData: {}[],
+  id: string,
+  operation: string,
+) =>
+  baselineFeatures.map(feature1 => {
+    const aggregateProperties = aggregateData.find(
+      item => get(item, id) === get(feature1, ['properties', id]) && item,
+    );
+    const properties = {
+      ...get(feature1, 'properties'),
+      ...aggregateProperties,
+      impactValue: get(feature1, 'properties.data'),
+      [operation]: get(aggregateProperties, `stats_${operation}`),
+    };
+    return { ...feature1, properties };
+  });
 
 export async function fetchImpactLayerData(
   params: LayerDataParams<ImpactLayerProps>,
@@ -140,102 +152,13 @@ export async function fetchImpactLayerData(
   const { getState, dispatch } = api;
   const { layer, extent, date } = params;
 
-  console.log(layer)
+  const operation = layer.operation || 'median';
 
   const hazardLayerDef = LayerDefinitions[layer.hazardLayer] as any;
 
   const { wcsConfig } = hazardLayerDef;
   const { noData, scale, offset } = wcsConfig || {};
 
-  console.log(wcsConfig)
-
-  if (layer.api) {
-    const wcsUrl = getWCSLayerUrl({
-      layer: hazardLayerDef,
-      extent,
-      date,
-    } as LayerDataParams<WMSLayerProps>);
-    const apiUrl = layer.api.url;
-
-    const apiData = {
-      geotiff_url: wcsUrl,
-      zones_url: layer.api.zonesUrl,
-      group_by: layer.api.groupBy,
-      geojson_out: 'true',
-    };
-
-    const features = await fetchApiData(apiUrl, apiData);
-
-    console.log(features)
-
-    const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
-    let baselineData: BaselineLayerData;
-    if (!baselineLayer) {
-      const baselineLayerDef = LayerDefinitions[layer.baselineLayer];
-      const {
-        payload: { data },
-      } = (await dispatch(
-        loadLayerData({ layer: baselineLayerDef, extent } as LayerDataParams<
-          NSOLayerProps
-        >),
-      )) as { payload: { data: unknown } };
-
-      // eslint-disable-next-line fp/no-mutation
-      baselineData = checkBaselineDataLayer(layer.baselineLayer, data);
-    } else {
-      // eslint-disable-next-line fp/no-mutation
-      baselineData = checkBaselineDataLayer(
-        layer.baselineLayer,
-        baselineLayer.data,
-      );
-    }
-
-    const mergedFeatures = mergeFeaturesByProperty(
-      baselineData.features.features,
-      features,
-      layer.api.groupBy
-    )
-
-    const activeFeatures = mergedFeatures.filter((feature) => {
-      const scaled = scaleValueIfDefined(feature.properties.data, scale, offset);
-      return thresholdOrNaN(scaled, layer.threshold);
-    })
-
-    console.log(activeFeatures)
-
-    return {
-      boundaries: adminBoundaries,
-      impactFeatures: {
-        ...adminBoundaries,
-        features,
-      },
-    };
-  }
-
-  const existingHazardLayer = layerDataSelector(
-    layer.hazardLayer,
-    date,
-  )(getState());
-
-  if (!existingHazardLayer) {
-    await dispatch(
-      loadLayerData({ layer: hazardLayerDef, extent, date } as LayerDataParams<
-        WMSLayerProps
-      >),
-    );
-  }
-
-  // eslint-disable-next-line fp/no-mutation
-  const hazardLayer = checkRasterLayerData(
-    layerDataSelector(layer.hazardLayer, date)(getState())!,
-  );
-  const {
-    layer: { wcsConfig },
-    data: { rasters, transform, image },
-  } = hazardLayer;
-  const { noData, scale, offset } = wcsConfig || {};
-
-  // TODO: add date support to baseline layers?
   const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
 
   let baselineData: BaselineLayerData;
@@ -259,76 +182,131 @@ export async function fetchImpactLayerData(
     );
   }
 
-  // Calculate a bounding box for each feature that we have baseline data for
-  const matchingFeatures = adminBoundaries.features.reduce(
-    (acc, f) => {
-      const feature = f as GeoJsonBoundary;
-      const baseline =
-        featureIntersectsImage(feature, image) &&
-        getBaselineDataForFeature(feature, baselineData);
-      return baseline
-        ? acc.concat({
-          id: baseline.adminKey,
-          baseline,
-          feature,
-          bounds: bbox(feature),
-        })
-        : acc;
-    },
-    [] as {
-      id: string;
-      baseline: BaselineRecord;
-      feature: GeoJsonBoundary;
-      bounds: ReturnType<typeof bbox>;
-    }[],
-  );
+  let activeFeatures: GeoJsonBoundary[];
+  if (layer.api) {
+    const wcsUrl = getWCSLayerUrl({
+      layer: hazardLayerDef,
+      extent,
+      date,
+    } as LayerDataParams<WMSLayerProps>);
+    const apiUrl = layer.api.url;
 
-  // Loop over the features and grab pixels that are contained by the feature.
-  const buckets = matchingFeatures.reduce((acc, { id, feature }) => {
-    const contained = pixelsInFeature(
-      feature,
-      rasters[0],
-      rasters.width,
-      transform,
+    const apiData = {
+      geotiff_url: wcsUrl,
+      zones_url: layer.api.zonesUrl,
+      group_by: layer.api.groupBy,
+      geojson_out: 'false',
+    };
+
+    const aggregateData = await fetchApiData(apiUrl, apiData);
+
+    const mergedFeatures = mergeFeaturesByProperty(
+      baselineData.features.features,
+      aggregateData,
+      layer.api.groupBy,
+      operation,
     );
-    return contained.length > 0 ? { ...acc, [id]: contained } : acc;
-  }, {} as { [key: string]: number[] });
 
-  const operation = layer.operation || 'median';
+    activeFeatures = mergedFeatures.filter(feature => {
+      const scaled = scaleValueIfDefined(
+        feature.properties.stats_median,
+        scale,
+        offset,
+      );
+      return thresholdOrNaN(scaled, layer.threshold);
+    }) as GeoJsonBoundary[];
+  } else {
+    const existingHazardLayer = layerDataSelector(
+      layer.hazardLayer,
+      date,
+    )(getState());
 
-  const activeFeatures = matchingFeatures.reduce(
-    (acc, { id, feature, baseline }) => {
-      const values = buckets[id];
+    if (!existingHazardLayer) {
+      await dispatch(
+        loadLayerData({
+          layer: hazardLayerDef,
+          extent,
+          date,
+        } as LayerDataParams<WMSLayerProps>),
+      );
+    }
 
-      if (values) {
-        const raw = operations[operation](
-          noData ? values.filter(value => value !== noData) : values,
-        );
-        const scaled = scaleValueIfDefined(raw, scale, offset);
-        const aggregateValue = thresholdOrNaN(scaled, layer.threshold);
-        if (!Number.isNaN(aggregateValue)) {
-          const { properties } = feature;
+    // eslint-disable-next-line fp/no-mutation
+    const hazardLayer = checkRasterLayerData(
+      layerDataSelector(layer.hazardLayer, date)(getState())!,
+    );
+    const {
+      data: { rasters, transform, image },
+    } = hazardLayer;
 
-          const baselineValue = isString(baseline.value)
-            ? parseFloat(baseline.value)
-            : baseline.value;
-          return isNull(baselineValue)
-            ? acc
-            : acc.concat({
-              ...feature,
-              properties: {
-                ...properties,
-                [operation]: aggregateValue,
-                impactValue: baselineValue,
-              },
-            });
+    // Calculate a bounding box for each feature that we have baseline data for
+    const matchingFeatures = adminBoundaries.features.reduce(
+      (acc, f) => {
+        const feature = f as GeoJsonBoundary;
+        const baseline =
+          featureIntersectsImage(feature, image) &&
+          getBaselineDataForFeature(feature, baselineData);
+        return baseline
+          ? acc.concat({
+              id: baseline.adminKey,
+              baseline,
+              feature,
+              bounds: bbox(feature),
+            })
+          : acc;
+      },
+      [] as {
+        id: string;
+        baseline: BaselineRecord;
+        feature: GeoJsonBoundary;
+        bounds: ReturnType<typeof bbox>;
+      }[],
+    );
+
+    // Loop over the features and grab pixels that are contained by the feature.
+    const buckets = matchingFeatures.reduce((acc, { id, feature }) => {
+      const contained = pixelsInFeature(
+        feature,
+        rasters[0],
+        rasters.width,
+        transform,
+      );
+      return contained.length > 0 ? { ...acc, [id]: contained } : acc;
+    }, {} as { [key: string]: number[] });
+
+    activeFeatures = matchingFeatures.reduce(
+      (acc, { id, feature, baseline }) => {
+        const values = buckets[id];
+
+        if (values) {
+          const raw = operations[operation](
+            noData ? values.filter(value => value !== noData) : values,
+          );
+          const scaled = scaleValueIfDefined(raw, scale, offset);
+          const aggregateValue = thresholdOrNaN(scaled, layer.threshold);
+          if (!Number.isNaN(aggregateValue)) {
+            const { properties } = feature;
+
+            const baselineValue = isString(baseline.value)
+              ? parseFloat(baseline.value)
+              : baseline.value;
+            return isNull(baselineValue)
+              ? acc
+              : acc.concat({
+                  ...feature,
+                  properties: {
+                    ...properties,
+                    [operation]: aggregateValue,
+                    impactValue: baselineValue,
+                  },
+                });
+          }
         }
-      }
-      return acc;
-    },
-    [] as GeoJsonBoundary[],
-  );
-
+        return acc;
+      },
+      [] as GeoJsonBoundary[],
+    );
+  }
   return {
     boundaries: adminBoundaries,
     impactFeatures: {
