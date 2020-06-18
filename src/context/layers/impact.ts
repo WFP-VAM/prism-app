@@ -37,7 +37,8 @@ const fetchApiData = async (url: string, apiData: any) =>
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(apiData), // body data type must match "Content-Type" header
+      // body data type must match "Content-Type" header
+      body: JSON.stringify(apiData),
     })
   ).json();
 
