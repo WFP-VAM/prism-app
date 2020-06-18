@@ -1,14 +1,12 @@
-import { FeatureCollection } from 'geojson';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { showPopup } from '../../../context/tooltipStateSlice';
-
-import adminBoundariesJson from '../../../config/admin_boundaries.json';
-
-const baselineBoundaries = adminBoundariesJson as FeatureCollection;
+import { showPopup } from '../../../../context/tooltipStateSlice';
+import { BoundaryLayerProps } from '../../../../config/types';
+import { layerDataSelector } from '../../../../context/mapStateSlice';
+import { LayerData } from '../../../../context/layers/layer-data';
 
 /**
  * To activate fillOnClick option, we "fill in"
@@ -23,20 +21,31 @@ function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   targetMap.getCanvas().style.cursor = cursor;
 }
 
-const linePaint: MapboxGL.LinePaint = {
-  'line-color': 'grey',
-  'line-width': 1,
-  'line-opacity': 0.8,
+const getLinePaintOptions: (
+  layer: BoundaryLayerProps,
+) => MapboxGL.LinePaint = layer => {
+  return {
+    'line-color': 'grey',
+    'line-width': 1,
+    'line-opacity': layer.opacity,
+  };
 };
 
-function Boundaries() {
+function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   const dispatch = useDispatch();
+  const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+  const { data } = boundaryLayer || {};
+  if (!data) {
+    return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
+  }
   return (
     <GeoJSONLayer
       id="boundaries"
-      data={baselineBoundaries}
+      data={data}
       fillPaint={fillPaint}
-      linePaint={linePaint}
+      linePaint={getLinePaintOptions(layer)}
       fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
       fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
       fillOnClick={(evt: any) => {
@@ -50,4 +59,4 @@ function Boundaries() {
   );
 }
 
-export default Boundaries;
+export default BoundaryLayer;

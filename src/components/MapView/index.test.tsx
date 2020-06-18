@@ -6,8 +6,10 @@ import MapView from '.';
 import { store } from '../../context/store';
 
 jest.mock('./Layers/WMSLayer', () => 'mock-WMSLayer');
+jest.mock('./Layers/ImpactLayer', () => 'mock-ImpactLayer');
 jest.mock('./Layers/NSOLayer', () => 'mock-NSOLayer');
-jest.mock('./Boundaries', () => 'mock-Boundaries');
+jest.mock('./Layers/BoundaryLayer', () => 'mock-BoundaryLayer');
+
 jest.mock('./Legends', () => 'mock-Legends');
 jest.mock('./DateSelector', () => 'mock-DateSelector');
 
