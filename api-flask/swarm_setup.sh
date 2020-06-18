@@ -1,4 +1,6 @@
 # Setup Docker Swarm and Traefik.
+# Adapting instructions from
+# https://medium.com/@tiangolo/docker-swarm-mode-and-traefik-for-a-https-cluster-20328dba6232
 
 export USE_HOSTNAME=$(hostname)
 
