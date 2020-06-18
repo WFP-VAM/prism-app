@@ -182,6 +182,7 @@ export async function fetchImpactLayerData(
     );
   }
 
+  // eslint-disable-next-line fp/no-mutation
   let activeFeatures: GeoJsonBoundary[];
   if (layer.api) {
     const wcsUrl = getWCSLayerUrl({
