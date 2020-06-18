@@ -44,15 +44,15 @@ def _calculate_stats(zones, geotiff, stats, prefix, group_by, geojson_out):
 @timed
 def stats():
     """Return zonal statistics."""
-    geotiff_url = request.form.get('geotiff_url', None)
-    zones_url = request.form.get('zones_url', None)
-    if not (geotiff_url and zones_url):
+    geotiff_url = request.form.get('geotiff_url')
+    zones_url = request.form.get('zones_url')
+    if geotiff_url is None or zones_url is None:
         raise Exception('geotiff_url and zones_url are both required.')
 
     geojson_out = request.form.get('geojson_out', 'False')
     geojson_out = strtobool(geojson_out)
 
-    group_by = request.form.get('group_by', None)
+    group_by = request.form.get('group_by')
 
     geotiff = cache_file(
         prefix='raster',
