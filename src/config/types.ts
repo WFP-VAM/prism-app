@@ -33,7 +33,7 @@ export function makeRequired(target: any, propertyKey: string) {
 }
 
 // Generic that verifies that type `T` is a class (basically that it has a constructor)
-export type ClassType<T> = { new(...args: any): T };
+export type ClassType<T> = { new (...args: any): T };
 
 /*
  * Get an array of required keys for a class.
@@ -160,7 +160,7 @@ export class ImpactLayerProps extends CommonLayerProps {
   operation?: AggregationOperations;
 
   @optional
-  api?: StatsApi
+  api?: StatsApi;
 
   @makeRequired
   legend: LegendDefinition;
@@ -191,7 +191,7 @@ export type DiscriminateUnion<
   T,
   K extends keyof T,
   V extends T[K]
-  > = T extends Record<K, V> ? T : never;
+> = T extends Record<K, V> ? T : never;
 
 export interface LayersMap {
   [key: string]: LayerType;

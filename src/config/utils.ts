@@ -43,7 +43,9 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
       return throwInvalidLayer();
     case 'impact':
       if (checkRequiredKeys(ImpactLayerProps, definition, true)) {
-        const apiConfig = definition.api ? mapKeys(definition.api, (v, k) => camelCase(k)) as StatsApi : undefined
+        const apiConfig = definition.api
+          ? (mapKeys(definition.api, (v, k) => camelCase(k)) as StatsApi)
+          : undefined;
         return { ...definition, api: apiConfig };
       }
       return throwInvalidLayer();
