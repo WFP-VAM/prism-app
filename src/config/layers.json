@@ -924,7 +924,7 @@
     "title": "Livestock exposed to very high dzud risk (soum)",
     "type": "impact",
     "api": {
-      "url": "http://ec2-18-188-224-11.us-east-2.compute.amazonaws.com/stats",
+      "url": "https://prism-api.ovio.org/stats",
       "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json"
     },
     "hazard_layer": "DzudRiskMap",
@@ -953,7 +953,7 @@
     "title": "Livestock exposed to drought in thousands (soum)",
     "type": "impact",
     "api": {
-      "url": "http://ec2-18-188-224-11.us-east-2.compute.amazonaws.com/stats",
+      "url": "https://prism-api.ovio.org/stats",
       "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
       "group_by": "ADM2_PCODE"
     },
