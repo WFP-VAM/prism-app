@@ -161,7 +161,7 @@ function mergeFeaturesByProperty(
 async function loadFeaturesFromApi(
   layer: ImpactLayerProps,
   baselineData: BaselineLayerData,
-  hazardLayerDef: any,
+  hazardLayerDef: WMSLayerProps,
   operation: AggregationOperations,
   extent?: Extent,
   date?: number,
@@ -208,7 +208,7 @@ async function loadFeaturesClientSide(
   api: ThunkApi,
   layer: ImpactLayerProps,
   baselineData: BaselineLayerData,
-  hazardLayerDef: any,
+  hazardLayerDef: WMSLayerProps,
   operation: AggregationOperations,
   extent?: Extent,
   date?: number,
@@ -315,7 +315,7 @@ export async function fetchImpactLayerData(
 
   const operation = layer.operation || 'median';
 
-  const hazardLayerDef = LayerDefinitions[layer.hazardLayer] as any;
+  const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
 
   const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
 
