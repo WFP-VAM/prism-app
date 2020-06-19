@@ -3,6 +3,7 @@ version: "3"
 services:
 
   traefik:
+    # https://docs.traefik.io/user-guides/docker-compose/acme-tls/
     image: "traefik:v2.2"
     container_name: "traefik"
     command:
