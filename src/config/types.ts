@@ -192,7 +192,6 @@ export class ImpactLayerProps extends CommonLayerProps {
   legendText: string;
 
   hazardLayer: string;
-
   baselineLayer: string;
   threshold: ThresholdDefinition;
 
