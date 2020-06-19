@@ -1,4 +1,5 @@
 """Flask API for geospatial utils."""
+from os import getenv
 import logging
 from distutils.util import strtobool
 
@@ -120,6 +121,6 @@ def stats_demo():
     return jsonify(features)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' and getenv('FLASK_DEBUG'):
     # Only for debugging while developing
     app.run(host='0.0.0.0', debug=True, port=80)
