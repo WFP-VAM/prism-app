@@ -138,13 +138,13 @@ function getBaselineDataForFeature(
   );
 }
 
-const mergeFeaturesByProperty = (
+function mergeFeaturesByProperty(
   baselineFeatures: Feature[],
   aggregateData: Array<object>,
   id: string,
   operation: string,
-) =>
-  baselineFeatures.map(feature1 => {
+): Feature[] {
+  return baselineFeatures.map(feature1 => {
     const aggregateProperties = aggregateData.find(
       item => get(item, id) === get(feature1, ['properties', id]) && item,
     );
@@ -156,6 +156,7 @@ const mergeFeaturesByProperty = (
     };
     return { ...feature1, properties };
   });
+}
 
 async function loadFeaturesFromApi(
   layer: ImpactLayerProps,
@@ -193,10 +194,9 @@ async function loadFeaturesFromApi(
     operation,
   );
 
-  // eslint-disable-next-line fp/no-mutation
   return mergedFeatures.filter(feature => {
     const scaled = scaleValueIfDefined(
-      feature.properties.stats_median,
+      get(feature, ['properties', operation]),
       scale,
       offset,
     );
@@ -233,7 +233,6 @@ async function loadFeaturesClientSide(
     );
   }
 
-  // eslint-disable-next-line fp/no-mutation
   const hazardLayer = checkRasterLayerData(
     layerDataSelector(layer.hazardLayer, date)(getState())!,
   );
