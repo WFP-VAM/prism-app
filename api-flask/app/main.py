@@ -4,7 +4,7 @@ from distutils.util import strtobool
 
 from caching import cache_file
 
-from flask import Flask, jsonify, request
+from flask import Flask, Response, jsonify, request
 
 from flask_caching import Cache
 
@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-
+app.config['JSON_AS_ASCII'] = False
 CORS(app)
 
 # For more configuration options, check out the documentation
@@ -27,7 +27,7 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 
 @timed
-@cache.memoize(50)
+@cache.memoize(3600)
 def _calculate_stats(zones, geotiff, stats, prefix, group_by, geojson_out):
     """Calculate stats."""
     return calculate_stats(
@@ -44,15 +44,19 @@ def _calculate_stats(zones, geotiff, stats, prefix, group_by, geojson_out):
 @timed
 def stats():
     """Return zonal statistics."""
-    geotiff_url = request.form.get('geotiff_url')
-    zones_url = request.form.get('zones_url')
+    # Accept data as json or form.
+    data = request.get_json() or request.form
+    geotiff_url = data.get('geotiff_url')
+    zones_url = data.get('zones_url')
     if geotiff_url is None or zones_url is None:
-        raise Exception('geotiff_url and zones_url are both required.')
+        logger.error('Received {}'.format(data))
+        return Response(
+            response='400: geotiff_url and zones_url are both required.',
+            status=400
+        )
 
-    geojson_out = request.form.get('geojson_out', 'False')
-    geojson_out = strtobool(geojson_out)
-
-    group_by = request.form.get('group_by')
+    geojson_out = strtobool(data.get('geojson_out', 'False'))
+    group_by = data.get('group_by')
 
     geotiff = cache_file(
         prefix='raster',
@@ -72,8 +76,6 @@ def stats():
         group_by=group_by,
         geojson_out=geojson_out
     )
-
-    # TODO - Properly encode before returning. Mongolian characters are returned as hex.
     return jsonify(features)
 
 
