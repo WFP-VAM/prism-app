@@ -1,6 +1,6 @@
 """Flask API for geospatial utils."""
-from os import getenv
 import logging
+from os import getenv
 from distutils.util import strtobool
 
 from caching import cache_file
