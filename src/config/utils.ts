@@ -16,6 +16,16 @@ import {
 type layerKeys = keyof typeof rawLayers;
 type tableKeys = keyof typeof rawTables;
 
+function parseStatsApiConfig(maybeConfig: {
+  [key: string]: any;
+}): StatsApi | undefined {
+  const config = mapKeys(maybeConfig, (v, k) => camelCase(k));
+  if (checkRequiredKeys(StatsApi, config, true)) {
+    return config as StatsApi;
+  }
+  return undefined;
+}
+
 // CamelCase the keys inside the layer definition & validate config
 const getLayerByKey = (layerKey: layerKeys): LayerType => {
   const rawDefinition = rawLayers[layerKey];
@@ -43,10 +53,10 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
       return throwInvalidLayer();
     case 'impact':
       if (checkRequiredKeys(ImpactLayerProps, definition, true)) {
-        const apiConfig = definition.api
-          ? (mapKeys(definition.api, (v, k) => camelCase(k)) as StatsApi)
-          : undefined;
-        return { ...definition, api: apiConfig };
+        return {
+          ...definition,
+          api: definition.api && parseStatsApiConfig(definition.api),
+        };
       }
       return throwInvalidLayer();
     case 'groundstation':

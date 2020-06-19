@@ -144,7 +144,11 @@ export interface ChartConfig {
   fill?: boolean;
 }
 
-export type StatsApi = { url: string; zonesUrl: string; groupBy: string };
+export class StatsApi {
+  url: string;
+  zonesUrl: string;
+  groupBy: string;
+}
 
 export type AggregationOperations = 'mean' | 'median';
 export type ThresholdDefinition = { below?: number; above?: number };

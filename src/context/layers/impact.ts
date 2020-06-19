@@ -315,7 +315,7 @@ export async function fetchImpactLayerData(
 
   const operation = layer.operation || 'median';
 
-  const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
+  const hazardLayerDef = LayerDefinitions[layer.hazardLayer] as WMSLayerProps;
 
   const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
 
