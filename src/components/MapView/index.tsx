@@ -1,37 +1,54 @@
-import React, { createElement, ComponentType, useEffect } from 'react';
-import ReactMapboxGl from 'react-mapbox-gl';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { ComponentType, createElement, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  CircularProgress,
   createStyles,
   WithStyles,
-  CircularProgress,
   withStyles,
 } from '@material-ui/core';
-import { Map } from 'mapbox-gl';
 import { uniq } from 'lodash';
-import Boundaries from './Boundaries';
-import NSOLayer from './Layers/NSOLayer';
-import WMSLayer from './Layers/WMSLayer';
-import GroundstationLayer from './Layers/GroundstationLayer';
+// map
+import ReactMapboxGl from 'react-mapbox-gl';
+import { Map } from 'mapbox-gl';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
+// layers
+import {
+  BoundaryLayer,
+  GroundstationLayer,
+  ImpactLayer,
+  NSOLayer,
+  WMSLayer,
+} from './Layers';
+
+import {
+  DiscriminateUnion,
+  ImpactLayerProps,
+  LayerType,
+  WMSLayerProps,
+} from '../../config/types';
+
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../config/utils';
+
 import DateSelector from './DateSelector';
-import { layersSelector, isLoading, setMap } from '../../context/mapStateSlice';
+import {
+  isLoading,
+  layersSelector,
+  setMap,
+  addLayer,
+} from '../../context/mapStateSlice';
 import { hidePopup } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
-  loadAvailableDates,
   isLoading as areDatesLoading,
+  loadAvailableDates,
 } from '../../context/serverStateSlice';
+
 import appConfig from '../../config/prism.json';
-import {
-  WMSLayerProps,
-  LayerType,
-  DiscriminateUnion,
-  ImpactLayerProps,
-} from '../../config/types';
-import ImpactLayer from './Layers/ImpactLayer';
-import { LayerDefinitions } from '../../config/utils';
+import { loadLayerData } from '../../context/layers/layer-data';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -42,6 +59,7 @@ type LayerComponentsMap<U extends LayerType> = {
 };
 
 const componentTypes: LayerComponentsMap<LayerType> = {
+  boundary: BoundaryLayer,
   wms: WMSLayer,
   nso: NSOLayer,
   impact: ImpactLayer,
@@ -58,10 +76,18 @@ function MapView({ classes }: MapViewProps) {
   const loading = layersLoading || datesLoading;
 
   useEffect(() => {
+    // initial load, need available dates and boundary layer
+    const boundaryLayer = getBoundaryLayerSingleton();
     dispatch(loadAvailableDates());
+    dispatch(addLayer(boundaryLayer));
+    // we must load boundary layer here for two reasons
+    // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer
+    // 2. Prevent situations where a user can toggle a layer like NSO (a dependent of Boundaries) before Boundaries finish loading.
+    dispatch(loadLayerData({ layer: boundaryLayer }));
   }, [dispatch]);
 
   useEffect(() => {
+    // when we switch layers, close any active pop-ups
     dispatch(hidePopup());
   }, [dispatch, layers]);
 
@@ -104,8 +130,7 @@ function MapView({ classes }: MapViewProps) {
         center={[longitude, latitude]}
         zoom={[zoom]}
         containerStyle={{
-          height: '100vh',
-          width: '100vw',
+          height: '100%',
         }}
         onClick={() => {
           dispatch(hidePopup());
@@ -122,7 +147,6 @@ function MapView({ classes }: MapViewProps) {
           })}
         </>
         <MapTooltip />
-        <Boundaries />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={layers} />
@@ -133,6 +157,7 @@ function MapView({ classes }: MapViewProps) {
 const styles = () =>
   createStyles({
     container: {
+      height: '100%',
       position: 'relative',
     },
     loading: {

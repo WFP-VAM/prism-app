@@ -46,9 +46,9 @@ def stats():
     """Return zonal statistics."""
     # Accept data as json or form.
     data = request.get_json() or request.form
-    geotiff_url = data.get('geotiff_url', None)
-    zones_url = data.get('zones_url', None)
-    if not (geotiff_url and zones_url):
+    geotiff_url = data.get('geotiff_url')
+    zones_url = data.get('zones_url')
+    if geotiff_url is None or zones_url is None:
         logger.error('Received {}'.format(data))
         return Response(
             response='400: geotiff_url and zones_url are both required.',
@@ -56,7 +56,7 @@ def stats():
         )
 
     geojson_out = strtobool(data.get('geojson_out', 'False'))
-    group_by = data.get('group_by', None)
+    group_by = data.get('group_by')
 
     geotiff = cache_file(
         prefix='raster',

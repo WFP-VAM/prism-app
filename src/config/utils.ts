@@ -1,16 +1,17 @@
-import { mapKeys, camelCase } from 'lodash';
+import { camelCase, mapKeys } from 'lodash';
 import rawLayers from './layers.json';
 import rawTables from './tables.json';
 import {
-  WMSLayerProps,
+  BoundaryLayerProps,
   checkRequiredKeys,
-  NSOLayerProps,
+  GroundstationLayerProps,
+  ImpactLayerProps,
   LayersMap,
   LayerType,
-  ImpactLayerProps,
-  GroundstationLayerProps,
+  NSOLayerProps,
   StatsApi,
   TableType,
+  WMSLayerProps,
 } from './types';
 
 type layerKeys = keyof typeof rawLayers;
@@ -30,14 +31,16 @@ function parseStatsApiConfig(maybeConfig: {
 const getLayerByKey = (layerKey: layerKeys): LayerType => {
   const rawDefinition = rawLayers[layerKey];
 
-  const definition = {
+  const definition: { id: layerKeys; type: LayerType['type'] } = {
     id: layerKey,
-    type: rawDefinition.type,
+    type: rawDefinition.type as LayerType['type'],
     ...mapKeys(rawDefinition, (v, k) => camelCase(k)),
   };
 
   const throwInvalidLayer = () => {
-    throw new Error(`Found invalid layer definition for layer '${layerKey}'.`);
+    throw new Error(
+      `Found invalid layer definition for layer '${layerKey}'. Check console for more details.`,
+    );
   };
 
   switch (definition.type) {
@@ -64,7 +67,16 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
         return definition;
       }
       return throwInvalidLayer();
+    case 'boundary':
+      if (checkRequiredKeys(BoundaryLayerProps, definition, true)) {
+        return definition as BoundaryLayerProps;
+      }
+      return throwInvalidLayer();
     default:
+      // doesn't do anything, but it helps catch any layer type cases we forgot above compile time via TS.
+      // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
+      // eslint-disable-next-line no-unused-vars
+      ((type: never) => {})(definition.type);
       throw new Error(
         `Found invalid layer definition for layer '${layerKey}' (Unknown type '${definition.type}'). Check config/layers.json.`,
       );
@@ -103,6 +115,23 @@ export const LayerDefinitions: LayersMap = (() => {
 
   return layers;
 })();
+
+export function getBoundaryLayerSingleton(): BoundaryLayerProps {
+  const boundaryLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
+  );
+  if (boundaryLayers.length > 1) {
+    throw new Error(
+      'More than one Boundary Layer defined! There should only be one boundary layer in layers.json',
+    );
+  }
+  if (boundaryLayers.length === 0) {
+    throw new Error(
+      'No Boundary Layer found! There should be exactly one boundary layer defined in layers.json.',
+    );
+  }
+  return boundaryLayers[0];
+}
 
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);

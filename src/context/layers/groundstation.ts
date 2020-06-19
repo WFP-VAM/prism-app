@@ -27,19 +27,13 @@ export async function fetchGroundstationData(
 
   const { layer } = params;
 
-  return new Promise<GroundstationLayerData>((resolve, reject) =>
-    fetch(layer.data, { mode: 'cors' })
-      .then(response => response.json())
-      .then(data => {
-        resolve(GeoJSON.parse(data, { Point: ['lat', 'lon'] }));
-      })
-      .catch(() =>
-        fetch(layer.fallbackData || '')
-          .then(response => response.json())
-          .then(data => {
-            resolve(GeoJSON.parse(data, { Point: ['lat', 'lon'] }));
-          })
-          .catch(error => reject(error)),
-      ),
-  );
+  let data;
+  try {
+    // eslint-disable-next-line fp/no-mutation
+    data = await (await fetch(layer.data, { mode: 'cors' })).json();
+  } catch (ignored) {
+    // eslint-disable-next-line fp/no-mutation
+    data = await (await fetch(layer.fallbackData || '')).json();
+  }
+  return GeoJSON.parse(data, { Point: ['lat', 'lon'] });
 }

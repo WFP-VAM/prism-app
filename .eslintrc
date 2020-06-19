@@ -62,7 +62,8 @@
       "ignoreRestSiblings": true
     }],
     "lines-between-class-members": "off",
-    "max-classes-per-file": "off"
+    "max-classes-per-file": "off",
+    "spaced-comment": "warn"
   },
   "settings": {
     "import/resolver": {

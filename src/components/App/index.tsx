@@ -3,6 +3,8 @@ import * as Sentry from '@sentry/browser';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
+// Basic CSS Layout for the whole page
+import './app.css';
 import NavBar from '../NavBar';
 import DataDrawer from '../DataDrawer';
 import MapView from '../MapView';
@@ -23,17 +25,16 @@ function App() {
   return (
     <ThemeProvider theme={muiTheme}>
       <Router>
-        <Switch>
-          <Route exact path="/">
-            <NavBar />
-            <div className="App">
+        <NavBar />
+        <div id="app">
+          <Switch>
+            <Route exact path="/">
               <MapView />
-            </div>
-            <DataDrawer />
-          </Route>
-
-          <Route default component={NotFound} />
-        </Switch>
+              <DataDrawer />
+            </Route>
+            <Route default component={NotFound} />
+          </Switch>
+        </div>
       </Router>
     </ThemeProvider>
   );

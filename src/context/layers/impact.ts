@@ -1,8 +1,9 @@
-import { get, has, isString, isNull } from 'lodash';
+import { get, has, isNull, isString } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
 import {
+  BoundaryLayerProps,
   ImpactLayerProps,
   LayerType,
   NSOLayerProps,
@@ -13,7 +14,10 @@ import {
 } from '../../config/types';
 import { ThunkApi } from '../store';
 import { layerDataSelector } from '../mapStateSlice';
-import { LayerDefinitions } from '../../config/utils';
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../config/utils';
 import {
   featureIntersectsImage,
   GeoJsonBoundary,
@@ -22,9 +26,7 @@ import {
 } from '../../components/MapView/Layers/raster-utils';
 import { NSOLayerData } from './nso';
 import { getWCSLayerUrl, WMSLayerData } from './wms';
-import adminBoundariesRaw from '../../config/admin_boundaries.json';
-
-const adminBoundaries = adminBoundariesRaw as FeatureCollection;
+import { BoundaryLayerData } from './boundary';
 
 export type ImpactLayerData = {
   boundaries: FeatureCollection;
@@ -207,6 +209,7 @@ async function loadFeaturesFromApi(
 async function loadFeaturesClientSide(
   api: ThunkApi,
   layer: ImpactLayerProps,
+  adminBoundaries: BoundaryLayerData,
   baselineData: BaselineLayerData,
   hazardLayerDef: WMSLayerProps,
   operation: AggregationOperations,
@@ -319,6 +322,15 @@ export async function fetchImpactLayerData(
 
   const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
 
+  const adminBoundariesLayer = layerDataSelector(
+    getBoundaryLayerSingleton().id,
+  )(getState()) as LayerData<BoundaryLayerProps> | undefined;
+  if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
+    // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
+    throw new Error('Boundary Layer not loaded!');
+  }
+  const adminBoundaries = adminBoundariesLayer.data;
+
   let baselineData: BaselineLayerData;
   if (!baselineLayer) {
     const baselineLayerDef = LayerDefinitions[layer.baselineLayer];
@@ -352,6 +364,7 @@ export async function fetchImpactLayerData(
     : await loadFeaturesClientSide(
         api,
         layer,
+        adminBoundaries,
         baselineData,
         hazardLayerDef,
         operation,
