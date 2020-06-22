@@ -91,6 +91,9 @@ export const isLoading = (state: RootState): boolean =>
 export const getCurrentData = (state: RootState): TableData =>
   state.tableState.data || { columns: [], rows: [] };
 
+export const tableErrorSelector = (state: RootState): string | undefined =>
+  state.tableState.error;
+
 // export actions
 export const { hideTable } = tableStateSlice.actions;
 

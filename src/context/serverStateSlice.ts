@@ -65,6 +65,9 @@ export const availableDatesSelector = (
 export const isLoading = (state: RootState): ServerState['loading'] =>
   state.serverState.loading;
 
+export const datesErrorSelector = (state: RootState): string | undefined =>
+  state.serverState.error;
+
 // Setters
 export const { updateLayersCapabilities } = serverStateSlice.actions;
 

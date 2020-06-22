@@ -119,6 +119,9 @@ export const layerDataSelector = (id: string, date?: number) => (
     ({ layer, date: dataDate }) =>
       layer.id === id && (!date || date === dataDate),
   );
+export const layerErrorsSelector = (state: RootState): string[] =>
+  state.mapState.errors;
+
 export const isLoading = (state: RootState): boolean =>
   state.mapState.loading > 0;
 
