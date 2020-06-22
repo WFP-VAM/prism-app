@@ -91,7 +91,15 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
     case 'mapState/loadLayerData/rejected':
     case 'serverState/loadAvailableDates/rejected':
     case 'tableState/loadTable/rejected':
-      dispatch(addNotification({ type: 'error', message: action.error }));
+      dispatch(
+        addNotification({
+          type: 'error',
+          message:
+            typeof action.error === 'string'
+              ? action.error
+              : action.error.message,
+        }),
+      );
   }
   return dispatchResult;
 };
