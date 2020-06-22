@@ -26,7 +26,7 @@ function App() {
   return (
     <ThemeProvider theme={muiTheme}>
       <SnackbarProvider preventDuplicate>
-        {/* Used to show errors from redux as a snackbar. Errors are stored in both mapState and serverState */}
+        {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
         <Notifier />
       </SnackbarProvider>
       <Router>
