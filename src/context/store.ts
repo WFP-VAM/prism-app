@@ -1,35 +1,24 @@
 import {
-  AnyAction,
   combineReducers,
   configureStore,
   getDefaultMiddleware,
-  Middleware,
 } from '@reduxjs/toolkit';
 
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
 import tableStateReduce from './tableStateSlice';
 import tooltipStateReduce from './tooltipStateSlice';
+import notificationStateReduce, {
+  errorToNotificationMiddleware,
+} from './notificationStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
   serverState: serverStateReduce,
   tableState: tableStateReduce,
   tooltipState: tooltipStateReduce,
+  notificationState: notificationStateReduce,
 });
-
-// I don't know how to type this properly
-const middleware: Middleware<{}, RootState> = (api: ThunkApi) => (
-  dispatch: AppDispatch,
-) => (action: AnyAction) => {
-  const prevState = api.getState();
-  const dispatchResult = dispatch(action);
-  const newState = api.getState();
-
-  console.log(action, dispatchResult);
-  console.table([prevState, newState]);
-  return dispatchResult;
-};
 
 export const store = configureStore({
   reducer,
@@ -40,7 +29,7 @@ export const store = configureStore({
     immutableCheck: {
       ignoredPaths: ['mapState.layersData'],
     },
-  }).concat(middleware),
+  }).concat(errorToNotificationMiddleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

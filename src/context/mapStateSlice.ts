@@ -131,6 +131,7 @@ export const {
   removeLayer,
   updateDateRange,
   setMap,
+  dismissError,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;
