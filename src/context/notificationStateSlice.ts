@@ -93,7 +93,6 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
     case 'tableState/loadTable/rejected':
       dispatch(addNotification({ type: 'error', message: action.error }));
   }
-  // console.log(action, dispatchResult);
   return dispatchResult;
 };
 
