@@ -35,10 +35,10 @@ import {
 
 import DateSelector from './DateSelector';
 import {
+  addLayer,
   isLoading,
   layersSelector,
   setMap,
-  addLayer,
 } from '../../context/mapStateSlice';
 import { hidePopup } from '../../context/tooltipStateSlice';
 import {
@@ -49,6 +49,7 @@ import {
 
 import appConfig from '../../config/prism.json';
 import { loadLayerData } from '../../context/layers/layer-data';
+import Analyser from './Analyser';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -146,10 +147,12 @@ function MapView({ classes }: MapViewProps) {
             });
           })}
         </>
+
         <MapTooltip />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={layers} />
+      <Analyser />
     </div>
   );
 }
