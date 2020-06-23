@@ -78,13 +78,20 @@ export const loadLayerData = createAsyncThunk<
     groundstation: fetchGroundstationData,
   };
   const lazyLoad: LazyLoader = layerLoaders[layer.type];
-  const layerData = await lazyLoad(params, thunkApi);
-  // Need to cast this since TS isn't smart enough to match layer & layerData types based on the nested discrimator
-  // field `layer.type`.
-  return {
-    layer,
-    extent,
-    date,
-    data: layerData,
-  } as LayerDataTypes;
+  try {
+    const layerData = await lazyLoad(params, thunkApi);
+    // Need to cast this since TS isn't smart enough to match layer & layerData types based on the nested discrimator
+    // field `layer.type`.
+    return {
+      layer,
+      extent,
+      date,
+      data: layerData,
+    } as LayerDataTypes;
+  } catch (err) {
+    console.error(err);
+    throw new Error(
+      `Failed to load layer: ${layer.id}. Check console for more details.`,
+    );
+  }
 });
