@@ -19,6 +19,7 @@ function Notifier({ classes }: NotifierProps) {
   const dispatch = useDispatch();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notifications = useSelector(notificationsSelector);
+  const autoHideDuration = 50000;
 
   useEffect(() => {
     notifications.forEach(notification => {
@@ -27,8 +28,8 @@ function Notifier({ classes }: NotifierProps) {
       if (displayed) return; // already displayed, nothing to do here.
       enqueueSnackbar(message, {
         key,
+        autoHideDuration,
         variant: type,
-        persist: true,
         className: classes.notification,
         action: () => (
           <IconButton onClick={() => closeSnackbar(key)}>
@@ -57,6 +58,9 @@ const styles = () =>
   createStyles({
     notification: {
       top: '45px',
+      '@media (max-width:960px)': {
+        top: '25px',
+      },
     },
   });
 
