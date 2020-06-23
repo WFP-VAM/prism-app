@@ -1,5 +1,5 @@
 api:
-	docker-compose -f docker-compose.yml -f docker-compose.override.yml up
+	docker-compose -f docker-compose.yml -f docker-compose.develop.yml up
 
 deploy:
 	docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
