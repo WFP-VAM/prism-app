@@ -16,11 +16,10 @@ export type NSOLayerData = {
   layerData: DataRecord[];
 };
 
-export async function fetchNsoLayerData(
-  params: LayerDataParams<NSOLayerProps>,
+export async function fetchNSOLayerData(
+  { layer }: LayerDataParams<NSOLayerProps>,
   api: ThunkApi,
 ) {
-  const { layer } = params;
   const { path, adminCode } = layer;
   const { getState } = api;
 
