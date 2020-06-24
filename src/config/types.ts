@@ -5,7 +5,7 @@ export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
 
 const optionalMetadataKey = Symbol('optional_property');
 
-// Master Layer type definition. All types/classes looking to exhaust cover of all layers should extend upon this type via LayerType['type']
+// Master Layer type definition. All types/classes looking to exhaust cover of all layer types (nso, wms, etc) should extend upon this type via LayerType['type']
 export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
@@ -113,7 +113,7 @@ export type RawDataConfiguration = {
 };
 
 export class CommonLayerProps {
-  id: string;
+  id: LayerKey;
 
   @optional // only optional for boundary layer
   title?: string;
@@ -179,7 +179,7 @@ export class StatsApi {
   groupBy: string;
 }
 
-export type AggregationOperations = 'mean' | 'median';
+export type AggregationOperations = 'mean' | 'median' | 'min' | 'max';
 export type ThresholdDefinition = { below?: number; above?: number };
 export class ImpactLayerProps extends CommonLayerProps {
   type: 'impact';

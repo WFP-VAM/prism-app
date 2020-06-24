@@ -12,7 +12,26 @@ import {
   FormLabel,
   FormControlLabel,
 } from '@material-ui/core';
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../../config/utils';
+import {
+  AggregationOperations,
+  NSOLayerProps,
+  WMSLayerProps,
+} from '../../../config/types';
+import { ApiData, fetchApiData } from '../../../utils/flask-api-utils';
+import { getWCSLayerUrl } from '../../../context/layers/wms';
 import { Assessment, ArrowDropDown } from '@material-ui/icons';
+
+const layers = Object.values(LayerDefinitions);
+const baselineLayers = layers.filter(
+  (layer): layer is NSOLayerProps => layer.type === 'nso',
+);
+const hazardLayers = layers.filter(
+  (layer): layer is WMSLayerProps => layer.type === 'wms',
+);
 
 function Analyser({ classes }: AnalyserProps) {
   const [open, setOpen] = React.useState(false);
@@ -205,6 +224,27 @@ function Analyser({ classes }: AnalyserProps) {
       </div>
     </div>
   );
+}
+
+const apiUrl = 'https://prism-api.ovio.org/stats'; // TODO needs to be stored somewhere
+async function submitAnaysisRequest(
+  baselineLayer: NSOLayerProps,
+  hazardLayer: WMSLayerProps,
+  date: number,
+  statistic: AggregationOperations,
+): Promise<Array<object>> {
+  const apiRequest: ApiData = {
+    geotiff_url: getWCSLayerUrl({
+      layer: hazardLayer,
+      date,
+      extent: [3, 3, 3, 3],
+    }),
+    zones_url: getBoundaryLayerSingleton().path,
+    group_by: baselineLayer.adminCode, // TODO needs to be a level in admin_boundaries, admin_level
+  };
+  const data = await fetchApiData(apiUrl, apiRequest);
+
+  return [];
 }
 
 const styles = (theme: Theme) =>
