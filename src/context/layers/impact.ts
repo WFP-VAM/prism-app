@@ -1,5 +1,5 @@
-import { has, isNull, isString } from 'lodash';
-import { FeatureCollection } from 'geojson';
+import { get, has, isNull, isString } from 'lodash';
+import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
 import {
@@ -9,6 +9,8 @@ import {
   NSOLayerProps,
   ThresholdDefinition,
   WMSLayerProps,
+  AggregationOperations,
+  StatsApi,
 } from '../../config/types';
 import { ThunkApi } from '../store';
 import { layerDataSelector } from '../mapStateSlice';
@@ -20,14 +22,38 @@ import {
   featureIntersectsImage,
   GeoJsonBoundary,
   pixelsInFeature,
+  Extent,
 } from '../../components/MapView/Layers/raster-utils';
 import { NSOLayerData } from './nso';
-import { WMSLayerData } from './wms';
+import { getWCSLayerUrl, WMSLayerData } from './wms';
+import { BoundaryLayerData } from './boundary';
 
 export type ImpactLayerData = {
   boundaries: FeatureCollection;
   impactFeatures: FeatureCollection;
 };
+
+/* eslint-disable camelcase */
+type ApiData = {
+  geotiff_url: string;
+  zones_url: string;
+  group_by?: string;
+  geojson_out?: string;
+};
+
+const fetchApiData = async (url: string, apiData: ApiData) =>
+  (
+    await fetch(url, {
+      method: 'POST',
+      cache: 'no-cache',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      // body data type must match "Content-Type" header
+      body: JSON.stringify(apiData),
+    })
+  ).json();
 
 type BaselineLayerData = NSOLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -114,21 +140,86 @@ function getBaselineDataForFeature(
   );
 }
 
-export async function fetchImpactLayerData(
-  params: LayerDataParams<ImpactLayerProps>,
-  api: ThunkApi,
-) {
-  const { getState, dispatch } = api;
-  const { layer, extent, date } = params;
+function mergeFeaturesByProperty(
+  baselineFeatures: Feature[],
+  aggregateData: Array<object>,
+  id: string,
+  operation: string,
+): Feature[] {
+  return baselineFeatures.map(feature1 => {
+    const aggregateProperties = aggregateData.find(
+      item => get(item, id) === get(feature1, ['properties', id]) && item,
+    );
+    const properties = {
+      ...get(feature1, 'properties'),
+      ...aggregateProperties,
+      impactValue: get(feature1, 'properties.data'),
+      [operation]: get(aggregateProperties, `stats_${operation}`),
+    };
+    return { ...feature1, properties };
+  });
+}
 
-  const adminBoundariesLayer = layerDataSelector(
-    getBoundaryLayerSingleton().id,
-  )(getState()) as LayerData<BoundaryLayerProps> | undefined;
-  if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
-    // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
-    throw new Error('Boundary Layer not loaded!');
-  }
-  const adminBoundaries = adminBoundariesLayer.data;
+async function loadFeaturesFromApi(
+  layer: ImpactLayerProps,
+  baselineData: BaselineLayerData,
+  hazardLayerDef: WMSLayerProps,
+  operation: AggregationOperations,
+  extent?: Extent,
+  date?: number,
+): Promise<GeoJsonBoundary[]> {
+  const { wcsConfig } = hazardLayerDef;
+  const { scale, offset } = wcsConfig || {};
+
+  const wcsUrl = getWCSLayerUrl({
+    layer: hazardLayerDef,
+    extent,
+    date,
+  } as LayerDataParams<WMSLayerProps>);
+
+  const statsApi = layer.api as StatsApi;
+  const apiUrl = statsApi.url;
+
+  const apiData = {
+    geotiff_url: wcsUrl,
+    zones_url: statsApi.zonesUrl,
+    group_by: statsApi.groupBy,
+    geojson_out: 'false',
+  };
+
+  const aggregateData = await fetchApiData(apiUrl, apiData);
+
+  const mergedFeatures = mergeFeaturesByProperty(
+    baselineData.features.features,
+    aggregateData,
+    statsApi.groupBy,
+    operation,
+  );
+
+  return mergedFeatures.filter(feature => {
+    const scaled = scaleValueIfDefined(
+      get(feature, ['properties', operation]),
+      scale,
+      offset,
+    );
+    return thresholdOrNaN(scaled, layer.threshold);
+  }) as GeoJsonBoundary[];
+}
+
+async function loadFeaturesClientSide(
+  api: ThunkApi,
+  layer: ImpactLayerProps,
+  adminBoundaries: BoundaryLayerData,
+  baselineData: BaselineLayerData,
+  hazardLayerDef: WMSLayerProps,
+  operation: AggregationOperations,
+  extent?: Extent,
+  date?: number,
+): Promise<GeoJsonBoundary[]> {
+  const { getState, dispatch } = api;
+
+  const { wcsConfig } = hazardLayerDef;
+  const { noData, scale, offset } = wcsConfig || {};
 
   const existingHazardLayer = layerDataSelector(
     layer.hazardLayer,
@@ -136,47 +227,21 @@ export async function fetchImpactLayerData(
   )(getState());
 
   if (!existingHazardLayer) {
-    const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
     await dispatch(
-      loadLayerData({ layer: hazardLayerDef, extent, date } as LayerDataParams<
-        WMSLayerProps
-      >),
+      loadLayerData({
+        layer: hazardLayerDef,
+        extent,
+        date,
+      } as LayerDataParams<WMSLayerProps>),
     );
   }
 
-  // eslint-disable-next-line fp/no-mutation
   const hazardLayer = checkRasterLayerData(
     layerDataSelector(layer.hazardLayer, date)(getState())!,
   );
   const {
-    layer: { wcsConfig },
     data: { rasters, transform, image },
   } = hazardLayer;
-  const { noData, scale, offset } = wcsConfig || {};
-
-  // TODO: add date support to baseline layers?
-  const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
-
-  let baselineData: BaselineLayerData;
-  if (!baselineLayer) {
-    const baselineLayerDef = LayerDefinitions[layer.baselineLayer];
-    const {
-      payload: { data },
-    } = (await dispatch(
-      loadLayerData({ layer: baselineLayerDef, extent } as LayerDataParams<
-        NSOLayerProps
-      >),
-    )) as { payload: { data: unknown } };
-
-    // eslint-disable-next-line fp/no-mutation
-    baselineData = checkBaselineDataLayer(layer.baselineLayer, data);
-  } else {
-    // eslint-disable-next-line fp/no-mutation
-    baselineData = checkBaselineDataLayer(
-      layer.baselineLayer,
-      baselineLayer.data,
-    );
-  }
 
   // Calculate a bounding box for each feature that we have baseline data for
   const matchingFeatures = adminBoundaries.features.reduce(
@@ -213,40 +278,99 @@ export async function fetchImpactLayerData(
     return contained.length > 0 ? { ...acc, [id]: contained } : acc;
   }, {} as { [key: string]: number[] });
 
+  return matchingFeatures.reduce((acc, { id, feature, baseline }) => {
+    const values = buckets[id];
+
+    if (values) {
+      const raw = operations[operation](
+        noData ? values.filter(value => value !== noData) : values,
+      );
+      const scaled = scaleValueIfDefined(raw, scale, offset);
+      const aggregateValue = thresholdOrNaN(scaled, layer.threshold);
+      if (!Number.isNaN(aggregateValue)) {
+        const { properties } = feature;
+
+        const baselineValue = isString(baseline.value)
+          ? parseFloat(baseline.value)
+          : baseline.value;
+        return isNull(baselineValue)
+          ? acc
+          : acc.concat({
+              ...feature,
+              properties: {
+                ...properties,
+                [operation]: aggregateValue,
+                impactValue: baselineValue,
+              },
+            });
+      }
+    }
+    return acc;
+  }, [] as GeoJsonBoundary[]);
+}
+
+export async function fetchImpactLayerData(
+  params: LayerDataParams<ImpactLayerProps>,
+  api: ThunkApi,
+) {
+  const { getState, dispatch } = api;
+  const { layer, extent, date } = params;
+
   const operation = layer.operation || 'median';
 
-  const activeFeatures = matchingFeatures.reduce(
-    (acc, { id, feature, baseline }) => {
-      const values = buckets[id];
+  const hazardLayerDef = LayerDefinitions[layer.hazardLayer] as WMSLayerProps;
 
-      if (values) {
-        const raw = operations[operation](
-          noData ? values.filter(value => value !== noData) : values,
-        );
-        const scaled = scaleValueIfDefined(raw, scale, offset);
-        const aggregateValue = thresholdOrNaN(scaled, layer.threshold);
-        if (!Number.isNaN(aggregateValue)) {
-          const { properties } = feature;
+  const baselineLayer = layerDataSelector(layer.baselineLayer)(getState());
 
-          const baselineValue = isString(baseline.value)
-            ? parseFloat(baseline.value)
-            : baseline.value;
-          return isNull(baselineValue)
-            ? acc
-            : acc.concat({
-                ...feature,
-                properties: {
-                  ...properties,
-                  [operation]: aggregateValue,
-                  impactValue: baselineValue,
-                },
-              });
-        }
-      }
-      return acc;
-    },
-    [] as GeoJsonBoundary[],
-  );
+  const adminBoundariesLayer = layerDataSelector(
+    getBoundaryLayerSingleton().id,
+  )(getState()) as LayerData<BoundaryLayerProps> | undefined;
+  if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
+    // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
+    throw new Error('Boundary Layer not loaded!');
+  }
+  const adminBoundaries = adminBoundariesLayer.data;
+
+  let baselineData: BaselineLayerData;
+  if (!baselineLayer) {
+    const baselineLayerDef = LayerDefinitions[layer.baselineLayer];
+    const {
+      payload: { data },
+    } = (await dispatch(
+      loadLayerData({ layer: baselineLayerDef, extent } as LayerDataParams<
+        NSOLayerProps
+      >),
+    )) as { payload: { data: unknown } };
+
+    // eslint-disable-next-line fp/no-mutation
+    baselineData = checkBaselineDataLayer(layer.baselineLayer, data);
+  } else {
+    // eslint-disable-next-line fp/no-mutation
+    baselineData = checkBaselineDataLayer(
+      layer.baselineLayer,
+      baselineLayer.data,
+    );
+  }
+
+  const activeFeatures = layer.api
+    ? await loadFeaturesFromApi(
+        layer,
+        baselineData,
+        hazardLayerDef,
+        operation,
+        extent,
+        date,
+      )
+    : await loadFeaturesClientSide(
+        api,
+        layer,
+        adminBoundaries,
+        baselineData,
+        hazardLayerDef,
+        operation,
+        extent,
+        date,
+      );
 
   return {
     boundaries: adminBoundaries,

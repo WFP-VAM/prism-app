@@ -171,6 +171,12 @@ export class NSOLayerProps extends CommonLayerProps {
   adminCode: BoundaryKey;
 }
 
+export class StatsApi {
+  url: string;
+  zonesUrl: string;
+  groupBy: string;
+}
+
 export type AggregationOperations = 'mean' | 'median';
 export type ThresholdDefinition = { below?: number; above?: number };
 export class ImpactLayerProps extends CommonLayerProps {
@@ -192,6 +198,9 @@ export class ImpactLayerProps extends CommonLayerProps {
   // defaults to 'median'
   @optional
   operation?: AggregationOperations;
+
+  @optional
+  api?: StatsApi;
 }
 
 export class GroundstationLayerProps extends CommonLayerProps {

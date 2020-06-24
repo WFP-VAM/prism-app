@@ -9,12 +9,23 @@ import {
   LayersMap,
   LayerType,
   NSOLayerProps,
+  StatsApi,
   TableType,
   WMSLayerProps,
 } from './types';
 
 type layerKeys = keyof typeof rawLayers;
 type tableKeys = keyof typeof rawTables;
+
+function parseStatsApiConfig(maybeConfig: {
+  [key: string]: any;
+}): StatsApi | undefined {
+  const config = mapKeys(maybeConfig, (v, k) => camelCase(k));
+  if (checkRequiredKeys(StatsApi, config, true)) {
+    return config as StatsApi;
+  }
+  return undefined;
+}
 
 // CamelCase the keys inside the layer definition & validate config
 const getLayerByKey = (layerKey: layerKeys): LayerType => {
@@ -45,7 +56,10 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
       return throwInvalidLayer();
     case 'impact':
       if (checkRequiredKeys(ImpactLayerProps, definition, true)) {
-        return definition;
+        return {
+          ...definition,
+          api: definition.api && parseStatsApiConfig(definition.api),
+        };
       }
       return throwInvalidLayer();
     case 'groundstation':
