@@ -163,7 +163,7 @@ async function loadFeaturesFromApi(
     geotiff_url: wcsUrl,
     zones_url: statsApi.zonesUrl,
     group_by: statsApi.groupBy,
-    geojson_out: 'false',
+    geojson_out: false,
   };
 
   const aggregateData = await fetchApiData(apiUrl, apiData);
