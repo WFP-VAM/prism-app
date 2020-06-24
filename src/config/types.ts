@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import rawLayers from './layers.json';
 
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
 
@@ -12,6 +13,7 @@ export type LayerType =
   | ImpactLayerProps
   | GroundstationLayerProps;
 
+export type LayerKey = keyof typeof rawLayers;
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
  * runtime for type checking.
@@ -191,8 +193,8 @@ export class ImpactLayerProps extends CommonLayerProps {
   @makeRequired
   legendText: string;
 
-  hazardLayer: string;
-  baselineLayer: string;
+  hazardLayer: LayerKey; // not all layers supported here, just WMS layers
+  baselineLayer: LayerKey; // not all layers supported here, just NSO layers. Maybe an advanced way to type this?
   threshold: ThresholdDefinition;
 
   // defaults to 'median'
@@ -232,9 +234,9 @@ export type DiscriminateUnion<
   V extends T[K]
 > = T extends Record<K, V> ? T : never;
 
-export interface LayersMap {
-  [key: string]: LayerType;
-}
+export type LayersMap = {
+  [key in LayerKey]: LayerType;
+};
 
 export interface LayersCategoryType {
   title: string;
