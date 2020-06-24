@@ -6,8 +6,9 @@ import {
   Typography,
   withStyles,
   WithStyles,
+  Radio,
 } from '@material-ui/core';
-import { Assessment } from '@material-ui/icons';
+import { Assessment, ArrowDropDown } from '@material-ui/icons';
 
 function Analyser({ classes }: AnalyserProps) {
   const [open, setOpen] = React.useState(false);
@@ -21,7 +22,24 @@ function Analyser({ classes }: AnalyserProps) {
       >
         <Assessment style={{ marginRight: '10px' }} />
         <Typography variant="body2">Run Analysis</Typography>
+        <ArrowDropDown />
       </Button>
+
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.analyserButton}
+      >
+        <Typography variant="body2">Show Result</Typography>
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.analyserButton}
+      >
+        <Typography variant="body2">Download</Typography>
+      </Button>
+
       <div
         className={classes.analyserMenu}
         style={{ width: open ? 500 : 0, padding: open ? 50 : 0 }}
@@ -37,8 +55,8 @@ const styles = (theme: Theme) =>
     container: {
       zIndex: theme.zIndex.drawer,
       position: 'absolute',
-      top: -2,
-      left: -2,
+      top: 2,
+      left: 2,
       textAlign: 'left',
     },
     analyserMenu: {
@@ -52,6 +70,10 @@ const styles = (theme: Theme) =>
       borderBottomRightRadius: '10px',
       height: '600px',
       maxHeight: '90vh',
+    },
+    analyserButton: {
+      height: '36px',
+      'margin-left': '3px',
     },
   });
 
