@@ -16,7 +16,7 @@ export type WMSLayerData = {
   transform: TransformMatrix;
 };
 
-export async function fetchWMSLayerData({
+export function getWCSLayerUrl({
   layer,
   extent,
   date,
@@ -27,12 +27,25 @@ export async function fetchWMSLayerData({
     );
   }
 
-  const tileUrl = WCSRequestUrl(
+  return WCSRequestUrl(
     layer.baseUrl,
     layer.serverLayerName,
     date ? moment(date).format('YYYY-MM-DD') : undefined,
     extent,
     get(layer, 'wcsConfig.pixelResolution'),
   );
-  return loadGeoTiff(tileUrl);
+}
+
+export async function fetchWCSLayerData({
+  layer,
+  extent,
+  date,
+}: LayerDataParams<WMSLayerProps>) {
+  if (!extent) {
+    throw new Error(
+      `Can't fetch WCS data for layer ${layer.id} without providing an extent!`,
+    );
+  }
+
+  return loadGeoTiff(getWCSLayerUrl({ layer, extent, date }));
 }
