@@ -6,6 +6,7 @@ import {
   checkRequiredKeys,
   GroundstationLayerProps,
   ImpactLayerProps,
+  LayerKey,
   LayersMap,
   LayerType,
   NSOLayerProps,
@@ -14,7 +15,6 @@ import {
   WMSLayerProps,
 } from './types';
 
-type layerKeys = keyof typeof rawLayers;
 type tableKeys = keyof typeof rawTables;
 
 function parseStatsApiConfig(maybeConfig: {
@@ -28,10 +28,10 @@ function parseStatsApiConfig(maybeConfig: {
 }
 
 // CamelCase the keys inside the layer definition & validate config
-const getLayerByKey = (layerKey: layerKeys): LayerType => {
+const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const rawDefinition = rawLayers[layerKey];
 
-  const definition: { id: layerKeys; type: LayerType['type'] } = {
+  const definition: { id: LayerKey; type: LayerType['type'] } = {
     id: layerKey,
     type: rawDefinition.type as LayerType['type'],
     ...mapKeys(rawDefinition, (v, k) => camelCase(k)),
@@ -76,7 +76,7 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
       // doesn't do anything, but it helps catch any layer type cases we forgot above compile time via TS.
       // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
       // eslint-disable-next-line no-unused-vars
-      ((type: never) => {})(definition.type);
+      ((_: never) => {})(definition.type);
       throw new Error(
         `Found invalid layer definition for layer '${layerKey}' (Unknown type '${definition.type}'). Check config/layers.json.`,
       );
@@ -103,7 +103,7 @@ export const LayerDefinitions: LayersMap = (() => {
   const layers = Object.keys(rawLayers).reduce(
     (acc, layerKey) => ({
       ...acc,
-      [layerKey]: getLayerByKey(layerKey as layerKeys),
+      [layerKey]: getLayerByKey(layerKey as LayerKey),
     }),
     {} as LayersMap,
   );
