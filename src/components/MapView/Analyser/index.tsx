@@ -2,18 +2,19 @@ import React, { useMemo } from 'react';
 import {
   Button,
   createStyles,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
   Theme,
   Typography,
   withStyles,
   WithStyles,
-  RadioGroup,
-  Radio,
-  FormControl,
-  FormLabel,
-  FormControlLabel,
 } from '@material-ui/core';
 import { extent as calculateExtentFromGeoJSON } from 'geojson-bounds';
 import { useSelector } from 'react-redux';
+import { ArrowDropDown, Assessment } from '@material-ui/icons';
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
@@ -28,7 +29,6 @@ import { getWCSLayerUrl } from '../../../context/layers/wms';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice';
 import { Extent } from '../Layers/raster-utils';
-import { Assessment, ArrowDropDown } from '@material-ui/icons';
 
 const layers = Object.values(LayerDefinitions);
 const baselineLayers = layers.filter(
