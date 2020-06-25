@@ -179,7 +179,7 @@ export class StatsApi {
   groupBy: string;
 }
 
-export type AggregationOperations = 'mean' | 'median' | 'min' | 'max';
+export type AggregationOperations = 'mean' | 'median';
 export type ThresholdDefinition = { below?: number; above?: number };
 export class ImpactLayerProps extends CommonLayerProps {
   type: 'impact';
