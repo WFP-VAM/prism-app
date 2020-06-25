@@ -115,11 +115,17 @@
           ".ts",
           ".tsx"
         ]
-      },
-      "typescript": {
-        // always try to resolve types under `<roo/>@types` directory even it doesn't contain any source code, like `@types/unist`
-        "alwaysTryTypes": true
       }
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [
+        ".ts",
+        ".tsx"
+      ]
+    },
+    "typescript": {
+      // always try to resolve types under `<roo/>@types` directory even it doesn't contain any source code, like `@types/unist`
+      "alwaysTryTypes": true
     }
   }
 }
