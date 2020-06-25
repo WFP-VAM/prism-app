@@ -7,12 +7,25 @@
     "prettier/react"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["jsx-a11y", "fp", "@typescript-eslint", "prettier", "import"],
+  "plugins": [
+    "jsx-a11y",
+    "fp",
+    "@typescript-eslint",
+    "prettier",
+    "import"
+  ],
   "rules": {
     // Allow JSX within .js files
     "react/jsx-filename-extension": [
       1,
-      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+      {
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
+      }
     ],
     // Allow props spreading in React
     "react/jsx-props-no-spreading": 0,
@@ -21,10 +34,15 @@
     "object-curly-spacing": [
       "error",
       "always",
-      { "arraysInObjects": true, "objectsInObjects": true }
+      {
+        "arraysInObjects": true,
+        "objectsInObjects": true
+      }
     ],
     // More verbose prettier suggestions
-    "prettier/prettier": ["warn"],
+    "prettier/prettier": [
+      "warn"
+    ],
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -41,7 +59,9 @@
     "fp/no-mutating-methods": [
       "warn",
       {
-        "allowedObjects": ["_"]
+        "allowedObjects": [
+          "_"
+        ]
       }
     ],
     "fp/no-mutation": [
@@ -50,17 +70,34 @@
         "commonjs": true,
         "allowThis": true,
         "exceptions": [
-          { "property": "propTypes" },
-          { "property": "defaultProps" },
-          { "property": "current" }
+          {
+            "property": "propTypes"
+          },
+          {
+            "property": "defaultProps"
+          },
+          {
+            "property": "current"
+          }
         ]
       }
     ],
-    "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "no-unused-vars": ["warn", {
-      "argsIgnorePattern": "^props$",
-      "ignoreRestSiblings": true
-    }],
+    "no-console": [
+      "warn",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ],
+    "no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^props$",
+        "ignoreRestSiblings": true
+      }
+    ],
     "lines-between-class-members": "off",
     "max-classes-per-file": "off",
     "spaced-comment": "warn"
@@ -68,11 +105,16 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "moduleDirectory": ["node_modules", "./src"],
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
-      },
-      "import/parsers": {
-        "@typescript-eslint/parser": [".ts", ".tsx"]
+        "moduleDirectory": [
+          "node_modules",
+          "./src"
+        ],
+        "extensions": [
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx"
+        ]
       },
       "typescript": {
         // always try to resolve types under `<roo/>@types` directory even it doesn't contain any source code, like `@types/unist`
