@@ -1,10 +1,10 @@
+/* eslint-disable no-console */
 import React, { useMemo, useState } from 'react';
 import {
   Button,
   createStyles,
   FormControl,
   FormControlLabel,
-  FormLabel,
   Radio,
   RadioGroup,
   Theme,
@@ -15,6 +15,7 @@ import {
 import { extent as calculateExtentFromGeoJSON } from 'geojson-bounds';
 import { useSelector } from 'react-redux';
 import { ArrowDropDown, Assessment } from '@material-ui/icons';
+import { map, find } from 'lodash';
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
@@ -38,18 +39,22 @@ const baselineLayers = layers.filter(
 const hazardLayers = layers.filter(
   (layer): layer is WMSLayerProps => layer.type === 'wms',
 );
+const statistics = ['mean', 'median'];
+
 const boundaryLayer = getBoundaryLayerSingleton();
 
 const apiUrl = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 const adminJson =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json';
-async function submitAnaysisRequest(
+async function submitAnalysisRequest(
   baselineLayer: NSOLayerProps,
   hazardLayer: WMSLayerProps,
-  extent: Extent,
+  extent: Extent | undefined,
   date: number,
-  statistic: 'mean' | 'median', // we cant use AggregateOptions here but we should aim to in the future.
+  statistic: string, // we cant use AggregateOptions here but we should aim to in the future.
 ): Promise<Array<object>> {
+  console.log('baselineLayer', baselineLayer);
+  console.log('hazardLayer', hazardLayer);
   const apiRequest: ApiData = {
     geotiff_url: getWCSLayerUrl({
       layer: hazardLayer,
@@ -69,13 +74,41 @@ async function submitAnaysisRequest(
 }
 
 function Analyser({ classes }: AnalyserProps) {
-  const [open, setOpen] = useState(false);
-  const [selectedBaselineLayer, setSelectedBaselineLayer] = useState(
-    baselineLayers[0],
+  const [open, setOpen] = useState(true);
+  const [analyserOption, setAnalyserOption] = useState('new');
+  const [hazardLayerId, setHazardLayerId] = useState(
+    hazardLayers[0].id as string,
   );
-  const [selectedHazardLayer, setSelectedHazardLayer] = useState(
-    hazardLayers[0],
+  const [statistic, setStatistic] = useState(statistics[0]);
+  const [baselineLayerId, setBaselineLayerId] = useState(
+    baselineLayers[0].id as string,
   );
+
+  const onAnalyserOptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setAnalyserOption((event.target as HTMLInputElement).value);
+  };
+
+  const onHazardLayerOptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setHazardLayerId((event.target as HTMLInputElement).value);
+  };
+  const onStatisticOptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setStatistic((event.target as HTMLInputElement).value);
+  };
+  const onBaselineLayerOptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setBaselineLayerId((event.target as HTMLInputElement).value);
+    console.log(
+      'Analyser -> (event.target as HTMLInputElement).value',
+      (event.target as HTMLInputElement).value,
+    );
+  };
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -85,17 +118,69 @@ function Analyser({ classes }: AnalyserProps) {
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData)
       // not loaded yet. Should be loaded in MapView
-      return null;
+      return undefined;
     return calculateExtentFromGeoJSON(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
+  const hazardLayerOptions = map(hazardLayers, hazardLayer => {
+    return (
+      <FormControlLabel
+        key={hazardLayer.id}
+        value={hazardLayer.id}
+        control={<Radio className={classes.radioOptions} size="small" />}
+        label={hazardLayer.title}
+      />
+    );
+  });
+  const baselineLayerOptions = map(baselineLayers, baselineLayer => {
+    return (
+      <FormControlLabel
+        key={baselineLayer.id}
+        value={baselineLayer.id}
+        control={<Radio className={classes.radioOptions} size="small" />}
+        label={baselineLayer.title}
+      />
+    );
+  });
+  const statisticOptions = map(statistics, stat => {
+    return (
+      <FormControlLabel
+        key={stat}
+        value={stat}
+        control={<Radio className={classes.radioOptions} size="small" />}
+        label={stat}
+      />
+    );
+  });
+
+  const runAnalyser = () => {
+    const selectedHazardLayer = find(hazardLayers, {
+      id: hazardLayerId,
+    }) as WMSLayerProps;
+    const selectedBaselineLayer = find(baselineLayers, {
+      id: baselineLayerId,
+    }) as NSOLayerProps;
+
+    submitAnalysisRequest(
+      selectedBaselineLayer,
+      selectedHazardLayer,
+      adminBoundariesExtent,
+      availableDates[selectedHazardLayer.serverLayerName][0],
+      statistic,
+    )
+      .then(res => {
+        const data = res;
+        // eslint-disable-next-line no-console
+        console.log(data);
+      })
+      .catch(err => console.error('error', err));
+  };
   return (
     <div className={classes.analyser}>
       <Button
         variant="contained"
         color="primary"
         onClick={() => setOpen(!open)}
-        style={{ display: open ? 'none' : 'inline-flex' }}
       >
         <Assessment style={{ marginRight: '10px' }} />
         <Typography variant="body2">Run Analysis</Typography>
@@ -106,20 +191,6 @@ function Analyser({ classes }: AnalyserProps) {
         variant="contained"
         color="primary"
         className={classes.analyserButton}
-        onClick={() => {
-          if (!adminBoundariesExtent) return;
-          submitAnaysisRequest(
-            selectedBaselineLayer,
-            selectedHazardLayer,
-            adminBoundariesExtent,
-            availableDates[selectedHazardLayer.serverLayerName][0],
-            'mean',
-          )
-            .then(data => {
-              console.log(data);
-            })
-            .catch(console.error);
-        }}
       >
         <Typography variant="body2">Show Result</Typography>
       </Button>
@@ -136,7 +207,7 @@ function Analyser({ classes }: AnalyserProps) {
         style={{ width: open ? '40vw' : 0, padding: open ? 10 : 0 }}
       >
         <FormControl component="fieldset">
-          <RadioGroup>
+          <RadioGroup value={analyserOption} onChange={onAnalyserOptionChange}>
             <FormControlLabel
               value="new"
               control={
@@ -162,124 +233,45 @@ function Analyser({ classes }: AnalyserProps) {
         </FormControl>
         <div className={classes.newAnalyserContainer}>
           <div>
-            <Typography>Step 1 - Choose a hazard Layer</Typography>
-            <div>
-              <FormControl component="div">
-                <FormLabel component="legend">Drought Indication</FormLabel>
-                <RadioGroup>
-                  <FormControlLabel
-                    value="new"
-                    control={
-                      <Radio className={classes.radioOptions} size="small" />
-                    }
-                    label="Pasture Anomaly"
-                  />
-                  <FormControlLabel
-                    value="pre-configure"
-                    control={
-                      <Radio className={classes.radioOptions} size="small" />
-                    }
-                    label="Vegetation Index (NDVI)"
-                  />
-                  <FormControlLabel
-                    value="generate"
-                    control={
-                      <Radio className={classes.radioOptions} size="small" />
-                    }
-                    label="Agricultural Drought (VHI)"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </div>
-            <div>
-              <FormControl component="div">
-                <FormLabel component="legend">Drought Indication</FormLabel>
-                <RadioGroup>
-                  <FormControlLabel
-                    value="new"
-                    control={
-                      <Radio className={classes.radioOptions} size="small" />
-                    }
-                    label="Pasture Anomaly"
-                  />
-                  <FormControlLabel
-                    value="pre-configure"
-                    control={
-                      <Radio className={classes.radioOptions} size="small" />
-                    }
-                    label="Vegetation Index (NDVI)"
-                  />
-                  <FormControlLabel
-                    value="generate"
-                    control={
-                      <Radio className={classes.radioOptions} size="small" />
-                    }
-                    label="Agricultural Drought (VHI)"
-                  />
-                </RadioGroup>
-              </FormControl>
-            </div>
-          </div>
-          <div>
-            <Typography>Step 1 - Choose a hazard Layer</Typography>
+            <Typography>Step 1 - Choose a hazard Layer:</Typography>
+
             <FormControl component="div">
-              <FormLabel component="legend">Drought Indication</FormLabel>
-              <RadioGroup>
-                <FormControlLabel
-                  value="new"
-                  control={
-                    <Radio className={classes.radioOptions} size="small" />
-                  }
-                  label="Pasture Anomaly"
-                />
-                <FormControlLabel
-                  value="pre-configure"
-                  control={
-                    <Radio className={classes.radioOptions} size="small" />
-                  }
-                  label="Vegetation Index (NDVI)"
-                />
-                <FormControlLabel
-                  value="generate"
-                  control={
-                    <Radio className={classes.radioOptions} size="small" />
-                  }
-                  label="Agricultural Drought (VHI)"
-                />
+              <RadioGroup
+                name="hazardLayer"
+                value={hazardLayerId}
+                onChange={onHazardLayerOptionChange}
+              >
+                {hazardLayerOptions}
               </RadioGroup>
             </FormControl>
           </div>
           <div>
-            <Typography>Step 1 - Choose a hazard Layer</Typography>
+            <Typography>Step 2 - Select a statistic:</Typography>
+
             <FormControl component="div">
-              <FormLabel component="legend">Drought Indication</FormLabel>
-              <RadioGroup>
-                <FormControlLabel
-                  value="new"
-                  control={
-                    <Radio className={classes.radioOptions} size="small" />
-                  }
-                  label="Pasture Anomaly"
-                />
-                <FormControlLabel
-                  value="pre-configure"
-                  control={
-                    <Radio className={classes.radioOptions} size="small" />
-                  }
-                  label="Vegetation Index (NDVI)"
-                />
-                <FormControlLabel
-                  value="generate"
-                  control={
-                    <Radio className={classes.radioOptions} size="small" />
-                  }
-                  label="Agricultural Drought (VHI)"
-                />
+              <RadioGroup
+                name="statistics"
+                value={statistic}
+                onChange={onStatisticOptionChange}
+              >
+                {statisticOptions}
+              </RadioGroup>
+            </FormControl>
+          </div>
+          <div>
+            <Typography>Step 5 - Choose a baseline Layer:</Typography>
+            <FormControl component="div">
+              <RadioGroup
+                name="baselineLayer"
+                value={baselineLayerId}
+                onChange={onBaselineLayerOptionChange}
+              >
+                {baselineLayerOptions}
               </RadioGroup>
             </FormControl>
           </div>
         </div>
-        <Button>
+        <Button onClick={runAnalyser}>
           <Typography variant="body2">Run Analysis</Typography>
         </Button>
         <Button>
@@ -324,11 +316,11 @@ const styles = (theme: Theme) =>
     },
     newAnalyserContainer: {
       padding: '5px',
+      marginTop: '10px',
     },
     radioOptions: {
       color: 'white',
-      paddingTop: '2px',
-      paddingBottom: '2px',
+      padding: '2px 10px 2px 20px',
     },
   });
 
