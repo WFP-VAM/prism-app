@@ -50,7 +50,7 @@ function Analyser({ classes }: AnalyserProps) {
     if (!boundaryLayerData)
       // not loaded yet. Should be loaded in MapView
       return null;
-    return calculateExtentFromGeoJSON(boundaryLayerData.data); // we get extents of admin boundaries to give to the api.
+    return calculateExtentFromGeoJSON(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
   console.log(adminBoundariesExtent);
 
