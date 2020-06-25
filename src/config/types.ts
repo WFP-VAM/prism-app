@@ -1,10 +1,11 @@
 import 'reflect-metadata';
+import rawLayers from './layers.json';
 
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
 
 const optionalMetadataKey = Symbol('optional_property');
 
-// Master Layer type definition. All types/classes looking to exhaust cover of all layers should extend upon this type via LayerType['type']
+// Master Layer type definition. All types/classes looking to exhaust cover of all layer types (nso, wms, etc) should extend upon this type via LayerType['type']
 export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
@@ -12,6 +13,7 @@ export type LayerType =
   | ImpactLayerProps
   | GroundstationLayerProps;
 
+export type LayerKey = keyof typeof rawLayers;
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
  * runtime for type checking.
@@ -111,7 +113,7 @@ export type RawDataConfiguration = {
 };
 
 export class CommonLayerProps {
-  id: string;
+  id: LayerKey;
 
   @optional // only optional for boundary layer
   title?: string;
@@ -191,8 +193,8 @@ export class ImpactLayerProps extends CommonLayerProps {
   @makeRequired
   legendText: string;
 
-  hazardLayer: string;
-  baselineLayer: string;
+  hazardLayer: LayerKey; // not all layers supported here, just WMS layers
+  baselineLayer: LayerKey; // not all layers supported here, just NSO layers. Maybe an advanced way to type this?
   threshold: ThresholdDefinition;
 
   // defaults to 'median'
@@ -232,9 +234,9 @@ export type DiscriminateUnion<
   V extends T[K]
 > = T extends Record<K, V> ? T : never;
 
-export interface LayersMap {
-  [key: string]: LayerType;
-}
+export type LayersMap = {
+  [key in LayerKey]: LayerType;
+};
 
 export interface LayersCategoryType {
   title: string;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Button,
   createStyles,
@@ -12,10 +12,47 @@ import {
   FormLabel,
   FormControlLabel,
 } from '@material-ui/core';
+import { extent as calculateExtentFromGeoJSON } from 'geojson-bounds';
+import { useSelector } from 'react-redux';
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../../config/utils';
+import {
+  BoundaryLayerProps,
+  NSOLayerProps,
+  WMSLayerProps,
+} from '../../../config/types';
+import { ApiData, fetchApiData } from '../../../utils/flask-api-utils';
+import { getWCSLayerUrl } from '../../../context/layers/wms';
+import { LayerData } from '../../../context/layers/layer-data';
+import { layerDataSelector } from '../../../context/mapStateSlice';
+import { Extent } from '../Layers/raster-utils';
 import { Assessment, ArrowDropDown } from '@material-ui/icons';
+
+const layers = Object.values(LayerDefinitions);
+const baselineLayers = layers.filter(
+  (layer): layer is NSOLayerProps => layer.type === 'nso',
+);
+const hazardLayers = layers.filter(
+  (layer): layer is WMSLayerProps => layer.type === 'wms',
+);
+const boundaryLayer = getBoundaryLayerSingleton();
 
 function Analyser({ classes }: AnalyserProps) {
   const [open, setOpen] = React.useState(false);
+
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+
+  const adminBoundariesExtent = useMemo(() => {
+    if (!boundaryLayerData)
+      // not loaded yet. Should be loaded in MapView
+      return null;
+    return calculateExtentFromGeoJSON(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
+  }, [boundaryLayerData]);
+  console.log(adminBoundariesExtent);
 
   return (
     <div className={classes.analyser}>
@@ -205,6 +242,28 @@ function Analyser({ classes }: AnalyserProps) {
       </div>
     </div>
   );
+}
+
+const apiUrl = 'https://prism-api.ovio.org/stats'; // TODO needs to be stored somewhere
+async function submitAnaysisRequest(
+  baselineLayer: NSOLayerProps,
+  hazardLayer: WMSLayerProps,
+  extent: Extent,
+  date: number,
+  statistic: 'mean' | 'median', // we cant use AggregateOptions here but we should aim to in the future.
+): Promise<Array<object>> {
+  const apiRequest: ApiData = {
+    geotiff_url: getWCSLayerUrl({
+      layer: hazardLayer,
+      date,
+      extent,
+    }),
+    zones_url: getBoundaryLayerSingleton().path,
+    group_by: baselineLayer.adminCode, // TODO needs to be a level in admin_boundaries, admin_level
+  };
+  const data = await fetchApiData(apiUrl, apiRequest);
+
+  return [];
 }
 
 const styles = (theme: Theme) =>

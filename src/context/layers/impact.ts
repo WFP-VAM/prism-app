@@ -27,33 +27,12 @@ import {
 import { NSOLayerData } from './nso';
 import { getWCSLayerUrl, WMSLayerData } from './wms';
 import { BoundaryLayerData } from './boundary';
+import { fetchApiData } from '../../utils/flask-api-utils';
 
 export type ImpactLayerData = {
   boundaries: FeatureCollection;
   impactFeatures: FeatureCollection;
 };
-
-/* eslint-disable camelcase */
-type ApiData = {
-  geotiff_url: string;
-  zones_url: string;
-  group_by?: string;
-  geojson_out?: string;
-};
-
-const fetchApiData = async (url: string, apiData: ApiData) =>
-  (
-    await fetch(url, {
-      method: 'POST',
-      cache: 'no-cache',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      // body data type must match "Content-Type" header
-      body: JSON.stringify(apiData),
-    })
-  ).json();
 
 type BaselineLayerData = NSOLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -184,7 +163,7 @@ async function loadFeaturesFromApi(
     geotiff_url: wcsUrl,
     zones_url: statsApi.zonesUrl,
     group_by: statsApi.groupBy,
-    geojson_out: 'false',
+    geojson_out: false,
   };
 
   const aggregateData = await fetchApiData(apiUrl, apiData);

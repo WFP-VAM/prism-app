@@ -3,6 +3,7 @@ import { chain, map, startCase } from 'lodash';
 import appJSON from '../../config/prism.json';
 import { LayerDefinitions, TableDefinitions } from '../../config/utils';
 import {
+  LayerKey,
   LayersCategoryType,
   LayerType,
   MenuItemType,
@@ -29,13 +30,14 @@ type LayersCategoriesType = LayersCategoryType[];
 
 type MenuItemsType = MenuItemType[];
 
+// TODO better typing
 function formatLayersCategories(layersList: {
   [key: string]: string[];
 }): LayersCategoriesType {
   return map(layersList, (layerKeys, layersListKey) => ({
     title: startCase(layersListKey),
     layers: layerKeys
-      .map(key => LayerDefinitions[key])
+      .map(key => LayerDefinitions[key as LayerKey])
       .filter((val): val is LayerType => Boolean(val)),
 
     tables: layerKeys
@@ -44,8 +46,7 @@ function formatLayersCategories(layersList: {
   }));
 }
 
-export const menuList: MenuItemsType = chain(appJSON)
-  .get('categories')
+export const menuList: MenuItemsType = chain(appJSON.categories)
   .map((layersCategories, categoryKey) => ({
     title: startCase(categoryKey),
     icon: icons[categoryKey],
