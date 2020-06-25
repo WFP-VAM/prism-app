@@ -1,5 +1,5 @@
 import React from 'react';
-import * as colormap from 'colormap';
+import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import { ChartConfig } from '../../../config/types';
