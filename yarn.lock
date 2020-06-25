@@ -5691,11 +5691,6 @@ gensync@^1.0.0-beta.1:
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.1.tgz#58f4361ff987e5ff6e1e7a210827aa371eaac269"
   integrity sha512-r8EC6NO1sngH/zdD9fiRDLdcgnbayXah+mLgManTaIZJqEC1MZstmnox8KpnI2/fxQwrp5OpCOYWLp4rBl4Jcg==
 
-geojson-bounds@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/geojson-bounds/-/geojson-bounds-1.0.2.tgz#c4f6e64223b8c919436707fe1acfabe93145b986"
-  integrity sha512-VTVisOF00DPgIl5xodFx5xyt2XPMXsz2CIAAxFMAtXbrOJjz2gwgzkGQtLEQuuSztn4plIy3Cgravc3QTu9S/A==
-
 geojson-vt@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/geojson-vt/-/geojson-vt-3.2.1.tgz#f8adb614d2c1d3f6ee7c4265cad4bbf3ad60c8b7"
