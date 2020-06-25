@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Button,
   createStyles,
@@ -29,6 +29,7 @@ import { getWCSLayerUrl } from '../../../context/layers/wms';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice';
 import { Extent } from '../Layers/raster-utils';
+import { availableDatesSelector } from '../../../context/serverStateSlice';
 
 const layers = Object.values(LayerDefinitions);
 const baselineLayers = layers.filter(
@@ -39,12 +40,47 @@ const hazardLayers = layers.filter(
 );
 const boundaryLayer = getBoundaryLayerSingleton();
 
+const apiUrl = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
+const adminJson =
+  'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json';
+async function submitAnaysisRequest(
+  baselineLayer: NSOLayerProps,
+  hazardLayer: WMSLayerProps,
+  extent: Extent,
+  date: number,
+  statistic: 'mean' | 'median', // we cant use AggregateOptions here but we should aim to in the future.
+): Promise<Array<object>> {
+  const apiRequest: ApiData = {
+    geotiff_url: getWCSLayerUrl({
+      layer: hazardLayer,
+      date,
+      extent,
+    }),
+    zones_url:
+      process.env.NODE_ENV === 'production'
+        ? window.location.origin +
+          getBoundaryLayerSingleton().path.replace('.', '')
+        : adminJson,
+    // TODO needs to be a level in admin_boundaries, admin_level for group_by
+  };
+  const data = await fetchApiData(apiUrl, apiRequest);
+
+  return data;
+}
+
 function Analyser({ classes }: AnalyserProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedBaselineLayer, setSelectedBaselineLayer] = useState(
+    baselineLayers[0],
+  );
+  const [selectedHazardLayer, setSelectedHazardLayer] = useState(
+    hazardLayers[0],
+  );
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
+  const availableDates = useSelector(availableDatesSelector);
 
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData)
@@ -52,7 +88,6 @@ function Analyser({ classes }: AnalyserProps) {
       return null;
     return calculateExtentFromGeoJSON(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
-  console.log(adminBoundariesExtent);
 
   return (
     <div className={classes.analyser}>
@@ -71,6 +106,20 @@ function Analyser({ classes }: AnalyserProps) {
         variant="contained"
         color="primary"
         className={classes.analyserButton}
+        onClick={() => {
+          if (!adminBoundariesExtent) return;
+          submitAnaysisRequest(
+            selectedBaselineLayer,
+            selectedHazardLayer,
+            adminBoundariesExtent,
+            availableDates[selectedHazardLayer.serverLayerName][0],
+            'mean',
+          )
+            .then(data => {
+              console.log(data);
+            })
+            .catch(console.error);
+        }}
       >
         <Typography variant="body2">Show Result</Typography>
       </Button>
@@ -242,28 +291,6 @@ function Analyser({ classes }: AnalyserProps) {
       </div>
     </div>
   );
-}
-
-const apiUrl = 'https://prism-api.ovio.org/stats'; // TODO needs to be stored somewhere
-async function submitAnaysisRequest(
-  baselineLayer: NSOLayerProps,
-  hazardLayer: WMSLayerProps,
-  extent: Extent,
-  date: number,
-  statistic: 'mean' | 'median', // we cant use AggregateOptions here but we should aim to in the future.
-): Promise<Array<object>> {
-  const apiRequest: ApiData = {
-    geotiff_url: getWCSLayerUrl({
-      layer: hazardLayer,
-      date,
-      extent,
-    }),
-    zones_url: getBoundaryLayerSingleton().path,
-    group_by: baselineLayer.adminCode, // TODO needs to be a level in admin_boundaries, admin_level
-  };
-  const data = await fetchApiData(apiUrl, apiRequest);
-
-  return [];
 }
 
 const styles = (theme: Theme) =>
