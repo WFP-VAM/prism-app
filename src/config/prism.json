@@ -1,15 +1,15 @@
 {
-  "country": "Mongolia",
+  "country": "Indonesia",
   "serversUrls": {
     "wcs": ["https://mongolia.sibelius-datacube.org:5000"],
     "wms": [
-      "https://mongolia.sibelius-datacube.org:5000/wms"
+      "https://mongolia.sibelius-datacube.org:5000/wms", "http://3.134.83.146:8080/geoserver/prism/wms"
     ]
   },
   "map": {
-    "latitude": 46.810021,
-    "longitude": 103.111657,
-    "zoom": 4.5
+    "latitude": -4.0682689,
+    "longitude": 118.7372352,
+    "zoom": 4.7
   },
   "categories": {
     "hazards": {
