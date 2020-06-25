@@ -1,63 +1,65 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSnackbar } from 'notistack';
 import {
   createStyles,
-  IconButton,
+  Snackbar,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Alert } from '@material-ui/lab';
 import {
   notificationsSelector,
-  removeNotification,
   setAsDisplayed,
+  Notification,
+  removeNotification,
 } from '../../context/notificationStateSlice';
 
-// built with the help of https://codesandbox.io/s/github/iamhosseindhv/notistack/tree/master/examples/redux-example?file=/Notifier.js
 function Notifier({ classes }: NotifierProps) {
   const dispatch = useDispatch();
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const notifications = useSelector(notificationsSelector);
   const autoHideDuration = 50000;
+  const [openNotification, setOpenNotification] = useState<Notification | null>(
+    null,
+  );
 
   useEffect(() => {
     notifications.forEach(notification => {
-      const { key, displayed, message, type } = notification;
+      const { key, displayed } = notification;
 
-      if (displayed) return; // already displayed, nothing to do here.
-      enqueueSnackbar(message, {
-        key,
-        autoHideDuration,
-        variant: type,
-        className: classes.notification,
-        action: () => (
-          <IconButton onClick={() => closeSnackbar(key)}>
-            <CloseIcon style={{ color: 'white' }} />
-          </IconButton>
-        ),
-        anchorOrigin: { horizontal: 'center', vertical: 'top' },
-        onExited: () => {
-          dispatch(removeNotification(key as number));
-        },
-      });
+      if (displayed || openNotification) return; // already displayed or something already displayed, nothing to do here.
+      setOpenNotification(notification);
       dispatch(setAsDisplayed(key));
     });
-  }, [
-    notifications,
-    enqueueSnackbar,
-    dispatch,
-    closeSnackbar,
-    classes.notification,
-  ]);
+  }, [notifications, dispatch, classes.notification, openNotification]);
+  const handleClose = () => {
+    if (!openNotification) return;
+    dispatch(removeNotification(openNotification.key));
+    setOpenNotification(null);
+  };
 
-  return null;
+  return (
+    <Snackbar
+      className={classes.notification}
+      autoHideDuration={autoHideDuration}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      open={!!openNotification}
+      onClose={handleClose}
+    >
+      <Alert
+        variant="filled"
+        severity={openNotification?.type}
+        onClose={handleClose}
+      >
+        {openNotification?.message}
+      </Alert>
+    </Snackbar>
+  );
 }
 
 const styles = () =>
   createStyles({
     notification: {
-      top: '45px',
+      top: '55px',
       '@media (max-width:960px)': {
         top: '25px',
       },

@@ -4,7 +4,6 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 // Basic CSS Layout for the whole page
 import './app.css';
-import { SnackbarProvider } from 'notistack';
 import NavBar from '../NavBar';
 import DataDrawer from '../DataDrawer';
 import MapView from '../MapView';
@@ -25,10 +24,8 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
 function App() {
   return (
     <ThemeProvider theme={muiTheme}>
-      <SnackbarProvider preventDuplicate>
-        {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
-        <Notifier />
-      </SnackbarProvider>
+      {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
+      <Notifier />
       <Router>
         <NavBar />
         <div id="app">

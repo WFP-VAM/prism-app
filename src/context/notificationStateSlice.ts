@@ -4,17 +4,17 @@ import {
   Middleware,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { OptionsObject } from 'notistack';
+import { Color } from '@material-ui/lab';
 import { AppDispatch, RootState } from './store';
 
 type NotificationConstructor = {
   message: string;
-  type: OptionsObject['variant'];
+  type: Color;
 };
 
-class Notification {
+export class Notification {
   readonly message: string;
-  readonly type: OptionsObject['variant'];
+  readonly type: Color;
   readonly key: number;
 
   displayed: boolean = false;
@@ -86,21 +86,23 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
 ) => (action: AnyAction) => {
   const dispatchResult = dispatch(action);
 
-  // eslint-disable-next-line default-case
-  switch (action.type) {
-    case 'mapState/loadLayerData/rejected':
-    case 'serverState/loadAvailableDates/rejected':
-    case 'tableState/loadTable/rejected':
-      dispatch(
-        addNotification({
-          type: 'error',
-          message:
-            typeof action.error === 'string'
-              ? action.error
-              : action.error.message,
-        }),
-      );
+  const errorActions = [
+    'tableState/loadTable/rejected',
+    'serverState/loadAvailableDates/rejected',
+    'mapState/loadLayerData/rejected',
+  ];
+  if (errorActions.includes(action.type)) {
+    dispatch(
+      addNotification({
+        type: 'error',
+        message:
+          typeof action.error === 'string'
+            ? action.error
+            : action.error.message,
+      }),
+    );
   }
+
   return dispatchResult;
 };
 
