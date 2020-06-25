@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { RootState } from './store';
-import { LayerType } from '../config/types';
+import { LayerKey, LayerType } from '../config/types';
 import { LayerData, LayerDataTypes, loadLayerData } from './layers/layer-data';
 
 interface DateRange {
@@ -112,7 +112,7 @@ export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
 export const mapSelector = (state: RootState): MapBoxMap | undefined =>
   state.mapState.mapboxMap();
 // TODO: Improve the typing on this function
-export const layerDataSelector = (id: string, date?: number) => (
+export const layerDataSelector = (id: LayerKey, date?: number) => (
   state: RootState,
 ): LayerDataTypes | undefined =>
   state.mapState.layersData.find(
