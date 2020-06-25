@@ -2,19 +2,20 @@ import React, { useMemo } from 'react';
 import {
   Button,
   createStyles,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
   Theme,
   Typography,
   withStyles,
   WithStyles,
-  RadioGroup,
-  Radio,
-  FormControl,
-  FormLabel,
-  FormControlLabel,
 } from '@material-ui/core';
 import { Assessment, ArrowDropDown } from '@material-ui/icons';
 import { extent as calculateExtentFromGeoJSON } from 'geojson-bounds';
 import { useSelector } from 'react-redux';
+import { ArrowDropDown, Assessment } from '@material-ui/icons';
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
