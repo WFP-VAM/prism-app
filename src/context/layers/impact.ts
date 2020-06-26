@@ -2,6 +2,7 @@ import { has } from 'lodash';
 import { FeatureCollection } from 'geojson';
 import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
 import {
+  AggregationOperations,
   BoundaryLayerProps,
   ImpactLayerProps,
   NSOLayerProps,
@@ -15,8 +16,8 @@ import {
 } from '../../config/utils';
 import { NSOLayerData } from './nso';
 import {
-  loadFeaturesFromApi,
   loadFeaturesClientSide,
+  loadFeaturesFromApi,
 } from '../../utils/analysis-utils';
 
 export type ImpactLayerData = {
@@ -51,7 +52,7 @@ export async function fetchImpactLayerData(
   const { getState, dispatch } = api;
   const { layer, extent, date } = params;
 
-  const operation = layer.operation || 'median';
+  const operation = layer.operation || AggregationOperations.mean;
 
   const hazardLayerDef = LayerDefinitions[layer.hazardLayer] as WMSLayerProps;
 

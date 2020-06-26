@@ -21,6 +21,7 @@ import {
   LayerDefinitions,
 } from '../../../config/utils';
 import {
+  AggregationOperations,
   BoundaryLayerProps,
   NSOLayerProps,
   WMSLayerProps,
@@ -32,8 +33,6 @@ import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import { ApiData, fetchApiData } from '../../../utils/analysis-utils';
 
-type StatisticType = 'mean' | 'median';
-
 const layers = Object.values(LayerDefinitions);
 const baselineLayers = layers.filter(
   (layer): layer is NSOLayerProps => layer.type === 'nso',
@@ -41,7 +40,6 @@ const baselineLayers = layers.filter(
 const hazardLayers = layers.filter(
   (layer): layer is WMSLayerProps => layer.type === 'wms',
 );
-const statistics: StatisticType[] = ['mean', 'median'];
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -53,7 +51,7 @@ async function submitAnalysisRequest(
   hazardLayer: WMSLayerProps,
   extent: Extent,
   date: number,
-  statistic: StatisticType, // we cant use AggregateOptions here but we should aim to in the future.
+  statistic: AggregationOperations, // we cant use AggregateOptions here but we should aim to in the future.
 ): Promise<Array<object>> {
   const apiRequest: ApiData = {
     geotiff_url: getWCSLayerUrl({
@@ -84,7 +82,7 @@ function Analyser({ classes }: AnalyserProps) {
   const [hazardLayerId, setHazardLayerId] = useState(
     hazardLayers[0].id as string,
   );
-  const [statistic, setStatistic] = useState(statistics[0]);
+  const [statistic, setStatistic] = useState(AggregationOperations.mean);
   const [baselineLayerId, setBaselineLayerId] = useState(
     baselineLayers[0].id as string,
   );
@@ -122,7 +120,7 @@ function Analyser({ classes }: AnalyserProps) {
       />
     );
   });
-  const statisticOptions = map(statistics, stat => {
+  const statisticOptions = map(Object.keys(AggregationOperations), stat => {
     return (
       <FormControlLabel
         key={stat}
