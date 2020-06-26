@@ -49,7 +49,7 @@ const adminJson =
 async function submitAnalysisRequest(
   baselineLayer: NSOLayerProps,
   hazardLayer: WMSLayerProps,
-  extent: Extent | undefined,
+  extent: Extent,
   date: number,
   statistic: string, // we cant use AggregateOptions here but we should aim to in the future.
 ): Promise<Array<object>> {
@@ -74,8 +74,13 @@ async function submitAnalysisRequest(
 }
 
 function Analyser({ classes }: AnalyserProps) {
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+  const availableDates = useSelector(availableDatesSelector);
+
   const [open, setOpen] = useState(true);
-  const [analyserOption, setAnalyserOption] = useState('new');
+  // const [analyserOption, setAnalyserOption] = useState('new');
   const [hazardLayerId, setHazardLayerId] = useState(
     hazardLayers[0].id as string,
   );
@@ -84,41 +89,16 @@ function Analyser({ classes }: AnalyserProps) {
     baselineLayers[0].id as string,
   );
 
-  const onAnalyserOptionChange = (
+  const onOptionChange = (setterFunc: (val: string) => void) => (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setAnalyserOption((event.target as HTMLInputElement).value);
+    setterFunc((event.target as HTMLInputElement).value);
   };
-
-  const onHazardLayerOptionChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setHazardLayerId((event.target as HTMLInputElement).value);
-  };
-  const onStatisticOptionChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setStatistic((event.target as HTMLInputElement).value);
-  };
-  const onBaselineLayerOptionChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setBaselineLayerId((event.target as HTMLInputElement).value);
-    console.log(
-      'Analyser -> (event.target as HTMLInputElement).value',
-      (event.target as HTMLInputElement).value,
-    );
-  };
-
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const availableDates = useSelector(availableDatesSelector);
 
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData)
       // not loaded yet. Should be loaded in MapView
-      return undefined;
+      return null;
     return calculateExtentFromGeoJSON(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
@@ -154,6 +134,7 @@ function Analyser({ classes }: AnalyserProps) {
   });
 
   const runAnalyser = () => {
+    if (!adminBoundariesExtent) return;
     const selectedHazardLayer = find(hazardLayers, {
       id: hazardLayerId,
     }) as WMSLayerProps;
@@ -241,7 +222,7 @@ function Analyser({ classes }: AnalyserProps) {
               <RadioGroup
                 name="hazardLayer"
                 value={hazardLayerId}
-                onChange={onHazardLayerOptionChange}
+                onChange={onOptionChange(setHazardLayerId)}
               >
                 {hazardLayerOptions}
               </RadioGroup>
@@ -256,7 +237,7 @@ function Analyser({ classes }: AnalyserProps) {
               <RadioGroup
                 name="statistics"
                 value={statistic}
-                onChange={onStatisticOptionChange}
+                onChange={onOptionChange(setStatistic)}
                 row
               >
                 {statisticOptions}
@@ -271,7 +252,7 @@ function Analyser({ classes }: AnalyserProps) {
               <RadioGroup
                 name="baselineLayer"
                 value={baselineLayerId}
-                onChange={onBaselineLayerOptionChange}
+                onChange={onOptionChange(setBaselineLayerId)}
               >
                 {baselineLayerOptions}
               </RadioGroup>
