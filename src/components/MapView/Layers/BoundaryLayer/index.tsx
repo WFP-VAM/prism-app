@@ -50,9 +50,19 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
       fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;
-        const locationName = get(evt.features[0], 'properties.ADM1_EN', '')
+        const locationName = get(
+          evt.features[0],
+          ['properties', layer.adminLevelNames['1']],
+          '',
+        )
           .concat(', ')
-          .concat(get(evt.features[0], 'properties.ADM2_EN', ''));
+          .concat(
+            get(
+              evt.features[0],
+              ['properties', layer.adminLevelNames['2']],
+              '',
+            ),
+          );
         dispatch(showPopup({ coordinates, locationName }));
       }}
     />
