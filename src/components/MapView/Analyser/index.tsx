@@ -15,6 +15,7 @@ import {
 import { Assessment, ArrowDropDown } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
 import { map, find } from 'lodash';
+import bbox from '@turf/bbox';
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
@@ -25,7 +26,6 @@ import {
   WMSLayerProps,
 } from '../../../config/types';
 import { ApiData, fetchApiData } from '../../../utils/flask-api-utils';
-import { extent as calculateExtentFromGeoJSON } from '../../../utils/geojson-utils';
 import { getWCSLayerUrl } from '../../../context/layers/wms';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice';
@@ -98,8 +98,8 @@ function Analyser({ classes }: AnalyserProps) {
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData)
       // not loaded yet. Should be loaded in MapView
-      return null;
-    return calculateExtentFromGeoJSON(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
+      return undefined;
+    return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
   const hazardLayerOptions = map(hazardLayers, hazardLayer => {
