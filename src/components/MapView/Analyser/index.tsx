@@ -206,8 +206,8 @@ function Analyser({ classes }: AnalyserProps) {
         className={classes.analyserMenu}
         style={{ width: open ? '40vw' : 0, padding: open ? 10 : 0 }}
       >
-        <FormControl component="fieldset">
-          <RadioGroup value={analyserOption} onChange={onAnalyserOptionChange}>
+        {/* <FormControl component="fieldset">
+          <RadioGroup value={analyserOption} onChange={onAnalyserOptionChange} row>
             <FormControlLabel
               value="new"
               control={
@@ -230,10 +230,12 @@ function Analyser({ classes }: AnalyserProps) {
               label="Generate spatial statistics"
             />
           </RadioGroup>
-        </FormControl>
+        </FormControl> */}
         <div className={classes.newAnalyserContainer}>
           <div>
-            <Typography>Step 1 - Choose a hazard Layer:</Typography>
+            <Typography variant="body2">
+              Step 1 - Choose a hazard Layer:
+            </Typography>
 
             <FormControl component="div">
               <RadioGroup
@@ -246,20 +248,25 @@ function Analyser({ classes }: AnalyserProps) {
             </FormControl>
           </div>
           <div>
-            <Typography>Step 2 - Select a statistic:</Typography>
+            <Typography variant="body2">
+              Step 2 - Select a statistic:
+            </Typography>
 
             <FormControl component="div">
               <RadioGroup
                 name="statistics"
                 value={statistic}
                 onChange={onStatisticOptionChange}
+                row
               >
                 {statisticOptions}
               </RadioGroup>
             </FormControl>
           </div>
           <div>
-            <Typography>Step 3 - Choose a baseline Layer:</Typography>
+            <Typography variant="body2">
+              Step 3 - Choose a baseline Layer:
+            </Typography>
             <FormControl component="div">
               <RadioGroup
                 name="baselineLayer"
