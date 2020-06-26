@@ -32,6 +32,8 @@ import { layerDataSelector } from '../../../context/mapStateSlice';
 import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 
+type StatisticType = 'mean' | 'median';
+
 const layers = Object.values(LayerDefinitions);
 const baselineLayers = layers.filter(
   (layer): layer is NSOLayerProps => layer.type === 'nso',
@@ -39,7 +41,7 @@ const baselineLayers = layers.filter(
 const hazardLayers = layers.filter(
   (layer): layer is WMSLayerProps => layer.type === 'wms',
 );
-const statistics = ['mean', 'median'];
+const statistics: StatisticType[] = ['mean', 'median'];
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -51,10 +53,8 @@ async function submitAnalysisRequest(
   hazardLayer: WMSLayerProps,
   extent: Extent,
   date: number,
-  statistic: string, // we cant use AggregateOptions here but we should aim to in the future.
+  statistic: StatisticType, // we cant use AggregateOptions here but we should aim to in the future.
 ): Promise<Array<object>> {
-  console.log('baselineLayer', baselineLayer);
-  console.log('hazardLayer', hazardLayer);
   const apiRequest: ApiData = {
     geotiff_url: getWCSLayerUrl({
       layer: hazardLayer,
@@ -89,7 +89,7 @@ function Analyser({ classes }: AnalyserProps) {
     baselineLayers[0].id as string,
   );
 
-  const onOptionChange = (setterFunc: (val: string) => void) => (
+  const onOptionChange = (setterFunc: (val: any) => void) => (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setterFunc((event.target as HTMLInputElement).value);
