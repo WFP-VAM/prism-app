@@ -2,12 +2,19 @@
   "admin_boundaries": {
     "type": "boundary",
     "path": "./data/admin_boundaries.json",
-    "opacity": 0.8
+    "opacity": 0.8,
+    "admin_code": "NSO_CODE",
+    "admin_level_names": {
+      "1": "ADM1_EN",
+      "2": "ADM2_EN"
+    }
   },
   "population_below_poverty": {
     "title": "Poverty headcount (aimag)",
     "type": "nso",
     "path": "./data/nso/NSO_Poverty_Headcount_Admin1.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE1",
     "opacity": 0.5,
     "legend": [
@@ -38,6 +45,8 @@
     "title": "Number of disabled people (aimag)",
     "type": "nso",
     "path": "./data/nso/NSO_Disabled_Admin1_Total.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -68,6 +77,8 @@
     "title": "Hay harvest (soum)",
     "type": "nso",
     "path": "./data/nso/NSO_Hay_Harvest_Admin2.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -98,6 +109,8 @@
     "title": "Single-headed elderly households (aimag)",
     "type": "nso",
     "path": "./data/nso/NSO_Single_Elderly_Admin1_Total.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -128,6 +141,8 @@
     "title": "Herder households (soum)",
     "type": "nso",
     "path": "./data/nso/NSO_Herder_HHs_Admin2.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -158,6 +173,8 @@
     "title": "Number of livestock in thousands (soum)",
     "type": "nso",
     "path": "./data/nso/NSO_Livestock_Count_ths_Admin2.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -188,6 +205,8 @@
     "title": "Number of children under 5 (soum)",
     "type": "nso",
     "path": "./data/nso/NSO_Child_U5_Admin2.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -218,6 +237,8 @@
     "title": "Small herder households (aimag)",
     "type": "nso",
     "path": "./data/nso/NSO_Herd_Size_Admin1_LT_200.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE1",
     "opacity": 0.5,
     "legend": [
@@ -248,6 +269,8 @@
     "title": "Total population (soum)",
     "type": "nso",
     "path": "./data/nso/NSO_Population_Admin2_Total.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -516,6 +539,8 @@
     "title": "Hay reserves in metric tonnes (soum)",
     "type": "nso",
     "path": "./data/nso/mVAM_Hay_Reserves.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -546,6 +571,8 @@
     "title": "Fodder reserves in metric tonnes (soum)",
     "type": "nso",
     "path": "./data/nso/mVAM_Fodder_Reserves.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -576,6 +603,8 @@
     "title": "Cash reserves in million MNT (soum)",
     "type": "nso",
     "path": "./data/nso/mVAM_Cash_Reserves.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -606,6 +635,8 @@
     "title": "Hay prices (soum)",
     "type": "nso",
     "path": "./data/nso/mVAM_Hay_Price.json",
+    "data_field": "DTVAL_CO",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
