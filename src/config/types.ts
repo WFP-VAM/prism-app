@@ -133,7 +133,7 @@ export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
   path: string; // path to admin_boundries.json file - web or local.
   adminCode: string;
-  adminLevelNames: { [key: string]: string };
+  adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
 }
 
 export class WMSLayerProps extends CommonLayerProps {

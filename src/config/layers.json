@@ -4,10 +4,10 @@
     "path": "./data/admin_boundaries.json",
     "opacity": 0.8,
     "admin_code": "NSO_CODE",
-    "admin_level_names": {
-      "1": "ADM1_EN",
-      "2": "ADM2_EN"
-    }
+    "admin_level_names": [
+      "ADM1_EN",
+      "ADM2_EN"
+    ]
   },
   "population_below_poverty": {
     "title": "Poverty headcount (aimag)",
