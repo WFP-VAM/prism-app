@@ -25,12 +25,12 @@ import {
   NSOLayerProps,
   WMSLayerProps,
 } from '../../../config/types';
-import { ApiData, fetchApiData } from '../../../utils/flask-api-utils';
 import { getWCSLayerUrl } from '../../../context/layers/wms';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice';
 import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
+import { ApiData, fetchApiData } from '../../../utils/analysis-utils';
 
 type StatisticType = 'mean' | 'median';
 

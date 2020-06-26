@@ -25,7 +25,6 @@ import {
 import { BoundaryLayerData } from '../context/layers/boundary';
 import { NSOLayerData } from '../context/layers/nso';
 import { getWCSLayerUrl, WMSLayerData } from '../context/layers/wms';
-import { fetchApiData } from './flask-api-utils';
 
 export type ImpactLayerData = {
   boundaries: FeatureCollection;
@@ -120,6 +119,29 @@ function mergeFeaturesByProperty(
     };
     return { ...feature1, properties };
   });
+}
+
+/* eslint-disable camelcase */
+export type ApiData = {
+  geotiff_url: ReturnType<typeof getWCSLayerUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
+  zones_url: string;
+  group_by?: string;
+  geojson_out?: boolean;
+};
+
+export async function fetchApiData(url: string, apiData: ApiData) {
+  return (
+    await fetch(url, {
+      method: 'POST',
+      cache: 'no-cache',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      // body data type must match "Content-Type" header
+      body: JSON.stringify(apiData),
+    })
+  ).json();
 }
 
 export async function loadFeaturesFromApi(
