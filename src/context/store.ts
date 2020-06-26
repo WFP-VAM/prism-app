@@ -8,12 +8,14 @@ import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
 import tableStateReduce from './tableStateSlice';
 import tooltipStateReduce from './tooltipStateSlice';
+import analysisResultStateSlice from './analysisResultStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
   serverState: serverStateReduce,
   tableState: tableStateReduce,
   tooltipState: tooltipStateReduce,
+  analysisResultState: analysisResultStateSlice,
 });
 
 export const store = configureStore({
