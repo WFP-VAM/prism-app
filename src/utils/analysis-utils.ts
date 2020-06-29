@@ -7,20 +7,21 @@ import {
   loadLayerData,
 } from '../context/layers/layer-data';
 import {
+  AggregationOperations,
+  AsyncReturnType,
   ImpactLayerProps,
   LayerType,
+  StatsApi,
   ThresholdDefinition,
   WMSLayerProps,
-  AggregationOperations,
-  StatsApi,
 } from '../config/types';
 import { ThunkApi } from '../context/store';
 import { layerDataSelector } from '../context/mapStateSlice';
 import {
+  Extent,
   featureIntersectsImage,
   GeoJsonBoundary,
   pixelsInFeature,
-  Extent,
 } from '../components/MapView/Layers/raster-utils';
 import { BoundaryLayerData } from '../context/layers/boundary';
 import { NSOLayerData } from '../context/layers/nso';
@@ -31,7 +32,7 @@ export type ImpactLayerData = {
   impactFeatures: FeatureCollection;
 };
 
-type BaselineLayerData = NSOLayerData;
+export type BaselineLayerData = NSOLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
 type RasterLayer = LayerData<WMSLayerProps>;
 
@@ -120,6 +121,20 @@ function mergeFeaturesByProperty(
     return { ...feature1, properties };
   });
 }
+export const checkBaselineDataLayer = (
+  layerId: string,
+  data: any,
+): BaselineLayerData => {
+  const isBaselineData = (maybeData: any): maybeData is BaselineLayerData =>
+    hasKeys(maybeData, ['features', 'layerData']);
+
+  if (isBaselineData(data)) {
+    return data;
+  }
+  throw new Error(
+    `Data for layer '${layerId}' does not appear to be valid baseline data.`,
+  );
+};
 
 /* eslint-disable camelcase */
 export type ApiData = {
@@ -129,7 +144,10 @@ export type ApiData = {
   geojson_out?: boolean;
 };
 
-export async function fetchApiData(url: string, apiData: ApiData) {
+export async function fetchApiData(
+  url: string,
+  apiData: ApiData,
+): Promise<Array<object>> {
   return (
     await fetch(url, {
       method: 'POST',
@@ -144,6 +162,34 @@ export async function fetchApiData(url: string, apiData: ApiData) {
   ).json();
 }
 
+export function generateFeaturesFromApiData(
+  aggregateData: AsyncReturnType<typeof fetchApiData>,
+  hazardLayerDef: WMSLayerProps,
+  baselineData: NSOLayerData,
+  groupBy: StatsApi['groupBy'],
+  operation: AggregationOperations,
+
+  threshold: ThresholdDefinition,
+): GeoJsonBoundary[] {
+  const { wcsConfig } = hazardLayerDef;
+  const { scale, offset } = wcsConfig || {};
+  const mergedFeatures = mergeFeaturesByProperty(
+    baselineData.features.features,
+    aggregateData,
+    groupBy,
+    operation,
+  );
+
+  return mergedFeatures.filter(feature => {
+    const scaled = scaleValueIfDefined(
+      get(feature, ['properties', operation]),
+      scale,
+      offset,
+    );
+    return thresholdOrNaN(scaled, threshold);
+  }) as GeoJsonBoundary[];
+}
+
 export async function loadFeaturesFromApi(
   layer: ImpactLayerProps,
   baselineData: BaselineLayerData,
@@ -152,9 +198,6 @@ export async function loadFeaturesFromApi(
   extent?: Extent,
   date?: number,
 ): Promise<GeoJsonBoundary[]> {
-  const { wcsConfig } = hazardLayerDef;
-  const { scale, offset } = wcsConfig || {};
-
   const wcsUrl = getWCSLayerUrl({
     layer: hazardLayerDef,
     extent,
@@ -172,22 +215,15 @@ export async function loadFeaturesFromApi(
   };
 
   const aggregateData = await fetchApiData(apiUrl, apiData);
-
-  const mergedFeatures = mergeFeaturesByProperty(
-    baselineData.features.features,
+  return generateFeaturesFromApiData(
     aggregateData,
+    hazardLayerDef,
+    baselineData,
     statsApi.groupBy,
     operation,
-  );
 
-  return mergedFeatures.filter(feature => {
-    const scaled = scaleValueIfDefined(
-      get(feature, ['properties', operation]),
-      scale,
-      offset,
-    );
-    return thresholdOrNaN(scaled, layer.threshold);
-  }) as GeoJsonBoundary[];
+    layer.threshold,
+  );
 }
 
 export async function loadFeaturesClientSide(

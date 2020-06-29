@@ -1,4 +1,3 @@
-import { has } from 'lodash';
 import { FeatureCollection } from 'geojson';
 import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
 import {
@@ -14,8 +13,9 @@ import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../config/utils';
-import { NSOLayerData } from './nso';
 import {
+  BaselineLayerData,
+  checkBaselineDataLayer,
   loadFeaturesClientSide,
   loadFeaturesFromApi,
 } from '../../utils/analysis-utils';
@@ -23,26 +23,6 @@ import {
 export type ImpactLayerData = {
   boundaries: FeatureCollection;
   impactFeatures: FeatureCollection;
-};
-
-type BaselineLayerData = NSOLayerData;
-
-const hasKeys = (obj: any, keys: string[]): boolean =>
-  !keys.find(key => !has(obj, key));
-
-const checkBaselineDataLayer = (
-  layerId: string,
-  data: any,
-): BaselineLayerData => {
-  const isBaselineData = (maybeData: any): maybeData is BaselineLayerData =>
-    hasKeys(maybeData, ['features', 'layerData']);
-
-  if (isBaselineData(data)) {
-    return data;
-  }
-  throw new Error(
-    `Data for layer '${layerId}' does not appear to be valid baseline data.`,
-  );
 };
 
 export async function fetchImpactLayerData(

@@ -12,9 +12,9 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { Assessment, ArrowDropDown } from '@material-ui/icons';
-import { useSelector } from 'react-redux';
-import { map, find } from 'lodash';
+import { ArrowDropDown, Assessment } from '@material-ui/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { find, map } from 'lodash';
 import bbox from '@turf/bbox';
 import {
   getBoundaryLayerSingleton,
@@ -26,12 +26,16 @@ import {
   NSOLayerProps,
   WMSLayerProps,
 } from '../../../config/types';
-import { getWCSLayerUrl } from '../../../context/layers/wms';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice';
 import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
-import { ApiData, fetchApiData } from '../../../utils/analysis-utils';
+import {
+  AnalysisDispatchParams,
+  isAnalysisLoadingSelector,
+  latestAnalysisResultSelector,
+  requestAndStoreAnalysis,
+} from '../../../context/analysisResultStateSlice';
 
 const layers = Object.values(LayerDefinitions);
 const baselineLayers = layers.filter(
@@ -43,39 +47,14 @@ const hazardLayers = layers.filter(
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-const apiUrl = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
-const adminJson =
-  'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json';
-async function submitAnalysisRequest(
-  baselineLayer: NSOLayerProps,
-  hazardLayer: WMSLayerProps,
-  extent: Extent,
-  date: number,
-  statistic: AggregationOperations, // we cant use AggregateOptions here but we should aim to in the future.
-): Promise<Array<object>> {
-  const apiRequest: ApiData = {
-    geotiff_url: getWCSLayerUrl({
-      layer: hazardLayer,
-      date,
-      extent,
-    }),
-    zones_url:
-      process.env.NODE_ENV === 'production'
-        ? window.location.origin +
-          getBoundaryLayerSingleton().path.replace('.', '')
-        : adminJson,
-    // TODO needs to be a level in admin_boundaries, admin_level for group_by
-  };
-  const data = await fetchApiData(apiUrl, apiRequest);
-
-  return data;
-}
-
 function Analyser({ classes }: AnalyserProps) {
+  const dispatch = useDispatch();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
   const availableDates = useSelector(availableDatesSelector);
+  const analysisResult = useSelector(latestAnalysisResultSelector);
+  const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
 
   const [open, setOpen] = useState(true);
   // const [analyserOption, setAnalyserOption] = useState('new');
@@ -131,28 +110,27 @@ function Analyser({ classes }: AnalyserProps) {
     );
   });
 
-  const runAnalyser = () => {
-    if (!adminBoundariesExtent) return;
+  const runAnalyser = async () => {
+    if (!adminBoundariesExtent) return; // hasn't been calculated yet
+
     const selectedHazardLayer = find(hazardLayers, {
       id: hazardLayerId,
     }) as WMSLayerProps;
     const selectedBaselineLayer = find(baselineLayers, {
       id: baselineLayerId,
     }) as NSOLayerProps;
-
-    submitAnalysisRequest(
-      selectedBaselineLayer,
-      selectedHazardLayer,
-      adminBoundariesExtent,
-      availableDates[selectedHazardLayer.serverLayerName][0],
+    const params: AnalysisDispatchParams = {
+      hazardLayer: selectedHazardLayer,
+      baselineLayer: selectedBaselineLayer,
+      date: availableDates[selectedHazardLayer.serverLayerName][0], // TODO load from ui
       statistic,
-    )
-      .then(res => {
-        const data = res;
-        // eslint-disable-next-line no-console
-        console.log(data);
-      })
-      .catch(err => console.error('error', err));
+      extent: adminBoundariesExtent,
+      threshold: {},
+    };
+
+    const data = await dispatch(requestAndStoreAnalysis(params));
+    // eslint-disable-next-line no-console
+    console.log(data);
   };
   return (
     <div className={classes.analyser}>
