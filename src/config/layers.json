@@ -3,512 +3,478 @@
   "admin_boundaries": {
     "type": "boundary",
     "path": "./data/admin_idn.json",
-    "opacity": 0.8
+    "opacity": 0.8,
+    "admin_code": "A2TEXT",
+    "admin_level_names": [
+      "A2NAME",
+      "A1NAME"
+    ]
   },
   "population_below_poverty": {
-    "title": "Poverty headcount (District)",
+    "title": "Poverty Rate",
     "type": "nso",
     "path": "./data/idn/socio_economic.json",
+    "data_field": "HH_FE65",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      { "value": "25", "color": "#fef0d9" },
-      { "value": "30", "color": "#fdcc8a" },
-      { "value": "35", "color": "#fc8d59" },
-      { "value": "40", "color": "#e34a33" },
+      { "value": "6.37", "color": "#fef0d9" },
+      { "value": "11.20", "color": "#fdcc8a" },
+      { "value": "17.39", "color": "#fc8d59" },
+      { "value": "27.25", "color": "#e34a33" },
       { "value": "45", "color": "#b30000" }
     ],
-    "legend_text": "The poverty headcount is the share of the population whose consumption / expenditure is below the poverty line by Aimag. Year: 2018. Source: National Statistics Office"
+    "legend_text": "Proportion of people living under the district level poverty line (%) | Source: Susenas 2019, BPS"
   },
-  "disabled": {
-    "title": "Number of disabled people (aimag)",
+  "pou": {
+    "title": "Prevalence of Undernoursihment",
     "type": "nso",
-    "path": "./data/nso/NSO_Disabled_Admin1_Total.json",
+    "path": "./data/idn/socio_economic.json",
+    "data_field": "POU",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      { "value": "2000", "color": "#fef0d9" },
-      { "value": "3000", "color": "#fdcc8a" },
-      { "value": "4000", "color": "#fc8d59" },
-      { "value": "5000", "color": "#e34a33" },
-      { "value": "6000", "color": "#b30000" }
+      {
+        "value": "7.56",
+        "color": "#feebe2"
+      },
+      {
+        "value": "14.48",
+        "color": "#fbb4b9"
+      },
+      {
+        "value": "26.34",
+        "color": "#f768a1"
+      },
+      {
+        "value": "44.77",
+        "color": "#c51b8a"
+      },
+      {
+        "value": "65.78",
+        "color": "#7a0177"
+      }
     ],
     "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
   },
-  "hay_harvest": {
-    "title": "Hay harvest (soum)",
+  "CER_YIELD": {
+    "title": "Cereal Yield",
     "type": "nso",
-    "path": "./data/nso/NSO_Hay_Harvest_Admin2.json",
+    "path": "./data/idn/socio_economic.json",
+    "data_field": "CER_YIELD",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      { "value": "500", "color": "#edf8fb" },
-      { "value": "1000", "color": "#b2e2e2" },
-      { "value": "3000", "color": "#66c2a4" },
-      { "value": "5000", "color": "#2ca25f" },
-      { "value": "7000", "color": "#006d2c" }
+      {
+        "value": "2000",
+        "color": "#fef0d9"
+      },
+      {
+        "value": "3000",
+        "color": "#fdcc8a"
+      },
+      {
+        "value": "4000",
+        "color": "#fc8d59"
+      },
+      {
+        "value": "5000",
+        "color": "#e34a33"
+      },
+      {
+        "value": "6000",
+        "color": "#b30000"
+      }
     ],
-    "legend_text": "Amount of hay harvested in tonnes by Soum. Year: 2019. Source: National Statistical Office"
+    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
   },
-   "elderly": {
-    "title": "Single-headed elderly households (aimag)",
+  "HH_AGRI": {
+    "title": "Household with Income Derived from Agriculture",
     "type": "nso",
-    "path": "./data/nso/NSO_Single_Elderly_Admin1_Total.json",
+    "path": "./data/idn/socio_economic.json",
+    "data_field": "HH_AGRI",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      { "value": "1000", "color": "#fef0d9" },
-      { "value": "1500", "color": "#fdcc8a" },
-      { "value": "2000", "color": "#fc8d59" },
-      { "value": "2500", "color": "#e34a33" },
-      { "value": "3000", "color": "#b30000" }
+      {
+        "value": "25",
+        "color": "#fef0d9"
+      },
+      {
+        "value": "43",
+        "color": "#fdcc8a"
+      },
+      {
+        "value": "57",
+        "color": "#fc8d59"
+      },
+      {
+        "value": "75",
+        "color": "#e34a33"
+      },
+      {
+        "value": "100",
+        "color": "#b30000"
+      }
     ],
-    "legend_text": "Number of single-headed households with a female head over 55 years old or a male head over 60 years old by Aimag. Year: 2018. Source: National Statistics Office"
+    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
   },
-  "herders": {
-    "title": "Herder households (soum)",
+  "HH_FE65": {
+    "title": "Houshold with Food Expenditure >65%",
     "type": "nso",
-    "path": "./data/nso/NSO_Herder_HHs_Admin2.json",
+    "path": "./data/idn/socio_economic.json",
+    "data_field": "HH_FE65",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      { "value": "300", "color": "#fef0d9" },
-      { "value": "400", "color": "#fdcc8a" },
-      { "value": "500", "color": "#fc8d59" },
-      { "value": "600", "color": "#e34a33" },
-      { "value": "700", "color": "#b30000" }
+      {
+        "value": "2.39",
+        "color": "#edf8fb"
+      },
+      {
+        "value": "4.72",
+        "color": "#b3cde3"
+      },
+      {
+        "value": "7",
+        "color": "#8c96c6"
+      },
+      {
+        "value": "9.86",
+        "color": "#8856a7"
+      },
+      {
+        "value": "14.57",
+        "color": "#810f7c"
+      }
     ],
-    "legend_text": "Number of herder households - defined as herding as the main source of income by Soum. Year: 2019. Source: National Statistical Office"
+    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
   },
-  "livestock": {
-    "title": "Number of livestock in thousands (soum)",
+  "OP_UNEMPLOY": {
+    "title": "Open Unemployment",
     "type": "nso",
-    "path": "./data/nso/NSO_Livestock_Count_ths_Admin2.json",
+    "path": "./data/idn/socio_economic.json",
+    "data_field": "OP_UNEMPLOY",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      { "value": "100", "color": "#fef0d9" },
-      { "value": "150", "color": "#fdcc8a" },
-      { "value": "200", "color": "#fc8d59" },
-      { "value": "250", "color": "#e34a33" },
-      { "value": "300", "color": "#b30000" }
+      {
+        "value": "1.82",
+        "color": "#edf8fb"
+      },
+      {
+        "value": "3.64",
+        "color": "#b3cde3"
+      },
+      {
+        "value": "5.42",
+        "color": "#8c96c6"
+      },
+      {
+        "value": "7.76",
+        "color": "#8856a7"
+      },
+      {
+        "value": "12.37",
+        "color": "#810f7c"
+      }
     ],
-    "legend_text": "Number of livestock raised for agricultural purposes in thousands of heads by Soum. Year: 2019. Source: National Statistical Office"
+    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
   },
-  "child": {
-    "title": "Number of children under 5 (soum)",
+  "HH_FOODASS": {
+    "title": "Poor Houshold With Access to Food Assistance",
     "type": "nso",
-    "path": "./data/nso/NSO_Child_U5_Admin2.json",
+    "path": "./data/idn/socio_economic.json",
+    "data_field": "HH_FOODASS",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      { "value": "200", "color": "#fef0d9" },
-      { "value": "400", "color": "#fdcc8a" },
-      { "value": "600", "color": "#fc8d59" },
-      { "value": "800", "color": "#e34a33" },
-      { "value": "1000", "color": "#b30000" }
+      {
+        "value": "28.93",
+        "color": "#edf8fb"
+      },
+      {
+        "value": "44.90",
+        "color": "#b3cde3"
+      },
+      {
+        "value": "53.85",
+        "color": "#8c96c6"
+      },
+      {
+        "value": "69.92",
+        "color": "#8856a7"
+      },
+      {
+        "value": "98.75",
+        "color": "#810f7c"
+      }
     ],
-    "legend_text": "Number of children under five years of age by Soum. Year: 2019. Source: National Statistics Office"
+    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
   },
-  "herd_200": {
-    "title": "Small herder households (aimag)",
+  "HH_ELEC_2019": {
+    "title": "Poor Houshold With Access to Food Assistance",
     "type": "nso",
-    "path": "./data/nso/NSO_Herd_Size_Admin1_LT_200.json",
-    "admin_code": "CODE1",
-    "opacity": 0.5,
-    "legend": [
-      { "value": "2000", "color": "#fef0d9" },
-      { "value": "4000", "color": "#fdcc8a" },
-      { "value": "6000", "color": "#fc8d59" },
-      { "value": "8000", "color": "#e34a33" },
-      { "value": "10000", "color": "#b30000" }
-    ],
-    "legend_text": "Number of households with less than 200 heads of livestock by Aimag. Year: 2019. Source: National Statistics Office"
-  },
-  "population_total": {
-    "title": "Total population (soum)",
-    "type": "nso",
-    "path": "./data/nso/NSO_Population_Admin2_Total.json",
+    "path": "./data/idn/socio_economic.json",
+    "data_field": "HH_FOODASS",
+    "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      { "value": "2500", "color": "#fef0d9" },
-      { "value": "5000", "color": "#fdcc8a" },
-      { "value": "7500", "color": "#fc8d59" },
-      { "value": "10000", "color": "#e34a33" },
-      { "value": "12500", "color": "#b30000" }
+      {
+        "value": "1.82",
+        "color": "#edf8fb"
+      },
+      {
+        "value": "3.64",
+        "color": "#b3cde3"
+      },
+      {
+        "value": "5.42",
+        "color": "#8c96c6"
+      },
+      {
+        "value": "7.76",
+        "color": "#8856a7"
+      },
+      {
+        "value": "12.37",
+        "color": "#810f7c"
+      }
     ],
-    "legend_text": "Total number of residents by Soum. Year: 2019. Source: National Statistics Office"
+    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
   },
-  "population_total_2": {
-    "title": "Total population (soum)",
-    "type": "nso",
-    "path": "./data/nso/NSO_Population_Admin2_Total.json",
-    "admin_code": "CODE",
-    "opacity": 0.5,
-    "legend": [
-      { "value": "2500", "color": "#fef0d9" },
-      { "value": "5000", "color": "#fdcc8a" },
-      { "value": "7500", "color": "#fc8d59" },
-      { "value": "10000", "color": "#e34a33" },
-      { "value": "12500", "color": "#b30000" }
-    ],
-    "legend_text": "Total number of residents by Soum. Year: 2019. Source: National Statistics Office"
-  },
-  "pasture_anomaly": {
-    "title": "Pasture anomaly",
+  "population_density": {
+    "title": "Population Density",
     "type": "wms",
-    "server_layer_name": "ModisAnomaly",
-    "base_url": "https://mongolia.sibelius-datacube.org:5000",
-    "date_interval": "days",
-    "opacity": 0.5,
-    "legend_text": "Compares the current pasture conditions to the long term average to calculate pasture anomaly",
-    "wcsConfig": {
-      "no_data": 65535,
-      "scale": 0.01,
-      "pixelResolution": 64,
-      "offset": -200
-    },
-    "legend": [
-      { "value": "-80%", "color": "#ff0000" },
-      { "value": "-60%", "color": "#ff5900" },
-      { "value": "-40%", "color": "#ff8400" },
-      { "value": "-20%", "color": "#ffce63" },
-      { "value": "-10%", "color": "#ffdd94" },
-      { "value": "0", "color": "#ffffbf" },
-      { "value": "+10%", "color": "#dee09f" },
-      { "value": "+20%", "color": "#bbbf7c" },
-      { "value": "+40%", "color": "#9da360" },
-      { "value": "+60%", "color": "#7e8745" },
-      { "value": "+80%", "color": "#5b6e00" }
-    ]
-  },
-  "ndvi": {
-    "title": "Vegetation index (NDVI)",
-    "type": "wms",
-    "server_layer_name": "ModisIndices",
-    "additional_query_params": {
-      "styles": "ndvi"
-    },
-    "base_url": "https://mongolia.sibelius-datacube.org:5000",
-    "date_interval": "days",
-    "opacity": 0.5,
-    "legend_text": "Median averaged Normalized Difference Vegetation Index (NDVI) from composite satellite imagery",
-    "legend": [
-      { "value": "0.00", "color": "#ece0d7" },
-      { "value": "0.11", "color": "#d7c8b1" },
-      { "value": "0.22", "color": "#bfb186" },
-      { "value": "0.33", "color": "#a59e59" },
-      { "value": "0.44", "color": "#878a31" },
-      { "value": "0.55", "color": "#69761f" },
-      { "value": "0.66", "color": "#4f6021" },
-      { "value": "0.77", "color": "#374b1b" },
-      { "value": "0.88", "color": "#1c3800" },
-      { "value": "1.00", "color": "#000000" }
-    ]
-  },
-  "ModisLST": {
-    "title": "Surface temperature",
-    "type": "wms",
-    "server_layer_name": "ModisLST",
-    "base_url": "https://mongolia.sibelius-datacube.org:5000",
-    "wcsConfig": {
-      "scale": 0.02,
-      "offset": -273,
-      "pixelResolution": 64
-    },
+    "server_layer_name": "population_density",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
     "date_interval": "day",
     "opacity": 0.5,
-    "legend_text": "Median value of Land Surface Temperature in degrees Celsius over a 10-day period (MODIS)",
     "legend": [
-      { "value": "-50", "color": "#5c9fc8" },
-      { "value": "-40", "color": "#7ab1c0" },
-      { "value": "-30", "color": "#9fc3b3" },
-      { "value": "-20", "color": "#d9e79a" },
-      { "value": "-10", "color": "#f3f88e" },
-      { "value": "5", "color": "#f0d779" },
-      { "value": "15", "color": "#eeb563" },
-      { "value": "25", "color": "#e98f51" },
-      { "value": "40", "color": "#e2633e" },
-      { "value": "50", "color": "#da402e" }
+      {
+        "value": "0",
+        "color": "#ffffff"
+      },
+      {
+        "value": "1 - 5",
+        "color": "#ffffbe"
+      },
+      {
+        "value": "26 - 50",
+        "color": "#ffff00"
+      },
+      {
+        "value": "51 - 100",
+        "color": "#ffaa00"
+      },
+      {
+        "value": "101 - 500",
+        "color": "#ff6600"
+      },
+      {
+        "value": "501 - 2500",
+        "color": "#ff0000"
+      },
+      {
+        "value": "2501 - 5000",
+        "color": "#ff6600"
+      },
+      {
+        "value": "> 5000",
+        "color": "#730000"
+      }
+    ],
+    "legend_text": "Population counts at 1km resolution | Source: LandScan, 2018"
+  },
+  "dslr": {
+    "title": "Days Since Last Rain",
+    "type": "wms",
+    "server_layer_name": "days_since_last_rain",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
+    "date_interval": "day",
+    "opacity": 0.5,
+    "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
+    "legend": [
+      {
+        "value": "0.10",
+        "color": "#ef1000"
+      },
+      {
+        "value": "0.17",
+        "color": "#bf4000"
+      },
+      {
+        "value": "0.26",
+        "color": "#ba7500"
+      },
+      {
+        "value": "0.34",
+        "color": "#ead500"
+      },
+      {
+        "value": "1.00",
+        "color": "#5ea100"
+      }
     ]
   },
   "ModisVHI": {
     "title": "Agricultural drought (VHI)",
     "type": "wms",
     "server_layer_name": "vhi",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
     "date_interval": "month",
     "opacity": 0.5,
-    "legend_text": "Vegetation Health Index for a 1 month period. The VHI is a combination of vegetation conditions and temperature conditions.",
+    "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
     "legend": [
-      { "value": "0.10", "color": "#ef1000" },
-      { "value": "0.17", "color": "#bf4000" },
-      { "value": "0.26", "color": "#ba7500" },
-      { "value": "0.34", "color": "#ead500" },
-      { "value": "1.00", "color": "#5ea100" }
+      {
+        "value": "> 40 | No Drought",
+        "color": "#ffffff"
+      },
+      {
+        "value": "30 - 40 | Mild Drought",
+        "color": "#fff1e8"
+      },
+      {
+        "value": "20 - 30 | Moderate Drought",
+        "color": "#e18283"
+      },
+      {
+        "value": "10 - 20 | Severe Drought",
+        "color": "#dc0b25"
+      },
+      {
+        "value": "< 10 | Extreme Drought",
+        "color": "#740315"
+      }
     ]
   },
-  "ModisSnowPercentage": {
-    "title": "Snow cover (%)",
+  "spi": {
+    "title": "Standardized Precipitation Index (SPI)",
     "type": "wms",
-    "server_layer_name": "ModisSnowPercentage",
-    "base_url": "https://mongolia.sibelius-datacube.org:5000",
+    "server_layer_name": "spi",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
+    "date_interval": "month",
+    "opacity": 0.5,
+    "legend_text": "SPI is a normalized index that indicates the probability of occurrence of observed rainfall compared with the long-term average | Source: CHIRPS",
+    "legend": [
+      {
+        "value": "Exceptionally Dry",
+        "color": "#760005"
+      },
+      {
+        "value": "Extremely Dry",
+        "color": "#ec0013"
+      },
+      {
+        "value": "Severely Dry",
+        "color": "#ffa938"
+      },
+      {
+        "value": "Moderately Dry",
+        "color": "#fdd28a"
+      },
+      {
+        "value": "Abnormally Dry",
+        "color": "#fefe53"
+      },
+      {
+        "value": "Near Normal",
+        "color": "#a2fd6e"
+      },
+      {
+        "value": "Abnormally Moist",
+        "color": "#00b44a"
+      },
+      {
+        "value": "Moderately Moist",
+        "color": "#008180"
+      },
+      {
+        "value": "Extremmely Moist",
+        "color": "#2a23eb"
+      },
+      {
+        "value": "Exceptionally Moist",
+        "color": "#a21fec"
+      }
+    ]
+  },
+  "rainfall_anomaly": {
+    "title": "Rainfall Anomaly (Monthly)",
+    "type": "wms",
+    "server_layer_name": "rainfall_anomaly",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
+    "date_interval": "month",
+    "opacity": 0.5,
+    "legend_text": "Percentage of monthly rainfall compared to a long-term average | Source: CHRIPS",
+    "legend": [
+      {
+        "value": "0-30%",
+        "color": "#4c1504"
+      },
+      {
+        "value": "30-50%",
+        "color": "#ac591c"
+      },
+      {
+        "value": "50-85%",
+        "color": "#ba7500"
+      },
+      {
+        "value": "85-115%",
+        "color": "#fefe53"
+      },
+      {
+        "value": "115-150%",
+        "color": "#86b638"
+      },
+      {
+        "value": "150-200%",
+        "color": "#0a8137"
+      },
+      {
+        "value": ">200%",
+        "color": "#004519"
+      }
+    ]
+  },
+  "floods_forecast": {
+    "title": "Floods Forecast",
+    "type": "wms",
+    "server_layer_name": "flood_forecast",
+    "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
     "date_interval": "day",
     "opacity": 0.5,
-    "legend_text": "Snow Percentage for a 10-day period, where the value represent the percentage of times that a pixel had snow",
+    "legend_text": "Forecast of an indicative flood hazard for 3 days ahead , daily | Source: GFS, CHIRPS",
     "legend": [
-      { "value": "0", "color": "#a8a8a8" },
-      { "value": "25", "color": "#c6c6c6" },
-      { "value": "50", "color": "#e0e0e0" },
-      { "value": "75", "color": "#f4f4f4" },
-      { "value": "100", "color": "#ffffff" }
-    ]
-  },
-  "mvam_hay_reserves": {
-    "title": "Hay reserves in metric tonnes (soum)",
-    "type": "nso",
-    "path": "./data/nso/mVAM_Hay_Reserves.json",
-    "admin_code": "CODE",
-    "opacity": 0.5,
-    "legend": [
-      { "value": "0", "color": "#d7191c" },
-      { "value": "1 - 20", "color": "#fdae61" },
-      { "value": "21 - 40", "color": "#ffffbf" },
-      { "value": "41 - 60", "color": "#a6d96a" },
-      { "value": "60 +", "color": "#1a9641" }
-    ],
-    "legend_text": "Average amount of hay stored in soum emergency reserves in metric tonnes (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
-  },
-  "mvam_fodder_reserves": {
-    "title": "Fodder reserves in metric tonnes (soum)",
-    "type": "nso",
-    "path": "./data/nso/mVAM_Fodder_Reserves.json",
-    "admin_code": "CODE",
-    "opacity": 0.5,
-    "legend": [
-      { "value": "0", "color": "#d7191c" },
-      { "value": "1 - 10", "color": "#fdae61" },
-      { "value": "11 - 20", "color": "#ffffbf" },
-      { "value": "21 - 30", "color": "#a6d96a" },
-      { "value": "30", "color": "#1a9641" }
-    ],
-    "legend_text": "Average amount of fodder stored in soum emergency reserves in metric tonnes (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
-  },
-  "mvam_cash_reserves": {
-    "title": "Cash reserves in million MNT (soum)",
-    "type": "nso",
-    "path": "./data/nso/mVAM_Cash_Reserves.json",
-    "admin_code": "CODE",
-    "opacity": 0.5,
-    "legend": [
-      { "value": "0", "color": "#d7191c" },
-      { "value": "1 - 5", "color": "#fdae61" },
-      { "value": "6 - 10", "color": "#ffffbf" },
-      { "value": "11 - 15", "color": "#a6d96a" },
-      { "value": "15 +", "color": "#1a9641" }
-    ],
-    "legend_text": "Average amount of cash dedicated for soum emergency hay and fodder reserves, in million MNT (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
-  },
-
-  "mvam_hay_prices": {
-    "title": "Hay prices (soum)",
-    "type": "nso",
-    "path": "./data/nso/mVAM_Hay_Price.json",
-    "admin_code": "CODE",
-    "opacity": 0.5,
-    "legend": [
-      { "value": "2000 - 4000", "color": "#1a9641" },
-      { "value": "4001 - 6000", "color": "#a6d96a" },
-      { "value": "6001 - 8000", "color": "#ffffbf" },
-      { "value": "8001 - 10000", "color": "#fdae61" },
-      { "value": "10001 and above", "color": "#d7191c" }
-    ],
-    "legend_text": "Average price of bale of hay (20kg) for sale in the soum emergency reserve (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
-  },
-  "DzudRiskMap": {
-    "title": "Dzud risk",
-    "type": "wms",
-    "base_url": "https://mng-wfp.ovio.org:8443/geoserver/prism",
-    "server_layer_name": "DZUDRM12312",
-    "date_interval": "month",
-    "opacity": 0.5,
-    "legend_text": "The dzud risk map is produced by the Mongolia Information and Research Institute of Meteorology, Hydrology and Environment (IRIMHE) and measures dzud risk based on a combination of climate hazards, pasture conditions and capacity, and risk exposure to livestock. Latest version: December 2019",
-    "legend": [
-      { "value": "1 Very low", "color": "#9ba7dc" },
-      { "value": "2 Low", "color": "#606b57" },
-      { "value": "3 Medium", "color": "#d0ce67" },
-      { "value": "4 High", "color": "#93522f" },
-      { "value": "5 Very high", "color": "#4c1110" }
-    ]
-  },
-  "avg_temperature_groundstations": {
-    "title": "10-day average temperature",
-    "type": "groundstation",
-    "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2020-05-01&endDateTime=2020-05-01",
-    "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
-    "opacity": 0.5,
-    "measure": "ttt_aver",
-    "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
-    "legend": [
-        { "value": "-40", "color": "#7ab1c0" },
-        { "value": "-30", "color": "#9fc3b3" },
-        { "value": "-20", "color": "#d9e79a" },
-        { "value": "-10", "color": "#f3f88e" },
-        { "value": "0", "color": "#f0d779"},
-        { "value": "10", "color": "#fdae61"},
-        { "value": "20", "color": "#f46d43"},
-        { "value": "30", "color": "#d53e4f"},
-        { "value": "40", "color": "#9e0142"}             
-    ]
-  },
-  "min_temperature_groundstations": {
-    "title": "10-day minimum temperature",
-    "type": "groundstation",
-    "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2020-05-01&endDateTime=2020-05-01",
-    "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
-    "opacity": 0.5,
-    "measure": "ttt_min",
-    "legend_text": "Minimum temperature over a 10-day period from ground station data reported in degrees Celsius",
-    "legend": [
-        { "value": "-40", "color": "#7ab1c0" },
-        { "value": "-30", "color": "#9fc3b3" },
-        { "value": "-20", "color": "#d9e79a" },
-        { "value": "-10", "color": "#f3f88e" },
-        { "value": "0", "color": "#f0d779"},
-        { "value": "10", "color": "#fdae61"},
-        { "value": "20", "color": "#f46d43"},
-        { "value": "30", "color": "#d53e4f"},
-        { "value": "40", "color": "#9e0142"}             
-    ]
-  },
-  "max_temperature_groundstations": {
-    "title": "10-day maximum temperature",
-    "type": "groundstation",
-    "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2020-05-01&endDateTime=2020-05-01",
-    "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
-    "opacity": 0.5,
-    "measure": "ttt_max",
-    "legend_text": "Maximum temperature over a 10-day period from ground station data reported in degrees Celsius",
-    "legend": [
-        { "value": "-40", "color": "#7ab1c0" },
-        { "value": "-30", "color": "#9fc3b3" },
-        { "value": "-20", "color": "#d9e79a" },
-        { "value": "-10", "color": "#f3f88e" },
-        { "value": "0", "color": "#f0d779"},
-        { "value": "10", "color": "#fdae61"},
-        { "value": "20", "color": "#f46d43"},
-        { "value": "30", "color": "#d53e4f"},
-        { "value": "40", "color": "#9e0142"}             
-      ]
-  },
-  "total_precipitation_groundstations": {
-    "title": "Total 10-day precipitation",
-    "type": "groundstation",
-    "data": "https://mng.prism.services/temp/percipitation?beginDateTime=2020-05-01&endDateTime=2020-05-01",
-    "fallback_data": "./data/groundstations/IRIMHE_precipitation_2020-05-01.json",
-    "opacity": 0.5,
-    "measure": "sum_rrr",
-    "legend_text": "Total precipitation over a 10-day period from ground station data reported in centimeters",
-    "legend": [
-        { "value": "0", "color": "#f1eef6" },
-        { "value": "5", "color": "#bdc9e1" },
-        { "value": "10", "color": "#74a9cf" },
-        { "value": "15", "color": "#2b8cbe" },
-        { "value": "20", "color": "#045a8d"}    
-      ]
-  },
-  "avg_precipitation_groundstations": {
-    "title": "10-day average precipitation",
-    "type": "groundstation",
-    "data": "https://mng.prism.services/temp/soil?beginDateTime=2020-03-11&endDateTime=2020-03-11",
-    "opacity": 0.5,
-    "measure": "ttt_aver",
-    "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
-    "legend": [
-        { "value": "-40", "color": "#7ab1c0" },
-        { "value": "-30", "color": "#9fc3b3" },
-        { "value": "-20", "color": "#d9e79a" },
-        { "value": "-10", "color": "#f3f88e" },
-        { "value": "0", "color": "#f0d779"}
-      ]
-  },
-  "herd_pasture_impact": {
-    "title": "Herders exposed to severe pasture anomaly (soum)",
-    "type": "impact",
-    "hazard_layer": "pasture_anomaly",
-    "baseline_layer": "herders",
-    "operation": "median",
-    "threshold": { "below": -25 },
-    "opacity": 0.5,
-    "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -25%",
-    "legend": [
-      { "value": 200, "color": "#fef0d9" },
-      { "value": 300, "color": "#fdcc8a" },
-      { "value": 400, "color": "#fc8d59" },
-      { "value": 500, "color": "#e34a33" },
-      { "value": 600, "color": "#b30000" }
-    ]
-  },
-  "small_herder_dzud_risk": {
-    "title": "Small herders exposed to very high dzud risk (aimag)",
-    "type": "impact",
-    "hazard_layer": "DzudRiskMap",
-    "baseline_layer": "herd_200",
-    "operation": "median",
-    "threshold": { "above": 3 },
-    "opacity": 0.5,
-    "legend_text": "Number of small herder households within an aimag with very high risk of dzud",
-    "legend": [
-      { "value": 250, "color": "#ffeda0" },
-      { "value": 300, "color": "#feb24c" },
-      { "value": 350, "color": "#f03b20" }
-    ]
-  },
-  "livestock_dzud_risk": {
-    "title": "Livestock exposed to very high dzud risk (soum)",
-    "type": "impact",
-    "hazard_layer": "DzudRiskMap",
-    "baseline_layer": "livestock",
-    "threshold": { "above": 25 },
-    "opacity": 0.5,
-    "legend_text": "Number of livestock within a soum with very high risk of dzud",
-    "legend": [
-      { "value": 5000, "color": "#ffeda0" },
-      { "value": 10000, "color": "#feb24c" },
-      { "value": 15000, "color": "#f03b20" }
-    ]
-  },
-  "livestock_vhi": {
-    "title": "Livestock exposed to drought in thousands (soum)",
-    "type": "impact",
-    "hazard_layer": "ModisVHI",
-    "baseline_layer": "livestock",
-    "threshold": { "below": 0.25 },
-    "opacity": 0.5,
-    "legend_text": "Number of livestock (in thousands) within a soum with drought conditions as measured through the Vegetation Health Index",
-    "legend": [
-      { "value": 100, "color": "#fef0d9" },
-      { "value": 150, "color": "#fdcc8a" },
-      { "value": 200, "color": "#fc8d59" },
-      { "value": 250, "color": "#e34a33" },
-      { "value": 300, "color": "#b30000" }
-    ]
-  },
-  "livestock_cold": {
-    "title": "Livestock exposed to extreme cold temperatures in thousands (soum)",
-    "type": "impact",
-    "hazard_layer": "ModisLST",
-    "baseline_layer": "livestock",
-    "threshold": { "below": -25 },
-    "opacity": 0.5,
-    "legend_text": "Number of livestock (in thousands) within a soum with average temperatures below -25 Celsius",
-    "legend": [
-      { "value": 100, "color": "#f0f9e8" },
-      { "value": 150, "color": "#bae4bc" },
-      { "value": 200, "color": "#7bccc4" },
-      { "value": 250, "color": "#43a2ca" },
-      { "value": 300, "color": "#0868ac" }
+      {
+        "value": "Very Low",
+        "color": "#fff5f0"
+      },
+      {
+        "value": "Low",
+        "color": "#fcbba2"
+      },
+      {
+        "value": "Moderate",
+        "color": "#fa6948"
+      },
+      {
+        "value": "High",
+        "color": "#ead500"
+      },
+      {
+        "value": "Very High",
+        "color": "#66000e"
+      }
     ]
   }
 }

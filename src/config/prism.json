@@ -3,7 +3,7 @@
   "serversUrls": {
     "wcs": ["https://mongolia.sibelius-datacube.org:5000"],
     "wms": [
-      "https://mongolia.sibelius-datacube.org:5000/wms", "http://3.134.83.146:8080/geoserver/prism/wms"
+      "https://vampire.idn.wfp.org:8081/geoserver/vampire/wms"
     ]
   },
   "map": {
@@ -13,31 +13,25 @@
   },
   "categories": {
     "hazards": {
-      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisVHI"],
-      "winter_conditions": ["ModisSnowPercentage","ModisLST"],
-      "ground_station_data": ["avg_temperature_groundstations", "min_temperature_groundstations", "max_temperature_groundstations", "total_precipitation_groundstations"]
+      "indikator_iklim": ["rainfall_anomaly", "spi"],
+      "drought_indicators": ["ModisVHI", "dslr"],
+      "floods_risk": ["floods_forecast"]
     },
     "exposure": {
-      "demographics": ["population_total"],
-      "livestock_and_herders": ["herders", "livestock"]
+      "demographics": ["population_density", "HH_AGRI", "HH_FE65"]
     },
     "vulnerability": {
-      "vulnerable_groups": ["population_below_poverty", "disabled", "elderly", "child"],
-      "herders": ["herd_200"]
+      "vulnerable_groups": ["population_below_poverty", "pou", "OP_UNEMPLOY"]
     },
     "capacity": {
-      "livestock_and_crop_preparedness": ["hay_harvest", "mvam_hay_reserves", "mvam_fodder_reserves", "mvam_cash_reserves", "mvam_hay_prices"]
+      "livestock_and_crop_preparedness": ["CER_YIELD", "HH_FOODASS"]
     },
     "risk": {
-      "dzud_risk": ["DzudRiskMap"],
-      "impact_analysis": ["herd_pasture_impact", "livestock_vhi", "livestock_cold"]
+      "impact_analysis": ["livestock_vhi", "livestock_cold"]
     },
     "tables": {
       "socioeconomic_data": [
         "poverty"
-      ],
-      "livestock_data": [
-        "animal_deaths"
       ],
       "price_data": [
         "hay_prices"
