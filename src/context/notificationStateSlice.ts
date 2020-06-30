@@ -84,9 +84,23 @@ export const {
 export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
   dispatch: AppDispatch,
 ) => (action: AnyAction) => {
-  const dispatchResult = dispatch(action);
-
+  let dispatchResult;
+  try {
+    // catch sync errors
+    // eslint-disable-next-line fp/no-mutation
+    dispatchResult = dispatch(action);
+  } catch (err) {
+    console.error(err);
+    dispatch(
+      addNotification({
+        type: 'error',
+        message: err.message || err,
+      }),
+    );
+    return dispatchResult;
+  }
   const errorActions = [
+    // async thunks that have errors included with them
     'tableState/loadTable/rejected',
     'serverState/loadAvailableDates/rejected',
     'mapState/loadLayerData/rejected',

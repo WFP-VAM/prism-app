@@ -8,10 +8,10 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import {
-  notificationsSelector,
-  setAsDisplayed,
   Notification,
+  notificationsSelector,
   removeNotification,
+  setAsDisplayed,
 } from '../../context/notificationStateSlice';
 
 function Notifier({ classes }: NotifierProps) {
