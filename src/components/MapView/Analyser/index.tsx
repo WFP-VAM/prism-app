@@ -11,6 +11,13 @@ import {
   Typography,
   withStyles,
   WithStyles,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TablePagination,
 } from '@material-ui/core';
 import { ArrowDropDown, Assessment } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -36,6 +43,7 @@ import {
   latestAnalysisResultSelector,
   requestAndStoreAnalysis,
 } from '../../../context/analysisResultStateSlice';
+import AnalysisTable from './AnalysisTable';
 
 const layers = Object.values(LayerDefinitions);
 const baselineLayers = layers.filter(
@@ -56,7 +64,7 @@ function Analyser({ classes }: AnalyserProps) {
   const analysisResult = useSelector(latestAnalysisResultSelector);
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
 
-  const [open, setOpen] = useState(true);
+  const [openAnalyserForm, setOpenAnalyserForm] = useState(true);
   // const [analyserOption, setAnalyserOption] = useState('new');
   const [hazardLayerId, setHazardLayerId] = useState(
     hazardLayers[0].id as string,
@@ -65,6 +73,9 @@ function Analyser({ classes }: AnalyserProps) {
   const [baselineLayerId, setBaselineLayerId] = useState(
     baselineLayers[0].id as string,
   );
+
+  const [openResult, setOpenResult] = useState(false);
+  const [isRunningAnalysis, setIsRunningAnalysis] = useState(false);
 
   const onOptionChange = (setterFunc: (val: any) => void) => (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -113,6 +124,7 @@ function Analyser({ classes }: AnalyserProps) {
   const runAnalyser = async () => {
     if (!adminBoundariesExtent) return; // hasn't been calculated yet
 
+    setIsRunningAnalysis(true);
     const selectedHazardLayer = find(hazardLayers, {
       id: hazardLayerId,
     }) as WMSLayerProps;
@@ -129,41 +141,103 @@ function Analyser({ classes }: AnalyserProps) {
     };
 
     const data = await dispatch(requestAndStoreAnalysis(params));
+    setIsRunningAnalysis(false);
+
     // eslint-disable-next-line no-console
     console.log(data);
   };
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  type Column = {
+    id: 'name' | 'nativeName' | 'mean' | 'median';
+    label: string;
+    format?: (value: number) => string;
+  };
+  const columns: Column[] = [
+    {
+      id: 'nativeName',
+      label: 'Native Name',
+    },
+    {
+      id: 'name',
+      label: 'Name',
+    },
+    {
+      id: 'mean',
+      label: 'Mean',
+      format: (value: number) => value.toLocaleString('en-US'),
+    },
+    {
+      id: 'median',
+      label: 'Median',
+      format: (value: number) => value.toLocaleString('en-US'),
+    },
+  ];
+
   return (
     <div className={classes.analyser}>
       <Button
         variant="contained"
         color="primary"
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          setOpenAnalyserForm(!openAnalyserForm);
+          setOpenResult(false);
+        }}
       >
         <Assessment style={{ marginRight: '10px' }} />
         <Typography variant="body2">Run Analysis</Typography>
         <ArrowDropDown />
       </Button>
 
-      <Button
-        variant="contained"
-        color="primary"
-        className={classes.analyserButton}
-      >
-        <Typography variant="body2">Show Result</Typography>
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        className={classes.analyserButton}
-      >
-        <Typography variant="body2">Download</Typography>
-      </Button>
+      {isRunningAnalysis || analysisResult
+        ? [
+            <Button
+              key="show"
+              variant="contained"
+              color="primary"
+              className={classes.analyserButton}
+              onClick={() => {
+                setOpenAnalyserForm(false);
+                setOpenResult(!openResult);
+              }}
+            >
+              <Typography variant="body2">Show Result</Typography>
+            </Button>,
+            <Button
+              key="download"
+              variant="contained"
+              color="primary"
+              className={classes.analyserButton}
+            >
+              <Typography variant="body2">Download</Typography>
+            </Button>,
+          ]
+        : ''}
 
       <div
         className={classes.analyserMenu}
-        style={{ width: open ? '40vw' : 0, padding: open ? 10 : 0 }}
+        style={{
+          // eslint-disable-next-line no-nested-ternary
+          width: openAnalyserForm ? '40vw' : openResult ? 'min-content' : 0,
+          padding: openAnalyserForm || openResult ? 10 : 0,
+        }}
       >
-        {/* <FormControl component="fieldset">
+        {openAnalyserForm ? (
+          <div>
+            {/* <FormControl component="fieldset">
           <RadioGroup value={analyserOption} onChange={onAnalyserOptionChange} row>
             <FormControlLabel
               value="new"
@@ -188,62 +262,149 @@ function Analyser({ classes }: AnalyserProps) {
             />
           </RadioGroup>
         </FormControl> */}
-        <div className={classes.newAnalyserContainer}>
-          <div>
-            <Typography variant="body2">
-              Step 1 - Choose a hazard Layer:
-            </Typography>
+            <div className={classes.newAnalyserContainer}>
+              <div>
+                <Typography variant="body2">
+                  Step 1 - Choose a hazard Layer:
+                </Typography>
 
-            <FormControl component="div">
-              <RadioGroup
-                name="hazardLayer"
-                value={hazardLayerId}
-                onChange={onOptionChange(setHazardLayerId)}
-              >
-                {hazardLayerOptions}
-              </RadioGroup>
-            </FormControl>
-          </div>
-          <div>
-            <Typography variant="body2">
-              Step 2 - Select a statistic:
-            </Typography>
+                <FormControl component="div">
+                  <RadioGroup
+                    name="hazardLayer"
+                    value={hazardLayerId}
+                    onChange={onOptionChange(setHazardLayerId)}
+                  >
+                    {hazardLayerOptions}
+                  </RadioGroup>
+                </FormControl>
+              </div>
+              <div>
+                <Typography variant="body2">
+                  Step 2 - Select a statistic:
+                </Typography>
 
-            <FormControl component="div">
-              <RadioGroup
-                name="statistics"
-                value={statistic}
-                onChange={onOptionChange(setStatistic)}
-                row
-              >
-                {statisticOptions}
-              </RadioGroup>
-            </FormControl>
+                <FormControl component="div">
+                  <RadioGroup
+                    name="statistics"
+                    value={statistic}
+                    onChange={onOptionChange(setStatistic)}
+                    row
+                  >
+                    {statisticOptions}
+                  </RadioGroup>
+                </FormControl>
+              </div>
+              <div>
+                <Typography variant="body2">
+                  Step 3 - Choose a baseline Layer:
+                </Typography>
+                <FormControl component="div">
+                  <RadioGroup
+                    name="baselineLayer"
+                    value={baselineLayerId}
+                    onChange={onOptionChange(setBaselineLayerId)}
+                  >
+                    {baselineLayerOptions}
+                  </RadioGroup>
+                </FormControl>
+              </div>
+            </div>
+            <Button onClick={runAnalyser}>
+              <Typography variant="body2">Run Analysis</Typography>
+            </Button>
+            <Button>
+              <Typography variant="body2">Show Result</Typography>
+            </Button>
+            <Button>
+              <Typography variant="body2">Download</Typography>
+            </Button>
           </div>
+        ) : (
           <div>
-            <Typography variant="body2">
-              Step 3 - Choose a baseline Layer:
-            </Typography>
             <FormControl component="div">
-              <RadioGroup
-                name="baselineLayer"
-                value={baselineLayerId}
-                onChange={onOptionChange(setBaselineLayerId)}
-              >
-                {baselineLayerOptions}
+              <RadioGroup row>
+                <FormControlLabel
+                  value="mapview"
+                  control={
+                    <Radio className={classes.radioOptions} size="small" />
+                  }
+                  label="Map View"
+                />
+                <FormControlLabel
+                  value="tableview"
+                  control={
+                    <Radio className={classes.radioOptions} size="small" />
+                  }
+                  label="Table View"
+                />
               </RadioGroup>
             </FormControl>
+
+            {analysisResult && analysisResult.tableData
+              ? [
+                  <TableContainer className={classes.tableContainer}>
+                    <Table stickyHeader aria-label="sticky table">
+                      <TableHead>
+                        <TableRow>
+                          {columns.map(column => (
+                            <TableCell
+                              key={column.id}
+                              // align={column.align}
+                              // style={{ minWidth: column.minWidth }}
+                              className={classes.tableHead}
+                            >
+                              {column.label}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {analysisResult.tableData
+                          .slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage,
+                          )
+                          .map(row => {
+                            return (
+                              <TableRow
+                                hover
+                                role="checkbox"
+                                tabIndex={-1}
+                                key={row.name}
+                              >
+                                {columns.map(column => {
+                                  const value = row[column.id];
+                                  return (
+                                    <TableCell
+                                      key={column.id}
+                                      // align={column.align}
+                                    >
+                                      {column.format &&
+                                      typeof value === 'number'
+                                        ? column.format(value)
+                                        : value}
+                                    </TableCell>
+                                  );
+                                })}
+                              </TableRow>
+                            );
+                          })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>,
+                  <TablePagination
+                    rowsPerPageOptions={[10, 25, 100]}
+                    component="div"
+                    count={analysisResult.tableData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                  />,
+                ]
+              : ''}
           </div>
-        </div>
-        <Button onClick={runAnalyser}>
-          <Typography variant="body2">Run Analysis</Typography>
-        </Button>
-        <Button>
-          <Typography variant="body2">Show Result</Typography>
-        </Button>
-        <Button>
-          <Typography variant="body2">Download</Typography>
-        </Button>
+        )}
       </div>
     </div>
   );
@@ -267,8 +428,8 @@ const styles = (theme: Theme) =>
       whiteSpace: 'nowrap',
       borderTopRightRadius: '10px',
       borderBottomRightRadius: '10px',
-      height: '600px',
-      maxHeight: '90vh',
+      height: 'auto',
+      maxHeight: '60vh',
     },
     analyserButton: {
       height: '36px',
@@ -285,6 +446,13 @@ const styles = (theme: Theme) =>
     radioOptions: {
       color: 'white',
       padding: '2px 10px 2px 20px',
+    },
+    tableContainer: {
+      maxHeight: '50vh',
+      border: '2px solid',
+    },
+    tableHead: {
+      backgroundColor: '#373d3f',
     },
   });
 

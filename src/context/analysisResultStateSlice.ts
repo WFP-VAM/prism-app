@@ -1,6 +1,7 @@
+/* eslint-disable no-console */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureCollection } from 'geojson';
-import { get } from 'lodash';
+import { get, find } from 'lodash';
 import { CreateAsyncThunkTypes, RootState } from './store';
 import {
   AggregationOperations,
@@ -56,11 +57,28 @@ const initialState: AnalysisResultState = {
 
 function generateTableFromApiData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
+  adminBoundariesData: LayerData<BoundaryLayerProps>,
 ): TableRow[] {
-  return aggregateData.map(row => {
+  return aggregateData.map((row: any) => {
+    const featureBoundary = find(
+      adminBoundariesData.data.features,
+      (feature: any) => feature.properties.ADM2_PCODE === row.ADM2_PCODE,
+    );
+
+    let name = 'No Name';
+    let nativeName = 'No Name';
+
+    if (featureBoundary && featureBoundary.properties) {
+      // eslint-disable-next-line fp/no-mutation
+      name = featureBoundary.properties.ADM2_EN;
+
+      // eslint-disable-next-line fp/no-mutation
+      nativeName = featureBoundary.properties.ADM2_MN;
+    }
+
     const tableRow: TableRow = {
-      name: get(row, 'ADM2_EN', 'No Name'), // TODO fix up as per pull #94
-      nativeName: get(row, 'ADM2_MN', 'No Name'),
+      name,
+      nativeName,
       mean: get(row, `stats_${AggregationOperations.mean}`, 0),
       median: get(row, `stats_${AggregationOperations.median}`, 0),
     };
@@ -148,7 +166,10 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
   );
-  const tableRows: TableRow[] = generateTableFromApiData(aggregateData);
+  const tableRows: TableRow[] = generateTableFromApiData(
+    aggregateData,
+    adminBoundariesData,
+  );
 
   return new AnalysisResult(tableRows, {
     ...adminBoundariesData.data,
@@ -172,6 +193,7 @@ export const analysisResultSlice = createSlice({
         { payload }: PayloadAction<AnalysisResult>,
       ): AnalysisResultState => ({
         ...rest,
+        isLoading: false,
         results: [...results, payload],
       }),
     );
