@@ -45,7 +45,7 @@ class AnalysisResult {
   }
 }
 
-type TableRow = {
+export type TableRow = {
   nativeName: string;
   name: string;
 } & { [k in AggregationOperations]: number };
