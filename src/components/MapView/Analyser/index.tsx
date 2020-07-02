@@ -32,8 +32,8 @@ import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import {
   AnalysisDispatchParams,
+  analysisResultSelector,
   isAnalysisLoadingSelector,
-  latestAnalysisResultSelector,
   requestAndStoreAnalysis,
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
@@ -54,7 +54,7 @@ function Analyser({ classes }: AnalyserProps) {
     | LayerData<BoundaryLayerProps>
     | undefined;
   const availableDates = useSelector(availableDatesSelector);
-  const analysisResult = useSelector(latestAnalysisResultSelector);
+  const analysisResult = useSelector(analysisResultSelector);
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
 
   const [openAnalyserForm, setOpenAnalyserForm] = useState(false);

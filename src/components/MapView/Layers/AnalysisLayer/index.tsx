@@ -4,10 +4,10 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
-import { latestAnalysisResultSelector } from '../../../../context/analysisResultStateSlice';
+import { analysisResultSelector } from '../../../../context/analysisResultStateSlice';
 
 function AnalysisLayer() {
-  const analysisData = useSelector(latestAnalysisResultSelector);
+  const analysisData = useSelector(analysisResultSelector);
   const dispatch = useDispatch();
 
   if (!analysisData) return null;

@@ -25,7 +25,7 @@ import { layerDataSelector } from './mapStateSlice';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 
 type AnalysisResultState = {
-  results: AnalysisResult[];
+  result?: AnalysisResult;
   error?: string;
   isLoading: boolean; // TODO possibly better loading system since this doesn't support multiple analysis loadings
 };
@@ -51,7 +51,6 @@ export type TableRow = {
 } & { [k in AggregationOperations]: number };
 
 const initialState: AnalysisResultState = {
-  results: [],
   isLoading: false,
 };
 
@@ -189,12 +188,12 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStoreAnalysis.fulfilled,
       (
-        { results, ...rest },
+        { result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
       ): AnalysisResultState => ({
         ...rest,
         isLoading: false,
-        results: [...results, payload],
+        result: payload,
       }),
     );
 
@@ -220,18 +219,10 @@ export const analysisResultSlice = createSlice({
 });
 
 // Getters
-export const analysisResultSelector = (key: AnalysisResult['key']) => (
+export const analysisResultSelector = (
   state: RootState,
-): AnalysisResult | undefined =>
-  state.analysisResultState.results.find(result => result.key === key);
+): AnalysisResult | undefined => state.analysisResultState.result;
 
-export const latestAnalysisResultSelector = (
-  state: RootState,
-): AnalysisResult | undefined => {
-  const analysisResults = state.analysisResultState.results;
-  if (analysisResults.length === 0) return undefined;
-  return analysisResults[analysisResults.length - 1];
-};
 export const isAnalysisLoadingSelector = (state: RootState): boolean =>
   state.analysisResultState.isLoading;
 
