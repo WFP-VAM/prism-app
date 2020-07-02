@@ -1,4 +1,4 @@
-import { camelCase, mapKeys, isNaN } from 'lodash';
+import { camelCase, mapKeys } from 'lodash';
 import rawLayers from './layers.json';
 import rawTables from './tables.json';
 import {
