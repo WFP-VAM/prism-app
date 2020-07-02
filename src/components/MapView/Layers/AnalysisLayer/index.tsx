@@ -25,14 +25,14 @@ function AnalysisLayer() {
   return (
     <GeoJSONLayer
       below="boundaries"
-      data={analysisData.features}
+      data={analysisData.featureCollection}
       fillPaint={fillPaintData}
       fillOnClick={(evt: any) => {
         dispatch(
           addPopupData({
             analysis: {
               data: get(
-                analysisData?.features?.features[0],
+                analysisData?.featureCollection?.features[0],
                 'properties.data',
                 'No Data',
               ),

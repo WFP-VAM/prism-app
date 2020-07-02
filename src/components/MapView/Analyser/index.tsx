@@ -132,7 +132,7 @@ function Analyser({ classes }: AnalyserProps) {
     };
 
     const data = await dispatch(requestAndStoreAnalysis(params));
-
+    // TODO remove
     // eslint-disable-next-line no-console
     console.log(data);
   };
@@ -267,22 +267,25 @@ function Analyser({ classes }: AnalyserProps) {
             >
               <Typography variant="body2">Run Analysis</Typography>
             </Button>
-            {isAnalysisLoading || analysisResult
-              ? [
-                  <Button
-                    className={classes.innerAnalysisButton}
-                    disabled={isAnalysisLoading}
-                  >
-                    <Typography variant="body2">Show Result</Typography>
-                  </Button>,
-                  <Button
-                    className={classes.innerAnalysisButton}
-                    disabled={isAnalysisLoading}
-                  >
-                    <Typography variant="body2">Download</Typography>
-                  </Button>,
-                ]
-              : ''}
+            {isAnalysisLoading || analysisResult ? (
+              <>
+                <Button
+                  className={classes.innerAnalysisButton}
+                  disabled={isAnalysisLoading}
+                >
+                  <Typography variant="body2">Show Result</Typography>
+                </Button>
+
+                <Button
+                  className={classes.innerAnalysisButton}
+                  disabled={isAnalysisLoading}
+                >
+                  <Typography variant="body2">Download</Typography>
+                </Button>
+              </>
+            ) : (
+              ''
+            )}
           </div>
         ) : (
           <div>

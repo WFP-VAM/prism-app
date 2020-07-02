@@ -7,6 +7,10 @@
     "admin_level_names": [
       "ADM1_EN",
       "ADM2_EN"
+    ],
+    "admin_level_native_names": [
+      "ADM1_MN",
+      "ADM2_MN"
     ]
   },
   "population_below_poverty": {

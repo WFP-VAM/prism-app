@@ -1,3 +1,4 @@
+// TODO remove
 /* eslint-disable no-console */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureCollection } from 'geojson';
@@ -31,12 +32,18 @@ type AnalysisResultState = {
 };
 class AnalysisResult {
   key: number = Date.now();
-  features: FeatureCollection | undefined;
-  tableData?: TableRow[] | undefined;
+  featureCollection: FeatureCollection;
+  tableData: TableRow[];
+  rawApiData?: object[];
 
-  constructor(tableData: TableRow[], features: FeatureCollection) {
-    this.features = features;
+  constructor(
+    tableData: TableRow[],
+    featureCollection: FeatureCollection,
+    rawApiData?: object[],
+  ) {
+    this.featureCollection = featureCollection;
     this.tableData = tableData;
+    this.rawApiData = rawApiData;
   }
 }
 
@@ -50,25 +57,31 @@ const initialState: AnalysisResultState = {
 };
 
 function generateTableFromApiData(
-  aggregateData: AsyncReturnType<typeof fetchApiData>,
-  adminBoundariesData: LayerData<BoundaryLayerProps>,
+  aggregateData: AsyncReturnType<typeof fetchApiData>, // data from api
+  { layer: adminLayer, data: adminLayerData }: LayerData<BoundaryLayerProps>, // admin layer, both props and data
+  adminLevel: number, // admin level - state/district focus etc
 ): TableRow[] {
+  // find the key that will let us reference the names of the bounding boxes.
+  const adminLevelName =
+    adminLayer.adminLevelNames[adminLevel - 1] || adminLayer.adminLevelNames[0];
+  // for native too.
+  const adminLevelNativeName =
+    adminLayer.adminLevelNativeNames[adminLevel - 1] ||
+    adminLayer.adminLevelNativeNames[0];
+
   return aggregateData.map((row: any) => {
+    // find feature from admin boundaries that closely matches this api row.
+    // once we find it we can get the corresponding native name.
     const featureBoundary = find(
-      adminBoundariesData.data.features,
-      (feature: any) => feature.properties.ADM1_EN === row.ADM1_EN,
+      adminLayerData.features,
+      (feature: any) =>
+        feature.properties[adminLevelName] === row[adminLevelName],
     );
-    console.log(row);
-    let name = 'No Name';
-    let nativeName = 'No Name';
 
-    if (featureBoundary && featureBoundary.properties) {
-      // eslint-disable-next-line fp/no-mutation
-      name = featureBoundary.properties.ADM2_EN;
-
-      // eslint-disable-next-line fp/no-mutation
-      nativeName = featureBoundary.properties.ADM2_MN;
-    }
+    const name: string =
+      featureBoundary?.properties?.[adminLevelName] || 'No Name';
+    const nativeName: string =
+      featureBoundary?.properties?.[adminLevelNativeName] || 'No Name';
 
     const tableRow: TableRow = {
       name,
@@ -163,15 +176,21 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
   );
+  console.log(features);
   const tableRows: TableRow[] = generateTableFromApiData(
     aggregateData,
     adminBoundariesData,
+    baselineLayer.adminLevel,
   );
 
-  return new AnalysisResult(tableRows, {
-    ...adminBoundariesData.data,
-    features,
-  });
+  return new AnalysisResult(
+    tableRows,
+    {
+      ...adminBoundariesData.data,
+      features,
+    },
+    aggregateData,
+  );
 });
 
 export const analysisResultSlice = createSlice({
