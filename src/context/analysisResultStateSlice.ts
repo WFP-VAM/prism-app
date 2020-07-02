@@ -33,13 +33,8 @@ class AnalysisResult {
   key: number = Date.now();
   features: FeatureCollection | undefined;
   tableData?: TableRow[] | undefined;
-  isLoading: boolean = true;
-  // this overload accepts two elements, or nothing.
-  // https://stackoverflow.com/a/35998779/5279269
-  // also...I managed to crash the linter by doing this (most likely a bug in eslint). Maybe an update will fix?
-  /* constructor()
-  constructor(tableData:TableRow[], features: FeatureCollection) TODO uncomment once eslint bug is fixed */
-  constructor(tableData?: TableRow[], features?: FeatureCollection) {
+
+  constructor(tableData: TableRow[], features: FeatureCollection) {
     this.features = features;
     this.tableData = tableData;
   }
@@ -61,9 +56,9 @@ function generateTableFromApiData(
   return aggregateData.map((row: any) => {
     const featureBoundary = find(
       adminBoundariesData.data.features,
-      (feature: any) => feature.properties.ADM2_PCODE === row.ADM2_PCODE,
+      (feature: any) => feature.properties.ADM1_EN === row.ADM1_EN,
     );
-
+    console.log(row);
     let name = 'No Name';
     let nativeName = 'No Name';
 
@@ -113,7 +108,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
   ) as LayerData<NSOLayerProps>;
-  const adminBoundariesData = layerDataSelector(getBoundaryLayerSingleton().id)(
+  const adminBoundaries = getBoundaryLayerSingleton();
+  const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
   ) as LayerData<BoundaryLayerProps>;
 
@@ -133,7 +129,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
         ? window.location.origin +
           getBoundaryLayerSingleton().path.replace('.', '')
         : adminJson,
-    group_by: 'ADM2_PCODE', // TODO get group_by layer data from baselineLayer as per pull #94
+    group_by:
+      adminBoundaries.adminLevelNames[baselineLayer.adminLevel - 1] ||
+      adminBoundaries.adminLevelNames[0],
   };
   const aggregateData = await fetchApiData(apiUrl, apiRequest);
   let baselineLayerData: BaselineLayerData;

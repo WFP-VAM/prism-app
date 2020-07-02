@@ -12,6 +12,7 @@ import {
   loadLayerData,
 } from '../../../../context/layers/layer-data';
 
+// Point Data, takes any GeoJSON and shows it.
 function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
   const layerData = useSelector(layerDataSelector(layer.id)) as
     | LayerData<GroundstationLayerProps>

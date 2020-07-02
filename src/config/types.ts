@@ -186,7 +186,7 @@ export class NSOLayerProps extends CommonLayerProps {
   adminCode: string;
 
   @makeRequired
-  adminLevel: string;
+  adminLevel: number;
 
   @makeRequired
   dataField: string;

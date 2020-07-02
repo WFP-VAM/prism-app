@@ -1,4 +1,4 @@
-import { camelCase, mapKeys } from 'lodash';
+import { camelCase, mapKeys, isNaN } from 'lodash';
 import rawLayers from './layers.json';
 import rawTables from './tables.json';
 import {
@@ -51,6 +51,13 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
       return throwInvalidLayer();
     case 'nso':
       if (checkRequiredKeys(NSOLayerProps, definition, true)) {
+        if (typeof (definition.adminLevel as unknown) !== 'number') {
+          console.error(
+            `admin_level in layer ${definition.id} isn't a number.`,
+          );
+          return throwInvalidLayer();
+        }
+
         return definition;
       }
       return throwInvalidLayer();
