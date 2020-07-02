@@ -186,7 +186,8 @@ export function generateFeaturesFromApiData(
       scale,
       offset,
     );
-    return thresholdOrNaN(scaled, threshold);
+
+    return !Number.isNaN(thresholdOrNaN(scaled, threshold));
   }) as GeoJsonBoundary[];
 }
 
