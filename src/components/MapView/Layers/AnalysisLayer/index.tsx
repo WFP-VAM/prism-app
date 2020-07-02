@@ -5,6 +5,8 @@ import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import { analysisResultSelector } from '../../../../context/analysisResultStateSlice';
+import { legendToStops } from '../layer-utils';
+import { LegendDefinition } from '../../../../config/types';
 
 function AnalysisLayer() {
   const analysisData = useSelector(analysisResultSelector);
@@ -13,20 +15,22 @@ function AnalysisLayer() {
   if (!analysisData) return null;
 
   // We use the legend values from the config to define "intervals".
-  const fillPaintData: MapboxGL.FillPaint = {
-    'fill-opacity': 0.3,
-    'fill-color': {
-      property: 'data',
-      stops: [],
-      type: 'interval',
-    },
-  };
+  function fillPaintData(legend: LegendDefinition): MapboxGL.FillPaint {
+    return {
+      'fill-opacity': 0.3,
+      'fill-color': {
+        property: 'data',
+        stops: legendToStops(legend),
+        type: 'interval',
+      },
+    };
+  }
 
   return (
     <GeoJSONLayer
       below="boundaries"
       data={analysisData.featureCollection}
-      fillPaint={fillPaintData}
+      fillPaint={fillPaintData(analysisData.legend)}
       fillOnClick={(evt: any) => {
         dispatch(
           addPopupData({

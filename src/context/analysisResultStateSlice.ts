@@ -11,6 +11,7 @@ import {
   NSOLayerProps,
   ThresholdDefinition,
   WMSLayerProps,
+  LegendDefinition,
 } from '../config/types';
 import {
   ApiData,
@@ -35,14 +36,17 @@ class AnalysisResult {
   featureCollection: FeatureCollection;
   tableData: TableRow[];
   rawApiData?: object[];
+  legend: LegendDefinition;
 
   constructor(
     tableData: TableRow[],
     featureCollection: FeatureCollection,
+    legend: LegendDefinition,
     rawApiData?: object[],
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
+    this.legend = legend;
     this.rawApiData = rawApiData;
   }
 }
@@ -176,12 +180,14 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
   );
-  console.log(features);
+
   const tableRows: TableRow[] = generateTableFromApiData(
     aggregateData,
     adminBoundariesData,
     baselineLayer.adminLevel,
   );
+
+  const { legend } = baselineLayer;
 
   return new AnalysisResult(
     tableRows,
@@ -189,6 +195,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       ...adminBoundariesData.data,
       features,
     },
+    legend,
     aggregateData,
   );
 });
