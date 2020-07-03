@@ -4,17 +4,22 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
-import { analysisResultSelector } from '../../../../context/analysisResultStateSlice';
+import {
+  analysisResultSelector,
+  isAnalysisLayerActiveSelector,
+} from '../../../../context/analysisResultStateSlice';
 import { legendToStops } from '../layer-utils';
 import { LegendDefinition } from '../../../../config/types';
 
 function AnalysisLayer() {
   const analysisData = useSelector(analysisResultSelector);
+  const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+
   const dispatch = useDispatch();
 
-  if (!analysisData) return null;
+  if (!analysisData || !isAnalysisLayerActive) return null;
 
-  // We use the legend values from the config to define "intervals".
+  // We use the legend values from the baseline layer
   function fillPaintData(legend: LegendDefinition): MapboxGL.FillPaint {
     return {
       'fill-opacity': 0.3,

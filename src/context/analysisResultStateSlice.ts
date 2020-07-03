@@ -29,7 +29,8 @@ import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 type AnalysisResultState = {
   result?: AnalysisResult;
   error?: string;
-  isLoading: boolean; // TODO possibly better loading system since this doesn't support multiple analysis loadings
+  isLoading: boolean;
+  isMapLayerActive: boolean;
 };
 class AnalysisResult {
   key: number = Date.now();
@@ -58,6 +59,7 @@ export type TableRow = {
 
 const initialState: AnalysisResultState = {
   isLoading: false,
+  isMapLayerActive: true, // TODO toggle via UI
 };
 
 function generateTableFromApiData(
@@ -204,8 +206,9 @@ export const analysisResultSlice = createSlice({
   name: 'analysisResultSlice',
   initialState,
   reducers: {
-    example: (state, { payload }: PayloadAction<string>) => ({
+    setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
       ...state,
+      isMapLayerActive: payload,
     }),
   },
   extraReducers: builder => {
@@ -250,7 +253,10 @@ export const analysisResultSelector = (
 export const isAnalysisLoadingSelector = (state: RootState): boolean =>
   state.analysisResultState.isLoading;
 
+export const isAnalysisLayerActiveSelector = (state: RootState): boolean =>
+  state.analysisResultState.isMapLayerActive;
+
 // Setters
-export const { example } = analysisResultSlice.actions;
+export const { setIsMapLayerActive } = analysisResultSlice.actions;
 
 export default analysisResultSlice.reducer;
