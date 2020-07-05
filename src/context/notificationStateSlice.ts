@@ -76,20 +76,20 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
     // eslint-disable-next-line fp/no-mutation
     dispatchResult = dispatch(action);
   } catch (err) {
-    console.error(err);
     dispatch(
       addNotification({
         type: 'error',
         message: err.message || err,
       }),
     );
-    return dispatchResult;
+    throw err;
   }
 
   // typical layout for rejected thunk e.g mapState/loadLayerData/rejected
   const thunkRejectedRegex = /^[A-z]+\/[A-z]+\/rejected$/;
 
   if (thunkRejectedRegex.test(action.type)) {
+    console.error(action.error);
     dispatch(
       addNotification({
         type: 'error',
