@@ -15,12 +15,9 @@ type NotificationConstructor = {
 export class Notification {
   readonly message: string;
   readonly type: Color;
-  readonly key: number;
-
-  displayed: boolean = false;
+  readonly key: number = Date.now(); // each notification needs a unique ID. Date.now() seems to do the job
 
   constructor({ message, type }: NotificationConstructor) {
-    this.key = Date.now(); // each notification needs a unique ID. Date.now() seems to do the job
     this.type = type;
     this.message = message;
   }
@@ -54,16 +51,6 @@ export const notificationStateSlice = createSlice({
         notification => notification.key !== payload,
       ),
     }),
-    setAsDisplayed: (
-      { notifications, ...rest },
-      { payload }: PayloadAction<Notification['key']>,
-    ) => ({
-      ...rest,
-      notifications: notifications.map(notification => {
-        if (payload !== notification.key) return notification;
-        return { ...notification, displayed: true };
-      }),
-    }),
   },
 });
 
@@ -76,7 +63,6 @@ export const notificationsSelector = (
 export const {
   addNotification,
   removeNotification,
-  setAsDisplayed,
 } = notificationStateSlice.actions;
 
 // middleware to add error as notifications to this slice
@@ -99,13 +85,11 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
     );
     return dispatchResult;
   }
-  const errorActions = [
-    // async thunks that have errors included with them
-    'tableState/loadTable/rejected',
-    'serverState/loadAvailableDates/rejected',
-    'mapState/loadLayerData/rejected',
-  ];
-  if (errorActions.includes(action.type)) {
+
+  // typical layout for rejected thunk e.g mapState/loadLayerData/rejected
+  const thunkRejectedRegex = /^[A-z]+\/[A-z]+\/rejected$/;
+
+  if (thunkRejectedRegex.test(action.type)) {
     dispatch(
       addNotification({
         type: 'error',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createStyles,
@@ -11,55 +11,46 @@ import {
   Notification,
   notificationsSelector,
   removeNotification,
-  setAsDisplayed,
 } from '../../context/notificationStateSlice';
 
 function Notifier({ classes }: NotifierProps) {
   const dispatch = useDispatch();
   const notifications = useSelector(notificationsSelector);
   const autoHideDuration = 50000;
-  const [openNotification, setOpenNotification] = useState<Notification | null>(
-    null,
-  );
 
-  useEffect(() => {
-    notifications.forEach(notification => {
-      const { key, displayed } = notification;
-
-      if (displayed || openNotification) return; // already displayed or something already displayed, nothing to do here.
-      setOpenNotification(notification);
-      dispatch(setAsDisplayed(key));
-    });
-  }, [notifications, dispatch, classes.notification, openNotification]);
-  const handleClose = () => {
-    if (!openNotification) return;
-    dispatch(removeNotification(openNotification.key));
-    setOpenNotification(null);
+  const handleClose = (notification: Notification) => () => {
+    dispatch(removeNotification(notification.key));
   };
-
   return (
-    <Snackbar
-      className={classes.notification}
-      autoHideDuration={autoHideDuration}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      open={!!openNotification}
-      onClose={handleClose}
-    >
-      <Alert
-        variant="filled"
-        severity={openNotification?.type}
-        onClose={handleClose}
-      >
-        {openNotification?.message}
-      </Alert>
-    </Snackbar>
+    <>
+      {notifications.map((notification, i) => {
+        return (
+          <Snackbar
+            key={notification.key}
+            style={{ marginTop: `${i * 50}px` }}
+            className={classes.notification}
+            autoHideDuration={autoHideDuration}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            open
+          >
+            <Alert
+              variant="filled"
+              severity={notification.type}
+              onClose={handleClose(notification)}
+            >
+              {notification.message}
+            </Alert>
+          </Snackbar>
+        );
+      })}
+    </>
   );
 }
 
 const styles = () =>
   createStyles({
     notification: {
-      top: '55px',
+      top: '65px',
       '@media (max-width:960px)': {
         top: '25px',
       },
