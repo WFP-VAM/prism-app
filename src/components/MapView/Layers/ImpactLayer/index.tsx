@@ -31,7 +31,7 @@ function getHazardData(evt: any, operation: string) {
   return data ? data.toFixed(2) : 'No Data';
 }
 
-export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
+const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   const map = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { data, date } =

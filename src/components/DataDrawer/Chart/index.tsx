@@ -133,7 +133,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
   };
 }
 
-export function Chart({ title, data, config }: ChartProps) {
+function Chart({ title, data, config }: ChartProps) {
   try {
     const chartData = formatChartData(data, config);
 
