@@ -26,7 +26,7 @@ export const store = configureStore({
     ...getDefaultMiddleware({
       serializableCheck: false,
       immutableCheck: {
-        ignoredPaths: ['mapState.layersData'],
+        ignoredPaths: ['mapState.layersData', 'analysisResultState.result'],
       },
     }),
   ],

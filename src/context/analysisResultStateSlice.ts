@@ -198,7 +198,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       features,
     },
     legend,
-    aggregateData,
   );
 });
 
