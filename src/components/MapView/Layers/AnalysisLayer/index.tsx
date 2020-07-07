@@ -41,7 +41,7 @@ function AnalysisLayer() {
           addPopupData({
             analysis: {
               data: get(
-                analysisData?.featureCollection?.features[0],
+                analysisData.featureCollection.features[0],
                 'properties.data',
                 'No Data',
               ),

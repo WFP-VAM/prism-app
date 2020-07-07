@@ -1,7 +1,7 @@
 // TODO remove
 /* eslint-disable no-console */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureCollection } from 'geojson';
+import { FeatureCollection, Position } from 'geojson';
 import { get, find } from 'lodash';
 import { CreateAsyncThunkTypes, RootState } from './store';
 import {
@@ -58,6 +58,7 @@ export type TableRow = {
   nativeName: string;
   name: string;
   baselineValue: DataRecord['value'];
+  coordinates?: Position;
 } & { [k in AggregationOperations]: number };
 
 const initialState: AnalysisResultState = {
@@ -113,6 +114,7 @@ function generateTableFromApiData(
       mean: get(row, `stats_${AggregationOperations.mean}`, 0),
       median: get(row, `stats_${AggregationOperations.median}`, 0),
       baselineValue,
+      coordinates: (featureBoundary?.geometry as any).coordinates[0][0][0], // TODO likely will not keep
     };
     return tableRow;
   });

@@ -13,12 +13,15 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
 import { TableRow as AnalysisTableObject } from '../../../../context/analysisResultStateSlice';
+import { showPopup } from '../../../../context/tooltipStateSlice';
 import { AggregationOperations } from '../../../../config/types';
 
 function AnalysisTable({ classes, tableData }: AnalysisTableProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const dispatch = useDispatch();
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -79,7 +82,23 @@ function AnalysisTable({ classes, tableData }: AnalysisTableProps) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(row => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={row.name}
+                    onClick={() => {
+                      // TODO if we decide to keep, add popup data?
+                      if (row.coordinates)
+                        dispatch(
+                          showPopup({
+                            coordinates: row.coordinates,
+                            locationName: row.name,
+                          }),
+                        );
+                    }}
+                    style={{ cursor: row.coordinates ? 'pointer' : 'none' }}
+                  >
                     {columns.map(column => {
                       const value = row[column.id];
                       return (
