@@ -52,8 +52,8 @@ function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
 
   const columns: Column[] = [
     {
-      id: 'nativeName',
-      label: 'Native Name',
+      id: 'localName',
+      label: 'Local Name',
     },
     {
       id: 'name',

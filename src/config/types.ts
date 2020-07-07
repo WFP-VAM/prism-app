@@ -146,7 +146,7 @@ export class BoundaryLayerProps extends CommonLayerProps {
   path: string; // path to admin_boundries.json file - web or local.
   adminCode: string;
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
-  adminLevelNativeNames: string[]; // Same as above, native to country
+  adminLevelLocalNames: string[]; // Same as above, local to country
 }
 
 export class WMSLayerProps extends CommonLayerProps {

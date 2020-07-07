@@ -97,14 +97,14 @@ function generateTableFromApiData(
   // find the key that will let us reference the names of the bounding boxes.
   const adminLevelName =
     adminLayer.adminLevelNames[adminLevel - 1] || adminLayer.adminLevelNames[0];
-  // for native too.
-  const adminLevelNativeName =
-    adminLayer.adminLevelNativeNames[adminLevel - 1] ||
-    adminLayer.adminLevelNativeNames[0];
+  // for local name too.
+  const adminLevelLocalName =
+    adminLayer.adminLevelLocalNames[adminLevel - 1] ||
+    adminLayer.adminLevelLocalNames[0];
 
   return aggregateData.map((row: any) => {
     // find feature from admin boundaries that closely matches this api row.
-    // once we find it we can get the corresponding native name.
+    // once we find it we can get the corresponding local name.
     const featureBoundary = find(
       adminLayerData.features,
       (feature: any) =>
@@ -114,7 +114,7 @@ function generateTableFromApiData(
     const name: string =
       featureBoundary?.properties?.[adminLevelName] || 'No Name';
     const localName: string =
-      featureBoundary?.properties?.[adminLevelNativeName] || 'No Name';
+      featureBoundary?.properties?.[adminLevelLocalName] || 'No Name';
 
     const baselineValue =
       layerData.find(({ adminKey }) => {
