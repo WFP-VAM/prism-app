@@ -132,6 +132,7 @@ function Analyser({ classes }: AnalyserProps) {
     };
 
     const data = await dispatch(requestAndStoreAnalysis(params));
+
     // TODO remove
     // eslint-disable-next-line no-console
     console.log(data);

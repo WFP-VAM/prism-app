@@ -6,7 +6,7 @@ import { layerDataSelector } from '../mapStateSlice';
 import { ThunkApi } from '../store';
 import { getBoundaryLayerSingleton } from '../../config/utils';
 
-type DataRecord = {
+export type DataRecord = {
   adminKey: string;
   value: string | number | null;
 };
@@ -58,8 +58,8 @@ export async function fetchNSOLayerData(
           properties,
           adminBoundaryLayer.adminCode,
         ) as string;
-        const match = layerData.find(
-          ({ adminKey }) => adminBoundaryCode.indexOf(adminKey) === 0,
+        const match = layerData.find(({ adminKey }) =>
+          adminBoundaryCode.startsWith(adminKey),
         );
         if (match && !isNull(match.value)) {
           // Do we want support for non-numeric values (like string colors?)

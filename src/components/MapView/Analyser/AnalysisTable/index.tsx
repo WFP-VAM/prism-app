@@ -1,18 +1,20 @@
 /* eslint-disable no-console */
+// TODO remove above
 import React, { useState } from 'react';
 import {
   createStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
   withStyles,
   WithStyles,
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  TablePagination,
 } from '@material-ui/core';
 import { TableRow as AnalysisTableObject } from '../../../../context/analysisResultStateSlice';
+import { AggregationOperations } from '../../../../config/types';
 
 function AnalysisTable({ classes, tableData }: AnalysisTableProps) {
   const [page, setPage] = useState(0);
@@ -30,7 +32,7 @@ function AnalysisTable({ classes, tableData }: AnalysisTableProps) {
   };
 
   type Column = {
-    id: 'name' | 'nativeName' | 'mean' | 'median';
+    id: keyof AnalysisTableObject;
     label: string;
     format?: (value: number) => string;
   };
@@ -44,14 +46,19 @@ function AnalysisTable({ classes, tableData }: AnalysisTableProps) {
       label: 'Name',
     },
     {
-      id: 'mean',
+      id: AggregationOperations.mean,
       label: 'Mean',
       format: (value: number) => value.toLocaleString('en-US'),
     },
     {
-      id: 'median',
+      id: AggregationOperations.median,
       label: 'Median',
       format: (value: number) => value.toLocaleString('en-US'),
+    },
+    {
+      id: 'baselineValue',
+      label: 'Baseline Value',
+      // format: (value: number | string) => value.toLocaleString('en-US'), Not needed for this one?
     },
   ];
   return (

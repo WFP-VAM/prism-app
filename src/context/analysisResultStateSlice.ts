@@ -25,6 +25,8 @@ import { getBoundaryLayerSingleton } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { layerDataSelector } from './mapStateSlice';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
+import { DataRecord, NSOLayerData } from './layers/nso';
+import { BoundaryLayerData } from './layers/boundary';
 
 type AnalysisResultState = {
   result?: AnalysisResult;
@@ -55,6 +57,7 @@ class AnalysisResult {
 export type TableRow = {
   nativeName: string;
   name: string;
+  baselineValue: DataRecord['value'];
 } & { [k in AggregationOperations]: number };
 
 const initialState: AnalysisResultState = {
@@ -64,8 +67,16 @@ const initialState: AnalysisResultState = {
 
 function generateTableFromApiData(
   aggregateData: AsyncReturnType<typeof fetchApiData>, // data from api
-  { layer: adminLayer, data: adminLayerData }: LayerData<BoundaryLayerProps>, // admin layer, both props and data
-  adminLevel: number, // admin level - state/district focus etc
+  // admin layer, both props and data. Aimed to closely match LayerData<BoundaryLayerProps>
+  {
+    layer: adminLayer,
+    data: adminLayerData,
+  }: { layer: BoundaryLayerProps; data: BoundaryLayerData },
+  // baseline layer, both props and data
+  {
+    layer: { adminLevel },
+    data: { layerData },
+  }: { layer: NSOLayerProps; data: NSOLayerData },
 ): TableRow[] {
   // find the key that will let us reference the names of the bounding boxes.
   const adminLevelName =
@@ -89,11 +100,19 @@ function generateTableFromApiData(
     const nativeName: string =
       featureBoundary?.properties?.[adminLevelNativeName] || 'No Name';
 
+    const baselineValue =
+      layerData.find(({ adminKey }) => {
+        return (featureBoundary?.properties?.[
+          adminLayer.adminCode
+        ] as string).startsWith(adminKey);
+      })?.value || 'No Data';
+
     const tableRow: TableRow = {
       name,
       nativeName,
       mean: get(row, `stats_${AggregationOperations.mean}`, 0),
       median: get(row, `stats_${AggregationOperations.median}`, 0),
+      baselineValue,
     };
     return tableRow;
   });
@@ -186,7 +205,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const tableRows: TableRow[] = generateTableFromApiData(
     aggregateData,
     adminBoundariesData,
-    baselineLayer.adminLevel,
+    { layer: baselineLayer, data: baselineLayerData },
   );
 
   const { legend } = baselineLayer;
@@ -198,11 +217,12 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       features,
     },
     legend,
+    aggregateData,
   );
 });
 
 export const analysisResultSlice = createSlice({
-  name: 'analysisResultSlice',
+  name: 'analysisResultState',
   initialState,
   reducers: {
     setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
