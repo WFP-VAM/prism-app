@@ -34,7 +34,7 @@ type AnalysisResultState = {
   isLoading: boolean;
   isMapLayerActive: boolean;
 };
-class AnalysisResult {
+export class AnalysisResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
   tableData: TableRow[];

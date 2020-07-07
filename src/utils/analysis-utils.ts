@@ -1,5 +1,5 @@
 import { get, has, isNull, isString } from 'lodash';
-import { Feature, FeatureCollection } from 'geojson';
+import { Feature } from 'geojson';
 import bbox from '@turf/bbox';
 import {
   LayerData,
@@ -26,11 +26,8 @@ import {
 import { BoundaryLayerData } from '../context/layers/boundary';
 import { NSOLayerData } from '../context/layers/nso';
 import { getWCSLayerUrl, WMSLayerData } from '../context/layers/wms';
-
-export type ImpactLayerData = {
-  boundaries: FeatureCollection;
-  impactFeatures: FeatureCollection;
-};
+import { AnalysisResult } from '../context/analysisResultStateSlice';
+import { Column } from '../components/MapView/Analyser/AnalysisTable';
 
 export type BaselineLayerData = NSOLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -328,4 +325,26 @@ export async function loadFeaturesClientSide(
     }
     return acc;
   }, [] as GeoJsonBoundary[]);
+}
+export function downloadCSVFromTableData(
+  { tableData, key: createdAt }: AnalysisResult,
+  columns: Column[],
+) {
+  // Built with https://stackoverflow.com/a/14966131/5279269
+  const csvLines = [
+    columns.map(col => col.label).join(','),
+    ...tableData.map(row => columns.map(col => row[col.id]).join(',')),
+  ];
+  const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
+
+  const encodedUri = encodeURI(rawCsv);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute(
+    'download',
+    `analysis_${new Date(createdAt).toDateString()}.csv`,
+  );
+  document.body.appendChild(link); // Required for FF
+
+  link.click();
 }

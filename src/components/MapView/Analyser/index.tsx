@@ -169,15 +169,6 @@ function Analyser({ classes }: AnalyserProps) {
             >
               <Typography variant="body2">Show Result</Typography>
             </Button>,
-            <Button
-              key="download"
-              variant="contained"
-              color="primary"
-              className={classes.analyserButton}
-              disabled={isAnalysisLoading}
-            >
-              <Typography variant="body2">Download</Typography>
-            </Button>,
           ]
         : ''}
 
@@ -277,13 +268,6 @@ function Analyser({ classes }: AnalyserProps) {
                 >
                   <Typography variant="body2">Show Result</Typography>
                 </Button>
-
-                <Button
-                  className={classes.innerAnalysisButton}
-                  disabled={isAnalysisLoading}
-                >
-                  <Typography variant="body2">Download</Typography>
-                </Button>
               </>
             ) : (
               ''
@@ -310,13 +294,8 @@ function Analyser({ classes }: AnalyserProps) {
               </RadioGroup>
             </FormControl>
             {analysisResult && analysisResult.tableData ? (
-              <AnalysisTable
-                tableData={analysisResult.tableData}
-                baselineLayerTitle={analysisResult.getBaselineLayer().title}
-              />
-            ) : (
-              ''
-            )}
+              <AnalysisTable analysisResult={analysisResult} />
+            ) : null}
           </div>
         )}
       </div>

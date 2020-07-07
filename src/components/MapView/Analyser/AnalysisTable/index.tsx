@@ -2,6 +2,7 @@
 // TODO remove above
 import React, { useState } from 'react';
 import {
+  Button,
   createStyles,
   Table,
   TableBody,
@@ -10,21 +11,32 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Typography,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { TableRow as AnalysisTableObject } from '../../../../context/analysisResultStateSlice';
+import {
+  AnalysisResult,
+  TableRow as AnalysisTableObject,
+} from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
-import { AggregationOperations, NSOLayerProps } from '../../../../config/types';
+import { AggregationOperations } from '../../../../config/types';
+import { downloadCSVFromTableData } from '../../../../utils/analysis-utils';
 
-function AnalysisTable({
-  classes,
-  tableData,
-  baselineLayerTitle,
-}: AnalysisTableProps) {
+export type Column = {
+  id: keyof AnalysisTableObject;
+  label: string;
+  format?: (value: number) => string;
+};
+
+function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const { tableData } = analysisResult;
+  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
+
   const dispatch = useDispatch();
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -38,11 +50,6 @@ function AnalysisTable({
     setPage(0);
   };
 
-  type Column = {
-    id: keyof AnalysisTableObject;
-    label: string;
-    format?: (value: number) => string;
-  };
   const columns: Column[] = [
     {
       id: 'nativeName',
@@ -128,7 +135,12 @@ function AnalysisTable({
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
-      ,
+      <Button
+        className={classes.innerAnalysisButton}
+        onClick={() => downloadCSVFromTableData(analysisResult, columns)}
+      >
+        <Typography variant="body2">Download</Typography>
+      </Button>
     </div>
   );
 }
@@ -146,11 +158,13 @@ const styles = () =>
     tableHead: {
       backgroundColor: '#3d474a',
     },
+    innerAnalysisButton: {
+      backgroundColor: '#3d474a',
+    },
   });
 
 interface AnalysisTableProps extends WithStyles<typeof styles> {
-  tableData: AnalysisTableObject[];
-  baselineLayerTitle: NSOLayerProps['title'];
+  analysisResult: AnalysisResult;
 }
 
 export default withStyles(styles)(AnalysisTable);
