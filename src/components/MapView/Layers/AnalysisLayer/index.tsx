@@ -46,9 +46,15 @@ function AnalysisLayer() {
               data: get(evt.features[0], 'properties.data', 'No Data'),
               coordinates,
             },
-            [`${analysisData.getHazardLayer().title} (${'mean'})`]: {
+            [`${analysisData.getHazardLayer().title} (${
+              analysisData.statistic
+            })`]: {
               // TODO
-              data: 'WIP',
+              data: get(
+                evt.features[0],
+                ['properties', analysisData.statistic],
+                'No Data',
+              ),
               coordinates,
             },
           }),

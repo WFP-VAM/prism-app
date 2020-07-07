@@ -39,7 +39,7 @@ export class AnalysisResult {
   featureCollection: FeatureCollection;
   tableData: TableRow[];
   rawApiData?: object[];
-
+  statistic: AggregationOperations;
   legend: LegendDefinition;
   hazardLayerId: WMSLayerProps['id'];
   baselineLayerId: NSOLayerProps['id'];
@@ -49,10 +49,12 @@ export class AnalysisResult {
     featureCollection: FeatureCollection,
     hazardLayer: WMSLayerProps,
     baselineLayer: NSOLayerProps,
+    statistic: AggregationOperations,
     rawApiData?: object[],
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
+    this.statistic = statistic;
     this.legend = baselineLayer.legend;
     this.rawApiData = rawApiData;
 
@@ -231,6 +233,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     },
     hazardLayer,
     baselineLayer,
+    statistic,
     aggregateData, // TODO we only pass this to make debugging easier - not used anywhere
   );
 });
