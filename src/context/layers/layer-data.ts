@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DiscriminateUnion, LayerType } from '../../config/types';
 import { Extent } from '../../components/MapView/Layers/raster-utils';
+/* eslint-disable import/no-cycle */
 import { CreateAsyncThunkTypes, ThunkApi } from '../store';
 import { fetchNsoLayerData, NSOLayerData } from './nso';
 import { fetchImpactLayerData, ImpactLayerData } from './impact';
@@ -9,7 +10,8 @@ import {
   fetchGroundstationData,
   GroundstationLayerData,
 } from './groundstation';
-import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
+import { fetchBoundaryLayerData, BoundaryLayerData } from './boundary';
+/* eslint-enable import/no-cycle */
 
 type LayerSpecificDataTypes = {
   boundary: BoundaryLayerData;

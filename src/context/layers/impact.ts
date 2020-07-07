@@ -1,7 +1,7 @@
 import { get, has, isNull, isString } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
-import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
+
 import {
   BoundaryLayerProps,
   ImpactLayerProps,
@@ -12,8 +12,6 @@ import {
   AggregationOperations,
   StatsApi,
 } from '../../config/types';
-import { ThunkApi } from '../store';
-import { layerDataSelector } from '../mapStateSlice';
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
@@ -24,9 +22,14 @@ import {
   pixelsInFeature,
   Extent,
 } from '../../components/MapView/Layers/raster-utils';
+/* eslint-disable import/no-cycle */
+import { ThunkApi } from '../store';
+import { layerDataSelector } from '../mapStateSlice';
+import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
 import { NSOLayerData } from './nso';
 import { getWCSLayerUrl, WMSLayerData } from './wms';
 import { BoundaryLayerData } from './boundary';
+/* eslint-enable import/no-cycle */
 
 export type ImpactLayerData = {
   boundaries: FeatureCollection;

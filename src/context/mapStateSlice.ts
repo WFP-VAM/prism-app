@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
+// eslint-disable-next-line import/no-cycle
 import { RootState } from './store';
 import { LayerType } from '../config/types';
+// eslint-disable-next-line import/no-cycle
 import { LayerData, LayerDataTypes, loadLayerData } from './layers/layer-data';
 
 interface DateRange {

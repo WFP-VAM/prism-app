@@ -1,9 +1,11 @@
 import { FeatureCollection } from 'geojson';
 import { get, isNull, isString } from 'lodash';
-import { LayerData, LayerDataParams } from './layer-data';
 import { BoundaryLayerProps, NSOLayerProps } from '../../config/types';
+/* eslint-disable import/no-cycle */
+import { LayerData, LayerDataParams } from './layer-data';
 import { layerDataSelector } from '../mapStateSlice';
 import { ThunkApi } from '../store';
+/* eslint-enable import/no-cycle */
 import { getBoundaryLayerSingleton } from '../../config/utils';
 
 type DataRecord = {

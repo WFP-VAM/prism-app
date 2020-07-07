@@ -1,4 +1,5 @@
 import { FeatureCollection } from 'geojson';
+// eslint-disable-next-line import/no-cycle
 import { LayerDataParams } from './layer-data';
 import { BoundaryLayerProps } from '../../config/types';
 

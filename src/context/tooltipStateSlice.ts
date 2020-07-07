@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { merge } from 'lodash';
+// eslint-disable-next-line import/no-cycle
 import { RootState } from './store';
 
 export interface PopupData {
