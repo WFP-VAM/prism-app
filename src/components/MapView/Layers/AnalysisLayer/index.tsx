@@ -39,15 +39,17 @@ function AnalysisLayer() {
       data={analysisData.featureCollection}
       fillPaint={fillPaintData(analysisData.legend)}
       fillOnClick={(evt: any) => {
+        const coordinates = evt.lngLat;
         dispatch(
           addPopupData({
-            analysis: {
-              data: get(
-                analysisData.featureCollection.features[0],
-                'properties.data',
-                'No Data',
-              ),
-              coordinates: evt.lngLat,
+            [analysisData.getBaselineLayer().title]: {
+              data: get(evt.features[0], 'properties.data', 'No Data'),
+              coordinates,
+            },
+            [`${analysisData.getHazardLayer().title} (${'mean'})`]: {
+              // TODO
+              data: 'WIP',
+              coordinates,
             },
           }),
         );

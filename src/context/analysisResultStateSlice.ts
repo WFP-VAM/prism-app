@@ -231,7 +231,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     },
     hazardLayer,
     baselineLayer,
-    aggregateData,
+    aggregateData, // TODO we only pass this to make debugging easier - not used anywhere
   );
 });
 

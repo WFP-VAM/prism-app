@@ -129,7 +129,7 @@ function Analyser({ classes }: AnalyserProps) {
       date: availableDates[selectedHazardLayer.serverLayerName][0], // TODO load from ui
       statistic,
       extent: adminBoundariesExtent,
-      threshold: {},
+      threshold: {}, // TODO load from ui
     };
 
     const data = await dispatch(requestAndStoreAnalysis(params));
