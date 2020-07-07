@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+// TODO remove above
 import React, { useMemo, useState } from 'react';
 import {
   Button,
@@ -309,7 +310,10 @@ function Analyser({ classes }: AnalyserProps) {
               </RadioGroup>
             </FormControl>
             {analysisResult && analysisResult.tableData ? (
-              <AnalysisTable tableData={analysisResult.tableData} />
+              <AnalysisTable
+                tableData={analysisResult.tableData}
+                baselineLayerTitle={analysisResult.getBaselineLayer().title}
+              />
             ) : (
               ''
             )}

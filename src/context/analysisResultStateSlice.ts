@@ -21,7 +21,7 @@ import {
   generateFeaturesFromApiData,
 } from '../utils/analysis-utils';
 import { getWCSLayerUrl } from './layers/wms';
-import { getBoundaryLayerSingleton } from '../config/utils';
+import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { layerDataSelector } from './mapStateSlice';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
@@ -39,18 +39,31 @@ class AnalysisResult {
   featureCollection: FeatureCollection;
   tableData: TableRow[];
   rawApiData?: object[];
+
   legend: LegendDefinition;
+  hazardLayerId: WMSLayerProps['id'];
+  baselineLayerId: NSOLayerProps['id'];
 
   constructor(
     tableData: TableRow[],
     featureCollection: FeatureCollection,
-    legend: LegendDefinition,
+    hazardLayer: WMSLayerProps,
+    baselineLayer: NSOLayerProps,
     rawApiData?: object[],
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
-    this.legend = legend;
+    this.legend = baselineLayer.legend;
     this.rawApiData = rawApiData;
+
+    this.hazardLayerId = hazardLayer.id;
+    this.baselineLayerId = baselineLayer.id;
+  }
+  getHazardLayer(): WMSLayerProps {
+    return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
+  }
+  getBaselineLayer(): NSOLayerProps {
+    return LayerDefinitions[this.baselineLayerId] as NSOLayerProps;
   }
 }
 
@@ -210,15 +223,14 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     { layer: baselineLayer, data: baselineLayerData },
   );
 
-  const { legend } = baselineLayer;
-
   return new AnalysisResult(
     tableRows,
     {
       ...adminBoundariesData.data,
       features,
     },
-    legend,
+    hazardLayer,
+    baselineLayer,
     aggregateData,
   );
 });

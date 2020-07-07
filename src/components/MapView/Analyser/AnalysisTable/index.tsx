@@ -16,9 +16,13 @@ import {
 import { useDispatch } from 'react-redux';
 import { TableRow as AnalysisTableObject } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
-import { AggregationOperations } from '../../../../config/types';
+import { AggregationOperations, NSOLayerProps } from '../../../../config/types';
 
-function AnalysisTable({ classes, tableData }: AnalysisTableProps) {
+function AnalysisTable({
+  classes,
+  tableData,
+  baselineLayerTitle,
+}: AnalysisTableProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const dispatch = useDispatch();
@@ -60,7 +64,7 @@ function AnalysisTable({ classes, tableData }: AnalysisTableProps) {
     },
     {
       id: 'baselineValue',
-      label: 'Baseline Value',
+      label: baselineLayerTitle,
       // format: (value: number | string) => value.toLocaleString('en-US'), Not needed for this one?
     },
   ];
@@ -146,6 +150,7 @@ const styles = () =>
 
 interface AnalysisTableProps extends WithStyles<typeof styles> {
   tableData: AnalysisTableObject[];
+  baselineLayerTitle: NSOLayerProps['title'];
 }
 
 export default withStyles(styles)(AnalysisTable);
