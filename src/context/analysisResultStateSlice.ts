@@ -70,7 +70,7 @@ export class AnalysisResult {
 }
 
 export type TableRow = {
-  nativeName: string;
+  localName: string;
   name: string;
   baselineValue: DataRecord['value'];
   coordinates?: Position;
@@ -113,7 +113,7 @@ function generateTableFromApiData(
 
     const name: string =
       featureBoundary?.properties?.[adminLevelName] || 'No Name';
-    const nativeName: string =
+    const localName: string =
       featureBoundary?.properties?.[adminLevelNativeName] || 'No Name';
 
     const baselineValue =
@@ -125,7 +125,7 @@ function generateTableFromApiData(
 
     const tableRow: TableRow = {
       name,
-      nativeName,
+      localName,
       mean: get(row, `stats_${AggregationOperations.mean}`, 0),
       median: get(row, `stats_${AggregationOperations.median}`, 0),
       baselineValue,
