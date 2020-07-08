@@ -6,8 +6,12 @@ import {
   createStyles,
   FormControl,
   FormControlLabel,
+  InputLabel,
+  ListSubheader,
+  MenuItem,
   Radio,
   RadioGroup,
+  Select,
   Theme,
   Typography,
   withStyles,
@@ -24,6 +28,8 @@ import {
 import {
   AggregationOperations,
   BoundaryLayerProps,
+  LayerKey,
+  LayerType,
   NSOLayerProps,
   WMSLayerProps,
 } from '../../../config/types';
@@ -38,6 +44,7 @@ import {
   requestAndStoreAnalysis,
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
+import { menuList } from '../../NavBar/utils';
 
 const layers = Object.values(LayerDefinitions);
 const baselineLayers = layers.filter(
@@ -59,14 +66,9 @@ function Analyser({ classes }: AnalyserProps) {
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
 
   const [openAnalyserForm, setOpenAnalyserForm] = useState(false);
-  // const [analyserOption, setAnalyserOption] = useState('new');
-  const [hazardLayerId, setHazardLayerId] = useState(
-    hazardLayers[0].id as string,
-  );
+  const [hazardLayerId, setHazardLayerId] = useState(hazardLayers[0].id);
   const [statistic, setStatistic] = useState(AggregationOperations.mean);
-  const [baselineLayerId, setBaselineLayerId] = useState(
-    baselineLayers[0].id as string,
-  );
+  const [baselineLayerId, setBaselineLayerId] = useState(baselineLayers[0].id);
 
   const [openResult, setOpenResult] = useState(false);
 
@@ -79,30 +81,10 @@ function Analyser({ classes }: AnalyserProps) {
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData)
       // not loaded yet. Should be loaded in MapView
-      return undefined;
+      return null;
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
-  const hazardLayerOptions = map(hazardLayers, hazardLayer => {
-    return (
-      <FormControlLabel
-        key={hazardLayer.id}
-        value={hazardLayer.id}
-        control={<Radio className={classes.radioOptions} size="small" />}
-        label={hazardLayer.title}
-      />
-    );
-  });
-  const baselineLayerOptions = map(baselineLayers, baselineLayer => {
-    return (
-      <FormControlLabel
-        key={baselineLayer.id}
-        value={baselineLayer.id}
-        control={<Radio className={classes.radioOptions} size="small" />}
-        label={baselineLayer.title}
-      />
-    );
-  });
   const statisticOptions = map(Object.keys(AggregationOperations), stat => {
     return (
       <FormControlLabel
@@ -182,46 +164,18 @@ function Analyser({ classes }: AnalyserProps) {
       >
         {openAnalyserForm ? (
           <div>
-            {/* <FormControl component="fieldset">
-          <RadioGroup value={analyserOption} onChange={onAnalyserOptionChange} row>
-            <FormControlLabel
-              value="new"
-              control={
-                <Radio className={classes.analyserOptions} size="small" />
-              }
-              label="Create a new analysis"
-            />
-            <FormControlLabel
-              value="pre-configure"
-              control={
-                <Radio className={classes.analyserOptions} size="small" />
-              }
-              label="Run a pre-configured analysis"
-            />
-            <FormControlLabel
-              value="generate"
-              control={
-                <Radio className={classes.analyserOptions} size="small" />
-              }
-              label="Generate spatial statistics"
-            />
-          </RadioGroup>
-        </FormControl> */}
             <div className={classes.newAnalyserContainer}>
               <div>
                 <Typography variant="body2">
                   Step 1 - Choose a hazard Layer:
                 </Typography>
-
-                <FormControl component="div">
-                  <RadioGroup
-                    name="hazardLayer"
-                    value={hazardLayerId}
-                    onChange={onOptionChange(setHazardLayerId)}
-                  >
-                    {hazardLayerOptions}
-                  </RadioGroup>
-                </FormControl>
+                <LayerSelector
+                  type="wms"
+                  value={hazardLayerId}
+                  setValue={setHazardLayerId}
+                  title="Hazard Layer"
+                  classes={classes}
+                />
               </div>
               <div>
                 <Typography variant="body2">
@@ -243,15 +197,13 @@ function Analyser({ classes }: AnalyserProps) {
                 <Typography variant="body2">
                   Step 3 - Choose a baseline Layer:
                 </Typography>
-                <FormControl component="div">
-                  <RadioGroup
-                    name="baselineLayer"
-                    value={baselineLayerId}
-                    onChange={onOptionChange(setBaselineLayerId)}
-                  >
-                    {baselineLayerOptions}
-                  </RadioGroup>
-                </FormControl>
+                <LayerSelector
+                  type="nso"
+                  value={baselineLayerId}
+                  setValue={setBaselineLayerId}
+                  title="Baseline Layer"
+                  classes={classes}
+                />
               </div>
             </div>
             <Button
@@ -303,6 +255,59 @@ function Analyser({ classes }: AnalyserProps) {
   );
 }
 
+function LayerSelector({
+  type,
+  classes,
+  value,
+  setValue,
+  title,
+}: LayerSelectorProps) {
+  const categories = menuList
+    // 1. flatten to just the layer categories, don't need the big menus
+    .flatMap(menu => menu.layersCategories)
+    // 2. get rid of layers within the categories which don't match the given type
+    .map(category => ({
+      ...category,
+      layers: category.layers.filter(layer => layer.type === type),
+    }))
+    // 3. filter categories which don't have any layers at the end of it all.
+    .filter(category => category.layers.length > 0);
+  const defaultValue = categories[0].layers[0].id;
+  if (!value) {
+    setValue(defaultValue);
+    return null;
+  }
+
+  return (
+    <FormControl>
+      <InputLabel htmlFor={`${title}-select`}>{title}</InputLabel>
+      <Select
+        defaultValue={defaultValue}
+        value={value}
+        onChange={e => {
+          setValue(e.target.value as LayerKey);
+        }}
+        id={`${title}-select`}
+      >
+        {categories.reduce(
+          (components, category) => [
+            ...components,
+            <ListSubheader key={category.title}>
+              {category.title}
+            </ListSubheader>,
+            ...category.layers.map(layer => (
+              <MenuItem key={layer.id} value={layer.id}>
+                {layer.title}
+              </MenuItem>
+            )),
+          ],
+          [] as any[],
+        )}
+      </Select>
+    </FormControl>
+  );
+}
+
 const styles = (theme: Theme) =>
   createStyles({
     analyser: {
@@ -346,5 +351,12 @@ const styles = (theme: Theme) =>
   });
 
 interface AnalyserProps extends WithStyles<typeof styles> {}
+
+interface LayerSelectorProps extends WithStyles<typeof styles> {
+  type: LayerType['type'];
+  value: LayerKey;
+  setValue: (val: LayerKey) => void;
+  title: string;
+}
 
 export default withStyles(styles)(Analyser);

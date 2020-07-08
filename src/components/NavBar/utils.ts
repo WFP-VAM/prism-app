@@ -30,7 +30,7 @@ type LayersCategoriesType = LayersCategoryType[];
 
 type MenuItemsType = MenuItemType[];
 
-// TODO better typing
+// TODO better typing for layer key
 function formatLayersCategories(layersList: {
   [key: string]: string[];
 }): LayersCategoriesType {
