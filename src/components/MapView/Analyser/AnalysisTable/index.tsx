@@ -148,7 +148,6 @@ function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
 const styles = () =>
   createStyles({
     tableContainer: {
-      maxHeight: '50vh',
       border: '2px solid',
     },
     tableHead: {

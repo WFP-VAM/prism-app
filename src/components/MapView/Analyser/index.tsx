@@ -6,12 +6,15 @@ import {
   createStyles,
   FormControl,
   FormControlLabel,
+  FormGroup,
   InputLabel,
+  LinearProgress,
   ListSubheader,
   MenuItem,
   Radio,
   RadioGroup,
   Select,
+  Switch,
   Theme,
   Typography,
   withStyles,
@@ -41,6 +44,9 @@ import {
   AnalysisDispatchParams,
   analysisResultSelector,
   isAnalysisLoadingSelector,
+  isAnalysisLayerActiveSelector,
+  setIsMapLayerActive,
+  clearAnalysisResult,
   requestAndStoreAnalysis,
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
@@ -63,14 +69,15 @@ function Analyser({ classes }: AnalyserProps) {
     | undefined;
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
-  const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
 
-  const [openAnalyserForm, setOpenAnalyserForm] = useState(false);
+  const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
+  const isMapLayerActive = useSelector(isAnalysisLayerActiveSelector);
+
+  const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState(false);
+  const [isTableViewOpen, setIsTableViewOpen] = useState(true);
   const [hazardLayerId, setHazardLayerId] = useState(hazardLayers[0].id);
   const [statistic, setStatistic] = useState(AggregationOperations.Mean);
   const [baselineLayerId, setBaselineLayerId] = useState(baselineLayers[0].id);
-
-  const [openResult, setOpenResult] = useState(false);
 
   const onOptionChange = (setterFunc: (val: any) => void) => (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -98,6 +105,11 @@ function Analyser({ classes }: AnalyserProps) {
 
   const runAnalyser = async () => {
     if (!adminBoundariesExtent) return; // hasn't been calculated yet
+    if (analysisResult) {
+      // if one exists we are likely trying to clear it to do a new one
+      dispatch(clearAnalysisResult());
+      return;
+    }
 
     const selectedHazardLayer = find(hazardLayers, {
       id: hazardLayerId,
@@ -127,8 +139,7 @@ function Analyser({ classes }: AnalyserProps) {
         variant="contained"
         color="primary"
         onClick={() => {
-          setOpenAnalyserForm(!openAnalyserForm);
-          setOpenResult(false);
+          setIsAnalyserFormOpen(!isAnalyserFormOpen);
         }}
       >
         <Assessment style={{ marginRight: '10px' }} />
@@ -136,33 +147,14 @@ function Analyser({ classes }: AnalyserProps) {
         <ArrowDropDown />
       </Button>
 
-      {isAnalysisLoading || analysisResult
-        ? [
-            <Button
-              key="show"
-              variant="contained"
-              color="primary"
-              className={classes.analyserButton}
-              onClick={() => {
-                setOpenAnalyserForm(false);
-                setOpenResult(!openResult);
-              }}
-              disabled={isAnalysisLoading}
-            >
-              <Typography variant="body2">Show Result</Typography>
-            </Button>,
-          ]
-        : ''}
-
       <div
         className={classes.analyserMenu}
         style={{
-          // eslint-disable-next-line no-nested-ternary
-          width: openAnalyserForm ? '40vw' : openResult ? 'min-content' : 0,
-          padding: openAnalyserForm || openResult ? 10 : 0,
+          width: isAnalyserFormOpen ? 'min-content' : 0,
+          padding: isAnalyserFormOpen ? 10 : 0,
         }}
       >
-        {openAnalyserForm ? (
+        {isAnalyserFormOpen ? (
           <div>
             <div className={classes.newAnalyserContainer}>
               <div>
@@ -206,50 +198,47 @@ function Analyser({ classes }: AnalyserProps) {
                 />
               </div>
             </div>
+
+            {!isAnalysisLoading && analysisResult && (
+              <>
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={isMapLayerActive}
+                        onChange={e =>
+                          dispatch(setIsMapLayerActive(e.target.checked))
+                        }
+                      />
+                    }
+                    label="Map View"
+                  />
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={isTableViewOpen}
+                        onChange={e => setIsTableViewOpen(e.target.checked)}
+                      />
+                    }
+                    label="Table View"
+                  />
+                </FormGroup>
+                {isTableViewOpen && (
+                  <AnalysisTable analysisResult={analysisResult} />
+                )}
+              </>
+            )}
             <Button
               className={classes.innerAnalysisButton}
               onClick={runAnalyser}
             >
-              <Typography variant="body2">Run Analysis</Typography>
+              <Typography variant="body2">
+                {analysisResult ? 'Clear Analysis' : 'Run Analysis'}
+              </Typography>
             </Button>
-            {isAnalysisLoading || analysisResult ? (
-              <>
-                <Button
-                  className={classes.innerAnalysisButton}
-                  disabled={isAnalysisLoading}
-                >
-                  <Typography variant="body2">Show Result</Typography>
-                </Button>
-              </>
-            ) : (
-              ''
-            )}
+            {isAnalysisLoading ? <LinearProgress /> : null}
           </div>
-        ) : (
-          <div>
-            <FormControl component="div">
-              <RadioGroup row>
-                <FormControlLabel
-                  value="mapview"
-                  control={
-                    <Radio className={classes.radioOptions} size="small" />
-                  }
-                  label="Map View"
-                />
-                <FormControlLabel
-                  value="tableview"
-                  control={
-                    <Radio className={classes.radioOptions} size="small" />
-                  }
-                  label="Table View"
-                />
-              </RadioGroup>
-            </FormControl>
-            {analysisResult && analysisResult.tableData ? (
-              <AnalysisTable analysisResult={analysisResult} />
-            ) : null}
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
@@ -355,6 +344,7 @@ const styles = (theme: Theme) =>
     },
     innerAnalysisButton: {
       backgroundColor: '#3d474a',
+      margin: '10px 0',
     },
     selectorLabel: {
       '&.Mui-focused': { color: 'white' },

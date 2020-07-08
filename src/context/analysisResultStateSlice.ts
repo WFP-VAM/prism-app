@@ -246,6 +246,10 @@ export const analysisResultSlice = createSlice({
       ...state,
       isMapLayerActive: payload,
     }),
+    clearAnalysisResult: state => ({
+      ...state,
+      result: undefined,
+    }),
   },
   extraReducers: builder => {
     builder.addCase(
@@ -293,6 +297,9 @@ export const isAnalysisLayerActiveSelector = (state: RootState): boolean =>
   state.analysisResultState.isMapLayerActive;
 
 // Setters
-export const { setIsMapLayerActive } = analysisResultSlice.actions;
+export const {
+  setIsMapLayerActive,
+  clearAnalysisResult,
+} = analysisResultSlice.actions;
 
 export default analysisResultSlice.reducer;
