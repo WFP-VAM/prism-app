@@ -67,7 +67,7 @@ function Analyser({ classes }: AnalyserProps) {
 
   const [openAnalyserForm, setOpenAnalyserForm] = useState(false);
   const [hazardLayerId, setHazardLayerId] = useState(hazardLayers[0].id);
-  const [statistic, setStatistic] = useState(AggregationOperations.mean);
+  const [statistic, setStatistic] = useState(AggregationOperations.Mean);
   const [baselineLayerId, setBaselineLayerId] = useState(baselineLayers[0].id);
 
   const [openResult, setOpenResult] = useState(false);
@@ -85,13 +85,13 @@ function Analyser({ classes }: AnalyserProps) {
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
-  const statisticOptions = map(Object.keys(AggregationOperations), stat => {
+  const statisticOptions = map(Object.entries(AggregationOperations), stat => {
     return (
       <FormControlLabel
-        key={stat}
-        value={stat}
+        key={stat[0]}
+        value={stat[1]}
         control={<Radio className={classes.radioOptions} size="small" />}
-        label={stat}
+        label={stat[0]}
       />
     );
   });
@@ -262,7 +262,7 @@ function LayerSelector({
   setValue,
   title,
 }: LayerSelectorProps) {
-  const categories = menuList
+  const categories = menuList // we could memo this but it isn't impacting performance, for now
     // 1. flatten to just the layer categories, don't need the big menus
     .flatMap(menu => menu.layersCategories)
     // 2. get rid of layers within the categories which don't match the given type
@@ -274,13 +274,15 @@ function LayerSelector({
     .filter(category => category.layers.length > 0);
   const defaultValue = categories[0].layers[0].id;
   if (!value) {
-    setValue(defaultValue);
+    setTimeout(() => setValue(defaultValue));
     return null;
   }
 
   return (
-    <FormControl>
-      <InputLabel htmlFor={`${title}-select`}>{title}</InputLabel>
+    <FormControl className={classes.selector}>
+      <InputLabel htmlFor={`${title}-select`} className={classes.selectorLabel}>
+        {title}
+      </InputLabel>
       <Select
         defaultValue={defaultValue}
         value={value}
@@ -293,10 +295,16 @@ function LayerSelector({
           (components, category) => [
             ...components,
             <ListSubheader key={category.title}>
-              {category.title}
+              <Typography variant="body2" color="primary">
+                {category.title}
+              </Typography>
             </ListSubheader>,
             ...category.layers.map(layer => (
-              <MenuItem key={layer.id} value={layer.id}>
+              <MenuItem
+                style={{ color: 'black' }}
+                key={layer.id}
+                value={layer.id}
+              >
                 {layer.title}
               </MenuItem>
             )),
@@ -347,6 +355,12 @@ const styles = (theme: Theme) =>
     },
     innerAnalysisButton: {
       backgroundColor: '#3d474a',
+    },
+    selectorLabel: {
+      '&.Mui-focused': { color: 'white' },
+    },
+    selector: {
+      margin: '20px 5px',
     },
   });
 

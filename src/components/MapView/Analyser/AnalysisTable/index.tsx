@@ -60,12 +60,12 @@ function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
       label: 'Name',
     },
     {
-      id: AggregationOperations.mean,
+      id: AggregationOperations.Mean,
       label: 'Mean',
       format: (value: number) => value.toLocaleString('en-US'),
     },
     {
-      id: AggregationOperations.median,
+      id: AggregationOperations.Median,
       label: 'Median',
       format: (value: number) => value.toLocaleString('en-US'),
     },
@@ -147,10 +147,6 @@ function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
 
 const styles = () =>
   createStyles({
-    radioOptions: {
-      color: 'white',
-      padding: '2px 10px 2px 20px',
-    },
     tableContainer: {
       maxHeight: '50vh',
       border: '2px solid',

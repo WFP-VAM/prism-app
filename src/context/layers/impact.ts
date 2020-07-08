@@ -32,7 +32,7 @@ export async function fetchImpactLayerData(
   const { getState, dispatch } = api;
   const { layer, extent, date } = params;
 
-  const operation = layer.operation || AggregationOperations.mean;
+  const operation = layer.operation || AggregationOperations.Mean;
 
   const hazardLayerDef = LayerDefinitions[layer.hazardLayer] as WMSLayerProps;
 

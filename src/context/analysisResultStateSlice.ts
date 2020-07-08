@@ -126,8 +126,8 @@ function generateTableFromApiData(
     const tableRow: TableRow = {
       name,
       localName,
-      mean: get(row, `stats_${AggregationOperations.mean}`, 0),
-      median: get(row, `stats_${AggregationOperations.median}`, 0),
+      mean: get(row, `stats_${AggregationOperations.Mean}`, 0),
+      median: get(row, `stats_${AggregationOperations.Median}`, 0),
       baselineValue,
       coordinates: (featureBoundary?.geometry as any).coordinates[0][0][0], // TODO likely will not keep
     };

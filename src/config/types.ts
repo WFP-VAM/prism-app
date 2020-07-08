@@ -200,8 +200,8 @@ export class StatsApi {
 }
 
 export enum AggregationOperations {
-  mean = 'mean',
-  median = 'median',
+  Mean = 'mean',
+  Median = 'median',
 }
 
 export type ThresholdDefinition = { below?: number; above?: number };
