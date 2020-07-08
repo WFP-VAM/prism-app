@@ -117,6 +117,7 @@ function Analyser({ classes }: AnalyserProps) {
     const selectedBaselineLayer = find(baselineLayers, {
       id: baselineLayerId,
     }) as NSOLayerProps;
+    console.log(availableDates[selectedHazardLayer.serverLayerName][0]);
     const params: AnalysisDispatchParams = {
       hazardLayer: selectedHazardLayer,
       baselineLayer: selectedBaselineLayer,
@@ -157,7 +158,7 @@ function Analyser({ classes }: AnalyserProps) {
         {isAnalyserFormOpen ? (
           <div>
             <div className={classes.newAnalyserContainer}>
-              <div>
+              <div className={classes.analyserOptions}>
                 <Typography variant="body2">Hazard Layer</Typography>
                 <LayerSelector
                   type="wms"
@@ -167,9 +168,8 @@ function Analyser({ classes }: AnalyserProps) {
                   classes={classes}
                 />
               </div>
-              <div>
+              <div className={classes.newAnalyserContainer}>
                 <Typography variant="body2">Statistic</Typography>
-
                 <FormControl component="div">
                   <RadioGroup
                     name="statistics"
@@ -181,7 +181,7 @@ function Analyser({ classes }: AnalyserProps) {
                   </RadioGroup>
                 </FormControl>
               </div>
-              <div>
+              <div className={classes.newAnalyserContainer}>
                 <Typography variant="body2">Baseline Layer</Typography>
                 <LayerSelector
                   type="nso"
@@ -263,9 +263,6 @@ function LayerSelector({
 
   return (
     <FormControl className={classes.selector}>
-      <InputLabel htmlFor={`${title}-select`} className={classes.selectorLabel}>
-        {title}
-      </InputLabel>
       <Select
         defaultValue={defaultValue}
         value={value}
@@ -325,8 +322,7 @@ const styles = (theme: Theme) =>
       'margin-left': '3px',
     },
     analyserOptions: {
-      color: 'white',
-      padding: '2px 5px',
+      padding: '5px 0px',
     },
     newAnalyserContainer: {
       padding: '5px',
@@ -344,7 +340,7 @@ const styles = (theme: Theme) =>
       '&.Mui-focused': { color: 'white' },
     },
     selector: {
-      margin: '20px 5px',
+      margin: '5px',
     },
   });
 
