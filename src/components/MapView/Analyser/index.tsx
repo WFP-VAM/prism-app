@@ -158,9 +158,7 @@ function Analyser({ classes }: AnalyserProps) {
           <div>
             <div className={classes.newAnalyserContainer}>
               <div>
-                <Typography variant="body2">
-                  Step 1 - Choose a hazard Layer:
-                </Typography>
+                <Typography variant="body2">Hazard Layer</Typography>
                 <LayerSelector
                   type="wms"
                   value={hazardLayerId}
@@ -170,9 +168,7 @@ function Analyser({ classes }: AnalyserProps) {
                 />
               </div>
               <div>
-                <Typography variant="body2">
-                  Step 2 - Select a statistic:
-                </Typography>
+                <Typography variant="body2">Statistic</Typography>
 
                 <FormControl component="div">
                   <RadioGroup
@@ -186,9 +182,7 @@ function Analyser({ classes }: AnalyserProps) {
                 </FormControl>
               </div>
               <div>
-                <Typography variant="body2">
-                  Step 3 - Choose a baseline Layer:
-                </Typography>
+                <Typography variant="body2">Baseline Layer</Typography>
                 <LayerSelector
                   type="nso"
                   value={baselineLayerId}
