@@ -103,7 +103,6 @@ function mergeFeaturesByProperty(
   baselineFeatures: Feature[],
   aggregateData: Array<object>,
   id: string,
-  operation: string,
 ): Feature[] {
   return baselineFeatures.map(feature1 => {
     const aggregateProperties = aggregateData.find(
@@ -113,7 +112,6 @@ function mergeFeaturesByProperty(
       ...get(feature1, 'properties'),
       ...aggregateProperties,
       impactValue: get(feature1, 'properties.data'),
-      [operation]: get(aggregateProperties, `stats_${operation}`),
     };
     return { ...feature1, properties };
   });
@@ -159,32 +157,45 @@ export async function fetchApiData(
   ).json();
 }
 
-export function generateFeaturesFromApiData(
+export function scaleAndFilterAggregateData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
   hazardLayerDef: WMSLayerProps,
+  operation: AggregationOperations,
+  threshold: ThresholdDefinition,
+): AsyncReturnType<typeof fetchApiData> {
+  const { wcsConfig } = hazardLayerDef;
+  const { scale, offset } = wcsConfig || {};
+
+  return aggregateData
+    .map(data => {
+      return {
+        ...data,
+        [operation]: scaleValueIfDefined(
+          get(data, `stats_${operation}`),
+          scale,
+          offset,
+        ),
+      };
+    })
+    .filter(data => {
+      return !Number.isNaN(thresholdOrNaN(data[operation], threshold));
+    });
+}
+
+export function generateFeaturesFromApiData(
+  aggregateData: AsyncReturnType<typeof fetchApiData>,
   baselineData: NSOLayerData,
   groupBy: StatsApi['groupBy'],
   operation: AggregationOperations,
-
-  threshold: ThresholdDefinition,
 ): GeoJsonBoundary[] {
-  const { wcsConfig } = hazardLayerDef;
-  const { scale, offset } = wcsConfig || {};
   const mergedFeatures = mergeFeaturesByProperty(
     baselineData.features.features,
     aggregateData,
     groupBy,
-    operation,
   );
 
   return mergedFeatures.filter(feature => {
-    const scaled = scaleValueIfDefined(
-      get(feature, ['properties', operation]),
-      scale,
-      offset,
-    );
-
-    return !Number.isNaN(thresholdOrNaN(scaled, threshold));
+    return !Number.isNaN(get(feature, ['properties', operation]));
   }) as GeoJsonBoundary[];
 }
 
@@ -212,15 +223,18 @@ export async function loadFeaturesFromApi(
     geojson_out: false,
   };
 
-  const aggregateData = await fetchApiData(apiUrl, apiData);
+  const aggregateData = scaleAndFilterAggregateData(
+    await fetchApiData(apiUrl, apiData),
+    hazardLayerDef,
+    operation,
+    layer.threshold,
+  );
+
   return generateFeaturesFromApiData(
     aggregateData,
-    hazardLayerDef,
     baselineData,
     statsApi.groupBy,
     operation,
-
-    layer.threshold,
   );
 }
 
