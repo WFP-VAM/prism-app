@@ -154,10 +154,6 @@ function Analyser({ classes }: AnalyserProps) {
     };
 
     const data = await dispatch(requestAndStoreAnalysis(params));
-
-    // TODO remove
-    // eslint-disable-next-line no-console
-    console.log(data);
   };
 
   return (
@@ -224,9 +220,9 @@ function Analyser({ classes }: AnalyserProps) {
                   className={classes.numberField}
                   label="Min"
                   type="number"
-                  value={threshold.below}
+                  value={threshold.above}
                   onChange={onOptionChange(
-                    val => setThreshold({ ...threshold, below: val }),
+                    val => setThreshold({ ...threshold, above: val }),
                     true,
                   )}
                   variant="filled"
@@ -235,7 +231,7 @@ function Analyser({ classes }: AnalyserProps) {
                   id="filled-number"
                   label="Max"
                   className={classes.numberField}
-                  value={threshold.above}
+                  value={threshold.below}
                   onChange={onOptionChange(
                     val => setThreshold({ ...threshold, below: val }),
                     true,
