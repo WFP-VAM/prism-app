@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 import { ArrowDropDown, Assessment } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { find, map } from 'lodash';
+import { map } from 'lodash';
 import bbox from '@turf/bbox';
 
 import DatePicker from 'react-datepicker';
@@ -153,7 +153,7 @@ function Analyser({ classes }: AnalyserProps) {
       threshold,
     };
 
-    const data = await dispatch(requestAndStoreAnalysis(params));
+    await dispatch(requestAndStoreAnalysis(params));
   };
 
   return (
