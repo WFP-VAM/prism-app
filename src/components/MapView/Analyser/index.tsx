@@ -15,6 +15,7 @@ import {
   RadioGroup,
   Select,
   Switch,
+  TextField,
   Theme,
   Typography,
   withStyles,
@@ -34,6 +35,7 @@ import {
   LayerKey,
   LayerType,
   NSOLayerProps,
+  ThresholdDefinition,
   WMSLayerProps,
 } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
@@ -75,13 +77,16 @@ function Analyser({ classes }: AnalyserProps) {
 
   const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState(false);
   const [isTableViewOpen, setIsTableViewOpen] = useState(true);
+
   const [hazardLayerId, setHazardLayerId] = useState(hazardLayers[0].id);
   const [statistic, setStatistic] = useState(AggregationOperations.Mean);
   const [baselineLayerId, setBaselineLayerId] = useState(baselineLayers[0].id);
+  const [threshold, setThreshold] = useState<ThresholdDefinition>({});
 
   const onOptionChange = (setterFunc: (val: any) => void) => (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    console.log((event.target as HTMLInputElement).value);
     setterFunc((event.target as HTMLInputElement).value);
   };
 
@@ -124,7 +129,7 @@ function Analyser({ classes }: AnalyserProps) {
       date: availableDates[selectedHazardLayer.serverLayerName][0], // TODO load from ui
       statistic,
       extent: adminBoundariesExtent,
-      threshold: {}, // TODO load from ui
+      threshold,
     };
 
     const data = await dispatch(requestAndStoreAnalysis(params));
@@ -189,6 +194,37 @@ function Analyser({ classes }: AnalyserProps) {
                   setValue={setBaselineLayerId}
                   title="Baseline Layer"
                   classes={classes}
+                />
+              </div>
+              <div>
+                <Typography variant="body2">Threshold</Typography>
+                <TextField
+                  id="filled-number"
+                  className={classes.numberField}
+                  label="Min"
+                  type="number"
+                  value={threshold.below}
+                  onChange={e =>
+                    setThreshold({
+                      ...threshold,
+                      below: parseFloat(e.target.value),
+                    })
+                  }
+                  variant="filled"
+                />
+                <TextField
+                  id="filled-number"
+                  label="Max"
+                  className={classes.numberField}
+                  value={threshold.above}
+                  onChange={e =>
+                    setThreshold({
+                      ...threshold,
+                      above: parseFloat(e.target.value),
+                    })
+                  }
+                  type="number"
+                  variant="filled"
                 />
               </div>
             </div>
@@ -341,6 +377,11 @@ const styles = (theme: Theme) =>
     },
     selector: {
       margin: '5px',
+    },
+    numberField: {
+      padding: '10px',
+      width: '85.5px',
+      '& .Mui-focused': { color: 'white' },
     },
   });
 
