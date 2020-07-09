@@ -49,7 +49,6 @@ function AnalysisLayer() {
             [`${analysisData.getHazardLayer().title} (${
               analysisData.statistic
             })`]: {
-              // TODO
               data: get(
                 evt.features[0],
                 ['properties', analysisData.statistic],

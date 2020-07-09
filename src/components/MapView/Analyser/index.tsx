@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 // TODO remove above
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   createStyles,
   FormControl,
   FormControlLabel,
   FormGroup,
-  InputLabel,
+  Input,
   LinearProgress,
   ListSubheader,
   MenuItem,
@@ -25,6 +25,9 @@ import { ArrowDropDown, Assessment } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { find, map } from 'lodash';
 import bbox from '@turf/bbox';
+
+import DatePicker from 'react-datepicker';
+
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
@@ -45,22 +48,16 @@ import { availableDatesSelector } from '../../../context/serverStateSlice';
 import {
   AnalysisDispatchParams,
   analysisResultSelector,
-  isAnalysisLoadingSelector,
-  isAnalysisLayerActiveSelector,
-  setIsMapLayerActive,
   clearAnalysisResult,
+  isAnalysisLayerActiveSelector,
+  isAnalysisLoadingSelector,
   requestAndStoreAnalysis,
+  setIsMapLayerActive,
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
 import { menuList } from '../../NavBar/utils';
 
 const layers = Object.values(LayerDefinitions);
-const baselineLayers = layers.filter(
-  (layer): layer is NSOLayerProps => layer.type === 'nso',
-);
-const hazardLayers = layers.filter(
-  (layer): layer is WMSLayerProps => layer.type === 'wms',
-);
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -69,6 +66,7 @@ function Analyser({ classes }: AnalyserProps) {
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
+
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
 
@@ -78,16 +76,36 @@ function Analyser({ classes }: AnalyserProps) {
   const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState(false);
   const [isTableViewOpen, setIsTableViewOpen] = useState(true);
 
-  const [hazardLayerId, setHazardLayerId] = useState(hazardLayers[0].id);
+  // form elements
+  const [hazardLayerId, setHazardLayerId] = useState(
+    (layers.find(layer => layer.type === 'wms') as WMSLayerProps).id,
+  );
   const [statistic, setStatistic] = useState(AggregationOperations.Mean);
-  const [baselineLayerId, setBaselineLayerId] = useState(baselineLayers[0].id);
+  const [baselineLayerId, setBaselineLayerId] = useState(
+    (layers.find(layer => layer.type === 'nso') as NSOLayerProps).id,
+  );
   const [threshold, setThreshold] = useState<ThresholdDefinition>({});
+  const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
-  const onOptionChange = (setterFunc: (val: any) => void) => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    console.log((event.target as HTMLInputElement).value);
-    setterFunc((event.target as HTMLInputElement).value);
+  // set default date after dates finish loading and when hazard layer changes
+  useEffect(() => {
+    const dates =
+      availableDates[
+        (LayerDefinitions[hazardLayerId] as WMSLayerProps).serverLayerName
+      ];
+    if (!dates || dates.length === 0) {
+      setSelectedDate(null);
+    } else setSelectedDate(dates[dates.length - 1]);
+  }, [availableDates, hazardLayerId]);
+
+  const onOptionChange = (
+    setterFunc: (val: any) => void,
+    isNumber?: boolean,
+  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target as HTMLInputElement;
+    if (isNumber) {
+      setterFunc(value ? parseFloat(value) : null);
+    } else setterFunc((event.target as HTMLInputElement).value);
   };
 
   const adminBoundariesExtent = useMemo(() => {
@@ -115,18 +133,21 @@ function Analyser({ classes }: AnalyserProps) {
       dispatch(clearAnalysisResult());
       return;
     }
+    if (!selectedDate) {
+      throw new Error('Date must be given to run Analysis');
+    }
 
-    const selectedHazardLayer = find(hazardLayers, {
-      id: hazardLayerId,
-    }) as WMSLayerProps;
-    const selectedBaselineLayer = find(baselineLayers, {
-      id: baselineLayerId,
-    }) as NSOLayerProps;
-    console.log(availableDates[selectedHazardLayer.serverLayerName][0]);
+    const selectedHazardLayer = LayerDefinitions[
+      hazardLayerId
+    ] as WMSLayerProps;
+    const selectedBaselineLayer = LayerDefinitions[
+      baselineLayerId
+    ] as NSOLayerProps;
+    console.log(availableDates);
     const params: AnalysisDispatchParams = {
       hazardLayer: selectedHazardLayer,
       baselineLayer: selectedBaselineLayer,
-      date: availableDates[selectedHazardLayer.serverLayerName][0], // TODO load from ui
+      date: selectedDate,
       statistic,
       extent: adminBoundariesExtent,
       threshold,
@@ -204,12 +225,10 @@ function Analyser({ classes }: AnalyserProps) {
                   label="Min"
                   type="number"
                   value={threshold.below}
-                  onChange={e =>
-                    setThreshold({
-                      ...threshold,
-                      below: parseFloat(e.target.value),
-                    })
-                  }
+                  onChange={onOptionChange(
+                    val => setThreshold({ ...threshold, below: val }),
+                    true,
+                  )}
                   variant="filled"
                 />
                 <TextField
@@ -217,14 +236,35 @@ function Analyser({ classes }: AnalyserProps) {
                   label="Max"
                   className={classes.numberField}
                   value={threshold.above}
-                  onChange={e =>
-                    setThreshold({
-                      ...threshold,
-                      above: parseFloat(e.target.value),
-                    })
-                  }
+                  onChange={onOptionChange(
+                    val => setThreshold({ ...threshold, below: val }),
+                    true,
+                  )}
                   type="number"
                   variant="filled"
+                />
+              </div>
+              <div>
+                <Typography variant="body2">Date</Typography>
+                <DatePicker
+                  selected={selectedDate ? new Date(selectedDate) : null}
+                  onChange={date =>
+                    setSelectedDate(date?.getTime() || selectedDate)
+                  }
+                  maxDate={new Date()}
+                  todayButton="Today"
+                  peekNextMonth
+                  showMonthDropdown
+                  showYearDropdown
+                  dropdownMode="select"
+                  customInput={<Input />}
+                  popperClassName={classes.calendarPopper}
+                  includeDates={
+                    availableDates[
+                      (LayerDefinitions[hazardLayerId] as WMSLayerProps)
+                        .serverLayerName
+                    ]?.map(d => new Date(d)) || []
+                  }
                 />
               </div>
             </div>
@@ -292,10 +332,6 @@ function LayerSelector({
     // 3. filter categories which don't have any layers at the end of it all.
     .filter(category => category.layers.length > 0);
   const defaultValue = categories[0].layers[0].id;
-  if (!value) {
-    setTimeout(() => setValue(defaultValue));
-    return null;
-  }
 
   return (
     <FormControl className={classes.selector}>
@@ -308,6 +344,7 @@ function LayerSelector({
         id={`${title}-select`}
       >
         {categories.reduce(
+          // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
           (components, category) => [
             ...components,
             <ListSubheader key={category.title}>
@@ -382,6 +419,9 @@ const styles = (theme: Theme) =>
       padding: '10px',
       width: '85.5px',
       '& .Mui-focused': { color: 'white' },
+    },
+    calendarPopper: {
+      zIndex: 3,
     },
   });
 
