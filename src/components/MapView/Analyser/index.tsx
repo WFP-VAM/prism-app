@@ -15,7 +15,6 @@ import {
   RadioGroup,
   Select,
   Switch,
-  Slider,
   TextField,
   Theme,
   Typography,
@@ -86,15 +85,7 @@ function Analyser({ classes }: AnalyserProps) {
     (layers.find(layer => layer.type === 'nso') as NSOLayerProps).id,
   );
 
-  const thresholdLimit = {
-    below: -100,
-    above: 100,
-  };
-
-  const [threshold, setThreshold] = useState<ThresholdDefinition>(
-    thresholdLimit,
-  );
-
+  const [threshold, setThreshold] = useState<ThresholdDefinition>({});
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
   // set default date after dates finish loading and when hazard layer changes
@@ -116,17 +107,6 @@ function Analyser({ classes }: AnalyserProps) {
     if (isNumber) {
       setterFunc(value ? parseFloat(value) : null);
     } else setterFunc((event.target as HTMLInputElement).value);
-  };
-
-  const onSliderChange = (
-    event: React.ChangeEvent<{}>,
-    newValue: number | number[],
-  ) => {
-    const thresholdRange = newValue as number[];
-    setThreshold({
-      below: thresholdRange[0],
-      above: thresholdRange[1],
-    });
   };
 
   const adminBoundariesExtent = useMemo(() => {
@@ -236,25 +216,14 @@ function Analyser({ classes }: AnalyserProps) {
               </div>
               <div>
                 <Typography variant="body2">Threshold</Typography>
-                <div className={classes.thresholdSliderDiv}>
-                  <Slider
-                    className={classes.thresholdSlider}
-                    min={thresholdLimit.below}
-                    max={thresholdLimit.above}
-                    value={values(threshold) as number[]}
-                    onChange={onSliderChange}
-                    valueLabelDisplay="auto"
-                    aria-labelledby="range-slider"
-                  />
-                </div>
                 <TextField
                   id="filled-number"
                   className={classes.numberField}
                   label="Min"
                   type="number"
-                  value={threshold.above}
+                  value={threshold.below}
                   onChange={onOptionChange(
-                    val => setThreshold({ ...threshold, above: val }),
+                    val => setThreshold({ ...threshold, below: val }),
                     true,
                   )}
                   variant="filled"
@@ -263,7 +232,7 @@ function Analyser({ classes }: AnalyserProps) {
                   id="filled-number"
                   label="Max"
                   className={classes.numberField}
-                  value={threshold.below}
+                  value={threshold.above}
                   onChange={onOptionChange(
                     val => setThreshold({ ...threshold, above: val }),
                     true,
@@ -450,13 +419,6 @@ const styles = (theme: Theme) =>
     },
     calendarPopper: {
       zIndex: 3,
-    },
-    thresholdSliderDiv: {
-      width: '80%',
-      margin: '0 10px',
-    },
-    thresholdSlider: {
-      color: '#3d474a',
     },
   });
 
