@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // TODO remove above
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -23,7 +22,7 @@ import {
 } from '@material-ui/core';
 import { ArrowDropDown, Assessment } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { map, values } from 'lodash';
+import { map } from 'lodash';
 import bbox from '@turf/bbox';
 
 import DatePicker from 'react-datepicker';
@@ -144,7 +143,7 @@ function Analyser({ classes }: AnalyserProps) {
     const selectedBaselineLayer = LayerDefinitions[
       baselineLayerId
     ] as NSOLayerProps;
-    console.log(availableDates);
+
     const params: AnalysisDispatchParams = {
       hazardLayer: selectedHazardLayer,
       baselineLayer: selectedBaselineLayer,
