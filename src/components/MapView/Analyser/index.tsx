@@ -7,11 +7,8 @@ import {
   FormGroup,
   Input,
   LinearProgress,
-  ListSubheader,
-  MenuItem,
   Radio,
   RadioGroup,
-  Select,
   Switch,
   TextField,
   Theme,
@@ -33,8 +30,6 @@ import {
 import {
   AggregationOperations,
   BoundaryLayerProps,
-  LayerKey,
-  LayerType,
   NSOLayerProps,
   WMSLayerProps,
 } from '../../../config/types';
@@ -52,7 +47,7 @@ import {
   setIsMapLayerActive,
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
-import { menuList } from '../../NavBar/utils';
+import LayerDropdown from '../../../utils/LayerDropdown';
 
 const layers = Object.values(LayerDefinitions);
 
@@ -190,12 +185,12 @@ function Analyser({ classes }: AnalyserProps) {
             <div className={classes.newAnalyserContainer}>
               <div className={classes.analyserOptions}>
                 <Typography variant="body2">Hazard Layer</Typography>
-                <LayerSelector
+                <LayerDropdown
                   type="wms"
                   value={hazardLayerId}
                   setValue={setHazardLayerId}
                   title="Hazard Layer"
-                  classes={classes}
+                  className={classes.selector}
                 />
               </div>
               <div className={classes.analyserOptions}>
@@ -213,12 +208,12 @@ function Analyser({ classes }: AnalyserProps) {
               </div>
               <div className={classes.analyserOptions}>
                 <Typography variant="body2">Baseline Layer</Typography>
-                <LayerSelector
+                <LayerDropdown
                   type="nso"
                   value={baselineLayerId}
                   setValue={setBaselineLayerId}
                   title="Baseline Layer"
-                  classes={classes}
+                  className={classes.selector}
                 />
               </div>
               <div className={classes.analyserOptions}>
@@ -315,61 +310,6 @@ function Analyser({ classes }: AnalyserProps) {
   );
 }
 
-function LayerSelector({
-  type,
-  classes,
-  value,
-  setValue,
-  title,
-}: LayerSelectorProps) {
-  const categories = menuList // we could memo this but it isn't impacting performance, for now
-    // 1. flatten to just the layer categories, don't need the big menus
-    .flatMap(menu => menu.layersCategories)
-    // 2. get rid of layers within the categories which don't match the given type
-    .map(category => ({
-      ...category,
-      layers: category.layers.filter(layer => layer.type === type),
-    }))
-    // 3. filter categories which don't have any layers at the end of it all.
-    .filter(category => category.layers.length > 0);
-  const defaultValue = categories[0].layers[0].id;
-
-  return (
-    <FormControl className={classes.selector}>
-      <Select
-        defaultValue={defaultValue}
-        value={value}
-        onChange={e => {
-          setValue(e.target.value as LayerKey);
-        }}
-        id={`${title}-select`}
-      >
-        {categories.reduce(
-          // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
-          (components, category) => [
-            ...components,
-            <ListSubheader key={category.title}>
-              <Typography variant="body2" color="primary">
-                {category.title}
-              </Typography>
-            </ListSubheader>,
-            ...category.layers.map(layer => (
-              <MenuItem
-                style={{ color: 'black' }}
-                key={layer.id}
-                value={layer.id}
-              >
-                {layer.title}
-              </MenuItem>
-            )),
-          ],
-          [] as any[],
-        )}
-      </Select>
-    </FormControl>
-  );
-}
-
 const styles = (theme: Theme) =>
   createStyles({
     analyser: {
@@ -428,12 +368,5 @@ const styles = (theme: Theme) =>
   });
 
 interface AnalyserProps extends WithStyles<typeof styles> {}
-
-interface LayerSelectorProps extends WithStyles<typeof styles> {
-  type: LayerType['type'];
-  value: LayerKey;
-  setValue: (val: LayerKey) => void;
-  title: string;
-}
 
 export default withStyles(styles)(Analyser);

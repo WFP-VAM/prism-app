@@ -1,0 +1,273 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="Analyser-analyser-1"
+  >
+    <mock-button
+      color="primary"
+      variant="contained"
+    >
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root"
+        focusable="false"
+        role="presentation"
+        style="margin-right: 10px;"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"
+        />
+      </svg>
+      <mock-typography
+        variant="body2"
+      >
+        Run Analysis
+      </mock-typography>
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root"
+        focusable="false"
+        role="presentation"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M7 10l5 5 5-5z"
+        />
+      </svg>
+    </mock-button>
+    <div
+      class="Analyser-analyserMenu-2"
+      style="padding: 10px;"
+    >
+      <div>
+        <div
+          class="Analyser-newAnalyserContainer-5"
+        >
+          <div
+            class="Analyser-analyserOptions-4"
+          >
+            <mock-typography
+              variant="body2"
+            >
+              Hazard Layer
+            </mock-typography>
+            <mock-layer-dropdown
+              classname="Analyser-selector-9"
+              title="Hazard Layer"
+              type="wms"
+              value="pasture_anomaly"
+            />
+          </div>
+          <div
+            class="Analyser-analyserOptions-4"
+          >
+            <mock-typography
+              variant="body2"
+            >
+              Statistic
+            </mock-typography>
+            <div
+              class="MuiFormControl-root"
+            >
+              <div
+                class="MuiFormGroup-root MuiFormGroup-row"
+                role="radiogroup"
+              >
+                <label
+                  class="MuiFormControlLabel-root"
+                >
+                  <span
+                    aria-disabled="false"
+                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-38 MuiRadio-root MuiRadio-colorSecondary Analyser-radioOptions-6 PrivateSwitchBase-checked-39 Mui-checked MuiIconButton-colorSecondary"
+                  >
+                    <span
+                      class="MuiIconButton-label"
+                    >
+                      <input
+                        checked=""
+                        class="PrivateSwitchBase-input-41"
+                        name="statistics"
+                        type="radio"
+                        value="mean"
+                      />
+                      <div
+                        class="PrivateRadioButtonIcon-root-54 PrivateRadioButtonIcon-checked-56"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+                          focusable="false"
+                          role="presentation"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+                          />
+                        </svg>
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-55 MuiSvgIcon-fontSizeSmall"
+                          focusable="false"
+                          role="presentation"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+                          />
+                        </svg>
+                      </div>
+                    </span>
+                    <span
+                      class="MuiTouchRipple-root"
+                    />
+                  </span>
+                  <mock-typography
+                    classname="MuiFormControlLabel-label"
+                    component="span"
+                  >
+                    Mean
+                  </mock-typography>
+                </label>
+                <label
+                  class="MuiFormControlLabel-root"
+                >
+                  <span
+                    aria-disabled="false"
+                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-38 MuiRadio-root MuiRadio-colorSecondary Analyser-radioOptions-6 MuiIconButton-colorSecondary"
+                  >
+                    <span
+                      class="MuiIconButton-label"
+                    >
+                      <input
+                        class="PrivateSwitchBase-input-41"
+                        name="statistics"
+                        type="radio"
+                        value="median"
+                      />
+                      <div
+                        class="PrivateRadioButtonIcon-root-54"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+                          focusable="false"
+                          role="presentation"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+                          />
+                        </svg>
+                        <svg
+                          aria-hidden="true"
+                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-55 MuiSvgIcon-fontSizeSmall"
+                          focusable="false"
+                          role="presentation"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
+                          />
+                        </svg>
+                      </div>
+                    </span>
+                    <span
+                      class="MuiTouchRipple-root"
+                    />
+                  </span>
+                  <mock-typography
+                    classname="MuiFormControlLabel-label"
+                    component="span"
+                  >
+                    Median
+                  </mock-typography>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div
+            class="Analyser-analyserOptions-4"
+          >
+            <mock-typography
+              variant="body2"
+            >
+              Baseline Layer
+            </mock-typography>
+            <mock-layer-dropdown
+              classname="Analyser-selector-9"
+              title="Baseline Layer"
+              type="nso"
+              value="population_below_poverty"
+            />
+          </div>
+          <div
+            class="Analyser-analyserOptions-4"
+          >
+            <mock-typography
+              variant="body2"
+            >
+              Threshold
+            </mock-typography>
+            <mock-textfield
+              classname="Analyser-numberField-10"
+              error="false"
+              id="filled-number"
+              label="Min"
+              type="number"
+              value=""
+              variant="filled"
+            />
+            <mock-textfield
+              classname="Analyser-numberField-10"
+              id="filled-number"
+              label="Max"
+              type="number"
+              value=""
+              variant="filled"
+            />
+          </div>
+          <div
+            class="Analyser-analyserOptions-4"
+          >
+            <mock-typography
+              variant="body2"
+            >
+              Date
+            </mock-typography>
+            <div
+              class="react-datepicker-wrapper"
+            >
+              <div
+                class="react-datepicker__input-container"
+              >
+                <div
+                  class="MuiInputBase-root MuiInput-root MuiInput-underline"
+                >
+                  <input
+                    class="MuiInputBase-input MuiInput-input"
+                    type="text"
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <mock-button
+          classname="Analyser-innerAnalysisButton-7"
+          disabled="true"
+        >
+          <mock-typography
+            variant="body2"
+          >
+            Run Analysis
+          </mock-typography>
+        </mock-button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
