@@ -1,4 +1,3 @@
-// TODO remove above
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   Button,
@@ -37,7 +36,6 @@ import {
   LayerKey,
   LayerType,
   NSOLayerProps,
-  ThresholdDefinition,
   WMSLayerProps,
 } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
@@ -83,29 +81,36 @@ function Analyser({ classes }: AnalyserProps) {
   const [baselineLayerId, setBaselineLayerId] = useState(
     (layers.find(layer => layer.type === 'nso') as NSOLayerProps).id,
   );
-
-  const [threshold, setThreshold] = useState<ThresholdDefinition>({});
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
+
+  const [belowThreshold, setBelowThreshold] = useState('');
+  const [aboveThreshold, setAboveThreshold] = useState('');
+  const [thresholdError, setThresholdError] = useState<string | null>(null);
+
+  // enforce errors.
+  useEffect(() => {
+    const belowThresholdValue = parseFloat(belowThreshold);
+    const aboveThresholdValue = parseFloat(aboveThreshold);
+    if (belowThresholdValue > aboveThresholdValue) {
+      setThresholdError('Min threshold is larger than Max!');
+    } else setThresholdError(null);
+  }, [belowThreshold, aboveThreshold]);
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
     const dates =
       availableDates[
-        (LayerDefinitions[hazardLayerId] as WMSLayerProps).serverLayerName
+        (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
       ];
     if (!dates || dates.length === 0) {
       setSelectedDate(null);
     } else setSelectedDate(dates[dates.length - 1]);
   }, [availableDates, hazardLayerId]);
 
-  const onOptionChange = (
-    setterFunc: (val: any) => void,
-    isNumber?: boolean,
-  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target as HTMLInputElement;
-    if (isNumber) {
-      setterFunc(value ? parseFloat(value) : null);
-    } else setterFunc((event.target as HTMLInputElement).value);
+  const onOptionChange = (setterFunc: (val: any) => void) => (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setterFunc((event.target as HTMLInputElement).value);
   };
 
   const adminBoundariesExtent = useMemo(() => {
@@ -150,7 +155,10 @@ function Analyser({ classes }: AnalyserProps) {
       date: selectedDate,
       statistic,
       extent: adminBoundariesExtent,
-      threshold,
+      threshold: {
+        above: parseFloat(aboveThreshold) || undefined,
+        below: parseFloat(belowThreshold) || undefined,
+      },
     };
 
     await dispatch(requestAndStoreAnalysis(params));
@@ -190,7 +198,7 @@ function Analyser({ classes }: AnalyserProps) {
                   classes={classes}
                 />
               </div>
-              <div className={classes.newAnalyserContainer}>
+              <div className={classes.analyserOptions}>
                 <Typography variant="body2">Statistic</Typography>
                 <FormControl component="div">
                   <RadioGroup
@@ -203,7 +211,7 @@ function Analyser({ classes }: AnalyserProps) {
                   </RadioGroup>
                 </FormControl>
               </div>
-              <div className={classes.newAnalyserContainer}>
+              <div className={classes.analyserOptions}>
                 <Typography variant="body2">Baseline Layer</Typography>
                 <LayerSelector
                   type="nso"
@@ -213,34 +221,30 @@ function Analyser({ classes }: AnalyserProps) {
                   classes={classes}
                 />
               </div>
-              <div>
+              <div className={classes.analyserOptions}>
                 <Typography variant="body2">Threshold</Typography>
                 <TextField
                   id="filled-number"
+                  error={!!thresholdError}
+                  helperText={thresholdError}
                   className={classes.numberField}
                   label="Min"
                   type="number"
-                  value={threshold.below}
-                  onChange={onOptionChange(
-                    val => setThreshold({ ...threshold, below: val }),
-                    true,
-                  )}
+                  value={belowThreshold}
+                  onChange={onOptionChange(setBelowThreshold)}
                   variant="filled"
                 />
                 <TextField
                   id="filled-number"
                   label="Max"
                   className={classes.numberField}
-                  value={threshold.above}
-                  onChange={onOptionChange(
-                    val => setThreshold({ ...threshold, above: val }),
-                    true,
-                  )}
+                  value={aboveThreshold}
+                  onChange={onOptionChange(setAboveThreshold)}
                   type="number"
                   variant="filled"
                 />
               </div>
-              <div>
+              <div className={classes.analyserOptions}>
                 <Typography variant="body2">Date</Typography>
                 <DatePicker
                   selected={selectedDate ? new Date(selectedDate) : null}
@@ -297,6 +301,7 @@ function Analyser({ classes }: AnalyserProps) {
             <Button
               className={classes.innerAnalysisButton}
               onClick={runAnalyser}
+              disabled={!analysisResult && (!!thresholdError || !selectedDate)}
             >
               <Typography variant="body2">
                 {analysisResult ? 'Clear Analysis' : 'Run Analysis'}
@@ -404,6 +409,7 @@ const styles = (theme: Theme) =>
     innerAnalysisButton: {
       backgroundColor: '#3d474a',
       margin: '10px 0',
+      '&.Mui-disabled': { opacity: 0.5 },
     },
     selectorLabel: {
       '&.Mui-focused': { color: 'white' },
