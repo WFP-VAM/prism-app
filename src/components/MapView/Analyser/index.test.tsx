@@ -8,10 +8,13 @@ import { store } from '../../../context/store';
 jest.mock('../../../utils/LayerDropdown', () => 'mock-Layer-Dropdown');
 
 test('renders as expected', () => {
-  const { container } = render(
+  const rendered = render(
     <Provider store={store}>
       <Analyser />
     </Provider>,
   );
-  expect(container).toMatchSnapshot();
+  return rendered
+    .findByText('Run Analysis')
+    .then(btn => btn.click()) // open analyser menu (default closed)
+    .then(() => expect(rendered.container).toMatchSnapshot());
 });

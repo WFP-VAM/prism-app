@@ -16,7 +16,10 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { ArrowDropDown, Assessment } from '@material-ui/icons';
+
+import { faChartBar, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { map } from 'lodash';
 import bbox from '@turf/bbox';
@@ -65,7 +68,7 @@ function Analyser({ classes }: AnalyserProps) {
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
   const isMapLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
-  const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState(true);
+  const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState(false);
   const [isTableViewOpen, setIsTableViewOpen] = useState(true);
 
   // form elements
@@ -168,9 +171,12 @@ function Analyser({ classes }: AnalyserProps) {
           setIsAnalyserFormOpen(!isAnalyserFormOpen);
         }}
       >
-        <Assessment style={{ marginRight: '10px' }} />
+        <FontAwesomeIcon
+          style={{ marginRight: '10px', fontSize: '1.6em' }}
+          icon={faChartBar}
+        />
         <Typography variant="body2">Run Analysis</Typography>
-        <ArrowDropDown />
+        <FontAwesomeIcon icon={faCaretDown} style={{ marginLeft: '10px' }} />
       </Button>
 
       <div

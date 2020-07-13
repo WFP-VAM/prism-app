@@ -4,7 +4,7 @@ import { render } from '@testing-library/react';
 
 import MenuItem from '.';
 import { store } from '../../../context/store';
-import { MenuItemType } from '../../../config/types';
+import { LayerKey, MenuItemType } from '../../../config/types';
 
 const props: MenuItemType = {
   title: 'title',
@@ -14,7 +14,7 @@ const props: MenuItemType = {
       title: 'Category 1',
       layers: [
         {
-          id: 'ID',
+          id: 'ID' as LayerKey,
           title: 'layer',
           type: 'wms',
           baseUrl: 'example.com',
