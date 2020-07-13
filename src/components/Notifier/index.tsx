@@ -1,11 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  createStyles,
-  Snackbar,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import {
   Notification,
@@ -16,44 +11,58 @@ import {
 function Notifier({ classes }: NotifierProps) {
   const dispatch = useDispatch();
   const notifications = useSelector(notificationsSelector);
-  const autoHideDuration = 50000;
+  const [topOffset, setTopOffset] = useState(65);
+
+  // make sure the notifications don't overlap the nav bar.
+  useEffect(() => {
+    const toolbar = document.getElementsByClassName('MuiToolbar-root')[0];
+    function handleResize() {
+      if (!toolbar) return;
+      setTopOffset(toolbar.clientHeight + 15);
+    }
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    // cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleClose = (notification: Notification) => () => {
     dispatch(removeNotification(notification.key));
   };
   return (
-    <>
-      {notifications.map((notification, i) => {
+    <div className={classes.notificationsContainer} style={{ top: topOffset }}>
+      {notifications.map((notification) => {
         return (
-          <Snackbar
+          <Alert
+            variant="filled"
+            severity={notification.type}
             key={notification.key}
-            style={{ marginTop: `${i * 50}px` }}
-            className={classes.notification}
-            autoHideDuration={autoHideDuration}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            open
+            onClose={handleClose(notification)}
+            className={classes.alert}
           >
-            <Alert
-              variant="filled"
-              severity={notification.type}
-              onClose={handleClose(notification)}
-            >
-              {notification.message}
-            </Alert>
-          </Snackbar>
+            {notification.message}
+          </Alert>
         );
       })}
-    </>
+    </div>
   );
 }
 
 const styles = () =>
   createStyles({
-    notification: {
-      top: '65px',
-      '@media (max-width:960px)': {
-        top: '25px',
-      },
+    notificationsContainer: {
+      left: '50%',
+      transform: 'translateX(-50%)',
+      display: 'flex',
+      zIndex: 10,
+      flexDirection: 'column',
+      position: 'fixed',
+      alignItems: 'center',
+    },
+    alert: {
+      marginBottom: '10px',
     },
   });
 
