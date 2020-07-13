@@ -33,7 +33,7 @@ function Notifier({ classes }: NotifierProps) {
   };
   return (
     <div className={classes.notificationsContainer} style={{ top: topOffset }}>
-      {notifications.map((notification) => {
+      {notifications.map(notification => {
         return (
           <Alert
             variant="filled"
