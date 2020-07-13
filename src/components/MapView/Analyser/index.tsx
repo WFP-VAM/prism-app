@@ -85,7 +85,7 @@ function Analyser({ classes }: AnalyserProps) {
   const [aboveThreshold, setAboveThreshold] = useState('');
   const [thresholdError, setThresholdError] = useState<string | null>(null);
 
-  // enforce errors.
+  // enforce errors
   useEffect(() => {
     const belowThresholdValue = parseFloat(belowThreshold);
     const aboveThresholdValue = parseFloat(aboveThreshold);
