@@ -100,13 +100,14 @@ function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
                     key={row.name}
                     onClick={() => {
                       // TODO if we decide to keep, add popup data?
-                      if (row.coordinates)
+                      if (row.coordinates) {
                         dispatch(
                           showPopup({
                             coordinates: row.coordinates,
                             locationName: row.name,
                           }),
                         );
+                      }
                     }}
                     style={{ cursor: row.coordinates ? 'pointer' : 'none' }}
                   >

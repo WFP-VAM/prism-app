@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   Button,
   createStyles,
@@ -17,11 +23,10 @@ import {
   WithStyles,
 } from '@material-ui/core';
 
-import { faChartBar, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { map } from 'lodash';
 import bbox from '@turf/bbox';
 
 import DatePicker from 'react-datepicker';
@@ -91,7 +96,9 @@ function Analyser({ classes }: AnalyserProps) {
     const aboveThresholdValue = parseFloat(aboveThreshold);
     if (belowThresholdValue > aboveThresholdValue) {
       setThresholdError('Min threshold is larger than Max!');
-    } else setThresholdError(null);
+    } else {
+      setThresholdError(null);
+    }
   }, [belowThreshold, aboveThreshold]);
 
   // set default date after dates finish loading and when hazard layer changes
@@ -102,42 +109,45 @@ function Analyser({ classes }: AnalyserProps) {
       ];
     if (!dates || dates.length === 0) {
       setSelectedDate(null);
-    } else setSelectedDate(dates[dates.length - 1]);
+    } else {
+      setSelectedDate(dates[dates.length - 1]);
+    }
   }, [availableDates, hazardLayerId]);
 
-  const onOptionChange = (setterFunc: (val: any) => void) => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setterFunc((event.target as HTMLInputElement).value);
+  const onOptionChange = <T extends string>(
+    setterFunc: Dispatch<SetStateAction<T>>,
+  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setterFunc(event.target.value as T);
   };
 
   const adminBoundariesExtent = useMemo(() => {
-    if (!boundaryLayerData)
+    if (!boundaryLayerData) {
       // not loaded yet. Should be loaded in MapView
       return null;
+    }
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
-  const statisticOptions = map(Object.entries(AggregationOperations), stat => {
-    return (
-      <FormControlLabel
-        key={stat[0]}
-        value={stat[1]}
-        control={<Radio className={classes.radioOptions} size="small" />}
-        label={stat[0]}
-      />
-    );
-  });
+  const statisticOptions = Object.entries(AggregationOperations).map(stat => (
+    <FormControlLabel
+      key={stat[0]}
+      value={stat[1]}
+      control={<Radio className={classes.radioOptions} size="small" />}
+      label={stat[0]}
+    />
+  ));
 
   const runAnalyser = async () => {
-    if (!adminBoundariesExtent) return; // hasn't been calculated yet
+    if (!adminBoundariesExtent) {
+      return;
+    } // hasn't been calculated yet
     if (analysisResult) {
       // if one exists we are likely trying to clear it to do a new one
       dispatch(clearAnalysisResult());
       return;
     }
     if (!selectedDate) {
-      throw new Error('Date must be given to run Analysis');
+      throw new Error('Date must be given to run analysis');
     }
 
     const selectedHazardLayer = LayerDefinitions[

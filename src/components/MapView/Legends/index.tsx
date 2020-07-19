@@ -43,24 +43,23 @@ function Legends({ classes, layers }: LegendsProps) {
         />
       );
     }),
+    // add analysis legend item if layer is active and analysis result exists
+    ...(isAnalysisLayerActive && analysisResult
+      ? [
+          <LegendItem
+            key={analysisResult.key}
+            legendText={`Impact Analysis on the effect of ${
+              analysisResult.getHazardLayer().title
+            } with the ongoing effects of ${
+              analysisResult.getBaselineLayer().title
+            }`}
+            legend={analysisResult.legend}
+            title="Analysis Layer"
+            classes={classes}
+          />,
+        ]
+      : []),
   ];
-
-  if (analysisResult && isAnalysisLayerActive) {
-    // eslint-disable-next-line fp/no-mutating-methods
-    legendItems.push(
-      <LegendItem
-        key={analysisResult.key}
-        legendText={`Impact Analysis on the effect of ${
-          analysisResult.getHazardLayer().title
-        } with the ongoing effects of ${
-          analysisResult.getBaselineLayer().title
-        }`}
-        legend={analysisResult.legend}
-        title="Analysis Layer"
-        classes={classes}
-      />,
-    );
-  }
 
   return (
     <div className={classes.container}>

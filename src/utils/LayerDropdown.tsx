@@ -5,7 +5,7 @@ import {
   Select,
   Typography,
 } from '@material-ui/core';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { menuList } from '../components/NavBar/utils';
 import { LayerKey, LayerType } from '../config/types';
 
@@ -59,7 +59,7 @@ function LayerDropdown({
               </MenuItem>
             )),
           ],
-          [] as any[],
+          [] as ReactElement[],
         )}
       </Select>
     </FormControl>

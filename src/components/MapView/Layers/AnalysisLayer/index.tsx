@@ -19,7 +19,9 @@ function AnalysisLayer() {
 
   const dispatch = useDispatch();
 
-  if (!analysisData || !isAnalysisLayerActive) return null;
+  if (!analysisData || !isAnalysisLayerActive) {
+    return null;
+  }
 
   // We use the legend values from the baseline layer
   function fillPaintData(legend: LegendDefinition): MapboxGL.FillPaint {

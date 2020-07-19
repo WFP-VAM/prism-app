@@ -7,8 +7,11 @@ import { RootState, store } from '../../../context/store';
 
 jest.mock('./ColorIndicator', () => 'mock-ColorIndicator');
 jest.mock('../../../context/analysisResultStateSlice', () => ({
-  isAnalysisLayerActiveSelector: (state: RootState) => null,
-  analysisResultSelector: (state: RootState) => null,
+  // if we try load the analysis redux slice we face an import cycle
+  /* eslint-disable no-unused-vars */
+  isAnalysisLayerActiveSelector: (_: RootState) => null,
+  analysisResultSelector: (_: RootState) => null,
+  /* eslint-enable no-unused-vars */
 }));
 
 test('renders as expected', () => {
