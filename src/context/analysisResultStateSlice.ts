@@ -29,6 +29,10 @@ import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, NSOLayerData } from './layers/nso';
 import { BoundaryLayerData } from './layers/boundary';
 
+const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
+const DEV_ADMIN_BOUNDARIES_URL =
+  'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json';
+
 type AnalysisResultState = {
   result?: AnalysisResult;
   error?: string;
@@ -39,7 +43,8 @@ export class AnalysisResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
   tableData: TableRow[];
-  rawApiData?: object[];
+  // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
+  private rawApiData?: object[];
   statistic: AggregationOperations;
   legend: LegendDefinition;
   hazardLayerId: WMSLayerProps['id'];
@@ -79,8 +84,30 @@ export type TableRow = {
 
 const initialState: AnalysisResultState = {
   isLoading: false,
-  isMapLayerActive: true, // TODO toggle via UI
+  isMapLayerActive: true,
 };
+
+/* Gets a public URL for the admin boundaries used by this application.
+ *
+ * If the application is in development, localhost is not accessible publicly.
+ * Therefore, we will return a pre-set constant to be used for development.
+ *
+ * If the application is in production, we will attempt to construct a public URL that the backend should be able to access.
+ */
+function getAdminBoundariesURL() {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const adminBoundariesPath = getBoundaryLayerSingleton().path;
+  if (!isProduction) {
+    return DEV_ADMIN_BOUNDARIES_URL;
+  }
+  // already a remote location, so return it.
+  if (adminBoundariesPath.startsWith('http')) {
+    return adminBoundariesPath;
+  }
+  // the regex here removes the dot at the beginning of a path, if there is one.
+  // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '
+  return window.location.origin + adminBoundariesPath.replace(/^\./, '');
+}
 
 function generateTableFromApiData(
   statistic: AggregationOperations,
@@ -93,10 +120,10 @@ function generateTableFromApiData(
   // baseline layer, both props and data
   {
     layer: { adminLevel },
-    data: { layerData },
+    data: { layerData: baselineLayerData },
   }: { layer: NSOLayerProps; data: NSOLayerData },
 ): TableRow[] {
-  // find the key that will let us reference the names of the bounding boxes.
+  // find the key that will let us reference the names of the bounding boxes. We get the one corresponding to the specific level of baseline, or the first if we fail.
   const adminLevelName =
     adminLayer.adminLevelNames[adminLevel - 1] || adminLayer.adminLevelNames[0];
   // for local name too.
@@ -104,13 +131,13 @@ function generateTableFromApiData(
     adminLayer.adminLevelLocalNames[adminLevel - 1] ||
     adminLayer.adminLevelLocalNames[0];
 
-  return aggregateData.map((row: any) => {
-    // find feature from admin boundaries that closely matches this api row.
+  return aggregateData.map(row => {
+    // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
+    // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
     const featureBoundary = find(
       adminLayerData.features,
-      (feature: any) =>
-        feature.properties[adminLevelName] === row[adminLevelName],
+      feature => feature.properties?.[adminLevelName] === row[adminLevelName],
     );
 
     const name: string =
@@ -118,11 +145,17 @@ function generateTableFromApiData(
     const localName: string =
       featureBoundary?.properties?.[adminLevelLocalName] || 'No Name';
 
+    // we are searching the data of baseline layer to find the data associated with this feature
+    // adminKey here refers to a specific feature (could be several) where the data is attached to.
     const baselineValue =
-      layerData.find(({ adminKey }) => {
-        return (featureBoundary?.properties?.[
-          adminLayer.adminCode
-        ] as string).startsWith(adminKey);
+      baselineLayerData.find(({ adminKey }) => {
+        // we only check startsWith because the adminCode grows longer the deeper the level.
+        // For example, 34 is state and 14 is district, therefore 3414 is a specific district in a specific state.
+        // if this baseline layer only focuses on a higher level (just states) it would only contain 34, but every feature is very specific (uses the full number 3414)
+        // therefore checking the start will cover all levels.
+        return featureBoundary?.properties?.[adminLayer.adminCode].startsWith(
+          adminKey,
+        );
       })?.value || 'No Data';
 
     const tableRow: TableRow = {
@@ -144,10 +177,6 @@ export type AnalysisDispatchParams = {
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
 };
-const apiUrl = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
-// TODO - we need to use the public version generated by the app itself
-const adminJson =
-  'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json';
 
 export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisResult,
@@ -181,23 +210,20 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       date,
       extent,
     }),
-    zones_url:
-      process.env.NODE_ENV === 'production'
-        ? window.location.origin +
-          getBoundaryLayerSingleton().path.replace('.', '')
-        : adminJson,
+    zones_url: getAdminBoundariesURL(),
     group_by:
       adminBoundaries.adminLevelNames[baselineLayer.adminLevel - 1] ||
       adminBoundaries.adminLevelNames[0],
   };
   const aggregateData = scaleAndFilterAggregateData(
-    await fetchApiData(apiUrl, apiRequest),
+    await fetchApiData(ANALYSIS_API_URL, apiRequest),
     hazardLayer,
     statistic,
     threshold,
   );
-  let baselineLayerData: BaselineLayerData;
+  let loadedAndCheckedBaselineData: BaselineLayerData;
   // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
+  // similar code can be found at impact.ts
   if (!baselineData) {
     const {
       payload: { data },
@@ -208,10 +234,13 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     )) as { payload: { data: unknown } };
 
     // eslint-disable-next-line fp/no-mutation
-    baselineLayerData = checkBaselineDataLayer(baselineLayer.id, data);
+    loadedAndCheckedBaselineData = checkBaselineDataLayer(
+      baselineLayer.id,
+      data,
+    );
   } else {
     // eslint-disable-next-line fp/no-mutation
-    baselineLayerData = checkBaselineDataLayer(
+    loadedAndCheckedBaselineData = checkBaselineDataLayer(
       baselineLayer.id,
       baselineData.data,
     );
@@ -219,7 +248,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const features = generateFeaturesFromApiData(
     aggregateData,
-    baselineLayerData,
+    loadedAndCheckedBaselineData,
     apiRequest.group_by,
     statistic,
   );
@@ -228,7 +257,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     aggregateData,
     adminBoundariesData,
-    { layer: baselineLayer, data: baselineLayerData },
+    { layer: baselineLayer, data: loadedAndCheckedBaselineData },
   );
 
   return new AnalysisResult(
@@ -240,7 +269,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     hazardLayer,
     baselineLayer,
     statistic,
-    aggregateData, // TODO we only pass this to make debugging easier - not used anywhere
+    // we never use the raw api data besides for debugging. So lets not bother saving it in Redux for production
+    process.env.NODE_ENV === 'production' ? undefined : aggregateData,
   );
 });
 

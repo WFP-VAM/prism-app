@@ -142,7 +142,7 @@ export type ApiData = {
 export async function fetchApiData(
   url: string,
   apiData: ApiData,
-): Promise<Array<object>> {
+): Promise<Array<{ [k in string]: string | number }>> {
   return (
     await fetch(url, {
       method: 'POST',
@@ -171,14 +171,16 @@ export function scaleAndFilterAggregateData(
       return {
         ...data,
         [operation]: scaleValueIfDefined(
-          get(data, `stats_${operation}`),
+          get(data, `stats_${operation}`) as number,
           scale,
           offset,
         ),
       };
     })
     .filter(data => {
-      return !Number.isNaN(thresholdOrNaN(data[operation], threshold));
+      return !Number.isNaN(
+        thresholdOrNaN(data[operation] as number, threshold),
+      );
     });
 }
 

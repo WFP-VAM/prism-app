@@ -7,7 +7,7 @@ import { ThunkApi } from '../store';
 import { getBoundaryLayerSingleton } from '../../config/utils';
 
 export type DataRecord = {
-  adminKey: string;
+  adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
   value: string | number | null;
 };
 
