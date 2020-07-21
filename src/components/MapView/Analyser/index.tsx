@@ -40,6 +40,7 @@ import {
   BoundaryLayerProps,
   NSOLayerProps,
   WMSLayerProps,
+  LayerKey,
 } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice';
@@ -56,8 +57,6 @@ import {
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
 import LayerDropdown from '../../../utils/LayerDropdown';
-
-const layers = Object.values(LayerDefinitions);
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -77,13 +76,9 @@ function Analyser({ classes }: AnalyserProps) {
   const [isTableViewOpen, setIsTableViewOpen] = useState(true);
 
   // form elements
-  const [hazardLayerId, setHazardLayerId] = useState(
-    (layers.find(layer => layer.type === 'wms') as WMSLayerProps).id,
-  );
+  const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
   const [statistic, setStatistic] = useState(AggregationOperations.Mean);
-  const [baselineLayerId, setBaselineLayerId] = useState(
-    (layers.find(layer => layer.type === 'nso') as NSOLayerProps).id,
-  );
+  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>();
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
   const [belowThreshold, setBelowThreshold] = useState('');
@@ -103,10 +98,11 @@ function Analyser({ classes }: AnalyserProps) {
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
-    const dates =
-      availableDates[
-        (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
-      ];
+    const dates = hazardLayerId
+      ? availableDates[
+          (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
+        ]
+      : null;
     if (!dates || dates.length === 0) {
       setSelectedDate(null);
     } else {
@@ -148,6 +144,10 @@ function Analyser({ classes }: AnalyserProps) {
     }
     if (!selectedDate) {
       throw new Error('Date must be given to run analysis');
+    }
+
+    if (!hazardLayerId || !baselineLayerId) {
+      throw new Error('Layer should be selected to run analysis');
     }
 
     const selectedHazardLayer = LayerDefinitions[
@@ -207,6 +207,7 @@ function Analyser({ classes }: AnalyserProps) {
                   setValue={setHazardLayerId}
                   title="Hazard Layer"
                   className={classes.selector}
+                  placeholder="Choose hazard layer"
                 />
               </div>
               <div className={classes.analyserOptions}>
@@ -230,6 +231,7 @@ function Analyser({ classes }: AnalyserProps) {
                   setValue={setBaselineLayerId}
                   title="Baseline Layer"
                   className={classes.selector}
+                  placeholder="Choose baseline layer"
                 />
               </div>
               <div className={classes.analyserOptions}>
@@ -271,10 +273,12 @@ function Analyser({ classes }: AnalyserProps) {
                   customInput={<Input />}
                   popperClassName={classes.calendarPopper}
                   includeDates={
-                    availableDates[
-                      (LayerDefinitions[hazardLayerId] as WMSLayerProps)
-                        .serverLayerName
-                    ]?.map(d => new Date(d)) || []
+                    hazardLayerId
+                      ? availableDates[
+                          (LayerDefinitions[hazardLayerId] as WMSLayerProps)
+                            .serverLayerName
+                        ]?.map(d => new Date(d)) || []
+                      : []
                   }
                 />
               </div>
@@ -312,7 +316,11 @@ function Analyser({ classes }: AnalyserProps) {
             <Button
               className={classes.innerAnalysisButton}
               onClick={runAnalyser}
-              disabled={!analysisResult && (!!thresholdError || !selectedDate)}
+              disabled={
+                (!analysisResult && (!!thresholdError || !selectedDate)) ||
+                !hazardLayerId ||
+                !baselineLayerId
+              }
             >
               <Typography variant="body2">
                 {analysisResult ? 'Clear Analysis' : 'Run Analysis'}

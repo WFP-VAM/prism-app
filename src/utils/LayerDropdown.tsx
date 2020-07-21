@@ -28,13 +28,12 @@ function LayerDropdown({
     }))
     // 3. filter categories which don't have any layers at the end of it all.
     .filter(category => category.layers.length > 0);
-  const defaultValue = categories[0].layers[0].id;
+  const defaultValue = 'placeholder';
 
   return (
     <FormControl {...rest}>
       <Select
         defaultValue={defaultValue}
-        value={value}
         onChange={e => {
           setValue(e.target.value as LayerKey);
         }}
@@ -59,7 +58,18 @@ function LayerDropdown({
               </MenuItem>
             )),
           ],
-          [] as ReactElement[],
+          (rest.placeholder
+            ? [
+                <MenuItem
+                  style={{ color: 'black' }}
+                  key="placeholder"
+                  value="placeholder"
+                  disabled
+                >
+                  {rest.placeholder}
+                </MenuItem>,
+              ]
+            : []) as ReactElement[],
         )}
       </Select>
     </FormControl>
@@ -68,10 +78,11 @@ function LayerDropdown({
 
 interface LayerSelectorProps {
   type: LayerType['type'];
-  value: LayerKey;
+  value: LayerKey | undefined;
   setValue: (val: LayerKey) => void;
   title: string;
   // a way to type this and every other default thing in? e.g style
   className?: string;
+  placeholder?: string;
 }
 export default LayerDropdown;
