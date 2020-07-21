@@ -1,4 +1,4 @@
-import { chain, map, startCase } from 'lodash';
+import { map, startCase } from 'lodash';
 
 import appJSON from '../../config/prism.json';
 import {
@@ -47,8 +47,9 @@ function formatLayersCategories(layersList: {
   });
 }
 
-export const menuList: MenuItemsType = chain(appJSON.categories)
-  .map((layersCategories, categoryKey) => {
+export const menuList: MenuItemsType = map(
+  appJSON.categories,
+  (layersCategories, categoryKey) => {
     Object.values(layersCategories)
       .flat()
       .forEach(layerOrTableKey => {
@@ -68,5 +69,5 @@ export const menuList: MenuItemsType = chain(appJSON.categories)
         },
       ),
     };
-  })
-  .value();
+  },
+);

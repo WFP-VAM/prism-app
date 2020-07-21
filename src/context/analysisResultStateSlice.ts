@@ -1,17 +1,15 @@
-// TODO remove
-/* eslint-disable no-console */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureCollection, Position } from 'geojson';
-import { get, find } from 'lodash';
+import { get } from 'lodash';
 import { CreateAsyncThunkTypes, RootState } from './store';
 import {
   AggregationOperations,
   AsyncReturnType,
   BoundaryLayerProps,
+  LegendDefinition,
   NSOLayerProps,
   ThresholdDefinition,
   WMSLayerProps,
-  LegendDefinition,
 } from '../config/types';
 import {
   ApiData,
@@ -135,8 +133,7 @@ function generateTableFromApiData(
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
     // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
-    const featureBoundary = find(
-      adminLayerData.features,
+    const featureBoundary = adminLayerData.features.find(
       feature => feature.properties?.[adminLevelName] === row[adminLevelName],
     );
 
@@ -202,7 +199,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   if (!adminBoundariesData) {
     throw new Error('Boundary Layer not loaded!');
   }
-  // we force group by to be defined with &
+  // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
   const apiRequest: ApiData & { group_by: string } = {
     geotiff_url: getWCSLayerUrl({
