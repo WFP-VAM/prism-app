@@ -1,4 +1,4 @@
-import { get, has, isNull, isString } from 'lodash';
+import { get, has, isNull, isString, mean } from 'lodash';
 import { Feature } from 'geojson';
 import bbox from '@turf/bbox';
 import {
@@ -51,11 +51,10 @@ const checkRasterLayerData = (layerData: LayerData<LayerType>): RasterLayer => {
 };
 
 const operations = {
-  mean: (data: number[]) =>
-    data.reduce((sum, value) => sum + value, 0) / data.length,
+  mean, // mean method directly from lodash
   median: (data: number[]) => {
     // eslint-disable-next-line fp/no-mutating-methods
-    const sortedValues = data.sort();
+    const sortedValues = [...data].sort();
     // Odd cases we use the middle value
     if (sortedValues.length % 2 !== 0) {
       return sortedValues[Math.floor(sortedValues.length / 2)];

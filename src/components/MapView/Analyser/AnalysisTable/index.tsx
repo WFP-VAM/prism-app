@@ -1,6 +1,5 @@
-/* eslint-disable no-console */
-// TODO remove above
 import React, { useState } from 'react';
+import { invert } from 'lodash';
 import {
   Button,
   createStyles,
@@ -18,14 +17,14 @@ import {
 import { useDispatch } from 'react-redux';
 import {
   AnalysisResult,
-  TableRow as AnalysisTableObject,
+  TableRow as AnalysisTableRow,
 } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { AggregationOperations } from '../../../../config/types';
 import { downloadCSVFromTableData } from '../../../../utils/analysis-utils';
 
 export type Column = {
-  id: keyof AnalysisTableObject;
+  id: keyof AnalysisTableRow;
   label: string;
   format?: (value: number) => string;
 };
@@ -34,7 +33,7 @@ function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const { tableData } = analysisResult;
+  const { tableData, statistic } = analysisResult;
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;
 
   const dispatch = useDispatch();
@@ -60,19 +59,15 @@ function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
       label: 'Name',
     },
     {
-      id: AggregationOperations.Mean,
-      label: 'Mean',
+      id: statistic,
+      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
       format: (value: number) => value.toLocaleString('en-US'),
     },
-    {
-      id: AggregationOperations.Median,
-      label: 'Median',
-      format: (value: number) => value.toLocaleString('en-US'),
-    },
+
     {
       id: 'baselineValue',
       label: baselineLayerTitle,
-      // format: (value: number | string) => value.toLocaleString('en-US'), Not needed for this one?
+      format: (value: number | string) => value.toLocaleString('en-US'),
     },
   ];
   return (

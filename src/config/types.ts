@@ -1,6 +1,8 @@
 import 'reflect-metadata';
 import rawLayers from './layers.json';
+import { TableKey } from './utils';
 
+// TODO currently unused. Could be harnessed within admin levels key typing
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
 
 const optionalMetadataKey = Symbol('optional_property');
@@ -14,6 +16,12 @@ export type LayerType =
   | GroundstationLayerProps;
 
 export type LayerKey = keyof typeof rawLayers;
+/**
+ * Check if a string is an explicitly defined layer in layers.json
+ * @param layerKey the string to check
+ */
+export const isLayerKey = (layerKey: string): layerKey is LayerKey =>
+  layerKey in rawLayers;
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
@@ -198,7 +206,7 @@ export class StatsApi {
   zonesUrl: string;
   groupBy: string;
 }
-
+// first is display name, second is name we store in computers
 export enum AggregationOperations {
   Mean = 'mean',
   Median = 'median',
@@ -290,7 +298,7 @@ export interface ChartConfig {
 }
 
 export class TableType {
-  id: string;
+  id: TableKey;
   title: string;
   table: string;
   legendText: string;

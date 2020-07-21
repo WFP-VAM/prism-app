@@ -15,7 +15,14 @@ import {
   WMSLayerProps,
 } from './types';
 
-type tableKeys = keyof typeof rawTables;
+export type TableKey = keyof typeof rawTables;
+/**
+ * Check if a string is an explicitly defined table in tables.json
+ * @param tableKey the string to check
+ */
+export function isTableKey(tableKey: string): tableKey is TableKey {
+  return tableKey in rawTables;
+}
 
 function parseStatsApiConfig(maybeConfig: {
   [key: string]: any;
@@ -144,7 +151,7 @@ function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
 }
 
-function getTableByKey(key: tableKeys): TableType {
+function getTableByKey(key: TableKey): TableType {
   const rawDefinition = {
     id: key,
     ...mapKeys(rawTables[key], (v, k) => camelCase(k)),
@@ -158,12 +165,10 @@ function getTableByKey(key: tableKeys): TableType {
   );
 }
 
-export const TableDefinitions: { [key: string]: TableType } = Object.keys(
-  rawTables,
-).reduce(
+export const TableDefinitions = Object.keys(rawTables).reduce(
   (acc, tableKey) => ({
     ...acc,
-    [tableKey]: getTableByKey(tableKey as tableKeys),
+    [tableKey]: getTableByKey(tableKey as TableKey),
   }),
   {},
-);
+) as { [key in TableKey]: TableType };
