@@ -43,7 +43,10 @@ function LayerDropdown({
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
           (components, category) => [
             ...components,
-            <ListSubheader key={category.title}>
+            <ListSubheader
+              style={{ pointerEvents: 'none' }}
+              key={category.title}
+            >
               <Typography variant="body2" color="primary">
                 {category.title}
               </Typography>
