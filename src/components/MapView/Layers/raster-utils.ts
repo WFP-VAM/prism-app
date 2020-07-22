@@ -107,7 +107,7 @@ export function getWCSUrl(
     coverage: layerName,
     crs: 'EPSG:4326',
     bbox: [xRange[0], yRange[0], xRange[1], yRange[1]]
-      .map(v => v.toFixed(1))
+      .map((v) => v.toFixed(1))
       .join(','),
     width: width.toString(),
     height: (height || width).toString(),

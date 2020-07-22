@@ -1,12 +1,11 @@
 import { FeatureCollection } from 'geojson';
 import { get, isNull, isString } from 'lodash';
 import { BoundaryLayerProps, NSOLayerProps } from '../../config/types';
-/* eslint-disable import/no-cycle */
-import { LayerData, LayerDataParams } from './layer-data';
-import { layerDataSelector } from '../mapStateSlice';
-import { ThunkApi } from '../store';
-/* eslint-enable import/no-cycle */
+import type { ThunkApi } from '../store';
 import { getBoundaryLayerSingleton } from '../../config/utils';
+// FIXME
+import { layerDataSelector } from '../mapStateSlice';
+import { LayerData, LayerDataParams } from './layer-data';
 
 type DataRecord = {
   adminKey: string;
@@ -42,7 +41,7 @@ export async function fetchNsoLayerData(
   ).json();
 
   const layerData = (rawJSONs || [])
-    .map(point => {
+    .map((point) => {
       const adminKey = point[adminCode] as string;
       if (!adminKey) {
         return undefined;
@@ -55,7 +54,7 @@ export async function fetchNsoLayerData(
   const features = {
     ...adminBoundaries,
     features: adminBoundaries.features
-      .map(feature => {
+      .map((feature) => {
         const { properties } = feature;
         const adminBoundaryCode = get(
           properties,
@@ -78,7 +77,7 @@ export async function fetchNsoLayerData(
         }
         return undefined;
       })
-      .filter(f => f !== undefined),
+      .filter((f) => f !== undefined),
   } as FeatureCollection;
 
   return {

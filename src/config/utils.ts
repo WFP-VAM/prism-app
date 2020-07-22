@@ -111,7 +111,7 @@ export const LayerDefinitions: LayersMap = (() => {
   // Verify that the layers referenced by impact layers actually exist
   Object.values(layers)
     .filter((layer): layer is ImpactLayerProps => layer.type === 'impact')
-    .forEach(layer => verifyValidImpactLayer(layer, layers));
+    .forEach((layer) => verifyValidImpactLayer(layer, layers));
 
   return layers;
 })();

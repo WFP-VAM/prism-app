@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as Papa from 'papaparse';
-// eslint-disable-next-line import/no-cycle
-import { CreateAsyncThunkTypes, RootState } from './store';
 import { TableType } from '../config/types';
 import { TableDefinitions } from '../config/utils';
+import type { CreateAsyncThunkTypes, RootState } from './store';
 
 export type TableRowType = { [key: string]: string | number };
 export type TableData = {
@@ -36,9 +35,9 @@ export const loadTable = createAsyncThunk<
     Papa.parse(url, {
       header: true,
       download: true,
-      complete: results =>
+      complete: (results) =>
         resolve({ rows: results.data, columns: Object.keys(results.data[0]) }),
-      error: error => reject(error),
+      error: (error) => reject(error),
     }),
   );
 });
@@ -52,7 +51,7 @@ export const tableStateSlice = createSlice({
       isShowing: false,
     }),
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder.addCase(
       loadTable.fulfilled,
       (state, { payload }: PayloadAction<TableData>) => ({

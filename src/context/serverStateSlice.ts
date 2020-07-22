@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { CreateAsyncThunkTypes, RootState } from './store';
 import { AvailableDates } from '../config/types';
 import { getLayersAvailableDates } from '../utils/server-utils';
+import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerState = {
   availableDates: AvailableDates;
@@ -33,7 +32,7 @@ export const serverStateSlice = createSlice({
       availableDates: payload,
     }),
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder.addCase(
       loadAvailableDates.fulfilled,
       (state, { payload }: PayloadAction<AvailableDates>) => ({
@@ -51,7 +50,7 @@ export const serverStateSlice = createSlice({
         : action.error.toString(),
     }));
 
-    builder.addCase(loadAvailableDates.pending, state => ({
+    builder.addCase(loadAvailableDates.pending, (state) => ({
       ...state,
       loading: true,
     }));

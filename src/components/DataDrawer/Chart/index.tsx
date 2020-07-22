@@ -89,7 +89,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
   const tableRows = data.rows.slice(1, data.rows.length);
 
   // Get the keys for the data of interest
-  const indices = Object.keys(header).filter(key =>
+  const indices = Object.keys(header).filter((key) =>
     key.includes(config.data || ''),
   );
 
@@ -106,8 +106,8 @@ function formatChartData(data: TableData, config: ChartConfig) {
   );
 
   const labels = !transpose
-    ? indices.map(index => header[index])
-    : tableRows.map(row => row[config.category]);
+    ? indices.map((index) => header[index])
+    : tableRows.map((row) => row[config.category]);
 
   const datasets = !transpose
     ? tableRows.map((row, i) => ({
@@ -116,7 +116,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         backgroundColor: colors[i],
         borderColor: colors[i],
         borderWidth: 2,
-        data: indices.map(index => (row[index] as number) || null),
+        data: indices.map((index) => (row[index] as number) || null),
       }))
     : indices.map((index, i) => ({
         label: header[index] as string,
@@ -124,7 +124,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         backgroundColor: colors[i],
         borderColor: colors[i],
         borderWidth: 2,
-        data: tableRows.map(row => (row[index] as number) || null),
+        data: tableRows.map((row) => (row[index] as number) || null),
       }));
 
   return {

@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from './store';
+import type { RootState } from './store';
 import { LayerType } from '../config/types';
-// eslint-disable-next-line import/no-cycle
+// FIXME
 import { LayerData, LayerDataTypes, loadLayerData } from './layers/layer-data';
 
 interface DateRange {
@@ -46,7 +45,9 @@ export const mapStateSlice = createSlice({
   reducers: {
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => ({
       ...rest,
-      layers: layers.filter(layer => keepLayer(layer, payload)).concat(payload),
+      layers: layers
+        .filter((layer) => keepLayer(layer, payload))
+        .concat(payload),
     }),
 
     removeLayer: (
@@ -72,10 +73,10 @@ export const mapStateSlice = createSlice({
       { payload }: PayloadAction<string>,
     ) => ({
       ...rest,
-      errors: errors.filter(msg => msg !== payload),
+      errors: errors.filter((msg) => msg !== payload),
     }),
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder.addCase(
       loadLayerData.fulfilled,
       (

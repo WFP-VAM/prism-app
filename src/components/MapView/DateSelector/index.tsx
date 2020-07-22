@@ -92,7 +92,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
             showYearDropdown
             dropdownMode="select"
             customInput={<Input />}
-            includeDates={availableDates.map(d => new Date(d + userOffset))}
+            includeDates={availableDates.map((d) => new Date(d + userOffset))}
           />
         </Grid>
 

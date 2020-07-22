@@ -1,7 +1,6 @@
 import { get } from 'lodash';
 import moment from 'moment';
-// eslint-disable-next-line import/no-cycle
-import { LayerDataParams } from './layer-data';
+import type { LayerDataParams } from './layer-data';
 import { WMSLayerProps } from '../../config/types';
 import {
   GeoTiffImage,

@@ -16,7 +16,7 @@ export function formatUrl(
   params: { [key: string]: any } = {},
 ): string {
   const url = new URL(baseUrl);
-  Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
+  Object.keys(params).forEach((k) => url.searchParams.append(k, params[k]));
   return url.toString();
 }
 
@@ -41,8 +41,8 @@ function formatCapabilitiesInfo(
       : rawDates;
 
     const availableDates = dates
-      .filter(date => !isEmpty(date))
-      .map(date => moment(get(date, '_text', date)).valueOf());
+      .filter((date) => !isEmpty(date))
+      .map((date) => moment(get(date, '_text', date)).valueOf());
 
     const { [layerId]: oldLayerDates } = acc;
     return {
@@ -154,8 +154,8 @@ export async function getLayersAvailableDates() {
   const wcsServerUrls: string[] = get(config, 'serversUrls.wcs', []);
 
   const [wmsAvailableDates, wcsAvailableDates] = await Promise.all([
-    ...wmsServerUrls.map(url => getWMSCapabilities(url)),
-    ...wcsServerUrls.map(url => getWCSCoverage(url)),
+    ...wmsServerUrls.map((url) => getWMSCapabilities(url)),
+    ...wcsServerUrls.map((url) => getWCSCoverage(url)),
   ]);
 
   return merge(wmsAvailableDates, wcsAvailableDates);

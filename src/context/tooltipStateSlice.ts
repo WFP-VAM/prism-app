@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { merge } from 'lodash';
-// eslint-disable-next-line import/no-cycle
-import { RootState } from './store';
+import type { RootState } from './store';
 
 export interface PopupData {
   [key: string]: { data: number; coordinates: GeoJSON.Position };
@@ -47,7 +46,7 @@ export const tooltipStateSlice = createSlice({
       showing: payload,
     }),
 
-    hidePopup: state => ({
+    hidePopup: (state) => ({
       ...state,
       showing: false,
       data: {},

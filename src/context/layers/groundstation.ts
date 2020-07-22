@@ -1,6 +1,5 @@
 import GeoJSON from 'geojson';
-// eslint-disable-next-line import/no-cycle
-import { LayerDataParams } from './layer-data';
+import type { LayerDataParams } from './layer-data';
 import { GroundstationLayerProps } from '../../config/types';
 
 declare module 'geojson' {

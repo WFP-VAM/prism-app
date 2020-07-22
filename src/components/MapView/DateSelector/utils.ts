@@ -43,7 +43,7 @@ export function findAvailableDayInMonth(
   availableDates: number[],
 ) {
   const reference = new Date(year, month);
-  return availableDates.filter(d => moment(d).isSame(reference, 'month'));
+  return availableDates.filter((d) => moment(d).isSame(reference, 'month'));
 }
 
 /**

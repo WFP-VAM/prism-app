@@ -35,7 +35,7 @@ export function makeRequired(target: any, propertyKey: string) {
     Reflect.getMetadata(optionalMetadataKey, target) || [];
   return Reflect.defineMetadata(
     optionalMetadataKey,
-    existingKeys.filter(v => v !== propertyKey),
+    existingKeys.filter((v) => v !== propertyKey),
     target,
   );
 }
@@ -55,7 +55,7 @@ export function requiredKeysForClassType(constructor: ClassType<any>) {
   const target = new constructor();
   const allKeys = Object.getOwnPropertyNames(target);
   const optionalKeys = Reflect.getMetadata(optionalMetadataKey, target) || [];
-  return allKeys.filter(k => !optionalKeys.includes(k));
+  return allKeys.filter((k) => !optionalKeys.includes(k));
 }
 
 /**
@@ -73,7 +73,7 @@ export function checkRequiredKeys<T>(
 ): maybeType is T {
   const requiredKeys = requiredKeysForClassType(classType);
   const missingKey = requiredKeys.find(
-    k => !Object.prototype.hasOwnProperty.call(maybeType, k),
+    (k) => !Object.prototype.hasOwnProperty.call(maybeType, k),
   );
 
   if (logErrors) {
@@ -89,8 +89,8 @@ export function checkRequiredKeys<T>(
     const target = new classType();
     const allKeys = Object.getOwnPropertyNames(target);
     Object.keys(maybeType)
-      .filter(key => !allKeys.includes(key))
-      .forEach(key =>
+      .filter((key) => !allKeys.includes(key))
+      .forEach((key) =>
         console.warn(`Found unknown key '${key}' on config for ${id}`),
       );
   }

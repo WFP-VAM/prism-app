@@ -21,9 +21,9 @@ function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   targetMap.getCanvas().style.cursor = cursor;
 }
 
-const getLinePaintOptions: (
-  layer: BoundaryLayerProps,
-) => MapboxGL.LinePaint = layer => {
+const getLinePaintOptions: (layer: BoundaryLayerProps) => MapboxGL.LinePaint = (
+  layer,
+) => {
   return {
     'line-color': 'grey',
     'line-width': 1,
@@ -52,7 +52,8 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
         const coordinates = evt.lngLat;
         const locationName = layer.adminLevelNames
           .map(
-            level => get(evt.features[0], ['properties', level], '') as string,
+            (level) =>
+              get(evt.features[0], ['properties', level], '') as string,
           )
           .join(', ');
         dispatch(showPopup({ coordinates, locationName }));
