@@ -301,7 +301,7 @@ export const analysisResultSlice = createSlice({
       requestAndStoreAnalysis.rejected,
       (state, action): AnalysisResultState => ({
         ...state,
-        isLoading: false, // TODO
+        isLoading: false,
         error: action.error.message
           ? action.error.message
           : action.error.toString(),
@@ -311,7 +311,7 @@ export const analysisResultSlice = createSlice({
     builder.addCase(
       requestAndStoreAnalysis.pending,
       (state): AnalysisResultState => ({
-        ...state, // TODO
+        ...state,
         isLoading: true,
       }),
     );

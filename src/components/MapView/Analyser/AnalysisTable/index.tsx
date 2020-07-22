@@ -145,6 +145,8 @@ const styles = () =>
   createStyles({
     tableContainer: {
       border: '2px solid',
+      width: '600px',
+      maxWidth: '100vw',
     },
     tableHead: {
       backgroundColor: '#3d474a',

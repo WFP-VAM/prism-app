@@ -14,6 +14,7 @@ function LayerDropdown({
   value,
   setValue,
   title,
+  placeholder,
   ...rest
 }: LayerSelectorProps) {
   // this could be testable, needs to be constructed in a way that prevents it breaking whenever new layers are added. (don't put layer name in snapshot)
@@ -61,7 +62,7 @@ function LayerDropdown({
               </MenuItem>
             )),
           ],
-          (rest.placeholder
+          (placeholder
             ? [
                 <MenuItem
                   style={{ color: 'black' }}
@@ -69,7 +70,7 @@ function LayerDropdown({
                   value="placeholder"
                   disabled
                 >
-                  {rest.placeholder}
+                  {placeholder}
                 </MenuItem>,
               ]
             : []) as ReactElement[],
@@ -81,7 +82,7 @@ function LayerDropdown({
 
 interface LayerSelectorProps {
   type: LayerType['type'];
-  value: LayerKey | undefined;
+  value?: LayerKey;
   setValue: (val: LayerKey) => void;
   title: string;
   // a way to type this and every other default thing in? e.g style

@@ -22,6 +22,7 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
+import { grey } from '@material-ui/core/colors';
 
 import { faCaretDown, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -128,7 +129,9 @@ function Analyser({ classes }: AnalyserProps) {
     <FormControlLabel
       key={stat[0]}
       value={stat[1]}
-      control={<Radio className={classes.radioOptions} size="small" />}
+      control={
+        <Radio className={classes.radioOptions} color="default" size="small" />
+      }
       label={stat[0]}
     />
   ));
@@ -290,6 +293,7 @@ function Analyser({ classes }: AnalyserProps) {
                   <FormControlLabel
                     control={
                       <Switch
+                        color="default"
                         checked={isMapLayerActive}
                         onChange={e =>
                           dispatch(setIsMapLayerActive(e.target.checked))
@@ -301,6 +305,7 @@ function Analyser({ classes }: AnalyserProps) {
                   <FormControlLabel
                     control={
                       <Switch
+                        color="default"
                         checked={isTableViewOpen}
                         onChange={e => setIsTableViewOpen(e.target.checked)}
                       />
@@ -367,7 +372,7 @@ const styles = (theme: Theme) =>
       marginTop: '10px',
     },
     radioOptions: {
-      color: 'white',
+      '&.Mui-checked': { color: grey[50] },
       padding: '2px 10px 2px 20px',
     },
     innerAnalysisButton: {
