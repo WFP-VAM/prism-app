@@ -28,7 +28,12 @@ import type { NSOLayerData } from './nso';
 import { getWCSLayerUrl, WMSLayerData } from './wms';
 import { BoundaryLayerData } from './boundary';
 // FIXME
-import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
+import type {
+  LayerData,
+  LayerDataParams,
+  LazyLoader,
+  LoadLayerDataFuncType,
+} from './layer-data';
 import { layerDataSelector } from '../mapStateSlice';
 
 export type ImpactLayerData = {
@@ -216,6 +221,7 @@ async function loadFeaturesClientSide(
   baselineData: BaselineLayerData,
   hazardLayerDef: WMSLayerProps,
   operation: AggregationOperations,
+  loadLayerData: LoadLayerDataFuncType,
   extent?: Extent,
   date?: number,
 ): Promise<GeoJsonBoundary[]> {
@@ -312,10 +318,10 @@ async function loadFeaturesClientSide(
   }, [] as GeoJsonBoundary[]);
 }
 
-export async function fetchImpactLayerData(
+export const fetchImpactLayerData: LazyLoader<ImpactLayerProps> = loadLayerData => async (
   params: LayerDataParams<ImpactLayerProps>,
   api: ThunkApi,
-) {
+) => {
   const { getState, dispatch } = api;
   const { layer, extent, date } = params;
 
@@ -371,6 +377,7 @@ export async function fetchImpactLayerData(
         baselineData,
         hazardLayerDef,
         operation,
+        loadLayerData,
         extent,
         date,
       );
@@ -382,4 +389,4 @@ export async function fetchImpactLayerData(
       features: activeFeatures,
     },
   };
-}
+};

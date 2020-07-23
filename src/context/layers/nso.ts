@@ -5,7 +5,7 @@ import type { ThunkApi } from '../store';
 import { getBoundaryLayerSingleton } from '../../config/utils';
 // FIXME
 import { layerDataSelector } from '../mapStateSlice';
-import { LayerData, LayerDataParams } from './layer-data';
+import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 
 type DataRecord = {
   adminKey: string;
@@ -17,10 +17,10 @@ export type NSOLayerData = {
   layerData: DataRecord[];
 };
 
-export async function fetchNsoLayerData(
+export const fetchNsoLayerData: LazyLoader<NSOLayerProps> = () => async (
   params: LayerDataParams<NSOLayerProps>,
   api: ThunkApi,
-) {
+) => {
   const { layer } = params;
   const { path, adminCode, dataField } = layer;
   const { getState } = api;
@@ -84,4 +84,4 @@ export async function fetchNsoLayerData(
     features,
     layerData,
   };
-}
+};

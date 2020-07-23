@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import moment from 'moment';
-import type { LayerDataParams } from './layer-data';
+import type { LayerDataParams, LazyLoader } from './layer-data';
 import { WMSLayerProps } from '../../config/types';
 import {
   GeoTiffImage,
@@ -36,11 +36,11 @@ export function getWCSLayerUrl({
   );
 }
 
-export async function fetchWCSLayerData({
+export const fetchWCSLayerData: LazyLoader<WMSLayerProps> = () => async ({
   layer,
   extent,
   date,
-}: LayerDataParams<WMSLayerProps>) {
+}: LayerDataParams<WMSLayerProps>) => {
   if (!extent) {
     throw new Error(
       `Can't fetch WCS data for layer ${layer.id} without providing an extent!`,
@@ -48,4 +48,4 @@ export async function fetchWCSLayerData({
   }
 
   return loadGeoTiff(getWCSLayerUrl({ layer, extent, date }));
-}
+};
