@@ -90,7 +90,7 @@ function Analyser({ classes }: AnalyserProps) {
   useEffect(() => {
     const belowThresholdValue = parseFloat(belowThreshold);
     const aboveThresholdValue = parseFloat(aboveThreshold);
-    if (belowThresholdValue > aboveThresholdValue) {
+    if (belowThresholdValue < aboveThresholdValue) {
       setThresholdError('Min threshold is larger than Max!');
     } else {
       setThresholdError(null);
