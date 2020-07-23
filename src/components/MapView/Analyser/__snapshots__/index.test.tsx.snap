@@ -65,9 +65,9 @@ exports[`renders as expected 1`] = `
             </mock-typography>
             <mock-layer-dropdown
               classname="Analyser-selector-9"
+              placeholder="Choose hazard layer"
               title="Hazard Layer"
               type="wms"
-              value="pasture_anomaly"
             />
           </div>
           <div
@@ -90,7 +90,7 @@ exports[`renders as expected 1`] = `
                 >
                   <span
                     aria-disabled="false"
-                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-29 MuiRadio-root MuiRadio-colorSecondary Analyser-radioOptions-6 PrivateSwitchBase-checked-30 Mui-checked MuiIconButton-colorSecondary"
+                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-29 MuiRadio-root Analyser-radioOptions-6 PrivateSwitchBase-checked-30 Mui-checked"
                   >
                     <span
                       class="MuiIconButton-label"
@@ -145,7 +145,7 @@ exports[`renders as expected 1`] = `
                 >
                   <span
                     aria-disabled="false"
-                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-29 MuiRadio-root MuiRadio-colorSecondary Analyser-radioOptions-6 MuiIconButton-colorSecondary"
+                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-29 MuiRadio-root Analyser-radioOptions-6"
                   >
                     <span
                       class="MuiIconButton-label"
@@ -207,9 +207,9 @@ exports[`renders as expected 1`] = `
             </mock-typography>
             <mock-layer-dropdown
               classname="Analyser-selector-9"
+              placeholder="Choose baseline layer"
               title="Baseline Layer"
               type="nso"
-              value="population_below_poverty"
             />
           </div>
           <div

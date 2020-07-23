@@ -387,7 +387,8 @@ const styles = (theme: Theme) =>
       margin: '5px',
     },
     numberField: {
-      padding: '10px',
+      paddingLeft: '10px',
+      marginTop: '10px',
       width: '85.5px',
       '& .Mui-focused': { color: 'white' },
     },
