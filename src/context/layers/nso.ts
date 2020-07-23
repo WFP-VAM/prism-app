@@ -3,9 +3,8 @@ import { get, isNull, isString } from 'lodash';
 import { BoundaryLayerProps, NSOLayerProps } from '../../config/types';
 import type { ThunkApi } from '../store';
 import { getBoundaryLayerSingleton } from '../../config/utils';
-// FIXME
-import { layerDataSelector } from '../mapStateSlice';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
+import { layerDataSelector } from '../mapStateSlice/selectors';
 
 type DataRecord = {
   adminKey: string;

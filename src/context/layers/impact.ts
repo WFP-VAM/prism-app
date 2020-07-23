@@ -34,7 +34,7 @@ import type {
   LazyLoader,
   LoadLayerDataFuncType,
 } from './layer-data';
-import { layerDataSelector } from '../mapStateSlice';
+import { layerDataSelector } from '../mapStateSlice/selectors';
 
 export type ImpactLayerData = {
   boundaries: FeatureCollection;

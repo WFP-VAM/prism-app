@@ -12,12 +12,13 @@ import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import {
-  mapSelector,
-  layerDataSelector,
-  dateRangeSelector,
-} from '../../../../context/mapStateSlice';
+
 import { addPopupData } from '../../../../context/tooltipStateSlice';
+import {
+  dateRangeSelector,
+  layerDataSelector,
+  mapSelector,
+} from '../../../../context/mapStateSlice/selectors';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',

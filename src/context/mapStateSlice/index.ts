@@ -1,16 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import type { RootState } from './store';
-import { LayerType } from '../config/types';
+import { LayerType } from '../../config/types';
 // FIXME
-import { LayerData, LayerDataTypes, loadLayerData } from './layers/layer-data';
+import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 
 interface DateRange {
   startDate?: number;
   endDate?: number;
 }
 
-type MapState = {
+export type MapState = {
   layers: LayerType[];
   dateRange: DateRange;
   mapboxMap: MapGetter;
@@ -104,24 +103,6 @@ export const mapStateSlice = createSlice({
     }));
   },
 });
-
-// Getters
-export const layersSelector = (state: RootState): MapState['layers'] =>
-  state.mapState.layers;
-export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
-  state.mapState.dateRange;
-export const mapSelector = (state: RootState): MapBoxMap | undefined =>
-  state.mapState.mapboxMap();
-// TODO: Improve the typing on this function
-export const layerDataSelector = (id: string, date?: number) => (
-  state: RootState,
-): LayerDataTypes | undefined =>
-  state.mapState.layersData.find(
-    ({ layer, date: dataDate }) =>
-      layer.id === id && (!date || date === dataDate),
-  );
-export const isLoading = (state: RootState): boolean =>
-  state.mapState.loading > 0;
 
 // Setters
 export const {
