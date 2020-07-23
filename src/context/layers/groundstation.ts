@@ -1,6 +1,5 @@
 import GeoJSON from 'geojson';
-// eslint-disable-next-line import/no-cycle
-import { LayerDataParams } from './layer-data';
+import type { LayerDataParams, LazyLoader } from './layer-data';
 import { GroundstationLayerProps } from '../../config/types';
 
 declare module 'geojson' {
@@ -19,9 +18,9 @@ export type GroundstationLayerData = {
   [key: string]: any;
 }[];
 
-export async function fetchGroundstationData(
+export const fetchGroundstationData: LazyLoader<GroundstationLayerProps> = () => async (
   params: LayerDataParams<GroundstationLayerProps>,
-) {
+) => {
   // This function fetches groundstation data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
@@ -37,4 +36,4 @@ export async function fetchGroundstationData(
     data = await (await fetch(layer.fallbackData || '')).json();
   }
   return GeoJSON.parse(data, { Point: ['lat', 'lon'] });
-}
+};

@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-// eslint-disable-next-line import/no-cycle
-import { CreateAsyncThunkTypes, RootState } from './store';
 import { AvailableDates } from '../config/types';
 import { getLayersAvailableDates } from '../utils/server-utils';
+import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerState = {
   availableDates: AvailableDates;

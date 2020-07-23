@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Source, Layer } from 'react-mapbox-gl';
 import { WMSLayerProps } from '../../../../config/types';
 import { getWMSUrl } from '../raster-utils';
-import { dateRangeSelector } from '../../../../context/mapStateSlice';
+import { dateRangeSelector } from '../../../../context/mapStateSlice/selectors';
 
 function WMSLayers({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },

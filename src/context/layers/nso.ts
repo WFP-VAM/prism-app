@@ -1,12 +1,10 @@
 import { FeatureCollection } from 'geojson';
 import { get, isNull, isString } from 'lodash';
 import { BoundaryLayerProps, NSOLayerProps } from '../../config/types';
-/* eslint-disable import/no-cycle */
-import { LayerData, LayerDataParams } from './layer-data';
-import { layerDataSelector } from '../mapStateSlice';
-import { ThunkApi } from '../store';
-/* eslint-enable import/no-cycle */
+import type { ThunkApi } from '../store';
 import { getBoundaryLayerSingleton } from '../../config/utils';
+import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
+import { layerDataSelector } from '../mapStateSlice/selectors';
 
 type DataRecord = {
   adminKey: string;
@@ -18,10 +16,10 @@ export type NSOLayerData = {
   layerData: DataRecord[];
 };
 
-export async function fetchNsoLayerData(
+export const fetchNsoLayerData: LazyLoader<NSOLayerProps> = () => async (
   params: LayerDataParams<NSOLayerProps>,
   api: ThunkApi,
-) {
+) => {
   const { layer } = params;
   const { path, adminCode, dataField } = layer;
   const { getState } = api;
@@ -85,4 +83,4 @@ export async function fetchNsoLayerData(
     features,
     layerData,
   };
-}
+};

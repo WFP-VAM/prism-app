@@ -4,12 +4,10 @@ import {
   combineReducers,
 } from '@reduxjs/toolkit';
 
-/* eslint-disable import/no-cycle */
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
 import tableStateReduce from './tableStateSlice';
 import tooltipStateReduce from './tooltipStateSlice';
-/* eslint-enable import/no-cycle */
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
