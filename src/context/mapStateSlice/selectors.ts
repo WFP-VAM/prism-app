@@ -1,5 +1,6 @@
 // cannot exist within mapStateSlice due to import cycles with
-// layerDataSelector -> nso/impact -> layer-data -> mapStateSlice -> layer-data -> finished loop
+// layerDataSelector(used to be mapStateSlice) -> nso/impact -> layer-data -> mapStateSlice
+// x -> y .. x is used by y
 import { Map as MapBoxMap } from 'mapbox-gl';
 import type { RootState } from '../store';
 import type { LayerDataTypes } from '../layers/layer-data';
@@ -11,7 +12,7 @@ export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
   state.mapState.dateRange;
 export const mapSelector = (state: RootState): MapBoxMap | undefined =>
   state.mapState.mapboxMap();
-// TODO: Improve the typing on this function
+// TODO: Improve the typing on this function with LayerKey from Analysis UI PR
 export const layerDataSelector = (id: string, date?: number) => (
   state: RootState,
 ): LayerDataTypes | undefined =>

@@ -10,7 +10,6 @@ import {
 import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
 
 import type { CreateAsyncThunkTypes, ThunkApi } from '../store';
-// FIXME
 import { fetchNsoLayerData, NSOLayerData } from './nso';
 import { fetchImpactLayerData, ImpactLayerData } from './impact';
 

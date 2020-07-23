@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerType } from '../../config/types';
-// FIXME
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 
 interface DateRange {

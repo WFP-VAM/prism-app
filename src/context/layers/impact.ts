@@ -27,7 +27,6 @@ import {
 import type { NSOLayerData } from './nso';
 import { getWCSLayerUrl, WMSLayerData } from './wms';
 import { BoundaryLayerData } from './boundary';
-// FIXME
 import type {
   LayerData,
   LayerDataParams,

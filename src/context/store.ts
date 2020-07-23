@@ -4,7 +4,6 @@ import {
   combineReducers,
 } from '@reduxjs/toolkit';
 
-// FIXME
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
 import tableStateReduce from './tableStateSlice';
