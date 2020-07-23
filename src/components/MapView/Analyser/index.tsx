@@ -246,16 +246,16 @@ function Analyser({ classes }: AnalyserProps) {
                   className={classes.numberField}
                   label="Min"
                   type="number"
-                  value={belowThreshold}
-                  onChange={onOptionChange(setBelowThreshold)}
+                  value={aboveThreshold}
+                  onChange={onOptionChange(setAboveThreshold)}
                   variant="filled"
                 />
                 <TextField
                   id="filled-number"
                   label="Max"
                   className={classes.numberField}
-                  value={aboveThreshold}
-                  onChange={onOptionChange(setAboveThreshold)}
+                  value={belowThreshold}
+                  onChange={onOptionChange(setBelowThreshold)}
                   type="number"
                   variant="filled"
                 />

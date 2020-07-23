@@ -196,7 +196,8 @@ export function generateFeaturesFromApiData(
   );
 
   return mergedFeatures.filter(feature => {
-    return !Number.isNaN(get(feature, ['properties', operation]));
+    const value = get(feature, ['properties', operation]);
+    return value && !Number.isNaN(value);
   }) as GeoJsonBoundary[];
 }
 
