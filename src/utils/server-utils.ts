@@ -101,6 +101,8 @@ async function getWMSCapabilities(serverUri: string) {
 
   try {
     const response = await fetch(requestUri);
+    if (!response.ok)
+      throw new Error(`${response.status}: ${response.statusText}`);
     const responseText = await response.text();
     const responseJS = xml2js(responseText, xml2jsOptions);
 
@@ -110,7 +112,7 @@ async function getWMSCapabilities(serverUri: string) {
     return formatCapabilitiesInfo(flatLayers, 'Name._text', 'Dimension._text');
   } catch (error) {
     throw new Error(
-      `Failed loading dates with request GET/${requestUri} for WMS Capabilities, error: ${error}`,
+      `Failed loading dates with request GET: ${requestUri} for WMS Capabilities, ${error}`,
     );
   }
 }
@@ -126,6 +128,8 @@ async function getWCSCoverage(serverUri: string) {
 
   try {
     const response = await fetch(requestUri);
+    if (!response.ok)
+      throw new Error(`${response.status}: ${response.statusText}`);
     const responseText = await response.text();
     const responseJS = xml2js(responseText, xml2jsOptions);
 
@@ -138,7 +142,7 @@ async function getWCSCoverage(serverUri: string) {
     );
   } catch (error) {
     throw new Error(
-      `Failed loading dates with request GET/${requestUri} for WCS Coverage, error: ${error}`,
+      `Failed loading dates with request GET: ${requestUri} for WCS Coverage, ${error}`,
     );
   }
 }

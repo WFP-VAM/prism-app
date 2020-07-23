@@ -20,7 +20,8 @@ function Notifier({ classes }: NotifierProps) {
       if (!toolbar) return;
       setTopOffset(toolbar.clientHeight + 15);
     }
-    handleResize();
+    // try make sure the toolbar is available to use on first run, not too dangerous if it doesn't work - default value is good for most screens.
+    setTimeout(handleResize, 500);
 
     window.addEventListener('resize', handleResize);
 

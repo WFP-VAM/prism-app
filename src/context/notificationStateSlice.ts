@@ -7,6 +7,7 @@ import {
 import { Color } from '@material-ui/lab';
 import { AppDispatch, RootState } from './store';
 
+// to test notification reaction to various error codes, http://httpstat.us/404 can be used where 404 is the status to test.
 type NotificationConstructor = {
   message: string;
   type: Color;
@@ -66,7 +67,7 @@ export const {
 } = notificationStateSlice.actions;
 
 // middleware to add error as notifications to this slice
-// I don't know how to type this properly
+// Typing could improve?
 export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
   dispatch: AppDispatch,
 ) => (action: AnyAction) => {
@@ -89,16 +90,15 @@ export const errorToNotificationMiddleware: Middleware<{}, RootState> = () => (
   const thunkRejectedRegex = /^[A-z]+\/[A-z]+\/rejected$/;
 
   if (thunkRejectedRegex.test(action.type)) {
-    console.error(action.error);
+    const errorMessage = action.error.message || action.error;
+
     dispatch(
       addNotification({
         type: 'error',
-        message:
-          typeof action.error === 'string'
-            ? action.error
-            : action.error.message,
+        message: errorMessage,
       }),
     );
+    console.error(`Above error(s) caused by: ${errorMessage}`);
   }
 
   return dispatchResult;
