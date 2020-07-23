@@ -46,7 +46,7 @@ export const tooltipStateSlice = createSlice({
       showing: payload,
     }),
 
-    hidePopup: (state) => ({
+    hidePopup: state => ({
       ...state,
       showing: false,
       data: {},

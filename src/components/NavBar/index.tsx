@@ -89,7 +89,7 @@ function NavBar({ classes }: NavBarProps) {
           <Hidden mdUp>
             <Grid item xs={9} className={classes.mobileMenuContainer}>
               <Button
-                onClick={() => setOpenMobileMenu((prevOpen) => !prevOpen)}
+                onClick={() => setOpenMobileMenu(prevOpen => !prevOpen)}
                 aria-controls={openMobileMenu ? 'mobile-menu-list' : undefined}
                 aria-haspopup="true"
                 className={classes.menuBars}

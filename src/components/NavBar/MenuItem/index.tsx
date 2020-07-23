@@ -84,7 +84,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
             </Typography>
             <hr />
 
-            {layers.map((layer) => {
+            {layers.map(layer => {
               const { id: layerId, title: layerTitle } = layer;
               const selected = Boolean(
                 selectedLayers.find(({ id: testId }) => testId === layerId),
@@ -103,7 +103,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
               );
             })}
 
-            {tables.map((table) => (
+            {tables.map(table => (
               <Button
                 className={classes.button}
                 id={table.title}

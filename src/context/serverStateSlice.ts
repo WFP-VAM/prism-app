@@ -32,7 +32,7 @@ export const serverStateSlice = createSlice({
       availableDates: payload,
     }),
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(
       loadAvailableDates.fulfilled,
       (state, { payload }: PayloadAction<AvailableDates>) => ({
@@ -50,7 +50,7 @@ export const serverStateSlice = createSlice({
         : action.error.toString(),
     }));
 
-    builder.addCase(loadAvailableDates.pending, (state) => ({
+    builder.addCase(loadAvailableDates.pending, state => ({
       ...state,
       loading: true,
     }));

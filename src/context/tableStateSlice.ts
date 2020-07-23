@@ -35,9 +35,9 @@ export const loadTable = createAsyncThunk<
     Papa.parse(url, {
       header: true,
       download: true,
-      complete: (results) =>
+      complete: results =>
         resolve({ rows: results.data, columns: Object.keys(results.data[0]) }),
-      error: (error) => reject(error),
+      error: error => reject(error),
     }),
   );
 });
@@ -51,7 +51,7 @@ export const tableStateSlice = createSlice({
       isShowing: false,
     }),
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(
       loadTable.fulfilled,
       (state, { payload }: PayloadAction<TableData>) => ({

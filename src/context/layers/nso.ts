@@ -41,7 +41,7 @@ export async function fetchNsoLayerData(
   ).json();
 
   const layerData = (rawJSONs || [])
-    .map((point) => {
+    .map(point => {
       const adminKey = point[adminCode] as string;
       if (!adminKey) {
         return undefined;
@@ -54,7 +54,7 @@ export async function fetchNsoLayerData(
   const features = {
     ...adminBoundaries,
     features: adminBoundaries.features
-      .map((feature) => {
+      .map(feature => {
         const { properties } = feature;
         const adminBoundaryCode = get(
           properties,
@@ -77,7 +77,7 @@ export async function fetchNsoLayerData(
         }
         return undefined;
       })
-      .filter((f) => f !== undefined),
+      .filter(f => f !== undefined),
   } as FeatureCollection;
 
   return {

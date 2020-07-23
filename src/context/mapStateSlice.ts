@@ -45,9 +45,7 @@ export const mapStateSlice = createSlice({
   reducers: {
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => ({
       ...rest,
-      layers: layers
-        .filter((layer) => keepLayer(layer, payload))
-        .concat(payload),
+      layers: layers.filter(layer => keepLayer(layer, payload)).concat(payload),
     }),
 
     removeLayer: (
@@ -73,10 +71,10 @@ export const mapStateSlice = createSlice({
       { payload }: PayloadAction<string>,
     ) => ({
       ...rest,
-      errors: errors.filter((msg) => msg !== payload),
+      errors: errors.filter(msg => msg !== payload),
     }),
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(
       loadLayerData.fulfilled,
       (

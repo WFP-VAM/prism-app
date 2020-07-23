@@ -35,12 +35,12 @@ function formatLayersCategories(layersList: {
   return map(layersList, (layerKeys, layersListKey) => ({
     title: startCase(layersListKey),
     layers: layerKeys
-      .map((key) => LayerDefinitions[key])
+      .map(key => LayerDefinitions[key])
       .filter((val): val is LayerType => Boolean(val)),
 
     tables: layerKeys
-      .map((key) => TableDefinitions[key])
-      .filter((val) => Boolean(val)),
+      .map(key => TableDefinitions[key])
+      .filter(val => Boolean(val)),
   }));
 }
 

@@ -63,7 +63,7 @@ type BaselineRecord = BaselineLayerData['layerData'][0];
 type RasterLayer = LayerData<WMSLayerProps>;
 
 const hasKeys = (obj: any, keys: string[]): boolean =>
-  !keys.find((key) => !has(obj, key));
+  !keys.find(key => !has(obj, key));
 
 const checkRasterLayerData = (layerData: LayerData<LayerType>): RasterLayer => {
   const isRasterLayerData = (maybeData: any): maybeData is WMSLayerData =>
@@ -149,9 +149,9 @@ function mergeFeaturesByProperty(
   id: string,
   operation: string,
 ): Feature[] {
-  return baselineFeatures.map((feature1) => {
+  return baselineFeatures.map(feature1 => {
     const aggregateProperties = aggregateData.find(
-      (item) => get(item, id) === get(feature1, ['properties', id]) && item,
+      item => get(item, id) === get(feature1, ['properties', id]) && item,
     );
     const properties = {
       ...get(feature1, 'properties'),
@@ -199,7 +199,7 @@ async function loadFeaturesFromApi(
     operation,
   );
 
-  return mergedFeatures.filter((feature) => {
+  return mergedFeatures.filter(feature => {
     const scaled = scaleValueIfDefined(
       get(feature, ['properties', operation]),
       scale,
@@ -286,7 +286,7 @@ async function loadFeaturesClientSide(
 
     if (values) {
       const raw = operations[operation](
-        noData ? values.filter((value) => value !== noData) : values,
+        noData ? values.filter(value => value !== noData) : values,
       );
       const scaled = scaleValueIfDefined(raw, scale, offset);
       const aggregateValue = thresholdOrNaN(scaled, layer.threshold);

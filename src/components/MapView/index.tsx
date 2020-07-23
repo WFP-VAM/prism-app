@@ -97,7 +97,7 @@ function MapView({ classes }: MapViewProps) {
 
   const selectedLayerDates = uniq(
     serverLayers
-      .map((layer) =>
+      .map(layer =>
         layer.type === 'wms'
           ? serverAvailableDates[layer.serverLayerName]
           : serverAvailableDates[
@@ -105,7 +105,7 @@ function MapView({ classes }: MapViewProps) {
                 .serverLayerName
             ],
       )
-      .filter((value) => value)
+      .filter(value => value)
       .flat(),
   );
 
@@ -137,7 +137,7 @@ function MapView({ classes }: MapViewProps) {
         }}
       >
         <>
-          {layers.map((layer) => {
+          {layers.map(layer => {
             const component: ComponentType<{ layer: any }> =
               componentTypes[layer.type];
             return createElement(component, {

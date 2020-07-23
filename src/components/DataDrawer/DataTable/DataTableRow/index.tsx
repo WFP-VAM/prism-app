@@ -10,7 +10,7 @@ export interface TableRowProps {
 
 const DataTableRow = ({ className, columns, rowData }: TableRowProps) => (
   <TableRow>
-    {columns.map((column) => (
+    {columns.map(column => (
       <TableCell className={className} key={column}>
         {' '}
         {rowData ? rowData[column] : column}{' '}
