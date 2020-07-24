@@ -12,12 +12,13 @@ import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import {
-  mapSelector,
-  layerDataSelector,
-  dateRangeSelector,
-} from '../../../../context/mapStateSlice';
+
 import { addPopupData } from '../../../../context/tooltipStateSlice';
+import {
+  dateRangeSelector,
+  layerDataSelector,
+  mapSelector,
+} from '../../../../context/mapStateSlice/selectors';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',
@@ -31,7 +32,7 @@ function getHazardData(evt: any, operation: string) {
   return data ? data.toFixed(2) : 'No Data';
 }
 
-export const ImpactLayer = ({ classes, layer }: ComponentProps) => {
+const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   const map = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { data, date } =

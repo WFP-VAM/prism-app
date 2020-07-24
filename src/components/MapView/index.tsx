@@ -34,12 +34,7 @@ import {
 } from '../../config/utils';
 
 import DateSelector from './DateSelector';
-import {
-  isLoading,
-  layersSelector,
-  setMap,
-  addLayer,
-} from '../../context/mapStateSlice';
+import { addLayer, setMap } from '../../context/mapStateSlice';
 import { hidePopup } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
@@ -49,6 +44,10 @@ import {
 
 import appConfig from '../../config/prism.json';
 import { loadLayerData } from '../../context/layers/layer-data';
+import {
+  isLoading,
+  layersSelector,
+} from '../../context/mapStateSlice/selectors';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,

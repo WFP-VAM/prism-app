@@ -9,7 +9,7 @@ import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../../context/mapStateSlice';
+import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 
 function NSOLayers({ layer }: { layer: NSOLayerProps }) {

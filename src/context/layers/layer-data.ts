@@ -1,15 +1,17 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
 import { DiscriminateUnion, LayerType } from '../../config/types';
 import { Extent } from '../../components/MapView/Layers/raster-utils';
-import { CreateAsyncThunkTypes, ThunkApi } from '../store';
-import { fetchNsoLayerData, NSOLayerData } from './nso';
-import { fetchImpactLayerData, ImpactLayerData } from './impact';
+
 import { fetchWCSLayerData, WMSLayerData } from './wms';
 import {
   fetchGroundstationData,
   GroundstationLayerData,
 } from './groundstation';
 import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
+
+import type { CreateAsyncThunkTypes, ThunkApi } from '../store';
+import { fetchNsoLayerData, NSOLayerData } from './nso';
+import { fetchImpactLayerData, ImpactLayerData } from './impact';
 
 type LayerSpecificDataTypes = {
   boundary: BoundaryLayerData;
@@ -52,19 +54,20 @@ export type LayerDataTypes = LayerDataMap[keyof LayerDataMap];
 
 // Define a type for the object mapping layer type to fetch function
 type LayerLoaders = {
-  [key in LayerType['type']]: (
-    params: LayerDataParams<DiscriminateUnion<LayerType, 'type', key>>,
-    api: ThunkApi,
-  ) => Promise<LayerSpecificDataTypes[key]>;
+  [key in LayerType['type']]: LazyLoader<
+    DiscriminateUnion<LayerType, 'type', key>
+  >;
 };
 
 // Less restrictive handler type since Typescript doesn't support nested union discrimination
-type LazyLoader = (
-  params: LayerDataParams<any>,
+export type LazyLoader<T extends LayerType> = (
+  recursive: LoadLayerDataFuncType,
+) => (
+  params: LayerDataParams<T>,
   api: ThunkApi,
-) => Promise<LayerSpecificDataTypes[keyof LayerSpecificDataTypes]>;
+) => Promise<LayerSpecificDataTypes[T['type']]>;
 
-export const loadLayerData = createAsyncThunk<
+export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
   LayerDataTypes,
   ParamTypes,
   CreateAsyncThunkTypes
@@ -77,8 +80,8 @@ export const loadLayerData = createAsyncThunk<
     nso: fetchNsoLayerData,
     groundstation: fetchGroundstationData,
   };
-  const lazyLoad: LazyLoader = layerLoaders[layer.type];
-  const layerData = await lazyLoad(params, thunkApi);
+  const lazyLoad: LazyLoader<any> = layerLoaders[layer.type];
+  const layerData = await lazyLoad(loadLayerData)(params, thunkApi);
   // Need to cast this since TS isn't smart enough to match layer & layerData types based on the nested discrimator
   // field `layer.type`.
   return {
@@ -88,3 +91,9 @@ export const loadLayerData = createAsyncThunk<
     data: layerData,
   } as LayerDataTypes;
 });
+
+export type LoadLayerDataFuncType = AsyncThunk<
+  LayerDataTypes,
+  ParamTypes,
+  CreateAsyncThunkTypes
+>;

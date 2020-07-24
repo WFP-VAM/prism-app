@@ -57,10 +57,13 @@
       }
     ],
     "no-console": ["warn", { "allow": ["warn", "error"] }],
-    "no-unused-vars": ["warn", {
-      "argsIgnorePattern": "^props$",
-      "ignoreRestSiblings": true
-    }],
+    "no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^props$",
+        "ignoreRestSiblings": true
+      }
+    ],
     "lines-between-class-members": "off",
     "max-classes-per-file": "off",
     "spaced-comment": "warn"
@@ -70,14 +73,14 @@
       "node": {
         "moduleDirectory": ["node_modules", "./src"],
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
-      },
-      "import/parsers": {
-        "@typescript-eslint/parser": [".ts", ".tsx"]
-      },
-      "typescript": {
-        // always try to resolve types under `<roo/>@types` directory even it doesn't contain any source code, like `@types/unist`
-        "alwaysTryTypes": true
       }
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "typescript": {
+      // always try to resolve types under `<roo/>@types` directory even it doesn't contain any source code, like `@types/unist`
+      "alwaysTryTypes": true
     }
   }
 }

@@ -5,8 +5,8 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { BoundaryLayerProps } from '../../../../config/types';
-import { layerDataSelector } from '../../../../context/mapStateSlice';
 import { LayerData } from '../../../../context/layers/layer-data';
+import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 
 /**
  * To activate fillOnClick option, we "fill in"
