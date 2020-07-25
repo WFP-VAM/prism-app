@@ -1,32 +1,39 @@
 import { get, has, isNull, isString } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
-import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
+
 import {
+  AggregationOperations,
   BoundaryLayerProps,
   ImpactLayerProps,
   LayerType,
   NSOLayerProps,
+  StatsApi,
   ThresholdDefinition,
   WMSLayerProps,
-  AggregationOperations,
-  StatsApi,
 } from '../../config/types';
-import { ThunkApi } from '../store';
-import { layerDataSelector } from '../mapStateSlice';
+import type { ThunkApi } from '../store';
+
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../config/utils';
 import {
+  Extent,
   featureIntersectsImage,
   GeoJsonBoundary,
   pixelsInFeature,
-  Extent,
 } from '../../components/MapView/Layers/raster-utils';
-import { NSOLayerData } from './nso';
+import type { NSOLayerData } from './nso';
 import { getWCSLayerUrl, WMSLayerData } from './wms';
 import { BoundaryLayerData } from './boundary';
+import type {
+  LayerData,
+  LayerDataParams,
+  LazyLoader,
+  LoadLayerDataFuncType,
+} from './layer-data';
+import { layerDataSelector } from '../mapStateSlice/selectors';
 
 export type ImpactLayerData = {
   boundaries: FeatureCollection;
@@ -213,6 +220,7 @@ async function loadFeaturesClientSide(
   baselineData: BaselineLayerData,
   hazardLayerDef: WMSLayerProps,
   operation: AggregationOperations,
+  loadLayerData: LoadLayerDataFuncType,
   extent?: Extent,
   date?: number,
 ): Promise<GeoJsonBoundary[]> {
@@ -309,10 +317,10 @@ async function loadFeaturesClientSide(
   }, [] as GeoJsonBoundary[]);
 }
 
-export async function fetchImpactLayerData(
+export const fetchImpactLayerData: LazyLoader<ImpactLayerProps> = loadLayerData => async (
   params: LayerDataParams<ImpactLayerProps>,
   api: ThunkApi,
-) {
+) => {
   const { getState, dispatch } = api;
   const { layer, extent, date } = params;
 
@@ -368,6 +376,7 @@ export async function fetchImpactLayerData(
         baselineData,
         hazardLayerDef,
         operation,
+        loadLayerData,
         extent,
         date,
       );
@@ -379,4 +388,4 @@ export async function fetchImpactLayerData(
       features: activeFeatures,
     },
   };
-}
+};

@@ -17,11 +17,9 @@ import {
   faAngleDoubleLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import 'react-datepicker/dist/react-datepicker.css';
-import {
-  dateRangeSelector,
-  updateDateRange,
-} from '../../../context/mapStateSlice';
+import { updateDateRange } from '../../../context/mapStateSlice';
 import { months, getMonthStartAndEnd, isAvailableMonth } from './utils';
+import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 
 interface InputProps {
   value?: string;

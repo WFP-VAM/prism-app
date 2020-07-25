@@ -12,12 +12,9 @@ import {
 } from '@material-ui/core';
 
 import { MenuItemType, LayerType, TableType } from '../../../config/types';
-import {
-  layersSelector,
-  addLayer,
-  removeLayer,
-} from '../../../context/mapStateSlice';
+import { addLayer, removeLayer } from '../../../context/mapStateSlice';
 import { loadTable } from '../../../context/tableStateSlice';
+import { layersSelector } from '../../../context/mapStateSlice/selectors';
 
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
