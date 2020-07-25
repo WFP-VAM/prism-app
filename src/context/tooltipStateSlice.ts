@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { merge } from 'lodash';
-import { RootState } from './store';
+import type { RootState } from './store';
 
 export interface PopupData {
   [key: string]: { data: number; coordinates: GeoJSON.Position };

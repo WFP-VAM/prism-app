@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { CreateAsyncThunkTypes, RootState } from './store';
 import { AvailableDates } from '../config/types';
 import { getLayersAvailableDates } from '../utils/server-utils';
+import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerState = {
   availableDates: AvailableDates;

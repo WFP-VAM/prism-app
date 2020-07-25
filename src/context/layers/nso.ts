@@ -1,10 +1,10 @@
 import { FeatureCollection } from 'geojson';
 import { get, isNull, isString } from 'lodash';
-import { LayerData, LayerDataParams } from './layer-data';
 import { BoundaryLayerProps, NSOLayerProps } from '../../config/types';
-import { layerDataSelector } from '../mapStateSlice';
-import { ThunkApi } from '../store';
+import type { ThunkApi } from '../store';
 import { getBoundaryLayerSingleton } from '../../config/utils';
+import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
+import { layerDataSelector } from '../mapStateSlice/selectors';
 
 export type DataRecord = {
   adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
@@ -16,10 +16,10 @@ export type NSOLayerData = {
   layerData: DataRecord[];
 };
 
-export async function fetchNSOLayerData(
-  { layer }: LayerDataParams<NSOLayerProps>,
+export const fetchNsoLayerData: LazyLoader<NSOLayerProps> = () => async (
+    { layer }: LayerDataParams<NSOLayerProps>,
   api: ThunkApi,
-) {
+) => {
   const { path, adminCode, dataField } = layer;
   const { getState } = api;
 
@@ -82,4 +82,4 @@ export async function fetchNSOLayerData(
     features,
     layerData,
   };
-}
+};

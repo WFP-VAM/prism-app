@@ -1,3 +1,7 @@
+import { get, has, isNull, isString } from 'lodash';
+import { Feature, FeatureCollection } from 'geojson';
+import bbox from '@turf/bbox';
+
 import { FeatureCollection } from 'geojson';
 import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
 import {
@@ -5,15 +9,32 @@ import {
   BoundaryLayerProps,
   ImpactLayerProps,
   NSOLayerProps,
+  StatsApi,
+  ThresholdDefinition,
   WMSLayerProps,
 } from '../../config/types';
-import { ThunkApi } from '../store';
-import { layerDataSelector } from '../mapStateSlice';
+import type { ThunkApi } from '../store';
+
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../config/utils';
 import {
+  Extent,
+  featureIntersectsImage,
+  GeoJsonBoundary,
+  pixelsInFeature,
+} from '../../components/MapView/Layers/raster-utils';
+import type { NSOLayerData } from './nso';
+import { getWCSLayerUrl, WMSLayerData } from './wms';
+import { BoundaryLayerData } from './boundary';
+import type {
+  LayerData,
+  LayerDataParams,
+  LazyLoader,
+  LoadLayerDataFuncType,
+} from './layer-data';
+import { layerDataSelector } from '../mapStateSlice/selectors';
   BaselineLayerData,
   checkBaselineDataLayer,
   loadFeaturesClientSide,
@@ -25,10 +46,10 @@ export type ImpactLayerData = {
   impactFeatures: FeatureCollection;
 };
 
-export async function fetchImpactLayerData(
+export const fetchImpactLayerData: LazyLoader<ImpactLayerProps> = loadLayerData => async (
   params: LayerDataParams<ImpactLayerProps>,
   api: ThunkApi,
-) {
+) => {
   const { getState, dispatch } = api;
   const { layer, extent, date } = params;
 
@@ -84,6 +105,7 @@ export async function fetchImpactLayerData(
         baselineData,
         hazardLayerDef,
         operation,
+        loadLayerData,
         extent,
         date,
       );
@@ -95,4 +117,4 @@ export async function fetchImpactLayerData(
       features: activeFeatures,
     },
   };
-}
+};

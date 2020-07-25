@@ -5,12 +5,12 @@ import * as MapboxGL from 'mapbox-gl';
 import { useSelector, useDispatch } from 'react-redux';
 import { legendToStops } from '../layer-utils';
 import { GroundstationLayerProps } from '../../../../config/types';
-import { layerDataSelector } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
+import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 
 // Point Data, takes any GeoJSON and shows it.
 function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {

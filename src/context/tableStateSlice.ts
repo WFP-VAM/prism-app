@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as Papa from 'papaparse';
-import { CreateAsyncThunkTypes, RootState } from './store';
 import { TableType } from '../config/types';
 import { TableDefinitions } from '../config/utils';
+import type { CreateAsyncThunkTypes, RootState } from './store';
 
 export type TableRowType = { [key: string]: string | number };
 export type TableData = {

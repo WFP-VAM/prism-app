@@ -17,8 +17,8 @@ import {
   isLoading,
   getCurrentData,
 } from '../../../context/tableStateSlice';
-import DataTableRow from './DataTableRow';
 import Chart from '../Chart';
+import DataTableRow from './DataTableRow';
 
 const styles = () =>
   createStyles({
