@@ -1,17 +1,17 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FeatureCollection, Position } from 'geojson';
+import { Position } from 'geojson';
 import { get } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import {
   AggregationOperations,
   AsyncReturnType,
   BoundaryLayerProps,
-  LegendDefinition,
   NSOLayerProps,
   ThresholdDefinition,
   WMSLayerProps,
 } from '../config/types';
 import {
+  AnalysisResult,
   ApiData,
   BaselineLayerData,
   checkBaselineDataLayer,
@@ -20,7 +20,7 @@ import {
   scaleAndFilterAggregateData,
 } from '../utils/analysis-utils';
 import { getWCSLayerUrl } from './layers/wms';
-import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
+import { getBoundaryLayerSingleton } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
@@ -37,41 +37,6 @@ type AnalysisResultState = {
   isLoading: boolean;
   isMapLayerActive: boolean;
 };
-export class AnalysisResult {
-  key: number = Date.now();
-  featureCollection: FeatureCollection;
-  tableData: TableRow[];
-  // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
-  private rawApiData?: object[];
-  statistic: AggregationOperations;
-  legend: LegendDefinition;
-  hazardLayerId: WMSLayerProps['id'];
-  baselineLayerId: NSOLayerProps['id'];
-
-  constructor(
-    tableData: TableRow[],
-    featureCollection: FeatureCollection,
-    hazardLayer: WMSLayerProps,
-    baselineLayer: NSOLayerProps,
-    statistic: AggregationOperations,
-    rawApiData?: object[],
-  ) {
-    this.featureCollection = featureCollection;
-    this.tableData = tableData;
-    this.statistic = statistic;
-    this.legend = baselineLayer.legend;
-    this.rawApiData = rawApiData;
-
-    this.hazardLayerId = hazardLayer.id;
-    this.baselineLayerId = baselineLayer.id;
-  }
-  getHazardLayer(): WMSLayerProps {
-    return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
-  }
-  getBaselineLayer(): NSOLayerProps {
-    return LayerDefinitions[this.baselineLayerId] as NSOLayerProps;
-  }
-}
 
 export type TableRow = {
   localName: string;

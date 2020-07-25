@@ -1,11 +1,13 @@
 import { get, has, isNull, isString, mean } from 'lodash';
-import { Feature } from 'geojson';
+import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import {
   AggregationOperations,
   AsyncReturnType,
   ImpactLayerProps,
   LayerType,
+  LegendDefinition,
+  NSOLayerProps,
   StatsApi,
   ThresholdDefinition,
   WMSLayerProps,
@@ -21,13 +23,14 @@ import {
 import { BoundaryLayerData } from '../context/layers/boundary';
 import { NSOLayerData } from '../context/layers/nso';
 import { getWCSLayerUrl, WMSLayerData } from '../context/layers/wms';
-import { AnalysisResult } from '../context/analysisResultStateSlice';
 import type { Column } from '../components/MapView/Analyser/AnalysisTable';
 import type {
   LayerData,
   LayerDataParams,
   LoadLayerDataFuncType,
 } from '../context/layers/layer-data';
+import { LayerDefinitions } from '../config/utils';
+import type { TableRow } from '../context/analysisResultStateSlice';
 
 export type BaselineLayerData = NSOLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -364,4 +367,40 @@ export function downloadCSVFromTableData(
   document.body.appendChild(link); // Required for FF
 
   link.click();
+}
+// not in analysisResultStateSlice to prevent import cycle
+export class AnalysisResult {
+  key: number = Date.now();
+  featureCollection: FeatureCollection;
+  tableData: TableRow[];
+  // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
+  private rawApiData?: object[];
+  statistic: AggregationOperations;
+  legend: LegendDefinition;
+  hazardLayerId: WMSLayerProps['id'];
+  baselineLayerId: NSOLayerProps['id'];
+
+  constructor(
+    tableData: TableRow[],
+    featureCollection: FeatureCollection,
+    hazardLayer: WMSLayerProps,
+    baselineLayer: NSOLayerProps,
+    statistic: AggregationOperations,
+    rawApiData?: object[],
+  ) {
+    this.featureCollection = featureCollection;
+    this.tableData = tableData;
+    this.statistic = statistic;
+    this.legend = baselineLayer.legend;
+    this.rawApiData = rawApiData;
+
+    this.hazardLayerId = hazardLayer.id;
+    this.baselineLayerId = baselineLayer.id;
+  }
+  getHazardLayer(): WMSLayerProps {
+    return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
+  }
+  getBaselineLayer(): NSOLayerProps {
+    return LayerDefinitions[this.baselineLayerId] as NSOLayerProps;
+  }
 }

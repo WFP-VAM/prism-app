@@ -15,13 +15,13 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import {
-  AnalysisResult,
-  TableRow as AnalysisTableRow,
-} from '../../../../context/analysisResultStateSlice';
+import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { AggregationOperations } from '../../../../config/types';
-import { downloadCSVFromTableData } from '../../../../utils/analysis-utils';
+import {
+  AnalysisResult,
+  downloadCSVFromTableData,
+} from '../../../../utils/analysis-utils';
 
 export type Column = {
   id: keyof AnalysisTableRow;
