@@ -16,8 +16,8 @@ export type NSOLayerData = {
   layerData: DataRecord[];
 };
 
-export const fetchNsoLayerData: LazyLoader<NSOLayerProps> = () => async (
-    { layer }: LayerDataParams<NSOLayerProps>,
+export const fetchNSOLayerData: LazyLoader<NSOLayerProps> = () => async (
+  { layer }: LayerDataParams<NSOLayerProps>,
   api: ThunkApi,
 ) => {
   const { path, adminCode, dataField } = layer;

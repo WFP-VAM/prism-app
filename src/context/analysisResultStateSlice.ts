@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FeatureCollection, Position } from 'geojson';
 import { get } from 'lodash';
-import { CreateAsyncThunkTypes, RootState } from './store';
+import type { CreateAsyncThunkTypes, RootState } from './store';
 import {
   AggregationOperations,
   AsyncReturnType,
@@ -22,7 +22,7 @@ import {
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
-import { layerDataSelector } from './mapStateSlice';
+import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, NSOLayerData } from './layers/nso';
 import { BoundaryLayerData } from './layers/boundary';

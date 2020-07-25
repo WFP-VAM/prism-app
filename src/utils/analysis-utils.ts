@@ -2,11 +2,6 @@ import { get, has, isNull, isString, mean } from 'lodash';
 import { Feature } from 'geojson';
 import bbox from '@turf/bbox';
 import {
-  LayerData,
-  LayerDataParams,
-  loadLayerData,
-} from '../context/layers/layer-data';
-import {
   AggregationOperations,
   AsyncReturnType,
   ImpactLayerProps,
@@ -15,8 +10,8 @@ import {
   ThresholdDefinition,
   WMSLayerProps,
 } from '../config/types';
-import { ThunkApi } from '../context/store';
-import { layerDataSelector } from '../context/mapStateSlice';
+import type { ThunkApi } from '../context/store';
+import { layerDataSelector } from '../context/mapStateSlice/selectors';
 import {
   Extent,
   featureIntersectsImage,
@@ -27,7 +22,12 @@ import { BoundaryLayerData } from '../context/layers/boundary';
 import { NSOLayerData } from '../context/layers/nso';
 import { getWCSLayerUrl, WMSLayerData } from '../context/layers/wms';
 import { AnalysisResult } from '../context/analysisResultStateSlice';
-import { Column } from '../components/MapView/Analyser/AnalysisTable';
+import type { Column } from '../components/MapView/Analyser/AnalysisTable';
+import type {
+  LayerData,
+  LayerDataParams,
+  LoadLayerDataFuncType,
+} from '../context/layers/layer-data';
 
 export type BaselineLayerData = NSOLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -247,6 +247,7 @@ export async function loadFeaturesClientSide(
   baselineData: BaselineLayerData,
   hazardLayerDef: WMSLayerProps,
   operation: AggregationOperations,
+  loadLayerData: LoadLayerDataFuncType,
   extent?: Extent,
   date?: number,
 ): Promise<GeoJsonBoundary[]> {

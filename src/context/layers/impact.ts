@@ -1,16 +1,10 @@
-import { get, has, isNull, isString } from 'lodash';
-import { Feature, FeatureCollection } from 'geojson';
-import bbox from '@turf/bbox';
-
 import { FeatureCollection } from 'geojson';
-import { LayerData, LayerDataParams, loadLayerData } from './layer-data';
+import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 import {
   AggregationOperations,
   BoundaryLayerProps,
   ImpactLayerProps,
   NSOLayerProps,
-  StatsApi,
-  ThresholdDefinition,
   WMSLayerProps,
 } from '../../config/types';
 import type { ThunkApi } from '../store';
@@ -19,23 +13,9 @@ import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../config/utils';
-import {
-  Extent,
-  featureIntersectsImage,
-  GeoJsonBoundary,
-  pixelsInFeature,
-} from '../../components/MapView/Layers/raster-utils';
-import type { NSOLayerData } from './nso';
-import { getWCSLayerUrl, WMSLayerData } from './wms';
-import { BoundaryLayerData } from './boundary';
-import type {
-  LayerData,
-  LayerDataParams,
-  LazyLoader,
-  LoadLayerDataFuncType,
-} from './layer-data';
 import { layerDataSelector } from '../mapStateSlice/selectors';
-  BaselineLayerData,
+import type { BaselineLayerData } from '../../utils/analysis-utils';
+import {
   checkBaselineDataLayer,
   loadFeaturesClientSide,
   loadFeaturesFromApi,

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import rawLayers from './layers.json';
-import { TableKey } from './utils';
+import type { TableKey } from './utils';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';

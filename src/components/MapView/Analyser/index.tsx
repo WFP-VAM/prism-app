@@ -44,7 +44,7 @@ import {
   LayerKey,
 } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../context/mapStateSlice';
+import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
 import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import {
