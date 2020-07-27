@@ -67,7 +67,7 @@
     "lines-between-class-members": "off",
     "max-classes-per-file": "off",
     "spaced-comment": "warn",
-    "curly": ["warn","all"]
+    "curly": ["warn", "all"]
   },
   "settings": {
     "import/resolver": {
