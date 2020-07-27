@@ -1,33 +1,35 @@
 import {
+  combineReducers,
   configureStore,
   getDefaultMiddleware,
-  combineReducers,
 } from '@reduxjs/toolkit';
 
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
 import tableStateReduce from './tableStateSlice';
 import tooltipStateReduce from './tooltipStateSlice';
+import notificationStateReduce, {
+  errorToNotificationMiddleware,
+} from './notificationStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
   serverState: serverStateReduce,
   tableState: tableStateReduce,
   tooltipState: tooltipStateReduce,
+  notificationState: notificationStateReduce,
 });
 
 export const store = configureStore({
   reducer,
   // TODO: Instead of snoozing this check, we might want to
   // serialize the state
-  middleware: [
-    ...getDefaultMiddleware({
-      serializableCheck: false,
-      immutableCheck: {
-        ignoredPaths: ['mapState.layersData'],
-      },
-    }),
-  ],
+  middleware: getDefaultMiddleware({
+    serializableCheck: false,
+    immutableCheck: {
+      ignoredPaths: ['mapState.layersData'],
+    },
+  }).concat(errorToNotificationMiddleware),
 });
 
 export type AppDispatch = typeof store.dispatch;
