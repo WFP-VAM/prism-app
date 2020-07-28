@@ -5,6 +5,8 @@ import DateSelector from '.';
 
 import { store } from '../../../context/store';
 
+jest.mock('../../Notifier', () => 'mock-Notifier');
+
 test('renders as expected', () => {
   const realDateNow = Date.now.bind(global.Date);
   const dateNowStub = jest.fn(() => 1530518207007);
@@ -13,7 +15,7 @@ test('renders as expected', () => {
 
   const { container } = render(
     <Provider store={store}>
-      <DateSelector />
+      <DateSelector availableDates={[]} />
     </Provider>,
   );
   expect(container).toMatchSnapshot();

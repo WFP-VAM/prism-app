@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 
 import { Provider } from 'react-redux';
 import Legends from '.';
-import { RootState, store } from '../../../context/store';
+import { store } from '../../../context/store';
 
 jest.mock('./ColorIndicator', () => 'mock-ColorIndicator');
 
