@@ -140,15 +140,13 @@ function Analyser({ classes }: AnalyserProps) {
     />
   ));
 
+  const clearAnalysis = () => dispatch(clearAnalysisResult());
+
   const runAnalyser = async () => {
     if (!adminBoundariesExtent) {
       return;
     } // hasn't been calculated yet
-    if (analysisResult) {
-      // if one exists we are likely trying to clear it to do a new one
-      dispatch(clearAnalysisResult());
-      return;
-    }
+
     if (!selectedDate) {
       throw new Error('Date must be given to run analysis');
     }
@@ -329,21 +327,28 @@ function Analyser({ classes }: AnalyserProps) {
                 >
                   <Typography variant="body2">Download</Typography>
                 </Button>
+                <Button
+                  className={classes.innerAnalysisButton}
+                  onClick={clearAnalysis}
+                >
+                  <Typography variant="body2">Clear Analysis</Typography>
+                </Button>
               </>
             )}
-            <Button
-              className={classes.innerAnalysisButton}
-              onClick={runAnalyser}
-              disabled={
-                (!analysisResult && (!!thresholdError || !selectedDate)) ||
-                !hazardLayerId ||
-                !baselineLayerId
-              }
-            >
-              <Typography variant="body2">
-                {analysisResult ? 'Clear Analysis' : 'Run Analysis'}
-              </Typography>
-            </Button>
+            {!analysisResult && (
+              <Button
+                className={classes.innerAnalysisButton}
+                onClick={runAnalyser}
+                disabled={
+                  (!analysisResult && (!!thresholdError || !selectedDate)) ||
+                  !hazardLayerId ||
+                  !baselineLayerId ||
+                  isAnalysisLoading
+                }
+              >
+                <Typography variant="body2">Run Analysis</Typography>
+              </Button>
+            )}
             {isAnalysisLoading ? <LinearProgress /> : null}
           </div>
         ) : null}
