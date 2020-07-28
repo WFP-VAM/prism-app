@@ -58,6 +58,10 @@ import {
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
 import LayerDropdown from '../../../utils/LayerDropdown';
+import {
+  getAnalysisTableColumns,
+  downloadCSVFromTableData,
+} from '../../../utils/analysis-utils';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -314,8 +318,17 @@ function Analyser({ classes }: AnalyserProps) {
                   />
                 </FormGroup>
                 {isTableViewOpen && (
-                  <AnalysisTable analysisResult={analysisResult} />
+                  <AnalysisTable
+                    tableData={analysisResult.tableData}
+                    columns={getAnalysisTableColumns(analysisResult)}
+                  />
                 )}
+                <Button
+                  className={classes.innerAnalysisButton}
+                  onClick={() => downloadCSVFromTableData(analysisResult)}
+                >
+                  <Typography variant="body2">Download</Typography>
+                </Button>
               </>
             )}
             <Button

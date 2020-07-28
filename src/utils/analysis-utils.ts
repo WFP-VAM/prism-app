@@ -1,4 +1,4 @@
-import { get, has, isNull, isString, mean } from 'lodash';
+import { get, has, isNull, isString, mean, invert } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import {
@@ -23,7 +23,6 @@ import {
 import { BoundaryLayerData } from '../context/layers/boundary';
 import { NSOLayerData } from '../context/layers/nso';
 import { getWCSLayerUrl, WMSLayerData } from '../context/layers/wms';
-import type { Column } from '../components/MapView/Analyser/AnalysisTable';
 import type {
   LayerData,
   LayerDataParams,
@@ -35,6 +34,12 @@ import type { TableRow } from '../context/analysisResultStateSlice';
 export type BaselineLayerData = NSOLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
 type RasterLayer = LayerData<WMSLayerProps>;
+
+export type Column = {
+  id: keyof TableRow;
+  label: string;
+  format?: (value: number) => string;
+};
 
 const hasKeys = (obj: any, keys: string[]): boolean =>
   !keys.find(key => !has(obj, key));
@@ -346,10 +351,39 @@ export async function loadFeaturesClientSide(
     return acc;
   }, [] as GeoJsonBoundary[]);
 }
-export function downloadCSVFromTableData(
-  { tableData, key: createdAt }: AnalysisResult,
-  columns: Column[],
-) {
+
+export function getAnalysisTableColumns(
+  analysisResult: AnalysisResult,
+): Column[] {
+  const { statistic } = analysisResult;
+  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
+
+  return [
+    {
+      id: 'localName',
+      label: 'Local Name',
+    },
+    {
+      id: 'name',
+      label: 'Name',
+    },
+    {
+      id: statistic,
+      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
+      format: (value: number) => value.toLocaleString('en-US'),
+    },
+
+    {
+      id: 'baselineValue',
+      label: baselineLayerTitle,
+      format: (value: number | string) => value.toLocaleString('en-US'),
+    },
+  ];
+}
+
+export function downloadCSVFromTableData(analysisResult: AnalysisResult) {
+  const { tableData, key: createdAt } = analysisResult;
+  const columns = getAnalysisTableColumns(analysisResult);
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
     columns.map(col => col.label).join(','),

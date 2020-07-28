@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { invert } from 'lodash';
 import {
-  Button,
   createStyles,
   Table,
   TableBody,
@@ -10,31 +8,17 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
-import { AggregationOperations } from '../../../../config/types';
-import {
-  AnalysisResult,
-  downloadCSVFromTableData,
-} from '../../../../utils/analysis-utils';
+import { Column } from '../../../../utils/analysis-utils';
 
-export type Column = {
-  id: keyof AnalysisTableRow;
-  label: string;
-  format?: (value: number) => string;
-};
-
-function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
+function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const { tableData, statistic } = analysisResult;
-  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
 
   const dispatch = useDispatch();
 
@@ -49,27 +33,6 @@ function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
     setPage(0);
   };
 
-  const columns: Column[] = [
-    {
-      id: 'localName',
-      label: 'Local Name',
-    },
-    {
-      id: 'name',
-      label: 'Name',
-    },
-    {
-      id: statistic,
-      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      format: (value: number) => value.toLocaleString('en-US'),
-    },
-
-    {
-      id: 'baselineValue',
-      label: baselineLayerTitle,
-      format: (value: number | string) => value.toLocaleString('en-US'),
-    },
-  ];
   return (
     <div>
       <TableContainer className={classes.tableContainer}>
@@ -131,12 +94,6 @@ function AnalysisTable({ classes, analysisResult }: AnalysisTableProps) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
-      <Button
-        className={classes.innerAnalysisButton}
-        onClick={() => downloadCSVFromTableData(analysisResult, columns)}
-      >
-        <Typography variant="body2">Download</Typography>
-      </Button>
     </div>
   );
 }
@@ -157,7 +114,8 @@ const styles = () =>
   });
 
 interface AnalysisTableProps extends WithStyles<typeof styles> {
-  analysisResult: AnalysisResult;
+  tableData: AnalysisTableRow[];
+  columns: Column[];
 }
 
 export default withStyles(styles)(AnalysisTable);
