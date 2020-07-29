@@ -231,6 +231,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     hazardLayer,
     baselineLayer,
     statistic,
+    threshold,
     // we never use the raw api data besides for debugging. So lets not bother saving it in Redux for production
     process.env.NODE_ENV === 'production' ? undefined : aggregateData,
   );

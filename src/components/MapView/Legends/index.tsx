@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import {
   createStyles,
   Divider,
@@ -34,13 +34,9 @@ function Legends({ classes, layers }: LegendsProps) {
         return null;
       }
       return (
-        <LegendItem
-          classes={classes}
-          key={title}
-          title={title}
-          legend={legend}
-          legendText={legendText}
-        />
+        <LegendItem classes={classes} key={title} title={title} legend={legend}>
+          {legendText}
+        </LegendItem>
       );
     }),
     // add analysis legend item if layer is active and analysis result exists
@@ -48,15 +44,22 @@ function Legends({ classes, layers }: LegendsProps) {
       ? [
           <LegendItem
             key={analysisResult.key}
-            legendText={`Impact Analysis on the effect of ${
-              analysisResult.getHazardLayer().title
-            } with the ongoing effects of ${
-              analysisResult.getBaselineLayer().title
-            }`}
             legend={analysisResult.legend}
-            title="Analysis Layer"
+            title={`${analysisResult.getBaselineLayer().title} exposed to ${
+              analysisResult.getHazardLayer().title
+            }`}
             classes={classes}
-          />,
+          >
+            Impact Analysis on {analysisResult.getBaselineLayer().legendText}
+            <br />
+            {analysisResult.threshold.above
+              ? `Above Threshold: ${analysisResult.threshold.above}`
+              : ''}
+            <br />
+            {analysisResult.threshold.below
+              ? `Below Threshold: ${analysisResult.threshold.below}`
+              : ''}
+          </LegendItem>,
         ]
       : []),
   ];
@@ -72,7 +75,8 @@ function Legends({ classes, layers }: LegendsProps) {
   );
 }
 
-function LegendItem({ classes, title, legend, legendText }: LegendItemProps) {
+// Children here is legendText
+function LegendItem({ classes, title, legend, children }: LegendItemProps) {
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
@@ -97,9 +101,9 @@ function LegendItem({ classes, title, legend, legendText }: LegendItemProps) {
 
           <Divider />
 
-          {legendText && (
+          {children && (
             <Grid item>
-              <Typography variant="h5">{legendText}</Typography>
+              <Typography variant="h5">{children}</Typography>
             </Grid>
           )}
         </Grid>
@@ -131,10 +135,11 @@ export interface LegendsProps extends WithStyles<typeof styles> {
   layers: LayerType[];
 }
 
-interface LegendItemProps extends WithStyles<typeof styles> {
+interface LegendItemProps
+  extends WithStyles<typeof styles>,
+    PropsWithChildren<{}> {
   title: LayerType['title'];
   legend: LayerType['legend'];
-  legendText: LayerType['legendText'];
 }
 
 export default withStyles(styles)(Legends);

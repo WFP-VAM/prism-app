@@ -409,7 +409,10 @@ export class AnalysisResult {
   tableData: TableRow[];
   // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
   private rawApiData?: object[];
+
   statistic: AggregationOperations;
+  threshold: ThresholdDefinition;
+
   legend: LegendDefinition;
   hazardLayerId: WMSLayerProps['id'];
   baselineLayerId: NSOLayerProps['id'];
@@ -420,11 +423,13 @@ export class AnalysisResult {
     hazardLayer: WMSLayerProps,
     baselineLayer: NSOLayerProps,
     statistic: AggregationOperations,
+    threshold: ThresholdDefinition,
     rawApiData?: object[],
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
     this.statistic = statistic;
+    this.threshold = threshold;
     this.legend = baselineLayer.legend;
     this.rawApiData = rawApiData;
 
