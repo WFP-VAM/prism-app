@@ -3,7 +3,8 @@ import { xml2js } from 'xml-js';
 import { merge, get, isString, union, isEmpty } from 'lodash';
 
 import config from '../config/prism.json';
-import { AvailableDates } from '../config/types';
+import { AvailableDates, GroundstationLayerProps } from '../config/types';
+import { LayerDefinitions } from '../config/utils';
 
 const xml2jsOptions = {
   compact: true,
@@ -148,12 +149,18 @@ async function getWCSCoverage(serverUri: string) {
 }
 
 /**
- * Given a WMS or WCS serverUri, return a Map of available dates
+ * Given a WMS or WCS serverUri, return a Map of available dates.
+ *
+ * We also now load possible dates for groundstation layers
  * @return a Promise of Map<layerId, availableDate[]>
  */
 export async function getLayersAvailableDates() {
   const wmsServerUrls: string[] = get(config, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(config, 'serversUrls.wcs', []);
+
+  const groundstationLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is GroundstationLayerProps => layer.type === 'groundstation',
+  );
 
   const [wmsAvailableDates, wcsAvailableDates] = await Promise.all([
     ...wmsServerUrls.map(url => getWMSCapabilities(url)),
