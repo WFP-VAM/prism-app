@@ -104,7 +104,7 @@ function MapView({ classes }: MapViewProps) {
                 .serverLayerName
             ],
       )
-      .filter(value => value)
+      .filter(value => value) // null check
       .flat(),
   );
 

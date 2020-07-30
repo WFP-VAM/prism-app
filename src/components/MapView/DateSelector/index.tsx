@@ -177,7 +177,7 @@ const styles = (theme: Theme) =>
   });
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
-  availableDates: number[];
+  availableDates?: number[];
 }
 
 export default withStyles(styles)(DateSelector);

@@ -1,10 +1,10 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { merge, get, isString, union, isEmpty } from 'lodash';
-
+import { get, isEmpty, isString, merge, union, keyBy } from 'lodash';
 import config from '../config/prism.json';
 import { AvailableDates, GroundstationLayerProps } from '../config/types';
 import { LayerDefinitions } from '../config/utils';
+import { GroundstationLayerData } from '../context/layers/groundstation';
 
 const xml2jsOptions = {
   compact: true,
@@ -112,9 +112,8 @@ async function getWMSCapabilities(serverUri: string) {
 
     return formatCapabilitiesInfo(flatLayers, 'Name._text', 'Dimension._text');
   } catch (error) {
-    throw new Error(
-      `Failed loading dates with request GET: ${requestUri} for WMS Capabilities, ${error}`,
-    );
+    console.error(error);
+    return {};
   }
 }
 
@@ -142,10 +141,39 @@ async function getWCSCoverage(serverUri: string) {
       'domainSet.temporalDomain.gml:timePosition',
     );
   } catch (error) {
-    throw new Error(
-      `Failed loading dates with request GET: ${requestUri} for WCS Coverage, ${error}`,
-    );
+    console.error(error);
+    return {};
   }
+}
+
+/**
+ * Gets the available dates for a groundstation layer
+ *
+ * in layers.json each uri is given a constant, large date range (2000-01-01 -> 2023-12-21) to try get the api to give all data
+ * TODO Once the api is fixed this needs to be fixed as its currently a hacky solution to get around the api's caveats
+ *
+ */
+async function getGroundstationCoverage({
+  data: uri,
+  fallbackData: fallbackUri,
+}: GroundstationLayerProps) {
+  let data;
+  try {
+    // eslint-disable-next-line fp/no-mutation
+    data = (await (
+      await fetch(uri, { mode: 'cors' })
+    ).json()) as GroundstationLayerData;
+  } catch (ignored) {
+    // eslint-disable-next-line fp/no-mutation
+    data = (await (
+      await fetch(fallbackUri || '')
+    ).json()) as GroundstationLayerData;
+  }
+  return data
+    .map(item => new Date(item.date).getTime())
+    .filter((date, index, arr) => {
+      return arr.indexOf(date) === index;
+    }); // removes duplicate dates because indexOf will always return the first occurrence of an item
 }
 
 /**
@@ -155,6 +183,7 @@ async function getWCSCoverage(serverUri: string) {
  * @return a Promise of Map<layerId, availableDate[]>
  */
 export async function getLayersAvailableDates() {
+  // https://mng.prism.services/temp/Temperature?beginDateTime=2020-05-01&endDateTime=2020-05-01
   const wmsServerUrls: string[] = get(config, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(config, 'serversUrls.wcs', []);
 
@@ -162,10 +191,13 @@ export async function getLayersAvailableDates() {
     (layer): layer is GroundstationLayerProps => layer.type === 'groundstation',
   );
 
-  const [wmsAvailableDates, wcsAvailableDates] = await Promise.all([
+  const layerDates: AvailableDates[] = await Promise.all([
     ...wmsServerUrls.map(url => getWMSCapabilities(url)),
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
+    ...groundstationLayers.map(async layer => ({
+      [layer.id]: await getGroundstationCoverage(layer),
+    })),
   ]);
 
-  return merge(wmsAvailableDates, wcsAvailableDates);
+  return merge({}, ...layerDates);
 }
