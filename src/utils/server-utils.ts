@@ -156,12 +156,15 @@ async function getWCSCoverage(serverUri: string) {
 async function getGroundstationCoverage({
   data: uri,
   fallbackData: fallbackUri,
+  beginDate,
+  endDate,
 }: GroundstationLayerProps) {
   let data;
+  const maxDateQuery = `?beginDateTime=${beginDate}&endDateTime=${endDate}`;
   try {
     // eslint-disable-next-line fp/no-mutation
     data = (await (
-      await fetch(uri, { mode: 'cors' })
+      await fetch(uri + maxDateQuery, { mode: 'cors' })
     ).json()) as GroundstationLayerData;
   } catch (ignored) {
     // eslint-disable-next-line fp/no-mutation
@@ -173,7 +176,7 @@ async function getGroundstationCoverage({
     .map(item => new Date(item.date).getTime())
     .filter((date, index, arr) => {
       return arr.indexOf(date) === index;
-    }); // removes duplicate dates because indexOf will always return the first occurrence of an item
+    }); // filter() here removes duplicate dates because indexOf will always return the first occurrence of an item
 }
 
 /**
