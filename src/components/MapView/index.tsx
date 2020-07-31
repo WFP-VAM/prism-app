@@ -23,6 +23,7 @@ import {
 
 import {
   DiscriminateUnion,
+  GroundstationLayerProps,
   ImpactLayerProps,
   LayerType,
   WMSLayerProps,
@@ -66,7 +67,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 };
 
 function MapView({ classes }: MapViewProps) {
-  const layers = useSelector(layersSelector);
+  const selectedLayers = useSelector(layersSelector);
   const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
   const dispatch = useDispatch();
@@ -88,22 +89,33 @@ function MapView({ classes }: MapViewProps) {
   useEffect(() => {
     // when we switch layers, close any active pop-ups
     dispatch(hidePopup());
-  }, [dispatch, layers]);
+  }, [dispatch, selectedLayers]);
 
-  const serverLayers = layers.filter((layer): layer is
+  const layersWithDateSupport = selectedLayers.filter((layer): layer is
     | WMSLayerProps
-    | ImpactLayerProps => ['impact', 'wms'].includes(layer.type));
+    | ImpactLayerProps
+    | GroundstationLayerProps =>
+    ['impact', 'groundstation', 'wms'].includes(layer.type),
+  );
 
   const selectedLayerDates = uniq(
-    serverLayers
-      .map(layer =>
-        layer.type === 'wms'
-          ? serverAvailableDates[layer.serverLayerName]
-          : serverAvailableDates[
+    layersWithDateSupport
+      // the 2 below eslint disables are justified as TS will strongly ensure undefined is never returned from map()
+      // eslint-disable-next-line array-callback-return,consistent-return
+      .map((layer): number[] => {
+        // eslint-disable-next-line default-case
+        switch (layer.type) {
+          case 'wms':
+            return serverAvailableDates[layer.serverLayerName];
+          case 'impact':
+            return serverAvailableDates[
               (LayerDefinitions[layer.hazardLayer] as WMSLayerProps)
                 .serverLayerName
-            ],
-      )
+            ];
+          case 'groundstation':
+            return serverAvailableDates[layer.id];
+        }
+      })
       .filter(value => value) // null check
       .flat(),
   );
@@ -136,7 +148,7 @@ function MapView({ classes }: MapViewProps) {
         }}
       >
         <>
-          {layers.map(layer => {
+          {selectedLayers.map(layer => {
             const component: ComponentType<{ layer: any }> =
               componentTypes[layer.type];
             return createElement(component, {
@@ -148,7 +160,7 @@ function MapView({ classes }: MapViewProps) {
         <MapTooltip />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
-      <Legends layers={layers} />
+      <Legends layers={selectedLayers} />
     </div>
   );
 }

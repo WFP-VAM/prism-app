@@ -38,6 +38,7 @@ const Input = forwardRef(
 
 function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const dispatch = useDispatch();
+
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
   const stateStartDateYear = moment(stateStartDate).year();
 

@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { get, isEmpty, isString, merge, union, keyBy } from 'lodash';
+import { get, isEmpty, isString, merge, union } from 'lodash';
 import config from '../config/prism.json';
 import { AvailableDates, GroundstationLayerProps } from '../config/types';
 import { LayerDefinitions } from '../config/utils';

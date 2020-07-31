@@ -10,10 +10,15 @@ import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import {
+  dateRangeSelector,
+  layerDataSelector,
+} from '../../../../context/mapStateSlice/selectors';
 
 function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
-  const layerData = useSelector(layerDataSelector(layer.id)) as
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
+  const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<GroundstationLayerProps>
     | undefined;
   const dispatch = useDispatch();
@@ -22,9 +27,9 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
 
   useEffect(() => {
     if (!data) {
-      dispatch(loadLayerData({ layer }));
+      dispatch(loadLayerData({ layer, date: selectedDate }));
     }
-  }, [data, dispatch, layer]);
+  }, [data, dispatch, layer, selectedDate]);
 
   if (!data) {
     return null;
