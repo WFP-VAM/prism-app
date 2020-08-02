@@ -50,6 +50,11 @@ const theme: any = createMuiTheme({
         textTransform: 'uppercase',
       },
     },
+    MuiListItem: {
+      button: {
+        color: 'black',
+      },
+    },
   },
 });
 

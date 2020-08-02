@@ -6,8 +6,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { ReactElement } from 'react';
-import { menuList } from '../components/NavBar/utils';
-import { LayerKey, LayerType } from '../config/types';
+import { menuList } from '../../NavBar/utils';
+import { LayerKey, LayerType } from '../../../config/types';
 
 function LayerDropdown({
   type,

@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import {
+  Box,
   Button,
   createStyles,
   FormControl,
@@ -57,11 +58,11 @@ import {
   setIsMapLayerActive,
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
-import LayerDropdown from '../../../utils/LayerDropdown';
 import {
   getAnalysisTableColumns,
   downloadCSVFromTableData,
 } from '../../../utils/analysis-utils';
+import LayerDropdown from './LayerDropdown';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -194,12 +195,10 @@ function Analyser({ classes }: AnalyserProps) {
         <FontAwesomeIcon icon={faCaretDown} style={{ marginLeft: '10px' }} />
       </Button>
 
-      <div
+      <Box
         className={classes.analyserMenu}
-        style={{
-          width: isAnalyserFormOpen ? 'min-content' : 0,
-          padding: isAnalyserFormOpen ? 10 : 0,
-        }}
+        width={isAnalyserFormOpen ? 'min-content' : 0}
+        padding={isAnalyserFormOpen ? '10px' : 0}
       >
         {isAnalyserFormOpen ? (
           <div>
@@ -352,7 +351,7 @@ function Analyser({ classes }: AnalyserProps) {
             {isAnalysisLoading ? <LinearProgress /> : null}
           </div>
         ) : null}
-      </div>
+      </Box>
     </div>
   );
 }

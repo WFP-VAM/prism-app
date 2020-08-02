@@ -102,7 +102,7 @@ const styles = () =>
   createStyles({
     tableContainer: {
       border: '2px solid',
-      width: '600px',
+      width: '700px',
       maxWidth: '100vw',
     },
     tableHead: {
