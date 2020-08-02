@@ -5,7 +5,7 @@ import { render } from '@testing-library/react';
 import Analyser from '.';
 import { store } from '../../../context/store';
 
-jest.mock('../../../utils/LayerDropdown', () => 'mock-Layer-Dropdown');
+jest.mock('./LayerDropdown', () => 'mock-Layer-Dropdown');
 
 test('renders as expected', () => {
   const rendered = render(

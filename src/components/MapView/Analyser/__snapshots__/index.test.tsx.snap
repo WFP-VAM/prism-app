@@ -48,8 +48,7 @@ exports[`renders as expected 1`] = `
       </svg>
     </mock-button>
     <div
-      class="Analyser-analyserMenu-2"
-      style="width: 0px; padding: 10px;"
+      class="MuiBox-root MuiBox-root-12 Analyser-analyserMenu-2"
     >
       <div>
         <div
@@ -90,20 +89,20 @@ exports[`renders as expected 1`] = `
                 >
                   <span
                     aria-disabled="false"
-                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-12 MuiRadio-root Analyser-radioOptions-6 PrivateSwitchBase-checked-13 Mui-checked"
+                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-13 MuiRadio-root Analyser-radioOptions-6 PrivateSwitchBase-checked-14 Mui-checked"
                   >
                     <span
                       class="MuiIconButton-label"
                     >
                       <input
                         checked=""
-                        class="PrivateSwitchBase-input-15"
+                        class="PrivateSwitchBase-input-16"
                         name="statistics"
                         type="radio"
                         value="mean"
                       />
                       <div
-                        class="PrivateRadioButtonIcon-root-16 PrivateRadioButtonIcon-checked-18"
+                        class="PrivateRadioButtonIcon-root-17 PrivateRadioButtonIcon-checked-19"
                       >
                         <svg
                           aria-hidden="true"
@@ -117,7 +116,7 @@ exports[`renders as expected 1`] = `
                         </svg>
                         <svg
                           aria-hidden="true"
-                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-17 MuiSvgIcon-fontSizeSmall"
+                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-18 MuiSvgIcon-fontSizeSmall"
                           focusable="false"
                           viewBox="0 0 24 24"
                         >
@@ -143,19 +142,19 @@ exports[`renders as expected 1`] = `
                 >
                   <span
                     aria-disabled="false"
-                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-12 MuiRadio-root Analyser-radioOptions-6"
+                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-13 MuiRadio-root Analyser-radioOptions-6"
                   >
                     <span
                       class="MuiIconButton-label"
                     >
                       <input
-                        class="PrivateSwitchBase-input-15"
+                        class="PrivateSwitchBase-input-16"
                         name="statistics"
                         type="radio"
                         value="median"
                       />
                       <div
-                        class="PrivateRadioButtonIcon-root-16"
+                        class="PrivateRadioButtonIcon-root-17"
                       >
                         <svg
                           aria-hidden="true"
@@ -169,7 +168,7 @@ exports[`renders as expected 1`] = `
                         </svg>
                         <svg
                           aria-hidden="true"
-                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-17 MuiSvgIcon-fontSizeSmall"
+                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-18 MuiSvgIcon-fontSizeSmall"
                           focusable="false"
                           viewBox="0 0 24 24"
                         >
