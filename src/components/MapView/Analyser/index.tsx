@@ -350,10 +350,11 @@ function Analyser({ classes }: AnalyserProps) {
                 className={classes.innerAnalysisButton}
                 onClick={runAnalyser}
                 disabled={
-                  (!analysisResult && (!!thresholdError || !selectedDate)) ||
-                  !hazardLayerId ||
-                  !baselineLayerId ||
-                  isAnalysisLoading
+                  !!thresholdError || // if there is a threshold error
+                  !selectedDate || // or date hasn't been selected
+                  !hazardLayerId || // or hazard layer hasn't been selected
+                  !baselineLayerId || // or baseline layer hasn't been selected
+                  isAnalysisLoading // or analysis is currently loading
                 }
               >
                 <Typography variant="body2">Run Analysis</Typography>
@@ -404,7 +405,7 @@ const styles = (theme: Theme) =>
     },
     innerAnalysisButton: {
       backgroundColor: '#3d474a',
-      margin: '10px 0',
+      margin: '10px',
       '&.Mui-disabled': { opacity: 0.5 },
     },
     selectorLabel: {
