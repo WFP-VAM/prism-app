@@ -91,17 +91,6 @@ function Analyser({ classes }: AnalyserProps) {
   const [aboveThreshold, setAboveThreshold] = useState('');
   const [thresholdError, setThresholdError] = useState<string | null>(null);
 
-  // enforce errors
-  useEffect(() => {
-    const belowThresholdValue = parseFloat(belowThreshold);
-    const aboveThresholdValue = parseFloat(aboveThreshold);
-    if (belowThresholdValue < aboveThresholdValue) {
-      setThresholdError('Min threshold is larger than Max!');
-    } else {
-      setThresholdError(null);
-    }
-  }, [belowThreshold, aboveThreshold]);
-
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
     const dates = hazardLayerId
@@ -119,7 +108,29 @@ function Analyser({ classes }: AnalyserProps) {
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
   ) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setterFunc(event.target.value as T);
+    const value = event.target.value as T;
+    setterFunc(value);
+    return value;
+  };
+  // specially for threshold values, also does error checking
+  const onThresholdOptionChange = (thresholdType: 'above' | 'below') => (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const setterFunc =
+      thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
+    const changedOption = onOptionChange(setterFunc)(event);
+    // setting a value doesn't update the existing value until next render, therefore we must decide whether to access the old one or the newly change one here.
+    const aboveThresholdValue = parseFloat(
+      thresholdType === 'above' ? changedOption : aboveThreshold,
+    );
+    const belowThresholdValue = parseFloat(
+      thresholdType === 'below' ? changedOption : belowThreshold,
+    );
+    if (belowThresholdValue < aboveThresholdValue) {
+      setThresholdError('Min threshold is larger than Max!');
+    } else {
+      setThresholdError(null);
+    }
   };
 
   const adminBoundariesExtent = useMemo(() => {
@@ -248,7 +259,7 @@ function Analyser({ classes }: AnalyserProps) {
                   label="Min"
                   type="number"
                   value={aboveThreshold}
-                  onChange={onOptionChange(setAboveThreshold)}
+                  onChange={onThresholdOptionChange('above')}
                   variant="filled"
                 />
                 <TextField
@@ -256,7 +267,7 @@ function Analyser({ classes }: AnalyserProps) {
                   label="Max"
                   className={classes.numberField}
                   value={belowThreshold}
-                  onChange={onOptionChange(setBelowThreshold)}
+                  onChange={onThresholdOptionChange('below')}
                   type="number"
                   variant="filled"
                 />
@@ -370,7 +381,6 @@ const styles = (theme: Theme) =>
       maxWidth: '100vw',
       color: 'white',
       overflowX: 'hidden',
-      // transition: 'width 0.5s ease-in-out',
       whiteSpace: 'nowrap',
       borderTopRightRadius: '10px',
       borderBottomRightRadius: '10px',

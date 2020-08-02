@@ -47,18 +47,33 @@ function formatLayersCategories(layersList: {
   });
 }
 
+/**
+ * Returns true if every layer/table key in every layer category given actually exists.
+ * Returns false otherwise.
+ * @param layersCategories a dictionary of layer categories from appJSON.categories
+ */
+function checkLayersCategories(
+  layersCategories: Record<string, any>,
+): layersCategories is Record<string, Array<LayerKey | TableKey>> {
+  return Object.values(layersCategories)
+    .flat()
+    .every(layerOrTableKey => {
+      if (isLayerKey(layerOrTableKey) || isTableKey(layerOrTableKey)) {
+        return true;
+      }
+      console.error(`Key ${layerOrTableKey} isn't a valid layer or table key`);
+      return false;
+    });
+}
+
 export const menuList: MenuItemsType = map(
   appJSON.categories,
   (layersCategories, categoryKey) => {
-    Object.values(layersCategories)
-      .flat()
-      .forEach(layerOrTableKey => {
-        if (!isLayerKey(layerOrTableKey) && !isTableKey(layerOrTableKey)) {
-          throw new Error(
-            `Key ${layerOrTableKey} isn't valid layer or table in category: ${categoryKey} - prism.json`,
-          );
-        }
-      });
+    if (!checkLayersCategories(layersCategories)) {
+      throw new Error(
+        `'${categoryKey}' in prism.json isn't a valid category. Check console for more details.`,
+      );
+    }
     return {
       title: startCase(categoryKey),
       icon: icons[categoryKey],

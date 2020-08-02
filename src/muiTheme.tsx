@@ -52,6 +52,7 @@ const theme: any = createMuiTheme({
     },
     MuiListItem: {
       button: {
+        // dropdowns in Analyser Table are white on white background without this rule.
         color: 'black',
       },
     },
