@@ -77,12 +77,7 @@ export const menuList: MenuItemsType = map(
     return {
       title: startCase(categoryKey),
       icon: icons[categoryKey],
-      layersCategories: formatLayersCategories(
-        // safe to cast - runtime checked above.
-        layersCategories as {
-          [key: string]: Array<LayerKey | TableKey>;
-        },
-      ),
+      layersCategories: formatLayersCategories(layersCategories),
     };
   },
 );
