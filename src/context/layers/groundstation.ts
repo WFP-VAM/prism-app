@@ -28,11 +28,8 @@ export const fetchGroundstationData: LazyLoader<GroundstationLayerProps> = () =>
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
 
-  // we minus the timezone offset to compensate for what happened in DateSelector (time is offset in opposite direction by same amount)
-  const formattedDate =
-    date &&
-    moment(date - new Date().getTimezoneOffset() * 60000).format('YYYY-MM-DD');
-  // TODO something less static
+  const formattedDate = date && moment(date).format('YYYY-MM-DD');
+
   const dateQuery = `?beginDateTime=${
     formattedDate || layer.beginDate
   }&endDateTime=${formattedDate || layer.endDate}`;

@@ -6,6 +6,10 @@ import { AvailableDates, GroundstationLayerProps } from '../config/types';
 import { LayerDefinitions } from '../config/utils';
 import { GroundstationLayerData } from '../context/layers/groundstation';
 
+// Note: PRISM's date picker only works with dates where their time is midnight in the UTC timezone (possible dates passed in should be 2020-xx-xx 00:00 Midnight in UTC    -    2020-xx-xx 10:00 in Australia East Coast)
+// Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
+//
+
 const xml2jsOptions = {
   compact: true,
   trim: true,
@@ -43,7 +47,7 @@ function formatCapabilitiesInfo(
 
     const availableDates = dates
       .filter(date => !isEmpty(date))
-      .map(date => moment(get(date, '_text', date)).valueOf());
+      .map(date => moment.utc(get(date, '_text', date)).valueOf());
 
     const { [layerId]: oldLayerDates } = acc;
     return {
@@ -173,7 +177,7 @@ async function getGroundstationCoverage({
     ).json()) as GroundstationLayerData;
   }
   return data
-    .map(item => new Date(item.date).getTime())
+    .map(item => moment.utc(item.date).valueOf())
     .filter((date, index, arr) => {
       return arr.indexOf(date) === index;
     }); // filter() here removes duplicate dates because indexOf will always return the first occurrence of an item
