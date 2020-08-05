@@ -100,7 +100,7 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
 });
 
 export type LoadLayerDataFuncType = AsyncThunk<
-  LayerDataTypes,
-  ParamTypes,
+  LayerDataTypes, // return types
+  ParamTypes, // function input types
   CreateAsyncThunkTypes
 >;

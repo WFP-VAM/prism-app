@@ -16,7 +16,7 @@ declare module 'geojson' {
 export type GroundstationLayerData = {
   lat: number;
   lon: number;
-  date: string; // yyyy-mm-dd
+  date: number; // in unix time.
   [key: string]: any;
 }[];
 
@@ -30,14 +30,15 @@ export const fetchGroundstationData: LazyLoader<GroundstationLayerProps> = () =>
 
   const formattedDate = date && moment(date).format('YYYY-MM-DD');
 
-  const dateQuery = `?beginDateTime=${
-    formattedDate || layer.beginDate
-  }&endDateTime=${formattedDate || layer.endDate}`;
+  const dateQuery = `?beginDateTime=${formattedDate}&endDateTime=${formattedDate}`;
   let data;
   try {
+    // TODO get data from cache
     // eslint-disable-next-line fp/no-mutation
     data = (await (
-      await fetch(layer.data + dateQuery, { mode: 'cors' })
+      await fetch(layer.data.substr(0, layer.data.indexOf('?')) + dateQuery, {
+        mode: 'cors',
+      })
     ).json()) as GroundstationLayerData;
   } catch (ignored) {
     // eslint-disable-next-line fp/no-mutation

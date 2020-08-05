@@ -2,9 +2,9 @@ import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, merge, union } from 'lodash';
 import config from '../config/prism.json';
-import { AvailableDates, GroundstationLayerProps } from '../config/types';
 import { LayerDefinitions } from '../config/utils';
-import { GroundstationLayerData } from '../context/layers/groundstation';
+import type { AvailableDates, GroundstationLayerProps } from '../config/types';
+import type { GroundstationLayerData } from '../context/layers/groundstation';
 
 // Note: PRISM's date picker only works with dates where their time is midnight in the UTC timezone (possible dates passed in should be 2020-xx-xx 00:00 Midnight in UTC    -    2020-xx-xx 10:00 in Australia East Coast)
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
@@ -157,30 +157,38 @@ async function getWCSCoverage(serverUri: string) {
  * TODO Once the api is fixed this needs to be fixed as its currently a hacky solution to get around the api's caveats
  *
  */
-async function getGroundstationCoverage({
-  data: uri,
-  fallbackData: fallbackUri,
-  beginDate,
-  endDate,
-}: GroundstationLayerProps) {
-  let data;
-  const maxDateQuery = `?beginDateTime=${beginDate}&endDateTime=${endDate}`;
-  try {
-    // eslint-disable-next-line fp/no-mutation
-    data = (await (
-      await fetch(uri + maxDateQuery, { mode: 'cors' })
-    ).json()) as GroundstationLayerData;
-  } catch (ignored) {
-    // eslint-disable-next-line fp/no-mutation
-    data = (await (
-      await fetch(fallbackUri || '')
-    ).json()) as GroundstationLayerData;
-  }
-  return data
+async function getGroundstationCoverage(layer: GroundstationLayerProps) {
+  const { data: url, fallbackData: fallbackUrl, id } = layer;
+  const loadGroundstationDataFromURL = async (fetchUrl: string) => {
+    const data = (await (
+      await fetch(fetchUrl || '', {
+        mode: fetchUrl.startsWith('http') ? 'cors' : 'same-origin',
+      })
+    ).json()) as GroundstationLayerData & { date: string }; // raw data comes in as string yyyy-mm-dd, needs to be converted to number.
+    return data.map(item => ({
+      ...item,
+      date: moment.utc(item.date).valueOf(),
+    }));
+  };
+  const data = await loadGroundstationDataFromURL(url).catch(err => {
+    console.error(err);
+    console.warn(
+      `Failed loading groundstation layer: ${id}. Attempting to load fallback URL...`,
+    );
+    return loadGroundstationDataFromURL(fallbackUrl || '');
+  });
+  const possibleDates = data
     .map(item => moment.utc(item.date).valueOf())
     .filter((date, index, arr) => {
       return arr.indexOf(date) === index;
     }); // filter() here removes duplicate dates because indexOf will always return the first occurrence of an item
+
+  // this is exclusive to this specific API, we need to fetch all groundstation data to just get the dates. To optimise, why not store it?
+  /* possibleDates.forEach(date => {
+    const pointsThatMatchDate = data.filter(item => item.date === date);
+    // TODO make cache
+  }); */
+  return possibleDates;
 }
 
 /**

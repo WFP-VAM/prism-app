@@ -228,11 +228,6 @@ export class GroundstationLayerProps extends CommonLayerProps {
   measure: string;
   @optional
   fallbackData?: string;
-
-  // the date range available to select from the date picker TODO api should just have a way to supply all possible dates
-  // in format YYYY-MM-DD where DD must be 01, 11 or 21. MM for endDate should be 12 to get max amount of dates
-  beginDate: string;
-  endDate: string;
 }
 
 export type RequiredKeys<T> = {

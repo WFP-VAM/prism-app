@@ -82,7 +82,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         <Grid item xs={2}>
           <DatePicker
             className={classes.datePickerInput}
-            selected={selectedDate.utc().toDate()}
+            selected={selectedDate.toDate()}
             onChange={updateStartDate}
             maxDate={new Date()}
             todayButton="Today"
