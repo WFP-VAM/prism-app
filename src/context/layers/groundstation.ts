@@ -30,7 +30,9 @@ export const fetchGroundstationData: LazyLoader<GroundstationLayerProps> = () =>
 
   const formattedDate = date && moment(date).format('YYYY-MM-DD');
 
-  const dateQuery = `?beginDateTime=${formattedDate}&endDateTime=${formattedDate}`;
+  const dateQuery = `?beginDateTime=${
+    formattedDate || '2000-01-01'
+  }&endDateTime=${formattedDate || '2023-12-21'}`;
   let data;
   try {
     // TODO get data from cache
@@ -41,13 +43,13 @@ export const fetchGroundstationData: LazyLoader<GroundstationLayerProps> = () =>
       })
     ).json()) as GroundstationLayerData;
   } catch (ignored) {
+    // fallback data isn't filtered, therefore we must filter it.
     // eslint-disable-next-line fp/no-mutation
     data = ((await (
       await fetch(layer.fallbackData || '')
-    ).json()) as GroundstationLayerData).filter(obj => {
-      // console.log(obj.date, formattedDate, moment(obj.date).valueOf(), date);
-      return moment(obj.date).valueOf() === moment(formattedDate).valueOf();
-    });
+    ).json()) as GroundstationLayerData).filter(
+      obj => moment(obj.date).valueOf() === moment(formattedDate).valueOf(),
+    );
   }
   return GeoJSON.parse(data, { Point: ['lat', 'lon'] });
 };
