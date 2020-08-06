@@ -29,13 +29,12 @@ export const fetchGroundstationData: LazyLoader<GroundstationLayerProps> = () =>
   // we should get the data from the local public file in layer.fallbackData
 
   const formattedDate = date && moment(date).format('YYYY-MM-DD');
-
+  // TODO exclusive to this api...
   const dateQuery = `?beginDateTime=${
     formattedDate || '2000-01-01'
   }&endDateTime=${formattedDate || '2023-12-21'}`;
   let data;
   try {
-    // TODO get data from cache
     // eslint-disable-next-line fp/no-mutation
     data = (await (
       await fetch(layer.data.substr(0, layer.data.indexOf('?')) + dateQuery, {

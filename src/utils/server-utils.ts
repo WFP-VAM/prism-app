@@ -6,9 +6,8 @@ import { LayerDefinitions } from '../config/utils';
 import type { AvailableDates, GroundstationLayerProps } from '../config/types';
 import type { GroundstationLayerData } from '../context/layers/groundstation';
 
-// Note: PRISM's date picker only works with dates where their time is midnight in the UTC timezone (possible dates passed in should be 2020-xx-xx 00:00 Midnight in UTC    -    2020-xx-xx 10:00 in Australia East Coast)
+// Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
-//
 
 const xml2jsOptions = {
   compact: true,
@@ -116,6 +115,7 @@ async function getWMSCapabilities(serverUri: string) {
 
     return formatCapabilitiesInfo(flatLayers, 'Name._text', 'Dimension._text');
   } catch (error) {
+    // TODO we used to throw the error here so a notification appears. Removed because a failure of one shouldn't prevent the successful requests from saving.
     console.error(error);
     return {};
   }
@@ -145,6 +145,7 @@ async function getWCSCoverage(serverUri: string) {
       'domainSet.temporalDomain.gml:timePosition',
     );
   } catch (error) {
+    // TODO we used to throw the error here so a notification appears. Removed because a failure of one shouldn't prevent the successful requests from saving.
     console.error(error);
     return {};
   }
@@ -183,22 +184,15 @@ async function getGroundstationCoverage(layer: GroundstationLayerProps) {
       return arr.indexOf(date) === index;
     }); // filter() here removes duplicate dates because indexOf will always return the first occurrence of an item
 
-  // this is exclusive to this specific API, we need to fetch all groundstation data to just get the dates. To optimise, why not store it?
-  /* possibleDates.forEach(date => {
-    const pointsThatMatchDate = data.filter(item => item.date === date);
-    // TODO make cache
-  }); */
   return possibleDates;
 }
 
 /**
- * Given a WMS or WCS serverUri, return a Map of available dates.
+ * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (groundstation) using their API endpoint.
  *
- * We also now load possible dates for groundstation layers
- * @return a Promise of Map<layerId, availableDate[]>
+ * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
  */
-export async function getLayersAvailableDates() {
-  // https://mng.prism.services/temp/Temperature?beginDateTime=2020-05-01&endDateTime=2020-05-01
+export async function getLayersAvailableDates(): Promise<AvailableDates> {
   const wmsServerUrls: string[] = get(config, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(config, 'serversUrls.wcs', []);
 
