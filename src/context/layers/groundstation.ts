@@ -47,6 +47,8 @@ export const fetchGroundstationData: LazyLoader<GroundstationLayerProps> = () =>
     data = ((await (
       await fetch(layer.fallbackData || '')
     ).json()) as GroundstationLayerData).filter(
+      // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
+      // using moment here helps compensate for these discrepancies
       obj => moment(obj.date).valueOf() === moment(formattedDate).valueOf(),
     );
   }
