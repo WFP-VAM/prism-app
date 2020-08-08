@@ -10,7 +10,7 @@ export type LayerType =
   | WMSLayerProps
   | NSOLayerProps
   | ImpactLayerProps
-  | GroundstationLayerProps;
+  | PointDataLayerProps;
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
@@ -212,8 +212,8 @@ export class ImpactLayerProps extends CommonLayerProps {
   api?: StatsApi;
 }
 
-export class GroundstationLayerProps extends CommonLayerProps {
-  type: 'groundstation';
+export class PointDataLayerProps extends CommonLayerProps {
+  type: 'point_data';
   data: string;
 
   @makeRequired
