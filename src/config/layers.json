@@ -57,7 +57,7 @@
         "color": "#7a0177"
       }
     ],
-    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
+    "legend_text": "Percentage of undernoursihment | Source: BPS 2018"
   },
   "CER_YIELD": {
     "title": "Cereal Yield",
@@ -89,7 +89,7 @@
         "color": "#b30000"
       }
     ],
-    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
+    "legend_text": "Cereal Yield | Source : BPS 2019"
   },
   "HH_AGRI": {
     "title": "Household with Income Derived from Agriculture",
@@ -121,7 +121,7 @@
         "color": "#b30000"
       }
     ],
-    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
+    "legend_text": "Source: SUSENAS 2019"
   },
   "HH_FE65": {
     "title": "Houshold with Food Expenditure >65%",
@@ -153,7 +153,7 @@
         "color": "#810f7c"
       }
     ],
-    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
+    "legend_text": "Source: SUSENAS 2019"
   },
   "OP_UNEMPLOY": {
     "title": "Open Unemployment",
@@ -185,7 +185,7 @@
         "color": "#810f7c"
       }
     ],
-    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
+    "legend_text": "Source: BPS 2019"
   },
   "HH_FOODASS": {
     "title": "Poor Houshold With Access to Food Assistance",
@@ -217,7 +217,7 @@
         "color": "#810f7c"
       }
     ],
-    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
+    "legend_text": "Source: BPS 2019"
   },
   "HH_ELEC_2019": {
     "title": "Poor Houshold With Access to Food Assistance",
@@ -249,7 +249,7 @@
         "color": "#810f7c"
       }
     ],
-    "legend_text": "Number of people whose ability was impaired for more than 12 months by Aimag. Year: 2018. Source: National Statistical Office"
+    "legend_text": "Source: BPS 2019"
   },
   "population_density": {
     "title": "Population Density",
@@ -301,7 +301,7 @@
     "base_url": "https://vampire.idn.wfp.org:8081/geoserver/vampire",
     "date_interval": "day",
     "opacity": 0.5,
-    "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
+    "legend_text": "A number of days since the last rainfall above 1mm per day | Source: IMERG",
     "legend": [
       {
         "value": "0.10",
