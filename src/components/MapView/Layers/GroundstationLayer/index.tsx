@@ -15,6 +15,7 @@ import {
   layerDataSelector,
 } from '../../../../context/mapStateSlice/selectors';
 
+// Point Data, takes any GeoJSON and shows it.
 function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 

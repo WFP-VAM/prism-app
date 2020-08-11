@@ -1,6 +1,7 @@
 import { createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
 import { DiscriminateUnion, LayerType } from '../../config/types';
 import { Extent } from '../../components/MapView/Layers/raster-utils';
+import { fetchNSOLayerData, NSOLayerData } from './nso';
 
 import { fetchWCSLayerData, WMSLayerData } from './wms';
 import {
@@ -8,10 +9,8 @@ import {
   GroundstationLayerData,
 } from './groundstation';
 import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
-
-import type { CreateAsyncThunkTypes, ThunkApi } from '../store';
-import { fetchNsoLayerData, NSOLayerData } from './nso';
 import { fetchImpactLayerData, ImpactLayerData } from './impact';
+import type { CreateAsyncThunkTypes, ThunkApi } from '../store';
 
 type LayerSpecificDataTypes = {
   boundary: BoundaryLayerData;
@@ -77,7 +76,7 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
     boundary: fetchBoundaryLayerData,
     impact: fetchImpactLayerData,
     wms: fetchWCSLayerData,
-    nso: fetchNsoLayerData,
+    nso: fetchNSOLayerData,
     groundstation: fetchGroundstationData,
   };
   const lazyLoad: LazyLoader<any> = layerLoaders[layer.type];

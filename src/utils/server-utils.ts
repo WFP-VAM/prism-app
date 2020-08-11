@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, merge, union } from 'lodash';
+
 import config from '../config/prism.json';
 import { LayerDefinitions } from '../config/utils';
 import type { AvailableDates, GroundstationLayerProps } from '../config/types';
@@ -105,8 +106,9 @@ async function getWMSCapabilities(serverUri: string) {
 
   try {
     const response = await fetch(requestUri);
-    if (!response.ok)
+    if (!response.ok) {
       throw new Error(`${response.status}: ${response.statusText}`);
+    }
     const responseText = await response.text();
     const responseJS = xml2js(responseText, xml2jsOptions);
 
@@ -132,8 +134,9 @@ async function getWCSCoverage(serverUri: string) {
 
   try {
     const response = await fetch(requestUri);
-    if (!response.ok)
+    if (!response.ok) {
       throw new Error(`${response.status}: ${response.statusText}`);
+    }
     const responseText = await response.text();
     const responseJS = xml2js(responseText, xml2jsOptions);
 

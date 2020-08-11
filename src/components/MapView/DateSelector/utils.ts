@@ -34,13 +34,13 @@ export function getMonthStartAndEnd(month: number, year: number) {
  * Return the list of available dates the month
  * @param month
  * @param year
- * @param availableDates
+ * @param availableDates in millisecond format
  * @return a list of available dates the month
  */
 export function findAvailableDayInMonth(
   month: number,
   year: number,
-  availableDates: number[],
+  availableDates: ReturnType<Date['getTime']>[],
 ) {
   const reference = new Date(year, month);
   return availableDates.filter(d => moment(d).isSame(reference, 'month'));
@@ -50,13 +50,13 @@ export function findAvailableDayInMonth(
  * Return true if there is an available date in the month
  * @param month
  * @param year
- * @param availableDates
+ * @param availableDates in millisecond format
  * @return
  */
 export function isAvailableMonth(
   month: number,
   year: number,
-  availableDates: number[],
+  availableDates: ReturnType<Date['getTime']>[],
 ) {
   return findAvailableDayInMonth(month, year, availableDates).length > 0;
 }

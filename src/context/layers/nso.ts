@@ -6,8 +6,8 @@ import { getBoundaryLayerSingleton } from '../../config/utils';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 import { layerDataSelector } from '../mapStateSlice/selectors';
 
-type DataRecord = {
-  adminKey: string;
+export type DataRecord = {
+  adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
   value: string | number | null;
 };
 
@@ -16,11 +16,10 @@ export type NSOLayerData = {
   layerData: DataRecord[];
 };
 
-export const fetchNsoLayerData: LazyLoader<NSOLayerProps> = () => async (
-  params: LayerDataParams<NSOLayerProps>,
+export const fetchNSOLayerData: LazyLoader<NSOLayerProps> = () => async (
+  { layer }: LayerDataParams<NSOLayerProps>,
   api: ThunkApi,
 ) => {
-  const { layer } = params;
   const { path, adminCode, dataField } = layer;
   const { getState } = api;
 
@@ -59,8 +58,8 @@ export const fetchNsoLayerData: LazyLoader<NSOLayerProps> = () => async (
           properties,
           adminBoundaryLayer.adminCode,
         ) as string;
-        const match = layerData.find(
-          ({ adminKey }) => adminBoundaryCode.indexOf(adminKey) === 0,
+        const match = layerData.find(({ adminKey }) =>
+          adminBoundaryCode.startsWith(adminKey),
         );
         if (match && !isNull(match.value)) {
           // Do we want support for non-numeric values (like string colors?)

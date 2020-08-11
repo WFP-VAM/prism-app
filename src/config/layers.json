@@ -7,6 +7,10 @@
     "admin_level_names": [
       "ADM1_EN",
       "ADM2_EN"
+    ],
+    "admin_level_local_names": [
+      "ADM1_MN",
+      "ADM2_MN"
     ]
   },
   "population_below_poverty": {
@@ -78,7 +82,7 @@
     "type": "nso",
     "path": "./data/nso/NSO_Hay_Harvest_Admin2.json",
     "data_field": "DTVAL_CO",
-    "admin_level": 1,
+    "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -142,7 +146,7 @@
     "type": "nso",
     "path": "./data/nso/NSO_Herder_HHs_Admin2.json",
     "data_field": "DTVAL_CO",
-    "admin_level": 1,
+    "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -174,7 +178,7 @@
     "type": "nso",
     "path": "./data/nso/NSO_Livestock_Count_ths_Admin2.json",
     "data_field": "DTVAL_CO",
-    "admin_level": 1,
+    "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -206,7 +210,7 @@
     "type": "nso",
     "path": "./data/nso/NSO_Child_U5_Admin2.json",
     "data_field": "DTVAL_CO",
-    "admin_level": 1,
+    "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
@@ -270,7 +274,7 @@
     "type": "nso",
     "path": "./data/nso/NSO_Population_Admin2_Total.json",
     "data_field": "DTVAL_CO",
-    "admin_level": 1,
+    "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [

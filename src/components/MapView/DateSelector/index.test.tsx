@@ -15,7 +15,7 @@ test('renders as expected', () => {
 
   const { container } = render(
     <Provider store={store}>
-      <DateSelector />
+      <DateSelector availableDates={[]} />
     </Provider>,
   );
   expect(container).toMatchSnapshot();
