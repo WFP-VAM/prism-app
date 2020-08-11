@@ -17,7 +17,9 @@ function Notifier({ classes }: NotifierProps) {
   useEffect(() => {
     const toolbar = document.getElementsByClassName('MuiToolbar-root')[0];
     function handleResize() {
-      if (!toolbar) return;
+      if (!toolbar) {
+        return;
+      }
       setTopOffset(toolbar.clientHeight + 15);
     }
     // try make sure the toolbar is available to use on first run, not too dangerous if it doesn't work - default value is good for most screens.

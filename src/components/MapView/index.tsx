@@ -35,7 +35,11 @@ import {
 } from '../../config/utils';
 
 import DateSelector from './DateSelector';
-import { addLayer, setMap } from '../../context/mapStateSlice';
+import {
+  isLoading,
+  layersSelector,
+} from '../../context/mapStateSlice/selectors';
+import { setMap, addLayer } from '../../context/mapStateSlice';
 import { addNotification } from '../../context/notificationStateSlice';
 import { hidePopup } from '../../context/tooltipStateSlice';
 import {
@@ -46,10 +50,8 @@ import {
 
 import appConfig from '../../config/prism.json';
 import { loadLayerData } from '../../context/layers/layer-data';
-import {
-  isLoading,
-  layersSelector,
-} from '../../context/mapStateSlice/selectors';
+import Analyser from './Analyser';
+import AnalysisLayer from './Layers/AnalysisLayer';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -104,7 +106,9 @@ function MapView({ classes }: MapViewProps) {
       | WMSLayerProps
       | ImpactLayerProps
       | PointDataLayerProps => dateSupportLayerTypes.includes(layer.type));
-    if (layersWithDateSupport.length === 0) return [];
+    if (layersWithDateSupport.length === 0) {
+      return [];
+    }
 
     /*
        takes all the dates possible for every layer and counts the amount of times each one is duplicated.
@@ -189,10 +193,13 @@ function MapView({ classes }: MapViewProps) {
             });
           })}
         </>
+        <AnalysisLayer />
+
         <MapTooltip />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={selectedLayers} />
+      <Analyser />
     </div>
   );
 }

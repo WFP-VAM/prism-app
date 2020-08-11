@@ -6,6 +6,7 @@ import {
   checkRequiredKeys,
   PointDataLayerProps,
   ImpactLayerProps,
+  LayerKey,
   LayersMap,
   LayerType,
   NSOLayerProps,
@@ -14,8 +15,14 @@ import {
   WMSLayerProps,
 } from './types';
 
-type layerKeys = keyof typeof rawLayers;
-type tableKeys = keyof typeof rawTables;
+export type TableKey = keyof typeof rawTables;
+/**
+ * Check if a string is an explicitly defined table in tables.json
+ * @param tableKey the string to check
+ */
+export function isTableKey(tableKey: string): tableKey is TableKey {
+  return tableKey in rawTables;
+}
 
 function parseStatsApiConfig(maybeConfig: {
   [key: string]: any;
@@ -28,10 +35,10 @@ function parseStatsApiConfig(maybeConfig: {
 }
 
 // CamelCase the keys inside the layer definition & validate config
-const getLayerByKey = (layerKey: layerKeys): LayerType => {
+const getLayerByKey = (layerKey: LayerKey): LayerType => {
   const rawDefinition = rawLayers[layerKey];
 
-  const definition: { id: layerKeys; type: LayerType['type'] } = {
+  const definition: { id: LayerKey; type: LayerType['type'] } = {
     id: layerKey,
     type: rawDefinition.type as LayerType['type'],
     ...mapKeys(rawDefinition, (v, k) => camelCase(k)),
@@ -51,6 +58,13 @@ const getLayerByKey = (layerKey: layerKeys): LayerType => {
       return throwInvalidLayer();
     case 'nso':
       if (checkRequiredKeys(NSOLayerProps, definition, true)) {
+        if (typeof (definition.adminLevel as unknown) !== 'number') {
+          console.error(
+            `admin_level in layer ${definition.id} isn't a number.`,
+          );
+          return throwInvalidLayer();
+        }
+
         return definition;
       }
       return throwInvalidLayer();
@@ -103,7 +117,7 @@ export const LayerDefinitions: LayersMap = (() => {
   const layers = Object.keys(rawLayers).reduce(
     (acc, layerKey) => ({
       ...acc,
-      [layerKey]: getLayerByKey(layerKey as layerKeys),
+      [layerKey]: getLayerByKey(layerKey as LayerKey),
     }),
     {} as LayersMap,
   );
@@ -137,7 +151,7 @@ function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
 }
 
-function getTableByKey(key: tableKeys): TableType {
+function getTableByKey(key: TableKey): TableType {
   const rawDefinition = {
     id: key,
     ...mapKeys(rawTables[key], (v, k) => camelCase(k)),
@@ -151,12 +165,10 @@ function getTableByKey(key: tableKeys): TableType {
   );
 }
 
-export const TableDefinitions: { [key: string]: TableType } = Object.keys(
-  rawTables,
-).reduce(
+export const TableDefinitions = Object.keys(rawTables).reduce(
   (acc, tableKey) => ({
     ...acc,
-    [tableKey]: getTableByKey(tableKey as tableKeys),
+    [tableKey]: getTableByKey(tableKey as TableKey),
   }),
   {},
-);
+) as { [key in TableKey]: TableType };
