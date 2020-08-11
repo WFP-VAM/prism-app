@@ -11,12 +11,14 @@ import tooltipStateReduce from './tooltipStateSlice';
 import notificationStateReduce, {
   errorToNotificationMiddleware,
 } from './notificationStateSlice';
+import analysisResultStateSlice from './analysisResultStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
   serverState: serverStateReduce,
   tableState: tableStateReduce,
   tooltipState: tooltipStateReduce,
+  analysisResultState: analysisResultStateSlice,
   notificationState: notificationStateReduce,
 });
 
@@ -27,7 +29,7 @@ export const store = configureStore({
   middleware: getDefaultMiddleware({
     serializableCheck: false,
     immutableCheck: {
-      ignoredPaths: ['mapState.layersData'],
+      ignoredPaths: ['mapState.layersData', 'analysisResultState.result'],
     },
   }).concat(errorToNotificationMiddleware),
 });

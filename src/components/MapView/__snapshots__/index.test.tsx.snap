@@ -21,6 +21,7 @@ exports[`renders as expected 1`] = `
     <mock-legends
       layers="[object Object]"
     />
+    <mock-analyser />
   </div>
 </div>
 `;

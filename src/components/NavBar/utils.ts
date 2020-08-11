@@ -1,10 +1,16 @@
-import { chain, map, startCase } from 'lodash';
+import { map, startCase } from 'lodash';
 
 import appJSON from '../../config/prism.json';
-import { LayerDefinitions, TableDefinitions } from '../../config/utils';
 import {
+  isTableKey,
+  LayerDefinitions,
+  TableDefinitions,
+  TableKey,
+} from '../../config/utils';
+import {
+  isLayerKey,
+  LayerKey,
   LayersCategoryType,
-  LayerType,
   MenuItemType,
 } from '../../config/types';
 
@@ -30,25 +36,48 @@ type LayersCategoriesType = LayersCategoryType[];
 type MenuItemsType = MenuItemType[];
 
 function formatLayersCategories(layersList: {
-  [key: string]: string[];
+  [key: string]: Array<LayerKey | TableKey>;
 }): LayersCategoriesType {
-  return map(layersList, (layerKeys, layersListKey) => ({
-    title: startCase(layersListKey),
-    layers: layerKeys
-      .map(key => LayerDefinitions[key])
-      .filter((val): val is LayerType => Boolean(val)),
-
-    tables: layerKeys
-      .map(key => TableDefinitions[key])
-      .filter(val => Boolean(val)),
-  }));
+  return map(layersList, (layerKeys, layersListKey) => {
+    return {
+      title: startCase(layersListKey),
+      layers: layerKeys.filter(isLayerKey).map(key => LayerDefinitions[key]),
+      tables: layerKeys.filter(isTableKey).map(key => TableDefinitions[key]),
+    };
+  });
 }
 
-export const menuList: MenuItemsType = chain(appJSON)
-  .get('categories')
-  .map((layersCategories, categoryKey) => ({
-    title: startCase(categoryKey),
-    icon: icons[categoryKey],
-    layersCategories: formatLayersCategories(layersCategories),
-  }))
-  .value();
+/**
+ * Returns true if every layer/table key in every layer category given actually exists.
+ * Returns false otherwise.
+ * @param layersCategories a dictionary of layer categories from appJSON.categories
+ */
+function checkLayersCategories(
+  layersCategories: Record<string, any>,
+): layersCategories is Record<string, Array<LayerKey | TableKey>> {
+  return Object.values(layersCategories)
+    .flat()
+    .every(layerOrTableKey => {
+      if (isLayerKey(layerOrTableKey) || isTableKey(layerOrTableKey)) {
+        return true;
+      }
+      console.error(`Key ${layerOrTableKey} isn't a valid layer or table key`);
+      return false;
+    });
+}
+
+export const menuList: MenuItemsType = map(
+  appJSON.categories,
+  (layersCategories, categoryKey) => {
+    if (!checkLayersCategories(layersCategories)) {
+      throw new Error(
+        `'${categoryKey}' in prism.json isn't a valid category. Check console for more details.`,
+      );
+    }
+    return {
+      title: startCase(categoryKey),
+      icon: icons[categoryKey],
+      layersCategories: formatLayersCategories(layersCategories),
+    };
+  },
+);

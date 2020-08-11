@@ -1,16 +1,27 @@
 import 'reflect-metadata';
+import rawLayers from './layers.json';
+import type { TableKey } from './utils';
 
+// TODO currently unused. Could be harnessed within admin levels key typing
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
 
 const optionalMetadataKey = Symbol('optional_property');
 
-// Master Layer type definition. All types/classes looking to exhaust cover of all layers should extend upon this type via LayerType['type']
+// Master Layer type definition. All types/classes looking to exhaust cover of all layer types (nso, wms, etc) should extend upon this type via LayerType['type']
 export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
   | NSOLayerProps
   | ImpactLayerProps
   | GroundstationLayerProps;
+
+export type LayerKey = keyof typeof rawLayers;
+/**
+ * Check if a string is an explicitly defined layer in layers.json
+ * @param layerKey the string to check
+ */
+export const isLayerKey = (layerKey: string): layerKey is LayerKey =>
+  layerKey in rawLayers;
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
@@ -42,6 +53,15 @@ export function makeRequired(target: any, propertyKey: string) {
 
 // Generic that verifies that type `T` is a class (basically that it has a constructor)
 export type ClassType<T> = { new (...args: any): T };
+// create a generic type https://jpwilliams.dev/how-to-unpack-the-return-type-of-a-promise-in-typescript
+export type AsyncReturnType<T extends (...args: any) => any> =
+  // if T matches this signature and returns a Promise, extract
+  // U (the type of the resolved promise) and use that, or...
+  T extends (...args: any) => Promise<infer U>
+    ? U // if T matches this signature and returns anything else, // extract the return value U and use that, or...
+    : T extends (...args: any) => infer U
+    ? U // if everything goes to hell, return an `any`
+    : any;
 
 /*
  * Get an array of required keys for a class.
@@ -111,7 +131,7 @@ export type RawDataConfiguration = {
 };
 
 export class CommonLayerProps {
-  id: string;
+  id: LayerKey;
 
   @optional // only optional for boundary layer
   title?: string;
@@ -134,6 +154,7 @@ export class BoundaryLayerProps extends CommonLayerProps {
   path: string; // path to admin_boundries.json file - web or local.
   adminCode: string;
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
+  adminLevelLocalNames: string[]; // Same as above, local to country
 }
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -174,7 +195,7 @@ export class NSOLayerProps extends CommonLayerProps {
   adminCode: string;
 
   @makeRequired
-  adminLevel: string;
+  adminLevel: number;
 
   @makeRequired
   dataField: string;
@@ -185,9 +206,14 @@ export class StatsApi {
   zonesUrl: string;
   groupBy: string;
 }
+// first is display name, second is name we store in computers
+export enum AggregationOperations {
+  Mean = 'mean',
+  Median = 'median',
+}
 
-export type AggregationOperations = 'mean' | 'median';
 export type ThresholdDefinition = { below?: number; above?: number };
+
 export class ImpactLayerProps extends CommonLayerProps {
   type: 'impact';
 
@@ -200,8 +226,8 @@ export class ImpactLayerProps extends CommonLayerProps {
   @makeRequired
   legendText: string;
 
-  hazardLayer: string;
-  baselineLayer: string;
+  hazardLayer: LayerKey; // not all layers supported here, just WMS layers
+  baselineLayer: LayerKey; // not all layers supported here, just NSO layers. Maybe an advanced way to type this?
   threshold: ThresholdDefinition;
 
   // defaults to 'median'
@@ -241,9 +267,9 @@ export type DiscriminateUnion<
   V extends T[K]
 > = T extends Record<K, V> ? T : never;
 
-export interface LayersMap {
-  [key: string]: LayerType;
-}
+export type LayersMap = {
+  [key in LayerKey]: LayerType;
+};
 
 export interface LayersCategoryType {
   title: string;
@@ -272,7 +298,7 @@ export interface ChartConfig {
 }
 
 export class TableType {
-  id: string;
+  id: TableKey;
   title: string;
   table: string;
   legendText: string;
