@@ -103,7 +103,9 @@ function MapView({ classes }: MapViewProps) {
       | GroundstationLayerProps =>
       ['impact', 'groundstation', 'wms'].includes(layer.type),
     );
-    if (layersWithDateSupport.length === 0) return [];
+    if (layersWithDateSupport.length === 0) {
+      return [];
+    }
 
     /*
        takes all the dates possible for every layer and counts the amount of times each one is duplicated.
