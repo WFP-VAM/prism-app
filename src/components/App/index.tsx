@@ -34,6 +34,10 @@ function App() {
               <MapView />
               <DataDrawer />
             </Route>
+            <Route exact path="/analysis">
+              <MapView />
+              <DataDrawer />
+            </Route>
             <Route default component={NotFound} />
           </Switch>
         </div>
