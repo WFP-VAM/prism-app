@@ -11,7 +11,6 @@ import { updateDateRange } from '../context/mapStateSlice';
 export function useDefaultDate(
   avaliableDatesLookupKey: keyof AvailableDates,
 ): number | undefined {
-  console.log(avaliableDatesLookupKey);
   const dispatch = useDispatch();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
