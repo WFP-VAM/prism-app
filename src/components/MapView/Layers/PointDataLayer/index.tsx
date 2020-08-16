@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
 import { PointDataLayerProps } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
@@ -10,14 +10,12 @@ import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import {
-  dateRangeSelector,
-  layerDataSelector,
-} from '../../../../context/mapStateSlice/selectors';
+import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import { useDefaultDate } from '../../../../utils/useDefaultDate';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const selectedDate = useDefaultDate(layer.id);
 
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<PointDataLayerProps>
