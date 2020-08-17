@@ -60,7 +60,7 @@ type LayerLoaders = {
 
 // Less restrictive handler type since Typescript doesn't support nested union discrimination
 export type LazyLoader<T extends LayerType> = (
-  recursive: LoadLayerDataFuncType,
+  recursive: LoadLayerDataFuncType, // just in case a loader wants to load another layer, we pass the function recursively to prevent import cycles.
 ) => (
   params: LayerDataParams<T>,
   api: ThunkApi,
