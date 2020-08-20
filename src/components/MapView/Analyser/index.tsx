@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -29,48 +23,35 @@ import { faCaretDown, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useDispatch, useSelector } from 'react-redux';
-import bbox from '@turf/bbox';
 
 import DatePicker from 'react-datepicker';
+import moment from 'moment';
 
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../../config/utils';
+import { LayerDefinitions } from '../../../config/utils';
 import {
   AggregationOperations,
-  BoundaryLayerProps,
-  NSOLayerProps,
-  WMSLayerProps,
   LayerKey,
+  WMSLayerProps,
 } from '../../../config/types';
-import { LayerData } from '../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
-import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import {
-  AnalysisDispatchParams,
   analysisResultSelector,
   clearAnalysisResult,
   isAnalysisLayerActiveSelector,
   isAnalysisLoadingSelector,
-  requestAndStoreAnalysis,
   setIsMapLayerActive,
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
 import {
-  getAnalysisTableColumns,
   downloadCSVFromTableData,
+  getAnalysisTableColumns,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from './LayerDropdown';
-
-const boundaryLayer = getBoundaryLayerSingleton();
+import useAnalysisDispatch from '../../../utils/analysis-dispatch';
 
 function Analyser({ classes }: AnalyserProps) {
   const dispatch = useDispatch();
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
+  const analysisDispatchFunc = useAnalysisDispatch();
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -133,14 +114,6 @@ function Analyser({ classes }: AnalyserProps) {
     }
   };
 
-  const adminBoundariesExtent = useMemo(() => {
-    if (!boundaryLayerData) {
-      // not loaded yet. Should be loaded in MapView
-      return null;
-    }
-    return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
-  }, [boundaryLayerData]);
-
   const statisticOptions = Object.entries(AggregationOperations).map(stat => (
     <FormControlLabel
       key={stat[0]}
@@ -153,42 +126,25 @@ function Analyser({ classes }: AnalyserProps) {
   ));
 
   const clearAnalysis = () => dispatch(clearAnalysisResult());
+  const runAnalyser = () => {
+    const date = moment(selectedDate as number).format('YYYY-MM-DD');
 
-  const runAnalyser = async () => {
-    if (!adminBoundariesExtent) {
-      return;
-    } // hasn't been calculated yet
+    window.history.pushState(
+      'Analysis data',
+      'PRISM',
+      `/analysis?hazard_layer=${hazardLayerId}&statistic=${statistic}&` +
+        `baseline_layer=${baselineLayerId}&date=${date}`,
+    );
 
-    if (!selectedDate) {
-      throw new Error('Date must be given to run analysis');
-    }
-
-    if (!hazardLayerId || !baselineLayerId) {
-      throw new Error('Layer should be selected to run analysis');
-    }
-
-    const selectedHazardLayer = LayerDefinitions[
-      hazardLayerId
-    ] as WMSLayerProps;
-    const selectedBaselineLayer = LayerDefinitions[
-      baselineLayerId
-    ] as NSOLayerProps;
-
-    const params: AnalysisDispatchParams = {
-      hazardLayer: selectedHazardLayer,
-      baselineLayer: selectedBaselineLayer,
-      date: selectedDate,
+    analysisDispatchFunc(
+      selectedDate,
+      hazardLayerId,
+      baselineLayerId,
       statistic,
-      extent: adminBoundariesExtent,
-      threshold: {
-        above: parseFloat(aboveThreshold) || undefined,
-        below: parseFloat(belowThreshold) || undefined,
-      },
-    };
-
-    await dispatch(requestAndStoreAnalysis(params));
+      aboveThreshold,
+      belowThreshold,
+    );
   };
-
   return (
     <div className={classes.analyser}>
       <Button

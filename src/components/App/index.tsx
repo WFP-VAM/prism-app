@@ -6,6 +6,7 @@ import {
   Route,
   RouteComponentProps,
   Switch,
+  useLocation,
 } from 'react-router-dom';
 // Basic CSS Layout for the whole page
 import './app.css';
@@ -15,6 +16,14 @@ import MapView from '../MapView';
 import NotFound from '../404Page';
 import muiTheme from '../../muiTheme';
 import Notifier from '../Notifier';
+import {
+  WMSLayerProps,
+  NSOLayerProps,
+  AggregationOperations,
+  LayerKey,
+} from '../../config/types';
+import { LayerData } from '../../context/layers/layer-data';
+import useAnalysisDispatch from '../../utils/analysis-dispatch';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_SENTRY_URL) {
@@ -26,28 +35,38 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   }
 }
 
+type AnalysisQueryParams = {
+  hazardLayer: WMSLayerProps['id'];
+  statistic: AggregationOperations;
+  baselineLayer: NSOLayerProps['id'];
+  date: string; // format YYYY-MM-DD
+};
+
+type ViewQueryParams = {
+  layers: LayerKey[];
+  date: string; // format YYYY-MM-DD
+};
+
 // reads urls to dispatch layers into mapview
 function QueryReader({ location, history: { push } }: RouteComponentProps) {
   // view?hazard_layer=pasture_anomaly&date=2020-05-21
   // analysis?hazard_layer=pasture_anomaly&statistic=mean&basline_layer=children&date=2020-05-21
   const path = location.pathname.toLowerCase();
+  const analysisDispatchFunc = useAnalysisDispatch();
+  const query = new URLSearchParams(useLocation().search);
 
   // load analysis from url
   if (path === '/analysis') {
-    // console.log('analysis loading here!');
+    query.entries();
+    console.log('QueryReader -> query.entries()', query.getAll('date'));
+    const hazardLayer = query.get('hazard_layer');
   } else if (path === '/view') {
-    // load generic layer from url
-    // console.log('layer loading here');
+    // sample
   } else if (path !== '/') {
     // if the url isn't to home page...404
     push('/404');
   }
-  // const query = new URLSearchParams(location.search);
-  // console.log(path, query.get('hazard_layer'));
-  // eslint-disable-next-line no-restricted-syntax
-  /* for (const entry of query.entries()) {
-    console.log(entry);
-  } */
+
   return (
     <>
       <MapView />
