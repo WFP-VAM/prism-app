@@ -1,15 +1,15 @@
 import React from 'react';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
-import { Source, Layer } from 'react-mapbox-gl';
+import { Layer, Source } from 'react-mapbox-gl';
 import { WMSLayerProps } from '../../../../config/types';
 import { getWMSUrl } from '../raster-utils';
-import { dateRangeSelector } from '../../../../context/mapStateSlice/selectors';
+import { useDefaultDate } from '../../../../utils/useDefaultDate';
 
 function WMSLayers({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
 }: LayersProps) {
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const selectedDate = useDefaultDate(serverLayerName);
+
   return (
     <>
       <Source

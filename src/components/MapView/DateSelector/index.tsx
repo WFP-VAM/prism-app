@@ -1,24 +1,24 @@
-import React, { useState, useEffect, Fragment, forwardRef, Ref } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { forwardRef, Fragment, Ref, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import {
-  Divider,
-  Grid,
   Button,
   createStyles,
-  withStyles,
-  WithStyles,
+  Divider,
+  Grid,
   Theme,
+  WithStyles,
+  withStyles,
 } from '@material-ui/core';
 import DatePicker from 'react-datepicker';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faAngleDoubleRight,
   faAngleDoubleLeft,
+  faAngleDoubleRight,
 } from '@fortawesome/free-solid-svg-icons';
 import 'react-datepicker/dist/react-datepicker.css';
 import { updateDateRange } from '../../../context/mapStateSlice';
-import { months, getMonthStartAndEnd, isAvailableMonth } from './utils';
+import { getMonthStartAndEnd, isAvailableMonth, months } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 
 interface InputProps {
@@ -38,6 +38,7 @@ const Input = forwardRef(
 
 function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const dispatch = useDispatch();
+
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
   const stateStartDateYear = moment(stateStartDate).year();
 
@@ -81,7 +82,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         <Grid item xs={2}>
           <DatePicker
             className={classes.datePickerInput}
-            selected={selectedDate.utc().toDate()}
+            selected={selectedDate.toDate()}
             onChange={updateStartDate}
             maxDate={new Date()}
             todayButton="Today"
@@ -177,7 +178,7 @@ const styles = (theme: Theme) =>
   });
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
-  availableDates: number[];
+  availableDates?: number[];
 }
 
 export default withStyles(styles)(DateSelector);
