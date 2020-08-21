@@ -58,8 +58,27 @@ function QueryReader({ location, history: { push } }: RouteComponentProps) {
   // load analysis from url
   if (path === '/analysis') {
     query.entries();
+
+    // const analysisQueryParams = getParamsData
+    const baselineLayer: NSOLayerProps['id'] | null = query.get(
+      'baseline_layer',
+    ) as NSOLayerProps['id'];
+    const statistic = query.get('statistic') as AggregationOperations;
+    const date = query.get('date');
+    const selectedDate = date ? new Date(date).getTime() : 0;
     console.log('QueryReader -> query.entries()', query.getAll('date'));
-    const hazardLayer = query.get('hazard_layer');
+    const hazardLayer: WMSLayerProps['id'] | null = query.get(
+      'hazard_layer',
+    ) as WMSLayerProps['id'];
+
+    analysisDispatchFunc(
+      selectedDate,
+      hazardLayer,
+      baselineLayer,
+      statistic,
+      '',
+      '',
+    );
   } else if (path === '/view') {
     // sample
   } else if (path !== '/') {
