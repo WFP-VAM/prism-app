@@ -286,7 +286,7 @@ export interface MenuItemType {
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | GroundstationLayerProps['id']]: number[];
+    | PointDataLayerProps['id']]: number[];
 };
 
 export interface ChartConfig {

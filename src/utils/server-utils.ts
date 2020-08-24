@@ -155,9 +155,9 @@ async function getWCSCoverage(serverUri: string) {
 }
 
 /**
- * Gets the available dates for a point data layer
+ * Gets the available dates for a point data layer.
  *
- * in layers.json each uri is given a constant, large date range (2000-01-01 -> 2023-12-21) to try get the api to give all data
+ * In layers.json each uri is given a constant, large date range (2000-01-01 -> 2023-12-21) to try get the api to give all possible dates
  * TODO Once the api is fixed this needs to be fixed as its currently a hacky solution to get around the api's caveats
  *
  */
