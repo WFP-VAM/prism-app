@@ -4,7 +4,7 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
-import { GroundstationLayerProps } from '../../../../config/types';
+import { PointDataLayerProps } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
@@ -13,12 +13,12 @@ import {
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 
-// Point Data, takes any GeoJSON and shows it.
-function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
+// Point Data, takes any GeoJSON of points and shows it.
+function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const selectedDate = useDefaultDate(layer.id);
 
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
-    | LayerData<GroundstationLayerProps>
+    | LayerData<PointDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
 
@@ -66,4 +66,4 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
   );
 }
 
-export default GroundstationLayers;
+export default PointDataLayer;

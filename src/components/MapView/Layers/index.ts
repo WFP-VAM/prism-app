@@ -1,7 +1,7 @@
 import WMSLayer from './WMSLayer';
 import NSOLayer from './NSOLayer';
-import GroundstationLayer from './GroundstationLayer';
+import PointDataLayer from './PointDataLayer';
 import BoundaryLayer from './BoundaryLayer';
 import ImpactLayer from './ImpactLayer';
 
-export { ImpactLayer, WMSLayer, NSOLayer, GroundstationLayer, BoundaryLayer };
+export { ImpactLayer, WMSLayer, NSOLayer, PointDataLayer, BoundaryLayer };

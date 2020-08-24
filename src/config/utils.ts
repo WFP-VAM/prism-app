@@ -4,7 +4,7 @@ import rawTables from './tables.json';
 import {
   BoundaryLayerProps,
   checkRequiredKeys,
-  GroundstationLayerProps,
+  PointDataLayerProps,
   ImpactLayerProps,
   LayerKey,
   LayersMap,
@@ -76,8 +76,8 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
         };
       }
       return throwInvalidLayer();
-    case 'groundstation':
-      if (checkRequiredKeys(GroundstationLayerProps, definition, true)) {
+    case 'point_data':
+      if (checkRequiredKeys(PointDataLayerProps, definition, true)) {
         return definition;
       }
       return throwInvalidLayer();

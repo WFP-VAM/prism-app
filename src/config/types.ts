@@ -13,7 +13,7 @@ export type LayerType =
   | WMSLayerProps
   | NSOLayerProps
   | ImpactLayerProps
-  | GroundstationLayerProps;
+  | PointDataLayerProps;
 
 export type LayerKey = keyof typeof rawLayers;
 /**
@@ -238,8 +238,8 @@ export class ImpactLayerProps extends CommonLayerProps {
   api?: StatsApi;
 }
 
-export class GroundstationLayerProps extends CommonLayerProps {
-  type: 'groundstation';
+export class PointDataLayerProps extends CommonLayerProps {
+  type: 'point_data';
   data: string;
 
   @makeRequired
@@ -286,7 +286,7 @@ export interface MenuItemType {
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | GroundstationLayerProps['id']]: number[];
+    | PointDataLayerProps['id']]: number[];
 };
 
 export interface ChartConfig {
