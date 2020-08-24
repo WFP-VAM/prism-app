@@ -1,6 +1,6 @@
 import GeoJSON from 'geojson';
 import moment from 'moment';
-import type { LayerDataParams, LazyLoader } from './layer-data';
+import type { LazyLoader } from './layer-data';
 import { PointDataLayerProps } from '../../config/types';
 
 declare module 'geojson' {
@@ -23,7 +23,7 @@ export type PointLayerData = {
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async ({
   date,
   layer,
-}: LayerDataParams<PointDataLayerProps>) => {
+}) => {
   // This function fetches point data data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData

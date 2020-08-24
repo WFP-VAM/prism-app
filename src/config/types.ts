@@ -283,9 +283,11 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
-export interface AvailableDates {
-  [key: string]: number[];
-}
+export type AvailableDates = {
+  [key in
+    | WMSLayerProps['serverLayerName']
+    | GroundstationLayerProps['id']]: number[];
+};
 
 export interface ChartConfig {
   type: string;

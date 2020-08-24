@@ -5,20 +5,20 @@ import { dateRangeSelector } from '../context/mapStateSlice/selectors';
 import { updateDateRange } from '../context/mapStateSlice';
 /**
  * A hook designed to automatically load the default date of a layer if the user doesn't select one.
- * returns either the user selected date or the default date, dispatching it to the date picker beforehand.
- * @param avaliableDatesLookupKey key to lookup in AvailableDates
+ * returns either the user selected date or the default date, dispatching it to the date picker beforehand. Can also return undefined if no default date is available.
+ * @param availableDatesLookupKey key to lookup in AvailableDates
  */
 export function useDefaultDate(
-  avaliableDatesLookupKey: keyof AvailableDates,
+  availableDatesLookupKey: keyof AvailableDates,
 ): number | undefined {
   const dispatch = useDispatch();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const possibleDates = useSelector(availableDatesSelector)[
-    avaliableDatesLookupKey
+    availableDatesLookupKey
   ];
   const defaultDate: number | undefined =
-    possibleDates[possibleDates?.length - 1];
+    possibleDates?.[possibleDates?.length - 1];
 
   if (!selectedDate && defaultDate) {
     dispatch(updateDateRange({ startDate: defaultDate }));
