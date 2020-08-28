@@ -24,7 +24,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   date,
   layer,
 }) => {
-  // This function fetches point data data from the API.
+  // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
 
