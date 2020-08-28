@@ -2,23 +2,21 @@ import { createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
 import { DiscriminateUnion, LayerType } from '../../config/types';
 import { Extent } from '../../components/MapView/Layers/raster-utils';
 
+import { fetchNSOLayerData, NSOLayerData } from './nso';
 import { fetchWCSLayerData, WMSLayerData } from './wms';
-import {
-  fetchGroundstationData,
-  GroundstationLayerData,
-} from './groundstation';
+import { fetchPointLayerData, PointLayerData } from './point_data';
 import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
+import { fetchImpactLayerData, ImpactLayerData } from './impact';
 
 import type { CreateAsyncThunkTypes, ThunkApi } from '../store';
-import { fetchNsoLayerData, NSOLayerData } from './nso';
-import { fetchImpactLayerData, ImpactLayerData } from './impact';
 
 type LayerSpecificDataTypes = {
   boundary: BoundaryLayerData;
   wms: WMSLayerData;
   impact: ImpactLayerData;
   nso: NSOLayerData;
-  groundstation: GroundstationLayerData;
+  // eslint-disable-next-line camelcase
+  point_data: PointLayerData;
 };
 
 export interface LayerData<L extends LayerType> {
@@ -61,7 +59,7 @@ type LayerLoaders = {
 
 // Less restrictive handler type since Typescript doesn't support nested union discrimination
 export type LazyLoader<T extends LayerType> = (
-  recursive: LoadLayerDataFuncType,
+  recursive: LoadLayerDataFuncType, // just in case a loader wants to load another layer, we pass the function recursively to prevent import cycles.
 ) => (
   params: LayerDataParams<T>,
   api: ThunkApi,
@@ -77,8 +75,8 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
     boundary: fetchBoundaryLayerData,
     impact: fetchImpactLayerData,
     wms: fetchWCSLayerData,
-    nso: fetchNsoLayerData,
-    groundstation: fetchGroundstationData,
+    nso: fetchNSOLayerData,
+    point_data: fetchPointLayerData,
   };
   const lazyLoad: LazyLoader<any> = layerLoaders[layer.type];
   try {
@@ -100,7 +98,7 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
 });
 
 export type LoadLayerDataFuncType = AsyncThunk<
-  LayerDataTypes,
-  ParamTypes,
+  LayerDataTypes, // return types
+  ParamTypes, // function input types
   CreateAsyncThunkTypes
 >;

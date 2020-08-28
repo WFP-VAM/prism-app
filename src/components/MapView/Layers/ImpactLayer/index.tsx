@@ -41,6 +41,7 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
     >) || {};
   const dispatch = useDispatch();
 
+  // TODO - Use bbox on the admin boundaries instead.
   const bounds = map && map.getBounds();
   const minX = bounds ? bounds.getWest() : 0;
   const maxX = bounds ? bounds.getEast() : 0;

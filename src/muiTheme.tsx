@@ -50,6 +50,12 @@ const theme: any = createMuiTheme({
         textTransform: 'uppercase',
       },
     },
+    MuiListItem: {
+      button: {
+        // dropdowns in Analyser Table are white on white background without this rule.
+        color: 'black',
+      },
+    },
   },
 });
 

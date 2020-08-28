@@ -1,4 +1,4 @@
-import { point, Feature, MultiPolygon, Properties } from '@turf/helpers';
+import { Feature, MultiPolygon, point } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import * as GeoTIFF from 'geotiff';
@@ -21,7 +21,7 @@ export interface Rasters extends Array<TypedArray> {
   width: number;
 }
 
-export type GeoJsonBoundary = Feature<MultiPolygon, Properties>;
+export type GeoJsonBoundary = Feature<MultiPolygon>;
 
 // GDAL style extent: xmin ymin xmax ymax
 export type Extent = [number, number, number, number];

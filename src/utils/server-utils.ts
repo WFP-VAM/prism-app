@@ -1,9 +1,14 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { merge, get, isString, union, isEmpty } from 'lodash';
+import { get, isEmpty, isString, merge, union } from 'lodash';
 
 import config from '../config/prism.json';
-import { AvailableDates } from '../config/types';
+import { LayerDefinitions } from '../config/utils';
+import type { AvailableDates, PointDataLayerProps } from '../config/types';
+import type { PointLayerData } from '../context/layers/point_data';
+
+// Note: PRISM's date picker is designed to work with dates in the UTC timezone
+// Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
 
 const xml2jsOptions = {
   compact: true,
@@ -42,7 +47,7 @@ function formatCapabilitiesInfo(
 
     const availableDates = dates
       .filter(date => !isEmpty(date))
-      .map(date => moment(get(date, '_text', date)).valueOf());
+      .map(date => moment.utc(get(date, '_text', date)).valueOf());
 
     const { [layerId]: oldLayerDates } = acc;
     return {
@@ -101,8 +106,9 @@ async function getWMSCapabilities(serverUri: string) {
 
   try {
     const response = await fetch(requestUri);
-    if (!response.ok)
+    if (!response.ok) {
       throw new Error(`${response.status}: ${response.statusText}`);
+    }
     const responseText = await response.text();
     const responseJS = xml2js(responseText, xml2jsOptions);
 
@@ -111,9 +117,9 @@ async function getWMSCapabilities(serverUri: string) {
 
     return formatCapabilitiesInfo(flatLayers, 'Name._text', 'Dimension._text');
   } catch (error) {
-    throw new Error(
-      `Failed loading dates with request GET: ${requestUri} for WMS Capabilities, ${error}`,
-    );
+    // TODO we used to throw the error here so a notification appears. Removed because a failure of one shouldn't prevent the successful requests from saving.
+    console.error(error);
+    return {};
   }
 }
 
@@ -128,8 +134,9 @@ async function getWCSCoverage(serverUri: string) {
 
   try {
     const response = await fetch(requestUri);
-    if (!response.ok)
+    if (!response.ok) {
       throw new Error(`${response.status}: ${response.statusText}`);
+    }
     const responseText = await response.text();
     const responseJS = xml2js(responseText, xml2jsOptions);
 
@@ -141,24 +148,68 @@ async function getWCSCoverage(serverUri: string) {
       'domainSet.temporalDomain.gml:timePosition',
     );
   } catch (error) {
-    throw new Error(
-      `Failed loading dates with request GET: ${requestUri} for WCS Coverage, ${error}`,
-    );
+    // TODO we used to throw the error here so a notification appears. Removed because a failure of one shouldn't prevent the successful requests from saving.
+    console.error(error);
+    return {};
   }
 }
 
 /**
- * Given a WMS or WCS serverUri, return a Map of available dates
- * @return a Promise of Map<layerId, availableDate[]>
+ * Gets the available dates for a point data layer.
+ *
+ * In layers.json each uri is given a constant, large date range (2000-01-01 -> 2023-12-21) to try get the api to give all possible dates
+ * TODO Once the api is fixed this needs to be fixed as its currently a hacky solution to get around the api's caveats
+ *
  */
-export async function getLayersAvailableDates() {
+async function getPointDataCoverage(layer: PointDataLayerProps) {
+  const { data: url, fallbackData: fallbackUrl, id } = layer;
+  const loadPointLayerDataFromURL = async (fetchUrl: string) => {
+    const data = (await (
+      await fetch(fetchUrl || '', {
+        mode: fetchUrl.startsWith('http') ? 'cors' : 'same-origin',
+      })
+    ).json()) as PointLayerData & { date: string }; // raw data comes in as string yyyy-mm-dd, needs to be converted to number.
+    return data.map(item => ({
+      ...item,
+      date: moment.utc(item.date).valueOf(),
+    }));
+  };
+  const data = await loadPointLayerDataFromURL(url).catch(err => {
+    console.error(err);
+    console.warn(
+      `Failed loading groundstation layer: ${id}. Attempting to load fallback URL...`,
+    );
+    return loadPointLayerDataFromURL(fallbackUrl || '');
+  });
+  const possibleDates = data
+    .map(item => moment.utc(item.date).valueOf())
+    .filter((date, index, arr) => {
+      return arr.indexOf(date) === index;
+    }); // filter() here removes duplicate dates because indexOf will always return the first occurrence of an item
+
+  return possibleDates;
+}
+
+/**
+ * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
+ *
+ * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
+ */
+export async function getLayersAvailableDates(): Promise<AvailableDates> {
   const wmsServerUrls: string[] = get(config, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(config, 'serversUrls.wcs', []);
 
-  const [wmsAvailableDates, wcsAvailableDates] = await Promise.all([
+  const pointDataLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is PointDataLayerProps => layer.type === 'point_data',
+  );
+
+  const layerDates: AvailableDates[] = await Promise.all([
     ...wmsServerUrls.map(url => getWMSCapabilities(url)),
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
+    ...pointDataLayers.map(async layer => ({
+      [layer.id]: await getPointDataCoverage(layer),
+    })),
   ]);
 
-  return merge(wmsAvailableDates, wcsAvailableDates);
+  return merge({}, ...layerDates);
 }
