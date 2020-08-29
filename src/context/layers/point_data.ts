@@ -49,7 +49,9 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     ).json()) as PointLayerData).filter(
       // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
       // using moment here helps compensate for these discrepancies
-      obj => moment(obj.date).valueOf() === moment(formattedDate).valueOf(),
+      obj =>
+        moment(obj.date).format('YYYY-MM-DD') ===
+        moment(formattedDate).format('YYYY-MM-DD'),
     );
   }
   return GeoJSON.parse(data, { Point: ['lat', 'lon'] });

@@ -47,7 +47,9 @@ function formatCapabilitiesInfo(
 
     const availableDates = dates
       .filter(date => !isEmpty(date))
-      .map(date => moment.utc(get(date, '_text', date)).valueOf());
+      .map(date =>
+        moment.utc(get(date, '_text', date)).add(12, 'hours').valueOf(),
+      );
 
     const { [layerId]: oldLayerDates } = acc;
     return {
@@ -182,7 +184,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     return loadPointLayerDataFromURL(fallbackUrl || '');
   });
   const possibleDates = data
-    .map(item => moment.utc(item.date).valueOf())
+    .map(item => moment.utc(item.date).add(12, 'hours').valueOf())
     .filter((date, index, arr) => {
       return arr.indexOf(date) === index;
     }); // filter() here removes duplicate dates because indexOf will always return the first occurrence of an item
