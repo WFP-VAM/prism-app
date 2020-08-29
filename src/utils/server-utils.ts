@@ -49,7 +49,7 @@ function formatCapabilitiesInfo(
       .filter(date => !isEmpty(date))
       .map(date =>
         // adding 12 hours to avoid  errors due to daylight saving
-        moment.utc(get(date, '_text', date)).add(12, 'hours').valueOf(),
+        moment.utc(get(date, '_text', date)).set({ hour: 12 }).valueOf(),
       );
 
     const { [layerId]: oldLayerDates } = acc;
@@ -175,7 +175,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     return data.map(item => ({
       ...item,
       // adding 12 hours to avoid  errors due to daylight saving
-      date: moment.utc(item.date).add(12, 'hours').valueOf(),
+      date: moment.utc(item.date).set({ hour: 12 }).valueOf(),
     }));
   };
   const data = await loadPointLayerDataFromURL(url).catch(err => {
@@ -187,7 +187,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   });
   const possibleDates = data
     // adding 12 hours to avoid  errors due to daylight saving
-    .map(item => moment.utc(item.date).add(12, 'hours').valueOf())
+    .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
     .filter((date, index, arr) => {
       return arr.indexOf(date) === index;
     }); // filter() here removes duplicate dates because indexOf will always return the first occurrence of an item

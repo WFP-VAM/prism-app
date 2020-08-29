@@ -7,6 +7,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { countBy, pickBy } from 'lodash';
+import moment from 'moment';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
 import { Map } from 'mapbox-gl';
@@ -133,7 +134,8 @@ function MapView({ classes }: MapViewProps) {
           }
         })
         .filter(value => value) // null check
-        .flat(),
+        .flat()
+        .map(value => moment(value).format('YYYY-MM-DD')),
     );
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
@@ -143,7 +145,8 @@ function MapView({ classes }: MapViewProps) {
         selectedLayerDatesDupCount,
         dupTimes => dupTimes >= layersWithDateSupport.length,
       ),
-    ).map(Number); // convert back to number array - countBy converted all the numbers to strings
+      // convert back to number array after using YYYY-MM-DD strings in countBy
+    ).map(dateString => moment.utc(dateString).set({ hour: 12 }).valueOf());
     if (ret.length === 0) {
       dispatch(
         addNotification({
