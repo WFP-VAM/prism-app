@@ -64,7 +64,12 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   }
   function updateStartDate(date: Date) {
     const time = date.getTime();
-    dispatch(updateDateRange({ startDate: time, endDate: time }));
+    dispatch(
+      updateDateRange({
+        startDate: time - USER_DATE_OFFSET,
+        endDate: time - USER_DATE_OFFSET,
+      }),
+    );
   }
 
   return (
@@ -77,7 +82,9 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         <Grid item xs={2}>
           <DatePicker
             className={classes.datePickerInput}
-            selected={selectedDate.toDate()}
+            selected={selectedDate
+              .add(moment.duration(USER_DATE_OFFSET))
+              .toDate()}
             onChange={updateStartDate}
             maxDate={new Date()}
             todayButton="Today"
