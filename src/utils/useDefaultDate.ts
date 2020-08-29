@@ -7,7 +7,7 @@ import { updateDateRange } from '../context/mapStateSlice';
 import { USER_DATE_OFFSET } from '../components/MapView/DateSelector';
 /**
  * A hook designed to automatically load the default date of a layer if the user doesn't select one.
- * returns either the user selected date or the default date, dispatching it to the date picker beforehand. Can also return undefined if no default date is available.
+ * Returns either the user selected date or the default date, dispatching it to the date picker beforehand. Can also return undefined if no default date is available.
  * @param availableDatesLookupKey key to lookup in AvailableDates
  */
 export function useDefaultDate(

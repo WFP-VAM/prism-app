@@ -1,7 +1,7 @@
 import GeoJSON from 'geojson';
 import moment from 'moment';
 import type { LazyLoader } from './layer-data';
-import { GroundstationLayerProps } from '../../config/types';
+import { PointDataLayerProps } from '../../config/types';
 
 declare module 'geojson' {
   export const version: string;
@@ -10,21 +10,21 @@ declare module 'geojson' {
     data: object,
     properties: object,
     callback?: Function,
-  ): GroundstationLayerData;
+  ): PointLayerData;
 }
 
-export type GroundstationLayerData = {
+export type PointLayerData = {
   lat: number;
   lon: number;
   date: number; // in unix time.
   [key: string]: any;
 }[];
 
-export const fetchGroundstationData: LazyLoader<GroundstationLayerProps> = () => async ({
+export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async ({
   date,
   layer,
 }) => {
-  // This function fetches groundstation data from the API.
+  // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
 
@@ -40,13 +40,13 @@ export const fetchGroundstationData: LazyLoader<GroundstationLayerProps> = () =>
       await fetch(layer.data.substr(0, layer.data.indexOf('?')) + dateQuery, {
         mode: 'cors',
       })
-    ).json()) as GroundstationLayerData;
+    ).json()) as PointLayerData;
   } catch (ignored) {
     // fallback data isn't filtered, therefore we must filter it.
     // eslint-disable-next-line fp/no-mutation
     data = ((await (
       await fetch(layer.fallbackData || '')
-    ).json()) as GroundstationLayerData).filter(
+    ).json()) as PointLayerData).filter(
       // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
       // using moment here helps compensate for these discrepancies
       obj => moment(obj.date).valueOf() === moment(formattedDate).valueOf(),

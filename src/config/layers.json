@@ -700,7 +700,7 @@
   },
   "avg_temperature_groundstations": {
     "title": "10-day average temperature",
-    "type": "groundstation",
+    "type": "point_data",
     "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2000-01-01&endDateTime=2023-12-21",
     "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
     "opacity": 0.5,
@@ -747,7 +747,7 @@
   },
   "min_temperature_groundstations": {
     "title": "10-day minimum temperature",
-    "type": "groundstation",
+    "type": "point_data",
     "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2000-01-01&endDateTime=2023-12-21",
     "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
     "opacity": 0.5,
@@ -794,7 +794,7 @@
   },
   "max_temperature_groundstations": {
     "title": "10-day maximum temperature",
-    "type": "groundstation",
+    "type": "point_data",
     "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2000-01-01&endDateTime=2023-12-21",
     "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
     "opacity": 0.5,
@@ -841,7 +841,7 @@
   },
   "total_precipitation_groundstations": {
     "title": "Total 10-day precipitation",
-    "type": "groundstation",
+    "type": "point_data",
     "data": "https://mng.prism.services/temp/percipitation?beginDateTime=2000-01-01&endDateTime=2023-12-21",
     "fallback_data": "./data/groundstations/IRIMHE_precipitation_2020-05-01.json",
     "opacity": 0.5,
@@ -872,7 +872,7 @@
   },
   "avg_precipitation_groundstations": {
     "title": "10-day average precipitation",
-    "type": "groundstation",
+    "type": "point_data",
     "data": "https://mng.prism.services/temp/soil?beginDateTime=2000-01-01&endDateTime=2023-12-21",
     "opacity": 0.5,
     "measure": "ttt_aver",

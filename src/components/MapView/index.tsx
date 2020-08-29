@@ -15,7 +15,7 @@ import Legends from './Legends';
 // layers
 import {
   BoundaryLayer,
-  GroundstationLayer,
+  PointDataLayer,
   ImpactLayer,
   NSOLayer,
   WMSLayer,
@@ -23,7 +23,7 @@ import {
 
 import {
   DiscriminateUnion,
-  GroundstationLayerProps,
+  PointDataLayerProps,
   ImpactLayerProps,
   LayerType,
   WMSLayerProps,
@@ -66,7 +66,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   wms: WMSLayer,
   nso: NSOLayer,
   impact: ImpactLayer,
-  groundstation: GroundstationLayer,
+  point_data: PointDataLayer,
 };
 
 function MapView({ classes }: MapViewProps) {
@@ -97,12 +97,15 @@ function MapView({ classes }: MapViewProps) {
   // calculate possible dates user can pick from the currently selected layers.
   // with useMemo we save on performance and only show the notification when layers selected amount changes, making it a useEffect too.
   const selectedLayerDates: number[] = useMemo(() => {
+    const dateSupportLayerTypes: Array<LayerType['type']> = [
+      'impact',
+      'point_data',
+      'wms',
+    ];
     const layersWithDateSupport = selectedLayers.filter((layer): layer is
       | WMSLayerProps
       | ImpactLayerProps
-      | GroundstationLayerProps =>
-      ['impact', 'groundstation', 'wms'].includes(layer.type),
-    );
+      | PointDataLayerProps => dateSupportLayerTypes.includes(layer.type));
     if (layersWithDateSupport.length === 0) {
       return [];
     }
@@ -125,7 +128,7 @@ function MapView({ classes }: MapViewProps) {
                 (LayerDefinitions[layer.hazardLayer] as WMSLayerProps)
                   .serverLayerName
               ];
-            case 'groundstation':
+            case 'point_data':
               return serverAvailableDates[layer.id];
           }
         })
