@@ -26,6 +26,10 @@ interface InputProps {
   onClick?: () => void;
 }
 
+// The DatePicker is timezone aware, so we trick it into
+// displaying UTC dates.
+export const USER_DATE_OFFSET = new Date().getTimezoneOffset() * 60000;
+
 const Input = forwardRef(
   ({ value, onClick }: InputProps, ref?: Ref<HTMLButtonElement>) => {
     return (
@@ -35,42 +39,33 @@ const Input = forwardRef(
     );
   },
 );
-
 function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const dispatch = useDispatch();
-
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
-  const stateStartDateYear = moment(stateStartDate).year();
 
+  const stateStartDateYear = moment(stateStartDate).year();
   const [selectedDate, setSelectedDate] = useState(moment(stateStartDate));
   const selectedMonth = selectedDate.month();
+
   const selectedYear = selectedDate.year();
 
   useEffect(() => {
     setSelectedDate(moment(stateStartDate));
   }, [stateStartDate]);
-
   function updateMonth(month: number) {
     const { startDate, endDate } = getMonthStartAndEnd(month, selectedYear);
     dispatch(updateDateRange({ startDate, endDate }));
   }
-
   function incrementYear() {
     setSelectedDate(selectedDate.clone().year(selectedYear + 1));
   }
-
   function decrementYear() {
     setSelectedDate(selectedDate.clone().year(selectedYear - 1));
   }
-
   function updateStartDate(date: Date) {
     const time = date.getTime();
     dispatch(updateDateRange({ startDate: time, endDate: time }));
   }
-
-  // The DatePicker is timezone aware, so we trick it into
-  // displaying UTC dates.
-  const userOffset = new Date().getTimezoneOffset() * 60000;
 
   return (
     <div className={classes.container}>
@@ -91,7 +86,9 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
             showYearDropdown
             dropdownMode="select"
             customInput={<Input />}
-            includeDates={availableDates.map(d => new Date(d + userOffset))}
+            includeDates={availableDates.map(
+              d => new Date(d + USER_DATE_OFFSET),
+            )}
           />
         </Grid>
 
