@@ -1,4 +1,4 @@
-import React, { ComponentType, createElement, useEffect } from 'react';
+import React, { ComponentType, createElement, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   CircularProgress,
@@ -6,7 +6,8 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { uniq } from 'lodash';
+import { countBy, pickBy } from 'lodash';
+import moment from 'moment';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
 import { Map } from 'mapbox-gl';
@@ -15,7 +16,7 @@ import Legends from './Legends';
 // layers
 import {
   BoundaryLayer,
-  GroundstationLayer,
+  PointDataLayer,
   ImpactLayer,
   NSOLayer,
   WMSLayer,
@@ -23,6 +24,7 @@ import {
 
 import {
   DiscriminateUnion,
+  PointDataLayerProps,
   ImpactLayerProps,
   LayerType,
   WMSLayerProps,
@@ -39,7 +41,7 @@ import {
   layersSelector,
 } from '../../context/mapStateSlice/selectors';
 import { setMap, addLayer } from '../../context/mapStateSlice';
-
+import { addNotification } from '../../context/notificationStateSlice';
 import { hidePopup } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
@@ -65,11 +67,11 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   wms: WMSLayer,
   nso: NSOLayer,
   impact: ImpactLayer,
-  groundstation: GroundstationLayer,
+  point_data: PointDataLayer,
 };
 
 function MapView({ classes }: MapViewProps) {
-  const layers = useSelector(layersSelector);
+  const selectedLayers = useSelector(layersSelector);
   const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
   const dispatch = useDispatch();
@@ -83,33 +85,79 @@ function MapView({ classes }: MapViewProps) {
     dispatch(loadAvailableDates());
     dispatch(addLayer(boundaryLayer));
     // we must load boundary layer here for two reasons
-    // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer
-    // 2. Prevent situations where a user can toggle a layer like NSO (a dependent of Boundaries) before Boundaries finish loading.
+    // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
+    // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
     dispatch(loadLayerData({ layer: boundaryLayer }));
   }, [dispatch]);
 
   useEffect(() => {
     // when we switch layers, close any active pop-ups
     dispatch(hidePopup());
-  }, [dispatch, layers]);
+  }, [dispatch, selectedLayers]);
 
-  const serverLayers = layers.filter((layer): layer is
-    | WMSLayerProps
-    | ImpactLayerProps => ['impact', 'wms'].includes(layer.type));
+  // calculate possible dates user can pick from the currently selected layers.
+  // with useMemo we save on performance and only show the notification when layers selected amount changes, making it a useEffect too.
+  const selectedLayerDates: number[] = useMemo(() => {
+    const dateSupportLayerTypes: Array<LayerType['type']> = [
+      'impact',
+      'point_data',
+      'wms',
+    ];
+    const layersWithDateSupport = selectedLayers.filter((layer): layer is
+      | WMSLayerProps
+      | ImpactLayerProps
+      | PointDataLayerProps => dateSupportLayerTypes.includes(layer.type));
+    if (layersWithDateSupport.length === 0) {
+      return [];
+    }
 
-  const selectedLayerDates = uniq(
-    serverLayers
-      .map(layer =>
-        layer.type === 'wms'
-          ? serverAvailableDates[layer.serverLayerName]
-          : serverAvailableDates[
-              (LayerDefinitions[layer.hazardLayer] as WMSLayerProps)
-                .serverLayerName
-            ],
-      )
-      .filter(value => value)
-      .flat(),
-  );
+    /*
+       takes all the dates possible for every layer and counts the amount of times each one is duplicated.
+       if a date's duplicate amount is the same as the number of layers active, then this date is compatible with all layers selected.
+    */
+    const selectedLayerDatesDupCount = countBy(
+      layersWithDateSupport
+        // the 2 below eslint disables are justified as TS will strongly ensure undefined is never returned from map()
+        // eslint-disable-next-line array-callback-return,consistent-return
+        .map((layer): number[] => {
+          // eslint-disable-next-line default-case
+          switch (layer.type) {
+            case 'wms':
+              return serverAvailableDates[layer.serverLayerName];
+            case 'impact':
+              return serverAvailableDates[
+                (LayerDefinitions[layer.hazardLayer] as WMSLayerProps)
+                  .serverLayerName
+              ];
+            case 'point_data':
+              return serverAvailableDates[layer.id];
+          }
+        })
+        .filter(value => value) // null check
+        .flat()
+        .map(value => moment(value).format('YYYY-MM-DD')),
+    );
+    /*
+      Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
+     */
+    const ret = Object.keys(
+      pickBy(
+        selectedLayerDatesDupCount,
+        dupTimes => dupTimes >= layersWithDateSupport.length,
+      ),
+      // convert back to number array after using YYYY-MM-DD strings in countBy
+    ).map(dateString => moment.utc(dateString).set({ hour: 12 }).valueOf());
+    if (ret.length === 0) {
+      dispatch(
+        addNotification({
+          message: 'No dates overlap with the selected layers.',
+          type: 'warning',
+        }),
+      );
+    }
+
+    return ret;
+  }, [dispatch, selectedLayers, serverAvailableDates]);
 
   const {
     map: { latitude, longitude, zoom },
@@ -139,7 +187,7 @@ function MapView({ classes }: MapViewProps) {
         }}
       >
         <>
-          {layers.map(layer => {
+          {selectedLayers.map(layer => {
             const component: ComponentType<{ layer: any }> =
               componentTypes[layer.type];
             return createElement(component, {
@@ -153,7 +201,7 @@ function MapView({ classes }: MapViewProps) {
         <MapTooltip />
       </MapboxMap>
       <DateSelector availableDates={selectedLayerDates} />
-      <Legends layers={layers} />
+      <Legends layers={selectedLayers} />
       <Analyser />
     </div>
   );

@@ -2,20 +2,23 @@ import React, { useEffect } from 'react';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
-import { GroundstationLayerProps } from '../../../../config/types';
+import { PointDataLayerProps } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import { useDefaultDate } from '../../../../utils/useDefaultDate';
 
-// Point Data, takes any GeoJSON and shows it.
-function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
-  const layerData = useSelector(layerDataSelector(layer.id)) as
-    | LayerData<GroundstationLayerProps>
+// Point Data, takes any GeoJSON of points and shows it.
+function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
+  const selectedDate = useDefaultDate(layer.id);
+
+  const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
+    | LayerData<PointDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
 
@@ -23,9 +26,9 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
 
   useEffect(() => {
     if (!data) {
-      dispatch(loadLayerData({ layer }));
+      dispatch(loadLayerData({ layer, date: selectedDate }));
     }
-  }, [data, dispatch, layer]);
+  }, [data, dispatch, layer, selectedDate]);
 
   if (!data) {
     return null;
@@ -63,4 +66,4 @@ function GroundstationLayers({ layer }: { layer: GroundstationLayerProps }) {
   );
 }
 
-export default GroundstationLayers;
+export default PointDataLayer;

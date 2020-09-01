@@ -5,7 +5,7 @@ import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 
 interface DateRange {
   startDate?: number;
-  endDate?: number;
+  endDate?: number; // TODO this field is updated, but doesn't seem to be used yet
 }
 
 export type MapState = {
