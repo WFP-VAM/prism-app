@@ -116,7 +116,10 @@ async function getWMSCapabilities(serverUri: string) {
     const responseJS = xml2js(responseText, xml2jsOptions);
 
     const rawLayers = get(responseJS, 'WMS_Capabilities.Capability.Layer');
-    const flatLayers = flattenLayers(rawLayers);
+
+    const flatLayers = flattenLayers(
+      Array.isArray(rawLayers) ? rawLayers : [rawLayers],
+    );
 
     return formatCapabilitiesInfo(flatLayers, 'Name._text', 'Dimension._text');
   } catch (error) {
