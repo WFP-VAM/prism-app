@@ -8,6 +8,10 @@
     "admin_level_names": [
       "A2NAME",
       "A1NAME"
+    ],
+    "admin_level_local_names": [
+      "A2NAME",
+      "A1NAME"
     ]
   },
   "population_below_poverty": {
