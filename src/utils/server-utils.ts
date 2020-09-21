@@ -47,7 +47,10 @@ function formatCapabilitiesInfo(
 
     const availableDates = dates
       .filter(date => !isEmpty(date))
-      .map(date => moment.utc(get(date, '_text', date)).valueOf());
+      .map(date =>
+        // adding 12 hours to avoid  errors due to daylight saving
+        moment.utc(get(date, '_text', date)).set({ hour: 12 }).valueOf(),
+      );
 
     const { [layerId]: oldLayerDates } = acc;
     return {
@@ -113,7 +116,10 @@ async function getWMSCapabilities(serverUri: string) {
     const responseJS = xml2js(responseText, xml2jsOptions);
 
     const rawLayers = get(responseJS, 'WMS_Capabilities.Capability.Layer');
-    const flatLayers = flattenLayers(rawLayers);
+
+    const flatLayers = flattenLayers(
+      Array.isArray(rawLayers) ? rawLayers : [rawLayers],
+    );
 
     return formatCapabilitiesInfo(flatLayers, 'Name._text', 'Dimension._text');
   } catch (error) {
@@ -171,7 +177,8 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     ).json()) as PointLayerData & { date: string }; // raw data comes in as string yyyy-mm-dd, needs to be converted to number.
     return data.map(item => ({
       ...item,
-      date: moment.utc(item.date).valueOf(),
+      // adding 12 hours to avoid  errors due to daylight saving
+      date: moment.utc(item.date).set({ hour: 12 }).valueOf(),
     }));
   };
   const data = await loadPointLayerDataFromURL(url).catch(err => {
@@ -182,7 +189,8 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     return loadPointLayerDataFromURL(fallbackUrl || '');
   });
   const possibleDates = data
-    .map(item => moment.utc(item.date).valueOf())
+    // adding 12 hours to avoid  errors due to daylight saving
+    .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
     .filter((date, index, arr) => {
       return arr.indexOf(date) === index;
     }); // filter() here removes duplicate dates because indexOf will always return the first occurrence of an item
