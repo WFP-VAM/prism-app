@@ -6,6 +6,7 @@ import { PointDataLayerProps } from '../../config/types';
 declare module 'geojson' {
   export const version: string;
   export const defaults: object;
+
   export function parse(
     data: object,
     properties: object,
@@ -22,7 +23,7 @@ export type PointLayerData = {
 
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async ({
   date,
-  layer,
+  layer: { data: dataUrl, fallbackData },
 }) => {
   // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,
@@ -37,7 +38,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   try {
     // eslint-disable-next-line fp/no-mutation
     data = (await (
-      await fetch(layer.data.substr(0, layer.data.indexOf('?')) + dateQuery, {
+      await fetch(dataUrl + dateQuery, {
         mode: 'cors',
       })
     ).json()) as PointLayerData;
@@ -45,7 +46,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     // fallback data isn't filtered, therefore we must filter it.
     // eslint-disable-next-line fp/no-mutation
     data = ((await (
-      await fetch(layer.fallbackData || '')
+      await fetch(fallbackData || '')
     ).json()) as PointLayerData).filter(
       // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
       // using moment here helps compensate for these discrepancies
