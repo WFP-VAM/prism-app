@@ -139,7 +139,6 @@ export class CommonLayerProps {
   type: string;
   opacity: number;
 
-  // TODO not used
   @optional
   dateInterval?: string;
 
@@ -208,7 +207,6 @@ export class StatsApi {
   groupBy: string;
 }
 
-// first is display name, second is name we store in computers
 export enum AggregationOperations {
   Mean = 'mean',
   Median = 'median',

@@ -174,7 +174,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   const data = await loadPointLayerDataFromURL(url).catch(err => {
     console.error(err);
     console.warn(
-      `Failed loading groundstation layer: ${id}. Attempting to load fallback URL...`,
+      `Failed loading point data layer: ${id}. Attempting to load fallback URL...`,
     );
     return loadPointLayerDataFromURL(fallbackUrl || '');
   });
