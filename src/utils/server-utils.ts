@@ -5,7 +5,6 @@ import { get, isEmpty, isString, merge, union } from 'lodash';
 import config from '../config/prism.json';
 import { LayerDefinitions } from '../config/utils';
 import type { AvailableDates, PointDataLayerProps } from '../config/types';
-import type { PointLayerData } from '../context/layers/point_data';
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
@@ -154,7 +153,8 @@ async function getWCSCoverage(serverUri: string) {
       'domainSet.temporalDomain.gml:timePosition',
     );
   } catch (error) {
-    // TODO we used to throw the error here so a notification appears. Removed because a failure of one shouldn't prevent the successful requests from saving.
+    // TODO we used to throw the error here so a notification appears via middleware. Removed because a failure of one shouldn't prevent the successful requests from saving.
+    // we could do a dispatch for a notification, but getting a dispatch reference here would be complex, just for a notification
     console.error(error);
     return {};
   }
@@ -162,38 +162,29 @@ async function getWCSCoverage(serverUri: string) {
 
 /**
  * Gets the available dates for a point data layer.
- *
- * In layers.json each uri is given a constant, large date range (2000-01-01 -> 2023-12-21) to try get the api to give all possible dates
- * TODO Once the api is fixed this needs to be fixed as its currently a hacky solution to get around the api's caveats
- *
  */
 async function getPointDataCoverage(layer: PointDataLayerProps) {
-  const { data: url, fallbackData: fallbackUrl, id } = layer;
+  const { dateUrl: url, fallbackData: fallbackUrl, id } = layer;
   const loadPointLayerDataFromURL = async (fetchUrl: string) => {
-    const data = (await (
-      await fetch(fetchUrl || '', {
-        mode: fetchUrl.startsWith('http') ? 'cors' : 'same-origin',
-      })
-    ).json()) as PointLayerData & { date: string }; // raw data comes in as string yyyy-mm-dd, needs to be converted to number.
-    return data.map(item => ({
-      ...item,
-      // adding 12 hours to avoid  errors due to daylight saving
-      date: moment.utc(item.date).set({ hour: 12 }).valueOf(),
-    }));
+    const data = (await (await fetch(fetchUrl || '')).json()) as Array<{
+      date: string;
+    }>; // raw data comes in as { date: yyyy-mm-dd }[]
+    return data;
   };
   const data = await loadPointLayerDataFromURL(url).catch(err => {
     console.error(err);
     console.warn(
-      `Failed loading groundstation layer: ${id}. Attempting to load fallback URL...`,
+      `Failed loading point data layer: ${id}. Attempting to load fallback URL...`,
     );
     return loadPointLayerDataFromURL(fallbackUrl || '');
   });
   const possibleDates = data
-    // adding 12 hours to avoid  errors due to daylight saving
+    // adding 12 hours to avoid  errors due to daylight saving, and convert to number
     .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
+    // remove duplicate dates - indexOf returns first index of item
     .filter((date, index, arr) => {
       return arr.indexOf(date) === index;
-    }); // filter() here removes duplicate dates because indexOf will always return the first occurrence of an item
+    });
 
   return possibleDates;
 }
