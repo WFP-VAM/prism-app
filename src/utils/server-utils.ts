@@ -174,6 +174,7 @@ const pointDataFetchPromises: {
 async function getPointDataCoverage(layer: PointDataLayerProps) {
   const { dateUrl: url, fallbackData: fallbackUrl, id } = layer;
   const loadPointLayerDataFromURL = async (fetchUrl: string) => {
+
     const data = (await (await fetch(fetchUrl || '')).json()) as PointDataDates; // raw data comes in as { date: yyyy-mm-dd }[]
     return data;
   };
@@ -188,6 +189,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
       return loadPointLayerDataFromURL(fallbackUrl || '');
     },
   );
+
   const possibleDates = data
     // adding 12 hours to avoid  errors due to daylight saving, and convert to number
     .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
