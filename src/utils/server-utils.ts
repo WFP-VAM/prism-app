@@ -174,7 +174,6 @@ const pointDataFetchPromises: {
 async function getPointDataCoverage(layer: PointDataLayerProps) {
   const { dateUrl: url, fallbackData: fallbackUrl, id } = layer;
   const loadPointLayerDataFromURL = async (fetchUrl: string) => {
-
     const data = (await (await fetch(fetchUrl || '')).json()) as PointDataDates; // raw data comes in as { date: yyyy-mm-dd }[]
     return data;
   };
