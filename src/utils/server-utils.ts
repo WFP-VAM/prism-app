@@ -5,6 +5,7 @@ import { get, isEmpty, isString, merge, union } from 'lodash';
 import config from '../config/prism.json';
 import { LayerDefinitions } from '../config/utils';
 import type { AvailableDates, PointDataLayerProps } from '../config/types';
+import { ImpactLayerProps, WMSLayerProps } from '../config/types';
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
@@ -13,6 +14,27 @@ const xml2jsOptions = {
   compact: true,
   trim: true,
   ignoreComment: true,
+};
+export type DateCompatibleLayer =
+  | WMSLayerProps
+  | ImpactLayerProps
+  | PointDataLayerProps;
+export const getPossibleDatesForLayer = (
+  layer: DateCompatibleLayer,
+  serverAvailableDates: AvailableDates,
+  // eslint-disable-next-line consistent-return
+): number[] => {
+  // eslint-disable-next-line default-case
+  switch (layer.type) {
+    case 'wms':
+      return serverAvailableDates[layer.serverLayerName];
+    case 'impact':
+      return serverAvailableDates[
+        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
+      ];
+    case 'point_data':
+      return serverAvailableDates[layer.id];
+  }
 };
 
 export function formatUrl(
