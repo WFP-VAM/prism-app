@@ -16,32 +16,23 @@ import Legends from './Legends';
 // layers
 import {
   BoundaryLayer,
-  PointDataLayer,
   ImpactLayer,
   NSOLayer,
+  PointDataLayer,
   WMSLayer,
 } from './Layers';
 
-import {
-  DiscriminateUnion,
-  PointDataLayerProps,
-  ImpactLayerProps,
-  LayerType,
-  WMSLayerProps,
-} from '../../config/types';
+import { DiscriminateUnion, LayerType } from '../../config/types';
 
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../config/utils';
+import { getBoundaryLayerSingleton } from '../../config/utils';
 
 import DateSelector from './DateSelector';
 import {
+  dateRangeSelector,
   isLoading,
   layersSelector,
 } from '../../context/mapStateSlice/selectors';
-import { setMap, addLayer } from '../../context/mapStateSlice';
-import { addNotification } from '../../context/notificationStateSlice';
+import { addLayer, setMap } from '../../context/mapStateSlice';
 import { hidePopup } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
@@ -53,6 +44,11 @@ import appConfig from '../../config/prism.json';
 import { loadLayerData } from '../../context/layers/layer-data';
 import Analyser from './Analyser';
 import AnalysisLayer from './Layers/AnalysisLayer';
+import {
+  DateCompatibleLayer,
+  getPossibleDatesForLayer,
+} from '../../utils/server-utils';
+import { addNotification } from '../../context/notificationStateSlice';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -70,14 +66,27 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   point_data: PointDataLayer,
 };
 
+const dateSupportLayerTypes: Array<LayerType['type']> = [
+  'impact',
+  'point_data',
+  'wms',
+];
+
 function MapView({ classes }: MapViewProps) {
   const selectedLayers = useSelector(layersSelector);
+
   const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
-  const dispatch = useDispatch();
-  const serverAvailableDates = useSelector(availableDatesSelector);
-
   const loading = layersLoading || datesLoading;
+
+  const dispatch = useDispatch();
+
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
+  const selectedLayersWithDateSupport = selectedLayers.filter(
+    (layer): layer is DateCompatibleLayer =>
+      dateSupportLayerTypes.includes(layer.type),
+  );
 
   useEffect(() => {
     // initial load, need available dates and boundary layer
@@ -90,24 +99,9 @@ function MapView({ classes }: MapViewProps) {
     dispatch(loadLayerData({ layer: boundaryLayer }));
   }, [dispatch]);
 
-  useEffect(() => {
-    // when we switch layers, close any active pop-ups
-    dispatch(hidePopup());
-  }, [dispatch, selectedLayers]);
-
-  // calculate possible dates user can pick from the currently selected layers.
-  // with useMemo we save on performance and only show the notification when layers selected amount changes, making it a useEffect too.
+  // calculate possible dates user can pick from the currently selected layers
   const selectedLayerDates: number[] = useMemo(() => {
-    const dateSupportLayerTypes: Array<LayerType['type']> = [
-      'impact',
-      'point_data',
-      'wms',
-    ];
-    const layersWithDateSupport = selectedLayers.filter((layer): layer is
-      | WMSLayerProps
-      | ImpactLayerProps
-      | PointDataLayerProps => dateSupportLayerTypes.includes(layer.type));
-    if (layersWithDateSupport.length === 0) {
+    if (selectedLayersWithDateSupport.length === 0) {
       return [];
     }
 
@@ -116,23 +110,8 @@ function MapView({ classes }: MapViewProps) {
        if a date's duplicate amount is the same as the number of layers active, then this date is compatible with all layers selected.
     */
     const selectedLayerDatesDupCount = countBy(
-      layersWithDateSupport
-        // the 2 below eslint disables are justified as TS will strongly ensure undefined is never returned from map()
-        // eslint-disable-next-line array-callback-return,consistent-return
-        .map((layer): number[] => {
-          // eslint-disable-next-line default-case
-          switch (layer.type) {
-            case 'wms':
-              return serverAvailableDates[layer.serverLayerName];
-            case 'impact':
-              return serverAvailableDates[
-                (LayerDefinitions[layer.hazardLayer] as WMSLayerProps)
-                  .serverLayerName
-              ];
-            case 'point_data':
-              return serverAvailableDates[layer.id];
-          }
-        })
+      selectedLayersWithDateSupport
+        .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
         .filter(value => value) // null check
         .flat()
         .map(value => moment(value).format('YYYY-MM-DD')),
@@ -140,14 +119,25 @@ function MapView({ classes }: MapViewProps) {
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
      */
-    const ret = Object.keys(
+    return Object.keys(
       pickBy(
         selectedLayerDatesDupCount,
-        dupTimes => dupTimes >= layersWithDateSupport.length,
+        dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
       ),
       // convert back to number array after using YYYY-MM-DD strings in countBy
     ).map(dateString => moment.utc(dateString).set({ hour: 12 }).valueOf());
-    if (ret.length === 0) {
+  }, [selectedLayersWithDateSupport, serverAvailableDates]);
+
+  // close popups and show warning notifications
+  useEffect(() => {
+    // when we switch layers, or change dates, close any active pop-ups
+    dispatch(hidePopup());
+
+    // let users know if the layers selected are not possible to view together.
+    if (
+      selectedLayerDates.length === 0 &&
+      selectedLayersWithDateSupport.length !== 0
+    ) {
       dispatch(
         addNotification({
           message: 'No dates overlap with the selected layers.',
@@ -155,9 +145,31 @@ function MapView({ classes }: MapViewProps) {
         }),
       );
     }
-
-    return ret;
-  }, [dispatch, selectedLayers, serverAvailableDates]);
+    // let users know if their current date doesn't exist in possible dates
+    if (selectedDate) {
+      selectedLayersWithDateSupport.forEach(layer => {
+        // we convert to date strings, so hh:ss is irrelevant
+        if (
+          !getPossibleDatesForLayer(layer, serverAvailableDates)
+            .map(date => moment(date).format('YYYY-MM-DD'))
+            .includes(moment(selectedDate).format('YYYY-MM-DD'))
+        ) {
+          dispatch(
+            addNotification({
+              message: `Selected Date isn't compatible with Layer: ${layer.title}`,
+              type: 'warning',
+            }),
+          );
+        }
+      });
+    }
+  }, [
+    dispatch,
+    selectedDate,
+    selectedLayerDates.length,
+    selectedLayersWithDateSupport,
+    serverAvailableDates,
+  ]);
 
   const {
     map: { latitude, longitude, zoom },
