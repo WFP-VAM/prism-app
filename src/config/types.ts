@@ -206,7 +206,7 @@ export class StatsApi {
   zonesUrl: string;
   groupBy: string;
 }
-// first is display name, second is name we store in computers
+
 export enum AggregationOperations {
   Mean = 'mean',
   Median = 'median',
@@ -254,6 +254,8 @@ export class PointDataLayerProps extends CommonLayerProps {
   measure: string;
   @optional
   fallbackData?: string;
+  // URL to fetch all possible dates from
+  dateUrl: string;
 }
 
 export type RequiredKeys<T> = {

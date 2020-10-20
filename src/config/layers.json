@@ -701,7 +701,8 @@
   "avg_temperature_groundstations": {
     "title": "10-day average temperature",
     "type": "point_data",
-    "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2000-01-01&endDateTime=2023-12-21",
+    "data": "https://mng.prism.services/temp/Temperature",
+    "date_url": "https://mng.prism.services/temp/getDates",
     "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
     "opacity": 0.5,
     "measure": "ttt_aver",
@@ -748,7 +749,8 @@
   "min_temperature_groundstations": {
     "title": "10-day minimum temperature",
     "type": "point_data",
-    "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2000-01-01&endDateTime=2023-12-21",
+    "data": "https://mng.prism.services/temp/Temperature",
+    "date_url": "https://mng.prism.services/temp/getDates",
     "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
     "opacity": 0.5,
     "measure": "ttt_min",
@@ -795,7 +797,8 @@
   "max_temperature_groundstations": {
     "title": "10-day maximum temperature",
     "type": "point_data",
-    "data": "https://mng.prism.services/temp/Temperature?beginDateTime=2000-01-01&endDateTime=2023-12-21",
+    "data": "https://mng.prism.services/temp/Temperature",
+    "date_url": "https://mng.prism.services/temp/getDates",
     "fallback_data": "./data/groundstations/IRIMHE_temperature_2020-01-d1.json",
     "opacity": 0.5,
     "measure": "ttt_max",
@@ -842,7 +845,8 @@
   "total_precipitation_groundstations": {
     "title": "Total 10-day precipitation",
     "type": "point_data",
-    "data": "https://mng.prism.services/temp/percipitation?beginDateTime=2000-01-01&endDateTime=2023-12-21",
+    "data": "https://mng.prism.services/temp/percipitation",
+    "date_url": "https://mng.prism.services/temp/getDates",
     "fallback_data": "./data/groundstations/IRIMHE_precipitation_2020-05-01.json",
     "opacity": 0.5,
     "measure": "sum_rrr",
@@ -873,7 +877,8 @@
   "avg_precipitation_groundstations": {
     "title": "10-day average precipitation",
     "type": "point_data",
-    "data": "https://mng.prism.services/temp/soil?beginDateTime=2000-01-01&endDateTime=2023-12-21",
+    "data": "https://mng.prism.services/temp/soil",
+    "date_url": "https://mng.prism.services/temp/getDates",
     "opacity": 0.5,
     "measure": "ttt_aver",
     "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
