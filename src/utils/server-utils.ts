@@ -182,24 +182,35 @@ async function getWCSCoverage(serverUri: string) {
   }
 }
 
+type PointDataDates = Array<{
+  date: string;
+}>;
+// used to cache repeat date requests to same URL
+const pointDataFetchPromises: {
+  [k in PointDataLayerProps['dateUrl']]: Promise<PointDataDates>;
+} = {};
+
 /**
  * Gets the available dates for a point data layer.
  */
 async function getPointDataCoverage(layer: PointDataLayerProps) {
   const { dateUrl: url, fallbackData: fallbackUrl, id } = layer;
   const loadPointLayerDataFromURL = async (fetchUrl: string) => {
-    const data = (await (await fetch(fetchUrl || '')).json()) as Array<{
-      date: string;
-    }>; // raw data comes in as { date: yyyy-mm-dd }[]
+    const data = (await (await fetch(fetchUrl || '')).json()) as PointDataDates; // raw data comes in as { date: yyyy-mm-dd }[]
     return data;
   };
-  const data = await loadPointLayerDataFromURL(url).catch(err => {
-    console.error(err);
-    console.warn(
-      `Failed loading point data layer: ${id}. Attempting to load fallback URL...`,
-    );
-    return loadPointLayerDataFromURL(fallbackUrl || '');
-  });
+  // eslint-disable-next-line fp/no-mutation
+  const data = await (pointDataFetchPromises[url] =
+    pointDataFetchPromises[url] || loadPointLayerDataFromURL(url)).catch(
+    err => {
+      console.error(err);
+      console.warn(
+        `Failed loading point data layer: ${id}. Attempting to load fallback URL...`,
+      );
+      return loadPointLayerDataFromURL(fallbackUrl || '');
+    },
+  );
+
   const possibleDates = data
     // adding 12 hours to avoid  errors due to daylight saving, and convert to number
     .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
