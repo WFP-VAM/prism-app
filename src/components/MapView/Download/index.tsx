@@ -21,7 +21,7 @@ function Download({ classes }: DownloadProps) {
     if (selectedMap) {
       const img = selectedMap.getCanvas().toDataURL('image/png');
       const link = document.createElement('a');
-      link.href = img;
+      link.setAttribute('href', img);
       link.setAttribute('download', 'map.png');
       link.click();
     }
