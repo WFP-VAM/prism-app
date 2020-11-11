@@ -3,13 +3,14 @@ import {
   createStyles,
   Divider,
   Grid,
+  Hidden,
   List,
   ListItem,
   Paper,
-  Theme,
   Typography,
   WithStyles,
   withStyles,
+  Button,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -65,13 +66,25 @@ function Legends({ classes, layers }: LegendsProps) {
   ];
 
   return (
-    <div className={classes.container}>
-      <button type="button" onClick={() => setOpen(!open)}>
-        <FontAwesomeIcon icon={open ? faEyeSlash : faEye} /> Legend
-      </button>
+    <Grid item className={classes.container}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setOpen(!open)}
+      >
+        <FontAwesomeIcon
+          style={{ fontSize: '1em' }}
+          icon={open ? faEyeSlash : faEye}
+        />
+        <Hidden smDown>
+          <Typography className={classes.label} variant="body2">
+            Legend
+          </Typography>
+        </Hidden>
+      </Button>
 
       {open && <List className={classes.list}>{legendItems}</List>}
-    </div>
+    </Grid>
   );
 }
 
@@ -112,18 +125,19 @@ function LegendItem({ classes, title, legend, children }: LegendItemProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const styles = () =>
   createStyles({
     container: {
-      zIndex: theme.zIndex.drawer,
-      position: 'absolute',
-      top: 24,
-      right: 24,
       textAlign: 'right',
+    },
+    label: {
+      marginLeft: '10px',
     },
     list: {
       overflow: 'auto',
       maxHeight: '70vh',
+      position: 'absolute',
+      right: '16px',
     },
     paper: {
       padding: 8,

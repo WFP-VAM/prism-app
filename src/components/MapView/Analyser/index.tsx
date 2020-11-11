@@ -198,11 +198,10 @@ function Analyser({ classes }: AnalyserProps) {
           setIsAnalyserFormOpen(!isAnalyserFormOpen);
         }}
       >
-        <FontAwesomeIcon
-          style={{ marginRight: '10px', fontSize: '1.6em' }}
-          icon={faChartBar}
-        />
-        <Typography variant="body2">Run Analysis</Typography>
+        <FontAwesomeIcon style={{ fontSize: '1em' }} icon={faChartBar} />
+        <Typography className={classes.label} variant="body2">
+          Run Analysis
+        </Typography>
         <FontAwesomeIcon icon={faCaretDown} style={{ marginLeft: '10px' }} />
       </Button>
 
@@ -372,9 +371,6 @@ const styles = (theme: Theme) =>
   createStyles({
     analyser: {
       zIndex: theme.zIndex.drawer,
-      position: 'absolute',
-      top: 2,
-      left: 2,
       textAlign: 'left',
     },
     analyserMenu: {
@@ -387,6 +383,7 @@ const styles = (theme: Theme) =>
       borderBottomRightRadius: '10px',
       height: 'auto',
       maxHeight: '60vh',
+      position: 'absolute',
     },
     analyserButton: {
       height: '36px',
@@ -394,6 +391,9 @@ const styles = (theme: Theme) =>
     },
     analyserOptions: {
       padding: '5px 0px',
+    },
+    label: {
+      marginLeft: '10px',
     },
     newAnalyserContainer: {
       padding: '5px',

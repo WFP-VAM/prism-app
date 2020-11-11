@@ -6,7 +6,6 @@ import {
   withStyles,
   WithStyles,
   createStyles,
-  Theme,
   Switch,
   Grid,
 } from '@material-ui/core';
