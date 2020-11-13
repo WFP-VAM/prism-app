@@ -3,10 +3,11 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="Legends-container-1"
+    class="MuiGrid-root Legends-container-1 MuiGrid-item"
   >
-    <button
-      type="button"
+    <mock-button
+      color="primary"
+      variant="contained"
     >
       <svg
         aria-hidden="true"
@@ -15,6 +16,7 @@ exports[`renders as expected 1`] = `
         data-prefix="fas"
         focusable="false"
         role="img"
+        style="font-size: 1em;"
         viewBox="0 0 640 512"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -23,10 +25,19 @@ exports[`renders as expected 1`] = `
           fill="currentColor"
         />
       </svg>
-       Legend
-    </button>
+      <mock-hidden
+        smdown="true"
+      >
+        <mock-typography
+          classname="Legends-label-2"
+          variant="body2"
+        >
+          Legend
+        </mock-typography>
+      </mock-hidden>
+    </mock-button>
     <mock-list
-      classname="Legends-list-2"
+      classname="Legends-list-3"
     />
   </div>
 </div>
