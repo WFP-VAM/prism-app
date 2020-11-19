@@ -4,6 +4,7 @@ import {
   CircularProgress,
   createStyles,
   Grid,
+  Theme,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
@@ -222,13 +223,14 @@ function MapView({ classes }: MapViewProps) {
   );
 }
 
-const styles = () =>
+const styles = (theme: Theme) =>
   createStyles({
     container: {
       height: '100%',
       position: 'relative',
     },
     buttonContainer: {
+      zIndex: theme.zIndex.drawer,
       position: 'absolute',
       top: 0,
       width: '100%',

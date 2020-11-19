@@ -6,6 +6,7 @@ import {
   createStyles,
   Divider,
   Grid,
+  Hidden,
   Theme,
   WithStyles,
   withStyles,
@@ -72,9 +73,16 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
       <Grid
         container
         alignItems="center"
+        justify="center"
         className={classes.datePickerContainer}
       >
-        <Grid item xs={2}>
+        <Hidden smUp>
+          <Button onClick={decrementYear}>
+            <FontAwesomeIcon icon={faAngleDoubleLeft} />
+          </Button>
+        </Hidden>
+
+        <Grid item xs={6} md={2}>
           <DatePicker
             className={classes.datePickerInput}
             selected={selectedDate.toDate()}
@@ -92,47 +100,55 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
           />
         </Grid>
 
-        <Grid item xs={10} className={classes.slider}>
-          <Button onClick={decrementYear}>
-            <FontAwesomeIcon icon={faAngleDoubleLeft} />
-          </Button>
-
-          <Grid container justify="center" spacing={1}>
-            {months.map((month, index) => (
-              <Fragment key={month}>
-                {index !== 0 && (
-                  <Divider
-                    flexItem
-                    className={classes.divider}
-                    orientation="vertical"
-                  />
-                )}
-
-                <Grid item>
-                  <Button
-                    variant={
-                      index === selectedMonth &&
-                      stateStartDateYear === selectedYear
-                        ? 'contained'
-                        : 'text'
-                    }
-                    onClick={() => updateMonth(index)}
-                    disabled={
-                      !isAvailableMonth(index, selectedYear, availableDates)
-                    }
-                    className={classes.monthButton}
-                  >
-                    {month}
-                  </Button>
-                </Grid>
-              </Fragment>
-            ))}
-          </Grid>
-
+        <Hidden smUp>
           <Button onClick={incrementYear}>
             <FontAwesomeIcon icon={faAngleDoubleRight} />
           </Button>
-        </Grid>
+        </Hidden>
+
+        <Hidden smDown>
+          <Grid item xs={10} className={classes.slider}>
+            <Button onClick={decrementYear}>
+              <FontAwesomeIcon icon={faAngleDoubleLeft} />
+            </Button>
+
+            <Grid container justify="center" spacing={1}>
+              {months.map((month, index) => (
+                <Fragment key={month}>
+                  {index !== 0 && (
+                    <Divider
+                      flexItem
+                      className={classes.divider}
+                      orientation="vertical"
+                    />
+                  )}
+
+                  <Grid item>
+                    <Button
+                      variant={
+                        index === selectedMonth &&
+                        stateStartDateYear === selectedYear
+                          ? 'contained'
+                          : 'text'
+                      }
+                      onClick={() => updateMonth(index)}
+                      disabled={
+                        !isAvailableMonth(index, selectedYear, availableDates)
+                      }
+                      className={classes.monthButton}
+                    >
+                      {month}
+                    </Button>
+                  </Grid>
+                </Fragment>
+              ))}
+            </Grid>
+
+            <Button onClick={incrementYear}>
+              <FontAwesomeIcon icon={faAngleDoubleRight} />
+            </Button>
+          </Grid>
+        </Hidden>
       </Grid>
     </div>
   );
