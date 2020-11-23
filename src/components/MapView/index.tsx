@@ -223,14 +223,14 @@ function MapView({ classes }: MapViewProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const styles = () =>
   createStyles({
     container: {
       height: '100%',
       position: 'relative',
     },
     buttonContainer: {
-      zIndex: theme.zIndex.drawer,
+      zIndex: 5,
       position: 'absolute',
       top: 0,
       width: '100%',
