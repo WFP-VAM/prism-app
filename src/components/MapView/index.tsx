@@ -4,7 +4,6 @@ import {
   CircularProgress,
   createStyles,
   Grid,
-  Theme,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
