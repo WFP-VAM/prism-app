@@ -26,6 +26,9 @@
     "capacity": {
       "livestock_and_crop_preparedness": ["CER_YIELD", "HH_FOODASS"]
     },
+    "risk": {
+      "impact_analysis": ["livestock_vhi"]
+    },
     "tables": {
       "socioeconomic_data": [
         "poverty"

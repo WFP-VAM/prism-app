@@ -17,7 +17,10 @@
   "population_below_poverty": {
     "title": "Poverty Rate",
     "type": "nso",
-    "path": "./data/idn/socio_economic.json",
+    "source": {
+      "type": "file",
+      "path": "./data/idn/socio_economic.json"
+    },
     "data_field": "HH_FE65",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -34,7 +37,10 @@
   "pou": {
     "title": "Prevalence of Undernoursihment",
     "type": "nso",
-    "path": "./data/idn/socio_economic.json",
+    "source": {
+      "type": "file",
+      "path": "./data/idn/socio_economic.json"
+    },
     "data_field": "POU",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -66,7 +72,10 @@
   "CER_YIELD": {
     "title": "Cereal Yield",
     "type": "nso",
-    "path": "./data/idn/socio_economic.json",
+    "source": {
+      "type": "file",
+      "path": "./data/idn/socio_economic.json"
+    },
     "data_field": "CER_YIELD",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -98,7 +107,10 @@
   "HH_AGRI": {
     "title": "Household with Income Derived from Agriculture",
     "type": "nso",
-    "path": "./data/idn/socio_economic.json",
+    "source": {
+      "type": "file",
+      "path": "./data/idn/socio_economic.json"
+    },
     "data_field": "HH_AGRI",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -130,7 +142,10 @@
   "HH_FE65": {
     "title": "Houshold with Food Expenditure >65%",
     "type": "nso",
-    "path": "./data/idn/socio_economic.json",
+    "source": {
+      "type": "file",
+      "path": "./data/idn/socio_economic.json"
+    },
     "data_field": "HH_FE65",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -162,7 +177,10 @@
   "OP_UNEMPLOY": {
     "title": "Open Unemployment",
     "type": "nso",
-    "path": "./data/idn/socio_economic.json",
+    "source": {
+      "type": "file",
+      "path": "./data/idn/socio_economic.json"
+    },
     "data_field": "OP_UNEMPLOY",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -194,7 +212,10 @@
   "HH_FOODASS": {
     "title": "Poor Houshold With Access to Food Assistance",
     "type": "nso",
-    "path": "./data/idn/socio_economic.json",
+    "source": {
+      "type": "file",
+      "path": "./data/idn/socio_economic.json"
+    },
     "data_field": "HH_FOODASS",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -226,8 +247,46 @@
   "HH_ELEC_2019": {
     "title": "Poor Houshold With Access to Food Assistance",
     "type": "nso",
-    "path": "./data/idn/socio_economic.json",
+    "source": {
+      "type": "file",
+      "path": "./data/idn/socio_economic.json"
+    },
     "data_field": "HH_FOODASS",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": "1.82",
+        "color": "#edf8fb"
+      },
+      {
+        "value": "3.64",
+        "color": "#b3cde3"
+      },
+      {
+        "value": "5.42",
+        "color": "#8c96c6"
+      },
+      {
+        "value": "7.76",
+        "color": "#8856a7"
+      },
+      {
+        "value": "12.37",
+        "color": "#810f7c"
+      }
+    ],
+    "legend_text": "Source: BPS 2019"
+  },
+  "livestock_vhi": {
+    "title": "test",
+    "type": "nso",
+    "source": {
+      "type": "url",
+      "path": "https://vampire.idn.wfp.org/home/get_layer/25?start=2020-11-24&end=2020-11-24"
+    },
+    "data_field": "VAL",
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,

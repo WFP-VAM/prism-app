@@ -1,5 +1,5 @@
 import { FeatureCollection } from 'geojson';
-import { get, isNull, isString } from 'lodash';
+import { get, isNull, isString, map } from 'lodash';
 import { BoundaryLayerProps, NSOLayerProps } from '../../config/types';
 import type { ThunkApi } from '../store';
 import { getBoundaryLayerSingleton } from '../../config/utils';
@@ -20,7 +20,7 @@ export const fetchNSOLayerData: LazyLoader<NSOLayerProps> = () => async (
   { layer }: LayerDataParams<NSOLayerProps>,
   api: ThunkApi,
 ) => {
-  const { path, adminCode, dataField } = layer;
+  const { source, adminCode, dataField } = layer;
   const { getState } = api;
 
   const adminBoundaryLayer = getBoundaryLayerSingleton();
@@ -34,9 +34,24 @@ export const fetchNSOLayerData: LazyLoader<NSOLayerProps> = () => async (
   }
   const adminBoundaries = adminBoundariesLayer.data;
 
-  const { DataList: rawJSONs }: { DataList: { [key: string]: any }[] } = await (
-    await fetch(path, { mode: path.includes('http') ? 'cors' : 'same-origin' })
+  const result: any = await (
+    await fetch(source!.path, {
+      mode: source!.path.includes('http') ? 'cors' : 'same-origin',
+    })
   ).json();
+
+  const { DataList: rawJSONs }: { DataList: { [key: string]: any }[] } =
+    source!.type === 'file'
+      ? result
+      : {
+          DataList: map(Object.entries(result.data), (e: any) => {
+            return {
+              CODE: e[0],
+              A2NAME: e[1][0],
+              [dataField]: e[1][1] === 'None' ? 0 : parseFloat(e[1][1]),
+            };
+          }),
+        };
 
   const layerData = (rawJSONs || [])
     .map(point => {

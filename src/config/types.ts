@@ -117,6 +117,11 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
+export type SourceDefinition = {
+  type: string;
+  path: string;
+};
+
 export type LegendDefinition = {
   value: string | number;
   color: string;
@@ -180,7 +185,7 @@ export class WMSLayerProps extends CommonLayerProps {
 
 export class NSOLayerProps extends CommonLayerProps {
   type: 'nso';
-  path: string;
+  source: SourceDefinition;
 
   @makeRequired
   title: string;

@@ -119,7 +119,9 @@ function LegendItem({
   };
 
   useEffect(() => {
-    map!.setPaintProperty(`layer-${id}`, 'raster-opacity', opacity);
+    if (type === 'wms') {
+      map!.setPaintProperty(`layer-${id}`, 'raster-opacity', opacity);
+    }
   });
 
   return (
