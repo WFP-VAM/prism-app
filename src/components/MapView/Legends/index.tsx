@@ -154,6 +154,7 @@ function LegendItem({
                   key={value}
                   value={value as string}
                   color={color as string}
+                  opacity={opacity as number}
                 />
               ))}
             </Grid>
