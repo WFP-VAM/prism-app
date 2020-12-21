@@ -24,6 +24,7 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
+import { useHistory } from 'react-router-dom';
 
 import { faCaretDown, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -68,6 +69,7 @@ const boundaryLayer = getBoundaryLayerSingleton();
 
 function Analyser({ classes }: AnalyserProps) {
   const dispatch = useDispatch();
+  const history = useHistory();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -134,6 +136,8 @@ function Analyser({ classes }: AnalyserProps) {
   };
 
   const adminBoundariesExtent = useMemo(() => {
+    // eslint-disable-next-line no-debugger
+    debugger;
     if (!boundaryLayerData) {
       // not loaded yet. Should be loaded in MapView
       return null;
@@ -155,13 +159,15 @@ function Analyser({ classes }: AnalyserProps) {
   const clearAnalysis = () => dispatch(clearAnalysisResult());
 
   const runAnalyser = async () => {
+    // eslint-disable-next-line no-debugger
+    debugger;
     if (!adminBoundariesExtent) {
       return;
     } // hasn't been calculated yet
 
-    if (!selectedDate) {
-      throw new Error('Date must be given to run analysis');
-    }
+    // if (!selectedDate) {
+    //   throw new Error('Date must be given to run analysis');
+    // }
 
     if (!hazardLayerId || !baselineLayerId) {
       throw new Error('Layer should be selected to run analysis');
@@ -177,7 +183,7 @@ function Analyser({ classes }: AnalyserProps) {
     const params: AnalysisDispatchParams = {
       hazardLayer: selectedHazardLayer,
       baselineLayer: selectedBaselineLayer,
-      date: selectedDate,
+      date: selectedDate || 1606824000000,
       statistic,
       extent: adminBoundariesExtent,
       threshold: {
@@ -187,7 +193,30 @@ function Analyser({ classes }: AnalyserProps) {
     };
 
     await dispatch(requestAndStoreAnalysis(params));
+    console.log(params);
+    // eslint-disable-next-line fp/no-mutating-methods
+    history.push(
+      `?hazardLayerId=${hazardLayerId}&baselineLayerId=${baselineLayerId}&date=${selectedDate}&statistic=${statistic}&extent=${adminBoundariesExtent}&aboveThreshold=${aboveThreshold}&belowThreshold=${belowThreshold}`,
+    );
   };
+
+  useEffect(() => {
+    const queryString = history.location.search;
+    const params = new URLSearchParams(queryString);
+    // const hazardLayerIds: LayerKey = params.get('hazardLayerId') || 'disabled';
+
+    setHazardLayerId('ndvi');
+    setBaselineLayerId('population_total');
+    setSelectedDate(1606824000000);
+
+    // Avoid Running Analyser if boundary Layer data is Null
+    if (boundaryLayerData) {
+      // eslint-disable-next-line no-debugger
+      debugger;
+      runAnalyser();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boundaryLayerData]);
 
   return (
     <div className={classes.analyser}>
@@ -348,7 +377,7 @@ function Analyser({ classes }: AnalyserProps) {
             {!analysisResult && (
               <Button
                 className={classes.innerAnalysisButton}
-                onClick={runAnalyser}
+                onClick={() => runAnalyser()}
                 disabled={
                   !!thresholdError || // if there is a threshold error
                   !selectedDate || // or date hasn't been selected
