@@ -140,6 +140,23 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     }
   }
 
+  // click on timeline
+  const clickDate = (index: number) => {
+    const selectedIndex = findDateIndex(
+      availableDates.map(date => {
+        return date + USER_DATE_OFFSET;
+      }),
+      dateRange[index].value,
+    );
+    if (
+      selectedIndex >= 0 &&
+      availableDates[selectedIndex] !== stateStartDate
+    ) {
+      setPointerPosition({ x: index * 10, y: 0 });
+      updateStartDate(new Date(availableDates[selectedIndex]));
+    }
+  };
+
   // after dragging the timeline
   const onTimelineStop = (e: any, position: { x: number; y: number }) => {
     setTimelinePosition(position);
@@ -162,8 +179,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
       availableDates[selectedIndex] !== stateStartDate
     ) {
       setPointerPosition({ x: exactX * 10, y: position.y });
-      const time = new Date(availableDates[selectedIndex]);
-      updateStartDate(time);
+      updateStartDate(new Date(availableDates[selectedIndex]));
     }
   };
 
@@ -214,7 +230,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
           <Grid className={classes.dateContainer} ref={timeLine}>
             <Draggable
               axis="x"
-              handle=".timeline"
+              handle="#timeline"
               bounds={{
                 top: 0,
                 bottom: 0,
@@ -224,13 +240,13 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
               position={timelinePosition}
               onStop={onTimelineStop}
             >
-              <div className="timeline">
+              <div className={classes.timeline} id="timeline">
                 <Grid
                   container
                   alignItems="stretch"
                   className={classes.dateLabelContainer}
                 >
-                  {dateRange.map(date => (
+                  {dateRange.map((date, index) => (
                     <Tooltip
                       title={date.label}
                       key={date.label}
@@ -247,7 +263,6 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
                             ? classes.dateItemFull
                             : classes.dateItem
                         }
-                        // onClick={() => alert('click')}
                       >
                         {date.isFirstday ? (
                           <Typography className={classes.dateItemLabel}>
@@ -261,7 +276,11 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
                             moment(availableDate).format('DD MMM YYYY'),
                           )
                           .includes(date.label) && (
-                          <div className={classes.dateAvailable} />
+                          <div
+                            className={classes.dateAvailable}
+                            role="presentation"
+                            onClick={() => clickDate(index)}
+                          />
                         )}
                       </Grid>
                     </Tooltip>
@@ -337,12 +356,7 @@ const styles = (theme: Theme) =>
       height: '36px',
       flexGrow: 1,
       cursor: 'e-resize',
-      overflowY: 'hidden',
-      overflowX: 'auto',
-      overflow: '-moz-scrollbars-none',
-      '&::-webkit-scrollbar': {
-        display: 'none',
-      },
+      overflow: 'hidden'
     },
 
     dateLabelContainer: {
@@ -350,11 +364,19 @@ const styles = (theme: Theme) =>
       flexWrap: 'nowrap',
     },
 
+    timeline: {
+      position: 'relative',
+      top: '5px',
+    },
+
     dateItemFull: {
       borderLeft: '1px solid white',
       height: '36px',
       borderTop: '1px solid white',
       color: 'white',
+      position: 'relative',
+      top: '-5px',
+      cursor: 'pointer',
       minWidth: '10px',
       '&:hover': {
         borderLeft: '1px solid #5ccfff',
@@ -364,6 +386,9 @@ const styles = (theme: Theme) =>
     dateItem: {
       borderTop: '1px solid white',
       color: 'white',
+      position: 'relative',
+      top: '-5px',
+      cursor: 'pointer',
       minWidth: '10px',
       '&:hover': {
         borderLeft: '1px solid #5ccfff',
@@ -404,6 +429,7 @@ const styles = (theme: Theme) =>
       borderBottom: '15px solid #5ccfff',
       position: 'absolute',
       left: '-10px',
+      top: '-5px',
     },
   });
 
