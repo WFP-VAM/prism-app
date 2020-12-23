@@ -203,14 +203,28 @@ function Analyser({ classes }: AnalyserProps) {
   useEffect(() => {
     const queryString = history.location.search;
     const params = new URLSearchParams(queryString);
-    // const hazardLayerIds: LayerKey = params.get('hazardLayerId') || 'disabled';
+    const hazardLayerParamId: string = params.get('hazardLayerId') || '';
+    const baselineLayerParamId: string = params.get('baselineLayerId') || '';
+    const selectedParamDate: number = Number(params.get('date'));
 
-    setHazardLayerId('ndvi');
-    setBaselineLayerId('population_total');
-    setSelectedDate(1606824000000);
+    function isHazardLayerId(layer: string): layer is LayerKey {
+      return typeof layer === 'string';
+    }
+    function isBaselineLAyerId(layer: string): layer is LayerKey {
+      return typeof layer === 'string';
+    }
+
+    if (isHazardLayerId(hazardLayerParamId)) {
+      setHazardLayerId(hazardLayerParamId);
+    }
+    if (isBaselineLAyerId(baselineLayerParamId)) {
+      setBaselineLayerId(baselineLayerParamId);
+    }
+
+    setSelectedDate(selectedParamDate);
 
     // Avoid Running Analyser if boundary Layer data is Null
-    if (boundaryLayerData) {
+    if (boundaryLayerData && hazardLayerId && baselineLayerId) {
       // eslint-disable-next-line no-debugger
       debugger;
       runAnalyser();
