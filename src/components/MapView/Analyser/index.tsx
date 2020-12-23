@@ -159,12 +159,11 @@ function Analyser({ classes }: AnalyserProps) {
   const clearAnalysis = () => dispatch(clearAnalysisResult());
 
   const runAnalyser = async () => {
-    // eslint-disable-next-line no-debugger
-    debugger;
     if (!adminBoundariesExtent) {
       return;
     } // hasn't been calculated yet
 
+    // Temporary Commented
     // if (!selectedDate) {
     //   throw new Error('Date must be given to run analysis');
     // }
@@ -193,7 +192,6 @@ function Analyser({ classes }: AnalyserProps) {
     };
 
     await dispatch(requestAndStoreAnalysis(params));
-    console.log(params);
     // eslint-disable-next-line fp/no-mutating-methods
     history.push(
       `?hazardLayerId=${hazardLayerId}&baselineLayerId=${baselineLayerId}&date=${selectedDate}&statistic=${statistic}&extent=${adminBoundariesExtent}&aboveThreshold=${aboveThreshold}&belowThreshold=${belowThreshold}`,
@@ -225,8 +223,6 @@ function Analyser({ classes }: AnalyserProps) {
 
     // Avoid Running Analyser if boundary Layer data is Null
     if (boundaryLayerData && hazardLayerId && baselineLayerId) {
-      // eslint-disable-next-line no-debugger
-      debugger;
       runAnalyser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
