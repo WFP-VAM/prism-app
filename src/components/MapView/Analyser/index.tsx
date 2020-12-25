@@ -95,17 +95,22 @@ function Analyser({ classes }: AnalyserProps) {
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
+    // eslint-disable-next-line no-debugger
+    debugger;
     const dates = hazardLayerId
       ? availableDates[
           (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
         ]
       : null;
+    if (Number(new URLSearchParams(history.location.search).get('date'))) {
+      return;
+    }
     if (!dates || dates.length === 0) {
       setSelectedDate(null);
     } else {
       setSelectedDate(dates[dates.length - 1]);
     }
-  }, [availableDates, hazardLayerId]);
+  }, [availableDates, hazardLayerId, history.location.search]);
 
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
@@ -163,10 +168,9 @@ function Analyser({ classes }: AnalyserProps) {
       return;
     } // hasn't been calculated yet
 
-    // Temporary Commented
-    // if (!selectedDate) {
-    //   throw new Error('Date must be given to run analysis');
-    // }
+    if (!selectedDate) {
+      throw new Error('Date must be given to run analysis');
+    }
 
     if (!hazardLayerId || !baselineLayerId) {
       throw new Error('Layer should be selected to run analysis');
@@ -182,7 +186,7 @@ function Analyser({ classes }: AnalyserProps) {
     const params: AnalysisDispatchParams = {
       hazardLayer: selectedHazardLayer,
       baselineLayer: selectedBaselineLayer,
-      date: selectedDate || 1606824000000,
+      date: selectedDate,
       statistic,
       extent: adminBoundariesExtent,
       threshold: {
@@ -204,6 +208,7 @@ function Analyser({ classes }: AnalyserProps) {
     const hazardLayerParamId: string = params.get('hazardLayerId') || '';
     const baselineLayerParamId: string = params.get('baselineLayerId') || '';
     const selectedParamDate: number = Number(params.get('date'));
+    const statisticParam: string = params.get('statistic') || '';
 
     function isHazardLayerId(layer: string): layer is LayerKey {
       return typeof layer === 'string';
@@ -219,10 +224,20 @@ function Analyser({ classes }: AnalyserProps) {
       setBaselineLayerId(baselineLayerParamId);
     }
 
+    // Mean is selected by default
+    if (statisticParam === 'median') {
+      setStatistic(AggregationOperations.Median);
+    }
+
     setSelectedDate(selectedParamDate);
 
     // Avoid Running Analyser if boundary Layer data is Null
-    if (boundaryLayerData && hazardLayerId && baselineLayerId) {
+    if (
+      boundaryLayerData &&
+      hazardLayerId &&
+      baselineLayerId &&
+      statisticParam
+    ) {
       runAnalyser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
