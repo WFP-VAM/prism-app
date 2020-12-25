@@ -52,17 +52,15 @@ function LayerDropdown({
                 {category.title}
               </Typography>
             </ListSubheader>,
-            ...category.layers.map(layer => {
-              return (
-                <MenuItem
-                  style={{ color: 'black' }}
-                  key={layer.id}
-                  value={layer.id}
-                >
-                  {layer.title}
-                </MenuItem>
-              );
-            }),
+            ...category.layers.map(layer => (
+              <MenuItem
+                style={{ color: 'black' }}
+                key={layer.id}
+                value={layer.id}
+              >
+                {layer.title}
+              </MenuItem>
+            )),
           ],
           (placeholder
             ? [
