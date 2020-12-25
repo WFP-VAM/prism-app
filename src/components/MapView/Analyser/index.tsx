@@ -95,8 +95,6 @@ function Analyser({ classes }: AnalyserProps) {
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
-    // eslint-disable-next-line no-debugger
-    debugger;
     const dates = hazardLayerId
       ? availableDates[
           (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
@@ -141,8 +139,6 @@ function Analyser({ classes }: AnalyserProps) {
   };
 
   const adminBoundariesExtent = useMemo(() => {
-    // eslint-disable-next-line no-debugger
-    debugger;
     if (!boundaryLayerData) {
       // not loaded yet. Should be loaded in MapView
       return null;
@@ -198,18 +194,23 @@ function Analyser({ classes }: AnalyserProps) {
     await dispatch(requestAndStoreAnalysis(params));
     // eslint-disable-next-line fp/no-mutating-methods
     history.push(
-      `?hazardLayerId=${hazardLayerId}&baselineLayerId=${baselineLayerId}&date=${selectedDate}&statistic=${statistic}&extent=${adminBoundariesExtent}&aboveThreshold=${aboveThreshold}&belowThreshold=${belowThreshold}`,
+      `?hazardLayerId=${hazardLayerId}&baselineLayerId=${baselineLayerId}&date=${selectedDate}&statistic=${statistic}&aboveThreshold=${aboveThreshold}&belowThreshold=${belowThreshold}`,
     );
   };
 
   useEffect(() => {
     const queryString = history.location.search;
     const params = new URLSearchParams(queryString);
-    const hazardLayerParamId: string = params.get('hazardLayerId') || '';
-    const baselineLayerParamId: string = params.get('baselineLayerId') || '';
+    const hazardLayerParamId = params.get('hazardLayerId');
+    const baselineLayerParamId = params.get('baselineLayerId');
     const selectedParamDate: number = Number(params.get('date'));
-    const statisticParam: string = params.get('statistic') || '';
+    const statisticParam = params.get('statistic');
+    const aboveThresholdParam: string = params.get('aboveThreshold') || '';
+    const belowThresholdParam: string = params.get('belowThreshold') || '';
 
+    if (!hazardLayerParamId || !baselineLayerParamId || !statisticParam) {
+      return;
+    }
     function isHazardLayerId(layer: string): layer is LayerKey {
       return typeof layer === 'string';
     }
@@ -230,14 +231,11 @@ function Analyser({ classes }: AnalyserProps) {
     }
 
     setSelectedDate(selectedParamDate);
+    setAboveThreshold(aboveThresholdParam);
+    setBelowThreshold(belowThresholdParam);
 
     // Avoid Running Analyser if boundary Layer data is Null
-    if (
-      boundaryLayerData &&
-      hazardLayerId &&
-      baselineLayerId &&
-      statisticParam
-    ) {
+    if (boundaryLayerData && hazardLayerId && baselineLayerId && selectedDate) {
       runAnalyser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
