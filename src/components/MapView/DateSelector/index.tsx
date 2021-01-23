@@ -120,24 +120,25 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     dispatch(updateDateRange({ startDate: time, endDate: time }));
   }
 
-  function incrementDate() {
-    const selectedIndex = findDateIndex(
-      availableDates,
-      stateStartDate as number,
-    );
-    if (availableDates[selectedIndex + 1]) {
-      updateStartDate(new Date(availableDates[selectedIndex + 1]));
+  function setDatePosition(date: number, increment: number) {
+    const selectedIndex = findDateIndex(availableDates, date as number);
+    if (availableDates[selectedIndex + increment]) {
+      updateStartDate(new Date(availableDates[selectedIndex + increment]));
     }
   }
 
+  // useful to move pointer to closest date when change map layer
+  useEffect(() => {
+    setDatePosition(stateStartDate as number, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [availableDates]);
+
+  function incrementDate() {
+    setDatePosition(stateStartDate as number, 1);
+  }
+
   function decrementDate() {
-    const selectedIndex = findDateIndex(
-      availableDates,
-      stateStartDate as number,
-    );
-    if (availableDates[selectedIndex - 1]) {
-      updateStartDate(new Date(availableDates[selectedIndex - 1]));
-    }
+    setDatePosition(stateStartDate as number, -1);
   }
 
   // click on timeline
@@ -356,7 +357,7 @@ const styles = (theme: Theme) =>
       height: '36px',
       flexGrow: 1,
       cursor: 'e-resize',
-      overflow: 'hidden'
+      overflow: 'hidden',
     },
 
     dateLabelContainer: {
