@@ -35,6 +35,7 @@ function LayerDropdown({
     <FormControl {...rest}>
       <Select
         defaultValue={defaultValue}
+        value={value}
         onChange={e => {
           setValue(e.target.value as LayerKey);
         }}

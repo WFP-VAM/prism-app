@@ -199,8 +199,6 @@ function Analyser({ classes }: AnalyserProps) {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line no-debugger
-    debugger;
     const queryString = history.location.search;
     const params = new URLSearchParams(queryString);
     const hazardLayerParamId = params.get('hazardLayerId');

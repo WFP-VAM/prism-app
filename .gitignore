@@ -32,4 +32,5 @@ yarn-error.log*
 .vscode/
 .idea/
 
+# VSCode extensions
 TODO
