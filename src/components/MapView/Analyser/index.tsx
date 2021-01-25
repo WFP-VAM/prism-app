@@ -34,6 +34,7 @@ import bbox from '@turf/bbox';
 
 import DatePicker from 'react-datepicker';
 
+import { extractPropsFromURL } from './util';
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
@@ -44,6 +45,7 @@ import {
   NSOLayerProps,
   WMSLayerProps,
   isLayerKey,
+  isStatistic,
   LayerKey,
 } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
@@ -200,21 +202,17 @@ function Analyser({ classes }: AnalyserProps) {
   };
 
   useEffect(() => {
-    const queryString = history.location.search;
-    const params = new URLSearchParams(queryString);
-    const hazardLayerParamId = params.get('hazardLayerId');
-    const baselineLayerParamId = params.get('baselineLayerId');
-    const selectedParamDate: number = Number(params.get('date'));
-    const statisticParam = params.get('statistic');
-    const aboveThresholdParam: string = params.get('aboveThreshold') || '';
-    const belowThresholdParam: string = params.get('belowThreshold') || '';
+    const {
+      hazardLayerParamId,
+      baselineLayerParamId,
+      selectedParamDate,
+      statisticParam,
+      aboveThresholdParam,
+      belowThresholdParam,
+    } = extractPropsFromURL(history.location.search);
 
     if (!hazardLayerParamId || !baselineLayerParamId || !statisticParam) {
       return;
-    }
-
-    function isStatistic(layer: string): layer is AggregationOperations {
-      return layer in AggregationOperations;
     }
 
     if (isLayerKey(hazardLayerParamId)) {

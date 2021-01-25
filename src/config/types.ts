@@ -212,6 +212,9 @@ export enum AggregationOperations {
   Median = 'median',
 }
 
+export const isStatistic = (stat: string): stat is AggregationOperations =>
+  stat in AggregationOperations;
+
 export type ThresholdDefinition = { below?: number; above?: number };
 
 export class ImpactLayerProps extends CommonLayerProps {
