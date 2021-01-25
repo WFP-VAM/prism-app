@@ -235,11 +235,11 @@ function Analyser({ classes }: AnalyserProps) {
     setBelowThreshold(belowThresholdParam);
 
     // Avoid Running Analyser if boundary Layer data is Null
-    if (boundaryLayerData && hazardLayerId && baselineLayerId && selectedDate) {
+    if (hazardLayerId && baselineLayerId && selectedDate) {
       runAnalyser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boundaryLayerData]);
+  }, [availableDates, boundaryLayerData, history.location.search]);
 
   return (
     <div className={classes.analyser}>

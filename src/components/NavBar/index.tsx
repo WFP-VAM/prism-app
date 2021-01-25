@@ -16,6 +16,10 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { useDispatch } from 'react-redux';
+// Basic CSS Layout for the whole page
+
+import { clearAnalysisResult } from '../../context/analysisResultStateSlice';
 
 import MenuItem from './MenuItem';
 import { menuList } from './utils';
@@ -35,10 +39,12 @@ const rightSideLinks = [
 
 function NavBar({ classes }: NavBarProps) {
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
-
+  const dispatch = useDispatch();
   const menu = menuList.map(({ title, ...category }) => (
     <MenuItem key={title} title={title} {...category} />
   ));
+
+  const clearAnalysis = () => dispatch(clearAnalysisResult());
 
   const buttons = rightSideLinks.map(({ title, icon, href }) => (
     <Grid item key={title}>
@@ -64,6 +70,7 @@ function NavBar({ classes }: NavBarProps) {
               className={classes.logo}
               component={Link}
               to="/"
+              onClick={clearAnalysis}
             >
               Prism
             </Typography>
