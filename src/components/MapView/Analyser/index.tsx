@@ -43,6 +43,7 @@ import {
   BoundaryLayerProps,
   NSOLayerProps,
   WMSLayerProps,
+  isLayerKey,
   LayerKey,
 } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
@@ -100,9 +101,9 @@ function Analyser({ classes }: AnalyserProps) {
           (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
         ]
       : null;
-    if (Number(new URLSearchParams(history.location.search).get('date'))) {
-      return;
-    }
+    // if (Number(new URLSearchParams(history.location.search).get('date'))) {
+    //   return;
+    // }
     if (!dates || dates.length === 0) {
       setSelectedDate(null);
     } else {
@@ -193,7 +194,7 @@ function Analyser({ classes }: AnalyserProps) {
 
     await dispatch(requestAndStoreAnalysis(params));
     // eslint-disable-next-line fp/no-mutating-methods
-    history.push(
+    history.replace(
       `?hazardLayerId=${hazardLayerId}&baselineLayerId=${baselineLayerId}&date=${selectedDate}&statistic=${statistic}&aboveThreshold=${aboveThreshold}&belowThreshold=${belowThreshold}`,
     );
   };
@@ -211,23 +212,19 @@ function Analyser({ classes }: AnalyserProps) {
     if (!hazardLayerParamId || !baselineLayerParamId || !statisticParam) {
       return;
     }
-    function isHazardLayerId(layer: string): layer is LayerKey {
-      return typeof layer === 'string';
-    }
-    function isBaselineLayerId(layer: string): layer is LayerKey {
-      return typeof layer === 'string';
+
+    function isStatistic(layer: string): layer is AggregationOperations {
+      return layer in AggregationOperations;
     }
 
-    if (isHazardLayerId(hazardLayerParamId)) {
+    if (isLayerKey(hazardLayerParamId)) {
       setHazardLayerId(hazardLayerParamId);
     }
-    if (isBaselineLayerId(baselineLayerParamId)) {
+    if (isLayerKey(baselineLayerParamId)) {
       setBaselineLayerId(baselineLayerParamId);
     }
-
-    // Mean is selected by default
-    if (statisticParam === 'median') {
-      setStatistic(AggregationOperations.Median);
+    if (isStatistic(statisticParam)) {
+      setStatistic(statisticParam);
     }
 
     setSelectedDate(selectedParamDate);
@@ -239,7 +236,7 @@ function Analyser({ classes }: AnalyserProps) {
       runAnalyser();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [availableDates, boundaryLayerData, history.location.search]);
+  }, [boundaryLayerData, availableDates, history.location.search]);
 
   return (
     <div className={classes.analyser}>
