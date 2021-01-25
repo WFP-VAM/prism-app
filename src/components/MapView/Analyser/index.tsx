@@ -199,6 +199,8 @@ function Analyser({ classes }: AnalyserProps) {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line no-debugger
+    debugger;
     const queryString = history.location.search;
     const params = new URLSearchParams(queryString);
     const hazardLayerParamId = params.get('hazardLayerId');
@@ -214,14 +216,14 @@ function Analyser({ classes }: AnalyserProps) {
     function isHazardLayerId(layer: string): layer is LayerKey {
       return typeof layer === 'string';
     }
-    function isBaselineLAyerId(layer: string): layer is LayerKey {
+    function isBaselineLayerId(layer: string): layer is LayerKey {
       return typeof layer === 'string';
     }
 
     if (isHazardLayerId(hazardLayerParamId)) {
       setHazardLayerId(hazardLayerParamId);
     }
-    if (isBaselineLAyerId(baselineLayerParamId)) {
+    if (isBaselineLayerId(baselineLayerParamId)) {
       setBaselineLayerId(baselineLayerParamId);
     }
 
@@ -400,7 +402,7 @@ function Analyser({ classes }: AnalyserProps) {
             {!analysisResult && (
               <Button
                 className={classes.innerAnalysisButton}
-                onClick={() => runAnalyser()}
+                onClick={runAnalyser}
                 disabled={
                   !!thresholdError || // if there is a threshold error
                   !selectedDate || // or date hasn't been selected
