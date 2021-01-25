@@ -40,6 +40,7 @@ function LayerDropdown({
           setValue(e.target.value as LayerKey);
         }}
         id={`${title}-select`}
+        value={value}
       >
         {categories.reduce(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
