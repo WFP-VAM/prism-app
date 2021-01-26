@@ -260,6 +260,5 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-toolbar>
   </mock-appbar>
-   
 </div>
 `;

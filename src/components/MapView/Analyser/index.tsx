@@ -103,15 +103,12 @@ function Analyser({ classes }: AnalyserProps) {
           (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
         ]
       : null;
-    // if (Number(new URLSearchParams(history.location.search).get('date'))) {
-    //   return;
-    // }
     if (!dates || dates.length === 0) {
       setSelectedDate(null);
     } else {
       setSelectedDate(dates[dates.length - 1]);
     }
-  }, [availableDates, hazardLayerId, history.location.search]);
+  }, [availableDates, hazardLayerId]);
 
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
@@ -233,8 +230,16 @@ function Analyser({ classes }: AnalyserProps) {
     if (hazardLayerId && baselineLayerId && selectedDate) {
       runAnalyser();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boundaryLayerData, availableDates, history.location.search]);
+
+  useEffect(() => {
+    return () => {
+      clearAnalysis();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history.location.search]);
 
   return (
     <div className={classes.analyser}>
