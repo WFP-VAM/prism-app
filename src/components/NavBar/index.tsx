@@ -18,6 +18,7 @@ import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import MenuItem from './MenuItem';
+import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
 
 const rightSideLinks = [
@@ -107,7 +108,9 @@ function NavBar({ classes }: NavBarProps) {
                     <Grid container justify="space-around" item>
                       {buttons}
                     </Grid>
-                    <Grid item>{menu}</Grid>
+                    <Grid container direction="column" item>
+                      <MenuItemMobile />
+                    </Grid>
                   </Grid>
                 </div>
               </Drawer>
@@ -144,9 +147,10 @@ const styles = (theme: Theme) =>
 
     drawerContent: {
       backgroundColor: theme.palette.primary.main,
-      padding: 16,
+      paddingTop: 16,
       width: '80vw',
       height: '100vh',
+      overflowX: 'hidden',
     },
 
     menuBars: {
