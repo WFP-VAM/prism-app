@@ -1065,5 +1065,50 @@
         "color": "#0868ac"
       }
     ]
+  },
+  "adam_earthquakes": {
+    "title": "Global Earthquakes Epicenters",
+    "type": "wms",
+    "server_layer_name": "prism:wld_eq_historical",
+    "opacity": 0.5,
+    "legend": [],
+    "legend_text": "",
+    "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "adamts_buffers": {
+    "title": "Wind buffers",
+    "type": "wms",
+    "server_layer_name": "geonode:wld_nhr_adamtsbufferscurrent_wfp",
+    "opacity": 0.5,
+    "legend": [],
+    "legend_text": "",
+    "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "adamts_nodes": {
+    "title": "Current nodes",
+    "type": "wms",
+    "server_layer_name": "geonode:wld_nhr_adamtsnodescurrent_wfp",
+    "opacity": 0.5,
+    "legend": [],
+    "legend_text": "",
+    "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "adamts_tracks": {
+    "title": "Current tracks",
+    "type": "wms",
+    "server_layer_name": "geonode:wld_nhr_adamtstrackscurrent_wfp",
+    "opacity": 0.5,
+    "legend": [],
+    "legend_text": "",
+    "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "cyclones": {
+    "title": "World cyclones",
+    "type": "wms",
+    "server_layer_name": "prism:wld_ibtracs",
+    "opacity": 0.5,
+    "legend": [],
+    "legend_text": "",
+    "base_url": "https://geonode.wfp.org/geoserver"
   }
 }

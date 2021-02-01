@@ -12,7 +12,12 @@ import {
 } from '@material-ui/core';
 
 import { MenuItemType, LayerType, TableType } from '../../../config/types';
-import { addLayer, removeLayer } from '../../../context/mapStateSlice';
+import {
+  removeLayers,
+  addLayer,
+  removeLayer,
+  addLayers,
+} from '../../../context/mapStateSlice';
 import { loadTable } from '../../../context/tableStateSlice';
 import { layersSelector } from '../../../context/mapStateSlice/selectors';
 
@@ -40,6 +45,20 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
 
   const showTableClicked = (table: TableType) => {
     dispatch(loadTable(table.id));
+  };
+
+  const toggleLayers = (layers: LayerType[]) => {
+    const layersIds = layers.map(l => l.id);
+    const selectedLayersIds = selectedLayers.map(l => l.id);
+
+    if (
+      layersIds.filter(l => selectedLayersIds.includes(l)).length ===
+      layersIds.length
+    ) {
+      dispatch(removeLayers(layersIds));
+    } else {
+      dispatch(addLayers(layers));
+    }
   };
 
   const open = Boolean(anchorEl);
@@ -74,44 +93,52 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
           className: classes.paper,
         }}
       >
-        {layersCategories.map(({ title: categoryTitle, layers, tables }) => (
-          <div key={categoryTitle} className={classes.categoryContainer}>
-            <Typography variant="body2" className={classes.categoryTitle}>
-              {categoryTitle}
-            </Typography>
-            <hr />
+        {layersCategories.map(
+          ({ title: categoryTitle, layers, tables, groupLayer }) => (
+            <div key={categoryTitle} className={classes.categoryContainer}>
+              <Typography variant="body2" className={classes.categoryTitle}>
+                {categoryTitle}
+              </Typography>
+              <hr />
 
-            {layers.map(layer => {
-              const { id: layerId, title: layerTitle } = layer;
-              const selected = Boolean(
-                selectedLayers.find(({ id: testId }) => testId === layerId),
-              );
-              return (
-                <div key={layerId} className={classes.layersContainer}>
-                  <Switch
-                    size="small"
-                    color="default"
-                    checked={selected}
-                    onChange={() => toggleLayerValue(selected, layer)}
-                    inputProps={{ 'aria-label': layerTitle }}
-                  />{' '}
-                  <Typography variant="body1">{layerTitle}</Typography>
-                </div>
-              );
-            })}
+              {layers.map(layer => {
+                const { id: layerId, title: layerTitle } = layer;
+                const selected = Boolean(
+                  selectedLayers.find(({ id: testId }) => testId === layerId),
+                );
+                return (
+                  <div key={layerId} className={classes.layersContainer}>
+                    <Switch
+                      size="small"
+                      color="default"
+                      checked={selected}
+                      onChange={() => toggleLayerValue(selected, layer)}
+                      inputProps={{ 'aria-label': layerTitle }}
+                    />{' '}
+                    <Typography variant="body1">{layerTitle}</Typography>
+                  </div>
+                );
+              })}
 
-            {tables.map(table => (
-              <Button
-                className={classes.button}
-                id={table.title}
-                key={table.title}
-                onClick={() => showTableClicked(table)}
-              >
-                <Typography variant="body1">{table.title}</Typography>
-              </Button>
-            ))}
-          </div>
-        ))}
+              {tables.map(table => (
+                <Button
+                  className={classes.button}
+                  id={table.title}
+                  key={table.title}
+                  onClick={() => showTableClicked(table)}
+                >
+                  <Typography variant="body1">{table.title}</Typography>
+                </Button>
+              ))}
+
+              {groupLayer === true ? (
+                <button type="button" onClick={() => toggleLayers(layers)}>
+                  View All
+                </button>
+              ) : null}
+            </div>
+          ),
+        )}
       </Popover>
     </>
   );

@@ -35,14 +35,18 @@ type LayersCategoriesType = LayersCategoryType[];
 
 type MenuItemsType = MenuItemType[];
 
-function formatLayersCategories(layersList: {
-  [key: string]: Array<LayerKey | TableKey>;
-}): LayersCategoriesType {
+function formatLayersCategories(
+  layersList: {
+    [key: string]: Array<LayerKey | TableKey>;
+  },
+  groupedLayers: string[],
+): LayersCategoriesType {
   return map(layersList, (layerKeys, layersListKey) => {
     return {
       title: startCase(layersListKey),
       layers: layerKeys.filter(isLayerKey).map(key => LayerDefinitions[key]),
       tables: layerKeys.filter(isTableKey).map(key => TableDefinitions[key]),
+      groupLayer: groupedLayers.includes(layersListKey),
     };
   });
 }
@@ -77,7 +81,10 @@ export const menuList: MenuItemsType = map(
     return {
       title: startCase(categoryKey),
       icon: icons[categoryKey],
-      layersCategories: formatLayersCategories(layersCategories),
+      layersCategories: formatLayersCategories(
+        layersCategories,
+        appJSON.grouped_layers,
+      ),
     };
   },
 );

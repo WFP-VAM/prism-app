@@ -2,20 +2,24 @@
   "country": "Mongolia",
   "serversUrls": {
     "wms": [
-      "https://mongolia.sibelius-datacube.org:5000/wms"
+      "https://mongolia.sibelius-datacube.org:5000/wms",
+      "https://geonode.wfp.org/geoserver/wms"
     ]
   },
   "map": {
     "latitude": 46.810021,
     "longitude": 103.111657,
-    "zoom": 4.5
+    "zoom": 1
   },
+  "grouped_layers": ["adam_tropical_storms", "adam_earthquakes"],
   "categories": {
     "hazards": {
       "drought_indicators": [
         "pasture_anomaly",
         "ndvi",
-        "ModisVHI"
+        "ModisVHI",
+        "cyclones",
+        "adam_earthquakes"
       ],
       "winter_conditions": [
         "ModisSnowPercentage",
@@ -26,6 +30,11 @@
         "min_temperature_groundstations",
         "max_temperature_groundstations",
         "total_precipitation_groundstations"
+      ],
+      "adam_tropical_storms": [
+        "adamts_buffers",
+        "adamts_nodes",
+        "adamts_tracks"
       ]
     },
     "exposure": {

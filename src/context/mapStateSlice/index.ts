@@ -71,6 +71,22 @@ export const mapStateSlice = createSlice({
       ...rest,
       errors: errors.filter(msg => msg !== payload),
     }),
+
+    addLayers: (
+      { layers, ...rest },
+      { payload }: PayloadAction<LayerType[]>,
+    ) => ({
+      ...rest,
+      layers: layers.filter(l => l.type === 'boundary').concat(payload),
+    }),
+
+    removeLayers: (
+      { layers, ...rest },
+      { payload }: PayloadAction<string[]>,
+    ) => ({
+      ...rest,
+      layers: layers.filter(({ id }) => payload.includes(id) === false),
+    }),
   },
   extraReducers: builder => {
     builder.addCase(
@@ -109,6 +125,8 @@ export const {
   removeLayer,
   updateDateRange,
   setMap,
+  addLayers,
+  removeLayers,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;

@@ -277,6 +277,7 @@ export interface LayersCategoryType {
   title: string;
   layers: LayerType[];
   tables: TableType[];
+  groupLayer: boolean;
 }
 
 export interface MenuItemType {
