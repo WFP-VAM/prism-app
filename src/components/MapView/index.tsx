@@ -14,6 +14,7 @@ import ReactMapboxGl from 'react-mapbox-gl';
 import { Map } from 'mapbox-gl';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
+import Download from './Download';
 // layers
 import {
   BoundaryLayer,
@@ -53,6 +54,7 @@ import { addNotification } from '../../context/notificationStateSlice';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
+  preserveDrawingBuffer: true,
 });
 
 type LayerComponentsMap<U extends LayerType> = {
@@ -223,6 +225,7 @@ function MapView({ classes }: MapViewProps) {
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
+            <Download />
             <Legends layers={selectedLayers} />
           </Grid>
         </Grid>

@@ -1,0 +1,136 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="MuiGrid-root MuiGrid-item"
+  >
+    <mock-button
+      color="primary"
+      variant="contained"
+    >
+      <svg
+        aria-hidden="true"
+        class="svg-inline--fa fa-file-export fa-w-18 "
+        data-icon="file-export"
+        data-prefix="fas"
+        focusable="false"
+        role="img"
+        style="font-size: 1.2em;"
+        viewBox="0 0 576 512"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M384 121.9c0-6.3-2.5-12.4-7-16.9L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128zM571 308l-95.7-96.4c-10.1-10.1-27.4-3-27.4 11.3V288h-64v64h64v65.2c0 14.3 17.3 21.4 27.4 11.3L571 332c6.6-6.6 6.6-17.4 0-24zm-379 28v-32c0-8.8 7.2-16 16-16h176V160H248c-13.2 0-24-10.8-24-24V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V352H208c-8.8 0-16-7.2-16-16z"
+          fill="currentColor"
+        />
+      </svg>
+      <mock-hidden
+        smdown="true"
+      >
+        <mock-typography
+          classname="Download-label-1"
+          variant="body2"
+        >
+          Export
+        </mock-typography>
+      </mock-hidden>
+      <svg
+        aria-hidden="true"
+        class="svg-inline--fa fa-caret-down fa-w-10 "
+        data-icon="caret-down"
+        data-prefix="fas"
+        focusable="false"
+        role="img"
+        style="margin-left: 10px;"
+        viewBox="0 0 320 512"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+          fill="currentColor"
+        />
+      </svg>
+    </mock-button>
+    <mock-menu
+      anchororigin="[object Object]"
+      classes="[object Object]"
+      elevation="0"
+      id="export-menu"
+      keepmounted="true"
+      open="false"
+      transformorigin="[object Object]"
+    >
+      <mock-menuitem
+        classes="[object Object]"
+      >
+        <div
+          class="MuiListItemIcon-root"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-image fa-w-16 "
+            color="white"
+            data-icon="image"
+            data-prefix="fas"
+            focusable="false"
+            role="img"
+            style="font-size: 1em;"
+            viewBox="0 0 512 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M464 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h416c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM112 120c-30.928 0-56 25.072-56 56s25.072 56 56 56 56-25.072 56-56-25.072-56-56-56zM64 384h384V272l-87.515-87.515c-4.686-4.686-12.284-4.686-16.971 0L208 320l-55.515-55.515c-4.686-4.686-12.284-4.686-16.971 0L64 336v48z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+        <mock-listitemtext
+          primary="IMAGE"
+        />
+      </mock-menuitem>
+    </mock-menu>
+    <mock-dialog
+      aria-labelledby="dialog-preview"
+      keepmounted="true"
+      maxwidth="xl"
+      open="false"
+    >
+      <mock-dialogtitle
+        classname="Download-title-2"
+        id="dialog-preview"
+      >
+        Map Preview
+      </mock-dialogtitle>
+      <mock-dialogcontent>
+        <canvas />
+      </mock-dialogcontent>
+      <mock-dialogactions>
+        <mock-button
+          color="primary"
+        >
+          Cancel
+        </mock-button>
+        <mock-button
+          color="primary"
+          variant="contained"
+        >
+          Download PNG
+        </mock-button>
+        <mock-button
+          color="primary"
+          variant="contained"
+        >
+          Download JPEG
+        </mock-button>
+        <mock-button
+          color="primary"
+          variant="contained"
+        >
+          Download PDF
+        </mock-button>
+      </mock-dialogactions>
+    </mock-dialog>
+  </div>
+</div>
+`;
