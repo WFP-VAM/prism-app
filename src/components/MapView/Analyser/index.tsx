@@ -199,7 +199,7 @@ function Analyser({ classes }: AnalyserProps) {
         }}
       >
         <FontAwesomeIcon
-          style={{ marginRight: '10px', fontSize: '1.6em' }}
+          style={{ marginRight: '10px', fontSize: '1.2em' }}
           icon={faChartBar}
         />
         <Typography variant="body2">Run Analysis</Typography>
@@ -372,9 +372,6 @@ const styles = (theme: Theme) =>
   createStyles({
     analyser: {
       zIndex: theme.zIndex.drawer,
-      position: 'absolute',
-      top: 2,
-      left: 2,
       textAlign: 'left',
     },
     analyserMenu: {
