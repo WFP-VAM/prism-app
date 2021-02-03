@@ -26,6 +26,8 @@ import {
   faTable,
 } from '@fortawesome/free-solid-svg-icons';
 
+import { jsPDF } from 'jspdf';
+
 import { useSelector } from 'react-redux';
 import {
   mapSelector,
@@ -82,11 +84,15 @@ function Download({ classes }: DownloadProps) {
   useEffect(() => {
     if (open && selectedMap) {
       const activeLayers = selectedMap.getCanvas();
+      const activeMap2 = selectedMap.getCanvas();
+
       const canvas = previewRef.current;
       canvas!.setAttribute('width', activeLayers.width.toString());
-      canvas!.setAttribute('height', activeLayers.height.toString());
+      canvas!.setAttribute('height', (activeLayers.height + 100).toString());
+
       const context = canvas!.getContext('2d');
       context!.drawImage(activeLayers, 0, 0);
+      context!.drawImage(activeMap2, 0, activeLayers.height);
     }
   });
 
@@ -94,13 +100,26 @@ function Download({ classes }: DownloadProps) {
     setOpen(false);
   };
 
-  function downloadPng() {
+  const download = (format: String) => {
+    const ext = format === 'pdf' ? 'png' : format;
     const canvas = previewRef!.current;
-    const img = canvas!.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.setAttribute('href', img);
-    link.setAttribute('download', 'map.png');
-    link.click();
+    const file = canvas!.toDataURL(`image/${ext}`);
+    if (format === 'pdf') {
+      // eslint-disable-next-line new-cap
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+      });
+      const imgProps = pdf.getImageProperties(file);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('map.pdf');
+    } else {
+      const link = document.createElement('a');
+      link.setAttribute('href', file);
+      link.setAttribute('download', `map.${ext}`);
+      link.click();
+    }
     setOpen(false);
   }
 
@@ -119,7 +138,7 @@ function Download({ classes }: DownloadProps) {
   return (
     <Grid item>
       <Button variant="contained" color="primary" onClick={handleClick}>
-        <FontAwesomeIcon style={{ fontSize: '1em' }} icon={faFileExport} />
+        <FontAwesomeIcon style={{ fontSize: '1.2em' }} icon={faFileExport} />
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
             Download
@@ -142,7 +161,7 @@ function Download({ classes }: DownloadProps) {
               icon={faImage}
             />
           </ListItemIcon>
-          <ListItemText primary="PNG" />
+          <ListItemText primary="IMAGE" />
         </ExportMenuItem>
         {lastLayer && lastLayer.downloadUrl ? (
           <ExportMenuItem
@@ -181,8 +200,26 @@ function Download({ classes }: DownloadProps) {
           <Button onClick={modalClose} color="primary">
             Cancel
           </Button>
-          <Button variant="contained" onClick={downloadPng} color="primary">
-            Download
+          <Button
+            variant="contained"
+            onClick={() => download('png')}
+            color="primary"
+          >
+            Download PNG
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => download('jpeg')}
+            color="primary"
+          >
+            Download JPEG
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => download('pdf')}
+            color="primary"
+          >
+            Download PDF
           </Button>
         </DialogActions>
       </Dialog>

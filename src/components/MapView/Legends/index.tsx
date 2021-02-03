@@ -91,7 +91,7 @@ function Legends({ classes, layers }: LegendsProps) {
         onClick={() => setOpen(!open)}
       >
         <FontAwesomeIcon
-          style={{ fontSize: '1em' }}
+          style={{ fontSize: '1.2em' }}
           icon={open ? faEyeSlash : faEye}
         />
         <Hidden smDown>

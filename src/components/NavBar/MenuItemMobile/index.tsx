@@ -22,7 +22,7 @@ import { loadTable } from '../../../context/tableStateSlice';
 import { layersSelector } from '../../../context/mapStateSlice/selectors';
 import { menuList } from '../utils';
 
-function MenuMobile({ classes }: MenuMobileProps) {
+function MenuItemMobile({ classes }: MenuItemMobileProps) {
   const [expanded, setExpanded] = useState<string>('');
 
   const selectedLayers = useSelector(layersSelector);
@@ -212,6 +212,6 @@ const styles = () =>
     },
   });
 
-export interface MenuMobileProps extends WithStyles<typeof styles> {}
+export interface MenuItemMobileProps extends WithStyles<typeof styles> {}
 
-export default withStyles(styles)(MenuMobile);
+export default withStyles(styles)(MenuItemMobile);

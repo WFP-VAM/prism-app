@@ -198,7 +198,7 @@ function Analyser({ classes }: AnalyserProps) {
           setIsAnalyserFormOpen(!isAnalyserFormOpen);
         }}
       >
-        <FontAwesomeIcon style={{ fontSize: '1em' }} icon={faChartBar} />
+        <FontAwesomeIcon style={{ fontSize: '1.2em' }} icon={faChartBar} />
         <Typography className={classes.label} variant="body2">
           Run Analysis
         </Typography>
