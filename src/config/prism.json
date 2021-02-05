@@ -20,7 +20,11 @@
         "dlx_dekad",
         "xnn_dekad",
         "xln_dekad"
-      ]  
+      ],
+      "MODIS": [
+        "mxd13c1_vim_dekad",
+        "myd11c2_txa_dekad"
+      ]
     }
   }
 }

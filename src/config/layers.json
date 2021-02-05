@@ -162,5 +162,48 @@
       {"value": 30, "color": "#1d2e83"},
       {"value": "255 - no value", "color": "#ffffff", "alpha": 0}
     ]
-  }        
-}  
+  },
+  "mxd13c1_vim_dekad": {
+    "title": "MODIS 8-day NDVI",
+    "type": "wms",
+    "server_layer_name": "mxd13c1_vim_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.5,
+    "legend_text": "NDVI (scaled)",
+    "legend": [
+      {"value": 1000, "color": "#a50026"},
+      {"value": 2000, "color": "#de3f2e"},
+      {"value": 3000, "color": "#f88d52"},
+      {"value": 4000, "color": "#fed380"},
+      {"value": 5000, "color": "#ffffbf"},
+      {"value": 6000, "color": "#ccea83"},
+      {"value": 7000, "color": "#86cb66"},
+      {"value": 8000, "color": "#2da155"},
+      {"value": 9000, "color": "#006837"}
+    ]
+  },
+  "myd11c2_txa_dekad": {
+    "title": "MODIS 8-day Land Surface Temperature",
+    "type": "wms",
+    "server_layer_name": "myd11c2_txa_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.5,
+    "legend_text": "Land Surface Temperature (scalded K)",
+    "legend": [
+      {"value": 11144, "color": "#2b83ba"},
+      {"value": 11653, "color": "#59a4b2"},
+      {"value": 12162, "color": "#88c5aa"},
+      {"value": 12671, "color": "#b3e0a7"},
+      {"value": 13181, "color": "#d2edb0"},
+      {"value": 13690, "color": "#f0f9ba"},
+      {"value": 14199, "color": "#fff1ae"},
+      {"value": 14708, "color": "#fed38c"},
+      {"value": 15218, "color": "#feb669"},
+      {"value": 15727, "color": "#f3854e"},
+      {"value": 16236, "color": "#e54f35"},
+      {"value": 16746, "color": "#d7191c"}
+    ]
+  }
+}
