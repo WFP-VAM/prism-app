@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, useState } from 'react';
 import {
   createStyles,
+  Button,
   Divider,
   Grid,
   List,
@@ -17,10 +18,16 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import ColorIndicator from './ColorIndicator';
 import { LayerType } from '../../../config/types';
+// import {
+//   dateRangeSelector,
+//   layerDataSelector,
+// } from '../../../context/mapStateSlice/selectors';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
+// import { AnalysisResult } from '../../../utils/analysis-utils';
+// import { LayerDataTypes } from '../../../context/layers/layer-data';
 
 function Legends({ classes, layers }: LegendsProps) {
   const [open, setOpen] = useState(true);
@@ -28,13 +35,20 @@ function Legends({ classes, layers }: LegendsProps) {
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const legendItems = [
-    ...layers.map(({ title, legend, legendText }) => {
+    ...layers.map(({ id, type, title, legend, legendText }) => {
       if (!legend || !legendText) {
         // this layer doesn't have a legend (likely boundary), so lets ignore.
         return null;
       }
       return (
-        <LegendItem classes={classes} key={title} title={title} legend={legend}>
+        <LegendItem
+          classes={classes}
+          key={title}
+          id={id}
+          layerType={type}
+          title={title}
+          legend={legend}
+        >
           {legendText}
         </LegendItem>
       );
@@ -75,8 +89,54 @@ function Legends({ classes, layers }: LegendsProps) {
   );
 }
 
-// Children here is legendText
-function LegendItem({ classes, title, legend, children }: LegendItemProps) {
+/* tslint:disable */
+
+function LegendItem({
+  classes,
+  id,
+  layerType,
+  title,
+  legend,
+  children,
+}: LegendItemProps) {
+  const handleDownload = () => {
+    // const { startDate: selectedDate } = useSelector(dateRangeSelector);
+    console.info(id);
+
+    switch (layerType) {
+      case 'nso':
+        // get datalayer using layerDataSelector
+        // dataLayer = layerDataSelector(id || 'disabled');
+        // get data from store using dataLayer based on the layer type
+        // const data = useSelector(dataLayer);
+        // transform data and export in required format
+        break;
+      case 'wms':
+        // get datalayer by forming a url using getWMSUrl and passing necessary layer args
+        // using baseUrl and other parameters we can query tiles and merge them as geotiff
+        // not having the API documentation left me in the blank here
+        break;
+      case 'impact':
+        // get datalayer using layerDataSelector and using selected data
+        // dataLayer = layerDataSelector(id || 'disabled', selectedDate);
+        // get data from store using dataLayer based on the layer type
+        // const data = useSelector(dataLayer);
+        // transform data and export in required format
+        break;
+      case 'point_data':
+        // get datalayer using layerDataSelector and using selected data
+        // dataLayer = layerDataSelector(id || 'disabled', selectedDate);
+        // get data from store using dataLayer based on the layer type
+        // const data = useSelector(dataLayer);
+        // transform data and export in required format
+        break;
+      default:
+        // Handle unsupported layer types
+        break;
+    }
+  };
+  /* tslint:enable */
+
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
@@ -106,6 +166,18 @@ function LegendItem({ classes, title, legend, children }: LegendItemProps) {
               <Typography variant="h5">{children}</Typography>
             </Grid>
           )}
+
+          <Divider />
+
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleDownload}
+            >
+              <Typography variant="body2">Download Data</Typography>
+            </Button>
+          </Grid>
         </Grid>
       </Paper>
     </ListItem>
@@ -138,6 +210,8 @@ export interface LegendsProps extends WithStyles<typeof styles> {
 interface LegendItemProps
   extends WithStyles<typeof styles>,
     PropsWithChildren<{}> {
+  id?: LayerType['id'];
+  layerType?: LayerType['type'];
   title: LayerType['title'];
   legend: LayerType['legend'];
 }

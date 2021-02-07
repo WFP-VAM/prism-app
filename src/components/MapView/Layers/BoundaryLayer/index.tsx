@@ -40,6 +40,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
   }
+
   return (
     <GeoJSONLayer
       id="boundaries"
