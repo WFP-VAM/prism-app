@@ -1,7 +1,9 @@
 {
   "country": "Indonesia",
   "serversUrls": {
-    "wcs": ["https://mongolia.sibelius-datacube.org:5000"],
+    "wcs": [
+      "https://mongolia.sibelius-datacube.org:5000"
+    ],
     "wms": [
       "https://vampire.idn.wfp.org:8081/geoserver/vampire/wms"
     ]
@@ -13,21 +15,45 @@
   },
   "categories": {
     "hazards": {
-      "indikator_iklim": ["rainfall_anomaly", "spi"],
-      "drought_indicators": ["ModisVHI", "dslr"],
-      "floods_risk": ["floods_forecast"]
+      "indikator_iklim": [
+        "rainfall_anomaly",
+        "spi"
+      ],
+      "extreme_rainfall": [
+        "rainfall_extreme_daily"
+      ],
+      "drought_indicators": [
+        "ModisVHI",
+        "dslr"
+      ],
+      "floods_risk": [
+        "floods_forecast"
+      ]
     },
     "exposure": {
-      "demographics": ["population_density", "HH_AGRI", "HH_FE65"]
+      "demographics": [
+        "population_density",
+        "HH_AGRI",
+        "HH_FE65"
+      ]
     },
     "vulnerability": {
-      "vulnerable_groups": ["population_below_poverty", "pou", "OP_UNEMPLOY"]
+      "vulnerable_groups": [
+        "population_below_poverty",
+        "pou",
+        "OP_UNEMPLOY",
+        "STUNRATE"
+      ]
     },
     "capacity": {
-      "livestock_and_crop_preparedness": ["CER_YIELD", "HH_FOODASS"]
+      "livestock_and_crop_preparedness": [
+        "CER_YIELD",
+        "HH_FOODASS",
+        "MOFB_10K"
+      ]
     },
     "risk": {
-      "impact_analysis": ["livestock_vhi"]
+      "impact_analysis": ["impact", "livestock_vhi"]
     },
     "tables": {
       "socioeconomic_data": [

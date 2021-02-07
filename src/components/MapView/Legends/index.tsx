@@ -3,12 +3,15 @@ import {
   Box,
   createStyles,
   Divider,
+  FormControl,
   Grid,
   Hidden,
   List,
   ListItem,
+  MenuItem,
   Paper,
   Slider,
+  Select,
   Typography,
   WithStyles,
   withStyles,
@@ -17,10 +20,14 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-import { useSelector } from 'react-redux';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFormInputValue } from '../../../context/mapStateSlice';
+import {
+  mapSelector,
+  layerFormSelector,
+} from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
-import { LayerType } from '../../../config/types';
+import { LayerFormInput, LayerType } from '../../../config/types';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
@@ -109,13 +116,26 @@ function LegendItem({
   opacity: initialOpacity,
   children,
 }: LegendItemProps) {
+  const dispatch = useDispatch();
   const map = useSelector(mapSelector);
+  const form = useSelector(layerFormSelector(id));
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
 
-  const handleChange = (event: object, newValue: number | number[]) => {
+  const handleChangeOpacity = (event: object, newValue: number | number[]) => {
     setOpacityValue(newValue);
+  };
+
+  const handleChangeFormInput = (event: any, input: LayerFormInput) => {
+    const { value } = event.target;
+    dispatch(
+      setFormInputValue({
+        layerId: id!,
+        inputId: input.id,
+        value,
+      }),
+    );
   };
 
   useEffect(() => {
@@ -142,11 +162,32 @@ function LegendItem({
                   min={0}
                   max={1}
                   aria-labelledby="opacity-slider"
-                  onChange={handleChange}
+                  onChange={handleChangeOpacity}
                 />
               </Box>
             </Grid>
           )}
+          {form &&
+            form.inputs.map(input => {
+              return (
+                <Grid key={input.id} item>
+                  <Typography variant="h4">{input.label}</Typography>
+                  <FormControl>
+                    <Select
+                      className={classes.select}
+                      value={input.value}
+                      onChange={e => handleChangeFormInput(e, input)}
+                    >
+                      {input.values.map(v => (
+                        <MenuItem key={v.value} value={v.value}>
+                          {v.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              );
+            })}
           {legend && (
             <Grid item>
               {legend.map(({ value, color }: any) => (
@@ -190,6 +231,9 @@ const styles = () =>
     paper: {
       padding: 8,
       width: 180,
+    },
+    select: {
+      color: '#333',
     },
     slider: {
       padding: '0 5px',

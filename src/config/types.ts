@@ -117,11 +117,6 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
-export type SourceDefinition = {
-  type: string;
-  path: string;
-};
-
 export type LegendDefinition = {
   value: string | number;
   color: string;
@@ -137,6 +132,12 @@ export type RawDataConfiguration = {
 
 export class CommonLayerProps {
   id: LayerKey;
+
+  @optional
+  downloadUrl?: string;
+
+  @optional
+  popupUrl?: string;
 
   @optional // only optional for boundary layer
   title?: string;
@@ -180,12 +181,21 @@ export class WMSLayerProps extends CommonLayerProps {
   additionalQueryParams?: { [key: string]: string };
 
   @optional
+  formInputs?: LayerFormInput[];
+
+  @optional
   wcsConfig?: RawDataConfiguration;
 }
 
 export class NSOLayerProps extends CommonLayerProps {
   type: 'nso';
-  source: SourceDefinition;
+  source: string;
+
+  @optional
+  hasDate?: boolean;
+
+  @optional
+  dateUrl?: string;
 
   @makeRequired
   title: string;
@@ -204,6 +214,21 @@ export class NSOLayerProps extends CommonLayerProps {
 
   @makeRequired
   dataField: string;
+}
+export class LayerForm {
+  id: string;
+  inputs: LayerFormInput[];
+}
+export class LayerFormInput {
+  id: string;
+  label: string;
+  value: string;
+  values: [
+    {
+      label: string;
+      value: string;
+    },
+  ];
 }
 
 export class StatsApi {
@@ -291,6 +316,7 @@ export interface MenuItemType {
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
+    | NSOLayerProps['id']
     | PointDataLayerProps['id']]: number[];
 };
 
@@ -312,4 +338,11 @@ export class TableType {
 
   @optional
   chart?: ChartConfig;
+}
+
+export class ShowPopupType {
+  coordinates: GeoJSON.Position;
+  locationName: string;
+  popupUrl?: string;
+  featureProperties?: object;
 }

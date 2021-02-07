@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { LayerType } from '../../config/types';
+import { LayerForm, LayerKey, LayerType } from '../../config/types';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 
 interface DateRange {
@@ -15,6 +15,13 @@ export type MapState = {
   loading: number;
   errors: string[];
   layersData: LayerData<any>[];
+  layerForms: LayerForm[];
+};
+
+export type FormInputChange = {
+  layerId: LayerKey;
+  inputId: string;
+  value: string;
 };
 
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -30,6 +37,7 @@ const initialState: MapState = {
   loading: 0,
   errors: [],
   layersData: [],
+  layerForms: [],
 };
 
 function keepLayer(layer: LayerType, payload: LayerType) {
@@ -41,17 +49,45 @@ export const mapStateSlice = createSlice({
   name: 'mapState',
   initialState,
   reducers: {
-    addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => ({
+    addLayer: (
+      { layers, layerForms, ...rest },
+      { payload }: PayloadAction<LayerType>,
+    ) => ({
       ...rest,
       layers: layers.filter(layer => keepLayer(layer, payload)).concat(payload),
+      layerForms: layerForms.concat(
+        'formInputs' in payload
+          ? [{ id: payload.id, inputs: payload.formInputs! }]
+          : [],
+      ),
     }),
 
     removeLayer: (
-      { layers, ...rest },
+      { layers, layerForms, ...rest },
       { payload }: PayloadAction<LayerType>,
     ) => ({
       ...rest,
       layers: layers.filter(({ id }) => id !== payload.id),
+      layerForms: layerForms.filter(({ id }) => id !== payload.id),
+    }),
+
+    setFormInputValue: (
+      { layerForms, ...rest },
+      { payload }: PayloadAction<FormInputChange>,
+    ) => ({
+      ...rest,
+      layerForms: layerForms.map(layerForm =>
+        layerForm.id === payload.layerId
+          ? {
+              id: layerForm.id,
+              inputs: layerForm.inputs.map(({ id, value, ...restInput }) => ({
+                id,
+                value: id === payload.inputId ? payload.value : value,
+                ...restInput,
+              })),
+            }
+          : layerForm,
+      ),
     }),
 
     updateDateRange: (state, { payload }: PayloadAction<DateRange>) => ({
@@ -107,6 +143,7 @@ export const mapStateSlice = createSlice({
 export const {
   addLayer,
   removeLayer,
+  setFormInputValue,
   updateDateRange,
   setMap,
 } = mapStateSlice.actions;

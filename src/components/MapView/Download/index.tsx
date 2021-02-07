@@ -23,10 +23,20 @@ import {
   faFileExport,
   faCaretDown,
   faImage,
+  faTable,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import {
+  mapSelector,
+  layersSelector,
+  dateRangeSelector,
+} from '../../../context/mapStateSlice/selectors';
+
+type DownloadRequest = {
+  url: string;
+  date: number | undefined;
+};
 
 const ExportMenu = withStyles((theme: Theme) => ({
   paper: {
@@ -84,7 +94,7 @@ function Download({ classes }: DownloadProps) {
     setOpen(false);
   };
 
-  const download = () => {
+  function downloadPng() {
     const canvas = previewRef!.current;
     const img = canvas!.toDataURL('image/png');
     const link = document.createElement('a');
@@ -92,7 +102,19 @@ function Download({ classes }: DownloadProps) {
     link.setAttribute('download', 'map.png');
     link.click();
     setOpen(false);
-  };
+  }
+
+  function downloadSourceData(request: DownloadRequest) {
+    const url = new URL(request.url);
+    if (request.date) {
+      url.searchParams.append('date', request.date.toString());
+    }
+    window.open(url.toString());
+  }
+
+  const layers = useSelector(layersSelector);
+  const lastLayer = layers.length > 1 ? layers[layers.length - 1] : null;
+  const selectedDate = useSelector(dateRangeSelector);
 
   return (
     <Grid item>
@@ -100,7 +122,7 @@ function Download({ classes }: DownloadProps) {
         <FontAwesomeIcon style={{ fontSize: '1em' }} icon={faFileExport} />
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
-            Export
+            Download
           </Typography>
         </Hidden>
         <FontAwesomeIcon icon={faCaretDown} style={{ marginLeft: '10px' }} />
@@ -112,8 +134,8 @@ function Download({ classes }: DownloadProps) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <ExportMenuItem>
-          <ListItemIcon onClick={() => setOpen(true)}>
+        <ExportMenuItem onClick={() => setOpen(true)}>
+          <ListItemIcon>
             <FontAwesomeIcon
               color="white"
               style={{ fontSize: '1em' }}
@@ -122,6 +144,25 @@ function Download({ classes }: DownloadProps) {
           </ListItemIcon>
           <ListItemText primary="PNG" />
         </ExportMenuItem>
+        {lastLayer && lastLayer.downloadUrl ? (
+          <ExportMenuItem
+            onClick={() => {
+              downloadSourceData({
+                date: selectedDate.startDate,
+                url: lastLayer.downloadUrl!,
+              });
+            }}
+          >
+            <ListItemIcon>
+              <FontAwesomeIcon
+                color="white"
+                style={{ fontSize: '1em' }}
+                icon={faTable}
+              />
+            </ListItemIcon>
+            <ListItemText primary="Source Data" />
+          </ExportMenuItem>
+        ) : null}
       </ExportMenu>
       <Dialog
         maxWidth="xl"
@@ -140,7 +181,7 @@ function Download({ classes }: DownloadProps) {
           <Button onClick={modalClose} color="primary">
             Cancel
           </Button>
-          <Button variant="contained" onClick={download} color="primary">
+          <Button variant="contained" onClick={downloadPng} color="primary">
             Download
           </Button>
         </DialogActions>

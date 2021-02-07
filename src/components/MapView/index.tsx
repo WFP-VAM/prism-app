@@ -30,6 +30,7 @@ import {
   ImpactLayerProps,
   LayerType,
   WMSLayerProps,
+  NSOLayerProps,
 } from '../../config/types';
 
 import {
@@ -109,7 +110,13 @@ function MapView({ classes }: MapViewProps) {
     const layersWithDateSupport = selectedLayers.filter((layer): layer is
       | WMSLayerProps
       | ImpactLayerProps
-      | PointDataLayerProps => dateSupportLayerTypes.includes(layer.type));
+      | NSOLayerProps
+      | PointDataLayerProps => {
+      if (layer.type === 'nso') {
+        return layer.hasDate!;
+      }
+      return dateSupportLayerTypes.includes(layer.type);
+    });
     if (layersWithDateSupport.length === 0) {
       return [];
     }
@@ -132,6 +139,7 @@ function MapView({ classes }: MapViewProps) {
                 (LayerDefinitions[layer.hazardLayer] as WMSLayerProps)
                   .serverLayerName
               ];
+            case 'nso':
             case 'point_data':
               return serverAvailableDates[layer.id];
           }
@@ -177,6 +185,7 @@ function MapView({ classes }: MapViewProps) {
         </div>
       )}
       <MapboxMap
+        // style="mapbox://styles/mapbox/dark-v10"
         // eslint-disable-next-line react/style-prop-object
         style="mapbox://styles/eric-ovio/ckaoo00yp0woy1ipevzqnvwzi"
         onStyleLoad={saveMap}
