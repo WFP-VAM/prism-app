@@ -89,8 +89,6 @@ function Legends({ classes, layers }: LegendsProps) {
   );
 }
 
-/* tslint:disable */
-
 function LegendItem({
   classes,
   id,
@@ -99,6 +97,7 @@ function LegendItem({
   legend,
   children,
 }: LegendItemProps) {
+  /* tslint:disable */
   const handleDownload = () => {
     // const { startDate: selectedDate } = useSelector(dateRangeSelector);
     console.info(id);
