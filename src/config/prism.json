@@ -3,7 +3,7 @@
   "serversUrls": {
     "wms": [
       "https://mongolia.sibelius-datacube.org:5000/wms",
-      "https://geonode.wfp.org/geoserver/wms"
+      "https://geonode.wfp.org/geoserver/prism/wms/"
     ]
   },
   "map": {
@@ -18,7 +18,6 @@
         "pasture_anomaly",
         "ndvi",
         "ModisVHI",
-        "cyclones",
         "adam_earthquakes"
       ],
       "winter_conditions": [
