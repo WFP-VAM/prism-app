@@ -1,11 +1,13 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useState, useEffect } from 'react';
 import {
+  Box,
   createStyles,
   Divider,
   Grid,
   List,
   ListItem,
   Paper,
+  Slider,
   Theme,
   Typography,
   WithStyles,
@@ -15,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
+import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
 import { LayerType } from '../../../config/types';
 import {
@@ -28,13 +31,21 @@ function Legends({ classes, layers }: LegendsProps) {
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const legendItems = [
-    ...layers.map(({ title, legend, legendText }) => {
+    ...layers.map(({ id, title, legend, legendText, type, opacity }) => {
       if (!legend || !legendText) {
         // this layer doesn't have a legend (likely boundary), so lets ignore.
         return null;
       }
       return (
-        <LegendItem classes={classes} key={title} title={title} legend={legend}>
+        <LegendItem
+          classes={classes}
+          key={title}
+          id={id}
+          title={title}
+          legend={legend}
+          type={type}
+          opacity={opacity}
+        >
           {legendText}
         </LegendItem>
       );
@@ -76,7 +87,30 @@ function Legends({ classes, layers }: LegendsProps) {
 }
 
 // Children here is legendText
-function LegendItem({ classes, title, legend, children }: LegendItemProps) {
+function LegendItem({
+  classes,
+  id,
+  title,
+  legend,
+  type,
+  opacity: initialOpacity,
+  children,
+}: LegendItemProps) {
+  const map = useSelector(mapSelector);
+  const [opacity, setOpacityValue] = useState<number | number[]>(
+    initialOpacity || 0,
+  );
+
+  const handleChangeOpacity = (event: object, newValue: number | number[]) => {
+    setOpacityValue(newValue);
+  };
+
+  useEffect(() => {
+    if (type === 'wms') {
+      map!.setPaintProperty(`layer-${id}`, 'raster-opacity', opacity);
+    }
+  });
+
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
@@ -86,6 +120,20 @@ function LegendItem({ classes, title, legend, children }: LegendItemProps) {
           </Grid>
 
           <Divider />
+          {type === 'wms' && (
+            <Grid item className={classes.slider}>
+              <Box px={1}>
+                <Slider
+                  value={opacity}
+                  step={0.01}
+                  min={0}
+                  max={1}
+                  aria-labelledby="opacity-slider"
+                  onChange={handleChangeOpacity}
+                />
+              </Box>
+            </Grid>
+          )}
 
           {legend && (
             <Grid item>
@@ -129,6 +177,9 @@ const styles = (theme: Theme) =>
       padding: 8,
       width: 180,
     },
+    slider: {
+      padding: '0 5px',
+    },
   });
 
 export interface LegendsProps extends WithStyles<typeof styles> {
@@ -138,8 +189,11 @@ export interface LegendsProps extends WithStyles<typeof styles> {
 interface LegendItemProps
   extends WithStyles<typeof styles>,
     PropsWithChildren<{}> {
+  id?: LayerType['id'];
   title: LayerType['title'];
   legend: LayerType['legend'];
+  type?: LayerType['type'];
+  opacity?: LayerType['opacity'];
 }
 
 export default withStyles(styles)(Legends);
