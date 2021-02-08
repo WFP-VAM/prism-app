@@ -100,7 +100,7 @@ function Download({ classes }: DownloadProps) {
     setOpen(false);
   };
 
-  const download = (format: String) => {
+  function download(format: String) {
     const ext = format === 'pdf' ? 'png' : format;
     const canvas = previewRef!.current;
     const file = canvas!.toDataURL(`image/${ext}`);
