@@ -164,13 +164,13 @@
     ]
   },
   "mxd13c1_vim_dekad": {
-    "title": "MODIS 8-day NDVI",
+    "title": "MODIS 10-day NDVI",
     "type": "wms",
     "server_layer_name": "mxd13c1_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.5,
-    "legend_text": "NDVI (scaled)",
+    "legend_text": "LEGEND",
     "legend": [
       {"value": 1000, "color": "#a50026"},
       {"value": 2000, "color": "#de3f2e"},
@@ -183,14 +183,34 @@
       {"value": 9000, "color": "#006837"}
     ]
   },
+  "mxd13c1_viq_dekad": {
+    "title": "MODIS 10-day NDVI Anomaly",
+    "type": "wms",
+    "server_layer_name": "mxd13c1_viq_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.5,
+    "legend_text": "LEGEND",
+    "legend": [
+      {"value": 50, "color": "#732600"},
+      {"value": 70, "color": "#f06405"},
+      {"value": 80, "color": "#f5af28"},
+      {"value": 90, "color": "#e6dc96"},
+      {"value": 110, "color": "#f5f5f5"},
+      {"value": 120, "color": "#cbff1f"},
+      {"value": 130, "color": "#00f200"},
+      {"value": 150, "color": "#008f00"},
+      {"value": 200, "color": "#004d00"}
+    ]
+  },
   "myd11c2_txa_dekad": {
-    "title": "MODIS 8-day Land Surface Temperature",
+    "title": "MODIS 10-day LST",
     "type": "wms",
     "server_layer_name": "myd11c2_txa_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.5,
-    "legend_text": "Land Surface Temperature (scalded K)",
+    "legend_text": "LEGEND",
     "legend": [
       {"value": 11144, "color": "#2b83ba"},
       {"value": 11653, "color": "#59a4b2"},
@@ -204,6 +224,46 @@
       {"value": 15727, "color": "#f3854e"},
       {"value": 16236, "color": "#e54f35"},
       {"value": 16746, "color": "#d7191c"}
+    ]
+  },
+  "myd11c2_txd_dekad": {
+    "title": "MODIS 10-day LST Anomaly",
+    "type": "wms",
+    "server_layer_name": "myd11c2_txd_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.5,
+    "legend_text": "LEGEND",
+    "legend": [
+      {"value": -300.0, "color": "#000004"},
+      {"value": -200.0, "color": "#210c4a"},
+      {"value": -100.0, "color": "#57106e"},
+      {"value": -50.0, "color": "#8a226a"},
+      {"value": 50.0, "color": "#bc3754"},
+      {"value": 100.0, "color": "#e45a31"},
+      {"value": 200.0, "color": "#f98e09"},
+      {"value": 300.0, "color": "#f9cb35"},
+      {"value": 5000.0, "color": "#fcffa4"}
+    ]
+  },
+  "myd11c2_taa_dekad": {
+    "title": "MODIS 10-day LST Amplitude",
+    "type": "wms",
+    "server_layer_name": "myd11c2_taa_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.5,
+    "legend_text": "LEGEND",
+    "legend": [
+      {"value": -0, "color": "#ffffff", "alpha": 0},
+      {"value": 50, "color": "#ffffd9"},
+      {"value": 200, "color": "#e8f6b1"},
+      {"value": 400, "color": "#b2e1b6"},
+      {"value": 600, "color": "#64c3bf"},
+      {"value": 800, "color": "#2ca1c2"},
+      {"value": 1000, "color": "#216daf"},
+      {"value": 1200, "color": "#253a97"},
+      {"value": 1400, "color": "#081d58"}
     ]
   }
 }

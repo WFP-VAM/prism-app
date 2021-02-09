@@ -23,7 +23,10 @@
       ],
       "MODIS": [
         "mxd13c1_vim_dekad",
-        "myd11c2_txa_dekad"
+        "mxd13c1_viq_dekad",
+        "myd11c2_txa_dekad",
+        "myd11c2_txd_dekad",
+        "myd11c2_taa_dekad"
       ]
     }
   }
