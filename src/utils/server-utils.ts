@@ -68,10 +68,12 @@ function formatCapabilitiesInfo(
 
     const availableDates = dates
       .filter(date => !isEmpty(date))
-      .map(date => get(date, '_text', date).split('T')[0])
       .map(date =>
         // adding 12 hours to avoid  errors due to daylight saving
-        moment.utc(date).set({ hour: 12 }).valueOf(),
+        moment
+          .utc(get(date, '_text', date).split('T')[0])
+          .set({ hour: 12 })
+          .valueOf(),
       );
 
     const { [layerId]: oldLayerDates } = acc;
