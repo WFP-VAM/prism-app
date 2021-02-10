@@ -13,10 +13,10 @@ import {
 
 import { MenuItemType, LayerType, TableType } from '../../../config/types';
 import {
-  removeLayers,
   addLayer,
-  removeLayer,
   addLayers,
+  removeLayer,
+  removeLayers,
 } from '../../../context/mapStateSlice';
 import { loadTable } from '../../../context/tableStateSlice';
 import { layersSelector } from '../../../context/mapStateSlice/selectors';
