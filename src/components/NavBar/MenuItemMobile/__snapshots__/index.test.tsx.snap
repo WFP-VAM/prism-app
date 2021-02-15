@@ -3,19 +3,19 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiAccordion-root WithStyles(ForwardRef(Accordion))-root-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
   >
     <div
       aria-controls="Hazards"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root WithStyles(ForwardRef(AccordionSummary))-root-10"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
       id="Hazards"
       role="button"
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content WithStyles(ForwardRef(AccordionSummary))-content-11"
+        class="MuiAccordionSummary-content"
       >
         <img
           alt="Hazards"
@@ -73,7 +73,7 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root WithStyles(ForwardRef(AccordionDetails))-root-13"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
@@ -263,19 +263,19 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root WithStyles(ForwardRef(Accordion))-root-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
   >
     <div
       aria-controls="Exposure"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root WithStyles(ForwardRef(AccordionSummary))-root-10"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
       id="Exposure"
       role="button"
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content WithStyles(ForwardRef(AccordionSummary))-content-11"
+        class="MuiAccordionSummary-content"
       >
         <img
           alt="Exposure"
@@ -333,7 +333,7 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root WithStyles(ForwardRef(AccordionDetails))-root-13"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
@@ -416,19 +416,19 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root WithStyles(ForwardRef(Accordion))-root-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
   >
     <div
       aria-controls="Vulnerability"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root WithStyles(ForwardRef(AccordionSummary))-root-10"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
       id="Vulnerability"
       role="button"
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content WithStyles(ForwardRef(AccordionSummary))-content-11"
+        class="MuiAccordionSummary-content"
       >
         <img
           alt="Vulnerability"
@@ -486,7 +486,7 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root WithStyles(ForwardRef(AccordionDetails))-root-13"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
@@ -601,19 +601,19 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root WithStyles(ForwardRef(Accordion))-root-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
   >
     <div
       aria-controls="Capacity"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root WithStyles(ForwardRef(AccordionSummary))-root-10"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
       id="Capacity"
       role="button"
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content WithStyles(ForwardRef(AccordionSummary))-content-11"
+        class="MuiAccordionSummary-content"
       >
         <img
           alt="Capacity"
@@ -671,7 +671,7 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root WithStyles(ForwardRef(AccordionDetails))-root-13"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
@@ -775,19 +775,19 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root WithStyles(ForwardRef(Accordion))-root-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
   >
     <div
       aria-controls="Risk"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root WithStyles(ForwardRef(AccordionSummary))-root-10"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
       id="Risk"
       role="button"
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content WithStyles(ForwardRef(AccordionSummary))-content-11"
+        class="MuiAccordionSummary-content"
       >
         <img
           alt="Risk"
@@ -845,7 +845,7 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root WithStyles(ForwardRef(AccordionDetails))-root-13"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
@@ -944,19 +944,19 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root WithStyles(ForwardRef(Accordion))-root-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
   >
     <div
       aria-controls="Tables"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root WithStyles(ForwardRef(AccordionSummary))-root-10"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
       id="Tables"
       role="button"
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content WithStyles(ForwardRef(AccordionSummary))-content-11"
+        class="MuiAccordionSummary-content"
       >
         <img
           alt="Tables"
@@ -1014,7 +1014,7 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root WithStyles(ForwardRef(AccordionDetails))-root-13"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
