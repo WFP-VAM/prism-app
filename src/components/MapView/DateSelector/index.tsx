@@ -22,7 +22,7 @@ import {
   faAngleDoubleRight,
 } from '@fortawesome/free-solid-svg-icons';
 import 'react-datepicker/dist/react-datepicker.css';
-import { findIndex, get } from 'lodash';
+import { findIndex, get, isEqual } from 'lodash';
 import { updateDateRange } from '../../../context/mapStateSlice';
 import { findDateIndex } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
@@ -64,6 +64,8 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
 
   const [timelinePosition, setTimelinePosition] = useState({ x: 0, y: 0 });
   const [pointerPosition, setPointerPosition] = useState({ x: 0, y: 0 });
+
+  const refDates = useRef(availableDates);
 
   const timeLine = useRef(null);
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
@@ -121,17 +123,20 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   }
 
   function setDatePosition(date: number, increment: number) {
-    const selectedIndex = findDateIndex(availableDates, date as number);
-    if (availableDates[selectedIndex + increment]) {
-      updateStartDate(new Date(availableDates[selectedIndex + increment]));
+    const dates = availableDates.map(d => {
+      return d + USER_DATE_OFFSET;
+    });
+    const selectedIndex = findDateIndex(dates, date as number);
+    if (dates[selectedIndex + increment]) {
+      updateStartDate(new Date(dates[selectedIndex + increment]));
     }
   }
 
-  // useful to move pointer to closest date when change map layer
-  useEffect(() => {
+  // move pointer to closest date when change map layer
+  if (!isEqual(refDates.current, availableDates)) {
     setDatePosition(stateStartDate as number, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [availableDates]);
+    refDates.current = availableDates;
+  }
 
   function incrementDate() {
     setDatePosition(stateStartDate as number, 1);
@@ -143,18 +148,13 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
 
   // click on timeline
   const clickDate = (index: number) => {
-    const selectedIndex = findDateIndex(
-      availableDates.map(date => {
-        return date + USER_DATE_OFFSET;
-      }),
-      dateRange[index].value,
-    );
-    if (
-      selectedIndex >= 0 &&
-      availableDates[selectedIndex] !== stateStartDate
-    ) {
+    const dates = availableDates.map(date => {
+      return date + USER_DATE_OFFSET;
+    });
+    const selectedIndex = findDateIndex(dates, dateRange[index].value);
+    if (selectedIndex >= 0 && dates[selectedIndex] !== stateStartDate) {
       setPointerPosition({ x: index * 10, y: 0 });
-      updateStartDate(new Date(availableDates[selectedIndex]));
+      updateStartDate(new Date(dates[selectedIndex]));
     }
   };
 
@@ -169,18 +169,13 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     if (exactX >= dateRange.length) {
       return;
     }
-    const selectedIndex = findDateIndex(
-      availableDates.map(date => {
-        return date + USER_DATE_OFFSET;
-      }),
-      dateRange[exactX].value,
-    );
-    if (
-      selectedIndex >= 0 &&
-      availableDates[selectedIndex] !== stateStartDate
-    ) {
+    const dates = availableDates.map(date => {
+      return date + USER_DATE_OFFSET;
+    });
+    const selectedIndex = findDateIndex(dates, dateRange[exactX].value);
+    if (selectedIndex >= 0 && dates[selectedIndex] !== stateStartDate) {
       setPointerPosition({ x: exactX * 10, y: position.y });
-      updateStartDate(new Date(availableDates[selectedIndex]));
+      updateStartDate(new Date(dates[selectedIndex]));
     }
   };
 
@@ -274,7 +269,9 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
                         )}
                         {availableDates
                           .map(availableDate =>
-                            moment(availableDate).format('DD MMM YYYY'),
+                            moment(availableDate + USER_DATE_OFFSET).format(
+                              'DD MMM YYYY',
+                            ),
                           )
                           .includes(date.label) && (
                           <div
