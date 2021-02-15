@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Button,
+  createStyles,
+  Grid,
+  Switch,
+  Theme,
   Typography,
   withStyles,
   WithStyles,
-  createStyles,
-  Switch,
-  Grid,
 } from '@material-ui/core';
-import MuiAccordion from '@material-ui/core/Accordion';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
@@ -48,55 +49,18 @@ function MenuItemMobile({ classes }: MenuItemMobileProps) {
     dispatch(loadTable(table.id));
   };
 
-  const Accordion = withStyles({
-    root: {
-      '&:before': {
-        display: 'none',
-      },
-      '&$expanded': {
-        margin: 'auto',
-        marginLeft: 0,
-        width: '100%',
-      },
-      boxShadow: 'none',
-    },
-    expanded: {},
-  })(MuiAccordion);
-
-  const AccordionSummary = withStyles(theme => ({
-    root: {
-      backgroundColor: theme.palette.primary.main,
-      minHeight: 56,
-      '&$expanded': {
-        minHeight: 56,
-      },
-    },
-    content: {
-      '&$expanded': {
-        margin: '12px 0',
-      },
-    },
-    expanded: {},
-  }))(MuiAccordionSummary);
-
-  const AccordionDetails = withStyles(theme => ({
-    root: {
-      backgroundColor: theme.palette.primary.dark,
-      opacity: '0.9',
-      padding: theme.spacing(2),
-    },
-  }))(MuiAccordionDetails);
-
   return (
     <>
       {menuList.map(({ title, icon, layersCategories }) => (
         <Accordion
+          className={classes.accordion}
           key={title}
           square
           expanded={expanded === title}
           onChange={handleChange(title)}
         >
           <AccordionSummary
+            className={classes.accordionSummary}
             expandIcon={<FontAwesomeIcon icon={faCaretDown} />}
             IconButtonProps={{ color: 'inherit', size: 'small' }}
             aria-controls={title}
@@ -105,7 +69,7 @@ function MenuItemMobile({ classes }: MenuItemMobileProps) {
             <img className={classes.icon} src={icon} alt={title} />
             <Typography variant="body2">{title}</Typography>
           </AccordionSummary>
-          <AccordionDetails>
+          <AccordionDetails className={classes.accordionDetail}>
             <Grid container direction="column">
               {layersCategories.map(
                 ({ title: categoryTitle, layers, tables }) => (
@@ -164,7 +128,7 @@ function MenuItemMobile({ classes }: MenuItemMobileProps) {
   );
 }
 
-const styles = () =>
+const styles = (theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
@@ -199,6 +163,9 @@ const styles = () =>
 
     categoryContainer: {
       marginBottom: 16,
+      '&:last-child': {
+        marginBottom: 0,
+      },
     },
 
     categoryTitle: {
@@ -209,6 +176,35 @@ const styles = () =>
     layersContainer: {
       display: 'flex',
       marginBottom: 8,
+    },
+
+    accordion: {
+      '&:before': {
+        display: 'none',
+      },
+      '&$expanded': {
+        margin: 'auto',
+        marginLeft: 0,
+        width: '100%',
+      },
+      boxShadow: 'none',
+    },
+
+    accordionSummary: {
+      backgroundColor: theme.palette.primary.main,
+      minHeight: 56,
+      '&$expanded': {
+        minHeight: 56,
+      },
+      '&:focus': {
+        background: theme.palette.primary.main,
+      },
+    },
+
+    accordionDetail: {
+      backgroundColor: theme.palette.primary.dark,
+      opacity: '0.9',
+      padding: theme.spacing(2),
     },
   });
 
