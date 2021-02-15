@@ -212,7 +212,9 @@ function MapView({ classes }: MapViewProps) {
 
         <MapTooltip />
       </MapboxMap>
-      <DateSelector availableDates={selectedLayerDates} />
+      {selectedLayerDates.length > 0 && (
+        <DateSelector availableDates={selectedLayerDates} />
+      )}
       <Legends layers={selectedLayers} />
       <Analyser />
     </div>

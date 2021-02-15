@@ -15,9 +15,6 @@ exports[`renders as expected 1`] = `
     <div
       style="height: 100%;"
     />
-    <mock-dateselector
-      availabledates=""
-    />
     <mock-legends
       layers="[object Object]"
     />
