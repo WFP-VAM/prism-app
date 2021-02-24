@@ -187,13 +187,19 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         justify="center"
         className={classes.datePickerContainer}
       >
-        <Hidden smUp>
-          <Button onClick={decrementDate}>
-            <FontAwesomeIcon icon={faAngleDoubleLeft} />
-          </Button>
-        </Hidden>
+        <Grid
+          item
+          xs={12}
+          sm={1}
+          className={classes.datePickerGrid}
+          justify="center"
+        >
+          <Hidden smUp>
+            <Button onClick={decrementDate}>
+              <FontAwesomeIcon icon={faAngleDoubleLeft} />
+            </Button>
+          </Hidden>
 
-        <Grid item xs={6} md={2}>
           <DatePicker
             className={classes.datePickerInput}
             selected={selectedDate.toDate()}
@@ -209,16 +215,16 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
               d => new Date(d + USER_DATE_OFFSET),
             )}
           />
+
+          <Hidden smUp>
+            <Button onClick={incrementDate}>
+              <FontAwesomeIcon icon={faAngleDoubleRight} />
+            </Button>
+          </Hidden>
         </Grid>
 
-        <Hidden smUp>
-          <Button onClick={incrementDate}>
-            <FontAwesomeIcon icon={faAngleDoubleRight} />
-          </Button>
-        </Hidden>
-
-        <Grid item xs={10} className={classes.slider}>
-          <Hidden smDown>
+        <Grid item xs={12} sm className={classes.slider}>
+          <Hidden xsDown>
             <Button onClick={decrementDate}>
               <FontAwesomeIcon icon={faAngleDoubleLeft} />
             </Button>
@@ -303,7 +309,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
               </div>
             </Draggable>
           </Grid>
-          <Hidden smDown>
+          <Hidden xsDown>
             <Button onClick={incrementDate}>
               <FontAwesomeIcon icon={faAngleDoubleRight} />
             </Button>
@@ -334,6 +340,14 @@ const styles = (theme: Theme) =>
 
     datePickerInput: {
       backgroundColor: theme.palette.primary.main,
+    },
+
+    datePickerGrid: {
+      display: 'flex',
+      minWidth: '150px',
+      [theme.breakpoints.down('xs')]: {
+        marginBottom: '8px',
+      },
     },
 
     slider: {
