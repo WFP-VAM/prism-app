@@ -10,8 +10,10 @@ import {
   ListItem,
   MenuItem,
   Paper,
-  Slider,
   Select,
+  Slider,
+  Switch,
+  Theme,
   Typography,
   WithStyles,
   withStyles,
@@ -123,6 +125,11 @@ function LegendItem({
     initialOpacity || 0,
   );
 
+  const [toggle, setToggle] = useState(true);
+  const toggleChecked = (prev: Boolean) => {
+    setToggle(!prev);
+  };
+
   const handleChangeOpacity = (event: object, newValue: number | number[]) => {
     setOpacityValue(newValue);
   };
@@ -142,71 +149,90 @@ function LegendItem({
     if (type === 'wms') {
       map!.setPaintProperty(`layer-${id}`, 'raster-opacity', opacity);
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opacity]);
+
+  useEffect(() => {
+    const visibility = toggle ? 'visible' : 'none';
+    map!.setLayoutProperty(`layer-${id}`, 'visibility', visibility);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toggle]);
 
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
         <Grid container direction="column" spacing={1}>
-          <Grid item>
-            <Typography variant="h4">{title}</Typography>
+          <Grid item style={{ display: 'flex' }}>
+            <Typography style={{ flexGrow: 1 }} variant="h4">
+              {title}
+            </Typography>
+            <Switch
+              checked={toggle}
+              onChange={() => toggleChecked(toggle)}
+              color="primary"
+              size="small"
+              disableRipple
+            />
           </Grid>
-
-          <Divider />
-          {type === 'wms' && (
-            <Grid item className={classes.slider}>
-              <Box px={1}>
-                <Slider
-                  value={opacity}
-                  step={0.01}
-                  min={0}
-                  max={1}
-                  aria-labelledby="opacity-slider"
-                  onChange={handleChangeOpacity}
-                />
-              </Box>
-            </Grid>
-          )}
-          {form &&
-            form.inputs.map(input => {
-              return (
-                <Grid key={input.id} item>
-                  <Typography variant="h4">{input.label}</Typography>
-                  <FormControl>
-                    <Select
-                      className={classes.select}
-                      value={input.value}
-                      onChange={e => handleChangeFormInput(e, input)}
-                    >
-                      {input.values.map(v => (
-                        <MenuItem key={v.value} value={v.value}>
-                          {v.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+          {toggle && (
+            <>
+              <Divider />
+              {type === 'wms' && (
+                <Grid item className={classes.slider}>
+                  <Box px={1}>
+                    <Slider
+                      value={opacity}
+                      step={0.01}
+                      min={0}
+                      max={1}
+                      aria-labelledby="opacity-slider"
+                      onChange={handleChangeOpacity}
+                    />
+                  </Box>
                 </Grid>
-              );
-            })}
-          {legend && (
-            <Grid item>
-              {legend.map(({ value, color }: any) => (
-                <ColorIndicator
-                  key={value}
-                  value={value as string}
-                  color={color as string}
-                  opacity={opacity as number}
-                />
-              ))}
-            </Grid>
-          )}
+              )}
+              {form &&
+                form.inputs.map(input => {
+                  return (
+                    <Grid key={input.id} item>
+                      <Typography variant="h4">{input.label}</Typography>
+                      <FormControl>
+                        <Select
+                          className={classes.select}
+                          value={input.value}
+                          onChange={e => handleChangeFormInput(e, input)}
+                        >
+                          {input.values.map(v => (
+                            <MenuItem key={v.value} value={v.value}>
+                              {v.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  );
+                })}
+              {legend && (
+                <Grid item>
+                  {legend.map(({ value, color }: any) => (
+                    <ColorIndicator
+                      key={value}
+                      value={value as string}
+                      color={color as string}
+                      opacity={opacity as number}
+                    />
+                  ))}
+                </Grid>
+              )}
 
-          <Divider />
+              <Divider />
 
-          {children && (
-            <Grid item>
-              <Typography variant="h5">{children}</Typography>
-            </Grid>
+              {children && (
+                <Grid item>
+                  <Typography variant="h5">{children}</Typography>
+                </Grid>
+              )}
+            </>
           )}
         </Grid>
       </Paper>
@@ -214,7 +240,7 @@ function LegendItem({
   );
 }
 
-const styles = () =>
+const styles = (theme: Theme) =>
   createStyles({
     container: {
       textAlign: 'right',
@@ -237,6 +263,16 @@ const styles = () =>
     },
     slider: {
       padding: '0 5px',
+    },
+    switch: {
+      '&$checked': {
+        color: theme.palette.common.white,
+        '& + $track': {
+          backgroundColor: theme.palette.secondary.dark,
+          opacity: 1,
+          border: 'none',
+        },
+      },
     },
   });
 

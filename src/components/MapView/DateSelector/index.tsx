@@ -187,13 +187,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         justify="center"
         className={classes.datePickerContainer}
       >
-        <Grid
-          item
-          xs={12}
-          sm={1}
-          className={classes.datePickerGrid}
-          justify="center"
-        >
+        <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
           <Hidden smUp>
             <Button onClick={decrementDate}>
               <FontAwesomeIcon icon={faAngleDoubleLeft} />
@@ -345,6 +339,7 @@ const styles = (theme: Theme) =>
     datePickerGrid: {
       display: 'flex',
       minWidth: '150px',
+      justifyContent: 'center',
       [theme.breakpoints.down('xs')]: {
         marginBottom: '8px',
       },
