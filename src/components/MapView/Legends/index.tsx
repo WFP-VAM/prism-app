@@ -1,3 +1,4 @@
+/* eslint-disable fp/no-mutation */
 import React, { PropsWithChildren, useState, useEffect } from 'react';
 import {
   Box,
@@ -8,6 +9,7 @@ import {
   ListItem,
   Paper,
   Slider,
+  Switch,
   Theme,
   Typography,
   WithStyles,
@@ -101,13 +103,40 @@ function LegendItem({
     initialOpacity || 0,
   );
 
+  const [toggle, setToggle] = useState(true);
+  const toggleChecked = (prev: Boolean) => {
+    setToggle(!prev);
+  };
+
   const handleChangeOpacity = (event: object, newValue: number | number[]) => {
     setOpacityValue(newValue);
   };
 
+  const layerTypes = ['wms', 'nso', 'point_data', 'impact'];
+  const [layerId, opacityType] = (e => {
+    switch (e) {
+      case 'wms':
+        return [`layer-${id}`, 'raster-opacity'];
+      case 'impact':
+      case 'nso':
+        return [`layer-${id}-fill`, 'fill-opacity'];
+      case 'point_data':
+        return [`layer-${id}-circle`, 'circle-opacity'];
+      default:
+        return ['', ''];
+    }
+  })(type);
+
+  const allLayers = map!.getStyle().layers;
+  const isAvailable = allLayers!.find(layer => layer.id === layerId);
   useEffect(() => {
-    if (type === 'wms') {
-      map!.setPaintProperty(`layer-${id}`, 'raster-opacity', opacity);
+    if (!!isAvailable && layerTypes.includes(type!)) {
+      map!.setPaintProperty(layerId, opacityType, opacity);
+      map!.setLayoutProperty(
+        layerId,
+        'visibility',
+        toggle ? 'visible' : 'none',
+      );
     }
   });
 
@@ -115,45 +144,58 @@ function LegendItem({
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
         <Grid container direction="column" spacing={1}>
-          <Grid item>
-            <Typography variant="h4">{title}</Typography>
+          <Grid item style={{ display: 'flex' }}>
+            <Typography style={{ flexGrow: 1 }} variant="h4">
+              {title}
+            </Typography>
+            {!!isAvailable && layerTypes.includes(type!) && (
+              <Switch
+                checked={toggle}
+                onChange={() => toggleChecked(toggle)}
+                color="primary"
+                size="small"
+                disableRipple
+              />
+            )}
           </Grid>
+          {toggle && (
+            <>
+              <Divider />
+              {!!isAvailable && layerTypes.includes(type!) && (
+                <Grid item className={classes.slider}>
+                  <Box px={1}>
+                    <Slider
+                      value={opacity}
+                      step={0.01}
+                      min={0}
+                      max={1}
+                      aria-labelledby="opacity-slider"
+                      onChange={handleChangeOpacity}
+                    />
+                  </Box>
+                </Grid>
+              )}
+              {legend && (
+                <Grid item>
+                  {legend.map(({ value, color }: any) => (
+                    <ColorIndicator
+                      key={value}
+                      value={value as string}
+                      color={color as string}
+                      opacity={opacity as number}
+                    />
+                  ))}
+                </Grid>
+              )}
 
-          <Divider />
-          {type === 'wms' && (
-            <Grid item className={classes.slider}>
-              <Box px={1}>
-                <Slider
-                  value={opacity}
-                  step={0.01}
-                  min={0}
-                  max={1}
-                  aria-labelledby="opacity-slider"
-                  onChange={handleChangeOpacity}
-                />
-              </Box>
-            </Grid>
-          )}
+              <Divider />
 
-          {legend && (
-            <Grid item>
-              {legend.map(({ value, color }: any) => (
-                <ColorIndicator
-                  key={value}
-                  value={value as string}
-                  color={color as string}
-                  opacity={opacity as number}
-                />
-              ))}
-            </Grid>
-          )}
-
-          <Divider />
-
-          {children && (
-            <Grid item>
-              <Typography variant="h5">{children}</Typography>
-            </Grid>
+              {children && (
+                <Grid item>
+                  <Typography variant="h5">{children}</Typography>
+                </Grid>
+              )}
+            </>
           )}
         </Grid>
       </Paper>
