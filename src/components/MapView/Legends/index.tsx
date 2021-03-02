@@ -145,18 +145,33 @@ function LegendItem({
     );
   };
 
-  useEffect(() => {
-    if (type === 'wms') {
-      map!.setPaintProperty(`layer-${id}`, 'raster-opacity', opacity);
+  const layerTypes = ['wms', 'nso', 'point_data', 'impact'];
+  const [layerId, opacityType] = (e => {
+    switch (e) {
+      case 'wms':
+        return [`layer-${id}`, 'raster-opacity'];
+      case 'impact':
+      case 'nso':
+        return [`layer-${id}-fill`, 'fill-opacity'];
+      case 'point_data':
+        return [`layer-${id}-circle`, 'circle-opacity'];
+      default:
+        return ['', ''];
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opacity]);
+  })(type);
 
+  const allLayers = map!.getStyle().layers;
+  const isAvailable = allLayers!.find(layer => layer.id === layerId);
   useEffect(() => {
-    const visibility = toggle ? 'visible' : 'none';
-    map!.setLayoutProperty(`layer-${id}`, 'visibility', visibility);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggle]);
+    if (!!isAvailable && layerTypes.includes(type!)) {
+      map!.setPaintProperty(layerId, opacityType, opacity);
+      map!.setLayoutProperty(
+        layerId,
+        'visibility',
+        toggle ? 'visible' : 'none',
+      );
+    }
+  });
 
   return (
     <ListItem disableGutters dense>
@@ -166,18 +181,20 @@ function LegendItem({
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
             </Typography>
-            <Switch
-              checked={toggle}
-              onChange={() => toggleChecked(toggle)}
-              color="primary"
-              size="small"
-              disableRipple
-            />
+            {!!isAvailable && layerTypes.includes(type!) && (
+              <Switch
+                checked={toggle}
+                onChange={() => toggleChecked(toggle)}
+                color="primary"
+                size="small"
+                disableRipple
+              />
+            )}
           </Grid>
           {toggle && (
             <>
               <Divider />
-              {type === 'wms' && (
+              {!!isAvailable && layerTypes.includes(type!) && (
                 <Grid item className={classes.slider}>
                   <Box px={1}>
                     <Slider

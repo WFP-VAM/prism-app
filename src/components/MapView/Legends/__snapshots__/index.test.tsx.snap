@@ -16,7 +16,7 @@ exports[`renders as expected 1`] = `
         data-prefix="fas"
         focusable="false"
         role="img"
-        style="font-size: 1em;"
+        style="font-size: 1.2em;"
         viewBox="0 0 640 512"
         xmlns="http://www.w3.org/2000/svg"
       >
