@@ -9,7 +9,7 @@ exports[`renders as expected 1`] = `
       class="MuiGrid-root DateSelector-datePickerContainer-2 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
     >
       <div
-        class="MuiGrid-root DateSelector-datePickerGrid-4 MuiGrid-item MuiGrid-justify-xs-center MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
+        class="MuiGrid-root DateSelector-datePickerGrid-4 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
       >
         <mock-hidden
           smup="true"
