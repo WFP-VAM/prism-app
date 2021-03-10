@@ -109,7 +109,6 @@ function MenuItemMobile({ classes }: MenuItemMobileProps) {
 
                     {tables.map(table => (
                       <Button
-                        className={classes.button}
                         id={table.title}
                         key={table.title}
                         onClick={() => showTableClicked(table)}
@@ -130,32 +129,6 @@ function MenuItemMobile({ classes }: MenuItemMobileProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
-    root: {
-      width: '100%',
-    },
-    button: {
-      textTransform: 'none',
-    },
-
-    title: {
-      margin: '0px 14px',
-      textTransform: 'uppercase',
-      color: 'inherit',
-
-      '&::after': {
-        content: '""',
-        display: 'inline-block',
-        width: 0,
-        height: 0,
-        marginLeft: 3.5,
-        verticalAlign: 3.5,
-        borderTop: '3.5px solid',
-        borderRight: '3.5px solid transparent',
-        borderBottom: 0,
-        borderLeft: '3.5px solid transparent',
-      },
-    },
-
     icon: {
       width: 18,
       marginRight: 6,
@@ -179,21 +152,19 @@ const styles = (theme: Theme) =>
     },
 
     accordion: {
-      '&:before': {
-        display: 'none',
-      },
-      '&$expanded': {
-        margin: 'auto',
-        marginLeft: 0,
-        width: '100%',
-      },
       boxShadow: 'none',
+      '&.Mui-expanded': {
+        margin: 0,
+        '&:before': {
+          opacity: 1,
+        },
+      },
     },
 
     accordionSummary: {
       backgroundColor: theme.palette.primary.main,
       minHeight: 56,
-      '&$expanded': {
+      '&.Mui-expanded': {
         minHeight: 56,
       },
       '&:focus': {
