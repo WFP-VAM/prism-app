@@ -3,13 +3,13 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-5 MuiPaper-elevation1"
   >
     <div
       aria-controls="Hazards"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-6"
       id="Hazards"
       role="button"
       tabindex="0"
@@ -19,7 +19,7 @@ exports[`renders as expected 1`] = `
       >
         <img
           alt="Hazards"
-          class="MenuItemMobile-icon-4"
+          class="MenuItemMobile-icon-1"
           src="icon_climate.png"
         />
         <mock-typography
@@ -73,23 +73,23 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-7"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
               >
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Drought Indicators
                   </mock-typography>
                   <hr />
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -105,7 +105,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -121,7 +121,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -138,17 +138,17 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Winter Conditions
                   </mock-typography>
                   <hr />
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -164,7 +164,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -181,17 +181,17 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Ground Station Data
                   </mock-typography>
                   <hr />
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -207,7 +207,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -223,7 +223,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -239,7 +239,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -263,13 +263,13 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-5 MuiPaper-elevation1"
   >
     <div
       aria-controls="Exposure"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-6"
       id="Exposure"
       role="button"
       tabindex="0"
@@ -279,7 +279,7 @@ exports[`renders as expected 1`] = `
       >
         <img
           alt="Exposure"
-          class="MenuItemMobile-icon-4"
+          class="MenuItemMobile-icon-1"
           src="icon_basemap.png"
         />
         <mock-typography
@@ -333,23 +333,23 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-7"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
               >
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Demographics
                   </mock-typography>
                   <hr />
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -366,17 +366,17 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Livestock And Herders
                   </mock-typography>
                   <hr />
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -392,7 +392,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -416,13 +416,13 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-5 MuiPaper-elevation1"
   >
     <div
       aria-controls="Vulnerability"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-6"
       id="Vulnerability"
       role="button"
       tabindex="0"
@@ -432,7 +432,7 @@ exports[`renders as expected 1`] = `
       >
         <img
           alt="Vulnerability"
-          class="MenuItemMobile-icon-4"
+          class="MenuItemMobile-icon-1"
           src="icon_vulnerable.png"
         />
         <mock-typography
@@ -486,23 +486,23 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-7"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
               >
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Vulnerable Groups
                   </mock-typography>
                   <hr />
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -518,7 +518,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -534,7 +534,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -550,7 +550,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -567,17 +567,17 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Herders
                   </mock-typography>
                   <hr />
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -601,13 +601,13 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-5 MuiPaper-elevation1"
   >
     <div
       aria-controls="Capacity"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-6"
       id="Capacity"
       role="button"
       tabindex="0"
@@ -617,7 +617,7 @@ exports[`renders as expected 1`] = `
       >
         <img
           alt="Capacity"
-          class="MenuItemMobile-icon-4"
+          class="MenuItemMobile-icon-1"
           src="icon_capacity.png"
         />
         <mock-typography
@@ -671,23 +671,23 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-7"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
               >
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Livestock And Crop Preparedness
                   </mock-typography>
                   <hr />
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -703,7 +703,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -719,7 +719,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -735,7 +735,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -751,7 +751,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -775,13 +775,13 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-5 MuiPaper-elevation1"
   >
     <div
       aria-controls="Risk"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-6"
       id="Risk"
       role="button"
       tabindex="0"
@@ -791,7 +791,7 @@ exports[`renders as expected 1`] = `
       >
         <img
           alt="Risk"
-          class="MenuItemMobile-icon-4"
+          class="MenuItemMobile-icon-1"
           src="icon_impact.png"
         />
         <mock-typography
@@ -845,23 +845,23 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-7"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
               >
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Dzud Risk
                   </mock-typography>
                   <hr />
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -878,17 +878,17 @@ exports[`renders as expected 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Impact Analysis
                   </mock-typography>
                   <hr />
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -904,7 +904,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -920,7 +920,7 @@ exports[`renders as expected 1`] = `
                     </mock-typography>
                   </div>
                   <div
-                    class="MenuItemMobile-layersContainer-7"
+                    class="MenuItemMobile-layersContainer-4"
                   >
                     <mock-switch
                       checked="false"
@@ -944,13 +944,13 @@ exports[`renders as expected 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-8 MuiPaper-elevation1"
+    class="MuiPaper-root MuiAccordion-root MenuItemMobile-accordion-5 MuiPaper-elevation1"
   >
     <div
       aria-controls="Tables"
       aria-disabled="false"
       aria-expanded="false"
-      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-9"
+      class="MuiButtonBase-root MuiAccordionSummary-root MenuItemMobile-accordionSummary-6"
       id="Tables"
       role="button"
       tabindex="0"
@@ -960,7 +960,7 @@ exports[`renders as expected 1`] = `
       >
         <img
           alt="Tables"
-          class="MenuItemMobile-icon-4"
+          class="MenuItemMobile-icon-1"
           src="icon_table.png"
         />
         <mock-typography
@@ -1014,23 +1014,22 @@ exports[`renders as expected 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-10"
+              class="MuiAccordionDetails-root MenuItemMobile-accordionDetail-7"
             >
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
               >
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Socioeconomic Data
                   </mock-typography>
                   <hr />
                   <mock-button
-                    classname="MenuItemMobile-button-2"
                     id="Poverty headcount 2016 vs 2018"
                   >
                     <mock-typography
@@ -1041,17 +1040,16 @@ exports[`renders as expected 1`] = `
                   </mock-button>
                 </div>
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Livestock Data
                   </mock-typography>
                   <hr />
                   <mock-button
-                    classname="MenuItemMobile-button-2"
                     id="Animal deaths due to disease or natural hazards"
                   >
                     <mock-typography
@@ -1062,17 +1060,16 @@ exports[`renders as expected 1`] = `
                   </mock-button>
                 </div>
                 <div
-                  class="MuiGrid-root MenuItemMobile-categoryContainer-5 MuiGrid-item"
+                  class="MuiGrid-root MenuItemMobile-categoryContainer-2 MuiGrid-item"
                 >
                   <mock-typography
-                    classname="MenuItemMobile-categoryTitle-6"
+                    classname="MenuItemMobile-categoryTitle-3"
                     variant="body2"
                   >
                     Price Data
                   </mock-typography>
                   <hr />
                   <mock-button
-                    classname="MenuItemMobile-button-2"
                     id="Monthly hay prices"
                   >
                     <mock-typography
