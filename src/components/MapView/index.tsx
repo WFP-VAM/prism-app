@@ -22,14 +22,22 @@ import {
   WMSLayer,
 } from './Layers';
 
-import { DiscriminateUnion, LayerType } from '../../config/types';
+import {
+  BoundaryLayerProps,
+  DiscriminateUnion,
+  LayerType,
+} from '../../config/types';
 
-import { getBoundaryLayerSingleton } from '../../config/utils';
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../config/utils';
 
 import DateSelector from './DateSelector';
 import {
   dateRangeSelector,
   isLoading,
+  layerDataSelector,
   layersSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap } from '../../context/mapStateSlice';
@@ -41,7 +49,7 @@ import {
 } from '../../context/serverStateSlice';
 
 import appConfig from '../../config/prism.json';
-import { loadLayerData } from '../../context/layers/layer-data';
+import { LayerData, loadLayerData } from '../../context/layers/layer-data';
 import Analyser from './Analyser';
 import AnalysisLayer from './Layers/AnalysisLayer';
 import {
@@ -49,6 +57,7 @@ import {
   getPossibleDatesForLayer,
 } from '../../utils/server-utils';
 import { addNotification } from '../../context/notificationStateSlice';
+import AlertForm from './AlertForm';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -215,6 +224,7 @@ function MapView({ classes }: MapViewProps) {
       <DateSelector availableDates={selectedLayerDates} />
       <Legends layers={selectedLayers} />
       <Analyser />
+      <AlertForm />
     </div>
   );
 }
