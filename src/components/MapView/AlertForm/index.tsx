@@ -80,23 +80,20 @@ function AlertForm({ classes }: AlertFormProps) {
     | undefined;
 
   const availableDates = useSelector(availableDatesSelector);
-  const analysisResult = useSelector(analysisResultSelector);
-
-  const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
-  const isMapLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const [isAlertFormFormOpen, setIsAlertFormFormOpen] = useState(false);
-  const [isTableViewOpen, setIsTableViewOpen] = useState(true);
 
   // form elements
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
-  const [statistic, setStatistic] = useState(AggregationOperations.Mean);
-  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>();
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const [regionsList, setRegionsList] = useState<string[]>(['allRegions']);
+  const [emailValid, setEmailValid] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>('');
+  const [selectedStat, setSelectedStat] = useState<string>('');
+  const [selectedThreshold, setSelectedThreshold] = useState<number>(0);
 
-  const [belowThreshold, setBelowThreshold] = useState('');
-  const [aboveThreshold, setAboveThreshold] = useState('');
-  const [thresholdError, setThresholdError] = useState<string | null>(null);
+  // Very basic...
+  const emailRegex: RegExp = RegExp('.+@.+');
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -111,55 +108,6 @@ function AlertForm({ classes }: AlertFormProps) {
       setSelectedDate(dates[dates.length - 1]);
     }
   }, [availableDates, hazardLayerId]);
-
-  const onOptionChange = <T extends string>(
-    setterFunc: Dispatch<SetStateAction<T>>,
-  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value as T;
-    setterFunc(value);
-    return value;
-  };
-  // specially for threshold values, also does error checking
-  const onThresholdOptionChange = (thresholdType: 'above' | 'below') => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const setterFunc =
-      thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
-    const changedOption = onOptionChange(setterFunc)(event);
-    // setting a value doesn't update the existing value until next render, therefore we must decide whether to access the old one or the newly change one here.
-    const aboveThresholdValue = parseFloat(
-      thresholdType === 'above' ? changedOption : aboveThreshold,
-    );
-    const belowThresholdValue = parseFloat(
-      thresholdType === 'below' ? changedOption : belowThreshold,
-    );
-    if (belowThresholdValue < aboveThresholdValue) {
-      setThresholdError('Min threshold is larger than Max!');
-    } else {
-      setThresholdError(null);
-    }
-  };
-
-  const adminBoundariesExtent = useMemo(() => {
-    if (!boundaryLayerData) {
-      // not loaded yet. Should be loaded in MapView
-      return null;
-    }
-    return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
-  }, [boundaryLayerData]);
-
-  const statisticOptions = Object.entries(AggregationOperations).map(stat => (
-    <FormControlLabel
-      key={stat[0]}
-      value={stat[1]}
-      control={
-        <Radio className={classes.radioOptions} color="default" size="small" />
-      }
-      label={stat[0]}
-    />
-  ));
-
-  const clearAnalysis = () => dispatch(clearAnalysisResult());
 
   const adminNames: string[] = useMemo(() => {
     if (!boundaryLayerData) {
@@ -181,41 +129,18 @@ function AlertForm({ classes }: AlertFormProps) {
       .sort();
   }, [boundaryLayerData]);
 
+  const onChangeEmail = (event: { target: { value: string } }) => {
+    const newEmail = event.target.value as string;
+    setEmailValid(!!newEmail.match(emailRegex));
+    setEmail(newEmail);
+  };
+
   const runAlertForm = async () => {
-    console.log('Click!');
-
-    // if (!adminBoundariesExtent) {
-    //   return;
-    // } // hasn't been calculated yet
-
-    // if (!selectedDate) {
-    //   throw new Error('Date must be given to run analysis');
-    // }
-
-    // if (!hazardLayerId || !baselineLayerId) {
-    //   throw new Error('Layer should be selected to run analysis');
-    // }
-
-    // const selectedHazardLayer = LayerDefinitions[
-    //   hazardLayerId
-    // ] as WMSLayerProps;
-    // const selectedBaselineLayer = LayerDefinitions[
-    //   baselineLayerId
-    // ] as NSOLayerProps;
-
-    // const params: AnalysisDispatchParams = {
-    //   hazardLayer: selectedHazardLayer,
-    //   baselineLayer: selectedBaselineLayer,
-    //   date: selectedDate,
-    //   statistic,
-    //   extent: adminBoundariesExtent,
-    //   threshold: {
-    //     above: parseFloat(aboveThreshold) || undefined,
-    //     below: parseFloat(belowThreshold) || undefined,
-    //   },
-    // };
-
-    // await dispatch(requestAndStoreAnalysis(params));
+    console.log(hazardLayerId);
+    console.log(selectedStat);
+    console.log(selectedThreshold);
+    console.log(regionsList);
+    console.log(email);
   };
 
   return (
@@ -257,7 +182,11 @@ function AlertForm({ classes }: AlertFormProps) {
               <div className={classes.AlertFormOptions}>
                 <Typography variant="body2">Statistic</Typography>
                 <FormControl component="div">
-                  <Select id="select-statistic" defaultValue="placeholder">
+                  <Select
+                    id="select-statistic"
+                    defaultValue="placeholder"
+                    onChange={e => setSelectedStat(e.target.value as string)}
+                  >
                     <MenuItem
                       style={{ color: 'black' }}
                       key="placeholder"
@@ -290,6 +219,10 @@ function AlertForm({ classes }: AlertFormProps) {
                   label="Threshold"
                   type="number"
                   variant="filled"
+                  defaultValue={0}
+                  onChange={e =>
+                    setSelectedThreshold(parseInt(e.target.value, 10))
+                  }
                 />
               </div>
               <div className={classes.AlertFormOptions}>
@@ -299,9 +232,22 @@ function AlertForm({ classes }: AlertFormProps) {
                   label="Regions to monitor"
                   type="text"
                   variant="filled"
-                  defaultValue={['allRegions']}
+                  value={regionsList}
                   multiple
                   style={{ maxWidth: '200px' }}
+                  onChange={e => {
+                    const selected: string[] = e.target.value as string[];
+                    const lastSelected = selected[selected.length - 1];
+
+                    if (lastSelected !== 'allRegions') {
+                      setRegionsList(
+                        selected.filter(el => el !== 'allRegions'),
+                      );
+                    } else {
+                      // If 'allRegions' was the last selected then it should be the only thing selected.
+                      setRegionsList(['allRegions']);
+                    }
+                  }}
                 >
                   [
                   <MenuItem
@@ -332,72 +278,24 @@ function AlertForm({ classes }: AlertFormProps) {
                   label="Email Address"
                   type="text"
                   variant="filled"
+                  onChange={onChangeEmail}
                 />
               </div>
             </div>
-
-            {!isAnalysisLoading && analysisResult && (
-              <>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        color="default"
-                        checked={isMapLayerActive}
-                        onChange={e =>
-                          dispatch(setIsMapLayerActive(e.target.checked))
-                        }
-                      />
-                    }
-                    label="Map View"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        color="default"
-                        checked={isTableViewOpen}
-                        onChange={e => setIsTableViewOpen(e.target.checked)}
-                      />
-                    }
-                    label="Table View"
-                  />
-                </FormGroup>
-                {isTableViewOpen && (
-                  <AnalysisTable
-                    tableData={analysisResult.tableData}
-                    columns={getAnalysisTableColumns(analysisResult)}
-                  />
-                )}
-                <Button
-                  className={classes.innerAnalysisButton}
-                  onClick={() => downloadCSVFromTableData(analysisResult)}
-                >
-                  <Typography variant="body2">Download</Typography>
-                </Button>
-                <Button
-                  className={classes.innerAnalysisButton}
-                  onClick={clearAnalysis}
-                >
-                  <Typography variant="body2">Clear Analysis</Typography>
-                </Button>
-              </>
-            )}
-            {!analysisResult && (
-              <Button
-                className={classes.innerAnalysisButton}
-                onClick={runAlertForm}
-                disabled={
-                  !!thresholdError || // if there is a threshold error
-                  !selectedDate || // or date hasn't been selected
-                  !hazardLayerId || // or hazard layer hasn't been selected
-                  !baselineLayerId || // or baseline layer hasn't been selected
-                  isAnalysisLoading // or analysis is currently loading
-                }
-              >
-                <Typography variant="body2">Create Alert</Typography>
-              </Button>
-            )}
-            {isAnalysisLoading ? <LinearProgress /> : null}
+            <Button
+              className={classes.innerAnalysisButton}
+              onClick={runAlertForm}
+              disabled={!hazardLayerId || !selectedStat || !emailValid}
+              // disabled={
+              //   !!thresholdError || // if there is a threshold error
+              //   !selectedDate || // or date hasn't been selected
+              //   !hazardLayerId || // or hazard layer hasn't been selected
+              //   !baselineLayerId || // or baseline layer hasn't been selected
+              //   isAnalysisLoading // or analysis is currently loading
+              // }
+            >
+              <Typography variant="body2">Create Alert</Typography>
+            </Button>
           </div>
         ) : null}
       </Box>
