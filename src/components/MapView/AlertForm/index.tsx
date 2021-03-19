@@ -1,25 +1,12 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
   createStyles,
   FormControl,
-  FormControlLabel,
-  FormGroup,
-  Input,
-  LinearProgress,
   ListSubheader,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
-  Switch,
   TextField,
   Theme,
   Typography,
@@ -28,47 +15,23 @@ import {
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
-import {
-  faBell,
-  faCaretDown,
-  faChartBar,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useDispatch, useSelector } from 'react-redux';
-import bbox from '@turf/bbox';
-
-import DatePicker from 'react-datepicker';
 
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../config/utils';
 import {
-  AggregationOperations,
   BoundaryLayerProps,
-  NSOLayerProps,
   WMSLayerProps,
   LayerKey,
 } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
-import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
-import {
-  AnalysisDispatchParams,
-  analysisResultSelector,
-  clearAnalysisResult,
-  isAnalysisLayerActiveSelector,
-  isAnalysisLoadingSelector,
-  requestAndStoreAnalysis,
-  setIsMapLayerActive,
-} from '../../../context/analysisResultStateSlice';
-import AnalysisTable from './AnalysisTable';
-import {
-  getAnalysisTableColumns,
-  downloadCSVFromTableData,
-} from '../../../utils/analysis-utils';
 import LayerDropdown from './LayerDropdown';
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -92,8 +55,10 @@ function AlertForm({ classes }: AlertFormProps) {
   const [selectedStat, setSelectedStat] = useState<string>('');
   const [selectedThreshold, setSelectedThreshold] = useState<number>(0);
 
-  // Very basic...
+  // Very basic regex for detecting emails
   const emailRegex: RegExp = RegExp('.+@.+');
+
+  const isAlertFormEnabled = false; // 'true' for development!
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -109,24 +74,39 @@ function AlertForm({ classes }: AlertFormProps) {
     }
   }, [availableDates, hazardLayerId]);
 
-  const adminNames: string[] = useMemo(() => {
+  const regionNamesToNsoCodes: Map<string, string> = useMemo(() => {
+    if (!boundaryLayerData) {
+      // Not loaded yet. Will proceed when it is.
+      return new Map();
+    }
+
+    return new Map(
+      boundaryLayerData.data.features
+        .filter(feature => feature.properties != null)
+        .map(feature => [
+          `${feature.properties?.ADM1_EN} / ${feature.properties?.ADM2_EN}`,
+          feature.properties?.NSO_CODE,
+        ]),
+    );
+  }, [boundaryLayerData]);
+
+  const regionNames: string[] = useMemo(() => {
     if (!boundaryLayerData) {
       // Not loaded yet. Will proceed when it is.
       return [];
     }
 
-    // Sorting in-place is fine here since it's a new array anyway
-    // eslint-disable-next-line fp/no-mutating-methods
-    return [
-      ...boundaryLayerData.data.features.map(f => {
-        if (!f.properties) {
-          return '';
-        }
-        return `${f.properties.ADM1_EN} / ${f.properties.ADM2_EN}`;
-      }),
-    ]
-      .filter(name => name !== '')
-      .sort();
+    return (
+      // eslint-disable-next-line fp/no-mutating-methods
+      boundaryLayerData.data.features
+        .filter(feature => feature.properties != null)
+        .map(
+          feature =>
+            `${feature.properties?.ADM1_EN} / ${feature.properties?.ADM2_EN}`,
+        )
+        // We can mutate the array since it's a new one anyway
+        .sort()
+    );
   }, [boundaryLayerData]);
 
   const onChangeEmail = (event: { target: { value: string } }) => {
@@ -136,14 +116,27 @@ function AlertForm({ classes }: AlertFormProps) {
   };
 
   const runAlertForm = async () => {
-    console.log(hazardLayerId);
-    console.log(selectedStat);
-    console.log(selectedThreshold);
-    console.log(regionsList);
-    console.log(email);
+    const regionCodes = regionsList
+      .filter(r => r !== 'allRegions')
+      .map(r => regionNamesToNsoCodes.get(r));
+
+    const apiData = {
+      hazardLayerId,
+      statistic: selectedStat,
+      threshold: selectedThreshold,
+      regionNsoCodes: regionCodes,
+      email,
+      zones_url: '', // part of the ApiData object; refactor needed
+      geotiff_url: '', // ^
+    };
+
+    console.log(apiData);
+
+    // TODO: Make API call
+    // await fetchApiData('http://localhost:80/alarms', apiData);
   };
 
-  return (
+  return isAlertFormEnabled ? (
     <div className={classes.AlertForm}>
       <Button
         variant="contained"
@@ -259,15 +252,17 @@ function AlertForm({ classes }: AlertFormProps) {
                   </MenuItem>
                   <ListSubheader>Administrative Regions</ListSubheader>
                   ...
-                  {adminNames.map(adminName => (
-                    <MenuItem
-                      style={{ color: 'black' }}
-                      key={adminName}
-                      value={adminName}
-                    >
-                      {adminName}
-                    </MenuItem>
-                  ))}
+                  {regionNames.map(region => {
+                    return (
+                      <MenuItem
+                        style={{ color: 'black' }}
+                        key={region}
+                        value={region}
+                      >
+                        {region}
+                      </MenuItem>
+                    );
+                  })}
                   ]
                 </Select>
               </div>
@@ -286,13 +281,6 @@ function AlertForm({ classes }: AlertFormProps) {
               className={classes.innerAnalysisButton}
               onClick={runAlertForm}
               disabled={!hazardLayerId || !selectedStat || !emailValid}
-              // disabled={
-              //   !!thresholdError || // if there is a threshold error
-              //   !selectedDate || // or date hasn't been selected
-              //   !hazardLayerId || // or hazard layer hasn't been selected
-              //   !baselineLayerId || // or baseline layer hasn't been selected
-              //   isAnalysisLoading // or analysis is currently loading
-              // }
             >
               <Typography variant="body2">Create Alert</Typography>
             </Button>
@@ -300,7 +288,7 @@ function AlertForm({ classes }: AlertFormProps) {
         ) : null}
       </Box>
     </div>
-  );
+  ) : null;
 }
 
 const styles = (theme: Theme) =>
