@@ -32,7 +32,7 @@ import {
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
-import LayerDropdown from './LayerDropdown';
+import LayerDropdown from '../Layers/LayerDropdown';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 

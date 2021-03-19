@@ -62,7 +62,7 @@ import {
   getAnalysisTableColumns,
   downloadCSVFromTableData,
 } from '../../../utils/analysis-utils';
-import LayerDropdown from './LayerDropdown';
+import LayerDropdown from '../Layers/LayerDropdown';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 

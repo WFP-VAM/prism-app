@@ -2,19 +2,19 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 
-import Analyser from '.';
+import AlertForm from '.';
 import { store } from '../../../context/store';
 
-jest.mock('./LayerDropdown', () => 'mock-Layer-Dropdown');
+jest.mock('../Layers/LayerDropdown', () => 'mock-Layer-Dropdown');
 
 test('renders as expected', () => {
   const rendered = render(
     <Provider store={store}>
-      <Analyser />
+      <AlertForm />
     </Provider>,
   );
   return rendered
-    .findByText('Run Analysis')
+    .findByText('Create Alarm')
     .then(btn => btn.click()) // open analyser menu (default closed)
     .then(() => expect(rendered.container).toMatchSnapshot());
 });
