@@ -16,7 +16,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
@@ -39,6 +38,21 @@ function NavBar({ classes }: NavBarProps) {
 
   const menu = menuList.map(({ title, ...category }) => (
     <MenuItem key={title} title={title} {...category} />
+  ));
+
+  // menu for mobile, 1 active accordion at a time so I put the state in here
+  const [expanded, setExpanded] = useState('');
+  const selectAccordion = (title: string) => {
+    setExpanded(title);
+  };
+  const menuMobile = menuList.map(({ title, ...category }) => (
+    <MenuItemMobile
+      expanded={expanded}
+      selectAccordion={selectAccordion}
+      key={title}
+      title={title}
+      {...category}
+    />
   ));
 
   const buttons = rightSideLinks.map(({ title, icon, href }) => (
@@ -103,13 +117,13 @@ function NavBar({ classes }: NavBarProps) {
                 open={openMobileMenu}
                 onClose={() => setOpenMobileMenu(false)}
               >
-                <div className={classes.drawerContent}>
+                <div className={classes.mobileDrawerContent}>
                   <Grid container spacing={3}>
                     <Grid container justify="space-around" item>
                       {buttons}
                     </Grid>
                     <Grid container direction="column" item>
-                      <MenuItemMobile />
+                      {menuMobile}
                     </Grid>
                   </Grid>
                 </div>
@@ -145,7 +159,7 @@ const styles = (theme: Theme) =>
       textAlign: 'center',
     },
 
-    drawerContent: {
+    mobileDrawerContent: {
       backgroundColor: theme.palette.primary.main,
       paddingTop: 16,
       width: '80vw',
