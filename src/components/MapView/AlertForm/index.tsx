@@ -58,7 +58,8 @@ function AlertForm({ classes }: AlertFormProps) {
   // Very basic regex for detecting emails
   const emailRegex: RegExp = RegExp('.+@.+');
 
-  const isAlertFormEnabled = false; // 'true' for development!
+  // On by default, may want to disable it in some cases
+  const isAlertFormEnabled = true;
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {

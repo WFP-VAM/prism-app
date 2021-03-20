@@ -14,7 +14,7 @@ test('renders as expected', () => {
     </Provider>,
   );
   return rendered
-    .findByText('Create Alarm')
+    .findByText('Create Alert')
     .then(btn => btn.click()) // open analyser menu (default closed)
     .then(() => expect(rendered.container).toMatchSnapshot());
 });

@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="Analyser-analyser-1"
+    class="AlertForm-AlertForm-1"
   >
     <mock-button
       color="primary"
@@ -11,24 +11,24 @@ exports[`renders as expected 1`] = `
     >
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-chart-bar fa-w-16 "
-        data-icon="chart-bar"
+        class="svg-inline--fa fa-bell fa-w-14 "
+        data-icon="bell"
         data-prefix="fas"
         focusable="false"
         role="img"
         style="margin-right: 10px; font-size: 1.6em;"
-        viewBox="0 0 512 512"
+        viewBox="0 0 448 512"
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
-          d="M332.8 320h38.4c6.4 0 12.8-6.4 12.8-12.8V172.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v134.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h38.4c6.4 0 12.8-6.4 12.8-12.8V76.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v230.4c0 6.4 6.4 12.8 12.8 12.8zm-288 0h38.4c6.4 0 12.8-6.4 12.8-12.8v-70.4c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v70.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h38.4c6.4 0 12.8-6.4 12.8-12.8V108.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v198.4c0 6.4 6.4 12.8 12.8 12.8zM496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16z"
+          d="M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z"
           fill="currentColor"
         />
       </svg>
       <mock-typography
         variant="body2"
       >
-        Run Analysis
+        Create Alert
       </mock-typography>
       <svg
         aria-hidden="true"
@@ -48,14 +48,14 @@ exports[`renders as expected 1`] = `
       </svg>
     </mock-button>
     <div
-      class="MuiBox-root MuiBox-root-12 Analyser-analyserMenu-2"
+      class="MuiBox-root MuiBox-root-12 AlertForm-AlertFormMenu-2"
     >
       <div>
         <div
-          class="Analyser-newAnalyserContainer-5"
+          class="AlertForm-newAlertFormContainer-5"
         >
           <div
-            class="Analyser-analyserOptions-4"
+            class="AlertForm-AlertFormOptions-4"
           >
             <mock-typography
               variant="body2"
@@ -63,14 +63,14 @@ exports[`renders as expected 1`] = `
               Hazard Layer
             </mock-typography>
             <mock-layer-dropdown
-              classname="Analyser-selector-9"
+              classname="AlertForm-selector-9"
               placeholder="Choose hazard layer"
               title="Hazard Layer"
               type="wms"
             />
           </div>
           <div
-            class="Analyser-analyserOptions-4"
+            class="AlertForm-AlertFormOptions-4"
           >
             <mock-typography
               variant="body2"
@@ -81,193 +81,160 @@ exports[`renders as expected 1`] = `
               class="MuiFormControl-root"
             >
               <div
-                class="MuiFormGroup-root MuiFormGroup-row"
-                role="radiogroup"
-              >
-                <label
-                  class="MuiFormControlLabel-root"
-                >
-                  <span
-                    aria-disabled="false"
-                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-13 MuiRadio-root Analyser-radioOptions-6 PrivateSwitchBase-checked-14 Mui-checked"
-                  >
-                    <span
-                      class="MuiIconButton-label"
-                    >
-                      <input
-                        checked=""
-                        class="PrivateSwitchBase-input-16"
-                        name="statistics"
-                        type="radio"
-                        value="mean"
-                      />
-                      <div
-                        class="PrivateRadioButtonIcon-root-17 PrivateRadioButtonIcon-checked-19"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-                          />
-                        </svg>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-18 MuiSvgIcon-fontSizeSmall"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
-                          />
-                        </svg>
-                      </div>
-                    </span>
-                    <span
-                      class="MuiTouchRipple-root"
-                    />
-                  </span>
-                  <mock-typography
-                    classname="MuiFormControlLabel-label"
-                    component="span"
-                  >
-                    Mean
-                  </mock-typography>
-                </label>
-                <label
-                  class="MuiFormControlLabel-root"
-                >
-                  <span
-                    aria-disabled="false"
-                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-13 MuiRadio-root Analyser-radioOptions-6"
-                  >
-                    <span
-                      class="MuiIconButton-label"
-                    >
-                      <input
-                        class="PrivateSwitchBase-input-16"
-                        name="statistics"
-                        type="radio"
-                        value="median"
-                      />
-                      <div
-                        class="PrivateRadioButtonIcon-root-17"
-                      >
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-                          />
-                        </svg>
-                        <svg
-                          aria-hidden="true"
-                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-18 MuiSvgIcon-fontSizeSmall"
-                          focusable="false"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
-                          />
-                        </svg>
-                      </div>
-                    </span>
-                    <span
-                      class="MuiTouchRipple-root"
-                    />
-                  </span>
-                  <mock-typography
-                    classname="MuiFormControlLabel-label"
-                    component="span"
-                  >
-                    Median
-                  </mock-typography>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div
-            class="Analyser-analyserOptions-4"
-          >
-            <mock-typography
-              variant="body2"
-            >
-              Baseline Layer
-            </mock-typography>
-            <mock-layer-dropdown
-              classname="Analyser-selector-9"
-              placeholder="Choose baseline layer"
-              title="Baseline Layer"
-              type="nso"
-            />
-          </div>
-          <div
-            class="Analyser-analyserOptions-4"
-          >
-            <mock-typography
-              variant="body2"
-            >
-              Threshold
-            </mock-typography>
-            <mock-textfield
-              classname="Analyser-numberField-10"
-              error="false"
-              id="filled-number"
-              label="Min"
-              type="number"
-              value=""
-              variant="filled"
-            />
-            <mock-textfield
-              classname="Analyser-numberField-10"
-              id="filled-number"
-              label="Max"
-              type="number"
-              value=""
-              variant="filled"
-            />
-          </div>
-          <div
-            class="Analyser-analyserOptions-4"
-          >
-            <mock-typography
-              variant="body2"
-            >
-              Date
-            </mock-typography>
-            <div
-              class="react-datepicker-wrapper"
-            >
-              <div
-                class="react-datepicker__input-container"
+                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
               >
                 <div
-                  class="MuiInputBase-root MuiInput-root MuiInput-underline"
+                  aria-haspopup="listbox"
+                  aria-labelledby="select-statistic"
+                  class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                  id="select-statistic"
+                  role="button"
+                  tabindex="0"
                 >
-                  <input
-                    class="MuiInputBase-input MuiInput-input"
-                    type="text"
-                    value=""
-                  />
+                  Choose a statistic
                 </div>
+                <input
+                  aria-hidden="true"
+                  class="MuiSelect-nativeInput"
+                  tabindex="-1"
+                  value="placeholder"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSelect-icon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+                <mock-menu
+                  anchorel="[object HTMLDivElement]"
+                  id="menu-"
+                  menulistprops="[object Object]"
+                  open="false"
+                  paperprops="[object Object]"
+                >
+                  <mock-menuitem
+                    aria-selected="true"
+                    data-value="placeholder"
+                    disabled="true"
+                    role="option"
+                    selected="true"
+                    style="color: black;"
+                  >
+                    Choose a statistic
+                  </mock-menuitem>
+                  <mock-menuitem
+                    data-value="minbelow"
+                    role="option"
+                    selected="false"
+                    style="color: black;"
+                  >
+                    Minimum Below
+                  </mock-menuitem>
+                  <mock-menuitem
+                    data-value="maxabove"
+                    role="option"
+                    selected="false"
+                    style="color: black;"
+                  >
+                    Maximum Above
+                  </mock-menuitem>
+                </mock-menu>
               </div>
             </div>
+          </div>
+          <div
+            class="AlertForm-AlertFormOptions-4"
+          >
+            <mock-textfield
+              classname="thresholdClass"
+              id="threshold"
+              label="Threshold"
+              type="number"
+              variant="filled"
+            />
+          </div>
+          <div
+            class="AlertForm-AlertFormOptions-4"
+          >
+            <div
+              class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline regionsListClass"
+              style="max-width: 200px;"
+            >
+              <div
+                aria-haspopup="listbox"
+                aria-labelledby="regionsList"
+                class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-filled MuiInputBase-input MuiFilledInput-input"
+                id="regionsList"
+                role="button"
+                tabindex="0"
+              >
+                All
+              </div>
+              <input
+                aria-hidden="true"
+                class="MuiSelect-nativeInput"
+                tabindex="-1"
+                value="allRegions"
+              />
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconFilled"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M7 10l5 5 5-5z"
+                />
+              </svg>
+              <mock-menu
+                anchorel="[object HTMLDivElement]"
+                id="menu-"
+                menulistprops="[object Object]"
+                open="false"
+                paperprops="[object Object]"
+              >
+                <mock-menuitem
+                  aria-selected="true"
+                  data-value="allRegions"
+                  role="option"
+                  selected="true"
+                  style="color: black;"
+                >
+                  All
+                </mock-menuitem>
+                <li
+                  class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
+                  role="option"
+                >
+                  Administrative Regions
+                </li>
+              </mock-menu>
+            </div>
+          </div>
+          <div
+            class="AlertForm-AlertFormOptions-4"
+          >
+            <mock-textfield
+              classname="emailAddressClass"
+              id="email-address"
+              label="Email Address"
+              type="text"
+              variant="filled"
+            />
           </div>
         </div>
         <mock-button
-          classname="Analyser-innerAnalysisButton-7"
+          classname="AlertForm-innerAnalysisButton-7"
           disabled="true"
         >
           <mock-typography
             variant="body2"
           >
-            Run Analysis
+            Create Alert
           </mock-typography>
         </mock-button>
       </div>
