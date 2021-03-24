@@ -12,14 +12,19 @@ const useStyles = makeStyles(() =>
       height: 10,
       width: 10,
       marginRight: 4,
-      backgroundColor: ({ color, opacity }: any) => fade(color, opacity),
+      backgroundColor: ({
+        color,
+        opacity,
+      }: {
+        color: string;
+        opacity: number;
+      }) => fade(color, opacity),
     },
   }),
 );
 
 function ColorIndicator({ value, color, opacity }: ColorIndicatorProps) {
   const classes = useStyles({ color, opacity });
-
   return (
     <div className={classes.container}>
       <div className={classes.indicator} />
