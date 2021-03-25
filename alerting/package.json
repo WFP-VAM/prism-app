@@ -1,0 +1,64 @@
+{
+  "name": "prism-alerting",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc -p tsconfig.build.json",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "lint": "eslint \"{src,apps,libs,test,scripts}/**/*.{ts,js}\" --max-warnings 0 --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "ts-node $(yarn bin typeorm)",
+    "migration:generate": "yarn typeorm migration:generate",
+    "migration:run": "yarn typeorm migration:run",
+    "migration:revert": "yarn typeorm migration:revert",
+    "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
+    "seed:config": "yarn typeorm-seeding config",
+    "seed:run": "yarn typeorm-seeding seed",
+    "daily-worker": "ts-node -r dotenv/config scripts/daily-update.ts"
+  },
+  "dependencies": {
+    "geojson": "^0.5.0",
+    "pg": "^8.5.1",
+    "typeorm": "^0.2.25",
+    "typeorm-naming-strategies": "^1.1.0"
+  },
+  "devDependencies": {
+    "faker": "^4.1.0",
+    "glob": "^7.1.6",
+    "jest": "24.9.0",
+    "rimraf": "^3.0.2",
+    "supertest": "^4.0.2",
+    "ts-jest": "^24.0",
+    "ts-loader": "^6.2.1",
+    "ts-node": "^8.10.2",
+    "tsconfig-paths": "^3.9.0",
+    "typeorm-seeding": "^1.6.1",
+    "typescript": "~3.8.2",
+    "yargs": "^15.4.1"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": [
+      ".spec.ts$",
+      ".test.ts$"
+    ],
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  }
+}
