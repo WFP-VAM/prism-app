@@ -25,10 +25,16 @@
     "daily-worker": "ts-node -r dotenv/config scripts/daily-update.ts"
   },
   "dependencies": {
+    "@turf/bbox": "^6.3.0",
+    "@types/node-fetch": "^2.5.8",
     "geojson": "^0.5.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
     "typeorm": "^0.2.25",
-    "typeorm-naming-strategies": "^1.1.0"
+    "typeorm-naming-strategies": "^1.1.0",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "faker": "^4.1.0",

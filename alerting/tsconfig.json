@@ -2,13 +2,9 @@
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "module": "commonjs",
-    "target": "es6",
+    "target": "es5",
     "noImplicitAny": false,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -24,6 +20,6 @@
     "experimentalDecorators": true,
     "downlevelIteration": true
   },
-  "include": ["src"],
-  "files": ["src/custom.d.ts", "ormconfig.ts"]
+  "include": ["src", "scripts"],
+  "files": ["src/custom.d.ts", "ormconfig.ts", "scripts/*"]
 }

@@ -8,6 +8,19 @@ import {
 } from 'typeorm';
 import { GeoJSON } from 'geojson';
 
+type WCSConfig = {
+  scale?: number;
+  offset?: number;
+  pixelResolution?: number;
+};
+
+export type AlertConfig = {
+  type: string;
+  serverLayerName: string;
+  baseUrl: string;
+  wcsConfig: WCSConfig;
+};
+
 @Entity()
 export class Alert {
   @PrimaryGeneratedColumn()
@@ -34,7 +47,7 @@ export class Alert {
   }
   */
   @Column({ type: 'json' })
-  alertConfig: any;
+  alertConfig: AlertConfig;
 
   @Column({ nullable: true })
   min: number;
