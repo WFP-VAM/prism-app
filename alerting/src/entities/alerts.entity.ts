@@ -46,7 +46,7 @@ export class Alert {
     }
   }
   */
-  @Column({ type: 'json' })
+  @Column({ type: 'jsonb' })
   alertConfig: AlertConfig;
 
   @Column({ nullable: true })
@@ -56,13 +56,10 @@ export class Alert {
   max: number;
 
   @Column({
-    type: 'geometry',
-    unique: true,
-    srid: 4326,
+    type: 'jsonb',
     nullable: true,
   })
-  @Index({ spatial: true })
-  zones: GeoJSON[];
+  zones: GeoJSON;
 
   @CreateDateColumn()
   createdAt: Date;
