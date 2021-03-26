@@ -1,6 +1,7 @@
 import { createConnection } from 'typeorm';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
+import { sendEmail } from './utils/email';
 import { getWCSCoverage, getWMSCapabilities } from './utils/server-utils';
 
 async function run() {
@@ -11,7 +12,7 @@ async function run() {
   await Promise.all(
     alerts.map(async (alert) => {
       const { baseUrl, serverLayerName, type } = alert.alertConfig;
-      const { lastTriggered } = alert;
+      const { email, alertName, lastTriggered } = alert;
       const availableDates =
         type === 'wms'
           ? await getWMSCapabilities(`${baseUrl}/wms`)
@@ -25,11 +26,23 @@ async function run() {
 
       const alertMessage = await calculateBoundsForAlert(maxDate, alert);
 
+      const emailMessage = `
+      Your alert${alertName ? ` ${alertName}` : ''} has been triggered.
+      Go to the PRISM_LINK for more information.
+
+      Alert: ${alertMessage}`;
+
       if (alertMessage) {
         console.log(
           `Your alert '${alert.alertName}' was triggered on ${maxDate}`,
         );
         // TODO - Send an email
+        sendEmail({
+          from: 'prism-alert@ovio.org',
+          to: email,
+          subject: `PRISM Alert Triggered`,
+          text: emailMessage,
+        });
 
         console.log(alertMessage);
       }
