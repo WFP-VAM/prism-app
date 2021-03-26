@@ -3,13 +3,15 @@ import logging
 from distutils.util import strtobool
 from os import getenv
 
-from caching import cache_file
+from caching import cache_file, cache_geojson
 
 from flask import Flask, Response, jsonify, request
 
 from flask_caching import Cache
 
 from flask_cors import CORS
+
+import json
 
 from timer import timed
 
@@ -20,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = True
 CORS(app)
 
 # For more configuration options, check out the documentation
@@ -49,10 +52,19 @@ def stats():
     data = request.get_json() or request.form
     geotiff_url = data.get('geotiff_url')
     zones_url = data.get('zones_url')
-    if geotiff_url is None or zones_url is None:
+    zonesGeojson = data.get('zones')
+
+    if geotiff_url is None:
         logger.error('Received {}'.format(data))
         return Response(
-            response='400: geotiff_url and zones_url are both required.',
+            response='400: geotiff_url is required.',
+            status=400
+        )
+
+    if zonesGeojson is None and zones_url is None:
+        logger.error('Received {}'.format(data))
+        return Response(
+            response='400: One of zones or zones_url is required.',
             status=400
         )
 
@@ -64,10 +76,17 @@ def stats():
         url=geotiff_url
     )
 
-    zones = cache_file(
-        prefix='zones',
-        url=zones_url
-    )
+    # TODO - Add validation for zones.
+    if (zonesGeojson is not None):
+        zones = cache_geojson(
+            prefix='zones_geojson',
+            geojson=zonesGeojson
+        )
+    else:
+        zones = cache_file(
+            prefix='zones',
+            url=zones_url
+        )
 
     features = _calculate_stats(
         zones,
@@ -77,6 +96,7 @@ def stats():
         group_by=group_by,
         geojson_out=geojson_out
     )
+
     return jsonify(features)
 
 
