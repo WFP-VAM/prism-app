@@ -37,8 +37,8 @@ export class Alert {
   /*
   {
     "type": "wms",
-    "server_layer_name": "ModisLST",
-    "base_url": "https://mongolia.sibelius-datacube.org:5000",
+    "serverLayerName": "ModisLST",
+    "baseUrl": "https://mongolia.sibelius-datacube.org:5000",
     "wcsConfig": {
       "scale": 0.02,
       "offset": -273,

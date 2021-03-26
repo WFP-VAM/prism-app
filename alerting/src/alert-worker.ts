@@ -19,20 +19,22 @@ async function run() {
       const layerAvailableDates = availableDates[serverLayerName];
       const maxDate = new Date(Math.max(...layerAvailableDates));
 
-      if (lastTriggered >= maxDate) {
+      if (!maxDate || lastTriggered >= maxDate) {
         return;
       }
 
       const alertMessage = await calculateBoundsForAlert(maxDate, alert);
-      if (!alertMessage) {
-        return;
+
+      if (alertMessage) {
+        console.log(
+          `Your alert '${alert.alertName}' was triggered on ${maxDate}`,
+        );
+        // TODO - Send an email
+
+        console.log(alertMessage);
       }
-      console.log(
-        `Your alert '${alert.alertName}' was triggered on ${maxDate}`,
-      );
-      // TODO - Send an email
-      // TODO - update
-      console.log(alertMessage);
+      // Update lastTriggered (imnactive during testing)
+      alertRepository.update(alert.id, { lastTriggered: maxDate });
     }),
   );
 }
