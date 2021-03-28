@@ -30,7 +30,7 @@ function App() {
         <NavBar />
         <div id="app">
           <Switch>
-            <Route exact path="/">
+            <Route exact path={['/', '/analysis', '/view']}>
               <MapView />
               <DataDrawer />
             </Route>

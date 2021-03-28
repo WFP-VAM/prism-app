@@ -29,6 +29,7 @@ import { faCaretDown, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import bbox from '@turf/bbox';
 
 import DatePicker from 'react-datepicker';
@@ -40,9 +41,9 @@ import {
 import {
   AggregationOperations,
   BoundaryLayerProps,
+  LayerKey,
   NSOLayerProps,
   WMSLayerProps,
-  LayerKey,
 } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
@@ -59,10 +60,12 @@ import {
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
 import {
-  getAnalysisTableColumns,
   downloadCSVFromTableData,
+  getAnalysisTableColumns,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from './LayerDropdown';
+import { addNotification } from '../../../context/notificationStateSlice';
+import { UrlParamsEnum } from './UrlParamsEnum';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -78,60 +81,50 @@ function Analyser({ classes }: AnalyserProps) {
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
   const isMapLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
+  const urlPath = useLocation().pathname;
+  const urlParams: {
+    [UrlParamsEnum.HAZARD_LAYER]?: string;
+    [UrlParamsEnum.STATISTIC]?: string;
+    [UrlParamsEnum.BASELINE_LAYER]?: string;
+    [UrlParamsEnum.BELOW_THRESHOLD]?: string;
+    [UrlParamsEnum.ABOVE_THRESHOLD]?: string;
+    [UrlParamsEnum.DATE]?: string;
+  } = {};
+  const searchParams = new URLSearchParams(useLocation().search);
+  if (urlPath === '/analysis') {
+    searchParams.forEach((value, key) => {
+      if (Object.values(UrlParamsEnum).includes(key as UrlParamsEnum)) {
+        urlParams[key as UrlParamsEnum] = value || undefined;
+      }
+    });
+  }
+
   const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState(false);
   const [isTableViewOpen, setIsTableViewOpen] = useState(true);
 
   // form elements
-  const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
-  const [statistic, setStatistic] = useState(AggregationOperations.Mean);
-  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>();
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
-
-  const [belowThreshold, setBelowThreshold] = useState('');
-  const [aboveThreshold, setAboveThreshold] = useState('');
+  const [hazardLayerId, setHazardLayerId] = useState<LayerKey>(
+    urlParams[UrlParamsEnum.HAZARD_LAYER] as LayerKey,
+  );
+  const [statistic, setStatistic] = useState(
+    (urlParams[UrlParamsEnum.STATISTIC] as AggregationOperations) ||
+      AggregationOperations.Mean,
+  );
+  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>(
+    urlParams[UrlParamsEnum.BASELINE_LAYER] as LayerKey,
+  );
+  const [selectedDate, setSelectedDate] = useState<number | null>(
+    urlParams[UrlParamsEnum.DATE]
+      ? new Date(urlParams[UrlParamsEnum.DATE] as string).getTime()
+      : null,
+  );
+  const [belowThreshold, setBelowThreshold] = useState(
+    urlParams[UrlParamsEnum.BELOW_THRESHOLD] || '',
+  );
+  const [aboveThreshold, setAboveThreshold] = useState(
+    urlParams[UrlParamsEnum.ABOVE_THRESHOLD] || '',
+  );
   const [thresholdError, setThresholdError] = useState<string | null>(null);
-
-  // set default date after dates finish loading and when hazard layer changes
-  useEffect(() => {
-    const dates = hazardLayerId
-      ? availableDates[
-          (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
-        ]
-      : null;
-    if (!dates || dates.length === 0) {
-      setSelectedDate(null);
-    } else {
-      setSelectedDate(dates[dates.length - 1]);
-    }
-  }, [availableDates, hazardLayerId]);
-
-  const onOptionChange = <T extends string>(
-    setterFunc: Dispatch<SetStateAction<T>>,
-  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value as T;
-    setterFunc(value);
-    return value;
-  };
-  // specially for threshold values, also does error checking
-  const onThresholdOptionChange = (thresholdType: 'above' | 'below') => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const setterFunc =
-      thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
-    const changedOption = onOptionChange(setterFunc)(event);
-    // setting a value doesn't update the existing value until next render, therefore we must decide whether to access the old one or the newly change one here.
-    const aboveThresholdValue = parseFloat(
-      thresholdType === 'above' ? changedOption : aboveThreshold,
-    );
-    const belowThresholdValue = parseFloat(
-      thresholdType === 'below' ? changedOption : belowThreshold,
-    );
-    if (belowThresholdValue < aboveThresholdValue) {
-      setThresholdError('Min threshold is larger than Max!');
-    } else {
-      setThresholdError(null);
-    }
-  };
 
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData) {
@@ -141,19 +134,7 @@ function Analyser({ classes }: AnalyserProps) {
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
-  const statisticOptions = Object.entries(AggregationOperations).map(stat => (
-    <FormControlLabel
-      key={stat[0]}
-      value={stat[1]}
-      control={
-        <Radio className={classes.radioOptions} color="default" size="small" />
-      }
-      label={stat[0]}
-    />
-  ));
-
-  const clearAnalysis = () => dispatch(clearAnalysisResult());
-
+  // Used with a link
   const runAnalyser = async () => {
     if (!adminBoundariesExtent) {
       return;
@@ -187,6 +168,100 @@ function Analyser({ classes }: AnalyserProps) {
     };
 
     await dispatch(requestAndStoreAnalysis(params));
+  };
+
+  const [isUrlActionPlayed, setIsUrlActionPlayed] = useState(false);
+  useEffect(() => {
+    if (
+      urlPath === '/analysis' &&
+      !isUrlActionPlayed &&
+      adminBoundariesExtent
+    ) {
+      setIsUrlActionPlayed(true);
+      runAnalyser().then(_ => setIsAnalyserFormOpen(true));
+    }
+  }, [
+    adminBoundariesExtent,
+    isUrlActionPlayed,
+    runAnalyser,
+    urlParams,
+    urlPath,
+  ]);
+
+  // set default date after dates finish loading and when hazard layer changes
+  useEffect(() => {
+    const dates = hazardLayerId
+      ? availableDates[
+          (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
+        ]
+      : null;
+    if (!urlParams[UrlParamsEnum.DATE]) {
+      if (!dates || dates.length === 0) {
+        setSelectedDate(null);
+      } else {
+        setSelectedDate(dates[dates.length - 1]);
+      }
+    }
+  }, [availableDates, hazardLayerId, urlParams]);
+
+  const onOptionChange = <T extends string>(
+    setterFunc: Dispatch<SetStateAction<T>>,
+  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value as T;
+    setterFunc(value);
+    return value;
+  };
+  // specially for threshold values, also does error checking
+  const onThresholdOptionChange = (thresholdType: 'above' | 'below') => (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const setterFunc =
+      thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
+    const changedOption = onOptionChange(setterFunc)(event);
+    // setting a value doesn't update the existing value until next render, therefore we must decide whether to access the old one or the newly change one here.
+    const aboveThresholdValue = parseFloat(
+      thresholdType === 'above' ? changedOption : aboveThreshold,
+    );
+    const belowThresholdValue = parseFloat(
+      thresholdType === 'below' ? changedOption : belowThreshold,
+    );
+    if (belowThresholdValue < aboveThresholdValue) {
+      setThresholdError('Min threshold is larger than Max!');
+    } else {
+      setThresholdError(null);
+    }
+  };
+
+  const statisticOptions = Object.entries(AggregationOperations).map(stat => (
+    <FormControlLabel
+      key={stat[0]}
+      value={stat[1]}
+      control={
+        <Radio className={classes.radioOptions} color="default" size="small" />
+      }
+      label={stat[0]}
+    />
+  ));
+
+  const clearAnalysis = () => dispatch(clearAnalysisResult());
+  const shareAnalysis = () => {
+    navigator.clipboard.writeText(
+      `${window.location.host}/analysis?${
+        UrlParamsEnum.HAZARD_LAYER
+      }=${hazardLayerId}&${UrlParamsEnum.STATISTIC}=${statistic}&${
+        UrlParamsEnum.BASELINE_LAYER
+      }=${baselineLayerId}&${UrlParamsEnum.BELOW_THRESHOLD}=${belowThreshold}&${
+        UrlParamsEnum.ABOVE_THRESHOLD
+      }=${aboveThreshold}&${UrlParamsEnum.DATE}=${
+        urlParams[UrlParamsEnum.DATE]
+      }`,
+    );
+    dispatch(
+      addNotification({
+        message: 'Copied link in your clipboard. Ctrl+V to share it anywhere.',
+        type: 'success',
+      }),
+    );
   };
 
   return (
@@ -358,6 +433,21 @@ function Analyser({ classes }: AnalyserProps) {
                 }
               >
                 <Typography variant="body2">Run Analysis</Typography>
+              </Button>
+            )}
+            {analysisResult && (
+              <Button
+                className={classes.innerAnalysisButton}
+                onClick={shareAnalysis}
+                disabled={
+                  !!thresholdError || // if there is a threshold error
+                  !selectedDate || // or date hasn't been selected
+                  !hazardLayerId || // or hazard layer hasn't been selected
+                  !baselineLayerId || // or baseline layer hasn't been selected
+                  isAnalysisLoading // or analysis is currently loading
+                }
+              >
+                <Typography variant="body2">Share Analysis</Typography>
               </Button>
             )}
             {isAnalysisLoading ? <LinearProgress /> : null}
