@@ -106,7 +106,11 @@ def stats_demo():
     geojson_out = request.args.get('geojson_out', 'False')
     group_by = request.args.get('group_by', None)
 
+    logger.debug('geojson_out: {}'.format(geojson_out))
+    logger.debug('group_by: {}'.format(group_by))
     geojson_out = strtobool(geojson_out)
+
+    logger.debug('strtobool(geojson_out): {}'.format(geojson_out))
 
     features = _calculate_stats(
         zones,

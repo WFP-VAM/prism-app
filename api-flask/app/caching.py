@@ -9,7 +9,8 @@ from timer import timed
 
 logger = logging.getLogger(__name__)
 
-CACHE_DIRECTORY = '/cache/'
+# on Mac use a dir that you have permission to
+CACHE_DIRECTORY = '/tmp/'
 
 
 @timed
@@ -26,6 +27,10 @@ def cache_file(url, prefix):
     # If the file does not exist, download and return path.
     else:
         r = requests.get(url, verify=False)
+
+        logger.info('Checking path: {}'.format(''.join(cache_filepath.split(os.sep)[:-1])))
+
+        os.makedirs(''.join(cache_filepath.split(os.sep)[:-1]), exist_ok=True)
 
         with open(cache_filepath, 'wb') as f:
             f.write(r.content)
