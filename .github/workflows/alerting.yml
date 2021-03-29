@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: '12'
 
-     # Run alerting
+     # Run alert worker
       - run: cd alerting
       - run: yarn
       - run: ts-node src/alert-worker.ts
