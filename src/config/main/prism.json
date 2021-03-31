@@ -1,0 +1,82 @@
+{
+  "country": "Mongolia",
+  "serversUrls": {
+    "wms": [
+      "https://mongolia.sibelius-datacube.org:5000/wms"
+    ]
+  },
+  "map": {
+    "latitude": 46.810021,
+    "longitude": 103.111657,
+    "zoom": 4.5
+  },
+  "categories": {
+    "hazards": {
+      "drought_indicators": [
+        "pasture_anomaly",
+        "ndvi",
+        "ModisVHI"
+      ],
+      "winter_conditions": [
+        "ModisSnowPercentage",
+        "ModisLST"
+      ],
+      "ground_station_data": [
+        "avg_temperature_groundstations",
+        "min_temperature_groundstations",
+        "max_temperature_groundstations",
+        "total_precipitation_groundstations"
+      ]
+    },
+    "exposure": {
+      "demographics": [
+        "population_total"
+      ],
+      "livestock_and_herders": [
+        "herders",
+        "livestock"
+      ]
+    },
+    "vulnerability": {
+      "vulnerable_groups": [
+        "population_below_poverty",
+        "disabled",
+        "elderly",
+        "child"
+      ],
+      "herders": [
+        "herd_200"
+      ]
+    },
+    "capacity": {
+      "livestock_and_crop_preparedness": [
+        "hay_harvest",
+        "mvam_hay_reserves",
+        "mvam_fodder_reserves",
+        "mvam_cash_reserves",
+        "mvam_hay_prices"
+      ]
+    },
+    "risk": {
+      "dzud_risk": [
+        "DzudRiskMap"
+      ],
+      "impact_analysis": [
+        "herd_pasture_impact",
+        "livestock_vhi",
+        "livestock_cold"
+      ]
+    },
+    "tables": {
+      "socioeconomic_data": [
+        "poverty"
+      ],
+      "livestock_data": [
+        "animal_deaths"
+      ],
+      "price_data": [
+        "hay_prices"
+      ]
+    }
+  }
+}

@@ -1,5 +1,5 @@
-import appConfig from './mongolia/prism.json';
-import rawLayers from './mongolia/layers.json';
-import rawTables from './mongolia/tables.json';
+import appConfig from './main/prism.json';
+import rawLayers from './main/layers.json';
+import rawTables from './main/tables.json';
 
 export { appConfig, rawLayers, rawTables };
