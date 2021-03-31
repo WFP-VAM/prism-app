@@ -1,6 +1,6 @@
 import { map, startCase } from 'lodash';
 
-import appJSON from '../../config/prism.json';
+import appJSON from '../../config/mongolia/prism.json';
 import {
   isTableKey,
   LayerDefinitions,
