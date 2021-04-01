@@ -10,9 +10,9 @@ import {
   indonesiaRawTables,
 } from './indonesia';
 
-const DEFAULT = 'mongolia';
-
 type Country = 'mongolia' | 'indonesia';
+
+const DEFAULT = 'mongolia';
 
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
 
