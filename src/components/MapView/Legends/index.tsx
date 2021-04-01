@@ -91,18 +91,15 @@ function LegendItem({
   id,
   title,
   legend,
-  opacity: initialOpacity,
+  opacity,
   children,
 }: LegendItemProps) {
-  const [opacity, setOpacityValue] = useState<number>(initialOpacity || 0);
-
   const dispatch = useDispatch();
 
   const handleChangeOpacity = (
     event: React.ChangeEvent<{}>,
     newValue: number | number[],
   ) => {
-    setOpacityValue(newValue as number);
     if (id) {
       dispatch(updateLayerOpacity({ id, opacity: newValue as number }));
     }
