@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, useRef, useEffect, useState } from 'react';
+import React, { forwardRef, Ref, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
@@ -15,11 +15,12 @@ import {
   withStyles,
 } from '@material-ui/core';
 import DatePicker from 'react-datepicker';
-import Draggable from 'react-draggable';
+import Draggable, { DraggableEvent } from 'react-draggable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faCaretUp,
 } from '@fortawesome/free-solid-svg-icons';
 import 'react-datepicker/dist/react-datepicker.css';
 import { findIndex, get, isEqual } from 'lodash';
@@ -32,11 +33,26 @@ interface InputProps {
   onClick?: () => void;
 }
 
+type DateRangeProps = {
+  value: number;
+  label: string;
+  month: string;
+  isFirstDay: boolean;
+};
+
+type Point = {
+  x: number;
+  y: number;
+};
+
 const moment = extendMoment(Moment as any);
 
 // The DatePicker is timezone aware, so we trick it into
 // displaying UTC dates.
 export const USER_DATE_OFFSET = new Date().getTimezoneOffset() * 60000;
+
+const TIMELINE_ITEM_WIDTH = 10;
+const POINTER_ID = 'datePointerSelector';
 
 const Input = forwardRef(
   ({ value, onClick }: InputProps, ref?: Ref<HTMLButtonElement>) => {
@@ -52,17 +68,20 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
 
   const [selectedDate, setSelectedDate] = useState(moment(stateStartDate));
-  const [dateRange, setDateRange] = useState([
+  const [dateRange, setDateRange] = useState<DateRangeProps[]>([
     {
       value: 0,
       label: '',
       month: '',
-      isFirstday: false,
+      isFirstDay: false,
     },
   ]);
 
-  const [timelinePosition, setTimelinePosition] = useState({ x: 0, y: 0 });
-  const [pointerPosition, setPointerPosition] = useState({ x: 0, y: 0 });
+  const [timelinePosition, setTimelinePosition] = useState<Point>({
+    x: 0,
+    y: 0,
+  });
+  const [pointerPosition, setPointerPosition] = useState<Point>({ x: 0, y: 0 });
 
   const dateRef = useRef(availableDates);
 
@@ -72,21 +91,23 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   // Move the slider automatically so that the pointer always visible
   useEffect(() => {
     let x = 0;
-    if (pointerPosition.x >= dateRange.length * 10 - timeLineWidth) {
+    if (
+      pointerPosition.x >=
+      dateRange.length * TIMELINE_ITEM_WIDTH - timeLineWidth
+    ) {
       // eslint-disable-next-line fp/no-mutation
-      x = timeLineWidth - dateRange.length * 10;
+      x = timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH;
     } else if (pointerPosition.x > timeLineWidth) {
       // eslint-disable-next-line fp/no-mutation
-      x = -1 * pointerPosition.x + timeLineWidth / 2;
+      x = -pointerPosition.x + timeLineWidth / 2;
     }
     if (
-      -1 * timelinePosition.x > pointerPosition.x ||
-      -1 * timelinePosition.x + timeLineWidth < pointerPosition.x
+      -timelinePosition.x > pointerPosition.x ||
+      -timelinePosition.x + timeLineWidth < pointerPosition.x
     ) {
       setTimelinePosition({ x, y: 0 });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pointerPosition]);
+  }, [dateRange.length, pointerPosition, timeLineWidth, timelinePosition.x]);
 
   // Create timeline range and set pointer position
   useEffect(() => {
@@ -97,20 +118,20 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
           moment(stateStartDate).endOf('year'),
         )
         .by('days'),
-    ).map(e => {
+    ).map(date => {
       return {
-        value: e.valueOf(),
-        label: e.format('DD MMM YYYY'),
-        month: e.format('MMM YYYY'),
-        isFirstday: e.date() === e.startOf('month').date(),
+        value: date.valueOf(),
+        label: date.format('DD MMM YYYY'),
+        month: date.format('MMM YYYY'),
+        isFirstDay: date.date() === date.startOf('month').date(),
       };
     });
     setDateRange(range);
-    const dateIndex = findIndex(range, e => {
-      return e.label === moment(stateStartDate).format('DD MMM YYYY');
+    const dateIndex = findIndex(range, date => {
+      return date.label === moment(stateStartDate).format('DD MMM YYYY');
     });
     setPointerPosition({
-      x: dateIndex * 10,
+      x: dateIndex * TIMELINE_ITEM_WIDTH,
       y: 0,
     });
     setSelectedDate(moment(stateStartDate));
@@ -121,28 +142,30 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     dispatch(updateDateRange({ startDate: time, endDate: time }));
   }
 
-  function setDatePosition(date: number, increment: number) {
+  function setDatePosition(date: number | undefined, increment: number) {
     const dates = availableDates.map(d => {
       return d + USER_DATE_OFFSET;
     });
-    const selectedIndex = findDateIndex(dates, date as number);
+    const selectedIndex = findDateIndex(dates, date);
     if (dates[selectedIndex + increment]) {
       updateStartDate(new Date(dates[selectedIndex + increment]));
     }
   }
 
   // move pointer to closest date when change map layer
-  if (!isEqual(dateRef.current, availableDates)) {
-    setDatePosition(stateStartDate as number, 0);
-    dateRef.current = availableDates;
-  }
+  useEffect(() => {
+    if (!isEqual(dateRef.current, availableDates)) {
+      setDatePosition(stateStartDate, 0);
+      dateRef.current = availableDates;
+    }
+  });
 
   function incrementDate() {
-    setDatePosition(stateStartDate as number, 1);
+    setDatePosition(stateStartDate, 1);
   }
 
   function decrementDate() {
-    setDatePosition(stateStartDate as number, -1);
+    setDatePosition(stateStartDate, -1);
   }
 
   // Click on available date to move the pointer
@@ -152,19 +175,19 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     });
     const selectedIndex = findDateIndex(dates, dateRange[index].value);
     if (selectedIndex >= 0 && dates[selectedIndex] !== stateStartDate) {
-      setPointerPosition({ x: index * 10, y: 0 });
+      setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
       updateStartDate(new Date(dates[selectedIndex]));
     }
   };
 
   // Set timeline position after being dragged
-  const onTimelineStop = (e: any, position: { x: number; y: number }) => {
+  const onTimelineStop = (e: DraggableEvent, position: Point) => {
     setTimelinePosition(position);
   };
 
   // Set pointer position after being dragged
-  const onPointerStop = (e: any, position: { x: number; y: number }) => {
-    const exactX = Math.round(position.x / 10);
+  const onPointerStop = (e: DraggableEvent, position: Point) => {
+    const exactX = Math.round(position.x / TIMELINE_ITEM_WIDTH);
     if (exactX >= dateRange.length) {
       return;
     }
@@ -173,7 +196,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     });
     const selectedIndex = findDateIndex(dates, dateRange[exactX].value);
     if (selectedIndex >= 0 && dates[selectedIndex] !== stateStartDate) {
-      setPointerPosition({ x: exactX * 10, y: position.y });
+      setPointerPosition({ x: exactX * TIMELINE_ITEM_WIDTH, y: position.y });
       updateStartDate(new Date(dates[selectedIndex]));
     }
   };
@@ -230,7 +253,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
                 top: 0,
                 bottom: 0,
                 right: 0,
-                left: timeLineWidth - dateRange.length * 10,
+                left: timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH,
               }}
               position={timelinePosition}
               onStop={onTimelineStop}
@@ -254,13 +277,16 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
                         item
                         xs
                         className={
-                          date.isFirstday
+                          date.isFirstDay
                             ? classes.dateItemFull
                             : classes.dateItem
                         }
                       >
-                        {date.isFirstday ? (
-                          <Typography className={classes.dateItemLabel}>
+                        {date.isFirstDay ? (
+                          <Typography
+                            variant="body2"
+                            className={classes.dateItemLabel}
+                          >
                             {date.month}
                           </Typography>
                         ) : (
@@ -285,19 +311,25 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
                 </Grid>
                 <Draggable
                   axis="x"
-                  handle="#datePointerSelector"
+                  handle={`#${POINTER_ID}`}
                   bounds={{
                     top: 0,
                     bottom: 0,
                     left: 0,
-                    right: dateRange.length * 10,
+                    right: dateRange.length * TIMELINE_ITEM_WIDTH,
                   }}
-                  grid={[10, 1]}
+                  grid={[TIMELINE_ITEM_WIDTH, 1]}
                   position={pointerPosition}
-                  onStart={(e: any) => e.stopPropagation()}
+                  onStart={(e: DraggableEvent) => e.stopPropagation()}
                   onStop={onPointerStop}
                 >
-                  <div className={classes.triangle} id="datePointerSelector" />
+                  <div className={classes.triangle} id={POINTER_ID}>
+                    <FontAwesomeIcon
+                      icon={faCaretUp}
+                      style={{ fontSize: 40 }}
+                      color="white"
+                    />
+                  </div>
                 </Draggable>
               </div>
             </Draggable>
@@ -337,10 +369,10 @@ const styles = (theme: Theme) =>
 
     datePickerGrid: {
       display: 'flex',
-      minWidth: '150px',
+      minWidth: 150,
       justifyContent: 'center',
       [theme.breakpoints.down('xs')]: {
-        marginBottom: '8px',
+        marginBottom: theme.spacing(1),
       },
     },
 
@@ -359,7 +391,7 @@ const styles = (theme: Theme) =>
 
     dateContainer: {
       position: 'relative',
-      height: '36px',
+      height: 36,
       flexGrow: 1,
       cursor: 'e-resize',
       overflow: 'hidden',
@@ -372,18 +404,18 @@ const styles = (theme: Theme) =>
 
     timeline: {
       position: 'relative',
-      top: '5px',
+      top: 5,
     },
 
     dateItemFull: {
       borderLeft: '1px solid white',
-      height: '36px',
+      height: 36,
       borderTop: '1px solid white',
       color: 'white',
       position: 'relative',
-      top: '-5px',
+      top: -5,
       cursor: 'pointer',
-      minWidth: '10px',
+      minWidth: TIMELINE_ITEM_WIDTH,
       '&:hover': {
         borderLeft: '1px solid #5ccfff',
       },
@@ -393,49 +425,44 @@ const styles = (theme: Theme) =>
       borderTop: '1px solid white',
       color: 'white',
       position: 'relative',
-      top: '-5px',
+      top: -5,
       cursor: 'pointer',
-      minWidth: '10px',
+      minWidth: TIMELINE_ITEM_WIDTH,
       '&:hover': {
         borderLeft: '1px solid #5ccfff',
         '& $dayItem': {
-          borderLeft: '0',
+          borderLeft: 0,
         },
       },
     },
 
     dateItemLabel: {
       position: 'absolute',
-      top: '18px',
+      top: 22,
       textAlign: 'left',
-      paddingLeft: '5px',
-      minWidth: '80px',
+      paddingLeft: 5,
+      minWidth: 80,
     },
 
     dayItem: {
-      height: '10px',
+      height: 10,
       borderLeft: '1px solid white',
     },
 
     dateAvailable: {
       position: 'absolute',
-      top: '0',
-      backgroundColor: '#5ccfff',
-      height: '5px',
-      width: '10px',
-      opacity: '0.5',
+      top: 0,
+      backgroundColor: 'white',
+      height: 5,
+      width: TIMELINE_ITEM_WIDTH,
+      opacity: 0.6,
     },
 
     triangle: {
-      width: 0,
-      height: 0,
       cursor: 'pointer',
-      borderLeft: '12px solid transparent',
-      borderRight: '12px solid transparent',
-      borderBottom: '15px solid #5ccfff',
       position: 'absolute',
-      left: '-10px',
-      top: '-5px',
+      left: -12,
+      top: -12,
     },
   });
 

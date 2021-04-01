@@ -62,15 +62,18 @@ export function isAvailableMonth(
 }
 
 /**
- * Return index of available dates that matched
- * @param availableDates in millisecond format
+ * Binary search to return index of available dates that matched
+ * @param availableDates in millisecond format, should be sorted
  * @param date in millisecond format
  * @return
  */
 export function findDateIndex(
   availableDates: ReturnType<Date['getTime']>[],
-  date: number,
+  date: number | undefined,
 ) {
+  if (!date) {
+    return -1;
+  }
   let startIndex = 0;
   let endIndex = availableDates.length - 1;
   while (startIndex <= endIndex) {
