@@ -1,5 +1,5 @@
-import mongoliaConfig from './prism.json';
-import mongoliaRawLayers from './layers.json';
-import mongoliaRawTables from './tables.json';
+import indonesiaConfig from './prism.json';
+import indonesiaRawLayers from './layers.json';
+import indonesiaRawTables from './tables.json';
 
-export { mongoliaConfig, mongoliaRawLayers, mongoliaRawTables };
+export { indonesiaConfig, indonesiaRawLayers, indonesiaRawTables };
