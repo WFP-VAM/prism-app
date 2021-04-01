@@ -23,7 +23,9 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const selectedLayers = useSelector(layersSelector);
   const dispatch = useDispatch();
 
-  const toggleLayerValue = (layer: LayerType) => (event: any) => {
+  const toggleLayerValue = (layer: LayerType) => (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const { checked } = event.target;
     if (checked) {
       dispatch(addLayer(layer));
