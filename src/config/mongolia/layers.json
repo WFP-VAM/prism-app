@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/main/admin_boundaries.json",
+    "path": "../data/mongolia/admin_boundaries.json",
     "opacity": 0.8,
     "admin_code": "NSO_CODE",
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
@@ -10,7 +10,7 @@
   "population_below_poverty": {
     "title": "Poverty headcount (aimag)",
     "type": "nso",
-    "path": "../data/main/nso/NSO_Poverty_Headcount_Admin1.json",
+    "path": "../data/mongolia/nso/NSO_Poverty_Headcount_Admin1.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE1",
@@ -42,7 +42,7 @@
   "disabled": {
     "title": "Number of disabled people (aimag)",
     "type": "nso",
-    "path": "../data/main/nso/NSO_Disabled_Admin1_Total.json",
+    "path": "../data/mongolia/nso/NSO_Disabled_Admin1_Total.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -74,7 +74,7 @@
   "hay_harvest": {
     "title": "Hay harvest (soum)",
     "type": "nso",
-    "path": "../data/main/nso/NSO_Hay_Harvest_Admin2.json",
+    "path": "../data/mongolia/nso/NSO_Hay_Harvest_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
@@ -106,7 +106,7 @@
   "elderly": {
     "title": "Single-headed elderly households (aimag)",
     "type": "nso",
-    "path": "../data/main/nso/NSO_Single_Elderly_Admin1_Total.json",
+    "path": "../data/mongolia/nso/NSO_Single_Elderly_Admin1_Total.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -138,7 +138,7 @@
   "herders": {
     "title": "Herder households (soum)",
     "type": "nso",
-    "path": "../data/main/nso/NSO_Herder_HHs_Admin2.json",
+    "path": "../data/mongolia/nso/NSO_Herder_HHs_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
@@ -170,7 +170,7 @@
   "livestock": {
     "title": "Number of livestock in thousands (soum)",
     "type": "nso",
-    "path": "../data/main/nso/NSO_Livestock_Count_ths_Admin2.json",
+    "path": "../data/mongolia/nso/NSO_Livestock_Count_ths_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
@@ -202,7 +202,7 @@
   "child": {
     "title": "Number of children under 5 (soum)",
     "type": "nso",
-    "path": "../data/main/nso/NSO_Child_U5_Admin2.json",
+    "path": "../data/mongolia/nso/NSO_Child_U5_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
@@ -234,7 +234,7 @@
   "herd_200": {
     "title": "Small herder households (aimag)",
     "type": "nso",
-    "path": "../data/main/nso/NSO_Herd_Size_Admin1_LT_200.json",
+    "path": "../data/mongolia/nso/NSO_Herd_Size_Admin1_LT_200.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE1",
@@ -266,7 +266,7 @@
   "population_total": {
     "title": "Total population (soum)",
     "type": "nso",
-    "path": "../data/main/nso/NSO_Population_Admin2_Total.json",
+    "path": "../data/mongolia/nso/NSO_Population_Admin2_Total.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
@@ -536,7 +536,7 @@
   "mvam_hay_reserves": {
     "title": "Hay reserves in metric tonnes (soum)",
     "type": "nso",
-    "path": "../data/main/nso/mVAM_Hay_Reserves.json",
+    "path": "../data/mongolia/nso/mVAM_Hay_Reserves.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -568,7 +568,7 @@
   "mvam_fodder_reserves": {
     "title": "Fodder reserves in metric tonnes (soum)",
     "type": "nso",
-    "path": "../data/main/nso/mVAM_Fodder_Reserves.json",
+    "path": "../data/mongolia/nso/mVAM_Fodder_Reserves.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -600,7 +600,7 @@
   "mvam_cash_reserves": {
     "title": "Cash reserves in million MNT (soum)",
     "type": "nso",
-    "path": "../data/main/nso/mVAM_Cash_Reserves.json",
+    "path": "../data/mongolia/nso/mVAM_Cash_Reserves.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -632,7 +632,7 @@
   "mvam_hay_prices": {
     "title": "Hay prices (soum)",
     "type": "nso",
-    "path": "../data/main/nso/mVAM_Hay_Price.json",
+    "path": "../data/mongolia/nso/mVAM_Hay_Price.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -697,7 +697,7 @@
     "type": "point_data",
     "data": "https://mng.prism.services/temp/Temperature",
     "date_url": "https://mng.prism.services/temp/getDates",
-    "fallback_data": "../data/main/groundstations/IRIMHE_temperature_2020-01-d1.json",
+    "fallback_data": "../data/mongolia/groundstations/IRIMHE_temperature_2020-01-d1.json",
     "opacity": 0.5,
     "measure": "ttt_aver",
     "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
@@ -745,7 +745,7 @@
     "type": "point_data",
     "data": "https://mng.prism.services/temp/Temperature",
     "date_url": "https://mng.prism.services/temp/getDates",
-    "fallback_data": "../data/main/groundstations/IRIMHE_temperature_2020-01-d1.json",
+    "fallback_data": "../data/mongolia/groundstations/IRIMHE_temperature_2020-01-d1.json",
     "opacity": 0.5,
     "measure": "ttt_min",
     "legend_text": "Minimum temperature over a 10-day period from ground station data reported in degrees Celsius",
@@ -793,7 +793,7 @@
     "type": "point_data",
     "data": "https://mng.prism.services/temp/Temperature",
     "date_url": "https://mng.prism.services/temp/getDates",
-    "fallback_data": "../data/main/groundstations/IRIMHE_temperature_2020-01-d1.json",
+    "fallback_data": "../data/mongolia/groundstations/IRIMHE_temperature_2020-01-d1.json",
     "opacity": 0.5,
     "measure": "ttt_max",
     "legend_text": "Maximum temperature over a 10-day period from ground station data reported in degrees Celsius",
@@ -841,7 +841,7 @@
     "type": "point_data",
     "data": "https://mng.prism.services/temp/percipitation",
     "date_url": "https://mng.prism.services/temp/getDates",
-    "fallback_data": "../data/main/groundstations/IRIMHE_precipitation_2020-05-01.json",
+    "fallback_data": "../data/mongolia/groundstations/IRIMHE_precipitation_2020-05-01.json",
     "opacity": 0.5,
     "measure": "sum_rrr",
     "legend_text": "Total precipitation over a 10-day period from ground station data reported in centimeters",
