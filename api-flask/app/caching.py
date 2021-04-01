@@ -38,7 +38,6 @@ def cache_file(url, prefix):
 @timed
 def cache_geojson(geojson, prefix):
     """Locally store needed for a request."""
-
     json_string = json.dumps(geojson)
 
     cache_filepath = _get_cached_filepath(
