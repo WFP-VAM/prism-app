@@ -11,8 +11,6 @@ from flask_caching import Cache
 
 from flask_cors import CORS
 
-import json
-
 from timer import timed
 
 from zonal_stats import calculate_stats

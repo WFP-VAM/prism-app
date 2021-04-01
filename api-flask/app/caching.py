@@ -34,6 +34,7 @@ def cache_file(url, prefix):
         logger.info('Caching file for {}.'.format(url))
         return cache_filepath
 
+
 @timed
 def cache_geojson(geojson, prefix):
     """Locally store needed for a request."""
