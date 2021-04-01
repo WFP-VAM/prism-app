@@ -71,6 +71,17 @@ export const mapStateSlice = createSlice({
       ...rest,
       errors: errors.filter(msg => msg !== payload),
     }),
+
+    updateLayerOpacity: (
+      { layers, ...rest },
+      { payload }: PayloadAction<Pick<LayerType, 'id' | 'opacity'>>,
+    ) => ({
+      ...rest,
+      layers: layers.map(layer => ({
+        ...layer,
+        opacity: layer.id === payload.id ? payload.opacity : layer.opacity,
+      })),
+    }),
   },
   extraReducers: builder => {
     builder.addCase(
@@ -109,6 +120,7 @@ export const {
   removeLayer,
   updateDateRange,
   setMap,
+  updateLayerOpacity,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;

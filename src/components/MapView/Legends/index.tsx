@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState, useEffect } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import {
   Box,
   createStyles,
@@ -15,9 +15,8 @@ import {
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
-import { useSelector } from 'react-redux';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateLayerOpacity } from '../../../context/mapStateSlice';
 import ColorIndicator from './ColorIndicator';
 import { LayerType } from '../../../config/types';
 import {
@@ -31,7 +30,7 @@ function Legends({ classes, layers }: LegendsProps) {
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const legendItems = [
-    ...layers.map(({ id, title, legend, legendText, type, opacity }) => {
+    ...layers.map(({ id, title, legend, legendText, opacity }) => {
       if (!legend || !legendText) {
         // this layer doesn't have a legend (likely boundary), so lets ignore.
         return null;
@@ -43,7 +42,6 @@ function Legends({ classes, layers }: LegendsProps) {
           id={id}
           title={title}
           legend={legend}
-          type={type}
           opacity={opacity}
         >
           {legendText}
@@ -93,49 +91,22 @@ function LegendItem({
   id,
   title,
   legend,
-  type,
   opacity: initialOpacity,
   children,
 }: LegendItemProps) {
-  const map = useSelector(mapSelector);
-  const [opacity, setOpacityValue] = useState<number | number[]>(
-    initialOpacity || 0,
-  );
+  const [opacity, setOpacityValue] = useState<number>(initialOpacity || 0);
+
+  const dispatch = useDispatch();
 
   const handleChangeOpacity = (
     event: React.ChangeEvent<{}>,
     newValue: number | number[],
   ) => {
-    setOpacityValue(newValue);
+    setOpacityValue(newValue as number);
+    if (id) {
+      dispatch(updateLayerOpacity({ id, opacity: newValue as number }));
+    }
   };
-
-  const castedLayer = { type } as LayerType;
-  const [layerId, opacityType] = (layer => {
-    switch (layer.type) {
-      case 'wms':
-        return [`layer-${id}`, 'raster-opacity'];
-      case 'impact':
-      case 'nso':
-        return [`layer-${id}-fill`, 'fill-opacity'];
-      case 'point_data':
-        return [`layer-${id}-circle`, 'circle-opacity'];
-      // TODO analysis layer type is undefined and
-      // the ID (layer-analysis) is hardcoded in src/components/MapView/Layers/AnalysisLayer/index.tsx
-      case undefined:
-        return ['layer-analysis-fill', 'fill-opacity'];
-      default:
-        throw new Error('Unknown map layer type');
-    }
-  })(castedLayer);
-
-  const allLayers = map!.getStyle().layers;
-  const isLayerActive = allLayers!.some(layer => layer.id === layerId);
-  useEffect(() => {
-    if (isLayerActive) {
-      map!.setPaintProperty(layerId, opacityType, opacity);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opacity]);
 
   return (
     <ListItem disableGutters dense>
@@ -147,20 +118,18 @@ function LegendItem({
             </Typography>
           </Grid>
           <Divider />
-          {isLayerActive && (
-            <Grid item className={classes.slider}>
-              <Box px={1}>
-                <Slider
-                  value={opacity}
-                  step={0.01}
-                  min={0}
-                  max={1}
-                  aria-labelledby="opacity-slider"
-                  onChange={handleChangeOpacity}
-                />
-              </Box>
-            </Grid>
-          )}
+          <Grid item className={classes.slider}>
+            <Box px={1}>
+              <Slider
+                value={opacity}
+                step={0.01}
+                min={0}
+                max={1}
+                aria-labelledby="opacity-slider"
+                onChange={handleChangeOpacity}
+              />
+            </Box>
+          </Grid>
           {legend && (
             <Grid item>
               {legend.map(({ value, color }) => (
@@ -168,7 +137,7 @@ function LegendItem({
                   key={value}
                   value={value as string}
                   color={color}
-                  opacity={opacity as number}
+                  opacity={opacity}
                 />
               ))}
             </Grid>
@@ -219,7 +188,6 @@ interface LegendItemProps
   id?: LayerType['id'];
   title: LayerType['title'];
   legend: LayerType['legend'];
-  type?: LayerType['type'];
   opacity: LayerType['opacity'];
 }
 

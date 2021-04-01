@@ -36,6 +36,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
 
   const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
   const circlePaint: MapboxGL.CirclePaint = {
+    'circle-opacity': layer.opacity || 0.3,
     'circle-color': {
       property: layer.measure,
       stops: legendToStops(layer.legend),
