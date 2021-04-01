@@ -114,6 +114,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Jan 2018
                   </mock-typography>
@@ -581,6 +582,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Feb 2018
                   </mock-typography>
@@ -1003,6 +1005,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Mar 2018
                   </mock-typography>
@@ -1470,6 +1473,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Apr 2018
                   </mock-typography>
@@ -1922,6 +1926,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     May 2018
                   </mock-typography>
@@ -2389,6 +2394,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Jun 2018
                   </mock-typography>
@@ -2841,6 +2847,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Jul 2018
                   </mock-typography>
@@ -3308,6 +3315,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Aug 2018
                   </mock-typography>
@@ -3775,6 +3783,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Sep 2018
                   </mock-typography>
@@ -4227,6 +4236,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Oct 2018
                   </mock-typography>
@@ -4694,6 +4704,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Nov 2018
                   </mock-typography>
@@ -5146,6 +5157,7 @@ exports[`renders as expected 1`] = `
                 >
                   <mock-typography
                     classname="DateSelector-dateItemLabel-13"
+                    variant="body2"
                   >
                     Dec 2018
                   </mock-typography>
@@ -5606,7 +5618,25 @@ exports[`renders as expected 1`] = `
               class="DateSelector-triangle-16 react-draggable"
               id="datePointerSelector"
               style="transform: translate(1820px,0px);"
-            />
+            >
+              <svg
+                aria-hidden="true"
+                class="svg-inline--fa fa-caret-up fa-w-10 "
+                color="white"
+                data-icon="caret-up"
+                data-prefix="fas"
+                focusable="false"
+                role="img"
+                style="font-size: 40px;"
+                viewBox="0 0 320 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <mock-hidden
