@@ -12,9 +12,7 @@ import {
   withStyles,
   Button,
 } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
 import ColorIndicator from './ColorIndicator';
 import { LayerType } from '../../../config/types';
@@ -72,10 +70,11 @@ function Legends({ classes, layers }: LegendsProps) {
         color="primary"
         onClick={() => setOpen(!open)}
       >
-        <FontAwesomeIcon
-          style={{ fontSize: '1.2em' }}
-          icon={open ? faEyeSlash : faEye}
-        />
+        {open ? (
+          <VisibilityOff fontSize="small" />
+        ) : (
+          <Visibility fontSize="small" />
+        )}
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
             Legend

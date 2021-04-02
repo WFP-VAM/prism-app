@@ -17,12 +17,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faFileExport,
-  faCaretDown,
-  faImage,
-} from '@fortawesome/free-solid-svg-icons';
+import { CloudDownload, ArrowDropDown, Image } from '@material-ui/icons';
 import { jsPDF } from 'jspdf';
 import { useSelector } from 'react-redux';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
@@ -114,13 +109,13 @@ function Download({ classes }: DownloadProps) {
   return (
     <Grid item>
       <Button variant="contained" color="primary" onClick={handleClick}>
-        <FontAwesomeIcon style={{ fontSize: '1.2em' }} icon={faFileExport} />
+        <CloudDownload fontSize="small" />
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
             Export
           </Typography>
         </Hidden>
-        <FontAwesomeIcon icon={faCaretDown} style={{ marginLeft: '10px' }} />
+        <ArrowDropDown fontSize="small" />
       </Button>
       <ExportMenu
         id="export-menu"
@@ -131,11 +126,7 @@ function Download({ classes }: DownloadProps) {
       >
         <ExportMenuItem onClick={openModal}>
           <ListItemIcon>
-            <FontAwesomeIcon
-              color="white"
-              style={{ fontSize: '1em' }}
-              icon={faImage}
-            />
+            <Image fontSize="small" style={{ color: 'white' }} />
           </ListItemIcon>
           <ListItemText primary="IMAGE" />
         </ExportMenuItem>
