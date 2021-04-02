@@ -23,9 +23,7 @@ import {
   faCaretDown,
   faImage,
 } from '@fortawesome/free-solid-svg-icons';
-
 import { jsPDF } from 'jspdf';
-
 import { useSelector } from 'react-redux';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 
