@@ -10,11 +10,7 @@ import {
   indonesiaRawTables,
 } from './indonesia';
 
-type Country = 'mongolia' | 'indonesia';
-
 const DEFAULT = 'mongolia';
-
-const { REACT_APP_COUNTRY: COUNTRY } = process.env;
 
 const configMap = {
   mongolia: {
@@ -29,8 +25,13 @@ const configMap = {
   },
 } as const;
 
-const { appConfig, rawLayers, rawTables } = configMap[
-  (COUNTRY as Country) || DEFAULT
-];
+type Country = 'mongolia' | 'indonesia';
+
+const { REACT_APP_COUNTRY: COUNTRY } = process.env;
+const safeCountry = (COUNTRY && Object.keys(configMap).includes(COUNTRY)
+  ? COUNTRY
+  : DEFAULT) as Country;
+
+const { appConfig, rawLayers, rawTables } = configMap[safeCountry];
 
 export { appConfig, rawLayers, rawTables };
