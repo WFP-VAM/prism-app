@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "./data/indonesia/admin_idn.json",
+    "path": "../data/indonesia/admin_idn.json",
     "opacity": 0.8,
     "admin_code": "A2TEXT",
     "admin_level_names": ["A2NAME", "A1NAME"],
