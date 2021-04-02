@@ -22,22 +22,14 @@ import {
   WMSLayer,
 } from './Layers';
 
-import {
-  BoundaryLayerProps,
-  DiscriminateUnion,
-  LayerType,
-} from '../../config/types';
+import { LayerType } from '../../config/types';
 
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../config/utils';
+import { getBoundaryLayerSingleton } from '../../config/utils';
 
 import DateSelector from './DateSelector';
 import {
   dateRangeSelector,
   isLoading,
-  layerDataSelector,
   layersSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap } from '../../context/mapStateSlice';
@@ -49,7 +41,7 @@ import {
 } from '../../context/serverStateSlice';
 
 import appConfig from '../../config/prism.json';
-import { LayerData, loadLayerData } from '../../context/layers/layer-data';
+import { loadLayerData } from '../../context/layers/layer-data';
 import Analyser from './Analyser';
 import AnalysisLayer from './Layers/AnalysisLayer';
 import {

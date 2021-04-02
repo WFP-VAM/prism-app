@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -17,95 +17,49 @@ import { grey } from '@material-ui/core/colors';
 import { faBell, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../../config/utils';
-import {
-  BoundaryLayerProps,
-  WMSLayerProps,
-  LayerKey,
-} from '../../../config/types';
+import { getBoundaryLayerSingleton } from '../../../config/utils';
+import { BoundaryLayerProps, LayerKey } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
-import { availableDatesSelector } from '../../../context/serverStateSlice';
 import LayerDropdown from '../Layers/LayerDropdown';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
 function AlertForm({ classes }: AlertFormProps) {
-  const dispatch = useDispatch();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
-
-  const availableDates = useSelector(availableDatesSelector);
 
   const [isAlertFormFormOpen, setIsAlertFormFormOpen] = useState(false);
 
   // form elements
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
   const [regionsList, setRegionsList] = useState<string[]>(['allRegions']);
   const [emailValid, setEmailValid] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>('');
-  const [selectedStat, setSelectedStat] = useState<string>('');
+  const [email, setEmail] = useState('');
+  const [selectedStat, setSelectedStat] = useState('');
   const [selectedThreshold, setSelectedThreshold] = useState<number>(0);
 
   // Very basic regex for detecting emails
   const emailRegex: RegExp = RegExp('.+@.+');
 
-  // On by default, may want to disable it in some cases
-  const isAlertFormEnabled = true;
+  const isAlertFormEnabled = true; // 'true' for development!
 
-  // set default date after dates finish loading and when hazard layer changes
-  useEffect(() => {
-    const dates = hazardLayerId
-      ? availableDates[
-          (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
-        ]
-      : null;
-    if (!dates || dates.length === 0) {
-      setSelectedDate(null);
-    } else {
-      setSelectedDate(dates[dates.length - 1]);
-    }
-  }, [availableDates, hazardLayerId]);
-
-  const regionNamesToNsoCodes: Map<string, string> = useMemo(() => {
+  const regionNamesToNsoCodes: { [k: string]: string } = useMemo(() => {
     if (!boundaryLayerData) {
       // Not loaded yet. Will proceed when it is.
-      return new Map();
+      return {};
     }
 
-    return new Map(
+    return Object.fromEntries(
       boundaryLayerData.data.features
         .filter(feature => feature.properties != null)
         .map(feature => [
           `${feature.properties?.ADM1_EN} / ${feature.properties?.ADM2_EN}`,
           feature.properties?.NSO_CODE,
         ]),
-    );
-  }, [boundaryLayerData]);
-
-  const regionNames: string[] = useMemo(() => {
-    if (!boundaryLayerData) {
-      // Not loaded yet. Will proceed when it is.
-      return [];
-    }
-
-    return (
-      // eslint-disable-next-line fp/no-mutating-methods
-      boundaryLayerData.data.features
-        .filter(feature => feature.properties != null)
-        .map(
-          feature =>
-            `${feature.properties?.ADM1_EN} / ${feature.properties?.ADM2_EN}`,
-        )
-        // We can mutate the array since it's a new one anyway
-        .sort()
     );
   }, [boundaryLayerData]);
 
@@ -118,7 +72,7 @@ function AlertForm({ classes }: AlertFormProps) {
   const runAlertForm = async () => {
     const regionCodes = regionsList
       .filter(r => r !== 'allRegions')
-      .map(r => regionNamesToNsoCodes.get(r));
+      .map(r => regionNamesToNsoCodes[r]);
 
     const apiData = {
       hazardLayerId,
@@ -252,7 +206,7 @@ function AlertForm({ classes }: AlertFormProps) {
                   </MenuItem>
                   <ListSubheader>Administrative Regions</ListSubheader>
                   ...
-                  {regionNames.map(region => {
+                  {Object.keys(regionNamesToNsoCodes).map(region => {
                     return (
                       <MenuItem
                         style={{ color: 'black' }}
