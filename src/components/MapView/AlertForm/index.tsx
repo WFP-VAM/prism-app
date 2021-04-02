@@ -14,7 +14,6 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-
 import { faBell, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
