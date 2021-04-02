@@ -285,6 +285,14 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
+export interface MenuItemMobileType {
+  title: string;
+  icon: string;
+  layersCategories: LayersCategoryType[];
+  expanded: string;
+  selectAccordion: (arg: string) => void;
+}
+
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']

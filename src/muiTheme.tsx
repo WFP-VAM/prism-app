@@ -61,6 +61,37 @@ const theme: any = createMuiTheme({
         color: 'black',
       },
     },
+    MuiAccordion: {
+      root: {
+        '&$expanded': {
+          margin: 0, // remove additional padding when expanded
+          '&:before': {
+            opacity: 1, // to keep the border when expanded
+          },
+        },
+      },
+    },
+    MuiAccordionSummary: {
+      root: {
+        backgroundColor: greyBlue,
+        minHeight: 56,
+        '&$expanded': {
+          minHeight: 56,
+        },
+      },
+      content: {
+        '&$expanded': {
+          margin: '12px 0px', // keep height the same before/after epanded
+        },
+      },
+    },
+    MuiAccordionDetails: {
+      root: {
+        backgroundColor: darkGreyBlue,
+        opacity: 0.9,
+        padding: 16,
+      },
+    },
   },
 });
 
