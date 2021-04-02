@@ -3,11 +3,11 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-button
-    classname="MenuItem-title-2"
+    classname="MenuItem-title-1"
   >
     <img
       alt="title"
-      class="MenuItem-icon-3"
+      class="MenuItem-icon-2"
       src="icon.png"
     />
     <mock-typography
@@ -18,23 +18,23 @@ exports[`renders as expected 1`] = `
   </mock-button>
   <mock-popover
     anchororigin="[object Object]"
-    classname="MenuItem-popover-4"
+    classname="MenuItem-popover-3"
     open="false"
     paperprops="[object Object]"
     transformorigin="[object Object]"
   >
     <div
-      class="MenuItem-categoryContainer-6"
+      class="MuiGrid-root MenuSwitch-categoryContainer-5 MuiGrid-item"
     >
       <mock-typography
-        classname="MenuItem-categoryTitle-7"
+        classname="MenuSwitch-categoryTitle-6"
         variant="body2"
       >
         Category 1
       </mock-typography>
       <hr />
       <div
-        class="MenuItem-layersContainer-8"
+        class="MuiBox-root MuiBox-root-7"
       >
         <mock-switch
           checked="false"
