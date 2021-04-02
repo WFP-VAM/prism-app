@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Button,
   createStyles,
@@ -17,7 +17,6 @@ import {
   withStyles,
 } from '@material-ui/core';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faFileExport,
@@ -71,42 +70,47 @@ function Download({ classes }: DownloadProps) {
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    if (open && selectedMap) {
+  const openModal = () => {
+    if (selectedMap) {
       const activeLayers = selectedMap.getCanvas();
       const canvas = previewRef.current;
-      canvas!.setAttribute('width', activeLayers.width.toString());
-      canvas!.setAttribute('height', activeLayers.height.toString());
-      const context = canvas!.getContext('2d');
-      context!.drawImage(activeLayers, 0, 0);
+      if (canvas) {
+        canvas.setAttribute('width', activeLayers.width.toString());
+        canvas.setAttribute('height', activeLayers.height.toString());
+        const context = canvas.getContext('2d');
+        if (context) {
+          context.drawImage(activeLayers, 0, 0);
+        }
+      }
+      setOpen(true);
     }
-  });
-
-  const modalClose = () => {
-    setOpen(false);
+    handleClose();
   };
 
-  const download = (format: String) => {
+  const download = (format: string) => {
     const ext = format === 'pdf' ? 'png' : format;
-    const canvas = previewRef!.current;
-    const file = canvas!.toDataURL(`image/${ext}`);
-    if (format === 'pdf') {
-      // eslint-disable-next-line new-cap
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-      });
-      const imgProps = pdf.getImageProperties(file);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('map.pdf');
-    } else {
-      const link = document.createElement('a');
-      link.setAttribute('href', file);
-      link.setAttribute('download', `map.${ext}`);
-      link.click();
+    const canvas = previewRef.current;
+    if (canvas) {
+      const file = canvas.toDataURL(`image/${ext}`);
+      if (format === 'pdf') {
+        // eslint-disable-next-line new-cap
+        const pdf = new jsPDF({
+          orientation: 'landscape',
+        });
+        const imgProps = pdf.getImageProperties(file);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save('map.pdf');
+      } else {
+        const link = document.createElement('a');
+        link.setAttribute('href', file);
+        link.setAttribute('download', `map.${ext}`);
+        link.click();
+      }
+      setOpen(false);
+      handleClose();
     }
-    setOpen(false);
   };
 
   return (
@@ -127,8 +131,8 @@ function Download({ classes }: DownloadProps) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <ExportMenuItem>
-          <ListItemIcon onClick={() => setOpen(true)}>
+        <ExportMenuItem onClick={openModal}>
+          <ListItemIcon>
             <FontAwesomeIcon
               color="white"
               style={{ fontSize: '1em' }}
@@ -142,7 +146,7 @@ function Download({ classes }: DownloadProps) {
         maxWidth="xl"
         open={open}
         keepMounted
-        onClose={modalClose}
+        onClose={() => setOpen(false)}
         aria-labelledby="dialog-preview"
       >
         <DialogTitle className={classes.title} id="dialog-preview">
@@ -152,7 +156,7 @@ function Download({ classes }: DownloadProps) {
           <canvas ref={previewRef} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={modalClose} color="primary">
+          <Button onClick={() => setOpen(false)} color="primary">
             Cancel
           </Button>
           <Button
