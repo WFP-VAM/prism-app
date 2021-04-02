@@ -1,9 +1,7 @@
 {
   "country": "Mongolia",
   "serversUrls": {
-    "wms": [
-      "https://mongolia.sibelius-datacube.org:5000/wms"
-    ]
+    "wms": ["https://mongolia.sibelius-datacube.org:5000/wms"]
   },
   "map": {
     "latitude": 46.810021,
@@ -12,15 +10,8 @@
   },
   "categories": {
     "hazards": {
-      "drought_indicators": [
-        "pasture_anomaly",
-        "ndvi",
-        "ModisVHI"
-      ],
-      "winter_conditions": [
-        "ModisSnowPercentage",
-        "ModisLST"
-      ],
+      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisVHI"],
+      "winter_conditions": ["ModisSnowPercentage", "ModisLST"],
       "ground_station_data": [
         "avg_temperature_groundstations",
         "min_temperature_groundstations",
@@ -29,13 +20,8 @@
       ]
     },
     "exposure": {
-      "demographics": [
-        "population_total"
-      ],
-      "livestock_and_herders": [
-        "herders",
-        "livestock"
-      ]
+      "demographics": ["population_total"],
+      "livestock_and_herders": ["herders", "livestock"]
     },
     "vulnerability": {
       "vulnerable_groups": [
@@ -44,9 +30,7 @@
         "elderly",
         "child"
       ],
-      "herders": [
-        "herd_200"
-      ]
+      "herders": ["herd_200"]
     },
     "capacity": {
       "livestock_and_crop_preparedness": [
@@ -58,9 +42,7 @@
       ]
     },
     "risk": {
-      "dzud_risk": [
-        "DzudRiskMap"
-      ],
+      "dzud_risk": ["DzudRiskMap"],
       "impact_analysis": [
         "herd_pasture_impact",
         "livestock_vhi",
@@ -68,15 +50,9 @@
       ]
     },
     "tables": {
-      "socioeconomic_data": [
-        "poverty"
-      ],
-      "livestock_data": [
-        "animal_deaths"
-      ],
-      "price_data": [
-        "hay_prices"
-      ]
+      "socioeconomic_data": ["poverty"],
+      "livestock_data": ["animal_deaths"],
+      "price_data": ["hay_prices"]
     }
   }
 }

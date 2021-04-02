@@ -2,9 +2,7 @@
   "country": "Indonesia",
   "serversUrls": {
     "wcs": ["https://mongolia.sibelius-datacube.org:5000"],
-    "wms": [
-      "https://vampire.idn.wfp.org:8081/geoserver/vampire/wms"
-    ]
+    "wms": ["https://vampire.idn.wfp.org:8081/geoserver/vampire/wms"]
   },
   "map": {
     "latitude": -4.0682689,
@@ -27,12 +25,8 @@
       "livestock_and_crop_preparedness": ["CER_YIELD", "HH_FOODASS"]
     },
     "tables": {
-      "socioeconomic_data": [
-        "poverty"
-      ],
-      "price_data": [
-        "hay_prices"
-      ]
+      "socioeconomic_data": ["poverty"],
+      "price_data": ["hay_prices"]
     }
   }
 }
