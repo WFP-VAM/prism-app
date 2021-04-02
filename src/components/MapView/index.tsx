@@ -22,7 +22,7 @@ import {
   WMSLayer,
 } from './Layers';
 
-import { LayerType } from '../../config/types';
+import { DiscriminateUnion, LayerType } from '../../config/types';
 
 import { getBoundaryLayerSingleton } from '../../config/utils';
 

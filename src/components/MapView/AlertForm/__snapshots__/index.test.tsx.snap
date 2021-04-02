@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="AlertForm-AlertForm-1"
+    class="AlertForm-alertForm-1"
   >
     <mock-button
       color="primary"
@@ -48,14 +48,14 @@ exports[`renders as expected 1`] = `
       </svg>
     </mock-button>
     <div
-      class="MuiBox-root MuiBox-root-12 AlertForm-AlertFormMenu-2"
+      class="MuiBox-root MuiBox-root-9 AlertForm-alertFormMenu-2"
     >
       <div>
         <div
           class="AlertForm-newAlertFormContainer-5"
         >
           <div
-            class="AlertForm-AlertFormOptions-4"
+            class="AlertForm-alertFormOptions-4"
           >
             <mock-typography
               variant="body2"
@@ -63,21 +63,21 @@ exports[`renders as expected 1`] = `
               Hazard Layer
             </mock-typography>
             <mock-layer-dropdown
-              classname="AlertForm-selector-9"
+              classname="AlertForm-selector-7"
               placeholder="Choose hazard layer"
               title="Hazard Layer"
               type="wms"
             />
           </div>
           <div
-            class="AlertForm-AlertFormOptions-4"
+            class="AlertForm-alertFormOptions-4"
           >
             <mock-typography
               variant="body2"
             >
               Statistic
             </mock-typography>
-            <div
+            <span
               class="MuiFormControl-root"
             >
               <div
@@ -91,7 +91,7 @@ exports[`renders as expected 1`] = `
                   role="button"
                   tabindex="0"
                 >
-                  Choose a statistic
+                  Statistic
                 </div>
                 <input
                   aria-hidden="true"
@@ -122,35 +122,124 @@ exports[`renders as expected 1`] = `
                     disabled="true"
                     role="option"
                     selected="true"
-                    style="color: black;"
                   >
-                    Choose a statistic
+                    Statistic
                   </mock-menuitem>
                   <mock-menuitem
-                    data-value="minbelow"
+                    data-value="Maximum"
                     role="option"
                     selected="false"
-                    style="color: black;"
                   >
-                    Minimum Below
+                    Maximum
                   </mock-menuitem>
                   <mock-menuitem
-                    data-value="maxabove"
+                    data-value="Minimum"
                     role="option"
                     selected="false"
-                    style="color: black;"
                   >
-                    Maximum Above
+                    Minimum
+                  </mock-menuitem>
+                  <mock-menuitem
+                    data-value="Median"
+                    role="option"
+                    selected="false"
+                  >
+                    Median
+                  </mock-menuitem>
+                  <mock-menuitem
+                    data-value="Mean"
+                    role="option"
+                    selected="false"
+                  >
+                    Mean
                   </mock-menuitem>
                 </mock-menu>
               </div>
-            </div>
+            </span>
+            <span
+              class="MuiFormControl-root"
+            >
+              <div
+                class="MuiInputBase-root MuiInput-root MuiInput-underline AlertForm-comparatorSelector-8 MuiInputBase-formControl MuiInput-formControl"
+              >
+                <div
+                  aria-haspopup="listbox"
+                  aria-labelledby="select-comparator"
+                  class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                  id="select-comparator"
+                  role="button"
+                  tabindex="0"
+                >
+                  -
+                </div>
+                <input
+                  aria-hidden="true"
+                  class="MuiSelect-nativeInput"
+                  tabindex="-1"
+                  value="placeholder"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSelect-icon"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+                <mock-menu
+                  anchorel="[object HTMLDivElement]"
+                  id="menu-"
+                  menulistprops="[object Object]"
+                  open="false"
+                  paperprops="[object Object]"
+                >
+                  <mock-menuitem
+                    aria-selected="true"
+                    data-value="placeholder"
+                    disabled="true"
+                    role="option"
+                    selected="true"
+                  >
+                    -
+                  </mock-menuitem>
+                  <mock-menuitem
+                    data-value=">"
+                    role="option"
+                    selected="false"
+                  >
+                    &gt;
+                  </mock-menuitem>
+                  <mock-menuitem
+                    data-value=">="
+                    role="option"
+                    selected="false"
+                  >
+                    &gt;=
+                  </mock-menuitem>
+                  <mock-menuitem
+                    data-value="<"
+                    role="option"
+                    selected="false"
+                  >
+                    &lt;
+                  </mock-menuitem>
+                  <mock-menuitem
+                    data-value="<="
+                    role="option"
+                    selected="false"
+                  >
+                    &lt;=
+                  </mock-menuitem>
+                </mock-menu>
+              </div>
+            </span>
           </div>
           <div
-            class="AlertForm-AlertFormOptions-4"
+            class="AlertForm-alertFormOptions-4"
           >
             <mock-textfield
-              classname="thresholdClass"
               id="threshold"
               label="Threshold"
               type="number"
@@ -158,10 +247,10 @@ exports[`renders as expected 1`] = `
             />
           </div>
           <div
-            class="AlertForm-AlertFormOptions-4"
+            class="AlertForm-alertFormOptions-4"
           >
             <div
-              class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline regionsListClass"
+              class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline"
               style="max-width: 200px;"
             >
               <div
@@ -202,7 +291,6 @@ exports[`renders as expected 1`] = `
                   data-value="allRegions"
                   role="option"
                   selected="true"
-                  style="color: black;"
                 >
                   All
                 </mock-menuitem>
@@ -216,10 +304,9 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            class="AlertForm-AlertFormOptions-4"
+            class="AlertForm-alertFormOptions-4"
           >
             <mock-textfield
-              classname="emailAddressClass"
               id="email-address"
               label="Email Address"
               type="text"
@@ -228,7 +315,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <mock-button
-          classname="AlertForm-innerAnalysisButton-7"
+          classname="AlertForm-innerCreateAlertButton-6"
           disabled="true"
         >
           <mock-typography

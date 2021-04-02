@@ -13,17 +13,36 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
 import { faBell, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { useSelector } from 'react-redux';
-
 import { getBoundaryLayerSingleton } from '../../../config/utils';
 import { BoundaryLayerProps, LayerKey } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
 import LayerDropdown from '../Layers/LayerDropdown';
+
+// Not fully RFC-compliant, but should filter out obviously-invalid emails.
+const EMAIL_REGEX: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+// This should probably be determined on a case-by-case basis,
+// depending on if the downstream API has the capability.
+// For now it can be permanently enabled.
+const ALERT_FORM_ENABLED = true;
+
+enum Statistic {
+  Maximum,
+  Minimum,
+  Median,
+  Mean,
+}
+
+enum Comparator {
+  '>',
+  '>=',
+  '<',
+  '<=',
+}
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -39,13 +58,9 @@ function AlertForm({ classes }: AlertFormProps) {
   const [regionsList, setRegionsList] = useState<string[]>(['allRegions']);
   const [emailValid, setEmailValid] = useState<boolean>(false);
   const [email, setEmail] = useState('');
-  const [selectedStat, setSelectedStat] = useState('');
+  const [selectedStat, setSelectedStat] = useState<Statistic>();
+  const [selectedComparator, setSelectedComparator] = useState('');
   const [selectedThreshold, setSelectedThreshold] = useState<number>(0);
-
-  // Very basic regex for detecting emails
-  const emailRegex: RegExp = RegExp('.+@.+');
-
-  const isAlertFormEnabled = true; // 'true' for development!
 
   const regionNamesToNsoCodes: { [k: string]: string } = useMemo(() => {
     if (!boundaryLayerData) {
@@ -63,9 +78,16 @@ function AlertForm({ classes }: AlertFormProps) {
     );
   }, [boundaryLayerData]);
 
-  const onChangeEmail = (event: { target: { value: string } }) => {
-    const newEmail = event.target.value as string;
-    setEmailValid(!!newEmail.match(emailRegex));
+  const sortedRegionNames: string[] = useMemo(() => {
+    // Fine to mutate this array since it's a new array of key names
+
+    // eslint-disable-next-line fp/no-mutating-methods
+    return Object.keys(regionNamesToNsoCodes).sort();
+  }, [regionNamesToNsoCodes]);
+
+  const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmail = event.target.value;
+    setEmailValid(!!newEmail.match(EMAIL_REGEX));
     setEmail(newEmail);
   };
 
@@ -77,6 +99,7 @@ function AlertForm({ classes }: AlertFormProps) {
     const apiData = {
       hazardLayerId,
       statistic: selectedStat,
+      comparator: selectedComparator,
       threshold: selectedThreshold,
       regionNsoCodes: regionCodes,
       email,
@@ -90,8 +113,12 @@ function AlertForm({ classes }: AlertFormProps) {
     // await fetchApiData('http://localhost:80/alarms', apiData);
   };
 
-  return isAlertFormEnabled ? (
-    <div className={classes.AlertForm}>
+  if (!ALERT_FORM_ENABLED) {
+    return null;
+  }
+
+  return (
+    <div className={classes.alertForm}>
       <Button
         variant="contained"
         color="primary"
@@ -108,14 +135,14 @@ function AlertForm({ classes }: AlertFormProps) {
       </Button>
 
       <Box
-        className={classes.AlertFormMenu}
+        className={classes.alertFormMenu}
         width={isAlertFormFormOpen ? 'min-content' : 0}
         padding={isAlertFormFormOpen ? '10px' : 0}
       >
         {isAlertFormFormOpen ? (
           <div>
             <div className={classes.newAlertFormContainer}>
-              <div className={classes.AlertFormOptions}>
+              <div className={classes.alertFormOptions}>
                 <Typography variant="body2">Hazard Layer</Typography>
                 <LayerDropdown
                   type="wms"
@@ -126,43 +153,57 @@ function AlertForm({ classes }: AlertFormProps) {
                   placeholder="Choose hazard layer"
                 />
               </div>
-              <div className={classes.AlertFormOptions}>
+              <div className={classes.alertFormOptions}>
                 <Typography variant="body2">Statistic</Typography>
-                <FormControl component="div">
+                <FormControl component="span">
                   <Select
                     id="select-statistic"
                     defaultValue="placeholder"
-                    onChange={e => setSelectedStat(e.target.value as string)}
+                    onChange={e => setSelectedStat(e.target.value as Statistic)}
                   >
-                    <MenuItem
-                      style={{ color: 'black' }}
-                      key="placeholder"
-                      value="placeholder"
-                      disabled
-                    >
-                      Choose a statistic
+                    [
+                    <MenuItem key="placeholder" value="placeholder" disabled>
+                      Statistic
                     </MenuItem>
-                    <MenuItem
-                      style={{ color: 'black' }}
-                      key="minbelow"
-                      value="minbelow"
-                    >
-                      Minimum Below
+                    ...
+                    {Object.keys(Statistic)
+                      .filter(n => Number.isNaN(Number(n)))
+                      .map(stat => (
+                        <MenuItem key={stat} value={stat}>
+                          {stat}
+                        </MenuItem>
+                      ))}
+                    ]
+                  </Select>
+                </FormControl>
+                <FormControl component="span">
+                  <Select
+                    id="select-comparator"
+                    className={classes.comparatorSelector}
+                    defaultValue="placeholder"
+                    onChange={e =>
+                      setSelectedComparator(e.target.value as string)
+                    }
+                  >
+                    [
+                    <MenuItem key="placeholder" value="placeholder" disabled>
+                      -
                     </MenuItem>
-                    <MenuItem
-                      style={{ color: 'black' }}
-                      key="maxabove"
-                      value="maxabove"
-                    >
-                      Maximum Above
-                    </MenuItem>
+                    ...
+                    {Object.keys(Comparator)
+                      .filter(n => Number.isNaN(Number(n)))
+                      .map(comp => (
+                        <MenuItem key={comp} value={comp}>
+                          {comp}
+                        </MenuItem>
+                      ))}
+                    ]
                   </Select>
                 </FormControl>
               </div>
-              <div className={classes.AlertFormOptions}>
+              <div className={classes.alertFormOptions}>
                 <TextField
                   id="threshold"
-                  className="thresholdClass"
                   label="Threshold"
                   type="number"
                   variant="filled"
@@ -172,10 +213,9 @@ function AlertForm({ classes }: AlertFormProps) {
                   }
                 />
               </div>
-              <div className={classes.AlertFormOptions}>
+              <div className={classes.alertFormOptions}>
                 <Select
                   id="regionsList"
-                  className="regionsListClass"
                   label="Regions to monitor"
                   type="text"
                   variant="filled"
@@ -197,22 +237,14 @@ function AlertForm({ classes }: AlertFormProps) {
                   }}
                 >
                   [
-                  <MenuItem
-                    style={{ color: 'black' }}
-                    key="allRegions"
-                    value="allRegions"
-                  >
+                  <MenuItem key="allRegions" value="allRegions">
                     All
                   </MenuItem>
                   <ListSubheader>Administrative Regions</ListSubheader>
                   ...
-                  {Object.keys(regionNamesToNsoCodes).map(region => {
+                  {sortedRegionNames.map(region => {
                     return (
-                      <MenuItem
-                        style={{ color: 'black' }}
-                        key={region}
-                        value={region}
-                      >
+                      <MenuItem key={region} value={region}>
                         {region}
                       </MenuItem>
                     );
@@ -220,10 +252,9 @@ function AlertForm({ classes }: AlertFormProps) {
                   ]
                 </Select>
               </div>
-              <div className={classes.AlertFormOptions}>
+              <div className={classes.alertFormOptions}>
                 <TextField
                   id="email-address"
-                  className="emailAddressClass"
                   label="Email Address"
                   type="text"
                   variant="filled"
@@ -232,9 +263,14 @@ function AlertForm({ classes }: AlertFormProps) {
               </div>
             </div>
             <Button
-              className={classes.innerAnalysisButton}
+              className={classes.innerCreateAlertButton}
               onClick={runAlertForm}
-              disabled={!hazardLayerId || !selectedStat || !emailValid}
+              disabled={
+                !hazardLayerId ||
+                !selectedStat ||
+                !selectedComparator ||
+                !emailValid
+              }
             >
               <Typography variant="body2">Create Alert</Typography>
             </Button>
@@ -242,19 +278,19 @@ function AlertForm({ classes }: AlertFormProps) {
         ) : null}
       </Box>
     </div>
-  ) : null;
+  );
 }
 
 const styles = (theme: Theme) =>
   createStyles({
-    AlertForm: {
+    alertForm: {
       zIndex: theme.zIndex.drawer - 1, // position this below the Analysis drawer
       position: 'absolute',
       top: 40,
       left: 2,
       textAlign: 'left',
     },
-    AlertFormMenu: {
+    alertFormMenu: {
       backgroundColor: '#5A686C',
       maxWidth: '100vw',
       color: 'white',
@@ -265,40 +301,29 @@ const styles = (theme: Theme) =>
       height: 'auto',
       maxHeight: '60vh',
     },
-    AlertFormButton: {
+    alertFormButton: {
       height: '36px',
       'margin-left': '3px',
     },
-    AlertFormOptions: {
+    alertFormOptions: {
       padding: '5px 0px',
     },
     newAlertFormContainer: {
       padding: '5px',
       marginTop: '10px',
     },
-    radioOptions: {
-      '&.Mui-checked': { color: grey[50] },
-      padding: '2px 10px 2px 20px',
-    },
-    innerAnalysisButton: {
+    innerCreateAlertButton: {
       backgroundColor: '#3d474a',
       margin: '10px',
-      '&.Mui-disabled': { opacity: 0.5 },
-    },
-    selectorLabel: {
-      '&.Mui-focused': { color: 'white' },
+      '&:disabled': {
+        opacity: '0.5',
+      },
     },
     selector: {
       margin: '5px',
     },
-    numberField: {
-      paddingLeft: '10px',
-      marginTop: '10px',
-      width: '85.5px',
-      '& .Mui-focused': { color: 'white' },
-    },
-    calendarPopper: {
-      zIndex: 3,
+    comparatorSelector: {
+      textAlign: 'center',
     },
   });
 
