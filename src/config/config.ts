@@ -1,27 +1,45 @@
 import {
+  indonesiaConfig,
+  indonesiaRawLayers,
+  indonesiaRawTables,
+} from './indonesia';
+
+import {
   mongoliaConfig,
   mongoliaRawLayers,
   mongoliaRawTables,
 } from './mongolia';
 
 import {
-  indonesiaConfig,
-  indonesiaRawLayers,
-  indonesiaRawTables,
-} from './indonesia';
+  mozambiqueConfig,
+  mozambiqueRawLayers,
+  mozambiqueRawTables,
+} from './mozambique';
+
+import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
 
 const DEFAULT = 'mongolia';
 
 const configMap = {
+  indonesia: {
+    appConfig: indonesiaConfig,
+    rawLayers: indonesiaRawLayers,
+    rawTables: indonesiaRawTables,
+  },
   mongolia: {
     appConfig: mongoliaConfig,
     rawLayers: mongoliaRawLayers,
     rawTables: mongoliaRawTables,
   },
-  indonesia: {
-    appConfig: indonesiaConfig,
-    rawLayers: indonesiaRawLayers,
-    rawTables: indonesiaRawTables,
+  mozambique: {
+    appConfig: mozambiqueConfig,
+    rawLayers: mozambiqueRawLayers,
+    rawTables: mozambiqueRawTables,
+  },
+  myanmar: {
+    appConfig: myanmarConfig,
+    rawLayers: myanmarRawLayers,
+    rawTables: myanmarRawTables,
   },
 } as const;
 
