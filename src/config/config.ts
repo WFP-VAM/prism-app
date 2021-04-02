@@ -43,7 +43,7 @@ const configMap = {
   },
 } as const;
 
-type Country = 'mongolia' | 'indonesia';
+type Country = 'indonesia' | 'mongolia' | 'mozambique' | 'myanmar';
 
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
 const safeCountry = (COUNTRY && Object.keys(configMap).includes(COUNTRY)
