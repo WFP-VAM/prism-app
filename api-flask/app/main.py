@@ -5,7 +5,7 @@ from os import getenv
 
 from caching import cache_file, cache_geojson
 
-from flask import Flask, Response, jsonify, request
+from flask import Flask, Response, jsonify, request, json
 
 from flask_caching import Cache
 
@@ -14,6 +14,9 @@ from flask_cors import CORS
 from timer import timed
 
 from zonal_stats import calculate_stats
+
+from app.database.alert_database import AlertsDataBase
+from app.database.alert_model import AlertModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,6 +29,8 @@ CORS(app)
 # For more configuration options, check out the documentation
 # Caching durations are in seconds.
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
+alert_db = AlertsDataBase()
 
 
 @timed
@@ -97,6 +102,29 @@ def stats():
 
     return jsonify(features)
 
+
+@app.route('/alerts', methods=['POST', 'GET'])
+def alerts():
+    if request.method == 'POST':
+        if request.is_json:
+            data = json.loads(request.get_data())
+            logger.info('Received body: {}'.format(data))
+            alert = AlertModel(**data)
+            try:
+                alert_db.write(alert)
+                return Response(response='Success', status=200)
+            except Exception as e:
+                logger.error(e)
+                return Response(
+                    response='500: OperationalError.',
+                    status=500
+                )
+        else:
+            logger.error('Unrecognized operation.')
+            return Response(
+                response='500: Unrecognized operation.',
+                status=500
+            )
 
 @app.route('/demo', methods=['GET'])
 @timed
