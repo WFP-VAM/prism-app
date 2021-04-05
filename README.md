@@ -15,8 +15,10 @@ The new PRISM frontend is built as a static website to minimize cross dependenci
 
 To chose which country to run PRISM for, you can set the environment variable `REACT_APP_COUNTRY`. Defaulting to `mongolia`, configurations currently available are:
 
-- `mongolia`
 - `indonesia`
+- `mongolia`
+- `mozambique`
+- `myanmar`
 
 ## Configuration
 
