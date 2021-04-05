@@ -13,7 +13,10 @@ The new PRISM frontend is built as a static website to minimize cross dependenci
 - Display WMS layers from Geoserver or Open Data Cube endpoints, with date selection capabilities
 - Display CSV tables in a left side panel
 
-To chose which country to run PRISM for, you can set the environment variable `REACT_APP_COUNTRY`. Currently, available configurations are `mongolia`, `indonesia`. The default is `mongolia`.
+To chose which country to run PRISM for, you can set the environment variable `REACT_APP_COUNTRY`. Defaulting to `mongolia`, configurations currently available are:
+
+- `mongolia`
+- `indonesia`
 
 ## Configuration
 

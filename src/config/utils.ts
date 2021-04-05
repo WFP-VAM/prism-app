@@ -1,5 +1,5 @@
 import { camelCase, mapKeys } from 'lodash';
-import { rawLayers, rawTables } from './config';
+import { rawLayers, rawTables } from '.';
 import {
   BoundaryLayerProps,
   checkRequiredKeys,

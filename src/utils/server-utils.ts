@@ -2,7 +2,7 @@ import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, merge, union } from 'lodash';
 
-import { appConfig } from '../config/config';
+import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type { AvailableDates, PointDataLayerProps } from '../config/types';
 import { ImpactLayerProps, WMSLayerProps } from '../config/types';

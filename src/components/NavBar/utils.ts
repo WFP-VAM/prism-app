@@ -1,6 +1,6 @@
 import { map, startCase } from 'lodash';
 
-import { appConfig } from '../../config/config';
+import { appConfig } from '../../config';
 import {
   isTableKey,
   LayerDefinitions,

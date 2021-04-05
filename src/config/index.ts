@@ -1,3 +1,5 @@
+import { has } from 'lodash';
+
 import {
   indonesiaConfig,
   indonesiaRawLayers,
@@ -18,7 +20,9 @@ import {
 
 import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
 
-const DEFAULT = 'mongolia';
+type Country = 'indonesia' | 'mongolia' | 'mozambique' | 'myanmar';
+
+const DEFAULT: Country = 'mongolia';
 
 const configMap = {
   indonesia: {
@@ -43,10 +47,8 @@ const configMap = {
   },
 } as const;
 
-type Country = 'indonesia' | 'mongolia' | 'mozambique' | 'myanmar';
-
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
-const safeCountry = (COUNTRY && Object.keys(configMap).includes(COUNTRY)
+const safeCountry = (COUNTRY && has(configMap, COUNTRY)
   ? COUNTRY
   : DEFAULT) as Country;
 
