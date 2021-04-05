@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import rawLayers from './layers.json';
+import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
 // TODO currently unused. Could be harnessed within admin levels key typing

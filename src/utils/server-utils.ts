@@ -2,7 +2,7 @@ import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, merge, union } from 'lodash';
 
-import config from '../config/prism.json';
+import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type { AvailableDates, PointDataLayerProps } from '../config/types';
 import { ImpactLayerProps, WMSLayerProps } from '../config/types';
@@ -228,8 +228,8 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
  */
 export async function getLayersAvailableDates(): Promise<AvailableDates> {
-  const wmsServerUrls: string[] = get(config, 'serversUrls.wms', []);
-  const wcsServerUrls: string[] = get(config, 'serversUrls.wcs', []);
+  const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
+  const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
   const pointDataLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is PointDataLayerProps => layer.type === 'point_data',

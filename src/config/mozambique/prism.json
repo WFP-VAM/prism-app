@@ -1,0 +1,26 @@
+{
+  "country": "Mozambique",
+  "serversUrls": {
+    "wms": [
+      "https://odc.ovio.org/wms"
+    ]
+  },
+  "map": {
+    "latitude": -18.6703535,
+    "longitude": 35.526067,
+    "zoom": 4.7
+  },
+  "categories": {
+    "hazards": {
+      "CHIRPS_products": [
+        "rfh_dekad",
+        "rnh_dekad",
+        "rnq_dekad",
+        "days_dry",
+        "dlx_dekad",
+        "xnn_dekad",
+        "xln_dekad"
+      ]  
+    }
+  }
+}

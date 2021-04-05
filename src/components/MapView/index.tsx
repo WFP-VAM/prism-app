@@ -40,7 +40,7 @@ import {
   loadAvailableDates,
 } from '../../context/serverStateSlice';
 
-import appConfig from '../../config/prism.json';
+import { appConfig } from '../../config';
 import { loadLayerData } from '../../context/layers/layer-data';
 import Analyser from './Analyser';
 import AnalysisLayer from './Layers/AnalysisLayer';
