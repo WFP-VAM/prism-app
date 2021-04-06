@@ -6,6 +6,8 @@ import Legends from '.';
 import { store } from '../../../context/store';
 
 jest.mock('./ColorIndicator', () => 'mock-ColorIndicator');
+jest.mock('@material-ui/icons/Visibility', () => 'mock-visibility');
+jest.mock('@material-ui/icons/VisibilityOff', () => 'mock-visibility-off');
 
 test('renders as expected', () => {
   const { container } = render(
