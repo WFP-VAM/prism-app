@@ -40,7 +40,7 @@ import {
   loadAvailableDates,
 } from '../../context/serverStateSlice';
 
-import appConfig from '../../config/prism.json';
+import { appConfig } from '../../config';
 import { loadLayerData } from '../../context/layers/layer-data';
 import Analyser from './Analyser';
 import AnalysisLayer from './Layers/AnalysisLayer';
@@ -155,6 +155,10 @@ function MapView({ classes }: MapViewProps) {
             .map(date => moment(date).format('YYYY-MM-DD'))
             .includes(moment(selectedDate).format('YYYY-MM-DD'))
         ) {
+          if (layer.group && layer.group.main === false) {
+            return;
+          }
+
           dispatch(
             addNotification({
               message: `Selected Date isn't compatible with Layer: ${layer.title}`,
