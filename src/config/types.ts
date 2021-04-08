@@ -122,6 +122,12 @@ export type LegendDefinition = {
   color: string;
 }[];
 
+export type GroupDefinition = {
+  name: string;
+  // Main layer of a group of layers. Secondary layers will not trigger notifications.
+  main: boolean;
+};
+
 export type RawDataConfiguration = {
   scale?: number;
   offset?: number;
@@ -147,6 +153,9 @@ export class CommonLayerProps {
 
   @optional // only optional for boundary layer
   legendText?: string;
+
+  @optional // only optional for boundary layer
+  group?: GroupDefinition;
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {

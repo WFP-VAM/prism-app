@@ -156,5 +156,53 @@
       { "value": 30, "color": "#1d2e83" },
       { "value": "255 - no value", "color": "#ffffff", "alpha": 0 }
     ]
+  },
+  "adam_earthquakes": {
+    "title": "Adam Global Earthquakes Epicenters",
+    "type": "wms",
+    "server_layer_name": "wld_eq_historical_moz",
+    "opacity": 0.9,
+    "legend": [],
+    "legend_text": "",
+    "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "adamts_main": {
+    "title": "Adam Tropical Storms",
+    "type": "wms",
+    "server_layer_name": "wld_gdacs_tc_events_buffers_moz",
+    "opacity": 0.9,
+    "legend": [],
+    "legend_text": "",
+    "group": {
+      "name": "adam",
+      "main": true
+    },
+    "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "adamts_nodes": {
+    "title": "Current nodes",
+    "type": "wms",
+    "server_layer_name": "wld_gdacs_tc_events_nodes_moz",
+    "opacity": 0.9,
+    "legend": [],
+    "legend_text": "",
+    "group": {
+      "name": "adam",
+      "main": false
+    },
+    "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "adamts_tracks": {
+    "title": "Current tracks",
+    "type": "wms",
+    "server_layer_name": "wld_gdacs_tc_events_tracks_moz",
+    "opacity": 0.9,
+    "legend": [],
+    "legend_text": "",
+    "group": {
+      "name": "adam",
+      "main": false
+    },
+    "base_url": "https://geonode.wfp.org/geoserver"
   }
 }
