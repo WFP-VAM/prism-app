@@ -83,10 +83,11 @@ function MapView({ classes }: MapViewProps) {
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const selectedLayersWithDateSupport = selectedLayers.filter(
-    (layer): layer is DateCompatibleLayer =>
+  const selectedLayersWithDateSupport = selectedLayers
+    .filter((layer): layer is DateCompatibleLayer =>
       dateSupportLayerTypes.includes(layer.type),
-  );
+    )
+    .filter(layer => !layer.group || layer.group.main === true);
 
   useEffect(() => {
     // initial load, need available dates and boundary layer
@@ -154,10 +155,6 @@ function MapView({ classes }: MapViewProps) {
             .map(date => moment(date).format('YYYY-MM-DD'))
             .includes(moment(selectedDate).format('YYYY-MM-DD'))
         ) {
-          if (layer.group && layer.group.main === false) {
-            return;
-          }
-
           dispatch(
             addNotification({
               message: `Selected Date isn't compatible with Layer: ${layer.title}`,
