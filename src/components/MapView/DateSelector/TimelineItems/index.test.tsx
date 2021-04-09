@@ -13,7 +13,7 @@ const props = {
       isFirstDay: false,
     },
   ],
-  userDateOffset: 0,
+  userDateOffset: new Date().getTimezoneOffset() * 60000,
   clickDate: () => {},
 };
 
