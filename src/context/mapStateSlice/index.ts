@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerType } from '../../config/types';
+import { LayerDefinitions } from '../../config/utils';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 
 interface DateRange {
@@ -41,10 +42,30 @@ export const mapStateSlice = createSlice({
   name: 'mapState',
   initialState,
   reducers: {
-    addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => ({
-      ...rest,
-      layers: layers.filter(layer => keepLayer(layer, payload)).concat(payload),
-    }),
+    addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => {
+      // Check if a layer belongs to a group.
+      if (!payload.group) {
+        return {
+          ...rest,
+          layers: layers
+            .filter(layer => keepLayer(layer, payload))
+            .concat(payload),
+        };
+      }
+
+      const { name } = payload.group;
+      // Get all layers that belong to a group.
+      const groupedLayer = Object.values(LayerDefinitions).filter(
+        l => l.group?.name === name,
+      );
+
+      return {
+        ...rest,
+        layers: layers
+          .filter(layer => keepLayer(layer, payload))
+          .concat(groupedLayer),
+      };
+    },
 
     removeLayer: (
       { layers, ...rest },
