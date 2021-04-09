@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+export const TIMELINE_ITEM_WIDTH = 10;
+
 export const months = [
   'Jan',
   'Feb',

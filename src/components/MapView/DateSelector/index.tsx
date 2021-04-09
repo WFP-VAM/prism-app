@@ -5,12 +5,9 @@ import { extendMoment } from 'moment-range';
 import {
   Button,
   createStyles,
-  Fade,
   Grid,
   Hidden,
   Theme,
-  Tooltip,
-  Typography,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
@@ -25,20 +22,15 @@ import {
 import 'react-datepicker/dist/react-datepicker.css';
 import { findIndex, get, isEqual } from 'lodash';
 import { updateDateRange } from '../../../context/mapStateSlice';
-import { findDateIndex } from './utils';
+import { DateRangeType } from '../../../config/types';
+import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
+import TimelineItems from './TimelineItems';
 
 interface InputProps {
   value?: string;
   onClick?: () => void;
 }
-
-type DateRangeProps = {
-  value: number;
-  label: string;
-  month: string;
-  isFirstDay: boolean;
-};
 
 type Point = {
   x: number;
@@ -51,7 +43,7 @@ const moment = extendMoment(Moment as any);
 // displaying UTC dates.
 export const USER_DATE_OFFSET = new Date().getTimezoneOffset() * 60000;
 
-const TIMELINE_ITEM_WIDTH = 10;
+const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
 
 const Input = forwardRef(
@@ -68,7 +60,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
 
   const [selectedDate, setSelectedDate] = useState(moment(stateStartDate));
-  const [dateRange, setDateRange] = useState<DateRangeProps[]>([
+  const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
       value: 0,
       label: '',
@@ -248,7 +240,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
           <Grid className={classes.dateContainer} ref={timeLine}>
             <Draggable
               axis="x"
-              handle="#timeline"
+              handle={`#${TIMELINE_ID}`}
               bounds={{
                 top: 0,
                 bottom: 0,
@@ -258,56 +250,18 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
               position={timelinePosition}
               onStop={onTimelineStop}
             >
-              <div className={classes.timeline} id="timeline">
+              <div className={classes.timeline} id={TIMELINE_ID}>
                 <Grid
                   container
                   alignItems="stretch"
                   className={classes.dateLabelContainer}
                 >
-                  {dateRange.map((date, index) => (
-                    <Tooltip
-                      title={date.label}
-                      key={date.label}
-                      TransitionComponent={Fade}
-                      TransitionProps={{ timeout: 0 }}
-                      placement="top"
-                      arrow
-                    >
-                      <Grid
-                        item
-                        xs
-                        className={
-                          date.isFirstDay
-                            ? classes.dateItemFull
-                            : classes.dateItem
-                        }
-                      >
-                        {date.isFirstDay ? (
-                          <Typography
-                            variant="body2"
-                            className={classes.dateItemLabel}
-                          >
-                            {date.month}
-                          </Typography>
-                        ) : (
-                          <div className={classes.dayItem} />
-                        )}
-                        {availableDates
-                          .map(availableDate =>
-                            moment(availableDate + USER_DATE_OFFSET).format(
-                              'DD MMM YYYY',
-                            ),
-                          )
-                          .includes(date.label) && (
-                          <div
-                            className={classes.dateAvailable}
-                            role="presentation"
-                            onClick={() => clickDate(index)}
-                          />
-                        )}
-                      </Grid>
-                    </Tooltip>
-                  ))}
+                  <TimelineItems
+                    dateRange={dateRange}
+                    availableDates={availableDates}
+                    userDateOffset={USER_DATE_OFFSET}
+                    clickDate={clickDate}
+                  />
                 </Grid>
                 <Draggable
                   axis="x"
@@ -380,15 +334,6 @@ const styles = (theme: Theme) =>
       display: 'flex',
     },
 
-    monthButton: {
-      fontSize: 12,
-      minWidth: '4.2vw',
-    },
-
-    divider: {
-      backgroundColor: theme.palette.grey[500],
-    },
-
     dateContainer: {
       position: 'relative',
       height: 36,
@@ -405,57 +350,6 @@ const styles = (theme: Theme) =>
     timeline: {
       position: 'relative',
       top: 5,
-    },
-
-    dateItemFull: {
-      borderLeft: '1px solid white',
-      height: 36,
-      borderTop: '1px solid white',
-      color: 'white',
-      position: 'relative',
-      top: -5,
-      cursor: 'pointer',
-      minWidth: TIMELINE_ITEM_WIDTH,
-      '&:hover': {
-        borderLeft: '1px solid #5ccfff',
-      },
-    },
-
-    dateItem: {
-      borderTop: '1px solid white',
-      color: 'white',
-      position: 'relative',
-      top: -5,
-      cursor: 'pointer',
-      minWidth: TIMELINE_ITEM_WIDTH,
-      '&:hover': {
-        borderLeft: '1px solid #5ccfff',
-        '& $dayItem': {
-          borderLeft: 0,
-        },
-      },
-    },
-
-    dateItemLabel: {
-      position: 'absolute',
-      top: 22,
-      textAlign: 'left',
-      paddingLeft: 5,
-      minWidth: 80,
-    },
-
-    dayItem: {
-      height: 10,
-      borderLeft: '1px solid white',
-    },
-
-    dateAvailable: {
-      position: 'absolute',
-      top: 0,
-      backgroundColor: 'white',
-      height: 5,
-      width: TIMELINE_ITEM_WIDTH,
-      opacity: 0.6,
     },
 
     triangle: {
