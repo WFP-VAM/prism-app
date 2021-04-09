@@ -10,13 +10,12 @@ import {
 } from '@material-ui/core';
 import moment from 'moment';
 import { DateRangeType } from '../../../../config/types';
-import { TIMELINE_ITEM_WIDTH } from '../utils';
+import { TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from '../utils';
 
 function TimelineItems({
   classes,
   availableDates,
   dateRange,
-  userDateOffset,
   clickDate,
 }: TimelineItemsProps) {
   const click = (dateIndex: number) => {
@@ -49,7 +48,7 @@ function TimelineItems({
             )}
             {availableDates
               .map(availableDate =>
-                moment(availableDate + userDateOffset).format('DD MMM YYYY'),
+                moment(availableDate + USER_DATE_OFFSET).format('DD MMM YYYY'),
               )
               .includes(date.label) && (
               <div
@@ -122,7 +121,6 @@ const styles = () =>
 export interface TimelineItemsProps extends WithStyles<typeof styles> {
   availableDates: number[];
   dateRange: DateRangeType[];
-  userDateOffset: number;
   clickDate: (arg: number) => void;
 }
 

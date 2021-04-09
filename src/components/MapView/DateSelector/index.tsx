@@ -23,7 +23,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { findIndex, get, isEqual } from 'lodash';
 import { updateDateRange } from '../../../context/mapStateSlice';
 import { DateRangeType } from '../../../config/types';
-import { TIMELINE_ITEM_WIDTH, findDateIndex } from './utils';
+import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import TimelineItems from './TimelineItems';
 
@@ -38,10 +38,6 @@ type Point = {
 };
 
 const moment = extendMoment(Moment as any);
-
-// The DatePicker is timezone aware, so we trick it into
-// displaying UTC dates.
-export const USER_DATE_OFFSET = new Date().getTimezoneOffset() * 60000;
 
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
@@ -259,7 +255,6 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
                   <TimelineItems
                     dateRange={dateRange}
                     availableDates={availableDates}
-                    userDateOffset={USER_DATE_OFFSET}
                     clickDate={clickDate}
                   />
                 </Grid>
