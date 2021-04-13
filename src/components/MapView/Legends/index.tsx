@@ -163,7 +163,8 @@ const styles = (theme: Theme) =>
       textAlign: 'right',
     },
     list: {
-      overflow: 'auto',
+      overflowX: 'hidden',
+      overflowY: 'auto',
       maxHeight: '70vh',
     },
     paper: {
