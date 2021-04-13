@@ -18,7 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import 'react-datepicker/dist/react-datepicker.css';
 import { updateDateRange } from '../../../context/mapStateSlice';
-import { getMonthStartAndEnd, isAvailableMonth, months } from './utils';
+import { isAvailableMonth, months, findAvailableDayInMonth } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 
 interface InputProps {
@@ -53,8 +53,8 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     setSelectedDate(moment(stateStartDate));
   }, [stateStartDate]);
   function updateMonth(month: number) {
-    const { startDate, endDate } = getMonthStartAndEnd(month, selectedYear);
-    dispatch(updateDateRange({ startDate, endDate }));
+    const dates = findAvailableDayInMonth(month, selectedYear, availableDates);
+    dispatch(updateDateRange({ startDate: dates[0] }));
   }
   function incrementYear() {
     setSelectedDate(selectedDate.clone().year(selectedYear + 1));
