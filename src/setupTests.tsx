@@ -71,3 +71,7 @@ stubMuiIcon('CloudDownload');
 stubMuiIcon('Image');
 stubMuiIcon('Visibility');
 stubMuiIcon('VisibilityOff');
+
+// mock getContext based on https://github.com/hustcc/jest-canvas-mock/issues/2
+// eslint-disable-next-line fp/no-mutation
+HTMLCanvasElement.prototype.getContext = jest.fn();
