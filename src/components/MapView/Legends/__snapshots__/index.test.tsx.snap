@@ -9,7 +9,7 @@ exports[`renders as expected 1`] = `
       color="primary"
       variant="contained"
     >
-      <mock-visibility-off
+      <mock-visibilityoff
         fontsize="small"
       />
       <mock-hidden

@@ -9,7 +9,7 @@ exports[`renders as expected 1`] = `
       color="primary"
       variant="contained"
     >
-      <mock-bar-chart
+      <mock-barchart
         fontsize="small"
       />
       <mock-typography
@@ -18,7 +18,7 @@ exports[`renders as expected 1`] = `
       >
         Run Analysis
       </mock-typography>
-      <mock-arrow-drop-down
+      <mock-arrowdropdown
         fontsize="small"
       />
     </mock-button>

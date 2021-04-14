@@ -60,3 +60,14 @@ stubMuiComponent('DialogActions');
 stubMuiComponent('DialogContent');
 stubMuiComponent('DialogContentText');
 stubMuiComponent('DialogTitle');
+
+function stubMuiIcon(iconName: string) {
+  jest.doMock(`@material-ui/icons/${iconName}`, () => `mock-${iconName}`);
+}
+
+stubMuiIcon('ArrowDropDown');
+stubMuiIcon('BarChart');
+stubMuiIcon('CloudDownload');
+stubMuiIcon('Image');
+stubMuiIcon('Visibility');
+stubMuiIcon('VisibilityOff');

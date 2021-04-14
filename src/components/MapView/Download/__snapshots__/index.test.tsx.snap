@@ -9,7 +9,7 @@ exports[`renders as expected 1`] = `
       color="primary"
       variant="contained"
     >
-      <mock-cloud-download
+      <mock-clouddownload
         fontsize="small"
       />
       <mock-hidden
@@ -22,7 +22,7 @@ exports[`renders as expected 1`] = `
           Export
         </mock-typography>
       </mock-hidden>
-      <mock-arrow-drop-down
+      <mock-arrowdropdown
         fontsize="small"
       />
     </mock-button>
