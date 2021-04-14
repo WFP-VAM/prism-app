@@ -1,0 +1,12 @@
+# node mofules
+node_modules
+
+# compiled output
+/dist
+
+# Tests
+/coverage
+/.nyc_output
+
+# Database
+/db_data/
