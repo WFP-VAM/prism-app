@@ -166,23 +166,10 @@
     "legend_text": "",
     "base_url": "https://geonode.wfp.org/geoserver"
   },
-  "adamts_main": {
-    "title": "Adam Tropical Storms",
+  "adamts_buffers": {
+    "title": "Adam tropical storms buffers",
     "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_buffers_moz",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "",
-    "group": {
-      "name": "adam",
-      "main": true
-    },
-    "base_url": "https://geonode.wfp.org/geoserver"
-  },
-  "adamts_nodes": {
-    "title": "Current nodes",
-    "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_nodes_moz",
+    "server_layer_name": "wld_gdacs_tc_events_buffers",
     "opacity": 0.9,
     "legend": [],
     "legend_text": "",
@@ -192,10 +179,23 @@
     },
     "base_url": "https://geonode.wfp.org/geoserver"
   },
-  "adamts_tracks": {
-    "title": "Current tracks",
+  "adamts_main": {
+    "title": "Adam tropical storms",
     "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_tracks_moz",
+    "server_layer_name": "wld_gdacs_tc_events_nodes_moz",
+    "opacity": 0.9,
+    "legend": [],
+    "legend_text": "",
+    "group": {
+      "name": "adam",
+      "main": true
+    },
+    "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "adamts_tracks": {
+    "title": "Adam tropical storms tracks",
+    "type": "wms",
+    "server_layer_name": "wld_gdacs_tc_events_tracks",
     "opacity": 0.9,
     "legend": [],
     "legend_text": "",
