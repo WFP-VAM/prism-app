@@ -23,7 +23,9 @@
         "xln_dekad"
       ],
       "disaster_management": [
-        "adamts_main",
+        "adamts_buffers",
+        "adamts_nodes",
+        "adamts_tracks",
         "adam_earthquakes"
       ]  
     }
