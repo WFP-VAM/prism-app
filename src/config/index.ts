@@ -20,7 +20,18 @@ import {
 
 import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
 
-type Country = 'indonesia' | 'mongolia' | 'mozambique' | 'myanmar';
+import {
+  tajikistanConfig,
+  tajikistanRawLayers,
+  tajikistanRawTables,
+} from './tajikistan';
+
+type Country =
+  | 'indonesia'
+  | 'mongolia'
+  | 'mozambique'
+  | 'myanmar'
+  | 'tajikistan';
 
 const DEFAULT: Country = 'mongolia';
 
@@ -44,6 +55,11 @@ const configMap = {
     appConfig: myanmarConfig,
     rawLayers: myanmarRawLayers,
     rawTables: myanmarRawTables,
+  },
+  tajikistan: {
+    appConfig: tajikistanConfig,
+    rawLayers: tajikistanRawLayers,
+    rawTables: tajikistanRawTables,
   },
 } as const;
 
