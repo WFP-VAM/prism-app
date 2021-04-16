@@ -107,23 +107,23 @@ def stats():
 def alerts():
     """Post new alerts."""
     if request.method == 'POST':
-        if request.is_json:
-            data = json.loads(request.get_data())
-            logger.info('Received body: {}'.format(data))
-            alert = AlertModel(**data)
-            try:
-                alert_db.write(alert)
-                return Response(response='Success', status=200)
-            except Exception as e:
-                logger.error(e)
-                return Response(
-                    response='500: OperationalError.',
-                    status=500
-                )
-        else:
-            logger.error('Unrecognized operation.')
+        if not request.is_json:
+            logger.error('Unrecognized operation. JSON data expected.')
             return Response(
-                response='500: Unrecognized operation.',
+                response='500: Unrecognized operation. JSON data expected',
+                status=500
+            )
+
+        data = json.loads(request.get_data())
+        logger.info('Received body: {}'.format(data))
+        alert = AlertModel(**data)
+        try:
+            alert_db.write(alert)
+            return Response(response='Success', status=200)
+        except Exception as e:
+            logger.error(e)
+            return Response(
+                response='500: OperationalError.',
                 status=500
             )
 
