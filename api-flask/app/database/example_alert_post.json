@@ -1,5 +1,6 @@
 {
   "email": "prism+test@ovio.org",
+  "prism_url": "https://prism-mongolia.org/",
   "alert_name": "Test",
   "min": 4,
   "max": 14,

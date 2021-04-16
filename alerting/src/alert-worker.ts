@@ -12,7 +12,7 @@ async function run() {
   await Promise.all(
     alerts.map(async (alert) => {
       const { baseUrl, serverLayerName, type } = alert.alertConfig;
-      const { email, alertName, lastTriggered } = alert;
+      const { alertName, email, lastTriggered, prismUrl } = alert;
       const availableDates =
         type === 'wms'
           ? await getWMSCapabilities(`${baseUrl}/wms`)
@@ -28,7 +28,7 @@ async function run() {
 
       const emailMessage = `
       Your alert${alertName ? ` ${alertName}` : ''} has been triggered.
-      Go to the PRISM_LINK for more information.
+      Go to ${prismUrl} for more information.
 
       Alert: ${alertMessage}`;
 

@@ -28,6 +28,9 @@ export class Alert {
   @Column()
   email: string;
 
+  @Column()
+  prismUrl: string;
+
   @Column({ nullable: true })
   alertName: string;
 

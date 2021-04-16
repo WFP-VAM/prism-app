@@ -35,8 +35,12 @@ class AlertsDataBase:
 
     def write(self, alert: AlertModel):
         """Write an alert to the alerts table."""
-        self.session.add(alert)
-        self.session.commit()
+        try:
+            self.session.add(alert)
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
     def readall(self) -> list:
         """

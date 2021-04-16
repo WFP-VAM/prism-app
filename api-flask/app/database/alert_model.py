@@ -13,6 +13,7 @@ class AlertModel(Base):
     __tablename__ = 'alert'
     id = Column('id', Integer, Identity(start=0, cycle=True), primary_key=True)
     email = Column('email', String, nullable=False)
+    prism_url = Column('prism_url', String, nullable=False)
     alert_name = Column('alert_name', String)
     alert_config = Column('alert_config', JSON, nullable=False)
     min = Column('min', Integer)

@@ -22,7 +22,7 @@
     "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
     "seed:config": "yarn typeorm-seeding config",
     "seed:run": "yarn typeorm-seeding seed",
-    "daily-worker": "ts-node -r dotenv/config scripts/daily-update.ts"
+    "alert-worker": "ts-node -r dotenv/config src/alert-worker.ts"
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",
