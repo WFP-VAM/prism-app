@@ -5,7 +5,10 @@ from os import getenv
 
 from caching import cache_file, cache_geojson
 
-from flask import Flask, Response, jsonify, request, json
+from database.alert_database import AlertsDataBase
+from database.alert_model import AlertModel
+
+from flask import Flask, Response, json, jsonify, request
 
 from flask_caching import Cache
 
@@ -14,9 +17,6 @@ from flask_cors import CORS
 from timer import timed
 
 from zonal_stats import calculate_stats
-
-from app.database.alert_database import AlertsDataBase
-from app.database.alert_model import AlertModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -105,6 +105,7 @@ def stats():
 
 @app.route('/alerts', methods=['POST', 'GET'])
 def alerts():
+    """Post and get alerts."""
     if request.method == 'POST':
         if request.is_json:
             data = json.loads(request.get_data())
@@ -125,6 +126,7 @@ def alerts():
                 response='500: Unrecognized operation.',
                 status=500
             )
+
 
 @app.route('/demo', methods=['GET'])
 @timed
