@@ -12,7 +12,7 @@ async function run() {
   await Promise.all(
     alerts.map(async (alert) => {
       const { baseUrl, serverLayerName, type } = alert.alertConfig;
-      const { alertName, email, lastTriggered, prismUrl } = alert;
+      const { id, alertName, email, lastTriggered, prismUrl } = alert;
       const availableDates =
         type === 'wms'
           ? await getWMSCapabilities(`${baseUrl}/wms`)
@@ -34,7 +34,7 @@ async function run() {
 
       if (alertMessage) {
         console.log(
-          `Your alert '${alert.alertName}' was triggered on ${maxDate}`,
+          `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
         );
         // TODO - Send an email
         sendEmail({

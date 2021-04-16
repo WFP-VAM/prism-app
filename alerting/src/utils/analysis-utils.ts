@@ -281,7 +281,6 @@ export async function calculateBoundsForAlert(date: Date, alert: Alert) {
   };
 
   const extent = bbox(testZone) as Extent;
-  console.log(extent);
   const apiRequest: ApiData = {
     geotiff_url: getWCSLayerUrl({
       layer: alert.alertConfig,
@@ -294,6 +293,5 @@ export async function calculateBoundsForAlert(date: Date, alert: Alert) {
     await fetchApiData(ANALYSIS_API_URL, apiRequest),
     alert,
   );
-  console.log(alertMessage);
   return alertMessage;
 }
