@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-DB_URI = 'postgresql://{user}:{password}@{host}:{port}/{database}'.format(
+DB_URI = getenv('DATABASE_URL') or 'postgresql://{user}:{password}@{host}:{port}/{database}'.format(
     host='localhost',
     port=54321,
     database=getenv('POSTGRES_DB', 'postgres'),
