@@ -1,0 +1,1984 @@
+{
+    "DataList": [
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D003",
+   "TS_PCODE": "MMR012013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D004",
+   "TS_PCODE": "MMR012016",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D003",
+   "TS_PCODE": "MMR012011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D004",
+   "TS_PCODE": "MMR017016",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D001",
+   "TS_PCODE": "MMR017004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D006",
+   "TS_PCODE": "MMR017024",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D004",
+   "TS_PCODE": "MMR012015",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D003",
+   "TS_PCODE": "MMR013029",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D006",
+   "TS_PCODE": "MMR017026",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D006",
+   "TS_PCODE": "MMR017023",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D003",
+   "TS_PCODE": "MMR012012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D004",
+   "TS_PCODE": "MMR012017",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR006",
+   "DT_PCODE": "MMR006D003",
+   "TS_PCODE": "MMR006009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR006",
+   "DT_PCODE": "MMR006D002",
+   "TS_PCODE": "MMR006006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR006",
+   "DT_PCODE": "MMR006D001",
+   "TS_PCODE": "MMR006002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR006",
+   "DT_PCODE": "MMR006D003",
+   "TS_PCODE": "MMR006010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR011",
+   "DT_PCODE": "MMR011D001",
+   "TS_PCODE": "MMR011006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR011",
+   "DT_PCODE": "MMR011D001",
+   "TS_PCODE": "MMR011003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR006",
+   "DT_PCODE": "MMR006D002",
+   "TS_PCODE": "MMR006007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR006",
+   "DT_PCODE": "MMR006D001",
+   "TS_PCODE": "MMR006004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR011",
+   "DT_PCODE": "MMR011D001",
+   "TS_PCODE": "MMR011001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR003",
+   "DT_PCODE": "MMR003D001",
+   "TS_PCODE": "MMR003001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D005",
+   "TS_PCODE": "MMR012006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D003",
+   "TS_PCODE": "MMR012014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D001",
+   "TS_PCODE": "MMR012007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D001",
+   "TS_PCODE": "MMR012008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D001",
+   "TS_PCODE": "MMR008002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D002",
+   "TS_PCODE": "MMR007010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D003",
+   "TS_PCODE": "MMR013025",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR011",
+   "DT_PCODE": "MMR011D002",
+   "TS_PCODE": "MMR011008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013020",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D001",
+   "TS_PCODE": "MMR013003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D003",
+   "TS_PCODE": "MMR009016",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D003",
+   "TS_PCODE": "MMR010013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D003",
+   "TS_PCODE": "MMR015013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D003",
+   "TS_PCODE": "MMR015012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D001",
+   "TS_PCODE": "MMR013004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D001",
+   "TS_PCODE": "MMR008003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013019",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D003",
+   "TS_PCODE": "MMR013027",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013042",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013021",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013036",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013037",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D001",
+   "TS_PCODE": "MMR013002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D001",
+   "TS_PCODE": "MMR013007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D001",
+   "TS_PCODE": "MMR017007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013038",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D002",
+   "TS_PCODE": "MMR008008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D002",
+   "TS_PCODE": "MMR017013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013015",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013044",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013041",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D005",
+   "TS_PCODE": "MMR017020",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013034",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013033",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D002",
+   "TS_PCODE": "MMR017012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D002",
+   "TS_PCODE": "MMR008013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013043",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013039",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D002",
+   "TS_PCODE": "MMR017008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D005",
+   "TS_PCODE": "MMR017022",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013040",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D003",
+   "TS_PCODE": "MMR013030",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D002",
+   "TS_PCODE": "MMR008012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D001",
+   "TS_PCODE": "MMR008005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D001",
+   "TS_PCODE": "MMR007002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR011",
+   "DT_PCODE": "MMR011D002",
+   "TS_PCODE": "MMR011009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR006",
+   "DT_PCODE": "MMR006D001",
+   "TS_PCODE": "MMR006003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR003",
+   "DT_PCODE": "MMR003D004",
+   "TS_PCODE": "MMR003003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR002",
+   "DT_PCODE": "MMR002D002",
+   "TS_PCODE": "MMR002007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D001",
+   "TS_PCODE": "MMR010007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D005",
+   "TS_PCODE": "MMR012005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D001",
+   "TS_PCODE": "MMR010002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D001",
+   "TS_PCODE": "MMR010001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D001",
+   "TS_PCODE": "MMR014005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D006",
+   "TS_PCODE": "MMR010023",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D002",
+   "TS_PCODE": "MMR010009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D004",
+   "TS_PCODE": "MMR005022",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D003",
+   "TS_PCODE": "MMR005013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D011",
+   "TS_PCODE": "MMR005025",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D002",
+   "TS_PCODE": "MMR010012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D001",
+   "TS_PCODE": "MMR010003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D008",
+   "TS_PCODE": "MMR005033",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D009",
+   "TS_PCODE": "MMR005016",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D002",
+   "TS_PCODE": "MMR005004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D002",
+   "TS_PCODE": "MMR005009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR018",
+   "DT_PCODE": "MMR018D002",
+   "TS_PCODE": "MMR018007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D009",
+   "TS_PCODE": "MMR005018",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D003",
+   "TS_PCODE": "MMR005015",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D004",
+   "TS_PCODE": "MMR009019",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D001",
+   "TS_PCODE": "MMR010006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D002",
+   "TS_PCODE": "MMR010008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D003",
+   "TS_PCODE": "MMR010014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D010",
+   "TS_PCODE": "MMR005007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D001",
+   "TS_PCODE": "MMR010004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR018",
+   "DT_PCODE": "MMR018D001",
+   "TS_PCODE": "MMR018003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D001",
+   "TS_PCODE": "MMR009004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D001",
+   "TS_PCODE": "MMR009002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014S002",
+   "TS_PCODE": "MMR014004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR016",
+   "DT_PCODE": "MMR016D001",
+   "TS_PCODE": "MMR016001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR016",
+   "DT_PCODE": "MMR016D002",
+   "TS_PCODE": "MMR016006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR002",
+   "DT_PCODE": "MMR002D001",
+   "TS_PCODE": "MMR002001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D002",
+   "TS_PCODE": "MMR009010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR016",
+   "DT_PCODE": "MMR016D003",
+   "TS_PCODE": "MMR016011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015S001",
+   "TS_PCODE": "MMR015016",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014S001",
+   "TS_PCODE": "MMR014006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D007",
+   "TS_PCODE": "MMR010030",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D003",
+   "TS_PCODE": "MMR017017",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D003",
+   "TS_PCODE": "MMR017014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D001",
+   "TS_PCODE": "MMR017003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D001",
+   "TS_PCODE": "MMR017006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D001",
+   "TS_PCODE": "MMR017002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D006",
+   "TS_PCODE": "MMR017025",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D002",
+   "TS_PCODE": "MMR017011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D003",
+   "TS_PCODE": "MMR013028",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013018",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D001",
+   "TS_PCODE": "MMR013005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D003",
+   "TS_PCODE": "MMR010016",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR003",
+   "DT_PCODE": "MMR003D001",
+   "TS_PCODE": "MMR003002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR011",
+   "DT_PCODE": "MMR011D002",
+   "TS_PCODE": "MMR011010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR006",
+   "DT_PCODE": "MMR006D001",
+   "TS_PCODE": "MMR006001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D004",
+   "TS_PCODE": "MMR009018",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D001",
+   "TS_PCODE": "MMR009003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR018",
+   "DT_PCODE": "MMR018D002",
+   "TS_PCODE": "MMR018004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR016",
+   "DT_PCODE": "MMR016D003",
+   "TS_PCODE": "MMR016009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015S002",
+   "TS_PCODE": "MMR015022",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D006",
+   "TS_PCODE": "MMR015021",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D003",
+   "TS_PCODE": "MMR001013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015S001",
+   "TS_PCODE": "MMR015019",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013017",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013016",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D001",
+   "TS_PCODE": "MMR013046",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D008",
+   "TS_PCODE": "MMR015017",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D002",
+   "TS_PCODE": "MMR010011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D003",
+   "TS_PCODE": "MMR009015",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D003",
+   "TS_PCODE": "MMR013026",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D001",
+   "TS_PCODE": "MMR007003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D003",
+   "TS_PCODE": "MMR013023",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D001",
+   "TS_PCODE": "MMR001004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D004",
+   "TS_PCODE": "MMR001014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D004",
+   "TS_PCODE": "MMR001015",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D001",
+   "TS_PCODE": "MMR007008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D001",
+   "TS_PCODE": "MMR007005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D001",
+   "TS_PCODE": "MMR007004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D001",
+   "TS_PCODE": "MMR007007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D001",
+   "TS_PCODE": "MMR007006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D003",
+   "TS_PCODE": "MMR009014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR018",
+   "DT_PCODE": "MMR018D001",
+   "TS_PCODE": "MMR018001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014S002",
+   "TS_PCODE": "MMR014009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR018",
+   "DT_PCODE": "MMR018D001",
+   "TS_PCODE": "MMR018005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR018",
+   "DT_PCODE": "MMR018D002",
+   "TS_PCODE": "MMR018006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D001",
+   "TS_PCODE": "MMR014010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR003",
+   "DT_PCODE": "MMR003D001",
+   "TS_PCODE": "MMR003004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D003",
+   "TS_PCODE": "MMR013024",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D001",
+   "TS_PCODE": "MMR007001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR002",
+   "DT_PCODE": "MMR002D002",
+   "TS_PCODE": "MMR002005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D003",
+   "TS_PCODE": "MMR015014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D001",
+   "TS_PCODE": "MMR014008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D001",
+   "TS_PCODE": "MMR013006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D005",
+   "TS_PCODE": "MMR017021",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D001",
+   "TS_PCODE": "MMR013047",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D002",
+   "TS_PCODE": "MMR017010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D004",
+   "TS_PCODE": "MMR017018",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D003",
+   "TS_PCODE": "MMR017015",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D001",
+   "TS_PCODE": "MMR017001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D005",
+   "TS_PCODE": "MMR017019",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D003",
+   "TS_PCODE": "MMR013031",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR006",
+   "DT_PCODE": "MMR006D002",
+   "TS_PCODE": "MMR006008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR011",
+   "DT_PCODE": "MMR011D002",
+   "TS_PCODE": "MMR011007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR003",
+   "DT_PCODE": "MMR003D003",
+   "TS_PCODE": "MMR003007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR018",
+   "DT_PCODE": "MMR018D002",
+   "TS_PCODE": "MMR018002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR004",
+   "DT_PCODE": "MMR004D004",
+   "TS_PCODE": "MMR004009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR004",
+   "DT_PCODE": "MMR004D002",
+   "TS_PCODE": "MMR004008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D005",
+   "TS_PCODE": "MMR012004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D005",
+   "TS_PCODE": "MMR012003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D002",
+   "TS_PCODE": "MMR012010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR003",
+   "DT_PCODE": "MMR003D003",
+   "TS_PCODE": "MMR003006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR011",
+   "DT_PCODE": "MMR011D001",
+   "TS_PCODE": "MMR011002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D002",
+   "TS_PCODE": "MMR012009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR006",
+   "DT_PCODE": "MMR006D002",
+   "TS_PCODE": "MMR006005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR011",
+   "DT_PCODE": "MMR011D001",
+   "TS_PCODE": "MMR011005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D003",
+   "TS_PCODE": "MMR013032",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR011",
+   "DT_PCODE": "MMR011D001",
+   "TS_PCODE": "MMR011004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D002",
+   "TS_PCODE": "MMR009011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D002",
+   "TS_PCODE": "MMR009009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D001",
+   "TS_PCODE": "MMR012002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR012",
+   "DT_PCODE": "MMR012D001",
+   "TS_PCODE": "MMR012001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR018",
+   "DT_PCODE": "MMR018D001",
+   "TS_PCODE": "MMR018008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D003",
+   "TS_PCODE": "MMR005014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D002",
+   "TS_PCODE": "MMR005010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D002",
+   "TS_PCODE": "MMR005006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D001",
+   "TS_PCODE": "MMR005002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D003",
+   "TS_PCODE": "MMR005012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D001",
+   "TS_PCODE": "MMR008006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D003",
+   "TS_PCODE": "MMR009017",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR016",
+   "DT_PCODE": "MMR016D001",
+   "TS_PCODE": "MMR016002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR016",
+   "DT_PCODE": "MMR016D001",
+   "TS_PCODE": "MMR016007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D007",
+   "TS_PCODE": "MMR015024",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR016",
+   "DT_PCODE": "MMR016D001",
+   "TS_PCODE": "MMR016003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D004",
+   "TS_PCODE": "MMR001016",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D004",
+   "TS_PCODE": "MMR001018",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D001",
+   "TS_PCODE": "MMR001003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D001",
+   "TS_PCODE": "MMR001001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR016",
+   "DT_PCODE": "MMR016D003",
+   "TS_PCODE": "MMR016010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D006",
+   "TS_PCODE": "MMR015007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D006",
+   "TS_PCODE": "MMR015008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D002",
+   "TS_PCODE": "MMR014013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D002",
+   "TS_PCODE": "MMR014014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR002",
+   "DT_PCODE": "MMR002D001",
+   "TS_PCODE": "MMR002004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D003",
+   "TS_PCODE": "MMR014019",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR016",
+   "DT_PCODE": "MMR016D002",
+   "TS_PCODE": "MMR016008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D003",
+   "TS_PCODE": "MMR014018",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D003",
+   "TS_PCODE": "MMR014020",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D007",
+   "TS_PCODE": "MMR015005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D007",
+   "TS_PCODE": "MMR015006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D003",
+   "TS_PCODE": "MMR014021",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D001",
+   "TS_PCODE": "MMR015004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D001",
+   "TS_PCODE": "MMR015003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D001",
+   "TS_PCODE": "MMR015001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014S002",
+   "TS_PCODE": "MMR014003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D001",
+   "TS_PCODE": "MMR014001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR016",
+   "DT_PCODE": "MMR016D001",
+   "TS_PCODE": "MMR016005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D002",
+   "TS_PCODE": "MMR014015",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D002",
+   "TS_PCODE": "MMR014017",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D002",
+   "TS_PCODE": "MMR014011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D003",
+   "TS_PCODE": "MMR015015",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D001",
+   "TS_PCODE": "MMR013001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D002",
+   "TS_PCODE": "MMR013022",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR013",
+   "DT_PCODE": "MMR013D004",
+   "TS_PCODE": "MMR013035",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D001",
+   "TS_PCODE": "MMR017005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D001",
+   "TS_PCODE": "MMR005001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D001",
+   "TS_PCODE": "MMR010005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D001",
+   "TS_PCODE": "MMR014002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR002",
+   "DT_PCODE": "MMR002D001",
+   "TS_PCODE": "MMR002002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D003",
+   "TS_PCODE": "MMR009013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D004",
+   "TS_PCODE": "MMR001017",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D002",
+   "TS_PCODE": "MMR007009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D002",
+   "TS_PCODE": "MMR001008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D002",
+   "TS_PCODE": "MMR001007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005S001",
+   "TS_PCODE": "MMR005037",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D001",
+   "TS_PCODE": "MMR008001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D001",
+   "TS_PCODE": "MMR008004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D002",
+   "TS_PCODE": "MMR008010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR017",
+   "DT_PCODE": "MMR017D002",
+   "TS_PCODE": "MMR017009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR003",
+   "DT_PCODE": "MMR003D002",
+   "TS_PCODE": "MMR003005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR004",
+   "DT_PCODE": "MMR004D001",
+   "TS_PCODE": "MMR004005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D011",
+   "TS_PCODE": "MMR005026",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D004",
+   "TS_PCODE": "MMR005020",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D006",
+   "TS_PCODE": "MMR005030",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR004",
+   "DT_PCODE": "MMR004D001",
+   "TS_PCODE": "MMR004001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR004",
+   "DT_PCODE": "MMR004D003",
+   "TS_PCODE": "MMR004003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D009",
+   "TS_PCODE": "MMR005017",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR004",
+   "DT_PCODE": "MMR004D004",
+   "TS_PCODE": "MMR004007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D003",
+   "TS_PCODE": "MMR009012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D001",
+   "TS_PCODE": "MMR005003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D004",
+   "TS_PCODE": "MMR009020",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D004",
+   "TS_PCODE": "MMR009021",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005S001",
+   "TS_PCODE": "MMR005035",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005S001",
+   "TS_PCODE": "MMR005036",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D002",
+   "TS_PCODE": "MMR005005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR004",
+   "DT_PCODE": "MMR004D003",
+   "TS_PCODE": "MMR004002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D005",
+   "TS_PCODE": "MMR009023",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D006",
+   "TS_PCODE": "MMR010024",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR004",
+   "DT_PCODE": "MMR004D001",
+   "TS_PCODE": "MMR004004",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D005",
+   "TS_PCODE": "MMR010022",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D002",
+   "TS_PCODE": "MMR009008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D007",
+   "TS_PCODE": "MMR010028",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D011",
+   "TS_PCODE": "MMR005024",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D007",
+   "TS_PCODE": "MMR010029",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D004",
+   "TS_PCODE": "MMR010018",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D002",
+   "TS_PCODE": "MMR015009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D003",
+   "TS_PCODE": "MMR001012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D001",
+   "TS_PCODE": "MMR001005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015S002",
+   "TS_PCODE": "MMR015023",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D001",
+   "TS_PCODE": "MMR001002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D001",
+   "TS_PCODE": "MMR001006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D003",
+   "TS_PCODE": "MMR001010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D002",
+   "TS_PCODE": "MMR015010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D002",
+   "TS_PCODE": "MMR015011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D008",
+   "TS_PCODE": "MMR015018",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D002",
+   "TS_PCODE": "MMR001009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D002",
+   "TS_PCODE": "MMR007012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR001",
+   "DT_PCODE": "MMR001D003",
+   "TS_PCODE": "MMR001011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014S001",
+   "TS_PCODE": "MMR014007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D002",
+   "TS_PCODE": "MMR007013",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D002",
+   "TS_PCODE": "MMR007011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR007",
+   "DT_PCODE": "MMR007D002",
+   "TS_PCODE": "MMR007014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR002",
+   "DT_PCODE": "MMR002D002",
+   "TS_PCODE": "MMR002006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR002",
+   "DT_PCODE": "MMR002D001",
+   "TS_PCODE": "MMR002003",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D003",
+   "TS_PCODE": "MMR010015",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D002",
+   "TS_PCODE": "MMR008009",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D002",
+   "TS_PCODE": "MMR008014",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D002",
+   "TS_PCODE": "MMR008007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR008",
+   "DT_PCODE": "MMR008D002",
+   "TS_PCODE": "MMR008011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D001",
+   "TS_PCODE": "MMR009006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D009",
+   "TS_PCODE": "MMR005019",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D004",
+   "TS_PCODE": "MMR010017",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D004",
+   "TS_PCODE": "MMR010019",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D002",
+   "TS_PCODE": "MMR010010",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D007",
+   "TS_PCODE": "MMR005031",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D005",
+   "TS_PCODE": "MMR005028",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D004",
+   "TS_PCODE": "MMR005021",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D005",
+   "TS_PCODE": "MMR009025",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D010",
+   "TS_PCODE": "MMR005008",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D007",
+   "TS_PCODE": "MMR005032",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D005",
+   "TS_PCODE": "MMR005029",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D005",
+   "TS_PCODE": "MMR009024",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR004",
+   "DT_PCODE": "MMR004D002",
+   "TS_PCODE": "MMR004006",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D004",
+   "TS_PCODE": "MMR010021",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D008",
+   "TS_PCODE": "MMR005034",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D004",
+   "TS_PCODE": "MMR005023",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D001",
+   "TS_PCODE": "MMR009001",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D001",
+   "TS_PCODE": "MMR009005",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D002",
+   "TS_PCODE": "MMR005011",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D005",
+   "TS_PCODE": "MMR010020",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR010",
+   "DT_PCODE": "MMR010D007",
+   "TS_PCODE": "MMR010031",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D002",
+   "TS_PCODE": "MMR009007",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR005",
+   "DT_PCODE": "MMR005D005",
+   "TS_PCODE": "MMR005027",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR009",
+   "DT_PCODE": "MMR009D004",
+   "TS_PCODE": "MMR009022",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D002",
+   "TS_PCODE": "MMR014012",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR014",
+   "DT_PCODE": "MMR014D002",
+   "TS_PCODE": "MMR014016",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D001",
+   "TS_PCODE": "MMR015002",
+   "Poverty": 27.4
+ },
+ {
+   "ST_PCODE": "MMR015",
+   "DT_PCODE": "MMR015D001",
+   "TS_PCODE": "MMR015020",
+   "Poverty": 27.4
+}
+]
+}

@@ -1,6 +1,6 @@
 import { map, startCase } from 'lodash';
 
-import appJSON from '../../config/prism.json';
+import { appConfig } from '../../config';
 import {
   isTableKey,
   LayerDefinitions,
@@ -67,7 +67,7 @@ function checkLayersCategories(
 }
 
 export const menuList: MenuItemsType = map(
-  appJSON.categories,
+  appConfig.categories,
   (layersCategories, categoryKey) => {
     if (!checkLayersCategories(layersCategories)) {
       throw new Error(

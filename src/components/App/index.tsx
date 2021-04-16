@@ -12,11 +12,11 @@ import muiTheme from '../../muiTheme';
 import Notifier from '../Notifier';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
-  if (process.env.REACT_SENTRY_URL) {
-    Sentry.init({ dsn: process.env.REACT_SENTRY_URL });
+  if (process.env.REACT_APP_SENTRY_URL) {
+    Sentry.init({ dsn: process.env.REACT_APP_SENTRY_URL });
   } else {
     console.warn(
-      'Sentry could not start. Make sure the REACT_SENTRY_URL environment variable is set.',
+      'Sentry could not start. Make sure the REACT_APP_SENTRY_URL environment variable is set.',
     );
   }
 }
