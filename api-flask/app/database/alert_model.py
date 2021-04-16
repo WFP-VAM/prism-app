@@ -15,8 +15,8 @@ class AlertModel(Base):
     email = Column('email', String, nullable=False)
     alert_name = Column('alert_name', String)
     alert_config = Column('alert_config', JSON, nullable=False)
-    min = Column('min', Integer, nullable=False)
-    max = Column('max', Integer, nullable=False)
+    min = Column('min', Integer)
+    max = Column('max', Integer)
     zones = Column('zones', JSON, nullable=False)
     created_at = Column(
         'created_at',
