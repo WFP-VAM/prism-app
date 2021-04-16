@@ -27,12 +27,13 @@ import { DiscriminateUnion, LayerType } from '../../config/types';
 import { getBoundaryLayerSingleton } from '../../config/utils';
 
 import DateSelector from './DateSelector';
+import { findClosestDate } from './DateSelector/utils';
 import {
   dateRangeSelector,
   isLoading,
   layersSelector,
 } from '../../context/mapStateSlice/selectors';
-import { addLayer, setMap } from '../../context/mapStateSlice';
+import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
 import { hidePopup } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
@@ -83,10 +84,11 @@ function MapView({ classes }: MapViewProps) {
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const selectedLayersWithDateSupport = selectedLayers.filter(
-    (layer): layer is DateCompatibleLayer =>
+  const selectedLayersWithDateSupport = selectedLayers
+    .filter((layer): layer is DateCompatibleLayer =>
       dateSupportLayerTypes.includes(layer.type),
-  );
+    )
+    .filter(layer => !layer.group || layer.group.main === true);
 
   useEffect(() => {
     // initial load, need available dates and boundary layer
@@ -148,19 +150,27 @@ function MapView({ classes }: MapViewProps) {
     // let users know if their current date doesn't exist in possible dates
     if (selectedDate) {
       selectedLayersWithDateSupport.forEach(layer => {
+        const momentSelectedDate = moment(selectedDate);
+
         // we convert to date strings, so hh:ss is irrelevant
         if (
           !getPossibleDatesForLayer(layer, serverAvailableDates)
             .map(date => moment(date).format('YYYY-MM-DD'))
-            .includes(moment(selectedDate).format('YYYY-MM-DD'))
+            .includes(momentSelectedDate.format('YYYY-MM-DD'))
         ) {
-          if (layer.group && layer.group.main === false) {
-            return;
-          }
+          const closestDate = findClosestDate(selectedDate, selectedLayerDates);
+
+          dispatch(updateDateRange({ startDate: closestDate.valueOf() }));
 
           dispatch(
             addNotification({
-              message: `Selected Date isn't compatible with Layer: ${layer.title}`,
+              message: `No data was found for the layer '${
+                layer.title
+              }' on ${momentSelectedDate.format(
+                'YYYY-MM-DD',
+              )}. The closest date ${closestDate.format(
+                'YYYY-MM-DD',
+              )} has been loaded instead`,
               type: 'warning',
             }),
           );
@@ -170,7 +180,7 @@ function MapView({ classes }: MapViewProps) {
   }, [
     dispatch,
     selectedDate,
-    selectedLayerDates.length,
+    selectedLayerDates,
     selectedLayersWithDateSupport,
     serverAvailableDates,
   ]);

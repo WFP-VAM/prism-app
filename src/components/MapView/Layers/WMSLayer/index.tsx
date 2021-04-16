@@ -6,9 +6,16 @@ import { getWMSUrl } from '../raster-utils';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 
 function WMSLayers({
-  layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
+  layer: {
+    id,
+    baseUrl,
+    serverLayerName,
+    additionalQueryParams,
+    opacity,
+    group,
+  },
 }: LayersProps) {
-  const selectedDate = useDefaultDate(serverLayerName);
+  const selectedDate = useDefaultDate(serverLayerName, group);
 
   return (
     <>
