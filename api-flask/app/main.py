@@ -115,13 +115,13 @@ def alerts():
             )
 
         data = json.loads(request.get_data())
-        logger.info('Received body: {}'.format(data))
         alert = AlertModel(**data)
         try:
             alert_db.write(alert)
             return Response(response='Success', status=200)
         except Exception as e:
             logger.error(e)
+            logger.error('Received body: {}'.format(data))
             return Response(
                 response='500: OperationalError.',
                 status=500
