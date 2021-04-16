@@ -13,9 +13,10 @@ logger = logging.getLogger(__name__)
 DB_URI = 'postgresql://{user}:{password}@{host}:{port}/{database}'.format(
     host='localhost',
     port=54321,
-    database=getenv('POSTGRES_DB') or 'postgres',
-    user=getenv('POSTGRES_USER') or 'postgres',
-    password=getenv('POSTGRES_PASSWORD') or '/!ChangeMe!')
+    database=getenv('POSTGRES_DB', 'postgres'),
+    user=getenv('POSTGRES_USER', 'postgres'),
+    password=getenv('POSTGRES_PASSWORD', '/!ChangeMe!')
+)
 
 
 class AlertsDataBase:
