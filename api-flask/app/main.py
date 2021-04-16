@@ -103,9 +103,9 @@ def stats():
     return jsonify(features)
 
 
-@app.route('/alerts', methods=['POST', 'GET'])
+@app.route('/alerts', methods=['POST'])
 def alerts():
-    """Post and get alerts."""
+    """Post new alerts."""
     if request.method == 'POST':
         if request.is_json:
             data = json.loads(request.get_data())
