@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   CircularProgress,
   createStyles,
+  Grid,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
@@ -13,6 +14,7 @@ import ReactMapboxGl from 'react-mapbox-gl';
 import { Map } from 'mapbox-gl';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
+import Download from './Download';
 // layers
 import {
   BoundaryLayer,
@@ -53,6 +55,7 @@ import { addNotification } from '../../context/notificationStateSlice';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
+  preserveDrawingBuffer: true,
 });
 
 type LayerComponentsMap<U extends LayerType> = {
@@ -193,7 +196,7 @@ function MapView({ classes }: MapViewProps) {
   const saveMap = (map: Map) => dispatch(setMap(() => map));
 
   return (
-    <div className={classes.container}>
+    <Grid item className={classes.container}>
       {loading && (
         <div className={classes.loading}>
           <CircularProgress size={100} />
@@ -226,10 +229,23 @@ function MapView({ classes }: MapViewProps) {
 
         <MapTooltip />
       </MapboxMap>
+      <Grid
+        container
+        justify="space-between"
+        className={classes.buttonContainer}
+      >
+        <Grid item>
+          <Analyser />
+        </Grid>
+        <Grid item>
+          <Grid container spacing={1}>
+            <Download />
+            <Legends layers={selectedLayers} />
+          </Grid>
+        </Grid>
+      </Grid>
       <DateSelector availableDates={selectedLayerDates} />
-      <Legends layers={selectedLayers} />
-      <Analyser />
-    </div>
+    </Grid>
   );
 }
 
@@ -238,6 +254,13 @@ const styles = () =>
     container: {
       height: '100%',
       position: 'relative',
+    },
+    buttonContainer: {
+      zIndex: 5,
+      position: 'absolute',
+      top: 0,
+      width: '100%',
+      padding: '16px',
     },
     loading: {
       position: 'absolute',
