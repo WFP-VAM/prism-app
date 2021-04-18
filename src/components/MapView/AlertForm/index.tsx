@@ -284,11 +284,9 @@ function AlertForm({ classes }: AlertFormProps) {
 const styles = (theme: Theme) =>
   createStyles({
     alertForm: {
-      zIndex: theme.zIndex.drawer - 1, // position this below the Analysis drawer
-      position: 'absolute',
-      top: 40,
-      left: 2,
+      zIndex: theme.zIndex.drawer,
       textAlign: 'left',
+      marginTop: '5px',
     },
     alertFormMenu: {
       backgroundColor: '#5A686C',
@@ -303,7 +301,7 @@ const styles = (theme: Theme) =>
     },
     alertFormButton: {
       height: '36px',
-      'margin-left': '3px',
+      marginLeft: '3px',
     },
     alertFormOptions: {
       padding: '5px 0px',
