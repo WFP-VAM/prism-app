@@ -16,6 +16,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux';
+import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import { updateLayerOpacity } from '../../../context/mapStateSlice';
 import ColorIndicator from './ColorIndicator';
 import { LayerType } from '../../../config/types';
@@ -30,7 +31,7 @@ function Legends({ classes, layers }: LegendsProps) {
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const legendItems = [
-    ...layers.map(({ id, title, legend, legendText, opacity }) => {
+    ...layers.map(({ id, title, legend, legendText, type, opacity }) => {
       if (!legend || !legendText) {
         // this layer doesn't have a legend (likely boundary), so lets ignore.
         return null;
@@ -42,6 +43,7 @@ function Legends({ classes, layers }: LegendsProps) {
           id={id}
           title={title}
           legend={legend}
+          type={type}
           opacity={opacity}
         >
           {legendText}
@@ -91,17 +93,27 @@ function LegendItem({
   id,
   title,
   legend,
-  opacity,
+  type,
+  opacity: initialOpacity,
   children,
 }: LegendItemProps) {
   const dispatch = useDispatch();
+  const map = useSelector(mapSelector);
+  const [opacity, setOpacityValue] = useState<number | number[]>(
+    initialOpacity || 0,
+  );
 
   const handleChangeOpacity = (
     event: React.ChangeEvent<{}>,
     newValue: number | number[],
   ) => {
     if (id) {
-      dispatch(updateLayerOpacity({ id, opacity: newValue as number }));
+      if (map && type === 'wms') {
+        map.setPaintProperty(`layer-${id}`, 'raster-opacity', newValue);
+      } else {
+        dispatch(updateLayerOpacity({ id, opacity: newValue as number }));
+      }
+      setOpacityValue(newValue);
     }
   };
 
@@ -134,7 +146,7 @@ function LegendItem({
                   key={value}
                   value={value as string}
                   color={color}
-                  opacity={opacity}
+                  opacity={opacity as number}
                 />
               ))}
             </Grid>
@@ -186,6 +198,7 @@ interface LegendItemProps
   id?: LayerType['id'];
   title: LayerType['title'];
   legend: LayerType['legend'];
+  type?: LayerType['type'];
   opacity: LayerType['opacity'];
 }
 
