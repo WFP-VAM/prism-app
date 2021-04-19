@@ -1,11 +1,12 @@
 import datetime
 import logging
-from sqlalchemy import Integer, Identity, JSON, TIMESTAMP
-from sqlalchemy import Column, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.ext.declarative import DeclarativeMeta
 
 from flask import json
+
+from sqlalchemy import Column, String
+from sqlalchemy import Identity, Integer, JSON, TIMESTAMP
+from sqlalchemy.ext.declarative import DeclarativeMeta
+from sqlalchemy.ext.declarative import declarative_base
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -40,7 +41,7 @@ class AlchemyEncoder(json.JSONEncoder):
             for field in [x for x in dir(obj) if not x.startswith('_') and x != 'metadata']:
                 data = obj.__getattribute__(field)
                 try:
-                    json.dumps(data) # this will fail on non-encodable values, like other classes
+                    json.dumps(data)  # this will fail on non-encodable values, like other classes
                     fields[field] = data
                 except TypeError:
                     fields[field] = None

@@ -4,9 +4,12 @@ import logging
 from distutils.util import strtobool
 from os import getenv
 
+from app.database.alert_database import AlertsDataBase
+from app.database.alert_model import AlchemyEncoder, AlertModel
+
 from caching import cache_file, cache_geojson
 
-from flask import Flask, Response, jsonify, request, json
+from flask import Flask, Response, json, jsonify, request
 
 from flask_caching import Cache
 
@@ -16,8 +19,6 @@ from timer import timed
 
 from zonal_stats import calculate_stats
 
-from app.database.alert_database import AlertsDataBase
-from app.database.alert_model import AlertModel, AlchemyEncoder
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -130,9 +131,10 @@ def _write_alert(request):
             status=500
         )
     data = json.loads(request.get_data())
-    data['created_at'] = datetime.datetime.now()  # if don't provide timestamp, it will always be DB start up time.
+    data['created_at'] = datetime.datetime.now()  # if don't provide timestamp, it will
+    # always be DB start up time.
     alert = AlertModel(**data)
-    del data['zones'] # for displaying purpose, remove zones data
+    del data['zones']  # for displaying purpose, remove zones data
     logger.info('Received body: {}'.format(data))
     try:
         alert_db.write(alert)
@@ -147,7 +149,8 @@ def _write_alert(request):
 
 def _read_alert_id(request):
     try:
-        results = alert_db.read(AlertModel.id == int(request.args.get('id')))  # matching an alert id
+        # matching an alert id
+        results = alert_db.read(AlertModel.id == int(request.args.get('id')))
         logger.info('Received body: {}'.format(results))
         return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
     except Exception as e:
@@ -163,12 +166,12 @@ def _read_alert_id(request):
 def stats_demo():
     """Return examples of zonal statistics."""
     # The GET endpoint is used for demo purposes only
-    geotiff_url = 'https://mongolia.sibelius-datacube.org:5000/?service=WCS&'\
-        'request=GetCoverage&version=1.0.0&coverage=ModisAnomaly&'\
-        'crs=EPSG%3A4326&bbox=86.5%2C36.7%2C119.7%2C55.3&width=1196&'\
-        'height=672&format=GeoTIFF&time=2020-03-01'
+    geotiff_url = 'https://mongolia.sibelius-datacube.org:5000/?service=WCS&' \
+                  'request=GetCoverage&version=1.0.0&coverage=ModisAnomaly&' \
+                  'crs=EPSG%3A4326&bbox=86.5%2C36.7%2C119.7%2C55.3&width=1196&' \
+                  'height=672&format=GeoTIFF&time=2020-03-01'
 
-    zones_url = 'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/'\
+    zones_url = 'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/' \
                 'mng_admin_boundaries.json'
 
     geotiff = cache_file(

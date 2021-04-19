@@ -1,19 +1,22 @@
-from psycopg2 import OperationalError
-from sqlalchemy.orm import sessionmaker
 import logging
-from sqlalchemy import create_engine
 from os import getenv
 
 from app.database.alert_model import AlertModel
 
+from psycopg2 import OperationalError
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-DB_URI = 'postgresql://{user}:{password}@{host}:{port}/{database}'.format(host=getenv('POSTGRES_HOST'),
-                                                                          port=5432,
-                                                                          database=getenv('POSTGRES_DB'),
-                                                                          user=getenv('POSTGRES_USER'),
-                                                                          password=getenv('POSTGRES_PASSWORD'))
+DB_URI = 'postgresql://{user}:{password}@{host}:{port}/{database}' \
+    .format(host=getenv('POSTGRES_HOST'),
+            port=5432,
+            database=getenv('POSTGRES_DB'),
+            user=getenv('POSTGRES_USER'),
+            password=getenv('POSTGRES_PASSWORD'))
 
 
 class AlertsDataBase:
@@ -31,7 +34,6 @@ class AlertsDataBase:
         # TODO: use migration library to automate the schema update
         from app.database.alert_model import create_all
         create_all(_eng)
-
 
     def write(self, alert: AlertModel):
         try:
