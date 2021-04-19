@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { AvailableDates } from '../config/types';
+import { AvailableDates, GroupDefinition } from '../config/types';
 import { availableDatesSelector } from '../context/serverStateSlice';
 import { dateRangeSelector } from '../context/mapStateSlice/selectors';
 import { updateDateRange } from '../context/mapStateSlice';
@@ -12,6 +12,7 @@ import { USER_DATE_OFFSET } from '../components/MapView/DateSelector/utils';
  */
 export function useDefaultDate(
   availableDatesLookupKey: keyof AvailableDates,
+  layerGroup?: GroupDefinition,
 ): number | undefined {
   const dispatch = useDispatch();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
@@ -26,10 +27,14 @@ export function useDefaultDate(
   // React doesn't allow updating other components within another component
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
   useEffect(() => {
-    if (!selectedDate && defaultDate) {
+    if (
+      !selectedDate &&
+      defaultDate &&
+      (!layerGroup || layerGroup.main === true)
+    ) {
       dispatch(updateDateRange({ startDate: defaultDate }));
     }
-  }, [defaultDate, dispatch, selectedDate]);
+  }, [defaultDate, dispatch, selectedDate, layerGroup]);
 
   return selectedDate || defaultDate;
 }

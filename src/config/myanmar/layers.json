@@ -214,7 +214,7 @@
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
     "type": "wms",
-    "server_layer_name": "rnh_dekad",
+    "server_layer_name": "rfh_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.5,
@@ -1012,32 +1012,44 @@
     ],
     "legend_text": "Population exposed to historical storm surges per year (MUDRA)"
   },
-  "adamts_buffers": {
-    "title": "Wind buffers",
+  "adamts_main": {
+    "title": "Tropical storm - wind buffer",
     "type": "wms",
     "server_layer_name": "wld_gdacs_tc_events_buffers",
     "opacity": 0.5,
     "legend": [],
-    "legend_text": "",
-    "base_url": "https://geonode.wfp.org/geoserver"
+    "legend_text": "Tropical storm - wind buffer",
+    "base_url": "https://geonode.wfp.org/geoserver",
+    "group": {
+      "name": "ts",
+      "main": true
+    }
   },
   "adamts_nodes": {
-    "title": "Current nodes",
+    "title": "Tropical storm - nodes",
     "type": "wms",
     "server_layer_name": "wld_gdacs_tc_events_nodes",
     "opacity": 0.5,
     "legend": [],
-    "legend_text": "",
-    "base_url": "https://geonode.wfp.org/geoserver"
+    "legend_text": "Tropical storm - nodes",
+    "base_url": "https://geonode.wfp.org/geoserver",
+    "group": {
+      "name": "ts",
+      "main": false
+    }
   },
   "adamts_tracks": {
-    "title": "Current tracks",
+    "title": "Tropical storm - track",
     "type": "wms",
     "server_layer_name": "wld_gdacs_tc_events_tracks",
     "opacity": 0.5,
     "legend": [],
-    "legend_text": "",
-    "base_url": "https://geonode.wfp.org/geoserver"
+    "legend_text": "Tropical storm - track",
+    "base_url": "https://geonode.wfp.org/geoserver",
+    "group": {
+      "name": "ts",
+      "main": false
+    }
   },
   "forecast": {
     "title": "10-day precipitation forecast",

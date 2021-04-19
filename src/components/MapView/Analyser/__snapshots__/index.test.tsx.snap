@@ -9,53 +9,28 @@ exports[`renders as expected 1`] = `
       color="primary"
       variant="contained"
     >
-      <svg
-        aria-hidden="true"
-        class="svg-inline--fa fa-chart-bar fa-w-16 "
-        data-icon="chart-bar"
-        data-prefix="fas"
-        focusable="false"
-        role="img"
-        style="margin-right: 10px; font-size: 1.6em;"
-        viewBox="0 0 512 512"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M332.8 320h38.4c6.4 0 12.8-6.4 12.8-12.8V172.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v134.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h38.4c6.4 0 12.8-6.4 12.8-12.8V76.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v230.4c0 6.4 6.4 12.8 12.8 12.8zm-288 0h38.4c6.4 0 12.8-6.4 12.8-12.8v-70.4c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v70.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h38.4c6.4 0 12.8-6.4 12.8-12.8V108.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v198.4c0 6.4 6.4 12.8 12.8 12.8zM496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16z"
-          fill="currentColor"
-        />
-      </svg>
+      <mock-barchart
+        fontsize="small"
+      />
       <mock-typography
+        classname="Analyser-analyserLabel-2"
         variant="body2"
       >
         Run Analysis
       </mock-typography>
-      <svg
-        aria-hidden="true"
-        class="svg-inline--fa fa-caret-down fa-w-10 "
-        data-icon="caret-down"
-        data-prefix="fas"
-        focusable="false"
-        role="img"
-        style="margin-left: 10px;"
-        viewBox="0 0 320 512"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-          fill="currentColor"
-        />
-      </svg>
+      <mock-arrowdropdown
+        fontsize="small"
+      />
     </mock-button>
     <div
-      class="MuiBox-root MuiBox-root-12 Analyser-analyserMenu-2"
+      class="MuiBox-root MuiBox-root-13 Analyser-analyserMenu-3"
     >
       <div>
         <div
-          class="Analyser-newAnalyserContainer-5"
+          class="Analyser-newAnalyserContainer-6"
         >
           <div
-            class="Analyser-analyserOptions-4"
+            class="Analyser-analyserOptions-5"
           >
             <mock-typography
               variant="body2"
@@ -63,14 +38,14 @@ exports[`renders as expected 1`] = `
               Hazard Layer
             </mock-typography>
             <mock-layer-dropdown
-              classname="Analyser-selector-9"
+              classname="Analyser-selector-10"
               placeholder="Choose hazard layer"
               title="Hazard Layer"
               type="wms"
             />
           </div>
           <div
-            class="Analyser-analyserOptions-4"
+            class="Analyser-analyserOptions-5"
           >
             <mock-typography
               variant="body2"
@@ -89,20 +64,20 @@ exports[`renders as expected 1`] = `
                 >
                   <span
                     aria-disabled="false"
-                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-13 MuiRadio-root Analyser-radioOptions-6 PrivateSwitchBase-checked-14 Mui-checked"
+                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-14 MuiRadio-root Analyser-radioOptions-7 PrivateSwitchBase-checked-15 Mui-checked"
                   >
                     <span
                       class="MuiIconButton-label"
                     >
                       <input
                         checked=""
-                        class="PrivateSwitchBase-input-16"
+                        class="PrivateSwitchBase-input-17"
                         name="statistics"
                         type="radio"
                         value="mean"
                       />
                       <div
-                        class="PrivateRadioButtonIcon-root-17 PrivateRadioButtonIcon-checked-19"
+                        class="PrivateRadioButtonIcon-root-18 PrivateRadioButtonIcon-checked-20"
                       >
                         <svg
                           aria-hidden="true"
@@ -116,7 +91,7 @@ exports[`renders as expected 1`] = `
                         </svg>
                         <svg
                           aria-hidden="true"
-                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-18 MuiSvgIcon-fontSizeSmall"
+                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-19 MuiSvgIcon-fontSizeSmall"
                           focusable="false"
                           viewBox="0 0 24 24"
                         >
@@ -142,19 +117,19 @@ exports[`renders as expected 1`] = `
                 >
                   <span
                     aria-disabled="false"
-                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-13 MuiRadio-root Analyser-radioOptions-6"
+                    class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-14 MuiRadio-root Analyser-radioOptions-7"
                   >
                     <span
                       class="MuiIconButton-label"
                     >
                       <input
-                        class="PrivateSwitchBase-input-16"
+                        class="PrivateSwitchBase-input-17"
                         name="statistics"
                         type="radio"
                         value="median"
                       />
                       <div
-                        class="PrivateRadioButtonIcon-root-17"
+                        class="PrivateRadioButtonIcon-root-18"
                       >
                         <svg
                           aria-hidden="true"
@@ -168,7 +143,7 @@ exports[`renders as expected 1`] = `
                         </svg>
                         <svg
                           aria-hidden="true"
-                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-18 MuiSvgIcon-fontSizeSmall"
+                          class="MuiSvgIcon-root PrivateRadioButtonIcon-layer-19 MuiSvgIcon-fontSizeSmall"
                           focusable="false"
                           viewBox="0 0 24 24"
                         >
@@ -193,7 +168,7 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            class="Analyser-analyserOptions-4"
+            class="Analyser-analyserOptions-5"
           >
             <mock-typography
               variant="body2"
@@ -201,14 +176,14 @@ exports[`renders as expected 1`] = `
               Baseline Layer
             </mock-typography>
             <mock-layer-dropdown
-              classname="Analyser-selector-9"
+              classname="Analyser-selector-10"
               placeholder="Choose baseline layer"
               title="Baseline Layer"
               type="nso"
             />
           </div>
           <div
-            class="Analyser-analyserOptions-4"
+            class="Analyser-analyserOptions-5"
           >
             <mock-typography
               variant="body2"
@@ -216,7 +191,7 @@ exports[`renders as expected 1`] = `
               Threshold
             </mock-typography>
             <mock-textfield
-              classname="Analyser-numberField-10"
+              classname="Analyser-numberField-11"
               error="false"
               id="filled-number"
               label="Min"
@@ -225,7 +200,7 @@ exports[`renders as expected 1`] = `
               variant="filled"
             />
             <mock-textfield
-              classname="Analyser-numberField-10"
+              classname="Analyser-numberField-11"
               id="filled-number"
               label="Max"
               type="number"
@@ -234,7 +209,7 @@ exports[`renders as expected 1`] = `
             />
           </div>
           <div
-            class="Analyser-analyserOptions-4"
+            class="Analyser-analyserOptions-5"
           >
             <mock-typography
               variant="body2"
@@ -261,7 +236,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <mock-button
-          classname="Analyser-innerAnalysisButton-7"
+          classname="Analyser-innerAnalysisButton-8"
           disabled="true"
         >
           <mock-typography
