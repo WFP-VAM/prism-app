@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Box,
   Button,
   createStyles,
-  FormControl,
   ListSubheader,
   MenuItem,
   Select,
@@ -13,11 +13,18 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { faBell, faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Notifications } from '@material-ui/icons';
+import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getBoundaryLayerSingleton } from '../../../config/utils';
-import { BoundaryLayerProps, LayerKey } from '../../../config/types';
+import {
+  BoundaryLayerProps,
+  LayerKey,
+  WMSLayerProps,
+} from '../../../config/types';
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../../config/utils';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
 import LayerDropdown from '../Layers/LayerDropdown';
@@ -29,20 +36,6 @@ const EMAIL_REGEX: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)
 // depending on if the downstream API has the capability.
 // For now it can be permanently enabled.
 const ALERT_FORM_ENABLED = true;
-
-enum Statistic {
-  Maximum,
-  Minimum,
-  Median,
-  Mean,
-}
-
-enum Comparator {
-  '>',
-  '>=',
-  '<',
-  '<=',
-}
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -58,11 +51,12 @@ function AlertForm({ classes }: AlertFormProps) {
   const [regionsList, setRegionsList] = useState<string[]>(['allRegions']);
   const [emailValid, setEmailValid] = useState<boolean>(false);
   const [email, setEmail] = useState('');
-  const [selectedStat, setSelectedStat] = useState<Statistic>();
-  const [selectedComparator, setSelectedComparator] = useState('');
-  const [selectedThreshold, setSelectedThreshold] = useState<number>(0);
+  const [belowThreshold, setBelowThreshold] = useState('');
+  const [aboveThreshold, setAboveThreshold] = useState('');
+  const [thresholdError, setThresholdError] = useState<string | null>(null);
+  const [alertName, setAlertName] = useState('');
 
-  const regionNamesToNsoCodes: { [k: string]: string } = useMemo(() => {
+  const regionNamesToFeatureData: { [k: string]: object } = useMemo(() => {
     if (!boundaryLayerData) {
       // Not loaded yet. Will proceed when it is.
       return {};
@@ -73,7 +67,7 @@ function AlertForm({ classes }: AlertFormProps) {
         .filter(feature => feature.properties != null)
         .map(feature => [
           `${feature.properties?.ADM1_EN} / ${feature.properties?.ADM2_EN}`,
-          feature.properties?.NSO_CODE,
+          feature,
         ]),
     );
   }, [boundaryLayerData]);
@@ -82,8 +76,35 @@ function AlertForm({ classes }: AlertFormProps) {
     // Fine to mutate this array since it's a new array of key names
 
     // eslint-disable-next-line fp/no-mutating-methods
-    return Object.keys(regionNamesToNsoCodes).sort();
-  }, [regionNamesToNsoCodes]);
+    return Object.keys(regionNamesToFeatureData).sort();
+  }, [regionNamesToFeatureData]);
+
+  const generateGeoJsonForRegionNames = () => {
+    if (!boundaryLayerData) {
+      throw new Error('Boundary layer data is not loaded yet.');
+    }
+
+    if (
+      regionsList.length < 1 ||
+      (regionsList.length === 1 && regionsList[0] === 'allRegions')
+    ) {
+      return boundaryLayerData.data;
+    }
+
+    const features = regionsList.map(region => {
+      return regionNamesToFeatureData[region];
+    });
+
+    // Generate a copy of admin layer data (to preserve top-level properties)
+    // and replace the 'features' property with just the selected regions.
+    const mutableFeatureCollection = JSON.parse(
+      JSON.stringify(boundaryLayerData.data),
+    );
+    // eslint-disable-next-line fp/no-mutation
+    mutableFeatureCollection.features = features;
+
+    return mutableFeatureCollection;
+  };
 
   const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = event.target.value;
@@ -91,17 +112,47 @@ function AlertForm({ classes }: AlertFormProps) {
     setEmail(newEmail);
   };
 
+  const onOptionChange = <T extends string>(
+    setterFunc: Dispatch<SetStateAction<T>>,
+  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value as T;
+    setterFunc(value);
+    return value;
+  };
+
+  // specially for threshold values, also does error checking
+  const onThresholdOptionChange = (thresholdType: 'above' | 'below') => (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const setterFunc =
+      thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
+    const changedOption = onOptionChange(setterFunc)(event);
+    // setting a value doesn't update the existing value until next render,
+    // therefore we must decide whether to access the old one or the newly change one here.
+    const aboveThresholdValue = parseFloat(
+      thresholdType === 'above' ? changedOption : aboveThreshold,
+    );
+    const belowThresholdValue = parseFloat(
+      thresholdType === 'below' ? changedOption : belowThreshold,
+    );
+    if (belowThresholdValue < aboveThresholdValue) {
+      setThresholdError('Min threshold is larger than Max!');
+    } else {
+      setThresholdError(null);
+    }
+  };
+
   const runAlertForm = async () => {
-    const regionCodes = regionsList
-      .filter(r => r !== 'allRegions')
-      .map(r => regionNamesToNsoCodes[r]);
+    if (!hazardLayerId) {
+      throw new Error('Layer should be selected to create alert.');
+    }
 
     const apiData = {
-      hazardLayerId,
-      statistic: selectedStat,
-      comparator: selectedComparator,
-      threshold: selectedThreshold,
-      regionNsoCodes: regionCodes,
+      alert_name: alertName,
+      alert_config: LayerDefinitions[hazardLayerId] as WMSLayerProps,
+      max: aboveThreshold,
+      min: belowThreshold,
+      zones: generateGeoJsonForRegionNames(),
       email,
       zones_url: '', // part of the ApiData object; refactor needed
       geotiff_url: '', // ^
@@ -126,11 +177,10 @@ function AlertForm({ classes }: AlertFormProps) {
           setIsAlertFormFormOpen(!isAlertFormFormOpen);
         }}
       >
-        <FontAwesomeIcon
-          style={{ marginRight: '10px', fontSize: '1.6em' }}
-          icon={faBell}
-        />
-        <Typography variant="body2">Create Alert</Typography>
+        <Notifications fontSize="small" />
+        <Typography variant="body2" className={classes.alertLabel}>
+          Create Alert
+        </Typography>
         <FontAwesomeIcon icon={faCaretDown} style={{ marginLeft: '10px' }} />
       </Button>
 
@@ -154,66 +204,31 @@ function AlertForm({ classes }: AlertFormProps) {
                 />
               </div>
               <div className={classes.alertFormOptions}>
-                <Typography variant="body2">Statistic</Typography>
-                <FormControl component="span">
-                  <Select
-                    id="select-statistic"
-                    defaultValue="placeholder"
-                    onChange={e => setSelectedStat(e.target.value as Statistic)}
-                  >
-                    [
-                    <MenuItem key="placeholder" value="placeholder" disabled>
-                      Statistic
-                    </MenuItem>
-                    ...
-                    {Object.keys(Statistic)
-                      .filter(n => Number.isNaN(Number(n)))
-                      .map(stat => (
-                        <MenuItem key={stat} value={stat}>
-                          {stat}
-                        </MenuItem>
-                      ))}
-                    ]
-                  </Select>
-                </FormControl>
-                <FormControl component="span">
-                  <Select
-                    id="select-comparator"
-                    className={classes.comparatorSelector}
-                    defaultValue="placeholder"
-                    onChange={e =>
-                      setSelectedComparator(e.target.value as string)
-                    }
-                  >
-                    [
-                    <MenuItem key="placeholder" value="placeholder" disabled>
-                      -
-                    </MenuItem>
-                    ...
-                    {Object.keys(Comparator)
-                      .filter(n => Number.isNaN(Number(n)))
-                      .map(comp => (
-                        <MenuItem key={comp} value={comp}>
-                          {comp}
-                        </MenuItem>
-                      ))}
-                    ]
-                  </Select>
-                </FormControl>
-              </div>
-              <div className={classes.alertFormOptions}>
+                <Typography variant="body2">Threshold</Typography>
                 <TextField
-                  id="threshold"
-                  label="Threshold"
+                  id="filled-number"
+                  error={!!thresholdError}
+                  helperText={thresholdError}
+                  className={classes.numberField}
+                  label="Min Below"
+                  type="number"
+                  value={aboveThreshold}
+                  onChange={onThresholdOptionChange('above')}
+                  variant="filled"
+                />
+                <TextField
+                  id="filled-number"
+                  label="Max Above"
+                  className={classes.numberField}
+                  style={{ paddingLeft: '10px' }}
+                  value={belowThreshold}
+                  onChange={onThresholdOptionChange('below')}
                   type="number"
                   variant="filled"
-                  defaultValue={0}
-                  onChange={e =>
-                    setSelectedThreshold(parseInt(e.target.value, 10))
-                  }
                 />
               </div>
               <div className={classes.alertFormOptions}>
+                <Typography variant="body2">Regions</Typography>
                 <Select
                   id="regionsList"
                   label="Regions to monitor"
@@ -221,7 +236,7 @@ function AlertForm({ classes }: AlertFormProps) {
                   variant="filled"
                   value={regionsList}
                   multiple
-                  style={{ maxWidth: '200px' }}
+                  className={classes.regionSelector}
                   onChange={e => {
                     const selected: string[] = e.target.value as string[];
                     const lastSelected = selected[selected.length - 1];
@@ -254,6 +269,16 @@ function AlertForm({ classes }: AlertFormProps) {
               </div>
               <div className={classes.alertFormOptions}>
                 <TextField
+                  id="alert-name"
+                  label="Alert Name"
+                  type="text"
+                  variant="filled"
+                  value={alertName}
+                  onChange={e => setAlertName(e.target.value)}
+                />
+              </div>
+              <div className={classes.alertFormOptions}>
+                <TextField
                   id="email-address"
                   label="Email Address"
                   type="text"
@@ -265,12 +290,7 @@ function AlertForm({ classes }: AlertFormProps) {
             <Button
               className={classes.innerCreateAlertButton}
               onClick={runAlertForm}
-              disabled={
-                !hazardLayerId ||
-                !selectedStat ||
-                !selectedComparator ||
-                !emailValid
-              }
+              disabled={!hazardLayerId || !!thresholdError || !emailValid}
             >
               <Typography variant="body2">Create Alert</Typography>
             </Button>
@@ -283,6 +303,7 @@ function AlertForm({ classes }: AlertFormProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
+    alertLabel: { marginLeft: '10px' },
     alertForm: {
       zIndex: theme.zIndex.drawer,
       textAlign: 'left',
@@ -291,13 +312,14 @@ const styles = (theme: Theme) =>
     alertFormMenu: {
       backgroundColor: '#5A686C',
       maxWidth: '100vw',
+      minWidth: 'max-content',
       color: 'white',
       overflowX: 'hidden',
       whiteSpace: 'nowrap',
       borderTopRightRadius: '10px',
       borderBottomRightRadius: '10px',
       height: 'auto',
-      maxHeight: '60vh',
+      maxHeight: '50vh',
     },
     alertFormButton: {
       height: '36px',
@@ -320,8 +342,14 @@ const styles = (theme: Theme) =>
     selector: {
       margin: '5px',
     },
-    comparatorSelector: {
-      textAlign: 'center',
+    regionSelector: {
+      minWidth: '100%',
+      maxWidth: '200px',
+    },
+    numberField: {
+      marginTop: '10px',
+      width: '110px',
+      '&:focused': { color: 'white' },
     },
   });
 
