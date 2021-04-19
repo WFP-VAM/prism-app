@@ -1,5 +1,3 @@
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Box,
   Button,
@@ -10,9 +8,10 @@ import {
   TextField,
   Theme,
   Typography,
+  WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { Notifications } from '@material-ui/icons';
+import { ArrowDropDown, Notifications } from '@material-ui/icons';
 import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -39,8 +38,8 @@ const EMAIL_REGEX: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)
 const ALERT_FORM_ENABLED = true;
 
 // TODO: Dynamic switch between local/production URLs, and consolidate this into util class
-// const ALERT_API_URL = 'https://prism-api.ovio.org/stats';
-const ALERT_API_URL = 'http://localhost:80/alerts';
+const ALERT_API_URL = 'https://prism-api.ovio.org/alerts';
+// const ALERT_API_URL = 'http://localhost:80/alerts';
 
 /* eslint-disable camelcase */
 type AlertRequest = ApiRequest & {
@@ -193,7 +192,7 @@ function AlertForm({ classes }: AlertFormProps) {
         <Typography variant="body2" className={classes.alertLabel}>
           Create Alert
         </Typography>
-        <FontAwesomeIcon icon={faCaretDown} style={{ marginLeft: '10px' }} />
+        <ArrowDropDown fontSize="small" />
       </Button>
 
       <Box
