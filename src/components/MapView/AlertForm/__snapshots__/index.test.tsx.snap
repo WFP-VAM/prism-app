@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="AlertForm-alertForm-1"
+    class="AlertForm-alertForm-2"
   >
     <mock-button
       color="primary"
@@ -11,21 +11,16 @@ exports[`renders as expected 1`] = `
     >
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-bell fa-w-14 "
-        data-icon="bell"
-        data-prefix="fas"
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
         focusable="false"
-        role="img"
-        style="margin-right: 10px; font-size: 1.6em;"
-        viewBox="0 0 448 512"
-        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
       >
         <path
-          d="M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z"
-          fill="currentColor"
+          d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"
         />
       </svg>
       <mock-typography
+        classname="AlertForm-alertLabel-1"
         variant="body2"
       >
         Create Alert
@@ -48,14 +43,14 @@ exports[`renders as expected 1`] = `
       </svg>
     </mock-button>
     <div
-      class="MuiBox-root MuiBox-root-9 AlertForm-alertFormMenu-2"
+      class="MuiBox-root MuiBox-root-11 AlertForm-alertFormMenu-3"
     >
       <div>
         <div
-          class="AlertForm-newAlertFormContainer-5"
+          class="AlertForm-newAlertFormContainer-6"
         >
           <div
-            class="AlertForm-alertFormOptions-4"
+            class="AlertForm-alertFormOptions-5"
           >
             <mock-typography
               variant="body2"
@@ -63,195 +58,49 @@ exports[`renders as expected 1`] = `
               Hazard Layer
             </mock-typography>
             <mock-layer-dropdown
-              classname="AlertForm-selector-7"
+              classname="AlertForm-selector-8"
               placeholder="Choose hazard layer"
               title="Hazard Layer"
               type="wms"
             />
           </div>
           <div
-            class="AlertForm-alertFormOptions-4"
+            class="AlertForm-alertFormOptions-5"
           >
             <mock-typography
               variant="body2"
             >
-              Statistic
+              Threshold
             </mock-typography>
-            <span
-              class="MuiFormControl-root"
-            >
-              <div
-                class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
-              >
-                <div
-                  aria-haspopup="listbox"
-                  aria-labelledby="select-statistic"
-                  class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
-                  id="select-statistic"
-                  role="button"
-                  tabindex="0"
-                >
-                  Statistic
-                </div>
-                <input
-                  aria-hidden="true"
-                  class="MuiSelect-nativeInput"
-                  tabindex="-1"
-                  value="placeholder"
-                />
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root MuiSelect-icon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M7 10l5 5 5-5z"
-                  />
-                </svg>
-                <mock-menu
-                  anchorel="[object HTMLDivElement]"
-                  id="menu-"
-                  menulistprops="[object Object]"
-                  open="false"
-                  paperprops="[object Object]"
-                >
-                  <mock-menuitem
-                    aria-selected="true"
-                    data-value="placeholder"
-                    disabled="true"
-                    role="option"
-                    selected="true"
-                  >
-                    Statistic
-                  </mock-menuitem>
-                  <mock-menuitem
-                    data-value="Maximum"
-                    role="option"
-                    selected="false"
-                  >
-                    Maximum
-                  </mock-menuitem>
-                  <mock-menuitem
-                    data-value="Minimum"
-                    role="option"
-                    selected="false"
-                  >
-                    Minimum
-                  </mock-menuitem>
-                  <mock-menuitem
-                    data-value="Median"
-                    role="option"
-                    selected="false"
-                  >
-                    Median
-                  </mock-menuitem>
-                  <mock-menuitem
-                    data-value="Mean"
-                    role="option"
-                    selected="false"
-                  >
-                    Mean
-                  </mock-menuitem>
-                </mock-menu>
-              </div>
-            </span>
-            <span
-              class="MuiFormControl-root"
-            >
-              <div
-                class="MuiInputBase-root MuiInput-root MuiInput-underline AlertForm-comparatorSelector-8 MuiInputBase-formControl MuiInput-formControl"
-              >
-                <div
-                  aria-haspopup="listbox"
-                  aria-labelledby="select-comparator"
-                  class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
-                  id="select-comparator"
-                  role="button"
-                  tabindex="0"
-                >
-                  -
-                </div>
-                <input
-                  aria-hidden="true"
-                  class="MuiSelect-nativeInput"
-                  tabindex="-1"
-                  value="placeholder"
-                />
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root MuiSelect-icon"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M7 10l5 5 5-5z"
-                  />
-                </svg>
-                <mock-menu
-                  anchorel="[object HTMLDivElement]"
-                  id="menu-"
-                  menulistprops="[object Object]"
-                  open="false"
-                  paperprops="[object Object]"
-                >
-                  <mock-menuitem
-                    aria-selected="true"
-                    data-value="placeholder"
-                    disabled="true"
-                    role="option"
-                    selected="true"
-                  >
-                    -
-                  </mock-menuitem>
-                  <mock-menuitem
-                    data-value=">"
-                    role="option"
-                    selected="false"
-                  >
-                    &gt;
-                  </mock-menuitem>
-                  <mock-menuitem
-                    data-value=">="
-                    role="option"
-                    selected="false"
-                  >
-                    &gt;=
-                  </mock-menuitem>
-                  <mock-menuitem
-                    data-value="<"
-                    role="option"
-                    selected="false"
-                  >
-                    &lt;
-                  </mock-menuitem>
-                  <mock-menuitem
-                    data-value="<="
-                    role="option"
-                    selected="false"
-                  >
-                    &lt;=
-                  </mock-menuitem>
-                </mock-menu>
-              </div>
-            </span>
-          </div>
-          <div
-            class="AlertForm-alertFormOptions-4"
-          >
             <mock-textfield
-              id="threshold"
-              label="Threshold"
+              classname="AlertForm-numberField-10"
+              error="false"
+              id="filled-number"
+              label="Min Below"
               type="number"
+              value=""
+              variant="filled"
+            />
+            <mock-textfield
+              classname="AlertForm-numberField-10"
+              id="filled-number"
+              label="Max Above"
+              style="padding-left: 10px;"
+              type="number"
+              value=""
               variant="filled"
             />
           </div>
           <div
-            class="AlertForm-alertFormOptions-4"
+            class="AlertForm-alertFormOptions-5"
           >
+            <mock-typography
+              variant="body2"
+            >
+              Regions
+            </mock-typography>
             <div
-              class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline"
-              style="max-width: 200px;"
+              class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline AlertForm-regionSelector-9"
             >
               <div
                 aria-haspopup="listbox"
@@ -304,7 +153,18 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            class="AlertForm-alertFormOptions-4"
+            class="AlertForm-alertFormOptions-5"
+          >
+            <mock-textfield
+              id="alert-name"
+              label="Alert Name"
+              type="text"
+              value=""
+              variant="filled"
+            />
+          </div>
+          <div
+            class="AlertForm-alertFormOptions-5"
           >
             <mock-textfield
               id="email-address"
@@ -315,7 +175,7 @@ exports[`renders as expected 1`] = `
           </div>
         </div>
         <mock-button
-          classname="AlertForm-innerCreateAlertButton-6"
+          classname="AlertForm-innerCreateAlertButton-7"
           disabled="true"
         >
           <mock-typography
