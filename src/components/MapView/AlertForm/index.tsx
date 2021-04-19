@@ -11,7 +11,6 @@ import {
   Theme,
   Typography,
   withStyles,
-  WithStyles,
 } from '@material-ui/core';
 import { Notifications } from '@material-ui/icons';
 import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
@@ -27,15 +26,32 @@ import {
 } from '../../../config/utils';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
+import { ApiRequest, fetchApiData } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 
 // Not fully RFC-compliant, but should filter out obviously-invalid emails.
+// Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
 const EMAIL_REGEX: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 // This should probably be determined on a case-by-case basis,
 // depending on if the downstream API has the capability.
 // For now it can be permanently enabled.
 const ALERT_FORM_ENABLED = true;
+
+// TODO: Dynamic switch between local/production URLs, and consolidate this into util class
+// const ALERT_API_URL = 'https://prism-api.ovio.org/stats';
+const ALERT_API_URL = 'http://localhost:80/alerts';
+
+/* eslint-disable camelcase */
+type AlertRequest = ApiRequest & {
+  alert_name: string;
+  alert_config: WMSLayerProps;
+  email: string;
+  max?: string;
+  min?: string;
+  prism_url: string;
+  zones: object;
+};
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -147,21 +163,17 @@ function AlertForm({ classes }: AlertFormProps) {
       throw new Error('Layer should be selected to create alert.');
     }
 
-    const apiData = {
+    const request: AlertRequest = {
       alert_name: alertName,
       alert_config: LayerDefinitions[hazardLayerId] as WMSLayerProps,
       max: aboveThreshold,
       min: belowThreshold,
       zones: generateGeoJsonForRegionNames(),
       email,
-      zones_url: '', // part of the ApiData object; refactor needed
-      geotiff_url: '', // ^
+      prism_url: '', // TODO: Find where to get this
     };
 
-    console.log(apiData);
-
-    // TODO: Make API call
-    // await fetchApiData('http://localhost:80/alarms', apiData);
+    await fetchApiData(ALERT_API_URL, request);
   };
 
   if (!ALERT_FORM_ENABLED) {

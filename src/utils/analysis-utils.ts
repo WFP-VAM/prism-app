@@ -138,8 +138,10 @@ export const checkBaselineDataLayer = (
   );
 };
 
+export type ApiRequest = {};
+
 /* eslint-disable camelcase */
-export type ApiData = {
+export type ApiData = ApiRequest & {
   geotiff_url: ReturnType<typeof getWCSLayerUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
   zones_url: string;
   group_by?: string;
@@ -148,7 +150,7 @@ export type ApiData = {
 
 export async function fetchApiData(
   url: string,
-  apiData: ApiData,
+  apiData: ApiRequest,
 ): Promise<Array<{ [k in string]: string | number }>> {
   return (
     await fetch(url, {
