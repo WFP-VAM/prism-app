@@ -14,11 +14,8 @@ import {
 import DatePicker from 'react-datepicker';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faAngleDoubleLeft,
-  faAngleDoubleRight,
-  faCaretUp,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import 'react-datepicker/dist/react-datepicker.css';
 import { findIndex, get, isEqual } from 'lodash';
 import { updateDateRange } from '../../../context/mapStateSlice';
@@ -200,7 +197,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
           <Hidden smUp>
             <Button onClick={decrementDate}>
-              <FontAwesomeIcon icon={faAngleDoubleLeft} />
+              <ChevronLeft />
             </Button>
           </Hidden>
 
@@ -222,7 +219,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
 
           <Hidden smUp>
             <Button onClick={incrementDate}>
-              <FontAwesomeIcon icon={faAngleDoubleRight} />
+              <ChevronRight />
             </Button>
           </Hidden>
         </Grid>
@@ -230,7 +227,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         <Grid item xs={12} sm className={classes.slider}>
           <Hidden xsDown>
             <Button onClick={decrementDate}>
-              <FontAwesomeIcon icon={faAngleDoubleLeft} />
+              <ChevronLeft />
             </Button>
           </Hidden>
           <Grid className={classes.dateContainer} ref={timeLine}>
@@ -272,7 +269,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
                   onStart={(e: DraggableEvent) => e.stopPropagation()}
                   onStop={onPointerStop}
                 >
-                  <div className={classes.triangle} id={POINTER_ID}>
+                  <div className={classes.pointer} id={POINTER_ID}>
                     <FontAwesomeIcon
                       icon={faCaretUp}
                       style={{ fontSize: 40 }}
@@ -285,7 +282,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
           </Grid>
           <Hidden xsDown>
             <Button onClick={incrementDate}>
-              <FontAwesomeIcon icon={faAngleDoubleRight} />
+              <ChevronRight />
             </Button>
           </Hidden>
         </Grid>
@@ -347,7 +344,7 @@ const styles = (theme: Theme) =>
       top: 5,
     },
 
-    triangle: {
+    pointer: {
       cursor: 'pointer',
       position: 'absolute',
       left: -12,

@@ -36,9 +36,6 @@ exports[`renders as expected 1`] = `
         </div>
       </div>
     </div>
-    <mock-dateselector
-      availabledates=""
-    />
   </div>
 </div>
 `;
