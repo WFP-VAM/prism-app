@@ -1,4 +1,5 @@
 """Flask API for geospatial utils."""
+import datetime
 import logging
 from distutils.util import strtobool
 from os import getenv
@@ -129,8 +130,10 @@ def _write_alert(request):
             status=500
         )
     data = json.loads(request.get_data())
-    logger.info('Received body: {}'.format(data))
+    data['created_at'] = datetime.datetime.now()  # if don't provide timestamp, it will always be DB start up time.
     alert = AlertModel(**data)
+    del data['zones'] # for displaying purpose, remove zones data
+    logger.info('Received body: {}'.format(data))
     try:
         alert_db.write(alert)
         return Response(response='Success', status=200)

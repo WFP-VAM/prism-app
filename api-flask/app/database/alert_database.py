@@ -27,6 +27,8 @@ class AlertsDataBase:
         self.session = sessionmaker(_eng)()
         logger.info('DB connection is initialized, database: {}.'.format(getenv('POSTGRES_DB')))
 
+        # Use drop_all() when you want to delete tables and use a new schema
+        # TODO: use migration library to automate the schema update
         from app.database.alert_model import create_all
         create_all(_eng)
 
