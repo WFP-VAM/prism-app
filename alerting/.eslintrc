@@ -1,0 +1,63 @@
+{
+  "rules": {
+    "no-useless-constructor": "off",
+    "no-empty-function": ["error", { "allow": ["constructors"] }],
+    "class-methods-use-this": "off"
+  },
+  "overrides": [
+    {
+      "files": ["test/*"],
+      "rules": {
+        "fp/no-mutation": "off",
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["scripts/**"],
+      "rules": {
+        "no-console": "off",
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["cloud-functions/*"],
+      "rules": {
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/seeds/*"],
+      "rules": {
+        "no-param-reassign": "off",
+        "fp/no-mutation": "off",
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/**/*.entity.{ts,js}"],
+      "rules": {
+        "import/no-cycle": "off"
+      }
+    }
+  ]
+}

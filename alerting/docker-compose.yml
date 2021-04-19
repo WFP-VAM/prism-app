@@ -1,0 +1,23 @@
+version: '3.4'
+services:
+  alerting-db:
+    image: kartoza/postgis:12.1
+    restart: always
+    ports:
+      - 54321:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: '!ChangeMe!'
+    volumes:
+      - ./db_data:/var/lib/postgresql
+  alerting-node:
+    image: node:12
+    restart: always
+    volumes:
+      - ./:/app
+    environment:
+      POSTGRES_HOST: alerting-db
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: '!ChangeMe!'

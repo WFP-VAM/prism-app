@@ -4,6 +4,8 @@ services:
   api:
     build: ./
     volumes:
-        - './cache:/cache:rw'
-        - ./.flake8:/app/.flake8:ro
-        - ./app:/usr/local/lib/python3.8/site-packages/app:ro
+      - './cache:/cache:rw'
+      - ./.flake8:/app/.flake8:ro
+      - ./app:/usr/local/lib/python3.8/site-packages/app:ro
+    environment:
+      - DATABASE_URL
