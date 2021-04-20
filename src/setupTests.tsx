@@ -67,6 +67,8 @@ function stubMuiIcon(iconName: string) {
 
 stubMuiIcon('ArrowDropDown');
 stubMuiIcon('BarChart');
+stubMuiIcon('ChevronLeft');
+stubMuiIcon('ChevronRight');
 stubMuiIcon('CloudDownload');
 stubMuiIcon('Image');
 stubMuiIcon('Visibility');

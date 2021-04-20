@@ -327,3 +327,11 @@ export class TableType {
   @optional
   chart?: ChartConfig;
 }
+
+// used for timeline items in date selector
+export type DateRangeType = {
+  value: number;
+  label: string;
+  month: string;
+  isFirstDay: boolean;
+};

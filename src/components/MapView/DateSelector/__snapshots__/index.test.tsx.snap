@@ -6,11 +6,18 @@ exports[`renders as expected 1`] = `
     class="DateSelector-container-1"
   >
     <div
-      class="MuiGrid-root DateSelector-datePickerContainer-2 MuiGrid-container MuiGrid-align-items-xs-center"
+      class="MuiGrid-root DateSelector-datePickerContainer-2 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
     >
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-2"
+        class="MuiGrid-root DateSelector-datePickerGrid-4 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
       >
+        <mock-hidden
+          smup="true"
+        >
+          <mock-button>
+            <mock-chevronleft />
+          </mock-button>
+        </mock-hidden>
         <div
           class="react-datepicker-wrapper"
         >
@@ -24,235 +31,72 @@ exports[`renders as expected 1`] = `
             </mock-button>
           </div>
         </div>
+        <mock-hidden
+          smup="true"
+        >
+          <mock-button>
+            <mock-chevronright />
+          </mock-button>
+        </mock-hidden>
       </div>
       <div
-        class="MuiGrid-root DateSelector-slider-4 MuiGrid-item MuiGrid-grid-xs-10"
+        class="MuiGrid-root DateSelector-slider-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
       >
-        <mock-button>
-          <svg
-            aria-hidden="true"
-            class="svg-inline--fa fa-angle-double-left fa-w-14 "
-            data-icon="angle-double-left"
-            data-prefix="fas"
-            focusable="false"
-            role="img"
-            viewBox="0 0 448 512"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M223.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L319.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L393.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34zm-192 34l136 136c9.4 9.4 24.6 9.4 33.9 0l22.6-22.6c9.4-9.4 9.4-24.6 0-33.9L127.9 256l96.4-96.4c9.4-9.4 9.4-24.6 0-33.9L201.7 103c-9.4-9.4-24.6-9.4-33.9 0l-136 136c-9.5 9.4-9.5 24.6-.1 34z"
-              fill="currentColor"
-            />
-          </svg>
-        </mock-button>
+        <mock-hidden
+          xsdown="true"
+        >
+          <mock-button>
+            <mock-chevronleft />
+          </mock-button>
+        </mock-hidden>
         <div
-          class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-justify-xs-center"
+          class="MuiGrid-root DateSelector-dateContainer-6"
         >
           <div
-            class="MuiGrid-root MuiGrid-item"
+            class="DateSelector-timeline-8 react-draggable"
+            id="dateTimelineSelector"
+            style="transform: translate(-1820px,0px);"
           >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
+            <div
+              class="MuiGrid-root DateSelector-dateLabelContainer-7 MuiGrid-container"
             >
-              Jan
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
+              <mock-timelineitems
+                availabledates=""
+                daterange="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+              />
+            </div>
+            <div
+              class="DateSelector-pointer-9 react-draggable"
+              id="datePointerSelector"
+              style="transform: translate(1820px,0px);"
             >
-              Feb
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
-            >
-              Mar
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
-            >
-              Apr
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
-            >
-              May
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
-            >
-              Jun
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="contained"
-            >
-              Jul
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
-            >
-              Aug
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
-            >
-              Sept
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
-            >
-              Oct
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
-            >
-              Nov
-            </mock-button>
-          </div>
-          <mock-divider
-            classname="DateSelector-divider-6"
-            flexitem="true"
-            orientation="vertical"
-          />
-          <div
-            class="MuiGrid-root MuiGrid-item"
-          >
-            <mock-button
-              classname="DateSelector-monthButton-5"
-              disabled="true"
-              variant="text"
-            >
-              Dec
-            </mock-button>
+              <svg
+                aria-hidden="true"
+                class="svg-inline--fa fa-caret-up fa-w-10 "
+                color="white"
+                data-icon="caret-up"
+                data-prefix="fas"
+                focusable="false"
+                role="img"
+                style="font-size: 40px;"
+                viewBox="0 0 320 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
           </div>
         </div>
-        <mock-button>
-          <svg
-            aria-hidden="true"
-            class="svg-inline--fa fa-angle-double-right fa-w-14 "
-            data-icon="angle-double-right"
-            data-prefix="fas"
-            focusable="false"
-            role="img"
-            viewBox="0 0 448 512"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34zm192-34l-136-136c-9.4-9.4-24.6-9.4-33.9 0l-22.6 22.6c-9.4 9.4-9.4 24.6 0 33.9l96.4 96.4-96.4 96.4c-9.4 9.4-9.4 24.6 0 33.9l22.6 22.6c9.4 9.4 24.6 9.4 33.9 0l136-136c9.4-9.2 9.4-24.4 0-33.8z"
-              fill="currentColor"
-            />
-          </svg>
-        </mock-button>
+        <mock-hidden
+          xsdown="true"
+        >
+          <mock-button>
+            <mock-chevronright />
+          </mock-button>
+        </mock-hidden>
       </div>
     </div>
   </div>
