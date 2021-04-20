@@ -3,10 +3,10 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MapView-container-1"
+    class="MuiGrid-root MapView-container-1 MuiGrid-item"
   >
     <div
-      class="MapView-loading-2"
+      class="MapView-loading-3"
     >
       <mock-circularprogress
         size="100"
@@ -15,13 +15,30 @@ exports[`renders as expected 1`] = `
     <div
       style="height: 100%;"
     />
+    <div
+      class="MuiGrid-root MapView-buttonContainer-2 MuiGrid-container MuiGrid-justify-xs-space-between"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <mock-analyser />
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
+        >
+          <mock-download />
+          <mock-legends
+            layers="[object Object]"
+          />
+        </div>
+      </div>
+    </div>
     <mock-dateselector
       availabledates=""
     />
-    <mock-legends
-      layers="[object Object]"
-    />
-    <mock-analyser />
   </div>
 </div>
 `;
