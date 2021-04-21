@@ -335,3 +335,8 @@ export type DateRangeType = {
   month: string;
   isFirstDay: boolean;
 };
+
+export interface wmsParamsProps {
+  baseUrl: string;
+  serverLayerName: string;
+}

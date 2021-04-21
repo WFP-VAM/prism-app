@@ -4,7 +4,11 @@ import { get, isEmpty, isString, merge, union } from 'lodash';
 
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
-import type { AvailableDates, PointDataLayerProps } from '../config/types';
+import type {
+  AvailableDates,
+  PointDataLayerProps,
+  wmsParamsProps,
+} from '../config/types';
 import { ImpactLayerProps, WMSLayerProps } from '../config/types';
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
@@ -122,6 +126,31 @@ function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
     );
   }
   return rawLayers as FlatLayer[];
+}
+
+export function formatWMSLegendUrl({
+  baseUrl,
+  serverLayerName,
+}: wmsParamsProps) {
+  const legendOptions = {
+    fontAntiAliasing: true,
+    fontSize: 13,
+    fontName: 'Roboto Light',
+    forceLabels: 'on',
+    fontColor: '0x2D3436',
+  };
+
+  const requestParams = {
+    service: 'WMS',
+    request: 'GetLegendGraphic',
+    format: 'image/png',
+    layer: serverLayerName,
+    legend_options: Object.entries(legendOptions)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(';'),
+  };
+
+  return formatUrl(`${baseUrl}/ows`, requestParams);
 }
 
 /**

@@ -172,7 +172,7 @@
     "server_layer_name": "wld_gdacs_tc_events_buffers",
     "opacity": 0.9,
     "legend": [],
-    "legend_text": "",
+    "legend_text": "Buffers",
     "group": {
       "name": "Tropical Storms",
       "main": false
@@ -185,7 +185,7 @@
     "server_layer_name": "wld_gdacs_tc_events_nodes_moz",
     "opacity": 0.9,
     "legend": [],
-    "legend_text": "",
+    "legend_text": "Nodes",
     "group": {
       "name": "Tropical Storms",
       "main": true
@@ -198,7 +198,7 @@
     "server_layer_name": "wld_gdacs_tc_events_tracks",
     "opacity": 0.9,
     "legend": [],
-    "legend_text": "",
+    "legend_text": "Tracks",
     "group": {
       "name": "Tropical Storms",
       "main": false
