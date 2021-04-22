@@ -88,14 +88,16 @@ function AlertForm({ classes }: AlertFormProps) {
   }, [regionNamesToFeatureData]);
 
   const generateGeoJsonForRegionNames = () => {
+    // TODO - Handle these errors properly.
     if (!boundaryLayerData) {
       throw new Error('Boundary layer data is not loaded yet.');
     }
 
-    if (
-      regionsList.length < 1 ||
-      (regionsList.length === 1 && regionsList[0] === 'allRegions')
-    ) {
+    if (regionsList.length === 0) {
+      throw new Error('Please select at least one region boundary.');
+    }
+
+    if (regionsList[0] === 'allRegions') {
       return boundaryLayerData.data;
     }
 
