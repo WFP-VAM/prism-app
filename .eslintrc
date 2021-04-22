@@ -68,12 +68,7 @@
     "max-classes-per-file": "off",
     "spaced-comment": "warn",
     "curly": ["warn", "all"],
-    "import/no-cycle": "error",
-    "import/no-extraneous-dependencies": [
-      "error", {
-        "devDependencies": true
-      }
-    ]
+    "import/no-cycle": "error"
   },
   "settings": {
     "import/resolver": {

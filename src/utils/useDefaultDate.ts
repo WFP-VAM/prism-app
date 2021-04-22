@@ -4,7 +4,7 @@ import { AvailableDates, GroupDefinition } from '../config/types';
 import { availableDatesSelector } from '../context/serverStateSlice';
 import { dateRangeSelector } from '../context/mapStateSlice/selectors';
 import { updateDateRange } from '../context/mapStateSlice';
-import { USER_DATE_OFFSET } from '../components/MapView/DateSelector/utils';
+import { USER_DATE_OFFSET } from '../components/MapView/DateSelector';
 /**
  * A hook designed to automatically load the default date of a layer if the user doesn't select one.
  * Returns either the user selected date or the default date, dispatching it to the date picker beforehand. Can also return undefined if no default date is available.

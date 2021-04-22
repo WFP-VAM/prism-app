@@ -6,7 +6,6 @@ import DateSelector from '.';
 import { store } from '../../../context/store';
 
 jest.mock('../../Notifier', () => 'mock-Notifier');
-jest.mock('./TimelineItems', () => 'mock-TimelineItems');
 
 test('renders as expected', () => {
   const realDateNow = Date.now.bind(global.Date);
