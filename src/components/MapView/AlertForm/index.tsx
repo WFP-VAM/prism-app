@@ -25,7 +25,11 @@ import {
 } from '../../../config/utils';
 import { LayerData } from '../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
-import { ApiRequest, fetchApiData } from '../../../utils/analysis-utils';
+import {
+  AlertRequest,
+  fetchApiData,
+  getPrismUrl,
+} from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 
 // Not fully RFC-compliant, but should filter out obviously-invalid emails.
@@ -40,17 +44,6 @@ const ALERT_FORM_ENABLED = true;
 // TODO: Dynamic switch between local/production URLs, and consolidate this into util class
 const ALERT_API_URL = 'https://prism-api.ovio.org/alerts';
 // const ALERT_API_URL = 'http://localhost:80/alerts';
-
-/* eslint-disable camelcase */
-type AlertRequest = ApiRequest & {
-  alert_name: string;
-  alert_config: WMSLayerProps;
-  email: string;
-  max?: string;
-  min?: string;
-  prism_url: string;
-  zones: object;
-};
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -169,7 +162,7 @@ function AlertForm({ classes }: AlertFormProps) {
       min: belowThreshold,
       zones: generateGeoJsonForRegionNames(),
       email,
-      prism_url: '', // TODO: Find where to get this
+      prism_url: getPrismUrl(),
     };
 
     await fetchApiData(ALERT_API_URL, request);

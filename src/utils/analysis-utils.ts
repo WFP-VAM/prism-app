@@ -138,19 +138,39 @@ export const checkBaselineDataLayer = (
   );
 };
 
-export type ApiRequest = {};
-
 /* eslint-disable camelcase */
-export type ApiData = ApiRequest & {
+export type ApiData = {
   geotiff_url: ReturnType<typeof getWCSLayerUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
   zones_url: string;
   group_by?: string;
   geojson_out?: boolean;
 };
 
+/* eslint-disable camelcase */
+export type AlertRequest = {
+  alert_name: string;
+  alert_config: WMSLayerProps;
+  email: string;
+  max?: string;
+  min?: string;
+  prism_url: string;
+  zones: object;
+};
+
+export function getPrismUrl(): string {
+  const { hostname, origin } = window.location;
+  if (hostname === 'localhost') {
+    // Special case - if we're testing locally, then assume we are testing prism-mongolia
+    // This is to ensure we don't pollute the database with localhost URLs
+    return 'https://prism-mongolia.org';
+  }
+
+  return origin;
+}
+
 export async function fetchApiData(
   url: string,
-  apiData: ApiRequest,
+  apiData: ApiData | AlertRequest,
 ): Promise<Array<{ [k in string]: string | number }>> {
   return (
     await fetch(url, {
