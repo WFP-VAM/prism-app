@@ -1,3 +1,4 @@
+"""Alert database model."""
 import datetime
 import logging
 
@@ -20,8 +21,8 @@ class AlertModel(Base):
     """
     __tablename__ = 'alert'
     id = Column('id', Integer, Identity(start=1, cycle=True), primary_key=True)
-    prism_url = Column('prism_url', String, nullable=True)
     email = Column('email', String, nullable=False)
+    prism_url = Column('prism_url', String, nullable=False)
     alert_name = Column('alert_name', String)
     alert_config = Column('alert_config', JSON, nullable=False)
     min = Column('min', Integer, nullable=False)
@@ -33,8 +34,10 @@ class AlertModel(Base):
 
 
 class AlchemyEncoder(json.JSONEncoder):
+    """An utility class that translates ORM model to JSON."""
 
     def default(self, obj):
+        """Overwrite JSONEncoder's default method"""
         if isinstance(obj.__class__, DeclarativeMeta):
             # an SQLAlchemy class
             fields = {}
@@ -49,20 +52,3 @@ class AlchemyEncoder(json.JSONEncoder):
             return fields
 
         return json.JSONEncoder.default(self, obj)
-
-
-def create_all(engine):
-    """
-    Creating a table using current schema if the table is not there.
-    """
-    AlertModel.__table__.metadata.create_all(engine)
-    logger.info('Table is ready to use, table name: {}.'.format(AlertModel.__tablename__))
-
-
-# TODO: use migration script instead of dropping all tables
-def drop_all(engine):
-    """
-    Drop tables, this method is used for local testing.
-    """
-    AlertModel.__table__.metadata.drop_all(engine)
-    logger.info('Dropped all tables.')

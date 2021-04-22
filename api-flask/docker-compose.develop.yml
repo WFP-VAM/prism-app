@@ -17,7 +17,7 @@ services:
       - POSTGRES_HOST=alerting-db
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD=!ChangeMe! # don't use '' to wrap string here
+      - POSTGRES_PASSWORD=!ChangeMe!
     command: flask run --host=0.0.0.0 --port=80
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"

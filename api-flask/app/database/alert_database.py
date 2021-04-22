@@ -3,8 +3,6 @@ from os import getenv
 
 from app.database.alert_model import AlertModel
 
-from psycopg2 import OperationalError
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -21,35 +19,33 @@ DB_URI = 'postgresql://{user}:{password}@{host}:{port}/{database}' \
 
 class AlertsDataBase:
     """
+    Alerts Database.
+
     This object provides the methods that will be required to connect to
     database that stores the alerts threshold and layers, etc.
     """
 
     def __init__(self):
+        """Alerts Database initializer."""
         _eng = create_engine(DB_URI)
         self.session = sessionmaker(_eng)()
         logger.info('DB connection is initialized, database: {}.'.format(getenv('POSTGRES_DB')))
 
-        # Use drop_all() when you want to delete tables and use a new schema
-        # TODO: use migration library to automate the schema update
-        from app.database.alert_model import create_all
-        create_all(_eng)
-
     def write(self, alert: AlertModel):
+        """Write an alert to the alerts table."""
         try:
             self.session.add(alert)
             self.session.commit()
-
-        except OperationalError:
+        except Exception as e:
             self.session.rollback()
-            raise
-
+            raise e
         finally:
             self.session.close()
 
     def readall(self) -> list:
         """
         Get all the rows from this table.
+
         :return: A list of ORM object.
         """
         return self.session.query(AlertModel).all()
@@ -57,6 +53,7 @@ class AlertsDataBase:
     def read(self, expr: bool) -> list:
         """
         Return all the rows that match expression.
+
         :param expr: An expression that builds a filter.
         :return: A list of ORM object.
         """
