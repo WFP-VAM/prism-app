@@ -4,7 +4,7 @@ import logging
 
 from flask import json
 
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, DateTime, String
 from sqlalchemy import Identity, Integer, JSON, TIMESTAMP
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.declarative import declarative_base
@@ -28,7 +28,8 @@ class AlertModel(Base):
     max = Column('max', Integer)
     zones = Column('zones', JSON, nullable=False)
     created_at = Column('created_at', DateTime, default=datetime.datetime.now())
-    updated_at = Column('updated_at', DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
+    updated_at = Column('updated_at', DateTime, default=datetime.datetime.now(),
+                        onupdate=datetime.datetime.now())
     last_triggered = Column('last_triggered', TIMESTAMP, nullable=True)
 
 
