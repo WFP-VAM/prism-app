@@ -18,7 +18,7 @@ async function run() {
           ? await getWMSCapabilities(`${baseUrl}/wms`)
           : await getWCSCoverage(`${baseUrl}`);
       const layerAvailableDates = availableDates[serverLayerName];
-      const maxDate = new Date(Math.max(...layerAvailableDates));
+      const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
       if (!maxDate || lastTriggered >= maxDate) {
         return;
