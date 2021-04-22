@@ -32,7 +32,7 @@ export class Alert {
   prismUrl: string;
 
   @Column({ nullable: true })
-  alertName: string;
+  alertName?: string;
 
   // Configuration of the type
   // TODO - Use type from frontend
@@ -52,16 +52,16 @@ export class Alert {
   alertConfig: AlertConfig;
 
   @Column({ nullable: true })
-  min: number;
+  min?: number;
 
   @Column({ nullable: true })
-  max: number;
+  max?: number;
 
   @Column({
     type: 'jsonb',
     nullable: true,
   })
-  zones: GeoJSON;
+  zones?: GeoJSON;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -70,5 +70,5 @@ export class Alert {
   updatedAt: Date;
 
   @Column({ nullable: true })
-  lastTriggered: Date;
+  lastTriggered?: Date;
 }

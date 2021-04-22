@@ -3,10 +3,10 @@ import logging
 from distutils.util import strtobool
 from os import getenv
 
-from caching import cache_file, cache_geojson
+from app.database.alert_database import AlertsDataBase
+from app.database.alert_model import AlchemyEncoder, AlertModel
 
-from database.alert_database import AlertsDataBase
-from database.alert_model import AlertModel
+from caching import cache_file, cache_geojson
 
 from flask import Flask, Response, json, jsonify, request
 
@@ -103,28 +103,34 @@ def stats():
     return jsonify(features)
 
 
-@app.route('/alerts', methods=['POST'])
-def alerts():
-    """Post new alerts."""
-    if request.method == 'POST':
-        if not request.is_json:
-            logger.error('Unrecognized operation. JSON data expected.')
-            return Response(
-                response='500: Unrecognized operation. JSON data expected',
-                status=500
-            )
+@app.route('/alerts-all', methods=['GET'])
+def alerts_all():
+    """Get all alerts in current table."""
+    results = alert_db.readall()
+    return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
 
-        data = json.loads(request.get_data())
-        alert = AlertModel(**data)
-        try:
-            alert_db.write(alert)
-            return Response(response='Success', status=200)
-        except Exception as e:
-            logger.error(e)
-            return Response(
-                response='500: OperationalError.',
-                status=500
-            )
+
+@app.route('/alerts/<id>', methods=['GET'])
+def get_alert_by_id(id=1):
+    """Get alert data from DB given id."""
+    results = alert_db.read(AlertModel.id == int(id))
+    return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
+
+
+@app.route('/alerts', methods=['POST'])
+def write_alerts():
+    """Post new alerts."""
+    if not request.is_json:
+        return Response(
+            response='500: InvalidInput',
+            status=500
+        )
+    data = json.loads(request.get_data())
+
+    alert = AlertModel(**data)
+
+    alert_db.write(alert)
+    return Response(response='Success', status=200)
 
 
 @app.route('/demo', methods=['GET'])

@@ -246,7 +246,9 @@ function MapView({ classes }: MapViewProps) {
           </Grid>
         </Grid>
       </Grid>
-      <DateSelector availableDates={selectedLayerDates} />
+      {selectedLayerDates.length > 0 && (
+        <DateSelector availableDates={selectedLayerDates} />
+      )}
     </Grid>
   );
 }

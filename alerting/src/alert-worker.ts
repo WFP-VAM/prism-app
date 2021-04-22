@@ -1,3 +1,4 @@
+import { isNaN } from 'lodash';
 import { createConnection } from 'typeorm';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
@@ -18,26 +19,26 @@ async function run() {
           ? await getWMSCapabilities(`${baseUrl}/wms`)
           : await getWCSCoverage(`${baseUrl}`);
       const layerAvailableDates = availableDates[serverLayerName];
-      const maxDate = new Date(Math.max(...layerAvailableDates));
+      const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
-      if (!maxDate || lastTriggered >= maxDate) {
+      if (isNaN(maxDate.getTime()) || lastTriggered >= maxDate) {
         return;
       }
 
       const alertMessage = await calculateBoundsForAlert(maxDate, alert);
 
-      const emailMessage = `
-      Your alert${alertName ? ` ${alertName}` : ''} has been triggered.
-      Go to ${prismUrl} for more information.
-
-      Alert: ${alertMessage}`;
-
       if (alertMessage) {
+        const emailMessage = `
+        Your alert${alertName ? ` ${alertName}` : ''} has been triggered.
+        Go to ${prismUrl} for more information.
+  
+        Alert: ${alertMessage}`;
+
         console.log(
           `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
         );
         // TODO - Send an email
-        sendEmail({
+        await sendEmail({
           from: 'prism-alert@ovio.org',
           to: email,
           subject: `PRISM Alert Triggered`,
@@ -47,7 +48,7 @@ async function run() {
         console.log(alertMessage);
       }
       // Update lastTriggered (imnactive during testing)
-      alertRepository.update(alert.id, { lastTriggered: maxDate });
+      await alertRepository.update(alert.id, { lastTriggered: maxDate });
     }),
   );
 }

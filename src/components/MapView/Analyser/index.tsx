@@ -25,12 +25,9 @@ import {
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import { ArrowDropDown, BarChart } from '@material-ui/icons';
-
 import { useDispatch, useSelector } from 'react-redux';
 import bbox from '@turf/bbox';
-
 import DatePicker from 'react-datepicker';
-
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
