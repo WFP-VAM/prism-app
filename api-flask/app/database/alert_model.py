@@ -4,7 +4,7 @@ import logging
 
 from flask import json
 
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, DateTime
 from sqlalchemy import Identity, Integer, JSON, TIMESTAMP
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.declarative import declarative_base
@@ -16,20 +16,19 @@ Base = declarative_base()
 
 
 class AlertModel(Base):
-    """
-    Alert ORM that defines a table.
-    """
+    """Alert ORM that defines a table."""
+
     __tablename__ = 'alert'
     id = Column('id', Integer, Identity(start=1, cycle=True), primary_key=True)
     email = Column('email', String, nullable=False)
     prism_url = Column('prism_url', String, nullable=False)
     alert_name = Column('alert_name', String)
     alert_config = Column('alert_config', JSON, nullable=False)
-    min = Column('min', Integer, nullable=False)
-    max = Column('max', Integer, nullable=False)
+    min = Column('min', Integer)
+    max = Column('max', Integer)
     zones = Column('zones', JSON, nullable=False)
-    created_at = Column('created_at', TIMESTAMP, nullable=False, default=datetime.datetime.now())
-    updated_at = Column('updated_at', TIMESTAMP, nullable=False, default=datetime.datetime.now())
+    created_at = Column('created_at', DateTime, default=datetime.datetime.now())
+    updated_at = Column('updated_at', DateTime, default=datetime.datetime.now(), onupdate=datetime.datetime.now())
     last_triggered = Column('last_triggered', TIMESTAMP, nullable=True)
 
 
@@ -37,7 +36,7 @@ class AlchemyEncoder(json.JSONEncoder):
     """An utility class that translates ORM model to JSON."""
 
     def default(self, obj):
-        """Overwrite JSONEncoder's default method"""
+        """Overwrite JSONEncoder's default method."""
         if isinstance(obj.__class__, DeclarativeMeta):
             # an SQLAlchemy class
             fields = {}

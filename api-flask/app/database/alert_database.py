@@ -1,3 +1,4 @@
+"""Alert database access functions."""
 import logging
 from os import getenv
 
@@ -9,11 +10,11 @@ from sqlalchemy.orm import sessionmaker
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-DB_URI = 'postgresql://{user}:{password}@{host}:{port}/{database}' \
-    .format(host=getenv('POSTGRES_HOST'),
-            port=5432,
-            database=getenv('POSTGRES_DB'),
-            user=getenv('POSTGRES_USER'),
+DB_URI = getenv('DATABASE_URL', 'postgresql://{user}:{password}@{host}:{port}/{database}') \
+    .format(host=getenv('POSTGRES_HOST', 'alerting-db'),
+            port=getenv('POSTGRES_PORT', 5432),
+            database=getenv('POSTGRES_DB', 'postgres'),
+            user=getenv('POSTGRES_USER', 'postgres'),
             password=getenv('POSTGRES_PASSWORD'))
 
 

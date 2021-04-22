@@ -1,5 +1,4 @@
 """Flask API for geospatial utils."""
-import datetime
 import logging
 from distutils.util import strtobool
 from os import getenv
@@ -114,7 +113,6 @@ def alerts_all():
 @app.route('/alerts/<id>', methods=['GET'])
 def get_alert_by_id(id=1):
     """Get alert data from DB given id."""
-    # matching an alert id
     results = alert_db.read(AlertModel.id == int(id))
     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
 
@@ -128,8 +126,6 @@ def write_alerts():
             status=500
         )
     data = json.loads(request.get_data())
-    # if don't provide timestamp, it will always be DB start up time.
-    data['created_at'] = datetime.datetime.now()
 
     alert = AlertModel(**data)
 
