@@ -296,7 +296,12 @@ function AlertForm({ classes }: AlertFormProps) {
             <Button
               className={classes.innerCreateAlertButton}
               onClick={runAlertForm}
-              disabled={!hazardLayerId || !!thresholdError || !emailValid}
+              disabled={
+                !hazardLayerId ||
+                !!thresholdError ||
+                !emailValid ||
+                regionsList.length === 0
+              }
             >
               <Typography variant="body2">Create Alert</Typography>
             </Button>
