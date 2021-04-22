@@ -30,7 +30,7 @@ class AlertsDataBase:
         """Alerts Database initializer."""
         _eng = create_engine(DB_URI)
         self.session = sessionmaker(_eng)()
-        logger.info('DB connection is initialized, database: {}.'.format(getenv('POSTGRES_DB')))
+        logger.info('DB connection is initialized.')
 
     def write(self, alert: AlertModel):
         """Write an alert to the alerts table."""

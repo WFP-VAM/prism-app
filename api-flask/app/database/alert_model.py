@@ -27,9 +27,9 @@ class AlertModel(Base):
     min = Column('min', Integer)
     max = Column('max', Integer)
     zones = Column('zones', JSON, nullable=False)
-    created_at = Column('created_at', DateTime, default=datetime.datetime.now())
-    updated_at = Column('updated_at', DateTime, default=datetime.datetime.now(),
-                        onupdate=datetime.datetime.now())
+    created_at = Column('created_at', DateTime, default=datetime.datetime.now)
+    updated_at = Column('updated_at', DateTime, default=datetime.datetime.now,
+                        onupdate=datetime.datetime.now)
     last_triggered = Column('last_triggered', TIMESTAMP, nullable=True)
 
 
