@@ -20,7 +20,7 @@ async function run() {
       const layerAvailableDates = availableDates[serverLayerName];
       const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
-      if (!maxDate || lastTriggered >= maxDate) {
+      if (isNaN(maxDate.getTime()) || lastTriggered >= maxDate) {
         return;
       }
 
