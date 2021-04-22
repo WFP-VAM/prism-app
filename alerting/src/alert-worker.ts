@@ -21,7 +21,10 @@ async function run() {
       const layerAvailableDates = availableDates[serverLayerName];
       const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
-      if (isNaN(maxDate.getTime()) || lastTriggered >= maxDate) {
+      if (
+        isNaN(maxDate.getTime()) ||
+        (lastTriggered && lastTriggered >= maxDate)
+      ) {
         return;
       }
 
@@ -37,7 +40,7 @@ async function run() {
         console.log(
           `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
         );
-        // TODO - Send an email
+        // TODO - Send an email using WFP SMTP servers.
         await sendEmail({
           from: 'prism-alert@ovio.org',
           to: email,

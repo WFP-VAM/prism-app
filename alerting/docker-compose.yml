@@ -6,9 +6,9 @@ services:
     ports:
       - 54321:5432
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: '!ChangeMe!'
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD='!ChangeMe!'
     volumes:
       - ./db_data:/var/lib/postgresql
   alerting-node:
@@ -16,8 +16,10 @@ services:
     restart: always
     volumes:
       - ./:/app
+    working_dir: /app
     environment:
-      POSTGRES_HOST: alerting-db
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: '!ChangeMe!'
+      - POSTGRES_HOST=alerting-db
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD='!ChangeMe!'
+      - DATABASE_URL
