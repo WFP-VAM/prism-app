@@ -20,6 +20,6 @@
     "experimentalDecorators": true,
     "downlevelIteration": true
   },
-  "include": ["src", "scripts"],
-  "files": ["src/custom.d.ts", "ormconfig.ts", "scripts/*"]
+  "include": ["src"],
+  "files": ["ormconfig.ts"]
 }

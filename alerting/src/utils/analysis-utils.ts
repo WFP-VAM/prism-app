@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import bbox from '@turf/bbox';
 import { Extent } from './raster-utils';
 import { getWCSLayerUrl } from './server-utils';
@@ -75,12 +75,12 @@ export function getAlertMessage(
       offset,
     );
 
-    if (alertMin && minValue < alertMin) {
+    if (!isNil(alertMin) && minValue < alertMin) {
       // eslint-disable-next-line fp/no-mutation
       alertMessage = `Minimum Value ${minValue} is below the threshold ${alertMin}.`;
     }
 
-    if (alertMax && maxValue > alertMax) {
+    if (!isNil(alertMax) && maxValue > alertMax) {
       // eslint-disable-next-line fp/no-mutation
       alertMessage = `Maximum Value ${maxValue} is above the threshold ${alertMin}.`;
     }
