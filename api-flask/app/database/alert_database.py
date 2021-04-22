@@ -10,13 +10,12 @@ from sqlalchemy.orm import sessionmaker
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-DB_URI = getenv('DATABASE_URL') or 'postgresql://{user}:{password}@{host}:{port}/{database}'.format(
-    host='localhost',
-    port=54321,
-    database=getenv('POSTGRES_DB', 'postgres'),
-    user=getenv('POSTGRES_USER', 'postgres'),
-    password=getenv('POSTGRES_PASSWORD', '/!ChangeMe!')
-)
+DB_URI = getenv('DATABASE_URL', 'postgresql://{user}:{password}@{host}:{port}/{database}') \
+    .format(host=getenv('POSTGRES_HOST', 'alerting-db'),
+            port=getenv('POSTGRES_PORT', 5432),
+            database=getenv('POSTGRES_DB', 'postgres'),
+            user=getenv('POSTGRES_USER', 'postgres'),
+            password=getenv('POSTGRES_PASSWORD'))
 
 
 class AlertsDataBase:
@@ -41,6 +40,8 @@ class AlertsDataBase:
         except Exception as e:
             self.session.rollback()
             raise e
+        finally:
+            self.session.close()
 
     def readall(self) -> list:
         """
@@ -57,7 +58,7 @@ class AlertsDataBase:
         :param expr: An expression that builds a filter.
         :return: A list of ORM object.
         """
-        return self.session.query(AlertModel).filter(expr)
+        return self.session.query(AlertModel).filter(expr).all()
 
 
 # Local test
