@@ -50,7 +50,7 @@ exports[`renders as expected 1`] = `
             />
           </mock-button>
           <div
-            class="MuiBox-root MuiBox-root-14 AlertForm-alertFormMenu-6"
+            class="MuiBox-root MuiBox-root-15 AlertForm-alertFormMenu-6"
           />
         </div>
       </div>
