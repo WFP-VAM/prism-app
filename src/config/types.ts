@@ -185,6 +185,9 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   wcsConfig?: RawDataConfiguration;
+
+  @optional
+  featureinfoProps?: string[];
 }
 
 export class NSOLayerProps extends CommonLayerProps {
@@ -335,3 +338,11 @@ export type DateRangeType = {
   month: string;
   isFirstDay: boolean;
 };
+
+export interface FeatureInfoType {
+  bbox: number[];
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}

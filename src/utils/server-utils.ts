@@ -1,11 +1,14 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, merge, union } from 'lodash';
-
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type { AvailableDates, PointDataLayerProps } from '../config/types';
-import { ImpactLayerProps, WMSLayerProps } from '../config/types';
+import {
+  ImpactLayerProps,
+  WMSLayerProps,
+  FeatureInfoType,
+} from '../config/types';
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
@@ -247,4 +250,70 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
   ]);
 
   return merge({}, ...layerDates);
+}
+
+function fetchFeatureInfo(
+  layers: WMSLayerProps[],
+  url: string,
+  params: FeatureInfoType,
+): Promise<{ [name: string]: any }> {
+  const requestLayers = layers.filter(l => l.baseUrl === url);
+  const layerNames = requestLayers.map(l => l.serverLayerName).join(',');
+
+  const requestParams = {
+    service: 'WMS',
+    request: 'getFeatureInfo',
+    version: '1.1.1',
+    exceptions: 'application/json',
+    info_format: 'application/json',
+    layers: layerNames,
+    srs: 'EPSG:4326',
+    query_layers: layerNames,
+    feature_count: 1,
+    format: 'image/png',
+    styles: '',
+  };
+
+  const wmsParams = { ...params, ...requestParams };
+
+  return fetch(formatUrl(`${url}/ows`, wmsParams))
+    .then(r => r.json())
+    .then((s: GeoJSON.FeatureCollection) =>
+      s.features.map(feature => {
+        // Get fields from layer configuration.
+        const [layerId] = (feature?.id as string).split('.');
+
+        const searchProps =
+          (layers &&
+            layers.find(l => l.serverLayerName === layerId)
+              ?.featureinfoProps) ||
+          [];
+
+        const properties = feature.properties ?? {};
+
+        return Object.keys(properties)
+          .filter(k => searchProps.includes(k))
+          .reduce(
+            (obj, key) => ({
+              ...obj,
+              [key]: properties[key],
+            }),
+            {},
+          );
+      }),
+    )
+    .then(r => r.reduce((obj, item) => ({ ...obj, ...item }), {}));
+}
+
+export async function makeFeatureInfoRequest(
+  layers: WMSLayerProps[],
+  params: FeatureInfoType,
+): Promise<{ [name: string]: any } | null> {
+  const urls = [...new Set(layers.map(l => l.baseUrl))];
+
+  const requests = urls.map(url => fetchFeatureInfo(layers, url, params));
+
+  return Promise.all(requests)
+    .then(r => r.reduce((obj, item) => ({ ...obj, ...item }), {}))
+    .then(obj => (Object.keys(obj).length === 0 ? null : obj));
 }

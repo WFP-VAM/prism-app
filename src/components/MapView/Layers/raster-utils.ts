@@ -3,6 +3,7 @@ import bbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import * as GeoTIFF from 'geotiff';
 import { buffer } from 'd3-fetch';
+import { Map as MapBoxMap } from 'mapbox-gl';
 import { formatUrl } from '../../../utils/server-utils';
 
 export type TransformMatrix = [number, number, number, number, number, number];
@@ -321,4 +322,14 @@ export function pixelsInFeature(
       ),
     );
   }, [] as number[]);
+}
+
+export function getExtent(map?: MapBoxMap): Extent {
+  const bounds = map && map.getBounds();
+  const minX = bounds ? bounds.getWest() : 0;
+  const maxX = bounds ? bounds.getEast() : 0;
+  const minY = bounds ? bounds.getSouth() : 0;
+  const maxY = bounds ? bounds.getNorth() : 0;
+
+  return [minX, minY, maxX, maxY];
 }

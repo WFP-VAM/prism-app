@@ -1,4 +1,10 @@
-import React, { ComponentType, createElement, useEffect, useMemo } from 'react';
+import React, {
+  ComponentType,
+  createElement,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   CircularProgress,
@@ -11,6 +17,7 @@ import { countBy, pickBy } from 'lodash';
 import moment from 'moment';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
+import DatePicker from 'react-datepicker';
 import { Map } from 'mapbox-gl';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
@@ -24,9 +31,17 @@ import {
   WMSLayer,
 } from './Layers';
 
-import { DiscriminateUnion, LayerType } from '../../config/types';
+import {
+  DiscriminateUnion,
+  LayerType,
+  WMSLayerProps,
+  FeatureInfoType,
+} from '../../config/types';
 
-import { getBoundaryLayerSingleton } from '../../config/utils';
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../config/utils';
 
 import DateSelector from './DateSelector';
 import { findClosestDate } from './DateSelector/utils';
@@ -36,7 +51,11 @@ import {
   layersSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
-import { hidePopup } from '../../context/tooltipStateSlice';
+import {
+  showPopup,
+  hidePopup,
+  addPopupData,
+} from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
   isLoading as areDatesLoading,
@@ -50,8 +69,10 @@ import AnalysisLayer from './Layers/AnalysisLayer';
 import {
   DateCompatibleLayer,
   getPossibleDatesForLayer,
+  makeFeatureInfoRequest,
 } from '../../utils/server-utils';
 import { addNotification } from '../../context/notificationStateSlice';
+import { getExtent } from './Layers/raster-utils';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -76,6 +97,50 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'wms',
 ];
 
+const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] | undefined => {
+  const matchStr = 'layer-';
+  const layerIds =
+    map
+      .getStyle()
+      .layers?.filter(l => l.id.startsWith(matchStr))
+      .map(l => l.id.split(matchStr)[1]) ?? [];
+
+  if (layerIds.length === 0) {
+    return undefined;
+  }
+
+  const featureInfoLayers = Object.values(LayerDefinitions).filter(
+    l => layerIds.includes(l.id) && l.type === 'wms' && l.featureinfoProps,
+  );
+
+  if (featureInfoLayers.length === 0) {
+    return undefined;
+  }
+
+  return featureInfoLayers as WMSLayerProps[];
+};
+
+const getFeatureInfoParams = (
+  map: Map,
+  evt: any,
+  date: string,
+): FeatureInfoType => {
+  const { x, y } = evt.point;
+  const bbox = getExtent(map);
+  const { clientWidth, clientHeight } = map.getContainer();
+
+  const params = {
+    bbox,
+    x: Math.floor(x),
+    y: Math.floor(y),
+    width: clientWidth,
+    height: clientHeight,
+    time: date,
+  };
+
+  return params;
+};
+
 function MapView({ classes }: MapViewProps) {
   const selectedLayers = useSelector(layersSelector);
 
@@ -84,6 +149,8 @@ function MapView({ classes }: MapViewProps) {
   const loading = layersLoading || datesLoading;
 
   const dispatch = useDispatch();
+
+  const selectedDateRef = useRef<DatePicker>(null);
 
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -211,8 +278,43 @@ function MapView({ classes }: MapViewProps) {
         containerStyle={{
           height: '100%',
         }}
-        onClick={() => {
+        onClick={(map: Map, evt: any) => {
           dispatch(hidePopup());
+          // Get layers that have getFeatureInfo option.
+          const featureInfoLayers = getActiveFeatureInfoLayers(map);
+          if (!featureInfoLayers || featureInfoLayers.length === 0) {
+            return;
+          }
+
+          const dateFromRef = (selectedDateRef.current?.props.selected as Date)
+            .toISOString()
+            .split('T')[0];
+
+          const params = getFeatureInfoParams(map, evt, dateFromRef);
+          makeFeatureInfoRequest(featureInfoLayers, params).then(
+            (result: any) => {
+              if (result === null) {
+                return;
+              }
+              Object.keys(result).forEach(k => {
+                dispatch(
+                  addPopupData({
+                    [k]: {
+                      data: result[k],
+                      coordinates: evt.lngLat,
+                    },
+                  }),
+                );
+              });
+
+              dispatch(
+                showPopup({
+                  coordinates: evt.lngLat,
+                  locationName: '',
+                }),
+              );
+            },
+          );
         }}
       >
         <>
@@ -245,7 +347,10 @@ function MapView({ classes }: MapViewProps) {
         </Grid>
       </Grid>
       {selectedLayerDates.length > 0 && (
-        <DateSelector availableDates={selectedLayerDates} />
+        <DateSelector
+          availableDates={selectedLayerDates}
+          selectedDateRef={selectedDateRef}
+        />
       )}
     </Grid>
   );
