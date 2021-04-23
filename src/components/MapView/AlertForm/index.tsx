@@ -75,10 +75,13 @@ function AlertForm({ classes }: AlertFormProps) {
     return Object.fromEntries(
       boundaryLayerData.data.features
         .filter(feature => feature.properties != null)
-        .map(feature => [
-          `${feature.properties?.ADM1_EN} / ${feature.properties?.ADM2_EN}`,
-          feature,
-        ]),
+        .map(feature => {
+          const localNames = boundaryLayer.adminLevelNames.map(
+            name => (feature.properties || {})[name],
+          );
+
+          return [localNames.join(' / '), feature];
+        }),
     );
   }, [boundaryLayerData]);
 
