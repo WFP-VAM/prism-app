@@ -77,12 +77,12 @@ export function getAlertMessage(
 
     if (!isNil(alertMin) && minValue < alertMin!) {
       // eslint-disable-next-line fp/no-mutation
-      alertMessage = `Minimum Value ${minValue} is below the threshold ${alertMin}.`;
+      alertMessage = `Minimum value ${minValue} is below the threshold ${alertMin}.`;
     }
 
     if (!isNil(alertMax) && maxValue > alertMax!) {
       // eslint-disable-next-line fp/no-mutation
-      alertMessage = `Maximum Value ${maxValue} is above the threshold ${alertMin}.`;
+      alertMessage = `Maximum value ${maxValue} is above the threshold ${alertMax}.`;
     }
   });
   return alertMessage;
