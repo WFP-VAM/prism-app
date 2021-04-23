@@ -15,7 +15,7 @@ import {
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
 import ColorIndicator from './ColorIndicator';
-import { LayerType, wmsParamsProps } from '../../../config/types';
+import { LayerType } from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
   analysisResultSelector,
@@ -34,9 +34,9 @@ function Legends({ classes, layers }: LegendsProps) {
         return null;
       }
 
-      const wmsParams =
+      const legendUrl =
         layer.type === 'wms' && layer.legend.length === 0
-          ? { baseUrl: layer.baseUrl, serverLayerName: layer.serverLayerName }
+          ? formatWMSLegendUrl(layer.baseUrl, layer.serverLayerName)
           : undefined;
 
       return (
@@ -45,7 +45,7 @@ function Legends({ classes, layers }: LegendsProps) {
           key={layer.title}
           title={layer.title}
           legend={layer.legend}
-          wmsParams={wmsParams}
+          legendUrl={legendUrl}
         >
           {layer.legendText}
         </LegendItem>
@@ -105,7 +105,7 @@ function LegendItem({
   title,
   legend,
   children,
-  wmsParams,
+  legendUrl,
 }: LegendItemProps) {
   return (
     <ListItem disableGutters dense>
@@ -119,8 +119,8 @@ function LegendItem({
 
           {legend && (
             <Grid item>
-              {wmsParams ? (
-                <img src={formatWMSLegendUrl(wmsParams)} alt={title} />
+              {legendUrl ? (
+                <img src={legendUrl} alt={title} />
               ) : (
                 legend.map(({ value, color }: any) => (
                   <ColorIndicator
@@ -175,7 +175,7 @@ interface LegendItemProps
     PropsWithChildren<{}> {
   title: LayerType['title'];
   legend: LayerType['legend'];
-  wmsParams?: wmsParamsProps;
+  legendUrl?: string;
 }
 
 export default withStyles(styles)(Legends);
