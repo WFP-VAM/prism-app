@@ -183,7 +183,19 @@ export async function fetchApiData(
       // body data type must match "Content-Type" header
       body: JSON.stringify(apiData),
     })
-  ).json();
+  )
+    .text()
+    .then(message => {
+      try {
+        return JSON.parse(message);
+      } catch (e) {
+        // In some cases the response isn't valid JSON.
+        // In those cases, just wrap the full response in an object.
+        return {
+          message,
+        };
+      }
+    });
 }
 
 export function scaleAndFilterAggregateData(
