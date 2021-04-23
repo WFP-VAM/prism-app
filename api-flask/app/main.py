@@ -125,11 +125,16 @@ def write_alerts():
             response='500: InvalidInput',
             status=500
         )
-    data = json.loads(request.get_data())
 
-    alert = AlertModel(**data)
+    try:
+        data = json.loads(request.get_data())
+        alert = AlertModel(**data)
+        alert_db.write(alert)
 
-    alert_db.write(alert)
+    except Exception as e:
+        logger.error(e)
+        raise e
+
     return Response(response='Success', status=200)
 
 
