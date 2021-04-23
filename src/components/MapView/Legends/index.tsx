@@ -34,6 +34,7 @@ function Legends({ classes, layers }: LegendsProps) {
         return null;
       }
 
+      // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
       const legendUrl =
         layer.type === 'wms' && layer.legend.length === 0
           ? formatWMSLegendUrl(layer.baseUrl, layer.serverLayerName)
