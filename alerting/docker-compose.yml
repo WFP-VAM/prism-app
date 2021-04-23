@@ -23,3 +23,5 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD='!ChangeMe!'
       - DATABASE_URL
+      - EMAIL_PASSWORD
+      - EMAIL_USER

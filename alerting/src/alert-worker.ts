@@ -33,6 +33,10 @@ async function run() {
       if (alertMessage) {
         const emailMessage = `
         Your alert${alertName ? ` ${alertName}` : ''} has been triggered.
+
+        Layer: ${serverLayerName}
+        Date: ${maxDate}
+
         Go to ${prismUrl} for more information.
   
         Alert: ${alertMessage}`;
