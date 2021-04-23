@@ -63,6 +63,8 @@ function AlertForm({ classes }: AlertFormProps) {
   const [aboveThreshold, setAboveThreshold] = useState('');
   const [thresholdError, setThresholdError] = useState<string | null>(null);
   const [alertName, setAlertName] = useState('');
+  const [alertWaiting, setAlertWaiting] = useState(false);
+  const [alertFinishedMessage, setAlertFinishedMessage] = useState('');
 
   const regionNamesToFeatureData: { [k: string]: object } = useMemo(() => {
     if (!boundaryLayerData) {
@@ -167,7 +169,14 @@ function AlertForm({ classes }: AlertFormProps) {
       prism_url: getPrismUrl(),
     };
 
-    await fetchApiData(ALERT_API_URL, request);
+    setAlertWaiting(true);
+    const response = await fetchApiData(ALERT_API_URL, request);
+    setAlertWaiting(false);
+
+    if ('message' in response) {
+      // eslint-disable-next-line dot-notation
+      setAlertFinishedMessage(response['message']);
+    }
   };
 
   if (!ALERT_FORM_ENABLED) {
@@ -293,6 +302,12 @@ function AlertForm({ classes }: AlertFormProps) {
                 />
               </div>
             </div>
+            <Typography
+              variant="body2"
+              className={classes.alertFormResponseText}
+            >
+              {alertFinishedMessage}
+            </Typography>
             <Button
               className={classes.innerCreateAlertButton}
               onClick={runAlertForm}
@@ -300,6 +315,7 @@ function AlertForm({ classes }: AlertFormProps) {
                 !hazardLayerId ||
                 !!thresholdError ||
                 !emailValid ||
+                alertWaiting ||
                 regionsList.length === 0
               }
             >
@@ -330,7 +346,7 @@ const styles = (theme: Theme) =>
       borderTopRightRadius: '10px',
       borderBottomRightRadius: '10px',
       height: 'auto',
-      maxHeight: '50vh',
+      maxHeight: '60vh',
     },
     alertFormButton: {
       height: '36px',
@@ -361,6 +377,9 @@ const styles = (theme: Theme) =>
       marginTop: '10px',
       width: '110px',
       '&:focused': { color: 'white' },
+    },
+    alertFormResponseText: {
+      marginLeft: '15px',
     },
   });
 
