@@ -20,6 +20,8 @@ DB_URI = getenv('DATABASE_URL') or \
         password=getenv('POSTGRES_PASSWORD')
     )
 
+logger.warning(DB_URI)
+
 
 class AlertsDataBase:
     """
