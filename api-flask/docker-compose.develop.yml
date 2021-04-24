@@ -14,7 +14,6 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - 'RUN=flask run --host=0.0.0.0 --port=80'
-      - DATABASE_URL=postgresql://{user}:{password}@{host}:{port}/{database}
       - POSTGRES_HOST=alerting-db
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
