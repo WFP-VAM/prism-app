@@ -166,6 +166,17 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminLevelLocalNames: string[]; // Same as above, local to country
 }
 
+export enum labelType {
+  Date = 'date',
+  Text = 'text',
+  Number = 'number',
+}
+
+interface featureInfoProps {
+  type: labelType;
+  label: string;
+}
+
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
   baseUrl: string;
@@ -187,7 +198,7 @@ export class WMSLayerProps extends CommonLayerProps {
   wcsConfig?: RawDataConfiguration;
 
   @optional
-  featureinfoProps?: string[];
+  featureInfoProps?: { [key: string]: featureInfoProps };
 }
 
 export class NSOLayerProps extends CommonLayerProps {

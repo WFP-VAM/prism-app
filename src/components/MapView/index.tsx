@@ -110,7 +110,7 @@ const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] | undefined => {
   }
 
   const featureInfoLayers = Object.values(LayerDefinitions).filter(
-    l => layerIds.includes(l.id) && l.type === 'wms' && l.featureinfoProps,
+    l => layerIds.includes(l.id) && l.type === 'wms' && l.featureInfoProps,
   );
 
   if (featureInfoLayers.length === 0) {

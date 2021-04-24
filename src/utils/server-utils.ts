@@ -8,6 +8,7 @@ import {
   ImpactLayerProps,
   WMSLayerProps,
   FeatureInfoType,
+  labelType,
 } from '../config/types';
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
@@ -252,6 +253,14 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
   return merge({}, ...layerDates);
 }
 
+function parseValue(value: string, type: labelType): string {
+  if (type === labelType.Date) {
+    return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
+  }
+
+  return value;
+}
+
 function fetchFeatureInfo(
   layers: WMSLayerProps[],
   url: string,
@@ -283,11 +292,11 @@ function fetchFeatureInfo(
         // Get fields from layer configuration.
         const [layerId] = (feature?.id as string).split('.');
 
-        const searchProps =
-          (layers &&
-            layers.find(l => l.serverLayerName === layerId)
-              ?.featureinfoProps) ||
-          [];
+        const featureInfoProps =
+          layers?.find(l => l.serverLayerName === layerId)?.featureInfoProps ||
+          {};
+
+        const searchProps = Object.keys(featureInfoProps);
 
         const properties = feature.properties ?? {};
 
@@ -296,7 +305,10 @@ function fetchFeatureInfo(
           .reduce(
             (obj, key) => ({
               ...obj,
-              [key]: properties[key],
+              [featureInfoProps[key].label]: parseValue(
+                properties[key],
+                featureInfoProps[key].type,
+              ),
             }),
             {},
           );

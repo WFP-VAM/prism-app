@@ -178,7 +178,16 @@
       "main": false
     },
     "base_url": "https://geonode.wfp.org/geoserver",
-    "featureinfo_props": ["event_name", "pub_date"]
+    "feature_info_props": {
+      "event_name": {
+        "type": "text",
+        "label": "Event name"
+      },
+      "pub_date": {
+        "type": "date",
+        "label": "Publication date"
+      }
+    }
   },
   "adamts_nodes": {
     "title": "Tropical Storms - Nodes",
