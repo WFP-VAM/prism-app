@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3'
 services:
   alerting-db:
     image: kartoza/postgis:12.1
