@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
+app.debug = True
 CORS(app)
 
 # For more configuration options, check out the documentation
