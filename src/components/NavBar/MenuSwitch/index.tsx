@@ -46,10 +46,17 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
       <hr />
 
       {layers.map(layer => {
-        const { id: layerId, title: layerTitle } = layer;
+        const { id: layerId, title: layerTitle, group: LayerGroup } = layer;
+        if (LayerGroup && !LayerGroup.main) {
+          return null;
+        }
+
         const selected = selectedLayers.some(
           ({ id: testId }) => testId === layerId,
         );
+
+        const validatedTitle = LayerGroup ? LayerGroup.name : layerTitle;
+
         return (
           <Box key={layerId} display="flex" mb={1}>
             <Switch
@@ -57,9 +64,11 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
               color="default"
               checked={selected}
               onChange={toggleLayerValue(layer)}
-              inputProps={{ 'aria-label': layerTitle }}
+              inputProps={{
+                'aria-label': validatedTitle,
+              }}
             />{' '}
-            <Typography variant="body1">{layerTitle}</Typography>
+            <Typography variant="body1">{validatedTitle}</Typography>
           </Box>
         );
       })}
