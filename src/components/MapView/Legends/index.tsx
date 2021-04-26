@@ -9,7 +9,6 @@ import {
   ListItem,
   Paper,
   Slider,
-  Theme,
   Typography,
   WithStyles,
   withStyles,
