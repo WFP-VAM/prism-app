@@ -15,9 +15,8 @@ import {
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
-import { updateLayerOpacity } from '../../../context/mapStateSlice';
 import ColorIndicator from './ColorIndicator';
 import { LayerType } from '../../../config/types';
 import {
@@ -60,7 +59,7 @@ function Legends({ classes, layers }: LegendsProps) {
               analysisResult.getHazardLayer().title
             }`}
             classes={classes}
-            opacity={0.3} // initial opacity value
+            opacity={0.5} // TODO: initial opacity value
           >
             Impact Analysis on {analysisResult.getBaselineLayer().legendText}
             <br />
@@ -97,7 +96,6 @@ function LegendItem({
   opacity: initialOpacity,
   children,
 }: LegendItemProps) {
-  const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
@@ -107,12 +105,28 @@ function LegendItem({
     event: React.ChangeEvent<{}>,
     newValue: number | number[],
   ) => {
-    if (id) {
-      if (map && type === 'wms') {
-        map.setPaintProperty(`layer-${id}`, 'raster-opacity', newValue);
-      } else {
-        dispatch(updateLayerOpacity({ id, opacity: newValue as number }));
-      }
+    // TODO: temporary solution for opacity adjustment,
+    // because the whole map will be re-rendered if using state directly
+    if (map) {
+      const castedLayer = { type } as LayerType;
+      const [layerId, opacityType] = (layer => {
+        switch (layer.type) {
+          case 'wms':
+            return [`layer-${id}`, 'raster-opacity'];
+          case 'impact':
+          case 'nso':
+            return [`layer-${id}-fill`, 'fill-opacity'];
+          case 'point_data':
+            return [`layer-${id}-circle`, 'circle-opacity'];
+          // analysis layer type is undefined
+          case undefined:
+            return ['layer-analysis-fill', 'fill-opacity'];
+          default:
+            throw new Error('Unknown map layer type');
+        }
+      })(castedLayer);
+
+      map.setPaintProperty(layerId, opacityType, newValue);
       setOpacityValue(newValue);
     }
   };
