@@ -7,7 +7,7 @@ import { getWCSCoverage, getWMSCapabilities } from './utils/server-utils';
 
 async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const { baseUrl, serverLayerName, type } = alert.alertConfig;
-  const { id, alertName, email, lastTriggered, prismUrl } = alert;
+  const { id, alertName, createdAt, email, lastTriggered, prismUrl } = alert;
   const availableDates =
     type === 'wms'
       ? await getWMSCapabilities(`${baseUrl}/wms`)
@@ -15,7 +15,11 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const layerAvailableDates = availableDates[serverLayerName];
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
-  if (isNaN(maxDate.getTime()) || (lastTriggered && lastTriggered >= maxDate)) {
+  if (
+    isNaN(maxDate.getTime()) ||
+    (lastTriggered && lastTriggered >= maxDate) ||
+    createdAt >= maxDate
+  ) {
     return;
   }
 
