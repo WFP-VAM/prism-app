@@ -231,14 +231,21 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   return possibleDates;
 }
 
-async function getNSOAvailableDates(layer: NSOLayerProps) {
-  const url = layer.dateUrl!;
-  const { dates }: { dates: string[] } = await fetch(url, {
-    mode: url.startsWith('http') ? 'cors' : 'same-origin',
-  }).then(resp => resp.json());
-  return {
-    [layer.id]: dates.map(v => moment(v, 'YYYY-MM-DD').valueOf()),
-  };
+async function getNSOCoverage(layer: NSOLayerProps) {
+  const url = layer.dateUrl;
+  if (!url) {
+    return [];
+  }
+  try {
+    const { dates }: { dates: string[] } = await fetch(url, {
+      mode: url.startsWith('http') ? 'cors' : 'same-origin',
+    }).then(resp => resp.json());
+    return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  } catch (error) {
+    // TODO we used to throw the error here so a notification appears. Removed because a failure of one shouldn't prevent the successful requests from saving.
+    console.error(error);
+    return [];
+  }
 }
 
 /**
@@ -265,7 +272,9 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer),
     })),
-    ...nsoWithDateLayers.map(async layer => getNSOAvailableDates(layer)),
+    ...nsoWithDateLayers.map(async layer => ({
+      [layer.id]: await getNSOCoverage(layer),
+    })),
   ]);
 
   return merge({}, ...layerDates);
