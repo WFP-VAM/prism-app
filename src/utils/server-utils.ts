@@ -237,6 +237,7 @@ async function getNSOCoverage(layer: NSOLayerProps) {
     return [];
   }
   try {
+    // raw data comes in as {"dates": ["YYYY-MM-DD"]}
     const { dates }: { dates: string[] } = await fetch(url, {
       mode: url.startsWith('http') ? 'cors' : 'same-origin',
     }).then(resp => resp.json());
