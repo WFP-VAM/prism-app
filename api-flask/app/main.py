@@ -3,9 +3,12 @@ import logging
 from distutils.util import strtobool
 from os import getenv
 
-from caching import cache_file
+from app.database.alert_database import AlertsDataBase
+from app.database.alert_model import AlchemyEncoder, AlertModel
 
-from flask import Flask, Response, jsonify, request
+from caching import cache_file, cache_geojson
+
+from flask import Flask, Response, json, jsonify, request
 
 from flask_caching import Cache
 
@@ -20,11 +23,15 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
+app.config['PROPAGATE_EXCEPTIONS'] = True
+app.debug = True
 CORS(app)
 
 # For more configuration options, check out the documentation
 # Caching durations are in seconds.
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
+alert_db = AlertsDataBase()
 
 
 @timed
@@ -49,10 +56,19 @@ def stats():
     data = request.get_json() or request.form
     geotiff_url = data.get('geotiff_url')
     zones_url = data.get('zones_url')
-    if geotiff_url is None or zones_url is None:
+    zonesGeojson = data.get('zones')
+
+    if geotiff_url is None:
         logger.error('Received {}'.format(data))
         return Response(
-            response='400: geotiff_url and zones_url are both required.',
+            response='400: geotiff_url is required.',
+            status=400
+        )
+
+    if zonesGeojson is None and zones_url is None:
+        logger.error('Received {}'.format(data))
+        return Response(
+            response='400: One of zones or zones_url is required.',
             status=400
         )
 
@@ -64,10 +80,17 @@ def stats():
         url=geotiff_url
     )
 
-    zones = cache_file(
-        prefix='zones',
-        url=zones_url
-    )
+    # TODO - Add validation for zones.
+    if (zonesGeojson is not None):
+        zones = cache_geojson(
+            prefix='zones_geojson',
+            geojson=zonesGeojson
+        )
+    else:
+        zones = cache_file(
+            prefix='zones',
+            url=zones_url
+        )
 
     features = _calculate_stats(
         zones,
@@ -77,7 +100,43 @@ def stats():
         group_by=group_by,
         geojson_out=geojson_out
     )
+
     return jsonify(features)
+
+
+@app.route('/alerts-all', methods=['GET'])
+def alerts_all():
+    """Get all alerts in current table."""
+    results = alert_db.readall()
+    return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
+
+
+@app.route('/alerts/<id>', methods=['GET'])
+def get_alert_by_id(id=1):
+    """Get alert data from DB given id."""
+    results = alert_db.read(AlertModel.id == int(id))
+    return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
+
+
+@app.route('/alerts', methods=['POST'])
+def write_alerts():
+    """Post new alerts."""
+    if not request.is_json:
+        return Response(
+            response='500: InvalidInput',
+            status=500
+        )
+
+    try:
+        data = json.loads(request.get_data())
+        alert = AlertModel(**data)
+        alert_db.write(alert)
+
+    except Exception as e:
+        logger.error(e)
+        raise e
+
+    return Response(response='Success', status=200)
 
 
 @app.route('/demo', methods=['GET'])
