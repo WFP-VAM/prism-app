@@ -5,12 +5,20 @@ services:
     volumes:
       - ./app:/app
     ports:
-      - "80:80"
+      - '80:80'
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
     environment:
       - FLASK_APP=main.py
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - 'RUN=flask run --host=0.0.0.0 --port=80'
+      - POSTGRES_HOST=alerting-db
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_PASSWORD=!ChangeMe!
     command: flask run --host=0.0.0.0 --port=80
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
