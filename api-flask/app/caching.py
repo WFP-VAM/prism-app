@@ -1,5 +1,6 @@
 """Methods to cache remote files."""
 import hashlib
+import json
 import logging
 import os
 
@@ -17,7 +18,7 @@ def cache_file(url, prefix):
     """Locally cache files fetched from a url."""
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
-        url=url,
+        data=url,
     )
     # If the file exists, return path.
     if os.path.isfile(cache_filepath):
@@ -34,11 +35,28 @@ def cache_file(url, prefix):
         return cache_filepath
 
 
-def _get_cached_filepath(prefix, url):
+@timed
+def cache_geojson(geojson, prefix):
+    """Locally store needed for a request."""
+    json_string = json.dumps(geojson)
+
+    cache_filepath = _get_cached_filepath(
+        prefix=prefix,
+        data=json_string,
+    )
+
+    with open(cache_filepath, 'w') as f:
+        f.write(json_string)
+
+    logger.info('Caching geojson in file.')
+    return cache_filepath
+
+
+def _get_cached_filepath(prefix, data):
     """Return the filepath where a cached response would live for the given inputs."""
     filename = '{prefix}_{hash_string}.cache'.format(
         prefix=prefix,
-        hash_string=_hash_value(url),
+        hash_string=_hash_value(data),
     )
     logger.debug('Cached filepath: ' + os.path.join(CACHE_DIRECTORY, filename))
     return os.path.join(CACHE_DIRECTORY, filename)
