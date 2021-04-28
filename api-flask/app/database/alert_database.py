@@ -54,7 +54,7 @@ class AlertsDataBase:
         """
         return self.session.query(AlertModel).all()
 
-    def read(self, expr: bool) -> list[AlertModel]:
+    def read(self, expr: bool) -> list:
         """
         Return all the rows that match expression.
 

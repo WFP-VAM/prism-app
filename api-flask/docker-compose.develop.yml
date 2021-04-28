@@ -5,16 +5,15 @@ services:
     volumes:
       - ./app:/app
     ports:
-      - "80:80"
+      - '80:80'
     build:
-        context: ./
-        dockerfile: ./Dockerfile
+      context: ./
+      dockerfile: ./Dockerfile
     environment:
       - FLASK_APP=main.py
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - 'RUN=flask run --host=0.0.0.0 --port=80'
-      - DATABASE_URL=postgresql://{user}:{password}@{host}:{port}/{database}
       - POSTGRES_HOST=alerting-db
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres

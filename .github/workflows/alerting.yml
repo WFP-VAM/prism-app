@@ -24,6 +24,8 @@ jobs:
         POSTGRES_PORT: 54321
         POSTGRES_USER: postgres
         POSTGRES_DB: postgres
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2

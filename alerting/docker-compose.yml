@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3'
 services:
   alerting-db:
     image: kartoza/postgis:12.1
@@ -12,7 +12,7 @@ services:
     volumes:
       - ./db_data:/var/lib/postgresql
   alerting-node:
-    image: node:12
+    build: ./
     restart: always
     volumes:
       - ./:/app
@@ -23,3 +23,5 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD='!ChangeMe!'
       - DATABASE_URL
+      - EMAIL_PASSWORD
+      - EMAIL_USER
