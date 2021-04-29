@@ -98,7 +98,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'wms',
 ];
 
-const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] | undefined => {
+const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
   const matchStr = 'layer-';
   const layerIds =
     map
@@ -107,7 +107,7 @@ const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] | undefined => {
       .map(l => l.id.split(matchStr)[1]) ?? [];
 
   if (layerIds.length === 0) {
-    return undefined;
+    return [];
   }
 
   const featureInfoLayers = Object.values(LayerDefinitions).filter(
@@ -115,7 +115,7 @@ const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] | undefined => {
   );
 
   if (featureInfoLayers.length === 0) {
-    return undefined;
+    return [];
   }
 
   return featureInfoLayers as WMSLayerProps[];
@@ -283,7 +283,7 @@ function MapView({ classes }: MapViewProps) {
           dispatch(hidePopup());
           // Get layers that have getFeatureInfo option.
           const featureInfoLayers = getActiveFeatureInfoLayers(map);
-          if (!featureInfoLayers || featureInfoLayers.length === 0) {
+          if (featureInfoLayers.length === 0) {
             return;
           }
 
