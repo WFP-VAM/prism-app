@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, useState } from 'react';
 import {
   Box,
+  Button,
   createStyles,
   Divider,
   Grid,
@@ -12,7 +13,6 @@ import {
   Typography,
   WithStyles,
   withStyles,
-  Button,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
@@ -117,12 +117,13 @@ function LegendItem({
     event: React.ChangeEvent<{}>,
     newValue: number | number[],
   ) => {
-    // TODO: temporary solution for opacity adjustment,
+    // TODO: temporary solution for opacity adjustment, we hope to edit react-mapbox in the future to support changing props
     // because the whole map will be re-rendered if using state directly
     if (map) {
-      const castedLayer = { type } as LayerType;
-      const [layerId, opacityType] = (layer => {
-        switch (layer.type) {
+      const [layerId, opacityType] = ((
+        layerType?: LayerType['type'],
+      ): [string, string] => {
+        switch (layerType) {
           case 'wms':
             return [`layer-${id}`, 'raster-opacity'];
           case 'impact':
@@ -130,13 +131,13 @@ function LegendItem({
             return [`layer-${id}-fill`, 'fill-opacity'];
           case 'point_data':
             return [`layer-${id}-circle`, 'circle-opacity'];
-          // analysis layer type is undefined
+          // analysis layer type is undefined TODO we should try make analysis a layer to remove edge cases like this
           case undefined:
             return ['layer-analysis-fill', 'fill-opacity'];
           default:
             throw new Error('Unknown map layer type');
         }
-      })(castedLayer);
+      })(type);
 
       map.setPaintProperty(layerId, opacityType, newValue);
       setOpacityValue(newValue);
