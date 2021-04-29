@@ -56,6 +56,11 @@ const theme: any = createMuiTheme({
         color: 'black',
       },
     },
+    MuiMenuItem: {
+      root: {
+        color: 'black',
+      },
+    },
     MuiAccordion: {
       root: {
         '&$expanded': {
