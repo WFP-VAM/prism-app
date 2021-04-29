@@ -124,6 +124,28 @@ function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
   return rawLayers as FlatLayer[];
 }
 
+export function formatWMSLegendUrl(baseUrl: string, serverLayerName: string) {
+  const legendOptions = {
+    fontAntiAliasing: true,
+    fontSize: 13,
+    fontName: 'Roboto Light',
+    forceLabels: 'on',
+    fontColor: '0x2D3436',
+  };
+
+  const requestParams = {
+    service: 'WMS',
+    request: 'GetLegendGraphic',
+    format: 'image/png',
+    layer: serverLayerName,
+    legend_options: Object.entries(legendOptions)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(';'),
+  };
+
+  return formatUrl(`${baseUrl}/ows`, requestParams);
+}
+
 /**
  * List capabilities for a WMS layer.
  * @param serverUri

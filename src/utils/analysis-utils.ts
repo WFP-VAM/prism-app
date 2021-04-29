@@ -146,9 +146,31 @@ export type ApiData = {
   geojson_out?: boolean;
 };
 
+/* eslint-disable camelcase */
+export type AlertRequest = {
+  alert_name: string;
+  alert_config: WMSLayerProps;
+  email: string;
+  max?: string;
+  min?: string;
+  prism_url: string;
+  zones: object;
+};
+
+export function getPrismUrl(): string {
+  const { hostname, origin } = window.location;
+  if (hostname === 'localhost') {
+    // Special case - if we're testing locally, then assume we are testing prism-mongolia
+    // This is to ensure we don't pollute the database with localhost URLs
+    return 'https://prism-mongolia.org';
+  }
+
+  return origin;
+}
+
 export async function fetchApiData(
   url: string,
-  apiData: ApiData,
+  apiData: ApiData | AlertRequest,
 ): Promise<Array<{ [k in string]: string | number }>> {
   return (
     await fetch(url, {
@@ -161,7 +183,19 @@ export async function fetchApiData(
       // body data type must match "Content-Type" header
       body: JSON.stringify(apiData),
     })
-  ).json();
+  )
+    .text()
+    .then(message => {
+      try {
+        return JSON.parse(message);
+      } catch (e) {
+        // In some cases the response isn't valid JSON.
+        // In those cases, just wrap the full response in an object.
+        return {
+          message,
+        };
+      }
+    });
 }
 
 export function scaleAndFilterAggregateData(

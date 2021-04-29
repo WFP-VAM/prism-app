@@ -1,5 +1,6 @@
 {
   "country": "Indonesia",
+  "alertFormActive": false,
   "serversUrls": {
     "wcs": ["https://mongolia.sibelius-datacube.org:5000"],
     "wms": ["https://vampire.idn.wfp.org:8081/geoserver/vampire/wms"]
