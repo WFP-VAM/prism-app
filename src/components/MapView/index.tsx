@@ -237,7 +237,7 @@ function MapView({ classes }: MapViewProps) {
       >
         <Grid item>
           <Analyser />
-          <AlertForm />
+          {appConfig.alertFormActive === true ? <AlertForm /> : null}
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
