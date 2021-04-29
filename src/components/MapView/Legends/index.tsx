@@ -16,6 +16,7 @@ import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
 import ColorIndicator from './ColorIndicator';
 import { LayerType } from '../../../config/types';
+import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
@@ -27,14 +28,27 @@ function Legends({ classes, layers }: LegendsProps) {
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const legendItems = [
-    ...layers.map(({ title, legend, legendText }) => {
-      if (!legend || !legendText) {
+    ...layers.map(layer => {
+      if (!layer.legend || !layer.legendText) {
         // this layer doesn't have a legend (likely boundary), so lets ignore.
         return null;
       }
+
+      // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
+      const legendUrl =
+        layer.type === 'wms' && layer.legend.length === 0
+          ? formatWMSLegendUrl(layer.baseUrl, layer.serverLayerName)
+          : undefined;
+
       return (
-        <LegendItem classes={classes} key={title} title={title} legend={legend}>
-          {legendText}
+        <LegendItem
+          classes={classes}
+          key={layer.title}
+          title={layer.title}
+          legend={layer.legend}
+          legendUrl={legendUrl}
+        >
+          {layer.legendText}
         </LegendItem>
       );
     }),
@@ -87,7 +101,13 @@ function Legends({ classes, layers }: LegendsProps) {
 }
 
 // Children here is legendText
-function LegendItem({ classes, title, legend, children }: LegendItemProps) {
+function LegendItem({
+  classes,
+  title,
+  legend,
+  children,
+  legendUrl,
+}: LegendItemProps) {
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
@@ -100,13 +120,17 @@ function LegendItem({ classes, title, legend, children }: LegendItemProps) {
 
           {legend && (
             <Grid item>
-              {legend.map(({ value, color }: any) => (
-                <ColorIndicator
-                  key={value}
-                  value={value as string}
-                  color={color as string}
-                />
-              ))}
+              {legendUrl ? (
+                <img src={legendUrl} alt={title} />
+              ) : (
+                legend.map(({ value, color }: any) => (
+                  <ColorIndicator
+                    key={value}
+                    value={value as string}
+                    color={color as string}
+                  />
+                ))
+              )}
             </Grid>
           )}
 
@@ -152,6 +176,7 @@ interface LegendItemProps
     PropsWithChildren<{}> {
   title: LayerType['title'];
   legend: LayerType['legend'];
+  legendUrl?: string;
 }
 
 export default withStyles(styles)(Legends);

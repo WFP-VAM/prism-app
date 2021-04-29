@@ -172,7 +172,7 @@
     "server_layer_name": "wld_gdacs_tc_events_buffers",
     "opacity": 0.9,
     "legend": [],
-    "legend_text": "",
+    "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
     "group": {
       "name": "Tropical Storms",
       "main": false
@@ -185,7 +185,7 @@
     "server_layer_name": "wld_gdacs_tc_events_nodes_moz",
     "opacity": 0.9,
     "legend": [],
-    "legend_text": "",
+    "legend_text": "Nodes visualize estimated maximum wind speed along a storm's path at various points in time. Source: GDACS",
     "group": {
       "name": "Tropical Storms",
       "main": true
@@ -198,7 +198,7 @@
     "server_layer_name": "wld_gdacs_tc_events_tracks",
     "opacity": 0.9,
     "legend": [],
-    "legend_text": "",
+    "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
     "group": {
       "name": "Tropical Storms",
       "main": false
