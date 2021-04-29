@@ -73,6 +73,7 @@ import {
 } from '../../utils/server-utils';
 import { addNotification } from '../../context/notificationStateSlice';
 import { getExtent } from './Layers/raster-utils';
+import AlertForm from './AlertForm';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -338,6 +339,7 @@ function MapView({ classes }: MapViewProps) {
       >
         <Grid item>
           <Analyser />
+          {appConfig.alertFormActive === true ? <AlertForm /> : null}
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
