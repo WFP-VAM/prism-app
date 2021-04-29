@@ -41,7 +41,6 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
     >) || {};
   const dispatch = useDispatch();
 
-  // TODO - Use bbox on the admin boundaries instead.
   const extent: Extent = getExtent(map);
   useEffect(() => {
     // For now, assume that if we have layer data, we don't need to refetch. This could change down the line if we

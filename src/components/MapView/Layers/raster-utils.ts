@@ -325,6 +325,7 @@ export function pixelsInFeature(
 }
 
 export function getExtent(map?: MapBoxMap): Extent {
+  // TODO - Use bbox on the admin boundaries instead.
   const bounds = map && map.getBounds();
   const minX = bounds ? bounds.getWest() : 0;
   const maxX = bounds ? bounds.getEast() : 0;
