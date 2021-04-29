@@ -166,14 +166,14 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminLevelLocalNames: string[]; // Same as above, local to country
 }
 
-export enum labelType {
+export enum LabelType {
   Date = 'date',
   Text = 'text',
   Number = 'number',
 }
 
 interface featureInfoProps {
-  type: labelType;
+  type: LabelType;
   label: string;
 }
 

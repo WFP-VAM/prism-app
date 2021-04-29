@@ -8,7 +8,7 @@ import {
   ImpactLayerProps,
   WMSLayerProps,
   FeatureInfoType,
-  labelType,
+  LabelType,
 } from '../config/types';
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
@@ -275,8 +275,8 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
   return merge({}, ...layerDates);
 }
 
-function parseValue(value: string, type: labelType): string {
-  if (type === labelType.Date) {
+function parseValue(value: string, type: LabelType): string {
+  if (type === LabelType.Date) {
     return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
   }
 
