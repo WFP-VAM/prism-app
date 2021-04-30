@@ -47,6 +47,7 @@ function Legends({ classes, layers }: LegendsProps) {
         <LegendItem
           classes={classes}
           key={layer.title}
+          id={layer.id}
           title={layer.title}
           legend={layer.legend}
           legendUrl={legendUrl}
