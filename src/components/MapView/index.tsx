@@ -31,17 +31,9 @@ import {
   WMSLayer,
 } from './Layers';
 
-import {
-  DiscriminateUnion,
-  LayerType,
-  WMSLayerProps,
-  FeatureInfoType,
-} from '../../config/types';
+import { DiscriminateUnion, LayerType } from '../../config/types';
 
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../config/utils';
+import { getBoundaryLayerSingleton } from '../../config/utils';
 
 import DateSelector from './DateSelector';
 import { findClosestDate } from './DateSelector/utils';
@@ -72,7 +64,7 @@ import {
   makeFeatureInfoRequest,
 } from '../../utils/server-utils';
 import { addNotification } from '../../context/notificationStateSlice';
-import { getExtent } from './Layers/raster-utils';
+import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 import AlertForm from './AlertForm';
 
 const MapboxMap = ReactMapboxGl({
@@ -97,50 +89,6 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'point_data',
   'wms',
 ];
-
-const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
-  const matchStr = 'layer-';
-  const layerIds =
-    map
-      .getStyle()
-      .layers?.filter(l => l.id.startsWith(matchStr))
-      .map(l => l.id.split(matchStr)[1]) ?? [];
-
-  if (layerIds.length === 0) {
-    return [];
-  }
-
-  const featureInfoLayers = Object.values(LayerDefinitions).filter(
-    l => layerIds.includes(l.id) && l.type === 'wms' && l.featureInfoProps,
-  );
-
-  if (featureInfoLayers.length === 0) {
-    return [];
-  }
-
-  return featureInfoLayers as WMSLayerProps[];
-};
-
-const getFeatureInfoParams = (
-  map: Map,
-  evt: any,
-  date: string,
-): FeatureInfoType => {
-  const { x, y } = evt.point;
-  const bbox = getExtent(map);
-  const { clientWidth, clientHeight } = map.getContainer();
-
-  const params = {
-    bbox,
-    x: Math.floor(x),
-    y: Math.floor(y),
-    width: clientWidth,
-    height: clientHeight,
-    time: date,
-  };
-
-  return params;
-};
 
 function MapView({ classes }: MapViewProps) {
   const selectedLayers = useSelector(layersSelector);
