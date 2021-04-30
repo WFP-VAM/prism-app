@@ -1,5 +1,6 @@
 {
   "country": "Mongolia",
+  "alertFormActive": false,
   "serversUrls": {
     "wms": ["https://mongolia.sibelius-datacube.org:5000/wms"]
   },

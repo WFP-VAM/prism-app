@@ -1,5 +1,6 @@
 {
   "country": "Myanmar",
+  "alertFormActive": false,
   "map": {
     "latitude": 17.346,
     "longitude": 97.557,
@@ -13,26 +14,65 @@
   },
   "categories": {
     "hazards": {
-      "rainfall": ["rainfall_dekad", "rain_anomaly_dekad", "rain_anomaly_monthly", "rainfall_agg_month", "streak_dry_days", "days_heavy_rain", "streak_heavy_rain"],
+      "rainfall": [
+        "rainfall_dekad",
+        "rain_anomaly_dekad",
+        "rain_anomaly_monthly",
+        "rainfall_agg_month",
+        "streak_dry_days",
+        "days_heavy_rain",
+        "streak_heavy_rain"
+      ],
       "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"],
-      "temperature": ["lst_daytime","lst_anomaly","lst_amplitude"],
+      "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"],
       "tropical_storms": ["adamts_main"]
     },
     "vulnerability": {
-      "vulnerability_index": ["multidimensional_disadvantage_index","inform"],
-      "vulnerabile_populations": ["age_dependency_ratio","female_headed_hhs","disability_prev_rate"],
-      "living_conditions": ["improved_sanitation","improved_drinking_water","poor_quality_house"],
-      "hazard_vulnerability": ["vulnerability_drought", "vulnerability_floods", "vulnerability_storms"],
-      "hazard_sensitivity": ["sensitvity_drought", "sensitvity_flood", "sensitvity_storms"]
+      "vulnerability_index": ["multidimensional_disadvantage_index", "inform"],
+      "vulnerabile_populations": [
+        "age_dependency_ratio",
+        "female_headed_hhs",
+        "disability_prev_rate"
+      ],
+      "living_conditions": [
+        "improved_sanitation",
+        "improved_drinking_water",
+        "poor_quality_house"
+      ],
+      "hazard_vulnerability": [
+        "vulnerability_drought",
+        "vulnerability_floods",
+        "vulnerability_storms"
+      ],
+      "hazard_sensitivity": [
+        "sensitvity_drought",
+        "sensitvity_flood",
+        "sensitvity_storms"
+      ]
     },
     "exposure": {
       "population": ["total_pop"],
-      "historical_climate_exposure": ["population_exposed_historical_river_floods", "population_exposed_historical_storm_surge"]
+      "historical_climate_exposure": [
+        "population_exposed_historical_river_floods",
+        "population_exposed_historical_storm_surge"
+      ]
     },
     "risk": {
-      "wfp_hazard_risk": ["wfp_risk_drought", "wfp_risk_floods", "wfp_risk_storms"],
-      "mudra_hazard_risk": ["mudra_risk_river_floods", "mudra_risk_cyclone_winds", "mudra_risk_cyclone_floods"],
-      "expected_annual_damage": ["annual_damage_river_floods", "annual_damage_cyclone_winds", "annual_damage_storm_surges"]
+      "wfp_hazard_risk": [
+        "wfp_risk_drought",
+        "wfp_risk_floods",
+        "wfp_risk_storms"
+      ],
+      "mudra_hazard_risk": [
+        "mudra_risk_river_floods",
+        "mudra_risk_cyclone_winds",
+        "mudra_risk_cyclone_floods"
+      ],
+      "expected_annual_damage": [
+        "annual_damage_river_floods",
+        "annual_damage_cyclone_winds",
+        "annual_damage_storm_surges"
+      ]
     }
   }
 }

@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
 import { LayerType } from '../../../config/types';
+import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
@@ -30,22 +31,29 @@ function Legends({ classes, layers }: LegendsProps) {
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const legendItems = [
-    ...layers.map(({ id, title, legend, legendText, type, opacity }) => {
-      if (!legend || !legendText) {
+    ...layers.map(layer => {
+      if (!layer.legend || !layer.legendText) {
         // this layer doesn't have a legend (likely boundary), so lets ignore.
         return null;
       }
+
+      // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
+      const legendUrl =
+        layer.type === 'wms' && layer.legend.length === 0
+          ? formatWMSLegendUrl(layer.baseUrl, layer.serverLayerName)
+          : undefined;
+
       return (
         <LegendItem
           classes={classes}
-          key={title}
-          id={id}
-          title={title}
-          legend={legend}
-          type={type}
-          opacity={opacity}
+          key={layer.title}
+          title={layer.title}
+          legend={layer.legend}
+          legendUrl={legendUrl}
+          type={layer.type}
+          opacity={layer.opacity}
         >
-          {legendText}
+          {layer.legendText}
         </LegendItem>
       );
     }),
@@ -107,6 +115,7 @@ function LegendItem({
   type,
   opacity: initialOpacity,
   children,
+  legendUrl,
 }: LegendItemProps) {
   const map = useSelector(mapSelector);
   const [opacity, setOpacityValue] = useState<number | number[]>(
@@ -168,14 +177,18 @@ function LegendItem({
           </Grid>
           {legend && (
             <Grid item>
-              {legend.map(({ value, color }) => (
-                <ColorIndicator
-                  key={value}
-                  value={value as string}
-                  color={color}
-                  opacity={opacity as number}
-                />
-              ))}
+              {legendUrl ? (
+                <img src={legendUrl} alt={title} />
+              ) : (
+                legend.map(({ value, color }: any) => (
+                  <ColorIndicator
+                    key={value}
+                    value={value as string}
+                    color={color as string}
+                    opacity={opacity as number}
+                  />
+                ))
+              )}
             </Grid>
           )}
 
@@ -226,6 +239,7 @@ interface LegendItemProps
   id?: LayerType['id'];
   title: LayerType['title'];
   legend: LayerType['legend'];
+  legendUrl?: string;
   type?: LayerType['type'];
   opacity: LayerType['opacity'];
 }

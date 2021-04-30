@@ -13,3 +13,5 @@ flake8==3.8.3
 flake8-import-order==0.18.1
 flake8-quotes==3.2.0
 pydocstyle==5.0.2
+psycopg2==2.8.6
+sqlalchemy==1.4.5
