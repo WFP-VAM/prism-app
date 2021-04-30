@@ -275,7 +275,12 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
   return merge({}, ...layerDates);
 }
 
-function parseValue(value: string, type: LabelType): string {
+/**
+ * Format value from featureInfo response based on LabelType provided
+ *
+ * @return a formatted string
+ */
+function formatFeatureInfo(value: string, type: LabelType): string {
   if (type === LabelType.Date) {
     return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
   }
@@ -327,7 +332,7 @@ function fetchFeatureInfo(
           .reduce(
             (obj, key) => ({
               ...obj,
-              [featureInfoProps[key].label]: parseValue(
+              [featureInfoProps[key].label]: formatFeatureInfo(
                 properties[key],
                 featureInfoProps[key].type,
               ),
