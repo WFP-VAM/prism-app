@@ -292,15 +292,73 @@ function formatFeatureInfo(value: string, type: LabelType): string {
   return value;
 }
 
+/**
+ * Executes a getFeatureInfo request
+ *
+ * @return object of key: string - value: string with formatted values given label type.
+ */
+async function runFeatureInfoRequest(
+  url: string,
+  wmsParams: requestFeatureInfo,
+  layers: WMSLayerProps[],
+): Promise<{ [name: string]: string }> {
+  // Transform to snake case.
+  const toSnakeWmsParams = Object.entries(wmsParams).reduce(
+    (obj, item) => ({
+      ...obj,
+      [item[0].replace(
+        /[A-Z]/g,
+        letter => `_${letter.toLowerCase()}`,
+      )]: item[1],
+    }),
+    {},
+  );
+
+  const res = await fetch(formatUrl(`${url}/ows`, toSnakeWmsParams));
+  const resJson: GeoJSON.FeatureCollection = await res.json();
+
+  const parsedProps = resJson.features.map(feature => {
+    // Get fields from layer configuration.
+    const [layerId] = (feature?.id as string).split('.');
+
+    const featureInfoProps =
+      layers?.find(l => l.serverLayerName === layerId)?.featureInfoProps || {};
+
+    const searchProps = Object.keys(featureInfoProps);
+
+    const properties = feature.properties ?? {};
+
+    return Object.keys(properties)
+      .filter(k => searchProps.includes(k))
+      .reduce(
+        (obj, key) => ({
+          ...obj,
+          [featureInfoProps[key].label]: formatFeatureInfo(
+            properties[key],
+            featureInfoProps[key].type,
+          ),
+        }),
+        {},
+      );
+  });
+
+  return parsedProps.reduce((obj, item) => ({ ...obj, ...item }), {});
+}
+
+/**
+ * This function builds and runs the getFeatureInfo request given the parameters
+ *
+ * @return Promise with returned object from request
+ */
 function fetchFeatureInfo(
   layers: WMSLayerProps[],
   url: string,
   params: FeatureInfoType,
-): Promise<{ [name: string]: any }> {
+): Promise<{ [name: string]: string }> {
   const requestLayers = layers.filter(l => l.baseUrl === url);
   const layerNames = requestLayers.map(l => l.serverLayerName).join(',');
 
-  const requestParams: requestFeatureInfo = {
+  const requestParams = {
     service: 'WMS',
     request: 'getFeatureInfo',
     version: '1.1.1',
@@ -314,56 +372,20 @@ function fetchFeatureInfo(
     styles: '',
   };
 
-  const wmsParams = { ...params, ...requestParams };
+  const wmsParams: requestFeatureInfo = { ...params, ...requestParams };
 
-  // Transform to snake case.
-  const toSnakeWmsParams = Object.entries(wmsParams).reduce(
-    (obj, item) => ({
-      ...obj,
-      [item[0].replace(
-        /[A-Z]/g,
-        letter => `_${letter.toLowerCase()}`,
-      )]: item[1],
-    }),
-    {},
-  );
-
-  return fetch(formatUrl(`${url}/ows`, toSnakeWmsParams))
-    .then(r => r.json())
-    .then((s: GeoJSON.FeatureCollection) =>
-      s.features.map(feature => {
-        // Get fields from layer configuration.
-        const [layerId] = (feature?.id as string).split('.');
-
-        const featureInfoProps =
-          layers?.find(l => l.serverLayerName === layerId)?.featureInfoProps ||
-          {};
-
-        const searchProps = Object.keys(featureInfoProps);
-
-        const properties = feature.properties ?? {};
-
-        return Object.keys(properties)
-          .filter(k => searchProps.includes(k))
-          .reduce(
-            (obj, key) => ({
-              ...obj,
-              [featureInfoProps[key].label]: formatFeatureInfo(
-                properties[key],
-                featureInfoProps[key].type,
-              ),
-            }),
-            {},
-          );
-      }),
-    )
-    .then(r => r.reduce((obj, item) => ({ ...obj, ...item }), {}));
+  return runFeatureInfoRequest(url, wmsParams, layers);
 }
 
+/**
+ * Collects all urls to create a getFeatureInfo request.
+ *
+ * @return Promise with returned object from request
+ */
 export async function makeFeatureInfoRequest(
   layers: WMSLayerProps[],
   params: FeatureInfoType,
-): Promise<{ [name: string]: any } | null> {
+): Promise<{ [name: string]: string } | null> {
   const urls = [...new Set(layers.map(l => l.baseUrl))];
 
   const requests = urls.map(url => fetchFeatureInfo(layers, url, params));
