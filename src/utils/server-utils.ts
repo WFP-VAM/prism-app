@@ -3,7 +3,11 @@ import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, merge, union } from 'lodash';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
-import type { AvailableDates, PointDataLayerProps } from '../config/types';
+import type {
+  AvailableDates,
+  PointDataLayerProps,
+  requestFeatureInfo,
+} from '../config/types';
 import {
   ImpactLayerProps,
   WMSLayerProps,
@@ -296,23 +300,35 @@ function fetchFeatureInfo(
   const requestLayers = layers.filter(l => l.baseUrl === url);
   const layerNames = requestLayers.map(l => l.serverLayerName).join(',');
 
-  const requestParams = {
+  const requestParams: requestFeatureInfo = {
     service: 'WMS',
     request: 'getFeatureInfo',
     version: '1.1.1',
     exceptions: 'application/json',
-    info_format: 'application/json',
+    infoFormat: 'application/json',
     layers: layerNames,
     srs: 'EPSG:4326',
-    query_layers: layerNames,
-    feature_count: 1,
+    queryLayers: layerNames,
+    featureCount: 1,
     format: 'image/png',
     styles: '',
   };
 
   const wmsParams = { ...params, ...requestParams };
 
-  return fetch(formatUrl(`${url}/ows`, wmsParams))
+  // Transform to snake case.
+  const toSnakeWmsParams = Object.entries(wmsParams).reduce(
+    (obj, item) => ({
+      ...obj,
+      [item[0].replace(
+        /[A-Z]/g,
+        letter => `_${letter.toLowerCase()}`,
+      )]: item[1],
+    }),
+    {},
+  );
+
+  return fetch(formatUrl(`${url}/ows`, toSnakeWmsParams))
     .then(r => r.json())
     .then((s: GeoJSON.FeatureCollection) =>
       s.features.map(feature => {

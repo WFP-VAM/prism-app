@@ -357,3 +357,17 @@ export interface FeatureInfoType {
   width: number;
   height: number;
 }
+
+export interface requestFeatureInfo {
+  service: string;
+  request: string;
+  version: string;
+  exceptions: string;
+  infoFormat: string;
+  layers: string;
+  srs: string;
+  queryLayers: string;
+  featureCount: number;
+  format: string;
+  styles: string;
+}
