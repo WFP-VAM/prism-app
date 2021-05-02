@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -88,20 +83,25 @@ function Analyser({ classes }: AnalyserProps) {
 
   // form elements
   const [form, setForm] = useAnalyserReducer();
-  
+
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
-    const dates = form.hazardLayerId !== 'placeholder'
-      ? availableDates[
-          (LayerDefinitions[form.hazardLayerId] as WMSLayerProps)?.serverLayerName
-        ]
-      : null;
+    const dates =
+      form.hazardLayerId !== 'placeholder'
+        ? availableDates[
+            (LayerDefinitions[form.hazardLayerId] as WMSLayerProps)
+              ?.serverLayerName
+          ]
+        : null;
     if (!dates || dates.length === 0) {
       setForm({ type: ActionTypes.SET_SELECTED_DATE, date: null });
     } else {
-      setForm({ type: ActionTypes.SET_SELECTED_DATE, date: dates[dates.length - 1] });
+      setForm({
+        type: ActionTypes.SET_SELECTED_DATE,
+        date: dates[dates.length - 1],
+      });
     }
-  }, [availableDates, form.hazardLayerId]);
+  }, [availableDates, form.hazardLayerId, setForm]);
 
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData) {
@@ -125,6 +125,8 @@ function Analyser({ classes }: AnalyserProps) {
   const clearAnalysis = () => {
     dispatch(clearAnalysisResult());
 
+    setForm({ type: ActionTypes.CLEAR_FORM });
+
     // Reset URL in browser.
     history.replace('');
   };
@@ -139,14 +141,19 @@ function Analyser({ classes }: AnalyserProps) {
       throw new Error('Date must be given to run analysis');
     }
 
-    if (form.hazardLayerId === 'placeholder' || form.baselineLayerId === 'placeholder') {
+    if (
+      form.hazardLayerId === 'placeholder' ||
+      form.baselineLayerId === 'placeholder'
+    ) {
       throw new Error('Layer should be selected to run analysis');
     }
 
     // Build URL string.
-    const analyserShareURL: string = Object.keys(form).map((prop: string) => {
-      return [prop, form[prop]].map(encodeURIComponent).join('=');
-    }).join('&');
+    const analyserShareURL: string = Object.keys(form)
+      .map((prop: string) => {
+        return [prop, form[prop]].map(encodeURIComponent).join('=');
+      })
+      .join('&');
 
     // Make sure to run teh nalyser onoly when needed.
     if (activeUrl.current !== analyserShareURL) {
@@ -159,7 +166,7 @@ function Analyser({ classes }: AnalyserProps) {
       const selectedBaselineLayer = LayerDefinitions[
         form.baselineLayerId
       ] as NSOLayerProps;
-  
+
       const params: AnalysisDispatchParams = {
         hazardLayer: selectedHazardLayer,
         baselineLayer: selectedBaselineLayer,
@@ -171,17 +178,17 @@ function Analyser({ classes }: AnalyserProps) {
           below: parseFloat(form.belowThreshold) || undefined,
         },
       };
-  
+
       await dispatch(requestAndStoreAnalysis(params));
 
       // Set share URL into the browser.
-      history.replace(`?${analyserShareURL}`);
+      history.replace(`?share=true&${analyserShareURL}`);
     }
   };
 
   useEffect(() => {
     // Early return if data not loaded.
-    if ((!boundaryLayerData) || (!availableDates)){
+    if (!boundaryLayerData || !availableDates) {
       return;
     }
 
@@ -192,31 +199,50 @@ function Analyser({ classes }: AnalyserProps) {
       statisticParam,
       aboveThresholdParam,
       belowThresholdParam,
+      fromURL,
     } = extractPropsFromURL(history.location.search);
 
-    // Correct the statistic if invalid.
-    const statisticCorrected: AggregationOperations = isStatistic(statisticParam) ? statisticParam as AggregationOperations : AggregationOperations.Mean;
+    // Set data from the URL.
+    if (fromURL) {
+      // Correct the statistic if invalid.
+      let statisticCorrected: AggregationOperations =
+        AggregationOperations.Mean;
 
-    // Set all from data from the URL.
-    setForm({
-      type: ActionTypes.SET_FORM,
-      params: {
-        hazardLayerId: hazardLayerParamId as LayerKey,
-        baselineLayerId: baselineLayerParamId as LayerKey,
-        statistic: statisticCorrected,
-        selectedDate: selectedParamDate,
-        belowThreshold: belowThresholdParam,
-        aboveThreshold: aboveThresholdParam,
+      if (isStatistic(statisticParam)) {
+        // eslint-disable-next-line fp/no-mutation
+        statisticCorrected = statisticParam as AggregationOperations;
       }
-    });
 
-    // Avoid Running Analyser if date is invalid.
-    if (form.selectedDate) {
-      runAnalyser();
+      // Set all from data from the URL.
+      setForm({
+        type: ActionTypes.SET_FORM,
+        params: {
+          hazardLayerId: hazardLayerParamId as LayerKey,
+          baselineLayerId: baselineLayerParamId as LayerKey,
+          statistic: statisticCorrected,
+          selectedDate: selectedParamDate,
+          belowThreshold: belowThresholdParam,
+          aboveThreshold: aboveThresholdParam,
+        },
+      });
+
+      // Avoid Running Analyser if required data are invalid or it's not a share link.
+      if (
+        form.hazardLayerId !== 'placeholder' &&
+        form.baselineLayerId !== 'placeholder' &&
+        form.selectedDate &&
+        fromURL
+      ) {
+        runAnalyser();
+      }
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boundaryLayerData, availableDates, history.location.search, form.selectedDate]);
+  }, [
+    boundaryLayerData,
+    availableDates,
+    history.location.search,
+    form.selectedDate,
+  ]);
 
   return (
     <div className={classes.analyser}>
@@ -249,9 +275,9 @@ function Analyser({ classes }: AnalyserProps) {
                   type="wms"
                   value={form.hazardLayerId}
                   setValue={(paramLayerKey: LayerKey) => {
-                    setForm({ 
-                      type: ActionTypes.SET_HAZARD_LAYER_ID, 
-                      layerKey: paramLayerKey 
+                    setForm({
+                      type: ActionTypes.SET_HAZARD_LAYER_ID,
+                      layerKey: paramLayerKey,
                     });
                   }}
                   title="Hazard Layer"
@@ -265,10 +291,13 @@ function Analyser({ classes }: AnalyserProps) {
                   <RadioGroup
                     name="statistics"
                     value={form.statistic}
-                    onChange={(paramEvent: React.ChangeEvent<HTMLInputElement>) => {
-                      setForm({ 
-                        type: ActionTypes.SET_STATISTIC, 
-                        statistic: paramEvent.target.value as AggregationOperations 
+                    onChange={(
+                      paramEvent: React.ChangeEvent<HTMLInputElement>,
+                    ) => {
+                      setForm({
+                        type: ActionTypes.SET_STATISTIC,
+                        statistic: paramEvent.target
+                          .value as AggregationOperations,
                       });
                     }}
                     row
@@ -283,9 +312,9 @@ function Analyser({ classes }: AnalyserProps) {
                   type="nso"
                   value={form.baselineLayerId}
                   setValue={(paramLayerKey: LayerKey) => {
-                    setForm({ 
-                      type: ActionTypes.SET_BASELINE_LAYER_ID, 
-                      layerKey: paramLayerKey 
+                    setForm({
+                      type: ActionTypes.SET_BASELINE_LAYER_ID,
+                      layerKey: paramLayerKey,
                     });
                   }}
                   title="Baseline Layer"
@@ -303,11 +332,13 @@ function Analyser({ classes }: AnalyserProps) {
                   label="Min"
                   type="number"
                   value={form.aboveThreshold}
-                  onChange={(paramEvent: React.ChangeEvent<HTMLInputElement>) => {
+                  onChange={(
+                    paramEvent: React.ChangeEvent<HTMLInputElement>,
+                  ) => {
                     setForm({
-                      type: ActionTypes.SET_ABOVE_THRESHOLD, 
-                      value: paramEvent.target.value
-                    })
+                      type: ActionTypes.SET_ABOVE_THRESHOLD,
+                      value: paramEvent.target.value,
+                    });
                   }}
                   variant="filled"
                 />
@@ -316,11 +347,13 @@ function Analyser({ classes }: AnalyserProps) {
                   label="Max"
                   className={classes.numberField}
                   value={form.belowThreshold}
-                  onChange={(paramEvent: React.ChangeEvent<HTMLInputElement>) => {
+                  onChange={(
+                    paramEvent: React.ChangeEvent<HTMLInputElement>,
+                  ) => {
                     setForm({
-                      type: ActionTypes.SET_BELOW_THRESHOLD, 
-                      value: paramEvent.target.value
-                    })
+                      type: ActionTypes.SET_BELOW_THRESHOLD,
+                      value: paramEvent.target.value,
+                    });
                   }}
                   type="number"
                   variant="filled"
@@ -329,9 +362,14 @@ function Analyser({ classes }: AnalyserProps) {
               <div className={classes.analyserOptions}>
                 <Typography variant="body2">Date</Typography>
                 <DatePicker
-                  selected={form.selectedDate ? new Date(form.selectedDate) : null}
-                  onChange={(date) => {
-                    setForm({ type: ActionTypes.SET_SELECTED_DATE, date: date?.getTime() || form.selectedDate });
+                  selected={
+                    form.selectedDate ? new Date(form.selectedDate) : null
+                  }
+                  onChange={date => {
+                    setForm({
+                      type: ActionTypes.SET_SELECTED_DATE,
+                      date: date?.getTime() || form.selectedDate,
+                    });
                   }}
                   maxDate={new Date()}
                   todayButton="Today"
@@ -344,8 +382,9 @@ function Analyser({ classes }: AnalyserProps) {
                   includeDates={
                     form.hazardLayerId !== 'placeholder'
                       ? availableDates[
-                          (LayerDefinitions[form.hazardLayerId] as WMSLayerProps)
-                            .serverLayerName
+                          (LayerDefinitions[
+                            form.hazardLayerId
+                          ] as WMSLayerProps).serverLayerName
                         ]?.map(d => new Date(d)) || []
                       : []
                   }

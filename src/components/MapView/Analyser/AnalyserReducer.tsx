@@ -1,15 +1,19 @@
 import { useReducer } from 'react';
-import { LayerKey, AggregationOperations, isLayerKey } from '../../../config/types';
+import {
+  LayerKey,
+  AggregationOperations,
+  isLayerKey,
+} from '../../../config/types';
 
 interface AnalyserForm {
-  [key: string]: any
-  hazardLayerId: LayerKey | 'placeholder',
-  baselineLayerId: LayerKey | 'placeholder',
-  statistic: AggregationOperations,
-  selectedDate: number | null,
-  belowThreshold: string,
-  aboveThreshold: string,
-  thresholdError: string | null,
+  [key: string]: any;
+  hazardLayerId: LayerKey | 'placeholder';
+  baselineLayerId: LayerKey | 'placeholder';
+  statistic: AggregationOperations;
+  selectedDate: number | null;
+  belowThreshold: string;
+  aboveThreshold: string;
+  thresholdError: string | null;
 }
 
 // Initial form values.
@@ -24,50 +28,60 @@ const initForm: AnalyserForm = {
 };
 
 export enum ActionTypes {
-  SET_FORM = "SET_FORM",
-  SET_HAZARD_LAYER_ID = "SET_HAZARD_LAYER_ID",
-  SET_BASELINE_LAYER_ID = "SET_BASELINE_LAYER_ID",
-  SET_SELECTED_DATE = "SET_SELECTED_DATE",
-  SET_STATISTIC = "SET_STATISTIC",
-  SET_BELOW_THRESHOLD = "SET_BELOW_THRESHOLD",
-  SET_ABOVE_THRESHOLD = "SET_ABOVE_THRESHOLD",
+  SET_FORM = 'SET_FORM',
+  SET_HAZARD_LAYER_ID = 'SET_HAZARD_LAYER_ID',
+  SET_BASELINE_LAYER_ID = 'SET_BASELINE_LAYER_ID',
+  SET_SELECTED_DATE = 'SET_SELECTED_DATE',
+  SET_STATISTIC = 'SET_STATISTIC',
+  SET_BELOW_THRESHOLD = 'SET_BELOW_THRESHOLD',
+  SET_ABOVE_THRESHOLD = 'SET_ABOVE_THRESHOLD',
+  CLEAR_FORM = 'CLEAR_FORM',
 }
 
-type AnlayserAction = {
-  type: ActionTypes.SET_FORM,
-  params: {
-    hazardLayerId: LayerKey | 'placeholder',
-    baselineLayerId: LayerKey | 'placeholder',
-    statistic: AggregationOperations,
-    selectedDate: number | null,
-    belowThreshold: string,
-    aboveThreshold: string
-  }
-} | {
-  type: ActionTypes.SET_HAZARD_LAYER_ID,
-  layerKey: LayerKey
-} | {
-  type: ActionTypes.SET_BASELINE_LAYER_ID,
-  layerKey: LayerKey
-} | {
-  type: ActionTypes.SET_STATISTIC,
-  statistic: AggregationOperations
-} | {
-  type: ActionTypes.SET_SELECTED_DATE,
-  date: null | number
-} | {
-  type: ActionTypes.SET_BELOW_THRESHOLD,
-  value: string
-} | {
-  type: ActionTypes.SET_ABOVE_THRESHOLD,
-  value: string
-};
+type AnlayserAction =
+  | {
+      type: ActionTypes.SET_FORM;
+      params: {
+        hazardLayerId: LayerKey | 'placeholder';
+        baselineLayerId: LayerKey | 'placeholder';
+        statistic: AggregationOperations;
+        selectedDate: number | null;
+        belowThreshold: string;
+        aboveThreshold: string;
+      };
+    }
+  | {
+      type: ActionTypes.SET_HAZARD_LAYER_ID;
+      layerKey: LayerKey;
+    }
+  | {
+      type: ActionTypes.SET_BASELINE_LAYER_ID;
+      layerKey: LayerKey;
+    }
+  | {
+      type: ActionTypes.SET_STATISTIC;
+      statistic: AggregationOperations;
+    }
+  | {
+      type: ActionTypes.SET_SELECTED_DATE;
+      date: null | number;
+    }
+  | {
+      type: ActionTypes.SET_BELOW_THRESHOLD;
+      value: string;
+    }
+  | {
+      type: ActionTypes.SET_ABOVE_THRESHOLD;
+      value: string;
+    }
+  | {
+      type: ActionTypes.CLEAR_FORM;
+    };
 
 const analyserReducer = (state: AnalyserForm, payload: AnlayserAction) => {
   switch (payload.type) {
     case ActionTypes.SET_FORM: {
       const payloadParams = payload.params;
-
       return {
         ...state,
         hazardLayerId: payloadParams.hazardLayerId,
@@ -75,14 +89,14 @@ const analyserReducer = (state: AnalyserForm, payload: AnlayserAction) => {
         statistic: payloadParams.statistic,
         selectedDate: payloadParams.selectedDate,
         belowThreshold: payloadParams.belowThreshold,
-        aboveThreshold: payloadParams.aboveThreshold
+        aboveThreshold: payloadParams.aboveThreshold,
       };
     }
     case ActionTypes.SET_HAZARD_LAYER_ID: {
       if (isLayerKey(payload.layerKey)) {
         return {
-          ...state,  
-          hazardLayerId: payload.layerKey
+          ...state,
+          hazardLayerId: payload.layerKey,
         };
       }
       return state;
@@ -90,38 +104,55 @@ const analyserReducer = (state: AnalyserForm, payload: AnlayserAction) => {
     case ActionTypes.SET_BASELINE_LAYER_ID: {
       if (isLayerKey(payload.layerKey)) {
         return {
-          ...state,  
-          baselineLayerId: payload.layerKey
+          ...state,
+          baselineLayerId: payload.layerKey,
         };
       }
       return state;
     }
-    case ActionTypes.SET_STATISTIC: { 
+    case ActionTypes.SET_STATISTIC: {
       return {
-        ...state,  
-        statistic: payload.statistic
+        ...state,
+        statistic: payload.statistic,
       };
     }
     case ActionTypes.SET_SELECTED_DATE: {
       return {
-        ...state,  
-        selectedDate: payload.date
+        ...state,
+        selectedDate: payload.date,
       };
     }
     case ActionTypes.SET_BELOW_THRESHOLD: {
-      const thresholdErrorString: string | null = (state.belowThresholdValue < payload.value) ? 'Min threshold is larger than Max!' : null;
+      const thresholdErrorString: string | null =
+        state.belowThresholdValue < payload.value
+          ? 'Min threshold is larger than Max!'
+          : null;
       return {
-        ...state,  
+        ...state,
         belowThreshold: payload.value,
-        thresholdError: thresholdErrorString
+        thresholdError: thresholdErrorString,
       };
     }
     case ActionTypes.SET_ABOVE_THRESHOLD: {
-      const thresholdErrorString: string | null = (payload.value < state.belowThreshold) ? 'Min threshold is larger than Max!' : null;
+      const thresholdErrorString: string | null =
+        payload.value < state.belowThreshold
+          ? 'Min threshold is larger than Max!'
+          : null;
       return {
-        ...state,  
+        ...state,
         aboveThreshold: payload.value,
-        thresholdError: thresholdErrorString
+        thresholdError: thresholdErrorString,
+      };
+    }
+    case ActionTypes.CLEAR_FORM: {
+      return {
+        ...state,
+        hazardLayerId: initForm.hazardLayerId,
+        baselineLayerId: initForm.baselineLayerId,
+        statistic: initForm.statistic,
+        selectedDate: initForm.selectedDate,
+        belowThreshold: initForm.belowThreshold,
+        aboveThreshold: initForm.aboveThreshold,
       };
     }
     default:

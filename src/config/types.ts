@@ -214,7 +214,7 @@ export enum AggregationOperations {
 
 export const isStatistic = (stat: string | null): boolean => {
   return stat ? stat in AggregationOperations : false;
-}
+};
 
 export type ThresholdDefinition = { below?: number; above?: number };
 

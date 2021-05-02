@@ -6,6 +6,7 @@ export const extractPropsFromURL = (path: string) => {
   const statisticParam = params.get('statistic');
   const aboveThresholdParam: string = params.get('aboveThreshold') || '0';
   const belowThresholdParam: string = params.get('belowThreshold') || '0';
+  const fromURL: boolean = params.get('share') === 'true';
 
   return {
     hazardLayerParamId,
@@ -14,5 +15,6 @@ export const extractPropsFromURL = (path: string) => {
     statisticParam,
     aboveThresholdParam,
     belowThresholdParam,
+    fromURL,
   };
 };
