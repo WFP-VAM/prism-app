@@ -212,8 +212,9 @@ export enum AggregationOperations {
   Median = 'median',
 }
 
-export const isStatistic = (stat: string): stat is AggregationOperations =>
-  stat in AggregationOperations;
+export const isStatistic = (stat: string | null): boolean => {
+  return stat ? stat in AggregationOperations : false;
+}
 
 export type ThresholdDefinition = { below?: number; above?: number };
 

@@ -1,11 +1,11 @@
 export const extractPropsFromURL = (path: string) => {
   const params = new URLSearchParams(path);
-  const hazardLayerParamId = params.get('hazardLayerId');
-  const baselineLayerParamId = params.get('baselineLayerId');
-  const selectedParamDate: number = Number(params.get('date'));
+  const hazardLayerParamId = params.get('hazardLayerId') || 'placeholder';
+  const baselineLayerParamId = params.get('baselineLayerId') || 'placeholder';
+  const selectedParamDate = Number(params.get('selectedDate')) || null;
   const statisticParam = params.get('statistic');
-  const aboveThresholdParam: string = params.get('aboveThreshold') || '';
-  const belowThresholdParam: string = params.get('belowThreshold') || '';
+  const aboveThresholdParam: string = params.get('aboveThreshold') || '0';
+  const belowThresholdParam: string = params.get('belowThreshold') || '0';
 
   return {
     hazardLayerParamId,

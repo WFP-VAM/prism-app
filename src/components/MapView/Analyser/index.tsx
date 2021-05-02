@@ -1,8 +1,7 @@
 import React, {
-  Dispatch,
-  SetStateAction,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -44,7 +43,6 @@ import {
   BoundaryLayerProps,
   NSOLayerProps,
   WMSLayerProps,
-  isLayerKey,
   isStatistic,
   LayerKey,
 } from '../../../config/types';
@@ -67,6 +65,7 @@ import {
   downloadCSVFromTableData,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from './LayerDropdown';
+import { ActionTypes, useAnalyserReducer } from './AnalyserReducer';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -85,58 +84,24 @@ function Analyser({ classes }: AnalyserProps) {
 
   const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState(false);
   const [isTableViewOpen, setIsTableViewOpen] = useState(true);
+  const activeUrl: React.MutableRefObject<string> = useRef<string>('');
 
   // form elements
-  const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
-  const [statistic, setStatistic] = useState(AggregationOperations.Mean);
-  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>();
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
-
-  const [belowThreshold, setBelowThreshold] = useState('');
-  const [aboveThreshold, setAboveThreshold] = useState('');
-  const [thresholdError, setThresholdError] = useState<string | null>(null);
-
+  const [form, setForm] = useAnalyserReducer();
+  
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
-    const dates = hazardLayerId
+    const dates = form.hazardLayerId !== 'placeholder'
       ? availableDates[
-          (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
+          (LayerDefinitions[form.hazardLayerId] as WMSLayerProps)?.serverLayerName
         ]
       : null;
     if (!dates || dates.length === 0) {
-      setSelectedDate(null);
+      setForm({ type: ActionTypes.SET_SELECTED_DATE, date: null });
     } else {
-      setSelectedDate(dates[dates.length - 1]);
+      setForm({ type: ActionTypes.SET_SELECTED_DATE, date: dates[dates.length - 1] });
     }
-  }, [availableDates, hazardLayerId]);
-
-  const onOptionChange = <T extends string>(
-    setterFunc: Dispatch<SetStateAction<T>>,
-  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value as T;
-    setterFunc(value);
-    return value;
-  };
-  // specially for threshold values, also does error checking
-  const onThresholdOptionChange = (thresholdType: 'above' | 'below') => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const setterFunc =
-      thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
-    const changedOption = onOptionChange(setterFunc)(event);
-    // setting a value doesn't update the existing value until next render, therefore we must decide whether to access the old one or the newly change one here.
-    const aboveThresholdValue = parseFloat(
-      thresholdType === 'above' ? changedOption : aboveThreshold,
-    );
-    const belowThresholdValue = parseFloat(
-      thresholdType === 'below' ? changedOption : belowThreshold,
-    );
-    if (belowThresholdValue < aboveThresholdValue) {
-      setThresholdError('Min threshold is larger than Max!');
-    } else {
-      setThresholdError(null);
-    }
-  };
+  }, [availableDates, form.hazardLayerId]);
 
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData) {
@@ -157,48 +122,69 @@ function Analyser({ classes }: AnalyserProps) {
     />
   ));
 
-  const clearAnalysis = () => dispatch(clearAnalysisResult());
+  const clearAnalysis = () => {
+    dispatch(clearAnalysisResult());
+
+    // Reset URL in browser.
+    history.replace('');
+  };
 
   const runAnalyser = async () => {
     if (!adminBoundariesExtent) {
       return;
     } // hasn't been calculated yet
 
-    if (!selectedDate) {
+    // Detect from issues and throw errors.
+    if (!form.selectedDate) {
       throw new Error('Date must be given to run analysis');
     }
 
-    if (!hazardLayerId || !baselineLayerId) {
+    if (form.hazardLayerId === 'placeholder' || form.baselineLayerId === 'placeholder') {
       throw new Error('Layer should be selected to run analysis');
     }
 
-    const selectedHazardLayer = LayerDefinitions[
-      hazardLayerId
-    ] as WMSLayerProps;
-    const selectedBaselineLayer = LayerDefinitions[
-      baselineLayerId
-    ] as NSOLayerProps;
+    // Build URL string.
+    const analyserShareURL: string = Object.keys(form).map((prop: string) => {
+      return [prop, form[prop]].map(encodeURIComponent).join('=');
+    }).join('&');
 
-    const params: AnalysisDispatchParams = {
-      hazardLayer: selectedHazardLayer,
-      baselineLayer: selectedBaselineLayer,
-      date: selectedDate,
-      statistic,
-      extent: adminBoundariesExtent,
-      threshold: {
-        above: parseFloat(aboveThreshold) || undefined,
-        below: parseFloat(belowThreshold) || undefined,
-      },
-    };
+    // Make sure to run teh nalyser onoly when needed.
+    if (activeUrl.current !== analyserShareURL) {
+      // Store the new URL.
+      activeUrl.current = analyserShareURL;
 
-    await dispatch(requestAndStoreAnalysis(params));
-    // eslint-disable-next-line fp/no-mutating-methods
-    history.replace(
-      `?hazardLayerId=${hazardLayerId}&baselineLayerId=${baselineLayerId}&date=${selectedDate}&statistic=${statistic}&aboveThreshold=${aboveThreshold}&belowThreshold=${belowThreshold}`,
-    );
+      const selectedHazardLayer = LayerDefinitions[
+        form.hazardLayerId
+      ] as WMSLayerProps;
+      const selectedBaselineLayer = LayerDefinitions[
+        form.baselineLayerId
+      ] as NSOLayerProps;
+  
+      const params: AnalysisDispatchParams = {
+        hazardLayer: selectedHazardLayer,
+        baselineLayer: selectedBaselineLayer,
+        date: form.selectedDate,
+        statistic: form.statistic,
+        extent: adminBoundariesExtent,
+        threshold: {
+          above: parseFloat(form.aboveThreshold) || undefined,
+          below: parseFloat(form.belowThreshold) || undefined,
+        },
+      };
+  
+      await dispatch(requestAndStoreAnalysis(params));
+
+      // Set share URL into the browser.
+      history.replace(`?${analyserShareURL}`);
+    }
   };
 
   useEffect(() => {
+    // Early return if data not loaded.
+    if ((!boundaryLayerData) || (!availableDates)){
+      return;
+    }
+
     const {
       hazardLayerParamId,
       baselineLayerParamId,
@@ -208,38 +194,29 @@ function Analyser({ classes }: AnalyserProps) {
       belowThresholdParam,
     } = extractPropsFromURL(history.location.search);
 
-    if (!hazardLayerParamId || !baselineLayerParamId || !statisticParam) {
-      return;
-    }
+    // Correct the statistic if invalid.
+    const statisticCorrected: AggregationOperations = isStatistic(statisticParam) ? statisticParam as AggregationOperations : AggregationOperations.Mean;
 
-    if (isLayerKey(hazardLayerParamId)) {
-      setHazardLayerId(hazardLayerParamId);
-    }
-    if (isLayerKey(baselineLayerParamId)) {
-      setBaselineLayerId(baselineLayerParamId);
-    }
-    if (isStatistic(statisticParam)) {
-      setStatistic(statisticParam);
-    }
+    // Set all from data from the URL.
+    setForm({
+      type: ActionTypes.SET_FORM,
+      params: {
+        hazardLayerId: hazardLayerParamId as LayerKey,
+        baselineLayerId: baselineLayerParamId as LayerKey,
+        statistic: statisticCorrected,
+        selectedDate: selectedParamDate,
+        belowThreshold: belowThresholdParam,
+        aboveThreshold: aboveThresholdParam,
+      }
+    });
 
-    setSelectedDate(selectedParamDate);
-    setAboveThreshold(aboveThresholdParam);
-    setBelowThreshold(belowThresholdParam);
-
-    // Avoid Running Analyser if boundary Layer data is Null
-    if (hazardLayerId && baselineLayerId && selectedDate) {
+    // Avoid Running Analyser if date is invalid.
+    if (form.selectedDate) {
       runAnalyser();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boundaryLayerData, availableDates, history.location.search]);
-
-  useEffect(() => {
-    return () => {
-      clearAnalysis();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history.location.search]);
+  }, [boundaryLayerData, availableDates, history.location.search, form.selectedDate]);
 
   return (
     <div className={classes.analyser}>
@@ -270,8 +247,13 @@ function Analyser({ classes }: AnalyserProps) {
                 <Typography variant="body2">Hazard Layer</Typography>
                 <LayerDropdown
                   type="wms"
-                  value={hazardLayerId}
-                  setValue={setHazardLayerId}
+                  value={form.hazardLayerId}
+                  setValue={(paramLayerKey: LayerKey) => {
+                    setForm({ 
+                      type: ActionTypes.SET_HAZARD_LAYER_ID, 
+                      layerKey: paramLayerKey 
+                    });
+                  }}
                   title="Hazard Layer"
                   className={classes.selector}
                   placeholder="Choose hazard layer"
@@ -282,8 +264,13 @@ function Analyser({ classes }: AnalyserProps) {
                 <FormControl component="div">
                   <RadioGroup
                     name="statistics"
-                    value={statistic}
-                    onChange={onOptionChange(setStatistic)}
+                    value={form.statistic}
+                    onChange={(paramEvent: React.ChangeEvent<HTMLInputElement>) => {
+                      setForm({ 
+                        type: ActionTypes.SET_STATISTIC, 
+                        statistic: paramEvent.target.value as AggregationOperations 
+                      });
+                    }}
                     row
                   >
                     {statisticOptions}
@@ -294,8 +281,13 @@ function Analyser({ classes }: AnalyserProps) {
                 <Typography variant="body2">Baseline Layer</Typography>
                 <LayerDropdown
                   type="nso"
-                  value={baselineLayerId}
-                  setValue={setBaselineLayerId}
+                  value={form.baselineLayerId}
+                  setValue={(paramLayerKey: LayerKey) => {
+                    setForm({ 
+                      type: ActionTypes.SET_BASELINE_LAYER_ID, 
+                      layerKey: paramLayerKey 
+                    });
+                  }}
                   title="Baseline Layer"
                   className={classes.selector}
                   placeholder="Choose baseline layer"
@@ -305,21 +297,31 @@ function Analyser({ classes }: AnalyserProps) {
                 <Typography variant="body2">Threshold</Typography>
                 <TextField
                   id="filled-number"
-                  error={!!thresholdError}
-                  helperText={thresholdError}
+                  error={!!form.thresholdError}
+                  helperText={form.thresholdError}
                   className={classes.numberField}
                   label="Min"
                   type="number"
-                  value={aboveThreshold}
-                  onChange={onThresholdOptionChange('above')}
+                  value={form.aboveThreshold}
+                  onChange={(paramEvent: React.ChangeEvent<HTMLInputElement>) => {
+                    setForm({
+                      type: ActionTypes.SET_ABOVE_THRESHOLD, 
+                      value: paramEvent.target.value
+                    })
+                  }}
                   variant="filled"
                 />
                 <TextField
                   id="filled-number"
                   label="Max"
                   className={classes.numberField}
-                  value={belowThreshold}
-                  onChange={onThresholdOptionChange('below')}
+                  value={form.belowThreshold}
+                  onChange={(paramEvent: React.ChangeEvent<HTMLInputElement>) => {
+                    setForm({
+                      type: ActionTypes.SET_BELOW_THRESHOLD, 
+                      value: paramEvent.target.value
+                    })
+                  }}
                   type="number"
                   variant="filled"
                 />
@@ -327,10 +329,10 @@ function Analyser({ classes }: AnalyserProps) {
               <div className={classes.analyserOptions}>
                 <Typography variant="body2">Date</Typography>
                 <DatePicker
-                  selected={selectedDate ? new Date(selectedDate) : null}
-                  onChange={date =>
-                    setSelectedDate(date?.getTime() || selectedDate)
-                  }
+                  selected={form.selectedDate ? new Date(form.selectedDate) : null}
+                  onChange={(date) => {
+                    setForm({ type: ActionTypes.SET_SELECTED_DATE, date: date?.getTime() || form.selectedDate });
+                  }}
                   maxDate={new Date()}
                   todayButton="Today"
                   peekNextMonth
@@ -340,9 +342,9 @@ function Analyser({ classes }: AnalyserProps) {
                   customInput={<Input />}
                   popperClassName={classes.calendarPopper}
                   includeDates={
-                    hazardLayerId
+                    form.hazardLayerId !== 'placeholder'
                       ? availableDates[
-                          (LayerDefinitions[hazardLayerId] as WMSLayerProps)
+                          (LayerDefinitions[form.hazardLayerId] as WMSLayerProps)
                             .serverLayerName
                         ]?.map(d => new Date(d)) || []
                       : []
@@ -402,10 +404,10 @@ function Analyser({ classes }: AnalyserProps) {
                 className={classes.innerAnalysisButton}
                 onClick={runAnalyser}
                 disabled={
-                  !!thresholdError || // if there is a threshold error
-                  !selectedDate || // or date hasn't been selected
-                  !hazardLayerId || // or hazard layer hasn't been selected
-                  !baselineLayerId || // or baseline layer hasn't been selected
+                  !!form.thresholdError || // if there is a threshold error
+                  !form.selectedDate || // or date hasn't been selected
+                  !form.hazardLayerId || // or hazard layer hasn't been selected
+                  !form.baselineLayerId || // or baseline layer hasn't been selected
                   isAnalysisLoading // or analysis is currently loading
                 }
               >

@@ -83,7 +83,7 @@ function LayerDropdown({
 
 interface LayerSelectorProps {
   type: LayerType['type'];
-  value?: LayerKey;
+  value?: LayerKey | 'placeholder';
   setValue: (val: LayerKey) => void;
   title: string;
   // a way to type this and every other default thing in? e.g style
