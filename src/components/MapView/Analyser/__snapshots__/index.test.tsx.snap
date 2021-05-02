@@ -67,6 +67,7 @@ exports[`renders as expected 1`] = `
               placeholder="Choose hazard layer"
               title="Hazard Layer"
               type="wms"
+              value="placeholder"
             />
           </div>
           <div
@@ -205,6 +206,7 @@ exports[`renders as expected 1`] = `
               placeholder="Choose baseline layer"
               title="Baseline Layer"
               type="nso"
+              value="placeholder"
             />
           </div>
           <div
@@ -221,7 +223,7 @@ exports[`renders as expected 1`] = `
               id="filled-number"
               label="Min"
               type="number"
-              value=""
+              value="0"
               variant="filled"
             />
             <mock-textfield
@@ -229,7 +231,7 @@ exports[`renders as expected 1`] = `
               id="filled-number"
               label="Max"
               type="number"
-              value=""
+              value="0"
               variant="filled"
             />
           </div>
