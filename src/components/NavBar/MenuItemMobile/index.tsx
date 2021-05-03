@@ -66,6 +66,7 @@ const styles = () =>
   createStyles({
     icon: {
       width: 18,
+      height: 18,
       marginRight: 6,
     },
   });
