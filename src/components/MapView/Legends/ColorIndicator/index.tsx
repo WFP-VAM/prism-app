@@ -1,5 +1,6 @@
 import React from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { fade } from '@material-ui/core/styles/colorManipulator';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -11,14 +12,19 @@ const useStyles = makeStyles(() =>
       height: 10,
       width: 10,
       marginRight: 4,
-      backgroundColor: ({ color }: any) => color,
+      backgroundColor: ({
+        color,
+        opacity,
+      }: {
+        color: string;
+        opacity: number;
+      }) => fade(color, opacity),
     },
   }),
 );
 
-function ColorIndicator({ value, color }: ColorIndicatorProps) {
-  const classes = useStyles({ color });
-
+function ColorIndicator({ value, color, opacity }: ColorIndicatorProps) {
+  const classes = useStyles({ color, opacity });
   return (
     <div className={classes.container}>
       <div className={classes.indicator} />
@@ -30,6 +36,7 @@ function ColorIndicator({ value, color }: ColorIndicatorProps) {
 export interface ColorIndicatorProps {
   value: string;
   color: string;
+  opacity: number;
 }
 
 export default ColorIndicator;
