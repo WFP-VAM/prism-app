@@ -26,12 +26,19 @@ import {
   tajikistanRawTables,
 } from './tajikistan';
 
+import {
+  zimbabweConfig,
+  zimbabweRawLayers,
+  zimbabweRawTables,
+} from './zimbabwe';
+
 type Country =
   | 'indonesia'
   | 'mongolia'
   | 'mozambique'
   | 'myanmar'
-  | 'tajikistan';
+  | 'tajikistan'
+  | 'zimbabwe';
 
 const DEFAULT: Country = 'mongolia';
 
@@ -60,6 +67,11 @@ const configMap = {
     appConfig: tajikistanConfig,
     rawLayers: tajikistanRawLayers,
     rawTables: tajikistanRawTables,
+  },
+  zimbabwe: {
+    appConfig: zimbabweConfig,
+    rawLayers: zimbabweRawLayers,
+    rawTables: zimbabweRawTables,
   },
 } as const;
 

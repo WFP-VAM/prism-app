@@ -1,0 +1,34 @@
+{
+  "country": "Zimbabwe",
+  "alertFormActive": false,
+  "serversUrls": {
+    "wms": [
+      "https://odc.ovio.org/wms",
+      "https://geonode.wfp.org/geoserver/prism/wms"
+    ]
+  },
+  "map": {
+    "latitude": -19.110,
+    "longitude": 30.095,
+    "zoom": 5.99
+  },
+  "categories": {
+    "hazards": {
+      "rainfall": [
+        "rainfall_dekad",
+        "rain_anomaly_dekad",
+        "rain_anomaly_monthly",
+        "rainfall_agg_dekad",
+        "days_dry",
+        "streak_dry_days",
+        "days_heavy_rain",
+        "streak_heavy_rain"
+      ],
+      "vegetation_conditions": ["ndvi_dekad_5","ndvi_dekad_1", "ndvi_dekad_anomaly"],
+      "temperature": ["lst_daytime_5","lst_daytime_1", "lst_day_anomaly_5", "lst_day_anomaly_1"]
+    },
+    "vulnerability": {
+      "food insecurity": ["vac_food_insec"]
+    }
+  }
+}
