@@ -37,6 +37,7 @@ function AnalysisLayer() {
 
   return (
     <GeoJSONLayer
+      id="layer-analysis"
       below="boundaries"
       data={analysisData.featureCollection}
       fillPaint={fillPaintData(analysisData.legend)}
