@@ -242,7 +242,7 @@ function MapView({ classes }: MapViewProps) {
           const params = getFeatureInfoParams(map, evt, dateFromRef);
           makeFeatureInfoRequest(featureInfoLayers, params).then(
             (result: any) => {
-              if (result === null) {
+              if (!result) {
                 return;
               }
               Object.keys(result).forEach(k => {
