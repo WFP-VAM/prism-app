@@ -358,7 +358,7 @@ export interface FeatureInfoType {
   height: number;
 }
 
-export interface requestFeatureInfo extends FeatureInfoType {
+export interface RequestFeatureInfo extends FeatureInfoType {
   service: string;
   request: string;
   version: string;
