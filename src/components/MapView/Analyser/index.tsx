@@ -28,7 +28,7 @@ import bbox from '@turf/bbox';
 
 import DatePicker from 'react-datepicker';
 
-import { removePropsFromURL } from './util';
+import { extractPropsFromURL, propsFromURL, removePropsFromURL } from './util';
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
@@ -210,6 +210,38 @@ function Analyser({ classes }: AnalyserProps) {
       !form.baselineLayerId // or baseline layer hasn't been selected
     );
   };
+
+  useEffect(() => {
+    // Early return if data not loaded.
+    if (!boundaryLayerData || !availableDates) {
+      return;
+    }
+
+    const URLParams: propsFromURL = extractPropsFromURL(
+      history.location.search,
+      URLParamList,
+    );
+
+    // Set data from the URL.
+    if (URLParams.fromURL) {
+      // Set all from data from the URL.
+      setForm({
+        type: 'SET_FORM',
+        payload: { params: URLParams.params },
+      });
+
+      // Avoid Running Analyser if required data are invalid or it's not a share link.
+      if (!isFormInvalid() && URLParams.fromURL) {
+        runAnalyser();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    boundaryLayerData,
+    availableDates,
+    history.location.search,
+    form.selectedDate,
+  ]);
 
   return (
     <div className={classes.analyser}>

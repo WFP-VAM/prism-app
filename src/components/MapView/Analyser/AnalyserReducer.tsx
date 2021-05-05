@@ -137,11 +137,16 @@ const analyserReducer = (state: AnalyserForm, action: AnlayserAction) => {
       };
     }
     case 'SET_THRESHOLD': {
-      const thresholdErrorString: string =
-        (state.belowThreshold && state.belowThreshold < action.payload.value) ||
-        (state.aboveThreshold && action.payload.value < state.aboveThreshold)
-          ? 'Min threshold is larger than Max!'
-          : '';
+      const hasError: boolean =
+        action.payload.type === 'below'
+          ? ((state.aboveThreshold &&
+              action.payload.value < state.aboveThreshold) as boolean)
+          : ((state.belowThreshold &&
+              state.belowThreshold < action.payload.value) as boolean);
+
+      const thresholdErrorString: string = hasError
+        ? 'Min threshold is larger than Max!'
+        : '';
 
       if (action.payload.type === 'below') {
         return {
@@ -150,6 +155,7 @@ const analyserReducer = (state: AnalyserForm, action: AnlayserAction) => {
           thresholdError: thresholdErrorString,
         };
       }
+
       return {
         ...state,
         aboveThreshold: action.payload.value,
