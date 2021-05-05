@@ -28,7 +28,7 @@ import bbox from '@turf/bbox';
 
 import DatePicker from 'react-datepicker';
 
-import { extractPropsFromURL } from './util';
+import { removePropsFromURL } from './util';
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
@@ -38,7 +38,6 @@ import {
   BoundaryLayerProps,
   NSOLayerProps,
   WMSLayerProps,
-  isStatistic,
   LayerKey,
 } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
@@ -60,7 +59,11 @@ import {
   downloadCSVFromTableData,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from './LayerDropdown';
-import { ActionTypes, useAnalyserReducer } from './AnalyserReducer';
+import {
+  useAnalyserReducer,
+  AnalyserForm,
+  URLParamList,
+} from './AnalyserReducer';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -86,19 +89,21 @@ function Analyser({ classes }: AnalyserProps) {
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
-    const dates =
-      form.hazardLayerId !== 'placeholder'
-        ? availableDates[
-            (LayerDefinitions[form.hazardLayerId] as WMSLayerProps)
-              ?.serverLayerName
-          ]
-        : null;
+    const dates = form.hazardLayerId
+      ? availableDates[
+          (LayerDefinitions[form.hazardLayerId] as WMSLayerProps)
+            ?.serverLayerName
+        ]
+      : null;
     if (!dates || dates.length === 0) {
-      setForm({ type: ActionTypes.SET_SELECTED_DATE, date: null });
+      setForm({
+        type: 'SET_SELECTED_DATE',
+        payload: {},
+      });
     } else {
       setForm({
-        type: ActionTypes.SET_SELECTED_DATE,
-        date: dates[dates.length - 1],
+        type: 'SET_SELECTED_DATE',
+        payload: { date: dates[dates.length - 1] },
       });
     }
   }, [availableDates, form.hazardLayerId, setForm]);
@@ -125,10 +130,15 @@ function Analyser({ classes }: AnalyserProps) {
   const clearAnalysis = () => {
     dispatch(clearAnalysisResult());
 
-    setForm({ type: ActionTypes.CLEAR_FORM });
+    // Empty previous set data.
+    setForm({ type: 'CLEAR_FORM' });
 
     // Reset URL in browser.
-    history.replace('');
+    const URLStringToReplace: string = removePropsFromURL(
+      history.location.search,
+      URLParamList,
+    );
+    history.replace(`?${URLStringToReplace}`);
   };
 
   const runAnalyser = async () => {
@@ -141,21 +151,23 @@ function Analyser({ classes }: AnalyserProps) {
       throw new Error('Date must be given to run analysis');
     }
 
-    if (
-      form.hazardLayerId === 'placeholder' ||
-      form.baselineLayerId === 'placeholder'
-    ) {
+    if (!form.hazardLayerId || !form.baselineLayerId) {
       throw new Error('Layer should be selected to run analysis');
     }
 
     // Build URL string.
     const analyserShareURL: string = Object.keys(form)
       .map((prop: string) => {
-        return [prop, form[prop]].map(encodeURIComponent).join('=');
+        return [prop, form[prop as keyof AnalyserForm]]
+          .map(param =>
+            param && param !== '' ? encodeURIComponent(param) : undefined,
+          )
+          .filter(Boolean)
+          .join('=');
       })
       .join('&');
 
-    // Make sure to run teh nalyser onoly when needed.
+    // Make sure to run the nalyser only when needed.
     if (activeUrl.current !== analyserShareURL) {
       // Store the new URL.
       activeUrl.current = analyserShareURL;
@@ -171,11 +183,15 @@ function Analyser({ classes }: AnalyserProps) {
         hazardLayer: selectedHazardLayer,
         baselineLayer: selectedBaselineLayer,
         date: form.selectedDate,
-        statistic: form.statistic,
+        statistic: form.statistic as AggregationOperations,
         extent: adminBoundariesExtent,
         threshold: {
-          above: parseFloat(form.aboveThreshold) || undefined,
-          below: parseFloat(form.belowThreshold) || undefined,
+          above: form.aboveThreshold
+            ? parseFloat(form.aboveThreshold as string)
+            : undefined,
+          below: form.belowThreshold
+            ? parseFloat(form.belowThreshold as string)
+            : undefined,
         },
       };
 
@@ -186,63 +202,14 @@ function Analyser({ classes }: AnalyserProps) {
     }
   };
 
-  useEffect(() => {
-    // Early return if data not loaded.
-    if (!boundaryLayerData || !availableDates) {
-      return;
-    }
-
-    const {
-      hazardLayerParamId,
-      baselineLayerParamId,
-      selectedParamDate,
-      statisticParam,
-      aboveThresholdParam,
-      belowThresholdParam,
-      fromURL,
-    } = extractPropsFromURL(history.location.search);
-
-    // Set data from the URL.
-    if (fromURL) {
-      // Correct the statistic if invalid.
-      let statisticCorrected: AggregationOperations =
-        AggregationOperations.Mean;
-
-      if (isStatistic(statisticParam)) {
-        // eslint-disable-next-line fp/no-mutation
-        statisticCorrected = statisticParam as AggregationOperations;
-      }
-
-      // Set all from data from the URL.
-      setForm({
-        type: ActionTypes.SET_FORM,
-        params: {
-          hazardLayerId: hazardLayerParamId as LayerKey,
-          baselineLayerId: baselineLayerParamId as LayerKey,
-          statistic: statisticCorrected,
-          selectedDate: selectedParamDate,
-          belowThreshold: belowThresholdParam,
-          aboveThreshold: aboveThresholdParam,
-        },
-      });
-
-      // Avoid Running Analyser if required data are invalid or it's not a share link.
-      if (
-        form.hazardLayerId !== 'placeholder' &&
-        form.baselineLayerId !== 'placeholder' &&
-        form.selectedDate &&
-        fromURL
-      ) {
-        runAnalyser();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    boundaryLayerData,
-    availableDates,
-    history.location.search,
-    form.selectedDate,
-  ]);
+  const isFormInvalid = (): boolean => {
+    return (
+      !!form.thresholdError || // if there is a threshold error
+      !form.selectedDate || // or date hasn't been selected
+      !form.hazardLayerId || // or hazard layer hasn't been selected
+      !form.baselineLayerId // or baseline layer hasn't been selected
+    );
+  };
 
   return (
     <div className={classes.analyser}>
@@ -276,8 +243,8 @@ function Analyser({ classes }: AnalyserProps) {
                   value={form.hazardLayerId}
                   setValue={(paramLayerKey: LayerKey) => {
                     setForm({
-                      type: ActionTypes.SET_HAZARD_LAYER_ID,
-                      layerKey: paramLayerKey,
+                      type: 'SET_LAYER_ID',
+                      payload: { type: 'hazard', layerKey: paramLayerKey },
                     });
                   }}
                   title="Hazard Layer"
@@ -295,9 +262,11 @@ function Analyser({ classes }: AnalyserProps) {
                       paramEvent: React.ChangeEvent<HTMLInputElement>,
                     ) => {
                       setForm({
-                        type: ActionTypes.SET_STATISTIC,
-                        statistic: paramEvent.target
-                          .value as AggregationOperations,
+                        type: 'SET_STATISTIC',
+                        payload: {
+                          statistic: paramEvent.target
+                            .value as AggregationOperations,
+                        },
                       });
                     }}
                     row
@@ -313,8 +282,8 @@ function Analyser({ classes }: AnalyserProps) {
                   value={form.baselineLayerId}
                   setValue={(paramLayerKey: LayerKey) => {
                     setForm({
-                      type: ActionTypes.SET_BASELINE_LAYER_ID,
-                      layerKey: paramLayerKey,
+                      type: 'SET_LAYER_ID',
+                      payload: { type: 'baseline', layerKey: paramLayerKey },
                     });
                   }}
                   title="Baseline Layer"
@@ -336,8 +305,11 @@ function Analyser({ classes }: AnalyserProps) {
                     paramEvent: React.ChangeEvent<HTMLInputElement>,
                   ) => {
                     setForm({
-                      type: ActionTypes.SET_ABOVE_THRESHOLD,
-                      value: paramEvent.target.value,
+                      type: 'SET_THRESHOLD',
+                      payload: {
+                        type: 'above',
+                        value: paramEvent.target.value,
+                      },
                     });
                   }}
                   variant="filled"
@@ -351,8 +323,11 @@ function Analyser({ classes }: AnalyserProps) {
                     paramEvent: React.ChangeEvent<HTMLInputElement>,
                   ) => {
                     setForm({
-                      type: ActionTypes.SET_BELOW_THRESHOLD,
-                      value: paramEvent.target.value,
+                      type: 'SET_THRESHOLD',
+                      payload: {
+                        type: 'below',
+                        value: paramEvent.target.value,
+                      },
                     });
                   }}
                   type="number"
@@ -367,8 +342,8 @@ function Analyser({ classes }: AnalyserProps) {
                   }
                   onChange={date => {
                     setForm({
-                      type: ActionTypes.SET_SELECTED_DATE,
-                      date: date?.getTime() || form.selectedDate,
+                      type: 'SET_SELECTED_DATE',
+                      payload: { date: date?.getTime() || form.selectedDate },
                     });
                   }}
                   maxDate={new Date()}
@@ -380,7 +355,7 @@ function Analyser({ classes }: AnalyserProps) {
                   customInput={<Input />}
                   popperClassName={classes.calendarPopper}
                   includeDates={
-                    form.hazardLayerId !== 'placeholder'
+                    form.hazardLayerId
                       ? availableDates[
                           (LayerDefinitions[
                             form.hazardLayerId
@@ -443,11 +418,7 @@ function Analyser({ classes }: AnalyserProps) {
                 className={classes.innerAnalysisButton}
                 onClick={runAnalyser}
                 disabled={
-                  !!form.thresholdError || // if there is a threshold error
-                  !form.selectedDate || // or date hasn't been selected
-                  !form.hazardLayerId || // or hazard layer hasn't been selected
-                  !form.baselineLayerId || // or baseline layer hasn't been selected
-                  isAnalysisLoading // or analysis is currently loading
+                  isFormInvalid() || isAnalysisLoading // or analysis is currently loading
                 }
               >
                 <Typography variant="body2">Run Analysis</Typography>
