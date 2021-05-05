@@ -6,7 +6,7 @@ import { LayerDefinitions } from '../config/utils';
 import type {
   AvailableDates,
   PointDataLayerProps,
-  requestFeatureInfo,
+  RequestFeatureInfo,
 } from '../config/types';
 import {
   ImpactLayerProps,
@@ -299,7 +299,7 @@ function formatFeatureInfo(value: string, type: LabelType): string {
  */
 async function runFeatureInfoRequest(
   url: string,
-  wmsParams: requestFeatureInfo,
+  wmsParams: RequestFeatureInfo,
   layers: WMSLayerProps[],
 ): Promise<{ [name: string]: string }> {
   // Transform to snake case.
@@ -372,7 +372,7 @@ function fetchFeatureInfo(
     styles: '',
   };
 
-  const wmsParams: requestFeatureInfo = { ...params, ...requestParams };
+  const wmsParams: RequestFeatureInfo = { ...params, ...requestParams };
 
   return runFeatureInfoRequest(url, wmsParams, layers);
 }
