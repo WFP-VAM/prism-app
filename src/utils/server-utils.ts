@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { get, isEmpty, isString, merge, union } from 'lodash';
+import { get, isEmpty, isString, merge, union, snakeCase } from 'lodash';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
@@ -306,10 +306,7 @@ async function runFeatureInfoRequest(
   const toSnakeWmsParams = Object.entries(wmsParams).reduce(
     (obj, item) => ({
       ...obj,
-      [item[0].replace(
-        /[A-Z]/g,
-        letter => `_${letter.toLowerCase()}`,
-      )]: item[1],
+      [snakeCase(item[0])]: item[1],
     }),
     {},
   );
