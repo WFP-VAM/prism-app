@@ -24,11 +24,14 @@
         "days_heavy_rain",
         "streak_heavy_rain"
       ],
-      "vegetation_conditions": ["ndvi_dekad_5","ndvi_dekad_1", "ndvi_dekad_anomaly"],
+      "vegetation_conditions": ["ndvi_dekad_5","ndvi_dekad_1", "ndvi_dekad_anomaly_5", "ndvi_dekad_anomaly_1"],
       "temperature": ["lst_daytime_5","lst_daytime_1", "lst_day_anomaly_5", "lst_day_anomaly_1"]
     },
     "vulnerability": {
-      "food insecurity": ["vac_food_insec"]
+      "food insecurity": ["vac_food_insec","ipc_phase_10_2020"]
+    },
+    "exposure": {
+      "demographics": ["pop_2020"]
     }
   }
 }
