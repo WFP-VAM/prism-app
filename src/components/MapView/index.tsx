@@ -235,9 +235,9 @@ function MapView({ classes }: MapViewProps) {
             return;
           }
 
-          const dateFromRef = (selectedDateRef.current?.props.selected as Date)
-            .toISOString()
-            .split('T')[0];
+          const dateFromRef = moment(
+            selectedDateRef.current?.props.selected as Date,
+          ).format('YYYY-MM-DD');
 
           const params = getFeatureInfoParams(map, evt, dateFromRef);
           makeFeatureInfoRequest(featureInfoLayers, params).then(
