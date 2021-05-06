@@ -2,7 +2,7 @@ import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, merge, union } from 'lodash';
 
-import config from '../config/prism.json';
+import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type { AvailableDates, PointDataLayerProps } from '../config/types';
 import { ImpactLayerProps, WMSLayerProps } from '../config/types';
@@ -70,7 +70,10 @@ function formatCapabilitiesInfo(
       .filter(date => !isEmpty(date))
       .map(date =>
         // adding 12 hours to avoid  errors due to daylight saving
-        moment.utc(get(date, '_text', date)).set({ hour: 12 }).valueOf(),
+        moment
+          .utc(get(date, '_text', date).split('T')[0])
+          .set({ hour: 12 })
+          .valueOf(),
       );
 
     const { [layerId]: oldLayerDates } = acc;
@@ -119,6 +122,28 @@ function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
     );
   }
   return rawLayers as FlatLayer[];
+}
+
+export function formatWMSLegendUrl(baseUrl: string, serverLayerName: string) {
+  const legendOptions = {
+    fontAntiAliasing: true,
+    fontSize: 13,
+    fontName: 'Roboto Light',
+    forceLabels: 'on',
+    fontColor: '0x2D3436',
+  };
+
+  const requestParams = {
+    service: 'WMS',
+    request: 'GetLegendGraphic',
+    format: 'image/png',
+    layer: serverLayerName,
+    legend_options: Object.entries(legendOptions)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(';'),
+  };
+
+  return formatUrl(`${baseUrl}/ows`, requestParams);
 }
 
 /**
@@ -228,8 +253,8 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
  */
 export async function getLayersAvailableDates(): Promise<AvailableDates> {
-  const wmsServerUrls: string[] = get(config, 'serversUrls.wms', []);
-  const wcsServerUrls: string[] = get(config, 'serversUrls.wcs', []);
+  const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
+  const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
   const pointDataLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is PointDataLayerProps => layer.type === 'point_data',

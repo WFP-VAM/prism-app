@@ -92,6 +92,7 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
 
   return (
     <GeoJSONLayer
+      id={`layer-${layer.id}`}
       below="boundaries"
       data={noMatchingDistricts ? boundaries : impactFeatures}
       linePaint={linePaint}

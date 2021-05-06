@@ -1,22 +1,25 @@
 import React, { PropsWithChildren, useState } from 'react';
 import {
+  Box,
+  Button,
   createStyles,
   Divider,
   Grid,
+  Hidden,
   List,
   ListItem,
   Paper,
-  Theme,
+  Slider,
   Typography,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
+import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
 import { LayerType } from '../../../config/types';
+import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
@@ -28,14 +31,30 @@ function Legends({ classes, layers }: LegendsProps) {
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const legendItems = [
-    ...layers.map(({ title, legend, legendText }) => {
-      if (!legend || !legendText) {
+    ...layers.map(layer => {
+      if (!layer.legend || !layer.legendText) {
         // this layer doesn't have a legend (likely boundary), so lets ignore.
         return null;
       }
+
+      // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
+      const legendUrl =
+        layer.type === 'wms' && layer.legend.length === 0
+          ? formatWMSLegendUrl(layer.baseUrl, layer.serverLayerName)
+          : undefined;
+
       return (
-        <LegendItem classes={classes} key={title} title={title} legend={legend}>
-          {legendText}
+        <LegendItem
+          classes={classes}
+          key={layer.title}
+          id={layer.id}
+          title={layer.title}
+          legend={layer.legend}
+          legendUrl={legendUrl}
+          type={layer.type}
+          opacity={layer.opacity}
+        >
+          {layer.legendText}
         </LegendItem>
       );
     }),
@@ -49,6 +68,7 @@ function Legends({ classes, layers }: LegendsProps) {
               analysisResult.getHazardLayer().title
             }`}
             classes={classes}
+            opacity={0.5} // TODO: initial opacity value
           >
             Impact Analysis on {analysisResult.getBaselineLayer().legendText}
             <br />
@@ -65,37 +85,111 @@ function Legends({ classes, layers }: LegendsProps) {
   ];
 
   return (
-    <div className={classes.container}>
-      <button type="button" onClick={() => setOpen(!open)}>
-        <FontAwesomeIcon icon={open ? faEyeSlash : faEye} /> Legend
-      </button>
-
+    <Grid item className={classes.container}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setOpen(!open)}
+      >
+        {open ? (
+          <VisibilityOff fontSize="small" />
+        ) : (
+          <Visibility fontSize="small" />
+        )}
+        <Hidden smDown>
+          <Typography className={classes.label} variant="body2">
+            Legend
+          </Typography>
+        </Hidden>
+      </Button>
       {open && <List className={classes.list}>{legendItems}</List>}
-    </div>
+    </Grid>
   );
 }
 
 // Children here is legendText
-function LegendItem({ classes, title, legend, children }: LegendItemProps) {
+function LegendItem({
+  classes,
+  id,
+  title,
+  legend,
+  type,
+  opacity: initialOpacity,
+  children,
+  legendUrl,
+}: LegendItemProps) {
+  const map = useSelector(mapSelector);
+  const [opacity, setOpacityValue] = useState<number | number[]>(
+    initialOpacity || 0,
+  );
+
+  const handleChangeOpacity = (
+    event: React.ChangeEvent<{}>,
+    newValue: number | number[],
+  ) => {
+    // TODO: temporary solution for opacity adjustment, we hope to edit react-mapbox in the future to support changing props
+    // because the whole map will be re-rendered if using state directly
+    if (map) {
+      const [layerId, opacityType] = ((
+        layerType?: LayerType['type'],
+      ): [string, string] => {
+        switch (layerType) {
+          case 'wms':
+            return [`layer-${id}`, 'raster-opacity'];
+          case 'impact':
+          case 'nso':
+            return [`layer-${id}-fill`, 'fill-opacity'];
+          case 'point_data':
+            return [`layer-${id}-circle`, 'circle-opacity'];
+          // analysis layer type is undefined TODO we should try make analysis a layer to remove edge cases like this
+          case undefined:
+            return ['layer-analysis-fill', 'fill-opacity'];
+          default:
+            throw new Error('Unknown map layer type');
+        }
+      })(type);
+
+      map.setPaintProperty(layerId, opacityType, newValue);
+      setOpacityValue(newValue);
+    }
+  };
+
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
         <Grid container direction="column" spacing={1}>
-          <Grid item>
-            <Typography variant="h4">{title}</Typography>
+          <Grid item style={{ display: 'flex' }}>
+            <Typography style={{ flexGrow: 1 }} variant="h4">
+              {title}
+            </Typography>
           </Grid>
-
           <Divider />
-
+          <Grid item className={classes.slider}>
+            <Box px={1}>
+              <Slider
+                value={opacity}
+                step={0.01}
+                min={0}
+                max={1}
+                aria-labelledby="opacity-slider"
+                onChange={handleChangeOpacity}
+              />
+            </Box>
+          </Grid>
           {legend && (
             <Grid item>
-              {legend.map(({ value, color }: any) => (
-                <ColorIndicator
-                  key={value}
-                  value={value as string}
-                  color={color as string}
-                />
-              ))}
+              {legendUrl ? (
+                <img src={legendUrl} alt={title} />
+              ) : (
+                legend.map(({ value, color }: any) => (
+                  <ColorIndicator
+                    key={value}
+                    value={value as string}
+                    color={color as string}
+                    opacity={opacity as number}
+                  />
+                ))
+              )}
             </Grid>
           )}
 
@@ -112,22 +206,27 @@ function LegendItem({ classes, title, legend, children }: LegendItemProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const styles = () =>
   createStyles({
     container: {
-      zIndex: theme.zIndex.drawer,
-      position: 'absolute',
-      top: 24,
-      right: 24,
       textAlign: 'right',
     },
+    label: {
+      marginLeft: '10px',
+    },
     list: {
-      overflow: 'auto',
+      overflowX: 'hidden',
+      overflowY: 'auto',
       maxHeight: '70vh',
+      position: 'absolute',
+      right: '16px',
     },
     paper: {
       padding: 8,
       width: 180,
+    },
+    slider: {
+      padding: '0 5px',
     },
   });
 
@@ -138,8 +237,12 @@ export interface LegendsProps extends WithStyles<typeof styles> {
 interface LegendItemProps
   extends WithStyles<typeof styles>,
     PropsWithChildren<{}> {
+  id?: LayerType['id'];
   title: LayerType['title'];
   legend: LayerType['legend'];
+  legendUrl?: string;
+  type?: LayerType['type'];
+  opacity: LayerType['opacity'];
 }
 
 export default withStyles(styles)(Legends);

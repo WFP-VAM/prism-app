@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import rawLayers from './layers.json';
+import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
@@ -122,6 +122,12 @@ export type LegendDefinition = {
   color: string;
 }[];
 
+export type GroupDefinition = {
+  name: string;
+  // Main layer of a group of layers. Secondary layers will not trigger notifications.
+  main: boolean;
+};
+
 export type RawDataConfiguration = {
   scale?: number;
   offset?: number;
@@ -147,6 +153,9 @@ export class CommonLayerProps {
 
   @optional // only optional for boundary layer
   legendText?: string;
+
+  @optional // only optional for boundary layer
+  group?: GroupDefinition;
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -293,6 +302,14 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
+export interface MenuItemMobileType {
+  title: string;
+  icon: string;
+  layersCategories: LayersCategoryType[];
+  expanded: string;
+  selectAccordion: (arg: string) => void;
+}
+
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
@@ -323,4 +340,12 @@ export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined
     ? { type: Key }
     : { type: Key; payload: M[Key] };
+};
+
+// used for timeline items in date selector
+export type DateRangeType = {
+  value: number;
+  label: string;
+  month: string;
+  isFirstDay: boolean;
 };

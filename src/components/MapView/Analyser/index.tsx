@@ -19,13 +19,9 @@ import {
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import { useHistory } from 'react-router-dom';
-
-import { faCaretDown, faChartBar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import bbox from '@turf/bbox';
-
 import DatePicker from 'react-datepicker';
 
 import { extractPropsFromURL, propsFromURL, removePropsFromURL } from './util';
@@ -58,12 +54,12 @@ import {
   getAnalysisTableColumns,
   downloadCSVFromTableData,
 } from '../../../utils/analysis-utils';
-import LayerDropdown from './LayerDropdown';
 import {
   useAnalyserReducer,
   AnalyserForm,
   URLParamList,
 } from './AnalyserReducer';
+import LayerDropdown from '../Layers/LayerDropdown';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -252,12 +248,11 @@ function Analyser({ classes }: AnalyserProps) {
           setIsAnalyserFormOpen(!isAnalyserFormOpen);
         }}
       >
-        <FontAwesomeIcon
-          style={{ marginRight: '10px', fontSize: '1.6em' }}
-          icon={faChartBar}
-        />
-        <Typography variant="body2">Run Analysis</Typography>
-        <FontAwesomeIcon icon={faCaretDown} style={{ marginLeft: '10px' }} />
+        <BarChart fontSize="small" />
+        <Typography variant="body2" className={classes.analyserLabel}>
+          Run Analysis
+        </Typography>
+        <ArrowDropDown fontSize="small" />
       </Button>
 
       <Box
@@ -468,10 +463,10 @@ const styles = (theme: Theme) =>
   createStyles({
     analyser: {
       zIndex: theme.zIndex.drawer,
-      position: 'absolute',
-      top: 2,
-      left: 2,
       textAlign: 'left',
+    },
+    analyserLabel: {
+      marginLeft: '10px',
     },
     analyserMenu: {
       backgroundColor: '#5A686C',
