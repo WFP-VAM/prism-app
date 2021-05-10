@@ -4,9 +4,9 @@ import json
 import logging
 import os
 
-import requests
+from app.timer import timed
 
-from timer import timed
+import requests
 
 logger = logging.getLogger(__name__)
 

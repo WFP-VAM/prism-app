@@ -1,16 +1,15 @@
 """Flask API for geospatial utils."""
-from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 import logging
-from urllib.parse import ParseResult, urlunparse, urlencode
 from distutils.util import strtobool
 from os import getenv
+from urllib.parse import ParseResult, urlencode, urlunparse
 
-from app.errors import handle_error, make_json_error
-
+from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
-
-from caching import cache_file, cache_geojson
+from app.errors import handle_error, make_json_error
+from app.timer import timed
+from app.zonal_stats import calculate_stats
 
 from flask import Flask, Response, json, jsonify, request
 
@@ -18,9 +17,8 @@ from flask_caching import Cache
 
 from flask_cors import CORS
 
-from timer import timed
+from werkzeug.exceptions import BadRequest, InternalServerError
 
-from zonal_stats import calculate_stats
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -40,6 +38,7 @@ alert_db = AlertsDataBase()
 for code in [400, 401, 403, 404, 405, 500]:
     app.register_error_handler(code, make_json_error)
 app.register_error_handler(Exception, handle_error)
+
 
 @timed
 @cache.memoize(3600)
@@ -115,7 +114,6 @@ def alerts_all():
 @app.route('/alerts/<id>', methods=['GET'])
 def get_alert_by_id(id: str = '1'):
     """Get alert data from DB given id."""
-
     try:
         id = int(id)
     except Exception as e:

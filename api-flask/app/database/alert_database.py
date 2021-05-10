@@ -3,12 +3,11 @@ import logging
 from os import getenv
 from typing import List
 
-from sqlalchemy.orm.session import Session
-
 from app.database.alert_model import AlertModel
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.session import Session
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

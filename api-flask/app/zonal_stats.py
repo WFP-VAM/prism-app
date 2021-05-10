@@ -3,12 +3,12 @@ import logging
 from collections import defaultdict
 from json import dump, load
 
+from app.timer import timed
+
 from rasterstats import zonal_stats
 
 from shapely.geometry import mapping, shape
 from shapely.ops import cascaded_union
-
-from app.timer import timed
 
 logger = logging.getLogger(__name__)
 

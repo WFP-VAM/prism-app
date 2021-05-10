@@ -1,20 +1,24 @@
+"""Error handling module."""
 import traceback
 
-from flask import jsonify, redirect, current_app, Response
+from flask import Response, current_app, jsonify, redirect
+
+import sqlalchemy.exc
+
 from werkzeug.exceptions import HTTPException
 from werkzeug.routing import RequestRedirect
-import sqlalchemy.exc
 
 
 def logError(description, traceback=None):
+    """Log error description and traceback, if provided, to stderr."""
     current_app.logger.error(description)
     if traceback:
         current_app.logger.error(traceback)
 
 
 def make_json_error(ex: Exception):
-    """
-    Catch all HTTP error codes and turn them into JSON responses.
+    """Catch all HTTP error codes and turn them into JSON responses.
+
     This assumes that this Flask app is JSON-only.
 
     Reference: https://flask.palletsprojects.com/en/1.1.x/errorhandling/
@@ -22,15 +26,12 @@ def make_json_error(ex: Exception):
     status = ex.code if isinstance(ex, HTTPException) else 500
     response: Response = jsonify(error=str(ex), status=status)
     response.status_code = status
-    logError("HTTP Error %s: %s" % (status, str(ex)))
+    logError('HTTP Error %s: %s' % (status, str(ex)))
     return response
 
 
 def handle_error(e: Exception):
-    """
-    Catch all exceptions and turn them into a JSON response.
-    """
-
+    """Catch all exceptions and turn them into a JSON response."""
     # Perform redirects requested by werkzeug's routing.
     if isinstance(e, RequestRedirect):
         return redirect(e.new_url, e.code)
