@@ -1,6 +1,9 @@
 """Alert database access functions."""
 import logging
 from os import getenv
+from typing import List
+
+from sqlalchemy.orm.session import Session
 
 from app.database.alert_model import AlertModel
 
@@ -32,7 +35,7 @@ class AlertsDataBase:
     def __init__(self):
         """Alerts Database initializer."""
         _eng = create_engine(DB_URI)
-        self.session = sessionmaker(_eng)()
+        self.session: Session = sessionmaker(_eng)()
         logger.info('DB connection is initialized.')
 
     def write(self, alert: AlertModel):
@@ -46,7 +49,7 @@ class AlertsDataBase:
         finally:
             self.session.close()
 
-    def readall(self) -> list:
+    def readall(self) -> List[AlertModel]:
         """
         Get all the rows from this table.
 
@@ -54,7 +57,7 @@ class AlertsDataBase:
         """
         return self.session.query(AlertModel).all()
 
-    def read(self, expr: bool) -> list:
+    def read(self, expr: bool) -> List[AlertModel]:
         """
         Return all the rows that match expression.
 

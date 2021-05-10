@@ -8,7 +8,7 @@ from rasterstats import zonal_stats
 from shapely.geometry import mapping, shape
 from shapely.ops import cascaded_union
 
-from timer import timed
+from app.timer import timed
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ def _group_zones(zones, group_by):
     return output_file
 
 
-@ timed
+@timed
 def calculate_stats(
     zones,
     geotiff,

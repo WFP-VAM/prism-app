@@ -1,7 +1,11 @@
 """Flask API for geospatial utils."""
+from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 import logging
+from urllib.parse import ParseResult, urlunparse, urlencode
 from distutils.util import strtobool
 from os import getenv
+
+from app.errors import handle_error, make_json_error
 
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
@@ -33,6 +37,9 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 alert_db = AlertsDataBase()
 
+for code in [400, 401, 403, 404, 405, 500]:
+    app.register_error_handler(code, make_json_error)
+app.register_error_handler(Exception, handle_error)
 
 @timed
 @cache.memoize(3600)
@@ -60,17 +67,11 @@ def stats():
 
     if geotiff_url is None:
         logger.error('Received {}'.format(data))
-        return Response(
-            response='400: geotiff_url is required.',
-            status=400
-        )
+        raise BadRequest('geotiff_url is required.')
 
     if zonesGeojson is None and zones_url is None:
         logger.error('Received {}'.format(data))
-        return Response(
-            response='400: One of zones or zones_url is required.',
-            status=400
-        )
+        raise BadRequest('One of zones or zones_url is required.')
 
     geojson_out = strtobool(data.get('geojson_out', 'False'))
     group_by = data.get('group_by')
@@ -112,9 +113,16 @@ def alerts_all():
 
 
 @app.route('/alerts/<id>', methods=['GET'])
-def get_alert_by_id(id=1):
+def get_alert_by_id(id: str = '1'):
     """Get alert data from DB given id."""
-    results = alert_db.read(AlertModel.id == int(id))
+
+    try:
+        id = int(id)
+    except Exception as e:
+        logger.error(f'Failed to fetch alerts: {e}')
+        raise InternalServerError('Invalid id')
+
+    results = alert_db.read(AlertModel.id == id)
     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
 
 
@@ -122,13 +130,10 @@ def get_alert_by_id(id=1):
 def write_alerts():
     """Post new alerts."""
     if not request.is_json:
-        return Response(
-            response='500: InvalidInput',
-            status=500
-        )
+        raise InternalServerError('InvalidInput')
 
     try:
-        data = json.loads(request.get_data())
+        data = request.json
         alert = AlertModel(**data)
         alert_db.write(alert)
 
@@ -144,13 +149,38 @@ def write_alerts():
 def stats_demo():
     """Return examples of zonal statistics."""
     # The GET endpoint is used for demo purposes only
-    geotiff_url = 'https://mongolia.sibelius-datacube.org:5000/?service=WCS&'\
-        'request=GetCoverage&version=1.0.0&coverage=ModisAnomaly&'\
-        'crs=EPSG%3A4326&bbox=86.5%2C36.7%2C119.7%2C55.3&width=1196&'\
-        'height=672&format=GeoTIFF&time=2020-03-01'
+    geotiff_url = urlunparse(
+        ParseResult(
+            scheme='https',
+            netloc='mongolia.sibelius-datacube.org:5000',
+            path='/',
+            params='',
+            query=urlencode({
+                'service': 'WCS',
+                'request': 'GetCoverage',
+                'version': '1.0.0',
+                'coverage': 'ModisAnomaly',
+                'crs': 'EPSG:4326',
+                'bbox': '86.5,36.7,119.7,55.3',
+                'width': '1196',
+                'height': '672',
+                'format': 'GeoTIFF',
+                'time': '2020-03-01'
+            }),
+            fragment='',
+        )
+    )
 
-    zones_url = 'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/'\
-                'mng_admin_boundaries.json'
+    zones_url = urlunparse(
+        ParseResult(
+            scheme='https',
+            netloc='prism-admin-boundaries.s3.us-east-2.amazonaws.com',
+            path='mng_admin_boundaries.json',
+            params='',
+            query='',
+            fragment=''
+        )
+    )
 
     geotiff = cache_file(
         prefix='raster_test',
