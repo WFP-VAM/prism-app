@@ -10,7 +10,7 @@ from timer import timed
 
 logger = logging.getLogger(__name__)
 
-CACHE_DIRECTORY = '/cache/'
+CACHE_DIRECTORY = os.getenv('CACHE_DIRECTORY', '/cache/')
 
 
 @timed
@@ -50,6 +50,14 @@ def cache_geojson(geojson, prefix):
 
     logger.info('Caching geojson in file.')
     return cache_filepath
+
+
+def get_geojson_file(cached_filepath):
+    """Return geojson object as python dictionary."""
+    with open(cached_filepath, 'rb') as f:
+        data = json.load(f)
+
+    return data
 
 
 def _get_cached_filepath(prefix, data):

@@ -6,7 +6,7 @@ from os import getenv
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
 
-from caching import cache_file, cache_geojson
+from caching import cache_file, cache_geojson, get_geojson_file
 
 from flask import Flask, Response, json, jsonify, request
 
@@ -16,7 +16,7 @@ from flask_cors import CORS
 
 from timer import timed
 
-from zonal_stats import calculate_stats
+from zonal_stats import calculate_stats, get_wfs_response
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -36,7 +36,13 @@ alert_db = AlertsDataBase()
 
 @timed
 @cache.memoize(3600)
-def _calculate_stats(zones, geotiff, stats, prefix, group_by, geojson_out):
+def _calculate_stats(zones,
+                     geotiff,
+                     stats,
+                     prefix,
+                     group_by,
+                     geojson_out,
+                     wfs_response):
     """Calculate stats."""
     return calculate_stats(
         zones,
@@ -44,7 +50,8 @@ def _calculate_stats(zones, geotiff, stats, prefix, group_by, geojson_out):
         stats=stats,
         prefix=prefix,
         group_by=group_by,
-        geojson_out=geojson_out
+        geojson_out=geojson_out,
+        wfs_response=wfs_response
     )
 
 
@@ -92,13 +99,34 @@ def stats():
             url=zones_url
         )
 
+    wfs_params = data.get('wfs_params', None)
+
+    wfs_response = None
+    if wfs_params is not None:
+        # Validate required keys.
+        required_keys = ['layer_name', 'url', 'time']
+        missing = [f for f in wfs_params.keys() if f not in required_keys]
+
+        if len(missing) > 0:
+            logger.error('Received {}'.format(data))
+            err_message = '400: {} required within wfs_params object'
+            joined_missing = ','.join(missing)
+            return Response(
+                response=err_message.format(joined_missing),
+                status=400
+            )
+
+        zones_geojson = get_geojson_file(zones)
+        wfs_response = get_wfs_response(wfs_params, zones_geojson)
+
     features = _calculate_stats(
         zones,
         geotiff,
         stats=['min', 'max', 'mean', 'median', 'sum', 'std'],
         prefix='stats_',
         group_by=group_by,
-        geojson_out=geojson_out
+        geojson_out=geojson_out,
+        wfs_response=wfs_response
     )
 
     return jsonify(features)
@@ -181,5 +209,6 @@ def stats_demo():
 
 
 if __name__ == '__main__' and getenv('FLASK_ENV') == 'development':
+    PORT = int(getenv('PORT', 80))
     # Only for debugging while developing
-    app.run(host='0.0.0.0', debug=True, port=80)
+    app.run(host='0.0.0.0', debug=True, port=PORT)
