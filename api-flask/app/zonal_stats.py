@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from json import dump, load
 
 from caching import get_geojson_file
+from app.timer import timed
 
 from rasterstats import zonal_stats
 
@@ -12,8 +13,6 @@ import requests
 
 from shapely.geometry import GeometryCollection, mapping, shape
 from shapely.ops import cascaded_union
-
-from timer import timed
 
 logger = logging.getLogger(__name__)
 
