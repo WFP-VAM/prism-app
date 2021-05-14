@@ -104,7 +104,7 @@ def stats():
     wfs_response = None
     if wfs_params is not None:
         # Validate required keys.
-        required_keys = ['layer_name', 'url', 'time']
+        required_keys = ['layer_name', 'url', 'time', 'key']
         missing = [f for f in wfs_params.keys() if f not in required_keys]
 
         if len(missing) > 0:
