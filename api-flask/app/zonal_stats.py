@@ -14,6 +14,8 @@ import requests
 from shapely.geometry import GeometryCollection, mapping, shape
 from shapely.ops import cascaded_union
 
+from werkzeug.exceptions import InternalServerError
+
 logger = logging.getLogger(__name__)
 
 
@@ -51,7 +53,9 @@ def get_wfs_response(wfs_params, zones):
     resp = requests.get(wfs_params.get('url'), params)
     if resp.status_code != 200:
         logger.error(resp.content)
-        raise ValueError('Invalid response WFS request')
+        err_message = 'Received status code from WFS request: {}'.format(resp.status_code)
+
+        raise InternalServerError(err_message)
 
     # A WFS response should be always a json response.
     return {'key': wfs_params.get('key'), 'data': resp.json()}

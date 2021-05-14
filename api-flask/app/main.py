@@ -109,12 +109,10 @@ def stats():
 
         if len(missing) > 0:
             logger.error('Received {}'.format(data))
-            err_message = '400: {} required within wfs_params object'
+            err_message = '{} required within wfs_params object'
             joined_missing = ','.join(missing)
-            return Response(
-                response=err_message.format(joined_missing),
-                status=400
-            )
+
+            raise BadRequest(err_message.format(joined_missing))
 
         zones_geojson = get_geojson_file(zones)
         wfs_response = get_wfs_response(wfs_params, zones_geojson)
