@@ -23,7 +23,13 @@ DEFAULT_STATS = ['min', 'max', 'mean', 'median']
 
 
 def get_wfs_response(wfs_params, zones):
-    """Execute wfs request to external service."""
+    """
+    Execute Web Feature Service (WFS) request to external OGC server.
+
+    This request returns geospatial features that match required filters within cql_filter param.
+
+    https://docs.geoserver.org/stable/en/user/services/wfs/reference.html
+    """
     geoms = [shape(f['geometry']).buffer(0) for f in zones.get('features')]
     envelope = GeometryCollection(geoms).envelope.wkt
 
