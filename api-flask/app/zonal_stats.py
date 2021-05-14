@@ -144,7 +144,7 @@ def _compute_wfs_stats(zones_dict, wfs_response, geotiff, stats_params):
     return output
 
 
-@ timed
+@timed
 def calculate_stats(
     zones,
     geotiff,
