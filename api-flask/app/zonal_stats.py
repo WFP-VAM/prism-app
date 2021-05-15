@@ -127,8 +127,7 @@ def _create_geoms(geojson_dict):
 
 def _compute_wfs_stats(zones_dict, wfs_response, geotiff, stats_params):
     """Compute stats for each individual polygon and geotiff image."""
-
-    wfs_geoms = [shape(f.get("geometry")) for f in wfs_response.get('features')
+    wfs_geoms = [shape(f.get('geometry')) for f in wfs_response.get('features')
                  if f.get('geometry').get('type') in ['MultiPolygon', 'Polygon']]
     zones_geoms = _create_geoms(zones_dict)
 
