@@ -30,7 +30,7 @@ def get_wfs_response(wfs_params, zones):
 
     https://docs.geoserver.org/stable/en/user/services/wfs/reference.html
     """
-    geoms = [shape(f['geometry']).buffer(0) for f in zones.get('features')]
+    geoms = [shape(f['geometry']) for f in zones.get('features')]
     envelope = GeometryCollection(geoms).envelope.wkt
 
     # We make a list and then join
@@ -64,7 +64,7 @@ def get_wfs_response(wfs_params, zones):
         raise InternalServerError(err_message)
 
     # A WFS response should be always a json response.
-    return {'key': wfs_params.get('key'), 'data': resp.json()}
+    return resp.json()
 
 
 def _extract_features_properties(zones):
@@ -118,7 +118,7 @@ def _create_geoms(geojson_dict):
     geometries = {}
     for feature in geojson_dict.get('data').get('features'):
         key = feature.get('properties').get(geojson_dict.get('key'))
-        geom = shape(feature.get('geometry')).buffer(0)
+        geom = shape(feature.get('geometry'))
 
         geometries[key] = geom
 
@@ -127,13 +127,15 @@ def _create_geoms(geojson_dict):
 
 def _compute_wfs_stats(zones_dict, wfs_response, geotiff, stats_params):
     """Compute stats for each individual polygon and geotiff image."""
-    wfs_geoms = _create_geoms(wfs_response)
+
+    wfs_geoms = [shape(f.get("geometry")) for f in wfs_response.get('features')
+                 if f.get('geometry').get('type') in ['MultiPolygon', 'Polygon']]
     zones_geoms = _create_geoms(zones_dict)
 
     results = []
     keys = []
     for key, value in zones_geoms.items():
-        filtered = [value.intersection(v) for _, v in wfs_geoms.items() if value.intersects(v)]
+        filtered = [value.intersection(g) for g in wfs_geoms if value.intersects(g)]
 
         if len(filtered) == 0:
             continue
