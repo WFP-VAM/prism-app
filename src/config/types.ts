@@ -166,6 +166,17 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminLevelLocalNames: string[]; // Same as above, local to country
 }
 
+export enum LabelType {
+  Date = 'date',
+  Text = 'text',
+  Number = 'number',
+}
+
+interface featureInfoProps {
+  type: LabelType;
+  label: string;
+}
+
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
   baseUrl: string;
@@ -185,6 +196,9 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   wcsConfig?: RawDataConfiguration;
+
+  @optional
+  featureInfoProps?: { [key: string]: featureInfoProps };
 }
 
 export class NSOLayerProps extends CommonLayerProps {
@@ -335,3 +349,25 @@ export type DateRangeType = {
   month: string;
   isFirstDay: boolean;
 };
+
+export interface FeatureInfoType {
+  bbox: number[];
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface RequestFeatureInfo extends FeatureInfoType {
+  service: string;
+  request: string;
+  version: string;
+  exceptions: string;
+  infoFormat: string;
+  layers: string;
+  srs: string;
+  queryLayers: string;
+  featureCount: number;
+  format: string;
+  styles: string;
+}
