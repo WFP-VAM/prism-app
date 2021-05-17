@@ -67,11 +67,11 @@ def get_wfs_response(wfs_params, zones):
     return resp.json()
 
 
-def _extract_features_properties(zones):
-    with open(zones) as json_file:
-        geojson_data = load(json_file)
-    features = geojson_data.get('features', [])
-    return [feature['properties'] for feature in features]
+def _extract_features_properties(zones, is_path=True):
+    if is_path is True:
+        with open(zones) as json_file:
+            zones = load(json_file)
+    return [f['properties'] for f in zones.get('features', [])]
 
 
 def _group_zones(zones, group_by):
@@ -113,45 +113,33 @@ def _group_zones(zones, group_by):
     return output_file
 
 
-def _create_geoms(geojson_dict):
+def _create_shapely_geoms(geojson_dict):
     """Read and parse geojson dictionary geometries into shapely objects."""
-    geometries = {}
-    for feature in geojson_dict.get('data').get('features'):
-        key = feature.get('properties').get(geojson_dict.get('key'))
-        geom = shape(feature.get('geometry'))
-
-        geometries[key] = geom
-
-    return geometries
+    return [shape(f.get('geometry')) for f in geojson_dict.get('features')
+            if f.get('geometry').get('type') in ['MultiPolygon', 'Polygon']]
 
 
-def _compute_wfs_stats(zones_dict, wfs_response, geotiff, stats_params):
-    """Compute stats for each individual polygon and geotiff image."""
-    wfs_geoms = [shape(f.get('geometry')) for f in wfs_response.get('features')
-                 if f.get('geometry').get('type') in ['MultiPolygon', 'Polygon']]
-    zones_geoms = _create_geoms(zones_dict)
+def _get_intersected_polygons(zones_geojson, wfs_response):
+    """Generate polygon intersection between each zone and polygons from wfs response."""
+    wfs_shapes = _create_shapely_geoms(wfs_response)
 
-    results = []
-    keys = []
-    for key, value in zones_geoms.items():
-        filtered = [value.intersection(g) for g in wfs_geoms if value.intersects(g)]
+    intersected_zones = []
+    for zone in zones_geojson.get('features'):
+        geom = shape(zone.get('geometry'))
+
+        filtered = [geom.intersection(s) for s in wfs_shapes if geom.intersects(s)]
 
         if len(filtered) == 0:
             continue
-        results.append(cascaded_union(filtered))
-        keys.append({zones_dict['key']: key})
 
-    stats = zonal_stats(results, geotiff, **stats_params)
-    parsed_stats = []
-    for stat in stats:
-        props = {k: v if v is None else int(v) for k, v in stat['properties'].items()}
-        props['geometry'] = stat['geometry']
-        parsed_stats.append(props)
+        intersected_zone = {
+            'properties': zone.get('properties'),
+            'geom': cascaded_union(filtered)
+        }
 
-    output = [{**key, **stat}
-              for stat, key in zip(parsed_stats, keys)]
+        intersected_zones.append(intersected_zone)
 
-    return output
+    return {'features': intersected_zones}
 
 
 @timed
@@ -168,27 +156,17 @@ def calculate_stats(
     if group_by:
         zones = _group_zones(zones, group_by)
 
+    stats_input = zones
+    is_path = True
     if wfs_response:
-        zones_key = group_by if group_by else 'TS'
         zones_geojson = get_geojson_file(zones)
-        zones_dict = {'key': zones_key, 'data': zones_geojson}
 
-        stats_params = dict(
-            stats=stats,
-            geojson_out=True,
-            prefix=prefix
-        )
-        zones = _compute_wfs_stats(
-            zones_dict,
-            wfs_response,
-            geotiff,
-            stats_params
-        )
-
-        return zones
+        zones = _get_intersected_polygons(zones_geojson, wfs_response)
+        is_path = False
+        stats_input = [s.get('geom') for s in zones.get('features')]
 
     stats = zonal_stats(
-        zones,
+        stats_input,
         geotiff,
         stats=stats,
         prefix=prefix,
@@ -196,7 +174,7 @@ def calculate_stats(
     )
 
     if not geojson_out:
-        feature_properties = _extract_features_properties(zones)
+        feature_properties = _extract_features_properties(zones, is_path)
         stats = [{**properties, **stat}
                  for stat, properties in zip(stats, feature_properties)]
     return stats
