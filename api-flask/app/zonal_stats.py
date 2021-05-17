@@ -34,7 +34,7 @@ def get_wfs_response(wfs_params, zones):
     envelope = GeometryCollection(geoms).envelope.wkt
 
     # We make a list and then join
-    cql_filter = ['OVERLAPS(shape, {})'.format(envelope)]
+    cql_filter = ['INTERSECTS(shape, {})'.format(envelope)]
 
     if 'time' in wfs_params.keys():
         from_date = datetime.strptime(wfs_params.get('time'), '%Y-%m-%d')
