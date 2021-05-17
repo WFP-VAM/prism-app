@@ -132,9 +132,15 @@ def _get_intersected_polygons(zones_geojson, wfs_response):
         if len(filtered) == 0:
             continue
 
+        merged_geom = cascaded_union(filtered)
+
+        properties = zone.get('properties', {})
+        # Store as dictionary in order to be used by the frontend.
+        properties['geometry'] = mapping(merged_geom)
+
         intersected_zone = {
-            'properties': zone.get('properties'),
-            'geom': cascaded_union(filtered)
+            'properties': properties,
+            'geom': merged_geom
         }
 
         intersected_zones.append(intersected_zone)
