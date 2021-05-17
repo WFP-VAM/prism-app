@@ -48,7 +48,11 @@ const Input = forwardRef(
     );
   },
 );
-function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
+function DateSelector({
+  availableDates = [],
+  classes,
+  selectedDateRef,
+}: DateSelectorProps) {
   const dispatch = useDispatch();
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
 
@@ -215,6 +219,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
             includeDates={availableDates.map(
               d => new Date(d + USER_DATE_OFFSET),
             )}
+            ref={selectedDateRef}
           />
 
           <Hidden smUp>
@@ -354,6 +359,7 @@ const styles = (theme: Theme) =>
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
   availableDates?: number[];
+  selectedDateRef: React.RefObject<DatePicker>;
 }
 
 export default withStyles(styles)(DateSelector);
