@@ -303,7 +303,7 @@ async function runFeatureInfoRequest(
   layers: WMSLayerProps[],
 ): Promise<{ [name: string]: string }> {
   // Transform to snake case.
-  const toSnakeWmsParams = Object.entries(wmsParams).reduce(
+  const wmsParamsInSnakeCase = Object.entries(wmsParams).reduce(
     (obj, item) => ({
       ...obj,
       [snakeCase(item[0])]: item[1],
@@ -311,7 +311,7 @@ async function runFeatureInfoRequest(
     {},
   );
 
-  const res = await fetch(formatUrl(`${url}/ows`, toSnakeWmsParams));
+  const res = await fetch(formatUrl(`${url}/ows`, wmsParamsInSnakeCase));
   const resJson: GeoJSON.FeatureCollection = await res.json();
 
   const parsedProps = resJson.features.map(feature => {
