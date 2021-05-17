@@ -1,7 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Popup } from 'react-mapbox-gl';
-import { createStyles, withStyles, WithStyles } from '@material-ui/core';
+import {
+  createStyles,
+  withStyles,
+  WithStyles,
+  LinearProgress,
+} from '@material-ui/core';
 import { tooltipSelector } from '../../../context/tooltipStateSlice';
 
 function MapTooltip({ classes }: TooltipProps) {
@@ -21,6 +26,8 @@ function MapTooltip({ classes }: TooltipProps) {
             {key}: {value.data}
           </h4>
         ))}
+
+      {popup.wmsGetFeatureInfoLoading ? <LinearProgress /> : null}
     </Popup>
   ) : null;
 }

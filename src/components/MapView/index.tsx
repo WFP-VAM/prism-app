@@ -44,9 +44,9 @@ import {
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
 import {
-  showPopup,
   hidePopup,
   addPopupData,
+  setWMSGetFeatureInfoLoading,
 } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
@@ -240,28 +240,22 @@ function MapView({ classes }: MapViewProps) {
           ).format('YYYY-MM-DD');
 
           const params = getFeatureInfoParams(map, evt, dateFromRef);
+          dispatch(setWMSGetFeatureInfoLoading(true));
           makeFeatureInfoRequest(featureInfoLayers, params).then(
-            (result: any) => {
-              if (!result) {
-                return;
+            (result: { [name: string]: string } | null) => {
+              if (result) {
+                Object.keys(result).forEach((k: string) => {
+                  dispatch(
+                    addPopupData({
+                      [k]: {
+                        data: result[k],
+                        coordinates: evt.lngLat,
+                      },
+                    }),
+                  );
+                });
               }
-              Object.keys(result).forEach(k => {
-                dispatch(
-                  addPopupData({
-                    [k]: {
-                      data: result[k],
-                      coordinates: evt.lngLat,
-                    },
-                  }),
-                );
-              });
-
-              dispatch(
-                showPopup({
-                  coordinates: evt.lngLat,
-                  locationName: '',
-                }),
-              );
+              dispatch(setWMSGetFeatureInfoLoading(false));
             },
           );
         }}
