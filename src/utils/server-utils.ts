@@ -1,11 +1,19 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { get, isEmpty, isString, merge, union } from 'lodash';
-
+import { get, isEmpty, isString, merge, union, snakeCase } from 'lodash';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
-import type { AvailableDates, PointDataLayerProps } from '../config/types';
-import { ImpactLayerProps, WMSLayerProps } from '../config/types';
+import type {
+  AvailableDates,
+  PointDataLayerProps,
+  RequestFeatureInfo,
+} from '../config/types';
+import {
+  ImpactLayerProps,
+  WMSLayerProps,
+  FeatureInfoType,
+  LabelType,
+} from '../config/types';
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
@@ -269,4 +277,117 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
   ]);
 
   return merge({}, ...layerDates);
+}
+
+/**
+ * Format value from featureInfo response based on LabelType provided
+ *
+ * @return a formatted string
+ */
+function formatFeatureInfo(value: string, type: LabelType): string {
+  if (type === LabelType.Date) {
+    return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
+  }
+
+  return value;
+}
+
+/**
+ * Executes a getFeatureInfo request
+ *
+ * @return object of key: string - value: string with formatted values given label type.
+ */
+async function runFeatureInfoRequest(
+  url: string,
+  wmsParams: RequestFeatureInfo,
+  layers: WMSLayerProps[],
+): Promise<{ [name: string]: string }> {
+  // Transform to snake case.
+  const wmsParamsInSnakeCase = Object.entries(wmsParams).reduce(
+    (obj, item) => ({
+      ...obj,
+      [snakeCase(item[0])]: item[1],
+    }),
+    {},
+  );
+
+  const res = await fetch(formatUrl(`${url}/ows`, wmsParamsInSnakeCase));
+  const resJson: GeoJSON.FeatureCollection = await res.json();
+
+  const parsedProps = resJson.features.map(feature => {
+    // Get fields from layer configuration.
+    const [layerId] = (feature?.id as string).split('.');
+
+    const featureInfoProps =
+      layers?.find(l => l.serverLayerName === layerId)?.featureInfoProps || {};
+
+    const searchProps = Object.keys(featureInfoProps);
+
+    const properties = feature.properties ?? {};
+
+    return Object.keys(properties)
+      .filter(k => searchProps.includes(k))
+      .reduce(
+        (obj, key) => ({
+          ...obj,
+          [featureInfoProps[key].label]: formatFeatureInfo(
+            properties[key],
+            featureInfoProps[key].type,
+          ),
+        }),
+        {},
+      );
+  });
+
+  return parsedProps.reduce((obj, item) => ({ ...obj, ...item }), {});
+}
+
+/**
+ * This function builds and runs the getFeatureInfo request given the parameters
+ *
+ * @return Promise with returned object from request
+ */
+function fetchFeatureInfo(
+  layers: WMSLayerProps[],
+  url: string,
+  params: FeatureInfoType,
+): Promise<{ [name: string]: string }> {
+  const requestLayers = layers.filter(l => l.baseUrl === url);
+  const layerNames = requestLayers.map(l => l.serverLayerName).join(',');
+
+  const requestParams = {
+    service: 'WMS',
+    request: 'getFeatureInfo',
+    version: '1.1.1',
+    exceptions: 'application/json',
+    infoFormat: 'application/json',
+    layers: layerNames,
+    srs: 'EPSG:4326',
+    queryLayers: layerNames,
+    featureCount: 1,
+    format: 'image/png',
+    styles: '',
+  };
+
+  const wmsParams: RequestFeatureInfo = { ...params, ...requestParams };
+
+  return runFeatureInfoRequest(url, wmsParams, layers);
+}
+
+/**
+ * Collects all urls to create a getFeatureInfo request.
+ *
+ * @return Promise with returned object from request
+ */
+export async function makeFeatureInfoRequest(
+  layers: WMSLayerProps[],
+  params: FeatureInfoType,
+): Promise<{ [name: string]: string } | null> {
+  const urls = [...new Set(layers.map(l => l.baseUrl))];
+
+  const requests = urls.map(url => fetchFeatureInfo(layers, url, params));
+
+  return Promise.all(requests)
+    .then(r => r.reduce((obj, item) => ({ ...obj, ...item }), {}))
+    .then(obj => (Object.keys(obj).length === 0 ? null : obj));
 }
