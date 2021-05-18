@@ -115,7 +115,7 @@ def stats():
             raise BadRequest(err_message.format(joined_missing))
 
         zones_geojson = get_json_file(zones)
-        wfs_response = get_wfs_response(wfs_params, zones_geojson)
+        wfs_response = get_wfs_response(wfs_params)
 
     features = _calculate_stats(
         zones,

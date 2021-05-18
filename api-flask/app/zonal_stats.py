@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_STATS = ['min', 'max', 'mean', 'median']
 
 
-def get_wfs_response(wfs_params, zones):
+def get_wfs_response(wfs_params):
     """
     Execute Web Feature Service (WFS) request to external OGC server.
 
@@ -28,22 +28,15 @@ def get_wfs_response(wfs_params, zones):
 
     https://docs.geoserver.org/stable/en/user/services/wfs/reference.html
     """
-    geoms = [shape(f['geometry']) for f in zones.get('features')]
-    envelope = GeometryCollection(geoms).envelope.wkt
-
-    # We make a list and then join
-    cql_filter = ['INTERSECTS(shape, {})'.format(envelope)]
-
+    cql_filter = []
     if 'time' in wfs_params.keys():
         from_date = datetime.strptime(wfs_params.get('time'), '%Y-%m-%d')
         to_date = from_date + timedelta(days=1)
 
-        time_filters = ['pub_date AFTER {}'.format(from_date.isoformat()),
-                        'pub_date BEFORE {}'.format(to_date.isoformat())]
+        time_filters = ['timestamp AFTER {}'.format(from_date.isoformat()),
+                        'timestamp BEFORE {}'.format(to_date.isoformat())]
 
         cql_filter.extend(time_filters)
-
-    cql_filter = ' AND '.join(cql_filter)
 
     params = {
         'service': 'WFS',
@@ -51,8 +44,10 @@ def get_wfs_response(wfs_params, zones):
         'request': 'GetFeature',
         'typeName': wfs_params.get('layer_name'),
         'outputFormat': 'application/json',
-        'cql_filter': cql_filter
     }
+
+    if len(cql_filter) > 0:
+        params["cql_filter"] = ' AND '.join(cql_filter)
 
     wfs_url = '{url}?{params}'.format(url=wfs_params.get('url'), params=urlencode(params))
 
