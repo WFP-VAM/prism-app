@@ -1,4 +1,14 @@
-import { get, has, isNull, isString, mean, invert } from 'lodash';
+import {
+  get,
+  has,
+  isNull,
+  isString,
+  mean,
+  invert,
+  sum,
+  omit,
+  flatten,
+} from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import {
@@ -59,6 +69,7 @@ const checkRasterLayerData = (layerData: LayerData<LayerType>): RasterLayer => {
 };
 
 const operations = {
+  sum, // sum method directly from lodash
   mean, // mean method directly from lodash
   median: (data: number[]) => {
     // eslint-disable-next-line fp/no-mutating-methods
@@ -111,18 +122,38 @@ function mergeFeaturesByProperty(
   aggregateData: Array<object>,
   id: string,
 ): Feature[] {
-  return baselineFeatures.map(feature1 => {
-    const aggregateProperties = aggregateData.find(
+  const features = baselineFeatures.map(feature1 => {
+    const aggregateProperties = aggregateData.filter(
       item => get(item, id) === get(feature1, ['properties', id]) && item,
     );
-    const properties = {
-      ...get(feature1, 'properties'),
-      ...aggregateProperties,
-      impactValue: get(feature1, 'properties.data'),
-    };
-    return { ...feature1, properties };
+
+    const filteredProperties = aggregateProperties.map(filteredProperty => {
+      // We use geometry from response. If not, use whole admin boundary.
+      const filteredGeometry = get(filteredProperty, 'geometry');
+
+      const propertyItems = filteredGeometry
+        ? omit(filteredProperty, 'geometry')
+        : filteredProperty;
+
+      const properties = {
+        ...get(feature1, 'properties'),
+        ...propertyItems,
+        impactValue: get(feature1, 'properties.data'),
+      };
+
+      const feature = filteredGeometry
+        ? { ...feature1, geometry: filteredGeometry, properties }
+        : { ...feature1, properties };
+
+      return feature;
+    });
+
+    return filteredProperties;
   });
+
+  return flatten(features);
 }
+
 export const checkBaselineDataLayer = (
   layerId: string,
   data: any,
@@ -144,6 +175,7 @@ export type ApiData = {
   zones_url: string;
   group_by?: string;
   geojson_out?: boolean;
+  wfs_params?: any;
 };
 
 /* eslint-disable camelcase */
