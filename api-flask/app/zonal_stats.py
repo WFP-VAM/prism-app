@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from json import dump, load
 from urllib.parse import urlencode
 
-from app.caching import cache_file, get_geojson_file
+from app.caching import cache_file, get_json_file
 from app.timer import timed
 
 from rasterstats import zonal_stats
@@ -159,8 +159,8 @@ def calculate_stats(
     stats_input = zones
     is_path = True
     if wfs_response:
-        zones_geojson = get_geojson_file(zones)
-        wfs_geojson = get_geojson_file(wfs_response)
+        zones_geojson = get_json_file(zones)
+        wfs_geojson = get_json_file(wfs_response)
 
         zones = _get_intersected_polygons(zones_geojson, wfs_geojson)
         is_path = False
