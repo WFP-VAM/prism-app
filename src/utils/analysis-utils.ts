@@ -175,7 +175,7 @@ export type ApiData = {
   zones_url: string;
   group_by?: string;
   geojson_out?: boolean;
-  wfs_params?: any;
+  wfs_params?: { time?: string; layer_name: string; url: string } | {};
 };
 
 /* eslint-disable camelcase */

@@ -174,13 +174,11 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const { wcsConfig } = hazardLayer;
 
-  const wfsParams: wfsRequestParams | undefined = wfsLayer
-    ? {
-        url: `${wfsLayer.baseUrl}/ows`,
-        layerName: wfsLayer.serverLayerName,
-        time: moment(date).format('YYYY-MM-DD'),
-      }
-    : undefined;
+  const wfsParams: wfsRequestParams | undefined = wfsLayer && {
+    url: `${wfsLayer.baseUrl}/ows`,
+    layerName: wfsLayer.serverLayerName,
+    time: moment(date).format('YYYY-MM-DD'),
+  };
 
   const wfsParamsSnakeCase = wfsParams && {
     wfs_params: Object.entries(wfsParams).reduce(
