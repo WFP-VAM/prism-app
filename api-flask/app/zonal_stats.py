@@ -63,7 +63,7 @@ def get_wfs_response(wfs_params, zones):
 
         raise InternalServerError(err_message)
 
-    # A WFS response should be always a json response.
+    # A WFS response should always be a json response.
     return resp.json()
 
 
