@@ -111,16 +111,22 @@ function Analyser({ extent, classes }: AnalyserProps) {
     }
   };
 
-  const statisticOptions = Object.entries(AggregationOperations).map(stat => (
-    <FormControlLabel
-      key={stat[0]}
-      value={stat[1]}
-      control={
-        <Radio className={classes.radioOptions} color="default" size="small" />
-      }
-      label={stat[0]}
-    />
-  ));
+  const statisticOptions = Object.entries(AggregationOperations)
+    .filter(stat => stat[1] !== 'sum') // sum is used only for exposure analysis.
+    .map(stat => (
+      <FormControlLabel
+        key={stat[0]}
+        value={stat[1]}
+        control={
+          <Radio
+            className={classes.radioOptions}
+            color="default"
+            size="small"
+          />
+        }
+        label={stat[0]}
+      />
+    ));
 
   const clearAnalysis = () => dispatch(clearAnalysisResult());
 
