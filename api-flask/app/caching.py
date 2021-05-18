@@ -52,12 +52,10 @@ def cache_geojson(geojson, prefix):
     return cache_filepath
 
 
-def get_geojson_file(cached_filepath):
+def get_json_file(cached_filepath):
     """Return geojson object as python dictionary."""
     with open(cached_filepath, 'rb') as f:
-        data = json.load(f)
-
-    return data
+        return json.load(f)
 
 
 def _get_cached_filepath(prefix, data):

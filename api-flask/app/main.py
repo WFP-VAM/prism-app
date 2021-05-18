@@ -4,7 +4,7 @@ from distutils.util import strtobool
 from os import getenv
 from urllib.parse import ParseResult, urlencode, urlunparse
 
-from app.caching import cache_file, cache_geojson, get_geojson_file
+from app.caching import cache_file, cache_geojson, get_json_file
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.errors import handle_error, make_json_error
@@ -114,8 +114,8 @@ def stats():
 
             raise BadRequest(err_message.format(joined_missing))
 
-        zones_geojson = get_geojson_file(zones)
-        wfs_response = get_wfs_response(wfs_params, zones_geojson)
+        zones_geojson = get_json_file(zones)
+        wfs_response = get_wfs_response(wfs_params)
 
     features = _calculate_stats(
         zones,
