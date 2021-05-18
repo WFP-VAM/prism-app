@@ -50,4 +50,3 @@ def test_calculate_stats_wfs_polygons():
     assert len(features) == 2
 
     assert True
-
