@@ -10,7 +10,7 @@ from app.timer import timed
 
 from rasterstats import zonal_stats
 
-from shapely.geometry import GeometryCollection, mapping, shape
+from shapely.geometry import mapping, shape
 from shapely.ops import cascaded_union
 
 
@@ -47,7 +47,7 @@ def get_wfs_response(wfs_params):
     }
 
     if len(cql_filter) > 0:
-        params["cql_filter"] = ' AND '.join(cql_filter)
+        params['cql_filter'] = ' AND '.join(cql_filter)
 
     wfs_url = '{url}?{params}'.format(url=wfs_params.get('url'), params=urlencode(params))
 
