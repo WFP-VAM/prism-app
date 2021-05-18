@@ -112,7 +112,7 @@ def alerts_all():
 
 
 @app.route('/alerts/<id>', methods=['GET'])
-def get_alert_by_id(id: str = '1'):
+def alert_by_id(id: str = '1'):
     """Get alert data from DB given id."""
     try:
         id = int(id)
@@ -120,8 +120,16 @@ def get_alert_by_id(id: str = '1'):
         logger.error(f'Failed to fetch alerts: {e}')
         raise InternalServerError('Invalid id')
 
-    results = alert_db.read(AlertModel.id == id)
-    return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
+    alert = alert_db.query.filter_by(id=id).first()
+
+    if request.args.get('deactivate'):
+        if request.args.get('email').lower() != alert.email.lower():
+            raise InternalServerError('Email addresses do not match. Your alert is still active.')
+
+        alert_db.deactivate(alert)
+        return Response(response='Alert successfully deactivated.', status=200)
+
+    return Response(json.dumps(alert, cls=AlchemyEncoder), mimetype='application/json')
 
 
 @app.route('/alerts', methods=['POST'])

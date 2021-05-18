@@ -65,6 +65,42 @@ class AlertsDataBase:
         """
         return self.session.query(AlertModel).filter(expr).all()
 
+    def deactivate(self, alert: AlertModel):
+        """
+        Deactivate an alert from the database.
+
+        :param alert: An existing AlertModel element.
+        :return: success boolean.
+        """
+        try:
+            alert.active = False
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
+        finally:
+            self.session.close()
+
+    def delete(self, alert: AlertModel) -> bool:
+        """
+        Delete an alert from the database.
+
+        :param alert: An existing AlertModel element.
+        :return: success boolean.
+        """
+        delete_successful = False
+        try:
+            self.session.delete(alert)
+            self.session.commit()
+            delete_successful = True
+        except Exception as e:
+            self.session.rollback()
+            logger.error(f'Failed to delete alert: {e}')
+        finally:
+            self.session.close()
+
+        return delete_successful
+
 
 # Local test
 if __name__ == '__main__':
