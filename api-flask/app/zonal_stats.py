@@ -3,18 +3,16 @@ import logging
 from collections import defaultdict
 from datetime import datetime, timedelta
 from json import dump, load
+from urllib.parse import urlencode
 
-from app.caching import get_geojson_file
+from app.caching import cache_file, get_geojson_file
 from app.timer import timed
 
 from rasterstats import zonal_stats
 
-import requests
-
 from shapely.geometry import GeometryCollection, mapping, shape
 from shapely.ops import cascaded_union
 
-from werkzeug.exceptions import InternalServerError
 
 logger = logging.getLogger(__name__)
 
@@ -56,15 +54,11 @@ def get_wfs_response(wfs_params, zones):
         'cql_filter': cql_filter
     }
 
-    resp = requests.get(wfs_params.get('url'), params)
-    if resp.status_code != 200:
-        logger.error(resp.content)
-        err_message = 'Received status code from WFS request: {}'.format(resp.status_code)
+    wfs_url = '{url}?{params}'.format(url=wfs_params.get('url'), params=urlencode(params))
 
-        raise InternalServerError(err_message)
+    wfs_response_path = cache_file(url=wfs_url, prefix='wfs')
 
-    # A WFS response should always be a json response.
-    return resp.json()
+    return wfs_response_path
 
 
 def _extract_features_properties(zones, is_path=True):
@@ -119,9 +113,9 @@ def _create_shapely_geoms(geojson_dict):
             if f.get('geometry').get('type') in ['MultiPolygon', 'Polygon']]
 
 
-def _get_intersected_polygons(zones_geojson, wfs_response):
+def _get_intersected_polygons(zones_geojson, wfs_geojson):
     """Generate polygon intersection between each zone and polygons from wfs response."""
-    wfs_shapes = _create_shapely_geoms(wfs_response)
+    wfs_shapes = _create_shapely_geoms(wfs_geojson)
 
     intersected_zones = []
     for zone in zones_geojson.get('features'):
@@ -166,8 +160,9 @@ def calculate_stats(
     is_path = True
     if wfs_response:
         zones_geojson = get_geojson_file(zones)
+        wfs_geojson = get_geojson_file(wfs_response)
 
-        zones = _get_intersected_polygons(zones_geojson, wfs_response)
+        zones = _get_intersected_polygons(zones_geojson, wfs_geojson)
         is_path = False
         stats_input = [s.get('geom') for s in zones.get('features')]
 
