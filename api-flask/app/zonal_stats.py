@@ -161,13 +161,17 @@ def calculate_stats(
         is_path = False
         stats_input = [s.get('geom') for s in zones.get('features')]
 
-    stats = zonal_stats(
-        stats_input,
-        geotiff,
-        stats=stats,
-        prefix=prefix,
-        geojson_out=geojson_out
-    )
+    try:
+        stats = zonal_stats(
+            stats_input,
+            geotiff,
+            stats=stats,
+            prefix=prefix,
+            geojson_out=geojson_out
+        )
+    except Exception as e:
+        logger.warn(e)
+        stats = []
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones, is_path)

@@ -85,7 +85,7 @@ def stats():
     geotiff = cache_file(
         prefix='raster',
         url=geotiff_url,
-        extension='tiff'
+        extension='tif'
     )
 
     # TODO - Add validation for zones.
@@ -209,7 +209,8 @@ def stats_demo():
 
     geotiff = cache_file(
         prefix='raster_test',
-        url=geotiff_url
+        url=geotiff_url,
+        extension='tif'
     )
 
     zones = cache_file(
