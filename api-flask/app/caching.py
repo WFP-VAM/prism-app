@@ -4,11 +4,11 @@ import json
 import logging
 import os
 
-from werkzeug.exceptions import InternalServerError
-
 from app.timer import timed
 
 import requests
+
+from werkzeug.exceptions import InternalServerError
 
 logger = logging.getLogger(__name__)
 
