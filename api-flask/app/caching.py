@@ -67,7 +67,7 @@ def _get_cached_filepath(prefix, data, extension='cache'):
         hash_string=_hash_value(data),
         extension=extension,
     )
-    logger.debug('Cached filepath: ' + os.path.join(CACHE_DIRECTORY, filename))
+    logger.info('Cached filepath: ' + os.path.join(CACHE_DIRECTORY, filename))
     return os.path.join(CACHE_DIRECTORY, filename)
 
 
