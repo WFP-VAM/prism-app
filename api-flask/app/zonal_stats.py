@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 from json import dump, load
 from urllib.parse import urlencode
 
+from werkzeug.exceptions import InternalServerError
+
 from app.caching import cache_file, get_json_file
 from app.timer import timed
 
@@ -170,8 +172,8 @@ def calculate_stats(
             geojson_out=geojson_out
         )
     except Exception as e:
-        logger.warn(e)
-        stats = []
+        logger.error(e)
+        raise InternalServerError('An error occured calculating statistics.')
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones, is_path)
