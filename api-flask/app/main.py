@@ -129,11 +129,12 @@ def stats():
     return jsonify(features)
 
 
-@app.route('/alerts-all', methods=['GET'])
-def alerts_all():
-    """Get all alerts in current table."""
-    results = alert_db.readall()
-    return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
+# TODO - Secure endpoint
+# @app.route('/alerts-all', methods=['GET'])
+# def alerts_all():
+#     """Get all alerts in current table."""
+#     results = alert_db.readall()
+#     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
 
 
 @app.route('/alerts/<id>', methods=['GET'])
@@ -147,10 +148,11 @@ def alert_by_id(id: str = '1'):
 
     alert = alert_db.read(AlertModel.id == id)[0]
 
-    if request.args.get('deactivate'):
-        if request.args.get('email').lower() != alert.email.lower():
-            raise InternalServerError('Email addresses do not match. Your alert is still active.')
+    # secure endpoint with simple email verification
+    if request.args.get('email').lower() != alert.email.lower():
+        raise InternalServerError('Access denied. Email addresses do not match.')
 
+    if request.args.get('deactivate'):
         alert_db.deactivate(alert)
         return Response(response='Alert successfully deactivated.', status=200)
 
