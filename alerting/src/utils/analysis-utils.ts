@@ -28,7 +28,6 @@ export async function fetchApiData(
     // body data type must match "Content-Type" header
     body: JSON.stringify(apiData),
   });
-  console.log(response);
   return response.json();
 }
 
