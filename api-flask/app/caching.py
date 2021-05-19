@@ -3,6 +3,7 @@ import hashlib
 import json
 import logging
 import os
+import rasterio
 
 from app.timer import timed
 
@@ -26,7 +27,16 @@ def cache_file(url, prefix, extension='cache'):
     # If the file exists, return path.
     if os.path.isfile(cache_filepath):
         logger.info('Returning cached file for {}.'.format(url))
-        return cache_filepath
+
+        # if the file is a geotiff, confirm that we can open it.
+        if extension == 'tif':
+            try:
+                rasterio.open(cache_filepath)
+                return cache_filepath
+            except:
+                pass
+        else:
+            return cache_filepath
 
     # If the file does not exist, download and return path.
     response = requests.get(url, verify=False)
