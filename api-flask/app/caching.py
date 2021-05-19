@@ -4,6 +4,8 @@ import json
 import logging
 import os
 
+from werkzeug.exceptions import InternalServerError
+
 from app.timer import timed
 
 import requests
@@ -25,15 +27,23 @@ def cache_file(url, prefix, extension='cache'):
     if os.path.isfile(cache_filepath):
         logger.info('Returning cached file for {}.'.format(url))
         return cache_filepath
+
     # If the file does not exist, download and return path.
-    else:
-        r = requests.get(url, verify=False)
+    response = requests.get(url, verify=False)
 
-        with open(cache_filepath, 'wb') as f:
-            f.write(r.content)
+    try:
+        response.raise_for_status()
+    except Exception as e:
+        logger.error(e, url)
+        raise InternalServerError('The file you requested is not available - {url}'.format(
+            url=url)
+        )
 
-        logger.info('Caching file for {}.'.format(url))
-        return cache_filepath
+    with open(cache_filepath, 'wb') as f:
+        f.write(response.content)
+
+    logger.info('Caching file for {}.'.format(url))
+    return cache_filepath
 
 
 @timed

@@ -69,13 +69,13 @@ def stats():
     data = request.get_json() or request.form
     geotiff_url = data.get('geotiff_url')
     zones_url = data.get('zones_url')
-    zonesGeojson = data.get('zones')
+    zones_geojson = data.get('zones')
 
     if geotiff_url is None:
         logger.error('Received {}'.format(data))
         raise BadRequest('geotiff_url is required.')
 
-    if zonesGeojson is None and zones_url is None:
+    if zones_geojson is None and zones_url is None:
         logger.error('Received {}'.format(data))
         raise BadRequest('One of zones or zones_url is required.')
 
@@ -89,10 +89,10 @@ def stats():
     )
 
     # TODO - Add validation for zones.
-    if (zonesGeojson is not None):
+    if (zones_geojson is not None):
         zones = cache_geojson(
             prefix='zones_geojson',
-            geojson=zonesGeojson
+            geojson=zones_geojson
         )
     else:
         zones = cache_file(
