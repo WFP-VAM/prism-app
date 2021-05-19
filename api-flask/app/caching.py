@@ -3,9 +3,10 @@ import hashlib
 import json
 import logging
 import os
-import rasterio
 
 from app.timer import timed
+
+import rasterio
 
 import requests
 
@@ -33,7 +34,7 @@ def cache_file(url, prefix, extension='cache'):
             try:
                 rasterio.open(cache_filepath)
                 return cache_filepath
-            except:
+            except Exception:
                 pass
         else:
             return cache_filepath
