@@ -28,6 +28,7 @@ export async function fetchApiData(
     // body data type must match "Content-Type" header
     body: JSON.stringify(apiData),
   });
+  console.log(response);
   return response.json();
 }
 
@@ -101,9 +102,14 @@ export async function calculateBoundsForAlert(date: Date, alert: Alert) {
     }),
     zones: alert.zones,
   };
-  const alertMessage = await getAlertMessage(
-    await fetchApiData(ANALYSIS_API_URL, apiRequest),
-    alert,
-  );
-  return alertMessage;
+
+  let apiResponse;
+  try {
+    apiResponse = await fetchApiData(ANALYSIS_API_URL, apiRequest);
+  } catch (error) {
+    console.error(error);
+    apiResponse = '';
+  }
+
+  return getAlertMessage(apiResponse, alert);
 }

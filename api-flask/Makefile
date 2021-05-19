@@ -4,6 +4,9 @@ api:
 deploy:
 	docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 
+logs:
+	docker-compose logs -f
+
 api-lint:
 	docker-compose run --no-deps api bash -c "flake8 ."
 	docker-compose run --no-deps api bash -c "pydocstyle ."

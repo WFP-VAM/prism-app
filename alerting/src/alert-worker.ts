@@ -25,6 +25,9 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
 
   const alertMessage = await calculateBoundsForAlert(maxDate, alert);
 
+  const deactivationLink = `api_url//alerts/id?deactivate=true&email=${email}`;
+  console.log(deactivationLink);
+
   if (alertMessage) {
     const emailMessage = `
         Your alert${alertName ? ` ${alertName}` : ''} has been triggered.
@@ -36,6 +39,8 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   
         Alert: ${alertMessage}`;
 
+    const emailHtml = `${emailMessage} <br><br>To cancel this alert, click <a href='${deactivationLink}'>here</a>.`;
+
     console.log(
       `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
     );
@@ -45,6 +50,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
       to: email,
       subject: `PRISM Alert Triggered`,
       text: emailMessage,
+      html: emailHtml,
     });
 
     console.log(alertMessage);
