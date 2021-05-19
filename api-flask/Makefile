@@ -1,8 +1,11 @@
 api:
-	docker-compose -f docker-compose.yml -f docker-compose.develop.yml up
+	docker-compose build && docker-compose -f docker-compose.yml -f docker-compose.develop.yml up
 
 deploy:
 	docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+
+logs:
+	docker-compose logs -f
 
 api-lint:
 	docker-compose run --no-deps api bash -c "flake8 ."
