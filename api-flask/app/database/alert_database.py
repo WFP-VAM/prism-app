@@ -73,6 +73,7 @@ class AlertsDataBase:
         :return: success boolean.
         """
         try:
+            # TODO - Make this work.
             alert.active = False
             self.session.commit()
         except Exception as e:

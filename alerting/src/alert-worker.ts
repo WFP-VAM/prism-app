@@ -1,5 +1,6 @@
 import { isNaN } from 'lodash';
 import { createConnection, Repository } from 'typeorm';
+import { ANALYSIS_API_URL } from './constants';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
@@ -25,7 +26,8 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
 
   const alertMessage = await calculateBoundsForAlert(maxDate, alert);
 
-  const deactivationLink = `api_url//alerts/id?deactivate=true&email=${email}`;
+  // TODO - escape symbols in email string
+  const deactivationLink = `${ANALYSIS_API_URL}/alerts/${id}?deactivate=true&email=${email}`;
   console.log(deactivationLink);
 
   if (alertMessage) {
@@ -39,7 +41,10 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   
         Alert: ${alertMessage}`;
 
-    const emailHtml = `${emailMessage} <br><br>To cancel this alert, click <a href='${deactivationLink}'>here</a>.`;
+    const emailHtml = `${emailMessage.replace(
+      '\n',
+      '<br>',
+    )} <br><br>To cancel this alert, click <a href='${deactivationLink}'>here</a>.`;
 
     console.log(
       `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,

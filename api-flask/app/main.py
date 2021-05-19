@@ -145,7 +145,7 @@ def alert_by_id(id: str = '1'):
         logger.error(f'Failed to fetch alerts: {e}')
         raise InternalServerError('Invalid id')
 
-    alert = alert_db.query.filter_by(id=id).first()
+    alert = alert_db.read(AlertModel.id == id)[0]
 
     if request.args.get('deactivate'):
         if request.args.get('email').lower() != alert.email.lower():

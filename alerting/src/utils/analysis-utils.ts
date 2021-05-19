@@ -105,7 +105,7 @@ export async function calculateBoundsForAlert(date: Date, alert: Alert) {
 
   let apiResponse;
   try {
-    apiResponse = await fetchApiData(ANALYSIS_API_URL, apiRequest);
+    apiResponse = await fetchApiData(`${ANALYSIS_API_URL}/stats`, apiRequest);
   } catch (error) {
     console.error(error);
     apiResponse = '';
