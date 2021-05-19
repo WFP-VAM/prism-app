@@ -3,6 +3,7 @@ import bbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import * as GeoTIFF from 'geotiff';
 import { buffer } from 'd3-fetch';
+import { Map as MapBoxMap } from 'mapbox-gl';
 import { formatUrl } from '../../../utils/server-utils';
 
 export type TransformMatrix = [number, number, number, number, number, number];
@@ -321,4 +322,16 @@ export function pixelsInFeature(
       ),
     );
   }, [] as number[]);
+}
+
+export function getExtent(map?: MapBoxMap): Extent {
+  // TODO - Use bbox on the admin boundaries instead.
+  const bounds = map?.getBounds();
+
+  const minX = bounds?.getWest();
+  const maxX = bounds?.getEast();
+  const minY = bounds?.getSouth();
+  const maxY = bounds?.getNorth();
+
+  return [minX, minY, maxX, maxY].map(val => val || 0) as Extent;
 }
