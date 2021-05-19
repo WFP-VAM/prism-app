@@ -84,7 +84,8 @@ def stats():
 
     geotiff = cache_file(
         prefix='raster',
-        url=geotiff_url
+        url=geotiff_url,
+        extension='tiff'
     )
 
     # TODO - Add validation for zones.
@@ -96,7 +97,8 @@ def stats():
     else:
         zones = cache_file(
             prefix='zones',
-            url=zones_url
+            url=zones_url,
+            extension='json',
         )
 
     wfs_params = data.get('wfs_params', None)
