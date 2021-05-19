@@ -26,9 +26,9 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
 
   const alertMessage = await calculateBoundsForAlert(maxDate, alert);
 
-  // TODO - escape symbols in email string
+  // TODO - safer url creation, escape symbols in email string
   const deactivationLink = `${ANALYSIS_API_URL}/alerts/${id}?deactivate=true&email=${email}`;
-  console.log(deactivationLink);
+  console.debug(deactivationLink);
 
   if (alertMessage) {
     const emailMessage = `
