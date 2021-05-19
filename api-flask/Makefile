@@ -1,8 +1,8 @@
 api:
-	docker-compose build && docker-compose -f docker-compose.yml -f docker-compose.develop.yml up
+	docker-compose -f docker-compose.yml -f docker-compose.develop.yml up
 
 deploy:
-	docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
+	docker-compose build && docker-compose -f docker-compose.yml -f docker-compose.deploy.yml up -d
 
 logs:
 	docker-compose logs -f
