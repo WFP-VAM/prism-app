@@ -5,8 +5,6 @@ from datetime import datetime, timedelta
 from json import dump, load
 from urllib.parse import urlencode
 
-from werkzeug.exceptions import InternalServerError
-
 from app.caching import cache_file, get_json_file
 from app.timer import timed
 
@@ -14,6 +12,8 @@ from rasterstats import zonal_stats
 
 from shapely.geometry import mapping, shape
 from shapely.ops import cascaded_union
+
+from werkzeug.exceptions import InternalServerError
 
 
 logger = logging.getLogger(__name__)
