@@ -229,7 +229,8 @@ def stats_demo():
         stats=['min', 'max', 'mean', 'median', 'sum', 'std'],
         prefix='stats_',
         group_by=group_by,
-        geojson_out=geojson_out
+        geojson_out=geojson_out,
+        wfs_response=None
     )
 
     # TODO - Properly encode before returning. Mongolian characters are returned as hex.
