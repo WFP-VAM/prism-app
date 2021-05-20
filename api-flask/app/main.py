@@ -17,7 +17,7 @@ from flask_caching import Cache
 
 from flask_cors import CORS
 
-from werkzeug.exceptions import BadRequest, InternalServerError
+from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 
 logging.basicConfig(level=logging.INFO)
@@ -146,14 +146,19 @@ def alert_by_id(id: str = '1'):
         logger.error(f'Failed to fetch alerts: {e}')
         raise InternalServerError('Invalid id')
 
-    alert = alert_db.read(AlertModel.id == id)[0]
+    alert = alert_db.readone(id)
+    if alert is None:
+        raise NotFound(f'No alert was found with id {id}')
 
     # secure endpoint with simple email verification
-    if request.args.get('email').lower() != alert.email.lower():
+    if request.args.get('email', '').lower() != alert.email.lower():
         raise InternalServerError('Access denied. Email addresses do not match.')
 
     if request.args.get('deactivate'):
-        alert_db.deactivate(alert)
+        status = alert_db.deactivate(alert)
+        if not status:
+            raise InternalServerError('Failed to deactivate alert')
+
         return Response(response='Alert successfully deactivated.', status=200)
 
     return Response(json.dumps(alert, cls=AlchemyEncoder), mimetype='application/json')
