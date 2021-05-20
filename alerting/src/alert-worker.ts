@@ -39,7 +39,6 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const url = new URL(`/alerts/${id}`, ANALYSIS_API_URL);
   url.searchParams.append('deactivate', 'true');
   url.searchParams.append('email', email);
-  console.debug(url.href);
 
   if (alertMessage) {
     const emailMessage = `
@@ -53,7 +52,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
         Alert: ${alertMessage}`;
 
     const emailHtml = `${emailMessage.replace(
-      '\n',
+      /(\r\n|\r|\n)/g,
       '<br>',
     )} <br><br>To cancel this alert, click <a href='${url.href}'>here</a>.`;
 
