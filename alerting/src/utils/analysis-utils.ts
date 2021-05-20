@@ -102,13 +102,11 @@ export async function calculateBoundsForAlert(date: Date, alert: Alert) {
     zones: alert.zones,
   };
 
-  let apiResponse;
   try {
-    apiResponse = await fetchApiData(`${ANALYSIS_API_URL}/stats`, apiRequest);
+    const apiData = await fetchApiData(`${ANALYSIS_API_URL}/stats`, apiRequest);
+    return getAlertMessage(apiData, alert);
   } catch (error) {
     console.error(error);
-    apiResponse = '';
+    return undefined;
   }
-
-  return getAlertMessage(apiResponse, alert);
 }
