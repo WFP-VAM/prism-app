@@ -65,6 +65,15 @@ class AlertsDataBase:
         """
         return self.session.query(AlertModel).filter(expr).all()
 
+    def readone(self, id: int):
+        """
+        Return one alert matching the provided id.
+
+        :param id: The id of the wanted alert entity
+        :return: An alert entity or None if no entity was found
+        """
+        return self.session.query(AlertModel).filter_by(id=id).first()
+
     def deactivate(self, alert: AlertModel):
         """
         Deactivate an alert from the database.
@@ -72,15 +81,18 @@ class AlertsDataBase:
         :param alert: An existing AlertModel element.
         :return: success boolean.
         """
+        deactivation_successful = False
         try:
-            # TODO - Make this work.
             alert.active = False
             self.session.commit()
+            deactivation_successful = True
         except Exception as e:
             self.session.rollback()
-            raise e
+            logger.error(f'Failed to deactivate alert: {e}')
         finally:
             self.session.close()
+
+        return deactivation_successful
 
     def delete(self, alert: AlertModel) -> bool:
         """
