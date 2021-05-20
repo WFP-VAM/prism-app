@@ -35,9 +35,11 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
 
   const alertMessage = await calculateBoundsForAlert(maxDate, alert);
 
-  // TODO - safer url creation, escape symbols in email string
-  const deactivationLink = `${ANALYSIS_API_URL}/alerts/${id}?deactivate=true&email=${email}`;
-  console.debug(deactivationLink);
+  // Use the URL API to create the url and perform url encoding on all character
+  const url = new URL(`/alerts/${id}`, ANALYSIS_API_URL);
+  url.searchParams.append('deactivate', 'true');
+  url.searchParams.append('email', email);
+  console.debug(url.href);
 
   if (alertMessage) {
     const emailMessage = `
@@ -53,7 +55,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     const emailHtml = `${emailMessage.replace(
       '\n',
       '<br>',
-    )} <br><br>To cancel this alert, click <a href='${deactivationLink}'>here</a>.`;
+    )} <br><br>To cancel this alert, click <a href='${url.href}'>here</a>.`;
 
     console.log(
       `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
