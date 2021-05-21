@@ -34,7 +34,7 @@ def cache_file(url, prefix, extension='cache'):
             try:
                 rasterio.open(cache_filepath)
                 return cache_filepath
-            except Exception:
+            except rasterio.errors.RasterioError:
                 pass
         else:
             return cache_filepath
@@ -44,7 +44,7 @@ def cache_file(url, prefix, extension='cache'):
 
     try:
         response.raise_for_status()
-    except Exception as e:
+    except requests.HTTPError as e:
         logger.error(e, url)
         raise InternalServerError('The file you requested is not available - {url}'.format(
             url=url)

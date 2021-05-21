@@ -17,6 +17,8 @@ from flask_caching import Cache
 
 from flask_cors import CORS
 
+import rasterio
+
 from werkzeug.exceptions import BadRequest, InternalServerError
 
 
@@ -162,7 +164,7 @@ def write_alerts():
         alert = AlertModel(**data)
         alert_db.write(alert)
 
-    except Exception as e:
+    except rasterio.errors.RasterioError as e:
         logger.error(e)
         raise e
 
