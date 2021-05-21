@@ -28,8 +28,6 @@ import { DataRecord, NSOLayerData } from './layers/nso';
 import { BoundaryLayerData } from './layers/boundary';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
-const DEV_ADMIN_BOUNDARIES_URL =
-  'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json';
 
 type AnalysisResultState = {
   result?: AnalysisResult;
@@ -60,9 +58,6 @@ const initialState: AnalysisResultState = {
 function getAdminBoundariesURL() {
   const isProduction = process.env.NODE_ENV === 'production';
   const adminBoundariesPath = getBoundaryLayerSingleton().path;
-  if (!isProduction) {
-    return DEV_ADMIN_BOUNDARIES_URL;
-  }
   // already a remote location, so return it.
   if (adminBoundariesPath.startsWith('http')) {
     return adminBoundariesPath;

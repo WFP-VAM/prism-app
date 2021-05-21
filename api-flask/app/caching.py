@@ -45,7 +45,7 @@ def cache_file(url, prefix, extension='cache'):
     try:
         response.raise_for_status()
     except requests.HTTPError as e:
-        logger.error(e, url)
+        logger.error(e)
         raise InternalServerError('The file you requested is not available - {url}'.format(
             url=url)
         )
