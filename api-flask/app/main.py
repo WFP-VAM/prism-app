@@ -22,7 +22,7 @@ import rasterio
 from werkzeug.exceptions import BadRequest, InternalServerError
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
@@ -68,6 +68,8 @@ def _calculate_stats(zones,
 def stats():
     """Return zonal statistics."""
     # Accept data as json or form.
+    logger.debug('New stats request:')
+    logger.debug(request)
     data = request.get_json() or request.form
     geotiff_url = data.get('geotiff_url')
     zones_url = data.get('zones_url')
