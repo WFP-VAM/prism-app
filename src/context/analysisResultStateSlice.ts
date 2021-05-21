@@ -56,7 +56,6 @@ const initialState: AnalysisResultState = {
  * If the application is in production, we will attempt to construct a public URL that the backend should be able to access.
  */
 function getAdminBoundariesURL() {
-  const isProduction = process.env.NODE_ENV === 'production';
   const adminBoundariesPath = getBoundaryLayerSingleton().path;
   // already a remote location, so return it.
   if (adminBoundariesPath.startsWith('http')) {
