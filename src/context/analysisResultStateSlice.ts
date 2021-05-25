@@ -61,6 +61,10 @@ function getAdminBoundariesURL() {
   if (adminBoundariesPath.startsWith('http')) {
     return adminBoundariesPath;
   }
+  // do not send a local path to the API, use a fixed boundary file instead.
+  if (window.location.origin.includes('localhost')) {
+    return 'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json';
+  }
   // the regex here removes the dot at the beginning of a path, if there is one.
   // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '
   return window.location.origin + adminBoundariesPath.replace(/^\./, '');
