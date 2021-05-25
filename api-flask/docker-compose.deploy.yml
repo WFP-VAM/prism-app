@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  web:
+  traefik_default:
     external:
       name: traefik_default
 
@@ -32,7 +32,7 @@ services:
   api:
     container_name: 'api'
     networks:
-      - web
+      - traefik_default
       - default
     labels:
       - 'traefik.enable=true'
