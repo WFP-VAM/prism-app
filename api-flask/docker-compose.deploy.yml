@@ -39,6 +39,6 @@ services:
       - FLASK_DEBUG=1
 
   networks:
-    web:
+    traefik_default:
       external:
         name: traefik_default
