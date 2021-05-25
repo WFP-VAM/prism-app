@@ -1,5 +1,6 @@
 import { isNaN } from 'lodash';
 import { createConnection, Repository } from 'typeorm';
+import { ANALYSIS_API_URL } from './constants';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
@@ -7,7 +8,15 @@ import { getWCSCoverage, getWMSCapabilities } from './utils/server-utils';
 
 async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const { baseUrl, serverLayerName, type } = alert.alertConfig;
-  const { id, alertName, createdAt, email, lastTriggered, prismUrl } = alert;
+  const {
+    id,
+    alertName,
+    createdAt,
+    email,
+    lastTriggered,
+    prismUrl,
+    active,
+  } = alert;
   const availableDates =
     type === 'wms'
       ? await getWMSCapabilities(`${baseUrl}/wms`)
@@ -16,6 +25,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
 
   if (
+    !active ||
     isNaN(maxDate.getTime()) ||
     (lastTriggered && lastTriggered >= maxDate) ||
     createdAt >= maxDate
@@ -24,6 +34,11 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   }
 
   const alertMessage = await calculateBoundsForAlert(maxDate, alert);
+
+  // Use the URL API to create the url and perform url encoding on all character
+  const url = new URL(`/alerts/${id}`, ANALYSIS_API_URL);
+  url.searchParams.append('deactivate', 'true');
+  url.searchParams.append('email', email);
 
   if (alertMessage) {
     const emailMessage = `
@@ -36,6 +51,11 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   
         Alert: ${alertMessage}`;
 
+    const emailHtml = `${emailMessage.replace(
+      /(\r\n|\r|\n)/g,
+      '<br>',
+    )} <br><br>To cancel this alert, click <a href='${url.href}'>here</a>.`;
+
     console.log(
       `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
     );
@@ -45,6 +65,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
       to: email,
       subject: `PRISM Alert Triggered`,
       text: emailMessage,
+      html: emailHtml,
     });
 
     console.log(alertMessage);

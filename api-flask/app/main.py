@@ -19,7 +19,7 @@ from flask_cors import CORS
 
 import rasterio
 
-from werkzeug.exceptions import BadRequest, InternalServerError
+from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -135,15 +135,16 @@ def stats():
     return jsonify(features)
 
 
-@app.route('/alerts-all', methods=['GET'])
-def alerts_all():
-    """Get all alerts in current table."""
-    results = alert_db.readall()
-    return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
+# TODO - Secure endpoint
+# @app.route('/alerts-all', methods=['GET'])
+# def alerts_all():
+#     """Get all alerts in current table."""
+#     results = alert_db.readall()
+#     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
 
 
 @app.route('/alerts/<id>', methods=['GET'])
-def get_alert_by_id(id: str = '1'):
+def alert_by_id(id: str = '1'):
     """Get alert data from DB given id."""
     try:
         id = int(id)
@@ -151,8 +152,22 @@ def get_alert_by_id(id: str = '1'):
         logger.error(f'Failed to fetch alerts: {e}')
         raise InternalServerError('Invalid id')
 
-    results = alert_db.read(AlertModel.id == id)
-    return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
+    alert = alert_db.readone(id)
+    if alert is None:
+        raise NotFound(f'No alert was found with id {id}')
+
+    # secure endpoint with simple email verification
+    if request.args.get('email', '').lower() != alert.email.lower():
+        raise InternalServerError('Access denied. Email addresses do not match.')
+
+    if request.args.get('deactivate'):
+        status = alert_db.deactivate(alert)
+        if not status:
+            raise InternalServerError('Failed to deactivate alert')
+
+        return Response(response='Alert successfully deactivated.', status=200)
+
+    return Response(json.dumps(alert, cls=AlchemyEncoder), mimetype='application/json')
 
 
 @app.route('/alerts', methods=['POST'])
