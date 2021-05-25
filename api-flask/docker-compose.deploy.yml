@@ -38,7 +38,7 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
 
-  networks:
-    traefik_default:
-      external:
-        name: traefik_default
+networks:
+  traefik_default:
+    external:
+      name: traefik_default
