@@ -65,6 +65,55 @@ class AlertsDataBase:
         """
         return self.session.query(AlertModel).filter(expr).all()
 
+    def readone(self, id: int):
+        """
+        Return one alert matching the provided id.
+
+        :param id: The id of the wanted alert entity
+        :return: An alert entity or None if no entity was found
+        """
+        return self.session.query(AlertModel).filter_by(id=id).first()
+
+    def deactivate(self, alert: AlertModel):
+        """
+        Deactivate an alert from the database.
+
+        :param alert: An existing AlertModel element.
+        :return: success boolean.
+        """
+        deactivation_successful = False
+        try:
+            alert.active = False
+            self.session.commit()
+            deactivation_successful = True
+        except Exception as e:
+            self.session.rollback()
+            logger.error(f'Failed to deactivate alert: {e}')
+        finally:
+            self.session.close()
+
+        return deactivation_successful
+
+    def delete(self, alert: AlertModel) -> bool:
+        """
+        Delete an alert from the database.
+
+        :param alert: An existing AlertModel element.
+        :return: success boolean.
+        """
+        delete_successful = False
+        try:
+            self.session.delete(alert)
+            self.session.commit()
+            delete_successful = True
+        except Exception as e:
+            self.session.rollback()
+            logger.error(f'Failed to delete alert: {e}')
+        finally:
+            self.session.close()
+
+        return delete_successful
+
 
 # Local test
 if __name__ == '__main__':
