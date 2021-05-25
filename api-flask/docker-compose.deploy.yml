@@ -1,5 +1,10 @@
 version: '3'
 
+networks:
+  traefik_default:
+    external:
+      name: traefik_default
+
 services:
   traefik:
     # https://docs.traefik.io/user-guides/docker-compose/acme-tls/
@@ -37,8 +42,3 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
-
-networks:
-  traefik_default:
-    external:
-      name: traefik_default
