@@ -6,7 +6,11 @@ import os
 
 from app.timer import timed
 
+import rasterio
+
 import requests
+
+from werkzeug.exceptions import InternalServerError
 
 logger = logging.getLogger(__name__)
 
@@ -24,16 +28,33 @@ def cache_file(url, prefix, extension='cache'):
     # If the file exists, return path.
     if os.path.isfile(cache_filepath):
         logger.info('Returning cached file for {}.'.format(url))
-        return cache_filepath
+
+        # if the file is a geotiff, confirm that we can open it.
+        if extension == 'tif':
+            try:
+                rasterio.open(cache_filepath)
+                return cache_filepath
+            except rasterio.errors.RasterioError:
+                pass
+        else:
+            return cache_filepath
+
     # If the file does not exist, download and return path.
-    else:
-        r = requests.get(url, verify=False)
+    response = requests.get(url, verify=False)
 
-        with open(cache_filepath, 'wb') as f:
-            f.write(r.content)
+    try:
+        response.raise_for_status()
+    except requests.HTTPError as e:
+        logger.error(e)
+        raise InternalServerError('The file you requested is not available - {url}'.format(
+            url=url)
+        )
 
-        logger.info('Caching file for {}.'.format(url))
-        return cache_filepath
+    with open(cache_filepath, 'wb') as f:
+        f.write(response.content)
+
+    logger.info('Caching file for {}.'.format(url))
+    return cache_filepath
 
 
 @timed

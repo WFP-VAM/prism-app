@@ -17,10 +17,12 @@ from flask_caching import Cache
 
 from flask_cors import CORS
 
+import rasterio
+
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
@@ -66,16 +68,18 @@ def _calculate_stats(zones,
 def stats():
     """Return zonal statistics."""
     # Accept data as json or form.
+    logger.debug('New stats request:')
+    logger.debug(request)
     data = request.get_json() or request.form
     geotiff_url = data.get('geotiff_url')
     zones_url = data.get('zones_url')
-    zonesGeojson = data.get('zones')
+    zones_geojson = data.get('zones')
 
     if geotiff_url is None:
         logger.error('Received {}'.format(data))
         raise BadRequest('geotiff_url is required.')
 
-    if zonesGeojson is None and zones_url is None:
+    if zones_geojson is None and zones_url is None:
         logger.error('Received {}'.format(data))
         raise BadRequest('One of zones or zones_url is required.')
 
@@ -84,19 +88,21 @@ def stats():
 
     geotiff = cache_file(
         prefix='raster',
-        url=geotiff_url
+        url=geotiff_url,
+        extension='tif'
     )
 
     # TODO - Add validation for zones.
-    if (zonesGeojson is not None):
+    if (zones_geojson is not None):
         zones = cache_geojson(
             prefix='zones_geojson',
-            geojson=zonesGeojson
+            geojson=zones_geojson
         )
     else:
         zones = cache_file(
             prefix='zones',
-            url=zones_url
+            url=zones_url,
+            extension='json',
         )
 
     wfs_params = data.get('wfs_params', None)
@@ -142,7 +148,7 @@ def alert_by_id(id: str = '1'):
     """Get alert data from DB given id."""
     try:
         id = int(id)
-    except Exception as e:
+    except ValueError as e:
         logger.error(f'Failed to fetch alerts: {e}')
         raise InternalServerError('Invalid id')
 
@@ -175,7 +181,7 @@ def write_alerts():
         alert = AlertModel(**data)
         alert_db.write(alert)
 
-    except Exception as e:
+    except rasterio.errors.RasterioError as e:
         logger.error(e)
         raise e
 
@@ -222,7 +228,8 @@ def stats_demo():
 
     geotiff = cache_file(
         prefix='raster_test',
-        url=geotiff_url
+        url=geotiff_url,
+        extension='tif'
     )
 
     zones = cache_file(
@@ -241,7 +248,8 @@ def stats_demo():
         stats=['min', 'max', 'mean', 'median', 'sum', 'std'],
         prefix='stats_',
         group_by=group_by,
-        geojson_out=geojson_out
+        geojson_out=geojson_out,
+        wfs_response=None
     )
 
     # TODO - Properly encode before returning. Mongolian characters are returned as hex.
