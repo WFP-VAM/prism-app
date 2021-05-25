@@ -121,7 +121,7 @@ function Analyser({ classes }: AnalyserProps) {
     const belowThresholdValue = parseFloat(
       thresholdType === 'below' ? changedOption : belowThreshold,
     );
-    if (belowThresholdValue < aboveThresholdValue) {
+    if (belowThresholdValue > aboveThresholdValue) {
       setThresholdError('Min threshold is larger than Max!');
     } else {
       setThresholdError(null);
@@ -252,16 +252,16 @@ function Analyser({ classes }: AnalyserProps) {
                   className={classes.numberField}
                   label="Min"
                   type="number"
-                  value={aboveThreshold}
-                  onChange={onThresholdOptionChange('above')}
+                  value={belowThreshold}
+                  onChange={onThresholdOptionChange('below')}
                   variant="filled"
                 />
                 <TextField
                   id="filled-number"
                   label="Max"
                   className={classes.numberField}
-                  value={belowThreshold}
-                  onChange={onThresholdOptionChange('below')}
+                  value={aboveThreshold}
+                  onChange={onThresholdOptionChange('above')}
                   type="number"
                   variant="filled"
                 />

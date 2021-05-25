@@ -150,7 +150,7 @@ function AlertForm({ classes }: AlertFormProps) {
     const belowThresholdValue = parseFloat(
       thresholdType === 'below' ? changedOption : belowThreshold,
     );
-    if (belowThresholdValue < aboveThresholdValue) {
+    if (belowThresholdValue > aboveThresholdValue) {
       setThresholdError('Min threshold is larger than Max!');
     } else {
       setThresholdError(null);
@@ -165,8 +165,8 @@ function AlertForm({ classes }: AlertFormProps) {
     const request: AlertRequest = {
       alert_name: alertName,
       alert_config: LayerDefinitions[hazardLayerId] as WMSLayerProps,
-      max: aboveThreshold,
-      min: belowThreshold,
+      max: parseFloat(aboveThreshold) || undefined,
+      min: parseFloat(belowThreshold) || undefined,
       zones: generateGeoJsonForRegionNames(),
       email,
       prism_url: getPrismUrl(),
@@ -230,8 +230,8 @@ function AlertForm({ classes }: AlertFormProps) {
                   className={classes.numberField}
                   label="Min Below"
                   type="number"
-                  value={aboveThreshold}
-                  onChange={onThresholdOptionChange('above')}
+                  value={belowThreshold}
+                  onChange={onThresholdOptionChange('below')}
                   variant="filled"
                 />
                 <TextField
@@ -239,8 +239,8 @@ function AlertForm({ classes }: AlertFormProps) {
                   label="Max Above"
                   className={classes.numberField}
                   style={{ paddingLeft: '10px' }}
-                  value={belowThreshold}
-                  onChange={onThresholdOptionChange('below')}
+                  value={aboveThreshold}
+                  onChange={onThresholdOptionChange('above')}
                   type="number"
                   variant="filled"
                 />

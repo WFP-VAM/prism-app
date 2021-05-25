@@ -151,8 +151,8 @@ export type AlertRequest = {
   alert_name: string;
   alert_config: WMSLayerProps;
   email: string;
-  max?: string;
-  min?: string;
+  max?: number;
+  min?: number;
   prism_url: string;
   zones: object;
 };
