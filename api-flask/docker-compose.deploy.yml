@@ -2,8 +2,7 @@ version: '3'
 
 networks:
   traefik_default:
-    external:
-      name: traefik_default
+    external: true
 
 services:
   traefik:
@@ -22,6 +21,8 @@ services:
       - '--certificatesresolvers.myresolver.acme.email=info@ovio.org'
       - '--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json'
       - traefik.docker.network=traefik_default
+    networks:
+      - traefik_default
     ports:
       - '443:443'
       - '8080:8080'
