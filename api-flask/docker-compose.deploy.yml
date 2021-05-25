@@ -9,12 +9,14 @@ services:
       - '--log.level=DEBUG'
       - '--api.insecure=true'
       - '--providers.docker=true'
+      - '--providers.docker.network=traefik_default'
       - '--providers.docker.exposedbydefault=false'
       - '--entrypoints.websecure.address=:443'
       - '--certificatesresolvers.myresolver.acme.tlschallenge=true'
       - '--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
       - '--certificatesresolvers.myresolver.acme.email=info@ovio.org'
       - '--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json'
+      - traefik.docker.network=traefik_default
     ports:
       - '443:443'
       - '8080:8080'
@@ -24,6 +26,9 @@ services:
 
   api:
     container_name: 'api'
+    networks:
+      - traefik_default
+      - default
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.whoami.rule=Host(`prism-api.ovio.org`)'
@@ -32,3 +37,8 @@ services:
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
+
+  networks:
+    web:
+      external:
+        name: traefik_default
