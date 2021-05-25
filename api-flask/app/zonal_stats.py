@@ -8,6 +8,8 @@ from urllib.parse import urlencode
 from app.caching import cache_file, get_json_file
 from app.timer import timed
 
+import rasterio
+
 from rasterstats import zonal_stats
 
 from shapely.geometry import mapping, shape
@@ -171,7 +173,7 @@ def calculate_stats(
             prefix=prefix,
             geojson_out=geojson_out
         )
-    except Exception as e:
+    except rasterio.errors.RasterioError as e:
         logger.error(e)
         raise InternalServerError('An error occured calculating statistics.')
 

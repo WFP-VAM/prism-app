@@ -147,7 +147,7 @@ def get_alert_by_id(id: str = '1'):
     """Get alert data from DB given id."""
     try:
         id = int(id)
-    except Exception as e:
+    except ValueError as e:
         logger.error(f'Failed to fetch alerts: {e}')
         raise InternalServerError('Invalid id')
 
