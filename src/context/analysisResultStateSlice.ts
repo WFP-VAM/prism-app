@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Position } from 'geojson';
 import { get } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
+import { defaultBoundariesFile } from '../config';
 import {
   AggregationOperations,
   AsyncReturnType,
@@ -26,6 +27,7 @@ import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, NSOLayerData } from './layers/nso';
 import { BoundaryLayerData } from './layers/boundary';
+import { isLocalhost } from '../serviceWorker';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
@@ -60,6 +62,10 @@ function getAdminBoundariesURL() {
   // already a remote location, so return it.
   if (adminBoundariesPath.startsWith('http')) {
     return adminBoundariesPath;
+  }
+  // do not send a local path to the API, use a fixed boundary file instead.
+  if (isLocalhost) {
+    return defaultBoundariesFile;
   }
   // the regex here removes the dot at the beginning of a path, if there is one.
   // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '
