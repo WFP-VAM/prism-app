@@ -44,31 +44,31 @@ const configMap = {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
     rawTables: indonesiaRawTables,
-    defaultBoudariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/idn_admin_boundaries.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/idn_admin_boundaries.json`,
   },
   mongolia: {
     appConfig: mongoliaConfig,
     rawLayers: mongoliaRawLayers,
     rawTables: mongoliaRawTables,
-    defaultBoudariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mng_admin_boundaries.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mng_admin_boundaries.json`,
   },
   mozambique: {
     appConfig: mozambiqueConfig,
     rawLayers: mozambiqueRawLayers,
     rawTables: mozambiqueRawTables,
-    defaultBoudariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/moz_admin_boundaries.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/moz_admin_boundaries.json`,
   },
   myanmar: {
     appConfig: myanmarConfig,
     rawLayers: myanmarRawLayers,
     rawTables: myanmarRawTables,
-    defaultBoudariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mmr_admin_boundaries.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mmr_admin_boundaries.json`,
   },
   tajikistan: {
     appConfig: tajikistanConfig,
     rawLayers: tajikistanRawLayers,
     rawTables: tajikistanRawTables,
-    defaultBoudariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/tjk_admin_boundaries_v2.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/tjk_admin_boundaries_v2.json`,
   },
 } as const;
 
@@ -77,8 +77,8 @@ const safeCountry = (COUNTRY && has(configMap, COUNTRY)
   ? COUNTRY
   : DEFAULT) as Country;
 
-const { appConfig, defaultBoudariesFile, rawLayers, rawTables } = configMap[
+const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
   safeCountry
 ];
 
-export { appConfig, defaultBoudariesFile, rawLayers, rawTables };
+export { appConfig, defaultBoundariesFile, rawLayers, rawTables };
