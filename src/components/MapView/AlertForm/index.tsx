@@ -151,7 +151,7 @@ function AlertForm({ classes }: AlertFormProps) {
       thresholdType === 'below' ? changedOption : belowThreshold,
     );
     if (belowThresholdValue > aboveThresholdValue) {
-      setThresholdError('Min threshold is larger than Max!');
+      setThresholdError('Below threshold is larger than above threshold!');
     } else {
       setThresholdError(null);
     }
@@ -228,7 +228,7 @@ function AlertForm({ classes }: AlertFormProps) {
                   error={!!thresholdError}
                   helperText={thresholdError}
                   className={classes.numberField}
-                  label="Min Below"
+                  label="Below"
                   type="number"
                   value={belowThreshold}
                   onChange={onThresholdOptionChange('below')}
@@ -236,7 +236,7 @@ function AlertForm({ classes }: AlertFormProps) {
                 />
                 <TextField
                   id="filled-number"
-                  label="Max Above"
+                  label="Above"
                   className={classes.numberField}
                   style={{ paddingLeft: '10px' }}
                   value={aboveThreshold}
@@ -293,6 +293,7 @@ function AlertForm({ classes }: AlertFormProps) {
                   variant="filled"
                   value={alertName}
                   onChange={e => setAlertName(e.target.value)}
+                  fullWidth
                 />
               </div>
               <div className={classes.alertFormOptions}>
@@ -302,6 +303,7 @@ function AlertForm({ classes }: AlertFormProps) {
                   type="text"
                   variant="filled"
                   onChange={onChangeEmail}
+                  fullWidth
                 />
               </div>
             </div>

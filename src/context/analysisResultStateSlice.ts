@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Position } from 'geojson';
 import { get } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
+import { defaultBoudariesFile } from '../config';
 import {
   AggregationOperations,
   AsyncReturnType,
@@ -64,7 +65,7 @@ function getAdminBoundariesURL() {
   }
   // do not send a local path to the API, use a fixed boundary file instead.
   if (isLocalhost) {
-    return 'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json';
+    return defaultBoudariesFile;
   }
   // the regex here removes the dot at the beginning of a path, if there is one.
   // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '
