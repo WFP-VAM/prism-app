@@ -26,6 +26,7 @@ import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, NSOLayerData } from './layers/nso';
 import { BoundaryLayerData } from './layers/boundary';
+import { isLocalhost } from '../serviceWorker';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
@@ -62,7 +63,7 @@ function getAdminBoundariesURL() {
     return adminBoundariesPath;
   }
   // do not send a local path to the API, use a fixed boundary file instead.
-  if (window.location.origin.includes('localhost')) {
+  if (isLocalhost) {
     return 'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json';
   }
   // the regex here removes the dot at the beginning of a path, if there is one.

@@ -30,6 +30,7 @@ import type {
 } from '../context/layers/layer-data';
 import { LayerDefinitions } from '../config/utils';
 import type { TableRow } from '../context/analysisResultStateSlice';
+import { isLocalhost } from '../serviceWorker';
 
 export type BaselineLayerData = NSOLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -158,8 +159,8 @@ export type AlertRequest = {
 };
 
 export function getPrismUrl(): string {
-  const { hostname, origin } = window.location;
-  if (hostname === 'localhost') {
+  const { origin } = window.location;
+  if (isLocalhost) {
     // Special case - if we're testing locally, then assume we are testing prism-mongolia
     // This is to ensure we don't pollute the database with localhost URLs
     return 'https://prism-mongolia.org';
