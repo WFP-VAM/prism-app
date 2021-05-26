@@ -8,10 +8,14 @@ from urllib.parse import urlencode
 from app.caching import cache_file, get_json_file
 from app.timer import timed
 
+import rasterio
+
 from rasterstats import zonal_stats
 
 from shapely.geometry import mapping, shape
 from shapely.ops import cascaded_union
+
+from werkzeug.exceptions import InternalServerError
 
 
 logger = logging.getLogger(__name__)
@@ -161,13 +165,17 @@ def calculate_stats(
         is_path = False
         stats_input = [s.get('geom') for s in zones.get('features')]
 
-    stats = zonal_stats(
-        stats_input,
-        geotiff,
-        stats=stats,
-        prefix=prefix,
-        geojson_out=geojson_out
-    )
+    try:
+        stats = zonal_stats(
+            stats_input,
+            geotiff,
+            stats=stats,
+            prefix=prefix,
+            geojson_out=geojson_out
+        )
+    except rasterio.errors.RasterioError as e:
+        logger.error(e)
+        raise InternalServerError('An error occured calculating statistics.')
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones, is_path)

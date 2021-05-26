@@ -3,6 +3,7 @@ import { Position } from 'geojson';
 import moment from 'moment';
 import { get, snakeCase } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
+import { defaultBoundariesFile } from '../config';
 import {
   AggregationOperations,
   AsyncReturnType,
@@ -28,10 +29,9 @@ import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, NSOLayerData } from './layers/nso';
 import { BoundaryLayerData } from './layers/boundary';
+import { isLocalhost } from '../serviceWorker';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
-const DEV_ADMIN_BOUNDARIES_URL =
-  'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json';
 
 type AnalysisResultState = {
   result?: AnalysisResult;
@@ -62,14 +62,14 @@ const initialState: AnalysisResultState = {
  * If the application is in production, we will attempt to construct a public URL that the backend should be able to access.
  */
 function getAdminBoundariesURL() {
-  const isProduction = process.env.NODE_ENV === 'production';
   const adminBoundariesPath = getBoundaryLayerSingleton().path;
-  if (!isProduction) {
-    return DEV_ADMIN_BOUNDARIES_URL;
-  }
   // already a remote location, so return it.
   if (adminBoundariesPath.startsWith('http')) {
     return adminBoundariesPath;
+  }
+  // do not send a local path to the API, use a fixed boundary file instead.
+  if (isLocalhost) {
+    return defaultBoundariesFile;
   }
   // the regex here removes the dot at the beginning of a path, if there is one.
   // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '

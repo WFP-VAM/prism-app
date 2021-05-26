@@ -150,8 +150,8 @@ function AlertForm({ classes }: AlertFormProps) {
     const belowThresholdValue = parseFloat(
       thresholdType === 'below' ? changedOption : belowThreshold,
     );
-    if (belowThresholdValue < aboveThresholdValue) {
-      setThresholdError('Min threshold is larger than Max!');
+    if (belowThresholdValue > aboveThresholdValue) {
+      setThresholdError('Below threshold is larger than above threshold!');
     } else {
       setThresholdError(null);
     }
@@ -165,8 +165,8 @@ function AlertForm({ classes }: AlertFormProps) {
     const request: AlertRequest = {
       alert_name: alertName,
       alert_config: LayerDefinitions[hazardLayerId] as WMSLayerProps,
-      max: aboveThreshold,
-      min: belowThreshold,
+      max: parseFloat(aboveThreshold) || undefined,
+      min: parseFloat(belowThreshold) || undefined,
       zones: generateGeoJsonForRegionNames(),
       email,
       prism_url: getPrismUrl(),
@@ -228,19 +228,19 @@ function AlertForm({ classes }: AlertFormProps) {
                   error={!!thresholdError}
                   helperText={thresholdError}
                   className={classes.numberField}
-                  label="Min Below"
+                  label="Below"
                   type="number"
-                  value={aboveThreshold}
-                  onChange={onThresholdOptionChange('above')}
+                  value={belowThreshold}
+                  onChange={onThresholdOptionChange('below')}
                   variant="filled"
                 />
                 <TextField
                   id="filled-number"
-                  label="Max Above"
+                  label="Above"
                   className={classes.numberField}
                   style={{ paddingLeft: '10px' }}
-                  value={belowThreshold}
-                  onChange={onThresholdOptionChange('below')}
+                  value={aboveThreshold}
+                  onChange={onThresholdOptionChange('above')}
                   type="number"
                   variant="filled"
                 />
@@ -293,6 +293,7 @@ function AlertForm({ classes }: AlertFormProps) {
                   variant="filled"
                   value={alertName}
                   onChange={e => setAlertName(e.target.value)}
+                  fullWidth
                 />
               </div>
               <div className={classes.alertFormOptions}>
@@ -302,6 +303,7 @@ function AlertForm({ classes }: AlertFormProps) {
                   type="text"
                   variant="filled"
                   onChange={onChangeEmail}
+                  fullWidth
                 />
               </div>
             </div>

@@ -10,8 +10,6 @@ try {
   // Pass
 }
 
-const env = process.env.NODE_ENV || 'development';
-
 // If we have a DATABASE_URL, use that
 const connectionInfo = process.env.DATABASE_URL
   ? { url: process.env.DATABASE_URL }
