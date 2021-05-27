@@ -1,7 +1,7 @@
 """Calulate zonal statistics and return a json or a geojson."""
 import logging
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from json import dump, load
 from urllib.parse import urlencode
 
@@ -35,12 +35,7 @@ def get_wfs_response(wfs_params):
     cql_filter = []
     if 'time' in wfs_params.keys():
         from_date = datetime.strptime(wfs_params.get('time'), '%Y-%m-%d')
-        to_date = from_date + timedelta(days=1)
-
-        time_filters = ['timestamp AFTER {}'.format(from_date.isoformat()),
-                        'timestamp BEFORE {}'.format(to_date.isoformat())]
-
-        cql_filter.extend(time_filters)
+        cql_filter.append('timestamp DURING {}/P1D'.format(from_date.isoformat()))
 
     params = {
         'service': 'WFS',
