@@ -1,7 +1,7 @@
 """Calulate zonal statistics and return a json or a geojson."""
 import logging
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from json import dump, load
 from urllib.parse import urlencode
 
