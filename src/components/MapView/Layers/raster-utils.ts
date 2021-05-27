@@ -5,6 +5,7 @@ import * as GeoTIFF from 'geotiff';
 import { buffer } from 'd3-fetch';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { formatUrl } from '../../../utils/server-utils';
+import { WcsGetCoverageVersion, WMSLayerProps } from '../../../config/types';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =
@@ -120,20 +121,59 @@ export function getWCSUrl(
   return formatUrl(baseUrl, params);
 }
 
-export function WCSRequestUrl(
-  baseUrl: string,
-  layerName: string,
+export function getWCS2Url(
+  layer: WMSLayerProps,
   date: string | undefined,
   extent: Extent,
-  resolution = 256,
+) {
+  const params = {
+    service: 'WCS',
+    request: 'GetCoverage',
+    version: layer.wcsConfig?.version,
+    coverageId: layer.serverLayerName,
+  };
+
+  // Subsets are used as spatial and temporal filters.
+  // For mote info: https://docs.geoserver.geo-solutions.it/edu/en/wcs/get.html
+  const spatialSubsets: string[] = [
+    `Long(${extent[0]}, ${extent[2]})`,
+    `Lat(${extent[1]}, ${extent[3]})`,
+  ];
+
+  const subsets = date
+    ? [...spatialSubsets, `time("${date}")`]
+    : spatialSubsets;
+
+  const formattedUrl = formatUrl(layer.baseUrl, params);
+
+  const formattedSubsets = subsets.map(s => `subset=${s}`).join('&');
+
+  return `${formattedUrl}&${formattedSubsets}`;
+}
+
+export function WCSRequestUrl(
+  layer: WMSLayerProps,
+  date: string | undefined,
+  extent: Extent,
   maxPixels = 5096,
 ) {
+  const { baseUrl, serverLayerName, wcsConfig } = layer;
   const [minX, minY, maxX, maxY] = extent;
+
   if (minX > maxX || minY > maxY) {
     throw new Error(
-      `Could not generate WCS request for ${baseUrl}/${layerName}: the extent ${extent} seems malformed or else may contain "wrapping" which is not implemented in the function 'WCSRequestUrl'`,
+      `Could not generate WCS request for ${baseUrl}/${serverLayerName}: the extent ${extent} seems malformed or else may contain "wrapping" which is not implemented in the function 'WCSRequestUrl'`,
     );
   }
+
+  if (
+    wcsConfig?.version &&
+    wcsConfig?.version !== WcsGetCoverageVersion.oneZeroZero
+  ) {
+    return getWCS2Url(layer, date, extent);
+  }
+
+  const resolution = wcsConfig?.pixelResolution || 256;
 
   // Get our image width & height at either the desired resolution or a down-sampled resolution if the resulting
   // dimensions would exceed our `maxPixels` in height or width
@@ -148,7 +188,7 @@ export function WCSRequestUrl(
 
   return getWCSUrl(
     baseUrl,
-    layerName,
+    serverLayerName,
     date,
     [minX, maxX],
     [minY, maxY],
