@@ -14,7 +14,7 @@
   },
   "categories": {
     "hazards": {
-      "tropical_storms": ["adamts_nodes"],
+      "tropical_storms": ["adamts_buffers"],
       "floods": ["hydra_s1"],
       "rainfall": [
         "rainfall_dekad",
