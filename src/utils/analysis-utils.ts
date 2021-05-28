@@ -272,7 +272,7 @@ export function generateFeaturesFromApiData(
 
   return mergedFeatures.filter(feature => {
     const value = get(feature, ['properties', operation]);
-    return value && !Number.isNaN(value);
+    return value !== undefined && !Number.isNaN(value);
   }) as GeoJsonBoundary[];
 }
 
