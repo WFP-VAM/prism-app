@@ -166,10 +166,7 @@ export function WCSRequestUrl(
     );
   }
 
-  if (
-    wcsConfig?.version &&
-    wcsConfig?.version !== WcsGetCoverageVersion.oneZeroZero
-  ) {
+  if (wcsConfig?.version === WcsGetCoverageVersion.twoZeroZero) {
     return getWCS2Url(layer, date, extent);
   }
 
