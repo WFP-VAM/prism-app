@@ -93,7 +93,7 @@ export function getWMSUrl(
 
   return formatUrl(`${baseUrl}/wms`, params);
 }
-export function getWCSUrl(
+export function getWCSUrl1(
   baseUrl: string,
   layerName: string,
   date: string | undefined,
@@ -186,7 +186,7 @@ export function WCSRequestUrl(
   const width = Math.ceil(xRange * scale);
   const height = Math.ceil(yRange * scale);
 
-  return getWCSUrl(
+  return getWCSUrl1(
     baseUrl,
     serverLayerName,
     date,
@@ -239,7 +239,7 @@ export function WCSTileUrls(
           yIdx * degPerTile + minY,
           (yIdx + 1) * degPerTile + minY,
         ] as const;
-        return getWCSUrl(baseUrl, layerName, date, x, y, pixelsPerTile);
+        return getWCSUrl1(baseUrl, layerName, date, x, y, pixelsPerTile);
       });
     })
     .flat();
