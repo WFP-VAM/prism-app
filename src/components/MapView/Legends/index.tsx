@@ -44,6 +44,19 @@ import {
 
 import { LayerDefinitions } from '../../../config/utils';
 
+/**
+ * Returns layer identifier used to perform exposure analysis.
+ *
+ * @return LayerKey or undefined if exposure not found or GeometryType is not Polygon.
+ */
+function GetExposureFromLayer(layer: LayerType): LayerKey | undefined {
+  return layer.type === 'wms' &&
+    layer.exposure &&
+    layer.geometry === GeometryType.Polygon
+    ? layer.exposure
+    : undefined;
+}
+
 function Legends({ classes, layers, extent }: LegendsProps) {
   const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
@@ -62,13 +75,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           ? formatWMSLegendUrl(layer.baseUrl, layer.serverLayerName)
           : undefined;
 
-      // Population exposure analysis will run only for polygon layers.
-      const exposure =
-        layer.type === 'wms' &&
-        layer.exposure &&
-        layer.geometry === GeometryType.Polygon
-          ? layer.exposure
-          : undefined;
+      const exposure = GetExposureFromLayer(layer);
 
       return (
         <LegendItem
