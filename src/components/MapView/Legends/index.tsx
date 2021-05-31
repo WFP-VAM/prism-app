@@ -164,13 +164,9 @@ function LegendItem({
   const analysisResult = useSelector(analysisResultSelector);
 
   const runExposureAnalysis = async () => {
-    if (!id) {
+    if (!id || !extent) {
       return;
     }
-
-    if (!extent) {
-      return;
-    } // hasn't been calculated yet
 
     if (!selectedDate) {
       throw new Error('Date must be given to run analysis');
