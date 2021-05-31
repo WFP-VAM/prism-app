@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Position } from 'geojson';
 import moment from 'moment';
-import { get, snakeCase } from 'lodash';
+import { get } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesFile } from '../config';
 import {
@@ -176,18 +176,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const wfsParams: wfsRequestParams | undefined = wfsLayer && {
     url: `${wfsLayer.baseUrl}/ows`,
-    layerName: wfsLayer.serverLayerName,
+    layer_name: wfsLayer.serverLayerName,
     time: moment(date).format('YYYY-MM-DD'),
-  };
-
-  const wfsParamsSnakeCase = wfsParams && {
-    wfs_params: Object.entries(wfsParams).reduce(
-      (acc, obj) => ({
-        ...acc,
-        [snakeCase(obj[0])]: obj[1],
-      }),
-      {},
-    ),
   };
 
   // we force group_by to be defined with &
@@ -202,7 +192,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     group_by:
       adminBoundaries.adminLevelNames[baselineLayer.adminLevel - 1] ||
       adminBoundaries.adminLevelNames[0],
-    ...wfsParamsSnakeCase,
+    ...(wfsParams ? { wfs_params: wfsParams } : undefined),
   };
 
   const aggregateData = scaleAndFilterAggregateData(

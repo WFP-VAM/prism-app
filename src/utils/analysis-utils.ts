@@ -21,6 +21,7 @@ import {
   StatsApi,
   ThresholdDefinition,
   WMSLayerProps,
+  wfsRequestParams,
 } from '../config/types';
 import type { ThunkApi } from '../context/store';
 import { layerDataSelector } from '../context/mapStateSlice/selectors';
@@ -176,7 +177,7 @@ export type ApiData = {
   zones_url: string;
   group_by?: string;
   geojson_out?: boolean;
-  wfs_params?: { time?: string; layer_name: string; url: string } | {};
+  wfs_params?: wfsRequestParams;
 };
 
 /* eslint-disable camelcase */

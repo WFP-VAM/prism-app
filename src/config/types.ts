@@ -339,9 +339,10 @@ export type AvailableDates = {
     | PointDataLayerProps['id']]: number[];
 };
 
+/* eslint-disable camelcase */
 export interface wfsRequestParams {
   url: string;
-  layerName: string;
+  layer_name: string;
   time?: string;
 }
 
