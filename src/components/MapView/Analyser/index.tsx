@@ -112,11 +112,11 @@ function Analyser({ extent, classes }: AnalyserProps) {
   };
 
   const statisticOptions = Object.entries(AggregationOperations)
-    .filter(stat => stat[1] !== 'sum') // sum is used only for exposure analysis.
-    .map(stat => (
+    .filter(([, value]) => value !== AggregationOperations.Sum) // sum is used only for exposure analysis.
+    .map(([key, value]) => (
       <FormControlLabel
-        key={stat[0]}
-        value={stat[1]}
+        key={key}
+        value={value}
         control={
           <Radio
             className={classes.radioOptions}
@@ -124,7 +124,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
             size="small"
           />
         }
-        label={stat[0]}
+        label={key}
       />
     ));
 
