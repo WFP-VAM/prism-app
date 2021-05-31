@@ -281,7 +281,7 @@ function LegendItem({
               size="small"
               onClick={runExposureAnalysis}
             >
-              exposure analysis
+              Exposure Analysis
             </AnalysisButton>
           ) : null}
 
