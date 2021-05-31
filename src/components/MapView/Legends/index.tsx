@@ -274,7 +274,7 @@ function LegendItem({
             </Grid>
           )}
 
-          {exposure && !analysisResult ? (
+          {exposure && !analysisResult && (
             <AnalysisButton
               variant="contained"
               color="primary"
@@ -283,9 +283,9 @@ function LegendItem({
             >
               Exposure Analysis
             </AnalysisButton>
-          ) : null}
+          )}
 
-          {exposure && analysisResult ? (
+          {exposure && analysisResult && (
             <AnalysisButton
               variant="contained"
               color="secondary"
@@ -294,9 +294,9 @@ function LegendItem({
             >
               clear analysis
             </AnalysisButton>
-          ) : null}
+          )}
 
-          {exposure && analysisExposureLoading ? <LinearProgress /> : null}
+          {exposure && analysisExposureLoading && <LinearProgress />}
         </Grid>
       </Paper>
     </ListItem>
