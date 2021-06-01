@@ -340,7 +340,7 @@ export type AvailableDates = {
 };
 
 /* eslint-disable camelcase */
-export interface wfsRequestParams {
+export interface WfsRequestParams {
   url: string;
   layer_name: string;
   time?: string;

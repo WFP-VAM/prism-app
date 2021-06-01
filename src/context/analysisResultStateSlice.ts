@@ -11,7 +11,7 @@ import {
   NSOLayerProps,
   ThresholdDefinition,
   WMSLayerProps,
-  wfsRequestParams,
+  WfsRequestParams,
 } from '../config/types';
 import {
   AnalysisResult,
@@ -174,7 +174,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const { wcsConfig } = hazardLayer;
 
-  const wfsParams: wfsRequestParams | undefined = wfsLayer && {
+  const wfsParams: WfsRequestParams | undefined = wfsLayer && {
     url: `${wfsLayer.baseUrl}/ows`,
     layer_name: wfsLayer.serverLayerName,
     time: moment(date).format('YYYY-MM-DD'),
