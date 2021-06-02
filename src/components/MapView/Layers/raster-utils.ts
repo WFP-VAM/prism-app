@@ -93,7 +93,7 @@ export function getWMSUrl(
 
   return formatUrl(`${baseUrl}/wms`, params);
 }
-export function getWCSUrl1(
+export function getWCSv1Url(
   baseUrl: string,
   layerName: string,
   date: string | undefined,
@@ -121,7 +121,7 @@ export function getWCSUrl1(
   return formatUrl(baseUrl, params);
 }
 
-export function getWCS2Url(
+export function getWCSv2Url(
   layer: WMSLayerProps,
   date: string | undefined,
   extent: Extent,
@@ -167,7 +167,7 @@ export function WCSRequestUrl(
   }
 
   if (wcsConfig?.version === WcsGetCoverageVersion.twoZeroZero) {
-    return getWCS2Url(layer, date, extent);
+    return getWCSv2Url(layer, date, extent);
   }
 
   const resolution = wcsConfig?.pixelResolution || 256;
@@ -183,7 +183,7 @@ export function WCSRequestUrl(
   const width = Math.ceil(xRange * scale);
   const height = Math.ceil(yRange * scale);
 
-  return getWCSUrl1(
+  return getWCSv1Url(
     baseUrl,
     serverLayerName,
     date,
@@ -236,7 +236,7 @@ export function WCSTileUrls(
           yIdx * degPerTile + minY,
           (yIdx + 1) * degPerTile + minY,
         ] as const;
-        return getWCSUrl1(baseUrl, layerName, date, x, y, pixelsPerTile);
+        return getWCSv1Url(baseUrl, layerName, date, x, y, pixelsPerTile);
       });
     })
     .flat();
