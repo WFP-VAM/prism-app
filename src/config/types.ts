@@ -128,10 +128,19 @@ export type GroupDefinition = {
   main: boolean;
 };
 
+export enum WcsGetCoverageVersion {
+  oneZeroZero = '1.0.0',
+  twoZeroZero = '2.0.0',
+}
+
 export type RawDataConfiguration = {
   scale?: number;
   offset?: number;
   noData?: number;
+
+  // WCS GetCoverage request version.
+  version?: WcsGetCoverageVersion;
+
   // Geotiff pixel resolution, in pixels per degree lat/long
   pixelResolution?: number;
 
