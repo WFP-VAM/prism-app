@@ -345,6 +345,7 @@ export interface WfsRequestParams {
   layer_name: string;
   time?: string;
 }
+/* eslint-enable camelcase */
 
 export interface ChartConfig {
   type: string;
