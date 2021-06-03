@@ -8,6 +8,7 @@ from sqlalchemy import Column, DateTime, String
 from sqlalchemy import Identity, Integer, JSON, TIMESTAMP
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.sql.sqltypes import Boolean
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ class AlertModel(Base):
     min = Column('min', Integer)
     max = Column('max', Integer)
     zones = Column('zones', JSON, nullable=False)
+    active = Column('active', Boolean, nullable=False, default=True)
     created_at = Column('created_at', DateTime, default=datetime.datetime.now)
     updated_at = Column('updated_at', DateTime, default=datetime.datetime.now,
                         onupdate=datetime.datetime.now)

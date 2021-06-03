@@ -8,7 +8,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD='!ChangeMe!'
+      - POSTGRES_PASSWORD=!ChangeMe!
     volumes:
       - ./db_data:/var/lib/postgresql
   alerting-node:
@@ -21,7 +21,7 @@ services:
       - POSTGRES_HOST=alerting-db
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
-      - POSTGRES_PASSWORD='!ChangeMe!'
+      - POSTGRES_PASSWORD=!ChangeMe!
       - DATABASE_URL
       - EMAIL_PASSWORD
       - EMAIL_USER
