@@ -1,10 +1,10 @@
 {
   "country": "Myanmar",
-  "alertFormActive": false,
+  "alertFormActive": true,
   "map": {
-    "latitude": 17.346,
-    "longitude": 97.557,
-    "zoom": 4.58
+    "latitude": 19.467,
+    "longitude": 96.371,
+    "zoom": 4.48
   },
   "serversUrls": {
     "wms": [
@@ -30,7 +30,7 @@
     },
     "vulnerability": {
       "vulnerability_index": ["multidimensional_disadvantage_index", "inform"],
-      "vulnerabile_populations": [
+      "vulnerable_populations": [
         "age_dependency_ratio",
         "female_headed_hhs",
         "disability_prev_rate"
