@@ -12,7 +12,7 @@
 
 /* eslint-disable fp/no-mutation, no-param-reassign, no-console */
 
-const isLocalhost = Boolean(
+export const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
     window.location.hostname === '[::1]' ||

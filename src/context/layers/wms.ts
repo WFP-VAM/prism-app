@@ -1,4 +1,3 @@
-import { get } from 'lodash';
 import moment from 'moment';
 import type { LayerDataParams, LazyLoader } from './layer-data';
 import { WMSLayerProps } from '../../config/types';
@@ -28,11 +27,9 @@ export function getWCSLayerUrl({
   }
 
   return WCSRequestUrl(
-    layer.baseUrl,
-    layer.serverLayerName,
+    layer,
     date ? moment(date).format('YYYY-MM-DD') : undefined,
     extent,
-    get(layer, 'wcsConfig.pixelResolution'),
   );
 }
 

@@ -14,6 +14,8 @@
   },
   "categories": {
     "hazards": {
+      "tropical_storms": ["adamts_buffers"],
+      "floods": ["hydra_s1"],
       "rainfall": [
         "rainfall_dekad",
         "rain_anomaly_dekad",
@@ -24,8 +26,7 @@
         "streak_heavy_rain"
       ],
       "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"],
-      "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"],
-      "tropical_storms": ["adamts_main"]
+      "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
     },
     "vulnerability": {
       "vulnerability_index": ["multidimensional_disadvantage_index", "inform"],

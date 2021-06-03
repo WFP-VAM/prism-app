@@ -3,7 +3,7 @@ import { merge } from 'lodash';
 import type { RootState } from './store';
 
 export interface PopupData {
-  [key: string]: { data: number; coordinates: GeoJSON.Position };
+  [key: string]: { data: number | string; coordinates: GeoJSON.Position };
 }
 
 export interface MapTooltipState {
@@ -11,6 +11,7 @@ export interface MapTooltipState {
   locationName: string;
   data: PopupData;
   showing: boolean;
+  wmsGetFeatureInfoLoading: boolean;
 }
 
 type ShowPopupType = {
@@ -22,6 +23,7 @@ const initialState: MapTooltipState = {
   locationName: '',
   data: {},
   showing: false,
+  wmsGetFeatureInfoLoading: false,
 };
 
 export const tooltipStateSlice = createSlice({
@@ -66,6 +68,14 @@ export const tooltipStateSlice = createSlice({
       ...state,
       coordinates: payload,
     }),
+
+    setWMSGetFeatureInfoLoading: (
+      state,
+      { payload }: PayloadAction<boolean>,
+    ) => ({
+      ...state,
+      wmsGetFeatureInfoLoading: payload,
+    }),
   },
 });
 
@@ -84,6 +94,7 @@ export const {
   hidePopup,
   showPopup,
   setPopupCoordinates,
+  setWMSGetFeatureInfoLoading,
 } = tooltipStateSlice.actions;
 
 export default tooltipStateSlice.reducer;

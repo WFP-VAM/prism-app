@@ -128,10 +128,19 @@ export type GroupDefinition = {
   main: boolean;
 };
 
+export enum WcsGetCoverageVersion {
+  oneZeroZero = '1.0.0',
+  twoZeroZero = '2.0.0',
+}
+
 export type RawDataConfiguration = {
   scale?: number;
   offset?: number;
   noData?: number;
+
+  // WCS GetCoverage request version.
+  version?: WcsGetCoverageVersion;
+
   // Geotiff pixel resolution, in pixels per degree lat/long
   pixelResolution?: number;
 };
@@ -166,6 +175,17 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminLevelLocalNames: string[]; // Same as above, local to country
 }
 
+export enum LabelType {
+  Date = 'date',
+  Text = 'text',
+  Number = 'number',
+}
+
+interface featureInfoProps {
+  type: LabelType;
+  label: string;
+}
+
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
   baseUrl: string;
@@ -185,6 +205,9 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   wcsConfig?: RawDataConfiguration;
+
+  @optional
+  featureInfoProps?: { [key: string]: featureInfoProps };
 }
 
 export class NSOLayerProps extends CommonLayerProps {
@@ -335,3 +358,25 @@ export type DateRangeType = {
   month: string;
   isFirstDay: boolean;
 };
+
+export interface FeatureInfoType {
+  bbox: number[];
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface RequestFeatureInfo extends FeatureInfoType {
+  service: string;
+  request: string;
+  version: string;
+  exceptions: string;
+  infoFormat: string;
+  layers: string;
+  srs: string;
+  queryLayers: string;
+  featureCount: number;
+  format: string;
+  styles: string;
+}
