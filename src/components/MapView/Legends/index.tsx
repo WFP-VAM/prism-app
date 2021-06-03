@@ -16,14 +16,31 @@ import {
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import bbox from '@turf/bbox';
+import {
+  mapSelector,
+  layerDataSelector,
+  dateRangeSelector,
+} from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
-import { LayerType } from '../../../config/types';
+import {
+  LayerType,
+  BoundaryLayerProps,
+  NSOLayerProps,
+  ImpactLayerProps,
+  PointDataLayerProps,
+} from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
+import { getWCSLayerUrl } from '../../../context/layers/wms';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
+import { Extent } from '../Layers/raster-utils';
+// import { layer } from '@fortawesome/fontawesome-svg-core';
+
+import { getBoundaryLayerSingleton } from '../../../config/utils';
+import { LayerData } from '../../../context/layers/layer-data';
 
 function Legends({ classes, layers }: LegendsProps) {
   const [open, setOpen] = useState(true);
@@ -53,6 +70,7 @@ function Legends({ classes, layers }: LegendsProps) {
           legendUrl={legendUrl}
           type={layer.type}
           opacity={layer.opacity}
+          layer={layer}
         >
           {layer.legendText}
         </LegendItem>
@@ -69,6 +87,7 @@ function Legends({ classes, layers }: LegendsProps) {
             }`}
             classes={classes}
             opacity={0.5} // TODO: initial opacity value
+            layer={analysisResult.getBaselineLayer()}
           >
             Impact Analysis on {analysisResult.getBaselineLayer().legendText}
             <br />
@@ -117,6 +136,7 @@ function LegendItem({
   opacity: initialOpacity,
   children,
   legendUrl,
+  layer,
 }: LegendItemProps) {
   const map = useSelector(mapSelector);
   const [opacity, setOpacityValue] = useState<number | number[]>(
@@ -124,7 +144,7 @@ function LegendItem({
   );
 
   const handleChangeOpacity = (
-    event: React.ChangeEvent<{}>,
+    _event: React.ChangeEvent<{}>,
     newValue: number | number[],
   ) => {
     // TODO: temporary solution for opacity adjustment, we hope to edit react-mapbox in the future to support changing props
@@ -154,6 +174,104 @@ function LegendItem({
     }
   };
 
+  const boundaryLayer = getBoundaryLayerSingleton();
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+
+  const legendLayerData = useSelector(layerDataSelector(layer.id)) as
+    | LayerData<LayerType>
+    | undefined;
+
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
+  const downloadToFile = (
+    source: { content: string; isUrl: boolean },
+    fileName: string,
+    contentType: string,
+  ) => {
+    const link = document.createElement('a');
+    link.setAttribute(
+      'href',
+      source.isUrl
+        ? source.content
+        : URL.createObjectURL(
+            new Blob([source.content], { type: contentType }),
+          ),
+    );
+
+    link.setAttribute('download', fileName);
+    link.click();
+  };
+
+  const handleLayerDownload = (
+    legendLayer: LayerType,
+    e: React.ChangeEvent<{}>,
+  ) => {
+    e.preventDefault();
+    const extent = bbox(boundaryLayerData?.data) as Extent;
+
+    switch (legendLayer.type) {
+      case 'wms': {
+        const dataUrl = getWCSLayerUrl({
+          layer: legendLayer,
+          extent,
+          date: selectedDate,
+        });
+        downloadToFile(
+          {
+            content: dataUrl,
+            isUrl: true,
+          },
+          legendLayer.serverLayerName,
+          'image/tiff',
+        );
+        break;
+      }
+      case 'nso': {
+        const { data } = (legendLayerData as LayerData<NSOLayerProps>) || {};
+        const { features } = data || {};
+        downloadToFile(
+          {
+            content: JSON.stringify(features),
+            isUrl: false,
+          },
+          legendLayer.title,
+          'text/plain',
+        );
+        break;
+      }
+      case 'impact': {
+        const { data } = (legendLayerData as LayerData<ImpactLayerProps>) || {};
+        const { impactFeatures } = data || {};
+        downloadToFile(
+          {
+            content: JSON.stringify(impactFeatures),
+            isUrl: false,
+          },
+          legendLayer.title,
+          'text/plain',
+        );
+        break;
+      }
+      case 'point_data': {
+        const { data } =
+          (legendLayerData as LayerData<PointDataLayerProps>) || {};
+        downloadToFile(
+          {
+            content: JSON.stringify(data),
+            isUrl: false,
+          },
+          legendLayer.title,
+          'text/plain',
+        );
+        break;
+      }
+      default:
+        throw new Error('Unknown map layer type');
+    }
+  };
+
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
@@ -163,7 +281,9 @@ function LegendItem({
               {title}
             </Typography>
           </Grid>
+
           <Divider />
+
           <Grid item className={classes.slider}>
             <Box px={1}>
               <Slider
@@ -176,6 +296,7 @@ function LegendItem({
               />
             </Box>
           </Grid>
+
           {legend && (
             <Grid item>
               {legendUrl ? (
@@ -200,6 +321,26 @@ function LegendItem({
               <Typography variant="h5">{children}</Typography>
             </Grid>
           )}
+
+          <Divider />
+
+          <Grid item>
+            <Typography variant="h5">
+              Explore {title} raw data outside of PRISM
+            </Typography>
+          </Grid>
+
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={e => handleLayerDownload(layer, e)}
+              fullWidth
+            >
+              Download
+            </Button>
+          </Grid>
         </Grid>
       </Paper>
     </ListItem>
@@ -243,6 +384,7 @@ interface LegendItemProps
   legendUrl?: string;
   type?: LayerType['type'];
   opacity: LayerType['opacity'];
+  layer: LayerType;
 }
 
 export default withStyles(styles)(Legends);
