@@ -183,7 +183,7 @@
         "type": "text",
         "label": "Event name"
       },
-      "pub_date": {
+      "timestamp": {
         "type": "date",
         "label": "Publication date"
       }

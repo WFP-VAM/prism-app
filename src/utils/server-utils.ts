@@ -358,7 +358,7 @@ function fetchFeatureInfo(
   const requestParams = {
     service: 'WMS',
     request: 'getFeatureInfo',
-    version: '1.3.0',
+    version: '1.1.1',
     exceptions: 'application/json',
     infoFormat: 'application/json',
     layers: layerNames,
