@@ -136,7 +136,7 @@ function LegendItem({
   children,
   legendUrl,
   layer,
-}: LegendItemProps) {
+}: LegendItemProps): JSX.Element {
   const map = useSelector(mapSelector);
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
@@ -189,6 +189,7 @@ function LegendItem({
     fileName: string,
     contentType: string,
   ) => {
+    const fileType = contentType.split('/')[1];
     const link = document.createElement('a');
     link.setAttribute(
       'href',
@@ -199,14 +200,14 @@ function LegendItem({
           ),
     );
 
-    link.setAttribute('download', fileName);
+    link.setAttribute('download', `${fileName}.${fileType}`);
     link.click();
   };
 
   const handleLayerDownload = (
     legendLayer: LayerType,
     e: React.ChangeEvent<{}>,
-  ) => {
+  ): void => {
     e.preventDefault();
     const extent = bbox(boundaryLayerData?.data) as Extent;
 
@@ -236,7 +237,7 @@ function LegendItem({
             isUrl: false,
           },
           legendLayer.title,
-          'text/plain',
+          'application/json',
         );
         break;
       }
@@ -249,7 +250,7 @@ function LegendItem({
             isUrl: false,
           },
           legendLayer.title,
-          'text/plain',
+          'application/json',
         );
         break;
       }
@@ -262,7 +263,7 @@ function LegendItem({
             isUrl: false,
           },
           legendLayer.title,
-          'text/plain',
+          'application/json',
         );
         break;
       }
