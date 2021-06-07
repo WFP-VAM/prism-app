@@ -266,7 +266,6 @@ function LegendItem({
 
     switch (legendLayer.type) {
       case 'wms': {
-        console.log('==> ', legendLayer.geometry);
         const dataUrl = getWCSLayerUrl({
           layer: legendLayer,
           extent,
