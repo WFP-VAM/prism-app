@@ -143,7 +143,17 @@ export type RawDataConfiguration = {
 
   // Geotiff pixel resolution, in pixels per degree lat/long
   pixelResolution?: number;
+
+  // Remote layers might not have time dimension enabled.
+  timeSupport?: boolean;
 };
+
+// Type of vector data that the layer provides
+export enum GeometryType {
+  Point = 'point',
+  LineString = 'linestring',
+  Polygon = 'polygon',
+}
 
 export class CommonLayerProps {
   id: LayerKey;
@@ -165,6 +175,9 @@ export class CommonLayerProps {
 
   @optional // only optional for boundary layer
   group?: GroupDefinition;
+
+  @optional // Perform population exposure analysis using this layer.
+  exposure?: LayerKey;
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -208,6 +221,9 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   featureInfoProps?: { [key: string]: featureInfoProps };
+
+  @optional // If included, we infer the layer is a vector layer.
+  geometry?: GeometryType;
 }
 
 export class NSOLayerProps extends CommonLayerProps {
@@ -242,6 +258,7 @@ export class StatsApi {
 export enum AggregationOperations {
   Mean = 'mean',
   Median = 'median',
+  Sum = 'sum',
 }
 
 export type ThresholdDefinition = { below?: number; above?: number };
@@ -330,6 +347,14 @@ export type AvailableDates = {
     | WMSLayerProps['serverLayerName']
     | PointDataLayerProps['id']]: number[];
 };
+
+/* eslint-disable camelcase */
+export interface WfsRequestParams {
+  url: string;
+  layer_name: string;
+  time?: string;
+}
+/* eslint-enable camelcase */
 
 export interface ChartConfig {
   type: string;

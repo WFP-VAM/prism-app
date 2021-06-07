@@ -13,10 +13,10 @@ import {
   Typography,
   WithStyles,
   withStyles,
+  LinearProgress,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
-import { useSelector } from 'react-redux';
-import bbox from '@turf/bbox';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   mapSelector,
   layerDataSelector,
@@ -25,26 +25,45 @@ import {
 import ColorIndicator from './ColorIndicator';
 import {
   LayerType,
-  BoundaryLayerProps,
   NSOLayerProps,
   ImpactLayerProps,
   PointDataLayerProps,
+  AggregationOperations,
+  WMSLayerProps,
+  LayerKey,
+  GeometryType,
 } from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import { getWCSLayerUrl } from '../../../context/layers/wms';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
+  AnalysisDispatchParams,
+  requestAndStoreAnalysis,
+  isExposureAnalysisLoadingSelector,
+  clearAnalysisResult,
 } from '../../../context/analysisResultStateSlice';
 import { Extent } from '../Layers/raster-utils';
-
-import { getBoundaryLayerSingleton } from '../../../config/utils';
 import { LayerData } from '../../../context/layers/layer-data';
+import { LayerDefinitions } from '../../../config/utils';
 
-function Legends({ classes, layers }: LegendsProps) {
+/**
+ * Returns layer identifier used to perform exposure analysis.
+ *
+ * @return LayerKey or undefined if exposure not found or GeometryType is not Polygon.
+ */
+function GetExposureFromLayer(layer: LayerType): LayerKey | undefined {
+  return layer.type === 'wms' &&
+    layer.exposure &&
+    layer.geometry === GeometryType.Polygon
+    ? layer.exposure
+    : undefined;
+}
+
+function Legends({ classes, layers, extent }: LegendsProps) {
   const [open, setOpen] = useState(true);
-  const analysisResult = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const analysisResult = useSelector(analysisResultSelector);
 
   const legendItems = [
     ...layers.map(layer => {
@@ -59,6 +78,8 @@ function Legends({ classes, layers }: LegendsProps) {
           ? formatWMSLegendUrl(layer.baseUrl, layer.serverLayerName)
           : undefined;
 
+      const exposure = GetExposureFromLayer(layer);
+
       return (
         <LegendItem
           classes={classes}
@@ -69,6 +90,8 @@ function Legends({ classes, layers }: LegendsProps) {
           legendUrl={legendUrl}
           type={layer.type}
           opacity={layer.opacity}
+          exposure={exposure}
+          extent={extent}
           layer={layer}
         >
           {layer.legendText}
@@ -135,12 +158,49 @@ function LegendItem({
   opacity: initialOpacity,
   children,
   legendUrl,
+  exposure,
+  extent,
   layer,
-}: LegendItemProps): JSX.Element {
+}: LegendItemProps) {
+  const dispatch = useDispatch();
   const map = useSelector(mapSelector);
+  const analysisExposureLoading = useSelector(
+    isExposureAnalysisLoadingSelector,
+  );
+
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
+
+  const analysisResult = useSelector(analysisResultSelector);
+
+  const runExposureAnalysis = async () => {
+    if (!id || !extent) {
+      return;
+    }
+
+    if (!selectedDate) {
+      throw new Error('Date must be given to run analysis');
+    }
+
+    const params: AnalysisDispatchParams = {
+      hazardLayer: LayerDefinitions[exposure as LayerKey] as WMSLayerProps,
+      baselineLayer: LayerDefinitions['inform' as LayerKey] as NSOLayerProps, // TODO: Make analysis without baselineLayer.
+      date: selectedDate,
+      statistic: AggregationOperations.Sum,
+      extent,
+      threshold: {
+        above: undefined,
+        below: undefined,
+      },
+      wfsLayer: LayerDefinitions[id] as WMSLayerProps,
+      isExposure: true,
+    };
+
+    await dispatch(requestAndStoreAnalysis(params));
+  };
 
   const handleChangeOpacity = (
     _event: React.ChangeEvent<{}>,
@@ -173,16 +233,9 @@ function LegendItem({
     }
   };
 
-  const boundaryLayer = getBoundaryLayerSingleton();
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-
   const legendLayerData = useSelector(layerDataSelector(layer.id)) as
     | LayerData<LayerType>
     | undefined;
-
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const downloadToFile = (
     source: { content: string; isUrl: boolean },
@@ -209,10 +262,11 @@ function LegendItem({
     e: React.ChangeEvent<{}>,
   ): void => {
     e.preventDefault();
-    const extent = bbox(boundaryLayerData?.data) as Extent;
+    // const extent = bbox(boundaryLayerData?.data) as Extent;
 
     switch (legendLayer.type) {
       case 'wms': {
+        console.log('==> ', legendLayer.geometry);
         const dataUrl = getWCSLayerUrl({
           layer: legendLayer,
           extent,
@@ -325,12 +379,6 @@ function LegendItem({
           <Divider />
 
           <Grid item>
-            <Typography variant="h5">
-              Explore {title} raw data outside of PRISM
-            </Typography>
-          </Grid>
-
-          <Grid item>
             <Button
               variant="contained"
               color="primary"
@@ -341,11 +389,43 @@ function LegendItem({
               Download
             </Button>
           </Grid>
+
+          {exposure && !analysisResult && (
+            <AnalysisButton
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={runExposureAnalysis}
+            >
+              Exposure Analysis
+            </AnalysisButton>
+          )}
+
+          {exposure && analysisResult && (
+            <AnalysisButton
+              variant="contained"
+              color="secondary"
+              size="small"
+              onClick={() => dispatch(clearAnalysisResult())}
+            >
+              clear analysis
+            </AnalysisButton>
+          )}
+
+          {exposure && analysisExposureLoading && <LinearProgress />}
         </Grid>
       </Paper>
     </ListItem>
   );
 }
+
+const AnalysisButton = withStyles(() => ({
+  root: {
+    marginTop: '1em',
+    marginBottom: '1em',
+    fontSize: '0.7em',
+  },
+}))(Button);
 
 const styles = () =>
   createStyles({
@@ -373,6 +453,7 @@ const styles = () =>
 
 export interface LegendsProps extends WithStyles<typeof styles> {
   layers: LayerType[];
+  extent?: Extent;
 }
 
 interface LegendItemProps
@@ -384,6 +465,8 @@ interface LegendItemProps
   legendUrl?: string;
   type?: LayerType['type'];
   opacity: LayerType['opacity'];
+  exposure?: LayerKey;
+  extent?: Extent;
   layer: LayerType;
 }
 

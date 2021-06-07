@@ -19,6 +19,7 @@ import moment from 'moment';
 import ReactMapboxGl from 'react-mapbox-gl';
 import DatePicker from 'react-datepicker';
 import { Map } from 'mapbox-gl';
+import bbox from '@turf/bbox';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import Download from './Download';
@@ -31,7 +32,13 @@ import {
   WMSLayer,
 } from './Layers';
 
-import { DiscriminateUnion, LayerType } from '../../config/types';
+import {
+  DiscriminateUnion,
+  LayerType,
+  BoundaryLayerProps,
+} from '../../config/types';
+
+import { Extent } from './Layers/raster-utils';
 
 import { getBoundaryLayerSingleton } from '../../config/utils';
 
@@ -41,6 +48,7 @@ import {
   dateRangeSelector,
   isLoading,
   layersSelector,
+  layerDataSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
 import {
@@ -55,7 +63,7 @@ import {
 } from '../../context/serverStateSlice';
 
 import { appConfig } from '../../config';
-import { loadLayerData } from '../../context/layers/layer-data';
+import { loadLayerData, LayerData } from '../../context/layers/layer-data';
 import Analyser from './Analyser';
 import AnalysisLayer from './Layers/AnalysisLayer';
 import {
@@ -109,16 +117,26 @@ function MapView({ classes }: MapViewProps) {
     )
     .filter(layer => !layer.group || layer.group.main === true);
 
+  const boundaryLayer = getBoundaryLayerSingleton();
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+
+  const adminBoundariesExtent = useMemo(() => {
+    if (!boundaryLayerData) {
+      return undefined;
+    }
+    return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
+  }, [boundaryLayerData]);
+
   useEffect(() => {
-    // initial load, need available dates and boundary layer
-    const boundaryLayer = getBoundaryLayerSingleton();
     dispatch(loadAvailableDates());
     dispatch(addLayer(boundaryLayer));
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
     dispatch(loadLayerData({ layer: boundaryLayer }));
-  }, [dispatch]);
+  }, [boundaryLayer, dispatch]);
 
   // calculate possible dates user can pick from the currently selected layers
   const selectedLayerDates: number[] = useMemo(() => {
@@ -280,13 +298,13 @@ function MapView({ classes }: MapViewProps) {
         className={classes.buttonContainer}
       >
         <Grid item>
-          <Analyser />
+          <Analyser extent={adminBoundariesExtent} />
           {appConfig.alertFormActive === true ? <AlertForm /> : null}
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
             <Download />
-            <Legends layers={selectedLayers} />
+            <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
           </Grid>
         </Grid>
       </Grid>

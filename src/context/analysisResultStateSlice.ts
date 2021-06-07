@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Position } from 'geojson';
+import moment from 'moment';
 import { get } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesFile } from '../config';
@@ -10,6 +11,7 @@ import {
   NSOLayerProps,
   ThresholdDefinition,
   WMSLayerProps,
+  WfsRequestParams,
 } from '../config/types';
 import {
   AnalysisResult,
@@ -36,6 +38,7 @@ type AnalysisResultState = {
   error?: string;
   isLoading: boolean;
   isMapLayerActive: boolean;
+  isExposureLoading: boolean;
 };
 
 export type TableRow = {
@@ -48,6 +51,7 @@ export type TableRow = {
 const initialState: AnalysisResultState = {
   isLoading: false,
   isMapLayerActive: true,
+  isExposureLoading: false,
 };
 
 /* Gets a public URL for the admin boundaries used by this application.
@@ -134,10 +138,12 @@ function generateTableFromApiData(
 export type AnalysisDispatchParams = {
   baselineLayer: NSOLayerProps;
   hazardLayer: WMSLayerProps;
+  wfsLayer?: WMSLayerProps;
   extent: Extent;
   threshold: ThresholdDefinition;
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
+  isExposure: boolean;
 };
 
 export const requestAndStoreAnalysis = createAsyncThunk<
@@ -152,6 +158,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     extent,
     statistic,
     threshold,
+    wfsLayer,
   } = params;
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
@@ -164,19 +171,30 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   if (!adminBoundariesData) {
     throw new Error('Boundary Layer not loaded!');
   }
+
+  const { wcsConfig } = hazardLayer;
+
+  const wfsParams: WfsRequestParams | undefined = wfsLayer && {
+    url: `${wfsLayer.baseUrl}/ows`,
+    layer_name: wfsLayer.serverLayerName,
+    time: moment(date).format('YYYY-MM-DD'),
+  };
+
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
   const apiRequest: ApiData & { group_by: string } = {
     geotiff_url: getWCSLayerUrl({
       layer: hazardLayer,
-      date,
+      date: wcsConfig?.timeSupport === true ? date : undefined,
       extent,
     }),
     zones_url: getAdminBoundariesURL(),
     group_by:
       adminBoundaries.adminLevelNames[baselineLayer.adminLevel - 1] ||
       adminBoundaries.adminLevelNames[0],
+    ...(wfsParams ? { wfs_params: wfsParams } : undefined),
   };
+
   const aggregateData = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest),
     hazardLayer,
@@ -260,6 +278,7 @@ export const analysisResultSlice = createSlice({
         ...rest,
         isLoading: false,
         result: payload,
+        isExposureLoading: false,
       }),
     );
 
@@ -268,6 +287,7 @@ export const analysisResultSlice = createSlice({
       (state, action): AnalysisResultState => ({
         ...state,
         isLoading: false,
+        isExposureLoading: false,
         error: action.error.message
           ? action.error.message
           : action.error.toString(),
@@ -276,10 +296,18 @@ export const analysisResultSlice = createSlice({
 
     builder.addCase(
       requestAndStoreAnalysis.pending,
-      (state): AnalysisResultState => ({
-        ...state,
-        isLoading: true,
-      }),
+      (state, action): AnalysisResultState => {
+        const { isExposure }: AnalysisDispatchParams = action.meta.arg;
+
+        const updateField = isExposure
+          ? { isExposureLoading: true }
+          : { isLoading: true };
+
+        return {
+          ...state,
+          ...updateField,
+        };
+      },
     );
   },
 });
@@ -291,6 +319,9 @@ export const analysisResultSelector = (
 
 export const isAnalysisLoadingSelector = (state: RootState): boolean =>
   state.analysisResultState.isLoading;
+
+export const isExposureAnalysisLoadingSelector = (state: RootState): boolean =>
+  state.analysisResultState.isExposureLoading;
 
 export const isAnalysisLayerActiveSelector = (state: RootState): boolean =>
   state.analysisResultState.isMapLayerActive;

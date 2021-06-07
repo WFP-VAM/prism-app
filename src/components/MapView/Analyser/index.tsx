@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -26,21 +20,15 @@ import {
 import { grey } from '@material-ui/core/colors';
 import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import bbox from '@turf/bbox';
 import DatePicker from 'react-datepicker';
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../../config/utils';
+import { LayerDefinitions } from '../../../config/utils';
 import {
   AggregationOperations,
-  BoundaryLayerProps,
   NSOLayerProps,
   WMSLayerProps,
   LayerKey,
 } from '../../../config/types';
-import { LayerData } from '../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
+
 import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import {
@@ -59,13 +47,8 @@ import {
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 
-const boundaryLayer = getBoundaryLayerSingleton();
-
-function Analyser({ classes }: AnalyserProps) {
+function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -128,29 +111,27 @@ function Analyser({ classes }: AnalyserProps) {
     }
   };
 
-  const adminBoundariesExtent = useMemo(() => {
-    if (!boundaryLayerData) {
-      // not loaded yet. Should be loaded in MapView
-      return null;
-    }
-    return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
-  }, [boundaryLayerData]);
-
-  const statisticOptions = Object.entries(AggregationOperations).map(stat => (
-    <FormControlLabel
-      key={stat[0]}
-      value={stat[1]}
-      control={
-        <Radio className={classes.radioOptions} color="default" size="small" />
-      }
-      label={stat[0]}
-    />
-  ));
+  const statisticOptions = Object.entries(AggregationOperations)
+    .filter(([, value]) => value !== AggregationOperations.Sum) // sum is used only for exposure analysis.
+    .map(([key, value]) => (
+      <FormControlLabel
+        key={key}
+        value={value}
+        control={
+          <Radio
+            className={classes.radioOptions}
+            color="default"
+            size="small"
+          />
+        }
+        label={key}
+      />
+    ));
 
   const clearAnalysis = () => dispatch(clearAnalysisResult());
 
   const runAnalyser = async () => {
-    if (!adminBoundariesExtent) {
+    if (!extent) {
       return;
     } // hasn't been calculated yet
 
@@ -174,11 +155,12 @@ function Analyser({ classes }: AnalyserProps) {
       baselineLayer: selectedBaselineLayer,
       date: selectedDate,
       statistic,
-      extent: adminBoundariesExtent,
+      extent,
       threshold: {
         above: parseFloat(aboveThreshold) || undefined,
         below: parseFloat(belowThreshold) || undefined,
       },
+      isExposure: false,
     };
 
     await dispatch(requestAndStoreAnalysis(params));
@@ -419,6 +401,8 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface AnalyserProps extends WithStyles<typeof styles> {}
+interface AnalyserProps extends WithStyles<typeof styles> {
+  extent?: Extent;
+}
 
 export default withStyles(styles)(Analyser);
