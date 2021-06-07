@@ -37,7 +37,6 @@ import {
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
 import { Extent } from '../Layers/raster-utils';
-// import { layer } from '@fortawesome/fontawesome-svg-core';
 
 import { getBoundaryLayerSingleton } from '../../../config/utils';
 import { LayerData } from '../../../context/layers/layer-data';
