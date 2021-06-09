@@ -194,6 +194,36 @@ export function WCSRequestUrl(
   );
 }
 
+export function getWFSUrl(
+  baseUrl: string,
+  layerName: string,
+  override: { [key: string]: string } = {},
+) {
+  const params = {
+    service: 'WFS',
+    version: '1.0.0',
+    request: 'GetFeature',
+    typeName: `prism:${layerName}`,
+    outputFormat: 'application/json',
+    ...override,
+  };
+
+  return formatUrl(`${baseUrl}/prism/ows`, params);
+}
+
+export function WFSRequestUrl(
+  baseUrl: string,
+  serverLayerName: string,
+  date?: string | undefined,
+  maxFeatures: number = 50,
+) {
+  const override = {
+    date: date || '',
+    maxFeatures: maxFeatures.toString(),
+  };
+  return getWFSUrl(baseUrl, serverLayerName, override);
+}
+
 /**
  * Generates an array of WCS URLs to request GeoTiff tiles based on the given extent and pixel resolution.
  *

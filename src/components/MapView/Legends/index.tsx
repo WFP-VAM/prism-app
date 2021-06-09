@@ -34,7 +34,7 @@ import {
   GeometryType,
 } from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
-import { getWCSLayerUrl } from '../../../context/layers/wms';
+import { getWCSLayerUrl, getWFSLayerUrl } from '../../../context/layers/wms';
 import { downloadToFile } from '../utils';
 import {
   analysisResultSelector,
@@ -246,19 +246,35 @@ function LegendItem({
 
     switch (legendLayer.type) {
       case 'wms': {
-        const dataUrl = getWCSLayerUrl({
-          layer: legendLayer,
-          extent,
-          date: selectedDate,
-        });
-        downloadToFile(
-          {
-            content: dataUrl,
-            isUrl: true,
-          },
-          legendLayer.serverLayerName,
-          'image/tiff',
-        );
+        const hasGeometry = legendLayer.geometry !== undefined;
+        if (hasGeometry) {
+          const dataUrl = getWFSLayerUrl({
+            url: legendLayer.baseUrl,
+            layer_name: legendLayer.serverLayerName,
+          });
+          downloadToFile(
+            {
+              content: dataUrl,
+              isUrl: true,
+            },
+            legendLayer.title,
+            'application/json',
+          );
+        } else {
+          const dataUrl = getWCSLayerUrl({
+            layer: legendLayer,
+            extent,
+            date: selectedDate,
+          });
+          downloadToFile(
+            {
+              content: dataUrl,
+              isUrl: true,
+            },
+            legendLayer.serverLayerName,
+            'image/tiff',
+          );
+        }
         break;
       }
       case 'nso': {

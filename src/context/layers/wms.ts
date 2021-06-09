@@ -1,12 +1,13 @@
 import moment from 'moment';
 import type { LayerDataParams, LazyLoader } from './layer-data';
-import { WMSLayerProps } from '../../config/types';
+import { WMSLayerProps, WfsRequestParams } from '../../config/types';
 import {
   GeoTiffImage,
   loadGeoTiff,
   Rasters,
   TransformMatrix,
   WCSRequestUrl,
+  WFSRequestUrl,
 } from '../../components/MapView/Layers/raster-utils';
 
 export type WMSLayerData = {
@@ -31,6 +32,11 @@ export function getWCSLayerUrl({
     date ? moment(date).format('YYYY-MM-DD') : undefined,
     extent,
   );
+}
+
+/* eslint-disable camelcase */
+export function getWFSLayerUrl({ url, layer_name, time }: WfsRequestParams) {
+  return WFSRequestUrl(url, layer_name, time);
 }
 
 export const fetchWCSLayerData: LazyLoader<WMSLayerProps> = () => async ({
