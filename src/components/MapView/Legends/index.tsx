@@ -35,6 +35,7 @@ import {
 } from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import { getWCSLayerUrl } from '../../../context/layers/wms';
+import { downloadToFile } from '../utils';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
@@ -199,7 +200,7 @@ function LegendItem({
       isExposure: true,
     };
 
-    await dispatch(requestAndStoreAnalysis(params));
+    dispatch(requestAndStoreAnalysis(params));
   };
 
   const handleChangeOpacity = (
@@ -237,32 +238,11 @@ function LegendItem({
     | LayerData<LayerType>
     | undefined;
 
-  const downloadToFile = (
-    source: { content: string; isUrl: boolean },
-    fileName: string,
-    contentType: string,
-  ) => {
-    const fileType = contentType.split('/')[1];
-    const link = document.createElement('a');
-    link.setAttribute(
-      'href',
-      source.isUrl
-        ? source.content
-        : URL.createObjectURL(
-            new Blob([source.content], { type: contentType }),
-          ),
-    );
-
-    link.setAttribute('download', `${fileName}.${fileType}`);
-    link.click();
-  };
-
   const handleLayerDownload = (
     legendLayer: LayerType,
     e: React.ChangeEvent<{}>,
   ): void => {
     e.preventDefault();
-    // const extent = bbox(boundaryLayerData?.data) as Extent;
 
     switch (legendLayer.type) {
       case 'wms': {
