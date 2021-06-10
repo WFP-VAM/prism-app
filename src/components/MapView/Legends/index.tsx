@@ -252,14 +252,22 @@ function LegendItem({
             url: legendLayer.baseUrl,
             layer_name: legendLayer.serverLayerName,
           });
-          downloadToFile(
-            {
-              content: dataUrl,
-              isUrl: true,
-            },
-            legendLayer.title,
-            'application/json',
-          );
+
+          fetch(dataUrl)
+            .then(res => res.json())
+            .then(data => {
+              downloadToFile(
+                {
+                  content: JSON.stringify(data),
+                  isUrl: false,
+                },
+                legendLayer.title,
+                'application/json',
+              );
+            })
+            .catch(err => {
+              throw new Error(err);
+            });
         } else {
           const dataUrl = getWCSLayerUrl({
             layer: legendLayer,
