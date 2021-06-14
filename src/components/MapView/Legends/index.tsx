@@ -204,11 +204,13 @@ function LegendItem({
   };
 
   const handleChangeOpacity = (
-    _event: React.ChangeEvent<{}>,
+    e: React.ChangeEvent<{}>,
     newValue: number | number[],
   ) => {
     // TODO: temporary solution for opacity adjustment, we hope to edit react-mapbox in the future to support changing props
     // because the whole map will be re-rendered if using state directly
+    e.preventDefault();
+
     if (map) {
       const [layerId, opacityType] = ((
         layerType?: LayerType['type'],
@@ -240,8 +242,10 @@ function LegendItem({
 
   const handleLayerDownload = (
     legendLayer: LayerType,
-    _event: React.ChangeEvent<{}>,
+    e: React.ChangeEvent<{}>,
   ): void => {
+    e.preventDefault();
+
     switch (legendLayer.type) {
       case 'wms': {
         const hasGeometry = legendLayer.geometry !== undefined;
