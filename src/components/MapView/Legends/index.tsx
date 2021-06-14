@@ -240,10 +240,8 @@ function LegendItem({
 
   const handleLayerDownload = (
     legendLayer: LayerType,
-    e: React.ChangeEvent<{}>,
+    _event: React.ChangeEvent<{}>,
   ): void => {
-    e.preventDefault();
-
     switch (legendLayer.type) {
       case 'wms': {
         const hasGeometry = legendLayer.geometry !== undefined;
