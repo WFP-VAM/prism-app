@@ -155,6 +155,11 @@ export enum GeometryType {
   Polygon = 'polygon',
 }
 
+export interface ExposedPopulationDefinition {
+  id: LayerKey;
+  key: string;
+}
+
 export class CommonLayerProps {
   id: LayerKey;
 
@@ -177,7 +182,7 @@ export class CommonLayerProps {
   group?: GroupDefinition;
 
   @optional // Perform population exposure analysis using this layer.
-  exposure?: LayerKey;
+  exposure?: ExposedPopulationDefinition;
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -353,6 +358,7 @@ export interface WfsRequestParams {
   url: string;
   layer_name: string;
   time?: string;
+  key: string;
 }
 /* eslint-enable camelcase */
 

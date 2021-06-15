@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Position } from 'geojson';
+import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
@@ -12,18 +12,23 @@ import {
   ThresholdDefinition,
   WMSLayerProps,
   WfsRequestParams,
+  LayerKey,
+  ExposedPopulationDefinition,
 } from '../config/types';
 import {
+  BaselineLayerResult,
   AnalysisResult,
   ApiData,
   BaselineLayerData,
   checkBaselineDataLayer,
   fetchApiData,
   generateFeaturesFromApiData,
+  KeyValueResponse,
   scaleAndFilterAggregateData,
+  ExposedPopulationResult,
 } from '../utils/analysis-utils';
 import { getWCSLayerUrl } from './layers/wms';
-import { getBoundaryLayerSingleton } from '../config/utils';
+import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
@@ -98,7 +103,7 @@ function generateTableFromApiData(
     adminLayer.adminLevelLocalNames[adminLevel - 1] ||
     adminLayer.adminLevelLocalNames[0];
 
-  return aggregateData.map(row => {
+  return (aggregateData as KeyValueResponse[]).map(row => {
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
     // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
@@ -138,13 +143,108 @@ function generateTableFromApiData(
 export type AnalysisDispatchParams = {
   baselineLayer: NSOLayerProps;
   hazardLayer: WMSLayerProps;
-  wfsLayer?: WMSLayerProps;
   extent: Extent;
   threshold: ThresholdDefinition;
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
   isExposure: boolean;
 };
+
+export type ExposedPopulationDispatchParams = {
+  exposure: ExposedPopulationDefinition;
+  statistic: AggregationOperations;
+  extent: Extent;
+  date: ReturnType<Date['getTime']>;
+  wfsLayerId: LayerKey;
+};
+
+const createAPIRequestParams = (
+  geotiffLayer: WMSLayerProps,
+  extent: Extent,
+  date: ReturnType<Date['getTime']>,
+  params: WfsRequestParams | NSOLayerProps,
+): ApiData => {
+  const adminBoundaries = getBoundaryLayerSingleton();
+
+  const groupBy =
+    adminBoundaries.adminLevelNames[(params as NSOLayerProps).adminLevel - 1] ||
+    adminBoundaries.adminLevelNames[0];
+
+  const wfsParams = (params as WfsRequestParams).layer_name
+    ? { wfs_params: params as WfsRequestParams }
+    : undefined;
+
+  // we force group_by to be defined with &
+  // eslint-disable-next-line camelcase
+  const apiRequest: ApiData = {
+    geotiff_url: getWCSLayerUrl({
+      layer: geotiffLayer,
+      date: geotiffLayer.wcsConfig?.timeSupport === true ? date : undefined,
+      extent,
+    }),
+    zones_url: getAdminBoundariesURL(),
+    group_by: groupBy,
+    ...wfsParams,
+  };
+
+  return apiRequest;
+};
+
+export const requestAndStoreExposedPopulation = createAsyncThunk<
+  AnalysisResult,
+  ExposedPopulationDispatchParams,
+  CreateAsyncThunkTypes
+>('analysisResultState/requestAndStoreExposedPopulation', async params => {
+  const { exposure, date, extent, statistic, wfsLayerId } = params;
+
+  const { id, key } = exposure;
+
+  const wfsLayer = LayerDefinitions[wfsLayerId] as WMSLayerProps;
+  const populationLayer = LayerDefinitions[id] as WMSLayerProps;
+
+  const wfsParams: WfsRequestParams = {
+    url: `${wfsLayer.baseUrl}/ows`,
+    layer_name: wfsLayer.serverLayerName,
+    time: moment(date).format('YYYY-MM-DD'),
+    key,
+  };
+
+  const apiRequest = createAPIRequestParams(
+    populationLayer,
+    extent,
+    date,
+    wfsParams,
+  );
+
+  const features = (await fetchApiData(
+    ANALYSIS_API_URL,
+    apiRequest,
+  )) as Feature[];
+
+  const stats: number[] = Array.prototype.sort.call(
+    features.map(f =>
+      f.properties && f.properties[statistic] ? f.properties[statistic] : 0,
+    ),
+    (a, b) => a - b, // This function is required since JS assumes unicode values.
+  );
+
+  const statsLen = stats.length;
+
+  const legend = [
+    { value: stats[Math.floor(statsLen * 0.2) - 1], color: '#fee5d9' },
+    { value: stats[Math.floor(statsLen * 0.4) - 1], color: '#fcae91' },
+    { value: stats[Math.floor(statsLen * 0.6) - 1], color: '#fb6a4a' },
+    { value: stats[Math.floor(statsLen * 0.8) - 1], color: '#de2d26' },
+    { value: stats[statsLen - 1], color: '#a50f15' },
+  ];
+
+  const collection: FeatureCollection = {
+    type: 'FeatureCollection',
+    features,
+  };
+
+  return new ExposedPopulationResult(collection, statistic, legend, key);
+});
 
 export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisResult,
@@ -158,7 +258,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     extent,
     statistic,
     threshold,
-    wfsLayer,
   } = params;
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
@@ -171,29 +270,12 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   if (!adminBoundariesData) {
     throw new Error('Boundary Layer not loaded!');
   }
-
-  const { wcsConfig } = hazardLayer;
-
-  const wfsParams: WfsRequestParams | undefined = wfsLayer && {
-    url: `${wfsLayer.baseUrl}/ows`,
-    layer_name: wfsLayer.serverLayerName,
-    time: moment(date).format('YYYY-MM-DD'),
-  };
-
-  // we force group_by to be defined with &
-  // eslint-disable-next-line camelcase
-  const apiRequest: ApiData & { group_by: string } = {
-    geotiff_url: getWCSLayerUrl({
-      layer: hazardLayer,
-      date: wcsConfig?.timeSupport === true ? date : undefined,
-      extent,
-    }),
-    zones_url: getAdminBoundariesURL(),
-    group_by:
-      adminBoundaries.adminLevelNames[baselineLayer.adminLevel - 1] ||
-      adminBoundaries.adminLevelNames[0],
-    ...(wfsParams ? { wfs_params: wfsParams } : undefined),
-  };
+  const apiRequest = createAPIRequestParams(
+    hazardLayer,
+    extent,
+    date,
+    baselineLayer,
+  );
 
   const aggregateData = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest),
@@ -240,7 +322,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     { layer: baselineLayer, data: loadedAndCheckedBaselineData },
   );
 
-  return new AnalysisResult(
+  return new BaselineLayerResult(
     tableRows,
     {
       ...adminBoundariesData.data,
@@ -270,23 +352,21 @@ export const analysisResultSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(
-      requestAndStoreAnalysis.fulfilled,
+      requestAndStoreExposedPopulation.fulfilled,
       (
         { result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
       ): AnalysisResultState => ({
         ...rest,
-        isLoading: false,
-        result: payload,
+        result: payload as ExposedPopulationResult,
         isExposureLoading: false,
       }),
     );
 
     builder.addCase(
-      requestAndStoreAnalysis.rejected,
+      requestAndStoreExposedPopulation.rejected,
       (state, action): AnalysisResultState => ({
         ...state,
-        isLoading: false,
         isExposureLoading: false,
         error: action.error.message
           ? action.error.message
@@ -295,19 +375,42 @@ export const analysisResultSlice = createSlice({
     );
 
     builder.addCase(
+      requestAndStoreExposedPopulation.pending,
+      (state): AnalysisResultState => ({
+        ...state,
+        isExposureLoading: true,
+      }),
+    );
+
+    builder.addCase(
+      requestAndStoreAnalysis.fulfilled,
+      (
+        { result, ...rest },
+        { payload }: PayloadAction<AnalysisResult>,
+      ): AnalysisResultState => ({
+        ...rest,
+        isLoading: false,
+        result: payload as BaselineLayerResult,
+      }),
+    );
+
+    builder.addCase(
+      requestAndStoreAnalysis.rejected,
+      (state, action): AnalysisResultState => ({
+        ...state,
+        isLoading: false,
+        error: action.error.message
+          ? action.error.message
+          : action.error.toString(),
+      }),
+    );
+
+    builder.addCase(
       requestAndStoreAnalysis.pending,
-      (state, action): AnalysisResultState => {
-        const { isExposure }: AnalysisDispatchParams = action.meta.arg;
-
-        const updateField = isExposure
-          ? { isExposureLoading: true }
-          : { isLoading: true };
-
-        return {
-          ...state,
-          ...updateField,
-        };
-      },
+      (state): AnalysisResultState => ({
+        ...state,
+        isLoading: true,
+      }),
     );
   },
 });

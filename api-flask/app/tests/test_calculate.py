@@ -39,7 +39,7 @@ def test_calculate_stats_wfs_polygons():
 
     zones = '/app/tests/small_admin_boundaries.json'
     geotiff = '/app/tests/raster_sample.tif'
-    wfs_response = '/app/tests/wfs_response.json'
+    wfs_response = {'key': 'label', 'path': '/app/tests/wfs_response.json'}
 
     features = calculate_stats(
         zones, geotiff, geojson_out=False, wfs_response=wfs_response)

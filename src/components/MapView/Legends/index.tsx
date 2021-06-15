@@ -13,48 +13,60 @@ import {
   Typography,
   WithStyles,
   withStyles,
-  LinearProgress,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Extent } from '../Layers/raster-utils';
-import {
-  mapSelector,
-  dateRangeSelector,
-} from '../../../context/mapStateSlice/selectors';
+import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
 import {
   LayerType,
-  AggregationOperations,
-  NSOLayerProps,
-  WMSLayerProps,
-  LayerKey,
   GeometryType,
+  ExposedPopulationDefinition,
 } from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
-  AnalysisDispatchParams,
-  requestAndStoreAnalysis,
-  isExposureAnalysisLoadingSelector,
-  clearAnalysisResult,
 } from '../../../context/analysisResultStateSlice';
 
-import { LayerDefinitions } from '../../../config/utils';
+import {
+  BaselineLayerResult,
+  ExposedPopulationResult,
+} from '../../../utils/analysis-utils';
+
+import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 
 /**
  * Returns layer identifier used to perform exposure analysis.
  *
  * @return LayerKey or undefined if exposure not found or GeometryType is not Polygon.
  */
-function GetExposureFromLayer(layer: LayerType): LayerKey | undefined {
+function GetExposureFromLayer(
+  layer: LayerType,
+): ExposedPopulationDefinition | undefined {
   return layer.type === 'wms' &&
     layer.exposure &&
     layer.geometry === GeometryType.Polygon
     ? layer.exposure
     : undefined;
+}
+
+function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
+  return (
+    <>
+      Impact Analysis on {result.getBaselineLayer().legendText}
+      <br />
+      {result.threshold.above
+        ? `Above Threshold: ${result.threshold.above}`
+        : ''}
+      <br />
+      {result.threshold.below
+        ? `Below Threshold: ${result.threshold.below}`
+        : ''}
+    </>
+  );
 }
 
 function Legends({ classes, layers, extent }: LegendsProps) {
@@ -100,21 +112,13 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           <LegendItem
             key={analysisResult.key}
             legend={analysisResult.legend}
-            title={`${analysisResult.getBaselineLayer().title} exposed to ${
-              analysisResult.getHazardLayer().title
-            }`}
+            title={analysisResult.getTitle()}
             classes={classes}
             opacity={0.5} // TODO: initial opacity value
           >
-            Impact Analysis on {analysisResult.getBaselineLayer().legendText}
-            <br />
-            {analysisResult.threshold.above
-              ? `Above Threshold: ${analysisResult.threshold.above}`
-              : ''}
-            <br />
-            {analysisResult.threshold.below
-              ? `Below Threshold: ${analysisResult.threshold.below}`
-              : ''}
+            {analysisResult instanceof BaselineLayerResult && (
+              <LegendImpactResult result={analysisResult} />
+            )}
           </LegendItem>,
         ]
       : []),
@@ -156,45 +160,12 @@ function LegendItem({
   exposure,
   extent,
 }: LegendItemProps) {
-  const dispatch = useDispatch();
   const map = useSelector(mapSelector);
-  const analysisExposureLoading = useSelector(
-    isExposureAnalysisLoadingSelector,
-  );
-
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
-
   const analysisResult = useSelector(analysisResultSelector);
-
-  const runExposureAnalysis = async () => {
-    if (!id || !extent) {
-      return;
-    }
-
-    if (!selectedDate) {
-      throw new Error('Date must be given to run analysis');
-    }
-
-    const params: AnalysisDispatchParams = {
-      hazardLayer: LayerDefinitions[exposure as LayerKey] as WMSLayerProps,
-      baselineLayer: LayerDefinitions['inform' as LayerKey] as NSOLayerProps, // TODO: Make analysis without baselineLayer.
-      date: selectedDate,
-      statistic: AggregationOperations.Sum,
-      extent,
-      threshold: {
-        above: undefined,
-        below: undefined,
-      },
-      wfsLayer: LayerDefinitions[id] as WMSLayerProps,
-      isExposure: true,
-    };
-
-    await dispatch(requestAndStoreAnalysis(params));
-  };
 
   const handleChangeOpacity = (
     event: React.ChangeEvent<{}>,
@@ -274,42 +245,19 @@ function LegendItem({
             </Grid>
           )}
 
-          {exposure && !analysisResult && (
-            <AnalysisButton
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={runExposureAnalysis}
-            >
-              Exposure Analysis
-            </AnalysisButton>
+          {exposure && (
+            <ExposedPopulationAnalysis
+              result={analysisResult as ExposedPopulationResult}
+              id={id!}
+              extent={extent!}
+              exposure={exposure}
+            />
           )}
-
-          {exposure && analysisResult && (
-            <AnalysisButton
-              variant="contained"
-              color="secondary"
-              size="small"
-              onClick={() => dispatch(clearAnalysisResult())}
-            >
-              clear analysis
-            </AnalysisButton>
-          )}
-
-          {exposure && analysisExposureLoading && <LinearProgress />}
         </Grid>
       </Paper>
     </ListItem>
   );
 }
-
-const AnalysisButton = withStyles(() => ({
-  root: {
-    marginTop: '1em',
-    marginBottom: '1em',
-    fontSize: '0.7em',
-  },
-}))(Button);
 
 const styles = () =>
   createStyles({
@@ -349,7 +297,7 @@ interface LegendItemProps
   legendUrl?: string;
   type?: LayerType['type'];
   opacity: LayerType['opacity'];
-  exposure?: LayerKey;
+  exposure?: ExposedPopulationDefinition;
   extent?: Extent;
 }
 
