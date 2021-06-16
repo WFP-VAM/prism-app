@@ -1,6 +1,6 @@
 import moment from 'moment';
 import type { LayerDataParams, LazyLoader } from './layer-data';
-import { WMSLayerProps, WfsRequestParams } from '../../config/types';
+import { WMSLayerProps } from '../../config/types';
 import {
   GeoTiffImage,
   loadGeoTiff,
@@ -20,6 +20,7 @@ export function getWCSLayerUrl({
   layer,
   extent,
   date,
+  ...override
 }: LayerDataParams<WMSLayerProps>) {
   if (!extent) {
     throw new Error(
@@ -27,16 +28,35 @@ export function getWCSLayerUrl({
     );
   }
 
+  const resolution = override?.resolution;
+
   return WCSRequestUrl(
     layer,
     date ? moment(date).format('YYYY-MM-DD') : undefined,
     extent,
+    resolution,
   );
 }
 
 /* eslint-disable camelcase */
-export function getWFSLayerUrl({ url, layer_name, time }: WfsRequestParams) {
-  return WFSRequestUrl(url, layer_name, time);
+export function getWFSLayerUrl({
+  layer,
+  extent,
+  date,
+  override,
+}: LayerDataParams<WMSLayerProps>) {
+  if (!extent) {
+    throw new Error(
+      `Can't fetch WFS data for layer ${layer.id} without providing an extent!`,
+    );
+  }
+
+  return WFSRequestUrl(
+    layer,
+    date ? moment(date).format('YYYY-MM-DD') : undefined,
+    extent,
+    override,
+  );
 }
 
 export const fetchWCSLayerData: LazyLoader<WMSLayerProps> = () => async ({

@@ -251,10 +251,10 @@ function LegendItem({
         const hasGeometry = legendLayer.geometry !== undefined;
         if (hasGeometry) {
           const dataUrl = getWFSLayerUrl({
-            url: legendLayer.baseUrl,
-            layer_name: legendLayer.serverLayerName,
+            layer: legendLayer,
+            extent,
+            date: selectedDate,
           });
-
           fetch(dataUrl)
             .then(res => res.json())
             .then(data => {
@@ -275,6 +275,7 @@ function LegendItem({
             layer: legendLayer,
             extent,
             date: selectedDate,
+            resolution: 1024,
           });
           downloadToFile(
             {
