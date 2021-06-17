@@ -229,10 +229,6 @@ export function WFSRequestUrl(
   const startOfToday = moment(new Date(`${date}T00:00:00Z`)).toISOString();
   const endOfToday = moment(new Date(`${date}T23:59:59Z`)).toISOString();
 
-  console.log('--> ', date);
-  console.log('--> ', startOfToday);
-  console.log('--> ', endOfToday);
-
   // WFS query doesn't allow to filter by  both `date` and `bbox`
   // they are mutual exclusive
   const filter =
