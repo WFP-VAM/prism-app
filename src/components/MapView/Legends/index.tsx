@@ -271,18 +271,21 @@ function LegendItem({
               throw new Error(err);
             });
         } else {
+          // Increased the `resolution` and `maxPixel` to high values this will help
+          // to download large image
           const dataUrl = getWCSLayerUrl({
             layer: legendLayer,
             extent,
             date: selectedDate,
-            resolution: 1024,
+            resolution: 4096,
+            maxPixel: 20348,
           });
           downloadToFile(
             {
               content: dataUrl,
               isUrl: true,
             },
-            legendLayer.serverLayerName,
+            legendLayer.title,
             'image/tiff',
           );
         }

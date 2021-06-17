@@ -29,12 +29,14 @@ export function getWCSLayerUrl({
   }
 
   const resolution = override?.resolution;
+  const maxPixel = override?.maxPixel;
 
   return WCSRequestUrl(
     layer,
     date ? moment(date).format('YYYY-MM-DD') : undefined,
     extent,
     resolution,
+    maxPixel,
   );
 }
 
