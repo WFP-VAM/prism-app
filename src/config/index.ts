@@ -19,6 +19,11 @@ import {
 } from './mozambique';
 
 import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
+import {
+  kyrgyzstanConfig,
+  kyrgyzstanRawLayers,
+  kyrgyzstanRawTables,
+} from './kyrgyzstan';
 
 import {
   tajikistanConfig,
@@ -28,12 +33,13 @@ import {
 
 type Country =
   | 'indonesia'
+  | 'kyrgyzstan'
   | 'mongolia'
   | 'mozambique'
   | 'myanmar'
   | 'tajikistan';
 
-const DEFAULT: Country = 'mongolia';
+const DEFAULT: Country = 'myanmar';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
@@ -45,6 +51,12 @@ const configMap = {
     rawLayers: indonesiaRawLayers,
     rawTables: indonesiaRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/idn_admin_boundaries.json`,
+  },
+  kyrgyzstan: {
+    appConfig: kyrgyzstanConfig,
+    rawLayers: kyrgyzstanRawLayers,
+    rawTables: kyrgyzstanRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/kgz_admin_boundaries.json`,
   },
   mongolia: {
     appConfig: mongoliaConfig,
