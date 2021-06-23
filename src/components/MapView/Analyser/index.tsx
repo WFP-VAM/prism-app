@@ -44,6 +44,7 @@ import AnalysisTable from './AnalysisTable';
 import {
   getAnalysisTableColumns,
   downloadCSVFromTableData,
+  BaselineLayerResult,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 
@@ -275,52 +276,54 @@ function Analyser({ extent, classes }: AnalyserProps) {
               </div>
             </div>
 
-            {!isAnalysisLoading && analysisResult && (
-              <>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        color="default"
-                        checked={isMapLayerActive}
-                        onChange={e =>
-                          dispatch(setIsMapLayerActive(e.target.checked))
-                        }
-                      />
-                    }
-                    label="Map View"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        color="default"
-                        checked={isTableViewOpen}
-                        onChange={e => setIsTableViewOpen(e.target.checked)}
-                      />
-                    }
-                    label="Table View"
-                  />
-                </FormGroup>
-                {isTableViewOpen && (
-                  <AnalysisTable
-                    tableData={analysisResult.tableData}
-                    columns={getAnalysisTableColumns(analysisResult)}
-                  />
-                )}
-                <Button
-                  className={classes.innerAnalysisButton}
-                  onClick={() => downloadCSVFromTableData(analysisResult)}
-                >
-                  <Typography variant="body2">Download</Typography>
-                </Button>
-                <Button
-                  className={classes.innerAnalysisButton}
-                  onClick={clearAnalysis}
-                >
-                  <Typography variant="body2">Clear Analysis</Typography>
-                </Button>
-              </>
-            )}
+            {!isAnalysisLoading &&
+              analysisResult &&
+              analysisResult instanceof BaselineLayerResult && (
+                <>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          color="default"
+                          checked={isMapLayerActive}
+                          onChange={e =>
+                            dispatch(setIsMapLayerActive(e.target.checked))
+                          }
+                        />
+                      }
+                      label="Map View"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          color="default"
+                          checked={isTableViewOpen}
+                          onChange={e => setIsTableViewOpen(e.target.checked)}
+                        />
+                      }
+                      label="Table View"
+                    />
+                  </FormGroup>
+                  {isTableViewOpen && (
+                    <AnalysisTable
+                      tableData={analysisResult.tableData}
+                      columns={getAnalysisTableColumns(analysisResult)}
+                    />
+                  )}
+                  <Button
+                    className={classes.innerAnalysisButton}
+                    onClick={() => downloadCSVFromTableData(analysisResult)}
+                  >
+                    <Typography variant="body2">Download</Typography>
+                  </Button>
+                  <Button
+                    className={classes.innerAnalysisButton}
+                    onClick={clearAnalysis}
+                  >
+                    <Typography variant="body2">Clear Analysis</Typography>
+                  </Button>
+                </>
+              )}
             {!analysisResult && (
               <Button
                 className={classes.innerAnalysisButton}

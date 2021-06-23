@@ -4,7 +4,7 @@
     "path": "../data/myanmar/admin_boundaries.json",
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
-    "admin_level_names": ["ST", "DT", "TS"],
+    "admin_level_names": ["TS", "ST", "DT"],
     "admin_level_local_names": ["DT_MMR4", "TS_MMR4"]
   },
   "inform": {
@@ -1069,7 +1069,10 @@
         "offset": 0
       }
     },
-    "exposure": "wp_pop_cicunadj",
+    "exposure": {
+      "id": "wp_pop_cicunadj",
+      "key": "label"
+    },
     "geometry": "polygon"
   },
   "wp_pop_cicunadj": {
