@@ -175,7 +175,7 @@ export const checkBaselineDataLayer = (
 export type ApiData = {
   geotiff_url: ReturnType<typeof getWCSLayerUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
   zones_url: string;
-  group_by?: string;
+  group_by: string;
   geojson_out?: boolean;
   wfs_params?: WfsRequestParams;
 };
@@ -202,10 +202,14 @@ export function getPrismUrl(): string {
   return origin;
 }
 
+export type KeyValueResponse = {
+  [k in string]: string | number;
+};
+
 export async function fetchApiData(
   url: string,
   apiData: ApiData | AlertRequest,
-): Promise<Array<{ [k in string]: string | number }>> {
+): Promise<Array<KeyValueResponse | Feature>> {
   return (
     await fetch(url, {
       method: 'POST',
@@ -241,7 +245,7 @@ export function scaleAndFilterAggregateData(
   const { wcsConfig } = hazardLayerDef;
   const { scale, offset } = wcsConfig || {};
 
-  return aggregateData
+  return (aggregateData as KeyValueResponse[])
     .map(data => {
       return {
         ...data,
@@ -421,7 +425,7 @@ export async function loadFeaturesClientSide(
 }
 
 export function getAnalysisTableColumns(
-  analysisResult: AnalysisResult,
+  analysisResult: BaselineLayerResult,
 ): Column[] {
   const { statistic } = analysisResult;
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;
@@ -449,7 +453,7 @@ export function getAnalysisTableColumns(
   ];
 }
 
-export function downloadCSVFromTableData(analysisResult: AnalysisResult) {
+export function downloadCSVFromTableData(analysisResult: BaselineLayerResult) {
   const { tableData, key: createdAt } = analysisResult;
   const columns = getAnalysisTableColumns(analysisResult);
   // Built with https://stackoverflow.com/a/14966131/5279269
@@ -470,8 +474,69 @@ export function downloadCSVFromTableData(analysisResult: AnalysisResult) {
 
   link.click();
 }
+
+export type AnalysisResult = BaselineLayerResult | ExposedPopulationResult;
+
+/**
+ * Creates Analysis result legend based on data returned from API.
+ *
+ * @return LegendDefinition
+ */
+export function createLegendFromFeatureArray(
+  features: Feature[],
+  statistic: AggregationOperations,
+): LegendDefinition {
+  // Extract values based on aggregation operation as sorted array.
+  const stats: number[] = Array.prototype.sort.call(
+    features.map(f =>
+      f.properties && f.properties[statistic] ? f.properties[statistic] : 0,
+    ),
+    (a, b) => a - b, // This function is required since JS assumes unicode values.
+  );
+
+  const statsLen = stats.length;
+
+  // legend breakpoints are generated based on quintiles derived from stats array.
+  const legend: LegendDefinition = [
+    { value: stats[Math.floor(statsLen * 0.2) - 1], color: '#fee5d9' },
+    { value: stats[Math.floor(statsLen * 0.4) - 1], color: '#fcae91' },
+    { value: stats[Math.floor(statsLen * 0.6) - 1], color: '#fb6a4a' },
+    { value: stats[Math.floor(statsLen * 0.8) - 1], color: '#de2d26' },
+    { value: stats[statsLen - 1], color: '#a50f15' },
+  ];
+
+  return legend;
+}
+
+export class ExposedPopulationResult {
+  key: string;
+  featureCollection: FeatureCollection;
+  legend: LegendDefinition;
+  statistic: AggregationOperations;
+
+  getTitle = (): string => {
+    return 'Population Affected';
+  };
+
+  getStatTitle = (): string => {
+    return this.getTitle();
+  };
+
+  constructor(
+    featureCollection: FeatureCollection,
+    statistic: AggregationOperations,
+    legend: LegendDefinition,
+    key: string,
+  ) {
+    this.featureCollection = featureCollection;
+    this.statistic = statistic;
+    this.legend = legend;
+    this.key = key;
+  }
+}
+
 // not in analysisResultStateSlice to prevent import cycle
-export class AnalysisResult {
+export class BaselineLayerResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
   tableData: TableRow[];
@@ -509,5 +574,15 @@ export class AnalysisResult {
   }
   getBaselineLayer(): NSOLayerProps {
     return LayerDefinitions[this.baselineLayerId] as NSOLayerProps;
+  }
+
+  getTitle(): string {
+    return `${this.getBaselineLayer().title} exposed to ${
+      this.getHazardLayer().title
+    }`;
+  }
+
+  getStatTitle(): string {
+    return `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }
