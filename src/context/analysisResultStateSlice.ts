@@ -23,6 +23,7 @@ import {
   checkBaselineDataLayer,
   fetchApiData,
   generateFeaturesFromApiData,
+  createLegendFromFeatureArray,
   KeyValueResponse,
   scaleAndFilterAggregateData,
   ExposedPopulationResult,
@@ -221,27 +222,12 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     apiRequest,
   )) as Feature[];
 
-  const stats: number[] = Array.prototype.sort.call(
-    features.map(f =>
-      f.properties && f.properties[statistic] ? f.properties[statistic] : 0,
-    ),
-    (a, b) => a - b, // This function is required since JS assumes unicode values.
-  );
-
-  const statsLen = stats.length;
-
-  const legend = [
-    { value: stats[Math.floor(statsLen * 0.2) - 1], color: '#fee5d9' },
-    { value: stats[Math.floor(statsLen * 0.4) - 1], color: '#fcae91' },
-    { value: stats[Math.floor(statsLen * 0.6) - 1], color: '#fb6a4a' },
-    { value: stats[Math.floor(statsLen * 0.8) - 1], color: '#de2d26' },
-    { value: stats[statsLen - 1], color: '#a50f15' },
-  ];
-
   const collection: FeatureCollection = {
     type: 'FeatureCollection',
     features,
   };
+
+  const legend = createLegendFromFeatureArray(features, statistic);
 
   return new ExposedPopulationResult(collection, statistic, legend, key);
 });

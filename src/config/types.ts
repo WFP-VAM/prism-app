@@ -157,6 +157,8 @@ export enum GeometryType {
 
 export interface ExposedPopulationDefinition {
   id: LayerKey;
+
+  // Geojson property key to extract from WFS Response when running exposed population analysis.
   key: string;
 }
 
