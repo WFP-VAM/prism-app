@@ -7,6 +7,12 @@ import {
 } from './indonesia';
 
 import {
+  kyrgyzstanConfig,
+  kyrgyzstanRawLayers,
+  kyrgyzstanRawTables,
+} from './kyrgyzstan';
+
+import {
   mongoliaConfig,
   mongoliaRawLayers,
   mongoliaRawTables,
@@ -28,6 +34,7 @@ import {
 
 type Country =
   | 'indonesia'
+  | 'kyrgyzstan'
   | 'mongolia'
   | 'mozambique'
   | 'myanmar'
@@ -45,6 +52,12 @@ const configMap = {
     rawLayers: indonesiaRawLayers,
     rawTables: indonesiaRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/idn_admin_boundaries.json`,
+  },
+  kyrgyzstan: {
+    appConfig: kyrgyzstanConfig,
+    rawLayers: kyrgyzstanRawLayers,
+    rawTables: kyrgyzstanRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/kgz_admin_boundaries.json`,
   },
   mongolia: {
     appConfig: mongoliaConfig,
