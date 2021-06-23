@@ -7,6 +7,12 @@ import {
 } from './indonesia';
 
 import {
+  kyrgyzstanConfig,
+  kyrgyzstanRawLayers,
+  kyrgyzstanRawTables,
+} from './kyrgyzstan';
+
+import {
   mongoliaConfig,
   mongoliaRawLayers,
   mongoliaRawTables,
@@ -19,11 +25,6 @@ import {
 } from './mozambique';
 
 import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
-import {
-  kyrgyzstanConfig,
-  kyrgyzstanRawLayers,
-  kyrgyzstanRawTables,
-} from './kyrgyzstan';
 
 import {
   tajikistanConfig,
