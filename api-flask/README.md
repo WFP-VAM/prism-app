@@ -17,6 +17,7 @@ Calculate zonal statistics for a raster / zones combination.Which takes as input
 - `?wfs_params`, A dictionary of parameters to compute statistics using the intersection between WFS FeatureCollection response polygons with admin boundaries. The parameters are the following:
 	- `url`, WFS remote service url.
 	- `layer_name`, the name of the vector layer. Geometry must be POLYGON or MULTIPOLYGON.
+	- `key`, Geojson property field to be extracted for each feature.
 	- `?time`, Layer TIME dimension if enabled.
 
 ### `/demo` (GET)

@@ -52,7 +52,7 @@ def get_wfs_response(wfs_params):
 
     wfs_response_path = cache_file(url=wfs_url, prefix='wfs')
 
-    return dict(key=wfs_params['key'], path=wfs_response_path)
+    return dict(filter_property_key=wfs_params['key'], path=wfs_response_path)
 
 
 def _extract_features_properties(zones):
@@ -100,47 +100,67 @@ def _group_zones(zones, group_by):
     return output_file
 
 
-def _create_shapely_geoms(geojson_dict, group_key):
-    """Read and parse geojson dictionary geometries into shapely objects."""
+def _create_shapely_geoms(geojson_dict, filter_property_key):
+    """
+    Read and parse geojson dictionary geometries into shapely objects.
+
+    returns a tuple with the property value that matches filter_property_key and shapely object.
+    """
     shapely_dicts = []
     for f in geojson_dict.get('features'):
         if f.get('geometry').get('type') not in ['MultiPolygon', 'Polygon']:
             continue
 
-        obj_key = f['properties'][group_key]
+        obj_key = f['properties'][filter_property_key]
 
         shapely_dicts.append((obj_key, shape(f.get('geometry'))))
 
     return shapely_dicts
 
 
-def _get_intersected_polygons(zones_geojson, wfs_geojson, group_key):
-    """Generate polygon intersection between each zone and polygons from wfs response."""
-    wfs_shapes = _create_shapely_geoms(wfs_geojson, group_key)
+def _get_intersected_polygons(zones_geojson, wfs_geojson, filter_property_key):
+    """
+    Generate polygon intersection between each zone and polygons from wfs response.
+
+    This function returns an array of dictionaries
+
+    - 'geom' key contains the shapely object which is used for statistics
+    - 'feature' key is a geojson feature with the intersected geometry
+
+    """
+    wfs_shapes = _create_shapely_geoms(wfs_geojson, filter_property_key)
 
     intersected_zones = []
     for zone in zones_geojson.get('features'):
+        # Shapely object from zone geojson geometry.
         geom = shape(zone.get('geometry'))
 
+        # Get geometry intersection between zone and wfs response polygons.
         filtered = [(k, geom.intersection(s)) for k, s in wfs_shapes if geom.intersects(s)]
 
         if len(filtered) == 0:
             continue
 
         filtered_dict = []
+
         for k, geom in filtered:
             properties = zone.get('properties').copy()
-            properties[group_key] = k
 
-            data = {
+            # Include property value from wfs_response.
+            properties[filter_property_key] = k
+
+            # Create geojson feature.
+            feature = {
+                'type': 'Feature',
                 'geometry': mapping(geom),
                 'properties': properties
             }
 
-            filtered_dict.append({'geom': geom, 'data': data})
+            filtered_dict.append({'geom': geom, 'feature': feature})
 
         intersected_zones.append(filtered_dict)
 
+    # Flatten.
     intersected_zones = [item for sublist in intersected_zones for item in sublist]
 
     return intersected_zones
@@ -165,7 +185,11 @@ def calculate_stats(
         zones_geojson = get_json_file(zones)
         wfs_geojson = get_json_file(wfs_response.get('path'))
 
-        zones = _get_intersected_polygons(zones_geojson, wfs_geojson, wfs_response.get('key'))
+        zones = _get_intersected_polygons(zones_geojson,
+                                          wfs_geojson,
+                                          wfs_response.get('filter_property_key'))
+
+        # Extract shapely objects to compute stats.
         stats_input = [s.get('geom') for s in zones]
         prefix = None
 
@@ -182,12 +206,14 @@ def calculate_stats(
         raise InternalServerError('An error occured calculating statistics.')
 
     if wfs_response:
-        zones_data = [z.get('data') for z in zones]
-        stats = [{'geometry': z.get('geometry'),
-                  'properties': {**z.get('properties'), **s},
-                  'type': 'Feature'} for z, s in zip(zones_data, stats)]
+        zones_features = [z.get('feature') for z in zones]
 
-        return stats
+        # Add statistics as feature property fields.
+        features = [{**z,  'properties': {**z.get('properties'), **s}}
+                    for z, s in zip(zones_features, stats)]
+
+        # Return stats as geojson array of features.
+        return features
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones)
