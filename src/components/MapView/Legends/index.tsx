@@ -228,7 +228,11 @@ function LegendItem({
                 legend.map(({ value, color }: any) => (
                   <ColorIndicator
                     key={value}
-                    value={value.toLocaleString('en-US')}
+                    value={
+                      typeof value === 'number'
+                        ? Math.round(value).toLocaleString('en-US')
+                        : value
+                    }
                     color={color as string}
                     opacity={opacity as number}
                   />
