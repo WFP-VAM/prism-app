@@ -117,10 +117,12 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
-export type LegendDefinition = {
+export type LegendDefinitionItem = {
   value: string | number;
   color: string;
-}[];
+};
+
+export type LegendDefinition = LegendDefinitionItem[];
 
 export type GroupDefinition = {
   name: string;
