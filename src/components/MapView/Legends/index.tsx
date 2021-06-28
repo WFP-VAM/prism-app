@@ -24,6 +24,7 @@ import {
   LayerType,
   GeometryType,
   ExposedPopulationDefinition,
+  LegendDefinitionItem,
 } from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
@@ -225,7 +226,7 @@ function LegendItem({
               {legendUrl ? (
                 <img src={legendUrl} alt={title} />
               ) : (
-                legend.map(({ value, color }: any) => (
+                legend.map(({ value, color }: LegendDefinitionItem) => (
                   <ColorIndicator
                     key={value}
                     value={
