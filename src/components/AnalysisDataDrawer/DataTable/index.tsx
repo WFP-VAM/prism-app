@@ -53,7 +53,7 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
   }
 
   const title = data.getTitle();
-  const legendText = data.getStatTitle();
+  const { legendText } = data;
   const { features } = data.featureCollection;
   const featureProperties = features.map(feature => {
     return {

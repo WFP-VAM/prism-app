@@ -240,8 +240,15 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   };
 
   const legend = createLegendFromFeatureArray(features, statistic);
+  const legendText = wfsLayer.title;
 
-  return new ExposedPopulationResult(collection, statistic, legend, key);
+  return new ExposedPopulationResult(
+    collection,
+    statistic,
+    legend,
+    legendText,
+    key,
+  );
 });
 
 export const requestAndStoreAnalysis = createAsyncThunk<
