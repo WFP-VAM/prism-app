@@ -14,6 +14,7 @@ import {
   WfsRequestParams,
   LayerKey,
   ExposedPopulationDefinition,
+  TableType,
 } from '../config/types';
 import {
   BaselineLayerResult,
@@ -39,11 +40,20 @@ import { isLocalhost } from '../serviceWorker';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
+export type TableRowType = { [key: string]: string | number };
+export type TableData = {
+  columns: string[];
+  rows: TableRowType[];
+};
+
 type AnalysisResultState = {
+  definition?: TableType;
+  tableData?: TableData;
   result?: AnalysisResult;
   error?: string;
   isLoading: boolean;
   isMapLayerActive: boolean;
+  isDataTableDrawerActive: boolean;
   isExposureLoading: boolean;
 };
 
@@ -57,6 +67,7 @@ export type TableRow = {
 const initialState: AnalysisResultState = {
   isLoading: false,
   isMapLayerActive: true,
+  isDataTableDrawerActive: false,
   isExposureLoading: false,
 };
 
@@ -331,6 +342,17 @@ export const analysisResultSlice = createSlice({
       ...state,
       isMapLayerActive: payload,
     }),
+    setIsDataTableDrawerActive: (
+      state,
+      { payload }: PayloadAction<boolean>,
+    ) => ({
+      ...state,
+      isDataTableDrawerActive: payload,
+    }),
+    hideDataTableDrawer: state => ({
+      ...state,
+      isDataTableDrawerActive: false,
+    }),
     clearAnalysisResult: state => ({
       ...state,
       result: undefined,
@@ -402,6 +424,9 @@ export const analysisResultSlice = createSlice({
 });
 
 // Getters
+export const getCurrentDefinition = (state: RootState): TableType | undefined =>
+  state.analysisResultState.definition;
+
 export const analysisResultSelector = (
   state: RootState,
 ): AnalysisResult | undefined => state.analysisResultState.result;
@@ -415,9 +440,14 @@ export const isExposureAnalysisLoadingSelector = (state: RootState): boolean =>
 export const isAnalysisLayerActiveSelector = (state: RootState): boolean =>
   state.analysisResultState.isMapLayerActive;
 
+export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
+  state.analysisResultState.isDataTableDrawerActive;
+
 // Setters
 export const {
   setIsMapLayerActive,
+  setIsDataTableDrawerActive,
+  hideDataTableDrawer,
   clearAnalysisResult,
 } = analysisResultSlice.actions;
 

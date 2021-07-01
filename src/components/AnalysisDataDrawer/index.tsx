@@ -8,29 +8,22 @@ import {
   Drawer,
 } from '@material-ui/core';
 import DataTable from './DataTable';
-import AnalysisDataTable from '../AnalysisDataDrawer/DataTable';
-import { getIsShowing, hideTable } from '../../context/tableStateSlice';
 import {
   isDataTableDrawerActiveSelector,
   hideDataTableDrawer,
 } from '../../context/analysisResultStateSlice';
 
-function DataDrawer({ classes }: DataDrawerProps) {
-  const tableIsShowing = useSelector(getIsShowing);
-  const analysisTableIsShowing = useSelector(isDataTableDrawerActiveSelector);
-  const isShowing = tableIsShowing || analysisTableIsShowing;
-
+function AnalysisDataDrawer({ classes }: DataDrawerProps) {
+  const tableIsShowing = useSelector(isDataTableDrawerActiveSelector);
   const dispatch = useDispatch();
   const handleClose = () => {
-    dispatch(hideTable());
     dispatch(hideDataTableDrawer());
   };
 
   return (
-    <Drawer anchor="left" open={isShowing} onClose={handleClose}>
+    <Drawer anchor="left" open={tableIsShowing} onClose={handleClose}>
       <div className={classes.drawerContent}>
-        {tableIsShowing && <DataTable maxResults={1000} />}
-        {analysisTableIsShowing && <AnalysisDataTable maxResults={1000} />}
+        <DataTable maxResults={1000} />
       </div>
     </Drawer>
   );
@@ -47,4 +40,4 @@ const styles = (theme: Theme) =>
 
 export interface DataDrawerProps extends WithStyles<typeof styles> {}
 
-export default withStyles(styles)(DataDrawer);
+export default withStyles(styles)(AnalysisDataDrawer);

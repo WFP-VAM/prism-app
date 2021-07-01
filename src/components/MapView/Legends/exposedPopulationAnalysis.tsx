@@ -15,12 +15,12 @@ import {
 } from '../../../utils/analysis-utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import {
-  isAnalysisLayerActiveSelector,
+  isDataTableDrawerActiveSelector,
   ExposedPopulationDispatchParams,
   requestAndStoreExposedPopulation,
   isExposureAnalysisLoadingSelector,
   clearAnalysisResult,
-  setIsMapLayerActive,
+  setIsDataTableDrawerActive,
 } from '../../../context/analysisResultStateSlice';
 import {
   LayerType,
@@ -52,7 +52,7 @@ const ExposedPopulationAnalysis = ({
   exposure,
 }: AnalysisProps) => {
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const isMapLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const isDataTableDrawerActive = useSelector(isDataTableDrawerActiveSelector);
 
   const analysisExposureLoading = useSelector(
     isExposureAnalysisLoadingSelector,
@@ -80,20 +80,26 @@ const ExposedPopulationAnalysis = ({
     await dispatch(requestAndStoreExposedPopulation(params));
   };
 
-  const ResultSwitches = () => (
-    <FormGroup>
-      <AnalysisFormControlLabel
-        control={
-          <Switch
-            color="primary"
-            checked={isMapLayerActive}
-            onChange={e => dispatch(setIsMapLayerActive(e.target.checked))}
-          />
-        }
-        label="Map View"
-      />
-    </FormGroup>
-  );
+  const ResultSwitches = () => {
+    const handleTableViewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatch(setIsDataTableDrawerActive(e.target.checked));
+    };
+
+    return (
+      <FormGroup>
+        <AnalysisFormControlLabel
+          control={
+            <Switch
+              color="primary"
+              checked={isDataTableDrawerActive}
+              onChange={handleTableViewChange}
+            />
+          }
+          label="Table view"
+        />
+      </FormGroup>
+    );
+  };
 
   if (!result || result instanceof BaselineLayerResult) {
     return (
