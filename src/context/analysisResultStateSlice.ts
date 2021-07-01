@@ -28,6 +28,7 @@ import {
   KeyValueResponse,
   scaleAndFilterAggregateData,
   ExposedPopulationResult,
+  scaleFeatureStat,
 } from '../utils/analysis-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
@@ -229,10 +230,22 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     wfsParams,
   );
 
-  const features = (await fetchApiData(
+  const apiFeatures = (await fetchApiData(
     ANALYSIS_API_URL,
     apiRequest,
   )) as Feature[];
+
+  const { scale, offset } = populationLayer.wcsConfig ?? {
+    scale: undefined,
+    offset: undefined,
+  };
+
+  const features =
+    !scale && !offset
+      ? apiFeatures
+      : apiFeatures.map(f =>
+          scaleFeatureStat(f, scale || 1, offset || 0, statistic),
+        );
 
   const collection: FeatureCollection = {
     type: 'FeatureCollection',
