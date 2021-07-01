@@ -478,6 +478,36 @@ export function downloadCSVFromTableData(analysisResult: BaselineLayerResult) {
 export type AnalysisResult = BaselineLayerResult | ExposedPopulationResult;
 
 /**
+ * Computes the feature property value according to the scale, offset values and statistic property
+ *
+ * @return Feature
+ */
+export function scaleFeatureStat(
+  feature: Feature,
+  scale: number,
+  offset: number,
+  statistic: AggregationOperations,
+): Feature {
+  const { properties } = feature;
+  if (!properties) {
+    return feature;
+  }
+
+  const scaledValue: number = get(properties, statistic) * scale + offset;
+
+  const scaledValueProperties = {
+    ...properties,
+    [statistic]: scaledValue,
+  };
+  const scaledValueFeature: Feature = {
+    ...feature,
+    properties: scaledValueProperties,
+  };
+
+  return scaledValueFeature;
+}
+
+/**
  * Creates Analysis result legend based on data returned from API.
  *
  * @return LegendDefinition
