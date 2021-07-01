@@ -119,6 +119,7 @@ function generateTableFromApiData(
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
     // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
+
     const featureBoundary = adminLayerData.features.find(
       feature => feature.properties?.[adminLevelName] === row[adminLevelName],
     );

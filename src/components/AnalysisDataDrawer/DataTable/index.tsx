@@ -56,19 +56,28 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
   const legendText = data.getStatTitle();
   const { features } = data.featureCollection;
   const featureProperties = features.map(feature => {
-    return { name: feature.properties?.TS, value: feature.properties?.label };
+    return {
+      name: feature.properties?.TS,
+      speed: feature.properties?.label,
+      sum: feature.properties?.sum,
+    };
   });
 
   type RowType = {
     name: string;
-    value: string[];
+    value: number[];
+    total: number;
   }[];
 
   const tableData: RowType = Object.entries(
     _.mapValues(_.groupBy(featureProperties, 'name'), properties =>
-      properties.map(prop => prop.value),
+      properties.map(prop => prop.sum || 0),
     ),
-  ).map(feature => ({ name: feature[0], value: feature[1] }));
+  ).map(feature => ({
+    name: feature[0],
+    value: feature[1],
+    total: feature[1].reduce((a, b) => a + b),
+  }));
 
   return (
     <div>
@@ -93,9 +102,9 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
                   className={classes.headCells}
                   columns={[
                     'Township',
-                    '60 km/h exposure',
-                    '90 km/h exposure',
-                    '120 km/h exposure',
+                    '60 km/h',
+                    '90 km/h',
+                    '120 km/h',
                     'Total',
                   ]}
                 />
@@ -114,13 +123,13 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
                       {rowData.value[0]}
                     </TableCell>
                     <TableCell className={classes.tableCells}>
-                      {rowData.value[1] || '-'}
+                      {rowData.value[1] || 0}
                     </TableCell>
                     <TableCell className={classes.tableCells}>
-                      {rowData.value[2] || '-'}
+                      {rowData.value[2] || 0}
                     </TableCell>
                     <TableCell className={classes.tableCells}>
-                      {rowData.value[3] || '-'}
+                      {rowData.total || 0}
                     </TableCell>
                   </TableRow>
                 ))}
