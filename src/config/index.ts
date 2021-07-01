@@ -26,6 +26,8 @@ import {
 
 import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
 
+import { rbdConfig, rbdRawLayers, rbdRawTables } from './rbd';
+
 import {
   tajikistanConfig,
   tajikistanRawLayers,
@@ -38,6 +40,7 @@ type Country =
   | 'mongolia'
   | 'mozambique'
   | 'myanmar'
+  | 'rbd'
   | 'tajikistan';
 
 const DEFAULT: Country = 'mongolia';
@@ -76,6 +79,12 @@ const configMap = {
     rawLayers: myanmarRawLayers,
     rawTables: myanmarRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mmr_admin_boundaries.json`,
+  },
+  rbd: {
+    appConfig: rbdConfig,
+    rawLayers: rbdRawLayers,
+    rawTables: rbdRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/rbd_admin_boundaries.json`,
   },
   tajikistan: {
     appConfig: tajikistanConfig,
