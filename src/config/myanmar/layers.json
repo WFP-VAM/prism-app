@@ -1080,7 +1080,8 @@
     "type": "wms",
     "wcsConfig": {
       "time_support": false,
-      "version": "2.0.0"
+      "version": "2.0.0",
+      "scale": "0.1"
     },
     "server_layer_name": "wp_pop_cicunadj",
     "base_url": "https://odc.ovio.org/",
