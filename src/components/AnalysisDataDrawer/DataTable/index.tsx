@@ -110,29 +110,47 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
                 />
               </TableHead>
               <TableBody>
-                {tableData.slice(1, maxResults).map((rowData, idx) => (
-                  <TableRow
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={idx}
-                    className={classes.tableCells}
-                  >
-                    <TableCell className={classes.tableCells}>
-                      {rowData.name}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {rowData.value[0]}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {rowData.value[1] || 0}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {rowData.value[2] || 0}
-                    </TableCell>
-                    <TableCell className={classes.tableCells}>
-                      {rowData.total || 0}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {tableData.slice(1, maxResults).map((rowData, idx) => {
+                  const first = (rowData.value[0] || 0).toLocaleString(
+                    'en-US',
+                    { maximumFractionDigits: 0 },
+                  );
+                  const second = (rowData.value[1] || 0).toLocaleString(
+                    'en-US',
+                    { maximumFractionDigits: 0 },
+                  );
+                  const third = (rowData.value[2] || 0).toLocaleString(
+                    'en-US',
+                    { maximumFractionDigits: 0 },
+                  );
+                  const fourth = (rowData.value[3] || 0).toLocaleString(
+                    'en-US',
+                    { maximumFractionDigits: 0 },
+                  );
+                  return (
+                    <TableRow
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={idx}
+                      className={classes.tableCells}
+                    >
+                      <TableCell className={classes.tableCells}>
+                        {rowData.name}
+                      </TableCell>
+                      <TableCell className={classes.tableCells}>
+                        {first}
+                      </TableCell>
+                      <TableCell className={classes.tableCells}>
+                        {second}
+                      </TableCell>
+                      <TableCell className={classes.tableCells}>
+                        {third}
+                      </TableCell>
+                      <TableCell className={classes.tableCells}>
+                        {fourth}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>
