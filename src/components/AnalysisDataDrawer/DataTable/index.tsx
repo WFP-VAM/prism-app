@@ -79,6 +79,8 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
     total: feature[1].reduce((a, b) => a + b),
   }));
 
+  console.log('--> ', tableData);
+
   return (
     <div>
       <h2>{title}</h2>
@@ -123,10 +125,9 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
                     'en-US',
                     { maximumFractionDigits: 0 },
                   );
-                  const fourth = (rowData.value[3] || 0).toLocaleString(
-                    'en-US',
-                    { maximumFractionDigits: 0 },
-                  );
+                  const fourth = (rowData.total || 0).toLocaleString('en-US', {
+                    maximumFractionDigits: 0,
+                  });
                   return (
                     <TableRow
                       // eslint-disable-next-line react/no-array-index-key
