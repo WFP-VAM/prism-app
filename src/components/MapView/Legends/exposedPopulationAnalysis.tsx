@@ -88,7 +88,7 @@ const ExposedPopulationAnalysis = ({
 
     const data = useSelector(analysisResultSelector);
     const features = data?.featureCollection.features;
-    const hasData = features !== undefined ? features.length > 0 : false;
+    const hasData = features?.length === 0 || false;
 
     return (
       <FormGroup>
