@@ -111,7 +111,7 @@ const ExposedPopulationAnalysis = ({
         {hasData && (
           <Grid item>
             <Typography align="center" variant="h5">
-              No Population was exposed
+              No population was exposed
             </Typography>
           </Grid>
         )}

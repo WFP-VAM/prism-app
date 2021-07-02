@@ -79,8 +79,6 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
     total: feature[1].reduce((a, b) => a + b),
   }));
 
-  console.log('--> ', tableData);
-
   return (
     <div>
       <h2>{title}</h2>
