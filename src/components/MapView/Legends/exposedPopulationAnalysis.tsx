@@ -8,6 +8,8 @@ import {
   Switch,
   FormGroup,
   FormControlLabel,
+  Grid,
+  Typography,
 } from '@material-ui/core';
 import {
   ExposedPopulationResult,
@@ -21,6 +23,7 @@ import {
   isExposureAnalysisLoadingSelector,
   clearAnalysisResult,
   setIsDataTableDrawerActive,
+  analysisResultSelector,
 } from '../../../context/analysisResultStateSlice';
 import {
   LayerType,
@@ -85,19 +88,34 @@ const ExposedPopulationAnalysis = ({
       dispatch(setIsDataTableDrawerActive(e.target.checked));
     };
 
+    const data = useSelector(analysisResultSelector);
+    const features = data?.featureCollection.features;
+    const hasData = features?.length === 0 || false;
+
     return (
-      <FormGroup>
-        <AnalysisFormControlLabel
-          control={
-            <Switch
-              color="primary"
-              checked={isDataTableDrawerActive}
-              onChange={handleTableViewChange}
-            />
-          }
-          label="Table view"
-        />
-      </FormGroup>
+      <>
+        <FormGroup>
+          <AnalysisFormControlLabel
+            control={
+              <Switch
+                color="primary"
+                disabled={hasData}
+                checked={isDataTableDrawerActive}
+                onChange={handleTableViewChange}
+              />
+            }
+            label="Table view"
+          />
+        </FormGroup>
+
+        {hasData && (
+          <Grid item>
+            <Typography align="center" variant="h5">
+              No population was exposed
+            </Typography>
+          </Grid>
+        )}
+      </>
     );
   };
 

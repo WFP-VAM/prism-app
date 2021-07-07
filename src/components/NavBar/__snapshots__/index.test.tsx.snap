@@ -32,13 +32,23 @@ exports[`renders as expected 1`] = `
           >
             <mock-menuitem
               icon="icon_climate.png"
-              layerscategories="[object Object],[object Object],[object Object],[object Object]"
+              layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
               title="Hazards"
             />
             <mock-menuitem
               icon="icon_vulnerable.png"
-              layerscategories="[object Object]"
+              layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
               title="Vulnerability"
+            />
+            <mock-menuitem
+              icon="icon_basemap.png"
+              layerscategories="[object Object],[object Object]"
+              title="Exposure"
+            />
+            <mock-menuitem
+              icon="icon_impact.png"
+              layerscategories="[object Object],[object Object],[object Object]"
+              title="Risk"
             />
           </div>
           <div
@@ -204,14 +214,26 @@ exports[`renders as expected 1`] = `
                     <mock-menuitemmobile
                       expanded=""
                       icon="icon_climate.png"
-                      layerscategories="[object Object],[object Object],[object Object],[object Object]"
+                      layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
                       title="Hazards"
                     />
                     <mock-menuitemmobile
                       expanded=""
                       icon="icon_vulnerable.png"
-                      layerscategories="[object Object]"
+                      layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
                       title="Vulnerability"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_basemap.png"
+                      layerscategories="[object Object],[object Object]"
+                      title="Exposure"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_impact.png"
+                      layerscategories="[object Object],[object Object],[object Object]"
+                      title="Risk"
                     />
                   </div>
                 </div>
