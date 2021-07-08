@@ -8,7 +8,6 @@ import {
   Drawer,
 } from '@material-ui/core';
 import DataTable from './DataTable';
-import AnalysisDataTable from '../AnalysisDataDrawer/DataTable';
 import { getIsShowing, hideTable } from '../../context/tableStateSlice';
 import {
   isDataTableDrawerActiveSelector,
@@ -30,7 +29,7 @@ function DataDrawer({ classes }: DataDrawerProps) {
     <Drawer anchor="left" open={isShowing} onClose={handleClose}>
       <div className={classes.drawerContent}>
         {tableIsShowing && <DataTable maxResults={1000} />}
-        {analysisTableIsShowing && <AnalysisDataTable maxResults={1000} />}
+        {analysisTableIsShowing && <DataTable maxResults={1000} />}
       </div>
     </Drawer>
   );

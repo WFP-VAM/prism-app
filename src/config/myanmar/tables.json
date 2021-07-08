@@ -1,4 +1,16 @@
 {
+  "default": {
+    "title": "",
+    "table": "",
+    "legend_text": "",
+    "chart": {
+      "type": "line",
+      "stacked": true,
+      "fill": true,
+      "category": "Category_EN",
+      "data": "Year"
+    }
+  },
   "animal_deaths": {
     "title": "Animal deaths due to disease or natural hazards",
     "table": "../data/myanmar/tables/NSO_Animal_Deaths_Annual_Admin1.csv",

@@ -13,10 +13,15 @@ import {
   Box,
 } from '@material-ui/core';
 import {
-  getCurrentDefinition,
+  getCurrentDefinition as getTableDefinition,
   isLoading,
-  getCurrentData,
+  getCurrentData as getTableData,
 } from '../../../context/tableStateSlice';
+import {
+  getCurrentDefinition as getAnalysisDefinition,
+  isExposureAnalysisLoadingSelector,
+  getCurrentData as getAnalysisData,
+} from '../../../context/analysisResultStateSlice';
 import Chart from '../Chart';
 import DataTableRow from './DataTableRow';
 
@@ -44,9 +49,15 @@ export interface DataTableProps extends WithStyles<typeof styles> {
 }
 
 const DataTable = ({ classes, maxResults }: DataTableProps) => {
-  const loading = useSelector(isLoading);
-  const definition = useSelector(getCurrentDefinition);
-  const data = useSelector(getCurrentData);
+  const tableLoading = useSelector(isLoading);
+  const analysisLoading = useSelector(isExposureAnalysisLoadingSelector);
+  const loading = tableLoading || analysisLoading;
+  const tableDefinition = useSelector(getTableDefinition);
+  const analysisDefinition = useSelector(getAnalysisDefinition);
+  const definition = tableDefinition || analysisDefinition;
+  const tableData = useSelector(getTableData);
+  const analysisData = useSelector(getAnalysisData);
+  const data = tableData.rows.length !== 0 ? tableData : analysisData;
 
   if (!definition) {
     return null;
@@ -58,9 +69,12 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
     <div>
       <h2>{title}</h2>
       <p>{legendText}</p>
-      <p>
-        <a href={process.env.PUBLIC_URL + table}>Download as CSV</a>
-      </p>
+
+      {table && (
+        <p>
+          <a href={process.env.PUBLIC_URL + table}>Download as CSV</a>
+        </p>
+      )}
 
       {!loading && chart && <Chart title={title} config={chart} data={data} />}
 

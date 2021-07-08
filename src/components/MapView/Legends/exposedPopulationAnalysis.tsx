@@ -23,6 +23,7 @@ import {
   isExposureAnalysisLoadingSelector,
   clearAnalysisResult,
   setIsDataTableDrawerActive,
+  setCurrentDataDefinition,
   analysisResultSelector,
 } from '../../../context/analysisResultStateSlice';
 import {
@@ -31,6 +32,7 @@ import {
   LayerKey,
   ExposedPopulationDefinition,
 } from '../../../config/types';
+import { TableDefinitions } from '../../../config/utils';
 
 import { Extent } from '../Layers/raster-utils';
 
@@ -56,7 +58,6 @@ const ExposedPopulationAnalysis = ({
 }: AnalysisProps) => {
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const isDataTableDrawerActive = useSelector(isDataTableDrawerActiveSelector);
-
   const analysisExposureLoading = useSelector(
     isExposureAnalysisLoadingSelector,
   );
@@ -84,13 +85,21 @@ const ExposedPopulationAnalysis = ({
   };
 
   const ResultSwitches = () => {
-    const handleTableViewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      dispatch(setIsDataTableDrawerActive(e.target.checked));
-    };
-
     const data = useSelector(analysisResultSelector);
     const features = data?.featureCollection.features;
     const hasData = features?.length === 0 || false;
+
+    const handleTableViewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      dispatch(setIsDataTableDrawerActive(e.target.checked));
+      dispatch(
+        setCurrentDataDefinition({
+          id: TableDefinitions.animal_deaths.id,
+          title: data?.getTitle() as string,
+          table: '',
+          legendText: data?.legendText as string,
+        }),
+      );
+    };
 
     return (
       <>

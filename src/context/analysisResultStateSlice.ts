@@ -359,6 +359,10 @@ export const analysisResultSlice = createSlice({
   name: 'analysisResultState',
   initialState,
   reducers: {
+    addTableData: (state, { payload }: PayloadAction<TableData>) => ({
+      ...state,
+      tableData: payload,
+    }),
     setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
       ...state,
       isMapLayerActive: payload,
@@ -369,6 +373,13 @@ export const analysisResultSlice = createSlice({
     ) => ({
       ...state,
       isDataTableDrawerActive: payload,
+    }),
+    setCurrentDataDefinition: (
+      state,
+      { payload }: PayloadAction<TableType>,
+    ) => ({
+      ...state,
+      definition: payload,
     }),
     hideDataTableDrawer: state => ({
       ...state,
@@ -448,6 +459,9 @@ export const analysisResultSlice = createSlice({
 export const getCurrentDefinition = (state: RootState): TableType | undefined =>
   state.analysisResultState.definition;
 
+export const getCurrentData = (state: RootState): TableData =>
+  state.analysisResultState.tableData || { columns: [], rows: [] };
+
 export const analysisResultSelector = (
   state: RootState,
 ): AnalysisResult | undefined => state.analysisResultState.result;
@@ -466,8 +480,10 @@ export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
 
 // Setters
 export const {
+  addTableData,
   setIsMapLayerActive,
   setIsDataTableDrawerActive,
+  setCurrentDataDefinition,
   hideDataTableDrawer,
   clearAnalysisResult,
 } = analysisResultSlice.actions;
