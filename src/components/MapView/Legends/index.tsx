@@ -76,6 +76,8 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
+  const hasData =
+    analysisResult?.featureCollection.features?.length === 0 || false;
 
   const legendItems = [
     ...layers.map(layer => {
@@ -110,12 +112,12 @@ function Legends({ classes, layers, extent }: LegendsProps) {
       );
     }),
     // add analysis legend item if layer is active and analysis result exists
-    ...(isAnalysisLayerActive && analysisResult
+    ...(isAnalysisLayerActive && hasData
       ? [
           <LegendItem
-            key={analysisResult.key}
-            legend={analysisResult.legend}
-            title={analysisResult.getTitle()}
+            key={analysisResult?.key}
+            legend={analysisResult?.legend}
+            title={analysisResult?.getTitle()}
             classes={classes}
             opacity={0.5} // TODO: initial opacity value
           >
