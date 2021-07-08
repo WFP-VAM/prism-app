@@ -32,13 +32,8 @@ exports[`renders as expected 1`] = `
           >
             <mock-menuitem
               icon="icon_climate.png"
-              layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
+              layerscategories="[object Object],[object Object],[object Object]"
               title="Hazards"
-            />
-            <mock-menuitem
-              icon="icon_vulnerable.png"
-              layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
-              title="Vulnerability"
             />
             <mock-menuitem
               icon="icon_basemap.png"
@@ -46,9 +41,24 @@ exports[`renders as expected 1`] = `
               title="Exposure"
             />
             <mock-menuitem
+              icon="icon_vulnerable.png"
+              layerscategories="[object Object],[object Object]"
+              title="Vulnerability"
+            />
+            <mock-menuitem
+              icon="icon_capacity.png"
+              layerscategories="[object Object]"
+              title="Capacity"
+            />
+            <mock-menuitem
               icon="icon_impact.png"
-              layerscategories="[object Object],[object Object],[object Object]"
+              layerscategories="[object Object],[object Object]"
               title="Risk"
+            />
+            <mock-menuitem
+              icon="icon_table.png"
+              layerscategories="[object Object],[object Object],[object Object]"
+              title="Tables"
             />
           </div>
           <div
@@ -214,14 +224,8 @@ exports[`renders as expected 1`] = `
                     <mock-menuitemmobile
                       expanded=""
                       icon="icon_climate.png"
-                      layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
+                      layerscategories="[object Object],[object Object],[object Object]"
                       title="Hazards"
-                    />
-                    <mock-menuitemmobile
-                      expanded=""
-                      icon="icon_vulnerable.png"
-                      layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
-                      title="Vulnerability"
                     />
                     <mock-menuitemmobile
                       expanded=""
@@ -231,9 +235,27 @@ exports[`renders as expected 1`] = `
                     />
                     <mock-menuitemmobile
                       expanded=""
+                      icon="icon_vulnerable.png"
+                      layerscategories="[object Object],[object Object]"
+                      title="Vulnerability"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_capacity.png"
+                      layerscategories="[object Object]"
+                      title="Capacity"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
                       icon="icon_impact.png"
-                      layerscategories="[object Object],[object Object],[object Object]"
+                      layerscategories="[object Object],[object Object]"
                       title="Risk"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_table.png"
+                      layerscategories="[object Object],[object Object],[object Object]"
+                      title="Tables"
                     />
                   </div>
                 </div>
