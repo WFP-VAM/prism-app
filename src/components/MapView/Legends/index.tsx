@@ -76,8 +76,8 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
-  const hasData =
-    analysisResult?.featureCollection.features?.length === 0 || false;
+  const features = analysisResult?.featureCollection.features;
+  const hasData = features ? features.length > 0 : false;
 
   const legendItems = [
     ...layers.map(layer => {
