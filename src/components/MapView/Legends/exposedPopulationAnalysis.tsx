@@ -33,7 +33,6 @@ import {
   ExposedPopulationDefinition,
 } from '../../../config/types';
 import { TableDefinitions } from '../../../config/utils';
-
 import { Extent } from '../Layers/raster-utils';
 
 const AnalysisButton = withStyles(() => ({

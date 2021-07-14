@@ -11,6 +11,7 @@ import {
   CircularProgress,
   Paper,
   Box,
+  Button,
 } from '@material-ui/core';
 import {
   getCurrentDefinition as getTableDefinition,
@@ -24,6 +25,7 @@ import {
 } from '../../../context/analysisResultStateSlice';
 import Chart from '../Chart';
 import DataTableRow from './DataTableRow';
+import { exportDataTableToCSV, downloadToFile } from '../../MapView/utils';
 
 const styles = () =>
   createStyles({
@@ -64,6 +66,19 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
   }
 
   const { table, title, legendText, chart } = definition;
+  const csvData = exportDataTableToCSV(analysisData);
+
+  const handleDownload = (payload: string, e: React.ChangeEvent<{}>) => {
+    e.preventDefault();
+    downloadToFile(
+      {
+        content: payload,
+        isUrl: false,
+      },
+      title,
+      'text/csv',
+    );
+  };
 
   return (
     <div>
@@ -72,7 +87,17 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
 
       {table && (
         <p>
-          <a href={process.env.PUBLIC_URL + table}>Download as CSV</a>
+          <Button>
+            <a href={process.env.PUBLIC_URL + table}>Download as CSV</a>
+          </Button>
+        </p>
+      )}
+
+      {csvData && (
+        <p>
+          <Button onClick={e => handleDownload(csvData, e)}>
+            Download as CSV
+          </Button>
         </p>
       )}
 
