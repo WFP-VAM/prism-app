@@ -54,11 +54,13 @@ export const convertToTableData = (
   result: ExposedPopulationResult,
   groupBy: string,
 ) => {
-  const { key, statistic } = result;
-  const { features } = result.featureCollection;
-  const fields = _.uniq(
-    _.map(features, f => f.properties && f.properties[key]),
-  );
+  const {
+    key,
+    statistic,
+    featureCollection: { features },
+  } = result;
+
+  const fields = _.uniq(features.map(f => f.properties && f.properties[key]));
 
   const featureProperties = features.map(feature => {
     return {
@@ -75,22 +77,28 @@ export const convertToTableData = (
       .value(),
   );
 
-  const groupedRowData = _.map(rowData, (x, i: number) => {
+  const groupedRowData = Object.keys(rowData).map((x, i: number) => {
     return {
       [groupBy]: i,
-      ...x,
+      ...rowData[x],
     };
   });
   const groupedRowDataWithAllLabels = _.map(groupedRowData, row => {
-    const extras = _.map(_.difference(fields, _.keysIn(row)), k => ({
-      [k]: 0,
-    }));
-    return extras.length !== 0 ? _.assign(row, ...extras) : row;
+    let item: string = '';
+    _.each(_.difference(fields, _.keysIn(row)), r => {
+      // eslint-disable-next-line fp/no-mutation
+      item = r;
+    });
+    return item !== '' ? _.assign(row, { [item]: 0 }) : row;
   });
 
   const headlessRows = _.map(groupedRowDataWithAllLabels as object, row => {
-    const total = _.reduce(fields, (a, b) => row[a] + row[b]);
-    return _.assign(row, { Total: total });
+    let t: number = 0;
+    _.each(fields, (c: string) => {
+      // eslint-disable-next-line fp/no-mutation
+      t += parseInt(row[c], 10);
+    });
+    return _.assign(row, { Total: t });
   });
   const columns = [groupBy, ...fields, 'Total'];
   const headRow = _.zipObject(columns, columns);

@@ -86,7 +86,7 @@ const ExposedPopulationAnalysis = ({
   const ResultSwitches = () => {
     const data = useSelector(analysisResultSelector);
     const features = data?.featureCollection.features;
-    const hasData = features?.length === 0 || false;
+    const hasData = features?.length === 0;
 
     const handleTableViewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       dispatch(setIsDataTableDrawerActive(e.target.checked));
