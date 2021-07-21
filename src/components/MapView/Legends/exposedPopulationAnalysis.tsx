@@ -93,9 +93,9 @@ const ExposedPopulationAnalysis = ({
       dispatch(
         setCurrentDataDefinition({
           id: TableDefinitions.animal_deaths.id,
-          title: data?.getTitle() as string,
+          title: data ? data.getTitle() : '',
           table: '',
-          legendText: data?.legendText as string,
+          legendText: data ? data.legendText : '',
         }),
       );
     };

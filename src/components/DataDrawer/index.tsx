@@ -28,8 +28,7 @@ function DataDrawer({ classes }: DataDrawerProps) {
   return (
     <Drawer anchor="left" open={isShowing} onClose={handleClose}>
       <div className={classes.drawerContent}>
-        {tableIsShowing ||
-          (analysisTableIsShowing && <DataTable maxResults={1000} />)}
+        {isShowing && <DataTable maxResults={1000} />}
       </div>
     </Drawer>
   );

@@ -1,4 +1,14 @@
-import _ from 'lodash';
+import {
+  values,
+  zipObject,
+  assign,
+  difference,
+  mapValues,
+  groupBy,
+  keysIn,
+  keyBy,
+  uniq,
+} from 'lodash';
 import { Map } from 'mapbox-gl';
 import { LayerDefinitions } from '../../config/utils';
 import { getExtent } from './Layers/raster-utils';
@@ -52,7 +62,7 @@ export const getFeatureInfoParams = (
 
 export const convertToTableData = (
   result: ExposedPopulationResult,
-  groupBy: string,
+  groupedBy: string,
 ) => {
   const {
     key,
@@ -60,58 +70,45 @@ export const convertToTableData = (
     featureCollection: { features },
   } = result;
 
-  const fields = _.uniq(features.map(f => f.properties && f.properties[key]));
+  const fields = uniq(features.map(f => f.properties && f.properties[key]));
 
   const featureProperties = features.map(feature => {
     return {
-      [groupBy]: feature.properties?.[groupBy],
+      [groupedBy]: feature.properties?.[groupedBy],
       [key]: feature.properties?.[key],
       [statistic]: feature.properties?.[statistic],
     };
   });
-  const rowData = _.mapValues(_.groupBy(featureProperties, groupBy), x =>
-    _.chain(x)
-      .keyBy(key)
-      .mapValues(statistic)
-      .mapValues(z => _.parseInt(z))
-      .value(),
-  );
+  const rowData = mapValues(groupBy(featureProperties, groupedBy), x => {
+    return mapValues(keyBy(x, 'label'), o => parseInt(o[statistic], 10));
+  });
 
   const groupedRowData = Object.keys(rowData).map((x, i: number) => {
     return {
-      [groupBy]: i,
+      [groupedBy]: i,
       ...rowData[x],
     };
   });
-  const groupedRowDataWithAllLabels = _.map(groupedRowData, row => {
-    let item: string = '';
-    _.each(_.difference(fields, _.keysIn(row)), r => {
-      // eslint-disable-next-line fp/no-mutation
-      item = r;
-    });
-    return item !== '' ? _.assign(row, { [item]: 0 }) : row;
+
+  const groupedRowDataWithAllLabels = groupedRowData.map(row => {
+    const labelsWithoutValue = difference(fields, keysIn(row));
+    const extras = labelsWithoutValue.map(k => ({ [k]: 0 }));
+    return extras.length !== 0 ? assign(row, ...extras) : row;
   });
 
-  const headlessRows = _.map(groupedRowDataWithAllLabels as object, row => {
-    let t: number = 0;
-    _.each(fields, (c: string) => {
-      // eslint-disable-next-line fp/no-mutation
-      t += parseInt(row[c], 10);
-    });
-    return _.assign(row, { Total: t });
+  const headlessRows = groupedRowDataWithAllLabels.map(row => {
+    const total = fields.reduce((a, b) => row[a] + row[b]);
+    return assign(row, { Total: total });
   });
-  const columns = [groupBy, ...fields, 'Total'];
-  const headRow = _.zipObject(columns, columns);
+  const columns = [groupedBy, ...fields, 'Total'];
+  const headRow = zipObject(columns, columns);
   const rows = [headRow, ...headlessRows];
   return { columns, rows };
 };
 
 export const exportDataTableToCSV = (data: TableData) => {
   const { rows } = data;
-  return _.join(
-    _.map(rows, r => _.map(_.values(r), x => x)),
-    '\n',
-  );
+  return rows.map(r => values(r).map(x => x)).join('\n');
 };
 
 export const downloadToFile = (
