@@ -37,7 +37,7 @@ import {
   BaselineLayerResult,
   ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
-import { convertToTableData } from '../utils';
+import { convertToTableData, downloadToFile } from '../utils';
 
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 
@@ -78,6 +78,18 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const analysisResult = useSelector(analysisResultSelector);
   const features = analysisResult?.featureCollection.features;
   const hasData = features ? features.length > 0 : false;
+
+  const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
+    e.preventDefault();
+    downloadToFile(
+      {
+        content: JSON.stringify(features),
+        isUrl: false,
+      },
+      analysisResult ? analysisResult.getTitle() : '',
+      'application/json',
+    );
+  };
 
   const legendItems = [
     ...layers.map(layer => {
@@ -124,6 +136,18 @@ function Legends({ classes, layers, extent }: LegendsProps) {
             {analysisResult instanceof BaselineLayerResult && (
               <LegendImpactResult result={analysisResult} />
             )}
+            <Divider />
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={e => handleAnalysisDownload(e)}
+                fullWidth
+              >
+                Download
+              </Button>
+            </Grid>
           </LegendItem>,
         ]
       : []),
@@ -166,12 +190,12 @@ function LegendItem({
   extent,
 }: LegendItemProps) {
   const map = useSelector(mapSelector);
+  const analysisResult = useSelector(analysisResultSelector);
+  const dispatch = useDispatch();
 
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
-  const analysisResult = useSelector(analysisResultSelector);
-  const dispatch = useDispatch();
 
   const handleChangeOpacity = (
     event: React.ChangeEvent<{}>,
