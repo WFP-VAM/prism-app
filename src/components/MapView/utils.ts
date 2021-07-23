@@ -79,14 +79,14 @@ export const convertToTableData = (
       [statistic]: feature.properties?.[statistic],
     };
   });
-  const rowData = mapValues(groupBy(featureProperties, groupedBy), x => {
-    return mapValues(keyBy(x, 'label'), o => parseInt(o[statistic], 10));
+  const rowData = mapValues(groupBy(featureProperties, groupedBy), k => {
+    return mapValues(keyBy(k, 'label'), obj => parseInt(obj[statistic], 10));
   });
 
-  const groupedRowData = Object.keys(rowData).map((x, i: number) => {
+  const groupedRowData = Object.keys(rowData).map((k, i: number) => {
     return {
       [groupedBy]: i,
-      ...rowData[x],
+      ...rowData[k],
     };
   });
 
@@ -97,7 +97,7 @@ export const convertToTableData = (
   });
 
   const headlessRows = groupedRowDataWithAllLabels.map(row => {
-    const total = fields.reduce((a, b) => row[a] + row[b]);
+    const total = fields.reduce((acc, o) => row[acc] + row[o]);
     return assign(row, { Total: total });
   });
   const columns = [groupedBy, ...fields, 'Total'];
@@ -108,7 +108,7 @@ export const convertToTableData = (
 
 export const exportDataTableToCSV = (data: TableData) => {
   const { rows } = data;
-  return rows.map(r => values(r).map(x => x)).join('\n');
+  return rows.map(r => values(r)).join('\n');
 };
 
 export const downloadToFile = (
