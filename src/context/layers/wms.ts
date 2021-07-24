@@ -33,8 +33,8 @@ export function getWCSLayerUrl({
 
   return WCSRequestUrl(
     layer,
-    date ? moment(date).format('YYYY-MM-DD') : undefined,
     extent,
+    date ? moment(date).format('YYYY-MM-DD') : undefined,
     resolution,
     maxPixel,
   );
@@ -55,9 +55,9 @@ export function getWFSLayerUrl({
 
   return WFSRequestUrl(
     layer,
-    date ? moment(date).format('YYYY-MM-DD') : undefined,
     extent,
     override,
+    date ? moment(date).format('YYYY-MM-DD') : undefined,
   );
 }
 
