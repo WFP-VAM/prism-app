@@ -156,7 +156,7 @@ export function WCSRequestUrl(
   layer: WMSLayerProps,
   date: string | undefined,
   extent: Extent,
-  resolution: number | undefined,
+  resolution?: number,
   maxPixels = 5096,
 ) {
   const { baseUrl, serverLayerName, wcsConfig } = layer;
@@ -202,14 +202,14 @@ export function WCSRequestUrl(
 
 export function getWFSUrl(
   baseUrl: string,
-  layerName: string,
+  serverLayerName: string,
   override: { [key: string]: string } = {},
 ) {
   const params = {
     service: 'WFS',
     version: '1.0.0',
     request: 'GetFeature',
-    typeName: `prism:${layerName}`,
+    typeName: `prism:${serverLayerName}`,
     outputFormat: 'application/json',
     ...override,
   };
@@ -219,15 +219,15 @@ export function getWFSUrl(
 
 export function WFSRequestUrl(
   layer: WMSLayerProps,
-  date: string | undefined,
   extent: Extent,
   override: { [key: string]: string } = {},
+  date?: string,
 ) {
   const { baseUrl, serverLayerName } = layer;
 
   // Precisely set start and end of the day
-  const startOfToday = moment(new Date(`${date}T00:00:00Z`)).toISOString();
-  const endOfToday = moment(new Date(`${date}T23:59:59Z`)).toISOString();
+  const startOfToday = new Date(`${date}T00:00:00Z`).toISOString();
+  const endOfToday = new Date(`${date}T23:59:59Z`).toISOString();
 
   // WFS query doesn't allow to filter by  both `date` and `bbox`
   // they are mutual exclusive

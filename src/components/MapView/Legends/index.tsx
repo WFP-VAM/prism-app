@@ -267,9 +267,7 @@ function LegendItem({
                 'application/json',
               );
             })
-            .catch(err => {
-              throw new Error(err);
-            });
+            .catch(console.error);
         } else {
           // Increased the `resolution` and `maxPixel` to high values this will help
           // to download large image
@@ -417,7 +415,7 @@ function LegendItem({
               size="small"
               onClick={() => dispatch(clearAnalysisResult())}
             >
-              clear analysis
+              Clear analysis
             </AnalysisButton>
           )}
 
