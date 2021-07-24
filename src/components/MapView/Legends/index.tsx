@@ -415,7 +415,7 @@ function LegendItem({
               size="small"
               onClick={() => dispatch(clearAnalysisResult())}
             >
-              Clear analysis
+              Clear Analysis
             </AnalysisButton>
           )}
 

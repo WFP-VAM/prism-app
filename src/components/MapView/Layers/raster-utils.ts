@@ -153,8 +153,8 @@ export function getWCSv2Url(
 
 export function WCSRequestUrl(
   layer: WMSLayerProps,
-  date: string | undefined,
   extent: Extent,
+  date?: string,
   resolution?: number,
   maxPixels = 5096,
 ) {
