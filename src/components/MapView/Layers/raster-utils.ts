@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { Feature, MultiPolygon, point } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
