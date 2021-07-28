@@ -83,9 +83,9 @@ export const convertToTableData = (
     return mapValues(keyBy(k, 'label'), obj => parseInt(obj[statistic], 10));
   });
 
-  const groupedRowData = Object.keys(rowData).map((k, i: number) => {
+  const groupedRowData = Object.keys(rowData).map(k => {
     return {
-      [groupedBy]: i,
+      [groupedBy]: k,
       ...rowData[k],
     };
   });
