@@ -540,6 +540,7 @@ export function createLegendFromFeatureArray(
 
 export class ExposedPopulationResult {
   key: string;
+  groupBy: string;
   featureCollection: FeatureCollection;
   legend: LegendDefinition;
   legendText: string;
@@ -558,12 +559,14 @@ export class ExposedPopulationResult {
     statistic: AggregationOperations,
     legend: LegendDefinition,
     legendText: string,
+    groupBy: string,
     key: string,
   ) {
     this.featureCollection = featureCollection;
     this.statistic = statistic;
     this.legend = legend;
     this.legendText = legendText;
+    this.groupBy = groupBy;
     this.key = key;
   }
 }

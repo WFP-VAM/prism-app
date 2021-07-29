@@ -4,7 +4,7 @@ import {
   assign,
   difference,
   mapValues,
-  groupBy,
+  groupBy as _groupBy,
   keysIn,
   keyBy,
   uniq,
@@ -60,12 +60,10 @@ export const getFeatureInfoParams = (
   return params;
 };
 
-export const convertToTableData = (
-  result: ExposedPopulationResult,
-  groupedBy: string,
-) => {
+export const convertToTableData = (result: ExposedPopulationResult) => {
   const {
     key,
+    groupBy,
     statistic,
     featureCollection: { features },
   } = result;
@@ -74,18 +72,18 @@ export const convertToTableData = (
 
   const featureProperties = features.map(feature => {
     return {
-      [groupedBy]: feature.properties?.[groupedBy],
+      [groupBy]: feature.properties?.[groupBy],
       [key]: feature.properties?.[key],
       [statistic]: feature.properties?.[statistic],
     };
   });
-  const rowData = mapValues(groupBy(featureProperties, groupedBy), k => {
-    return mapValues(keyBy(k, 'label'), obj => parseInt(obj[statistic], 10));
+  const rowData = mapValues(_groupBy(featureProperties, groupBy), k => {
+    return mapValues(keyBy(k, key), obj => parseInt(obj[statistic], 10));
   });
 
   const groupedRowData = Object.keys(rowData).map(k => {
     return {
-      [groupedBy]: k,
+      [groupBy]: k,
       ...rowData[k],
     };
   });
@@ -100,7 +98,7 @@ export const convertToTableData = (
     const total = fields.reduce((acc, o) => row[acc] + row[o]);
     return assign(row, { Total: total });
   });
-  const columns = [groupedBy, ...fields, 'Total'];
+  const columns = [groupBy, ...fields, 'Total'];
   const headRow = zipObject(columns, columns);
   const rows = [headRow, ...headlessRows];
   return { columns, rows };
