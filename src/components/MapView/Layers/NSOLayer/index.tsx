@@ -43,8 +43,8 @@ function NSOLayers({ layer }: { layer: NSOLayerProps }) {
 
   return (
     <GeoJSONLayer
+      before="boundaries-line"
       id={`layer-${layer.id}`}
-      below="boundaries"
       data={features}
       fillPaint={fillPaintData}
       fillOnClick={(evt: any) => {
