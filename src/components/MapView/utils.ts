@@ -6,7 +6,6 @@ import {
   mapValues,
   groupBy as _groupBy,
   keysIn,
-  keyBy,
   uniq,
 } from 'lodash';
 import { Map } from 'mapbox-gl';
@@ -77,8 +76,14 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
       [statistic]: feature.properties?.[statistic],
     };
   });
+
   const rowData = mapValues(_groupBy(featureProperties, groupBy), k => {
-    return mapValues(keyBy(k, key), obj => parseInt(obj[statistic], 10));
+    return mapValues(_groupBy(k, key), v =>
+      parseInt(
+        v.map(x => x[statistic]).reduce((acc, value) => acc + value),
+        10,
+      ),
+    );
   });
 
   const groupedRowData = Object.keys(rowData).map(k => {
@@ -95,9 +100,10 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
   });
 
   const headlessRows = groupedRowDataWithAllLabels.map(row => {
-    const total = fields.reduce((acc, o) => row[acc] + row[o]);
+    const total = fields.map(f => row[f]).reduce((a, b) => a + b);
     return assign(row, { Total: total });
   });
+
   const columns = [groupBy, ...fields, 'Total'];
   const headRow = zipObject(columns, columns);
   const rows = [headRow, ...headlessRows];
