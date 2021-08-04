@@ -252,6 +252,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     features,
   };
 
+  const groupBy = apiRequest.group_by;
   const legend = createLegendFromFeatureArray(features, statistic);
   const legendText = wfsLayer.title;
 
@@ -260,6 +261,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     statistic,
     legend,
     legendText,
+    groupBy,
     key,
   );
 });

@@ -4,9 +4,8 @@ import {
   assign,
   difference,
   mapValues,
-  groupBy,
+  groupBy as _groupBy,
   keysIn,
-  keyBy,
   uniq,
 } from 'lodash';
 import { Map } from 'mapbox-gl';
@@ -60,12 +59,10 @@ export const getFeatureInfoParams = (
   return params;
 };
 
-export const convertToTableData = (
-  result: ExposedPopulationResult,
-  groupedBy: string,
-) => {
+export const convertToTableData = (result: ExposedPopulationResult) => {
   const {
     key,
+    groupBy,
     statistic,
     featureCollection: { features },
   } = result;
@@ -74,18 +71,24 @@ export const convertToTableData = (
 
   const featureProperties = features.map(feature => {
     return {
-      [groupedBy]: feature.properties?.[groupedBy],
+      [groupBy]: feature.properties?.[groupBy],
       [key]: feature.properties?.[key],
       [statistic]: feature.properties?.[statistic],
     };
   });
-  const rowData = mapValues(groupBy(featureProperties, groupedBy), k => {
-    return mapValues(keyBy(k, 'label'), obj => parseInt(obj[statistic], 10));
+
+  const rowData = mapValues(_groupBy(featureProperties, groupBy), k => {
+    return mapValues(_groupBy(k, key), v =>
+      parseInt(
+        v.map(x => x[statistic]).reduce((acc, value) => acc + value),
+        10,
+      ),
+    );
   });
 
-  const groupedRowData = Object.keys(rowData).map((k, i: number) => {
+  const groupedRowData = Object.keys(rowData).map(k => {
     return {
-      [groupedBy]: i,
+      [groupBy]: k,
       ...rowData[k],
     };
   });
@@ -97,10 +100,11 @@ export const convertToTableData = (
   });
 
   const headlessRows = groupedRowDataWithAllLabels.map(row => {
-    const total = fields.reduce((acc, o) => row[acc] + row[o]);
+    const total = fields.map(f => row[f]).reduce((a, b) => a + b);
     return assign(row, { Total: total });
   });
-  const columns = [groupedBy, ...fields, 'Total'];
+
+  const columns = [groupBy, ...fields, 'Total'];
   const headRow = zipObject(columns, columns);
   const rows = [headRow, ...headlessRows];
   return { columns, rows };

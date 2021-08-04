@@ -229,7 +229,7 @@ function LegendItem({
   };
 
   if (analysisResult instanceof ExposedPopulationResult) {
-    const tableData = convertToTableData(analysisResult, 'TS');
+    const tableData = convertToTableData(analysisResult);
     dispatch(addTableData(tableData));
   }
 
