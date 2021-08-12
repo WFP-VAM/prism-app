@@ -524,15 +524,17 @@ export function createLegendFromFeatureArray(
     (a, b) => a - b, // This function is required since JS assumes unicode values.
   );
 
-  const statsLen = stats.length;
+  const uniqueStats = [...new Set(stats)]; // Remove repeated elements.
+
+  const statsLen = uniqueStats.length;
 
   // legend breakpoints are generated based on quintiles derived from stats array.
   const legend: LegendDefinition = [
-    { value: stats[Math.floor(statsLen * 0.2) - 1], color: '#fee5d9' },
-    { value: stats[Math.floor(statsLen * 0.4) - 1], color: '#fcae91' },
-    { value: stats[Math.floor(statsLen * 0.6) - 1], color: '#fb6a4a' },
-    { value: stats[Math.floor(statsLen * 0.8) - 1], color: '#de2d26' },
-    { value: stats[statsLen - 1], color: '#a50f15' },
+    { value: uniqueStats[Math.floor(statsLen * 0.2) - 1], color: '#fee5d9' },
+    { value: uniqueStats[Math.floor(statsLen * 0.4) - 1], color: '#fcae91' },
+    { value: uniqueStats[Math.floor(statsLen * 0.6) - 1], color: '#fb6a4a' },
+    { value: uniqueStats[Math.floor(statsLen * 0.8) - 1], color: '#de2d26' },
+    { value: uniqueStats[statsLen - 1], color: '#a50f15' },
   ];
 
   return legend;
