@@ -77,6 +77,8 @@ def _group_zones(zones, group_by):
 
     new_features = []
     for group_id, polygons in grouped_polygons.items():
+        if group_id is None:
+            continue
         new_geometry = mapping(cascaded_union(polygons))
 
         new_features.append(
