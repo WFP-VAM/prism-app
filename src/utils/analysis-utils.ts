@@ -510,32 +510,39 @@ export function scaleFeatureStat(
 /**
  * Creates Analysis result legend based on data returned from API.
  *
+ * The equal interval method takes the maximum values minus the minimum
+ * and divides the result by the number of classes, which is the length
+ * of colors array.
+ *
+ * Finally the function calculates the upper end of each class interval
+ * and assigns a color.
+ *
  * @return LegendDefinition
  */
 export function createLegendFromFeatureArray(
   features: Feature[],
   statistic: AggregationOperations,
 ): LegendDefinition {
-  // Extract values based on aggregation operation as sorted array.
-  const stats: number[] = Array.prototype.sort.call(
-    features.map(f =>
-      f.properties && f.properties[statistic] ? f.properties[statistic] : 0,
-    ),
-    (a, b) => a - b, // This function is required since JS assumes unicode values.
+  // Extract values based on aggregation operation.
+  const stats: number[] = features.map(f =>
+    f.properties && f.properties[statistic] ? f.properties[statistic] : 0,
   );
 
-  const uniqueStats = [...new Set(stats)]; // Remove repeated elements.
+  const maxNum = Math.max(...stats);
+  const minNum = Math.min(...stats);
 
-  const statsLen = uniqueStats.length;
+  const colors = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15'];
 
-  // legend breakpoints are generated based on quintiles derived from stats array.
-  const legend: LegendDefinition = [
-    { value: uniqueStats[Math.floor(statsLen * 0.2) - 1], color: '#fee5d9' },
-    { value: uniqueStats[Math.floor(statsLen * 0.4) - 1], color: '#fcae91' },
-    { value: uniqueStats[Math.floor(statsLen * 0.6) - 1], color: '#fb6a4a' },
-    { value: uniqueStats[Math.floor(statsLen * 0.8) - 1], color: '#de2d26' },
-    { value: uniqueStats[statsLen - 1], color: '#a50f15' },
-  ];
+  const delta = (maxNum - minNum) / colors.length;
+
+  const legend: LegendDefinition = colors.map((color, index) => {
+    const breakpoint = Math.ceil(minNum + (index + 1) * delta);
+
+    // Make sure you don't have a value greater than maxNum.
+    const value = Math.min(breakpoint, maxNum);
+
+    return { value, color };
+  });
 
   return legend;
 }
