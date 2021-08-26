@@ -87,6 +87,7 @@
     "react-scripts": "3.4.0",
     "redux": "^4.0.5",
     "reflect-metadata": "^0.1.13",
+    "rehype-raw": "^6.1.0",
     "typescript": "^3.9.7",
     "url": "^0.11.0",
     "xml-js": "^1.6.11"
