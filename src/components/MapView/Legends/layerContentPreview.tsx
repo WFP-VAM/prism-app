@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import rehypeRaw from 'rehype-raw';
+import marked from 'marked';
+import DOMPurify from 'dompurify';
 import {
   IconButton,
   createStyles,
@@ -48,7 +48,12 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
       >
         <DialogContent>
           <Typography color="textSecondary">
-            <ReactMarkdown rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(marked(content)),
+              }}
+            />
           </Typography>
         </DialogContent>
       </Dialog>
