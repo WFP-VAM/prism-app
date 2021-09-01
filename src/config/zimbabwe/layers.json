@@ -201,8 +201,8 @@
       { "value": 9000, "color": "#006837" }
     ]
   },
-  "ndvi_dekad_1": {
-    "title": "10-day NDVI 1km (MODIS)",
+  "ndvi_dekad": {
+    "title": "10-day NDVI (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://odc.ovio.org/",
@@ -244,8 +244,8 @@
       { "value": 200, "color": "#004d00" }
     ]
   },
-  "ndvi_dekad_anomaly_1": {
-    "title": "10-day NDVI anomaly 1km (MODIS)",
+  "ndvi_dekad_anomaly": {
+    "title": "10-day NDVI anomaly (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13a2_viq_dekad",
     "base_url": "https://odc.ovio.org/",
@@ -317,8 +317,8 @@
       { "value": 50, "color": "#e54f35" }
     ]
   },
-  "lst_daytime_1": {
-    "title": "Daytime Land Surface Temperature - 10-day 1km (MODIS)",
+  "lst_daytime": {
+    "title": "Daytime Land Surface Temperature - 10-day (MODIS)",
     "type": "wms",
     "server_layer_name": "myd11a2_txa_dekad",
     "base_url": "https://odc.ovio.org/",
@@ -370,8 +370,8 @@
       { "value": 5000.0, "color": "#fcffa4" }
     ]
   },
-  "lst_day_anomaly_1": {
-    "title": "Daytime Land Surface Temperature - 10-day Anomaly 1km (MODIS)",
+  "lst_day_anomaly": {
+    "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)",
     "type": "wms",
     "server_layer_name": "myd11a2_txd_dekad",
     "base_url": "https://odc.ovio.org/",
