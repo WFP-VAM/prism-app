@@ -45,6 +45,7 @@ import {
   getAnalysisTableColumns,
   downloadCSVFromTableData,
   BaselineLayerResult,
+  ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 
@@ -132,6 +133,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const clearAnalysis = () => dispatch(clearAnalysisResult());
 
   const runAnalyser = async () => {
+    if (analysisResult) {
+      clearAnalysis();
+    }
+
     if (!extent) {
       return;
     } // hasn't been calculated yet
@@ -324,21 +329,22 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   </Button>
                 </>
               )}
-            {!analysisResult && (
-              <Button
-                className={classes.innerAnalysisButton}
-                onClick={runAnalyser}
-                disabled={
-                  !!thresholdError || // if there is a threshold error
-                  !selectedDate || // or date hasn't been selected
-                  !hazardLayerId || // or hazard layer hasn't been selected
-                  !baselineLayerId || // or baseline layer hasn't been selected
-                  isAnalysisLoading // or analysis is currently loading
-                }
-              >
-                <Typography variant="body2">Run Analysis</Typography>
-              </Button>
-            )}
+            {!analysisResult ||
+              (analysisResult instanceof ExposedPopulationResult && (
+                <Button
+                  className={classes.innerAnalysisButton}
+                  onClick={runAnalyser}
+                  disabled={
+                    !!thresholdError || // if there is a threshold error
+                    !selectedDate || // or date hasn't been selected
+                    !hazardLayerId || // or hazard layer hasn't been selected
+                    !baselineLayerId || // or baseline layer hasn't been selected
+                    isAnalysisLoading // or analysis is currently loading
+                  }
+                >
+                  <Typography variant="body2">Run Analysis</Typography>
+                </Button>
+              ))}
             {isAnalysisLoading ? <LinearProgress /> : null}
           </div>
         ) : null}
