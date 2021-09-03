@@ -221,29 +221,6 @@
       { "value": 9000, "color": "#006837" }
     ]
   },
-  "ndvi_dekad_anomaly_5": {
-    "title": "10-day NDVI anomaly 5km (MODIS)",
-    "type": "wms",
-    "server_layer_name": "mxd13c1_viq_dekad",
-    "base_url": "https://odc.ovio.org/",
-    "date_interval": "days",
-    "additional_query_params": {
-      "styles": "viq"
-    },
-    "opacity": 0.5,
-    "legend_text": "NDVI Anomaly compared to LTA",
-    "legend": [
-      { "value": 50, "color": "#732600" },
-      { "value": 70, "color": "#f06405" },
-      { "value": 80, "color": "#f5af28" },
-      { "value": 90, "color": "#e6dc96" },
-      { "value": 110, "color": "#f5f5f5" },
-      { "value": 120, "color": "#cbff1f" },
-      { "value": 130, "color": "#00f200" },
-      { "value": 150, "color": "#008f00" },
-      { "value": 200, "color": "#004d00" }
-    ]
-  },
   "ndvi_dekad_anomaly": {
     "title": "10-day NDVI anomaly (MODIS)",
     "type": "wms",
@@ -287,36 +264,6 @@
       { "value": 1400, "color": "#081d58" }
     ]
   },
-  "lst_daytime_5": {
-    "title": "Daytime Land Surface Temperature - 10-day 5km (MODIS)",
-    "type": "wms",
-    "server_layer_name": "myd11c2_txa_dekad",
-    "base_url": "https://odc.ovio.org/",
-    "date_interval": "days",
-    "wcsConfig": {
-      "scale": 0.02,
-      "offset": -273,
-      "pixelResolution": 64
-    },
-    "opacity": 0.5,
-    "legend_text": "LEGEND",
-    "additional_query_params": {
-      "styles": "lst_day"
-    },
-    "legend": [
-      { "value": 0, "color": "#f0f9ba" },
-      { "value": 5, "color": "#edeba4" },
-      { "value": 10, "color": "#ebdd8f" },
-      { "value": 15, "color": "#eace7c" },
-      { "value": 20, "color": "#e9bf6a" },
-      { "value": 25, "color": "#e9af59" },
-      { "value": 30, "color": "#e99e4c" },
-      { "value": 35, "color": "#e98d41" },
-      { "value": 40, "color": "#e87a3a" },
-      { "value": 45, "color": "#e76636" },
-      { "value": 50, "color": "#e54f35" }
-    ]
-  },
   "lst_daytime": {
     "title": "Daytime Land Surface Temperature - 10-day (MODIS)",
     "type": "wms",
@@ -345,29 +292,6 @@
       { "value": 40, "color": "#e87a3a" },
       { "value": 45, "color": "#e76636" },
       { "value": 50, "color": "#e54f35" }
-    ]
-  },
-  "lst_day_anomaly_5": {
-    "title": "Daytime Land Surface Temperature - 10-day Anomaly 5km (MODIS)",
-    "type": "wms",
-    "server_layer_name": "myd11c2_txd_dekad",
-    "base_url": "https://odc.ovio.org/",
-    "date_interval": "days",
-    "opacity": 0.5,
-    "additional_query_params": {
-      "styles": "lst_day"
-    },
-    "legend_text": "LEGEND",
-    "legend": [
-      { "value": -300.0, "color": "#000004" },
-      { "value": -200.0, "color": "#210c4a" },
-      { "value": -100.0, "color": "#57106e" },
-      { "value": -50.0, "color": "#8a226a" },
-      { "value": 50.0, "color": "#bc3754" },
-      { "value": 100.0, "color": "#e45a31" },
-      { "value": 200.0, "color": "#f98e09" },
-      { "value": 300.0, "color": "#f9cb35" },
-      { "value": 5000.0, "color": "#fcffa4" }
     ]
   },
   "lst_day_anomaly": {
