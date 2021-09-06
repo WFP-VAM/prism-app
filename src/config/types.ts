@@ -189,7 +189,7 @@ export class CommonLayerProps {
   exposure?: ExposedPopulationDefinition;
 
   @optional // Display layer extra details from a `markup` file
-  contentsPath?: string;
+  contentPath?: string;
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {

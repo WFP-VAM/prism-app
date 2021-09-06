@@ -21,16 +21,18 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
   const [content, setContent] = useState('');
   const layer = LayerDefinitions[layerId || 'admin_boundaries'];
   const canDisplayContent = !layer.group || layer.group.main;
-  const hasContent = layer.contentsPath && layer.contentsPath.length > 0;
+  const hasContent = layer.contentPath && layer.contentPath.length > 0;
+
+  marked.use({ sanitizer: DOMPurify.sanitize });
 
   useEffect(() => {
-    const path = `${process.env.PUBLIC_URL}/${layer.contentsPath}`;
+    const path = `${process.env.PUBLIC_URL}/${layer.contentPath}`;
     if (hasContent) {
       fetch(path)
         .then(response => response.text())
         .then(text => setContent(text));
     }
-  }, [hasContent, layer.contentsPath]);
+  }, [hasContent, layer.contentPath]);
 
   return (
     <Grid item>
@@ -51,7 +53,7 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
             <div
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(marked(content)),
+                __html: marked(content),
               }}
             />
           </Typography>
