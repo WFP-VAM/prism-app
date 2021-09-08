@@ -188,12 +188,18 @@ const createAPIRequestParams = (
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
+  const { wcsConfig } = geotiffLayer;
+  const dateValue =
+    !wcsConfig || wcsConfig.disableDateParam === false ? date : undefined;
+
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
   const apiRequest: ApiData = {
     geotiff_url: getWCSLayerUrl({
       layer: geotiffLayer,
-      date: geotiffLayer.wcsConfig?.timeSupport === true ? date : undefined,
+
+      // Skip date parameter if layer has disableDateParam set to true.
+      date: dateValue,
       extent,
     }),
     zones_url: getAdminBoundariesURL(),
