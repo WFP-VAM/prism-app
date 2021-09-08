@@ -235,16 +235,6 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
         </div>
-        <mock-button
-          classname="Analyser-innerAnalysisButton-8"
-          disabled="true"
-        >
-          <mock-typography
-            variant="body2"
-          >
-            Run Analysis
-          </mock-typography>
-        </mock-button>
       </div>
     </div>
   </div>
