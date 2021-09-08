@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { get } from 'lodash';
-import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
+import { Source, Layer } from 'react-mapbox-gl';
 import { legendToStops } from '../layer-utils';
 import { PointDataLayerProps } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
@@ -43,29 +43,47 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     },
   };
 
+  const geojsonData = {
+    type: 'geojson',
+    data,
+  };
+
   return (
-    <GeoJSONLayer
-      before="boundaries-line"
-      id={`layer-${layer.id}`}
-      data={data}
-      circleLayout={circleLayout}
-      circlePaint={circlePaint}
-      circleOnClick={(evt: any) => {
-        dispatch(
-          addPopupData({
-            [layer.title]: {
-              data: get(
-                evt.features[0],
-                `properties.${layer.measure}`,
-                'No Data',
-              ),
-              coordinates: evt.lngLat,
-            },
-          }),
-        );
-      }}
-    />
+    <>
+      <Source id="source_id" geoJsonSource={geojsonData} />
+      <Layer
+        type="circle"
+        id="layer_id"
+        sourceId="source_id"
+        circleLayout={circleLayout}
+        circlePaint={circlePaint}
+      />
+    </>
   );
+
+  // return (
+  //   <GeoJSONLayer
+  //     before="boundaries-line"
+  //     id={`layer-${layer.id}`}
+  //     data={JSON.stringify(data.properties)}
+  //     circleLayout={circleLayout}
+  //     circlePaint={circlePaint}
+  //     circleOnClick={(evt: any) => {
+  //       dispatch(
+  //         addPopupData({
+  //           [layer.title]: {
+  //             data: get(
+  //               evt.features[0],
+  //               `properties.${layer.measure}`,
+  //               'No Data',
+  //             ),
+  //             coordinates: evt.lngLat,
+  //           },
+  //         }),
+  //       );
+  //     }}
+  //   />
+  // );
 }
 
 export default PointDataLayer;
