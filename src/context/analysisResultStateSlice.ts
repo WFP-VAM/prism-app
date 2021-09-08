@@ -89,9 +89,9 @@ function getAdminBoundariesURL() {
   if (isLocalhost) {
     return defaultBoundariesFile;
   }
-  // the regex here removes the dot at the beginning of a path, if there is one.
+  // the regex here removes the dot(s) at the beginning of a path, if there is at least one.
   // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '
-  return window.location.origin + adminBoundariesPath.replace(/^\./, '');
+  return window.location.origin + adminBoundariesPath.replace(/^\.+/, '');
 }
 
 function generateTableFromApiData(
