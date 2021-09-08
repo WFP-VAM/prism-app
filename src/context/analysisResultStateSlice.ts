@@ -193,7 +193,9 @@ const createAPIRequestParams = (
   const apiRequest: ApiData = {
     geotiff_url: getWCSLayerUrl({
       layer: geotiffLayer,
-      date: geotiffLayer.wcsConfig?.timeSupport === true ? date : undefined,
+
+      // Skip date if layer does not have timesSupport field or it is set to false.
+      date: geotiffLayer.wcsConfig?.timeSupport === false ? undefined : date,
       extent,
     }),
     zones_url: getAdminBoundariesURL(),
