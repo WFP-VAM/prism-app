@@ -147,7 +147,7 @@ export type RawDataConfiguration = {
   pixelResolution?: number;
 
   // Remote layers might not have time dimension enabled.
-  timeSupport?: boolean;
+  disableDateParam?: boolean;
 };
 
 // Type of vector data that the layer provides
