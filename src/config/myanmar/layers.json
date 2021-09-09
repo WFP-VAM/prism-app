@@ -1044,6 +1044,7 @@
   "adamts_buffers": {
     "title": "Tropical Storms - Wind buffers",
     "type": "wms",
+    "content_path": "data/myanmar/contents.md#pan-h1-headers",
     "server_layer_name": "mmr_gdacs_buffers",
     "opacity": 0.7,
     "legend": [],
