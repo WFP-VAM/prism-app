@@ -3,8 +3,9 @@ import { useEffect } from 'react';
 import { AvailableDates, GroupDefinition } from '../config/types';
 import { availableDatesSelector } from '../context/serverStateSlice';
 import { dateRangeSelector } from '../context/mapStateSlice/selectors';
-import { updateDateRange } from '../context/mapStateSlice';
 import { USER_DATE_OFFSET } from '../components/MapView/DateSelector/utils';
+
+import { useUrlHistory } from './url-utils';
 /**
  * A hook designed to automatically load the default date of a layer if the user doesn't select one.
  * Returns either the user selected date or the default date, dispatching it to the date picker beforehand. Can also return undefined if no default date is available.
@@ -16,6 +17,8 @@ export function useDefaultDate(
 ): number | undefined {
   const dispatch = useDispatch();
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
+
+  const { updateHistory } = useUrlHistory();
 
   const possibleDates = useSelector(availableDatesSelector)[
     availableDatesLookupKey
@@ -32,9 +35,9 @@ export function useDefaultDate(
       defaultDate &&
       (!layerGroup || layerGroup.main === true)
     ) {
-      dispatch(updateDateRange({ startDate: defaultDate }));
+      updateHistory({ date: defaultDate });
     }
-  }, [defaultDate, dispatch, selectedDate, layerGroup]);
+  }, [defaultDate, dispatch, selectedDate, layerGroup, updateHistory]);
 
   return selectedDate || defaultDate;
 }

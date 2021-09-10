@@ -35,12 +35,17 @@ import {
 import {
   DiscriminateUnion,
   LayerType,
+  LayerKey,
   BoundaryLayerProps,
 } from '../../config/types';
 
 import { Extent } from './Layers/raster-utils';
+import { useUrlHistory } from '../../utils/url-utils';
 
-import { getBoundaryLayerSingleton } from '../../config/utils';
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../config/utils';
 
 import DateSelector from './DateSelector';
 import { findClosestDate } from './DateSelector/utils';
@@ -129,6 +134,62 @@ function MapView({ classes }: MapViewProps) {
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
+  const { urlParams, updateHistory } = useUrlHistory();
+
+  useEffect(() => {
+    /*
+      This useEffect hook keeps track of parameters obtained from url and loads layers according
+      to the hazardLayerId and baselineLayerId values. If the date field is found, the application
+      status is also updated. There are guards in case the values are not valid, such as invalid
+      date or layerids.
+    */
+
+    const { hazardLayerId, baselineLayerId, date } = urlParams;
+
+    if (
+      (!hazardLayerId && !baselineLayerId) ||
+      Object.keys(serverAvailableDates).length === 0
+    ) {
+      return;
+    }
+
+    const selectedLayersIds: LayerKey[] = selectedLayers.map(layer => layer.id);
+
+    // Check for layers in url and add them.
+    [hazardLayerId, baselineLayerId].forEach(id => {
+      if (!id || selectedLayersIds.includes(id as LayerKey)) {
+        return;
+      }
+
+      if (Object.keys(LayerDefinitions).includes(id)) {
+        dispatch(addLayer(LayerDefinitions[id as LayerKey]));
+      } else {
+        dispatch(
+          addNotification({
+            message: `Invalid layer identifier: ${id}`,
+            type: 'error',
+          }),
+        );
+      }
+    });
+
+    if (date && moment(date).valueOf() !== selectedDate) {
+      const dateInt = moment(date).valueOf();
+      if (Number.isNaN(dateInt)) {
+        dispatch(
+          addNotification({
+            message: 'Invalid date found. Using most recent date',
+            type: 'warning',
+          }),
+        );
+      } else {
+        dispatch(updateDateRange({ startDate: dateInt }));
+      }
+    }
+
+    // Validate hazardLayer.
+  }, [urlParams, dispatch, selectedLayers, serverAvailableDates, selectedDate]);
+
   useEffect(() => {
     dispatch(loadAvailableDates());
     dispatch(addLayer(boundaryLayer));
@@ -185,7 +246,7 @@ function MapView({ classes }: MapViewProps) {
       );
     }
     // let users know if their current date doesn't exist in possible dates
-    if (selectedDate) {
+    if (selectedDate && urlParams.date !== selectedDate) {
       selectedLayersWithDateSupport.forEach(layer => {
         const momentSelectedDate = moment(selectedDate);
 
@@ -197,7 +258,7 @@ function MapView({ classes }: MapViewProps) {
         ) {
           const closestDate = findClosestDate(selectedDate, selectedLayerDates);
 
-          dispatch(updateDateRange({ startDate: closestDate.valueOf() }));
+          updateHistory({ date: closestDate.valueOf() });
 
           dispatch(
             addNotification({
@@ -220,6 +281,8 @@ function MapView({ classes }: MapViewProps) {
     selectedLayerDates,
     selectedLayersWithDateSupport,
     serverAvailableDates,
+    updateHistory,
+    urlParams,
   ]);
 
   const {
