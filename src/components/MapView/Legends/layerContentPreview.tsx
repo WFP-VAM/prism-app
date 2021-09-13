@@ -24,9 +24,8 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
   const contentRef = useRef<HTMLHeadingElement>(null);
   const layer = LayerDefinitions[layerId || 'admin_boundaries'];
   const canDisplayContent = !layer.group || layer.group.main;
-  const hasContent = layer.contentPath && layer.contentPath.length > 0;
-
-  const domId = layer.contentPath && layer.contentPath.split('#')[1];
+  const hasContent = layer.contentPath?.length;
+  const domId = layer.contentPath?.split('#')?.[1];
 
   marked.use({ sanitizer: DOMPurify.sanitize });
 
@@ -51,11 +50,7 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
 
   const transform: HTMLReactParserOptions = {
     replace: domNode => {
-      if (
-        domNode instanceof Element &&
-        domNode.attribs &&
-        domNode.attribs.id === domId
-      ) {
+      if (domNode instanceof Element && domNode.attribs?.id === domId) {
         return React.createElement(
           domNode.name,
           {
@@ -110,7 +105,7 @@ const styles = (theme: Theme) =>
   });
 
 export interface PreviewProps extends WithStyles<typeof styles> {
-  layerId: LayerType['id'] | undefined;
+  layerId?: LayerType['id'];
 }
 
 export default withStyles(styles)(LayerContentPreview);
