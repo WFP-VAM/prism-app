@@ -1080,7 +1080,7 @@
     "title": "population",
     "type": "wms",
     "wcsConfig": {
-      "time_support": false,
+      "disable_time_param": true,
       "version": "2.0.0",
       "scale": "0.1"
     },

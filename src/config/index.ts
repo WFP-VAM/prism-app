@@ -40,7 +40,7 @@ type Country =
   | 'myanmar'
   | 'tajikistan';
 
-const DEFAULT: Country = 'mongolia';
+const DEFAULT: Country = 'myanmar';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
