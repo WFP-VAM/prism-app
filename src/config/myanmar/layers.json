@@ -11,6 +11,7 @@
     "title": "Vulnerability index",
     "type": "nso",
     "path": "../data/myanmar/nso/all-vuln-layers.json",
+    "content_path": "data/myanmar/contents.md#vulnerability-index",
     "data_field": "mmr_inform",
     "admin_level": 3,
     "admin_code": "TS_PCODE",
@@ -436,6 +437,7 @@
     "title": "Daytime Land Surface Temperature - 10-day (MODIS)",
     "type": "wms",
     "server_layer_name": "myd11c2_txa_dekad",
+    "content_path": "data/myanmar/contents.md#daytime-land-surface-temperature",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "wcsConfig": {
@@ -725,7 +727,6 @@
     ],
     "legend_text": "Sensitivity describes the characteristics of a community adversely affected by a drought. Sensitivity scores were assigned based on a review of the literature on climate sensitivity of livelihoods and consultation with the WFP Country Office in Myanmar"
   },
-
   "poverty": {
     "title": "Poverty by township",
     "type": "nso",
@@ -750,7 +751,6 @@
     ],
     "legend_text": "Sensitivity scores were assigned based on a review of the literature on climate sensitivity of livelihoods and consultation with WFP Myanmar"
   },
-
   "sensitvity_storms": {
     "title": "Sensitivity to storms",
     "type": "nso",
@@ -1046,6 +1046,7 @@
   "adamts_buffers": {
     "title": "Tropical Storms - Wind buffers",
     "type": "wms",
+    "content_path": "data/myanmar/contents.md#tropical-storm-wind-buffers",
     "server_layer_name": "mmr_gdacs_buffers",
     "opacity": 0.7,
     "legend": [],

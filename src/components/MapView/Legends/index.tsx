@@ -40,6 +40,7 @@ import {
 import { convertToTableData, downloadToFile } from '../utils';
 
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
+import LayerContentPreview from './layerContentPreview';
 
 /**
  * Returns layer identifier used to perform exposure analysis.
@@ -241,6 +242,7 @@ function LegendItem({
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
             </Typography>
+            <LayerContentPreview layerId={id} />
           </Grid>
           <Divider />
           <Grid item className={classes.slider}>
