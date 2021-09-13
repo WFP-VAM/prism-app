@@ -56,10 +56,13 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
         domNode.attribs &&
         domNode.attribs.id === domId
       ) {
-        return (
-          <h1 id={domNode.attribs.id} ref={contentRef}>
-            {domToReact(domNode.children, transform)}
-          </h1>
+        return React.createElement(
+          domNode.name,
+          {
+            id: domNode.attribs.id,
+            ref: contentRef,
+          },
+          domToReact(domNode.children, transform),
         );
       }
       return domNode;
