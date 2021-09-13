@@ -1,159 +1,135 @@
-Paragraphs are separated by a blank line.
+# Vulnerability layers
 
-2nd paragraph. *Italic*, **bold**, and `monospace`. Itemized lists
+## Vulnerability indices
 
-look like:
+### Multidimensional disadvantage index
 
-  * this one
-  * that one
-  * the other one
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-Note that --- not considering the asterisk --- the actual text
-content starts at 4-columns in.
+### Vulnerability index
 
-> Block quotes are
-> written like so.
->
-> They can span multiple paragraphs,
-> if you like.
+The INFORM model is based on risk concepts published in scientific literature and envisages three dimensions of risk: hazards & exposure, vulnerability and lack of coping capacity dimensions. See https://drmkc.jrc.ec.europa.eu/inform-index
 
-Use 3 dashes for an em-dash. Use 2 dashes for ranges (ex., "it's all
-in chapters 12--14"). Three dots ... will be converted to an ellipsis.
-Unicode is supported. ☺
+## Vulnerable populations
 
+### Age dependency ratio
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-An h2 header
-------------
+### Female headed households
 
-Here's a numbered list:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
- 1. first item
- 2. second item
- 3. third item
+### Disability prevalence
 
-Note again how the actual text starts at 4 columns in (4 characters
-from the left side). Here's a code sample:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-    # Let me re-iterate ...
-    for i in 1 .. 10 { do-something(i) }
+## Living conditions
 
-As you probably guessed, indented 4 spaces. By the way, instead of
-indenting the block, you can use delimited blocks, if you like:
+### Improved sanitation
 
-~~~
-define foobar() {
-    print "Welcome to flavor country!";
-}
-~~~
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-(which makes copying & pasting easier). You can optionally mark the
-delimited block for Pandoc to syntax highlight it:
+### Improved drinking water
 
-~~~python
-import time
-# Quick, count to ten!
-for i in range(10):
-    # (but not *too* quick)
-    time.sleep(0.5)
-    print(i)
-~~~
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
+### Poor quality housing
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-pAn h1 header
-============
+## Hazard vulnerability
 
+### Vulnerability to drought
 
-Now a nested list:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
- 1. First, get these ingredients:
+### Vulnerability to floods
 
-      * carrots
-      * celery
-      * lentils
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
- 2. Boil some water.
+### Vulnerability to storms
 
- 3. Dump everything in the pot and follow
-    this algorithm:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-        find wooden spoon
-        uncover pot
-        stir
-        cover pot
-        balance wooden spoon precariously on pot handle
-        wait 10 minutes
-        goto first step (or shut off burner when done)
+## Hazard sensitivity
 
-    Do not bump wooden spoon or it will fall.
+### Sensitivity to droughts
 
-Notice again how text always lines up on 4-space indents (including
-that last line which continues item 3 above).
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-Here's a link to [a website](http://foo.bar), to a [local
-doc](local-doc.html), and to a [section heading in the current
-doc](#an-h2-header). Here's a footnote [^1].
+### Sensitivity to floods
 
-[^1]: Some footnote text.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-Tables can look like this:
+### Sensitivity to storms
 
-Name           Size  Material      Color
-------------- -----  ------------  ------------
-All Business      9  leather       brown
-Roundabout       10  hemp canvas   natural
-Cinderella       11  glass         transparent
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-Table: Shoes sizes, materials, and colors.
+# Hazard layers
 
-(The above is the caption for the table.) Pandoc also supports
-multi-line tables:
+## Tropical Storms
 
---------  -----------------------
-Keyword   Text
---------  -----------------------
-red       Sunsets, apples, and
-          other red or reddish
-          things.
+### Tropical storm wind buffers
 
-green     Leaves, grass, frogs
-          and other things it's
-          not easy being.
---------  -----------------------
+Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS
 
-A horizontal rule follows.
+## Floods
 
-***
+### Potential flooding
 
-Here's a definition list:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-apples
-  : Good for making applesauce.
+## Rainfall
 
-oranges
-  : Citrus!
+### 10 day rainfall estimate
 
-tomatoes
-  : There's no "e" in tomatoe.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-Again, text is indented 4 spaces. (Put a blank line between each
-term and  its definition to spread things out more.)
+### 10 day rainfall anomaly
 
-Here's a "line block" (note how whitespace is honored):
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-| Line one
-|   Line too
-| Line tree
+### Monthly rainfall anomaly
 
-and images can be specified like so:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-![example image](example-image.jpg "An exemplary image")
+### 1 month rainfall aggregate
 
-Inline math equation: $\omega = d\phi / dt$. Display
-math should get its own line like so:
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
 
-$$I = \int \rho R^{2} dV$$
+### Longest number of consecutive dry days
 
-And note that you can backslash-escape any punctuation characters
-which you wish to be displayed literally, ex.: \`foo\`, \*bar\*, etc.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Number of days with heavy rainfall in the last 30 days
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Longest consecutive number of days with heavy rainfall in the last 30 days
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+## Vegetation conditions
+
+### 10 day NDVI
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### 10 day NDVI anomaly
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+## Temperature
+
+### Daytime Land Surface Temperature
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Land Surface Temperature Anomaly
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Land Surface Temperature Amplitude
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.

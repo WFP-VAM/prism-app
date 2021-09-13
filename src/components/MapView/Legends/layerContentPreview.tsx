@@ -1,5 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { parse } from 'htmlstring-to-react';
+import React, { useRef, useState, useEffect, useLayoutEffect } from 'react';
+import parse, { domToReact, HTMLReactParserOptions } from 'html-react-parser';
+import { Element } from 'domhandler/lib/node';
 import marked from 'marked';
 import DOMPurify from 'dompurify';
 import {
@@ -29,6 +30,15 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
 
   marked.use({ sanitizer: DOMPurify.sanitize });
 
+  useLayoutEffect(() => {
+    if (contentRef.current !== null) {
+      contentRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  });
+
   useEffect(() => {
     const path = `${process.env.PUBLIC_URL}/${layer.contentPath}`;
 
@@ -39,18 +49,20 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
     }
   }, [hasContent, layer.contentPath]);
 
-  const transform = {
-    overrides: {
-      h1: (props: any, textContext: string | undefined) => {
-        const { id } = props;
-        if (contentRef.current && id && id === domId) {
-          contentRef.current.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          });
-        }
-        return <h1 ref={contentRef}>{textContext}</h1>;
-      },
+  const transform: HTMLReactParserOptions = {
+    replace: domNode => {
+      if (
+        domNode instanceof Element &&
+        domNode.attribs &&
+        domNode.attribs.id === domId
+      ) {
+        return (
+          <h1 id={domNode.attribs.id} ref={contentRef}>
+            {domToReact(domNode.children, transform)}
+          </h1>
+        );
+      }
+      return domNode;
     },
   };
 
