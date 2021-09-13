@@ -74,6 +74,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum effici
 
 Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS
 
+### Tropical storm nodes
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Tropical storm track
+
+Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS
+
 ## Floods
 
 ### Potential flooding
@@ -132,4 +140,55 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum effici
 
 ### Land Surface Temperature Amplitude
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+# Exposure layers
+
+## Population
+
+### Total population
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+## Historical Climate Exposure
+
+### Population exposed to historical river floods per year
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Population exposed to historical storm surges per year
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+# Risk layers
+
+## WFP Hazard Risk
+
+### Drought risk
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Flood risk
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Storm risk
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+## MUDRA Hazard Risk
+
+### Population risk to river floods
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Economic risk to cyclone winds
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Population risk to storm surges
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+## Expected annual damage
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Annual damage expected from river floods
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Annual damage expected from strong cyclone winds
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
+
+### Annual damage expected from storm surges
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elementum efficitur nisl et consectetur. Duis ac nisl hendrerit nulla molestie consectetur. Nulla eget ligula erat. Aliquam suscipit, ante sed euismod pellentesque, turpis eros laoreet felis, vel pulvinar diam lorem eu purus. Nulla posuere dui ipsum, interdum vulputate dui venenatis eget. Nulla vitae turpis metus. Integer imperdiet mi et mi dignissim sagittis. Nulla in luctus eros. Donec gravida turpis velit. Aliquam erat volutpat. Proin quis enim eu risus ornare ullamcorper et sit amet erat. Fusce eleifend semper odio a suscipit. Vivamus ullamcorper odio vitae ante feugiat blandit. Sed sollicitudin urna vel elit sodales, ut hendrerit nibh fringilla. Pellentesque fermentum, justo eu dignissim porttitor, nisl sapien semper lorem, sed faucibus justo leo in dui.
