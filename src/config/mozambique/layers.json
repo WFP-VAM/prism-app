@@ -76,7 +76,7 @@
     ]
   },
   "rainfall_agg_dekad": {
-    "title": "10-day rainfall aggregate",
+    "title": "1-month rainfall aggregate",
     "type": "wms",
     "server_layer_name": "r1h_dekad",
     "additional_query_params": {
@@ -85,7 +85,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "CHIRPS rainfall aggregate dekad",
+    "legend_text": "CHIRPS 1 month dekadal rainfall aggregations",
     "legend": [
       {"value": "-0", "color": "#ffffff", "alpha": "0"},
       { "value": "50", "color": "#faf3d2" },
