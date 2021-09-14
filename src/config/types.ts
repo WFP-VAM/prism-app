@@ -187,6 +187,9 @@ export class CommonLayerProps {
 
   @optional // Perform population exposure analysis using this layer.
   exposure?: ExposedPopulationDefinition;
+
+  @optional // Display layer extra details from a `markup` file
+  contentPath?: string;
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {
