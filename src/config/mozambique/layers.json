@@ -475,7 +475,10 @@
   "precip_blended_dekad_anomaly": {
     "title": "INAM blended rainfall anomaly (10-day)",
     "type": "wms",
-    "server_layer_name": "rnq_blended_dekad",
+    "server_layer_name": "rfq_blended_dekad",
+    "additional_query_params": {
+      "styles": "rfq"
+    },  
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
