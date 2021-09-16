@@ -60,10 +60,15 @@ const ExposedPopulationAnalysis = ({
   const analysisExposureLoading = useSelector(
     isExposureAnalysisLoadingSelector,
   );
+  const data = useSelector(analysisResultSelector);
 
   const dispatch = useDispatch();
 
   const runExposureAnalysis = async () => {
+    if (data) {
+      dispatch(clearAnalysisResult());
+    }
+
     if (!id || !extent || !exposure) {
       return;
     }
@@ -84,7 +89,6 @@ const ExposedPopulationAnalysis = ({
   };
 
   const ResultSwitches = () => {
-    const data = useSelector(analysisResultSelector);
     const features = data?.featureCollection.features;
     const hasData = features?.length === 0;
 

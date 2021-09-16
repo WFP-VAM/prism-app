@@ -89,9 +89,9 @@ function getAdminBoundariesURL() {
   if (isLocalhost) {
     return defaultBoundariesFile;
   }
-  // the regex here removes the dot at the beginning of a path, if there is one.
+  // the regex here removes the dot(s) at the beginning of a path, if there is at least one.
   // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '
-  return window.location.origin + adminBoundariesPath.replace(/^\./, '');
+  return window.location.origin + adminBoundariesPath.replace(/^\.+/, '');
 }
 
 function generateTableFromApiData(
@@ -188,12 +188,18 @@ const createAPIRequestParams = (
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
+  const { wcsConfig } = geotiffLayer;
+  const dateValue =
+    !wcsConfig || wcsConfig.disableDateParam === false ? date : undefined;
+
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
   const apiRequest: ApiData = {
     geotiff_url: getWCSLayerUrl({
       layer: geotiffLayer,
-      date: geotiffLayer.wcsConfig?.timeSupport === true ? date : undefined,
+
+      // Skip date parameter if layer has disableDateParam set to true.
+      date: dateValue,
       extent,
     }),
     zones_url: getAdminBoundariesURL(),

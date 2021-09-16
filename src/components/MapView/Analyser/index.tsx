@@ -45,6 +45,7 @@ import {
   getAnalysisTableColumns,
   downloadCSVFromTableData,
   BaselineLayerResult,
+  ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 
@@ -132,6 +133,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const clearAnalysis = () => dispatch(clearAnalysisResult());
 
   const runAnalyser = async () => {
+    if (analysisResult) {
+      clearAnalysis();
+    }
+
     if (!extent) {
       return;
     } // hasn't been calculated yet
@@ -324,7 +329,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   </Button>
                 </>
               )}
-            {!analysisResult && (
+            {(!analysisResult ||
+              analysisResult instanceof ExposedPopulationResult) && (
               <Button
                 className={classes.innerAnalysisButton}
                 onClick={runAnalyser}

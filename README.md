@@ -28,7 +28,7 @@ The configuration is split into four files that you can find in `src/config`:
 - 2. `layers.json`
 - 3. `tables.json`
 - 4. `baseline.ts`
-
+  
 ### prism.json
 
 This is the primary configuration file. You can define:
@@ -119,6 +119,12 @@ The `data` field should point to a dataset defined in `baseline.ts`
 ### baseline.ts
 
 This file is used to pre-load datasets and make sure that they are formatted properly. Thanks to TypeScript, this is limitting the potential for mismatch and failed loads.
+
+### Layer Configurations
+#### Add Layer Contents
+In country layers. You can add `content_path` element which
+expects a path to a `.md` or `.html` file. That file must be placed in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory e.g. `public/data/myanmar/contents.md`
+The application will use that to display layer contents as part of the Legend.
 
 ## Technical - Packages/Dependencies
 
