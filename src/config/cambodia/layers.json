@@ -219,38 +219,35 @@
       "type": "wms",
       "server_layer_name": "rfh_dekad",
       "additional_query_params": {
-        "styles": "rfh_600"
+        "styles": "rfh_350"
       },
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
-        { "value": -0, "color": "#ffffff", "alpha": 0 },
-        { "value": 1, "color": "#ffffff" },
-        { "value": 50, "color": "#faf3d2" },
-        { "value": 100, "color": "#dae3a1" },
-        { "value": 150, "color": "#a0c787" },
-        { "value": 200, "color": "#68ab79" },
-        { "value": 250, "color": "#9beafa" },
-        { "value": 300, "color": "#00b1de" },
-        { "value": 350, "color": "#005ae6" },
-        { "value": 400, "color": "#0000c8" },
-        { "value": 500, "color": "#a000fa" },
-        { "value": 600, "color": "#fa78fa" },
-        { "value": 800, "color": "#ffc4ee" }
+        { "value": "-0", "color": "#ffffff", "alpha": 0 },
+        { "value": "1", "color": "#ffffff" },
+        { "value": "20", "color": "#faf5e6" },
+        { "value": "40", "color": "#faf3d2" },
+        { "value": "60", "color": "#dae3a1" },
+        { "value": "80", "color": "#a0c787" },
+        { "value": "100", "color": "#68ab79" },
+        { "value": "125", "color": "#9beafa" },
+        { "value": "150", "color": "#00b1de" },
+        { "value": "200", "color": "#005ae6" },
+        { "value": "250", "color": "#0000c8" },
+        { "value": "300", "color": "#a000fa" },
+        { "value": "350", "color": "#fa78fa" }
       ]
     },
     "rain_anomaly_dekad": {
       "title": "10-day rainfall anomaly",
       "type": "wms",
-      "server_layer_name": "rnq_dekad",
-      "additional_query_params": {
-        "styles": "rfq"
-      },
+      "server_layer_name": "rfq_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": "1%", "color": "#d79b0b" },
@@ -267,13 +264,10 @@
     "rain_anomaly_monthly": {
       "title": "Monthly rainfall anomaly",
       "type": "wms",
-      "server_layer_name": "rnq_dekad",
-      "additional_query_params": {
-        "styles": "r1q"
-      },
+      "server_layer_name": "r1q_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": -0, "color": "#ffffff", "alpha": 0 },
@@ -291,22 +285,27 @@
     "rainfall_agg_month": {
       "title": "1-month rainfall aggregate",
       "type": "wms",
-      "server_layer_name": "rnh_dekad",
+      "server_layer_name": "r1h_dekad",
       "base_url": "https://odc.ovio.org/",
+      "additional_query_params": {
+        "styles": "rfh_1500"
+      },
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
-        { "value": "50", "color": "#faf3d2" },
-        { "value": "100", "color": "#dae3a1" },
-        { "value": "150", "color": "#a0c787" },
-        { "value": "200", "color": "#68ab79" },
-        { "value": "250", "color": "#9beafa" },
-        { "value": "300", "color": "#00b1de" },
-        { "value": "400", "color": "#005ae6" },
-        { "value": "500", "color": "#0000c8" },
-        { "value": "600", "color": "#a000fa" },
-        { "value": ">600", "color": "#fa78fa" }
+        {"value": "-0", "color": "#ffffff", "alpha": 0},
+        {"value": "50", "color": "#faf3d2"},
+        {"value": "100", "color": "#dae3a1"},
+        {"value": "200", "color": "#a0c787"},
+        {"value": "300", "color": "#68ab79"},
+        {"value": "400", "color": "#9beafa"},
+        {"value": "500", "color": "#00b1de"},
+        {"value": "600", "color": "#005ae6"},
+        {"value": "800", "color": "#0000c8"},
+        {"value": "1000", "color": "#a000fa"},
+        {"value": "1500", "color": "#fa78fa"},
+        {"value": "> 1500", "color": "#ffc4ee"}
       ]
     },
     "streak_dry_days": {
@@ -315,7 +314,7 @@
       "server_layer_name": "dlx_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": 0, "color": "#fff9c7" },
@@ -333,10 +332,10 @@
     "days_heavy_rain": {
       "title": "Number of days with heavy rainfall in the last 30 days",
       "type": "wms",
-      "server_layer_name": "xnn_dekad",
+      "server_layer_name": "xnh_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": 0, "color": "#f2fabc" },
@@ -354,10 +353,10 @@
     "streak_heavy_rain": {
       "title": "Longest consecutive number of days with heavy rainfall in the last 30 days",
       "type": "wms",
-      "server_layer_name": "xln_dekad",
+      "server_layer_name": "xlh_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": 0, "color": "#f2fabc" },
@@ -379,7 +378,7 @@
       "server_layer_name": "mxd13a2_vim_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "LEGEND",
       "legend": [
         { "value": 1000, "color": "#a50026" },
@@ -402,7 +401,7 @@
       "additional_query_params": {
         "styles": "viq"
       },
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "NDVI Anomaly compared to LTA",
       "legend": [
         { "value": 50, "color": "#732600" },
@@ -422,7 +421,7 @@
       "server_layer_name": "myd11a2_taa_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "LEGEND",
       "legend": [
         { "value": -0, "color": "#ffffff", "alpha": 0 },
@@ -447,7 +446,7 @@
         "offset": -273,
         "pixelResolution": 64
       },
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "LEGEND",
       "additional_query_params": {
         "styles": "lst_day"
@@ -472,7 +471,7 @@
       "server_layer_name": "myd11a2_txd_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "additional_query_params": {
         "styles": "lst_day"
       },
@@ -1119,11 +1118,35 @@
         { "value": "1 - flooded", "color": "#a50f15" }
       ]
     },    
+    "hydra_s2": {
+      "title": "Potential flooding (Sentinel-2)",
+      "type": "wms",
+      "server_layer_name": "hfs2_sfw_mask",
+      "base_url": "https://odc.ovio.org/",
+      "date_interval": "days",
+      "opacity": 1.0,
+      "legend_text": "Flood water detected from Sentinel-2 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
+      "legend": [      
+        { "value": "1 - flooded", "color": "#a50f15" }
+      ]
+    },    
+    "hydra_l8": {
+      "title": "Potential flooding (Landsat)",
+      "type": "wms",
+      "server_layer_name": "hfl8_sfw_mask",
+      "base_url": "https://odc.ovio.org/",
+      "date_interval": "days",
+      "opacity": 1.0,
+      "legend_text": "Flood water detected from Landsat-8 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
+      "legend": [      
+        { "value": "1 - flooded", "color": "#a50f15" }
+      ]
+    },    
     "forecast": {
       "title": "10-day precipitation forecast",
       "type": "wms",
       "server_layer_name": "wld_cli_tp_10d_ecmwf",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend": [],
       "legend_text": "",
       "base_url": "https://geonode.wfp.org/geoserver"
