@@ -1,6 +1,6 @@
 {
   "country": "Myanmar",
-  "alertFormActive": true,
+  "alertFormActive": false,
   "map": {
     "latitude": 19.467,
     "longitude": 96.371,
