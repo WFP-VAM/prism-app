@@ -1,6 +1,12 @@
 import { has } from 'lodash';
 
 import {
+  cambodiaConfig,
+  cambodiaRawLayers,
+  cambodiaRawTables,
+} from './cambodia';
+
+import {
   indonesiaConfig,
   indonesiaRawLayers,
   indonesiaRawTables,
@@ -33,6 +39,7 @@ import {
 } from './tajikistan';
 
 type Country =
+  | 'cambodia'
   | 'indonesia'
   | 'kyrgyzstan'
   | 'mongolia'
@@ -47,6 +54,12 @@ const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
 const configMap = {
+  cambodia: {
+    appConfig: cambodiaConfig,
+    rawLayers: cambodiaRawLayers,
+    rawTables: cambodiaRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_gov_wfp_edEarly2021.json`,
+  },
   indonesia: {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
