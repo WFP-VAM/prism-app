@@ -8,7 +8,7 @@ import {
   LayerKey,
   LayersMap,
   LayerType,
-  NSOLayerProps,
+  AdminLevelDataLayerProps,
   StatsApi,
   TableType,
   WMSLayerProps,
@@ -55,8 +55,8 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
         return definition;
       }
       return throwInvalidLayer();
-    case 'nso':
-      if (checkRequiredKeys(NSOLayerProps, definition, true)) {
+    case 'admin_level_data':
+      if (checkRequiredKeys(AdminLevelDataLayerProps, definition, true)) {
         if (typeof (definition.adminLevel as unknown) !== 'number') {
           console.error(
             `admin_level in layer ${definition.id} isn't a number.`,

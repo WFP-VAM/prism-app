@@ -179,7 +179,7 @@ exports[`renders as expected 1`] = `
               classname="Analyser-selector-10"
               placeholder="Choose baseline layer"
               title="Baseline Layer"
-              type="nso"
+              type="admin_level_data"
             />
           </div>
           <div

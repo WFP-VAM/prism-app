@@ -27,7 +27,7 @@ import Download from './Download';
 import {
   BoundaryLayer,
   ImpactLayer,
-  NSOLayer,
+  AdminLevelDataLayer,
   PointDataLayer,
   WMSLayer,
 } from './Layers';
@@ -87,7 +87,7 @@ type LayerComponentsMap<U extends LayerType> = {
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: BoundaryLayer,
   wms: WMSLayer,
-  nso: NSOLayer,
+  admin_level_data: AdminLevelDataLayer,
   impact: ImpactLayer,
   point_data: PointDataLayer,
 };

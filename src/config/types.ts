@@ -11,7 +11,7 @@ const optionalMetadataKey = Symbol('optional_property');
 export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
-  | NSOLayerProps
+  | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps;
 
@@ -235,8 +235,8 @@ export class WMSLayerProps extends CommonLayerProps {
   geometry?: GeometryType;
 }
 
-export class NSOLayerProps extends CommonLayerProps {
-  type: 'nso';
+export class AdminLevelDataLayerProps extends CommonLayerProps {
+  type: 'admin_level_data';
   path: string;
 
   @makeRequired

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { NSOLayerProps } from '../../../../config/types';
+import { AdminLevelDataLayerProps } from '../../../../config/types';
 import { legendToStops } from '../layer-utils';
 import {
   LayerData,
@@ -12,9 +12,9 @@ import {
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 
-function NSOLayers({ layer }: { layer: NSOLayerProps }) {
+function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const layerData = useSelector(layerDataSelector(layer.id)) as
-    | LayerData<NSOLayerProps>
+    | LayerData<AdminLevelDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
 
@@ -61,4 +61,4 @@ function NSOLayers({ layer }: { layer: NSOLayerProps }) {
   );
 }
 
-export default NSOLayers;
+export default AdminLevelDataLayers;

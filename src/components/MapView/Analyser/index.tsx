@@ -24,7 +24,7 @@ import DatePicker from 'react-datepicker';
 import { LayerDefinitions } from '../../../config/utils';
 import {
   AggregationOperations,
-  NSOLayerProps,
+  AdminLevelDataLayerProps,
   WMSLayerProps,
   LayerKey,
 } from '../../../config/types';
@@ -149,7 +149,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
     ] as WMSLayerProps;
     const selectedBaselineLayer = LayerDefinitions[
       baselineLayerId
-    ] as NSOLayerProps;
+    ] as AdminLevelDataLayerProps;
 
     const params: AnalysisDispatchParams = {
       hazardLayer: selectedHazardLayer,
@@ -218,7 +218,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
               <div className={classes.analyserOptions}>
                 <Typography variant="body2">Baseline Layer</Typography>
                 <LayerDropdown
-                  type="nso"
+                  type="admin_level_data"
                   value={baselineLayerId}
                   setValue={setBaselineLayerId}
                   title="Baseline Layer"

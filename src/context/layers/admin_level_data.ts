@@ -1,6 +1,9 @@
 import { FeatureCollection } from 'geojson';
 import { get, isNull, isString } from 'lodash';
-import { BoundaryLayerProps, NSOLayerProps } from '../../config/types';
+import {
+  BoundaryLayerProps,
+  AdminLevelDataLayerProps,
+} from '../../config/types';
 import type { ThunkApi } from '../store';
 import { getBoundaryLayerSingleton } from '../../config/utils';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
@@ -11,13 +14,13 @@ export type DataRecord = {
   value: string | number | null;
 };
 
-export type NSOLayerData = {
+export type AdminLevelDataLayerData = {
   features: FeatureCollection;
   layerData: DataRecord[];
 };
 
-export const fetchNSOLayerData: LazyLoader<NSOLayerProps> = () => async (
-  { layer }: LayerDataParams<NSOLayerProps>,
+export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> = () => async (
+  { layer }: LayerDataParams<AdminLevelDataLayerProps>,
   api: ThunkApi,
 ) => {
   const { path, adminCode, dataField } = layer;

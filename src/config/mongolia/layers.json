@@ -9,7 +9,7 @@
   },
   "population_below_poverty": {
     "title": "Poverty headcount (aimag)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Poverty_Headcount_Admin1.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
@@ -41,7 +41,7 @@
   },
   "disabled": {
     "title": "Number of disabled people (aimag)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Disabled_Admin1_Total.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
@@ -73,7 +73,7 @@
   },
   "hay_harvest": {
     "title": "Hay harvest (soum)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Hay_Harvest_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
@@ -105,7 +105,7 @@
   },
   "elderly": {
     "title": "Single-headed elderly households (aimag)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Single_Elderly_Admin1_Total.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
@@ -137,7 +137,7 @@
   },
   "herders": {
     "title": "Herder households (soum)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Herder_HHs_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
@@ -169,7 +169,7 @@
   },
   "livestock": {
     "title": "Number of livestock in thousands (soum)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Livestock_Count_ths_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
@@ -201,7 +201,7 @@
   },
   "child": {
     "title": "Number of children under 5 (soum)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Child_U5_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
@@ -233,7 +233,7 @@
   },
   "herd_200": {
     "title": "Small herder households (aimag)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Herd_Size_Admin1_LT_200.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
@@ -265,7 +265,7 @@
   },
   "population_total": {
     "title": "Total population (soum)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Population_Admin2_Total.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
@@ -535,7 +535,7 @@
   },
   "mvam_hay_reserves": {
     "title": "Hay reserves in metric tonnes (soum)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/mVAM_Hay_Reserves.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
@@ -567,7 +567,7 @@
   },
   "mvam_fodder_reserves": {
     "title": "Fodder reserves in metric tonnes (soum)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/mVAM_Fodder_Reserves.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
@@ -599,7 +599,7 @@
   },
   "mvam_cash_reserves": {
     "title": "Cash reserves in million MNT (soum)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/mVAM_Cash_Reserves.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
@@ -631,7 +631,7 @@
   },
   "mvam_hay_prices": {
     "title": "Hay prices (soum)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mongolia/nso/mVAM_Hay_Price.json",
     "data_field": "DTVAL_CO",
     "admin_level": 1,

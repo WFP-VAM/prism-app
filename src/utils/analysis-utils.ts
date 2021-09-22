@@ -17,7 +17,7 @@ import {
   ImpactLayerProps,
   LayerType,
   LegendDefinition,
-  NSOLayerProps,
+  AdminLevelDataLayerProps,
   StatsApi,
   ThresholdDefinition,
   WMSLayerProps,
@@ -32,7 +32,7 @@ import {
   pixelsInFeature,
 } from '../components/MapView/Layers/raster-utils';
 import { BoundaryLayerData } from '../context/layers/boundary';
-import { NSOLayerData } from '../context/layers/nso';
+import { AdminLevelDataLayerData } from '../context/layers/admin_level_data';
 import { getWCSLayerUrl, WMSLayerData } from '../context/layers/wms';
 import type {
   LayerData,
@@ -43,7 +43,7 @@ import { LayerDefinitions } from '../config/utils';
 import type { TableRow } from '../context/analysisResultStateSlice';
 import { isLocalhost } from '../serviceWorker';
 
-export type BaselineLayerData = NSOLayerData;
+export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
 type RasterLayer = LayerData<WMSLayerProps>;
 
@@ -265,7 +265,7 @@ export function scaleAndFilterAggregateData(
 
 export function generateFeaturesFromApiData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
-  baselineData: NSOLayerData,
+  baselineData: AdminLevelDataLayerData,
   groupBy: StatsApi['groupBy'],
   operation: AggregationOperations,
 ): GeoJsonBoundary[] {
@@ -585,13 +585,13 @@ export class BaselineLayerResult {
   legend: LegendDefinition;
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
-  baselineLayerId: NSOLayerProps['id'];
+  baselineLayerId: AdminLevelDataLayerProps['id'];
 
   constructor(
     tableData: TableRow[],
     featureCollection: FeatureCollection,
     hazardLayer: WMSLayerProps,
-    baselineLayer: NSOLayerProps,
+    baselineLayer: AdminLevelDataLayerProps,
     statistic: AggregationOperations,
     threshold: ThresholdDefinition,
     rawApiData?: object[],
@@ -610,8 +610,8 @@ export class BaselineLayerResult {
   getHazardLayer(): WMSLayerProps {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
-  getBaselineLayer(): NSOLayerProps {
-    return LayerDefinitions[this.baselineLayerId] as NSOLayerProps;
+  getBaselineLayer(): AdminLevelDataLayerProps {
+    return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
   }
 
   getTitle(): string {
