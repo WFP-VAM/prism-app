@@ -15,6 +15,11 @@
   },
     "categories": {
       "hazards": {
+        "floods": [
+          "hydra_s1",
+          "hydra_s2",
+          "hydra_l8"
+        ],
         "rainfall": [
           "rainfall_dekad",
           "rain_anomaly_dekad",

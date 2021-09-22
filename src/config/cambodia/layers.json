@@ -1109,7 +1109,7 @@
     "hydra_s1": {
       "title": "Potential flooding (Sentinel-1)",
       "type": "wms",
-      "server_layer_name": "hfs1_sfw_mask",
+      "server_layer_name": "hfs1_sfw_mask_khm",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
       "opacity": 1.0,
@@ -1121,7 +1121,7 @@
     "hydra_s2": {
       "title": "Potential flooding (Sentinel-2)",
       "type": "wms",
-      "server_layer_name": "hfs2_sfw_mask",
+      "server_layer_name": "hfs2_sfw_mask_khm",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
       "opacity": 1.0,
@@ -1133,7 +1133,7 @@
     "hydra_l8": {
       "title": "Potential flooding (Landsat)",
       "type": "wms",
-      "server_layer_name": "hfl8_sfw_mask",
+      "server_layer_name": "hfl8_sfw_mask_khm",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
       "opacity": 1.0,
