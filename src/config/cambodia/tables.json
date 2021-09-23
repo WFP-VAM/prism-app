@@ -1,0 +1,38 @@
+{
+  "animal_deaths": {
+    "title": "Animal deaths due to disease or natural hazards",
+    "table": "./data/tables/NSO_Animal_Deaths_Annual_Admin1.csv",
+    "legend_text": "Annual deaths of animals due to disease or natural hazards (including dzud). Source: National Statistics Office",
+    "chart": {
+      "type": "line",
+      "stacked": true,
+      "fill": true,
+      "category": "Category_EN",
+      "data": "Year"
+    }
+  },
+  "hay_prices": {
+    "title": "Monthly hay prices",
+    "table": "./data/tables/NSO_Bale_Hay_Price_Monthly_Avg2.csv",
+    "legend_text": "Price of a bail of hay by month. Source: National Statistics Office",
+    "chart": {
+      "type": "line",
+      "stacked": false,
+      "transpose": true,
+      "category": "Month",
+      "data": "data"
+    }
+  },
+  "poverty": {
+    "title": "Poverty headcount 2016 vs 2018",
+    "table": "./data/tables/NSO_Poverty_Headcount_Admin1.csv",
+    "legend_text": "Poverty headcount over two periods. Source: National Statistics Office",
+    "chart": {
+      "type": "bar",
+      "stacked": false,
+      "transpose": true,
+      "category": "Category_EN",
+      "data": "Year"
+    }
+  }
+}
