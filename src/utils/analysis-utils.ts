@@ -510,42 +510,53 @@ export function scaleFeatureStat(
 /**
  * Creates Analysis result legend based on data returned from API.
  *
+ * The equal interval method takes the maximum values minus the minimum
+ * and divides the result by the number of classes, which is the length
+ * of colors array.
+ *
+ * Finally the function calculates the upper end of each class interval
+ * and assigns a color.
+ *
  * @return LegendDefinition
  */
 export function createLegendFromFeatureArray(
   features: Feature[],
   statistic: AggregationOperations,
 ): LegendDefinition {
-  // Extract values based on aggregation operation as sorted array.
-  const stats: number[] = Array.prototype.sort.call(
-    features.map(f =>
-      f.properties && f.properties[statistic] ? f.properties[statistic] : 0,
-    ),
-    (a, b) => a - b, // This function is required since JS assumes unicode values.
+  // Extract values based on aggregation operation.
+  const stats: number[] = features.map(f =>
+    f.properties && f.properties[statistic] ? f.properties[statistic] : 0,
   );
 
-  const statsLen = stats.length;
+  const maxNum = Math.max(...stats);
+  const minNum = Math.min(...stats);
 
-  // legend breakpoints are generated based on quintiles derived from stats array.
-  const legend: LegendDefinition = [
-    { value: stats[Math.floor(statsLen * 0.2) - 1], color: '#fee5d9' },
-    { value: stats[Math.floor(statsLen * 0.4) - 1], color: '#fcae91' },
-    { value: stats[Math.floor(statsLen * 0.6) - 1], color: '#fb6a4a' },
-    { value: stats[Math.floor(statsLen * 0.8) - 1], color: '#de2d26' },
-    { value: stats[statsLen - 1], color: '#a50f15' },
-  ];
+  const colors = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15'];
+
+  const delta = (maxNum - minNum) / colors.length;
+
+  const legend: LegendDefinition = colors.map((color, index) => {
+    const breakpoint = Math.ceil(minNum + (index + 1) * delta);
+
+    // Make sure you don't have a value greater than maxNum.
+    const value = Math.min(breakpoint, maxNum);
+
+    return { value, color };
+  });
 
   return legend;
 }
 
 export class ExposedPopulationResult {
   key: string;
+  groupBy: string;
   featureCollection: FeatureCollection;
   legend: LegendDefinition;
+  legendText: string;
   statistic: AggregationOperations;
 
   getTitle = (): string => {
-    return 'Population Affected';
+    return 'Population Exposure';
   };
 
   getStatTitle = (): string => {
@@ -556,11 +567,15 @@ export class ExposedPopulationResult {
     featureCollection: FeatureCollection,
     statistic: AggregationOperations,
     legend: LegendDefinition,
+    legendText: string,
+    groupBy: string,
     key: string,
   ) {
     this.featureCollection = featureCollection;
     this.statistic = statistic;
     this.legend = legend;
+    this.legendText = legendText;
+    this.groupBy = groupBy;
     this.key = key;
   }
 }
@@ -577,6 +592,7 @@ export class BaselineLayerResult {
   threshold: ThresholdDefinition;
 
   legend: LegendDefinition;
+  legendText: string;
   hazardLayerId: WMSLayerProps['id'];
   baselineLayerId: NSOLayerProps['id'];
 
@@ -594,6 +610,7 @@ export class BaselineLayerResult {
     this.statistic = statistic;
     this.threshold = threshold;
     this.legend = baselineLayer.legend;
+    this.legendText = hazardLayer.legendText;
     this.rawApiData = rawApiData;
 
     this.hazardLayerId = hazardLayer.id;

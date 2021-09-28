@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Extent } from '../Layers/raster-utils';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
@@ -28,6 +28,7 @@ import {
 } from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
+  addTableData,
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
@@ -36,8 +37,10 @@ import {
   BaselineLayerResult,
   ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
+import { convertToTableData, downloadToFile } from '../utils';
 
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
+import LayerContentPreview from './layerContentPreview';
 
 /**
  * Returns layer identifier used to perform exposure analysis.
@@ -74,6 +77,20 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
+  const features = analysisResult?.featureCollection.features;
+  const hasData = features ? features.length > 0 : false;
+
+  const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
+    e.preventDefault();
+    downloadToFile(
+      {
+        content: JSON.stringify(features),
+        isUrl: false,
+      },
+      analysisResult ? analysisResult.getTitle() : '',
+      'application/json',
+    );
+  };
 
   const legendItems = [
     ...layers.map(layer => {
@@ -108,18 +125,30 @@ function Legends({ classes, layers, extent }: LegendsProps) {
       );
     }),
     // add analysis legend item if layer is active and analysis result exists
-    ...(isAnalysisLayerActive && analysisResult
+    ...(isAnalysisLayerActive && hasData
       ? [
           <LegendItem
-            key={analysisResult.key}
-            legend={analysisResult.legend}
-            title={analysisResult.getTitle()}
+            key={analysisResult?.key}
+            legend={analysisResult?.legend}
+            title={analysisResult?.getTitle()}
             classes={classes}
             opacity={0.5} // TODO: initial opacity value
           >
             {analysisResult instanceof BaselineLayerResult && (
               <LegendImpactResult result={analysisResult} />
             )}
+            <Divider />
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={e => handleAnalysisDownload(e)}
+                fullWidth
+              >
+                Download
+              </Button>
+            </Grid>
           </LegendItem>,
         ]
       : []),
@@ -162,11 +191,12 @@ function LegendItem({
   extent,
 }: LegendItemProps) {
   const map = useSelector(mapSelector);
+  const analysisResult = useSelector(analysisResultSelector);
+  const dispatch = useDispatch();
 
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
-  const analysisResult = useSelector(analysisResultSelector);
 
   const handleChangeOpacity = (
     event: React.ChangeEvent<{}>,
@@ -199,6 +229,11 @@ function LegendItem({
     }
   };
 
+  if (analysisResult instanceof ExposedPopulationResult) {
+    const tableData = convertToTableData(analysisResult);
+    dispatch(addTableData(tableData));
+  }
+
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
@@ -207,6 +242,7 @@ function LegendItem({
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
             </Typography>
+            <LayerContentPreview layerId={id} />
           </Grid>
           <Divider />
           <Grid item className={classes.slider}>

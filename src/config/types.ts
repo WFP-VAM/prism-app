@@ -147,7 +147,7 @@ export type RawDataConfiguration = {
   pixelResolution?: number;
 
   // Remote layers might not have time dimension enabled.
-  timeSupport?: boolean;
+  disableDateParam?: boolean;
 };
 
 // Type of vector data that the layer provides
@@ -187,6 +187,9 @@ export class CommonLayerProps {
 
   @optional // Perform population exposure analysis using this layer.
   exposure?: ExposedPopulationDefinition;
+
+  @optional // Display layer extra details from a `markup` file
+  contentPath?: string;
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -414,4 +417,9 @@ export interface RequestFeatureInfo extends FeatureInfoType {
   featureCount: number;
   format: string;
   styles: string;
+}
+
+export enum DownloadFormat {
+  CSV,
+  JSON,
 }

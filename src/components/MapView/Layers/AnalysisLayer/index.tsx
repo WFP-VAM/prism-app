@@ -49,8 +49,8 @@ function AnalysisLayer() {
 
   return (
     <GeoJSONLayer
+      before="boundaries-line"
       id="layer-analysis"
-      below="boundaries"
       data={analysisData.featureCollection}
       fillPaint={fillPaintData(analysisData.legend, property)}
       fillOnClick={(evt: any) => {

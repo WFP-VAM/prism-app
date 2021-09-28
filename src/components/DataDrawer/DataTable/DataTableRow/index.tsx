@@ -10,12 +10,16 @@ export interface TableRowProps {
 
 const DataTableRow = ({ className, columns, rowData }: TableRowProps) => (
   <TableRow>
-    {columns.map(column => (
-      <TableCell className={className} key={column}>
-        {' '}
-        {rowData ? rowData[column] : column}{' '}
-      </TableCell>
-    ))}
+    {columns.map(column => {
+      const colValue = rowData ? rowData[column] : column;
+      const formattedColValue = colValue.toLocaleString();
+      return (
+        <TableCell className={className} key={column}>
+          {' '}
+          {formattedColValue}{' '}
+        </TableCell>
+      );
+    })}
   </TableRow>
 );
 
