@@ -8,7 +8,7 @@
     "admin_level_local_names": ["admin1Name_ru", "admin2Name_ru"]
   },
   "rainfall_dekad": {
-    "title": "10-day rainfall estimate (mm)",
+    "title": "TEST _ 10-day rainfall estimate (mm)",
     "type": "wms",
     "server_layer_name": "rfh_dekad",
     "additional_query_params": {
