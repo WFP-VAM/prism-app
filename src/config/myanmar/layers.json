@@ -1186,5 +1186,28 @@
     "legend": [],
     "legend_text": "",
     "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "kobo_test": {
+    "title": "Kobo data",
+    "type": "point_data",
+    "data": "http://localhost/kobo/forms?nameField=Test MMR&dateTimeField=_submission_time&geomField=Location&measureField=The_number",
+    "date_url": "http://localhost/kobo/forms?nameField=Test MMR&dateTimeField=_submission_time&geomField=Location&measureField=The_number",
+    "opacity": 1,
+    "measure": "The_number",
+    "legend_text": "Test",
+    "legend": [
+      {
+        "value": "2",
+        "color": "#7ab1c0"
+      },
+      {
+        "value": "5",
+        "color": "#9fc3b3"
+      },
+      {
+        "value": "100",
+        "color": "#d9e79a"
+      }
+    ]
   }
 }

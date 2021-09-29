@@ -1,4 +1,8 @@
 """Tests files for the analytics API."""
+from datetime import datetime
+from unittest.mock import patch
+
+from app.kobo import get_form_responses
 from app.zonal_stats import calculate_stats
 
 
@@ -48,5 +52,44 @@ def test_calculate_stats_wfs_polygons():
     features = calculate_stats(
         zones, geotiff, group_by='ADM1_PCODE', geojson_out=False, wfs_response=wfs_response)
     assert len(features) == 2
+
+    assert True
+
+
+@patch('app.kobo.get_responses_from_kobo')
+@patch('app.kobo.get_kobo_params')
+def test_kobo_response_form(kobo_params, kobo_data):
+    """ Test form response parsing. """
+    form_fields = {'name': 'name', 'datetime': 'date', 'geom': 'geom', 'measure': 'value'}
+    kobo_params.return_value = (('test', 'test'), form_fields)
+
+    kobo_data_json = [
+        {
+            'date': '2021-09-22T21:35:54',
+            'geom': '21.908012 95.986908 0 0',
+            'value': '2',
+        },
+        {
+            'date': '2019-01-01T10:00:08',
+            'geom': '21.916222 95.955971 0 0',
+            'value': '3',
+        }
+    ]
+
+    kobo_data.return_value = (kobo_data_json, ['value', 'geom'])
+
+    begin, end = datetime(2000, 1, 1), datetime(2030, 1, 1)
+    forms = get_form_responses(begin, end)
+
+    assert len(forms) == 2
+
+    assert forms[0]['lat'] == '21.908012'
+    assert forms[0]['lon'] == '95.986908'
+    assert forms[0]['value'] == 2
+
+    # Test Filter
+    begin, end = datetime(2000, 1, 1), datetime(2020, 1, 1)
+    forms = get_form_responses(begin, end)
+    assert len(forms) == 1
 
     assert True

@@ -30,15 +30,21 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   // we should get the data from the local public file in layer.fallbackData
 
   const formattedDate = date && moment(date).format('YYYY-MM-DD');
+
   // TODO exclusive to this api...
-  const dateQuery = `?beginDateTime=${
+  const dateQuery = `beginDateTime=${
     formattedDate || '2000-01-01'
   }&endDateTime=${formattedDate || '2023-12-21'}`;
+
+  const requestUrl = `${dataUrl}${
+    dataUrl.includes('?') ? '&' : '?'
+  }${dateQuery}`;
+
   let data;
   try {
     // eslint-disable-next-line fp/no-mutation
     data = (await (
-      await fetch(dataUrl + dateQuery, {
+      await fetch(requestUrl, {
         mode: 'cors',
       })
     ).json()) as PointLayerData;
