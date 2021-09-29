@@ -1,0 +1,6312 @@
+{
+    "DataList": [
+ {
+   "Adm3_NCDD": "100101",
+   "num_idpoor": 357
+ },
+ {
+   "Adm3_NCDD": "100102",
+   "num_idpoor": 762
+ },
+ {
+   "Adm3_NCDD": "100103",
+   "num_idpoor": 224
+ },
+ {
+   "Adm3_NCDD": "100104",
+   "num_idpoor": 447
+ },
+ {
+   "Adm3_NCDD": "100105",
+   "num_idpoor": 436
+ },
+ {
+   "Adm3_NCDD": "100106",
+   "num_idpoor": 223
+ },
+ {
+   "Adm3_NCDD": "100107",
+   "num_idpoor": 464
+ },
+ {
+   "Adm3_NCDD": "100108",
+   "num_idpoor": 765
+ },
+ {
+   "Adm3_NCDD": "100207",
+   "num_idpoor": 91
+ },
+ {
+   "Adm3_NCDD": "100208",
+   "num_idpoor": 171
+ },
+ {
+   "Adm3_NCDD": "100209",
+   "num_idpoor": 219
+ },
+ {
+   "Adm3_NCDD": "100210",
+   "num_idpoor": 632
+ },
+ {
+   "Adm3_NCDD": "100211",
+   "num_idpoor": 219
+ },
+ {
+   "Adm3_NCDD": "100301",
+   "num_idpoor": 413
+ },
+ {
+   "Adm3_NCDD": "100302",
+   "num_idpoor": 544
+ },
+ {
+   "Adm3_NCDD": "100303",
+   "num_idpoor": 382
+ },
+ {
+   "Adm3_NCDD": "100304",
+   "num_idpoor": 55
+ },
+ {
+   "Adm3_NCDD": "100305",
+   "num_idpoor": 778
+ },
+ {
+   "Adm3_NCDD": "100306",
+   "num_idpoor": 243
+ },
+ {
+   "Adm3_NCDD": "100307",
+   "num_idpoor": 503
+ },
+ {
+   "Adm3_NCDD": "100308",
+   "num_idpoor": 682
+ },
+ {
+   "Adm3_NCDD": "100401",
+   "num_idpoor": 311
+ },
+ {
+   "Adm3_NCDD": "100402",
+   "num_idpoor": 594
+ },
+ {
+   "Adm3_NCDD": "100403",
+   "num_idpoor": 446
+ },
+ {
+   "Adm3_NCDD": "100404",
+   "num_idpoor": 370
+ },
+ {
+   "Adm3_NCDD": "100405",
+   "num_idpoor": 677
+ },
+ {
+   "Adm3_NCDD": "100406",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "100407",
+   "num_idpoor": 547
+ },
+ {
+   "Adm3_NCDD": "100408",
+   "num_idpoor": 365
+ },
+ {
+   "Adm3_NCDD": "100409",
+   "num_idpoor": 298
+ },
+ {
+   "Adm3_NCDD": "100410",
+   "num_idpoor": 289
+ },
+ {
+   "Adm3_NCDD": "100501",
+   "num_idpoor": 528
+ },
+ {
+   "Adm3_NCDD": "100502",
+   "num_idpoor": 474
+ },
+ {
+   "Adm3_NCDD": "100503",
+   "num_idpoor": 432
+ },
+ {
+   "Adm3_NCDD": "100504",
+   "num_idpoor": 624
+ },
+ {
+   "Adm3_NCDD": "100505",
+   "num_idpoor": 632
+ },
+ {
+   "Adm3_NCDD": "100601",
+   "num_idpoor": 242
+ },
+ {
+   "Adm3_NCDD": "100602",
+   "num_idpoor": 415
+ },
+ {
+   "Adm3_NCDD": "100603",
+   "num_idpoor": 508
+ },
+ {
+   "Adm3_NCDD": "100604",
+   "num_idpoor": 445
+ },
+ {
+   "Adm3_NCDD": "100605",
+   "num_idpoor": 380
+ },
+ {
+   "Adm3_NCDD": "100606",
+   "num_idpoor": 113
+ },
+ {
+   "Adm3_NCDD": "100607",
+   "num_idpoor": 417
+ },
+ {
+   "Adm3_NCDD": "100608",
+   "num_idpoor": 211
+ },
+ {
+   "Adm3_NCDD": "100609",
+   "num_idpoor": 341
+ },
+ {
+   "Adm3_NCDD": "100610",
+   "num_idpoor": 666
+ },
+ {
+   "Adm3_NCDD": "110101",
+   "num_idpoor": 174
+ },
+ {
+   "Adm3_NCDD": "110102",
+   "num_idpoor": 146
+ },
+ {
+   "Adm3_NCDD": "110103",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "110104",
+   "num_idpoor": 414
+ },
+ {
+   "Adm3_NCDD": "110105",
+   "num_idpoor": 141
+ },
+ {
+   "Adm3_NCDD": "110201",
+   "num_idpoor": 178
+ },
+ {
+   "Adm3_NCDD": "110202",
+   "num_idpoor": 88
+ },
+ {
+   "Adm3_NCDD": "110203",
+   "num_idpoor": 227
+ },
+ {
+   "Adm3_NCDD": "110204",
+   "num_idpoor": 252
+ },
+ {
+   "Adm3_NCDD": "110205",
+   "num_idpoor": 166
+ },
+ {
+   "Adm3_NCDD": "110206",
+   "num_idpoor": 391
+ },
+ {
+   "Adm3_NCDD": "110301",
+   "num_idpoor": 136
+ },
+ {
+   "Adm3_NCDD": "110302",
+   "num_idpoor": 148
+ },
+ {
+   "Adm3_NCDD": "110401",
+   "num_idpoor": 84
+ },
+ {
+   "Adm3_NCDD": "110402",
+   "num_idpoor": 278
+ },
+ {
+   "Adm3_NCDD": "110403",
+   "num_idpoor": 54
+ },
+ {
+   "Adm3_NCDD": "110404",
+   "num_idpoor": 168
+ },
+ {
+   "Adm3_NCDD": "110501",
+   "num_idpoor": 100
+ },
+ {
+   "Adm3_NCDD": "110502",
+   "num_idpoor": 108
+ },
+ {
+   "Adm3_NCDD": "110503",
+   "num_idpoor": 146
+ },
+ {
+   "Adm3_NCDD": "110504",
+   "num_idpoor": 138
+ },
+ {
+   "Adm3_NCDD": "120501",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "120507",
+   "num_idpoor": 76
+ },
+ {
+   "Adm3_NCDD": "120508",
+   "num_idpoor": 338
+ },
+ {
+   "Adm3_NCDD": "120510",
+   "num_idpoor": 170
+ },
+ {
+   "Adm3_NCDD": "120512",
+   "num_idpoor": 69
+ },
+ {
+   "Adm3_NCDD": "120513",
+   "num_idpoor": 96
+ },
+ {
+   "Adm3_NCDD": "120514",
+   "num_idpoor": 115
+ },
+ {
+   "Adm3_NCDD": "120515",
+   "num_idpoor": 120
+ },
+ {
+   "Adm3_NCDD": "120516",
+   "num_idpoor": 44
+ },
+ {
+   "Adm3_NCDD": "120517",
+   "num_idpoor": 115
+ },
+ {
+   "Adm3_NCDD": "120518",
+   "num_idpoor": 95
+ },
+ {
+   "Adm3_NCDD": "120519",
+   "num_idpoor": 36
+ },
+ {
+   "Adm3_NCDD": "120520",
+   "num_idpoor": 105
+ },
+ {
+   "Adm3_NCDD": "120606",
+   "num_idpoor": 307
+ },
+ {
+   "Adm3_NCDD": "120607",
+   "num_idpoor": 214
+ },
+ {
+   "Adm3_NCDD": "120703",
+   "num_idpoor": 371
+ },
+ {
+   "Adm3_NCDD": "120704",
+   "num_idpoor": 207
+ },
+ {
+   "Adm3_NCDD": "120706",
+   "num_idpoor": 154
+ },
+ {
+   "Adm3_NCDD": "120711",
+   "num_idpoor": 326
+ },
+ {
+   "Adm3_NCDD": "120712",
+   "num_idpoor": 110
+ },
+ {
+   "Adm3_NCDD": "120801",
+   "num_idpoor": 214
+ },
+ {
+   "Adm3_NCDD": "120802",
+   "num_idpoor": 167
+ },
+ {
+   "Adm3_NCDD": "120803",
+   "num_idpoor": 640
+ },
+ {
+   "Adm3_NCDD": "120807",
+   "num_idpoor": 217
+ },
+ {
+   "Adm3_NCDD": "120901",
+   "num_idpoor": 1011
+ },
+ {
+   "Adm3_NCDD": "120903",
+   "num_idpoor": 106
+ },
+ {
+   "Adm3_NCDD": "120906",
+   "num_idpoor": 120
+ },
+ {
+   "Adm3_NCDD": "120908",
+   "num_idpoor": 150
+ },
+ {
+   "Adm3_NCDD": "120909",
+   "num_idpoor": 210
+ },
+ {
+   "Adm3_NCDD": "120910",
+   "num_idpoor": 214
+ },
+ {
+   "Adm3_NCDD": "120911",
+   "num_idpoor": 133
+ },
+ {
+   "Adm3_NCDD": "120913",
+   "num_idpoor": 99
+ },
+ {
+   "Adm3_NCDD": "121001",
+   "num_idpoor": 204
+ },
+ {
+   "Adm3_NCDD": "121002",
+   "num_idpoor": 568
+ },
+ {
+   "Adm3_NCDD": "121003",
+   "num_idpoor": 174
+ },
+ {
+   "Adm3_NCDD": "121004",
+   "num_idpoor": 293
+ },
+ {
+   "Adm3_NCDD": "121005",
+   "num_idpoor": 124
+ },
+ {
+   "Adm3_NCDD": "121101",
+   "num_idpoor": 450
+ },
+ {
+   "Adm3_NCDD": "121102",
+   "num_idpoor": 152
+ },
+ {
+   "Adm3_NCDD": "121103",
+   "num_idpoor": 79
+ },
+ {
+   "Adm3_NCDD": "121104",
+   "num_idpoor": 986
+ },
+ {
+   "Adm3_NCDD": "121105",
+   "num_idpoor": 352
+ },
+ {
+   "Adm3_NCDD": "121201",
+   "num_idpoor": 266
+ },
+ {
+   "Adm3_NCDD": "121202",
+   "num_idpoor": 809
+ },
+ {
+   "Adm3_NCDD": "121203",
+   "num_idpoor": 423
+ },
+ {
+   "Adm3_NCDD": "121204",
+   "num_idpoor": 918
+ },
+ {
+   "Adm3_NCDD": "121205",
+   "num_idpoor": 305
+ },
+ {
+   "Adm3_NCDD": "121206",
+   "num_idpoor": 505
+ },
+ {
+   "Adm3_NCDD": "121207",
+   "num_idpoor": 847
+ },
+ {
+   "Adm3_NCDD": "121208",
+   "num_idpoor": 785
+ },
+ {
+   "Adm3_NCDD": "130101",
+   "num_idpoor": 223
+ },
+ {
+   "Adm3_NCDD": "130102",
+   "num_idpoor": 123
+ },
+ {
+   "Adm3_NCDD": "130103",
+   "num_idpoor": 217
+ },
+ {
+   "Adm3_NCDD": "130104",
+   "num_idpoor": 133
+ },
+ {
+   "Adm3_NCDD": "130105",
+   "num_idpoor": 105
+ },
+ {
+   "Adm3_NCDD": "130106",
+   "num_idpoor": 241
+ },
+ {
+   "Adm3_NCDD": "130201",
+   "num_idpoor": 145
+ },
+ {
+   "Adm3_NCDD": "130202",
+   "num_idpoor": 65
+ },
+ {
+   "Adm3_NCDD": "130203",
+   "num_idpoor": 75
+ },
+ {
+   "Adm3_NCDD": "130204",
+   "num_idpoor": 69
+ },
+ {
+   "Adm3_NCDD": "130205",
+   "num_idpoor": 120
+ },
+ {
+   "Adm3_NCDD": "130206",
+   "num_idpoor": 66
+ },
+ {
+   "Adm3_NCDD": "130207",
+   "num_idpoor": 83
+ },
+ {
+   "Adm3_NCDD": "130208",
+   "num_idpoor": 103
+ },
+ {
+   "Adm3_NCDD": "130301",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "130302",
+   "num_idpoor": 321
+ },
+ {
+   "Adm3_NCDD": "130303",
+   "num_idpoor": 148
+ },
+ {
+   "Adm3_NCDD": "130304",
+   "num_idpoor": 204
+ },
+ {
+   "Adm3_NCDD": "130305",
+   "num_idpoor": 224
+ },
+ {
+   "Adm3_NCDD": "130306",
+   "num_idpoor": 238
+ },
+ {
+   "Adm3_NCDD": "130307",
+   "num_idpoor": 259
+ },
+ {
+   "Adm3_NCDD": "130308",
+   "num_idpoor": 255
+ },
+ {
+   "Adm3_NCDD": "130401",
+   "num_idpoor": 239
+ },
+ {
+   "Adm3_NCDD": "130402",
+   "num_idpoor": 192
+ },
+ {
+   "Adm3_NCDD": "130403",
+   "num_idpoor": 310
+ },
+ {
+   "Adm3_NCDD": "130404",
+   "num_idpoor": 442
+ },
+ {
+   "Adm3_NCDD": "130405",
+   "num_idpoor": 204
+ },
+ {
+   "Adm3_NCDD": "130406",
+   "num_idpoor": 708
+ },
+ {
+   "Adm3_NCDD": "130501",
+   "num_idpoor": 77
+ },
+ {
+   "Adm3_NCDD": "130502",
+   "num_idpoor": 123
+ },
+ {
+   "Adm3_NCDD": "130503",
+   "num_idpoor": 115
+ },
+ {
+   "Adm3_NCDD": "130504",
+   "num_idpoor": 158
+ },
+ {
+   "Adm3_NCDD": "130505",
+   "num_idpoor": 54
+ },
+ {
+   "Adm3_NCDD": "130506",
+   "num_idpoor": 62
+ },
+ {
+   "Adm3_NCDD": "130507",
+   "num_idpoor": 91
+ },
+ {
+   "Adm3_NCDD": "130508",
+   "num_idpoor": 81
+ },
+ {
+   "Adm3_NCDD": "130509",
+   "num_idpoor": 148
+ },
+ {
+   "Adm3_NCDD": "130510",
+   "num_idpoor": 154
+ },
+ {
+   "Adm3_NCDD": "130512",
+   "num_idpoor": 176
+ },
+ {
+   "Adm3_NCDD": "130601",
+   "num_idpoor": 212
+ },
+ {
+   "Adm3_NCDD": "130602",
+   "num_idpoor": 361
+ },
+ {
+   "Adm3_NCDD": "130603",
+   "num_idpoor": 86
+ },
+ {
+   "Adm3_NCDD": "130604",
+   "num_idpoor": 297
+ },
+ {
+   "Adm3_NCDD": "130605",
+   "num_idpoor": 378
+ },
+ {
+   "Adm3_NCDD": "130703",
+   "num_idpoor": 233
+ },
+ {
+   "Adm3_NCDD": "130704",
+   "num_idpoor": 206
+ },
+ {
+   "Adm3_NCDD": "130705",
+   "num_idpoor": 185
+ },
+ {
+   "Adm3_NCDD": "130706",
+   "num_idpoor": 236
+ },
+ {
+   "Adm3_NCDD": "130801",
+   "num_idpoor": 372
+ },
+ {
+   "Adm3_NCDD": "130802",
+   "num_idpoor": 975
+ },
+ {
+   "Adm3_NCDD": "140101",
+   "num_idpoor": 661
+ },
+ {
+   "Adm3_NCDD": "140102",
+   "num_idpoor": 508
+ },
+ {
+   "Adm3_NCDD": "140103",
+   "num_idpoor": 489
+ },
+ {
+   "Adm3_NCDD": "140104",
+   "num_idpoor": 538
+ },
+ {
+   "Adm3_NCDD": "140105",
+   "num_idpoor": 464
+ },
+ {
+   "Adm3_NCDD": "140106",
+   "num_idpoor": 644
+ },
+ {
+   "Adm3_NCDD": "140107",
+   "num_idpoor": 595
+ },
+ {
+   "Adm3_NCDD": "140108",
+   "num_idpoor": 465
+ },
+ {
+   "Adm3_NCDD": "140109",
+   "num_idpoor": 632
+ },
+ {
+   "Adm3_NCDD": "140201",
+   "num_idpoor": 697
+ },
+ {
+   "Adm3_NCDD": "140202",
+   "num_idpoor": 686
+ },
+ {
+   "Adm3_NCDD": "140203",
+   "num_idpoor": 470
+ },
+ {
+   "Adm3_NCDD": "140204",
+   "num_idpoor": 341
+ },
+ {
+   "Adm3_NCDD": "140205",
+   "num_idpoor": 400
+ },
+ {
+   "Adm3_NCDD": "140206",
+   "num_idpoor": 881
+ },
+ {
+   "Adm3_NCDD": "140207",
+   "num_idpoor": 906
+ },
+ {
+   "Adm3_NCDD": "140208",
+   "num_idpoor": 279
+ },
+ {
+   "Adm3_NCDD": "140301",
+   "num_idpoor": 321
+ },
+ {
+   "Adm3_NCDD": "140302",
+   "num_idpoor": 530
+ },
+ {
+   "Adm3_NCDD": "140303",
+   "num_idpoor": 465
+ },
+ {
+   "Adm3_NCDD": "140304",
+   "num_idpoor": 456
+ },
+ {
+   "Adm3_NCDD": "140305",
+   "num_idpoor": 493
+ },
+ {
+   "Adm3_NCDD": "140306",
+   "num_idpoor": 663
+ },
+ {
+   "Adm3_NCDD": "140307",
+   "num_idpoor": 363
+ },
+ {
+   "Adm3_NCDD": "140308",
+   "num_idpoor": 476
+ },
+ {
+   "Adm3_NCDD": "140309",
+   "num_idpoor": 319
+ },
+ {
+   "Adm3_NCDD": "140310",
+   "num_idpoor": 432
+ },
+ {
+   "Adm3_NCDD": "140311",
+   "num_idpoor": 272
+ },
+ {
+   "Adm3_NCDD": "140312",
+   "num_idpoor": 301
+ },
+ {
+   "Adm3_NCDD": "140313",
+   "num_idpoor": 218
+ },
+ {
+   "Adm3_NCDD": "140401",
+   "num_idpoor": 683
+ },
+ {
+   "Adm3_NCDD": "140402",
+   "num_idpoor": 281
+ },
+ {
+   "Adm3_NCDD": "140403",
+   "num_idpoor": 559
+ },
+ {
+   "Adm3_NCDD": "140404",
+   "num_idpoor": 476
+ },
+ {
+   "Adm3_NCDD": "140405",
+   "num_idpoor": 262
+ },
+ {
+   "Adm3_NCDD": "140406",
+   "num_idpoor": 352
+ },
+ {
+   "Adm3_NCDD": "140407",
+   "num_idpoor": 465
+ },
+ {
+   "Adm3_NCDD": "140408",
+   "num_idpoor": 229
+ },
+ {
+   "Adm3_NCDD": "140501",
+   "num_idpoor": 643
+ },
+ {
+   "Adm3_NCDD": "140502",
+   "num_idpoor": 766
+ },
+ {
+   "Adm3_NCDD": "140503",
+   "num_idpoor": 672
+ },
+ {
+   "Adm3_NCDD": "140504",
+   "num_idpoor": 521
+ },
+ {
+   "Adm3_NCDD": "140505",
+   "num_idpoor": 410
+ },
+ {
+   "Adm3_NCDD": "140506",
+   "num_idpoor": 733
+ },
+ {
+   "Adm3_NCDD": "140507",
+   "num_idpoor": 679
+ },
+ {
+   "Adm3_NCDD": "140508",
+   "num_idpoor": 1048
+ },
+ {
+   "Adm3_NCDD": "140601",
+   "num_idpoor": 423
+ },
+ {
+   "Adm3_NCDD": "140602",
+   "num_idpoor": 502
+ },
+ {
+   "Adm3_NCDD": "140603",
+   "num_idpoor": 234
+ },
+ {
+   "Adm3_NCDD": "140604",
+   "num_idpoor": 379
+ },
+ {
+   "Adm3_NCDD": "140605",
+   "num_idpoor": 530
+ },
+ {
+   "Adm3_NCDD": "140606",
+   "num_idpoor": 705
+ },
+ {
+   "Adm3_NCDD": "140607",
+   "num_idpoor": 397
+ },
+ {
+   "Adm3_NCDD": "140608",
+   "num_idpoor": 299
+ },
+ {
+   "Adm3_NCDD": "140609",
+   "num_idpoor": 811
+ },
+ {
+   "Adm3_NCDD": "140610",
+   "num_idpoor": 225
+ },
+ {
+   "Adm3_NCDD": "140701",
+   "num_idpoor": 494
+ },
+ {
+   "Adm3_NCDD": "140702",
+   "num_idpoor": 310
+ },
+ {
+   "Adm3_NCDD": "140703",
+   "num_idpoor": 382
+ },
+ {
+   "Adm3_NCDD": "140704",
+   "num_idpoor": 413
+ },
+ {
+   "Adm3_NCDD": "140705",
+   "num_idpoor": 360
+ },
+ {
+   "Adm3_NCDD": "140706",
+   "num_idpoor": 104
+ },
+ {
+   "Adm3_NCDD": "140707",
+   "num_idpoor": 271
+ },
+ {
+   "Adm3_NCDD": "140708",
+   "num_idpoor": 432
+ },
+ {
+   "Adm3_NCDD": "140801",
+   "num_idpoor": 285
+ },
+ {
+   "Adm3_NCDD": "140802",
+   "num_idpoor": 250
+ },
+ {
+   "Adm3_NCDD": "140803",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "140805",
+   "num_idpoor": 229
+ },
+ {
+   "Adm3_NCDD": "140807",
+   "num_idpoor": 443
+ },
+ {
+   "Adm3_NCDD": "140808",
+   "num_idpoor": 310
+ },
+ {
+   "Adm3_NCDD": "140809",
+   "num_idpoor": 275
+ },
+ {
+   "Adm3_NCDD": "140810",
+   "num_idpoor": 228
+ },
+ {
+   "Adm3_NCDD": "140811",
+   "num_idpoor": 258
+ },
+ {
+   "Adm3_NCDD": "140901",
+   "num_idpoor": 639
+ },
+ {
+   "Adm3_NCDD": "140902",
+   "num_idpoor": 927
+ },
+ {
+   "Adm3_NCDD": "140903",
+   "num_idpoor": 900
+ },
+ {
+   "Adm3_NCDD": "140904",
+   "num_idpoor": 808
+ },
+ {
+   "Adm3_NCDD": "140905",
+   "num_idpoor": 764
+ },
+ {
+   "Adm3_NCDD": "140906",
+   "num_idpoor": 566
+ },
+ {
+   "Adm3_NCDD": "140907",
+   "num_idpoor": 340
+ },
+ {
+   "Adm3_NCDD": "140908",
+   "num_idpoor": 713
+ },
+ {
+   "Adm3_NCDD": "140909",
+   "num_idpoor": 458
+ },
+ {
+   "Adm3_NCDD": "140910",
+   "num_idpoor": 738
+ },
+ {
+   "Adm3_NCDD": "140911",
+   "num_idpoor": 837
+ },
+ {
+   "Adm3_NCDD": "141001",
+   "num_idpoor": 237
+ },
+ {
+   "Adm3_NCDD": "141002",
+   "num_idpoor": 189
+ },
+ {
+   "Adm3_NCDD": "141003",
+   "num_idpoor": 518
+ },
+ {
+   "Adm3_NCDD": "141101",
+   "num_idpoor": 304
+ },
+ {
+   "Adm3_NCDD": "141102",
+   "num_idpoor": 383
+ },
+ {
+   "Adm3_NCDD": "141103",
+   "num_idpoor": 218
+ },
+ {
+   "Adm3_NCDD": "141104",
+   "num_idpoor": 115
+ },
+ {
+   "Adm3_NCDD": "141105",
+   "num_idpoor": 257
+ },
+ {
+   "Adm3_NCDD": "141106",
+   "num_idpoor": 248
+ },
+ {
+   "Adm3_NCDD": "141107",
+   "num_idpoor": 247
+ },
+ {
+   "Adm3_NCDD": "141201",
+   "num_idpoor": 347
+ },
+ {
+   "Adm3_NCDD": "141202",
+   "num_idpoor": 431
+ },
+ {
+   "Adm3_NCDD": "141203",
+   "num_idpoor": 341
+ },
+ {
+   "Adm3_NCDD": "141204",
+   "num_idpoor": 295
+ },
+ {
+   "Adm3_NCDD": "141205",
+   "num_idpoor": 161
+ },
+ {
+   "Adm3_NCDD": "141206",
+   "num_idpoor": 267
+ },
+ {
+   "Adm3_NCDD": "141207",
+   "num_idpoor": 309
+ },
+ {
+   "Adm3_NCDD": "141208",
+   "num_idpoor": 109
+ },
+ {
+   "Adm3_NCDD": "141209",
+   "num_idpoor": 335
+ },
+ {
+   "Adm3_NCDD": "141210",
+   "num_idpoor": 195
+ },
+ {
+   "Adm3_NCDD": "141211",
+   "num_idpoor": 221
+ },
+ {
+   "Adm3_NCDD": "141301",
+   "num_idpoor": 310
+ },
+ {
+   "Adm3_NCDD": "141302",
+   "num_idpoor": 270
+ },
+ {
+   "Adm3_NCDD": "141303",
+   "num_idpoor": 540
+ },
+ {
+   "Adm3_NCDD": "141304",
+   "num_idpoor": 605
+ },
+ {
+   "Adm3_NCDD": "141305",
+   "num_idpoor": 356
+ },
+ {
+   "Adm3_NCDD": "141306",
+   "num_idpoor": 702
+ },
+ {
+   "Adm3_NCDD": "141307",
+   "num_idpoor": 232
+ },
+ {
+   "Adm3_NCDD": "141308",
+   "num_idpoor": 423
+ },
+ {
+   "Adm3_NCDD": "141309",
+   "num_idpoor": 544
+ },
+ {
+   "Adm3_NCDD": "141310",
+   "num_idpoor": 348
+ },
+ {
+   "Adm3_NCDD": "141311",
+   "num_idpoor": 833
+ },
+ {
+   "Adm3_NCDD": "150101",
+   "num_idpoor": 557
+ },
+ {
+   "Adm3_NCDD": "150102",
+   "num_idpoor": 695
+ },
+ {
+   "Adm3_NCDD": "150103",
+   "num_idpoor": 331
+ },
+ {
+   "Adm3_NCDD": "150104",
+   "num_idpoor": 609
+ },
+ {
+   "Adm3_NCDD": "150105",
+   "num_idpoor": 934
+ },
+ {
+   "Adm3_NCDD": "150106",
+   "num_idpoor": 552
+ },
+ {
+   "Adm3_NCDD": "150107",
+   "num_idpoor": 927
+ },
+ {
+   "Adm3_NCDD": "150108",
+   "num_idpoor": 370
+ },
+ {
+   "Adm3_NCDD": "150110",
+   "num_idpoor": 1088
+ },
+ {
+   "Adm3_NCDD": "150201",
+   "num_idpoor": 406
+ },
+ {
+   "Adm3_NCDD": "150203",
+   "num_idpoor": 462
+ },
+ {
+   "Adm3_NCDD": "150204",
+   "num_idpoor": 546
+ },
+ {
+   "Adm3_NCDD": "150206",
+   "num_idpoor": 770
+ },
+ {
+   "Adm3_NCDD": "150207",
+   "num_idpoor": 424
+ },
+ {
+   "Adm3_NCDD": "150208",
+   "num_idpoor": 477
+ },
+ {
+   "Adm3_NCDD": "150209",
+   "num_idpoor": 373
+ },
+ {
+   "Adm3_NCDD": "150210",
+   "num_idpoor": 583
+ },
+ {
+   "Adm3_NCDD": "150301",
+   "num_idpoor": 260
+ },
+ {
+   "Adm3_NCDD": "150302",
+   "num_idpoor": 390
+ },
+ {
+   "Adm3_NCDD": "150303",
+   "num_idpoor": 359
+ },
+ {
+   "Adm3_NCDD": "150304",
+   "num_idpoor": 710
+ },
+ {
+   "Adm3_NCDD": "150305",
+   "num_idpoor": 277
+ },
+ {
+   "Adm3_NCDD": "150306",
+   "num_idpoor": 369
+ },
+ {
+   "Adm3_NCDD": "150307",
+   "num_idpoor": 419
+ },
+ {
+   "Adm3_NCDD": "150308",
+   "num_idpoor": 271
+ },
+ {
+   "Adm3_NCDD": "150309",
+   "num_idpoor": 728
+ },
+ {
+   "Adm3_NCDD": "150310",
+   "num_idpoor": 280
+ },
+ {
+   "Adm3_NCDD": "150311",
+   "num_idpoor": 472
+ },
+ {
+   "Adm3_NCDD": "150401",
+   "num_idpoor": 354
+ },
+ {
+   "Adm3_NCDD": "150402",
+   "num_idpoor": 586
+ },
+ {
+   "Adm3_NCDD": "150404",
+   "num_idpoor": 773
+ },
+ {
+   "Adm3_NCDD": "150405",
+   "num_idpoor": 307
+ },
+ {
+   "Adm3_NCDD": "150406",
+   "num_idpoor": 389
+ },
+ {
+   "Adm3_NCDD": "150407",
+   "num_idpoor": 788
+ },
+ {
+   "Adm3_NCDD": "150501",
+   "num_idpoor": 470
+ },
+ {
+   "Adm3_NCDD": "150503",
+   "num_idpoor": 310
+ },
+ {
+   "Adm3_NCDD": "150504",
+   "num_idpoor": 524
+ },
+ {
+   "Adm3_NCDD": "150505",
+   "num_idpoor": 252
+ },
+ {
+   "Adm3_NCDD": "150506",
+   "num_idpoor": 803
+ },
+ {
+   "Adm3_NCDD": "150507",
+   "num_idpoor": 378
+ },
+ {
+   "Adm3_NCDD": "150508",
+   "num_idpoor": 240
+ },
+ {
+   "Adm3_NCDD": "150601",
+   "num_idpoor": 83
+ },
+ {
+   "Adm3_NCDD": "150602",
+   "num_idpoor": 161
+ },
+ {
+   "Adm3_NCDD": "150603",
+   "num_idpoor": 291
+ },
+ {
+   "Adm3_NCDD": "150604",
+   "num_idpoor": 399
+ },
+ {
+   "Adm3_NCDD": "150605",
+   "num_idpoor": 63
+ },
+ {
+   "Adm3_NCDD": "160101",
+   "num_idpoor": 155
+ },
+ {
+   "Adm3_NCDD": "160103",
+   "num_idpoor": 336
+ },
+ {
+   "Adm3_NCDD": "160104",
+   "num_idpoor": 150
+ },
+ {
+   "Adm3_NCDD": "160201",
+   "num_idpoor": 497
+ },
+ {
+   "Adm3_NCDD": "160202",
+   "num_idpoor": 209
+ },
+ {
+   "Adm3_NCDD": "160203",
+   "num_idpoor": 210
+ },
+ {
+   "Adm3_NCDD": "160204",
+   "num_idpoor": 217
+ },
+ {
+   "Adm3_NCDD": "160301",
+   "num_idpoor": 167
+ },
+ {
+   "Adm3_NCDD": "160302",
+   "num_idpoor": 252
+ },
+ {
+   "Adm3_NCDD": "160303",
+   "num_idpoor": 163
+ },
+ {
+   "Adm3_NCDD": "160304",
+   "num_idpoor": 128
+ },
+ {
+   "Adm3_NCDD": "160305",
+   "num_idpoor": 172
+ },
+ {
+   "Adm3_NCDD": "160306",
+   "num_idpoor": 261
+ },
+ {
+   "Adm3_NCDD": "160401",
+   "num_idpoor": 138
+ },
+ {
+   "Adm3_NCDD": "160402",
+   "num_idpoor": 107
+ },
+ {
+   "Adm3_NCDD": "160403",
+   "num_idpoor": 186
+ },
+ {
+   "Adm3_NCDD": "160404",
+   "num_idpoor": 253
+ },
+ {
+   "Adm3_NCDD": "160405",
+   "num_idpoor": 316
+ },
+ {
+   "Adm3_NCDD": "160406",
+   "num_idpoor": 154
+ },
+ {
+   "Adm3_NCDD": "160501",
+   "num_idpoor": 227
+ },
+ {
+   "Adm3_NCDD": "160502",
+   "num_idpoor": 123
+ },
+ {
+   "Adm3_NCDD": "160503",
+   "num_idpoor": 142
+ },
+ {
+   "Adm3_NCDD": "160504",
+   "num_idpoor": 100
+ },
+ {
+   "Adm3_NCDD": "160505",
+   "num_idpoor": 322
+ },
+ {
+   "Adm3_NCDD": "160506",
+   "num_idpoor": 250
+ },
+ {
+   "Adm3_NCDD": "160601",
+   "num_idpoor": 169
+ },
+ {
+   "Adm3_NCDD": "160602",
+   "num_idpoor": 160
+ },
+ {
+   "Adm3_NCDD": "160603",
+   "num_idpoor": 223
+ },
+ {
+   "Adm3_NCDD": "160604",
+   "num_idpoor": 94
+ },
+ {
+   "Adm3_NCDD": "160605",
+   "num_idpoor": 190
+ },
+ {
+   "Adm3_NCDD": "160606",
+   "num_idpoor": 163
+ },
+ {
+   "Adm3_NCDD": "160607",
+   "num_idpoor": 144
+ },
+ {
+   "Adm3_NCDD": "160701",
+   "num_idpoor": 157
+ },
+ {
+   "Adm3_NCDD": "160702",
+   "num_idpoor": 140
+ },
+ {
+   "Adm3_NCDD": "160703",
+   "num_idpoor": 133
+ },
+ {
+   "Adm3_NCDD": "160704",
+   "num_idpoor": 87
+ },
+ {
+   "Adm3_NCDD": "160705",
+   "num_idpoor": 78
+ },
+ {
+   "Adm3_NCDD": "160706",
+   "num_idpoor": 92
+ },
+ {
+   "Adm3_NCDD": "160707",
+   "num_idpoor": 142
+ },
+ {
+   "Adm3_NCDD": "160801",
+   "num_idpoor": 276
+ },
+ {
+   "Adm3_NCDD": "160802",
+   "num_idpoor": 315
+ },
+ {
+   "Adm3_NCDD": "160901",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "160903",
+   "num_idpoor": 117
+ },
+ {
+   "Adm3_NCDD": "160904",
+   "num_idpoor": 209
+ },
+ {
+   "Adm3_NCDD": "160905",
+   "num_idpoor": 61
+ },
+ {
+   "Adm3_NCDD": "160906",
+   "num_idpoor": 180
+ },
+ {
+   "Adm3_NCDD": "160907",
+   "num_idpoor": 210
+ },
+ {
+   "Adm3_NCDD": "160908",
+   "num_idpoor": 74
+ },
+ {
+   "Adm3_NCDD": "160909",
+   "num_idpoor": 182
+ },
+ {
+   "Adm3_NCDD": "160910",
+   "num_idpoor": 332
+ },
+ {
+   "Adm3_NCDD": "170101",
+   "num_idpoor": 145
+ },
+ {
+   "Adm3_NCDD": "170102",
+   "num_idpoor": 129
+ },
+ {
+   "Adm3_NCDD": "170103",
+   "num_idpoor": 456
+ },
+ {
+   "Adm3_NCDD": "170104",
+   "num_idpoor": 122
+ },
+ {
+   "Adm3_NCDD": "170105",
+   "num_idpoor": 196
+ },
+ {
+   "Adm3_NCDD": "170106",
+   "num_idpoor": 242
+ },
+ {
+   "Adm3_NCDD": "170107",
+   "num_idpoor": 167
+ },
+ {
+   "Adm3_NCDD": "170201",
+   "num_idpoor": 118
+ },
+ {
+   "Adm3_NCDD": "170202",
+   "num_idpoor": 500
+ },
+ {
+   "Adm3_NCDD": "170203",
+   "num_idpoor": 287
+ },
+ {
+   "Adm3_NCDD": "170204",
+   "num_idpoor": 306
+ },
+ {
+   "Adm3_NCDD": "170301",
+   "num_idpoor": 372
+ },
+ {
+   "Adm3_NCDD": "170302",
+   "num_idpoor": 169
+ },
+ {
+   "Adm3_NCDD": "170303",
+   "num_idpoor": 324
+ },
+ {
+   "Adm3_NCDD": "170304",
+   "num_idpoor": 171
+ },
+ {
+   "Adm3_NCDD": "170305",
+   "num_idpoor": 252
+ },
+ {
+   "Adm3_NCDD": "170306",
+   "num_idpoor": 480
+ },
+ {
+   "Adm3_NCDD": "170401",
+   "num_idpoor": 428
+ },
+ {
+   "Adm3_NCDD": "170402",
+   "num_idpoor": 529
+ },
+ {
+   "Adm3_NCDD": "170403",
+   "num_idpoor": 419
+ },
+ {
+   "Adm3_NCDD": "170404",
+   "num_idpoor": 531
+ },
+ {
+   "Adm3_NCDD": "170405",
+   "num_idpoor": 740
+ },
+ {
+   "Adm3_NCDD": "170406",
+   "num_idpoor": 537
+ },
+ {
+   "Adm3_NCDD": "170407",
+   "num_idpoor": 462
+ },
+ {
+   "Adm3_NCDD": "170408",
+   "num_idpoor": 532
+ },
+ {
+   "Adm3_NCDD": "170409",
+   "num_idpoor": 398
+ },
+ {
+   "Adm3_NCDD": "170410",
+   "num_idpoor": 476
+ },
+ {
+   "Adm3_NCDD": "170411",
+   "num_idpoor": 323
+ },
+ {
+   "Adm3_NCDD": "170412",
+   "num_idpoor": 502
+ },
+ {
+   "Adm3_NCDD": "170601",
+   "num_idpoor": 182
+ },
+ {
+   "Adm3_NCDD": "170602",
+   "num_idpoor": 132
+ },
+ {
+   "Adm3_NCDD": "170603",
+   "num_idpoor": 146
+ },
+ {
+   "Adm3_NCDD": "170604",
+   "num_idpoor": 138
+ },
+ {
+   "Adm3_NCDD": "170605",
+   "num_idpoor": 139
+ },
+ {
+   "Adm3_NCDD": "170606",
+   "num_idpoor": 193
+ },
+ {
+   "Adm3_NCDD": "170607",
+   "num_idpoor": 269
+ },
+ {
+   "Adm3_NCDD": "170608",
+   "num_idpoor": 171
+ },
+ {
+   "Adm3_NCDD": "170609",
+   "num_idpoor": 278
+ },
+ {
+   "Adm3_NCDD": "170610",
+   "num_idpoor": 78
+ },
+ {
+   "Adm3_NCDD": "170701",
+   "num_idpoor": 322
+ },
+ {
+   "Adm3_NCDD": "170702",
+   "num_idpoor": 617
+ },
+ {
+   "Adm3_NCDD": "170703",
+   "num_idpoor": 333
+ },
+ {
+   "Adm3_NCDD": "170704",
+   "num_idpoor": 220
+ },
+ {
+   "Adm3_NCDD": "170705",
+   "num_idpoor": 411
+ },
+ {
+   "Adm3_NCDD": "170707",
+   "num_idpoor": 542
+ },
+ {
+   "Adm3_NCDD": "170708",
+   "num_idpoor": 346
+ },
+ {
+   "Adm3_NCDD": "170709",
+   "num_idpoor": 68
+ },
+ {
+   "Adm3_NCDD": "170710",
+   "num_idpoor": 128
+ },
+ {
+   "Adm3_NCDD": "170711",
+   "num_idpoor": 237
+ },
+ {
+   "Adm3_NCDD": "170712",
+   "num_idpoor": 946
+ },
+ {
+   "Adm3_NCDD": "170713",
+   "num_idpoor": 135
+ },
+ {
+   "Adm3_NCDD": "170715",
+   "num_idpoor": 522
+ },
+ {
+   "Adm3_NCDD": "170716",
+   "num_idpoor": 294
+ },
+ {
+   "Adm3_NCDD": "170902",
+   "num_idpoor": 189
+ },
+ {
+   "Adm3_NCDD": "170903",
+   "num_idpoor": 179
+ },
+ {
+   "Adm3_NCDD": "170904",
+   "num_idpoor": 80
+ },
+ {
+   "Adm3_NCDD": "170905",
+   "num_idpoor": 115
+ },
+ {
+   "Adm3_NCDD": "170906",
+   "num_idpoor": 200
+ },
+ {
+   "Adm3_NCDD": "170907",
+   "num_idpoor": 219
+ },
+ {
+   "Adm3_NCDD": "170908",
+   "num_idpoor": 237
+ },
+ {
+   "Adm3_NCDD": "170909",
+   "num_idpoor": 261
+ },
+ {
+   "Adm3_NCDD": "171001",
+   "num_idpoor": 596
+ },
+ {
+   "Adm3_NCDD": "171002",
+   "num_idpoor": 384
+ },
+ {
+   "Adm3_NCDD": "171003",
+   "num_idpoor": 898
+ },
+ {
+   "Adm3_NCDD": "171004",
+   "num_idpoor": 249
+ },
+ {
+   "Adm3_NCDD": "171005",
+   "num_idpoor": 382
+ },
+ {
+   "Adm3_NCDD": "171006",
+   "num_idpoor": 297
+ },
+ {
+   "Adm3_NCDD": "171007",
+   "num_idpoor": 289
+ },
+ {
+   "Adm3_NCDD": "171008",
+   "num_idpoor": 203
+ },
+ {
+   "Adm3_NCDD": "171009",
+   "num_idpoor": 386
+ },
+ {
+   "Adm3_NCDD": "171010",
+   "num_idpoor": 182
+ },
+ {
+   "Adm3_NCDD": "171012",
+   "num_idpoor": 317
+ },
+ {
+   "Adm3_NCDD": "171013",
+   "num_idpoor": 356
+ },
+ {
+   "Adm3_NCDD": "171101",
+   "num_idpoor": 338
+ },
+ {
+   "Adm3_NCDD": "171102",
+   "num_idpoor": 377
+ },
+ {
+   "Adm3_NCDD": "171103",
+   "num_idpoor": 379
+ },
+ {
+   "Adm3_NCDD": "171104",
+   "num_idpoor": 609
+ },
+ {
+   "Adm3_NCDD": "171105",
+   "num_idpoor": 264
+ },
+ {
+   "Adm3_NCDD": "171106",
+   "num_idpoor": 276
+ },
+ {
+   "Adm3_NCDD": "171107",
+   "num_idpoor": 226
+ },
+ {
+   "Adm3_NCDD": "171108",
+   "num_idpoor": 350
+ },
+ {
+   "Adm3_NCDD": "171109",
+   "num_idpoor": 372
+ },
+ {
+   "Adm3_NCDD": "171110",
+   "num_idpoor": 435
+ },
+ {
+   "Adm3_NCDD": "171201",
+   "num_idpoor": 191
+ },
+ {
+   "Adm3_NCDD": "171202",
+   "num_idpoor": 105
+ },
+ {
+   "Adm3_NCDD": "171203",
+   "num_idpoor": 186
+ },
+ {
+   "Adm3_NCDD": "171204",
+   "num_idpoor": 214
+ },
+ {
+   "Adm3_NCDD": "171205",
+   "num_idpoor": 83
+ },
+ {
+   "Adm3_NCDD": "171206",
+   "num_idpoor": 380
+ },
+ {
+   "Adm3_NCDD": "171301",
+   "num_idpoor": 224
+ },
+ {
+   "Adm3_NCDD": "171302",
+   "num_idpoor": 72
+ },
+ {
+   "Adm3_NCDD": "171303",
+   "num_idpoor": 213
+ },
+ {
+   "Adm3_NCDD": "171304",
+   "num_idpoor": 318
+ },
+ {
+   "Adm3_NCDD": "171305",
+   "num_idpoor": 325
+ },
+ {
+   "Adm3_NCDD": "171401",
+   "num_idpoor": 149
+ },
+ {
+   "Adm3_NCDD": "171402",
+   "num_idpoor": 163
+ },
+ {
+   "Adm3_NCDD": "171403",
+   "num_idpoor": 720
+ },
+ {
+   "Adm3_NCDD": "171404",
+   "num_idpoor": 134
+ },
+ {
+   "Adm3_NCDD": "171405",
+   "num_idpoor": 249
+ },
+ {
+   "Adm3_NCDD": "180101",
+   "num_idpoor": 155
+ },
+ {
+   "Adm3_NCDD": "180102",
+   "num_idpoor": 42
+ },
+ {
+   "Adm3_NCDD": "180103",
+   "num_idpoor": 238
+ },
+ {
+   "Adm3_NCDD": "180104",
+   "num_idpoor": 326
+ },
+ {
+   "Adm3_NCDD": "180105",
+   "num_idpoor": 44
+ },
+ {
+   "Adm3_NCDD": "180201",
+   "num_idpoor": 123
+ },
+ {
+   "Adm3_NCDD": "180202",
+   "num_idpoor": 169
+ },
+ {
+   "Adm3_NCDD": "180203",
+   "num_idpoor": 75
+ },
+ {
+   "Adm3_NCDD": "180204",
+   "num_idpoor": 173
+ },
+ {
+   "Adm3_NCDD": "180205",
+   "num_idpoor": 196
+ },
+ {
+   "Adm3_NCDD": "180206",
+   "num_idpoor": 159
+ },
+ {
+   "Adm3_NCDD": "180207",
+   "num_idpoor": 92
+ },
+ {
+   "Adm3_NCDD": "180208",
+   "num_idpoor": 263
+ },
+ {
+   "Adm3_NCDD": "180209",
+   "num_idpoor": 143
+ },
+ {
+   "Adm3_NCDD": "180210",
+   "num_idpoor": 219
+ },
+ {
+   "Adm3_NCDD": "180211",
+   "num_idpoor": 121
+ },
+ {
+   "Adm3_NCDD": "180212",
+   "num_idpoor": 181
+ },
+ {
+   "Adm3_NCDD": "180213",
+   "num_idpoor": 115
+ },
+ {
+   "Adm3_NCDD": "180214",
+   "num_idpoor": 244
+ },
+ {
+   "Adm3_NCDD": "180301",
+   "num_idpoor": 45
+ },
+ {
+   "Adm3_NCDD": "180302",
+   "num_idpoor": 101
+ },
+ {
+   "Adm3_NCDD": "180303",
+   "num_idpoor": 253
+ },
+ {
+   "Adm3_NCDD": "180304",
+   "num_idpoor": 90
+ },
+ {
+   "Adm3_NCDD": "180401",
+   "num_idpoor": 95
+ },
+ {
+   "Adm3_NCDD": "180402",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "180403",
+   "num_idpoor": 113
+ },
+ {
+   "Adm3_NCDD": "180404",
+   "num_idpoor": 78
+ },
+ {
+   "Adm3_NCDD": "190101",
+   "num_idpoor": 257
+ },
+ {
+   "Adm3_NCDD": "190102",
+   "num_idpoor": 176
+ },
+ {
+   "Adm3_NCDD": "190103",
+   "num_idpoor": 157
+ },
+ {
+   "Adm3_NCDD": "190104",
+   "num_idpoor": 197
+ },
+ {
+   "Adm3_NCDD": "190105",
+   "num_idpoor": 156
+ },
+ {
+   "Adm3_NCDD": "190106",
+   "num_idpoor": 15
+ },
+ {
+   "Adm3_NCDD": "190107",
+   "num_idpoor": 161
+ },
+ {
+   "Adm3_NCDD": "190201",
+   "num_idpoor": 82
+ },
+ {
+   "Adm3_NCDD": "190202",
+   "num_idpoor": 98
+ },
+ {
+   "Adm3_NCDD": "190203",
+   "num_idpoor": 205
+ },
+ {
+   "Adm3_NCDD": "190204",
+   "num_idpoor": 182
+ },
+ {
+   "Adm3_NCDD": "190205",
+   "num_idpoor": 86
+ },
+ {
+   "Adm3_NCDD": "190206",
+   "num_idpoor": 134
+ },
+ {
+   "Adm3_NCDD": "190207",
+   "num_idpoor": 189
+ },
+ {
+   "Adm3_NCDD": "190301",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "190302",
+   "num_idpoor": 233
+ },
+ {
+   "Adm3_NCDD": "190303",
+   "num_idpoor": 225
+ },
+ {
+   "Adm3_NCDD": "190304",
+   "num_idpoor": 212
+ },
+ {
+   "Adm3_NCDD": "190305",
+   "num_idpoor": 119
+ },
+ {
+   "Adm3_NCDD": "190401",
+   "num_idpoor": 198
+ },
+ {
+   "Adm3_NCDD": "190402",
+   "num_idpoor": 182
+ },
+ {
+   "Adm3_NCDD": "190403",
+   "num_idpoor": 160
+ },
+ {
+   "Adm3_NCDD": "190404",
+   "num_idpoor": 622
+ },
+ {
+   "Adm3_NCDD": "190501",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "190502",
+   "num_idpoor": 167
+ },
+ {
+   "Adm3_NCDD": "190503",
+   "num_idpoor": 370
+ },
+ {
+   "Adm3_NCDD": "190504",
+   "num_idpoor": 143
+ },
+ {
+   "Adm3_NCDD": "190505",
+   "num_idpoor": 339
+ },
+ {
+   "Adm3_NCDD": "190506",
+   "num_idpoor": 184
+ },
+ {
+   "Adm3_NCDD": "190507",
+   "num_idpoor": 209
+ },
+ {
+   "Adm3_NCDD": "190508",
+   "num_idpoor": 308
+ },
+ {
+   "Adm3_NCDD": "190509",
+   "num_idpoor": 205
+ },
+ {
+   "Adm3_NCDD": "190510",
+   "num_idpoor": 190
+ },
+ {
+   "Adm3_NCDD": "190511",
+   "num_idpoor": 309
+ },
+ {
+   "Adm3_NCDD": "200103",
+   "num_idpoor": 175
+ },
+ {
+   "Adm3_NCDD": "200104",
+   "num_idpoor": 232
+ },
+ {
+   "Adm3_NCDD": "200105",
+   "num_idpoor": 207
+ },
+ {
+   "Adm3_NCDD": "200108",
+   "num_idpoor": 114
+ },
+ {
+   "Adm3_NCDD": "200109",
+   "num_idpoor": 161
+ },
+ {
+   "Adm3_NCDD": "200110",
+   "num_idpoor": 94
+ },
+ {
+   "Adm3_NCDD": "200201",
+   "num_idpoor": 128
+ },
+ {
+   "Adm3_NCDD": "200202",
+   "num_idpoor": 107
+ },
+ {
+   "Adm3_NCDD": "200203",
+   "num_idpoor": 254
+ },
+ {
+   "Adm3_NCDD": "200204",
+   "num_idpoor": 131
+ },
+ {
+   "Adm3_NCDD": "200205",
+   "num_idpoor": 115
+ },
+ {
+   "Adm3_NCDD": "200206",
+   "num_idpoor": 132
+ },
+ {
+   "Adm3_NCDD": "200207",
+   "num_idpoor": 183
+ },
+ {
+   "Adm3_NCDD": "200208",
+   "num_idpoor": 181
+ },
+ {
+   "Adm3_NCDD": "200209",
+   "num_idpoor": 257
+ },
+ {
+   "Adm3_NCDD": "200211",
+   "num_idpoor": 196
+ },
+ {
+   "Adm3_NCDD": "200212",
+   "num_idpoor": 235
+ },
+ {
+   "Adm3_NCDD": "200301",
+   "num_idpoor": 289
+ },
+ {
+   "Adm3_NCDD": "200302",
+   "num_idpoor": 311
+ },
+ {
+   "Adm3_NCDD": "200303",
+   "num_idpoor": 259
+ },
+ {
+   "Adm3_NCDD": "200304",
+   "num_idpoor": 319
+ },
+ {
+   "Adm3_NCDD": "200305",
+   "num_idpoor": 210
+ },
+ {
+   "Adm3_NCDD": "200306",
+   "num_idpoor": 354
+ },
+ {
+   "Adm3_NCDD": "200307",
+   "num_idpoor": 225
+ },
+ {
+   "Adm3_NCDD": "200308",
+   "num_idpoor": 155
+ },
+ {
+   "Adm3_NCDD": "200309",
+   "num_idpoor": 228
+ },
+ {
+   "Adm3_NCDD": "200310",
+   "num_idpoor": 274
+ },
+ {
+   "Adm3_NCDD": "200401",
+   "num_idpoor": 183
+ },
+ {
+   "Adm3_NCDD": "200402",
+   "num_idpoor": 437
+ },
+ {
+   "Adm3_NCDD": "200403",
+   "num_idpoor": 236
+ },
+ {
+   "Adm3_NCDD": "200404",
+   "num_idpoor": 476
+ },
+ {
+   "Adm3_NCDD": "200405",
+   "num_idpoor": 500
+ },
+ {
+   "Adm3_NCDD": "200406",
+   "num_idpoor": 291
+ },
+ {
+   "Adm3_NCDD": "200407",
+   "num_idpoor": 589
+ },
+ {
+   "Adm3_NCDD": "200408",
+   "num_idpoor": 213
+ },
+ {
+   "Adm3_NCDD": "200409",
+   "num_idpoor": 89
+ },
+ {
+   "Adm3_NCDD": "200410",
+   "num_idpoor": 208
+ },
+ {
+   "Adm3_NCDD": "200411",
+   "num_idpoor": 314
+ },
+ {
+   "Adm3_NCDD": "200412",
+   "num_idpoor": 524
+ },
+ {
+   "Adm3_NCDD": "200413",
+   "num_idpoor": 262
+ },
+ {
+   "Adm3_NCDD": "200414",
+   "num_idpoor": 163
+ },
+ {
+   "Adm3_NCDD": "200415",
+   "num_idpoor": 563
+ },
+ {
+   "Adm3_NCDD": "200416",
+   "num_idpoor": 204
+ },
+ {
+   "Adm3_NCDD": "200501",
+   "num_idpoor": 351
+ },
+ {
+   "Adm3_NCDD": "200502",
+   "num_idpoor": 436
+ },
+ {
+   "Adm3_NCDD": "200503",
+   "num_idpoor": 545
+ },
+ {
+   "Adm3_NCDD": "200504",
+   "num_idpoor": 490
+ },
+ {
+   "Adm3_NCDD": "200505",
+   "num_idpoor": 479
+ },
+ {
+   "Adm3_NCDD": "200507",
+   "num_idpoor": 502
+ },
+ {
+   "Adm3_NCDD": "200508",
+   "num_idpoor": 342
+ },
+ {
+   "Adm3_NCDD": "200509",
+   "num_idpoor": 404
+ },
+ {
+   "Adm3_NCDD": "200510",
+   "num_idpoor": 532
+ },
+ {
+   "Adm3_NCDD": "200511",
+   "num_idpoor": 608
+ },
+ {
+   "Adm3_NCDD": "200512",
+   "num_idpoor": 277
+ },
+ {
+   "Adm3_NCDD": "200513",
+   "num_idpoor": 186
+ },
+ {
+   "Adm3_NCDD": "200514",
+   "num_idpoor": 183
+ },
+ {
+   "Adm3_NCDD": "200515",
+   "num_idpoor": 489
+ },
+ {
+   "Adm3_NCDD": "200516",
+   "num_idpoor": 191
+ },
+ {
+   "Adm3_NCDD": "200517",
+   "num_idpoor": 308
+ },
+ {
+   "Adm3_NCDD": "200601",
+   "num_idpoor": 194
+ },
+ {
+   "Adm3_NCDD": "200602",
+   "num_idpoor": 59
+ },
+ {
+   "Adm3_NCDD": "200603",
+   "num_idpoor": 70
+ },
+ {
+   "Adm3_NCDD": "200604",
+   "num_idpoor": 67
+ },
+ {
+   "Adm3_NCDD": "200605",
+   "num_idpoor": 214
+ },
+ {
+   "Adm3_NCDD": "200606",
+   "num_idpoor": 156
+ },
+ {
+   "Adm3_NCDD": "200607",
+   "num_idpoor": 153
+ },
+ {
+   "Adm3_NCDD": "200702",
+   "num_idpoor": 315
+ },
+ {
+   "Adm3_NCDD": "200703",
+   "num_idpoor": 293
+ },
+ {
+   "Adm3_NCDD": "200704",
+   "num_idpoor": 42
+ },
+ {
+   "Adm3_NCDD": "200705",
+   "num_idpoor": 122
+ },
+ {
+   "Adm3_NCDD": "200706",
+   "num_idpoor": 100
+ },
+ {
+   "Adm3_NCDD": "200707",
+   "num_idpoor": 323
+ },
+ {
+   "Adm3_NCDD": "200708",
+   "num_idpoor": 252
+ },
+ {
+   "Adm3_NCDD": "200709",
+   "num_idpoor": 502
+ },
+ {
+   "Adm3_NCDD": "200711",
+   "num_idpoor": 209
+ },
+ {
+   "Adm3_NCDD": "200801",
+   "num_idpoor": 219
+ },
+ {
+   "Adm3_NCDD": "200802",
+   "num_idpoor": 70
+ },
+ {
+   "Adm3_NCDD": "200803",
+   "num_idpoor": 225
+ },
+ {
+   "Adm3_NCDD": "200804",
+   "num_idpoor": 96
+ },
+ {
+   "Adm3_NCDD": "200805",
+   "num_idpoor": 154
+ },
+ {
+   "Adm3_NCDD": "210101",
+   "num_idpoor": 587
+ },
+ {
+   "Adm3_NCDD": "210102",
+   "num_idpoor": 641
+ },
+ {
+   "Adm3_NCDD": "210103",
+   "num_idpoor": 144
+ },
+ {
+   "Adm3_NCDD": "210104",
+   "num_idpoor": 268
+ },
+ {
+   "Adm3_NCDD": "210105",
+   "num_idpoor": 359
+ },
+ {
+   "Adm3_NCDD": "210106",
+   "num_idpoor": 438
+ },
+ {
+   "Adm3_NCDD": "210201",
+   "num_idpoor": 309
+ },
+ {
+   "Adm3_NCDD": "210202",
+   "num_idpoor": 167
+ },
+ {
+   "Adm3_NCDD": "210203",
+   "num_idpoor": 298
+ },
+ {
+   "Adm3_NCDD": "210204",
+   "num_idpoor": 244
+ },
+ {
+   "Adm3_NCDD": "210205",
+   "num_idpoor": 535
+ },
+ {
+   "Adm3_NCDD": "210206",
+   "num_idpoor": 604
+ },
+ {
+   "Adm3_NCDD": "210207",
+   "num_idpoor": 285
+ },
+ {
+   "Adm3_NCDD": "210208",
+   "num_idpoor": 270
+ },
+ {
+   "Adm3_NCDD": "210209",
+   "num_idpoor": 262
+ },
+ {
+   "Adm3_NCDD": "210210",
+   "num_idpoor": 511
+ },
+ {
+   "Adm3_NCDD": "210211",
+   "num_idpoor": 205
+ },
+ {
+   "Adm3_NCDD": "210212",
+   "num_idpoor": 253
+ },
+ {
+   "Adm3_NCDD": "210213",
+   "num_idpoor": 231
+ },
+ {
+   "Adm3_NCDD": "210214",
+   "num_idpoor": 501
+ },
+ {
+   "Adm3_NCDD": "210215",
+   "num_idpoor": 591
+ },
+ {
+   "Adm3_NCDD": "210301",
+   "num_idpoor": 88
+ },
+ {
+   "Adm3_NCDD": "210302",
+   "num_idpoor": 136
+ },
+ {
+   "Adm3_NCDD": "210303",
+   "num_idpoor": 206
+ },
+ {
+   "Adm3_NCDD": "210304",
+   "num_idpoor": 201
+ },
+ {
+   "Adm3_NCDD": "210305",
+   "num_idpoor": 390
+ },
+ {
+   "Adm3_NCDD": "210401",
+   "num_idpoor": 361
+ },
+ {
+   "Adm3_NCDD": "210402",
+   "num_idpoor": 764
+ },
+ {
+   "Adm3_NCDD": "210403",
+   "num_idpoor": 228
+ },
+ {
+   "Adm3_NCDD": "210404",
+   "num_idpoor": 190
+ },
+ {
+   "Adm3_NCDD": "210405",
+   "num_idpoor": 178
+ },
+ {
+   "Adm3_NCDD": "210406",
+   "num_idpoor": 407
+ },
+ {
+   "Adm3_NCDD": "210407",
+   "num_idpoor": 263
+ },
+ {
+   "Adm3_NCDD": "210408",
+   "num_idpoor": 239
+ },
+ {
+   "Adm3_NCDD": "210409",
+   "num_idpoor": 136
+ },
+ {
+   "Adm3_NCDD": "210410",
+   "num_idpoor": 126
+ },
+ {
+   "Adm3_NCDD": "210411",
+   "num_idpoor": 511
+ },
+ {
+   "Adm3_NCDD": "210412",
+   "num_idpoor": 506
+ },
+ {
+   "Adm3_NCDD": "210501",
+   "num_idpoor": 347
+ },
+ {
+   "Adm3_NCDD": "210502",
+   "num_idpoor": 344
+ },
+ {
+   "Adm3_NCDD": "210503",
+   "num_idpoor": 280
+ },
+ {
+   "Adm3_NCDD": "210504",
+   "num_idpoor": 225
+ },
+ {
+   "Adm3_NCDD": "210505",
+   "num_idpoor": 521
+ },
+ {
+   "Adm3_NCDD": "210506",
+   "num_idpoor": 224
+ },
+ {
+   "Adm3_NCDD": "210601",
+   "num_idpoor": 196
+ },
+ {
+   "Adm3_NCDD": "210602",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "210603",
+   "num_idpoor": 324
+ },
+ {
+   "Adm3_NCDD": "210604",
+   "num_idpoor": 137
+ },
+ {
+   "Adm3_NCDD": "210605",
+   "num_idpoor": 277
+ },
+ {
+   "Adm3_NCDD": "210606",
+   "num_idpoor": 321
+ },
+ {
+   "Adm3_NCDD": "210607",
+   "num_idpoor": 111
+ },
+ {
+   "Adm3_NCDD": "210608",
+   "num_idpoor": 264
+ },
+ {
+   "Adm3_NCDD": "210609",
+   "num_idpoor": 132
+ },
+ {
+   "Adm3_NCDD": "210610",
+   "num_idpoor": 238
+ },
+ {
+   "Adm3_NCDD": "210611",
+   "num_idpoor": 342
+ },
+ {
+   "Adm3_NCDD": "210612",
+   "num_idpoor": 163
+ },
+ {
+   "Adm3_NCDD": "210613",
+   "num_idpoor": 104
+ },
+ {
+   "Adm3_NCDD": "210701",
+   "num_idpoor": 387
+ },
+ {
+   "Adm3_NCDD": "210702",
+   "num_idpoor": 529
+ },
+ {
+   "Adm3_NCDD": "210703",
+   "num_idpoor": 349
+ },
+ {
+   "Adm3_NCDD": "210704",
+   "num_idpoor": 538
+ },
+ {
+   "Adm3_NCDD": "210705",
+   "num_idpoor": 750
+ },
+ {
+   "Adm3_NCDD": "210706",
+   "num_idpoor": 245
+ },
+ {
+   "Adm3_NCDD": "210707",
+   "num_idpoor": 797
+ },
+ {
+   "Adm3_NCDD": "210708",
+   "num_idpoor": 280
+ },
+ {
+   "Adm3_NCDD": "210709",
+   "num_idpoor": 394
+ },
+ {
+   "Adm3_NCDD": "210710",
+   "num_idpoor": 356
+ },
+ {
+   "Adm3_NCDD": "210711",
+   "num_idpoor": 248
+ },
+ {
+   "Adm3_NCDD": "210801",
+   "num_idpoor": 423
+ },
+ {
+   "Adm3_NCDD": "210802",
+   "num_idpoor": 395
+ },
+ {
+   "Adm3_NCDD": "210803",
+   "num_idpoor": 407
+ },
+ {
+   "Adm3_NCDD": "210901",
+   "num_idpoor": 582
+ },
+ {
+   "Adm3_NCDD": "210902",
+   "num_idpoor": 443
+ },
+ {
+   "Adm3_NCDD": "210903",
+   "num_idpoor": 816
+ },
+ {
+   "Adm3_NCDD": "210904",
+   "num_idpoor": 1128
+ },
+ {
+   "Adm3_NCDD": "210905",
+   "num_idpoor": 240
+ },
+ {
+   "Adm3_NCDD": "210906",
+   "num_idpoor": 499
+ },
+ {
+   "Adm3_NCDD": "210907",
+   "num_idpoor": 415
+ },
+ {
+   "Adm3_NCDD": "210908",
+   "num_idpoor": 602
+ },
+ {
+   "Adm3_NCDD": "210909",
+   "num_idpoor": 388
+ },
+ {
+   "Adm3_NCDD": "210910",
+   "num_idpoor": 282
+ },
+ {
+   "Adm3_NCDD": "210911",
+   "num_idpoor": 375
+ },
+ {
+   "Adm3_NCDD": "210912",
+   "num_idpoor": 479
+ },
+ {
+   "Adm3_NCDD": "210913",
+   "num_idpoor": 502
+ },
+ {
+   "Adm3_NCDD": "210914",
+   "num_idpoor": 211
+ },
+ {
+   "Adm3_NCDD": "210915",
+   "num_idpoor": 384
+ },
+ {
+   "Adm3_NCDD": "211001",
+   "num_idpoor": 150
+ },
+ {
+   "Adm3_NCDD": "211002",
+   "num_idpoor": 172
+ },
+ {
+   "Adm3_NCDD": "211003",
+   "num_idpoor": 156
+ },
+ {
+   "Adm3_NCDD": "211004",
+   "num_idpoor": 402
+ },
+ {
+   "Adm3_NCDD": "211005",
+   "num_idpoor": 365
+ },
+ {
+   "Adm3_NCDD": "211006",
+   "num_idpoor": 192
+ },
+ {
+   "Adm3_NCDD": "211007",
+   "num_idpoor": 473
+ },
+ {
+   "Adm3_NCDD": "211008",
+   "num_idpoor": 391
+ },
+ {
+   "Adm3_NCDD": "211009",
+   "num_idpoor": 433
+ },
+ {
+   "Adm3_NCDD": "211010",
+   "num_idpoor": 192
+ },
+ {
+   "Adm3_NCDD": "211011",
+   "num_idpoor": 271
+ },
+ {
+   "Adm3_NCDD": "211012",
+   "num_idpoor": 351
+ },
+ {
+   "Adm3_NCDD": "211013",
+   "num_idpoor": 547
+ },
+ {
+   "Adm3_NCDD": "211014",
+   "num_idpoor": 127
+ },
+ {
+   "Adm3_NCDD": "220101",
+   "num_idpoor": 460
+ },
+ {
+   "Adm3_NCDD": "220103",
+   "num_idpoor": 375
+ },
+ {
+   "Adm3_NCDD": "220104",
+   "num_idpoor": 355
+ },
+ {
+   "Adm3_NCDD": "220105",
+   "num_idpoor": 199
+ },
+ {
+   "Adm3_NCDD": "220201",
+   "num_idpoor": 534
+ },
+ {
+   "Adm3_NCDD": "220202",
+   "num_idpoor": 604
+ },
+ {
+   "Adm3_NCDD": "220203",
+   "num_idpoor": 255
+ },
+ {
+   "Adm3_NCDD": "220204",
+   "num_idpoor": 462
+ },
+ {
+   "Adm3_NCDD": "220301",
+   "num_idpoor": 88
+ },
+ {
+   "Adm3_NCDD": "220302",
+   "num_idpoor": 225
+ },
+ {
+   "Adm3_NCDD": "220303",
+   "num_idpoor": 181
+ },
+ {
+   "Adm3_NCDD": "220304",
+   "num_idpoor": 130
+ },
+ {
+   "Adm3_NCDD": "220401",
+   "num_idpoor": 500
+ },
+ {
+   "Adm3_NCDD": "220402",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "220403",
+   "num_idpoor": 1055
+ },
+ {
+   "Adm3_NCDD": "220404",
+   "num_idpoor": 579
+ },
+ {
+   "Adm3_NCDD": "220405",
+   "num_idpoor": 231
+ },
+ {
+   "Adm3_NCDD": "220501",
+   "num_idpoor": 110
+ },
+ {
+   "Adm3_NCDD": "220502",
+   "num_idpoor": 332
+ },
+ {
+   "Adm3_NCDD": "220503",
+   "num_idpoor": 238
+ },
+ {
+   "Adm3_NCDD": "220504",
+   "num_idpoor": 213
+ },
+ {
+   "Adm3_NCDD": "220505",
+   "num_idpoor": 148
+ },
+ {
+   "Adm3_NCDD": "220506",
+   "num_idpoor": 513
+ },
+ {
+   "Adm3_NCDD": "230101",
+   "num_idpoor": 566
+ },
+ {
+   "Adm3_NCDD": "230103",
+   "num_idpoor": 376
+ },
+ {
+   "Adm3_NCDD": "230201",
+   "num_idpoor": 121
+ },
+ {
+   "Adm3_NCDD": "230202",
+   "num_idpoor": 204
+ },
+ {
+   "Adm3_NCDD": "230203",
+   "num_idpoor": 219
+ },
+ {
+   "Adm3_NCDD": "240101",
+   "num_idpoor": 653
+ },
+ {
+   "Adm3_NCDD": "240102",
+   "num_idpoor": 934
+ },
+ {
+   "Adm3_NCDD": "240103",
+   "num_idpoor": 371
+ },
+ {
+   "Adm3_NCDD": "240104",
+   "num_idpoor": 281
+ },
+ {
+   "Adm3_NCDD": "240201",
+   "num_idpoor": 335
+ },
+ {
+   "Adm3_NCDD": "240202",
+   "num_idpoor": 678
+ },
+ {
+   "Adm3_NCDD": "240203",
+   "num_idpoor": 943
+ },
+ {
+   "Adm3_NCDD": "240204",
+   "num_idpoor": 266
+ },
+ {
+   "Adm3_NCDD": "250101",
+   "num_idpoor": 627
+ },
+ {
+   "Adm3_NCDD": "250102",
+   "num_idpoor": 354
+ },
+ {
+   "Adm3_NCDD": "250103",
+   "num_idpoor": 625
+ },
+ {
+   "Adm3_NCDD": "250104",
+   "num_idpoor": 188
+ },
+ {
+   "Adm3_NCDD": "250105",
+   "num_idpoor": 927
+ },
+ {
+   "Adm3_NCDD": "250106",
+   "num_idpoor": 494
+ },
+ {
+   "Adm3_NCDD": "250107",
+   "num_idpoor": 442
+ },
+ {
+   "Adm3_NCDD": "250201",
+   "num_idpoor": 871
+ },
+ {
+   "Adm3_NCDD": "250202",
+   "num_idpoor": 109
+ },
+ {
+   "Adm3_NCDD": "250203",
+   "num_idpoor": 274
+ },
+ {
+   "Adm3_NCDD": "250204",
+   "num_idpoor": 120
+ },
+ {
+   "Adm3_NCDD": "250205",
+   "num_idpoor": 376
+ },
+ {
+   "Adm3_NCDD": "250206",
+   "num_idpoor": 337
+ },
+ {
+   "Adm3_NCDD": "250207",
+   "num_idpoor": 291
+ },
+ {
+   "Adm3_NCDD": "250208",
+   "num_idpoor": 248
+ },
+ {
+   "Adm3_NCDD": "250209",
+   "num_idpoor": 495
+ },
+ {
+   "Adm3_NCDD": "250210",
+   "num_idpoor": 234
+ },
+ {
+   "Adm3_NCDD": "250211",
+   "num_idpoor": 427
+ },
+ {
+   "Adm3_NCDD": "250212",
+   "num_idpoor": 656
+ },
+ {
+   "Adm3_NCDD": "250301",
+   "num_idpoor": 279
+ },
+ {
+   "Adm3_NCDD": "250302",
+   "num_idpoor": 323
+ },
+ {
+   "Adm3_NCDD": "250303",
+   "num_idpoor": 545
+ },
+ {
+   "Adm3_NCDD": "250304",
+   "num_idpoor": 357
+ },
+ {
+   "Adm3_NCDD": "250305",
+   "num_idpoor": 1012
+ },
+ {
+   "Adm3_NCDD": "250306",
+   "num_idpoor": 491
+ },
+ {
+   "Adm3_NCDD": "250307",
+   "num_idpoor": 232
+ },
+ {
+   "Adm3_NCDD": "250308",
+   "num_idpoor": 387
+ },
+ {
+   "Adm3_NCDD": "250309",
+   "num_idpoor": 747
+ },
+ {
+   "Adm3_NCDD": "250310",
+   "num_idpoor": 316
+ },
+ {
+   "Adm3_NCDD": "250311",
+   "num_idpoor": 360
+ },
+ {
+   "Adm3_NCDD": "250312",
+   "num_idpoor": 677
+ },
+ {
+   "Adm3_NCDD": "250313",
+   "num_idpoor": 331
+ },
+ {
+   "Adm3_NCDD": "250314",
+   "num_idpoor": 262
+ },
+ {
+   "Adm3_NCDD": "250401",
+   "num_idpoor": 330
+ },
+ {
+   "Adm3_NCDD": "250402",
+   "num_idpoor": 300
+ },
+ {
+   "Adm3_NCDD": "250403",
+   "num_idpoor": 396
+ },
+ {
+   "Adm3_NCDD": "250404",
+   "num_idpoor": 403
+ },
+ {
+   "Adm3_NCDD": "250405",
+   "num_idpoor": 294
+ },
+ {
+   "Adm3_NCDD": "250406",
+   "num_idpoor": 382
+ },
+ {
+   "Adm3_NCDD": "250407",
+   "num_idpoor": 320
+ },
+ {
+   "Adm3_NCDD": "250501",
+   "num_idpoor": 566
+ },
+ {
+   "Adm3_NCDD": "250502",
+   "num_idpoor": 911
+ },
+ {
+   "Adm3_NCDD": "250503",
+   "num_idpoor": 856
+ },
+ {
+   "Adm3_NCDD": "250504",
+   "num_idpoor": 728
+ },
+ {
+   "Adm3_NCDD": "250505",
+   "num_idpoor": 1194
+ },
+ {
+   "Adm3_NCDD": "250506",
+   "num_idpoor": 456
+ },
+ {
+   "Adm3_NCDD": "250507",
+   "num_idpoor": 1033
+ },
+ {
+   "Adm3_NCDD": "250508",
+   "num_idpoor": 297
+ },
+ {
+   "Adm3_NCDD": "250601",
+   "num_idpoor": 478
+ },
+ {
+   "Adm3_NCDD": "250602",
+   "num_idpoor": 475
+ },
+ {
+   "Adm3_NCDD": "250701",
+   "num_idpoor": 691
+ },
+ {
+   "Adm3_NCDD": "250702",
+   "num_idpoor": 363
+ },
+ {
+   "Adm3_NCDD": "250703",
+   "num_idpoor": 635
+ },
+ {
+   "Adm3_NCDD": "250704",
+   "num_idpoor": 568
+ },
+ {
+   "Adm3_NCDD": "250705",
+   "num_idpoor": 683
+ },
+ {
+   "Adm3_NCDD": "250706",
+   "num_idpoor": 634
+ },
+ {
+   "Adm3_NCDD": "250707",
+   "num_idpoor": 838
+ },
+ {
+   "Adm3_NCDD": "250708",
+   "num_idpoor": 241
+ },
+ {
+   "Adm3_NCDD": "250709",
+   "num_idpoor": 425
+ },
+ {
+   "Adm3_NCDD": "250710",
+   "num_idpoor": 460
+ },
+ {
+   "Adm3_NCDD": "250711",
+   "num_idpoor": 1497
+ },
+ {
+   "Adm3_NCDD": "250712",
+   "num_idpoor": 799
+ },
+ {
+   "Adm3_NCDD": "250713",
+   "num_idpoor": 480
+ },
+ {
+   "Adm3_NCDD": "250714",
+   "num_idpoor": 651
+ },
+ {
+   "Adm3_NCDD": "70101",
+   "num_idpoor": 86
+ },
+ {
+   "Adm3_NCDD": "70102",
+   "num_idpoor": 132
+ },
+ {
+   "Adm3_NCDD": "70103",
+   "num_idpoor": 317
+ },
+ {
+   "Adm3_NCDD": "70104",
+   "num_idpoor": 406
+ },
+ {
+   "Adm3_NCDD": "70105",
+   "num_idpoor": 229
+ },
+ {
+   "Adm3_NCDD": "70106",
+   "num_idpoor": 94
+ },
+ {
+   "Adm3_NCDD": "70107",
+   "num_idpoor": 157
+ },
+ {
+   "Adm3_NCDD": "70108",
+   "num_idpoor": 195
+ },
+ {
+   "Adm3_NCDD": "70109",
+   "num_idpoor": 210
+ },
+ {
+   "Adm3_NCDD": "70110",
+   "num_idpoor": 244
+ },
+ {
+   "Adm3_NCDD": "70111",
+   "num_idpoor": 129
+ },
+ {
+   "Adm3_NCDD": "70201",
+   "num_idpoor": 227
+ },
+ {
+   "Adm3_NCDD": "70202",
+   "num_idpoor": 151
+ },
+ {
+   "Adm3_NCDD": "70203",
+   "num_idpoor": 115
+ },
+ {
+   "Adm3_NCDD": "70204",
+   "num_idpoor": 259
+ },
+ {
+   "Adm3_NCDD": "70205",
+   "num_idpoor": 205
+ },
+ {
+   "Adm3_NCDD": "70206",
+   "num_idpoor": 234
+ },
+ {
+   "Adm3_NCDD": "70207",
+   "num_idpoor": 96
+ },
+ {
+   "Adm3_NCDD": "70208",
+   "num_idpoor": 130
+ },
+ {
+   "Adm3_NCDD": "70209",
+   "num_idpoor": 319
+ },
+ {
+   "Adm3_NCDD": "70210",
+   "num_idpoor": 96
+ },
+ {
+   "Adm3_NCDD": "70211",
+   "num_idpoor": 157
+ },
+ {
+   "Adm3_NCDD": "70212",
+   "num_idpoor": 84
+ },
+ {
+   "Adm3_NCDD": "70213",
+   "num_idpoor": 177
+ },
+ {
+   "Adm3_NCDD": "70214",
+   "num_idpoor": 184
+ },
+ {
+   "Adm3_NCDD": "70215",
+   "num_idpoor": 275
+ },
+ {
+   "Adm3_NCDD": "70301",
+   "num_idpoor": 280
+ },
+ {
+   "Adm3_NCDD": "70302",
+   "num_idpoor": 489
+ },
+ {
+   "Adm3_NCDD": "70303",
+   "num_idpoor": 236
+ },
+ {
+   "Adm3_NCDD": "70304",
+   "num_idpoor": 241
+ },
+ {
+   "Adm3_NCDD": "70305",
+   "num_idpoor": 259
+ },
+ {
+   "Adm3_NCDD": "70306",
+   "num_idpoor": 216
+ },
+ {
+   "Adm3_NCDD": "70307",
+   "num_idpoor": 325
+ },
+ {
+   "Adm3_NCDD": "70308",
+   "num_idpoor": 458
+ },
+ {
+   "Adm3_NCDD": "70309",
+   "num_idpoor": 748
+ },
+ {
+   "Adm3_NCDD": "70310",
+   "num_idpoor": 265
+ },
+ {
+   "Adm3_NCDD": "70311",
+   "num_idpoor": 272
+ },
+ {
+   "Adm3_NCDD": "70312",
+   "num_idpoor": 155
+ },
+ {
+   "Adm3_NCDD": "70313",
+   "num_idpoor": 200
+ },
+ {
+   "Adm3_NCDD": "70314",
+   "num_idpoor": 194
+ },
+ {
+   "Adm3_NCDD": "70315",
+   "num_idpoor": 499
+ },
+ {
+   "Adm3_NCDD": "70401",
+   "num_idpoor": 139
+ },
+ {
+   "Adm3_NCDD": "70402",
+   "num_idpoor": 233
+ },
+ {
+   "Adm3_NCDD": "70403",
+   "num_idpoor": 200
+ },
+ {
+   "Adm3_NCDD": "70404",
+   "num_idpoor": 357
+ },
+ {
+   "Adm3_NCDD": "70405",
+   "num_idpoor": 207
+ },
+ {
+   "Adm3_NCDD": "70406",
+   "num_idpoor": 102
+ },
+ {
+   "Adm3_NCDD": "70407",
+   "num_idpoor": 204
+ },
+ {
+   "Adm3_NCDD": "70501",
+   "num_idpoor": 147
+ },
+ {
+   "Adm3_NCDD": "70502",
+   "num_idpoor": 561
+ },
+ {
+   "Adm3_NCDD": "70503",
+   "num_idpoor": 160
+ },
+ {
+   "Adm3_NCDD": "70504",
+   "num_idpoor": 145
+ },
+ {
+   "Adm3_NCDD": "70505",
+   "num_idpoor": 59
+ },
+ {
+   "Adm3_NCDD": "70506",
+   "num_idpoor": 112
+ },
+ {
+   "Adm3_NCDD": "70507",
+   "num_idpoor": 76
+ },
+ {
+   "Adm3_NCDD": "70508",
+   "num_idpoor": 356
+ },
+ {
+   "Adm3_NCDD": "70509",
+   "num_idpoor": 267
+ },
+ {
+   "Adm3_NCDD": "70510",
+   "num_idpoor": 238
+ },
+ {
+   "Adm3_NCDD": "70601",
+   "num_idpoor": 217
+ },
+ {
+   "Adm3_NCDD": "70602",
+   "num_idpoor": 286
+ },
+ {
+   "Adm3_NCDD": "70603",
+   "num_idpoor": 258
+ },
+ {
+   "Adm3_NCDD": "70604",
+   "num_idpoor": 112
+ },
+ {
+   "Adm3_NCDD": "70605",
+   "num_idpoor": 423
+ },
+ {
+   "Adm3_NCDD": "70606",
+   "num_idpoor": 308
+ },
+ {
+   "Adm3_NCDD": "70607",
+   "num_idpoor": 132
+ },
+ {
+   "Adm3_NCDD": "70608",
+   "num_idpoor": 231
+ },
+ {
+   "Adm3_NCDD": "70609",
+   "num_idpoor": 124
+ },
+ {
+   "Adm3_NCDD": "70612",
+   "num_idpoor": 277
+ },
+ {
+   "Adm3_NCDD": "70613",
+   "num_idpoor": 155
+ },
+ {
+   "Adm3_NCDD": "70614",
+   "num_idpoor": 356
+ },
+ {
+   "Adm3_NCDD": "70615",
+   "num_idpoor": 192
+ },
+ {
+   "Adm3_NCDD": "70616",
+   "num_idpoor": 255
+ },
+ {
+   "Adm3_NCDD": "70701",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "70702",
+   "num_idpoor": 109
+ },
+ {
+   "Adm3_NCDD": "70703",
+   "num_idpoor": 297
+ },
+ {
+   "Adm3_NCDD": "70704",
+   "num_idpoor": 174
+ },
+ {
+   "Adm3_NCDD": "70705",
+   "num_idpoor": 286
+ },
+ {
+   "Adm3_NCDD": "70707",
+   "num_idpoor": 284
+ },
+ {
+   "Adm3_NCDD": "70708",
+   "num_idpoor": 325
+ },
+ {
+   "Adm3_NCDD": "70709",
+   "num_idpoor": 146
+ },
+ {
+   "Adm3_NCDD": "70711",
+   "num_idpoor": 186
+ },
+ {
+   "Adm3_NCDD": "70712",
+   "num_idpoor": 210
+ },
+ {
+   "Adm3_NCDD": "70713",
+   "num_idpoor": 233
+ },
+ {
+   "Adm3_NCDD": "70715",
+   "num_idpoor": 301
+ },
+ {
+   "Adm3_NCDD": "70716",
+   "num_idpoor": 261
+ },
+ {
+   "Adm3_NCDD": "70717",
+   "num_idpoor": 191
+ },
+ {
+   "Adm3_NCDD": "70718",
+   "num_idpoor": 83
+ },
+ {
+   "Adm3_NCDD": "70719",
+   "num_idpoor": 75
+ },
+ {
+   "Adm3_NCDD": "70801",
+   "num_idpoor": 89
+ },
+ {
+   "Adm3_NCDD": "70802",
+   "num_idpoor": 233
+ },
+ {
+   "Adm3_NCDD": "70803",
+   "num_idpoor": 96
+ },
+ {
+   "Adm3_NCDD": "70804",
+   "num_idpoor": 277
+ },
+ {
+   "Adm3_NCDD": "70805",
+   "num_idpoor": 223
+ },
+ {
+   "Adm3_NCDD": "90706",
+   "num_idpoor": 53
+ },
+ {
+   "Adm3_NCDD": "90705",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "90704",
+   "num_idpoor": 115
+ },
+ {
+   "Adm3_NCDD": "90703",
+   "num_idpoor": 44
+ },
+ {
+   "Adm3_NCDD": "90702",
+   "num_idpoor": 91
+ },
+ {
+   "Adm3_NCDD": "90701",
+   "num_idpoor": 77
+ },
+ {
+   "Adm3_NCDD": "90606",
+   "num_idpoor": 593
+ },
+ {
+   "Adm3_NCDD": "90605",
+   "num_idpoor": 625
+ },
+ {
+   "Adm3_NCDD": "90604",
+   "num_idpoor": 479
+ },
+ {
+   "Adm3_NCDD": "90603",
+   "num_idpoor": 333
+ },
+ {
+   "Adm3_NCDD": "90602",
+   "num_idpoor": 223
+ },
+ {
+   "Adm3_NCDD": "90601",
+   "num_idpoor": 363
+ },
+ {
+   "Adm3_NCDD": "90503",
+   "num_idpoor": 74
+ },
+ {
+   "Adm3_NCDD": "90502",
+   "num_idpoor": 123
+ },
+ {
+   "Adm3_NCDD": "90501",
+   "num_idpoor": 648
+ },
+ {
+   "Adm3_NCDD": "90403",
+   "num_idpoor": 214
+ },
+ {
+   "Adm3_NCDD": "90402",
+   "num_idpoor": 348
+ },
+ {
+   "Adm3_NCDD": "90401",
+   "num_idpoor": 116
+ },
+ {
+   "Adm3_NCDD": "90304",
+   "num_idpoor": 161
+ },
+ {
+   "Adm3_NCDD": "90303",
+   "num_idpoor": 76
+ },
+ {
+   "Adm3_NCDD": "90302",
+   "num_idpoor": 120
+ },
+ {
+   "Adm3_NCDD": "90301",
+   "num_idpoor": 73
+ },
+ {
+   "Adm3_NCDD": "90203",
+   "num_idpoor": 100
+ },
+ {
+   "Adm3_NCDD": "90202",
+   "num_idpoor": 134
+ },
+ {
+   "Adm3_NCDD": "90201",
+   "num_idpoor": 282
+ },
+ {
+   "Adm3_NCDD": "90104",
+   "num_idpoor": 280
+ },
+ {
+   "Adm3_NCDD": "90103",
+   "num_idpoor": 195
+ },
+ {
+   "Adm3_NCDD": "90102",
+   "num_idpoor": 269
+ },
+ {
+   "Adm3_NCDD": "90101",
+   "num_idpoor": 348
+ },
+ {
+   "Adm3_NCDD": "50101",
+   "num_idpoor": 329
+ },
+ {
+   "Adm3_NCDD": "50102",
+   "num_idpoor": 336
+ },
+ {
+   "Adm3_NCDD": "50103",
+   "num_idpoor": 322
+ },
+ {
+   "Adm3_NCDD": "50104",
+   "num_idpoor": 170
+ },
+ {
+   "Adm3_NCDD": "50105",
+   "num_idpoor": 205
+ },
+ {
+   "Adm3_NCDD": "50106",
+   "num_idpoor": 258
+ },
+ {
+   "Adm3_NCDD": "50107",
+   "num_idpoor": 549
+ },
+ {
+   "Adm3_NCDD": "50108",
+   "num_idpoor": 210
+ },
+ {
+   "Adm3_NCDD": "50109",
+   "num_idpoor": 395
+ },
+ {
+   "Adm3_NCDD": "50110",
+   "num_idpoor": 367
+ },
+ {
+   "Adm3_NCDD": "50111",
+   "num_idpoor": 436
+ },
+ {
+   "Adm3_NCDD": "50112",
+   "num_idpoor": 230
+ },
+ {
+   "Adm3_NCDD": "50113",
+   "num_idpoor": 186
+ },
+ {
+   "Adm3_NCDD": "50114",
+   "num_idpoor": 224
+ },
+ {
+   "Adm3_NCDD": "50115",
+   "num_idpoor": 159
+ },
+ {
+   "Adm3_NCDD": "50201",
+   "num_idpoor": 181
+ },
+ {
+   "Adm3_NCDD": "50202",
+   "num_idpoor": 100
+ },
+ {
+   "Adm3_NCDD": "50203",
+   "num_idpoor": 169
+ },
+ {
+   "Adm3_NCDD": "50204",
+   "num_idpoor": 106
+ },
+ {
+   "Adm3_NCDD": "50205",
+   "num_idpoor": 150
+ },
+ {
+   "Adm3_NCDD": "50301",
+   "num_idpoor": 277
+ },
+ {
+   "Adm3_NCDD": "50302",
+   "num_idpoor": 504
+ },
+ {
+   "Adm3_NCDD": "50303",
+   "num_idpoor": 429
+ },
+ {
+   "Adm3_NCDD": "50304",
+   "num_idpoor": 355
+ },
+ {
+   "Adm3_NCDD": "50305",
+   "num_idpoor": 399
+ },
+ {
+   "Adm3_NCDD": "50306",
+   "num_idpoor": 547
+ },
+ {
+   "Adm3_NCDD": "50307",
+   "num_idpoor": 500
+ },
+ {
+   "Adm3_NCDD": "50308",
+   "num_idpoor": 227
+ },
+ {
+   "Adm3_NCDD": "50309",
+   "num_idpoor": 264
+ },
+ {
+   "Adm3_NCDD": "50310",
+   "num_idpoor": 429
+ },
+ {
+   "Adm3_NCDD": "50311",
+   "num_idpoor": 445
+ },
+ {
+   "Adm3_NCDD": "50312",
+   "num_idpoor": 226
+ },
+ {
+   "Adm3_NCDD": "50313",
+   "num_idpoor": 328
+ },
+ {
+   "Adm3_NCDD": "50401",
+   "num_idpoor": 209
+ },
+ {
+   "Adm3_NCDD": "50402",
+   "num_idpoor": 185
+ },
+ {
+   "Adm3_NCDD": "50403",
+   "num_idpoor": 545
+ },
+ {
+   "Adm3_NCDD": "50404",
+   "num_idpoor": 313
+ },
+ {
+   "Adm3_NCDD": "50405",
+   "num_idpoor": 268
+ },
+ {
+   "Adm3_NCDD": "50501",
+   "num_idpoor": 244
+ },
+ {
+   "Adm3_NCDD": "50502",
+   "num_idpoor": 327
+ },
+ {
+   "Adm3_NCDD": "50503",
+   "num_idpoor": 113
+ },
+ {
+   "Adm3_NCDD": "50504",
+   "num_idpoor": 241
+ },
+ {
+   "Adm3_NCDD": "50505",
+   "num_idpoor": 300
+ },
+ {
+   "Adm3_NCDD": "50506",
+   "num_idpoor": 145
+ },
+ {
+   "Adm3_NCDD": "50507",
+   "num_idpoor": 277
+ },
+ {
+   "Adm3_NCDD": "50508",
+   "num_idpoor": 196
+ },
+ {
+   "Adm3_NCDD": "50509",
+   "num_idpoor": 243
+ },
+ {
+   "Adm3_NCDD": "50510",
+   "num_idpoor": 462
+ },
+ {
+   "Adm3_NCDD": "50511",
+   "num_idpoor": 135
+ },
+ {
+   "Adm3_NCDD": "50512",
+   "num_idpoor": 235
+ },
+ {
+   "Adm3_NCDD": "50513",
+   "num_idpoor": 191
+ },
+ {
+   "Adm3_NCDD": "50514",
+   "num_idpoor": 168
+ },
+ {
+   "Adm3_NCDD": "50515",
+   "num_idpoor": 376
+ },
+ {
+   "Adm3_NCDD": "50601",
+   "num_idpoor": 76
+ },
+ {
+   "Adm3_NCDD": "50602",
+   "num_idpoor": 125
+ },
+ {
+   "Adm3_NCDD": "50603",
+   "num_idpoor": 251
+ },
+ {
+   "Adm3_NCDD": "50604",
+   "num_idpoor": 127
+ },
+ {
+   "Adm3_NCDD": "50605",
+   "num_idpoor": 162
+ },
+ {
+   "Adm3_NCDD": "50606",
+   "num_idpoor": 52
+ },
+ {
+   "Adm3_NCDD": "50607",
+   "num_idpoor": 438
+ },
+ {
+   "Adm3_NCDD": "50608",
+   "num_idpoor": 113
+ },
+ {
+   "Adm3_NCDD": "50609",
+   "num_idpoor": 130
+ },
+ {
+   "Adm3_NCDD": "50610",
+   "num_idpoor": 204
+ },
+ {
+   "Adm3_NCDD": "50611",
+   "num_idpoor": 231
+ },
+ {
+   "Adm3_NCDD": "50613",
+   "num_idpoor": 486
+ },
+ {
+   "Adm3_NCDD": "50701",
+   "num_idpoor": 288
+ },
+ {
+   "Adm3_NCDD": "50702",
+   "num_idpoor": 228
+ },
+ {
+   "Adm3_NCDD": "50703",
+   "num_idpoor": 399
+ },
+ {
+   "Adm3_NCDD": "50704",
+   "num_idpoor": 242
+ },
+ {
+   "Adm3_NCDD": "50705",
+   "num_idpoor": 460
+ },
+ {
+   "Adm3_NCDD": "50706",
+   "num_idpoor": 354
+ },
+ {
+   "Adm3_NCDD": "50707",
+   "num_idpoor": 255
+ },
+ {
+   "Adm3_NCDD": "50708",
+   "num_idpoor": 154
+ },
+ {
+   "Adm3_NCDD": "50709",
+   "num_idpoor": 308
+ },
+ {
+   "Adm3_NCDD": "50710",
+   "num_idpoor": 336
+ },
+ {
+   "Adm3_NCDD": "50711",
+   "num_idpoor": 199
+ },
+ {
+   "Adm3_NCDD": "50712",
+   "num_idpoor": 358
+ },
+ {
+   "Adm3_NCDD": "50713",
+   "num_idpoor": 286
+ },
+ {
+   "Adm3_NCDD": "50714",
+   "num_idpoor": 155
+ },
+ {
+   "Adm3_NCDD": "50715",
+   "num_idpoor": 541
+ },
+ {
+   "Adm3_NCDD": "50801",
+   "num_idpoor": 291
+ },
+ {
+   "Adm3_NCDD": "50802",
+   "num_idpoor": 147
+ },
+ {
+   "Adm3_NCDD": "50804",
+   "num_idpoor": 296
+ },
+ {
+   "Adm3_NCDD": "50805",
+   "num_idpoor": 188
+ },
+ {
+   "Adm3_NCDD": "50806",
+   "num_idpoor": 130
+ },
+ {
+   "Adm3_NCDD": "50807",
+   "num_idpoor": 207
+ },
+ {
+   "Adm3_NCDD": "50808",
+   "num_idpoor": 167
+ },
+ {
+   "Adm3_NCDD": "10202",
+   "num_idpoor": 257
+ },
+ {
+   "Adm3_NCDD": "10203",
+   "num_idpoor": 517
+ },
+ {
+   "Adm3_NCDD": "10204",
+   "num_idpoor": 255
+ },
+ {
+   "Adm3_NCDD": "10205",
+   "num_idpoor": 228
+ },
+ {
+   "Adm3_NCDD": "10206",
+   "num_idpoor": 446
+ },
+ {
+   "Adm3_NCDD": "10207",
+   "num_idpoor": 312
+ },
+ {
+   "Adm3_NCDD": "10208",
+   "num_idpoor": 542
+ },
+ {
+   "Adm3_NCDD": "10209",
+   "num_idpoor": 600
+ },
+ {
+   "Adm3_NCDD": "10210",
+   "num_idpoor": 230
+ },
+ {
+   "Adm3_NCDD": "10211",
+   "num_idpoor": 479
+ },
+ {
+   "Adm3_NCDD": "10212",
+   "num_idpoor": 214
+ },
+ {
+   "Adm3_NCDD": "10213",
+   "num_idpoor": 285
+ },
+ {
+   "Adm3_NCDD": "10301",
+   "num_idpoor": 245
+ },
+ {
+   "Adm3_NCDD": "10302",
+   "num_idpoor": 299
+ },
+ {
+   "Adm3_NCDD": "10303",
+   "num_idpoor": 443
+ },
+ {
+   "Adm3_NCDD": "10304",
+   "num_idpoor": 212
+ },
+ {
+   "Adm3_NCDD": "10305",
+   "num_idpoor": 309
+ },
+ {
+   "Adm3_NCDD": "10306",
+   "num_idpoor": 298
+ },
+ {
+   "Adm3_NCDD": "10401",
+   "num_idpoor": 263
+ },
+ {
+   "Adm3_NCDD": "10402",
+   "num_idpoor": 417
+ },
+ {
+   "Adm3_NCDD": "10403",
+   "num_idpoor": 566
+ },
+ {
+   "Adm3_NCDD": "10404",
+   "num_idpoor": 313
+ },
+ {
+   "Adm3_NCDD": "10405",
+   "num_idpoor": 521
+ },
+ {
+   "Adm3_NCDD": "10406",
+   "num_idpoor": 395
+ },
+ {
+   "Adm3_NCDD": "10407",
+   "num_idpoor": 230
+ },
+ {
+   "Adm3_NCDD": "10408",
+   "num_idpoor": 592
+ },
+ {
+   "Adm3_NCDD": "10409",
+   "num_idpoor": 502
+ },
+ {
+   "Adm3_NCDD": "10501",
+   "num_idpoor": 266
+ },
+ {
+   "Adm3_NCDD": "10502",
+   "num_idpoor": 314
+ },
+ {
+   "Adm3_NCDD": "10503",
+   "num_idpoor": 190
+ },
+ {
+   "Adm3_NCDD": "10505",
+   "num_idpoor": 305
+ },
+ {
+   "Adm3_NCDD": "10506",
+   "num_idpoor": 209
+ },
+ {
+   "Adm3_NCDD": "10507",
+   "num_idpoor": 312
+ },
+ {
+   "Adm3_NCDD": "10509",
+   "num_idpoor": 583
+ },
+ {
+   "Adm3_NCDD": "10602",
+   "num_idpoor": 731
+ },
+ {
+   "Adm3_NCDD": "10603",
+   "num_idpoor": 176
+ },
+ {
+   "Adm3_NCDD": "10604",
+   "num_idpoor": 340
+ },
+ {
+   "Adm3_NCDD": "10605",
+   "num_idpoor": 543
+ },
+ {
+   "Adm3_NCDD": "10606",
+   "num_idpoor": 236
+ },
+ {
+   "Adm3_NCDD": "10607",
+   "num_idpoor": 443
+ },
+ {
+   "Adm3_NCDD": "10608",
+   "num_idpoor": 451
+ },
+ {
+   "Adm3_NCDD": "10701",
+   "num_idpoor": 830
+ },
+ {
+   "Adm3_NCDD": "10702",
+   "num_idpoor": 654
+ },
+ {
+   "Adm3_NCDD": "10703",
+   "num_idpoor": 218
+ },
+ {
+   "Adm3_NCDD": "10704",
+   "num_idpoor": 248
+ },
+ {
+   "Adm3_NCDD": "10705",
+   "num_idpoor": 413
+ },
+ {
+   "Adm3_NCDD": "10706",
+   "num_idpoor": 250
+ },
+ {
+   "Adm3_NCDD": "10801",
+   "num_idpoor": 284
+ },
+ {
+   "Adm3_NCDD": "10802",
+   "num_idpoor": 216
+ },
+ {
+   "Adm3_NCDD": "10803",
+   "num_idpoor": 382
+ },
+ {
+   "Adm3_NCDD": "10804",
+   "num_idpoor": 467
+ },
+ {
+   "Adm3_NCDD": "10805",
+   "num_idpoor": 122
+ },
+ {
+   "Adm3_NCDD": "10806",
+   "num_idpoor": 362
+ },
+ {
+   "Adm3_NCDD": "10807",
+   "num_idpoor": 603
+ },
+ {
+   "Adm3_NCDD": "10808",
+   "num_idpoor": 119
+ },
+ {
+   "Adm3_NCDD": "10901",
+   "num_idpoor": 319
+ },
+ {
+   "Adm3_NCDD": "10902",
+   "num_idpoor": 271
+ },
+ {
+   "Adm3_NCDD": "10903",
+   "num_idpoor": 295
+ },
+ {
+   "Adm3_NCDD": "10904",
+   "num_idpoor": 200
+ },
+ {
+   "Adm3_NCDD": "10905",
+   "num_idpoor": 424
+ },
+ {
+   "Adm3_NCDD": "10906",
+   "num_idpoor": 335
+ },
+ {
+   "Adm3_NCDD": "11001",
+   "num_idpoor": 697
+ },
+ {
+   "Adm3_NCDD": "11002",
+   "num_idpoor": 679
+ },
+ {
+   "Adm3_NCDD": "11003",
+   "num_idpoor": 532
+ },
+ {
+   "Adm3_NCDD": "30101",
+   "num_idpoor": 468
+ },
+ {
+   "Adm3_NCDD": "30102",
+   "num_idpoor": 360
+ },
+ {
+   "Adm3_NCDD": "30103",
+   "num_idpoor": 348
+ },
+ {
+   "Adm3_NCDD": "30104",
+   "num_idpoor": 378
+ },
+ {
+   "Adm3_NCDD": "30105",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "30106",
+   "num_idpoor": 358
+ },
+ {
+   "Adm3_NCDD": "30107",
+   "num_idpoor": 372
+ },
+ {
+   "Adm3_NCDD": "30108",
+   "num_idpoor": 648
+ },
+ {
+   "Adm3_NCDD": "30109",
+   "num_idpoor": 436
+ },
+ {
+   "Adm3_NCDD": "30110",
+   "num_idpoor": 459
+ },
+ {
+   "Adm3_NCDD": "30111",
+   "num_idpoor": 478
+ },
+ {
+   "Adm3_NCDD": "30112",
+   "num_idpoor": 372
+ },
+ {
+   "Adm3_NCDD": "30201",
+   "num_idpoor": 1061
+ },
+ {
+   "Adm3_NCDD": "30202",
+   "num_idpoor": 518
+ },
+ {
+   "Adm3_NCDD": "30203",
+   "num_idpoor": 665
+ },
+ {
+   "Adm3_NCDD": "30204",
+   "num_idpoor": 327
+ },
+ {
+   "Adm3_NCDD": "30205",
+   "num_idpoor": 514
+ },
+ {
+   "Adm3_NCDD": "30206",
+   "num_idpoor": 1268
+ },
+ {
+   "Adm3_NCDD": "30207",
+   "num_idpoor": 730
+ },
+ {
+   "Adm3_NCDD": "30208",
+   "num_idpoor": 339
+ },
+ {
+   "Adm3_NCDD": "30301",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "30302",
+   "num_idpoor": 141
+ },
+ {
+   "Adm3_NCDD": "30303",
+   "num_idpoor": 268
+ },
+ {
+   "Adm3_NCDD": "30304",
+   "num_idpoor": 374
+ },
+ {
+   "Adm3_NCDD": "30305",
+   "num_idpoor": 362
+ },
+ {
+   "Adm3_NCDD": "30306",
+   "num_idpoor": 766
+ },
+ {
+   "Adm3_NCDD": "30307",
+   "num_idpoor": 488
+ },
+ {
+   "Adm3_NCDD": "30308",
+   "num_idpoor": 374
+ },
+ {
+   "Adm3_NCDD": "30309",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "30310",
+   "num_idpoor": 457
+ },
+ {
+   "Adm3_NCDD": "30501",
+   "num_idpoor": 284
+ },
+ {
+   "Adm3_NCDD": "30502",
+   "num_idpoor": 55
+ },
+ {
+   "Adm3_NCDD": "30503",
+   "num_idpoor": 497
+ },
+ {
+   "Adm3_NCDD": "30504",
+   "num_idpoor": 63
+ },
+ {
+   "Adm3_NCDD": "30601",
+   "num_idpoor": 684
+ },
+ {
+   "Adm3_NCDD": "30602",
+   "num_idpoor": 178
+ },
+ {
+   "Adm3_NCDD": "30603",
+   "num_idpoor": 163
+ },
+ {
+   "Adm3_NCDD": "30604",
+   "num_idpoor": 170
+ },
+ {
+   "Adm3_NCDD": "30605",
+   "num_idpoor": 153
+ },
+ {
+   "Adm3_NCDD": "30606",
+   "num_idpoor": 327
+ },
+ {
+   "Adm3_NCDD": "30607",
+   "num_idpoor": 108
+ },
+ {
+   "Adm3_NCDD": "30608",
+   "num_idpoor": 149
+ },
+ {
+   "Adm3_NCDD": "30609",
+   "num_idpoor": 437
+ },
+ {
+   "Adm3_NCDD": "30610",
+   "num_idpoor": 387
+ },
+ {
+   "Adm3_NCDD": "30611",
+   "num_idpoor": 346
+ },
+ {
+   "Adm3_NCDD": "30612",
+   "num_idpoor": 106
+ },
+ {
+   "Adm3_NCDD": "30613",
+   "num_idpoor": 306
+ },
+ {
+   "Adm3_NCDD": "30614",
+   "num_idpoor": 405
+ },
+ {
+   "Adm3_NCDD": "30615",
+   "num_idpoor": 318
+ },
+ {
+   "Adm3_NCDD": "30701",
+   "num_idpoor": 322
+ },
+ {
+   "Adm3_NCDD": "30702",
+   "num_idpoor": 464
+ },
+ {
+   "Adm3_NCDD": "30703",
+   "num_idpoor": 361
+ },
+ {
+   "Adm3_NCDD": "30704",
+   "num_idpoor": 201
+ },
+ {
+   "Adm3_NCDD": "30705",
+   "num_idpoor": 476
+ },
+ {
+   "Adm3_NCDD": "30706",
+   "num_idpoor": 363
+ },
+ {
+   "Adm3_NCDD": "30707",
+   "num_idpoor": 461
+ },
+ {
+   "Adm3_NCDD": "30708",
+   "num_idpoor": 208
+ },
+ {
+   "Adm3_NCDD": "30709",
+   "num_idpoor": 464
+ },
+ {
+   "Adm3_NCDD": "30710",
+   "num_idpoor": 242
+ },
+ {
+   "Adm3_NCDD": "30711",
+   "num_idpoor": 393
+ },
+ {
+   "Adm3_NCDD": "30801",
+   "num_idpoor": 440
+ },
+ {
+   "Adm3_NCDD": "30802",
+   "num_idpoor": 287
+ },
+ {
+   "Adm3_NCDD": "30803",
+   "num_idpoor": 224
+ },
+ {
+   "Adm3_NCDD": "30804",
+   "num_idpoor": 230
+ },
+ {
+   "Adm3_NCDD": "30805",
+   "num_idpoor": 231
+ },
+ {
+   "Adm3_NCDD": "30806",
+   "num_idpoor": 311
+ },
+ {
+   "Adm3_NCDD": "30807",
+   "num_idpoor": 242
+ },
+ {
+   "Adm3_NCDD": "30808",
+   "num_idpoor": 298
+ },
+ {
+   "Adm3_NCDD": "31301",
+   "num_idpoor": 368
+ },
+ {
+   "Adm3_NCDD": "31302",
+   "num_idpoor": 446
+ },
+ {
+   "Adm3_NCDD": "31303",
+   "num_idpoor": 341
+ },
+ {
+   "Adm3_NCDD": "31304",
+   "num_idpoor": 142
+ },
+ {
+   "Adm3_NCDD": "31305",
+   "num_idpoor": 332
+ },
+ {
+   "Adm3_NCDD": "31306",
+   "num_idpoor": 305
+ },
+ {
+   "Adm3_NCDD": "31307",
+   "num_idpoor": 305
+ },
+ {
+   "Adm3_NCDD": "31308",
+   "num_idpoor": 375
+ },
+ {
+   "Adm3_NCDD": "31309",
+   "num_idpoor": 65
+ },
+ {
+   "Adm3_NCDD": "31310",
+   "num_idpoor": 223
+ },
+ {
+   "Adm3_NCDD": "31311",
+   "num_idpoor": 148
+ },
+ {
+   "Adm3_NCDD": "31312",
+   "num_idpoor": 180
+ },
+ {
+   "Adm3_NCDD": "31313",
+   "num_idpoor": 495
+ },
+ {
+   "Adm3_NCDD": "31314",
+   "num_idpoor": 227
+ },
+ {
+   "Adm3_NCDD": "31315",
+   "num_idpoor": 387
+ },
+ {
+   "Adm3_NCDD": "31401",
+   "num_idpoor": 426
+ },
+ {
+   "Adm3_NCDD": "31402",
+   "num_idpoor": 158
+ },
+ {
+   "Adm3_NCDD": "31403",
+   "num_idpoor": 128
+ },
+ {
+   "Adm3_NCDD": "31404",
+   "num_idpoor": 109
+ },
+ {
+   "Adm3_NCDD": "31405",
+   "num_idpoor": 409
+ },
+ {
+   "Adm3_NCDD": "31406",
+   "num_idpoor": 116
+ },
+ {
+   "Adm3_NCDD": "31407",
+   "num_idpoor": 360
+ },
+ {
+   "Adm3_NCDD": "31408",
+   "num_idpoor": 323
+ },
+ {
+   "Adm3_NCDD": "31409",
+   "num_idpoor": 330
+ },
+ {
+   "Adm3_NCDD": "31410",
+   "num_idpoor": 377
+ },
+ {
+   "Adm3_NCDD": "31411",
+   "num_idpoor": 258
+ },
+ {
+   "Adm3_NCDD": "31412",
+   "num_idpoor": 254
+ },
+ {
+   "Adm3_NCDD": "31413",
+   "num_idpoor": 236
+ },
+ {
+   "Adm3_NCDD": "31414",
+   "num_idpoor": 170
+ },
+ {
+   "Adm3_NCDD": "31501",
+   "num_idpoor": 278
+ },
+ {
+   "Adm3_NCDD": "31503",
+   "num_idpoor": 632
+ },
+ {
+   "Adm3_NCDD": "31504",
+   "num_idpoor": 245
+ },
+ {
+   "Adm3_NCDD": "31505",
+   "num_idpoor": 606
+ },
+ {
+   "Adm3_NCDD": "31506",
+   "num_idpoor": 428
+ },
+ {
+   "Adm3_NCDD": "31507",
+   "num_idpoor": 383
+ },
+ {
+   "Adm3_NCDD": "31508",
+   "num_idpoor": 139
+ },
+ {
+   "Adm3_NCDD": "31509",
+   "num_idpoor": 438
+ },
+ {
+   "Adm3_NCDD": "31510",
+   "num_idpoor": 1164
+ },
+ {
+   "Adm3_NCDD": "31512",
+   "num_idpoor": 572
+ },
+ {
+   "Adm3_NCDD": "31513",
+   "num_idpoor": 333
+ },
+ {
+   "Adm3_NCDD": "31514",
+   "num_idpoor": 270
+ },
+ {
+   "Adm3_NCDD": "60101",
+   "num_idpoor": 240
+ },
+ {
+   "Adm3_NCDD": "60102",
+   "num_idpoor": 566
+ },
+ {
+   "Adm3_NCDD": "60103",
+   "num_idpoor": 283
+ },
+ {
+   "Adm3_NCDD": "60104",
+   "num_idpoor": 334
+ },
+ {
+   "Adm3_NCDD": "60105",
+   "num_idpoor": 341
+ },
+ {
+   "Adm3_NCDD": "60106",
+   "num_idpoor": 747
+ },
+ {
+   "Adm3_NCDD": "60107",
+   "num_idpoor": 462
+ },
+ {
+   "Adm3_NCDD": "60108",
+   "num_idpoor": 169
+ },
+ {
+   "Adm3_NCDD": "60109",
+   "num_idpoor": 466
+ },
+ {
+   "Adm3_NCDD": "60110",
+   "num_idpoor": 337
+ },
+ {
+   "Adm3_NCDD": "60111",
+   "num_idpoor": 354
+ },
+ {
+   "Adm3_NCDD": "60112",
+   "num_idpoor": 243
+ },
+ {
+   "Adm3_NCDD": "60113",
+   "num_idpoor": 405
+ },
+ {
+   "Adm3_NCDD": "60114",
+   "num_idpoor": 351
+ },
+ {
+   "Adm3_NCDD": "60115",
+   "num_idpoor": 535
+ },
+ {
+   "Adm3_NCDD": "60116",
+   "num_idpoor": 210
+ },
+ {
+   "Adm3_NCDD": "60117",
+   "num_idpoor": 289
+ },
+ {
+   "Adm3_NCDD": "60118",
+   "num_idpoor": 825
+ },
+ {
+   "Adm3_NCDD": "60201",
+   "num_idpoor": 384
+ },
+ {
+   "Adm3_NCDD": "60202",
+   "num_idpoor": 199
+ },
+ {
+   "Adm3_NCDD": "60203",
+   "num_idpoor": 343
+ },
+ {
+   "Adm3_NCDD": "60204",
+   "num_idpoor": 827
+ },
+ {
+   "Adm3_NCDD": "60205",
+   "num_idpoor": 137
+ },
+ {
+   "Adm3_NCDD": "60206",
+   "num_idpoor": 250
+ },
+ {
+   "Adm3_NCDD": "60207",
+   "num_idpoor": 718
+ },
+ {
+   "Adm3_NCDD": "60208",
+   "num_idpoor": 584
+ },
+ {
+   "Adm3_NCDD": "60209",
+   "num_idpoor": 257
+ },
+ {
+   "Adm3_NCDD": "60210",
+   "num_idpoor": 228
+ },
+ {
+   "Adm3_NCDD": "60211",
+   "num_idpoor": 395
+ },
+ {
+   "Adm3_NCDD": "60301",
+   "num_idpoor": 317
+ },
+ {
+   "Adm3_NCDD": "60302",
+   "num_idpoor": 63
+ },
+ {
+   "Adm3_NCDD": "60303",
+   "num_idpoor": 213
+ },
+ {
+   "Adm3_NCDD": "60304",
+   "num_idpoor": 251
+ },
+ {
+   "Adm3_NCDD": "60306",
+   "num_idpoor": 191
+ },
+ {
+   "Adm3_NCDD": "60308",
+   "num_idpoor": 212
+ },
+ {
+   "Adm3_NCDD": "60309",
+   "num_idpoor": 130
+ },
+ {
+   "Adm3_NCDD": "60310",
+   "num_idpoor": 582
+ },
+ {
+   "Adm3_NCDD": "60401",
+   "num_idpoor": 209
+ },
+ {
+   "Adm3_NCDD": "60402",
+   "num_idpoor": 266
+ },
+ {
+   "Adm3_NCDD": "60403",
+   "num_idpoor": 143
+ },
+ {
+   "Adm3_NCDD": "60404",
+   "num_idpoor": 376
+ },
+ {
+   "Adm3_NCDD": "60405",
+   "num_idpoor": 951
+ },
+ {
+   "Adm3_NCDD": "60406",
+   "num_idpoor": 169
+ },
+ {
+   "Adm3_NCDD": "60407",
+   "num_idpoor": 298
+ },
+ {
+   "Adm3_NCDD": "60501",
+   "num_idpoor": 380
+ },
+ {
+   "Adm3_NCDD": "60502",
+   "num_idpoor": 379
+ },
+ {
+   "Adm3_NCDD": "60503",
+   "num_idpoor": 603
+ },
+ {
+   "Adm3_NCDD": "60504",
+   "num_idpoor": 283
+ },
+ {
+   "Adm3_NCDD": "60505",
+   "num_idpoor": 296
+ },
+ {
+   "Adm3_NCDD": "60601",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "60602",
+   "num_idpoor": 159
+ },
+ {
+   "Adm3_NCDD": "60603",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "60604",
+   "num_idpoor": 314
+ },
+ {
+   "Adm3_NCDD": "60605",
+   "num_idpoor": 338
+ },
+ {
+   "Adm3_NCDD": "60606",
+   "num_idpoor": 256
+ },
+ {
+   "Adm3_NCDD": "60607",
+   "num_idpoor": 174
+ },
+ {
+   "Adm3_NCDD": "60608",
+   "num_idpoor": 193
+ },
+ {
+   "Adm3_NCDD": "60609",
+   "num_idpoor": 344
+ },
+ {
+   "Adm3_NCDD": "60701",
+   "num_idpoor": 269
+ },
+ {
+   "Adm3_NCDD": "60702",
+   "num_idpoor": 242
+ },
+ {
+   "Adm3_NCDD": "60703",
+   "num_idpoor": 395
+ },
+ {
+   "Adm3_NCDD": "60704",
+   "num_idpoor": 548
+ },
+ {
+   "Adm3_NCDD": "60705",
+   "num_idpoor": 639
+ },
+ {
+   "Adm3_NCDD": "60706",
+   "num_idpoor": 165
+ },
+ {
+   "Adm3_NCDD": "60707",
+   "num_idpoor": 418
+ },
+ {
+   "Adm3_NCDD": "60708",
+   "num_idpoor": 567
+ },
+ {
+   "Adm3_NCDD": "60709",
+   "num_idpoor": 633
+ },
+ {
+   "Adm3_NCDD": "60710",
+   "num_idpoor": 330
+ },
+ {
+   "Adm3_NCDD": "60801",
+   "num_idpoor": 953
+ },
+ {
+   "Adm3_NCDD": "60802",
+   "num_idpoor": 615
+ },
+ {
+   "Adm3_NCDD": "60803",
+   "num_idpoor": 473
+ },
+ {
+   "Adm3_NCDD": "60804",
+   "num_idpoor": 345
+ },
+ {
+   "Adm3_NCDD": "60805",
+   "num_idpoor": 159
+ },
+ {
+   "Adm3_NCDD": "60806",
+   "num_idpoor": 645
+ },
+ {
+   "Adm3_NCDD": "60807",
+   "num_idpoor": 372
+ },
+ {
+   "Adm3_NCDD": "60808",
+   "num_idpoor": 480
+ },
+ {
+   "Adm3_NCDD": "60809",
+   "num_idpoor": 574
+ },
+ {
+   "Adm3_NCDD": "60810",
+   "num_idpoor": 371
+ },
+ {
+   "Adm3_NCDD": "60811",
+   "num_idpoor": 428
+ },
+ {
+   "Adm3_NCDD": "60812",
+   "num_idpoor": 954
+ },
+ {
+   "Adm3_NCDD": "60813",
+   "num_idpoor": 906
+ },
+ {
+   "Adm3_NCDD": "10201",
+   "num_idpoor": 648
+ },
+ {
+   "Adm3_NCDD": "40407",
+   "num_idpoor": 85
+ },
+ {
+   "Adm3_NCDD": "40406",
+   "num_idpoor": 315
+ },
+ {
+   "Adm3_NCDD": "40405",
+   "num_idpoor": 421
+ },
+ {
+   "Adm3_NCDD": "40404",
+   "num_idpoor": 303
+ },
+ {
+   "Adm3_NCDD": "40403",
+   "num_idpoor": 440
+ },
+ {
+   "Adm3_NCDD": "40402",
+   "num_idpoor": 316
+ },
+ {
+   "Adm3_NCDD": "40401",
+   "num_idpoor": 366
+ },
+ {
+   "Adm3_NCDD": "40304",
+   "num_idpoor": 439
+ },
+ {
+   "Adm3_NCDD": "40303",
+   "num_idpoor": 271
+ },
+ {
+   "Adm3_NCDD": "40302",
+   "num_idpoor": 467
+ },
+ {
+   "Adm3_NCDD": "40301",
+   "num_idpoor": 730
+ },
+ {
+   "Adm3_NCDD": "40205",
+   "num_idpoor": 498
+ },
+ {
+   "Adm3_NCDD": "40204",
+   "num_idpoor": 307
+ },
+ {
+   "Adm3_NCDD": "40203",
+   "num_idpoor": 202
+ },
+ {
+   "Adm3_NCDD": "40202",
+   "num_idpoor": 394
+ },
+ {
+   "Adm3_NCDD": "20307",
+   "num_idpoor": 997
+ },
+ {
+   "Adm3_NCDD": "20306",
+   "num_idpoor": 585
+ },
+ {
+   "Adm3_NCDD": "20305",
+   "num_idpoor": 440
+ },
+ {
+   "Adm3_NCDD": "20304",
+   "num_idpoor": 646
+ },
+ {
+   "Adm3_NCDD": "20303",
+   "num_idpoor": 682
+ },
+ {
+   "Adm3_NCDD": "20302",
+   "num_idpoor": 623
+ },
+ {
+   "Adm3_NCDD": "20301",
+   "num_idpoor": 828
+ },
+ {
+   "Adm3_NCDD": "20210",
+   "num_idpoor": 527
+ },
+ {
+   "Adm3_NCDD": "20209",
+   "num_idpoor": 798
+ },
+ {
+   "Adm3_NCDD": "20208",
+   "num_idpoor": 851
+ },
+ {
+   "Adm3_NCDD": "20207",
+   "num_idpoor": 692
+ },
+ {
+   "Adm3_NCDD": "20206",
+   "num_idpoor": 559
+ },
+ {
+   "Adm3_NCDD": "20205",
+   "num_idpoor": 486
+ },
+ {
+   "Adm3_NCDD": "20204",
+   "num_idpoor": 833
+ },
+ {
+   "Adm3_NCDD": "20203",
+   "num_idpoor": 1733
+ },
+ {
+   "Adm3_NCDD": "20202",
+   "num_idpoor": 396
+ },
+ {
+   "Adm3_NCDD": "20201",
+   "num_idpoor": 806
+ },
+ {
+   "Adm3_NCDD": "20108",
+   "num_idpoor": 1871
+ },
+ {
+   "Adm3_NCDD": "20107",
+   "num_idpoor": 1037
+ },
+ {
+   "Adm3_NCDD": "20106",
+   "num_idpoor": 1226
+ },
+ {
+   "Adm3_NCDD": "40201",
+   "num_idpoor": 386
+ },
+ {
+   "Adm3_NCDD": "40111",
+   "num_idpoor": 249
+ },
+ {
+   "Adm3_NCDD": "40110",
+   "num_idpoor": 280
+ },
+ {
+   "Adm3_NCDD": "40109",
+   "num_idpoor": 184
+ },
+ {
+   "Adm3_NCDD": "40108",
+   "num_idpoor": 190
+ },
+ {
+   "Adm3_NCDD": "40107",
+   "num_idpoor": 359
+ },
+ {
+   "Adm3_NCDD": "40106",
+   "num_idpoor": 161
+ },
+ {
+   "Adm3_NCDD": "40105",
+   "num_idpoor": 131
+ },
+ {
+   "Adm3_NCDD": "40104",
+   "num_idpoor": 455
+ },
+ {
+   "Adm3_NCDD": "40103",
+   "num_idpoor": 175
+ },
+ {
+   "Adm3_NCDD": "40102",
+   "num_idpoor": 218
+ },
+ {
+   "Adm3_NCDD": "40101",
+   "num_idpoor": 179
+ },
+ {
+   "Adm3_NCDD": "21405",
+   "num_idpoor": 485
+ },
+ {
+   "Adm3_NCDD": "21404",
+   "num_idpoor": 1098
+ },
+ {
+   "Adm3_NCDD": "21403",
+   "num_idpoor": 610
+ },
+ {
+   "Adm3_NCDD": "21402",
+   "num_idpoor": 537
+ },
+ {
+   "Adm3_NCDD": "21401",
+   "num_idpoor": 595
+ },
+ {
+   "Adm3_NCDD": "21306",
+   "num_idpoor": 480
+ },
+ {
+   "Adm3_NCDD": "21305",
+   "num_idpoor": 1024
+ },
+ {
+   "Adm3_NCDD": "81005",
+   "num_idpoor": 318
+ },
+ {
+   "Adm3_NCDD": "81006",
+   "num_idpoor": 179
+ },
+ {
+   "Adm3_NCDD": "81007",
+   "num_idpoor": 363
+ },
+ {
+   "Adm3_NCDD": "81008",
+   "num_idpoor": 343
+ },
+ {
+   "Adm3_NCDD": "81010",
+   "num_idpoor": 466
+ },
+ {
+   "Adm3_NCDD": "81012",
+   "num_idpoor": 592
+ },
+ {
+   "Adm3_NCDD": "81014",
+   "num_idpoor": 354
+ },
+ {
+   "Adm3_NCDD": "81015",
+   "num_idpoor": 218
+ },
+ {
+   "Adm3_NCDD": "81016",
+   "num_idpoor": 318
+ },
+ {
+   "Adm3_NCDD": "81101",
+   "num_idpoor": 203
+ },
+ {
+   "Adm3_NCDD": "81102",
+   "num_idpoor": 219
+ },
+ {
+   "Adm3_NCDD": "81103",
+   "num_idpoor": 300
+ },
+ {
+   "Adm3_NCDD": "81104",
+   "num_idpoor": 429
+ },
+ {
+   "Adm3_NCDD": "81105",
+   "num_idpoor": 363
+ },
+ {
+   "Adm3_NCDD": "81106",
+   "num_idpoor": 156
+ },
+ {
+   "Adm3_NCDD": "81004",
+   "num_idpoor": 294
+ },
+ {
+   "Adm3_NCDD": "81003",
+   "num_idpoor": 82
+ },
+ {
+   "Adm3_NCDD": "81001",
+   "num_idpoor": 337
+ },
+ {
+   "Adm3_NCDD": "80914",
+   "num_idpoor": 87
+ },
+ {
+   "Adm3_NCDD": "80913",
+   "num_idpoor": 198
+ },
+ {
+   "Adm3_NCDD": "80911",
+   "num_idpoor": 435
+ },
+ {
+   "Adm3_NCDD": "80910",
+   "num_idpoor": 144
+ },
+ {
+   "Adm3_NCDD": "80907",
+   "num_idpoor": 65
+ },
+ {
+   "Adm3_NCDD": "80906",
+   "num_idpoor": 143
+ },
+ {
+   "Adm3_NCDD": "80905",
+   "num_idpoor": 197
+ },
+ {
+   "Adm3_NCDD": "80904",
+   "num_idpoor": 94
+ },
+ {
+   "Adm3_NCDD": "80903",
+   "num_idpoor": 176
+ },
+ {
+   "Adm3_NCDD": "80902",
+   "num_idpoor": 178
+ },
+ {
+   "Adm3_NCDD": "80901",
+   "num_idpoor": 120
+ },
+ {
+   "Adm3_NCDD": "80816",
+   "num_idpoor": 153
+ },
+ {
+   "Adm3_NCDD": "80814",
+   "num_idpoor": 198
+ },
+ {
+   "Adm3_NCDD": "80813",
+   "num_idpoor": 199
+ },
+ {
+   "Adm3_NCDD": "80811",
+   "num_idpoor": 125
+ },
+ {
+   "Adm3_NCDD": "80809",
+   "num_idpoor": 185
+ },
+ {
+   "Adm3_NCDD": "80808",
+   "num_idpoor": 164
+ },
+ {
+   "Adm3_NCDD": "80807",
+   "num_idpoor": 236
+ },
+ {
+   "Adm3_NCDD": "80804",
+   "num_idpoor": 151
+ },
+ {
+   "Adm3_NCDD": "80803",
+   "num_idpoor": 171
+ },
+ {
+   "Adm3_NCDD": "80801",
+   "num_idpoor": 301
+ },
+ {
+   "Adm3_NCDD": "80711",
+   "num_idpoor": 188
+ },
+ {
+   "Adm3_NCDD": "80710",
+   "num_idpoor": 302
+ },
+ {
+   "Adm3_NCDD": "80709",
+   "num_idpoor": 242
+ },
+ {
+   "Adm3_NCDD": "80708",
+   "num_idpoor": 167
+ },
+ {
+   "Adm3_NCDD": "80707",
+   "num_idpoor": 168
+ },
+ {
+   "Adm3_NCDD": "21304",
+   "num_idpoor": 585
+ },
+ {
+   "Adm3_NCDD": "21303",
+   "num_idpoor": 510
+ },
+ {
+   "Adm3_NCDD": "21302",
+   "num_idpoor": 383
+ },
+ {
+   "Adm3_NCDD": "21301",
+   "num_idpoor": 844
+ },
+ {
+   "Adm3_NCDD": "21206",
+   "num_idpoor": 621
+ },
+ {
+   "Adm3_NCDD": "21205",
+   "num_idpoor": 486
+ },
+ {
+   "Adm3_NCDD": "21204",
+   "num_idpoor": 466
+ },
+ {
+   "Adm3_NCDD": "21203",
+   "num_idpoor": 487
+ },
+ {
+   "Adm3_NCDD": "21202",
+   "num_idpoor": 745
+ },
+ {
+   "Adm3_NCDD": "21201",
+   "num_idpoor": 395
+ },
+ {
+   "Adm3_NCDD": "20102",
+   "num_idpoor": 266
+ },
+ {
+   "Adm3_NCDD": "20101",
+   "num_idpoor": 214
+ },
+ {
+   "Adm3_NCDD": "20105",
+   "num_idpoor": 585
+ },
+ {
+   "Adm3_NCDD": "20104",
+   "num_idpoor": 1036
+ },
+ {
+   "Adm3_NCDD": "20103",
+   "num_idpoor": 299
+ },
+ {
+   "Adm3_NCDD": "21105",
+   "num_idpoor": 708
+ },
+ {
+   "Adm3_NCDD": "21104",
+   "num_idpoor": 852
+ },
+ {
+   "Adm3_NCDD": "21103",
+   "num_idpoor": 1495
+ },
+ {
+   "Adm3_NCDD": "80704",
+   "num_idpoor": 132
+ },
+ {
+   "Adm3_NCDD": "80703",
+   "num_idpoor": 160
+ },
+ {
+   "Adm3_NCDD": "80615",
+   "num_idpoor": 87
+ },
+ {
+   "Adm3_NCDD": "80614",
+   "num_idpoor": 98
+ },
+ {
+   "Adm3_NCDD": "80613",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "80612",
+   "num_idpoor": 135
+ },
+ {
+   "Adm3_NCDD": "80611",
+   "num_idpoor": 239
+ },
+ {
+   "Adm3_NCDD": "80610",
+   "num_idpoor": 97
+ },
+ {
+   "Adm3_NCDD": "80609",
+   "num_idpoor": 112
+ },
+ {
+   "Adm3_NCDD": "80608",
+   "num_idpoor": 37
+ },
+ {
+   "Adm3_NCDD": "80607",
+   "num_idpoor": 319
+ },
+ {
+   "Adm3_NCDD": "80606",
+   "num_idpoor": 106
+ },
+ {
+   "Adm3_NCDD": "80605",
+   "num_idpoor": 88
+ },
+ {
+   "Adm3_NCDD": "80604",
+   "num_idpoor": 62
+ },
+ {
+   "Adm3_NCDD": "80603",
+   "num_idpoor": 92
+ },
+ {
+   "Adm3_NCDD": "80602",
+   "num_idpoor": 113
+ },
+ {
+   "Adm3_NCDD": "80601",
+   "num_idpoor": 327
+ },
+ {
+   "Adm3_NCDD": "80507",
+   "num_idpoor": 223
+ },
+ {
+   "Adm3_NCDD": "80506",
+   "num_idpoor": 486
+ },
+ {
+   "Adm3_NCDD": "80505",
+   "num_idpoor": 313
+ },
+ {
+   "Adm3_NCDD": "80504",
+   "num_idpoor": 166
+ },
+ {
+   "Adm3_NCDD": "21102",
+   "num_idpoor": 818
+ },
+ {
+   "Adm3_NCDD": "21101",
+   "num_idpoor": 515
+ },
+ {
+   "Adm3_NCDD": "21006",
+   "num_idpoor": 495
+ },
+ {
+   "Adm3_NCDD": "21005",
+   "num_idpoor": 634
+ },
+ {
+   "Adm3_NCDD": "21004",
+   "num_idpoor": 629
+ },
+ {
+   "Adm3_NCDD": "21003",
+   "num_idpoor": 392
+ },
+ {
+   "Adm3_NCDD": "21002",
+   "num_idpoor": 179
+ },
+ {
+   "Adm3_NCDD": "21001",
+   "num_idpoor": 162
+ },
+ {
+   "Adm3_NCDD": "20907",
+   "num_idpoor": 430
+ },
+ {
+   "Adm3_NCDD": "20906",
+   "num_idpoor": 257
+ },
+ {
+   "Adm3_NCDD": "20905",
+   "num_idpoor": 393
+ },
+ {
+   "Adm3_NCDD": "20904",
+   "num_idpoor": 350
+ },
+ {
+   "Adm3_NCDD": "20903",
+   "num_idpoor": 357
+ },
+ {
+   "Adm3_NCDD": "20902",
+   "num_idpoor": 243
+ },
+ {
+   "Adm3_NCDD": "20901",
+   "num_idpoor": 484
+ },
+ {
+   "Adm3_NCDD": "20810",
+   "num_idpoor": 628
+ },
+ {
+   "Adm3_NCDD": "20809",
+   "num_idpoor": 981
+ },
+ {
+   "Adm3_NCDD": "20808",
+   "num_idpoor": 467
+ },
+ {
+   "Adm3_NCDD": "20807",
+   "num_idpoor": 495
+ },
+ {
+   "Adm3_NCDD": "20806",
+   "num_idpoor": 583
+ },
+ {
+   "Adm3_NCDD": "20805",
+   "num_idpoor": 621
+ },
+ {
+   "Adm3_NCDD": "20804",
+   "num_idpoor": 1180
+ },
+ {
+   "Adm3_NCDD": "20803",
+   "num_idpoor": 1185
+ },
+ {
+   "Adm3_NCDD": "20802",
+   "num_idpoor": 335
+ },
+ {
+   "Adm3_NCDD": "20801",
+   "num_idpoor": 1174
+ },
+ {
+   "Adm3_NCDD": "20705",
+   "num_idpoor": 611
+ },
+ {
+   "Adm3_NCDD": "20704",
+   "num_idpoor": 810
+ },
+ {
+   "Adm3_NCDD": "20703",
+   "num_idpoor": 593
+ },
+ {
+   "Adm3_NCDD": "20702",
+   "num_idpoor": 397
+ },
+ {
+   "Adm3_NCDD": "20701",
+   "num_idpoor": 581
+ },
+ {
+   "Adm3_NCDD": "20609",
+   "num_idpoor": 622
+ },
+ {
+   "Adm3_NCDD": "20608",
+   "num_idpoor": 424
+ },
+ {
+   "Adm3_NCDD": "20607",
+   "num_idpoor": 834
+ },
+ {
+   "Adm3_NCDD": "20606",
+   "num_idpoor": 541
+ },
+ {
+   "Adm3_NCDD": "20605",
+   "num_idpoor": 593
+ },
+ {
+   "Adm3_NCDD": "20604",
+   "num_idpoor": 696
+ },
+ {
+   "Adm3_NCDD": "20603",
+   "num_idpoor": 669
+ },
+ {
+   "Adm3_NCDD": "20602",
+   "num_idpoor": 885
+ },
+ {
+   "Adm3_NCDD": "20601",
+   "num_idpoor": 645
+ },
+ {
+   "Adm3_NCDD": "20507",
+   "num_idpoor": 585
+ },
+ {
+   "Adm3_NCDD": "20506",
+   "num_idpoor": 453
+ },
+ {
+   "Adm3_NCDD": "20505",
+   "num_idpoor": 1052
+ },
+ {
+   "Adm3_NCDD": "20504",
+   "num_idpoor": 801
+ },
+ {
+   "Adm3_NCDD": "20503",
+   "num_idpoor": 400
+ },
+ {
+   "Adm3_NCDD": "20502",
+   "num_idpoor": 562
+ },
+ {
+   "Adm3_NCDD": "20501",
+   "num_idpoor": 788
+ },
+ {
+   "Adm3_NCDD": "20408",
+   "num_idpoor": 693
+ },
+ {
+   "Adm3_NCDD": "20407",
+   "num_idpoor": 699
+ },
+ {
+   "Adm3_NCDD": "20406",
+   "num_idpoor": 498
+ },
+ {
+   "Adm3_NCDD": "20405",
+   "num_idpoor": 669
+ },
+ {
+   "Adm3_NCDD": "20404",
+   "num_idpoor": 485
+ },
+ {
+   "Adm3_NCDD": "20403",
+   "num_idpoor": 551
+ },
+ {
+   "Adm3_NCDD": "20402",
+   "num_idpoor": 344
+ },
+ {
+   "Adm3_NCDD": "20401",
+   "num_idpoor": 878
+ },
+ {
+   "Adm3_NCDD": "20310",
+   "num_idpoor": 509
+ },
+ {
+   "Adm3_NCDD": "20309",
+   "num_idpoor": 823
+ },
+ {
+   "Adm3_NCDD": "20308",
+   "num_idpoor": 858
+ },
+ {
+   "Adm3_NCDD": "80503",
+   "num_idpoor": 164
+ },
+ {
+   "Adm3_NCDD": "80502",
+   "num_idpoor": 335
+ },
+ {
+   "Adm3_NCDD": "80501",
+   "num_idpoor": 526
+ },
+ {
+   "Adm3_NCDD": "80412",
+   "num_idpoor": 463
+ },
+ {
+   "Adm3_NCDD": "80411",
+   "num_idpoor": 287
+ },
+ {
+   "Adm3_NCDD": "80410",
+   "num_idpoor": 419
+ },
+ {
+   "Adm3_NCDD": "80409",
+   "num_idpoor": 217
+ },
+ {
+   "Adm3_NCDD": "80408",
+   "num_idpoor": 345
+ },
+ {
+   "Adm3_NCDD": "80407",
+   "num_idpoor": 318
+ },
+ {
+   "Adm3_NCDD": "80405",
+   "num_idpoor": 135
+ },
+ {
+   "Adm3_NCDD": "80404",
+   "num_idpoor": 188
+ },
+ {
+   "Adm3_NCDD": "80403",
+   "num_idpoor": 317
+ },
+ {
+   "Adm3_NCDD": "80402",
+   "num_idpoor": 201
+ },
+ {
+   "Adm3_NCDD": "80401",
+   "num_idpoor": 263
+ },
+ {
+   "Adm3_NCDD": "80318",
+   "num_idpoor": 542
+ },
+ {
+   "Adm3_NCDD": "80317",
+   "num_idpoor": 94
+ },
+ {
+   "Adm3_NCDD": "80316",
+   "num_idpoor": 79
+ },
+ {
+   "Adm3_NCDD": "80315",
+   "num_idpoor": 170
+ },
+ {
+   "Adm3_NCDD": "80314",
+   "num_idpoor": 285
+ },
+ {
+   "Adm3_NCDD": "80313",
+   "num_idpoor": 262
+ },
+ {
+   "Adm3_NCDD": "80312",
+   "num_idpoor": 211
+ },
+ {
+   "Adm3_NCDD": "80311",
+   "num_idpoor": 509
+ },
+ {
+   "Adm3_NCDD": "80310",
+   "num_idpoor": 267
+ },
+ {
+   "Adm3_NCDD": "80309",
+   "num_idpoor": 273
+ },
+ {
+   "Adm3_NCDD": "80308",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "80307",
+   "num_idpoor": 307
+ },
+ {
+   "Adm3_NCDD": "80306",
+   "num_idpoor": 359
+ },
+ {
+   "Adm3_NCDD": "80305",
+   "num_idpoor": 117
+ },
+ {
+   "Adm3_NCDD": "80304",
+   "num_idpoor": 135
+ },
+ {
+   "Adm3_NCDD": "80303",
+   "num_idpoor": 129
+ },
+ {
+   "Adm3_NCDD": "80302",
+   "num_idpoor": 266
+ },
+ {
+   "Adm3_NCDD": "80301",
+   "num_idpoor": 169
+ },
+ {
+   "Adm3_NCDD": "80211",
+   "num_idpoor": 1393
+ },
+ {
+   "Adm3_NCDD": "80208",
+   "num_idpoor": 253
+ },
+ {
+   "Adm3_NCDD": "80207",
+   "num_idpoor": 490
+ },
+ {
+   "Adm3_NCDD": "80206",
+   "num_idpoor": 231
+ },
+ {
+   "Adm3_NCDD": "80204",
+   "num_idpoor": 222
+ },
+ {
+   "Adm3_NCDD": "80203",
+   "num_idpoor": 758
+ },
+ {
+   "Adm3_NCDD": "80202",
+   "num_idpoor": 380
+ },
+ {
+   "Adm3_NCDD": "80201",
+   "num_idpoor": 514
+ },
+ {
+   "Adm3_NCDD": "80128",
+   "num_idpoor": 177
+ },
+ {
+   "Adm3_NCDD": "80127",
+   "num_idpoor": 92
+ },
+ {
+   "Adm3_NCDD": "80125",
+   "num_idpoor": 132
+ },
+ {
+   "Adm3_NCDD": "80122",
+   "num_idpoor": 174
+ },
+ {
+   "Adm3_NCDD": "80118",
+   "num_idpoor": 187
+ },
+ {
+   "Adm3_NCDD": "80117",
+   "num_idpoor": 101
+ },
+ {
+   "Adm3_NCDD": "80116",
+   "num_idpoor": 104
+ },
+ {
+   "Adm3_NCDD": "80115",
+   "num_idpoor": 147
+ },
+ {
+   "Adm3_NCDD": "80113",
+   "num_idpoor": 128
+ },
+ {
+   "Adm3_NCDD": "80109",
+   "num_idpoor": 136
+ },
+ {
+   "Adm3_NCDD": "80108",
+   "num_idpoor": 126
+ },
+ {
+   "Adm3_NCDD": "80107",
+   "num_idpoor": 175
+ },
+ {
+   "Adm3_NCDD": "80106",
+   "num_idpoor": 180
+ },
+ {
+   "Adm3_NCDD": "80105",
+   "num_idpoor": 211
+ },
+ {
+   "Adm3_NCDD": "80104",
+   "num_idpoor": 251
+ },
+ {
+   "Adm3_NCDD": "80103",
+   "num_idpoor": 150
+ },
+ {
+   "Adm3_NCDD": "80102",
+   "num_idpoor": 87
+ },
+ {
+   "Adm3_NCDD": "80101",
+   "num_idpoor": 339
+ },
+ {
+   "Adm3_NCDD": "40808",
+   "num_idpoor": 247
+ },
+ {
+   "Adm3_NCDD": "40807",
+   "num_idpoor": 452
+ },
+ {
+   "Adm3_NCDD": "40806",
+   "num_idpoor": 469
+ },
+ {
+   "Adm3_NCDD": "40805",
+   "num_idpoor": 373
+ },
+ {
+   "Adm3_NCDD": "40804",
+   "num_idpoor": 439
+ },
+ {
+   "Adm3_NCDD": "40803",
+   "num_idpoor": 282
+ },
+ {
+   "Adm3_NCDD": "40802",
+   "num_idpoor": 394
+ },
+ {
+   "Adm3_NCDD": "40801",
+   "num_idpoor": 589
+ },
+ {
+   "Adm3_NCDD": "40709",
+   "num_idpoor": 375
+ },
+ {
+   "Adm3_NCDD": "40708",
+   "num_idpoor": 463
+ },
+ {
+   "Adm3_NCDD": "40707",
+   "num_idpoor": 537
+ },
+ {
+   "Adm3_NCDD": "40706",
+   "num_idpoor": 544
+ },
+ {
+   "Adm3_NCDD": "40705",
+   "num_idpoor": 430
+ },
+ {
+   "Adm3_NCDD": "40704",
+   "num_idpoor": 425
+ },
+ {
+   "Adm3_NCDD": "40703",
+   "num_idpoor": 560
+ },
+ {
+   "Adm3_NCDD": "40702",
+   "num_idpoor": 438
+ },
+ {
+   "Adm3_NCDD": "40701",
+   "num_idpoor": 230
+ },
+ {
+   "Adm3_NCDD": "40613",
+   "num_idpoor": 415
+ },
+ {
+   "Adm3_NCDD": "40612",
+   "num_idpoor": 845
+ },
+ {
+   "Adm3_NCDD": "40611",
+   "num_idpoor": 479
+ },
+ {
+   "Adm3_NCDD": "40610",
+   "num_idpoor": 444
+ },
+ {
+   "Adm3_NCDD": "40609",
+   "num_idpoor": 227
+ },
+ {
+   "Adm3_NCDD": "40608",
+   "num_idpoor": 298
+ },
+ {
+   "Adm3_NCDD": "40607",
+   "num_idpoor": 320
+ },
+ {
+   "Adm3_NCDD": "40606",
+   "num_idpoor": 362
+ },
+ {
+   "Adm3_NCDD": "40605",
+   "num_idpoor": 365
+ },
+ {
+   "Adm3_NCDD": "40604",
+   "num_idpoor": 744
+ },
+ {
+   "Adm3_NCDD": "40603",
+   "num_idpoor": 455
+ },
+ {
+   "Adm3_NCDD": "40602",
+   "num_idpoor": 268
+ },
+ {
+   "Adm3_NCDD": "40601",
+   "num_idpoor": 402
+ },
+ {
+   "Adm3_NCDD": "40510",
+   "num_idpoor": 286
+ },
+ {
+   "Adm3_NCDD": "40509",
+   "num_idpoor": 755
+ },
+ {
+   "Adm3_NCDD": "40508",
+   "num_idpoor": 383
+ },
+ {
+   "Adm3_NCDD": "40507",
+   "num_idpoor": 313
+ },
+ {
+   "Adm3_NCDD": "40506",
+   "num_idpoor": 386
+ },
+ {
+   "Adm3_NCDD": "40505",
+   "num_idpoor": 280
+ },
+ {
+   "Adm3_NCDD": "40504",
+   "num_idpoor": 249
+ },
+ {
+   "Adm3_NCDD": "40503",
+   "num_idpoor": 544
+ },
+ {
+   "Adm3_NCDD": "40502",
+   "num_idpoor": 497
+ },
+ {
+   "Adm3_NCDD": "40501",
+   "num_idpoor": 437
+ },
+ {
+   "Adm3_NCDD": "40409",
+   "num_idpoor": 293
+ },
+ {
+   "Adm3_NCDD": "40408",
+   "num_idpoor": 280
+ }
+]
+}

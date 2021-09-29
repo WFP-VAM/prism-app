@@ -1,6 +1,12 @@
 import { has } from 'lodash';
 
 import {
+  cambodiaConfig,
+  cambodiaRawLayers,
+  cambodiaRawTables,
+} from './cambodia';
+
+import {
   indonesiaConfig,
   indonesiaRawLayers,
   indonesiaRawTables,
@@ -26,6 +32,8 @@ import {
 
 import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
 
+import { rbdConfig, rbdRawLayers, rbdRawTables } from './rbd';
+
 import {
   tajikistanConfig,
   tajikistanRawLayers,
@@ -33,11 +41,13 @@ import {
 } from './tajikistan';
 
 type Country =
+  | 'cambodia'
   | 'indonesia'
   | 'kyrgyzstan'
   | 'mongolia'
   | 'mozambique'
   | 'myanmar'
+  | 'rbd'
   | 'tajikistan';
 
 const DEFAULT: Country = 'myanmar';
@@ -47,6 +57,12 @@ const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
 const configMap = {
+  cambodia: {
+    appConfig: cambodiaConfig,
+    rawLayers: cambodiaRawLayers,
+    rawTables: cambodiaRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_gov_wfp_edEarly2021.json`,
+  },
   indonesia: {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
@@ -76,6 +92,12 @@ const configMap = {
     rawLayers: myanmarRawLayers,
     rawTables: myanmarRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mmr_admin_boundaries.json`,
+  },
+  rbd: {
+    appConfig: rbdConfig,
+    rawLayers: rbdRawLayers,
+    rawTables: rbdRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/rbd_admin_boundaries.json`,
   },
   tajikistan: {
     appConfig: tajikistanConfig,

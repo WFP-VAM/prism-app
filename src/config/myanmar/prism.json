@@ -1,6 +1,6 @@
 {
   "country": "Myanmar",
-  "alertFormActive": true,
+  "alertFormActive": false,
   "map": {
     "latitude": 19.467,
     "longitude": 96.371,
@@ -15,7 +15,11 @@
   "categories": {
     "hazards": {
       "tropical_storms": ["adamts_buffers"],
-      "floods": ["hydra_s1"],
+      "floods": [
+        "hydra_s1",
+        "hydra_s2",
+        "hydra_l8"
+      ],
       "rainfall": [
         "rainfall_dekad",
         "rain_anomaly_dekad",
