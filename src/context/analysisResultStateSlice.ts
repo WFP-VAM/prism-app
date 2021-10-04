@@ -8,7 +8,7 @@ import {
   AggregationOperations,
   AsyncReturnType,
   BoundaryLayerProps,
-  NSOLayerProps,
+  AdminLevelDataLayerProps,
   ThresholdDefinition,
   WMSLayerProps,
   WfsRequestParams,
@@ -35,7 +35,7 @@ import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
-import { DataRecord, NSOLayerData } from './layers/nso';
+import { DataRecord, AdminLevelDataLayerData } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
 
@@ -106,7 +106,7 @@ function generateTableFromApiData(
   {
     layer: { adminLevel },
     data: { layerData: baselineLayerData },
-  }: { layer: NSOLayerProps; data: NSOLayerData },
+  }: { layer: AdminLevelDataLayerProps; data: AdminLevelDataLayerData },
 ): TableRow[] {
   // find the key that will let us reference the names of the bounding boxes. We get the one corresponding to the specific level of baseline, or the first if we fail.
   const adminLevelName =
@@ -155,7 +155,7 @@ function generateTableFromApiData(
 }
 
 export type AnalysisDispatchParams = {
-  baselineLayer: NSOLayerProps;
+  baselineLayer: AdminLevelDataLayerProps;
   hazardLayer: WMSLayerProps;
   extent: Extent;
   threshold: ThresholdDefinition;
@@ -176,13 +176,14 @@ const createAPIRequestParams = (
   geotiffLayer: WMSLayerProps,
   extent: Extent,
   date: ReturnType<Date['getTime']>,
-  params: WfsRequestParams | NSOLayerProps,
+  params: WfsRequestParams | AdminLevelDataLayerProps,
 ): ApiData => {
   const adminBoundaries = getBoundaryLayerSingleton();
 
   const groupBy =
-    adminBoundaries.adminLevelNames[(params as NSOLayerProps).adminLevel - 1] ||
-    adminBoundaries.adminLevelNames[0];
+    adminBoundaries.adminLevelNames[
+      (params as AdminLevelDataLayerProps).adminLevel - 1
+    ] || adminBoundaries.adminLevelNames[0];
 
   const wfsParams = (params as WfsRequestParams).layer_name
     ? { wfs_params: params as WfsRequestParams }
@@ -287,7 +288,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   } = params;
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
-  ) as LayerData<NSOLayerProps>;
+  ) as LayerData<AdminLevelDataLayerProps>;
   const adminBoundaries = getBoundaryLayerSingleton();
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
@@ -317,7 +318,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       payload: { data },
     } = (await api.dispatch(
       loadLayerData({ layer: baselineLayer, extent } as LayerDataParams<
-        NSOLayerProps
+        AdminLevelDataLayerProps
       >),
     )) as { payload: { data: unknown } };
 
