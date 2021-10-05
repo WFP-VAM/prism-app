@@ -1,0 +1,31 @@
+{
+    "country": "Regional Bureau Dakar",
+    "alertFormActive": false,
+    "serversUrls": {
+      "wms": [
+        "https://odc.ovio.org/wms",
+        "https://geonode.wfp.org/geoserver/prism/wms"
+      ]
+    },
+    "map": {
+      "latitude": 14.61,
+      "longitude": 5.46,
+      "zoom": 3.99
+    },
+    "categories": {
+      "hazards": {
+        "rainfall": [
+          "rainfall_dekad",
+          "rain_anomaly_dekad",
+          "rain_anomaly_monthly",
+          "rainfall_agg_month",
+          "streak_dry_days",
+          "days_heavy_rain",
+          "streak_heavy_rain"
+        ],
+        "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"],
+        "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
+      }
+    }
+  }
+  

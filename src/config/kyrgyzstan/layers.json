@@ -9,7 +9,7 @@
   },
   "recurrence_mudflows": {
     "title": "Recurrence of mudflows",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/kyrgyzstan/mudflows_w_admin.json",
     "data_field": "mudflow",
     "admin_level": 2,

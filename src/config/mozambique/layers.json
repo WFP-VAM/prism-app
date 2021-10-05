@@ -591,7 +591,7 @@
   },
   "ipc_phase_12_2020": {
     "title": "IPC Phase Classification (Oct-Dec 2020)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/mozambique/moz-ipc-2020-12.json",
     "data_field": "overall_phase",
     "admin_level": 2,

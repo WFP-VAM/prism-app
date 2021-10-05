@@ -212,7 +212,7 @@ function LegendItem({
           case 'wms':
             return [`layer-${id}`, 'raster-opacity'];
           case 'impact':
-          case 'nso':
+          case 'admin_level_data':
             return [`layer-${id}-fill`, 'fill-opacity'];
           case 'point_data':
             return [`layer-${id}-circle`, 'circle-opacity'];

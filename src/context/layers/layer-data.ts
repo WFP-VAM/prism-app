@@ -2,7 +2,10 @@ import { createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
 import { DiscriminateUnion, LayerType } from '../../config/types';
 import { Extent } from '../../components/MapView/Layers/raster-utils';
 
-import { fetchNSOLayerData, NSOLayerData } from './nso';
+import {
+  fetchAdminLevelDataLayerData,
+  AdminLevelDataLayerData,
+} from './admin_level_data';
 import { fetchWCSLayerData, WMSLayerData } from './wms';
 import { fetchPointLayerData, PointLayerData } from './point_data';
 import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
@@ -14,7 +17,8 @@ type LayerSpecificDataTypes = {
   boundary: BoundaryLayerData;
   wms: WMSLayerData;
   impact: ImpactLayerData;
-  nso: NSOLayerData;
+  // eslint-disable-next-line camelcase
+  admin_level_data: AdminLevelDataLayerData;
   // eslint-disable-next-line camelcase
   point_data: PointLayerData;
 };
@@ -75,7 +79,7 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
     boundary: fetchBoundaryLayerData,
     impact: fetchImpactLayerData,
     wms: fetchWCSLayerData,
-    nso: fetchNSOLayerData,
+    admin_level_data: fetchAdminLevelDataLayerData,
     point_data: fetchPointLayerData,
   };
   const lazyLoad: LazyLoader<any> = layerLoaders[layer.type];
