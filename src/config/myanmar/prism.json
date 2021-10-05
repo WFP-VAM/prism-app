@@ -2,9 +2,9 @@
   "country": "Myanmar",
   "alertFormActive": false,
   "map": {
-    "latitude": 17.346,
-    "longitude": 97.557,
-    "zoom": 4.58
+    "latitude": 19.467,
+    "longitude": 96.371,
+    "zoom": 4.48
   },
   "serversUrls": {
     "wms": [
@@ -14,6 +14,12 @@
   },
   "categories": {
     "hazards": {
+      "tropical_storms": ["adamts_buffers"],
+      "floods": [
+        "hydra_s1",
+        "hydra_s2",
+        "hydra_l8"
+      ],
       "rainfall": [
         "rainfall_dekad",
         "rain_anomaly_dekad",
@@ -24,12 +30,11 @@
         "streak_heavy_rain"
       ],
       "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"],
-      "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"],
-      "tropical_storms": ["adamts_main"]
+      "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
     },
     "vulnerability": {
       "vulnerability_index": ["multidimensional_disadvantage_index", "inform"],
-      "vulnerabile_populations": [
+      "vulnerable_populations": [
         "age_dependency_ratio",
         "female_headed_hhs",
         "disability_prev_rate"

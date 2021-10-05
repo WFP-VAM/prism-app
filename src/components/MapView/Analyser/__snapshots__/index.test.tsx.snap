@@ -179,7 +179,7 @@ exports[`renders as expected 1`] = `
               classname="Analyser-selector-10"
               placeholder="Choose baseline layer"
               title="Baseline Layer"
-              type="nso"
+              type="admin_level_data"
             />
           </div>
           <div
@@ -194,7 +194,7 @@ exports[`renders as expected 1`] = `
               classname="Analyser-numberField-11"
               error="false"
               id="filled-number"
-              label="Min"
+              label="Below"
               type="number"
               value=""
               variant="filled"
@@ -202,7 +202,7 @@ exports[`renders as expected 1`] = `
             <mock-textfield
               classname="Analyser-numberField-11"
               id="filled-number"
-              label="Max"
+              label="Above"
               type="number"
               value=""
               variant="filled"

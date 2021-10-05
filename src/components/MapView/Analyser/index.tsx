@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -26,21 +20,15 @@ import {
 import { grey } from '@material-ui/core/colors';
 import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import bbox from '@turf/bbox';
 import DatePicker from 'react-datepicker';
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../../config/utils';
+import { LayerDefinitions } from '../../../config/utils';
 import {
   AggregationOperations,
-  BoundaryLayerProps,
-  NSOLayerProps,
+  AdminLevelDataLayerProps,
   WMSLayerProps,
   LayerKey,
 } from '../../../config/types';
-import { LayerData } from '../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
+
 import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import {
@@ -56,16 +44,13 @@ import AnalysisTable from './AnalysisTable';
 import {
   getAnalysisTableColumns,
   downloadCSVFromTableData,
+  BaselineLayerResult,
+  ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 
-const boundaryLayer = getBoundaryLayerSingleton();
-
-function Analyser({ classes }: AnalyserProps) {
+function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -121,36 +106,38 @@ function Analyser({ classes }: AnalyserProps) {
     const belowThresholdValue = parseFloat(
       thresholdType === 'below' ? changedOption : belowThreshold,
     );
-    if (belowThresholdValue < aboveThresholdValue) {
-      setThresholdError('Min threshold is larger than Max!');
+    if (belowThresholdValue > aboveThresholdValue) {
+      setThresholdError('Below threshold is larger than above threshold!');
     } else {
       setThresholdError(null);
     }
   };
 
-  const adminBoundariesExtent = useMemo(() => {
-    if (!boundaryLayerData) {
-      // not loaded yet. Should be loaded in MapView
-      return null;
-    }
-    return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
-  }, [boundaryLayerData]);
-
-  const statisticOptions = Object.entries(AggregationOperations).map(stat => (
-    <FormControlLabel
-      key={stat[0]}
-      value={stat[1]}
-      control={
-        <Radio className={classes.radioOptions} color="default" size="small" />
-      }
-      label={stat[0]}
-    />
-  ));
+  const statisticOptions = Object.entries(AggregationOperations)
+    .filter(([, value]) => value !== AggregationOperations.Sum) // sum is used only for exposure analysis.
+    .map(([key, value]) => (
+      <FormControlLabel
+        key={key}
+        value={value}
+        control={
+          <Radio
+            className={classes.radioOptions}
+            color="default"
+            size="small"
+          />
+        }
+        label={key}
+      />
+    ));
 
   const clearAnalysis = () => dispatch(clearAnalysisResult());
 
   const runAnalyser = async () => {
-    if (!adminBoundariesExtent) {
+    if (analysisResult) {
+      clearAnalysis();
+    }
+
+    if (!extent) {
       return;
     } // hasn't been calculated yet
 
@@ -167,18 +154,19 @@ function Analyser({ classes }: AnalyserProps) {
     ] as WMSLayerProps;
     const selectedBaselineLayer = LayerDefinitions[
       baselineLayerId
-    ] as NSOLayerProps;
+    ] as AdminLevelDataLayerProps;
 
     const params: AnalysisDispatchParams = {
       hazardLayer: selectedHazardLayer,
       baselineLayer: selectedBaselineLayer,
       date: selectedDate,
       statistic,
-      extent: adminBoundariesExtent,
+      extent,
       threshold: {
         above: parseFloat(aboveThreshold) || undefined,
         below: parseFloat(belowThreshold) || undefined,
       },
+      isExposure: false,
     };
 
     await dispatch(requestAndStoreAnalysis(params));
@@ -235,7 +223,7 @@ function Analyser({ classes }: AnalyserProps) {
               <div className={classes.analyserOptions}>
                 <Typography variant="body2">Baseline Layer</Typography>
                 <LayerDropdown
-                  type="nso"
+                  type="admin_level_data"
                   value={baselineLayerId}
                   setValue={setBaselineLayerId}
                   title="Baseline Layer"
@@ -250,18 +238,18 @@ function Analyser({ classes }: AnalyserProps) {
                   error={!!thresholdError}
                   helperText={thresholdError}
                   className={classes.numberField}
-                  label="Min"
+                  label="Below"
                   type="number"
-                  value={aboveThreshold}
-                  onChange={onThresholdOptionChange('above')}
+                  value={belowThreshold}
+                  onChange={onThresholdOptionChange('below')}
                   variant="filled"
                 />
                 <TextField
                   id="filled-number"
-                  label="Max"
+                  label="Above"
                   className={classes.numberField}
-                  value={belowThreshold}
-                  onChange={onThresholdOptionChange('below')}
+                  value={aboveThreshold}
+                  onChange={onThresholdOptionChange('above')}
                   type="number"
                   variant="filled"
                 />
@@ -293,53 +281,56 @@ function Analyser({ classes }: AnalyserProps) {
               </div>
             </div>
 
-            {!isAnalysisLoading && analysisResult && (
-              <>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        color="default"
-                        checked={isMapLayerActive}
-                        onChange={e =>
-                          dispatch(setIsMapLayerActive(e.target.checked))
-                        }
-                      />
-                    }
-                    label="Map View"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        color="default"
-                        checked={isTableViewOpen}
-                        onChange={e => setIsTableViewOpen(e.target.checked)}
-                      />
-                    }
-                    label="Table View"
-                  />
-                </FormGroup>
-                {isTableViewOpen && (
-                  <AnalysisTable
-                    tableData={analysisResult.tableData}
-                    columns={getAnalysisTableColumns(analysisResult)}
-                  />
-                )}
-                <Button
-                  className={classes.innerAnalysisButton}
-                  onClick={() => downloadCSVFromTableData(analysisResult)}
-                >
-                  <Typography variant="body2">Download</Typography>
-                </Button>
-                <Button
-                  className={classes.innerAnalysisButton}
-                  onClick={clearAnalysis}
-                >
-                  <Typography variant="body2">Clear Analysis</Typography>
-                </Button>
-              </>
-            )}
-            {!analysisResult && (
+            {!isAnalysisLoading &&
+              analysisResult &&
+              analysisResult instanceof BaselineLayerResult && (
+                <>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          color="default"
+                          checked={isMapLayerActive}
+                          onChange={e =>
+                            dispatch(setIsMapLayerActive(e.target.checked))
+                          }
+                        />
+                      }
+                      label="Map View"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          color="default"
+                          checked={isTableViewOpen}
+                          onChange={e => setIsTableViewOpen(e.target.checked)}
+                        />
+                      }
+                      label="Table View"
+                    />
+                  </FormGroup>
+                  {isTableViewOpen && (
+                    <AnalysisTable
+                      tableData={analysisResult.tableData}
+                      columns={getAnalysisTableColumns(analysisResult)}
+                    />
+                  )}
+                  <Button
+                    className={classes.innerAnalysisButton}
+                    onClick={() => downloadCSVFromTableData(analysisResult)}
+                  >
+                    <Typography variant="body2">Download</Typography>
+                  </Button>
+                  <Button
+                    className={classes.innerAnalysisButton}
+                    onClick={clearAnalysis}
+                  >
+                    <Typography variant="body2">Clear Analysis</Typography>
+                  </Button>
+                </>
+              )}
+            {(!analysisResult ||
+              analysisResult instanceof ExposedPopulationResult) && (
               <Button
                 className={classes.innerAnalysisButton}
                 onClick={runAnalyser}
@@ -419,6 +410,8 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface AnalyserProps extends WithStyles<typeof styles> {}
+interface AnalyserProps extends WithStyles<typeof styles> {
+  extent?: Extent;
+}
 
 export default withStyles(styles)(Analyser);

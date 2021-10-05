@@ -40,7 +40,7 @@
     "@types/nodemailer": "^6.4.1",
     "faker": "^4.1.0",
     "glob": "^7.1.6",
-    "jest": "24.9.0",
+    "jest": "27.0.4",
     "rimraf": "^3.0.2",
     "supertest": "^4.0.2",
     "ts-jest": "^24.0",

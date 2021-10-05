@@ -15,20 +15,82 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
-import { useSelector } from 'react-redux';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { Extent } from '../Layers/raster-utils';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
-import { LayerType } from '../../../config/types';
+import {
+  LayerType,
+  GeometryType,
+  ExposedPopulationDefinition,
+  LegendDefinitionItem,
+} from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
+  addTableData,
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
 
-function Legends({ classes, layers }: LegendsProps) {
+import {
+  BaselineLayerResult,
+  ExposedPopulationResult,
+} from '../../../utils/analysis-utils';
+import { convertToTableData, downloadToFile } from '../utils';
+
+import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
+import LayerContentPreview from './layerContentPreview';
+
+/**
+ * Returns layer identifier used to perform exposure analysis.
+ *
+ * @return LayerKey or undefined if exposure not found or GeometryType is not Polygon.
+ */
+function GetExposureFromLayer(
+  layer: LayerType,
+): ExposedPopulationDefinition | undefined {
+  return layer.type === 'wms' &&
+    layer.exposure &&
+    layer.geometry === GeometryType.Polygon
+    ? layer.exposure
+    : undefined;
+}
+
+function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
+  return (
+    <>
+      Impact Analysis on {result.getBaselineLayer().legendText}
+      <br />
+      {result.threshold.above
+        ? `Above Threshold: ${result.threshold.above}`
+        : ''}
+      <br />
+      {result.threshold.below
+        ? `Below Threshold: ${result.threshold.below}`
+        : ''}
+    </>
+  );
+}
+
+function Legends({ classes, layers, extent }: LegendsProps) {
   const [open, setOpen] = useState(true);
-  const analysisResult = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const analysisResult = useSelector(analysisResultSelector);
+  const features = analysisResult?.featureCollection.features;
+  const hasData = features ? features.length > 0 : false;
+
+  const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
+    e.preventDefault();
+    downloadToFile(
+      {
+        content: JSON.stringify(features),
+        isUrl: false,
+      },
+      analysisResult ? analysisResult.getTitle() : '',
+      'application/json',
+    );
+  };
 
   const legendItems = [
     ...layers.map(layer => {
@@ -43,6 +105,8 @@ function Legends({ classes, layers }: LegendsProps) {
           ? formatWMSLegendUrl(layer.baseUrl, layer.serverLayerName)
           : undefined;
 
+      const exposure = GetExposureFromLayer(layer);
+
       return (
         <LegendItem
           classes={classes}
@@ -53,32 +117,38 @@ function Legends({ classes, layers }: LegendsProps) {
           legendUrl={legendUrl}
           type={layer.type}
           opacity={layer.opacity}
+          exposure={exposure}
+          extent={extent}
         >
           {layer.legendText}
         </LegendItem>
       );
     }),
     // add analysis legend item if layer is active and analysis result exists
-    ...(isAnalysisLayerActive && analysisResult
+    ...(isAnalysisLayerActive && hasData
       ? [
           <LegendItem
-            key={analysisResult.key}
-            legend={analysisResult.legend}
-            title={`${analysisResult.getBaselineLayer().title} exposed to ${
-              analysisResult.getHazardLayer().title
-            }`}
+            key={analysisResult?.key}
+            legend={analysisResult?.legend}
+            title={analysisResult?.getTitle()}
             classes={classes}
             opacity={0.5} // TODO: initial opacity value
           >
-            Impact Analysis on {analysisResult.getBaselineLayer().legendText}
-            <br />
-            {analysisResult.threshold.above
-              ? `Above Threshold: ${analysisResult.threshold.above}`
-              : ''}
-            <br />
-            {analysisResult.threshold.below
-              ? `Below Threshold: ${analysisResult.threshold.below}`
-              : ''}
+            {analysisResult instanceof BaselineLayerResult && (
+              <LegendImpactResult result={analysisResult} />
+            )}
+            <Divider />
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={e => handleAnalysisDownload(e)}
+                fullWidth
+              >
+                Download
+              </Button>
+            </Grid>
           </LegendItem>,
         ]
       : []),
@@ -117,8 +187,13 @@ function LegendItem({
   opacity: initialOpacity,
   children,
   legendUrl,
+  exposure,
+  extent,
 }: LegendItemProps) {
   const map = useSelector(mapSelector);
+  const analysisResult = useSelector(analysisResultSelector);
+  const dispatch = useDispatch();
+
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
@@ -137,7 +212,7 @@ function LegendItem({
           case 'wms':
             return [`layer-${id}`, 'raster-opacity'];
           case 'impact':
-          case 'nso':
+          case 'admin_level_data':
             return [`layer-${id}-fill`, 'fill-opacity'];
           case 'point_data':
             return [`layer-${id}-circle`, 'circle-opacity'];
@@ -154,6 +229,11 @@ function LegendItem({
     }
   };
 
+  if (analysisResult instanceof ExposedPopulationResult) {
+    const tableData = convertToTableData(analysisResult);
+    dispatch(addTableData(tableData));
+  }
+
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
@@ -162,6 +242,7 @@ function LegendItem({
             <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
             </Typography>
+            <LayerContentPreview layerId={id} />
           </Grid>
           <Divider />
           <Grid item className={classes.slider}>
@@ -181,10 +262,14 @@ function LegendItem({
               {legendUrl ? (
                 <img src={legendUrl} alt={title} />
               ) : (
-                legend.map(({ value, color }: any) => (
+                legend.map(({ value, color }: LegendDefinitionItem) => (
                   <ColorIndicator
                     key={value}
-                    value={value as string}
+                    value={
+                      typeof value === 'number'
+                        ? Math.round(value).toLocaleString('en-US')
+                        : value
+                    }
                     color={color as string}
                     opacity={opacity as number}
                   />
@@ -199,6 +284,15 @@ function LegendItem({
             <Grid item>
               <Typography variant="h5">{children}</Typography>
             </Grid>
+          )}
+
+          {exposure && (
+            <ExposedPopulationAnalysis
+              result={analysisResult as ExposedPopulationResult}
+              id={id!}
+              extent={extent!}
+              exposure={exposure}
+            />
           )}
         </Grid>
       </Paper>
@@ -232,6 +326,7 @@ const styles = () =>
 
 export interface LegendsProps extends WithStyles<typeof styles> {
   layers: LayerType[];
+  extent?: Extent;
 }
 
 interface LegendItemProps
@@ -243,6 +338,8 @@ interface LegendItemProps
   legendUrl?: string;
   type?: LayerType['type'];
   opacity: LayerType['opacity'];
+  exposure?: ExposedPopulationDefinition;
+  extent?: Extent;
 }
 
 export default withStyles(styles)(Legends);

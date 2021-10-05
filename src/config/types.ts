@@ -11,7 +11,7 @@ const optionalMetadataKey = Symbol('optional_property');
 export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
-  | NSOLayerProps
+  | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps;
 
@@ -117,10 +117,12 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
-export type LegendDefinition = {
+export type LegendDefinitionItem = {
   value: string | number;
   color: string;
-}[];
+};
+
+export type LegendDefinition = LegendDefinitionItem[];
 
 export type GroupDefinition = {
   name: string;
@@ -128,13 +130,39 @@ export type GroupDefinition = {
   main: boolean;
 };
 
+export enum WcsGetCoverageVersion {
+  oneZeroZero = '1.0.0',
+  twoZeroZero = '2.0.0',
+}
+
 export type RawDataConfiguration = {
   scale?: number;
   offset?: number;
   noData?: number;
+
+  // WCS GetCoverage request version.
+  version?: WcsGetCoverageVersion;
+
   // Geotiff pixel resolution, in pixels per degree lat/long
   pixelResolution?: number;
+
+  // Remote layers might not have time dimension enabled.
+  disableDateParam?: boolean;
 };
+
+// Type of vector data that the layer provides
+export enum GeometryType {
+  Point = 'point',
+  LineString = 'linestring',
+  Polygon = 'polygon',
+}
+
+export interface ExposedPopulationDefinition {
+  id: LayerKey;
+
+  // Geojson property key to extract from WFS Response when running exposed population analysis.
+  key: string;
+}
 
 export class CommonLayerProps {
   id: LayerKey;
@@ -156,6 +184,12 @@ export class CommonLayerProps {
 
   @optional // only optional for boundary layer
   group?: GroupDefinition;
+
+  @optional // Perform population exposure analysis using this layer.
+  exposure?: ExposedPopulationDefinition;
+
+  @optional // Display layer extra details from a `markup` file
+  contentPath?: string;
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -164,6 +198,17 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminCode: string;
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: string[]; // Same as above, local to country
+}
+
+export enum LabelType {
+  Date = 'date',
+  Text = 'text',
+  Number = 'number',
+}
+
+interface featureInfoProps {
+  type: LabelType;
+  label: string;
 }
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -185,10 +230,16 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   wcsConfig?: RawDataConfiguration;
+
+  @optional
+  featureInfoProps?: { [key: string]: featureInfoProps };
+
+  @optional // If included, we infer the layer is a vector layer.
+  geometry?: GeometryType;
 }
 
-export class NSOLayerProps extends CommonLayerProps {
-  type: 'nso';
+export class AdminLevelDataLayerProps extends CommonLayerProps {
+  type: 'admin_level_data';
   path: string;
 
   @makeRequired
@@ -219,6 +270,7 @@ export class StatsApi {
 export enum AggregationOperations {
   Mean = 'mean',
   Median = 'median',
+  Sum = 'sum',
 }
 
 export type ThresholdDefinition = { below?: number; above?: number };
@@ -308,6 +360,15 @@ export type AvailableDates = {
     | PointDataLayerProps['id']]: number[];
 };
 
+/* eslint-disable camelcase */
+export interface WfsRequestParams {
+  url: string;
+  layer_name: string;
+  time?: string;
+  key: string;
+}
+/* eslint-enable camelcase */
+
 export interface ChartConfig {
   type: string;
   category: string;
@@ -335,3 +396,30 @@ export type DateRangeType = {
   month: string;
   isFirstDay: boolean;
 };
+
+export interface FeatureInfoType {
+  bbox: number[];
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface RequestFeatureInfo extends FeatureInfoType {
+  service: string;
+  request: string;
+  version: string;
+  exceptions: string;
+  infoFormat: string;
+  layers: string;
+  srs: string;
+  queryLayers: string;
+  featureCount: number;
+  format: string;
+  styles: string;
+}
+
+export enum DownloadFormat {
+  CSV,
+  JSON,
+}

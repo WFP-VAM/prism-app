@@ -3,7 +3,9 @@ import bbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import * as GeoTIFF from 'geotiff';
 import { buffer } from 'd3-fetch';
+import { Map as MapBoxMap } from 'mapbox-gl';
 import { formatUrl } from '../../../utils/server-utils';
+import { WcsGetCoverageVersion, WMSLayerProps } from '../../../config/types';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =
@@ -91,7 +93,7 @@ export function getWMSUrl(
 
   return formatUrl(`${baseUrl}/wms`, params);
 }
-export function getWCSUrl(
+export function getWCSv1Url(
   baseUrl: string,
   layerName: string,
   date: string | undefined,
@@ -119,20 +121,56 @@ export function getWCSUrl(
   return formatUrl(baseUrl, params);
 }
 
-export function WCSRequestUrl(
-  baseUrl: string,
-  layerName: string,
+export function getWCSv2Url(
+  layer: WMSLayerProps,
   date: string | undefined,
   extent: Extent,
-  resolution = 256,
+) {
+  const params = {
+    service: 'WCS',
+    request: 'GetCoverage',
+    version: layer.wcsConfig?.version,
+    coverageId: layer.serverLayerName,
+  };
+
+  // Subsets are used as spatial and temporal filters.
+  // For mote info: https://docs.geoserver.geo-solutions.it/edu/en/wcs/get.html
+  const spatialSubsets: string[] = [
+    `Long(${extent[0]}, ${extent[2]})`,
+    `Lat(${extent[1]}, ${extent[3]})`,
+  ];
+
+  const subsets = date
+    ? [...spatialSubsets, `time("${date}")`]
+    : spatialSubsets;
+
+  const formattedUrl = formatUrl(layer.baseUrl, params);
+
+  const formattedSubsets = subsets.map(s => `subset=${s}`).join('&');
+
+  return `${formattedUrl}&${formattedSubsets}`;
+}
+
+export function WCSRequestUrl(
+  layer: WMSLayerProps,
+  date: string | undefined,
+  extent: Extent,
   maxPixels = 5096,
 ) {
+  const { baseUrl, serverLayerName, wcsConfig } = layer;
   const [minX, minY, maxX, maxY] = extent;
+
   if (minX > maxX || minY > maxY) {
     throw new Error(
-      `Could not generate WCS request for ${baseUrl}/${layerName}: the extent ${extent} seems malformed or else may contain "wrapping" which is not implemented in the function 'WCSRequestUrl'`,
+      `Could not generate WCS request for ${baseUrl}/${serverLayerName}: the extent ${extent} seems malformed or else may contain "wrapping" which is not implemented in the function 'WCSRequestUrl'`,
     );
   }
+
+  if (wcsConfig?.version === WcsGetCoverageVersion.twoZeroZero) {
+    return getWCSv2Url(layer, date, extent);
+  }
+
+  const resolution = wcsConfig?.pixelResolution || 256;
 
   // Get our image width & height at either the desired resolution or a down-sampled resolution if the resulting
   // dimensions would exceed our `maxPixels` in height or width
@@ -145,9 +183,9 @@ export function WCSRequestUrl(
   const width = Math.ceil(xRange * scale);
   const height = Math.ceil(yRange * scale);
 
-  return getWCSUrl(
+  return getWCSv1Url(
     baseUrl,
-    layerName,
+    serverLayerName,
     date,
     [minX, maxX],
     [minY, maxY],
@@ -198,7 +236,7 @@ export function WCSTileUrls(
           yIdx * degPerTile + minY,
           (yIdx + 1) * degPerTile + minY,
         ] as const;
-        return getWCSUrl(baseUrl, layerName, date, x, y, pixelsPerTile);
+        return getWCSv1Url(baseUrl, layerName, date, x, y, pixelsPerTile);
       });
     })
     .flat();
@@ -321,4 +359,16 @@ export function pixelsInFeature(
       ),
     );
   }, [] as number[]);
+}
+
+export function getExtent(map?: MapBoxMap): Extent {
+  // TODO - Use bbox on the admin boundaries instead.
+  const bounds = map?.getBounds();
+
+  const minX = bounds?.getWest();
+  const maxX = bounds?.getEast();
+  const minY = bounds?.getSouth();
+  const maxY = bounds?.getNorth();
+
+  return [minX, minY, maxX, maxY].map(val => val || 0) as Extent;
 }

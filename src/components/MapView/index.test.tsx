@@ -7,7 +7,7 @@ import { store } from '../../context/store';
 
 jest.mock('./Layers/WMSLayer', () => 'mock-WMSLayer');
 jest.mock('./Layers/ImpactLayer', () => 'mock-ImpactLayer');
-jest.mock('./Layers/NSOLayer', () => 'mock-NSOLayer');
+jest.mock('./Layers/AdminLevelDataLayer', () => 'mock-AdminLevelDataLayer');
 jest.mock('./Layers/BoundaryLayer', () => 'mock-BoundaryLayer');
 
 jest.mock('./Legends', () => 'mock-Legends');

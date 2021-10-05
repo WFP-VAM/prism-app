@@ -10,6 +10,10 @@ import {
 } from '../../../../context/analysisResultStateSlice';
 import { legendToStops } from '../layer-utils';
 import { LegendDefinition } from '../../../../config/types';
+import {
+  BaselineLayerResult,
+  ExposedPopulationResult,
+} from '../../../../utils/analysis-utils';
 
 function AnalysisLayer() {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
@@ -24,43 +28,74 @@ function AnalysisLayer() {
   }
 
   // We use the legend values from the baseline layer
-  function fillPaintData(legend: LegendDefinition): MapboxGL.FillPaint {
+  function fillPaintData(
+    legend: LegendDefinition,
+    property: string,
+  ): MapboxGL.FillPaint {
     return {
       'fill-opacity': 0.3,
       'fill-color': {
-        property: 'data',
+        property,
         stops: legendToStops(legend),
         type: 'interval',
       },
     };
   }
 
+  const property =
+    analysisData instanceof ExposedPopulationResult
+      ? (analysisData.statistic as string)
+      : 'data';
+
   return (
     <GeoJSONLayer
+      before="boundaries-line"
       id="layer-analysis"
-      below="boundaries"
       data={analysisData.featureCollection}
-      fillPaint={fillPaintData(analysisData.legend)}
+      fillPaint={fillPaintData(analysisData.legend, property)}
       fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;
+
         dispatch(
           addPopupData({
-            [analysisData.getBaselineLayer().title]: {
-              data: get(evt.features[0], 'properties.data', 'No Data'),
-              coordinates,
-            },
-            [`${analysisData.getHazardLayer().title} (${
-              analysisData.statistic
-            })`]: {
-              data: get(
-                evt.features[0],
-                ['properties', analysisData.statistic],
-                'No Data',
-              ),
+            [analysisData.getStatTitle()]: {
+              data: Math.round(
+                get(
+                  evt.features[0],
+                  ['properties', analysisData.statistic],
+                  'No Data',
+                ),
+              ).toLocaleString('en-US'),
               coordinates,
             },
           }),
         );
+
+        if (analysisData instanceof BaselineLayerResult) {
+          dispatch(
+            addPopupData({
+              [analysisData.getBaselineLayer().title]: {
+                data: get(evt.features[0], 'properties.data', 'No Data'),
+                coordinates,
+              },
+            }),
+          );
+        }
+
+        if (analysisData instanceof ExposedPopulationResult) {
+          dispatch(
+            addPopupData({
+              [analysisData.key]: {
+                data: get(
+                  evt.features[0],
+                  `properties.${analysisData.key}`,
+                  'No Data',
+                ),
+                coordinates,
+              },
+            }),
+          );
+        }
       }}
     />
   );

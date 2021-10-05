@@ -4,7 +4,7 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FillPaint, LinePaint } from 'mapbox-gl';
 import { get } from 'lodash';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
-import { Extent } from '../raster-utils';
+import { getExtent, Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { ImpactLayerProps } from '../../../../config/types';
 import { LayerDefinitions } from '../../../../config/utils';
@@ -41,27 +41,21 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
     >) || {};
   const dispatch = useDispatch();
 
-  // TODO - Use bbox on the admin boundaries instead.
-  const bounds = map && map.getBounds();
-  const minX = bounds ? bounds.getWest() : 0;
-  const maxX = bounds ? bounds.getEast() : 0;
-  const minY = bounds ? bounds.getSouth() : 0;
-  const maxY = bounds ? bounds.getNorth() : 0;
-
+  const extent: Extent = getExtent(map);
   useEffect(() => {
     // For now, assume that if we have layer data, we don't need to refetch. This could change down the line if we
     // want to dynamically re-fetch data based on changing map bounds.
     // Only fetch once we actually know the extent
+    const [minX, , maxX] = extent;
     if (
       selectedDate &&
       (!data || date !== selectedDate) &&
       minX !== 0 &&
       maxX !== 0
     ) {
-      const extent: Extent = [minX, minY, maxX, maxY];
       dispatch(loadLayerData({ layer, extent, date: selectedDate }));
     }
-  }, [dispatch, layer, maxX, maxY, minX, minY, data, selectedDate, date]);
+  }, [dispatch, layer, extent, data, selectedDate, date]);
 
   if (!data) {
     return selectedDate ? null : (
@@ -92,8 +86,8 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
 
   return (
     <GeoJSONLayer
+      before="boundaries-line"
       id={`layer-${layer.id}`}
-      below="boundaries"
       data={noMatchingDistricts ? boundaries : impactFeatures}
       linePaint={linePaint}
       fillPaint={fillPaint}
