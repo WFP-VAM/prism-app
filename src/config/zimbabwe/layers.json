@@ -367,7 +367,7 @@
   },
   "vac_food_insec": {
     "title": "Food insecurity prevalence (ZimVAC 2020)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/zimbabwe/zim_vac_food_insec_2020.json",
     "data_field": "food_insecurity_prevalence",
     "admin_level": 2,
@@ -399,7 +399,7 @@
   } ,
   "pop_2020": {
     "title": "Population (UNFPA - 2020)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/zimbabwe/zim_pop_2020.json",
     "data_field": "total_population",
     "admin_level": 2,
@@ -431,7 +431,7 @@
   } ,
   "ipc_phase_10_2020": {
     "title": "IPC Phase Classification (Oct 2020)",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "../data/zimbabwe/zim_ipc_2020_10.json",
     "data_field": "ipc_phase_2020_10",
     "admin_level": 2,
