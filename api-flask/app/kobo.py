@@ -62,7 +62,9 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
     datetime_value = datetime_value.replace(tzinfo=timezone.utc)
     lat, lon, _, _ = form_dict.get(form_fields.get('geom')).split(' ')
 
-    form_data = {**form_data, 'date': datetime_value, 'lat': lat, 'lon': lon}
+    status = form_dict.get('_validation_status').get('label', None)
+
+    form_data = {**form_data, 'date': datetime_value, 'lat': lat, 'lon': lon, 'status': status}
 
     return form_data
 
