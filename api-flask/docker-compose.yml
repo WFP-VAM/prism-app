@@ -8,7 +8,6 @@ services:
       - ./.flake8:/app/.flake8:ro
       - ./app:/usr/local/lib/python3.8/site-packages/app:ro
     environment:
-      - DATABASE_URL
       - WORKERS_PER_CORE=1
-      - KOBO_USERNAME=changeme
-      - KOBO_PW=changeme
+      - KOBO_USERNAME=jorgemartinezg
+      - KOBO_PW=Jorgemg_0327

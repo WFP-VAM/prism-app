@@ -317,6 +317,9 @@ export class PointDataLayerProps extends CommonLayerProps {
   fallbackData?: string;
   // URL to fetch all possible dates from
   dateUrl: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string };
 }
 
 export type RequiredKeys<T> = {

@@ -1,3 +1,4 @@
+import { camelCase } from 'lodash';
 import GeoJSON from 'geojson';
 import moment from 'moment';
 import type { LazyLoader } from './layer-data';
@@ -21,9 +22,18 @@ export type PointLayerData = {
   [key: string]: any;
 }[];
 
+export const queryParamsToString = (queryParams?: {
+  [key: string]: string;
+}): string =>
+  queryParams
+    ? Object.entries(queryParams)
+        .map(([key, value]) => `${camelCase(key)}=${value}`)
+        .join('&')
+    : '';
+
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async ({
   date,
-  layer: { data: dataUrl, fallbackData },
+  layer: { data: dataUrl, fallbackData, additionalQueryParams },
 }) => {
   // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,
@@ -38,7 +48,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
 
   const requestUrl = `${dataUrl}${
     dataUrl.includes('?') ? '&' : '?'
-  }${dateQuery}`;
+  }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
 
   let data;
   try {

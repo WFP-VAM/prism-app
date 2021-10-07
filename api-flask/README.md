@@ -15,10 +15,10 @@ Calculate zonal statistics for a raster / zones combination.Which takes as input
 - `?group_by`, a key to use to group zones in the geojson
 - `?geojson_out`, decide if the output should be a geojson or a list of data. Default is false -> List.
 - `?wfs_params`, A dictionary of parameters to compute statistics using the intersection between WFS FeatureCollection response polygons with admin boundaries. The parameters are the following.
-    - `url`, WFS remote service url.
-    - `layer_name`, the name of the vector layer. Geometry must be POLYGON or MULTIPOLYGON.
-    - `key`, Geojson property field to be extracted for each feature.
-    - `?time`, Layer TIME dimension if enabled.
+  - `url`, WFS remote service url.
+  - `layer_name`, the name of the vector layer. Geometry must be POLYGON or MULTIPOLYGON.
+  - `key`, Geojson property field to be extracted for each feature.
+  - `?time`, Layer TIME dimension if enabled.
 
 ### `/demo` (GET)
 
@@ -65,14 +65,14 @@ you have set the environment variables KOBO_USER, KOBO_PW
 Returns all form responses using Kobo API
 
 - `nameField`, The name of the Kobo form.
-- `dateTimeField`, Field used to collect all timestamps.
+- `datetimeField`, Field used to collect all timestamps.
 - `geomField`, form field which contains lat lon coordinates.
 - `measureField`, form field used for legend rendering. Backend converts string form value to number.
 - `beginDateTime`, Filter forms starting from given date.
 - `endDateTime`, Filter forms whose date field is lower than value provided.
 
 ```
-curl -X GET 'http://localhost/kobo/forms?nameField=Test%20MMR&dateTimeField=_submission_time&geomField=Location&measureField=The_number&beginDateTime=2021-09-15&endDateTime=2021-09-29'
+curl -X GET 'http://localhost/kobo/forms?nameField=Test%20MMR&datetimeField=_submission_time&geomField=Location&measureField=The_number&beginDateTime=2021-09-15&endDateTime=2021-09-29'
 ```
 
 ## Development

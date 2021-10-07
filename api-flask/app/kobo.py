@@ -23,10 +23,10 @@ def get_kobo_params():
     if name_field is None:
         raise BadRequest('Missing query parameter: nameField')
 
-    datetime_field = request.args.get('dateTimeField')
+    datetime_field = request.args.get('datetimeField')
 
     if datetime_field is None:
-        raise BadRequest('Missing parameter dateTimeField')
+        raise BadRequest('Missing parameter datetimeField')
 
     geom_field = request.args.get('geomField')
     if geom_field is None:
@@ -112,6 +112,10 @@ def get_responses_from_kobo(auth, form_name):
     resp.raise_for_status()
 
     form_responses = resp.json().get('results')
+
+    from json import dumps
+
+    print(dumps(form_responses, indent=2))
 
     return form_responses, form_labels
 
