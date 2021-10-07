@@ -1190,8 +1190,8 @@
   "kobo_test": {
     "title": "Kobo data",
     "type": "point_data",
-    "data": "http://localhost:5000/kobo/forms",
-    "date_url": "http://localhost:5000/kobo/forms",
+    "data": "http://localhost/kobo/forms",
+    "date_url": "http://localhost/kobo/forms",
     "additional_query_params": {
       "name_field": "Test MMR",
       "datetime_field": "_submission_time",
