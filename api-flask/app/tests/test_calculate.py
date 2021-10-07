@@ -1,5 +1,5 @@
 """Tests files for the analytics API."""
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import patch
 
 from app.kobo import get_form_responses
@@ -78,7 +78,8 @@ def test_kobo_response_form(kobo_params, kobo_data):
 
     kobo_data.return_value = (kobo_data_json, ['value', 'geom'])
 
-    begin, end = datetime(2000, 1, 1), datetime(2030, 1, 1)
+    begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
+    end = datetime(2030, 1, 1).replace(tzinfo=timezone.utc)
     forms = get_form_responses(begin, end)
 
     assert len(forms) == 2
@@ -88,7 +89,8 @@ def test_kobo_response_form(kobo_params, kobo_data):
     assert forms[0]['value'] == 2
 
     # Test Filter
-    begin, end = datetime(2000, 1, 1), datetime(2020, 1, 1)
+    begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
+    end = datetime(2020, 1, 1).replace(tzinfo=timezone.utc)
     forms = get_form_responses(begin, end)
     assert len(forms) == 1
 

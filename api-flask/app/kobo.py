@@ -1,5 +1,5 @@
 """Collect and parse kobo forms."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from os import getenv
 from typing import Dict, List
 
@@ -53,8 +53,13 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
                  for k in labels if k != form_fields.get('geom')}
 
     datetime_field = form_fields.get('datetime')
-    datetime_value = datetime.strptime(form_dict.get(datetime_field), '%Y-%m-%dT%H:%M:%S')
 
+    if datetime_field not in ('start', 'end'):
+        datetime_value = datetime.strptime(form_dict.get(datetime_field), '%Y-%m-%dT%H:%M:%S')
+    else:
+        datetime_value = datetime.strptime(form_dict.get(datetime_field), '%Y-%m-%dT%H:%M:%S.%f%z')
+
+    datetime_value = datetime_value.replace(tzinfo=timezone.utc)
     lat, lon, _, _ = form_dict.get(form_fields.get('geom')).split(' ')
 
     form_data = {**form_data, 'date': datetime_value, 'lat': lat, 'lon': lon}
@@ -66,13 +71,15 @@ def parse_datetime_params():
     """Transform into datetime objects used for filtering form responses."""
     date_format = '%Y-%m-%d'
     begin_datetime_str = request.args.get('beginDateTime', '2000-01-01')
-    begin_datetime = datetime.strptime(begin_datetime_str, date_format)
+    begin_datetime = datetime.strptime(begin_datetime_str, date_format).replace(tzinfo=timezone.utc)
 
     end_datetime_str = request.args.get('endDateTime')
     if end_datetime_str is not None:
         end_datetime = datetime.strptime(end_datetime_str, date_format)
     else:
         end_datetime = datetime.today()
+
+    end_datetime = end_datetime.replace(tzinfo=timezone.utc)
 
     # strptime function includes hours, minutes, and seconds as 00 by default.
     # This check is done in case the begin and end datetime values are the same.
@@ -112,10 +119,6 @@ def get_responses_from_kobo(auth, form_name):
     resp.raise_for_status()
 
     form_responses = resp.json().get('results')
-
-    from json import dumps
-
-    print(dumps(form_responses, indent=2))
 
     return form_responses, form_labels
 
