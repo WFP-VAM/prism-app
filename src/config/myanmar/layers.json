@@ -1190,13 +1190,14 @@
   "kobo_test": {
     "title": "Kobo data",
     "type": "point_data",
-    "data": "http://localhost/kobo/forms",
-    "date_url": "http://localhost/kobo/forms",
+    "data": "http://localhost:5000/kobo/forms",
+    "date_url": "http://localhost:5000/kobo/forms",
     "additional_query_params": {
       "name_field": "Test MMR",
       "datetime_field": "_submission_time",
       "geom_field": "Location",
-      "measure_field": "The_number"
+      "measure_field": "The_number",
+      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
     },
     "opacity": 1,
     "measure": "The_number",

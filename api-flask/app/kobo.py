@@ -100,7 +100,10 @@ def get_responses_from_kobo(auth, form_name):
 
     Also, retrieve the form responses for parsing and filtering.
     """
-    form_url = 'https://kobo.humanitarianresponse.info/api/v2/assets.json'
+    form_url = request.args.get('koboUrl')
+    if form_url is None:
+        raise BadRequest('Missing parameter koboUrl')
+
     resp = requests.get(form_url, auth=auth)
 
     resp.raise_for_status()
