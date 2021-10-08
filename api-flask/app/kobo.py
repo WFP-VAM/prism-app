@@ -3,6 +3,8 @@ from datetime import datetime, timedelta, timezone
 from os import getenv
 from typing import Dict, List
 
+from dateutil.parser import parse as dtparser
+
 from flask import request
 
 import requests
@@ -54,12 +56,8 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
 
     datetime_field = form_fields.get('datetime')
 
-    if datetime_field not in ('start', 'end'):
-        datetime_value = datetime.strptime(form_dict.get(datetime_field), '%Y-%m-%dT%H:%M:%S')
-    else:
-        datetime_value = datetime.strptime(form_dict.get(datetime_field), '%Y-%m-%dT%H:%M:%S.%f%z')
+    datetime_value = dtparser(form_dict.get(datetime_field)).astimezone(timezone.utc)
 
-    datetime_value = datetime_value.replace(tzinfo=timezone.utc)
     lat, lon, _, _ = form_dict.get(form_fields.get('geom')).split(' ')
 
     status = form_dict.get('_validation_status').get('label', None)
@@ -71,17 +69,17 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
 
 def parse_datetime_params():
     """Transform into datetime objects used for filtering form responses."""
-    date_format = '%Y-%m-%d'
     begin_datetime_str = request.args.get('beginDateTime', '2000-01-01')
-    begin_datetime = datetime.strptime(begin_datetime_str, date_format).replace(tzinfo=timezone.utc)
+    begin_datetime = dtparser(begin_datetime_str).astimezone(timezone.utc)
 
     end_datetime_str = request.args.get('endDateTime')
     if end_datetime_str is not None:
-        end_datetime = datetime.strptime(end_datetime_str, date_format)
+        end_datetime = dtparser(end_datetime_str)
     else:
-        end_datetime = datetime.today()
+        # 10 years.
+        end_datetime = datetime.now() + timedelta(days=365 * 10)
 
-    end_datetime = end_datetime.replace(tzinfo=timezone.utc)
+    end_datetime = end_datetime.astimezone(timezone.utc)
 
     # strptime function includes hours, minutes, and seconds as 00 by default.
     # This check is done in case the begin and end datetime values are the same.

@@ -68,18 +68,20 @@ def test_kobo_response_form(kobo_params, kobo_data):
             'date': '2021-09-22T21:35:54',
             'geom': '21.908012 95.986908 0 0',
             'value': '2',
+            '_validation_status': {'label': 'Approved'}
         },
         {
             'date': '2019-01-01T10:00:08',
             'geom': '21.916222 95.955971 0 0',
             'value': '3',
+            '_validation_status': {}
         }
     ]
 
     kobo_data.return_value = (kobo_data_json, ['value', 'geom'])
 
-    begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
-    end = datetime(2030, 1, 1).replace(tzinfo=timezone.utc)
+    begin = datetime(2000, 1, 1).astimezone(timezone.utc)
+    end = datetime(2030, 1, 1).astimezone(timezone.utc)
     forms = get_form_responses(begin, end)
 
     assert len(forms) == 2
@@ -87,10 +89,11 @@ def test_kobo_response_form(kobo_params, kobo_data):
     assert forms[0]['lat'] == '21.908012'
     assert forms[0]['lon'] == '95.986908'
     assert forms[0]['value'] == 2
+    assert forms[0]['status'] == 'Approved'
 
     # Test Filter
-    begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
-    end = datetime(2020, 1, 1).replace(tzinfo=timezone.utc)
+    begin = datetime(2000, 1, 1).astimezone(timezone.utc)
+    end = datetime(2020, 1, 1).astimezone(timezone.utc)
     forms = get_form_responses(begin, end)
     assert len(forms) == 1
 
