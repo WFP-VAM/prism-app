@@ -11,9 +11,16 @@ import {
 import { Map } from 'mapbox-gl';
 import { LayerDefinitions } from '../../config/utils';
 import { getExtent } from './Layers/raster-utils';
-import { WMSLayerProps, FeatureInfoType } from '../../config/types';
+import {
+  WMSLayerProps,
+  FeatureInfoType,
+  AdminLevelDataLayerProps,
+  LayerType,
+} from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
+import { LayersProps } from './Layers/WMSLayer';
+import { AdminLevelDataLayerData } from '../../context/layers/admin_level_data';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
   const matchStr = 'layer-';
@@ -132,3 +139,44 @@ export const downloadToFile = (
   link.setAttribute('download', `${filename}.${fileType}`);
   link.click();
 };
+
+export function formatAdminCode(
+  layer: LayerType,
+  properties: { [key: string]: any },
+) {
+  const l = layer as AdminLevelDataLayerProps;
+
+  if (l.adminCode.includes('CODE')) {
+    return `NSO_ADM${properties.NSO_Region_CODE}_CODE`;
+  }
+  return l.adminCode.toLocaleUpperCase();
+}
+
+export async function getFeatureInfo(
+  adminLevelDataLayer: AdminLevelDataLayerProps,
+  adminCodeValue: string,
+) {
+  const { path, adminCode, featureInfoProps } = adminLevelDataLayer;
+  const res = await fetch(path);
+  const resJson = await res.json();
+  const searchProps = Object.keys(featureInfoProps || []);
+  const filteredProps = resJson.DataList.filter((i: { [key: string]: any }) => {
+    console.log('--------------------------');
+    console.log('-> ', adminCode);
+    console.log('-> ', i[adminCode]);
+    console.log('-> ', adminCodeValue);
+    console.log('-> ', i[adminCode] === adminCodeValue);
+    console.log('--------------------------');
+    return i[adminCode] === adminCodeValue;
+  });
+
+  console.log('-> ', filteredProps);
+
+  return searchProps.reduce(
+    (acc, val) => ({
+      ...acc,
+      [(featureInfoProps || {})[val].label]: filteredProps[0][val],
+    }),
+    {},
+  );
+}

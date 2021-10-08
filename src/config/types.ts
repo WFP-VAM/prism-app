@@ -164,6 +164,11 @@ export interface ExposedPopulationDefinition {
   key: string;
 }
 
+interface featureInfoProps {
+  type: LabelType;
+  label: string;
+}
+
 export class CommonLayerProps {
   id: LayerKey;
 
@@ -190,6 +195,9 @@ export class CommonLayerProps {
 
   @optional // Display layer extra details from a `markup` file
   contentPath?: string;
+
+  @optional
+  featureInfoProps?: { [key: string]: featureInfoProps };
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -204,11 +212,6 @@ export enum LabelType {
   Date = 'date',
   Text = 'text',
   Number = 'number',
-}
-
-interface featureInfoProps {
-  type: LabelType;
-  label: string;
 }
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -230,9 +233,6 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   wcsConfig?: RawDataConfiguration;
-
-  @optional
-  featureInfoProps?: { [key: string]: featureInfoProps };
 
   @optional // If included, we infer the layer is a vector layer.
   geometry?: GeometryType;

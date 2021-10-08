@@ -11,6 +11,7 @@ import {
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
+import { formatAdminCode, getFeatureInfo } from '../../utils';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const layerData = useSelector(layerDataSelector(layer.id)) as
@@ -47,15 +48,25 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       id={`layer-${layer.id}`}
       data={features}
       fillPaint={fillPaintData}
-      fillOnClick={(evt: any) => {
-        dispatch(
-          addPopupData({
-            [layer.title]: {
-              data: get(evt.features[0], 'properties.data', 'No Data'),
-              coordinates: evt.lngLat,
-            },
-          }),
+      fillOnClick={async (evt: any) => {
+        const code = formatAdminCode(layer, evt.features[0].properties);
+        const adminCode = get(evt.features[0].properties, code, 'No Data');
+        console.log('--> ', adminCode);
+        console.log('--> ', evt.features[0].properties);
+        const fields: { [key: string]: any } = await getFeatureInfo(
+          layer,
+          adminCode,
         );
+        Object.keys(fields).forEach((key: string) => {
+          dispatch(
+            addPopupData({
+              [key]: {
+                data: fields[key],
+                coordinates: evt.lngLat,
+              },
+            }),
+          );
+        });
       }}
     />
   );
