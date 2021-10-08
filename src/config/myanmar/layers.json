@@ -1193,7 +1193,7 @@
     "data": "http://localhost:5000/kobo/forms",
     "date_url": "http://localhost:5000/kobo/forms",
     "additional_query_params": {
-      "name_field": "Test MMR",
+      "form_name": "Test MMR",
       "datetime_field": "_submission_time",
       "geom_field": "Location",
       "measure_field": "The_number",

@@ -19,9 +19,9 @@ def get_kobo_params():
     if kobo_pw is None:
         raise InternalServerError('Missing backend parameter: KOBO_PW')
 
-    name_field = request.args.get('nameField')
-    if name_field is None:
-        raise BadRequest('Missing query parameter: nameField')
+    form_name = request.args.get('formName')
+    if form_name is None:
+        raise BadRequest('Missing query parameter: formName')
 
     datetime_field = request.args.get('datetimeField')
 
@@ -36,7 +36,7 @@ def get_kobo_params():
     if measure_field is None:
         raise BadRequest('Missing parameter measureField')
 
-    form_fields = dict(name=name_field,
+    form_fields = dict(name=form_name,
                        datetime=datetime_field,
                        geom=geom_field,
                        measure=measure_field)
