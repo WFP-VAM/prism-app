@@ -140,7 +140,11 @@ def get_form_responses(begin_datetime, end_datetime):
 
         # Check form submission date is between request dates.
         if begin_datetime <= date_value <= end_datetime:
-            new_form = {**form, 'date': date_value.isoformat()}
-            filtered_forms.append(new_form)
+            filtered_forms.append(form)
 
-    return filtered_forms
+    sorted_forms = sorted(filtered_forms, key=lambda x: x.get('date'))
+
+    # Transform into string.
+    sorted_forms = [{**f, 'date': f.get('date').isoformat()} for f in sorted_forms]
+
+    return sorted_forms

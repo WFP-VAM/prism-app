@@ -65,13 +65,13 @@ def test_kobo_response_form(kobo_params, kobo_data):
 
     kobo_data_json = [
         {
-            'date': '2021-09-22T21:35:54',
+            'date': '2019-09-22T21:35:54',
             'geom': '21.908012 95.986908 0 0',
             'value': '2',
             '_validation_status': {'label': 'Approved'}
         },
         {
-            'date': '2019-01-01T10:00:08',
+            'date': '2021-01-01T10:00:08',
             'geom': '21.916222 95.955971 0 0',
             'value': '3',
             '_validation_status': {}
