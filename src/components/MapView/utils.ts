@@ -138,10 +138,7 @@ export const downloadToFile = (
   link.click();
 };
 
-export function formatAdminCode(
-  layer: LayerType,
-  properties: { [key: string]: any },
-) {
+export function formatAdminCode(layer: LayerType) {
   const l = layer as AdminLevelDataLayerProps;
 
   if (l.adminCode === 'CODE' || l.adminCode === 'CODE1') {
@@ -158,22 +155,11 @@ export async function getFeatureInfo(
   const res = await fetch(path);
   const resJson = await res.json();
   const searchProps = Object.keys(featureInfoProps || []);
-  const formattedAdminCode = formatAdminCode(adminLevelDataLayer, properties);
+  const formattedAdminCode = formatAdminCode(adminLevelDataLayer);
   const adminCodeValue = properties[formattedAdminCode];
   const filteredProps = resJson.DataList.filter((i: { [key: string]: any }) => {
-    console.log('-----------------------');
-    console.log(i);
-    console.log(adminCode);
-    console.log(i[adminCode]);
-    console.log(properties);
-    console.log(formattedAdminCode);
-    console.log(adminCodeValue);
-    console.log('-----------------------');
     return i[adminCode] === adminCodeValue;
   });
-
-  console.log('-> ', filteredProps);
-
   return searchProps.reduce(
     (acc, val) => ({
       ...acc,
