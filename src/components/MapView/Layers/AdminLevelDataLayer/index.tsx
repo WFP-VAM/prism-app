@@ -49,13 +49,19 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       data={features}
       fillPaint={fillPaintData}
       fillOnClick={async (evt: any) => {
-        const code = formatAdminCode(layer, evt.features[0].properties);
-        const adminCode = get(evt.features[0].properties, code, 'No Data');
-        console.log('--> ', adminCode);
-        console.log('--> ', evt.features[0].properties);
+        // by default add `data_field` to the tooltip
+        dispatch(
+          addPopupData({
+            [layer.title]: {
+              data: get(evt.features[0], 'properties.data', 'No Data'),
+              coordinates: evt.lngLat,
+            },
+          }),
+        );
+        // then add featured info properties as extra fields to the tooltip
         const fields: { [key: string]: any } = await getFeatureInfo(
           layer,
-          adminCode,
+          evt.features[0].properties,
         );
         Object.keys(fields).forEach((key: string) => {
           dispatch(

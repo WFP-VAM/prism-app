@@ -13,9 +13,9 @@
     "path": "../data/mongolia/nso/NSO_Poverty_Headcount_Admin1.json",
     "data_field": "DTVAL_CO",
     "feature_info_props": {
-      "DTVAL_CO": {
+      "Period": {
         "type": "string",
-        "label": "Poverty headcount (aimag)"
+        "label": "Poverty period"
       }
     },
     "admin_level": 1,
@@ -50,12 +50,6 @@
     "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Disabled_Admin1_Total.json",
     "data_field": "DTVAL_CO",
-    "feature_info_props": {
-      "DTVAL_CO": {
-        "type": "string",
-        "label": "Number of disabled people (aimag)"
-      }
-    },
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,

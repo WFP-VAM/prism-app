@@ -19,8 +19,6 @@ import {
 } from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
-import { LayersProps } from './Layers/WMSLayer';
-import { AdminLevelDataLayerData } from '../../context/layers/admin_level_data';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
   const matchStr = 'layer-';
@@ -146,27 +144,31 @@ export function formatAdminCode(
 ) {
   const l = layer as AdminLevelDataLayerProps;
 
-  if (l.adminCode.includes('CODE')) {
-    return `NSO_ADM${properties.NSO_Region_CODE}_CODE`;
+  if (l.adminCode === 'CODE' || l.adminCode === 'CODE1') {
+    return `NSO_ADM${l.adminLevel}_CODE`;
   }
-  return l.adminCode.toLocaleUpperCase();
+  return l.adminCode.toUpperCase();
 }
 
 export async function getFeatureInfo(
   adminLevelDataLayer: AdminLevelDataLayerProps,
-  adminCodeValue: string,
+  properties: { [key: string]: any },
 ) {
   const { path, adminCode, featureInfoProps } = adminLevelDataLayer;
   const res = await fetch(path);
   const resJson = await res.json();
   const searchProps = Object.keys(featureInfoProps || []);
+  const formattedAdminCode = formatAdminCode(adminLevelDataLayer, properties);
+  const adminCodeValue = properties[formattedAdminCode];
   const filteredProps = resJson.DataList.filter((i: { [key: string]: any }) => {
-    console.log('--------------------------');
-    console.log('-> ', adminCode);
-    console.log('-> ', i[adminCode]);
-    console.log('-> ', adminCodeValue);
-    console.log('-> ', i[adminCode] === adminCodeValue);
-    console.log('--------------------------');
+    console.log('-----------------------');
+    console.log(i);
+    console.log(adminCode);
+    console.log(i[adminCode]);
+    console.log(properties);
+    console.log(formattedAdminCode);
+    console.log(adminCodeValue);
+    console.log('-----------------------');
     return i[adminCode] === adminCodeValue;
   });
 

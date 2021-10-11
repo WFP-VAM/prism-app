@@ -14,10 +14,6 @@
     "content_path": "data/myanmar/contents.md#vulnerability-index",
     "data_field": "mmr_inform",
     "feature_info_props": {
-      "mmr_inform": {
-        "type": "string",
-        "label": "Vulnerability Index"
-      },
       "drought_se": {
         "type": "string",
         "label": "Drought Sensitivity"
@@ -55,12 +51,6 @@
     "type": "admin_level_data",
     "path": "../data/myanmar/nso/vulnerability-layers.json",
     "data_field": "total_pop",
-    "feature_info_props": {
-      "total_pop": {
-        "type": "string",
-        "label": "Total Population"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -78,12 +68,6 @@
     "type": "admin_level_data",
     "path": "../data/myanmar/nso/vulnerability-layers.json",
     "data_field": "improved_sanitation",
-    "feature_info_props": {
-      "improve_sanitation": {
-        "type": "string",
-        "label": "Improve Sanitation"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -101,12 +85,6 @@
     "type": "admin_level_data",
     "path": "../data/myanmar/nso/vulnerability-layers.json",
     "data_field": "improved_drinking_water",
-    "feature_info_props": {
-      "improve_drinking_water": {
-        "type": "string",
-        "label": "Improve Drinking Water"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -124,12 +102,6 @@
     "type": "admin_level_data",
     "path": "../data/myanmar/nso/vulnerability-layers.json",
     "data_field": "poor_quality_house",
-    "feature_info_props": {
-      "poor_quality_house": {
-        "type": "string",
-        "label": "Poor Quality House"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -148,12 +120,6 @@
     "path": "../data/myanmar/nso/vulnerability-layers.json",
     "content_path": "data/myanmar/contents.md#multidimensional-disadvantage-index",
     "data_field": "multidimensional_disadvantage_index",
-    "feature_info_props": {
-      "multidimensional_disadvantage_index": {
-        "type": "string",
-        "label": "Disadvantage Index"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -177,12 +143,6 @@
     "path": "../data/myanmar/nso/vulnerability-layers.json",
     "content_path": "data/myanmar/contents.md#age-dependency-ratio",
     "data_field": "age_dependency_ratio",
-    "feature_info_props": {
-      "age_dependency_ratio": {
-        "type": "string",
-        "label": "Age Dependency Ratio"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -203,12 +163,6 @@
     "path": "../data/myanmar/nso/vulnerability-layers.json",
     "content_path": "data/myanmar/contents.md#female-headed-households",
     "data_field": "female_headed_hhs",
-    "feature_info_props": {
-      "female_headed_hhs": {
-        "type": "string",
-        "label": "Female Head of Household"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -227,12 +181,6 @@
     "path": "../data/myanmar/nso/vulnerability-layers.json",
     "content_path": "data/myanmar/contents.md#disability-prevalence",
     "data_field": "disability_prev_rate",
-    "feature_info_props": {
-      "disability_prev_rate": {
-        "type": "string",
-        "label": "Previous Disability Rate"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -251,12 +199,6 @@
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#storm-risk",
     "data_field": "storm_risk",
-    "feature_info_props": {
-      "storm_risk": {
-        "type": "string",
-        "label": "Storm Risk"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -575,12 +517,6 @@
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#sensitivity-to-floods",
     "data_field": "flood_sens",
-    "feature_info_props": {
-      "flood_sens": {
-        "type": "string",
-        "label": "Sensitivity to Floods"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -614,12 +550,6 @@
     "path": "../data/myanmar/mudra/River_Flood_Present_conditions.json",
     "content_path": "data/myanmar/contents.md#population-risk-to-river-floods",
     "data_field": "risk_population",
-    "feature_info_props": {
-      "risk_population": {
-        "type": "string",
-        "label": "Population risk to river floods"
-      }
-    },
     "admin_level": 3,
     "admin_code": "ts_pcode",
     "opacity": 0.7,
@@ -645,12 +575,6 @@
     "path": "../data/myanmar/mudra/Cyclone_wind_Present.json",
     "content_path": "data/myanmar/contents.md#economic-risk-to-cyclone-winds",
     "data_field": "risk_economic",
-    "feature_info_props": {
-      "risk_economic": {
-        "type": "string",
-        "label": "Economic risk to cyclone winds"
-      }
-    },
     "admin_level": 3,
     "admin_code": "ts_pcode",
     "opacity": 0.7,
@@ -676,12 +600,6 @@
     "path": "../data/myanmar/mudra/cyclone_flood_present.json",
     "content_path": "data/myanmar/contents.md#population-risk-to-storm-surges",
     "data_field": "risk_population",
-    "feature_info_props": {
-      "risk_population": {
-        "type": "string",
-        "label": "Population risk to storm surges"
-      }
-    },
     "admin_level": 3,
     "admin_code": "ts_pcode",
     "opacity": 0.7,
@@ -707,12 +625,6 @@
     "path": "../data/myanmar/mudra/River_Flood_Present_conditions.json",
     "content_path": "data/myanmar/contents.md#annual-damage-expected-from-river-floods",
     "data_field": "t_ead_alll",
-    "feature_info_props": {
-      "t_ead_alll": {
-        "type": "string",
-        "label": "Annual damage from river floods"
-      }
-    },
     "admin_level": 3,
     "admin_code": "ts_pcode",
     "opacity": 0.7,
@@ -750,12 +662,6 @@
     "path": "../data/myanmar/mudra/cyclone_flood_present.json",
     "content_path": "data/myanmar/contents.md#annual-damage-expected-from-storm-surges",
     "data_field": "t_ead_alll",
-    "feature_info_props": {
-      "t_ead_alll": {
-        "type": "string",
-        "label": "Annual damage from river surges"
-      }
-    },
     "admin_level": 3,
     "admin_code": "ts_pcode",
     "opacity": 0.7,
@@ -789,12 +695,6 @@
     "path": "../data/myanmar/mudra/Cyclone_wind_Present.json",
     "content_path": "data/myanmar/contents.md#annual-damage-expected-from-strong-cyclone-winds",
     "data_field": "t_ead_alll",
-    "feature_info_props": {
-      "t_ead_alll": {
-        "type": "string",
-        "label": "Annual damage from strong cyclone winds"
-      }
-    },
     "admin_level": 3,
     "admin_code": "ts_pcode",
     "opacity": 0.7,
@@ -832,12 +732,6 @@
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#sensitivity-to-droughts",
     "data_field": "drought_se",
-    "feature_info_props": {
-      "drought_se": {
-        "type": "string",
-        "label": "Sensitivity to droughts"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -870,12 +764,6 @@
     "type": "admin_level_data",
     "path": "../data/myanmar/nso/poverty.json",
     "data_field": "Poverty",
-    "feature_info_props": {
-      "Poverty": {
-        "type": "string",
-        "label": "Sensitivity to droughts"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -901,12 +789,6 @@
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#sensitivity-to-storms",
     "data_field": "storm_sens",
-    "feature_info_props": {
-      "storm_sens": {
-        "type": "string",
-        "label": "Sensitivity to stroms"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -940,12 +822,6 @@
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#vulnerability-to-drought",
     "data_field": "drought_vu",
-    "feature_info_props": {
-      "drought_vu": {
-        "type": "string",
-        "label": "Vulnerability to drought"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -979,12 +855,6 @@
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#vulnerability-to-floods",
     "data_field": "flood_vuln",
-    "feature_info_props": {
-      "flood_vuln": {
-        "type": "string",
-        "label": "Vulnerability to floods"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -1018,12 +888,6 @@
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#vulnerability-to-storms",
     "data_field": "storm_vuln",
-    "feature_info_props": {
-      "storm_vuln": {
-        "type": "string",
-        "label": "Vulnerability to storms"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -1057,12 +921,6 @@
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#drought-risk",
     "data_field": "drought_ri",
-    "feature_info_props": {
-      "drought_ri": {
-        "type": "string",
-        "label": "Drought risk"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -1096,12 +954,6 @@
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#flood-risk",
     "data_field": "flood_risk",
-    "feature_info_props": {
-      "flood_risk": {
-        "type": "string",
-        "label": "Flood risk"
-      }
-    },
     "admin_level": 3,
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
@@ -1135,12 +987,6 @@
     "path": "../data/myanmar/mudra/River_Flood_Present_conditions.json",
     "content_path": "data/myanmar/contents.md#population-exposed-to-historical-river-floods-per-year",
     "data_field": "affected_popluation_risk",
-    "feature_info_props": {
-      "affected_popluation_risk": {
-        "type": "string",
-        "label": "Population exposed to historical river floods per year"
-      }
-    },
     "admin_level": 3,
     "admin_code": "ts_pcode",
     "opacity": 0.7,
@@ -1178,12 +1024,6 @@
     "path": "../data/myanmar/mudra/cyclone_flood_present.json",
     "content_path": "data/myanmar/contents.md#population-exposed-to-historical-storm-surges-per-year",
     "data_field": "affected_popluation_risk",
-    "feature_info_props": {
-      "affected_popluation_risk": {
-        "type": "string",
-        "label": "Population exposed to historical river surges per year"
-      }
-    },
     "admin_level": 3,
     "admin_code": "ts_pcode",
     "opacity": 0.7,
