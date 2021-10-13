@@ -850,6 +850,12 @@
     "fallback_data": "../data/mongolia/groundstations/IRIMHE_precipitation_2020-05-01.json",
     "opacity": 0.5,
     "measure": "sum_rrr",
+    "feature_info_props": {
+      "date": {
+        "type": "date",
+        "label": "Precipitation date"
+      }
+    },
     "legend_text": "Total precipitation over a 10-day period from ground station data reported in centimeters",
     "legend": [
       {

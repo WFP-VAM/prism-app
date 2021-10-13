@@ -164,10 +164,12 @@ export interface ExposedPopulationDefinition {
   key: string;
 }
 
-interface featureInfoProps {
+interface FeatureInfoProps {
   type: LabelType;
   label: string;
 }
+
+export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
 
 export class CommonLayerProps {
   id: LayerKey;
@@ -197,7 +199,7 @@ export class CommonLayerProps {
   contentPath?: string;
 
   @optional
-  featureInfoProps?: { [key: string]: featureInfoProps };
+  featureInfoProps?: { [key: string]: FeatureInfoProps };
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {

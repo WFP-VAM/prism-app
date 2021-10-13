@@ -12,6 +12,7 @@ import {
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
+import { getFeatureInfoPropsData } from '../../utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -50,7 +51,8 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       data={data}
       circleLayout={circleLayout}
       circlePaint={circlePaint}
-      circleOnClick={(evt: any) => {
+      circleOnClick={async (evt: any) => {
+        // by default add `measure` to the tooltip
         dispatch(
           addPopupData({
             [layer.title]: {
@@ -63,6 +65,12 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
             },
           }),
         );
+        // then add feature_info_props as extra fields to the tooltip
+        const featureInfoPropsData = getFeatureInfoPropsData(
+          layer.featureInfoProps || {},
+          evt,
+        );
+        dispatch(addPopupData(featureInfoPropsData));
       }}
     />
   );

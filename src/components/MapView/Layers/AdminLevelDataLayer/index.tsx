@@ -11,7 +11,7 @@ import {
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
-import { formatAdminCode, getFeatureInfo } from '../../utils';
+import { getALDFeatureInfoPropsData } from '../../utils';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const layerData = useSelector(layerDataSelector(layer.id)) as
@@ -58,21 +58,11 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
             },
           }),
         );
-        // then add featured info properties as extra fields to the tooltip
-        const fields: { [key: string]: any } = await getFeatureInfo(
-          layer,
-          evt.features[0].properties,
-        );
-        Object.keys(fields).forEach((key: string) => {
-          dispatch(
-            addPopupData({
-              [key]: {
-                data: fields[key],
-                coordinates: evt.lngLat,
-              },
-            }),
-          );
-        });
+        // then add feature_info_props as extra fields to the tooltip
+        const featuredInfoPropsData: {
+          [key: string]: any;
+        } = await getALDFeatureInfoPropsData(layer, evt);
+        dispatch(addPopupData(featuredInfoPropsData));
       }}
     />
   );

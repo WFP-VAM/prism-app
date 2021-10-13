@@ -16,6 +16,7 @@ import {
   FeatureInfoType,
   AdminLevelDataLayerProps,
   LayerType,
+  FeatureInfoObject,
 } from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
@@ -147,24 +148,53 @@ export function formatAdminCode(layer: LayerType) {
   return l.adminCode.toUpperCase();
 }
 
-export async function getFeatureInfo(
+export async function getALDFeatureInfoPropsData(
   adminLevelDataLayer: AdminLevelDataLayerProps,
-  properties: { [key: string]: any },
+  event: any,
 ) {
-  const { path, adminCode, featureInfoProps } = adminLevelDataLayer;
+  const { path, adminCode } = adminLevelDataLayer;
+  const featureInfoProps = adminLevelDataLayer.featureInfoProps || {};
+
+  const keys = Object.keys(featureInfoProps);
+  const { properties } = event.features[0];
+  const coordinates = event.lngLat;
+
   const res = await fetch(path);
   const resJson = await res.json();
-  const searchProps = Object.keys(featureInfoProps || []);
   const formattedAdminCode = formatAdminCode(adminLevelDataLayer);
   const adminCodeValue = properties[formattedAdminCode];
   const filteredProps = resJson.DataList.filter((i: { [key: string]: any }) => {
     return i[adminCode] === adminCodeValue;
   });
-  return searchProps.reduce(
-    (acc, val) => ({
-      ...acc,
-      [(featureInfoProps || {})[val].label]: filteredProps[0][val],
+  return keys.reduce(
+    (obj, item) => ({
+      ...obj,
+      [featureInfoProps[item].label]: {
+        data: filteredProps[0][item],
+        coordinates,
+      },
     }),
     {},
   );
+}
+
+export function getFeatureInfoPropsData(
+  featureInfoProps: FeatureInfoObject,
+  event: any,
+) {
+  const keys = Object.keys(featureInfoProps);
+  const { properties } = event.features[0];
+  const coordinates = event.lngLat;
+
+  return Object.keys(properties)
+    .filter(prop => keys.includes(prop))
+    .reduce((obj, item) => {
+      return {
+        ...obj,
+        [featureInfoProps[item].label]: {
+          data: properties[item],
+          coordinates,
+        },
+      };
+    }, {});
 }
