@@ -1,5 +1,6 @@
 """Collect and parse kobo forms."""
 from datetime import datetime, timedelta, timezone
+from enum import Enum
 from os import getenv
 from typing import Dict, List
 
@@ -11,10 +12,10 @@ import requests
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
-from enum import Enum
-
 
 class FormStatus(Enum):
+    """Values returned from kobo api response."""
+
     APPROVED = 'Approved'
     NOT_APPROVED = 'Not Approved'
     ON_HOLD = 'On Hold'
@@ -51,7 +52,8 @@ def get_kobo_params():
     try:
         status = FormStatus(filter_status) if filter_status is not None else None
     except ValueError:
-        raise BadRequest('Invalid filterStatus parameter. Values are Approved, Not Approved and On Hold')
+        err_message = 'Invalid filterStatus value. Values are Approved, Not Approved and On Hold'
+        raise BadRequest(err_message)
 
     form_fields = dict(name=form_name,
                        datetime=datetime_field,
@@ -154,8 +156,9 @@ def get_form_responses(begin_datetime, end_datetime):
     filtered_forms = []
     for form in forms:
         date_value = form.get('date')
+        status = form_fields.get('status')
 
-        if form_fields.get('status') is not None and form.get('status') != form_fields.get('status').value:
+        if status is not None and form.get('status') != status.value:
             continue
 
         # Check form submission date is between request dates.
