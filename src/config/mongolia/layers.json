@@ -12,12 +12,6 @@
     "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Poverty_Headcount_Admin1.json",
     "data_field": "DTVAL_CO",
-    "feature_info_props": {
-      "Period": {
-        "type": "string",
-        "label": "Poverty period"
-      }
-    },
     "admin_level": 1,
     "admin_code": "CODE1",
     "opacity": 0.5,
@@ -850,12 +844,6 @@
     "fallback_data": "../data/mongolia/groundstations/IRIMHE_precipitation_2020-05-01.json",
     "opacity": 0.5,
     "measure": "sum_rrr",
-    "feature_info_props": {
-      "date": {
-        "type": "date",
-        "label": "Precipitation date"
-      }
-    },
     "legend_text": "Total precipitation over a 10-day period from ground station data reported in centimeters",
     "legend": [
       {
