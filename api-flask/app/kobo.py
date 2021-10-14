@@ -11,6 +11,14 @@ import requests
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
+from enum import Enum
+
+
+class FormStatus(Enum):
+    APPROVED = 'Approved'
+    NOT_APPROVED = 'Not Approved'
+    ON_HOLD = 'On Hold'
+
 
 def get_kobo_params():
     """Collect and validate request parameters and environment variables."""
@@ -38,10 +46,19 @@ def get_kobo_params():
     if measure_field is None:
         raise BadRequest('Missing parameter measureField')
 
+    filter_status = request.args.get('filterStatus')
+
+    try:
+        status = FormStatus(filter_status) if filter_status is not None else None
+    except ValueError:
+        raise BadRequest('Invalid filterStatus parameter. Values are Approved, Not Approved and On Hold')
+
     form_fields = dict(name=form_name,
                        datetime=datetime_field,
                        geom=geom_field,
-                       measure=measure_field)
+                       measure=measure_field,
+                       status=status)
+
     auth = (kobo_username, kobo_pw)
 
     return auth, form_fields
@@ -137,6 +154,9 @@ def get_form_responses(begin_datetime, end_datetime):
     filtered_forms = []
     for form in forms:
         date_value = form.get('date')
+
+        if form_fields.get('status') is not None and form.get('status') != form_fields.get('status').value:
+            continue
 
         # Check form submission date is between request dates.
         if begin_datetime <= date_value <= end_datetime:

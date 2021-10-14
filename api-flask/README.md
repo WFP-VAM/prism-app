@@ -68,8 +68,9 @@ Returns all form responses using Kobo API
 - `datetimeField`, Field used to collect all timestamps.
 - `geomField`, form field which contains lat lon coordinates.
 - `measureField`, form field used for legend rendering. Backend converts string form value to number.
-- `beginDateTime`, Filter forms starting from given date.
-- `endDateTime`, Filter forms whose date field is lower than value provided.
+- `?beginDateTime`, Filter forms starting from given date.
+- `?endDateTime`, Filter forms whose date field is lower than value provided.
+- `?filterStatus`, Filter forms that match the given value. Possible values are 'Approved', 'Not Approved' and 'On Hold'
 
 ```
 curl -X GET 'http://localhost/kobo/forms?nameField=Test%20MMR&datetimeField=_submission_time&geomField=Location&measureField=The_number&beginDateTime=2021-09-15&endDateTime=2021-09-29'
