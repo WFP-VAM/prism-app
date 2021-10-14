@@ -66,11 +66,11 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
           }),
         );
         // then add feature_info_props as extra fields to the tooltip
-        const featureInfoPropsData = getFeatureInfoPropsData(
-          layer.featureInfoProps || {},
-          evt,
+        dispatch(
+          addPopupData(
+            getFeatureInfoPropsData(layer.featureInfoProps || {}, evt),
+          ),
         );
-        dispatch(addPopupData(featureInfoPropsData));
       }}
     />
   );

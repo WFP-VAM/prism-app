@@ -14,8 +14,6 @@ import { getExtent } from './Layers/raster-utils';
 import {
   WMSLayerProps,
   FeatureInfoType,
-  AdminLevelDataLayerProps,
-  LayerType,
   FeatureInfoObject,
 } from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
@@ -138,45 +136,6 @@ export const downloadToFile = (
   link.setAttribute('download', `${filename}.${fileType}`);
   link.click();
 };
-
-export function formatAdminCode(layer: LayerType) {
-  const l = layer as AdminLevelDataLayerProps;
-
-  if (l.adminCode === 'CODE' || l.adminCode === 'CODE1') {
-    return `NSO_ADM${l.adminLevel}_CODE`;
-  }
-  return l.adminCode.toUpperCase();
-}
-
-export async function getALDFeatureInfoPropsData(
-  adminLevelDataLayer: AdminLevelDataLayerProps,
-  event: any,
-) {
-  const { path, adminCode } = adminLevelDataLayer;
-  const featureInfoProps = adminLevelDataLayer.featureInfoProps || {};
-
-  const keys = Object.keys(featureInfoProps);
-  const { properties } = event.features[0];
-  const coordinates = event.lngLat;
-
-  const res = await fetch(path);
-  const resJson = await res.json();
-  const formattedAdminCode = formatAdminCode(adminLevelDataLayer);
-  const adminCodeValue = properties[formattedAdminCode];
-  const filteredProps = resJson.DataList.filter((i: { [key: string]: any }) => {
-    return i[adminCode] === adminCodeValue;
-  });
-  return keys.reduce(
-    (obj, item) => ({
-      ...obj,
-      [featureInfoProps[item].label]: {
-        data: filteredProps[0][item],
-        coordinates,
-      },
-    }),
-    {},
-  );
-}
 
 export function getFeatureInfoPropsData(
   featureInfoProps: FeatureInfoObject,
