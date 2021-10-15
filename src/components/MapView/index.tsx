@@ -144,7 +144,9 @@ function MapView({ classes }: MapViewProps) {
       date or layerids.
     */
 
-    const { hazardLayerId, baselineLayerId, date } = urlParams;
+    const hazardLayerId = urlParams.get('hazardLayerId');
+    const baselineLayerId = urlParams.get('baselineLayerId');
+    const date = urlParams.get('date');
 
     if (
       (!hazardLayerId && !baselineLayerId) ||
@@ -163,6 +165,10 @@ function MapView({ classes }: MapViewProps) {
 
       if (Object.keys(LayerDefinitions).includes(id)) {
         dispatch(addLayer(LayerDefinitions[id as LayerKey]));
+
+        if (selectedDate && !date) {
+          updateHistory('date', moment(selectedDate).format('YYYY-MM-DD'));
+        }
       } else {
         dispatch(
           addNotification({
@@ -173,7 +179,11 @@ function MapView({ classes }: MapViewProps) {
       }
     });
 
-    if (date && moment(date).valueOf() !== selectedDate) {
+    if (
+      date &&
+      moment(date).valueOf() !== selectedDate &&
+      selectedLayersIds.includes(hazardLayerId as LayerKey)
+    ) {
       const dateInt = moment(date).valueOf();
       if (Number.isNaN(dateInt)) {
         dispatch(
@@ -188,7 +198,14 @@ function MapView({ classes }: MapViewProps) {
     }
 
     // Validate hazardLayer.
-  }, [urlParams, dispatch, selectedLayers, serverAvailableDates, selectedDate]);
+  }, [
+    urlParams,
+    dispatch,
+    selectedLayers,
+    serverAvailableDates,
+    selectedDate,
+    updateHistory,
+  ]);
 
   useEffect(() => {
     dispatch(loadAvailableDates());
@@ -246,7 +263,9 @@ function MapView({ classes }: MapViewProps) {
       );
     }
     // let users know if their current date doesn't exist in possible dates
-    if (selectedDate && urlParams.date !== selectedDate) {
+    const urlDate = urlParams.get('date');
+
+    if (selectedDate && urlDate && moment(urlDate).valueOf() !== selectedDate) {
       selectedLayersWithDateSupport.forEach(layer => {
         const momentSelectedDate = moment(selectedDate);
 
@@ -258,7 +277,7 @@ function MapView({ classes }: MapViewProps) {
         ) {
           const closestDate = findClosestDate(selectedDate, selectedLayerDates);
 
-          updateHistory({ date: closestDate.valueOf() });
+          updateHistory('date', closestDate.format('YYYY-MM-DD'));
 
           dispatch(
             addNotification({

@@ -31,10 +31,10 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
     const { checked } = event.target;
 
     const urlLayerKey =
-      layer.type === 'nso' ? 'baselineLayerId' : 'hazardLayerId';
+      layer.type === 'admin_level_data' ? 'baselineLayerId' : 'hazardLayerId';
 
     if (checked) {
-      updateHistory({ [urlLayerKey]: layer.id });
+      updateHistory(urlLayerKey, layer.id);
     } else {
       removeKeyFromUrl(urlLayerKey);
 

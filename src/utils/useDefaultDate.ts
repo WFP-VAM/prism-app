@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import moment from 'moment';
 import { AvailableDates, GroupDefinition } from '../config/types';
 import { availableDatesSelector } from '../context/serverStateSlice';
 import { dateRangeSelector } from '../context/mapStateSlice/selectors';
 import { USER_DATE_OFFSET } from '../components/MapView/DateSelector/utils';
 
 import { useUrlHistory } from './url-utils';
+
 /**
  * A hook designed to automatically load the default date of a layer if the user doesn't select one.
  * Returns either the user selected date or the default date, dispatching it to the date picker beforehand. Can also return undefined if no default date is available.
@@ -35,7 +37,7 @@ export function useDefaultDate(
       defaultDate &&
       (!layerGroup || layerGroup.main === true)
     ) {
-      updateHistory({ date: defaultDate });
+      updateHistory('date', moment(defaultDate).format('YYYY-MM-DD'));
     }
   }, [defaultDate, dispatch, selectedDate, layerGroup, updateHistory]);
 

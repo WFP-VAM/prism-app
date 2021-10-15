@@ -129,7 +129,7 @@ function DateSelector({
 
   function updateStartDate(date: Date) {
     const time = date.getTime();
-    updateHistory({ date: time });
+    updateHistory('date', moment(time).format('YYYY-MM-DD'));
   }
 
   function setDatePosition(date: number | undefined, increment: number) {
