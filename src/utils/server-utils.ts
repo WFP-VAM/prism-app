@@ -15,6 +15,8 @@ import {
   LabelType,
 } from '../config/types';
 
+import { queryParamsToString } from '../context/layers/point_data';
+
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
 
@@ -227,9 +229,20 @@ const pointDataFetchPromises: {
  * Gets the available dates for a point data layer.
  */
 async function getPointDataCoverage(layer: PointDataLayerProps) {
-  const { dateUrl: url, fallbackData: fallbackUrl, id } = layer;
+  const {
+    dateUrl: url,
+    fallbackData: fallbackUrl,
+    id,
+    additionalQueryParams,
+  } = layer;
   const loadPointLayerDataFromURL = async (fetchUrl: string) => {
-    const data = (await (await fetch(fetchUrl || '')).json()) as PointDataDates; // raw data comes in as { date: yyyy-mm-dd }[]
+    const fetchUrlWithParams = `${fetchUrl}${
+      fetchUrl.includes('?') ? '&' : '?'
+    }${queryParamsToString(additionalQueryParams)}`;
+
+    const data = (await (
+      await fetch(fetchUrlWithParams || '')
+    ).json()) as PointDataDates; // raw data comes in as { date: yyyy-mm-dd }[]
     return data;
   };
   // eslint-disable-next-line fp/no-mutation
