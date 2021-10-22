@@ -71,7 +71,7 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
     measure_field = form_fields.get('measure')
 
     form_data = {k: form_dict.get(k) if k != measure_field else int(form_dict.get(k))
-                 for k in labels if k != form_fields.get('geom')}
+                 for k in labels if k not in (form_fields.get('geom'), form_fields.get('datetime'))}
 
     datetime_field = form_fields.get('datetime')
 
@@ -132,9 +132,12 @@ def get_responses_from_kobo(auth, form_name):
     if form_metadata is None:
         raise NotFound('Form not found')
 
-    # Get form labels.
-    # Replace string is needed since form dictionariy keys use '_' as space.
-    form_labels = [f.replace(' ', '_') for f in form_metadata.get('summary').get('labels')]
+    # Additional request to get label mappings.
+    resp = requests.get(form_metadata.get('url'), auth=auth)
+    resp.raise_for_status()
+    form_metadata = resp.json()
+
+    form_labels = [f.get('$autoname') for f in form_metadata.get('content').get('survey')]
 
     # Get all form responses using metadata 'data' key
     resp = requests.get(form_metadata.get('data'), auth=auth)
