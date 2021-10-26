@@ -4,6 +4,7 @@ import { get, isEmpty, isString, merge, union, snakeCase } from 'lodash';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
+  AdminLevelDataLayerProps,
   AvailableDates,
   PointDataLayerProps,
   RequestFeatureInfo,
@@ -26,7 +27,8 @@ const xml2jsOptions = {
 export type DateCompatibleLayer =
   | WMSLayerProps
   | ImpactLayerProps
-  | PointDataLayerProps;
+  | PointDataLayerProps
+  | AdminLevelDataLayerProps;
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
@@ -36,6 +38,8 @@ export const getPossibleDatesForLayer = (
   switch (layer.type) {
     case 'wms':
       return serverAvailableDates[layer.serverLayerName];
+    case 'admin_level_data':
+      return serverAvailableDates[layer.id];
     case 'impact':
       return serverAvailableDates[
         (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
@@ -215,6 +219,57 @@ async function getWCSCoverage(serverUri: string) {
   }
 }
 
+type LayerDates = Array<{
+  date: string;
+}>;
+
+const adminLevelDataFetchPromises: {
+  [k in AdminLevelDataLayerProps['datePath']]: Promise<LayerDates>;
+} = {};
+
+async function loadAdminLevelDataDates(layer: AdminLevelDataLayerProps) {
+  const { datePath, path, id } = layer;
+  const loadAdminLevelDates = async (fetchPath: string) => {
+    const data = await (await fetch(fetchPath || '')).json();
+
+    return data.DataList.filter(
+      (item: { [key: string]: any }) => 'date' in item,
+    ).reduce((obj: { [key: string]: any }, val: any) => {
+      return [{ ...obj, ...{ date: val.date } }];
+    }, {}) as LayerDates;
+  };
+
+  // eslint-disable-next-line fp/no-mutation
+  const data = await (adminLevelDataFetchPromises[datePath] =
+    adminLevelDataFetchPromises[datePath] ||
+    loadAdminLevelDates(datePath)).catch(err => {
+    console.error(err);
+    console.warn(
+      `Failed loading admin level data layer: ${id}. Attempting to load from path...`,
+    );
+    return loadAdminLevelDates(path || '');
+  });
+
+  return data;
+}
+
+/**
+ * Gets the available dates for an admin level layer.
+ */
+async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
+  // get dates based on the precedency of sources first `path_dates` or `path`
+  const data = await loadAdminLevelDataDates(layer);
+  const possibleDates = data
+    // adding 12 hours to avoid  errors due to daylight saving, and convert to number
+    .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
+    // remove duplicate dates - indexOf returns first index of item
+    .filter((date, index, arr) => {
+      return arr.indexOf(date) === index;
+    });
+
+  return possibleDates;
+}
+
 type PointDataDates = Array<{
   date: string;
 }>;
@@ -268,11 +323,31 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     (layer): layer is PointDataLayerProps => layer.type === 'point_data',
   );
 
+  const adminLevelDataLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is AdminLevelDataLayerProps =>
+      layer.type === 'admin_level_data',
+  );
+
+  const asyncFilter = async (
+    arr: AdminLevelDataLayerProps[],
+    predicate: (i: any) => Promise<boolean>,
+  ) => {
+    const results = await Promise.all(arr.map(predicate));
+    return arr.filter((_v, index) => results[index]);
+  };
+
+  const asyncRes = await asyncFilter(adminLevelDataLayers, async i => {
+    return (await loadAdminLevelDataDates(i)).length !== undefined;
+  });
+
   const layerDates: AvailableDates[] = await Promise.all([
     ...wmsServerUrls.map(url => getWMSCapabilities(url)),
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer),
+    })),
+    ...asyncRes.map(async layer => ({
+      [layer.id]: await getAdminLevelDataCoverage(layer),
     })),
   ]);
 

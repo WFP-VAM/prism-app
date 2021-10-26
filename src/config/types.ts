@@ -259,6 +259,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @makeRequired
   dataField: string;
+
+  @optional
+  datePath: string;
 }
 
 export class StatsApi {
@@ -357,7 +360,8 @@ export interface MenuItemMobileType {
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | PointDataLayerProps['id']]: number[];
+    | PointDataLayerProps['id']
+    | AdminLevelDataLayerProps['id']]: number[];
 };
 
 /* eslint-disable camelcase */

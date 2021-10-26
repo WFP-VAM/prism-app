@@ -753,7 +753,6 @@
     ],
     "legend_text": "Sensitivity describes the characteristics of a community adversely affected by a drought. Sensitivity scores were assigned based on a review of the literature on climate sensitivity of livelihoods and consultation with the WFP Country Office in Myanmar"
   },
-
   "poverty": {
     "title": "Poverty by township",
     "type": "admin_level_data",
@@ -778,7 +777,6 @@
     ],
     "legend_text": "Sensitivity scores were assigned based on a review of the literature on climate sensitivity of livelihoods and consultation with WFP Myanmar"
   },
-
   "sensitvity_storms": {
     "title": "Sensitivity to storms",
     "type": "admin_level_data",

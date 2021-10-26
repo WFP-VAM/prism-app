@@ -95,6 +95,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
   'point_data',
+  'admin_level_data',
   'wms',
 ];
 
@@ -112,9 +113,9 @@ function MapView({ classes }: MapViewProps) {
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const selectedLayersWithDateSupport = selectedLayers
-    .filter((layer): layer is DateCompatibleLayer =>
-      dateSupportLayerTypes.includes(layer.type),
-    )
+    .filter((layer): layer is DateCompatibleLayer => {
+      return dateSupportLayerTypes.includes(layer.type);
+    })
     .filter(layer => !layer.group || layer.group.main === true);
 
   const boundaryLayer = getBoundaryLayerSingleton();

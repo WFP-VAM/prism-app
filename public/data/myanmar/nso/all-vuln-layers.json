@@ -271,7 +271,8 @@
    "storm_vuln": 0.615,
    "drought_ri": 0.203746278,
    "flood_risk": 0.336734694,
-   "storm_risk": 0.137892377
+   "storm_risk": 0.137892377,
+   "date": "2021-01-05"
  },
  {
    "TS_PCODE": "MMR003001",
