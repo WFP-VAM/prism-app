@@ -33,7 +33,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
         onClick={handleClick}
         aria-describedby={id}
       >
-        <img className={classes.icon} src={icon} alt={title} />
+        <img className={classes.icon} src={`/images/${icon}`} alt={title} />
         <Typography variant="body2">{title}</Typography>
       </Button>
 
