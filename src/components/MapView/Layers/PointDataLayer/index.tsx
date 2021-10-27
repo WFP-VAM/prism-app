@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
+import { get } from 'lodash';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
 import { PointDataLayerProps } from '../../../../config/types';
+
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,

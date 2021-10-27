@@ -1190,5 +1190,45 @@
     "legend": [],
     "legend_text": "",
     "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "kobo_test": {
+    "title": "Kobo data",
+    "type": "point_data",
+    "data": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "additional_query_params": {
+      "form_name": "test_prism_form_v3",
+      "datetime_field": "date_time",
+      "geom_field": "location",
+      "measure_field": "number",
+      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
+    },
+    "feature_info_props": {
+      "number": {
+        "type": "number",
+        "label": "Measure"
+      },
+      "username": {
+        "type": "text",
+        "label": "User name"
+      }
+    },
+    "opacity": 1,
+    "measure": "number",
+    "legend_text": "Test",
+    "legend": [
+      {
+        "value": "2",
+        "color": "#7ab1c0"
+      },
+      {
+        "value": "5",
+        "color": "#9fc3b3"
+      },
+      {
+        "value": "100",
+        "color": "#d9e79a"
+      }
+    ]
   }
 }
