@@ -10,5 +10,5 @@ services:
     environment:
       - DATABASE_URL
       - WORKERS_PER_CORE=1
-      - KOBO_USERNAME=changeme
-      - KOBO_PW=changeme
+      - KOBO_USERNAME=prism_kobo
+      - KOBO_PW=8XQ9aHRqU5
