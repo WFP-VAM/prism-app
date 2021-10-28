@@ -34,7 +34,9 @@
       },
       "vulnerability":{
           "poverty": ["idpoor"]
-      }
+      },
+      "exposure": {
+        "field_reports": ["disaster_report"]
     }
   }
-  
+}
