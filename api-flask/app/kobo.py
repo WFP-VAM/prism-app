@@ -1,6 +1,5 @@
 """Collect and parse kobo forms."""
 from datetime import datetime, timedelta, timezone
-from enum import Enum
 from os import getenv
 from typing import Dict, List
 
@@ -11,14 +10,6 @@ from flask import request
 import requests
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
-
-
-class FormStatus(Enum):
-    """Values returned from kobo api response."""
-
-    APPROVED = 'Approved'
-    NOT_APPROVED = 'Not Approved'
-    ON_HOLD = 'On Hold'
 
 
 def get_kobo_params():
@@ -47,19 +38,13 @@ def get_kobo_params():
     if measure_field is None:
         raise BadRequest('Missing parameter measureField')
 
-    filter_status = request.args.get('filterStatus')
-
-    try:
-        status = FormStatus(filter_status) if filter_status is not None else None
-    except ValueError:
-        err_message = 'Invalid filterStatus value. Values are Approved, Not Approved and On Hold'
-        raise BadRequest(err_message)
+    filters = dict([f.split('=') for f in request.args.get('filters').split(',')])
 
     form_fields = dict(name=form_name,
                        datetime=datetime_field,
                        geom=geom_field,
                        measure=measure_field,
-                       status=status)
+                       filters=filters)
 
     auth = (kobo_username, kobo_pw)
 
@@ -89,7 +74,7 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
 def parse_datetime_params():
     """Transform into datetime objects used for filtering form responses."""
     begin_datetime_str = request.args.get('beginDateTime', '2000-01-01')
-    begin_datetime = dtparser(begin_datetime_str).astimezone(timezone.utc)
+    begin_datetime = dtparser(begin_datetime_str).replace(tzinfo=timezone.utc)
 
     end_datetime_str = request.args.get('endDateTime')
     if end_datetime_str is not None:
@@ -98,7 +83,7 @@ def parse_datetime_params():
         # 10 years.
         end_datetime = datetime.now() + timedelta(days=365 * 10)
 
-    end_datetime = end_datetime.astimezone(timezone.utc)
+    end_datetime = end_datetime.replace(tzinfo=timezone.utc)
 
     # strptime function includes hours, minutes, and seconds as 00 by default.
     # This check is done in case the begin and end datetime values are the same.
@@ -157,16 +142,18 @@ def get_form_responses(begin_datetime, end_datetime):
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
     filtered_forms = []
+
     for form in forms:
         date_value = form.get('date')
-        status = form_fields.get('status')
 
-        if status is not None and form.get('status') != status.value:
+        conditions = [form.get(k) == v for k, v in form_fields.get('filters').items()]
+        conditions.append(begin_datetime <= date_value)
+        conditions.append(date_value < end_datetime)
+
+        if all(conditions) is False:
             continue
 
-        # Check form submission date is between request dates.
-        if begin_datetime <= date_value <= end_datetime:
-            filtered_forms.append(form)
+        filtered_forms.append(form)
 
     sorted_forms = sorted(filtered_forms, key=lambda x: x.get('date'))
 
