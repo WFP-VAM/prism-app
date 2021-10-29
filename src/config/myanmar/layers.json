@@ -11,6 +11,7 @@
     "title": "Vulnerability index",
     "type": "admin_level_data",
     "path": "../data/myanmar/nso/all-vuln-layers.json",
+    "date_path": "../data/myanmar/nso/all-vuln-dates.json",
     "content_path": "data/myanmar/contents.md#vulnerability-index",
     "data_field": "mmr_inform",
     "admin_level": 3,

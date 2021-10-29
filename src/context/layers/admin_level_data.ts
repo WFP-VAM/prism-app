@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { FeatureCollection } from 'geojson';
 import { get, isNull, isString } from 'lodash';
 import {
@@ -12,6 +13,7 @@ import { layerDataSelector } from '../mapStateSlice/selectors';
 export type DataRecord = {
   adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
   value: string | number | null;
+  date?: string | number;
 };
 
 export type AdminLevelDataLayerData = {
@@ -20,9 +22,10 @@ export type AdminLevelDataLayerData = {
 };
 
 export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> = () => async (
-  { layer }: LayerDataParams<AdminLevelDataLayerProps>,
+  { date, layer }: LayerDataParams<AdminLevelDataLayerProps>,
   api: ThunkApi,
 ) => {
+  const formattedDate = date && moment(date).format('YYYY-MM-DD');
   const { path, adminCode, dataField } = layer;
   const { getState } = api;
 
@@ -38,10 +41,23 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
   const adminBoundaries = adminBoundariesLayer.data;
 
   const { DataList: rawJSONs }: { DataList: { [key: string]: any }[] } = await (
-    await fetch(path, { mode: path.includes('http') ? 'cors' : 'same-origin' })
+    await fetch(path, {
+      mode: path.includes('http') ? 'cors' : 'same-origin',
+    })
   ).json();
 
-  const layerData = (rawJSONs || [])
+  const rawWithDates = (rawJSONs || []).filter(obj => {
+    return (
+      moment(obj.date).format('YYYY-MM-DD') ===
+      moment(formattedDate).format('YYYY-MM-DD')
+    );
+  });
+
+  console.log('-> Date: ', formattedDate);
+  console.log('-> Raw Data: ', rawJSONs);
+  console.log('-> Filtered Data: ', rawWithDates);
+
+  const layerData = rawWithDates
     .map(point => {
       const adminKey = point[adminCode] as string;
       if (!adminKey) {
@@ -51,6 +67,8 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
       return { adminKey, value };
     })
     .filter((v): v is DataRecord => v !== undefined);
+
+  console.log('-> Final Layer Data: ', layerData);
 
   const features = {
     ...adminBoundaries,

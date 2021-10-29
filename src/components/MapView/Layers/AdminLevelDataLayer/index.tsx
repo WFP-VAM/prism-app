@@ -10,22 +10,27 @@ import {
   loadLayerData,
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
-  const layerData = useSelector(layerDataSelector(layer.id)) as
+  const selectedDate = useDefaultDate(layer.id);
+
+  const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
 
   const { data } = layerData || {};
+  // get date from global state and use it to
+  // filter data by the selected date
   const { features } = data || {};
 
   useEffect(() => {
     if (!features) {
-      dispatch(loadLayerData({ layer }));
+      dispatch(loadLayerData({ layer, date: selectedDate }));
     }
-  }, [dispatch, features, layer]);
+  }, [dispatch, features, layer, selectedDate]);
 
   if (!features) {
     return null;
