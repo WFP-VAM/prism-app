@@ -10,7 +10,6 @@ import {
 import { Link } from 'react-router-dom';
 
 import { colors } from '../../muiTheme';
-import wfpLogo from '../images/wfp_logo.png';
 
 function NotFound({ classes }: NotFoundProps) {
   return (
@@ -41,7 +40,7 @@ function NotFound({ classes }: NotFoundProps) {
         <Grid item>
           <img
             className={classes.image}
-            src={wfpLogo}
+            src="/images/wfp_logo.png"
             alt="World Food Programme logo"
           />
         </Grid>
