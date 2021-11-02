@@ -321,7 +321,7 @@ export class PointDataLayerProps extends CommonLayerProps {
   dateUrl: string;
 
   @optional
-  additionalQueryParams?: { [key: string]: string };
+  additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
 
   @optional
   featureInfoProps?: FeatureInfoObject;

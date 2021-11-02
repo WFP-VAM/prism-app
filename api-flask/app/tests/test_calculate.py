@@ -60,7 +60,15 @@ def test_calculate_stats_wfs_polygons():
 @patch('app.kobo.get_kobo_params')
 def test_kobo_response_form(kobo_params, kobo_data):
     """ Test form response parsing. """
-    form_fields = {'name': 'name', 'datetime': 'date', 'geom': 'geom', 'measure': 'value'}
+    form_fields = {
+        'name': 'name',
+        'datetime': 'date',
+        'geom': 'geom',
+        'measure': 'value',
+        'filters': {
+            'status': 'Approved'
+        }
+    }
     kobo_params.return_value = (('test', 'test'), form_fields)
 
     kobo_data_json = [
@@ -68,20 +76,22 @@ def test_kobo_response_form(kobo_params, kobo_data):
             'date': '2019-09-22T21:35:54',
             'geom': '21.908012 95.986908 0 0',
             'value': '2',
-            '_validation_status': {'label': 'Approved'}
+            '_validation_status': {'label': 'Approved'},
+            'username': 'jorge'
         },
         {
             'date': '2021-01-01T10:00:08',
             'geom': '21.916222 95.955971 0 0',
             'value': '3',
-            '_validation_status': {}
+            '_validation_status': {'label': 'Approved'},
+            'username': 'test'
         }
     ]
 
-    kobo_data.return_value = (kobo_data_json, ['value', 'geom'])
+    kobo_data.return_value = (kobo_data_json, ['value', 'geom', 'username'])
 
-    begin = datetime(2000, 1, 1).astimezone(timezone.utc)
-    end = datetime(2030, 1, 1).astimezone(timezone.utc)
+    begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
+    end = datetime(2030, 1, 1).replace(tzinfo=timezone.utc)
     forms = get_form_responses(begin, end)
 
     assert len(forms) == 2
@@ -91,9 +101,24 @@ def test_kobo_response_form(kobo_params, kobo_data):
     assert forms[0]['value'] == 2
     assert forms[0]['status'] == 'Approved'
 
+    form_fields = {
+        'name': 'name',
+        'datetime': 'date',
+        'geom': 'geom',
+        'measure': 'value',
+        'filters': {
+            'status': 'Approved',
+            'username': 'jorge'
+        }
+    }
+    kobo_params.return_value = (('test', 'test'), form_fields)
+    forms = get_form_responses(begin, end)
+
+    assert len(forms) == 1
+
     # Test Filter
-    begin = datetime(2000, 1, 1).astimezone(timezone.utc)
-    end = datetime(2020, 1, 1).astimezone(timezone.utc)
+    begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
+    end = datetime(2020, 1, 1).replace(tzinfo=timezone.utc)
     forms = get_form_responses(begin, end)
     assert len(forms) == 1
 
