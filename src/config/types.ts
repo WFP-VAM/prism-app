@@ -206,10 +206,12 @@ export enum LabelType {
   Number = 'number',
 }
 
-interface featureInfoProps {
+interface FeatureInfoProps {
   type: LabelType;
   label: string;
 }
+
+export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
 
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
@@ -232,7 +234,7 @@ export class WMSLayerProps extends CommonLayerProps {
   wcsConfig?: RawDataConfiguration;
 
   @optional
-  featureInfoProps?: { [key: string]: featureInfoProps };
+  featureInfoProps?: FeatureInfoObject;
 
   @optional // If included, we infer the layer is a vector layer.
   geometry?: GeometryType;
@@ -320,6 +322,12 @@ export class PointDataLayerProps extends CommonLayerProps {
   fallbackData?: string;
   // URL to fetch all possible dates from
   dateUrl: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
+
+  @optional
+  featureInfoProps?: FeatureInfoObject;
 }
 
 export type RequiredKeys<T> = {

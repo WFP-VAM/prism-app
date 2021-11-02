@@ -1,6 +1,14 @@
 {
   "country": "Cambodia",
   "alertFormActive": false,
+  "icons": {
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png",
+    "hazards": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "capacity": "icon_capacity.png",
+    "tables": "icon_table.png"
+  },
   "serversUrls": {
     "wms": [
       "https://www.prism-kh.info:8443/geoserver/Prism/wms",
@@ -34,7 +42,9 @@
       },
       "vulnerability":{
           "poverty": ["idpoor"]
-      }
+      },
+      "exposure": {
+        "field_reports": ["disaster_report"]
     }
   }
-  
+}

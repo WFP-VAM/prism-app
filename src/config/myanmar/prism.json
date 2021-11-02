@@ -1,6 +1,14 @@
 {
   "country": "Myanmar",
   "alertFormActive": false,
+  "icons": {
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png",
+    "hazards": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "capacity": "icon_capacity.png",
+    "tables": "icon_table.png"
+  },
   "map": {
     "latitude": 19.467,
     "longitude": 96.371,
@@ -56,7 +64,7 @@
       ]
     },
     "exposure": {
-      "population": ["total_pop"],
+      "population": ["total_pop", "kobo_test"],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",
         "population_exposed_historical_storm_surge"

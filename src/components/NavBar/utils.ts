@@ -1,4 +1,4 @@
-import { map, startCase } from 'lodash';
+import { map, startCase, get } from 'lodash';
 
 import { appConfig } from '../../config';
 import {
@@ -13,23 +13,6 @@ import {
   LayersCategoryType,
   MenuItemType,
 } from '../../config/types';
-
-import vulnerability from '../images/icon_vulnerable.png';
-import exposure from '../images/icon_basemap.png';
-import hazards from '../images/icon_climate.png';
-import risk from '../images/icon_impact.png';
-// note to Ovio: wanted to use risk_and_impact but this fails. riskandimpact works, but doesn't create spaces in nav
-import capacity from '../images/icon_capacity.png';
-import tables from '../images/icon_table.png';
-
-const icons: { [key: string]: string } = {
-  vulnerability,
-  exposure,
-  hazards,
-  risk,
-  capacity,
-  tables,
-};
 
 type LayersCategoriesType = LayersCategoryType[];
 
@@ -76,7 +59,7 @@ export const menuList: MenuItemsType = map(
     }
     return {
       title: startCase(categoryKey),
-      icon: icons[categoryKey],
+      icon: get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
       layersCategories: formatLayersCategories(layersCategories),
     };
   },

@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react';
-import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
-import { PointDataLayerProps } from '../../../../config/types';
+import {
+  PointDataLayerProps,
+  FeatureInfoObject,
+  LabelType,
+} from '../../../../config/types';
+
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
@@ -43,6 +47,15 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     },
   };
 
+  const defaultProps: FeatureInfoObject = {
+    measure: {
+      type: LabelType.Number,
+      label: layer.title,
+    },
+  };
+
+  const props = layer.featureInfoProps || defaultProps;
+
   return (
     <GeoJSONLayer
       before="boundaries-line"
@@ -51,18 +64,23 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       circleLayout={circleLayout}
       circlePaint={circlePaint}
       circleOnClick={(evt: any) => {
-        dispatch(
-          addPopupData({
-            [layer.title]: {
-              data: get(
-                evt.features[0],
-                `properties.${layer.measure}`,
-                'No Data',
-              ),
-              coordinates: evt.lngLat,
-            },
-          }),
-        );
+        const { properties } = evt.features[0];
+        const featureInfoKeys = Object.keys(props);
+
+        const popupData = Object.keys(properties)
+          .filter(p => featureInfoKeys.includes(p))
+          .reduce(
+            (obj, item) => ({
+              ...obj,
+              [props[item].label]: {
+                data: properties[item],
+                coordinates: evt.lngLat,
+              },
+            }),
+            {},
+          );
+
+        dispatch(addPopupData(popupData));
       }}
     />
   );
