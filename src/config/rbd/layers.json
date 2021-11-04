@@ -1,11 +1,11 @@
 {
     "admin_boundaries": {
       "type": "boundary",
-      "path": "../data/rbd/rbd_admin0-rev.json",
+      "path": "../data/rbd/wca_CHIPC_mar2021_projected_jun2021_simple.json",
       "opacity": 0.8,
-      "admin_code": "ADM0_PCODE",
-      "admin_level_names": ["adm0_name"],
-      "admin_level_local_names": ["adm0_name"]
+      "admin_code": "adm1_pcod2",
+      "admin_level_names": ["adm0_name", "adm1_name"],
+      "admin_level_local_names": ["adm0_name", "adm1_name"]
     },
     "rainfall_dekad": {
       "title": "10-day rainfall estimate (mm)",
@@ -286,6 +286,38 @@
       "legend": [],
       "legend_text": "",
       "base_url": "https://geonode.wfp.org/geoserver"
+    },
+    "ch_2021_03": {
+      "title": "Projected - March to June 2021",
+      "type": "admin_level_data",
+      "path": "../data/rbd/wca_CHIPC_mar2021_projected_jun2021.json",
+      "data_field": "phase_class",
+      "admin_level": 3,
+      "admin_code": "adm1_pcod2",
+      "opacity": 0.7,
+      "legend": [
+        {
+          "value": 1,
+          "color": "#c6ffc7"
+        },
+        {
+          "value": 2,
+          "color": "#ffe718"
+        },
+        {
+          "value": 3,
+          "color": "#e88400"
+        },
+        {
+          "value": 4,
+          "color": "#e02d00"
+        },
+        {
+          "value": 5,
+          "color": "#5e0803"
+        }
+      ],
+      "legend_text": "The INFORM model is based on risk concepts published in scientific literature and envisages three dimensions of risk: hazards & exposure, vulnerability and lack of coping capacity dimensions. See https://drmkc.jrc.ec.europa.eu/inform-index"
     }
   }
   

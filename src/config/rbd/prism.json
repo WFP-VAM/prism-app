@@ -33,7 +33,10 @@
         ],
         "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"],
         "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
-      }
+      },
+      "Cadre Harmonisé": {
+        "Phase classification": ["ch_2021_03"]
+      } 
     }
   }
   
