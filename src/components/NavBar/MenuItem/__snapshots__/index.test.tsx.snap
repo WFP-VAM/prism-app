@@ -8,7 +8,7 @@ exports[`renders as expected 1`] = `
     <img
       alt="title"
       class="MenuItem-icon-2"
-      src="icon.png"
+      src="/images/icon.png"
     />
     <mock-typography
       variant="body2"

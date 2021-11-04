@@ -49,7 +49,7 @@ exports[`renders as expected 1`] = `
         <img
           alt="World Food Programme logo"
           class="NotFound-image-3"
-          src="wfp_logo.png"
+          src="/images/wfp_logo.png"
         />
       </div>
     </div>

@@ -1201,7 +1201,10 @@
       "datetime_field": "date_time",
       "geom_field": "location",
       "measure_field": "number",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
+      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json",
+      "filters": {
+        "status": "Approved"
+      }
     },
     "feature_info_props": {
       "number": {
