@@ -11,7 +11,6 @@
     "title": "Vulnerability index",
     "type": "admin_level_data",
     "path": "../data/myanmar/nso/all-vuln-layers.json",
-    "date_path": "../data/myanmar/nso/all-vuln-dates.json",
     "content_path": "data/myanmar/contents.md#vulnerability-index",
     "data_field": "mmr_inform",
     "admin_level": 3,
@@ -40,6 +39,39 @@
       }
     ],
     "legend_text": "The INFORM model is based on risk concepts published in scientific literature and envisages three dimensions of risk: hazards & exposure, vulnerability and lack of coping capacity dimensions. See https://drmkc.jrc.ec.europa.eu/inform-index"
+  },
+  "admin_level_test": {
+    "title": "Admin Level Test - Time Dimension",
+    "type": "admin_level_data",
+    "path": "../data/myanmar/nso/all-vuln-test.json",
+    "content_path": "data/myanmar/contents.md#vulnerability-index",
+    "data_field": "mmr_inform",
+    "admin_level": 3,
+    "admin_code": "TS_PCODE",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": "0 to 0.2 Very low",
+        "color": "#1a9641"
+      },
+      {
+        "value": "0.21 to 0.4 Low",
+        "color": "#a6d96a"
+      },
+      {
+        "value": "0.41 to 0.6 Medium",
+        "color": "#ffffbf"
+      },
+      {
+        "value": "0.61 to 0.8 High",
+        "color": "#fdae61"
+      },
+      {
+        "value": "0.8 to 1 Very high",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Based on INFORM dataset we are going to add time dimension onto it. This will allow users to travel back and forth in time."
   },
   "total_pop": {
     "title": "Total population",

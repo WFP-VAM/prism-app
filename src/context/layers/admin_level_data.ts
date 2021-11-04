@@ -53,10 +53,6 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
     );
   });
 
-  console.log('-> Date: ', formattedDate);
-  console.log('-> Raw Data: ', rawJSONs);
-  console.log('-> Filtered Data: ', rawWithDates);
-
   const layerData = rawWithDates
     .map(point => {
       const adminKey = point[adminCode] as string;
@@ -67,8 +63,6 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
       return { adminKey, value };
     })
     .filter((v): v is DataRecord => v !== undefined);
-
-  console.log('-> Final Layer Data: ', layerData);
 
   const features = {
     ...adminBoundaries,

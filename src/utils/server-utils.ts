@@ -233,12 +233,11 @@ async function loadAdminLevelDataDates(layer: AdminLevelDataLayerProps) {
   const { datePath, path, id } = layer;
   const loadAdminLevelDates = async (fetchPath: string) => {
     const data = await (await fetch(fetchPath || '')).json();
-
-    return data.DataList.filter(
+    const dataWithDate = data.DataList.filter(
       (item: { [key: string]: any }) => 'date' in item,
-    ).reduce((obj: { [key: string]: any }, val: any) => {
-      return [{ ...obj, ...{ date: val.date } }];
-    }, {}) as LayerDates;
+    ).map((obj: { [key: string]: string }) => obj.date);
+
+    return [...new Set(dataWithDate)] as LayerDates;
   };
 
   // eslint-disable-next-line fp/no-mutation
@@ -263,12 +262,16 @@ async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
   const data = await loadAdminLevelDataDates(layer);
   const possibleDates = data
     // adding 12 hours to avoid  errors due to daylight saving, and convert to number
-    .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
+    .map(item => {
+      return moment
+        .utc((item as unknown) as string)
+        .set({ hour: 12 })
+        .valueOf();
+    })
     // remove duplicate dates - indexOf returns first index of item
     .filter((date, index, arr) => {
       return arr.indexOf(date) === index;
     });
-
   return possibleDates;
 }
 
@@ -319,7 +322,6 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     .filter((date, index, arr) => {
       return arr.indexOf(date) === index;
     });
-
   return possibleDates;
 }
 
@@ -349,9 +351,12 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     return arr.filter((_v, index) => results[index]);
   };
 
-  const asyncRes = await asyncFilter(adminLevelDataLayers, async i => {
-    return (await loadAdminLevelDataDates(i)).length !== undefined;
-  });
+  const adminlevelLayersWithDates = await asyncFilter(
+    adminLevelDataLayers,
+    async i => {
+      return (await loadAdminLevelDataDates(i)).length > 0;
+    },
+  );
 
   const layerDates: AvailableDates[] = await Promise.all([
     ...wmsServerUrls.map(url => getWMSCapabilities(url)),
@@ -359,7 +364,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer),
     })),
-    ...asyncRes.map(async layer => ({
+    ...adminlevelLayersWithDates.map(async layer => ({
       [layer.id]: await getAdminLevelDataCoverage(layer),
     })),
   ]);

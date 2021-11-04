@@ -11,8 +11,7 @@
    "storm_vuln": 0.773333333,
    "drought_ri": 0.152151215,
    "flood_risk": 0.227118433,
-   "storm_risk": 0.520179372,
-   "date": "2021-01-05"
+   "storm_risk": 0.520179372
  },
  {
    "TS_PCODE": "MMR012016",
@@ -51,8 +50,7 @@
    "storm_vuln": 0.805,
    "drought_ri": 0.581162879,
    "flood_risk": 0.34079181,
-   "storm_risk": 0.541479821,
-   "date": "2021-01-05"
+   "storm_risk": 0.541479821
  },
  {
    "TS_PCODE": "MMR017004",
@@ -104,8 +102,7 @@
    "storm_vuln": 0.77,
    "drought_ri": 0.173486943,
    "flood_risk": 0.772108844,
-   "storm_risk": 0.17264574,
-   "date": "2021-01-05"
+   "storm_risk": 0.17264574
  },
  {
    "TS_PCODE": "MMR017026",
@@ -144,8 +141,7 @@
    "storm_vuln": 0.751428571,
    "drought_ri": 0.164357557,
    "flood_risk": 0.027851754,
-   "storm_risk": 0.67392697,
-   "date": "2021-01-05"
+   "storm_risk": 0.67392697
  },
  {
    "TS_PCODE": "MMR012017",
@@ -223,8 +219,7 @@
    "storm_vuln": 0.614180791,
    "drought_ri": 1,
    "flood_risk": 0.035339357,
-   "storm_risk": 0.137708698,
-   "date": "2021-01-05"
+   "storm_risk": 0.137708698
  },
  {
    "TS_PCODE": "MMR011003",
@@ -276,8 +271,7 @@
    "storm_vuln": 0.615,
    "drought_ri": 0.203746278,
    "flood_risk": 0.336734694,
-   "storm_risk": 0.137892377,
-   "date": "2021-01-05"
+   "storm_risk": 0.137892377
  },
  {
    "TS_PCODE": "MMR003001",
@@ -1408,8 +1402,7 @@
    "storm_vuln": 0.499736842,
    "drought_ri": 0.491521173,
    "flood_risk": 0.057891859,
-   "storm_risk": 0,
-   "date": "2021-02-12"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR016011",
@@ -1422,8 +1415,7 @@
    "storm_vuln": 0.460841924,
    "drought_ri": 0.024797661,
    "flood_risk": 0.026606093,
-   "storm_risk": 0,
-   "date": "2021-02-12"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR015016",
@@ -1449,8 +1441,7 @@
    "storm_vuln": 0.384756098,
    "drought_ri": 0.010280239,
    "flood_risk": 0,
-   "storm_risk": 0,
-   "date": "2021-02-12"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR010030",
@@ -1489,8 +1480,7 @@
    "storm_vuln": 0.765,
    "drought_ri": 0.45168535,
    "flood_risk": 0.744897959,
-   "storm_risk": 0.514573991,
-   "date": "2021-02-12"
+   "storm_risk": 0.514573991
  },
  {
    "TS_PCODE": "MMR017003",
@@ -1503,8 +1493,7 @@
    "storm_vuln": 0.729444444,
    "drought_ri": 0.335784238,
    "flood_risk": 0.278433782,
-   "storm_risk": 0.81776283,
-   "date": "2021-02-12"
+   "storm_risk": 0.81776283
  },
  {
    "TS_PCODE": "MMR017006",
@@ -1530,8 +1519,7 @@
    "storm_vuln": 0.755,
    "drought_ri": 0.265139652,
    "flood_risk": 0.291089141,
-   "storm_risk": 0,
-   "date": "2021-02-12"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR017025",
@@ -1544,8 +1532,7 @@
    "storm_vuln": 0.765,
    "drought_ri": 0.267215768,
    "flood_risk": 0.780390417,
-   "storm_risk": 0,
-   "date": "2021-02-12"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR017011",
@@ -1558,8 +1545,7 @@
    "storm_vuln": 0.646683168,
    "drought_ri": 0.394143831,
    "flood_risk": 0.3465426,
-   "storm_risk": 0,
-   "date": "2021-02-12"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR013028",
@@ -1637,8 +1623,7 @@
    "storm_vuln": 0.685217391,
    "drought_ri": 0.100045424,
    "flood_risk": 0.247146466,
-   "storm_risk": 0.153636186,
-   "date": "2021-01-05"
+   "storm_risk": 0.153636186
  },
  {
    "TS_PCODE": "MMR006001",
@@ -1651,8 +1636,7 @@
    "storm_vuln": 0.450646259,
    "drought_ri": 0.015574767,
    "flood_risk": 0.004769017,
-   "storm_risk": 0.101041762,
-   "date": "2021-01-05"
+   "storm_risk": 0.101041762
  },
  {
    "TS_PCODE": "MMR009018",
@@ -1665,8 +1649,7 @@
    "storm_vuln": 0.485,
    "drought_ri": 0.614270551,
    "flood_risk": 0.038738137,
-   "storm_risk": 0,
-   "date": "2021-01-05"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR009003",
@@ -1679,8 +1662,7 @@
    "storm_vuln": 0.506428571,
    "drought_ri": 0.330933282,
    "flood_risk": 0.138456411,
-   "storm_risk": 0,
-   "date": "2021-01-05"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR018004",
@@ -1693,8 +1675,7 @@
    "storm_vuln": 0.455,
    "drought_ri": 0.470340355,
    "flood_risk": 0.044270479,
-   "storm_risk": 0,
-   "date": "2021-01-05"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR016009",
@@ -1707,8 +1688,7 @@
    "storm_vuln": 0.376382979,
    "drought_ri": 0.037001512,
    "flood_risk": 0.028135536,
-   "storm_risk": 0,
-   "date": "2021-01-05"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR015022",
@@ -1721,8 +1701,7 @@
    "storm_vuln": 0.418461538,
    "drought_ri": 0.053275401,
    "flood_risk": 0.027881673,
-   "storm_risk": 0,
-   "date": "2021-01-05"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR015021",
@@ -1735,8 +1714,7 @@
    "storm_vuln": 0.463820225,
    "drought_ri": 0.07513493,
    "flood_risk": 0.062629163,
-   "storm_risk": 0,
-   "date": "2021-01-05"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR001013",
@@ -1749,8 +1727,7 @@
    "storm_vuln": 0.605051546,
    "drought_ri": 0.139397422,
    "flood_risk": 0.07170498,
-   "storm_risk": 0,
-   "date": "2021-01-05"
+   "storm_risk": 0
  },
  {
    "TS_PCODE": "MMR015019",

@@ -15,15 +15,12 @@ import { addPopupData } from '../../../../context/tooltipStateSlice';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const selectedDate = useDefaultDate(layer.id);
-
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
 
   const { data } = layerData || {};
-  // get date from global state and use it to
-  // filter data by the selected date
   const { features } = data || {};
 
   useEffect(() => {
