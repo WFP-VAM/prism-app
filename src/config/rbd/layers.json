@@ -13,7 +13,7 @@
       "server_layer_name": "rfh_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": -0, "color": "#ffffff", "alpha": 0 },
@@ -39,7 +39,7 @@
       },
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": "1%", "color": "#d79b0b" },
@@ -62,7 +62,7 @@
       },
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": -0, "color": "#ffffff", "alpha": 0 },
@@ -83,7 +83,7 @@
       "server_layer_name": "rnh_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": "50", "color": "#faf3d2" },
@@ -104,7 +104,7 @@
       "server_layer_name": "dlx_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": 0, "color": "#fff9c7" },
@@ -125,7 +125,7 @@
       "server_layer_name": "xnn_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": 0, "color": "#f2fabc" },
@@ -146,7 +146,7 @@
       "server_layer_name": "xln_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
       "legend": [
         { "value": 0, "color": "#f2fabc" },
@@ -165,10 +165,10 @@
     "ndvi_dekad": {
       "title": "10-day NDVI (MODIS)",
       "type": "wms",
-      "server_layer_name": "mxd13c1_vim_dekad",
+      "server_layer_name": "mxd13a2_vim_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "LEGEND",
       "legend": [
         { "value": 1000, "color": "#a50026" },
@@ -185,13 +185,13 @@
     "ndvi_dekad_anomaly": {
       "title": "10-day NDVI anomaly (MODIS)",
       "type": "wms",
-      "server_layer_name": "mxd13c1_viq_dekad",
+      "server_layer_name": "mxd13a2_viq_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
       "additional_query_params": {
         "styles": "viq"
       },
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "NDVI Anomaly compared to LTA",
       "legend": [
         { "value": 50, "color": "#732600" },
@@ -208,10 +208,10 @@
     "lst_amplitude": {
       "title": "Land Surface Temperature - 10-day Amplitude (MODIS)",
       "type": "wms",
-      "server_layer_name": "myd11c2_taa_dekad",
+      "server_layer_name": "myd11a2_taa_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "LEGEND",
       "legend": [
         { "value": -0, "color": "#ffffff", "alpha": 0 },
@@ -228,7 +228,7 @@
     "lst_daytime": {
       "title": "Daytime Land Surface Temperature - 10-day (MODIS)",
       "type": "wms",
-      "server_layer_name": "myd11c2_txa_dekad",
+      "server_layer_name": "myd11a2_txa_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
       "wcsConfig": {
@@ -236,7 +236,7 @@
         "offset": -273,
         "pixelResolution": 64
       },
-      "opacity": 0.5,
+      "opacity": 0.7,
       "legend_text": "LEGEND",
       "additional_query_params": {
         "styles": "lst_day"
@@ -256,12 +256,12 @@
       ]
     },
     "lst_anomaly": {
-      "title": "Land Surface Temperature - 10-day Anomaly (MODIS)",
+      "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)",
       "type": "wms",
-      "server_layer_name": "myd11c2_txd_dekad",
+      "server_layer_name": "myd11a2_txd_dekad",
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
-      "opacity": 0.5,
+      "opacity": 0.7,
       "additional_query_params": {
         "styles": "lst_day"
       },
@@ -288,7 +288,7 @@
       "base_url": "https://geonode.wfp.org/geoserver"
     },
     "ch_2021_03": {
-      "title": "Projected - March to June 2021",
+      "title": "Cadre Harmonisé: Projected - March to June 2021",
       "type": "admin_level_data",
       "path": "../data/rbd/wca_CHIPC_mar2021_projected_jun2021.json",
       "data_field": "phase_class",
@@ -317,7 +317,7 @@
           "color": "#5e0803"
         }
       ],
-      "legend_text": "The INFORM model is based on risk concepts published in scientific literature and envisages three dimensions of risk: hazards & exposure, vulnerability and lack of coping capacity dimensions. See https://drmkc.jrc.ec.europa.eu/inform-index"
+      "legend_text": "Overall phase classification projected - March to June 2021"
     }
   }
   

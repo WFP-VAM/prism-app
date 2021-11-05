@@ -4,7 +4,7 @@
       "vulnerability": "icon_vulnerable.png",
       "exposure": "icon_basemap.png",
       "hazards": "icon_climate.png",
-      "risk": "icon_impact.png",
+      "Cadre Harmonisé": "icon_cadreharmoise2.png",
       "capacity": "icon_capacity.png",
       "tables": "icon_table.png"
     },
@@ -31,8 +31,8 @@
           "days_heavy_rain",
           "streak_heavy_rain"
         ],
-        "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"],
-        "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
+        "vegetation_conditions": ["ndvi_dekad"],
+        "temperature": ["lst_daytime"]
       },
       "Cadre Harmonisé": {
         "Phase classification": ["ch_2021_03"]
