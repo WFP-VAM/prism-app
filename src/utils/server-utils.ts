@@ -297,7 +297,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
  *
  * @return a formatted string
  */
-function formatFeatureInfo(value: string, type: LabelType): string {
+export function formatFeatureInfo(value: string, type: LabelType): string {
   if (type === LabelType.Date) {
     return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
   }

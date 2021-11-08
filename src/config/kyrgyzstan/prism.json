@@ -38,7 +38,8 @@
     },
     "risk": {
       "recurrence_of_hazards":[
-        "recurrence_mudflows"
+        "recurrence_mudflows",
+        "fires_2020"
       ]
     }
   }

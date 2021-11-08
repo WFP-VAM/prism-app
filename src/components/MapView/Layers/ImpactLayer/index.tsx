@@ -19,6 +19,7 @@ import {
   layerDataSelector,
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
+import { getFeatureInfoPropsData } from '../../utils';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',
@@ -102,7 +103,14 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
             coordinates: evt.lngLat,
           },
         };
+        // by default add `impactValue` to the tooltip
         dispatch(addPopupData(popupData));
+        // then add feature_info_props as extra fields to the tooltip
+        dispatch(
+          addPopupData(
+            getFeatureInfoPropsData(layer.featureInfoProps || {}, evt),
+          ),
+        );
       }}
     />
   );

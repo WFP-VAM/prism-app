@@ -39,7 +39,6 @@
     ],
     "legend_text": "This layer shows number of households of IDPoor level 1 and 2 at commune level. The identification of poor households (IDPoor) is established to collect and share poor household information nationwide in order to enhance targeting services and assistance for poverty reduction."
   },
-  
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
     "type": "wms",
