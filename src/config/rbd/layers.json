@@ -298,7 +298,22 @@
       "data_field": "phase_class",
       "admin_level": 3,
       "admin_code": "adm1_pcod2",
+      "content_path": "data/rbd/contents.md#Cadre-Harmonisé:-Projected-March-to-June-2021",
       "opacity": 0.7,
+      "feature_info_props": {
+        "exercise_year": {
+          "type": "string",
+          "label": "Exercise year"
+        },
+        "exercise_label": {
+          "type": "string",
+          "label": "Exercise period"
+        },
+        "phase_class": {
+          "type": "number",
+          "label": "Phase classification"
+        }
+      },
       "legend": [
         {
           "value": 1,
