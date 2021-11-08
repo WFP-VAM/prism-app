@@ -23,7 +23,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
   { layer }: LayerDataParams<AdminLevelDataLayerProps>,
   api: ThunkApi,
 ) => {
-  const { path, adminCode, dataField } = layer;
+  const { path, adminCode, dataField, featureInfoProps } = layer;
   const { getState } = api;
 
   const adminBoundaryLayer = getBoundaryLayerSingleton();
@@ -48,7 +48,16 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         return undefined;
       }
       const value = get(point, dataField);
-      return { adminKey, value };
+      const featureInfoPropsValues = Object.keys(featureInfoProps || {}).reduce(
+        (obj, item) => {
+          return {
+            ...obj,
+            [item]: point[item],
+          };
+        },
+        {},
+      );
+      return { adminKey, value, ...featureInfoPropsValues };
     })
     .filter((v): v is DataRecord => v !== undefined);
 
@@ -61,18 +70,19 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
           properties,
           adminBoundaryLayer.adminCode,
         ) as string;
-        const match = layerData.find(({ adminKey }) =>
+        const matchProperties = layerData.find(({ adminKey }) =>
           adminBoundaryCode.startsWith(adminKey),
         );
-        if (match && !isNull(match.value)) {
+        if (matchProperties && !isNull(matchProperties.value)) {
           // Do we want support for non-numeric values (like string colors?)
           return {
             ...feature,
             properties: {
               ...properties,
-              data: isString(match.value)
-                ? parseFloat(match.value)
-                : match.value,
+              ...matchProperties,
+              data: isString(matchProperties.value)
+                ? parseFloat(matchProperties.value)
+                : matchProperties.value,
             },
           };
         }
