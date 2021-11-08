@@ -110,8 +110,11 @@ function MapView({ classes }: MapViewProps) {
 
   const selectedDateRef = useRef<DatePicker>(null);
 
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const { startDate: selectedDate, endDate } = useSelector(dateRangeSelector);
+  console.log('StartDate: ', selectedDate);
+  console.log('EndDate: ', endDate);
   const serverAvailableDates = useSelector(availableDatesSelector);
+  console.log('AvailableDates: ', serverAvailableDates);
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
       return dateSupportLayerTypes.includes(layer.type);

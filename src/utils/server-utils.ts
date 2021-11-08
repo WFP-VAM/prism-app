@@ -225,6 +225,11 @@ type LayerDates = Array<{
   date: string;
 }>;
 
+type LayerDatesRange = Array<{
+  startDate: string;
+  endDate: string;
+}>;
+
 const adminLevelDataFetchPromises: {
   [k in AdminLevelDataLayerProps['datePath']]: Promise<LayerDates>;
 } = {};
@@ -233,6 +238,33 @@ async function loadAdminLevelDataDates(layer: AdminLevelDataLayerProps) {
   const { datePath, path, id } = layer;
   const loadAdminLevelDates = async (fetchPath: string) => {
     const data = await (await fetch(fetchPath || '')).json();
+    // change the condition to filter for both start, end dates
+    // to adopt DateRange instead of just date
+    const foo = data.DataList.filter(
+      (item: { [key: string]: any }) =>
+        Object.keys(item).find(s => s.includes('date')) !== undefined,
+    )
+      .map((obj: { [key: string]: string }) => ({
+        startDate: obj.startdate || obj.date,
+        endDate: obj.enddate || obj.startdate || obj.date,
+      }))
+      .reduce(
+        (dates: LayerDatesRange, o: { startDate: string; endDate: string }) => {
+          if (
+            !dates.some(
+              obj => obj.startDate === o.startDate && obj.endDate === o.endDate,
+            )
+          ) {
+            // eslint-disable-next-line fp/no-mutating-methods
+            dates.push(o);
+          }
+          return dates;
+        },
+        [],
+      );
+
+    console.log('Foo: ', foo);
+
     const dataWithDate = data.DataList.filter(
       (item: { [key: string]: any }) => 'date' in item,
     ).map((obj: { [key: string]: string }) => obj.date);
