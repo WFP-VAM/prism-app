@@ -10,6 +10,7 @@ import {
 } from 'lodash';
 import { Map } from 'mapbox-gl';
 import { LayerDefinitions } from '../../config/utils';
+import { formatFeatureInfo } from '../../utils/server-utils';
 import { getExtent } from './Layers/raster-utils';
 import {
   WMSLayerProps,
@@ -151,7 +152,10 @@ export function getFeatureInfoPropsData(
       return {
         ...obj,
         [featureInfoProps[item].label]: {
-          data: properties[item],
+          data: formatFeatureInfo(
+            properties[item],
+            featureInfoProps[item].type,
+          ),
           coordinates,
         },
       };
