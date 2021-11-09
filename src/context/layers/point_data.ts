@@ -23,11 +23,20 @@ export type PointLayerData = {
 }[];
 
 export const queryParamsToString = (queryParams?: {
-  [key: string]: string;
+  [key: string]: string | { [key: string]: string };
 }): string =>
   queryParams
     ? Object.entries(queryParams)
-        .map(([key, value]) => `${camelCase(key)}=${value}`)
+        .map(([key, value]) => {
+          if (key === 'filters') {
+            const filterValues = Object.entries(value)
+              .map(([filterKey, filterValue]) => `${filterKey}=${filterValue}`)
+              .join(',');
+
+            return `filters=${filterValues}`;
+          }
+          return `${camelCase(key)}=${value}`;
+        })
         .join('&')
     : '';
 

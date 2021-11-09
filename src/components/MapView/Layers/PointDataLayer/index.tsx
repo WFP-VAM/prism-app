@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react';
 import { GeoJSONLayer } from 'react-mapbox-gl';
+import { get } from 'lodash';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
-import {
-  PointDataLayerProps,
-  FeatureInfoObject,
-  LabelType,
-} from '../../../../config/types';
+import { PointDataLayerProps } from '../../../../config/types';
 
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
@@ -16,6 +13,7 @@ import {
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
+import { getFeatureInfoPropsData } from '../../utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -47,15 +45,6 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     },
   };
 
-  const defaultProps: FeatureInfoObject = {
-    measure: {
-      type: LabelType.Number,
-      label: layer.title,
-    },
-  };
-
-  const props = layer.featureInfoProps || defaultProps;
-
   return (
     <GeoJSONLayer
       before="boundaries-line"
@@ -63,24 +52,26 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       data={data}
       circleLayout={circleLayout}
       circlePaint={circlePaint}
-      circleOnClick={(evt: any) => {
-        const { properties } = evt.features[0];
-        const featureInfoKeys = Object.keys(props);
-
-        const popupData = Object.keys(properties)
-          .filter(p => featureInfoKeys.includes(p))
-          .reduce(
-            (obj, item) => ({
-              ...obj,
-              [props[item].label]: {
-                data: properties[item],
-                coordinates: evt.lngLat,
-              },
-            }),
-            {},
-          );
-
-        dispatch(addPopupData(popupData));
+      circleOnClick={async (evt: any) => {
+        // by default add `measure` to the tooltip
+        dispatch(
+          addPopupData({
+            [layer.title]: {
+              data: get(
+                evt.features[0],
+                `properties.${layer.measure}`,
+                'No Data',
+              ),
+              coordinates: evt.lngLat,
+            },
+          }),
+        );
+        // then add feature_info_props as extra fields to the tooltip
+        dispatch(
+          addPopupData(
+            getFeatureInfoPropsData(layer.featureInfoProps || {}, evt),
+          ),
+        );
       }}
     />
   );

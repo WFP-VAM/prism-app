@@ -1,6 +1,14 @@
 {
   "country": "Myanmar",
   "alertFormActive": false,
+  "icons": {
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png",
+    "hazards": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "capacity": "icon_capacity.png",
+    "tables": "icon_table.png"
+  },
   "map": {
     "latitude": 19.467,
     "longitude": 96.371,
