@@ -158,6 +158,6 @@ def get_form_responses(begin_datetime, end_datetime):
     sorted_forms = sorted(filtered_forms, key=lambda x: x.get('date'))
 
     # Transform into string.
-    sorted_forms = [{**f, 'date': f.get('date').isoformat()} for f in sorted_forms]
+    sorted_forms = [{**f, 'date': f.get('date').date().isoformat()} for f in sorted_forms]
 
     return sorted_forms

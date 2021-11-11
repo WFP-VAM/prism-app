@@ -148,23 +148,41 @@ function MapView({ classes }: MapViewProps) {
        takes all the dates possible for every layer and counts the amount of times each one is duplicated.
        if a date's duplicate amount is the same as the number of layers active, then this date is compatible with all layers selected.
     */
-    const selectedLayerDatesDupCount = countBy(
-      selectedLayersWithDateSupport
-        .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
-        .filter(value => value) // null check
-        .flat()
-        .map(value => moment(value).format('YYYY-MM-DD')),
+    const selectedLayersDatesList = selectedLayersWithDateSupport.map(
+      layer => ({
+        id: layer.id,
+        type: layer.type,
+        dates: getPossibleDatesForLayer(layer, serverAvailableDates)
+          .filter(value => value)
+          .map(value => moment(value).format('YYYY-MM-DD')),
+      }),
     );
+    const selectedLayerDatesDupCount = countBy(
+      selectedLayersDatesList.map(layer => layer.dates).flat(),
+    );
+
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
      */
-    return Object.keys(
+    const duplicatedDates: string[] = Object.keys(
       pickBy(
         selectedLayerDatesDupCount,
         dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
       ),
-      // convert back to number array after using YYYY-MM-DD strings in countBy
-    ).map(dateString => moment.utc(dateString).set({ hour: 12 }).valueOf());
+    );
+
+    /*
+      Verify that duplicatedDates array is not empty. If yes, pick dates from selected WMS layer.
+    */
+    const selectedDatesString: string[] =
+      duplicatedDates.length === 0
+        ? selectedLayersDatesList.find(layer => layer.type === 'wms')!.dates
+        : duplicatedDates;
+
+    // convert back to number array after using YYYY-MM-DD strings.
+    return selectedDatesString.map(dateString =>
+      moment.utc(dateString).set({ hour: 12 }).valueOf(),
+    );
   }, [selectedLayersWithDateSupport, serverAvailableDates]);
 
   // close popups and show warning notifications
@@ -186,26 +204,29 @@ function MapView({ classes }: MapViewProps) {
     }
     // let users know if their current date doesn't exist in possible dates
     if (selectedDate) {
+      const momentSelectedDate = moment(selectedDate);
+      const selectedDateStr = momentSelectedDate.format('YYYY-MM-DD');
       selectedLayersWithDateSupport.forEach(layer => {
-        const momentSelectedDate = moment(selectedDate);
-
         // we convert to date strings, so hh:ss is irrelevant
         if (
           !getPossibleDatesForLayer(layer, serverAvailableDates)
             .map(date => moment(date).format('YYYY-MM-DD'))
             .includes(momentSelectedDate.format('YYYY-MM-DD'))
         ) {
+          const message = `No data was found for the layer '${layer.title}' on ${selectedDateStr}`;
+          if (layer.type !== 'wms') {
+            dispatch(addNotification({ message, type: 'warning' }));
+
+            return;
+          }
+
           const closestDate = findClosestDate(selectedDate, selectedLayerDates);
 
           dispatch(updateDateRange({ startDate: closestDate.valueOf() }));
 
           dispatch(
             addNotification({
-              message: `No data was found for the layer '${
-                layer.title
-              }' on ${momentSelectedDate.format(
-                'YYYY-MM-DD',
-              )}. The closest date ${closestDate.format(
+              message: `${message}. The closest date ${closestDate.format(
                 'YYYY-MM-DD',
               )} has been loaded instead`,
               type: 'warning',
