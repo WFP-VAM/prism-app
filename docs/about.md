@@ -1,5 +1,7 @@
 # About PRISM
 
+---
+
 ## What is PRISM?
 
 PRISM is a technology solution which simplifies the integration of geospatial data on hazards such as droughts, floods, tropical storms, and earthquakes, along with information on socioeconomic vulnerability. PRISM combines data from these various sources to rapidly present decision makers with actionable information on vulnerable populations exposed to hazards, allowing them to prioritize assistance to those most in need.
