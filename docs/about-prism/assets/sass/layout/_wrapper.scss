@@ -1,36 +1,30 @@
 ///
-/// Dimension by HTML5 UP
+/// Hyperspace by HTML5 UP
 /// html5up.net | @ajlkn
 /// Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 ///
 
-/* Wrapper */
+/* Wrapper (main) */
 
 	#wrapper {
-		@include vendor('display', 'flex');
-		@include vendor('flex-direction', 'column');
-		@include vendor('align-items', 'center');
-		@include vendor('justify-content', 'space-between');
-		position: relative;
-		min-height: 100vh;
-		width: 100%;
-		padding: 4rem 2rem;
-		z-index: 3;
+		#sidebar + & {
+			margin-left: _size(sidebar-width);
 
-		&:before {
-			content: '';
-			display: block;
+			@include breakpoint('<=large') {
+				margin-left: 0;
+				padding-top: _size(sidebar-height);
+			}
+
+			@include breakpoint('<=small') {
+				padding-top: 0;
+			}
 		}
 
-		@include breakpoint('<=xlarge') {
-			padding: 3rem 2rem;
-		}
-
-		@include breakpoint('<=small') {
-			padding: 2rem 1rem;
-		}
-
-		@include breakpoint('<=xsmall') {
-			padding: 1rem;
+		#header + & {
+			> .wrapper {
+				> .inner {
+					margin: 0 auto;
+				}
+			}
 		}
 	}
