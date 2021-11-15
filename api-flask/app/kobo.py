@@ -34,7 +34,10 @@ def get_kobo_params():
     if geom_field is None:
         raise BadRequest('Missing parameter geomField')
 
-    filters = dict([f.split('=') for f in request.args.get('filters').split(',')])
+    filters = {}
+    filters_params = request.args.get('filters', None)
+    if filters_params is not None:
+        filters = dict([f.split('=') for f in filters_params.split(',')])
 
     form_fields = dict(name=form_name,
                        datetime=datetime_field,
@@ -52,7 +55,7 @@ def parse_form_field(value: str, field_type: str):
         return float(value)
     elif field_type == 'integer':
         return int(value)
-    elif field_type == 'datetime':
+    elif field_type in ('datetime', 'date'):
         return dtparser(value).astimezone(timezone.utc)
     elif field_type == 'geopoint':
         lat, lon, _, _ = value.split(' ')
