@@ -135,6 +135,8 @@ function MapView({ classes }: MapViewProps) {
   }, [boundaryLayerData]);
 
   const { urlParams, updateHistory } = useUrlHistory();
+  // let users know if their current date doesn't exist in possible dates
+  const urlDate = urlParams.get('date');
 
   useEffect(() => {
     /*
@@ -146,7 +148,6 @@ function MapView({ classes }: MapViewProps) {
 
     const hazardLayerId = urlParams.get('hazardLayerId');
     const baselineLayerId = urlParams.get('baselineLayerId');
-    const date = urlParams.get('date');
 
     if (
       (!hazardLayerId && !baselineLayerId) ||
@@ -166,7 +167,7 @@ function MapView({ classes }: MapViewProps) {
       if (Object.keys(LayerDefinitions).includes(id)) {
         dispatch(addLayer(LayerDefinitions[id as LayerKey]));
 
-        if (selectedDate && !date) {
+        if (selectedDate && !urlDate) {
           updateHistory('date', moment(selectedDate).format('YYYY-MM-DD'));
         }
       } else {
@@ -180,11 +181,11 @@ function MapView({ classes }: MapViewProps) {
     });
 
     if (
-      date &&
-      moment(date).valueOf() !== selectedDate &&
+      urlDate &&
+      moment(urlDate).valueOf() !== selectedDate &&
       selectedLayersIds.includes(hazardLayerId as LayerKey)
     ) {
-      const dateInt = moment(date).valueOf();
+      const dateInt = moment(urlDate).valueOf();
       if (Number.isNaN(dateInt)) {
         dispatch(
           addNotification({
@@ -200,6 +201,7 @@ function MapView({ classes }: MapViewProps) {
     // Validate hazardLayer.
   }, [
     urlParams,
+    urlDate,
     dispatch,
     selectedLayers,
     serverAvailableDates,
@@ -262,8 +264,6 @@ function MapView({ classes }: MapViewProps) {
         }),
       );
     }
-    // let users know if their current date doesn't exist in possible dates
-    const urlDate = urlParams.get('date');
 
     if (selectedDate && urlDate && moment(urlDate).valueOf() !== selectedDate) {
       selectedLayersWithDateSupport.forEach(layer => {
@@ -302,6 +302,7 @@ function MapView({ classes }: MapViewProps) {
     serverAvailableDates,
     updateHistory,
     urlParams,
+    urlDate,
   ]);
 
   const {
