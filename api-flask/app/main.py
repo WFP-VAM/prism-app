@@ -17,6 +17,8 @@ from flask_caching import Cache
 
 from flask_cors import CORS
 
+from kobo import get_form_responses, parse_datetime_params
+
 import rasterio
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
@@ -141,6 +143,13 @@ def stats():
 #     """Get all alerts in current table."""
 #     results = alert_db.readall()
 #     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
+@app.route('/kobo/forms', methods=['GET'])
+def get_kobo_forms():
+    """Get all form responses."""
+    begin_datetime, end_datetime = parse_datetime_params()
+    form_responses = get_form_responses(begin_datetime, end_datetime)
+
+    return Response(json.dumps(form_responses), mimetype='application/json')
 
 
 @app.route('/alerts/<id>', methods=['GET'])

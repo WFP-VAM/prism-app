@@ -164,6 +164,13 @@ export interface ExposedPopulationDefinition {
   key: string;
 }
 
+interface FeatureInfoProps {
+  type: LabelType;
+  label: string;
+}
+
+export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
+
 export class CommonLayerProps {
   id: LayerKey;
 
@@ -190,6 +197,9 @@ export class CommonLayerProps {
 
   @optional // Display layer extra details from a `markup` file
   contentPath?: string;
+
+  @optional
+  featureInfoProps?: { [key: string]: FeatureInfoProps };
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -206,7 +216,7 @@ export enum LabelType {
   Number = 'number',
 }
 
-interface featureInfoProps {
+interface FeatureInfoProps {
   type: LabelType;
   label: string;
 }
@@ -230,9 +240,6 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   wcsConfig?: RawDataConfiguration;
-
-  @optional
-  featureInfoProps?: { [key: string]: featureInfoProps };
 
   @optional // If included, we infer the layer is a vector layer.
   geometry?: GeometryType;
@@ -317,6 +324,12 @@ export class PointDataLayerProps extends CommonLayerProps {
   fallbackData?: string;
   // URL to fetch all possible dates from
   dateUrl: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
+
+  @optional
+  featureInfoProps?: FeatureInfoObject;
 }
 
 export type RequiredKeys<T> = {

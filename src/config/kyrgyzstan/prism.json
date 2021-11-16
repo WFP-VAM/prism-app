@@ -1,5 +1,13 @@
 {
   "country": "Kyrgyzstan",
+  "icons": {
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png",
+    "hazards": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "capacity": "icon_capacity.png",
+    "tables": "icon_table.png"
+  },
   "alertFormActive": false,
   "map": {
     "latitude": 41.256,
@@ -30,7 +38,8 @@
     },
     "risk": {
       "recurrence_of_hazards":[
-        "recurrence_mudflows"
+        "recurrence_mudflows",
+        "fires_2020"
       ]
     }
   }
