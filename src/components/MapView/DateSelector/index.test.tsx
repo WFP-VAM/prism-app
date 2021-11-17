@@ -5,6 +5,14 @@ import DateSelector from '.';
 
 import { store } from '../../../context/store';
 
+jest.mock('react-router-dom', () => ({
+  useHistory: () => ({
+    replace: jest.fn(),
+    location: {
+      search: '',
+    },
+  }),
+}));
 jest.mock('../../Notifier', () => 'mock-Notifier');
 jest.mock('./TimelineItems', () => 'mock-TimelineItems');
 
