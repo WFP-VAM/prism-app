@@ -6,6 +6,15 @@ import MenuSwitch from '.';
 import { store } from '../../../context/store';
 import { LayerKey, LayersCategoryType } from '../../../config/types';
 
+jest.mock('react-router-dom', () => ({
+  useHistory: () => ({
+    replace: jest.fn(),
+    location: {
+      search: '',
+    },
+  }),
+}));
+
 const props: LayersCategoryType = {
   title: 'Category 1',
   layers: [
