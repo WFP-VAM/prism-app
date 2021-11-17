@@ -81,7 +81,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
     if (!dates || dates.length === 0) {
       setSelectedDate(null);
     } else {
-      setSelectedDate(dates[dates.length - 1]);
+      setSelectedDate(dates[dates.length - 1].startDate);
     }
   }, [availableDates, hazardLayerId]);
 
@@ -274,7 +274,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                       ? availableDates[
                           (LayerDefinitions[hazardLayerId] as WMSLayerProps)
                             .serverLayerName
-                        ]?.map(d => new Date(d)) || []
+                        ]?.map(d => new Date(d.startDate)) || []
                       : []
                   }
                 />

@@ -44,7 +44,8 @@
       "vulnerability_index": [
         "multidimensional_disadvantage_index",
         "inform",
-        "admin_level_test"
+        "admin_level_with_date",
+        "admin_level_with_date_range"
       ],
       "vulnerable_populations": [
         "age_dependency_ratio",

@@ -15,7 +15,10 @@ import { addPopupData } from '../../../../context/tooltipStateSlice';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const selectedDate = useDefaultDate(layer.id);
-  const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
+  const selectedLayerData = selectedDate
+    ? layerDataSelector(layer.id, selectedDate)
+    : layerDataSelector(layer.id);
+  const layerData = useSelector(selectedLayerData) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
@@ -25,7 +28,10 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
 
   useEffect(() => {
     if (!features) {
-      dispatch(loadLayerData({ layer, date: selectedDate }));
+      const loadedLayerData = selectedDate
+        ? loadLayerData({ layer, date: selectedDate })
+        : loadLayerData({ layer });
+      dispatch(loadedLayerData);
     }
   }, [dispatch, features, layer, selectedDate]);
 

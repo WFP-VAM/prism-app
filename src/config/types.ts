@@ -369,7 +369,10 @@ export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
     | PointDataLayerProps['id']
-    | AdminLevelDataLayerProps['id']]: number[];
+    | AdminLevelDataLayerProps['id']]: Array<{
+    startDate: number;
+    endDate: number;
+  }>;
 };
 
 /* eslint-disable camelcase */

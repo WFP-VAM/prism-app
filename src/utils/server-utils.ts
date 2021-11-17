@@ -31,11 +31,12 @@ export type DateCompatibleLayer =
   | ImpactLayerProps
   | PointDataLayerProps
   | AdminLevelDataLayerProps;
+
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
   // eslint-disable-next-line consistent-return
-): number[] => {
+): Array<{ startDate: number; endDate: number }> => {
   // eslint-disable-next-line default-case
   switch (layer.type) {
     case 'wms':
@@ -80,15 +81,38 @@ function formatCapabilitiesInfo(
       ? rawDates.split(',')
       : rawDates;
 
-    const availableDates = dates
-      .filter(date => !isEmpty(date))
-      .map(date =>
-        // adding 12 hours to avoid  errors due to daylight saving
-        moment
-          .utc(get(date, '_text', date).split('T')[0])
+    const formattedDates: LayerDatesRange = dates
+      .map(obj => ({
+        startDate: get(obj, '_text', obj) as string,
+        endDate: get(obj, '_text', obj) as string,
+      }))
+      .reduce(
+        (d: LayerDatesRange, o: { startDate: string; endDate: string }) => {
+          if (
+            !d.some(
+              obj => obj.startDate === o.startDate && obj.endDate === o.endDate,
+            )
+          ) {
+            // eslint-disable-next-line fp/no-mutating-methods
+            d.push(o);
+          }
+          return d;
+        },
+        [],
+      );
+
+    const availableDates = formattedDates.map(item => {
+      return {
+        startDate: moment
+          .utc(item.startDate as string)
           .set({ hour: 12 })
           .valueOf(),
-      );
+        endDate: moment
+          .utc(item.endDate as string)
+          .set({ hour: 12 })
+          .valueOf(),
+      };
+    });
 
     const { [layerId]: oldLayerDates } = acc;
     return {
@@ -231,16 +255,14 @@ type LayerDatesRange = Array<{
 }>;
 
 const adminLevelDataFetchPromises: {
-  [k in AdminLevelDataLayerProps['datePath']]: Promise<LayerDates>;
+  [k in AdminLevelDataLayerProps['datePath']]: Promise<LayerDatesRange>;
 } = {};
 
 async function loadAdminLevelDataDates(layer: AdminLevelDataLayerProps) {
   const { datePath, path, id } = layer;
   const loadAdminLevelDates = async (fetchPath: string) => {
     const data = await (await fetch(fetchPath || '')).json();
-    // change the condition to filter for both start, end dates
-    // to adopt DateRange instead of just date
-    const foo = data.DataList.filter(
+    const dataWithDate: LayerDatesRange = data.DataList.filter(
       (item: { [key: string]: any }) =>
         Object.keys(item).find(s => s.includes('date')) !== undefined,
     )
@@ -262,14 +284,7 @@ async function loadAdminLevelDataDates(layer: AdminLevelDataLayerProps) {
         },
         [],
       );
-
-    console.log('Foo: ', foo);
-
-    const dataWithDate = data.DataList.filter(
-      (item: { [key: string]: any }) => 'date' in item,
-    ).map((obj: { [key: string]: string }) => obj.date);
-
-    return [...new Set(dataWithDate)] as LayerDates;
+    return dataWithDate;
   };
 
   // eslint-disable-next-line fp/no-mutation
@@ -295,14 +310,16 @@ async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
   const possibleDates = data
     // adding 12 hours to avoid  errors due to daylight saving, and convert to number
     .map(item => {
-      return moment
-        .utc((item as unknown) as string)
-        .set({ hour: 12 })
-        .valueOf();
-    })
-    // remove duplicate dates - indexOf returns first index of item
-    .filter((date, index, arr) => {
-      return arr.indexOf(date) === index;
+      return {
+        startDate: moment
+          .utc(item.startDate as string)
+          .set({ hour: 12 })
+          .valueOf(),
+        endDate: moment
+          .utc(item.endDate as string)
+          .set({ hour: 12 })
+          .valueOf(),
+      };
     });
   return possibleDates;
 }
@@ -347,12 +364,39 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     },
   );
 
-  const possibleDates = data
+  const dataWithDate = data
+    .map((obj: { [key: string]: string }) => ({
+      startDate: obj.startdate || obj.date,
+      endDate: obj.enddate || obj.startdate || obj.date,
+    }))
+    .reduce(
+      (dates: LayerDatesRange, o: { startDate: string; endDate: string }) => {
+        if (
+          !dates.some(
+            obj => obj.startDate === o.startDate && obj.endDate === o.endDate,
+          )
+        ) {
+          // eslint-disable-next-line fp/no-mutating-methods
+          dates.push(o);
+        }
+        return dates;
+      },
+      [],
+    );
+
+  const possibleDates = dataWithDate
     // adding 12 hours to avoid  errors due to daylight saving, and convert to number
-    .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
-    // remove duplicate dates - indexOf returns first index of item
-    .filter((date, index, arr) => {
-      return arr.indexOf(date) === index;
+    .map(item => {
+      return {
+        startDate: moment
+          .utc(item.startDate as string)
+          .set({ hour: 12 })
+          .valueOf(),
+        endDate: moment
+          .utc(item.endDate as string)
+          .set({ hour: 12 })
+          .valueOf(),
+      };
     });
   return possibleDates;
 }
@@ -400,7 +444,6 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
       [layer.id]: await getAdminLevelDataCoverage(layer),
     })),
   ]);
-
   return merge({}, ...layerDates);
 }
 

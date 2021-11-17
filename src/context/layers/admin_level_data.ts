@@ -48,7 +48,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
 
   const rawWithDates = (rawJSONs || []).filter(obj => {
     return (
-      moment(obj.date).format('YYYY-MM-DD') ===
+      moment(obj.date || obj.startdate).format('YYYY-MM-DD') ===
       moment(formattedDate).format('YYYY-MM-DD')
     );
   });

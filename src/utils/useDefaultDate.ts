@@ -22,7 +22,7 @@ export function useDefaultDate(
   ];
 
   const defaultDate: number | undefined =
-    possibleDates?.[possibleDates?.length - 1] + USER_DATE_OFFSET;
+    possibleDates?.[possibleDates?.length - 1].startDate + USER_DATE_OFFSET;
 
   // React doesn't allow updating other components within another component
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
