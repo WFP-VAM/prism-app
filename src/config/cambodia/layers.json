@@ -449,8 +449,8 @@
   "disaster_report": {
     "title": "Disaster impact report",
     "type": "point_data",
-    "data": "http://prism-api.ovio.org/kobo/forms",
-    "date_url": "http://prism-api.ovio.org/kobo/forms",
+    "data": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/forms",
     "additional_query_params": {
       "form_name": "PRISM-KHM-Disaster-Report-v1",
       "datetime_field": "disaster_date",
