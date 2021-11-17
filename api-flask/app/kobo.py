@@ -34,16 +34,14 @@ def get_kobo_params():
     if geom_field is None:
         raise BadRequest('Missing parameter geomField')
 
-    measure_field = request.args.get('measureField')
-    if measure_field is None:
-        raise BadRequest('Missing parameter measureField')
-
-    filters = dict([f.split('=') for f in request.args.get('filters').split(',')])
+    filters = {}
+    filters_params = request.args.get('filters', None)
+    if filters_params is not None:
+        filters = dict([f.split('=') for f in filters_params.split(',')])
 
     form_fields = dict(name=form_name,
                        datetime=datetime_field,
                        geom=geom_field,
-                       measure=measure_field,
                        filters=filters)
 
     auth = (kobo_username, kobo_pw)
@@ -51,22 +49,35 @@ def get_kobo_params():
     return auth, form_fields
 
 
+def parse_form_field(value: str, field_type: str):
+    """Parse strings into type according to field_type provided."""
+    if field_type == 'decimal':
+        return float(value)
+    elif field_type == 'integer':
+        return int(value)
+    elif field_type in ('datetime', 'date'):
+        return dtparser(value).astimezone(timezone.utc)
+    elif field_type == 'geopoint':
+        lat, lon, _, _ = value.split(' ')
+        return {'lat': float(lat), 'lon': float(lon)}
+    else:
+        return value
+
+
 def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], labels: List[str]):
     """Transform a Kobo form dictionary into a format that is used by the frontend."""
-    measure_field = form_fields.get('measure')
-
-    form_data = {k: form_dict.get(k) if k != measure_field else int(form_dict.get(k))
-                 for k in labels if k not in (form_fields.get('geom'), form_fields.get('datetime'))}
+    form_data = {k: parse_form_field(form_dict.get(k), v) for k, v in labels.items()
+                 if k not in (form_fields.get('geom'), form_fields.get('datetime'))}
 
     datetime_field = form_fields.get('datetime')
+    datetime_value = parse_form_field(form_dict.get(datetime_field), labels.get(datetime_field))
 
-    datetime_value = dtparser(form_dict.get(datetime_field)).astimezone(timezone.utc)
-
-    lat, lon, _, _ = form_dict.get(form_fields.get('geom')).split(' ')
+    geom_field = form_fields.get('geom')
+    latlon_dict = parse_form_field(form_dict.get(geom_field), labels.get(geom_field))
 
     status = form_dict.get('_validation_status').get('label', None)
 
-    form_data = {**form_data, 'date': datetime_value, 'lat': lat, 'lon': lon, 'status': status}
+    form_data = {**form_data, **latlon_dict, 'date': datetime_value, 'status': status}
 
     return form_data
 
@@ -122,7 +133,9 @@ def get_responses_from_kobo(auth, form_name):
     resp.raise_for_status()
     form_metadata = resp.json()
 
-    form_labels = [f.get('$autoname') for f in form_metadata.get('content').get('survey')]
+    # Get form fields and field type used for parsing.
+    form_labels = {f.get('$autoname'): f.get('type') for f
+                   in form_metadata.get('content').get('survey')}
 
     # Get all form responses using metadata 'data' key
     resp = requests.get(form_metadata.get('data'), auth=auth)
@@ -142,7 +155,6 @@ def get_form_responses(begin_datetime, end_datetime):
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
     filtered_forms = []
-
     for form in forms:
         date_value = form.get('date')
 
@@ -157,7 +169,7 @@ def get_form_responses(begin_datetime, end_datetime):
 
     sorted_forms = sorted(filtered_forms, key=lambda x: x.get('date'))
 
-    # Transform into string.
-    sorted_forms = [{**f, 'date': f.get('date').isoformat()} for f in sorted_forms]
+    # Transform date into string.
+    sorted_forms = [{**f, 'date': f.get('date').date().isoformat()} for f in sorted_forms]
 
     return sorted_forms
