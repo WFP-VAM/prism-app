@@ -10,8 +10,13 @@ import {
 } from 'lodash';
 import { Map } from 'mapbox-gl';
 import { LayerDefinitions } from '../../config/utils';
+import { formatFeatureInfo } from '../../utils/server-utils';
 import { getExtent } from './Layers/raster-utils';
-import { WMSLayerProps, FeatureInfoType } from '../../config/types';
+import {
+  WMSLayerProps,
+  FeatureInfoType,
+  FeatureInfoObject,
+} from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
 
@@ -132,3 +137,27 @@ export const downloadToFile = (
   link.setAttribute('download', `${filename}.${fileType}`);
   link.click();
 };
+
+export function getFeatureInfoPropsData(
+  featureInfoProps: FeatureInfoObject,
+  event: any,
+) {
+  const keys = Object.keys(featureInfoProps);
+  const { properties } = event.features[0];
+  const coordinates = event.lngLat;
+
+  return Object.keys(properties)
+    .filter(prop => keys.includes(prop))
+    .reduce((obj, item) => {
+      return {
+        ...obj,
+        [featureInfoProps[item].label]: {
+          data: formatFeatureInfo(
+            properties[item],
+            featureInfoProps[item].type,
+          ),
+          coordinates,
+        },
+      };
+    }, {});
+}

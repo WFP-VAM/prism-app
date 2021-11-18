@@ -12,6 +12,7 @@ import {
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
+import { getFeatureInfoPropsData } from '../../utils';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const selectedDate = useDefaultDate(layer.id);
@@ -55,7 +56,8 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       id={`layer-${layer.id}`}
       data={features}
       fillPaint={fillPaintData}
-      fillOnClick={(evt: any) => {
+      fillOnClick={async (evt: any) => {
+        // by default add `data_field` to the tooltip
         dispatch(
           addPopupData({
             [layer.title]: {
@@ -63,6 +65,12 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
               coordinates: evt.lngLat,
             },
           }),
+        );
+        // then add feature_info_props as extra fields to the tooltip
+        dispatch(
+          addPopupData(
+            getFeatureInfoPropsData(layer.featureInfoProps || {}, evt),
+          ),
         );
       }}
     />
