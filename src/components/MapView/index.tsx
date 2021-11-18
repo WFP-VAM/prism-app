@@ -208,14 +208,14 @@ function MapView({ classes }: MapViewProps) {
           selectedLayerDates.length !== 0
         ) {
           const selectedDateStr = momentSelectedDate.format('YYYY-MM-DD');
-          const closestDate = findClosestDate(selectedDate, selectedLayerDates);
-          // dispatch(updateDateRange({ startDate: closestDate.valueOf() }));
           const message = `No data was found for the layer '${layer.title}' on ${selectedDateStr}`;
           if (layer.type !== 'wms') {
             dispatch(addNotification({ message, type: 'warning' }));
-
             return;
           }
+
+          const closestDate = findClosestDate(selectedDate, selectedLayerDates);
+          dispatch(updateDateRange({ startDate: closestDate.valueOf() }));
 
           dispatch(
             addNotification({
