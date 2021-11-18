@@ -87,12 +87,8 @@ def test_kobo_response_form(kobo_params, kobo_data):
         }
     ]
 
-<<<<<<< HEAD
-    kobo_data.return_value = (kobo_data_json, ['value', 'geom', 'username'])
-=======
     labels = {'value': 'integer', 'geom': 'geopoint', 'username': 'username', 'date': 'datetime'}
     kobo_data.return_value = (kobo_data_json, labels)
->>>>>>> ddabd0b2bbe86fec6f1a45adbd146f2dbcd191cb
 
     begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
     end = datetime(2030, 1, 1).replace(tzinfo=timezone.utc)
