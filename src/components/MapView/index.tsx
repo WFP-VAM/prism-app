@@ -43,7 +43,7 @@ import { Extent } from './Layers/raster-utils';
 import { getBoundaryLayerSingleton } from '../../config/utils';
 
 import DateSelector from './DateSelector';
-import { findClosestDate } from './DateSelector/utils';
+import { findClosestDate, getDaysRange } from './DateSelector/utils';
 import {
   dateRangeSelector,
   isLoading,
@@ -110,7 +110,7 @@ function MapView({ classes }: MapViewProps) {
 
   const selectedDateRef = useRef<DatePicker>(null);
 
-  const { startDate: selectedDate, endDate } = useSelector(dateRangeSelector);
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
@@ -151,10 +151,14 @@ function MapView({ classes }: MapViewProps) {
     */
     const selectedLayerDatesDupCount = countBy(
       selectedLayersWithDateSupport
-        .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
+        .map(layer => {
+          return getPossibleDatesForLayer(layer, serverAvailableDates);
+        })
         .filter(value => value) // null check
         .flat()
-        .map(value => moment(value.startDate).format('YYYY-MM-DD')),
+        .map(val => getDaysRange(val.startDate, val.endDate)) // convert range to dates
+        .flat()
+        .map(value => moment(value).format('YYYY-MM-DD')),
     );
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
@@ -174,17 +178,18 @@ function MapView({ classes }: MapViewProps) {
     dispatch(hidePopup());
 
     // let users know if the layers selected are not possible to view together.
-    // if (
-    //   selectedLayerDates.length === 0 &&
-    //   selectedLayersWithDateSupport.length !== 0
-    // ) {
-    //   dispatch(
-    //     addNotification({
-    //       message: 'No dates overlap with the selected layers.',
-    //       type: 'warning',
-    //     }),
-    //   );
-    // }
+    if (
+      selectedDate &&
+      selectedLayerDates.length === 0 &&
+      selectedLayersWithDateSupport.length !== 0
+    ) {
+      dispatch(
+        addNotification({
+          message: 'No dates overlap with the selected layers.',
+          type: 'warning',
+        }),
+      );
+    }
 
     // let users know if their current date doesn't exist in possible dates
     if (selectedDate) {
@@ -199,11 +204,18 @@ function MapView({ classes }: MapViewProps) {
           possibleDates &&
           !possibleDates
             .map(range => moment(range.startDate).format('YYYY-MM-DD'))
-            .includes(momentSelectedDate.format('YYYY-MM-DD'))
+            .includes(momentSelectedDate.format('YYYY-MM-DD')) &&
+          selectedLayerDates.length !== 0
         ) {
+          const selectedDateStr = momentSelectedDate.format('YYYY-MM-DD');
           const closestDate = findClosestDate(selectedDate, selectedLayerDates);
+          // dispatch(updateDateRange({ startDate: closestDate.valueOf() }));
+          const message = `No data was found for the layer '${layer.title}' on ${selectedDateStr}`;
+          if (layer.type !== 'wms') {
+            dispatch(addNotification({ message, type: 'warning' }));
 
-          dispatch(updateDateRange({ startDate: closestDate.valueOf() }));
+            return;
+          }
 
           dispatch(
             addNotification({
@@ -218,30 +230,6 @@ function MapView({ classes }: MapViewProps) {
             }),
           );
         }
-
-        // we convert to date strings, so hh:ss is irrelevant
-        // if (
-        //   !getPossibleDatesForLayer(layer, serverAvailableDates)
-        //     .map(date => moment(date.startDate).format('YYYY-MM-DD'))
-        //     .includes(momentSelectedDate.format('YYYY-MM-DD'))
-        // ) {
-        //   const closestDate = findClosestDate(selectedDate, selectedLayerDates);
-
-        //   dispatch(updateDateRange({ startDate: closestDate.valueOf() }));
-
-        //   dispatch(
-        //     addNotification({
-        //       message: `No data was found for the layer '${
-        //         layer.title
-        //       }' on ${momentSelectedDate.format(
-        //         'YYYY-MM-DD',
-        //       )}. The closest date ${closestDate.format(
-        //         'YYYY-MM-DD',
-        //       )} has been loaded instead`,
-        //       type: 'warning',
-        //     }),
-        //   );
-        // }
       });
     }
   }, [

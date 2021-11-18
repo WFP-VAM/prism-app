@@ -17,9 +17,11 @@ export const mapSelector = (state: RootState): MapBoxMap | undefined =>
 export const layerDataSelector = (id: LayerKey, date?: number) => (
   state: RootState,
 ): LayerDataTypes | undefined =>
-  state.mapState.layersData.find(
-    ({ layer, date: dataDate }) =>
-      layer.id === id && (!date || date === dataDate),
-  );
+  state.mapState.layersData.find(({ layer, date: dataDate }) => {
+    if (!date || !dataDate) {
+      return layer.id === id;
+    }
+    return layer.id === id && date === dataDate;
+  });
 export const isLoading = (state: RootState): boolean =>
   state.mapState.loading > 0;

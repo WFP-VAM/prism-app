@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { get, isEmpty, isString, merge, union, snakeCase } from 'lodash';
+import { get, isString, merge, union, snakeCase } from 'lodash';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {

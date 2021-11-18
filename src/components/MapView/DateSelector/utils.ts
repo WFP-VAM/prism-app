@@ -143,3 +143,20 @@ export function findDateIndex(
   }
   return -1;
 }
+
+export function getDaysRange(startDate: number, endDate: number) {
+  const diff = moment(endDate).diff(moment(startDate), 'days');
+  if (diff === 0) {
+    return [moment.utc(moment(startDate)).set({ hour: 12 }).valueOf()];
+  }
+  return Array.from({ length: diff }, (_, i) => i).reduce(
+    (acc: number[], val: number) => [
+      ...acc,
+      moment
+        .utc(moment(startDate).add(val, 'days'))
+        .set({ hour: 12 })
+        .valueOf(),
+    ],
+    [],
+  );
+}
