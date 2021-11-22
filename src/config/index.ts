@@ -42,19 +42,6 @@ import {
   tajikistanRawTables,
 } from './tajikistan';
 
-type Country =
-  | 'cambodia'
-  | 'global'
-  | 'indonesia'
-  | 'kyrgyzstan'
-  | 'mongolia'
-  | 'mozambique'
-  | 'myanmar'
-  | 'rbd'
-  | 'tajikistan';
-
-const DEFAULT: Country = 'myanmar';
-
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
@@ -116,10 +103,13 @@ const configMap = {
   },
 } as const;
 
+type Country = keyof typeof configMap;
+
+const DEFAULT: Country = 'mozambique';
+
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
-const safeCountry = (COUNTRY && has(configMap, COUNTRY)
-  ? COUNTRY
-  : DEFAULT) as Country;
+const safeCountry =
+  COUNTRY && has(configMap, COUNTRY) ? (COUNTRY as Country) : DEFAULT;
 
 const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
   safeCountry
