@@ -102,7 +102,6 @@ const theme: any = createMuiTheme({
         backgroundColor: 'white',
       },
     },
-    MuiSelect: {},
   },
 });
 

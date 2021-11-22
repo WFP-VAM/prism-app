@@ -4,6 +4,7 @@ import {
   ListSubheader,
   MenuItem,
   Select,
+  styled,
   Typography,
 } from '@material-ui/core';
 import React, { ReactElement, useEffect } from 'react';
@@ -19,6 +20,13 @@ import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
 import { LayerData } from '../../../context/layers/layer-data';
 
 const boundaryLayer = getBoundaryLayerSingleton();
+const ClickableListSubheader = styled(ListSubheader)({
+  pointerEvents: 'inherit',
+  cursor: 'pointer',
+  '&:hover': {
+    backgroundColor: '#f5f5f5',
+  },
+});
 
 /**
  * This component allows you to give the user the ability to select several admin_boundary cells.
@@ -28,14 +36,13 @@ const boundaryLayer = getBoundaryLayerSingleton();
 function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
   const dispatch = useDispatch();
   const selectedBoundaries = useSelector(getSelectedBoundaries);
-
   // toggle the selection mode as this component is created and destroyed.
   useEffect(() => {
     dispatch(setIsSelectionMode(true));
     return () => {
       dispatch(setIsSelectionMode(false));
     };
-  });
+  }, [dispatch]);
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -43,7 +50,6 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
   if (!data) {
     return <CircularProgress />;
   }
-  console.log(data);
   const categories: Array<{
     title: string;
     children: { value: string; label: string }[];
@@ -81,6 +87,14 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
         defaultValue={[defaultValue]}
         // TODO value
         onChange={e => {
+          // do nothing if value is invalid
+          // This happens when you click list subheadings.
+          if (
+            !Array.isArray(e.target.value) ||
+            e.target.value.includes(undefined)
+          ) {
+            return;
+          }
           dispatch(
             setSelectedBoundaries(
               Array.isArray(e.target.value) ? e.target.value : [],
@@ -92,11 +106,35 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
           (components, category) => [
             ...components,
-            <ListSubheader key={category.title}>
+            <ClickableListSubheader
+              key={category.title}
+              style={{
+                // Override the default list subheader style to make it clickable
+                pointerEvents: 'inherit',
+                cursor: 'pointer',
+              }}
+              onClick={e => {
+                e.preventDefault();
+                // if at least one is selected, deselect all. Otherwise select all
+                const categoryValues = category.children.map(c => c.value);
+                const selectedChildren =
+                  selectedBoundaries.filter(val => categoryValues.includes(val))
+                    .length > 0;
+                dispatch(
+                  setSelectedBoundaries(
+                    selectedChildren
+                      ? selectedBoundaries.filter(
+                          val => !categoryValues.includes(val),
+                        )
+                      : [...selectedBoundaries, ...categoryValues],
+                  ),
+                );
+              }}
+            >
               <Typography variant="body2" color="primary">
                 {category.title}
               </Typography>
-            </ListSubheader>,
+            </ClickableListSubheader>,
             ...category.children.map(({ label, value }) => (
               <MenuItem key={value} value={value}>
                 {label}
