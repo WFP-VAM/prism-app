@@ -13,7 +13,7 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { countBy, pickBy } from 'lodash';
+import { countBy, get, pickBy } from 'lodash';
 import moment from 'moment';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
@@ -148,6 +148,17 @@ function MapView({ classes }: MapViewProps) {
 
     const hazardLayerId = urlParams.get('hazardLayerId');
     const baselineLayerId = urlParams.get('baselineLayerId');
+
+    /*
+      In case we don't have hazard or baseline layers we will use the default
+      layer provided in the appConfig defined within `prism.json` file.
+     */
+    if (!hazardLayerId && !baselineLayerId) {
+      const defaultLayer = get(appConfig, 'defaultLayer', '');
+      if (defaultLayer.length !== 0) {
+        updateHistory('baselineLayerId', defaultLayer);
+      }
+    }
 
     if (
       (!hazardLayerId && !baselineLayerId) ||
