@@ -385,7 +385,7 @@ function MapView({ classes }: MapViewProps) {
       >
         <Grid item>
           <Analyser extent={adminBoundariesExtent} />
-          {appConfig.alertFormActive === true ? <AlertForm /> : null}
+          {appConfig.alertFormActive ? <AlertForm /> : null}
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
