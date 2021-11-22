@@ -7,6 +7,10 @@ import { showPopup } from '../../../../context/tooltipStateSlice';
 import { BoundaryLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import {
+  toggleSelectedBoundary,
+  getIsSelectionMode,
+} from '../../../../context/mapSelectionLayerStateSlice';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -15,6 +19,7 @@ function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
 
 function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   const dispatch = useDispatch();
+  const isSelectionMode = useSelector(getIsSelectionMode);
   const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -30,6 +35,9 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       .map(level => get(evt.features[0], ['properties', level], '') as string)
       .join(', ');
     dispatch(showPopup({ coordinates, locationName }));
+    dispatch(
+      toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),
+    );
   };
 
   return (

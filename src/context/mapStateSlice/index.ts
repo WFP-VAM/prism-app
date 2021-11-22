@@ -6,7 +6,8 @@ import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 
 interface DateRange {
   startDate?: number;
-  endDate?: number; // TODO this field is updated, but doesn't seem to be used yet
+  // TODO this field is updated, but doesn't seem to be used yet
+  endDate?: number;
 }
 
 export type MapState = {
@@ -15,6 +16,7 @@ export type MapState = {
   mapboxMap: MapGetter;
   loading: number;
   errors: string[];
+  // TODO this shouldn't be any
   layersData: LayerData<any>[];
 };
 

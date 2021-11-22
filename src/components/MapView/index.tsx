@@ -25,26 +25,26 @@ import Legends from './Legends';
 import Download from './Download';
 // layers
 import {
+  AdminLevelDataLayer,
   BoundaryLayer,
   ImpactLayer,
-  AdminLevelDataLayer,
   PointDataLayer,
   WMSLayer,
 } from './Layers';
 
 import {
-  DiscriminateUnion,
-  LayerType,
-  LayerKey,
   BoundaryLayerProps,
+  DiscriminateUnion,
+  LayerKey,
+  LayerType,
 } from '../../config/types';
 
 import { Extent } from './Layers/raster-utils';
 import { useUrlHistory } from '../../utils/url-utils';
 
 import {
-  getBoundaryLayerSingleton,
   getBoundaryLayers,
+  getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../config/utils';
 
@@ -53,13 +53,13 @@ import { findClosestDate } from './DateSelector/utils';
 import {
   dateRangeSelector,
   isLoading,
-  layersSelector,
   layerDataSelector,
+  layersSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
 import {
-  hidePopup,
   addPopupData,
+  hidePopup,
   setWMSGetFeatureInfoLoading,
 } from '../../context/tooltipStateSlice';
 import {
@@ -69,7 +69,7 @@ import {
 } from '../../context/serverStateSlice';
 
 import { appConfig } from '../../config';
-import { loadLayerData, LayerData } from '../../context/layers/layer-data';
+import { LayerData, loadLayerData } from '../../context/layers/layer-data';
 import Analyser from './Analyser';
 import AnalysisLayer from './Layers/AnalysisLayer';
 import {
@@ -80,6 +80,7 @@ import {
 import { addNotification } from '../../context/notificationStateSlice';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 import AlertForm from './AlertForm';
+import SelectionLayer from './Layers/SelectionLayer';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -374,8 +375,9 @@ function MapView({ classes }: MapViewProps) {
             });
           })}
         </>
+        {/* These are custom layers which provide functionality and are not really controllable via JSON */}
         <AnalysisLayer />
-
+        <SelectionLayer />
         <MapTooltip />
       </MapboxMap>
       <Grid

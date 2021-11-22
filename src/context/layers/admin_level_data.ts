@@ -36,7 +36,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
     throw new Error('Boundary Layer not loaded!');
   }
   const adminBoundaries = adminBoundariesLayer.data;
-
+  // TODO avoid any use, the json should be typed. See issue #307
   const { DataList: rawJSONs }: { DataList: { [key: string]: any }[] } = await (
     await fetch(path, { mode: path.includes('http') ? 'cors' : 'same-origin' })
   ).json();

@@ -3,7 +3,6 @@ import {
   configureStore,
   getDefaultMiddleware,
 } from '@reduxjs/toolkit';
-
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
 import tableStateReduce from './tableStateSlice';
@@ -11,26 +10,27 @@ import tooltipStateReduce from './tooltipStateSlice';
 import notificationStateReduce, {
   errorToNotificationMiddleware,
 } from './notificationStateSlice';
-import analysisResultStateSlice from './analysisResultStateSlice';
+import analysisResultStateReduce from './analysisResultStateSlice';
+import mapSelectionLayerStateReduce from './mapSelectionLayerStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
   serverState: serverStateReduce,
   tableState: tableStateReduce,
   tooltipState: tooltipStateReduce,
-  analysisResultState: analysisResultStateSlice,
+  analysisResultState: analysisResultStateReduce,
   notificationState: notificationStateReduce,
+  mapSelectionLayerStateSlice: mapSelectionLayerStateReduce,
 });
 
 export const store = configureStore({
   reducer,
-  // TODO: Instead of snoozing this check, we might want to
-  // serialize the state
   middleware: getDefaultMiddleware({
+    // TODO: Instead of snoozing this check, we might want to
+    // serialize the state
     serializableCheck: false,
-    immutableCheck: {
-      ignoredPaths: ['mapState.layersData', 'analysisResultState.result'],
-    },
+    // TODO this is incredibly slow in development
+    immutableCheck: false,
   }).concat(errorToNotificationMiddleware),
 });
 
