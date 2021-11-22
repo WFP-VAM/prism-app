@@ -3,60 +3,34 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="Analyser-analyser-1"
+    class="MuiGrid-root Analyser-analyser-1 MuiGrid-item"
   >
     <mock-button
       color="primary"
       variant="contained"
     >
-      <svg
-        aria-hidden="true"
-        class="svg-inline--fa fa-chart-bar fa-w-16 "
-        data-icon="chart-bar"
-        data-prefix="fas"
-        focusable="false"
-        role="img"
-        style="font-size: 1em;"
-        viewBox="0 0 512 512"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M332.8 320h38.4c6.4 0 12.8-6.4 12.8-12.8V172.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v134.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h38.4c6.4 0 12.8-6.4 12.8-12.8V76.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v230.4c0 6.4 6.4 12.8 12.8 12.8zm-288 0h38.4c6.4 0 12.8-6.4 12.8-12.8v-70.4c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v70.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h38.4c6.4 0 12.8-6.4 12.8-12.8V108.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v198.4c0 6.4 6.4 12.8 12.8 12.8zM496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16z"
-          fill="currentColor"
-        />
-      </svg>
+      <mock-barchart
+        fontsize="small"
+      />
       <mock-typography
-        classname="Analyser-label-5"
+        classname="Analyser-analyserLabel-2"
         variant="body2"
       >
         Run Analysis
       </mock-typography>
-      <svg
-        aria-hidden="true"
-        class="svg-inline--fa fa-caret-down fa-w-10 "
-        data-icon="caret-down"
-        data-prefix="fas"
-        focusable="false"
-        role="img"
-        style="margin-left: 10px;"
-        viewBox="0 0 320 512"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-          fill="currentColor"
-        />
-      </svg>
+      <mock-arrowdropdown
+        fontsize="small"
+      />
     </mock-button>
     <div
-      class="MuiBox-root MuiBox-root-13 Analyser-analyserMenu-2"
+      class="MuiBox-root MuiBox-root-13 Analyser-analyserMenu-3"
     >
       <div>
         <div
           class="Analyser-newAnalyserContainer-6"
         >
           <div
-            class="Analyser-analyserOptions-4"
+            class="Analyser-analyserOptions-5"
           >
             <mock-typography
               variant="body2"
@@ -71,7 +45,7 @@ exports[`renders as expected 1`] = `
             />
           </div>
           <div
-            class="Analyser-analyserOptions-4"
+            class="Analyser-analyserOptions-5"
           >
             <mock-typography
               variant="body2"
@@ -194,7 +168,7 @@ exports[`renders as expected 1`] = `
             </div>
           </div>
           <div
-            class="Analyser-analyserOptions-4"
+            class="Analyser-analyserOptions-5"
           >
             <mock-typography
               variant="body2"
@@ -205,11 +179,11 @@ exports[`renders as expected 1`] = `
               classname="Analyser-selector-10"
               placeholder="Choose baseline layer"
               title="Baseline Layer"
-              type="nso"
+              type="admin_level_data"
             />
           </div>
           <div
-            class="Analyser-analyserOptions-4"
+            class="Analyser-analyserOptions-5"
           >
             <mock-typography
               variant="body2"
@@ -220,7 +194,7 @@ exports[`renders as expected 1`] = `
               classname="Analyser-numberField-11"
               error="false"
               id="filled-number"
-              label="Min"
+              label="Below"
               type="number"
               value=""
               variant="filled"
@@ -228,14 +202,14 @@ exports[`renders as expected 1`] = `
             <mock-textfield
               classname="Analyser-numberField-11"
               id="filled-number"
-              label="Max"
+              label="Above"
               type="number"
               value=""
               variant="filled"
             />
           </div>
           <div
-            class="Analyser-analyserOptions-4"
+            class="Analyser-analyserOptions-5"
           >
             <mock-typography
               variant="body2"

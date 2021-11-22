@@ -21,7 +21,33 @@ exports[`renders as expected 1`] = `
       <div
         class="MuiGrid-root MuiGrid-item"
       >
-        <mock-analyser />
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
+        >
+          <mock-analyser />
+          <div
+            class="MuiGrid-root MuiGrid-item"
+          >
+            <mock-button
+              color="primary"
+              variant="contained"
+            >
+              <mock-visibility
+                fontsize="small"
+              />
+              <mock-hidden
+                smdown="true"
+              >
+                <mock-typography
+                  classname="InfoBox-label-4"
+                  variant="body2"
+                >
+                  Info
+                </mock-typography>
+              </mock-hidden>
+            </mock-button>
+          </div>
+        </div>
       </div>
       <div
         class="MuiGrid-root MuiGrid-item"

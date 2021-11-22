@@ -1,0 +1,82 @@
+{
+  "country": "Indonesia",
+  "icons": {
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png",
+    "hazards": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "capacity": "icon_capacity.png",
+    "tables": "icon_table.png"
+  },
+  "alertFormActive": false,
+  "serversUrls": {
+    "wcs": [ ],
+    "wms": [
+      "http://3.134.83.146:8080/geoserver/prism/wms"
+    ]
+  },
+  "map": {
+    "latitude": -4.0682689,
+    "longitude": 118.7372352,
+    "zoom": 4.3
+  },
+  "categories": {
+    "hazards": {
+      "extreme_rainfall_monitoring": [
+        "rainfall_extreme_probability",
+        "rainfall_extreme_flood"
+      ],
+      "extreme_rainfall_forecast": [
+        "rainfall_extreme_forecast_probability",
+        "rainfall_extreme_forecast_flood"
+      ],
+      "Climate Indicator": [
+        "rainfall_anomaly",
+        "spi"
+      ],
+      "Drought Indicator": [
+        "ModisVHI",
+        "dslr"
+      ],
+      "Vegetation Indicator": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
+    },
+    "exposure": {
+      "demographics": [
+        "pop2020",
+        "HH_AGRI",
+        "HH_FE65"
+      ],
+      "ricefield": [
+        "paddy_areas"
+      ],
+      "DTKS 2015": [
+        "desil_10%",
+        "krtw_60",
+        "disability"
+      ]
+    },
+    "vulnerability": {
+      "vulnerable_groups": [
+        "population_below_poverty",
+        "pou",
+        "OP_UNEMPLOY",
+        "FSVA_2020"
+      ]
+    },
+    "risk": {
+      "impact_analysis": [
+        "dslr_pop",
+        "dslr_crops"
+      ]
+    },
+    "capacity": {
+      "livestock_and_crop_preparedness": [
+        "HH_ELEC_2019",
+        "HH_FOODASS"
+      ]
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
@@ -6,6 +7,7 @@ import * as MapboxGL from 'mapbox-gl';
 import {
   showPopup,
   fetchPopupData,
+  clearRemotePopupData,
 } from '../../../../context/tooltipStateSlice';
 import { BoundaryLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
@@ -33,7 +35,7 @@ const getLinePaintOptions: (
 ) => MapboxGL.LinePaint = layer => {
   return {
     'line-color': 'grey',
-    'line-width': 0.1,
+    'line-width': 1,
     'line-opacity': layer.opacity,
   };
 };
@@ -43,15 +45,16 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
-  const { data } = boundaryLayer || {};
   const layers = useSelector(layersSelector);
   const { startDate } = useSelector(dateRangeSelector);
-  // use last layer as reference for popup content
-  const layerProps = layers[layers.length - 1];
-  const layerData = useSelector(layerDataSelector(layerProps.id));
+  const { data } = boundaryLayer || {};
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
   }
+  // use last layer as reference for popup content
+  // start with index 1 because index 0 is boundary layer itself
+  // FIXME: idn mosa specific
+  const lastLayer = layers[0];
   return (
     <GeoJSONLayer
       id="boundaries"
@@ -60,26 +63,34 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       linePaint={getLinePaintOptions(layer)}
       fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
       fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
-      fillOnClick={async (evt: any) => {
+      fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;
-        const locationName = layer.adminLevelNames
-          .map(
-            level => get(evt.features[0], ['properties', level], '') as string,
-          )
-          .join(', ');
+        const locationNames = layer.adminLevelNames.map(
+          level => get(evt.features[0], ['properties', level], '') as string,
+        );
         const params = {
           coordinates,
-          locationName,
-          popupUrl: layerData!.layer.popupUrl,
+          locationName: locationNames.join(', '),
+          popupUrl: lastLayer ? lastLayer.popupUrl : undefined,
         };
         const featureProperties = evt.features[0].properties;
         const areacode = featureProperties[layer.adminCode];
+        dispatch(clearRemotePopupData());
         if (params.popupUrl) {
-          const url = new URL(params.popupUrl);
+          const { href } = window.location;
+          const url = new URL(
+            params.popupUrl.startsWith('http')
+              ? params.popupUrl
+              : `${href}${params.popupUrl}`,
+          );
           url.searchParams.set('lon', coordinates.lng.toString());
           url.searchParams.set('lat', coordinates.lat.toString());
+          url.searchParams.set('location', JSON.stringify(locationNames));
           url.searchParams.set('areacode', areacode);
-          url.searchParams.set('date', startDate ? startDate.toString() : '');
+          url.searchParams.set(
+            'date',
+            startDate ? moment(startDate).format('YYYY-MM-DD') : '',
+          );
           dispatch(fetchPopupData(url.toString()));
         }
         dispatch(showPopup(params));

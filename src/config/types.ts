@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import rawLayers from './layers.json';
+import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
@@ -11,7 +11,7 @@ const optionalMetadataKey = Symbol('optional_property');
 export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
-  | NSOLayerProps
+  | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps;
 
@@ -117,27 +117,67 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
-export type LegendDefinition = {
+export type LegendDefinitionItem = {
   value: string | number;
   color: string;
-}[];
+};
+
+export type LegendDefinition = LegendDefinitionItem[];
+
+export type GroupDefinition = {
+  name: string;
+  // Main layer of a group of layers. Secondary layers will not trigger notifications.
+  main: boolean;
+};
+
+export enum WcsGetCoverageVersion {
+  oneZeroZero = '1.0.0',
+  twoZeroZero = '2.0.0',
+}
+
+export type DownloadDefinition = {
+  label: string;
+  url: string;
+};
 
 export type RawDataConfiguration = {
   scale?: number;
   offset?: number;
   noData?: number;
+
+  // WCS GetCoverage request version.
+  version?: WcsGetCoverageVersion;
+
   // Geotiff pixel resolution, in pixels per degree lat/long
   pixelResolution?: number;
+
+  // Remote layers might not have time dimension enabled.
+  disableDateParam?: boolean;
 };
+
+// Type of vector data that the layer provides
+export enum GeometryType {
+  Point = 'point',
+  LineString = 'linestring',
+  Polygon = 'polygon',
+}
+
+export interface ExposedPopulationDefinition {
+  id: LayerKey;
+
+  // Geojson property key to extract from WFS Response when running exposed population analysis.
+  key: string;
+}
+
+interface FeatureInfoProps {
+  type: LabelType;
+  label: string;
+}
+
+export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
 
 export class CommonLayerProps {
   id: LayerKey;
-
-  @optional
-  downloadUrl?: string;
-
-  @optional
-  popupUrl?: string;
 
   @optional // only optional for boundary layer
   title?: string;
@@ -153,6 +193,24 @@ export class CommonLayerProps {
 
   @optional // only optional for boundary layer
   legendText?: string;
+
+  @optional // only optional for boundary layer
+  group?: GroupDefinition;
+
+  @optional // Perform population exposure analysis using this layer.
+  exposure?: ExposedPopulationDefinition;
+
+  @optional // Display layer extra details from a `markup` file
+  contentPath?: string;
+
+  @optional
+  featureInfoProps?: { [key: string]: FeatureInfoProps };
+
+  @optional
+  downloads?: DownloadDefinition[];
+
+  @optional
+  popupUrl?: string;
 }
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -161,6 +219,17 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminCode: string;
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: string[]; // Same as above, local to country
+}
+
+export enum LabelType {
+  Date = 'date',
+  Text = 'text',
+  Number = 'number',
+}
+
+interface FeatureInfoProps {
+  type: LabelType;
+  label: string;
 }
 
 export class WMSLayerProps extends CommonLayerProps {
@@ -185,14 +254,14 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   wcsConfig?: RawDataConfiguration;
+
+  @optional // If included, we infer the layer is a vector layer.
+  geometry?: GeometryType;
 }
 
-export class NSOLayerProps extends CommonLayerProps {
-  type: 'nso';
-  source: string;
-
-  @optional
-  hasDate?: boolean;
+export class AdminLevelDataLayerProps extends CommonLayerProps {
+  type: 'admin_level_data';
+  path: string;
 
   @optional
   dateUrl?: string;
@@ -215,12 +284,13 @@ export class NSOLayerProps extends CommonLayerProps {
   @makeRequired
   dataField: string;
 }
+
 export class LayerForm {
-  id: string;
+  id: LayerKey;
   inputs: LayerFormInput[];
 }
 export class LayerFormInput {
-  id: string;
+  id: LayerKey;
   label: string;
   value: string;
   values: [
@@ -230,16 +300,16 @@ export class LayerFormInput {
     },
   ];
 }
-
 export class StatsApi {
   url: string;
   zonesUrl: string;
   groupBy: string;
 }
-// first is display name, second is name we store in computers
+
 export enum AggregationOperations {
   Mean = 'mean',
   Median = 'median',
+  Sum = 'sum',
 }
 
 export type ThresholdDefinition = { below?: number; above?: number };
@@ -284,6 +354,14 @@ export class PointDataLayerProps extends CommonLayerProps {
   measure: string;
   @optional
   fallbackData?: string;
+  // URL to fetch all possible dates from
+  dateUrl: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
+
+  @optional
+  featureInfoProps?: FeatureInfoObject;
 }
 
 export type RequiredKeys<T> = {
@@ -313,12 +391,28 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
+export interface MenuItemMobileType {
+  title: string;
+  icon: string;
+  layersCategories: LayersCategoryType[];
+  expanded: string;
+  selectAccordion: (arg: string) => void;
+}
+
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | NSOLayerProps['id']
     | PointDataLayerProps['id']]: number[];
 };
+
+/* eslint-disable camelcase */
+export interface WfsRequestParams {
+  url: string;
+  layer_name: string;
+  time?: string;
+  key: string;
+}
+/* eslint-enable camelcase */
 
 export interface ChartConfig {
   type: string;
@@ -340,9 +434,37 @@ export class TableType {
   chart?: ChartConfig;
 }
 
-export class ShowPopupType {
-  coordinates: GeoJSON.Position;
-  locationName: string;
-  popupUrl?: string;
-  featureProperties?: object;
+// used for timeline items in date selector
+export type DateRangeType = {
+  value: number;
+  label: string;
+  month: string;
+  isFirstDay: boolean;
+};
+
+export interface FeatureInfoType {
+  bbox: number[];
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface RequestFeatureInfo extends FeatureInfoType {
+  service: string;
+  request: string;
+  version: string;
+  exceptions: string;
+  infoFormat: string;
+  layers: string;
+  srs: string;
+  queryLayers: string;
+  featureCount: number;
+  format: string;
+  styles: string;
+}
+
+export enum DownloadFormat {
+  CSV,
+  JSON,
 }

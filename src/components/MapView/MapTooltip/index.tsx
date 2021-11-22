@@ -2,16 +2,18 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Popup } from 'react-mapbox-gl';
 import {
+  CircularProgress,
   createStyles,
   withStyles,
   WithStyles,
-  CircularProgress,
+  LinearProgress,
 } from '@material-ui/core';
 import { tooltipSelector } from '../../../context/tooltipStateSlice';
-import Components from './Components';
+import TooltipComponents from './Components/index';
 
 function MapTooltip({ classes }: TooltipProps) {
   const popup = useSelector(tooltipSelector);
+
   return popup.showing && popup.coordinates ? (
     <Popup
       anchor="bottom"
@@ -19,9 +21,8 @@ function MapTooltip({ classes }: TooltipProps) {
       className={classes.popup}
     >
       <h4>{popup.locationName}</h4>
-      {popup.loading ? <CircularProgress /> : null}
       {popup.remoteData
-        ? popup.remoteData.components.map(Components)
+        ? popup.remoteData.components.map(TooltipComponents)
         : Object.entries(popup.data)
             .filter(([, value]) => value.coordinates === popup.coordinates)
             .map(([key, value]) => (
@@ -29,6 +30,8 @@ function MapTooltip({ classes }: TooltipProps) {
                 {key}: {value.data}
               </h4>
             ))}
+      {popup.remoteDataLoading ? <CircularProgress /> : null}
+      {popup.wmsGetFeatureInfoLoading ? <LinearProgress /> : null}
     </Popup>
   ) : null;
 }
@@ -37,12 +40,7 @@ const styles = () =>
   createStyles({
     popup: {
       '& div.mapboxgl-popup-content': {
-        // background: 'black',
-        // color: 'white',
         padding: '10px 10px 10px',
-      },
-      '& div.mapboxgl-popup-tip': {
-        // 'border-top-color': 'black',
       },
     },
   });

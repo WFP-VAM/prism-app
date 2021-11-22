@@ -1,13 +1,9 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { merge } from 'lodash';
-import { ShowPopupType } from '../config/types';
 import type { RootState } from './store';
 
 export interface PopupData {
-  [key: string]: {
-    data: number;
-    coordinates: GeoJSON.Position;
-  };
+  [key: string]: { data: number | string; coordinates: GeoJSON.Position };
 }
 
 export interface PopupComponentSpec {
@@ -26,15 +22,22 @@ export interface MapTooltipState {
   data: PopupData;
   remoteData: PopupRemoteData | null;
   showing: boolean;
-  loading: boolean;
+  wmsGetFeatureInfoLoading: boolean;
+  remoteDataLoading: boolean;
 }
+
+type ShowPopupType = {
+  coordinates: GeoJSON.Position;
+  locationName: string;
+};
 
 const initialState: MapTooltipState = {
   locationName: '',
   data: {},
   remoteData: null,
   showing: false,
-  loading: false,
+  wmsGetFeatureInfoLoading: false,
+  remoteDataLoading: false,
 };
 
 export const fetchPopupData = createAsyncThunk(
@@ -65,6 +68,11 @@ export const tooltipStateSlice = createSlice({
       data: payload,
     }),
 
+    clearRemotePopupData: state => ({
+      ...state,
+      remoteData: null,
+    }),
+
     setPopupShowing: (state, { payload }: PayloadAction<boolean>) => ({
       ...state,
       showing: payload,
@@ -81,7 +89,6 @@ export const tooltipStateSlice = createSlice({
       showing: true,
       locationName: payload.locationName,
       coordinates: payload.coordinates,
-      popupUrl: payload.popupUrl,
     }),
 
     setPopupCoordinates: (
@@ -91,24 +98,32 @@ export const tooltipStateSlice = createSlice({
       ...state,
       coordinates: payload,
     }),
+
+    setWMSGetFeatureInfoLoading: (
+      state,
+      { payload }: PayloadAction<boolean>,
+    ) => ({
+      ...state,
+      wmsGetFeatureInfoLoading: payload,
+    }),
   },
   extraReducers: builder => {
     builder.addCase(fetchPopupData.fulfilled, (state, { payload }) => ({
       ...state,
-      loading: false,
       remoteData: payload,
+      remoteDataLoading: false,
     }));
 
     builder.addCase(fetchPopupData.pending, state => ({
       ...state,
       remoteData: null,
-      loading: true,
+      remoteDataLoading: true,
     }));
 
     builder.addCase(fetchPopupData.rejected, state => ({
       ...state,
       remoteData: null,
-      loading: false,
+      remoteDataLoading: false,
     }));
   },
 });
@@ -124,10 +139,12 @@ export const tooltipShowingSelector = (
 export const {
   addPopupData,
   setPopupData,
+  clearRemotePopupData,
   setPopupShowing,
   hidePopup,
   showPopup,
   setPopupCoordinates,
+  setWMSGetFeatureInfoLoading,
 } = tooltipStateSlice.actions;
 
 export default tooltipStateSlice.reducer;

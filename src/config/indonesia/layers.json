@@ -1,0 +1,1111 @@
+{
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "../data/indonesia/admin_idn.json",
+    "popup_url": "http://prism-dev.wfp.or.id:3002/p/socio_economic/popup",
+    "opacity": 0.8,
+    "admin_code": "A2TEXT",
+    "admin_level_names": [
+      "A2NAME",
+      "A1NAME"
+    ],
+    "admin_level_local_names": [
+      "A2NAME",
+      "A1NAME"
+    ]
+  },
+  "rainfall_extreme_probability": {
+    "title": "Extreme Rainfall last 5-days",
+    "type": "wms",
+    "server_layer_name": "rainfall_extreme_probability",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "downloads": [
+      {
+        "label": "CSV",
+        "url": "http://3.134.83.146:3002/download/rainfall_extreme?type=daily&numday=1"
+      }
+    ],
+    "form_inputs": [
+      {
+        "id": "DIM_NUMDAYSOURCE",
+        "label": "Number of days",
+        "value": "5days",
+        "values": [
+          {
+            "value": "1days",
+            "label": "1 Day"
+          },
+          {
+            "value": "2days",
+            "label": "2 Days"
+          },
+          {
+            "value": "3days",
+            "label": "3 Days"
+          },
+          {
+            "value": "4days",
+            "label": "4 Days"
+          },
+          {
+            "value": "5days",
+            "label": "5 Days"
+          }
+        ]
+      }
+    ],
+    "date_interval": "day",
+    "opacity": 0.9,
+    "legend_text": "Extreme Rainfall last 5-days",
+    "legend": [
+      {
+        "value": "",
+        "color": "#ffffff"
+      },
+      {
+        "value": "Moderate",
+        "color": "#ffffcc"
+      },
+      {
+        "value": "Heavy",
+        "color": "#a1dab4"
+      },
+      {
+        "value": "Intense",
+        "color": "#41b6c4"
+      },
+      {
+        "value": "Extreme",
+        "color": "#225ea8"
+      }
+    ]
+  },
+  "rainfall_extreme_flood": {
+    "title": "Extreme Rainfall-triggering Flood last 5-days",
+    "type": "wms",
+    "server_layer_name": "rainfall_extreme_flood",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "download_url": "http://3.134.83.146:3002/download/rainfall_extreme?type=daily&numday=1",
+    "form_inputs": [
+      {
+        "id": "DIM_NUMDAYSOURCE",
+        "label": "Number of days",
+        "value": "5days",
+        "values": [
+          {
+            "value": "1days",
+            "label": "1 Day"
+          },
+          {
+            "value": "2days",
+            "label": "2 Days"
+          },
+          {
+            "value": "3days",
+            "label": "3 Days"
+          },
+          {
+            "value": "4days",
+            "label": "4 Days"
+          },
+          {
+            "value": "5days",
+            "label": "5 Days"
+          }
+        ]
+      }
+    ],
+    "date_interval": "day",
+    "opacity": 0.9,
+    "legend_text": "Extreme Rainfall-triggering Flood last 5-days",
+    "legend": [
+      {
+        "value": "Category 0",
+        "color": "#97D700"
+      },
+      {
+        "value": "Category 1-3",
+        "color": "#FEB24C"
+      },
+      {
+        "value": "Category 4-6",
+        "color": "#FFEDA0"
+      },
+      {
+        "value": "Category 7-9",
+        "color": "#F03B20"
+      }
+    ]
+  },
+  "rainfall_extreme_forecast_probability": {
+    "title": "Extreme Rainfall next 5-days",
+    "type": "wms",
+    "server_layer_name": "rainfall_extreme_forecast_probability",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "download_url": "http://3.134.83.146:3002/download/rainfall_extreme?type=daily&numday=1",
+    "form_inputs": [
+      {
+        "id": "DIM_NUMDAYSOURCE",
+        "label": "Number of days",
+        "value": "5days",
+        "values": [
+          {
+            "value": "1days",
+            "label": "1 Day"
+          },
+          {
+            "value": "2days",
+            "label": "2 Days"
+          },
+          {
+            "value": "3days",
+            "label": "3 Days"
+          },
+          {
+            "value": "4days",
+            "label": "4 Days"
+          },
+          {
+            "value": "5days",
+            "label": "5 Days"
+          }
+        ]
+      },
+      {
+        "id": "DIM_HOURSOURCE",
+        "label": "Release Hour",
+        "value": "H00",
+        "values": [
+          {
+            "value": "H00",
+            "label": "00:00"
+          },
+          {
+            "value": "H06",
+            "label": "06:00"
+          },
+          {
+            "value": "H12",
+            "label": "12:00"
+          },
+          {
+            "value": "H18",
+            "label": "18:00"
+          }
+        ]
+      }
+    ],
+    "date_interval": "day",
+    "opacity": 0.9,
+    "legend_text": "Extreme Rainfall next 5-days",
+    "legend": [
+      {
+        "value": "",
+        "color": "#ffffff"
+      },
+      {
+        "value": "Moderate",
+        "color": "#ffffcc"
+      },
+      {
+        "value": "Heavy",
+        "color": "#a1dab4"
+      },
+      {
+        "value": "Intense",
+        "color": "#41b6c4"
+      },
+      {
+        "value": "Extreme",
+        "color": "#225ea8"
+      }
+    ]
+  },
+  "rainfall_extreme_forecast_flood": {
+    "title": "Extreme Rainfall-triggering Flood next 5-days",
+    "type": "wms",
+    "server_layer_name": "rainfall_extreme_forecast_flood",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "download_url": "http://3.134.83.146:3002/download/rainfall_extreme?type=daily&numday=1",
+    "form_inputs": [
+      {
+        "id": "DIM_NUMDAYSOURCE",
+        "label": "Number of days",
+        "value": "5days",
+        "values": [
+          {
+            "value": "1days",
+            "label": "1 Day"
+          },
+          {
+            "value": "2days",
+            "label": "2 Days"
+          },
+          {
+            "value": "3days",
+            "label": "3 Days"
+          },
+          {
+            "value": "4days",
+            "label": "4 Days"
+          },
+          {
+            "value": "5days",
+            "label": "5 Days"
+          }
+        ]
+      },
+      {
+        "id": "DIM_HOURSOURCE",
+        "label": "Release Hour",
+        "value": "H00",
+        "values": [
+          {
+            "value": "H00",
+            "label": "00:00"
+          },
+          {
+            "value": "H06",
+            "label": "06:00"
+          },
+          {
+            "value": "H12",
+            "label": "12:00"
+          },
+          {
+            "value": "H18",
+            "label": "18:00"
+          }
+        ]
+      }
+    ],
+    "date_interval": "day",
+    "opacity": 0.9,
+    "legend_text": "Extreme Rainfall-triggering Flood next 5-days",
+    "legend": [
+      {
+        "value": "Category 0",
+        "color": "#97D700"
+      },
+      {
+        "value": "Category 1-3",
+        "color": "#FEB24C"
+      },
+      {
+        "value": "Category 4-6",
+        "color": "#FFEDA0"
+      },
+      {
+        "value": "Category 7-9",
+        "color": "#F03B20"
+      }
+    ]
+  },
+  "rainfall_anomaly": {
+    "title": "Rainfall Anomaly (Monthly)",
+    "type": "wms",
+    "server_layer_name": "rainfall_anomaly_monthly",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "date_interval": "month",
+    "opacity": 0.5,
+    "legend_text": "Percentage of monthly rainfall compared to a long-term average | Source: CHRIPS",
+    "legend": [
+      {
+        "value": "0-30%",
+        "color": "#4c1504"
+      },
+      {
+        "value": "30-50%",
+        "color": "#ac591c"
+      },
+      {
+        "value": "50-85%",
+        "color": "#ba7500"
+      },
+      {
+        "value": "85-115%",
+        "color": "#fefe53"
+      },
+      {
+        "value": "115-150%",
+        "color": "#86b638"
+      },
+      {
+        "value": "150-200%",
+        "color": "#0a8137"
+      },
+      {
+        "value": ">200%",
+        "color": "#004519"
+      }
+    ]
+  },
+  "spi": {
+    "title": "Standardized Precipitation Index (SPI)",
+    "type": "wms",
+    "server_layer_name": "spi_monthly",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "date_interval": "month",
+    "opacity": 0.5,
+    "legend_text": "SPI is a normalized index that indicates the probability of occurrence of observed rainfall compared with the long-term average | Source: CHIRPS",
+    "legend": [
+      {
+        "value": "Exceptionally Dry",
+        "color": "#760005"
+      },
+      {
+        "value": "Extremely Dry",
+        "color": "#ec0013"
+      },
+      {
+        "value": "Severely Dry",
+        "color": "#ffa938"
+      },
+      {
+        "value": "Moderately Dry",
+        "color": "#fdd28a"
+      },
+      {
+        "value": "Abnormally Dry",
+        "color": "#fefe53"
+      },
+      {
+        "value": "Near Normal",
+        "color": "#a2fd6e"
+      },
+      {
+        "value": "Abnormally Moist",
+        "color": "#00b44a"
+      },
+      {
+        "value": "Moderately Moist",
+        "color": "#008180"
+      },
+      {
+        "value": "Extremmely Moist",
+        "color": "#2a23eb"
+      },
+      {
+        "value": "Exceptionally Moist",
+        "color": "#a21fec"
+      }
+    ]
+  },
+  "ModisVHI": {
+    "title": "Agricultural drought (VHI)",
+    "type": "wms",
+    "server_layer_name": "vhi_monthly",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "date_interval": "month",
+    "opacity": 0.5,
+    "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
+    "legend": [
+      {
+        "value": "> 40 | No Drought",
+        "color": "#ffffff"
+      },
+      {
+        "value": "30 - 40 | Mild Drought",
+        "color": "#fff1e8"
+      },
+      {
+        "value": "20 - 30 | Moderate Drought",
+        "color": "#e18283"
+      },
+      {
+        "value": "10 - 20 | Severe Drought",
+        "color": "#dc0b25"
+      },
+      {
+        "value": "< 10 | Extreme Drought",
+        "color": "#740315"
+      }
+    ]
+  },
+  "dslr": {
+    "title": "Days Since Last Rain",
+    "type": "wms",
+    "server_layer_name": "days_since_last_rain_daily",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "date_interval": "day",
+    "opacity": 0.5,
+    "legend_text": "A number of days since the last rainfall above 1mm per day | Source: IMERG",
+    "legend": [
+      {
+        "value": "No Drought",
+        "color": "#b2b2b2"
+      },
+      {
+        "value": "< 5 days | Very Short",
+        "color": "#fcbba2"
+      },
+      {
+        "value": "5 - 10 days | Short",
+        "color": "#fc9272"
+      },
+      {
+        "value": "10 - 20 days | Moderate",
+        "color": "#fa6948"
+      },
+      {
+        "value": "20 - 30 days | Long",
+        "color": "#f03c2b"
+      },
+      {
+        "value": "30 - 60 days | Very Long",
+        "color": "#CC181E"
+      },
+      {
+        "value": "> 60 days | Extreme Drought",
+        "color": "#99000D"
+      }
+    ]
+  },
+  "lst_anomaly": {
+    "type": "wms",
+    "title": "Suhu Permukaan Tanah  - anomali 10 hari (MODIS)",
+    "server_layer_name": "myd11c2_txd_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.5,
+    "additional_query_params": {
+      "styles": "lst_day"
+    },
+    "legend_text": "LEGEND",
+    "legend": [
+      {
+        "value": -300,
+        "color": "#000004"
+      },
+      {
+        "value": -200,
+        "color": "#210c4a"
+      },
+      {
+        "value": -100,
+        "color": "#57106e"
+      },
+      {
+        "value": -50,
+        "color": "#8a226a"
+      },
+      {
+        "value": 50,
+        "color": "#bc3754"
+      },
+      {
+        "value": 100,
+        "color": "#e45a31"
+      },
+      {
+        "value": 200,
+        "color": "#f98e09"
+      },
+      {
+        "value": 300,
+        "color": "#f9cb35"
+      },
+      {
+        "value": 5000,
+        "color": "#fcffa4"
+      }
+    ]
+  },
+  "ndvi_dekad": {
+    "type": "wms",
+    "title": "NDVI 10-hari (MODIS)",
+    "server_layer_name": "mxd13c1_vim_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.5,
+    "legend_text": "LEGEND",
+    "legend": [
+      {
+        "value": 1000,
+        "color": "#a50026"
+      },
+      {
+        "value": 2000,
+        "color": "#de3f2e"
+      },
+      {
+        "value": 3000,
+        "color": "#f88d52"
+      },
+      {
+        "value": 4000,
+        "color": "#fed380"
+      },
+      {
+        "value": 5000,
+        "color": "#ffffbf"
+      },
+      {
+        "value": 6000,
+        "color": "#ccea83"
+      },
+      {
+        "value": 7000,
+        "color": "#86cb66"
+      },
+      {
+        "value": 8000,
+        "color": "#2da155"
+      },
+      {
+        "value": 9000,
+        "color": "#006837"
+      }
+    ]
+  },
+  "ndvi_dekad_anomaly": {
+    "type": "wms",
+    "title": "NDVI anomali 10 hari (MODIS)",
+    "server_layer_name": "mxd13c1_viq_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "viq"
+    },
+    "opacity": 0.5,
+    "legend_text": "Anomali NDVI dibandingkan dengan rata-rata jangka panjnag",
+    "legend": [
+      {
+        "value": 50,
+        "color": "#732600"
+      },
+      {
+        "value": 70,
+        "color": "#f06405"
+      },
+      {
+        "value": 80,
+        "color": "#f5af28"
+      },
+      {
+        "value": 90,
+        "color": "#e6dc96"
+      },
+      {
+        "value": 110,
+        "color": "#f5f5f5"
+      },
+      {
+        "value": 120,
+        "color": "#cbff1f"
+      },
+      {
+        "value": 130,
+        "color": "#00f200"
+      },
+      {
+        "value": 150,
+        "color": "#008f00"
+      },
+      {
+        "value": 200,
+        "color": "#004d00"
+      }
+    ]
+  },
+  "pop2020": {
+    "type": "wms",
+    "title": "Sebaran Penduduk",
+    "server_layer_name": "population2018",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "opacity": 0.5,
+    "legend_text": "Sebaran Penduduk 2020 | Sumber: Landsacan",
+    "legend": [
+      {
+        "value": "Sebaran Penduduk",
+        "color": "#007a10"
+      }
+    ]
+  },
+  "HH_AGRI": {
+    "title": "Household with Income Derived from Agriculture",
+    "type": "admin_level_data",
+    "path": "./data/indonesia/socio_economic.json",
+    "data_field": "HHAgri",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": "25",
+        "color": "#fef0d9"
+      },
+      {
+        "value": "43",
+        "color": "#fdcc8a"
+      },
+      {
+        "value": "57",
+        "color": "#fc8d59"
+      },
+      {
+        "value": "75",
+        "color": "#e34a33"
+      },
+      {
+        "value": "100",
+        "color": "#b30000"
+      }
+    ],
+    "legend_text": "Source: SUSENAS 2020"
+  },
+  "HH_FE65": {
+    "title": "Houshold with Food Expenditure >65%",
+    "type": "admin_level_data",
+    "path": "./data/indonesia/socio_economic.json",
+    "data_field": "FoodExp",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": "2.39",
+        "color": "#edf8fb"
+      },
+      {
+        "value": "4.72",
+        "color": "#b3cde3"
+      },
+      {
+        "value": "7",
+        "color": "#8c96c6"
+      },
+      {
+        "value": "9.86",
+        "color": "#8856a7"
+      },
+      {
+        "value": "14.57",
+        "color": "#810f7c"
+      }
+    ],
+    "legend_text": "Source: SUSENAS 2020"
+  },
+  "paddy_areas": {
+    "type": "wms",
+    "title": "Lahan Sawah",
+    "server_layer_name": "paddy_areas_raster",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "opacity": 0.5,
+    "legend_text": "Lahan Baku Sawah 2019 | Sumber: MoA",
+    "legend": [
+      {
+        "value": "Lahan Sawah",
+        "color": "#007a10"
+      }
+    ]
+  },
+  "desil_10%": {
+    "title": "People 10% Lowest",
+    "type": "wms",
+    "server_layer_name": "Desil10%",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "opacity": 0.5,
+    "legend_text": "Number of Houshold Lowest 10% | Source: MOSA",
+    "legend": [
+      {
+        "value": "0-35",
+        "color": "#1a9641"
+      },
+      {
+        "value": "35-101",
+        "color": "#60b855"
+      },
+      {
+        "value": "101-181",
+        "color": "#a6d96a"
+      },
+      {
+        "value": "181-292",
+        "color": "#d3ec95"
+      },
+      {
+        "value": "292-475",
+        "color": "#ffffc0"
+      },
+      {
+        "value": "475-763",
+        "color": "#fed791"
+      },
+      {
+        "value": "763-1210",
+        "color": "#fdae61"
+      },
+      {
+        "value": "1210-2148",
+        "color": "#ea633e"
+      },
+      {
+        "value": "2148-12,626",
+        "color": "#d7191c"
+      }
+    ]
+  },
+  "krtw_60": {
+    "title": "Female Headed Hosehold >60 years old",
+    "type": "wms",
+    "server_layer_name": "KRTW_60",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "opacity": 0.5,
+    "legend_text": "Female Headed Hosehold >60 years old | Source: MOSA",
+    "legend": [
+      {
+        "value": "0-35",
+        "color": "#1a9641"
+      },
+      {
+        "value": "35-101",
+        "color": "#60b855"
+      },
+      {
+        "value": "101-181",
+        "color": "#a6d96a"
+      },
+      {
+        "value": "181-292",
+        "color": "#d3ec95"
+      },
+      {
+        "value": "292-475",
+        "color": "#ffffc0"
+      },
+      {
+        "value": "475-763",
+        "color": "#fed791"
+      },
+      {
+        "value": "763-1210",
+        "color": "#fdae61"
+      },
+      {
+        "value": "1210-2148",
+        "color": "#ea633e"
+      },
+      {
+        "value": "2148-12,626",
+        "color": "#d7191c"
+      }
+    ]
+  },
+  "disability": {
+    "title": "Number of Disable People",
+    "type": "wms",
+    "server_layer_name": "Disability",
+    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "opacity": 0.5,
+    "legend_text": "Number of Disable People | Source: MOSA",
+    "legend": [
+      {
+        "value": "0-35",
+        "color": "#1a9641"
+      },
+      {
+        "value": "35-101",
+        "color": "#60b855"
+      },
+      {
+        "value": "101-181",
+        "color": "#a6d96a"
+      },
+      {
+        "value": "181-292",
+        "color": "#d3ec95"
+      },
+      {
+        "value": "292-475",
+        "color": "#ffffc0"
+      },
+      {
+        "value": "475-763",
+        "color": "#fed791"
+      },
+      {
+        "value": "763-1210",
+        "color": "#fdae61"
+      },
+      {
+        "value": "1210-2148",
+        "color": "#ea633e"
+      },
+      {
+        "value": "2148-12,626",
+        "color": "#d7191c"
+      }
+    ]
+  },
+  "population_below_poverty": {
+    "title": "Poverty Rate",
+    "type": "admin_level_data",
+    "path": "./data/indonesia/socio_economic.json",
+    "data_field": "HH_FE65",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": "6.37",
+        "color": "#fef0d9"
+      },
+      {
+        "value": "11.20",
+        "color": "#fdcc8a"
+      },
+      {
+        "value": "17.39",
+        "color": "#fc8d59"
+      },
+      {
+        "value": "27.25",
+        "color": "#e34a33"
+      },
+      {
+        "value": "45",
+        "color": "#b30000"
+      }
+    ],
+    "legend_text": "Proportion of people living under the district level poverty line (%) | Source: Susenas 2019, BPS"
+  },
+  "pou": {
+    "title": "Prevalence of Undernoursihment",
+    "type": "admin_level_data",
+    "path": "./data/indonesia/socio_economic.json",
+    "data_field": "POU",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": "7.56",
+        "color": "#feebe2"
+      },
+      {
+        "value": "14.48",
+        "color": "#fbb4b9"
+      },
+      {
+        "value": "26.34",
+        "color": "#f768a1"
+      },
+      {
+        "value": "44.77",
+        "color": "#c51b8a"
+      },
+      {
+        "value": "65.78",
+        "color": "#7a0177"
+      }
+    ],
+    "legend_text": "Percentage of undernoursihment | Source: BPS 2018"
+  },
+  "OP_UNEMPLOY": {
+    "title": "Open Unemployment",
+    "type": "admin_level_data",
+    "path": "./data/indonesia/socio_economic.json",
+    "data_field": "OP_UNEMPLOY",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": "1.82",
+        "color": "#edf8fb"
+      },
+      {
+        "value": "3.64",
+        "color": "#b3cde3"
+      },
+      {
+        "value": "5.42",
+        "color": "#8c96c6"
+      },
+      {
+        "value": "7.76",
+        "color": "#8856a7"
+      },
+      {
+        "value": "12.37",
+        "color": "#810f7c"
+      }
+    ],
+    "legend_text": "Source: BPS 2019"
+  },
+  "FSVA_2020": {
+    "title": "FSVA 2020",
+    "type": "admin_level_data",
+    "path": "./data/indonesia/socio_economic.json",
+    "data_field": "FSVA",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": "1",
+        "color": "#6e1f1f"
+      },
+      {
+        "value": "2",
+        "color": "#e85961"
+      },
+      {
+        "value": "3",
+        "color": "#f4a1a7"
+      },
+      {
+        "value": "4",
+        "color": "#c9e077"
+      },
+      {
+        "value": "5",
+        "color": "#94c945"
+      },
+      {
+        "value": "6",
+        "color": "#3b703b"
+      }
+    ],
+    "legend_text": "Source: BKP 2020"
+  },
+  "dslr_pop": {
+    "type": "admin_level_data",
+    "title": "Populasi Terdampak Kekeringan Metereologis",
+    "path": "http://prism-dev.wfp.or.id/home/get_layer/22?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
+    "date_url": "http://prism-dev.wfp.or.id/home/get_date/22?start=2020-01-02&end=2020-01-02",
+    "data_field": "VALUE",
+    "admin_level": 1,
+    "admin_code": "A2CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": 0,
+        "color": "#F0F2F9"
+      },
+      {
+        "value": 1000,
+        "color": "#fee5d9"
+      },
+      {
+        "value": 5000,
+        "color": "#fcae91"
+      },
+      {
+        "value": 10000,
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 20000,
+        "color": "#de2d26"
+      },
+      {
+        "value": 50000,
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Potensi Penduduk Terdampak Kekeringan Metereologis"
+  },
+  "dslr_crops": {
+    "type": "admin_level_data",
+    "title": "Populasi Sawah Terdampak Kekeringan Metereologis (ha)",
+    "path": "http://prism-dev.wfp.or.id/home/get_layer/25?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
+    "date_url": "http://prism-dev.wfp.or.id/home/get_date/25?start=2020-01-02&end=2020-01-02",
+    "data_field": "VALUE",
+    "admin_level": 1,
+    "admin_code": "A2CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": 0,
+        "color": "#F0F2F9"
+      },
+      {
+        "value": 1000,
+        "color": "#ffffd4"
+      },
+      {
+        "value": 10000,
+        "color": "#fed98e"
+      },
+      {
+        "value": 20000,
+        "color": "#fe9929"
+      },
+      {
+        "value": 50000,
+        "color": "#d95f0e"
+      },
+      {
+        "value": 100000,
+        "color": "#993404"
+      }
+    ],
+    "legend_text": "Potensi Luas Sawah Terdampak Kekeringan Metereologis"
+  },
+  "HH_ELEC_2019": {
+    "title": "Electricity Access",
+    "type": "admin_level_data",
+    "path": "./data/indonesia/socio_economic.json",
+    "data_field": "Electicity",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": "10",
+        "color": "#edf8fb"
+      },
+      {
+        "value": "20",
+        "color": "#b3cde3"
+      },
+      {
+        "value": "50",
+        "color": "#8c96c6"
+      },
+      {
+        "value": "70",
+        "color": "#8856a7"
+      },
+      {
+        "value": "90",
+        "color": "#810f7c"
+      }
+    ],
+    "legend_text": "Source: BPS 2020"
+  },
+  "HH_FOODASS": {
+    "title": "Poor Houshold With Access to Food Assistance",
+    "type": "admin_level_data",
+    "path": "./data/indonesia/socio_economic.json",
+    "data_field": "HH_FOODASS",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": "28.93",
+        "color": "#edf8fb"
+      },
+      {
+        "value": "44.90",
+        "color": "#b3cde3"
+      },
+      {
+        "value": "53.85",
+        "color": "#8c96c6"
+      },
+      {
+        "value": "69.92",
+        "color": "#8856a7"
+      },
+      {
+        "value": "98.75",
+        "color": "#810f7c"
+      }
+    ],
+    "legend_text": "Source: BPS 2020"
+  }
+}

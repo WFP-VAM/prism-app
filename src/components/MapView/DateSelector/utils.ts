@@ -1,5 +1,11 @@
 import moment from 'moment';
 
+export const TIMELINE_ITEM_WIDTH = 10;
+
+// The DatePicker is timezone aware, so we trick it into
+// displaying UTC dates.
+export const USER_DATE_OFFSET = new Date().getTimezoneOffset() * 60000;
+
 export const months = [
   'Jan',
   'Feb',
@@ -14,6 +20,35 @@ export const months = [
   'Nov',
   'Dec',
 ];
+
+/**
+ * Return the closest date from a given list of available dates
+ * @param date
+ * @param availableDates
+ * @return date as momentjs object
+ */
+export function findClosestDate(
+  date: number,
+  availableDates: ReturnType<Date['getTime']>[],
+) {
+  const dateToCheck = moment(date);
+
+  const reducerFunc = (
+    closest: ReturnType<Date['getTime']>,
+    current: ReturnType<Date['getTime']>,
+  ) => {
+    const diff = Math.abs(moment(current).diff(dateToCheck));
+    const closestDiff = Math.abs(moment(closest).diff(dateToCheck));
+
+    if (diff < closestDiff) {
+      return current;
+    }
+
+    return closest;
+  };
+
+  return moment(availableDates.reduce(reducerFunc));
+}
 
 /**
  * Return the start and end date of a month (utc format)
@@ -62,15 +97,18 @@ export function isAvailableMonth(
 }
 
 /**
- * Return index of available dates that matched
- * @param availableDates in millisecond format
+ * Binary search to return index of available dates that matched
+ * @param availableDates in millisecond format, should be sorted
  * @param date in millisecond format
  * @return
  */
 export function findDateIndex(
   availableDates: ReturnType<Date['getTime']>[],
-  date: number,
+  date: number | undefined,
 ) {
+  if (!date) {
+    return -1;
+  }
   let startIndex = 0;
   let endIndex = availableDates.length - 1;
   while (startIndex <= endIndex) {

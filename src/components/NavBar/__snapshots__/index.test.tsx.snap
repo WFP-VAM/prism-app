@@ -15,8 +15,18 @@ exports[`renders as expected 1`] = `
         <div
           class="MuiGrid-root NavBar-logoContainer-2 MuiGrid-item MuiGrid-grid-xs-3"
         >
+          <img
+            alt="logo mosa"
+            class="NavBar-orgLogo-3"
+            src="mosa_logo.png"
+          />
+          <img
+            alt="logo wfp"
+            class="NavBar-orgLogo-3"
+            src="wfp_logo_small.png"
+          />
           <mock-typography
-            classname="NavBar-logo-3"
+            classname="NavBar-logo-4"
             component="[object Object]"
             to="/"
             variant="h6"
@@ -28,37 +38,27 @@ exports[`renders as expected 1`] = `
           smdown="true"
         >
           <div
-            class="MuiGrid-root NavBar-menuContainer-4 MuiGrid-item MuiGrid-grid-xs-6"
+            class="MuiGrid-root NavBar-menuContainer-5 MuiGrid-item MuiGrid-grid-xs-6"
           >
             <mock-menuitem
               icon="icon_climate.png"
-              layerscategories="[object Object],[object Object],[object Object],[object Object]"
+              layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
               title="Hazards"
             />
             <mock-menuitem
-              icon="icon_basemap.png"
-              layerscategories="[object Object]"
-              title="Exposure"
-            />
-            <mock-menuitem
               icon="icon_vulnerable.png"
-              layerscategories="[object Object]"
+              layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
               title="Vulnerability"
             />
             <mock-menuitem
-              icon="icon_capacity.png"
-              layerscategories="[object Object]"
-              title="Capacity"
+              icon="icon_basemap.png"
+              layerscategories="[object Object],[object Object]"
+              title="Exposure"
             />
             <mock-menuitem
               icon="icon_impact.png"
-              layerscategories="[object Object]"
+              layerscategories="[object Object],[object Object],[object Object]"
               title="Risk"
-            />
-            <mock-menuitem
-              icon="icon_table.png"
-              layerscategories="[object Object],[object Object]"
-              title="Tables"
             />
           </div>
           <div
@@ -88,7 +88,7 @@ exports[`renders as expected 1`] = `
                     fill="currentColor"
                   />
                 </svg>
-                 
+
                 About
               </mock-typography>
             </div>
@@ -116,7 +116,7 @@ exports[`renders as expected 1`] = `
                     fill="currentColor"
                   />
                 </svg>
-                 
+
                 Github
               </mock-typography>
             </div>
@@ -126,11 +126,11 @@ exports[`renders as expected 1`] = `
           mdup="true"
         >
           <div
-            class="MuiGrid-root NavBar-mobileMenuContainer-7 MuiGrid-item MuiGrid-grid-xs-9"
+            class="MuiGrid-root NavBar-mobileMenuContainer-8 MuiGrid-item MuiGrid-grid-xs-9"
           >
             <mock-button
               aria-haspopup="true"
-              classname="NavBar-menuBars-6"
+              classname="NavBar-menuBars-7"
             >
               <svg
                 aria-hidden="true"
@@ -153,7 +153,7 @@ exports[`renders as expected 1`] = `
               open="false"
             >
               <div
-                class="NavBar-drawerContent-5"
+                class="NavBar-mobileDrawerContent-6"
               >
                 <div
                   class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3"
@@ -185,7 +185,7 @@ exports[`renders as expected 1`] = `
                             fill="currentColor"
                           />
                         </svg>
-                         
+
                         About
                       </mock-typography>
                     </div>
@@ -213,7 +213,7 @@ exports[`renders as expected 1`] = `
                             fill="currentColor"
                           />
                         </svg>
-                         
+
                         Github
                       </mock-typography>
                     </div>
@@ -221,7 +221,30 @@ exports[`renders as expected 1`] = `
                   <div
                     class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-direction-xs-column"
                   >
-                    <mock-menuitemmobile />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_climate.png"
+                      layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
+                      title="Hazards"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_vulnerable.png"
+                      layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
+                      title="Vulnerability"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_basemap.png"
+                      layerscategories="[object Object],[object Object]"
+                      title="Exposure"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_impact.png"
+                      layerscategories="[object Object],[object Object],[object Object]"
+                      title="Risk"
+                    />
                   </div>
                 </div>
               </div>

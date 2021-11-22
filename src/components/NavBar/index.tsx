@@ -16,10 +16,11 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
+import mosaLogo from '../images/mosa_logo.png';
+import wfpLogo from '../images/wfp_logo_small.png';
 
 const rightSideLinks = [
   {
@@ -41,6 +42,21 @@ function NavBar({ classes }: NavBarProps) {
     <MenuItem key={title} title={title} {...category} />
   ));
 
+  // menu for mobile, 1 active accordion at a time so I put the state in here
+  const [expanded, setExpanded] = useState('');
+  const selectAccordion = (title: string) => {
+    setExpanded(title);
+  };
+  const menuMobile = menuList.map(({ title, ...category }) => (
+    <MenuItemMobile
+      expanded={expanded}
+      selectAccordion={selectAccordion}
+      key={title}
+      title={title}
+      {...category}
+    />
+  ));
+
   const buttons = rightSideLinks.map(({ title, icon, href }) => (
     <Grid item key={title}>
       <Typography
@@ -60,6 +76,8 @@ function NavBar({ classes }: NavBarProps) {
       <Toolbar variant="dense">
         <Grid container>
           <Grid item xs={3} className={classes.logoContainer}>
+            <img className={classes.orgLogo} src={mosaLogo} alt="logo mosa" />
+            <img className={classes.orgLogo} src={wfpLogo} alt="logo wfp" />
             <Typography
               variant="h6"
               className={classes.logo}
@@ -103,13 +121,13 @@ function NavBar({ classes }: NavBarProps) {
                 open={openMobileMenu}
                 onClose={() => setOpenMobileMenu(false)}
               >
-                <div className={classes.drawerContent}>
+                <div className={classes.mobileDrawerContent}>
                   <Grid container spacing={3}>
                     <Grid container justify="space-around" item>
                       {buttons}
                     </Grid>
                     <Grid container direction="column" item>
-                      <MenuItemMobile />
+                      {menuMobile}
                     </Grid>
                   </Grid>
                 </div>
@@ -125,13 +143,18 @@ function NavBar({ classes }: NavBarProps) {
 const styles = (theme: Theme) =>
   createStyles({
     appBar: {
-      backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+      backgroundColor: theme.palette.primary.main,
     },
 
     logoContainer: {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+    },
+
+    orgLogo: {
+      width: 28,
+      marginRight: 15,
     },
 
     logo: {
@@ -145,7 +168,7 @@ const styles = (theme: Theme) =>
       textAlign: 'center',
     },
 
-    drawerContent: {
+    mobileDrawerContent: {
       backgroundColor: theme.palette.primary.main,
       paddingTop: 16,
       width: '80vw',

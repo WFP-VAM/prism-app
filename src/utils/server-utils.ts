@@ -1,15 +1,31 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { findIndex, get, isEmpty, isString, merge, union } from 'lodash';
+import {
+  findIndex,
+  get,
+  isEmpty,
+  isString,
+  merge,
+  union,
+  snakeCase,
+} from 'lodash';
 
-import config from '../config/prism.json';
+import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
+  AdminLevelDataLayerProps,
   AvailableDates,
-  NSOLayerProps,
   PointDataLayerProps,
+  RequestFeatureInfo,
 } from '../config/types';
-import type { PointLayerData } from '../context/layers/point_data';
+import {
+  ImpactLayerProps,
+  WMSLayerProps,
+  FeatureInfoType,
+  LabelType,
+} from '../config/types';
+
+import { queryParamsToString } from '../context/layers/point_data';
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
@@ -18,6 +34,29 @@ const xml2jsOptions = {
   compact: true,
   trim: true,
   ignoreComment: true,
+};
+export type DateCompatibleLayer =
+  | AdminLevelDataLayerProps
+  | WMSLayerProps
+  | ImpactLayerProps
+  | PointDataLayerProps;
+export const getPossibleDatesForLayer = (
+  layer: DateCompatibleLayer,
+  serverAvailableDates: AvailableDates,
+  // eslint-disable-next-line consistent-return
+): number[] => {
+  // eslint-disable-next-line default-case
+  switch (layer.type) {
+    case 'wms':
+      return serverAvailableDates[layer.serverLayerName];
+    case 'impact':
+      return serverAvailableDates[
+        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
+      ];
+    case 'point_data':
+    case 'admin_level_data':
+      return serverAvailableDates[layer.id];
+  }
 };
 
 export function formatUrl(
@@ -43,6 +82,7 @@ function formatCapabilitiesInfo(
 ): AvailableDates {
   return rawLayers.reduce((acc: any, layer: any) => {
     const layerId = get(layer, layerIdPath);
+
     const innerDatesPath =
       'Dimension' in layer && datesPath === 'Dimension._text'
         ? (() => {
@@ -55,7 +95,6 @@ function formatCapabilitiesInfo(
         : datesPath;
 
     const rawDates = get(layer, innerDatesPath, []);
-
     const dates: (string | { _text: string })[] = isString(rawDates)
       ? rawDates.split(',')
       : rawDates;
@@ -64,7 +103,10 @@ function formatCapabilitiesInfo(
       .filter(date => !isEmpty(date))
       .map(date =>
         // adding 12 hours to avoid  errors due to daylight saving
-        moment.utc(get(date, '_text', date)).set({ hour: 12 }).valueOf(),
+        moment
+          .utc(get(date, '_text', date).split('T')[0])
+          .set({ hour: 12 })
+          .valueOf(),
       );
 
     const { [layerId]: oldLayerDates } = acc;
@@ -113,6 +155,28 @@ function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
     );
   }
   return rawLayers as FlatLayer[];
+}
+
+export function formatWMSLegendUrl(baseUrl: string, serverLayerName: string) {
+  const legendOptions = {
+    fontAntiAliasing: true,
+    fontSize: 13,
+    fontName: 'Roboto Light',
+    forceLabels: 'on',
+    fontColor: '0x2D3436',
+  };
+
+  const requestParams = {
+    service: 'WMS',
+    request: 'GetLegendGraphic',
+    format: 'image/png',
+    layer: serverLayerName,
+    legend_options: Object.entries(legendOptions)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(';'),
+  };
+
+  return formatUrl(`${baseUrl}/ows`, requestParams);
 }
 
 /**
@@ -169,58 +233,80 @@ async function getWCSCoverage(serverUri: string) {
       'domainSet.temporalDomain.gml:timePosition',
     );
   } catch (error) {
-    // TODO we used to throw the error here so a notification appears. Removed because a failure of one shouldn't prevent the successful requests from saving.
+    // TODO we used to throw the error here so a notification appears via middleware. Removed because a failure of one shouldn't prevent the successful requests from saving.
+    // we could do a dispatch for a notification, but getting a dispatch reference here would be complex, just for a notification
     console.error(error);
     return {};
   }
 }
 
+type PointDataDates = Array<{
+  date: string;
+}>;
+// used to cache repeat date requests to same URL
+const pointDataFetchPromises: {
+  [k in PointDataLayerProps['dateUrl']]: Promise<PointDataDates>;
+} = {};
+
 /**
  * Gets the available dates for a point data layer.
- *
- * In layers.json each uri is given a constant, large date range (2000-01-01 -> 2023-12-21) to try get the api to give all possible dates
- * TODO Once the api is fixed this needs to be fixed as its currently a hacky solution to get around the api's caveats
- *
  */
 async function getPointDataCoverage(layer: PointDataLayerProps) {
-  const { data: url, fallbackData: fallbackUrl, id } = layer;
+  const {
+    dateUrl: url,
+    fallbackData: fallbackUrl,
+    id,
+    additionalQueryParams,
+  } = layer;
   const loadPointLayerDataFromURL = async (fetchUrl: string) => {
+    const fetchUrlWithParams = `${fetchUrl}${
+      fetchUrl.includes('?') ? '&' : '?'
+    }${queryParamsToString(additionalQueryParams)}`;
+
     const data = (await (
-      await fetch(fetchUrl || '', {
-        mode: fetchUrl.startsWith('http') ? 'cors' : 'same-origin',
-      })
-    ).json()) as PointLayerData & { date: string }; // raw data comes in as string yyyy-mm-dd, needs to be converted to number.
-    return data.map(item => ({
-      ...item,
-      // adding 12 hours to avoid  errors due to daylight saving
-      date: moment.utc(item.date).set({ hour: 12 }).valueOf(),
-    }));
+      await fetch(fetchUrlWithParams || '')
+    ).json()) as PointDataDates; // raw data comes in as { date: yyyy-mm-dd }[]
+    return data;
   };
-  const data = await loadPointLayerDataFromURL(url).catch(err => {
-    console.error(err);
-    console.warn(
-      `Failed loading groundstation layer: ${id}. Attempting to load fallback URL...`,
-    );
-    return loadPointLayerDataFromURL(fallbackUrl || '');
-  });
+  // eslint-disable-next-line fp/no-mutation
+  const data = await (pointDataFetchPromises[url] =
+    pointDataFetchPromises[url] || loadPointLayerDataFromURL(url)).catch(
+    err => {
+      console.error(err);
+      console.warn(
+        `Failed loading point data layer: ${id}. Attempting to load fallback URL...`,
+      );
+      return loadPointLayerDataFromURL(fallbackUrl || '');
+    },
+  );
+
   const possibleDates = data
-    // adding 12 hours to avoid  errors due to daylight saving
+    // adding 12 hours to avoid  errors due to daylight saving, and convert to number
     .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
+    // remove duplicate dates - indexOf returns first index of item
     .filter((date, index, arr) => {
       return arr.indexOf(date) === index;
-    }); // filter() here removes duplicate dates because indexOf will always return the first occurrence of an item
+    });
 
   return possibleDates;
 }
 
-async function getNSOAvailableDates(layer: NSOLayerProps) {
-  const url = layer.dateUrl!;
-  const dates: number[] = await fetch(url, {
-    mode: url.startsWith('http') ? 'cors' : 'same-origin',
-  }).then(resp => resp.json());
-  return {
-    [layer.id]: dates,
-  };
+async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
+  const url = layer.dateUrl;
+  if (!url) {
+    return [];
+  }
+  try {
+    // raw data comes in as {"dates": ["YYYY-MM-DD"]}
+    const { dates }: { dates: string[] } = await fetch(url, {
+      mode: url.startsWith('http') ? 'cors' : 'same-origin',
+    }).then(resp => resp.json());
+    return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  } catch (error) {
+    // TODO we used to throw the error here so a notification appears. Removed because a failure of one shouldn't prevent the successful requests from saving.
+    console.error(error);
+    return [];
+  }
 }
 
 /**
@@ -229,15 +315,16 @@ async function getNSOAvailableDates(layer: NSOLayerProps) {
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
  */
 export async function getLayersAvailableDates(): Promise<AvailableDates> {
-  const wmsServerUrls: string[] = get(config, 'serversUrls.wms', []);
-  const wcsServerUrls: string[] = get(config, 'serversUrls.wcs', []);
+  const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
+  const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
   const pointDataLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is PointDataLayerProps => layer.type === 'point_data',
   );
 
-  const nsoWithDateLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is NSOLayerProps => layer.type === 'nso' && layer.hasDate!,
+  const adminWithDateLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is AdminLevelDataLayerProps =>
+      layer.type === 'admin_level_data' && Boolean(layer.dateUrl),
   );
 
   const layerDates: AvailableDates[] = await Promise.all([
@@ -246,8 +333,123 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer),
     })),
-    ...nsoWithDateLayers.map(async layer => getNSOAvailableDates(layer)),
+    ...adminWithDateLayers.map(async layer => ({
+      [layer.id]: await getAdminLevelDataCoverage(layer),
+    })),
   ]);
 
   return merge({}, ...layerDates);
+}
+
+/**
+ * Format value from featureInfo response based on LabelType provided
+ *
+ * @return a formatted string
+ */
+export function formatFeatureInfo(value: string, type: LabelType): string {
+  if (type === LabelType.Date) {
+    return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
+  }
+
+  return value;
+}
+
+/**
+ * Executes a getFeatureInfo request
+ *
+ * @return object of key: string - value: string with formatted values given label type.
+ */
+async function runFeatureInfoRequest(
+  url: string,
+  wmsParams: RequestFeatureInfo,
+  layers: WMSLayerProps[],
+): Promise<{ [name: string]: string }> {
+  // Transform to snake case.
+  const wmsParamsInSnakeCase = Object.entries(wmsParams).reduce(
+    (obj, item) => ({
+      ...obj,
+      [snakeCase(item[0])]: item[1],
+    }),
+    {},
+  );
+
+  const res = await fetch(formatUrl(`${url}/ows`, wmsParamsInSnakeCase));
+  const resJson: GeoJSON.FeatureCollection = await res.json();
+
+  const parsedProps = resJson.features.map(feature => {
+    // Get fields from layer configuration.
+    const [layerId] = (feature?.id as string).split('.');
+
+    const featureInfoProps =
+      layers?.find(l => l.serverLayerName === layerId)?.featureInfoProps || {};
+
+    const searchProps = Object.keys(featureInfoProps);
+
+    const properties = feature.properties ?? {};
+
+    return Object.keys(properties)
+      .filter(k => searchProps.includes(k))
+      .reduce(
+        (obj, key) => ({
+          ...obj,
+          [featureInfoProps[key].label]: formatFeatureInfo(
+            properties[key],
+            featureInfoProps[key].type,
+          ),
+        }),
+        {},
+      );
+  });
+
+  return parsedProps.reduce((obj, item) => ({ ...obj, ...item }), {});
+}
+
+/**
+ * This function builds and runs the getFeatureInfo request given the parameters
+ *
+ * @return Promise with returned object from request
+ */
+function fetchFeatureInfo(
+  layers: WMSLayerProps[],
+  url: string,
+  params: FeatureInfoType,
+): Promise<{ [name: string]: string }> {
+  const requestLayers = layers.filter(l => l.baseUrl === url);
+  const layerNames = requestLayers.map(l => l.serverLayerName).join(',');
+
+  const requestParams = {
+    service: 'WMS',
+    request: 'getFeatureInfo',
+    version: '1.1.1',
+    exceptions: 'application/json',
+    infoFormat: 'application/json',
+    layers: layerNames,
+    srs: 'EPSG:4326',
+    queryLayers: layerNames,
+    featureCount: 1,
+    format: 'image/png',
+    styles: '',
+  };
+
+  const wmsParams: RequestFeatureInfo = { ...params, ...requestParams };
+
+  return runFeatureInfoRequest(url, wmsParams, layers);
+}
+
+/**
+ * Collects all urls to create a getFeatureInfo request.
+ *
+ * @return Promise with returned object from request
+ */
+export async function makeFeatureInfoRequest(
+  layers: WMSLayerProps[],
+  params: FeatureInfoType,
+): Promise<{ [name: string]: string } | null> {
+  const urls = [...new Set(layers.map(l => l.baseUrl))];
+
+  const requests = urls.map(url => fetchFeatureInfo(layers, url, params));
+
+  return Promise.all(requests)
+    .then(r => r.reduce((obj, item) => ({ ...obj, ...item }), {}))
+    .then(obj => (Object.keys(obj).length === 0 ? null : obj));
 }

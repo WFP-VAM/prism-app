@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerForm, LayerKey, LayerType } from '../../config/types';
+import { LayerDefinitions } from '../../config/utils';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 
 interface DateRange {
@@ -16,12 +17,6 @@ export type MapState = {
   errors: string[];
   layersData: LayerData<any>[];
   layerForms: LayerForm[];
-};
-
-export type FormInputChange = {
-  layerId: LayerKey;
-  inputId: string;
-  value: string;
 };
 
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -40,6 +35,12 @@ const initialState: MapState = {
   layerForms: [],
 };
 
+export type FormInputChange = {
+  layerId: LayerKey;
+  inputId: string;
+  value: string;
+};
+
 function keepLayer(layer: LayerType, payload: LayerType) {
   // Simple function to control which layers can overlap.
   return payload.type !== layer.type;
@@ -52,23 +53,48 @@ export const mapStateSlice = createSlice({
     addLayer: (
       { layers, layerForms, ...rest },
       { payload }: PayloadAction<LayerType>,
-    ) => ({
-      ...rest,
-      layers: layers.filter(layer => keepLayer(layer, payload)).concat(payload),
-      layerForms: layerForms.concat(
+    ) => {
+      const layerForm =
         'formInputs' in payload
-          ? [{ id: payload.id, inputs: payload.formInputs! }]
-          : [],
-      ),
-    }),
+          ? { id: payload.id, inputs: payload.formInputs! }
+          : null;
+
+      // Check if a layer belongs to a group.
+      if (!payload.group) {
+        return {
+          ...rest,
+          layers: layers
+            .filter(layer => keepLayer(layer, payload))
+            .concat(payload),
+          layerForms: layerForms.concat(layerForm ? [layerForm] : []),
+        };
+      }
+
+      const { name } = payload.group;
+      // Get all layers that belong to a group.
+      const groupedLayer = Object.values(LayerDefinitions).filter(
+        l => l.group?.name === name,
+      );
+      return {
+        ...rest,
+        layers: layers
+          .filter(layer => keepLayer(layer, payload))
+          .concat(groupedLayer),
+        layerForms: layerForms.concat(layerForm ? [layerForm] : []),
+      };
+    },
 
     removeLayer: (
-      { layers, layerForms, ...rest },
+      { layers, ...rest },
       { payload }: PayloadAction<LayerType>,
     ) => ({
       ...rest,
-      layers: layers.filter(({ id }) => id !== payload.id),
-      layerForms: layerForms.filter(({ id }) => id !== payload.id),
+      layers: layers.filter(({ id, group }) =>
+        // Keep layers without group and layers with group and different group name.
+        payload.group
+          ? !group || group?.name !== payload.group.name
+          : id !== payload.id,
+      ),
     }),
 
     setFormInputValue: (
@@ -106,6 +132,17 @@ export const mapStateSlice = createSlice({
     ) => ({
       ...rest,
       errors: errors.filter(msg => msg !== payload),
+    }),
+
+    updateLayerOpacity: (
+      { layers, ...rest },
+      { payload }: PayloadAction<Pick<LayerType, 'id' | 'opacity'>>,
+    ) => ({
+      ...rest,
+      layers: layers.map(layer => ({
+        ...layer,
+        opacity: layer.id === payload.id ? payload.opacity : layer.opacity,
+      })),
     }),
   },
   extraReducers: builder => {
@@ -146,6 +183,7 @@ export const {
   setFormInputValue,
   updateDateRange,
   setMap,
+  updateLayerOpacity,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;

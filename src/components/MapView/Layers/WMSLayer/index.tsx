@@ -9,9 +9,16 @@ import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { layerFormSelector } from '../../../../context/mapStateSlice/selectors';
 
 function WMSLayers({
-  layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
+  layer: {
+    id,
+    baseUrl,
+    serverLayerName,
+    additionalQueryParams,
+    opacity,
+    group,
+  },
 }: LayersProps) {
-  const selectedDate = useDefaultDate(serverLayerName);
+  const selectedDate = useDefaultDate(serverLayerName, group);
   const layerForm = useSelector(layerFormSelector(id));
   const layerFormParams = layerForm
     ? fromPairs(layerForm.inputs.map(input => [input.id, input.value]))
@@ -37,7 +44,7 @@ function WMSLayers({
       />
 
       <Layer
-        below="boundaries"
+        before="boundaries-line"
         type="raster"
         id={`layer-${id}`}
         sourceId={`source-${id}`}
