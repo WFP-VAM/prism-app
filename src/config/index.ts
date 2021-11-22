@@ -1,4 +1,10 @@
 import { has } from 'lodash';
+import {
+  getSelectedLanguage,
+  LanguageConfig,
+  translateAppConfig,
+  translateRawLayers,
+} from './language';
 
 import {
   cambodiaConfig,
@@ -12,6 +18,7 @@ import {
   indonesiaConfig,
   indonesiaRawLayers,
   indonesiaRawTables,
+  indonesiaLanguage,
 } from './indonesia';
 
 import {
@@ -76,6 +83,7 @@ const configMap = {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
     rawTables: indonesiaRawTables,
+    languageConfig: indonesiaLanguage,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/idn_admin_boundaries.json`,
   },
   kyrgyzstan: {
@@ -121,8 +129,43 @@ const safeCountry = (COUNTRY && has(configMap, COUNTRY)
   ? COUNTRY
   : DEFAULT) as Country;
 
-const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
-  safeCountry
-];
+const countryConfig = configMap[safeCountry];
 
-export { appConfig, defaultBoundariesFile, rawLayers, rawTables };
+const DefaultLanguageConfig: LanguageConfig = {
+  default: 'en',
+  languages: [
+    {
+      id: 'en',
+      label: 'EN',
+      layers: {},
+      categories: {},
+      uiLabels: {},
+    },
+  ],
+};
+
+const { defaultBoundariesFile, rawTables, languageConfig } = {
+  languageConfig: DefaultLanguageConfig,
+  ...countryConfig,
+};
+
+const languageOption = getSelectedLanguage(languageConfig);
+
+function uiLabel(key: string, defaultLabel: string): string {
+  const { uiLabels } = languageOption;
+  return key in uiLabels ? uiLabels[key] : defaultLabel;
+}
+
+const appConfig = translateAppConfig(countryConfig.appConfig, languageOption);
+
+const rawLayers = translateRawLayers(countryConfig.rawLayers, languageOption);
+
+export {
+  appConfig,
+  defaultBoundariesFile,
+  languageConfig,
+  languageOption,
+  rawLayers,
+  rawTables,
+  uiLabel,
+};

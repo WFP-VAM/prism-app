@@ -1,0 +1,81 @@
+{
+  "rainfall_extreme_probability": {
+    "title": "Hujan Ekstrim 5 harian",
+    "legend_text": "Hujan Ekstrim 5 harian"
+  },
+  "rainfall_extreme_flood": {
+    "title": "Hujan Esktrim Berpotensi Banjir 5 harian"
+  },
+  "rainfall_extreme_forecast_probability": {
+    "title": "Hujan Ekstrim 5 harian"
+  },
+  "rainfall_extreme_forecast_flood": {
+    "title": "Hujan Esktrim Berpotensi Banjir 5 harian"
+  },
+  "rainfall_anomaly": {
+    "title": "Anomali Curah Hujan (Bulanan)"
+  },
+  "spi": {
+    "title": "Standardized Precipitation Index (SPI)"
+  },
+  "ModisVHI": {
+    "title": "Indeks Kekeringan Vegetasi (VHI)"
+  },
+  "dslr": {
+    "title": "Hari Tanpa Hujan"
+  },
+  "lst_anomaly": {
+    "title": "Suhu Permukaan Tanah - anomali 10 hari (MODIS)"
+  },
+  "ndvi_dekad": {
+    "title": "NDVI 10-hari (MODIS)"
+  },
+  "ndvi_dekad_anomaly": {
+    "title": "NDVI anomali 10 hari (MODIS)"
+  },
+  "pop2020": {
+    "title": "Sebaran Penduduk"
+  },
+  "HH_AGRI": {
+    "title": "Masyarakat Hidup Dari Sektor Agrikultur"
+  },
+  "HH_FE65": {
+    "title": "Rumah Tangga Pengeluaran Makanan >65% Pendapatan"
+  },
+  "paddy_areas": {
+    "title": "Lahan Sawah"
+  },
+  "desil_10%": {
+    "title": "Penduduk Ekonomi 10% Terbawah"
+  },
+  "krtw_60": {
+    "title": "RT dengan Kepala Keluarga Wanita usia >60 tahun"
+  },
+  "disability": {
+    "title": "Jumlah Populasi Dengan Disabilitas"
+  },
+  "population_below_poverty": {
+    "title": "Presentase Kemiskinan"
+  },
+  "pou": {
+    "title": "Prevelensi Kurang Gizi"
+  },
+  "OP_UNEMPLOY": {
+    "title": "Pengangguran Terbuka"
+  },
+  "FSVA_2020": {
+    "title": "FSVA 2020"
+  },
+  "dslr_pop": {
+    "title": "Populasi Terdampak Kekeringan Metereologis"
+  },
+  "dslr_crops": {
+    "title": "Populasi Sawah Terdampak Kekeringan Metereologis (ha)"
+  },
+  "HH_ELEC_2019": {
+    "title": "Akses Listrik"
+  },
+  "HH_FOODASS": {
+    "title": "Presentase Rumah Tangga Misikin dengan Akses Bantuan PanganPoor Houshold With Access to Food Assistance"
+  }
+}

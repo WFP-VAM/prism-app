@@ -10,10 +10,8 @@
   },
   "alertFormActive": false,
   "serversUrls": {
-    "wcs": [ ],
-    "wms": [
-      "http://3.134.83.146:8080/geoserver/prism/wms"
-    ]
+    "wcs": [],
+    "wms": ["http://3.134.83.146:8080/geoserver/prism/wms"]
   },
   "map": {
     "latitude": -4.0682689,
@@ -30,33 +28,14 @@
         "rainfall_extreme_forecast_probability",
         "rainfall_extreme_forecast_flood"
       ],
-      "Climate Indicator": [
-        "rainfall_anomaly",
-        "spi"
-      ],
-      "Drought Indicator": [
-        "ModisVHI",
-        "dslr"
-      ],
-      "Vegetation Indicator": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "climate_indicator": ["rainfall_anomaly", "spi"],
+      "drought_indicator": ["ModisVHI", "dslr"],
+      "vegetation_indicator": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "exposure": {
-      "demographics": [
-        "pop2020",
-        "HH_AGRI",
-        "HH_FE65"
-      ],
-      "ricefield": [
-        "paddy_areas"
-      ],
-      "DTKS 2015": [
-        "desil_10%",
-        "krtw_60",
-        "disability"
-      ]
+      "demographics": ["pop2020", "HH_AGRI", "HH_FE65"],
+      "ricefield": ["paddy_areas"],
+      "dtks_2015": ["desil_10%", "krtw_60", "disability"]
     },
     "vulnerability": {
       "vulnerable_groups": [
@@ -67,16 +46,10 @@
       ]
     },
     "risk": {
-      "impact_analysis": [
-        "dslr_pop",
-        "dslr_crops"
-      ]
+      "impact_analysis": ["dslr_pop", "dslr_crops"]
     },
     "capacity": {
-      "livestock_and_crop_preparedness": [
-        "HH_ELEC_2019",
-        "HH_FOODASS"
-      ]
+      "livestock_and_crop_preparedness": ["HH_ELEC_2019", "HH_FOODASS"]
     }
   }
 }

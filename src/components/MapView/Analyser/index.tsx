@@ -22,6 +22,7 @@ import { grey } from '@material-ui/core/colors';
 import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
+import { uiLabel } from '../../../config';
 import { LayerDefinitions } from '../../../config/utils';
 import {
   AggregationOperations,
@@ -184,7 +185,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       >
         <BarChart fontSize="small" />
         <Typography variant="body2" className={classes.analyserLabel}>
-          Run Analysis
+          {uiLabel('analysis', 'Run Analysis')}
         </Typography>
         <ArrowDropDown fontSize="small" />
       </Button>

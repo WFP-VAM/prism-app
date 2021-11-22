@@ -16,15 +16,17 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import LanguageSelect from './LanguageSelect';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
 import mosaLogo from '../images/mosa_logo.png';
 import wfpLogo from '../images/wfp_logo_small.png';
+import { uiLabel } from '../../config';
 
 const rightSideLinks = [
   {
-    title: 'About',
+    title: uiLabel('about', 'About'),
     icon: faInfoCircle,
     href: 'https://innovation.wfp.org/project/prism',
   },
@@ -101,6 +103,7 @@ function NavBar({ classes }: NavBarProps) {
               item
               xs={3}
             >
+              <LanguageSelect key="language" />
               {buttons}
             </Grid>
           </Hidden>

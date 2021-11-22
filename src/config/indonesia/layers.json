@@ -5,14 +5,8 @@
     "popup_url": "http://prism-dev.wfp.or.id:3002/p/socio_economic/popup",
     "opacity": 0.8,
     "admin_code": "A2TEXT",
-    "admin_level_names": [
-      "A2NAME",
-      "A1NAME"
-    ],
-    "admin_level_local_names": [
-      "A2NAME",
-      "A1NAME"
-    ]
+    "admin_level_names": ["A2NAME", "A1NAME"],
+    "admin_level_local_names": ["A2NAME", "A1NAME"]
   },
   "rainfall_extreme_probability": {
     "title": "Extreme Rainfall last 5-days",
@@ -85,7 +79,6 @@
     "type": "wms",
     "server_layer_name": "rainfall_extreme_flood",
     "base_url": "http://3.134.83.146:8080/geoserver/prism",
-    "download_url": "http://3.134.83.146:3002/download/rainfall_extreme?type=daily&numday=1",
     "form_inputs": [
       {
         "id": "DIM_NUMDAYSOURCE",
@@ -142,7 +135,6 @@
     "type": "wms",
     "server_layer_name": "rainfall_extreme_forecast_probability",
     "base_url": "http://3.134.83.146:8080/geoserver/prism",
-    "download_url": "http://3.134.83.146:3002/download/rainfall_extreme?type=daily&numday=1",
     "form_inputs": [
       {
         "id": "DIM_NUMDAYSOURCE",
@@ -226,7 +218,6 @@
     "type": "wms",
     "server_layer_name": "rainfall_extreme_forecast_flood",
     "base_url": "http://3.134.83.146:8080/geoserver/prism",
-    "download_url": "http://3.134.83.146:3002/download/rainfall_extreme?type=daily&numday=1",
     "form_inputs": [
       {
         "id": "DIM_NUMDAYSOURCE",
@@ -463,7 +454,7 @@
   },
   "lst_anomaly": {
     "type": "wms",
-    "title": "Suhu Permukaan Tanah  - anomali 10 hari (MODIS)",
+    "title": "Ground Surface Temperature - anomaly 10 days (MODIS)",
     "server_layer_name": "myd11c2_txd_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
@@ -513,7 +504,7 @@
   },
   "ndvi_dekad": {
     "type": "wms",
-    "title": "NDVI 10-hari (MODIS)",
+    "title": "NDVI 10-days (MODIS)",
     "server_layer_name": "mxd13c1_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
@@ -560,7 +551,7 @@
   },
   "ndvi_dekad_anomaly": {
     "type": "wms",
-    "title": "NDVI anomali 10 hari (MODIS)",
+    "title": "NDVI anomaly 10 days (MODIS)",
     "server_layer_name": "mxd13c1_viq_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
@@ -610,7 +601,7 @@
   },
   "pop2020": {
     "type": "wms",
-    "title": "Sebaran Penduduk",
+    "title": "Population Distribution",
     "server_layer_name": "population2018",
     "base_url": "http://3.134.83.146:8080/geoserver/prism",
     "opacity": 0.5,
@@ -688,7 +679,7 @@
   },
   "paddy_areas": {
     "type": "wms",
-    "title": "Lahan Sawah",
+    "title": "Paddy Areas",
     "server_layer_name": "paddy_areas_raster",
     "base_url": "http://3.134.83.146:8080/geoserver/prism",
     "opacity": 0.5,
@@ -972,7 +963,7 @@
   },
   "dslr_pop": {
     "type": "admin_level_data",
-    "title": "Populasi Terdampak Kekeringan Metereologis",
+    "title": "Meteorological Drought Affected Population",
     "path": "http://prism-dev.wfp.or.id/home/get_layer/22?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
     "date_url": "http://prism-dev.wfp.or.id/home/get_date/22?start=2020-01-02&end=2020-01-02",
     "data_field": "VALUE",
@@ -1009,7 +1000,7 @@
   },
   "dslr_crops": {
     "type": "admin_level_data",
-    "title": "Populasi Sawah Terdampak Kekeringan Metereologis (ha)",
+    "title": "Rice Field Affected by Meteorological Drought (hectare)",
     "path": "http://prism-dev.wfp.or.id/home/get_layer/25?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
     "date_url": "http://prism-dev.wfp.or.id/home/get_date/25?start=2020-01-02&end=2020-01-02",
     "data_field": "VALUE",

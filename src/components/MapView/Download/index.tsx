@@ -31,6 +31,7 @@ import {
   layersSelector,
   dateRangeSelector,
 } from '../../../context/mapStateSlice/selectors';
+import { uiLabel } from '../../../config';
 
 type ExtraDownloadRequest = {
   url: string;
@@ -145,7 +146,7 @@ function Download({ classes }: DownloadProps) {
         <CloudDownload fontSize="small" />
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
-            Export
+            {uiLabel('export', 'Export')}
           </Typography>
         </Hidden>
         <ArrowDropDown fontSize="small" />

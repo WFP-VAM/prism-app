@@ -22,6 +22,7 @@ import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Extent } from '../Layers/raster-utils';
 import ColorIndicator from './ColorIndicator';
+import { uiLabel } from '../../../config';
 import {
   LayerFormInput,
   LayerType,
@@ -176,7 +177,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
         )}
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
-            Legend
+            {uiLabel('legend', 'Legend')}
           </Typography>
         </Hidden>
       </Button>
