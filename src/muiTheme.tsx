@@ -92,6 +92,17 @@ const theme: any = createMuiTheme({
         padding: 16,
       },
     },
+    // For <Select/> subheadings
+    MuiListSubheader: {
+      root: {
+        pointerEvents: 'none',
+        padding: 10,
+      },
+      sticky: {
+        backgroundColor: 'white',
+      },
+    },
+    MuiSelect: {},
   },
 });
 

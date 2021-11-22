@@ -13,7 +13,6 @@ function LayerDropdown({
   type,
   value,
   setValue,
-  title,
   placeholder,
   ...rest
 }: LayerSelectorProps) {
@@ -39,41 +38,29 @@ function LayerDropdown({
     <FormControl {...rest}>
       <Select
         defaultValue={defaultValue}
+        value={value}
         onChange={e => {
           setValue(e.target.value as LayerKey);
         }}
-        id={`${title}-select`}
       >
         {categories.reduce(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
           (components, category) => [
             ...components,
-            <ListSubheader
-              style={{ pointerEvents: 'none' }}
-              key={category.title}
-            >
+            <ListSubheader key={category.title}>
               <Typography variant="body2" color="primary">
                 {category.title}
               </Typography>
             </ListSubheader>,
             ...category.layers.map(layer => (
-              <MenuItem
-                style={{ color: 'black' }}
-                key={layer.id}
-                value={layer.id}
-              >
+              <MenuItem key={layer.id} value={layer.id}>
                 {layer.title}
               </MenuItem>
             )),
           ],
           (placeholder
             ? [
-                <MenuItem
-                  style={{ color: 'black' }}
-                  key="placeholder"
-                  value="placeholder"
-                  disabled
-                >
+                <MenuItem key={defaultValue} value={defaultValue} disabled>
                   {placeholder}
                 </MenuItem>,
               ]
@@ -88,7 +75,6 @@ interface LayerSelectorProps {
   type: LayerType['type'];
   value?: LayerKey;
   setValue: (val: LayerKey) => void;
-  title: string;
   // a way to type this and every other default thing in? e.g style
   className?: string;
   placeholder?: string;

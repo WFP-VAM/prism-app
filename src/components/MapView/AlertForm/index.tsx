@@ -31,6 +31,7 @@ import {
   getPrismUrl,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
+import BoundaryDropdown from '../Layers/BoundaryDropdown';
 
 // Not fully RFC-compliant, but should filter out obviously-invalid emails.
 // Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
@@ -216,7 +217,6 @@ function AlertForm({ classes }: AlertFormProps) {
                   type="wms"
                   value={hazardLayerId}
                   setValue={setHazardLayerId}
-                  title="Hazard Layer"
                   className={classes.selector}
                   placeholder="Choose hazard layer"
                 />
@@ -284,6 +284,10 @@ function AlertForm({ classes }: AlertFormProps) {
                   })}
                   ]
                 </Select>
+              </div>
+              <div className={classes.alertFormOptions}>
+                <Typography variant="body2">Regions v2</Typography>
+                <BoundaryDropdown className={classes.regionSelector} />
               </div>
               <div className={classes.alertFormOptions}>
                 <TextField

@@ -12,18 +12,18 @@ interface MapSelectionState {
 
 const initialState: MapSelectionState = {
   selectedBoundaries: [],
-  // TODO default false
-  isSelectionMode: true,
+  isSelectionMode: false,
 };
 
 export const mapSelectionLayerStateSlice = createSlice({
   name: 'mapSelectionLayerState',
   initialState,
   reducers: {
-    toggleSelectedBoundary: (
-      { selectedBoundaries, ...rest },
-      { payload }: PayloadAction<string>,
-    ) => {
+    toggleSelectedBoundary: (state, { payload }: PayloadAction<string>) => {
+      const { selectedBoundaries, ...rest } = state;
+      if (!state.isSelectionMode) {
+        return state;
+      }
       if (selectedBoundaries.includes(payload)) {
         return {
           ...rest,
@@ -37,12 +37,10 @@ export const mapSelectionLayerStateSlice = createSlice({
         selectedBoundaries: [...selectedBoundaries, payload],
       };
     },
-    removeSelectedBoundary: (state, action: PayloadAction<string>) => {
+    setSelectedBoundaries: (state, { payload }: PayloadAction<string[]>) => {
       return {
         ...state,
-        selectedBoundaries: state.selectedBoundaries.filter(
-          code => code !== action.payload,
-        ),
+        selectedBoundaries: payload,
       };
     },
     clearSelectedBoundaries: state => {
@@ -52,7 +50,7 @@ export const mapSelectionLayerStateSlice = createSlice({
       state,
       { payload: isSelectionMode }: PayloadAction<boolean>,
     ) => {
-      const { isSelectionMode: prevIsSelectionMode, ...rest } = state;
+      /* const { isSelectionMode: prevIsSelectionMode, ...rest } = state;
       // Same mode do nothing
       if (isSelectionMode === prevIsSelectionMode) {
         return state;
@@ -64,9 +62,9 @@ export const mapSelectionLayerStateSlice = createSlice({
           isSelectionMode,
           selectedBoundaries: [],
         };
-      }
+      } */
       return {
-        ...rest,
+        ...state,
         isSelectionMode,
       };
     },
@@ -84,6 +82,7 @@ export const {
   toggleSelectedBoundary,
   clearSelectedBoundaries,
   setIsSelectionMode,
+  setSelectedBoundaries,
 } = mapSelectionLayerStateSlice.actions;
 
 export default mapSelectionLayerStateSlice.reducer;

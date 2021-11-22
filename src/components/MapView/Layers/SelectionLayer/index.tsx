@@ -24,7 +24,6 @@ function SelectionLayer() {
   const boundaryLayerState = useSelector(
     layerDataSelector(boundaryLayer.id),
   ) as LayerData<BoundaryLayerProps> | undefined;
-  const dispatch = useDispatch();
   const { data } = boundaryLayerState || {};
   if (!data || !isSelectionMode) {
     return null;
@@ -47,10 +46,6 @@ function SelectionLayer() {
       id="map-selection-layer"
       data={filteredData}
       fillPaint={fillPaintData}
-      fillOnClick={(evt: any) => {
-        console.log(evt);
-        console.log(evt.features[0]);
-      }}
     />
   );
 }
