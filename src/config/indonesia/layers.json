@@ -2,7 +2,7 @@
   "admin_boundaries": {
     "type": "boundary",
     "path": "../data/indonesia/admin_idn.json",
-    "popup_url": "http://prism-dev.wfp.or.id:3002/p/socio_economic/popup",
+    "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva",
     "opacity": 0.8,
     "admin_code": "A2TEXT",
     "admin_level_names": ["A2NAME", "A1NAME"],
@@ -12,7 +12,7 @@
     "title": "Extreme Rainfall last 5-days",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_probability",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "downloads": [
       {
         "label": "CSV",
@@ -78,7 +78,7 @@
     "title": "Extreme Rainfall-triggering Flood last 5-days",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_flood",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "form_inputs": [
       {
         "id": "DIM_NUMDAYSOURCE",
@@ -134,7 +134,7 @@
     "title": "Extreme Rainfall next 5-days",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_forecast_probability",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "form_inputs": [
       {
         "id": "DIM_NUMDAYSOURCE",
@@ -217,7 +217,7 @@
     "title": "Extreme Rainfall-triggering Flood next 5-days",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_forecast_flood",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "form_inputs": [
       {
         "id": "DIM_NUMDAYSOURCE",
@@ -296,7 +296,7 @@
     "title": "Rainfall Anomaly (Monthly)",
     "type": "wms",
     "server_layer_name": "rainfall_anomaly_monthly",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "date_interval": "month",
     "opacity": 0.5,
     "legend_text": "Percentage of monthly rainfall compared to a long-term average | Source: CHRIPS",
@@ -335,7 +335,7 @@
     "title": "Standardized Precipitation Index (SPI)",
     "type": "wms",
     "server_layer_name": "spi_monthly",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "date_interval": "month",
     "opacity": 0.5,
     "legend_text": "SPI is a normalized index that indicates the probability of occurrence of observed rainfall compared with the long-term average | Source: CHIRPS",
@@ -386,7 +386,7 @@
     "title": "Agricultural drought (VHI)",
     "type": "wms",
     "server_layer_name": "vhi_monthly",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "date_interval": "month",
     "opacity": 0.5,
     "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
@@ -417,7 +417,7 @@
     "title": "Days Since Last Rain",
     "type": "wms",
     "server_layer_name": "days_since_last_rain_daily",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "date_interval": "day",
     "opacity": 0.5,
     "legend_text": "A number of days since the last rainfall above 1mm per day | Source: IMERG",
@@ -603,7 +603,7 @@
     "type": "wms",
     "title": "Population Distribution",
     "server_layer_name": "population2018",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "opacity": 0.5,
     "legend_text": "Sebaran Penduduk 2020 | Sumber: Landsacan",
     "legend": [
@@ -681,7 +681,7 @@
     "type": "wms",
     "title": "Paddy Areas",
     "server_layer_name": "paddy_areas_raster",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "opacity": 0.5,
     "legend_text": "Lahan Baku Sawah 2019 | Sumber: MoA",
     "legend": [
@@ -695,7 +695,7 @@
     "title": "People 10% Lowest",
     "type": "wms",
     "server_layer_name": "Desil10%",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "opacity": 0.5,
     "legend_text": "Number of Houshold Lowest 10% | Source: MOSA",
     "legend": [
@@ -741,7 +741,7 @@
     "title": "Female Headed Hosehold >60 years old",
     "type": "wms",
     "server_layer_name": "KRTW_60",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "opacity": 0.5,
     "legend_text": "Female Headed Hosehold >60 years old | Source: MOSA",
     "legend": [
@@ -787,7 +787,7 @@
     "title": "Number of Disable People",
     "type": "wms",
     "server_layer_name": "Disability",
-    "base_url": "http://3.134.83.146:8080/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "opacity": 0.5,
     "legend_text": "Number of Disable People | Source: MOSA",
     "legend": [
@@ -964,8 +964,8 @@
   "dslr_pop": {
     "type": "admin_level_data",
     "title": "Meteorological Drought Affected Population",
-    "path": "http://prism-dev.wfp.or.id/home/get_layer/22?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
-    "date_url": "http://prism-dev.wfp.or.id/home/get_date/22?start=2020-01-02&end=2020-01-02",
+    "path": "https://prism-backend-old.wfpidn.link/home/get_layer/22?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
+    "date_url": "https://prism-backend-old.wfpidn.link/home/get_date/22?start=2020-01-02&end=2020-01-02",
     "data_field": "VALUE",
     "admin_level": 1,
     "admin_code": "A2CODE",
@@ -1001,8 +1001,8 @@
   "dslr_crops": {
     "type": "admin_level_data",
     "title": "Rice Field Affected by Meteorological Drought (hectare)",
-    "path": "http://prism-dev.wfp.or.id/home/get_layer/25?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
-    "date_url": "http://prism-dev.wfp.or.id/home/get_date/25?start=2020-01-02&end=2020-01-02",
+    "path": "http://prism-backend-old.wfpidn.link/home/get_layer/25?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
+    "date_url": "http://prism-backend-old.wfpidn.link/home/get_date/25?start=2020-01-02&end=2020-01-02",
     "data_field": "VALUE",
     "admin_level": 1,
     "admin_code": "A2CODE",

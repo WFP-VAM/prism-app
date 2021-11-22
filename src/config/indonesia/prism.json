@@ -11,7 +11,7 @@
   "alertFormActive": false,
   "serversUrls": {
     "wcs": [],
-    "wms": ["http://3.134.83.146:8080/geoserver/prism/wms"]
+    "wms": ["https://prism-geoserver.wfpidn.link/geoserver/prism/wms"]
   },
   "map": {
     "latitude": -4.0682689,
