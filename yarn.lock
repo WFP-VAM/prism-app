@@ -4887,11 +4887,6 @@ domhandler@^2.3.0:
   dependencies:
     domelementtype "1"
 
-dompurify@2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.3.0.tgz#07bb39515e491588e5756b1d3e8375b5964814e2"
-  integrity sha512-VV5C6Kr53YVHGOBKO/F86OYX6/iLTw2yVSI721gKetxpHCK/V5TaLEf9ODjRgl1KLSWRMY6cUhAbv/c+IUnwQw==
-
 dompurify@^2.2.0:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.2.6.tgz#54945dc5c0b45ce5ae228705777e8e59d7b2edc4"
@@ -6626,13 +6621,6 @@ htmlparser2@^3.3.0, htmlparser2@^3.9.1:
     entities "^1.1.1"
     inherits "^2.0.1"
     readable-stream "^3.1.1"
-
-htmlstring-to-react@^5.2.3:
-  version "5.2.3"
-  resolved "https://registry.yarnpkg.com/htmlstring-to-react/-/htmlstring-to-react-5.2.3.tgz#938384d105514d8b0ae37a584f37c1d2dbe9aff7"
-  integrity sha512-flt6vmBIaxqmQTk1t9gqOO/BYO/obnTZsJsBg8Vzv4QKSgmmcI12ulA87mkHGK4mSqqHf87rnoTj7RLtIslRaQ==
-  dependencies:
-    dompurify "2.3.0"
 
 http-deceiver@^1.2.7:
   version "1.2.7"
