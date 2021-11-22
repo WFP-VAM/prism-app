@@ -2,9 +2,6 @@ import {
   Box,
   Button,
   createStyles,
-  ListSubheader,
-  MenuItem,
-  Select,
   TextField,
   Theme,
   Typography,
@@ -13,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { ArrowDropDown, Notifications } from '@material-ui/icons';
 import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   BoundaryLayerProps,
   LayerKey,
@@ -32,6 +29,8 @@ import {
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 import BoundaryDropdown from '../Layers/BoundaryDropdown';
+import { getSelectedBoundaries } from '../../../context/mapSelectionLayerStateSlice';
+import { addNotification } from '../../../context/notificationStateSlice';
 
 // Not fully RFC-compliant, but should filter out obviously-invalid emails.
 // Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
@@ -52,12 +51,11 @@ function AlertForm({ classes }: AlertFormProps) {
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
-
+  const regionsList = useSelector(getSelectedBoundaries);
   const [isAlertFormFormOpen, setIsAlertFormFormOpen] = useState(false);
-
+  const dispatch = useDispatch();
   // form elements
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
-  const [regionsList, setRegionsList] = useState<string[]>(['allRegions']);
   const [emailValid, setEmailValid] = useState<boolean>(false);
   const [email, setEmail] = useState('');
   const [belowThreshold, setBelowThreshold] = useState('');
@@ -65,9 +63,8 @@ function AlertForm({ classes }: AlertFormProps) {
   const [thresholdError, setThresholdError] = useState<string | null>(null);
   const [alertName, setAlertName] = useState('');
   const [alertWaiting, setAlertWaiting] = useState(false);
-  const [alertFinishedMessage, setAlertFinishedMessage] = useState('');
 
-  const regionNamesToFeatureData: { [k: string]: object } = useMemo(() => {
+  const regionCodesToFeatureData: { [k: string]: object } = useMemo(() => {
     if (!boundaryLayerData) {
       // Not loaded yet. Will proceed when it is.
       return {};
@@ -75,23 +72,12 @@ function AlertForm({ classes }: AlertFormProps) {
 
     return Object.fromEntries(
       boundaryLayerData.data.features
-        .filter(feature => feature.properties != null)
+        .filter(feature => feature.properties !== null)
         .map(feature => {
-          const localNames = boundaryLayer.adminLevelNames.map(
-            name => (feature.properties || {})[name],
-          );
-
-          return [localNames.join(' / '), feature];
+          return [feature.properties?.[boundaryLayer.adminCode], feature];
         }),
     );
   }, [boundaryLayerData]);
-
-  const sortedRegionNames: string[] = useMemo(() => {
-    // Fine to mutate this array since it's a new array of key names
-
-    // eslint-disable-next-line fp/no-mutating-methods
-    return Object.keys(regionNamesToFeatureData).sort();
-  }, [regionNamesToFeatureData]);
 
   const generateGeoJsonForRegionNames = () => {
     // TODO - Handle these errors properly.
@@ -103,12 +89,8 @@ function AlertForm({ classes }: AlertFormProps) {
       throw new Error('Please select at least one region boundary.');
     }
 
-    if (regionsList[0] === 'allRegions') {
-      return boundaryLayerData.data;
-    }
-
     const features = regionsList.map(region => {
-      return regionNamesToFeatureData[region];
+      return regionCodesToFeatureData[region];
     });
 
     // Generate a copy of admin layer data (to preserve top-level properties)
@@ -178,8 +160,13 @@ function AlertForm({ classes }: AlertFormProps) {
     setAlertWaiting(false);
 
     if ('message' in response) {
-      // eslint-disable-next-line dot-notation
-      setAlertFinishedMessage(response['message']);
+      // TODO response isn't typed correctly because fetchApiData is too strict.
+      dispatch(
+        addNotification({
+          message: (response as { message: string }).message,
+          type: 'success',
+        }),
+      );
     }
   };
 
@@ -247,46 +234,6 @@ function AlertForm({ classes }: AlertFormProps) {
               </div>
               <div className={classes.alertFormOptions}>
                 <Typography variant="body2">Regions</Typography>
-                <Select
-                  id="regionsList"
-                  label="Regions to monitor"
-                  type="text"
-                  variant="filled"
-                  value={regionsList}
-                  multiple
-                  className={classes.regionSelector}
-                  onChange={e => {
-                    const selected: string[] = e.target.value as string[];
-                    const lastSelected = selected[selected.length - 1];
-
-                    if (lastSelected !== 'allRegions') {
-                      setRegionsList(
-                        selected.filter(el => el !== 'allRegions'),
-                      );
-                    } else {
-                      // If 'allRegions' was the last selected then it should be the only thing selected.
-                      setRegionsList(['allRegions']);
-                    }
-                  }}
-                >
-                  [
-                  <MenuItem key="allRegions" value="allRegions">
-                    All
-                  </MenuItem>
-                  <ListSubheader>Administrative Regions</ListSubheader>
-                  ...
-                  {sortedRegionNames.map(region => {
-                    return (
-                      <MenuItem key={region} value={region}>
-                        {region}
-                      </MenuItem>
-                    );
-                  })}
-                  ]
-                </Select>
-              </div>
-              <div className={classes.alertFormOptions}>
-                <Typography variant="body2">Regions v2</Typography>
                 <BoundaryDropdown className={classes.regionSelector} />
               </div>
               <div className={classes.alertFormOptions}>
@@ -311,12 +258,6 @@ function AlertForm({ classes }: AlertFormProps) {
                 />
               </div>
             </div>
-            <Typography
-              variant="body2"
-              className={classes.alertFormResponseText}
-            >
-              {alertFinishedMessage}
-            </Typography>
             <Button
               className={classes.innerCreateAlertButton}
               onClick={runAlertForm}

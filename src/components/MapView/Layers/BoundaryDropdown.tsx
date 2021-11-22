@@ -20,13 +20,13 @@ import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
 import { LayerData } from '../../../context/layers/layer-data';
 
 const boundaryLayer = getBoundaryLayerSingleton();
-const ClickableListSubheader = styled(ListSubheader)({
+const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
   pointerEvents: 'inherit',
   cursor: 'pointer',
   '&:hover': {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.palette.action.hover,
   },
-});
+}));
 
 /**
  * This component allows you to give the user the ability to select several admin_boundary cells.

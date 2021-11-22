@@ -85,67 +85,6 @@ exports[`renders as expected 1`] = `
             >
               Regions
             </mock-typography>
-            <div
-              class="MuiInputBase-root MuiFilledInput-root MuiFilledInput-underline AlertForm-regionSelector-9"
-            >
-              <div
-                aria-haspopup="listbox"
-                aria-labelledby="regionsList"
-                class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-filled MuiInputBase-input MuiFilledInput-input"
-                id="regionsList"
-                role="button"
-                tabindex="0"
-              >
-                All
-              </div>
-              <input
-                aria-hidden="true"
-                class="MuiSelect-nativeInput"
-                tabindex="-1"
-                value="allRegions"
-              />
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconFilled"
-                focusable="false"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M7 10l5 5 5-5z"
-                />
-              </svg>
-              <mock-menu
-                anchorel="[object HTMLDivElement]"
-                id="menu-"
-                menulistprops="[object Object]"
-                open="false"
-                paperprops="[object Object]"
-              >
-                <mock-menuitem
-                  aria-selected="true"
-                  data-value="allRegions"
-                  role="option"
-                  selected="true"
-                >
-                  All
-                </mock-menuitem>
-                <li
-                  class="MuiListSubheader-root MuiListSubheader-sticky MuiListSubheader-gutters"
-                  role="option"
-                >
-                  Administrative Regions
-                </li>
-              </mock-menu>
-            </div>
-          </div>
-          <div
-            class="AlertForm-alertFormOptions-5"
-          >
-            <mock-typography
-              variant="body2"
-            >
-              Regions v2
-            </mock-typography>
             <mock-circularprogress />
           </div>
           <div
@@ -172,10 +111,6 @@ exports[`renders as expected 1`] = `
             />
           </div>
         </div>
-        <mock-typography
-          classname="AlertForm-alertFormResponseText-11"
-          variant="body2"
-        />
         <mock-button
           classname="AlertForm-innerCreateAlertButton-7"
           disabled="true"
