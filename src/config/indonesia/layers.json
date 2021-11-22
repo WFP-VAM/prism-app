@@ -1001,8 +1001,8 @@
   "dslr_crops": {
     "type": "admin_level_data",
     "title": "Rice Field Affected by Meteorological Drought (hectare)",
-    "path": "http://prism-backend-old.wfpidn.link/home/get_layer/25?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
-    "date_url": "http://prism-backend-old.wfpidn.link/home/get_date/25?start=2020-01-02&end=2020-01-02",
+    "path": "https://prism-backend-old.wfpidn.link/home/get_layer/25?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
+    "date_url": "https://prism-backend-old.wfpidn.link/home/get_date/25?start=2020-01-02&end=2020-01-02",
     "data_field": "VALUE",
     "admin_level": 1,
     "admin_code": "A2CODE",
