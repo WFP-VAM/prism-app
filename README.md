@@ -1,6 +1,6 @@
 # WFP PRISM Frontend
 
-This project is the front-end interface for the World Food Programme's [PRISM project](https://innovation.wfp.org/project/prism). It displays data, forecasts, and impact projections on a configurable map interface.
+This project is the front-end interface for the World Food Programme's [PRISM project](https://innovation.wfp.org/project/prism). It displays data and impact projections on a configurable map interface.
 
 ![](/assets/prism_frontend.png)
 

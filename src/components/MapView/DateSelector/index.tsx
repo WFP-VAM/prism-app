@@ -1,5 +1,5 @@
 import React, { forwardRef, Ref, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import {
@@ -18,7 +18,7 @@ import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import 'react-datepicker/dist/react-datepicker.css';
 import { findIndex, get, isEqual } from 'lodash';
-import { updateDateRange } from '../../../context/mapStateSlice';
+import { useUrlHistory } from '../../../utils/url-utils';
 import { DateRangeType } from '../../../config/types';
 import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
@@ -53,7 +53,6 @@ function DateSelector({
   classes,
   selectedDateRef,
 }: DateSelectorProps) {
-  const dispatch = useDispatch();
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
 
   const [selectedDate, setSelectedDate] = useState(moment(stateStartDate));
@@ -76,6 +75,8 @@ function DateSelector({
 
   const timeLine = useRef(null);
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
+
+  const { updateHistory } = useUrlHistory();
 
   // Move the slider automatically so that the pointer always visible
   useEffect(() => {
@@ -128,7 +129,7 @@ function DateSelector({
 
   function updateStartDate(date: Date) {
     const time = date.getTime();
-    dispatch(updateDateRange({ startDate: time, endDate: time }));
+    updateHistory('date', moment(time).format('YYYY-MM-DD'));
   }
 
   function setDatePosition(date: number | undefined, increment: number) {
