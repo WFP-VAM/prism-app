@@ -47,7 +47,6 @@ exports[`renders as expected 1`] = `
             <mock-layer-dropdown
               classname="AlertForm-selector-8"
               placeholder="Choose hazard layer"
-              title="Hazard Layer"
               type="wms"
             />
           </div>
@@ -138,6 +137,16 @@ exports[`renders as expected 1`] = `
                 </li>
               </mock-menu>
             </div>
+          </div>
+          <div
+            class="AlertForm-alertFormOptions-5"
+          >
+            <mock-typography
+              variant="body2"
+            >
+              Regions v2
+            </mock-typography>
+            <mock-circularprogress />
           </div>
           <div
             class="AlertForm-alertFormOptions-5"
