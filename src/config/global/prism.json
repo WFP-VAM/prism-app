@@ -1,6 +1,7 @@
 {
   "country": "Global",
   "alertFormActive": false,
+  "defaultLayer": "rainfall_dekad",
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",

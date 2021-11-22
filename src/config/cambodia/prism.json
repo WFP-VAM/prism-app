@@ -1,6 +1,7 @@
 {
   "country": "Cambodia",
   "alertFormActive": false,
+  "defaultLayer": "hydra_s1",
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
