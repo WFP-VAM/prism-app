@@ -75,17 +75,24 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
       });
     }
   });
-  // this could be testable, needs to be constructed in a way that prevents it breaking whenever new layers are added. (don't put layer name in snapshot)
-
-  const defaultValue = 'All';
+  const selectOrDeselectAll = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (selectedBoundaries.length > 0) {
+      dispatch(setSelectedBoundaries([]));
+    } else {
+      dispatch(
+        setSelectedBoundaries(
+          categories.flatMap(c => c.children.map(({ value }) => value)),
+        ),
+      );
+    }
+  };
 
   return (
     <FormControl {...rest}>
       <Select
         multiple
         value={selectedBoundaries}
-        defaultValue={[defaultValue]}
-        // TODO value
         onChange={e => {
           // do nothing if value is invalid
           // This happens when you click list subheadings.
@@ -102,6 +109,9 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
           );
         }}
       >
+        <MenuItem onClick={selectOrDeselectAll}>
+          {selectedBoundaries.length === 0 ? 'Select All' : 'Deselect All'}
+        </MenuItem>
         {categories.reduce(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
           (components, category) => [
@@ -141,11 +151,7 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
               </MenuItem>
             )),
           ],
-          [
-            <MenuItem key={defaultValue} value={defaultValue}>
-              {defaultValue}
-            </MenuItem>,
-          ] as ReactElement[],
+          [] as ReactElement[],
         )}
       </Select>
     </FormControl>

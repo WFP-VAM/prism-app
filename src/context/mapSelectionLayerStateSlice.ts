@@ -51,19 +51,6 @@ export const mapSelectionLayerStateSlice = createSlice({
       state,
       { payload: isSelectionMode }: PayloadAction<boolean>,
     ) => {
-      /* const { isSelectionMode: prevIsSelectionMode, ...rest } = state;
-      // Same mode do nothing
-      if (isSelectionMode === prevIsSelectionMode) {
-        return state;
-      }
-      // If selection mode is turned off, clear selected boundaries
-      if (!isSelectionMode) {
-        return {
-          ...rest,
-          isSelectionMode,
-          selectedBoundaries: [],
-        };
-      } */
       return {
         ...state,
         isSelectionMode,
