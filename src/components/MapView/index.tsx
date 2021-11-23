@@ -414,6 +414,12 @@ const styles = () =>
     },
     buttonContainer: {
       zIndex: 5,
+      // Allow users to click on the map through this div
+      pointerEvents: 'none',
+      // Give children the ability to be clicked however
+      '& > * > *': {
+        pointerEvents: 'auto',
+      },
       position: 'absolute',
       top: 0,
       width: '100%',
