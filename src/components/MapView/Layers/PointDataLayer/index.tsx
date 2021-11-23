@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
+import { get } from 'lodash';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
 import { PointDataLayerProps } from '../../../../config/types';
+
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
@@ -12,6 +13,7 @@ import {
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
+import { getFeatureInfoPropsData } from '../../utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -50,7 +52,8 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       data={data}
       circleLayout={circleLayout}
       circlePaint={circlePaint}
-      circleOnClick={(evt: any) => {
+      circleOnClick={async (evt: any) => {
+        // by default add `measure` to the tooltip
         dispatch(
           addPopupData({
             [layer.title]: {
@@ -62,6 +65,12 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
               coordinates: evt.lngLat,
             },
           }),
+        );
+        // then add feature_info_props as extra fields to the tooltip
+        dispatch(
+          addPopupData(
+            getFeatureInfoPropsData(layer.featureInfoProps || {}, evt),
+          ),
         );
       }}
     />

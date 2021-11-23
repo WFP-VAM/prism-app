@@ -1,3 +1,4 @@
+import { camelCase } from 'lodash';
 import GeoJSON from 'geojson';
 import moment from 'moment';
 import type { LazyLoader } from './layer-data';
@@ -21,24 +22,48 @@ export type PointLayerData = {
   [key: string]: any;
 }[];
 
+export const queryParamsToString = (queryParams?: {
+  [key: string]: string | { [key: string]: string };
+}): string =>
+  queryParams
+    ? Object.entries(queryParams)
+        .map(([key, value]) => {
+          if (key === 'filters') {
+            const filterValues = Object.entries(value)
+              .map(([filterKey, filterValue]) => `${filterKey}=${filterValue}`)
+              .join(',');
+
+            return `filters=${filterValues}`;
+          }
+          return `${camelCase(key)}=${value}`;
+        })
+        .join('&')
+    : '';
+
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async ({
   date,
-  layer: { data: dataUrl, fallbackData },
+  layer: { data: dataUrl, fallbackData, additionalQueryParams },
 }) => {
   // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
 
   const formattedDate = date && moment(date).format('YYYY-MM-DD');
+
   // TODO exclusive to this api...
-  const dateQuery = `?beginDateTime=${
+  const dateQuery = `beginDateTime=${
     formattedDate || '2000-01-01'
   }&endDateTime=${formattedDate || '2023-12-21'}`;
+
+  const requestUrl = `${dataUrl}${
+    dataUrl.includes('?') ? '&' : '?'
+  }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
+
   let data;
   try {
     // eslint-disable-next-line fp/no-mutation
     data = (await (
-      await fetch(dataUrl + dateQuery, {
+      await fetch(requestUrl, {
         mode: 'cors',
       })
     ).json()) as PointLayerData;

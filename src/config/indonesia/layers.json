@@ -5,11 +5,21 @@
     "opacity": 0.8,
     "admin_code": "A2TEXT",
     "admin_level_names": ["A2NAME", "A1NAME"],
-    "admin_level_local_names": ["A2NAME", "A1NAME"]
+    "admin_level_local_names": ["A2NAME", "A1NAME"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
   },
   "population_below_poverty": {
     "title": "Poverty Rate",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "HH_FE65",
     "admin_level": 1,
@@ -26,7 +36,7 @@
   },
   "pou": {
     "title": "Prevalence of Undernoursihment",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "POU",
     "admin_level": 1,
@@ -58,7 +68,7 @@
   },
   "CER_YIELD": {
     "title": "Cereal Yield",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "CER_YIELD",
     "admin_level": 1,
@@ -90,7 +100,7 @@
   },
   "HH_AGRI": {
     "title": "Household with Income Derived from Agriculture",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "HH_AGRI",
     "admin_level": 1,
@@ -122,7 +132,7 @@
   },
   "HH_FE65": {
     "title": "Houshold with Food Expenditure >65%",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "HH_FE65",
     "admin_level": 1,
@@ -154,7 +164,7 @@
   },
   "OP_UNEMPLOY": {
     "title": "Open Unemployment",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "OP_UNEMPLOY",
     "admin_level": 1,
@@ -186,7 +196,7 @@
   },
   "HH_FOODASS": {
     "title": "Poor Houshold With Access to Food Assistance",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "HH_FOODASS",
     "admin_level": 1,
@@ -218,7 +228,7 @@
   },
   "HH_ELEC_2019": {
     "title": "Poor Houshold With Access to Food Assistance",
-    "type": "nso",
+    "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "HH_FOODASS",
     "admin_level": 1,
