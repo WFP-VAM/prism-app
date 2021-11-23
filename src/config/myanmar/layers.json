@@ -12,6 +12,42 @@
       },
       "line": {
         "line-color": "gray",
+        "line-width": 0.5,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "../data/myanmar/mmr_admin1_boundaries.json",
+    "opacity": 0.8,
+    "admin_code": "TS_PCODE",
+    "admin_level_names": ["TS", "ST", "DT"],
+    "admin_level_local_names": ["DT_MMR4", "TS_MMR4"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin2_boundaries": {
+    "type": "boundary",
+    "path": "../data/myanmar/mmr_admin2_boundaries.json",
+    "opacity": 0.8,
+    "admin_code": "TS_PCODE",
+    "admin_level_names": ["TS", "ST", "DT"],
+    "admin_level_local_names": ["DT_MMR4", "TS_MMR4"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
         "line-width": 1,
         "line-opacity": 0.8
       }
