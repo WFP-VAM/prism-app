@@ -5,7 +5,17 @@
     "opacity": 0.8,
     "admin_code": "A2TEXT",
     "admin_level_names": ["A2NAME", "A1NAME"],
-    "admin_level_local_names": ["A2NAME", "A1NAME"]
+    "admin_level_local_names": ["A2NAME", "A1NAME"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
   },
   "population_below_poverty": {
     "title": "Poverty Rate",

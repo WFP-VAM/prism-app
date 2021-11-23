@@ -129,21 +129,29 @@ export const LayerDefinitions: LayersMap = (() => {
   return layers;
 })();
 
-export function getBoundaryLayerSingleton(): BoundaryLayerProps {
+export function getBoundaryLayers(): BoundaryLayerProps[] {
   const boundaryLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
   );
-  if (boundaryLayers.length > 1) {
-    throw new Error(
-      'More than one Boundary Layer defined! There should only be one boundary layer in layers.json',
-    );
-  }
   if (boundaryLayers.length === 0) {
     throw new Error(
-      'No Boundary Layer found! There should be exactly one boundary layer defined in layers.json.',
+      'No boundary layer found. There should be at least one boundary layer defined in layers.json',
     );
   }
-  return boundaryLayers[0];
+  return boundaryLayers;
+}
+
+export function getBoundaryLayerSingleton(): BoundaryLayerProps {
+  const boundaryLayers = getBoundaryLayers();
+  const boundaryLayer = boundaryLayers.find(l => l.id === 'admin_boundaries');
+
+  if (!boundaryLayer) {
+    throw new Error(
+      'No admin_boundaries Layer found! There should be exactly one boundary layer defined in layers.json with id admin_boundaries.',
+    );
+  }
+
+  return boundaryLayer;
 }
 
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {

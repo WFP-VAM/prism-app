@@ -35,7 +35,7 @@ const initialState: MapState = {
 
 function keepLayer(layer: LayerType, payload: LayerType) {
   // Simple function to control which layers can overlap.
-  return payload.type !== layer.type;
+  return payload.type !== layer.type || payload.type === 'boundary';
 }
 
 export const mapStateSlice = createSlice({
