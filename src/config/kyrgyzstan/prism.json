@@ -9,7 +9,6 @@
     "tables": "icon_table.png"
   },
   "alertFormActive": false,
-  "defaultLayer": "rainfall_dekad",
   "map": {
     "latitude": 41.256,
     "longitude": 74.757,

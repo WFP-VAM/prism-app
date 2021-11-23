@@ -9,7 +9,6 @@
     "tables": "icon_table.png"
   },
   "alertFormActive": false,
-  "defaultLayer": "pasture_anomaly",
   "serversUrls": {
     "wms": ["https://mongolia.sibelius-datacube.org:5000/wms"]
   },
