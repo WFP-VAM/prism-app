@@ -48,7 +48,7 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
     | undefined;
   const { data } = boundaryLayerData || {};
   if (!data) {
-    return <CircularProgress />;
+    return <CircularProgress size={24} color="secondary" />;
   }
   const categories: Array<{
     title: string;
@@ -112,7 +112,7 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
         <MenuItem onClick={selectOrDeselectAll}>
           {selectedBoundaries.length === 0 ? 'Select All' : 'Deselect All'}
         </MenuItem>
-        {categories.reduce(
+        {categories.reduce<ReactElement[]>(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
           (components, category) => [
             ...components,
@@ -151,7 +151,7 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
               </MenuItem>
             )),
           ],
-          [] as ReactElement[],
+          [],
         )}
       </Select>
     </FormControl>
@@ -159,7 +159,6 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
 }
 
 interface BoundaryDropdownProps {
-  // a way to type this and every other default thing in? e.g style
   className?: string;
 }
 

@@ -12,6 +12,10 @@ import { LayerData } from '../../../../context/layers/layer-data';
 import { BoundaryLayerProps } from '../../../../config/types';
 
 const boundaryLayer = getBoundaryLayerSingleton();
+const FILL_PAINT_DATA: MapboxGL.FillPaint = {
+  'fill-opacity': 0.3,
+  'fill-color': 'green',
+};
 
 /**
  * A special layer which allows you to select any cell you want within admin_boundaries programmatically.
@@ -29,11 +33,6 @@ function SelectionLayer() {
     return null;
   }
 
-  // We use the legend values from the config to define "intervals".
-  const fillPaintData: MapboxGL.FillPaint = {
-    'fill-opacity': 0.3,
-    'fill-color': 'green',
-  };
   const filteredData = {
     ...data,
     features: data.features.filter(cell =>
@@ -45,7 +44,7 @@ function SelectionLayer() {
     <GeoJSONLayer
       id="map-selection-layer"
       data={filteredData}
-      fillPaint={fillPaintData}
+      fillPaint={FILL_PAINT_DATA}
     />
   );
 }

@@ -417,6 +417,7 @@ const styles = () =>
       // Allow users to click on the map through this div
       pointerEvents: 'none',
       // Give children the ability to be clicked however
+      // (go down 2 levels to target raw elements, instead of individual grid cells)
       '& > * > *': {
         pointerEvents: 'auto',
       },

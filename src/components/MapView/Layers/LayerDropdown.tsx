@@ -75,7 +75,6 @@ interface LayerSelectorProps {
   type: LayerType['type'];
   value?: LayerKey;
   setValue: (val: LayerKey) => void;
-  // a way to type this and every other default thing in? e.g style
   className?: string;
   placeholder?: string;
 }
