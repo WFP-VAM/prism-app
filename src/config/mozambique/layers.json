@@ -5,7 +5,35 @@
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE",
     "admin_level_names": ["ADM2_PT", "ADM1_PT"],
-    "admin_level_local_names": ["ADM1_PT", "ADM2_PT"]
+    "admin_level_local_names": ["ADM1_PT", "ADM2_PT"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "../data/mozambique/moz_admin1_boundaries.json",
+    "opacity": 0.8,
+    "admin_code": "ADM2_PCODE",
+    "admin_level_names": ["ADM2_PT", "ADM1_PT"],
+    "admin_level_local_names": ["ADM1_PT", "ADM2_PT"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 3,
+        "line-opacity": 0.8
+      }
+    }
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",

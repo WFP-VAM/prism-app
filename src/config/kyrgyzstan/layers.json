@@ -5,7 +5,17 @@
     "opacity": 1,
     "admin_code": "ADM2_PCODE",
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["ADM1_KY", "ADM2_KY"]
+    "admin_level_local_names": ["ADM1_KY", "ADM2_KY"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
   },
   "recurrence_mudflows": {
     "title": "Recurrence of mudflows",

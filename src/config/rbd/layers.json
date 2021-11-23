@@ -5,7 +5,17 @@
       "opacity": 0.8,
       "admin_code": "ADM0_PCODE",
       "admin_level_names": ["adm0_name"],
-      "admin_level_local_names": ["adm0_name"]
+      "admin_level_local_names": ["adm0_name"],
+      "styles:": {
+        "fill": {
+          "fill-opacity": 0
+        },
+        "line": {
+          "line-color": "gray",
+          "line-width": 1,
+          "line-opacity": 0.8
+        }
+      }
     },
     "rainfall_dekad": {
       "title": "10-day rainfall estimate (mm)",
