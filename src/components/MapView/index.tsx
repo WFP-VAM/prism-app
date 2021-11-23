@@ -155,8 +155,13 @@ function MapView({ classes }: MapViewProps) {
      */
     if (!hazardLayerId && !baselineLayerId) {
       const defaultLayer = get(appConfig, 'defaultLayer', '');
-      if (defaultLayer.length !== 0) {
-        updateHistory('baselineLayerId', defaultLayer);
+      const layer = LayerDefinitions[defaultLayer as LayerKey];
+      if (layer) {
+        const urlLayerKey =
+          layer.type === 'admin_level_data'
+            ? 'baselineLayerId'
+            : 'hazardLayerId';
+        updateHistory(urlLayerKey, defaultLayer);
       }
     }
 
