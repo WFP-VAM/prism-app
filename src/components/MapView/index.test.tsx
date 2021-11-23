@@ -15,6 +15,15 @@ jest.mock('./DateSelector', () => 'mock-DateSelector');
 jest.mock('./Analyser', () => 'mock-Analyser');
 jest.mock('./Download', () => 'mock-Download');
 
+jest.mock('react-router-dom', () => ({
+  useHistory: () => ({
+    replace: jest.fn(),
+    location: {
+      search: '',
+    },
+  }),
+}));
+
 test('renders as expected', () => {
   const { container } = render(
     <Provider store={store}>

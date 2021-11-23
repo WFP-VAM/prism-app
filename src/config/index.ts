@@ -6,6 +6,8 @@ import {
   cambodiaRawTables,
 } from './cambodia';
 
+import { globalConfig, globalRawLayers, globalRawTables } from './global';
+
 import {
   indonesiaConfig,
   indonesiaRawLayers,
@@ -42,6 +44,7 @@ import {
 
 type Country =
   | 'cambodia'
+  | 'global'
   | 'indonesia'
   | 'kyrgyzstan'
   | 'mongolia'
@@ -62,6 +65,12 @@ const configMap = {
     rawLayers: cambodiaRawLayers,
     rawTables: cambodiaRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_gov_wfp_edEarly2021.json`,
+  },
+  global: {
+    appConfig: globalConfig,
+    rawLayers: globalRawLayers,
+    rawTables: globalRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/adm0_simplified.json`,
   },
   indonesia: {
     appConfig: indonesiaConfig,
