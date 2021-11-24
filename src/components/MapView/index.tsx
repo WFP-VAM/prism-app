@@ -45,6 +45,7 @@ import { useUrlHistory } from '../../utils/url-utils';
 import {
   getBoundaryLayers,
   getBoundaryLayerSingleton,
+  getBoundaryLayers,
   LayerDefinitions,
 } from '../../config/utils';
 

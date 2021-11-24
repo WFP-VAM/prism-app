@@ -135,7 +135,7 @@ export function getBoundaryLayers(): BoundaryLayerProps[] {
   );
   if (boundaryLayers.length === 0) {
     throw new Error(
-      'No Boundary Layer found! There should be exactly one boundary layer defined in layers.json.',
+      'No boundary layer found. There should be at least one boundary layer defined in layers.json',
     );
   }
   return boundaryLayers;
