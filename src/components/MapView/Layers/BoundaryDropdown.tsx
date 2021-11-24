@@ -1,11 +1,14 @@
 import {
   CircularProgress,
   FormControl,
+  InputLabel,
   ListSubheader,
   MenuItem,
   Select,
   styled,
+  Theme,
   Typography,
+  useMediaQuery,
 } from '@material-ui/core';
 import React, { ReactElement, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,6 +38,9 @@ const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
  */
 function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
   const dispatch = useDispatch();
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.only('xs'),
+  );
   const selectedBoundaries = useSelector(getSelectedBoundaries);
   // toggle the selection mode as this component is created and destroyed.
   useEffect(() => {
@@ -90,6 +96,7 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
 
   return (
     <FormControl {...rest}>
+      <InputLabel>{isMobile ? 'Tap' : 'Click'} the map to select</InputLabel>
       <Select
         multiple
         value={selectedBoundaries}
