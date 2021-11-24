@@ -85,7 +85,10 @@ exports[`renders as expected 1`] = `
             >
               Regions
             </mock-typography>
-            <mock-circularprogress />
+            <mock-circularprogress
+              color="secondary"
+              size="24"
+            />
           </div>
           <div
             class="AlertForm-alertFormOptions-5"
