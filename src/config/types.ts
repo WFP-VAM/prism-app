@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { FillPaint, LinePaint } from 'mapbox-gl';
 import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
@@ -202,12 +203,23 @@ export class CommonLayerProps {
   featureInfoProps?: { [key: string]: FeatureInfoProps };
 }
 
+/*
+  To get possible values for fill and lines, go to:
+  https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#line
+  https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#fill
+*/
+type LayerStyleProps = {
+  fill: FillPaint;
+  line: LinePaint;
+};
+
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
   path: string; // path to admin_boundries.json file - web or local.
   adminCode: string;
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: string[]; // Same as above, local to country
+  styles: LayerStyleProps; // Mapbox line and fill properties.
 }
 
 export enum LabelType {

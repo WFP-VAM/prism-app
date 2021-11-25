@@ -64,7 +64,6 @@ def test_kobo_response_form(kobo_params, kobo_data):
         'name': 'name',
         'datetime': 'date',
         'geom': 'geom',
-        'measure': 'value',
         'filters': {
             'status': 'Approved'
         }
@@ -88,7 +87,8 @@ def test_kobo_response_form(kobo_params, kobo_data):
         }
     ]
 
-    kobo_data.return_value = (kobo_data_json, ['value', 'geom', 'username'])
+    labels = {'value': 'integer', 'geom': 'geopoint', 'username': 'username', 'date': 'datetime'}
+    kobo_data.return_value = (kobo_data_json, labels)
 
     begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
     end = datetime(2030, 1, 1).replace(tzinfo=timezone.utc)
@@ -96,8 +96,8 @@ def test_kobo_response_form(kobo_params, kobo_data):
 
     assert len(forms) == 2
 
-    assert forms[0]['lat'] == '21.908012'
-    assert forms[0]['lon'] == '95.986908'
+    assert forms[0]['lat'] == 21.908012
+    assert forms[0]['lon'] == 95.986908
     assert forms[0]['value'] == 2
     assert forms[0]['status'] == 'Approved'
 
@@ -105,7 +105,6 @@ def test_kobo_response_form(kobo_params, kobo_data):
         'name': 'name',
         'datetime': 'date',
         'geom': 'geom',
-        'measure': 'value',
         'filters': {
             'status': 'Approved',
             'username': 'jorge'
