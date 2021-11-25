@@ -42,6 +42,12 @@ import {
   tajikistanRawTables,
 } from './tajikistan';
 
+import {
+  zimbabweConfig,
+  zimbabweRawLayers,
+  zimbabweRawTables,
+} from './zimbabwe';
+
 type Country =
   | 'cambodia'
   | 'global'
@@ -51,7 +57,8 @@ type Country =
   | 'mozambique'
   | 'myanmar'
   | 'rbd'
-  | 'tajikistan';
+  | 'tajikistan'
+  | 'zimbabwe';
 
 const DEFAULT: Country = 'myanmar';
 
@@ -113,6 +120,13 @@ const configMap = {
     rawLayers: tajikistanRawLayers,
     rawTables: tajikistanRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/tjk_admin_boundaries_v2.json`,
+  },
+  zimbabwe: {
+    appConfig: zimbabweConfig,
+    rawLayers: zimbabweRawLayers,
+    rawTables: zimbabweRawTables,
+    // TODO - Add selected defaultBoundary to S3
+    defaultBoundariesFile: '',
   },
 } as const;
 
