@@ -55,6 +55,9 @@
     },
     "temperature": {
       "land_surface_temperature": ["lst_daytime_5", "lst_day_anomaly_5"]
+    },
+    "vulnerability": {
+      "poverty": ["poor_hhs"]   
     }
   }
 }

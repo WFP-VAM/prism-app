@@ -1,11 +1,11 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/namibia/nam_admin2.json",
+    "path": "../data/namibia/nam_admin1.json",
     "opacity": 0.8,
-    "admin_code": "ADM2_PCODE",
-    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["ADM1_EN", "ADM2_EN"],
+    "admin_code": "ADM1_PCODE",
+    "admin_level_names": ["ADM1_EN"],
+    "admin_level_local_names": ["ADM1_EN"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -13,24 +13,6 @@
       "line": {
         "line-color": "gray",
         "line-width": 1,
-        "line-opacity": 0.8
-      }
-    }
-  },
-  "admin1_boundaries": {
-    "type": "boundary",
-    "path": "../data/namibia/nam_admin1.json",
-    "opacity": 0.8,
-    "admin_code": "ADM1_PCODE",
-    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["ADM1_EN", "ADM2_EN"],
-    "styles:": {
-      "fill": {
-        "fill-opacity": 0
-      },
-      "line": {
-        "line-color": "gray",
-        "line-width": 2,
         "line-opacity": 0.8
       }
     }
@@ -856,34 +838,6 @@
       { "value": "> 800", "color": "#ffc4ee" }
     ]
   }, 
-  "adamts_buffers": {
-    "title": "Tropical Storms - Wind buffers",
-    "type": "wms",
-    "server_layer_name": "moz_gdacs_buffers",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
-    "group": {
-      "name": "Tropical Storms",
-      "main": true
-    },
-    "base_url": "https://geonode.wfp.org/geoserver",
-    "feature_info_props": {
-      "event_name": {
-        "type": "text",
-        "label": "Event name"
-      },
-      "timestamp": {
-        "type": "date",
-        "label": "Publication date"
-      }
-    },
-    "exposure": {
-      "id": "wp_pop_cicunadj",
-      "key": "label"
-    },
-    "geometry": "polygon"
-  },
   "wp_pop_cicunadj": {
     "title": "population",
     "type": "wms",
@@ -899,113 +853,36 @@
     "legend_text": "",
     "legend": []
   }, 
-  "adamts_nodes": {
-    "title": "Tropical Storms - Nodes",
-    "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_nodes",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "Nodes visualize estimated maximum wind speed along a storm's path at various points in time. Source: GDACS",
-    "group": {
-      "name": "Tropical Storms",
-      "main": false
-    },
-    "base_url": "https://geonode.wfp.org/geoserver"
-  },
-  "adamts_tracks": {
-    "title": "Tropical Storms - Tracks",
-    "type": "wms",
-    "server_layer_name": "wld_gdacs_tc_events_tracks",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
-    "group": {
-      "name": "Tropical Storms",
-      "main": false
-    },
-    "base_url": "https://geonode.wfp.org/geoserver"
-  },
-  "ipc_phase_12_2020": {
-    "title": "IPC Phase Classification (Oct-Dec 2020)",
+  "poor_hhs": {
+    "title": "Proportion of poor households",
     "type": "admin_level_data",
-    "path": "../data/mozambique/moz-ipc-2020-12.json",
-    "data_field": "overall_phase",
-    "admin_level": 2,
-    "admin_code": "ADM2_PCODE",
-    "opacity": 0.7,
-    "legend": [
-      {
-        "value": "1 - Minimal",
-        "color": "#CDFACD"
-      },
-      {
-        "value": "2 - Stressed",
-        "color": "#FAE61E" 
-      },
-      {
-        "value": "3 - Crisis",
-        "color": "#E67800" 
-      },
-      {
-        "value": "4 - Emergency",
-        "color": "#C80000" 
-      },
-      {
-        "value": "5 - Famine",
-        "color": "#640000" 
-      }
-    ],
-    "legend_text": "Source: National IPC Technical Working Group"
-  },
-  "mpi": {
-    "title": "Multidimensional Poverty Index",
-    "type": "admin_level_data",
-    "path": "../data/mozambique/moz-mpi-2020.json",
-    "data_field": "mpi",
+    "path": "../data/namibia/poverty.json",
+    "data_field": "pph",
     "admin_level": 1,
     "admin_code": "ADM1_PCODE",
     "opacity": 0.7,
-    "feature_info_props": {
-      "mpi_headcount": {
-        "type": "number",
-        "label": "Percent of the population in multidimensional poverty"
-      },
-      "mpi_intensity": {
-        "type": "number",
-        "label": "Intensity of deprivation among the poor"
-      },
-      "vuln_poverty": {
-        "type": "number",
-        "label": "Vulnerable to poverty"
-      },
-      "severe_poverty": {
-        "type": "number",
-        "label": "In severe poverty"
-      }
-    },
     "legend": [
       {
-        "value": "0 - 0.3",
+        "value": "0 - 10",
         "color": "#fee5d9"
       },
       {
-        "value": "0.31 - 0.4",
+        "value": "11 - 20",
         "color": "#fcae91" 
       },
       {
-        "value": "0.41 - 0.5",
+        "value": "21 - 30",
         "color": "#fb6a4a" 
       },
       {
-        "value": "0.51 - 0.6",
+        "value": "31 - 40",
         "color": "#de2d26" 
       },
       {
-        "value": "0.61 or more",
+        "value": "41 or more",
         "color": "#a50f15" 
       }
     ],
-    "legend_text": "Multidimensional Poverty Index. Source: Alkire, S., Kanagaratnam, U. and Suppa, N. (2020). ‘The Global Multidimensional Poverty Index (MPI) 2020’, OPHI MPI"
-  }    
-  
+    "legend_text": "Proportion of poor households. Source: https://digitalnamibia.nsa.org.na/"
+  }
 }
