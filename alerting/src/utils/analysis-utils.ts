@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import { get, isNil } from 'lodash';
-import bbox from '@turf/bbox';
+import { bbox } from '@turf/turf';
 import { Extent } from './raster-utils';
 import { getWCSLayerUrl } from './server-utils';
 import { ANALYSIS_API_URL } from '../constants';

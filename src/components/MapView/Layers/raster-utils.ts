@@ -1,5 +1,5 @@
 import { Feature, MultiPolygon, point } from '@turf/helpers';
-import bbox from '@turf/bbox';
+import { bbox } from '@turf/turf';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import * as GeoTIFF from 'geotiff';
 import { buffer } from 'd3-fetch';

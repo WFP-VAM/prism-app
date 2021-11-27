@@ -10,7 +10,7 @@ import {
   flatten,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
-import bbox from '@turf/bbox';
+import { bbox } from '@turf/turf';
 import {
   AggregationOperations,
   AsyncReturnType,
