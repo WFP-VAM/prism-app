@@ -34,6 +34,8 @@ import {
 
 import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
 
+import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
+
 import { rbdConfig, rbdRawLayers, rbdRawTables } from './rbd';
 
 import {
@@ -41,6 +43,12 @@ import {
   tajikistanRawLayers,
   tajikistanRawTables,
 } from './tajikistan';
+
+import {
+  zimbabweConfig,
+  zimbabweRawLayers,
+  zimbabweRawTables,
+} from './zimbabwe';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
@@ -89,6 +97,12 @@ const configMap = {
     rawTables: myanmarRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mmr_admin_boundaries.json`,
   },
+  namibia: {
+    appConfig: namibiaConfig,
+    rawLayers: namibiaRawLayers,
+    rawTables: namibiaRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/nam_admin2.json`,
+  },
   rbd: {
     appConfig: rbdConfig,
     rawLayers: rbdRawLayers,
@@ -100,6 +114,13 @@ const configMap = {
     rawLayers: tajikistanRawLayers,
     rawTables: tajikistanRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/tjk_admin_boundaries_v2.json`,
+  },
+  zimbabwe: {
+    appConfig: zimbabweConfig,
+    rawLayers: zimbabweRawLayers,
+    rawTables: zimbabweRawTables,
+    // TODO - Add selected defaultBoundary to S3
+    defaultBoundariesFile: '',
   },
 } as const;
 
