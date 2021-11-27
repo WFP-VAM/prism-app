@@ -12,9 +12,9 @@ import { LayerData } from '../../../../context/layers/layer-data';
 import { BoundaryLayerProps } from '../../../../config/types';
 
 const boundaryLayer = getBoundaryLayerSingleton();
-const FILL_PAINT_DATA: MapboxGL.FillPaint = {
-  'fill-opacity': 0.3,
-  'fill-color': 'green',
+const LINE_PAINT_DATA: MapboxGL.LinePaint = {
+  'line-color': 'green',
+  'line-width': 4,
 };
 
 /**
@@ -44,7 +44,7 @@ function SelectionLayer() {
     <GeoJSONLayer
       id="map-selection-layer"
       data={filteredData}
-      fillPaint={FILL_PAINT_DATA}
+      linePaint={LINE_PAINT_DATA}
     />
   );
 }

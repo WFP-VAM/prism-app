@@ -56,6 +56,7 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
   if (!data) {
     return <CircularProgress size={24} color="secondary" />;
   }
+  // Make categories based off the level of all boundaries
   const categories: Array<{
     title: string;
     children: { value: string; label: string }[];

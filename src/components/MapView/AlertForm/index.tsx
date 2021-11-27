@@ -47,12 +47,11 @@ const ALERT_API_URL = 'https://prism-api.ovio.org/alerts';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-function AlertForm({ classes }: AlertFormProps) {
+function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
   const regionsList = useSelector(getSelectedBoundaries);
-  const [isAlertFormFormOpen, setIsAlertFormFormOpen] = useState(false);
   const dispatch = useDispatch();
   // form elements
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
@@ -180,7 +179,7 @@ function AlertForm({ classes }: AlertFormProps) {
         variant="contained"
         color="primary"
         onClick={() => {
-          setIsAlertFormFormOpen(!isAlertFormFormOpen);
+          setOpen(!isOpen);
         }}
       >
         <Notifications fontSize="small" />
@@ -192,10 +191,10 @@ function AlertForm({ classes }: AlertFormProps) {
 
       <Box
         className={classes.alertFormMenu}
-        width={isAlertFormFormOpen ? 'min-content' : 0}
-        padding={isAlertFormFormOpen ? '10px' : 0}
+        width={isOpen ? 'min-content' : 0}
+        padding={isOpen ? '10px' : 0}
       >
-        {isAlertFormFormOpen ? (
+        {isOpen ? (
           <div>
             <div className={classes.newAlertFormContainer}>
               <div className={classes.alertFormOptions}>
@@ -333,6 +332,9 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface AlertFormProps extends WithStyles<typeof styles> {}
+interface AlertFormProps extends WithStyles<typeof styles> {
+  isOpen: boolean;
+  setOpen: (isOpen: boolean) => void;
+}
 
 export default withStyles(styles)(AlertForm);

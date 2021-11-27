@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -19,7 +20,8 @@ import moment from 'moment';
 import ReactMapboxGl from 'react-mapbox-gl';
 import DatePicker from 'react-datepicker';
 import { Map } from 'mapbox-gl';
-import bbox from '@turf/bbox';
+import { bbox, inside } from '@turf/turf';
+import { Feature, MultiPolygon } from '@turf/helpers';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import Download from './Download';
@@ -113,6 +115,7 @@ function MapView({ classes }: MapViewProps) {
   const loading = layersLoading || datesLoading;
 
   const dispatch = useDispatch();
+  const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
 
   const selectedDateRef = useRef<DatePicker>(null);
 
@@ -312,7 +315,6 @@ function MapView({ classes }: MapViewProps) {
   const {
     map: { latitude, longitude, zoom },
   } = appConfig;
-
   // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers
   const saveMap = (map: Map) => dispatch(setMap(() => map));
 
@@ -324,6 +326,8 @@ function MapView({ classes }: MapViewProps) {
         </div>
       )}
       <MapboxMap
+        // Map needs to be regenerated once boundarydata loads/changes
+        key={boundaryLayerData?.layer.id}
         // eslint-disable-next-line react/style-prop-object
         style="mapbox://styles/eric-ovio/ckaoo00yp0woy1ipevzqnvwzi"
         onStyleLoad={saveMap}
@@ -334,6 +338,18 @@ function MapView({ classes }: MapViewProps) {
         }}
         onClick={(map: Map, evt: any) => {
           dispatch(hidePopup());
+          // Hide the alert popup if we click outside the target country (outside boundary bbox)
+          if (
+            boundaryLayerData?.data.features.every(
+              feature =>
+                !inside(
+                  [evt.lngLat.lng, evt.lngLat.lat],
+                  feature as Feature<MultiPolygon>,
+                ),
+            )
+          ) {
+            setIsAlertFormOpen(false);
+          }
           // Get layers that have getFeatureInfo option.
           const featureInfoLayers = getActiveFeatureInfoLayers(map);
           if (featureInfoLayers.length === 0) {
@@ -387,7 +403,9 @@ function MapView({ classes }: MapViewProps) {
       >
         <Grid item>
           <Analyser extent={adminBoundariesExtent} />
-          {appConfig.alertFormActive ? <AlertForm /> : null}
+          {appConfig.alertFormActive ? (
+            <AlertForm isOpen={isAlertFormOpen} setOpen={setIsAlertFormOpen} />
+          ) : null}
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
