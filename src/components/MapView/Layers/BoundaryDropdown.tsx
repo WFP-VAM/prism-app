@@ -1,17 +1,21 @@
 import {
   CircularProgress,
   FormControl,
+  InputAdornment,
   InputLabel,
   ListSubheader,
+  makeStyles,
   MenuItem,
   Select,
   styled,
+  TextField,
   Theme,
   Typography,
   useMediaQuery,
 } from '@material-ui/core';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Search } from '@material-ui/icons';
 import { BoundaryLayerProps } from '../../../config/types';
 import {
   getSelectedBoundaries,
@@ -30,6 +34,13 @@ const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
     backgroundColor: theme.palette.action.hover,
   },
 }));
+const useStyles = makeStyles(() => ({
+  searchField: {
+    '&>div': {
+      color: 'black',
+    },
+  },
+}));
 
 /**
  * This component allows you to give the user the ability to select several admin_boundary cells.
@@ -37,10 +48,12 @@ const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
  * Selection mode is automatically toggled based off this component's lifecycle.
  */
 function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.only('xs'),
   );
+  const [search, setSearch] = useState('');
   const selectedBoundaries = useSelector(getSelectedBoundaries);
   // toggle the selection mode as this component is created and destroyed.
   useEffect(() => {
@@ -67,6 +80,17 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
     const label = feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
     const code = feature.properties?.[boundaryLayer.adminCode];
     if (!label || !code || !parentCategory) {
+      return;
+    }
+    // filter via search
+    const searchIncludes = (field: string) =>
+      field.toLowerCase().includes(search.toLowerCase());
+    if (
+      search &&
+      !searchIncludes(label) &&
+      !searchIncludes(code) &&
+      !searchIncludes(parentCategory)
+    ) {
       return;
     }
     // add to categories if exists
@@ -117,9 +141,30 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
           );
         }}
       >
-        <MenuItem onClick={selectOrDeselectAll}>
-          {selectedBoundaries.length === 0 ? 'Select All' : 'Deselect All'}
-        </MenuItem>
+        <TextField
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+          className={classes.searchField}
+          onKeyDown={e => e.stopPropagation()}
+          onClick={e => e.stopPropagation()}
+          onChange={e => {
+            e.stopPropagation();
+            setSearch(e.target.value);
+          }}
+        />
+        {!search && (
+          <MenuItem onClick={selectOrDeselectAll}>
+            {selectedBoundaries.length === 0 ? 'Select All' : 'Deselect All'}
+          </MenuItem>
+        )}
+        {search && categories.flatMap(c => c.children).length === 0 && (
+          <MenuItem disabled>No Results</MenuItem>
+        )}
         {categories.reduce<ReactElement[]>(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
           (components, category) => [

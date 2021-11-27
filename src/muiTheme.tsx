@@ -59,6 +59,7 @@ const theme: any = createMuiTheme({
     MuiMenuItem: {
       root: {
         color: 'black',
+        paddingLeft: 25,
       },
     },
     MuiAccordion: {
