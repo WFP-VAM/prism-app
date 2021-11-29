@@ -15,7 +15,8 @@ export type LanguageOption = {
   uiLabels: { [key: string]: string };
 };
 
-interface HasCategories {
+interface AppConfig {
+  icons: { [key: string]: string };
   categories: { [key: string]: { [key: string]: string[] } };
 }
 
@@ -49,7 +50,7 @@ export function translateRawLayers<T>(
   return merge(rawLayers, langLayers);
 }
 
-export function translateAppConfig<T extends HasCategories>(
+export function translateAppConfig<T extends AppConfig>(
   appConfig: T,
   language: LanguageOption,
 ): T {
@@ -66,8 +67,15 @@ export function translateAppConfig<T extends HasCategories>(
       return [trans(categoryKey), translatedCategory];
     }),
   );
+  const { icons } = appConfig;
+  const translatedIcons = Object.fromEntries(
+    Object.keys(icons).map(iconKey => {
+      return [trans(iconKey), icons[iconKey]];
+    }),
+  );
   return {
     ...appConfig,
+    icons: translatedIcons,
     categories: translatedCategories,
   };
 }
