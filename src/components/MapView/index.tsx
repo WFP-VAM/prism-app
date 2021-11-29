@@ -326,8 +326,6 @@ function MapView({ classes }: MapViewProps) {
         </div>
       )}
       <MapboxMap
-        // Map needs to be regenerated once boundarydata loads/changes
-        key={boundaryLayerData?.layer.id}
         // eslint-disable-next-line react/style-prop-object
         style="mapbox://styles/eric-ovio/ckaoo00yp0woy1ipevzqnvwzi"
         onStyleLoad={saveMap}
@@ -336,50 +334,55 @@ function MapView({ classes }: MapViewProps) {
         containerStyle={{
           height: '100%',
         }}
-        onClick={(map: Map, evt: any) => {
-          dispatch(hidePopup());
-          // Hide the alert popup if we click outside the target country (outside boundary bbox)
-          if (
-            boundaryLayerData?.data.features.every(
-              feature =>
-                !inside(
-                  [evt.lngLat.lng, evt.lngLat.lat],
-                  feature as Feature<MultiPolygon>,
-                ),
-            )
-          ) {
-            setIsAlertFormOpen(false);
-          }
-          // Get layers that have getFeatureInfo option.
-          const featureInfoLayers = getActiveFeatureInfoLayers(map);
-          if (featureInfoLayers.length === 0) {
-            return;
-          }
+        onClick={
+          boundaryLayerData
+            ? // this function will only work when boundary data loads/changes
+              (map: Map, evt: any) => {
+                dispatch(hidePopup());
+                // Hide the alert popup if we click outside the target country (outside boundary bbox)
+                if (
+                  boundaryLayerData?.data.features.every(
+                    feature =>
+                      !inside(
+                        [evt.lngLat.lng, evt.lngLat.lat],
+                        feature as Feature<MultiPolygon>,
+                      ),
+                  )
+                ) {
+                  setIsAlertFormOpen(false);
+                }
+                // Get layers that have getFeatureInfo option.
+                const featureInfoLayers = getActiveFeatureInfoLayers(map);
+                if (featureInfoLayers.length === 0) {
+                  return;
+                }
 
-          const dateFromRef = moment(
-            selectedDateRef.current?.props.selected as Date,
-          ).format('YYYY-MM-DD');
+                const dateFromRef = moment(
+                  selectedDateRef.current?.props.selected as Date,
+                ).format('YYYY-MM-DD');
 
-          const params = getFeatureInfoParams(map, evt, dateFromRef);
-          dispatch(setWMSGetFeatureInfoLoading(true));
-          makeFeatureInfoRequest(featureInfoLayers, params).then(
-            (result: { [name: string]: string } | null) => {
-              if (result) {
-                Object.keys(result).forEach((k: string) => {
-                  dispatch(
-                    addPopupData({
-                      [k]: {
-                        data: result[k],
-                        coordinates: evt.lngLat,
-                      },
-                    }),
-                  );
-                });
+                const params = getFeatureInfoParams(map, evt, dateFromRef);
+                dispatch(setWMSGetFeatureInfoLoading(true));
+                makeFeatureInfoRequest(featureInfoLayers, params).then(
+                  (result: { [name: string]: string } | null) => {
+                    if (result) {
+                      Object.keys(result).forEach((k: string) => {
+                        dispatch(
+                          addPopupData({
+                            [k]: {
+                              data: result[k],
+                              coordinates: evt.lngLat,
+                            },
+                          }),
+                        );
+                      });
+                    }
+                    dispatch(setWMSGetFeatureInfoLoading(false));
+                  },
+                );
               }
-              dispatch(setWMSGetFeatureInfoLoading(false));
-            },
-          );
-        }}
+            : undefined
+        }
       >
         <>
           {selectedLayers.map(layer => {
