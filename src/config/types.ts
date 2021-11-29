@@ -120,6 +120,7 @@ export function checkRequiredKeys<T>(
 export type LegendDefinitionItem = {
   value: string | number;
   color: string;
+  label?: string;
 };
 
 export type LegendDefinition = LegendDefinitionItem[];

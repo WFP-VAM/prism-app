@@ -256,6 +256,16 @@ function LegendItem({
     dispatch(addTableData(tableData));
   }
 
+  const legendItemLabel = ({ label, value }: LegendDefinitionItem) => {
+    if (typeof label === 'string') {
+      return label;
+    }
+    if (typeof value === 'number') {
+      return Math.round(value).toLocaleString('en-US');
+    }
+    return value;
+  };
+
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
@@ -307,15 +317,11 @@ function LegendItem({
               {legendUrl ? (
                 <img src={legendUrl} alt={title} />
               ) : (
-                legend.map(({ value, color }: LegendDefinitionItem) => (
+                legend.map((item: LegendDefinitionItem) => (
                   <ColorIndicator
-                    key={value}
-                    value={
-                      typeof value === 'number'
-                        ? Math.round(value).toLocaleString('en-US')
-                        : value
-                    }
-                    color={color as string}
+                    key={item.value}
+                    value={legendItemLabel(item)}
+                    color={item.color as string}
                     opacity={opacity as number}
                   />
                 ))

@@ -21,15 +21,14 @@ function MapTooltip({ classes }: TooltipProps) {
       className={classes.popup}
     >
       <h4>{popup.locationName}</h4>
-      {popup.remoteData
-        ? popup.remoteData.components.map(TooltipComponents)
-        : Object.entries(popup.data)
-            .filter(([, value]) => value.coordinates === popup.coordinates)
-            .map(([key, value]) => (
-              <h4 key={key}>
-                {key}: {value.data}
-              </h4>
-            ))}
+      {Object.entries(popup.data)
+        .filter(([, value]) => value.coordinates === popup.coordinates)
+        .map(([key, value]) => (
+          <h4 key={key}>
+            {key}: {value.data}
+          </h4>
+        ))}
+      {popup.remoteData && popup.remoteData.components.map(TooltipComponents)}
       {popup.remoteDataLoading ? <CircularProgress /> : null}
       {popup.wmsGetFeatureInfoLoading ? <LinearProgress /> : null}
     </Popup>
@@ -45,6 +44,6 @@ const styles = () =>
     },
   });
 
-export interface TooltipProps extends WithStyles<typeof styles> {}
+export interface TooltipProps extends WithStyles<typeof styles> { }
 
 export default withStyles(styles)(MapTooltip);

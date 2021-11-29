@@ -53,8 +53,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   }
   // use last layer as reference for popup content
   // start with index 1 because index 0 is boundary layer itself
-  // FIXME: idn mosa specific
-  const lastLayer = layers[0];
+  const lastLayer = layers[1];
   return (
     <GeoJSONLayer
       id="boundaries"
@@ -77,12 +76,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
         const areacode = featureProperties[layer.adminCode];
         dispatch(clearRemotePopupData());
         if (params.popupUrl) {
-          const { href } = window.location;
-          const url = new URL(
-            params.popupUrl.startsWith('http')
-              ? params.popupUrl
-              : `${href}${params.popupUrl}`,
-          );
+          const url = new URL(params.popupUrl);
           url.searchParams.set('lon', coordinates.lng.toString());
           url.searchParams.set('lat', coordinates.lat.toString());
           url.searchParams.set('location', JSON.stringify(locationNames));

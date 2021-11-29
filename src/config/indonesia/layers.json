@@ -2,11 +2,16 @@
   "admin_boundaries": {
     "type": "boundary",
     "path": "../data/indonesia/admin_idn.json",
-    "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva",
     "opacity": 0.8,
     "admin_code": "A2TEXT",
-    "admin_level_names": ["A2NAME", "A1NAME"],
-    "admin_level_local_names": ["A2NAME", "A1NAME"]
+    "admin_level_names": [
+      "A2NAME",
+      "A1NAME"
+    ],
+    "admin_level_local_names": [
+      "A2NAME",
+      "A1NAME"
+    ]
   },
   "rainfall_extreme_probability": {
     "title": "Extreme Rainfall last 5-days",
@@ -617,29 +622,35 @@
     "title": "Household with Income Derived from Agriculture",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
+    "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=agriculture",
     "data_field": "HHAgri",
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
       {
-        "value": "25",
+        "value": "14.92",
+        "label": "≤ 14.91",
         "color": "#fef0d9"
       },
       {
-        "value": "43",
+        "value": "33.98",
+        "label": "14.92 - 33.98",
         "color": "#fdcc8a"
       },
       {
-        "value": "57",
+        "value": "44.71",
+        "label": "33.99 - 44.71",
         "color": "#fc8d59"
       },
       {
-        "value": "75",
+        "value": "54.88",
+        "label": "44.72 - 54.87",
         "color": "#e34a33"
       },
       {
-        "value": "100",
+        "value": "99.74",
+        "label": "> 54.87",
         "color": "#b30000"
       }
     ],
@@ -649,32 +660,38 @@
     "title": "Houshold with Food Expenditure >65%",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
+    "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=food65",
     "data_field": "FoodExp",
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      {
-        "value": "2.39",
+    {
+        "value": "14.61",
+        "label": "≤ 14.60",
         "color": "#edf8fb"
-      },
-      {
-        "value": "4.72",
+    },
+    {
+        "value": "22.37",
+        "label": "14.61 - 22.37",
         "color": "#b3cde3"
-      },
-      {
-        "value": "7",
+    },
+    {
+        "value": "29.38",
+        "label": "22.38 - 29.37",
         "color": "#8c96c6"
-      },
-      {
-        "value": "9.86",
+    },
+    {
+        "value": "39.30",
+        "label": "29.38 - 39.30",
         "color": "#8856a7"
-      },
-      {
-        "value": "14.57",
+    },
+    {
+        "value": "91.88",
+        "label": "≥ 39.30",
         "color": "#810f7c"
-      }
-    ],
+    }
+],
     "legend_text": "Source: SUSENAS 2020"
   },
   "paddy_areas": {
@@ -833,32 +850,38 @@
     "title": "Poverty Rate",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
-    "data_field": "HH_FE65",
+    "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=poverty",
+    "data_field": "Poverty",
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      {
-        "value": "6.37",
+    {
+        "value": "6.02",
+        "label": "≤ 6.02",
         "color": "#fef0d9"
-      },
-      {
-        "value": "11.20",
+    },
+    {
+        "value": "8.81",
+        "label": "6.03 - 8.81",
         "color": "#fdcc8a"
-      },
-      {
-        "value": "17.39",
+    },
+    {
+        "value": "12.15",
+        "label": "8.82 - 12.14",
         "color": "#fc8d59"
-      },
-      {
-        "value": "27.25",
+    },
+    {
+        "value": "15.92",
+        "label": "12.15 - 15.91",
         "color": "#e34a33"
-      },
-      {
-        "value": "45",
+    },
+    {
+        "value": "41.76",
+        "label": "> 15.91",
         "color": "#b30000"
-      }
-    ],
+    }
+],
     "legend_text": "Proportion of people living under the district level poverty line (%) | Source: Susenas 2019, BPS"
   },
   "pou": {
@@ -869,25 +892,31 @@
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
+    "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=pou",
     "legend": [
       {
-        "value": "7.56",
+        "value": "5.35",
+        "label": "≤ 5.35",
         "color": "#feebe2"
       },
       {
-        "value": "14.48",
+        "value": "7.90",
+        "label": "5.36 - 7.90",
         "color": "#fbb4b9"
       },
       {
-        "value": "26.34",
+        "value": "10.30",
+        "label": "8.00 - 10.30",
         "color": "#f768a1"
       },
       {
-        "value": "44.77",
+        "value": "14.02",
+        "label": "10.31 - 14.02",
         "color": "#c51b8a"
       },
       {
-        "value": "65.78",
+        "value": "72.20",
+        "label": "> 14.02",
         "color": "#7a0177"
       }
     ],
@@ -897,32 +926,38 @@
     "title": "Open Unemployment",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
+    "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=unemploy",
     "data_field": "OP_UNEMPLOY",
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-      {
-        "value": "1.82",
+    {
+        "value": "3.33",
+        "label": "≤ 3.33",
         "color": "#edf8fb"
-      },
-      {
-        "value": "3.64",
+    },
+    {
+        "value": "4.43",
+        "label": "3.33 - 4.43",
         "color": "#b3cde3"
-      },
-      {
-        "value": "5.42",
+    },
+    {
+        "value": "5.49",
+        "label": "4.44 - 5.48",
         "color": "#8c96c6"
-      },
-      {
-        "value": "7.76",
+    },
+    {
+        "value": "7.62",
+        "label": "5.49 - 7.62",
         "color": "#8856a7"
-      },
-      {
-        "value": "12.37",
+    },
+    {
+        "value": "15.92",
+        "label": "> 7.62",
         "color": "#810f7c"
-      }
-    ],
+    }
+],
     "legend_text": "Source: BPS 2019"
   },
   "FSVA_2020": {
