@@ -145,10 +145,12 @@ function MapView({ classes }: MapViewProps) {
       to the hazardLayerId and baselineLayerId values. If the date field is found, the application
       status is also updated. There are guards in case the values are not valid, such as invalid
       date or layerids.
-    */
+      */
+    const HAZARD_LAYER_PARAM = 'hazardLayerId';
+    const BASELINE_LAYER_PARAM = 'baselineLayerId';
 
-    const hazardLayerId = urlParams.get('hazardLayerId');
-    const baselineLayerId = urlParams.get('baselineLayerId');
+    const hazardLayerId = urlParams.get(HAZARD_LAYER_PARAM);
+    const baselineLayerId = urlParams.get(BASELINE_LAYER_PARAM);
 
     /*
       In case we don't have hazard or baseline layers we will use the default
@@ -156,13 +158,21 @@ function MapView({ classes }: MapViewProps) {
      */
     if (!hazardLayerId && !baselineLayerId) {
       const defaultLayer = get(appConfig, 'defaultLayer', '');
-      const layer = LayerDefinitions[defaultLayer as LayerKey];
-      if (layer) {
+
+      if (Object.keys(LayerDefinitions).includes(defaultLayer)) {
+        const layer = LayerDefinitions[defaultLayer as LayerKey];
         const urlLayerKey =
           layer.type === 'admin_level_data'
-            ? 'baselineLayerId'
-            : 'hazardLayerId';
+            ? BASELINE_LAYER_PARAM
+            : HAZARD_LAYER_PARAM;
         updateHistory(urlLayerKey, defaultLayer);
+      } else {
+        dispatch(
+          addNotification({
+            message: `Invalid default layer identifier: ${defaultLayer}`,
+            type: 'error',
+          }),
+        );
       }
     }
 
