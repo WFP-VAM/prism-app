@@ -32,6 +32,7 @@ type FsvaTooltipData = {
     }[];
     rows: { [key: string]: number }[];
   };
+  lang: { [key: string]: string };
 };
 
 interface FsvaProps extends PopupComponentSpec, WithStyles<typeof styles> {}
@@ -76,7 +77,7 @@ const Fsva = ({ params, classes }: FsvaProps) => {
       <table className={classes.table}>
         <thead>
           <tr>
-            <th className={classes.cellHead}>Year</th>
+            <th className={classes.cellHead}>{p.lang.year}</th>
             {p.table.header.map(h => (
               <th key={h.id} className={classes.cellHead}>
                 {h.label}

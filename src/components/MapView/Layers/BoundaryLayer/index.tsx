@@ -9,6 +9,7 @@ import {
   fetchPopupData,
   clearRemotePopupData,
 } from '../../../../context/tooltipStateSlice';
+import { languageOption } from '../../../../config';
 import { BoundaryLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import {
@@ -81,6 +82,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
           url.searchParams.set('lat', coordinates.lat.toString());
           url.searchParams.set('location', JSON.stringify(locationNames));
           url.searchParams.set('areacode', areacode);
+          url.searchParams.set('language', languageOption.id);
           url.searchParams.set(
             'date',
             startDate ? moment(startDate).format('YYYY-MM-DD') : '',
