@@ -335,13 +335,15 @@ function MapView({ classes }: MapViewProps) {
           height: '100%',
         }}
         onClick={
+          // this function will only work when boundary data loads.
+          // due to how the library works, we can only set this function once,
+          // so we should set it when boundary data is present
           boundaryLayerData
-            ? // this function will only work when boundary data loads/changes
-              (map: Map, evt: any) => {
+            ? (map: Map, evt: any) => {
                 dispatch(hidePopup());
                 // Hide the alert popup if we click outside the target country (outside boundary bbox)
                 if (
-                  boundaryLayerData?.data.features.every(
+                  boundaryLayerData.data.features.every(
                     feature =>
                       !inside(
                         [evt.lngLat.lng, evt.lngLat.lat],
