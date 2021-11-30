@@ -1,6 +1,21 @@
 {
   "rainfall_extreme_probability": {
     "title": "Hujan Ekstrim 5 harian",
+    "legend": [
+      {},
+      {
+        "label": "Sedang"
+      },
+      {
+        "label": "Tinggi"
+      },
+      {
+        "label": "Sangat Tinggi"
+      },
+      {
+        "label": "Ekstrim"
+      }
+    ],
     "legend_text": "Hujan Ekstrim 5 harian"
   },
   "rainfall_extreme_flood": {
