@@ -122,6 +122,10 @@ function MapView({ classes }: MapViewProps) {
       if (layer.type === 'admin_level_data') {
         return Boolean(layer.dateUrl);
       }
+      if (layer.type === 'wms') {
+        // some WMS layer might not have date dimension (i.e. static data)
+        return layer.id in serverAvailableDates;
+      }
       return dateSupportLayerTypes.includes(layer.type);
     })
     .filter(layer => !layer.group || layer.group.main === true);
@@ -184,10 +188,17 @@ function MapView({ classes }: MapViewProps) {
       }
     });
 
+    const selectedLayersWithDateIds: LayerKey[] = selectedLayersWithDateSupport.map(
+      layer => layer.id,
+    );
+    const hasLayerWithDate = [hazardLayerId, baselineLayerId].some(id =>
+      selectedLayersWithDateIds.includes(id as LayerKey),
+    );
+
     if (
       urlDate &&
       moment(urlDate).valueOf() !== selectedDate &&
-      selectedLayersIds.includes(hazardLayerId as LayerKey)
+      hasLayerWithDate
     ) {
       const dateInt = moment(urlDate).valueOf();
       if (Number.isNaN(dateInt)) {
@@ -211,6 +222,7 @@ function MapView({ classes }: MapViewProps) {
     serverAvailableDates,
     selectedDate,
     updateHistory,
+    selectedLayersWithDateSupport,
   ]);
 
   useEffect(() => {
