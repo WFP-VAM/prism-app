@@ -40,7 +40,10 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
     } else {
       removeKeyFromUrl(urlLayerKey);
       dispatch(removeLayer(layer));
-      // re-activate boundary layers
+
+      // For admin boundary layers with boundary property
+      // we have to de-activate the unique boundary and re-activate
+      // default boundaries
       if ('boundary' in layer) {
         const boundaryId = layer.boundary || '';
         if (Object.keys(LayerDefinitions).includes(boundaryId)) {
