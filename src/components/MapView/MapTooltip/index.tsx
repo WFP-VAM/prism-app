@@ -44,6 +44,6 @@ const styles = () =>
     },
   });
 
-export interface TooltipProps extends WithStyles<typeof styles> { }
+export interface TooltipProps extends WithStyles<typeof styles> {}
 
 export default withStyles(styles)(MapTooltip);
