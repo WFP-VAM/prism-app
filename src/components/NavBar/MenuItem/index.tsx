@@ -100,7 +100,7 @@ const styles = (theme: Theme) =>
 
     paper: {
       padding: '8px 16px',
-      backgroundColor: `${theme.palette.primary.dark}f9`,
+      backgroundColor: `${theme.palette.primary.main}f9`,
       borderRadius: theme.shape.borderRadius,
     },
   });

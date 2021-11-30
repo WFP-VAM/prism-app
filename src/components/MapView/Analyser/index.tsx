@@ -365,7 +365,7 @@ const styles = (theme: Theme) =>
       marginLeft: '10px',
     },
     analyserMenu: {
-      backgroundColor: theme.palette.primary.dark,
+      backgroundColor: '#5A686C',
       maxWidth: '100vw',
       color: 'white',
       overflowX: 'hidden',

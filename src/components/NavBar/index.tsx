@@ -146,7 +146,7 @@ function NavBar({ classes }: NavBarProps) {
 const styles = (theme: Theme) =>
   createStyles({
     appBar: {
-      backgroundColor: theme.palette.primary.main,
+      backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
     },
 
     logoContainer: {
