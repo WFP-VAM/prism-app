@@ -220,6 +220,8 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: string[]; // Same as above, local to country
   styles: LayerStyleProps; // Mapbox line and fill properties.
+  @optional
+  display?: boolean; // Flag for default boundary layers to display
 }
 
 export enum LabelType {
@@ -278,6 +280,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @makeRequired
   dataField: string;
+
+  @optional
+  boundary?: LayerKey;
 }
 
 export class StatsApi {

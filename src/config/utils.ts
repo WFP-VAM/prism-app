@@ -131,7 +131,9 @@ export const LayerDefinitions: LayersMap = (() => {
 
 export function getBoundaryLayers(): BoundaryLayerProps[] {
   const boundaryLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
+    (layer): layer is BoundaryLayerProps =>
+      layer.type === 'boundary' &&
+      (layer as BoundaryLayerProps).display === true,
   );
   if (boundaryLayers.length === 0) {
     throw new Error(

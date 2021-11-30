@@ -11,14 +11,16 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import {
+  LayerKey,
   LayersCategoryType,
   LayerType,
   TableType,
 } from '../../../config/types';
-import { removeLayer } from '../../../context/mapStateSlice';
+import { addLayer, removeLayer } from '../../../context/mapStateSlice';
 import { loadTable } from '../../../context/tableStateSlice';
 import { layersSelector } from '../../../context/mapStateSlice/selectors';
 import { useUrlHistory } from '../../../utils/url-utils';
+import { getBoundaryLayers, LayerDefinitions } from '../../../config/utils';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const selectedLayers = useSelector(layersSelector);
@@ -37,8 +39,18 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
       updateHistory(urlLayerKey, layer.id);
     } else {
       removeKeyFromUrl(urlLayerKey);
-
       dispatch(removeLayer(layer));
+      // re-activate boundary layers
+      if ('boundary' in layer) {
+        const boundaryId = layer.boundary || '';
+        if (Object.keys(LayerDefinitions).includes(boundaryId)) {
+          const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
+          dispatch(removeLayer(uniqueBoundaryLayer));
+
+          const boundaryLayers = getBoundaryLayers();
+          boundaryLayers.map(l => dispatch(addLayer(l)));
+        }
+      }
     }
   };
 

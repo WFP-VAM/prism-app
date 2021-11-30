@@ -3,15 +3,18 @@ import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { AdminLevelDataLayerProps } from '../../../../config/types';
+import { AdminLevelDataLayerProps, LayerKey } from '../../../../config/types';
 import { legendToStops } from '../layer-utils';
 import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import { getFeatureInfoPropsData } from '../../utils';
+import { getBoundaryLayers, LayerDefinitions } from '../../../../config/utils';
+import { addNotification } from '../../../../context/notificationStateSlice';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const layerData = useSelector(layerDataSelector(layer.id)) as
@@ -23,6 +26,25 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const { features } = data || {};
 
   useEffect(() => {
+    // before loading layer check if it has unique boundary?
+    if ('boundary' in layer) {
+      const boundaryId = layer.boundary || '';
+      if (Object.keys(LayerDefinitions).includes(boundaryId)) {
+        const boundaryLayers = getBoundaryLayers();
+        boundaryLayers.map(l => dispatch(removeLayer(l)));
+
+        const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
+        dispatch(addLayer(uniqueBoundaryLayer));
+      } else {
+        dispatch(
+          addNotification({
+            message: `Invalid unique boundary: ${boundaryId} for ${layer.id}`,
+            type: 'error',
+          }),
+        );
+      }
+    }
+
     if (!features) {
       dispatch(loadLayerData({ layer }));
     }

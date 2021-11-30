@@ -1,6 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
+    "display": true,
     "path": "../data/myanmar/admin_boundaries.json",
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
@@ -19,6 +20,7 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
+    "display": true,
     "path": "../data/myanmar/mmr_admin1_boundaries.json",
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
@@ -37,6 +39,7 @@
   },
   "admin2_boundaries": {
     "type": "boundary",
+    "display": true,
     "path": "../data/myanmar/mmr_admin2_boundaries.json",
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
@@ -56,6 +59,7 @@
   "inform": {
     "title": "Vulnerability index",
     "type": "admin_level_data",
+    "boundary": "admin_boundaries",
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#vulnerability-index",
     "data_field": "mmr_inform",
