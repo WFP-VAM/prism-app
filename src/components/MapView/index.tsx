@@ -1,6 +1,7 @@
 import React, {
   ComponentType,
   createElement,
+  useState,
   useEffect,
   useMemo,
   useRef,
@@ -105,6 +106,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
 ];
 
 function MapView({ classes }: MapViewProps) {
+  const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
   const selectedLayers = useSelector(layersSelector);
 
   const layersLoading = useSelector(isLoading);
@@ -166,13 +168,14 @@ function MapView({ classes }: MapViewProps) {
             ? BASELINE_LAYER_PARAM
             : HAZARD_LAYER_PARAM;
         updateHistory(urlLayerKey, defaultLayer);
-      } else {
+      } else if (!defaultLayerAttempted) {
         dispatch(
           addNotification({
             message: `Invalid default layer identifier: ${defaultLayer}`,
             type: 'error',
           }),
         );
+        setDefaultLayerAttempted(true);
       }
     }
 
@@ -234,6 +237,7 @@ function MapView({ classes }: MapViewProps) {
     serverAvailableDates,
     selectedDate,
     updateHistory,
+    defaultLayerAttempted,
   ]);
 
   useEffect(() => {
