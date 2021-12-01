@@ -41,34 +41,52 @@ const useStyles = makeStyles(() => ({
     },
   },
 }));
+const TIMEOUT_ANIMATION_DELAY = 5;
+const SearchField = ({
+  // important this isn't called `value` since this would confuse <Select/>
+  // the main purpose of wrapping this text-field is for this very purpose.
+  search,
+  setSearch,
+}: {
+  search: string;
+  setSearch: (val: string) => void;
+}) => {
+  const styles = useStyles();
+  return (
+    <TextField
+      onKeyDown={e => e.stopPropagation()}
+      className={styles.searchField}
+      value={search}
+      onChange={e => {
+        setSearch(e.target.value);
+        // when something is selected, and the user tries to search, this field deselects for some reason,
+        // thus reselect on change. Important to capture target as it's null inside timeout.
+        const { target } = e;
+        setTimeout(() => {
+          target.focus();
+        }, TIMEOUT_ANIMATION_DELAY);
+      }}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="end">
+            <Search />
+          </InputAdornment>
+        ),
+      }}
+    />
+  );
+};
 
 /**
- * This component allows you to give the user the ability to select several admin_boundary cells.
- * This component also syncs with the map automatically, allowing users to select cells by clicking the map.
- * Selection mode is automatically toggled based off this component's lifecycle.
+ * Converts the boundary layer data into a list of options for the dropdown
+ * grouped by admin level 2, with individual sections under admin level 3.
+ * @param data
+ * @param search
  */
-function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const isMobile = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.only('xs'),
-  );
-  const [search, setSearch] = useState('');
-  const selectedBoundaries = useSelector(getSelectedBoundaries);
-  // toggle the selection mode as this component is created and destroyed.
-  useEffect(() => {
-    dispatch(setIsSelectionMode(true));
-    return () => {
-      dispatch(setIsSelectionMode(false));
-    };
-  }, [dispatch]);
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayerData || {};
-  if (!data) {
-    return <CircularProgress size={24} color="secondary" />;
-  }
+function getCategories(
+  data: LayerData<BoundaryLayerProps>['data'],
+  search: string,
+) {
   // Make categories based off the level of all boundaries
   const categories: Array<{
     title: string;
@@ -106,6 +124,36 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
       });
     }
   });
+  return categories;
+}
+
+/**
+ * This component allows you to give the user the ability to select several admin_boundary cells.
+ * This component also syncs with the map automatically, allowing users to select cells by clicking the map.
+ * Selection mode is automatically toggled based off this component's lifecycle.
+ */
+function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
+  const dispatch = useDispatch();
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.only('xs'),
+  );
+  const [search, setSearch] = useState('');
+  const selectedBoundaries = useSelector(getSelectedBoundaries);
+  // toggle the selection mode as this component is created and destroyed.
+  useEffect(() => {
+    dispatch(setIsSelectionMode(true));
+    return () => {
+      dispatch(setIsSelectionMode(false));
+    };
+  }, [dispatch]);
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+  const { data } = boundaryLayerData || {};
+  if (!data) {
+    return <CircularProgress size={24} color="secondary" />;
+  }
+  const categories = getCategories(data, search);
   const selectOrDeselectAll = (e: React.MouseEvent) => {
     e.preventDefault();
     if (selectedBoundaries.length > 0) {
@@ -118,12 +166,18 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
       );
     }
   };
-
+  // It's important for this to be another component, since the Select component
+  // acts on the `value` prop, which we need to hide from <Select/> since this isn't a menu item.
   return (
     <FormControl {...rest}>
       <InputLabel>{isMobile ? 'Tap' : 'Click'} the map to select</InputLabel>
       <Select
         multiple
+        onClose={() => {
+          // empty search so that component shows correct options
+          // otherwise, we would only show selected options which satisfy the search
+          setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
+        }}
         value={selectedBoundaries}
         onChange={e => {
           // do nothing if value is invalid
@@ -141,22 +195,7 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
           );
         }}
       >
-        <TextField
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-          className={classes.searchField}
-          onKeyDown={e => e.stopPropagation()}
-          onClick={e => e.stopPropagation()}
-          onChange={e => {
-            e.stopPropagation();
-            setSearch(e.target.value);
-          }}
-        />
+        <SearchField search={search} setSearch={setSearch} />
         {!search && (
           <MenuItem onClick={selectOrDeselectAll}>
             {selectedBoundaries.length === 0 ? 'Select All' : 'Deselect All'}
