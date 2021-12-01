@@ -41,7 +41,7 @@
       "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
     },
     "vulnerability": {
-      "vulnerability_index": ["multidimensional_disadvantage_index", "inform"],
+      "vulnerability_index": ["test_admin1_data", "multidimensional_disadvantage_index", "inform"],
       "vulnerable_populations": [
         "age_dependency_ratio",
         "female_headed_hhs",

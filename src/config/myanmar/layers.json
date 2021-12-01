@@ -23,9 +23,9 @@
     "display": true,
     "path": "../data/myanmar/mmr_admin1_boundaries.json",
     "opacity": 0.8,
-    "admin_code": "TS_PCODE",
-    "admin_level_names": ["TS", "ST", "DT"],
-    "admin_level_local_names": ["DT_MMR4", "TS_MMR4"],
+    "admin_code": "ST_PCODE",
+    "admin_level_names": ["ST"],
+    "admin_level_local_names": ["Name_MMR4"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -55,6 +55,24 @@
         "line-opacity": 0.8
       }
     }
+  },
+  "test_admin1_data": {
+    "title": "test_admin1_data",
+    "type": "admin_level_data",
+    "boundary": "admin1_boundaries",
+    "path": "../data/myanmar/nso/poverty.json",
+    "data_field": "Poverty",
+    "admin_level": 1,
+    "admin_code": "ST_PCODE",
+    "opacity": 0.7,
+    "legend_text": "",
+    "legend": [
+      { "value": 0, "color": "#eff3ff" },
+      { "value": 10, "color": "#bdd7e7" },
+      { "value": 20, "color": "#6baed6" },
+      { "value": 30, "color": "#3182bd" },
+      { "value": 40, "color": "#08519c" }
+    ]
   },
   "inform": {
     "title": "Vulnerability index",
