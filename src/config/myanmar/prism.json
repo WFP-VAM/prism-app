@@ -1,7 +1,7 @@
 {
   "country": "Myanmar",
   "alertFormActive": false,
-  "defaultLayer": "informs",
+  "defaultLayer": "inform",
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
