@@ -159,23 +159,25 @@ function MapView({ classes }: MapViewProps) {
       layer provided in the appConfig defined within `prism.json` file.
      */
     if (!hazardLayerId && !baselineLayerId) {
-      const defaultLayer = get(appConfig, 'defaultLayer', '');
+      const defaultLayer = get(appConfig, 'defaultLayer');
 
-      if (Object.keys(LayerDefinitions).includes(defaultLayer)) {
-        const layer = LayerDefinitions[defaultLayer as LayerKey];
-        const urlLayerKey =
-          layer.type === 'admin_level_data'
-            ? BASELINE_LAYER_PARAM
-            : HAZARD_LAYER_PARAM;
-        updateHistory(urlLayerKey, defaultLayer);
-      } else if (!defaultLayerAttempted) {
-        dispatch(
-          addNotification({
-            message: `Invalid default layer identifier: ${defaultLayer}`,
-            type: 'error',
-          }),
-        );
-        setDefaultLayerAttempted(true);
+      if (defaultLayer) {
+        if (Object.keys(LayerDefinitions).includes(defaultLayer)) {
+          const layer = LayerDefinitions[defaultLayer as LayerKey];
+          const urlLayerKey =
+            layer.type === 'admin_level_data'
+              ? BASELINE_LAYER_PARAM
+              : HAZARD_LAYER_PARAM;
+          updateHistory(urlLayerKey, defaultLayer);
+        } else if (!defaultLayerAttempted) {
+          dispatch(
+            addNotification({
+              message: `Invalid default layer identifier: ${defaultLayer}`,
+              type: 'error',
+            }),
+          );
+          setDefaultLayerAttempted(true);
+        }
       }
     }
 
