@@ -1,0 +1,50 @@
+{
+  "country": "Cambodia",
+  "alertFormActive": false,
+  "icons": {
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png",
+    "hazards": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "capacity": "icon_capacity.png",
+    "tables": "icon_table.png"
+  },
+  "serversUrls": {
+    "wms": [
+      "https://www.prism-kh.info:8443/geoserver/Prism/wms",
+      "https://geonode.wfp.org/geoserver/prism/wms/",
+      "https://odc.ovio.org/wms"
+    ]
+  },   
+  "map": {
+    "latitude": 12.058,
+    "longitude": 105.281,
+    "zoom": 6.49
+  },
+    "categories": {
+      "hazards": {
+        "floods": [
+          "hydra_s1",
+          "hydra_s2",
+          "hydra_l8"
+        ],
+        "rainfall": [
+          "rainfall_dekad",
+          "rain_anomaly_dekad",
+          "rain_anomaly_monthly",
+          "rainfall_agg_month",
+          "streak_dry_days",
+          "days_heavy_rain",
+          "streak_heavy_rain"
+        ],
+        "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"],
+        "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
+      },
+      "vulnerability":{
+          "poverty": ["idpoor"]
+      },
+      "exposure": {
+        "field_reports": ["disaster_report"]
+    }
+  }
+}

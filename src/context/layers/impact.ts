@@ -4,7 +4,7 @@ import {
   AggregationOperations,
   BoundaryLayerProps,
   ImpactLayerProps,
-  NSOLayerProps,
+  AdminLevelDataLayerProps,
   WMSLayerProps,
 } from '../../config/types';
 import type { ThunkApi } from '../store';
@@ -55,7 +55,7 @@ export const fetchImpactLayerData: LazyLoader<ImpactLayerProps> = loadLayerData 
       payload: { data },
     } = (await dispatch(
       loadLayerData({ layer: baselineLayerDef, extent } as LayerDataParams<
-        NSOLayerProps
+        AdminLevelDataLayerProps
       >),
     )) as { payload: { data: unknown } };
 

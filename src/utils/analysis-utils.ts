@@ -17,7 +17,7 @@ import {
   ImpactLayerProps,
   LayerType,
   LegendDefinition,
-  NSOLayerProps,
+  AdminLevelDataLayerProps,
   StatsApi,
   ThresholdDefinition,
   WMSLayerProps,
@@ -32,7 +32,7 @@ import {
   pixelsInFeature,
 } from '../components/MapView/Layers/raster-utils';
 import { BoundaryLayerData } from '../context/layers/boundary';
-import { NSOLayerData } from '../context/layers/nso';
+import { AdminLevelDataLayerData } from '../context/layers/admin_level_data';
 import { getWCSLayerUrl, WMSLayerData } from '../context/layers/wms';
 import type {
   LayerData,
@@ -43,7 +43,7 @@ import { LayerDefinitions } from '../config/utils';
 import type { TableRow } from '../context/analysisResultStateSlice';
 import { isLocalhost } from '../serviceWorker';
 
-export type BaselineLayerData = NSOLayerData;
+export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
 type RasterLayer = LayerData<WMSLayerProps>;
 
@@ -175,7 +175,7 @@ export const checkBaselineDataLayer = (
 export type ApiData = {
   geotiff_url: ReturnType<typeof getWCSLayerUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
   zones_url: string;
-  group_by?: string;
+  group_by: string;
   geojson_out?: boolean;
   wfs_params?: WfsRequestParams;
 };
@@ -202,10 +202,14 @@ export function getPrismUrl(): string {
   return origin;
 }
 
+export type KeyValueResponse = {
+  [k in string]: string | number;
+};
+
 export async function fetchApiData(
   url: string,
   apiData: ApiData | AlertRequest,
-): Promise<Array<{ [k in string]: string | number }>> {
+): Promise<Array<KeyValueResponse | Feature>> {
   return (
     await fetch(url, {
       method: 'POST',
@@ -241,7 +245,7 @@ export function scaleAndFilterAggregateData(
   const { wcsConfig } = hazardLayerDef;
   const { scale, offset } = wcsConfig || {};
 
-  return aggregateData
+  return (aggregateData as KeyValueResponse[])
     .map(data => {
       return {
         ...data,
@@ -261,7 +265,7 @@ export function scaleAndFilterAggregateData(
 
 export function generateFeaturesFromApiData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
-  baselineData: NSOLayerData,
+  baselineData: AdminLevelDataLayerData,
   groupBy: StatsApi['groupBy'],
   operation: AggregationOperations,
 ): GeoJsonBoundary[] {
@@ -421,7 +425,7 @@ export async function loadFeaturesClientSide(
 }
 
 export function getAnalysisTableColumns(
-  analysisResult: AnalysisResult,
+  analysisResult: BaselineLayerResult,
 ): Column[] {
   const { statistic } = analysisResult;
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;
@@ -449,7 +453,7 @@ export function getAnalysisTableColumns(
   ];
 }
 
-export function downloadCSVFromTableData(analysisResult: AnalysisResult) {
+export function downloadCSVFromTableData(analysisResult: BaselineLayerResult) {
   const { tableData, key: createdAt } = analysisResult;
   const columns = getAnalysisTableColumns(analysisResult);
   // Built with https://stackoverflow.com/a/14966131/5279269
@@ -470,8 +474,114 @@ export function downloadCSVFromTableData(analysisResult: AnalysisResult) {
 
   link.click();
 }
+
+export type AnalysisResult = BaselineLayerResult | ExposedPopulationResult;
+
+/**
+ * Computes the feature property value according to the scale, offset values and statistic property
+ *
+ * @return Feature
+ */
+export function scaleFeatureStat(
+  feature: Feature,
+  scale: number,
+  offset: number,
+  statistic: AggregationOperations,
+): Feature {
+  const { properties } = feature;
+  if (!properties) {
+    return feature;
+  }
+
+  const scaledValue: number = get(properties, statistic) * scale + offset;
+
+  const scaledValueProperties = {
+    ...properties,
+    [statistic]: scaledValue,
+  };
+  const scaledValueFeature: Feature = {
+    ...feature,
+    properties: scaledValueProperties,
+  };
+
+  return scaledValueFeature;
+}
+
+/**
+ * Creates Analysis result legend based on data returned from API.
+ *
+ * The equal interval method takes the maximum values minus the minimum
+ * and divides the result by the number of classes, which is the length
+ * of colors array.
+ *
+ * Finally the function calculates the upper end of each class interval
+ * and assigns a color.
+ *
+ * @return LegendDefinition
+ */
+export function createLegendFromFeatureArray(
+  features: Feature[],
+  statistic: AggregationOperations,
+): LegendDefinition {
+  // Extract values based on aggregation operation.
+  const stats: number[] = features.map(f =>
+    f.properties && f.properties[statistic] ? f.properties[statistic] : 0,
+  );
+
+  const maxNum = Math.max(...stats);
+  const minNum = Math.min(...stats);
+
+  const colors = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15'];
+
+  const delta = (maxNum - minNum) / colors.length;
+
+  const legend: LegendDefinition = colors.map((color, index) => {
+    const breakpoint = Math.ceil(minNum + (index + 1) * delta);
+
+    // Make sure you don't have a value greater than maxNum.
+    const value = Math.min(breakpoint, maxNum);
+
+    return { value, color };
+  });
+
+  return legend;
+}
+
+export class ExposedPopulationResult {
+  key: string;
+  groupBy: string;
+  featureCollection: FeatureCollection;
+  legend: LegendDefinition;
+  legendText: string;
+  statistic: AggregationOperations;
+
+  getTitle = (): string => {
+    return 'Population Exposure';
+  };
+
+  getStatTitle = (): string => {
+    return this.getTitle();
+  };
+
+  constructor(
+    featureCollection: FeatureCollection,
+    statistic: AggregationOperations,
+    legend: LegendDefinition,
+    legendText: string,
+    groupBy: string,
+    key: string,
+  ) {
+    this.featureCollection = featureCollection;
+    this.statistic = statistic;
+    this.legend = legend;
+    this.legendText = legendText;
+    this.groupBy = groupBy;
+    this.key = key;
+  }
+}
+
 // not in analysisResultStateSlice to prevent import cycle
-export class AnalysisResult {
+export class BaselineLayerResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
   tableData: TableRow[];
@@ -482,14 +592,15 @@ export class AnalysisResult {
   threshold: ThresholdDefinition;
 
   legend: LegendDefinition;
+  legendText: string;
   hazardLayerId: WMSLayerProps['id'];
-  baselineLayerId: NSOLayerProps['id'];
+  baselineLayerId: AdminLevelDataLayerProps['id'];
 
   constructor(
     tableData: TableRow[],
     featureCollection: FeatureCollection,
     hazardLayer: WMSLayerProps,
-    baselineLayer: NSOLayerProps,
+    baselineLayer: AdminLevelDataLayerProps,
     statistic: AggregationOperations,
     threshold: ThresholdDefinition,
     rawApiData?: object[],
@@ -499,6 +610,7 @@ export class AnalysisResult {
     this.statistic = statistic;
     this.threshold = threshold;
     this.legend = baselineLayer.legend;
+    this.legendText = hazardLayer.legendText;
     this.rawApiData = rawApiData;
 
     this.hazardLayerId = hazardLayer.id;
@@ -507,7 +619,17 @@ export class AnalysisResult {
   getHazardLayer(): WMSLayerProps {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
-  getBaselineLayer(): NSOLayerProps {
-    return LayerDefinitions[this.baselineLayerId] as NSOLayerProps;
+  getBaselineLayer(): AdminLevelDataLayerProps {
+    return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
+  }
+
+  getTitle(): string {
+    return `${this.getBaselineLayer().title} exposed to ${
+      this.getHazardLayer().title
+    }`;
+  }
+
+  getStatTitle(): string {
+    return `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }

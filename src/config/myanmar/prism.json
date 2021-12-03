@@ -1,6 +1,14 @@
 {
   "country": "Myanmar",
-  "alertFormActive": true,
+  "alertFormActive": false,
+  "icons": {
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png",
+    "hazards": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "capacity": "icon_capacity.png",
+    "tables": "icon_table.png"
+  },
   "map": {
     "latitude": 19.467,
     "longitude": 96.371,
@@ -15,7 +23,11 @@
   "categories": {
     "hazards": {
       "tropical_storms": ["adamts_buffers"],
-      "floods": ["hydra_s1"],
+      "floods": [
+        "hydra_s1",
+        "hydra_s2",
+        "hydra_l8"
+      ],
       "rainfall": [
         "rainfall_dekad",
         "rain_anomaly_dekad",
@@ -52,7 +64,7 @@
       ]
     },
     "exposure": {
-      "population": ["total_pop"],
+      "population": ["total_pop", "kobo_test"],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",
         "population_exposed_historical_storm_surge"

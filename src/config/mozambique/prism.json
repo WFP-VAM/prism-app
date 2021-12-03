@@ -1,5 +1,13 @@
 {
   "country": "Mozambique",
+  "icons": {
+    "rainfall": "icon_rain.png",
+    "vegetation": "icon_veg.png",
+    "temperature": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "tropical_storms": "icon_tropical_storm.png",
+    "vulnerability": "icon_vulnerable.png"
+  },
   "alertFormActive": false,
   "serversUrls": {
     "wms": [
@@ -13,22 +21,49 @@
     "zoom": 4.7
   },
   "categories": {
-    "hazards": {
-      "CHIRPS_products": [
-        "rfh_dekad",
-        "rnh_dekad",
-        "rnq_dekad",
-        "days_dry",
-        "dlx_dekad",
-        "xnn_dekad",
-        "xln_dekad"
+    "rainfall": {
+      "rainfall_amount": [
+        "precip_blended_dekad",
+        "rainfall_dekad",
+        "rainfall_agg_1month",
+        "rainfall_agg_3month",
+        "rainfall_agg_6month",
+        "rainfall_agg_9month",
+        "rainfall_agg_1year"
       ],
-      "disaster_management": [
-        "adamts_buffers",
-        "adamts_nodes",
-        "adamts_tracks",
-        "adam_earthquakes"
+      "rainfall_anomalies": [
+        "precip_blended_dekad_anomaly",
+        "rain_anomaly_dekad",
+        "rain_anomaly_1month",
+        "rain_anomaly_3month",
+        "rain_anomaly_6month",
+        "rain_anomaly_9month",
+        "rain_anomaly_1year"
+      ],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
+      "heavy_rain": [
+        "days_heavy_rain",
+        "days_intense_rain",
+        "days_extreme_rain",
+        "streak_heavy_rain"
       ]
+    },
+    "vegetation": {
+      "vegetation_conditions": ["ndvi_dekad_5", "ndvi_dekad_anomaly_5"]
+    },
+    "temperature": {
+      "air_temperature": ["ast_max", "ast_max_anomaly"],
+      "land_surface_temperature": ["lst_daytime_blended", "lst_day_anomaly_blended", "lst_daytime_5", "lst_day_anomaly_5"]
+    },
+    "tropical_storms": {
+      "tropical_storms": ["adamts_buffers"]
+    },
+    "vulnerability": {
+      "food_insecurity": ["ipc_phase_12_2020"],
+      "poverty": ["mpi"]   
     }
   }
 }

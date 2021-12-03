@@ -1,0 +1,662 @@
+{
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "../data/kyrgyzstan/kgz_admbnda_adm2_moes_20181119.json",
+    "opacity": 1,
+    "admin_code": "ADM2_PCODE",
+    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
+    "admin_level_local_names": ["ADM1_KY", "ADM2_KY"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "recurrence_mudflows": {
+    "title": "Recurrence of mudflows",
+    "type": "admin_level_data",
+    "path": "../data/kyrgyzstan/mudflows_w_admin.json",
+    "data_field": "mudflow",
+    "admin_level": 2,
+    "admin_code": "ADM2_PCODE",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Recurrence of mudflows, Ministry of Emergency Situations 2009"
+  },
+  "rainfall_dekad": {
+    "title": "10-day rainfall estimate (mm)",
+    "type": "wms",
+    "server_layer_name": "rfh_dekad",
+    "additional_query_params": {
+      "styles": "rfh_200"
+    },  
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      { "value": "-0", "color": "#ffffff", "alpha": 0},
+      { "value": "1", "color": "#ffffff"},
+      { "value": "3", "color": "#faf5e6"},
+      { "value": "10", "color": "#faf3d2"},
+      { "value": "20", "color": "#dae3a1"},
+      { "value": "30", "color": "#a0c787"},
+      { "value": "40", "color": "#68ab79"},
+      { "value": "60", "color": "#9beafa"},
+      { "value": "80", "color": "#00b1de"},
+      { "value": "100", "color": "#005ae6"},
+      { "value": "120", "color": "#0000c8"},
+      { "value": "150", "color": "#a000fa"},
+      { "value": "200", "color": "#fa78fa"},
+      { "value": "400", "color": "#ffc4ee"}
+    ]
+  },
+  "rain_anomaly_dekad": {
+    "title": "10-day rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r1q_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      { "value": "1%", "color": "#d79b0b" },
+      { "value": "60%", "color": "#e1b344" },
+      { "value": "80%", "color": "#ebcb7d" },
+      { "value": "90%", "color": "#f5e3b6" },
+      { "value": "110%", "color": "#f2f2f2" },
+      { "value": "120%", "color": "#b5e7fe" },
+      { "value": "140%", "color": "#7dd4fd" },
+      { "value": "180%", "color": "#45c1fc" },
+      { "value": "> 180%", "color": "#0fb0fb" }
+    ]
+  },
+  "rain_anomaly_monthly": {
+    "title": "Monthly rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "rfq_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      { "value": "1%", "color": "#d79b0b" },
+      { "value": "60%", "color": "#e1b344" },
+      { "value": "80%", "color": "#ebcb7d" },
+      { "value": "90%", "color": "#f5e3b6" },
+      { "value": "110%", "color": "#f2f2f2" },
+      { "value": "120%", "color": "#b5e7fe" },
+      { "value": "140%", "color": "#7dd4fd" },
+      { "value": "180%", "color": "#45c1fc" },
+      { "value": "> 180%", "color": "#0fb0fb" }
+    ]
+  },
+  "rainfall_agg_month": {
+    "title": "1-month rainfall aggregate",
+    "type": "wms",
+    "server_layer_name": "r1h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_350"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      { "value": "-0", "color": "#ffffff", "alpha": 0 },
+      { "value": "1", "color": "#ffffff" },
+      { "value": "20", "color": "#faf5e6" },
+      { "value": "40", "color": "#faf3d2" },
+      { "value": "60", "color": "#dae3a1" },
+      { "value": "80", "color": "#a0c787" },
+      { "value": "100", "color": "#68ab79" },
+      { "value": "125", "color": "#9beafa" },
+      { "value": "150", "color": "#00b1de" },
+      { "value": "200", "color": "#005ae6" },
+      { "value": "250", "color": "#0000c8" },
+      { "value": "300", "color": "#a000fa" },
+      { "value": "350", "color": "#fa78fa" }
+    ]
+  },
+  "streak_dry_days": {
+    "title": "Longest number of consecutive dry days",
+    "type": "wms",
+    "server_layer_name": "dlx_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      { "value": 0, "color": "#fff9c7" },
+      { "value": 1, "color": "#ffeea9" },
+      { "value": 4, "color": "#fede86" },
+      { "value": 6, "color": "#fec754" },
+      { "value": 10, "color": "#fea937" },
+      { "value": 14, "color": "#f88a21" },
+      { "value": 18, "color": "#e96d13" },
+      { "value": 22, "color": "#d15205" },
+      { "value": 25, "color": "#b03f03" },
+      { "value": 30, "color": "#8b3005" }
+    ]
+  },
+  "days_heavy_rain": {
+    "title": "Number of days with heavy rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xnh_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      { "value": 0, "color": "#f2fabc" },
+      { "value": 1, "color": "#dcf1b2" },
+      { "value": 4, "color": "#bbe4b5" },
+      { "value": 6, "color": "#85cfba" },
+      { "value": 10, "color": "#57bec1" },
+      { "value": 14, "color": "#34a9c3" },
+      { "value": 18, "color": "#1d8dbe" },
+      { "value": 22, "color": "#2166ac" },
+      { "value": 25, "color": "#24479d" },
+      { "value": 30, "color": "#1d2e83" }
+    ]
+  },
+  "streak_heavy_rain": {
+    "title": "Longest consecutive number of days with heavy rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xlh_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      { "value": 0, "color": "#f2fabc" },
+      { "value": 1, "color": "#dcf1b2" },
+      { "value": 4, "color": "#bbe4b5" },
+      { "value": 6, "color": "#85cfba" },
+      { "value": 10, "color": "#57bec1" },
+      { "value": 14, "color": "#34a9c3" },
+      { "value": 18, "color": "#1d8dbe" },
+      { "value": 22, "color": "#2166ac" },
+      { "value": 25, "color": "#24479d" },
+      { "value": 30, "color": "#1d2e83" },
+      { "value": "255 - no value", "color": "#ffffff", "alpha": 0 }
+    ]
+  },
+  "ndvi_dekad": {
+    "title": "10-day NDVI (MODIS)",
+    "type": "wms",
+    "server_layer_name": "mxd13a2_vim_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "LEGEND",
+    "legend": [
+      { "value": 1000, "color": "#a50026" },
+      { "value": 2000, "color": "#de3f2e" },
+      { "value": 3000, "color": "#f88d52" },
+      { "value": 4000, "color": "#fed380" },
+      { "value": 5000, "color": "#ffffbf" },
+      { "value": 6000, "color": "#ccea83" },
+      { "value": 7000, "color": "#86cb66" },
+      { "value": 8000, "color": "#2da155" },
+      { "value": 9000, "color": "#006837" }
+    ]
+  },
+  "ndvi_dekad_anomaly": {
+    "title": "10-day NDVI anomaly (MODIS)",
+    "type": "wms",
+    "server_layer_name": "mxd13a2_viq_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "viq"
+    },
+    "opacity": 0.7,
+    "legend_text": "NDVI Anomaly compared to LTA",
+    "legend": [
+      { "value": 50, "color": "#732600" },
+      { "value": 70, "color": "#f06405" },
+      { "value": 80, "color": "#f5af28" },
+      { "value": 90, "color": "#e6dc96" },
+      { "value": 110, "color": "#f5f5f5" },
+      { "value": 120, "color": "#cbff1f" },
+      { "value": 130, "color": "#00f200" },
+      { "value": 150, "color": "#008f00" },
+      { "value": 200, "color": "#004d00" }
+    ]
+  },
+  "lst_amplitude": {
+    "title": "Land Surface Temperature - 10-day Amplitude (MODIS)",
+    "type": "wms",
+    "server_layer_name": "myd11a2_taa_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "LEGEND",
+    "legend": [
+      { "value": -0, "color": "#ffffff", "alpha": 0 },
+      { "value": 50, "color": "#ffffd9" },
+      { "value": 200, "color": "#e8f6b1" },
+      { "value": 400, "color": "#b2e1b6" },
+      { "value": 600, "color": "#64c3bf" },
+      { "value": 800, "color": "#2ca1c2" },
+      { "value": 1000, "color": "#216daf" },
+      { "value": 1200, "color": "#253a97" },
+      { "value": 1400, "color": "#081d58" }
+    ]
+  },
+  "lst_daytime": {
+    "title": "Daytime Land Surface Temperature - 10-day (MODIS)",
+    "type": "wms",
+    "server_layer_name": "myd11a2_txa_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.02,
+      "offset": -273,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "LEGEND",
+    "additional_query_params": {
+      "styles": "lst_day"
+    },
+    "legend": [
+      { "value": 0, "color": "#f0f9ba" },
+      { "value": 5, "color": "#edeba4" },
+      { "value": 10, "color": "#ebdd8f" },
+      { "value": 15, "color": "#eace7c" },
+      { "value": 20, "color": "#e9bf6a" },
+      { "value": 25, "color": "#e9af59" },
+      { "value": 30, "color": "#e99e4c" },
+      { "value": 35, "color": "#e98d41" },
+      { "value": 40, "color": "#e87a3a" },
+      { "value": 45, "color": "#e76636" },
+      { "value": 50, "color": "#e54f35" }
+    ]
+  },
+  "lst_anomaly": {
+    "title": "Land Surface Temperature - 10-day Anomaly (MODIS)",
+    "type": "wms",
+    "server_layer_name": "myd11a2_txd_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "additional_query_params": {
+      "styles": "lst_day"
+    },
+    "legend_text": "LEGEND",
+    "legend": [
+      { "value": -300.0, "color": "#000004" },
+      { "value": -200.0, "color": "#210c4a" },
+      { "value": -100.0, "color": "#57106e" },
+      { "value": -50.0, "color": "#8a226a" },
+      { "value": 50.0, "color": "#bc3754" },
+      { "value": 100.0, "color": "#e45a31" },
+      { "value": 200.0, "color": "#f98e09" },
+      { "value": 300.0, "color": "#f9cb35" },
+      { "value": 5000.0, "color": "#fcffa4" }
+    ]
+  },
+    "snow_cover":{
+      "title": "Snow cover (binary snow detection)",
+      "type": "wms",
+      "server_layer_name": "ModisSnowCover",
+      "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+      "date_interval": "days",
+      "opacity": 0.7,
+      "additional_query_params": {
+        "styles": "snow_cover"
+      },
+      "legend_text": "LEGEND",
+      "legend": [
+        { "value": "1 = snow detected", "color": "#ffffff" }
+      ]  
+    },
+    "snow_percentage": {
+      "title": "Snow cover (%)",
+      "type": "wms",
+      "server_layer_name": "MonthSnowPercentage",
+      "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+      "date_interval": "day",
+      "opacity": 0.7,
+      "additional_query_params": {
+        "styles": "snow_percentage"
+      },
+      "legend_text": "Snow Percentage for a 10-day period, where the value represent the percentage of times that a pixel had snow",
+      "legend": [
+        {
+          "value": "0",
+          "color": "#a8a8a8"
+        },
+        {
+          "value": "25",
+          "color": "#c6c6c6"
+        },
+        {
+          "value": "50",
+          "color": "#e0e0e0"
+        },
+        {
+          "value": "75",
+          "color": "#f4f4f4"
+        },
+        {
+          "value": "100",
+          "color": "#ffffff"
+        }
+      ]
+    },
+    "modis_snow_percentage": {
+      "title": "Snow cover (%)",
+      "type": "wms",
+      "server_layer_name": "ModisSnowPercentage",
+      "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+      "date_interval": "day",
+      "opacity": 0.7,
+      "additional_query_params": {
+        "styles": "snow_percentage"
+      },
+      "legend_text": "Snow Percentage for a 10-day period, where the value represent the percentage of times that a pixel had snow",
+      "legend": [
+        {
+          "value": "0",
+          "color": "#a8a8a8"
+        },
+        {
+          "value": "25",
+          "color": "#c6c6c6"
+        },
+        {
+          "value": "50",
+          "color": "#e0e0e0"
+        },
+        {
+          "value": "75",
+          "color": "#f4f4f4"
+        },
+        {
+          "value": "100",
+          "color": "#ffffff"
+        }
+      ]
+    },
+    "ModisVCI": {
+      "title": "Vegetation Condition Index",
+      "type": "wms",
+      "server_layer_name": "ModisVCI",
+      "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+      "date_interval": "day",
+      "opacity": 0.7,
+      "additional_query_params": {
+        "styles": "vci"
+      },
+      "legend_text": "Vegetation Condition Index for a 10day period. The VCI compares the current NDVI to the long-term minimum and maximum values of NDVI. VCI values range [0,1]",
+      "legend": [
+      ]
+    },
+    "ModisTCI": {
+      "title": "Temperature Condition Index ",
+      "type": "wms",
+      "server_layer_name": "ModisTCI",
+      "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+      "date_interval": "day",
+      "opacity": 0.7,
+      "additional_query_params": {
+        "styles": "tci"
+      },
+      "legend_text": "Temperature Condition Index for a 10day period. The TCI compares the current LST to the long-term minimum and maximum values of LST.",
+      "legend": [
+      ]
+    },
+    "ModisVHI": {
+      "title": "Vegetation Health Index",
+      "type": "wms",
+      "server_layer_name": "ModisVHI",
+      "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+      "date_interval": "day",
+      "opacity": 0.7,
+      "additional_query_params": {
+        "styles": "vhi"
+      },
+      "wcsConfig": {
+        "scale": 0.0001,
+        "offset": 0,
+        "pixelResolution": 64
+      },
+      "legend_text": "Vegetation Health Index for a 10day period. The VHI is a combination of VCI and TCI, and it is mainly used for monitoring drought.",
+      "legend": [
+        {
+          "value": "0.10",
+          "color": "#ef1000"
+        },
+        {
+          "value": "0.17",
+          "color": "#bf4000"
+        },
+        {
+          "value": "0.26",
+          "color": "#ba7500"
+        },
+        {
+          "value": "0.34",
+          "color": "#ead500"
+        },
+        {
+          "value": "1.00",
+          "color": "#5ea100"
+        }
+      ]
+    },
+    "pasture_anomaly": {
+      "title": "10-day pasture anomaly",
+      "type": "wms",
+      "server_layer_name": "ModisAnomaly",
+      "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+      "date_interval": "day",
+      "opacity": 0.7,
+      "additional_query_params": {
+        "styles": "anomaly"
+      },
+      "legend_text": "Pasture anomaly comparing current pasture condition to long term median",
+      "wcsConfig": {
+        "no_data": 65535,
+        "scale": 0.01,
+        "pixelResolution": 64,
+        "offset": -200
+      },
+      "legend": [
+        {
+          "value": "-80%",
+          "color": "#ff0000"
+        },
+        {
+          "value": "-60%",
+          "color": "#ff5900"
+        },
+        {
+          "value": "-40%",
+          "color": "#ff8400"
+        },
+        {
+          "value": "-20%",
+          "color": "#ffce63"
+        },
+        {
+          "value": "-10%",
+          "color": "#ffdd94"
+        },
+        {
+          "value": "0",
+          "color": "#ffffbf"
+        },
+        {
+          "value": "+10%",
+          "color": "#dee09f"
+        },
+        {
+          "value": "+20%",
+          "color": "#bbbf7c"
+        },
+        {
+          "value": "+40%",
+          "color": "#9da360"
+        },
+        {
+          "value": "+60%",
+          "color": "#7e8745"
+        },
+        {
+          "value": "+80%",
+          "color": "#5b6e00"
+        }
+      ]
+    },
+    "10day_NDVI_KDC": {
+      "title": "10-day NDVI (KDC)",
+      "type": "wms",
+      "server_layer_name": "ModisIndices",
+      "base_url": "https://kyrgyzstan.sibelius-datacube.org:5000",
+      "date_interval": "day",
+      "opacity": 0.7,
+      "additional_query_params": {
+        "styles": "ndvi"
+      },
+      "legend_text": "Median averaged Normalized Difference Vegetation Index (NDVI) from composite satellite imagery",
+      "legend": [
+        {
+          "value": "0.00",
+          "color": "#ece0d7"
+        },
+        {
+          "value": "0.11",
+          "color": "#d7c8b1"
+        },
+        {
+          "value": "0.22",
+          "color": "#bfb186"
+        },
+        {
+          "value": "0.33",
+          "color": "#a59e59"
+        },
+        {
+          "value": "0.44",
+          "color": "#878a31"
+        },
+        {
+          "value": "0.55",
+          "color": "#69761f"
+        },
+        {
+          "value": "0.66",
+          "color": "#4f6021"
+        },
+        {
+          "value": "0.77",
+          "color": "#374b1b"
+        },
+        {
+          "value": "0.88",
+          "color": "#1c3800"
+        },
+        {
+          "value": "1.00",
+          "color": "#000000"
+        }
+      ]
+    },
+    "active_fires": {
+      "title": "Active fires in the past 24 hours",
+      "type": "wms",
+      "server_layer_name": "",
+      "base_url": "https://firms.modaps.eosdis.nasa.gov/mapserver/wms/fires/0ef35b7cd1e43a2ff674818814c24231/fires_viirs_24/",
+      "date_interval": "day",
+      "opacity": 0.8,
+      "additional_query_params": {
+        "time": "2021-02-11/2021-02-20"
+      },
+      "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 24 hours",
+      "legend": [
+        { "value":  "Fire detected", "color": "#FF0000" }
+      ]
+    },
+    "active_fires_7days": {
+      "title": "Active fires in the past 7 days",
+      "type": "wms",
+      "server_layer_name": "",
+      "base_url": "    https://firms.modaps.eosdis.nasa.gov/mapserver/wms/time_since_detection_4/0ef35b7cd1e43a2ff674818814c24231/tsd_4_viirs_all/",
+      "date_interval": "day",
+      "opacity": 0.8,
+      "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 7 days",
+      "legend": [
+        { "value": "0 to < 6 hours", "color": "#8B0000" },
+        { "value":  "6 to < 12 hours", "color": "#FF0000" },
+        { "value":  "12 to < 24 hours", "color": "#FFA500" },
+        { "value":  "24 + hours", "color": "#FFFF00" }
+      ]
+    },
+    "fires_2020": {
+      "title": "Fires detected in 2020",
+      "type": "point_data",
+      "data": "",
+      "date_url": "",
+      "fallback_data": "../data/kyrgyzstan/viirs_fires_2020.json",
+      "opacity": 0.8,
+      "measure": "bright_ti4",
+      "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
+      "legend": [
+        {
+          "value": "200",
+          "color": "#7ab1c0"
+        },
+        {
+          "value": "250",
+          "color": "#9fc3b3"
+        },
+        {
+          "value": "300",
+          "color": "#d9e79a"
+        },
+        {
+          "value": "350",
+          "color": "#f3f88e"
+        },
+        {
+          "value": "400",
+          "color": "#f0d779"
+        },
+        {
+          "value": "10",
+          "color": "#fdae61"
+        }
+      ]
+    }
+}
+

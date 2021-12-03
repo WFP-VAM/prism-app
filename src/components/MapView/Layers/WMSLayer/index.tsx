@@ -36,7 +36,7 @@ function WMSLayers({
       />
 
       <Layer
-        below="boundaries"
+        before="boundaries-line"
         type="raster"
         id={`layer-${id}`}
         sourceId={`source-${id}`}

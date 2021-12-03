@@ -24,7 +24,7 @@ import DatePicker from 'react-datepicker';
 import { LayerDefinitions } from '../../../config/utils';
 import {
   AggregationOperations,
-  NSOLayerProps,
+  AdminLevelDataLayerProps,
   WMSLayerProps,
   LayerKey,
 } from '../../../config/types';
@@ -44,6 +44,8 @@ import AnalysisTable from './AnalysisTable';
 import {
   getAnalysisTableColumns,
   downloadCSVFromTableData,
+  BaselineLayerResult,
+  ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 
@@ -131,6 +133,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const clearAnalysis = () => dispatch(clearAnalysisResult());
 
   const runAnalyser = async () => {
+    if (analysisResult) {
+      clearAnalysis();
+    }
+
     if (!extent) {
       return;
     } // hasn't been calculated yet
@@ -148,7 +154,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
     ] as WMSLayerProps;
     const selectedBaselineLayer = LayerDefinitions[
       baselineLayerId
-    ] as NSOLayerProps;
+    ] as AdminLevelDataLayerProps;
 
     const params: AnalysisDispatchParams = {
       hazardLayer: selectedHazardLayer,
@@ -217,7 +223,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
               <div className={classes.analyserOptions}>
                 <Typography variant="body2">Baseline Layer</Typography>
                 <LayerDropdown
-                  type="nso"
+                  type="admin_level_data"
                   value={baselineLayerId}
                   setValue={setBaselineLayerId}
                   title="Baseline Layer"
@@ -275,53 +281,56 @@ function Analyser({ extent, classes }: AnalyserProps) {
               </div>
             </div>
 
-            {!isAnalysisLoading && analysisResult && (
-              <>
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        color="default"
-                        checked={isMapLayerActive}
-                        onChange={e =>
-                          dispatch(setIsMapLayerActive(e.target.checked))
-                        }
-                      />
-                    }
-                    label="Map View"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        color="default"
-                        checked={isTableViewOpen}
-                        onChange={e => setIsTableViewOpen(e.target.checked)}
-                      />
-                    }
-                    label="Table View"
-                  />
-                </FormGroup>
-                {isTableViewOpen && (
-                  <AnalysisTable
-                    tableData={analysisResult.tableData}
-                    columns={getAnalysisTableColumns(analysisResult)}
-                  />
-                )}
-                <Button
-                  className={classes.innerAnalysisButton}
-                  onClick={() => downloadCSVFromTableData(analysisResult)}
-                >
-                  <Typography variant="body2">Download</Typography>
-                </Button>
-                <Button
-                  className={classes.innerAnalysisButton}
-                  onClick={clearAnalysis}
-                >
-                  <Typography variant="body2">Clear Analysis</Typography>
-                </Button>
-              </>
-            )}
-            {!analysisResult && (
+            {!isAnalysisLoading &&
+              analysisResult &&
+              analysisResult instanceof BaselineLayerResult && (
+                <>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          color="default"
+                          checked={isMapLayerActive}
+                          onChange={e =>
+                            dispatch(setIsMapLayerActive(e.target.checked))
+                          }
+                        />
+                      }
+                      label="Map View"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          color="default"
+                          checked={isTableViewOpen}
+                          onChange={e => setIsTableViewOpen(e.target.checked)}
+                        />
+                      }
+                      label="Table View"
+                    />
+                  </FormGroup>
+                  {isTableViewOpen && (
+                    <AnalysisTable
+                      tableData={analysisResult.tableData}
+                      columns={getAnalysisTableColumns(analysisResult)}
+                    />
+                  )}
+                  <Button
+                    className={classes.innerAnalysisButton}
+                    onClick={() => downloadCSVFromTableData(analysisResult)}
+                  >
+                    <Typography variant="body2">Download</Typography>
+                  </Button>
+                  <Button
+                    className={classes.innerAnalysisButton}
+                    onClick={clearAnalysis}
+                  >
+                    <Typography variant="body2">Clear Analysis</Typography>
+                  </Button>
+                </>
+              )}
+            {(!analysisResult ||
+              analysisResult instanceof ExposedPopulationResult) && (
               <Button
                 className={classes.innerAnalysisButton}
                 onClick={runAnalyser}

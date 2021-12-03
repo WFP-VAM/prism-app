@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { FillPaint, LinePaint } from 'mapbox-gl';
 import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
@@ -11,7 +12,7 @@ const optionalMetadataKey = Symbol('optional_property');
 export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
-  | NSOLayerProps
+  | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps;
 
@@ -117,10 +118,15 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
-export type LegendDefinition = {
+export type LegendDefinitionItem = {
   value: string | number;
   color: string;
-}[];
+  // Optional, to create custom label like '≤50'. if label is not defined
+  // then value attribute will be shown instead
+  label?: string;
+};
+
+export type LegendDefinition = LegendDefinitionItem[];
 
 export type GroupDefinition = {
   name: string;
@@ -145,7 +151,7 @@ export type RawDataConfiguration = {
   pixelResolution?: number;
 
   // Remote layers might not have time dimension enabled.
-  timeSupport?: boolean;
+  disableDateParam?: boolean;
 };
 
 // Type of vector data that the layer provides
@@ -154,6 +160,20 @@ export enum GeometryType {
   LineString = 'linestring',
   Polygon = 'polygon',
 }
+
+export interface ExposedPopulationDefinition {
+  id: LayerKey;
+
+  // Geojson property key to extract from WFS Response when running exposed population analysis.
+  key: string;
+}
+
+interface FeatureInfoProps {
+  type: LabelType;
+  label: string;
+}
+
+export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
 
 export class CommonLayerProps {
   id: LayerKey;
@@ -177,8 +197,24 @@ export class CommonLayerProps {
   group?: GroupDefinition;
 
   @optional // Perform population exposure analysis using this layer.
-  exposure?: LayerKey;
+  exposure?: ExposedPopulationDefinition;
+
+  @optional // Display layer extra details from a `markup` file
+  contentPath?: string;
+
+  @optional
+  featureInfoProps?: { [key: string]: FeatureInfoProps };
 }
+
+/*
+  To get possible values for fill and lines, go to:
+  https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#line
+  https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#fill
+*/
+type LayerStyleProps = {
+  fill: FillPaint;
+  line: LinePaint;
+};
 
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
@@ -186,6 +222,7 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminCode: string;
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: string[]; // Same as above, local to country
+  styles: LayerStyleProps; // Mapbox line and fill properties.
 }
 
 export enum LabelType {
@@ -194,7 +231,7 @@ export enum LabelType {
   Number = 'number',
 }
 
-interface featureInfoProps {
+interface FeatureInfoProps {
   type: LabelType;
   label: string;
 }
@@ -219,15 +256,12 @@ export class WMSLayerProps extends CommonLayerProps {
   @optional
   wcsConfig?: RawDataConfiguration;
 
-  @optional
-  featureInfoProps?: { [key: string]: featureInfoProps };
-
   @optional // If included, we infer the layer is a vector layer.
   geometry?: GeometryType;
 }
 
-export class NSOLayerProps extends CommonLayerProps {
-  type: 'nso';
+export class AdminLevelDataLayerProps extends CommonLayerProps {
+  type: 'admin_level_data';
   path: string;
 
   @makeRequired
@@ -305,6 +339,12 @@ export class PointDataLayerProps extends CommonLayerProps {
   fallbackData?: string;
   // URL to fetch all possible dates from
   dateUrl: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
+
+  @optional
+  featureInfoProps?: FeatureInfoObject;
 }
 
 export type RequiredKeys<T> = {
@@ -353,6 +393,7 @@ export interface WfsRequestParams {
   url: string;
   layer_name: string;
   time?: string;
+  key: string;
 }
 /* eslint-enable camelcase */
 
@@ -404,4 +445,9 @@ export interface RequestFeatureInfo extends FeatureInfoType {
   featureCount: number;
   format: string;
   styles: string;
+}
+
+export enum DownloadFormat {
+  CSV,
+  JSON,
 }
