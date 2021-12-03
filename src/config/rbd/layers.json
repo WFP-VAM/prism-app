@@ -12,7 +12,7 @@
           "line-width": 1,
           "line-opacity": 0.8
         }
-      }
+      },
       "admin_code": "adm1_pcod2",
       "admin_level_names": ["adm0_name", "adm1_name"],
       "admin_level_local_names": ["adm0_name", "adm1_name"]
