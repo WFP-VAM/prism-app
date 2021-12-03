@@ -9,6 +9,12 @@ import {
   uniq,
 } from 'lodash';
 import { Map } from 'mapbox-gl';
+import bbox from '@turf/bbox';
+import { Feature } from 'geojson';
+import { multiPolygon, Polygon } from '@turf/helpers';
+import bboxPolygon from '@turf/bbox-polygon';
+import union from '@turf/union';
+import { LayerData } from '../../context/layers/layer-data';
 import { LayerDefinitions } from '../../config/utils';
 import { formatFeatureInfo } from '../../utils/server-utils';
 import { getExtent } from './Layers/raster-utils';
@@ -16,6 +22,7 @@ import {
   WMSLayerProps,
   FeatureInfoType,
   FeatureInfoObject,
+  BoundaryLayerProps,
 } from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
@@ -49,11 +56,11 @@ export const getFeatureInfoParams = (
   date: string,
 ): FeatureInfoType => {
   const { x, y } = evt.point;
-  const bbox = getExtent(map);
+  const bboxExtent = getExtent(map);
   const { clientWidth, clientHeight } = map.getContainer();
 
   const params = {
-    bbox,
+    bbox: bboxExtent,
     x: Math.floor(x),
     y: Math.floor(y),
     width: clientWidth,
@@ -160,4 +167,82 @@ export function getFeatureInfoPropsData(
         },
       };
     }, {});
+}
+
+export type Boundary = {
+  name: string;
+  bbox: [number, number, number, number];
+  parent: boolean;
+};
+
+type boundaryObj = { [key: string]: Boundary[] };
+
+export function groupBoundaries(
+  boundaryLayerData?: LayerData<BoundaryLayerProps>,
+): Boundary[] {
+  if (!boundaryLayerData) {
+    return [];
+  }
+
+  const { data, layer } = boundaryLayerData;
+  const [level0, level1] = layer.adminLevelLocalNames;
+
+  const boundaries = data.features.reduce(
+    (obj: boundaryObj, feature: Feature) => {
+      const { properties, geometry } = feature;
+
+      if (!properties) {
+        return obj;
+      }
+
+      if (geometry.type !== 'MultiPolygon') {
+        return obj;
+      }
+
+      const level0Name = properties[level0];
+      const level1Name = properties[level1];
+
+      const turfObj = multiPolygon(geometry.coordinates);
+      const geomBbox = bbox(turfObj);
+      const boundary = { name: level1Name, bbox: geomBbox, parent: false };
+
+      const addedLevel1 = Object.keys(obj).includes(level0Name)
+        ? [...obj[level0Name], boundary]
+        : [boundary];
+
+      const newObj = { ...obj, [level0Name]: addedLevel1 };
+
+      return newObj;
+    },
+    {},
+  );
+
+  // Take each boundary category and build the bbox that combines all children bboxes.
+  const groupedBoundaries = Object.entries(boundaries).reduce(
+    (obj: Boundary[], [key, items]) => {
+      const childrenBBoxes = items.map(i => bboxPolygon(i.bbox));
+
+      const unionPolygon = childrenBBoxes.reduce(
+        (bboxUnion: Feature<Polygon>, item: Feature<Polygon>) => {
+          const unionObj = union(bboxUnion, item);
+          if (!unionObj) {
+            return bboxUnion;
+          }
+          return unionObj as Feature<Polygon>;
+        },
+        childrenBBoxes[0],
+      );
+
+      const parentItem: Boundary = {
+        name: key,
+        bbox: bbox(unionPolygon) as [number, number, number, number],
+        parent: true,
+      };
+
+      return [...obj, parentItem, ...items];
+    },
+    [] as Boundary[],
+  );
+
+  return groupedBoundaries;
 }

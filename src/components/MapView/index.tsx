@@ -23,6 +23,7 @@ import bbox from '@turf/bbox';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import Download from './Download';
+import BoundarySelector from './BoundarySelector';
 // layers
 import {
   BoundaryLayer,
@@ -389,6 +390,7 @@ function MapView({ classes }: MapViewProps) {
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
+            <BoundarySelector boundaryLayerData={boundaryLayerData} />
             <Download />
             <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
           </Grid>
