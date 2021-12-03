@@ -121,6 +121,9 @@ export function checkRequiredKeys<T>(
 export type LegendDefinitionItem = {
   value: string | number;
   color: string;
+  // Optional, to create custom label like '≤50'. if label is not defined
+  // then value attribute will be shown instead
+  label?: string;
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
