@@ -8,6 +8,7 @@ import {
   sum,
   omit,
   flatten,
+  isNumber,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import { bbox } from '@turf/turf';
@@ -98,6 +99,12 @@ const scaleValueIfDefined = (
 };
 
 function thresholdOrNaN(value: number, threshold?: ThresholdDefinition) {
+  // filter out nullish values.
+  if (!isNumber(value)) {
+    return NaN;
+  }
+
+  // if there is no threshold, simply return the original value.
   if (threshold === undefined) {
     return value;
   }
