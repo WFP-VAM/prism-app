@@ -106,10 +106,66 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'point_data',
   'wms',
 ];
+const boundaryLayer = getBoundaryLayerSingleton();
+
+function useMapOnClick(setIsAlertFormOpen: (value: boolean) => void) {
+  const dispatch = useDispatch();
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+
+  return (
+    // this function will only work when boundary data loads.
+    // due to how the library works, we can only set this function once,
+    // so we should set it when boundary data is present
+    boundaryLayerData &&
+    ((map: Map, evt: any) => {
+      dispatch(hidePopup());
+      // Hide the alert popup if we click outside the target country (outside boundary bbox)
+      if (
+        boundaryLayerData.data.features.every(
+          feature =>
+            !inside(
+              [evt.lngLat.lng, evt.lngLat.lat],
+              feature as Feature<MultiPolygon>,
+            ),
+        )
+      ) {
+        setIsAlertFormOpen(false);
+      }
+      // Get layers that have getFeatureInfo option.
+      const featureInfoLayers = getActiveFeatureInfoLayers(map);
+      if (featureInfoLayers.length === 0) {
+        const dateFromRef = moment(selectedDate).format('YYYY-MM-DD');
+
+        const params = getFeatureInfoParams(map, evt, dateFromRef);
+        dispatch(setWMSGetFeatureInfoLoading(true));
+        makeFeatureInfoRequest(featureInfoLayers, params).then(
+          (result: { [name: string]: string } | null) => {
+            if (result) {
+              Object.keys(result).forEach((k: string) => {
+                dispatch(
+                  addPopupData({
+                    [k]: {
+                      data: result[k],
+                      coordinates: evt.lngLat,
+                    },
+                  }),
+                );
+              });
+            }
+            dispatch(setWMSGetFeatureInfoLoading(false));
+          },
+        );
+      }
+    })
+  );
+}
 
 function MapView({ classes }: MapViewProps) {
   const selectedLayers = useSelector(layersSelector);
-
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
   const loading = layersLoading || datesLoading;
@@ -117,17 +173,13 @@ function MapView({ classes }: MapViewProps) {
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
 
-  const selectedDateRef = useRef<DatePicker>(null);
-
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer =>
       dateSupportLayerTypes.includes(layer.type),
     )
-    .filter(layer => !layer.group || layer.group.main === true);
+    .filter(layer => !layer.group || layer.group.main);
 
-  const boundaryLayer = getBoundaryLayerSingleton();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -142,6 +194,7 @@ function MapView({ classes }: MapViewProps) {
   const { urlParams, updateHistory } = useUrlHistory();
   // let users know if their current date doesn't exist in possible dates
   const urlDate = urlParams.get('date');
+  const mapOnClick = useMapOnClick(setIsAlertFormOpen);
 
   useEffect(() => {
     /*
@@ -223,7 +276,7 @@ function MapView({ classes }: MapViewProps) {
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
     boundaryLayers.map(l => dispatch(addLayer(l)));
     boundaryLayers.map(l => dispatch(loadLayerData({ layer: l })));
-  }, [boundaryLayer, dispatch]);
+  }, [dispatch]);
 
   // calculate possible dates user can pick from the currently selected layers
   const selectedLayerDates: number[] = useMemo(() => {
@@ -334,57 +387,7 @@ function MapView({ classes }: MapViewProps) {
         containerStyle={{
           height: '100%',
         }}
-        onClick={
-          // this function will only work when boundary data loads.
-          // due to how the library works, we can only set this function once,
-          // so we should set it when boundary data is present
-          boundaryLayerData
-            ? (map: Map, evt: any) => {
-                dispatch(hidePopup());
-                // Hide the alert popup if we click outside the target country (outside boundary bbox)
-                if (
-                  boundaryLayerData.data.features.every(
-                    feature =>
-                      !inside(
-                        [evt.lngLat.lng, evt.lngLat.lat],
-                        feature as Feature<MultiPolygon>,
-                      ),
-                  )
-                ) {
-                  setIsAlertFormOpen(false);
-                }
-                // Get layers that have getFeatureInfo option.
-                const featureInfoLayers = getActiveFeatureInfoLayers(map);
-                if (featureInfoLayers.length === 0) {
-                  return;
-                }
-
-                const dateFromRef = moment(
-                  selectedDateRef.current?.props.selected as Date,
-                ).format('YYYY-MM-DD');
-
-                const params = getFeatureInfoParams(map, evt, dateFromRef);
-                dispatch(setWMSGetFeatureInfoLoading(true));
-                makeFeatureInfoRequest(featureInfoLayers, params).then(
-                  (result: { [name: string]: string } | null) => {
-                    if (result) {
-                      Object.keys(result).forEach((k: string) => {
-                        dispatch(
-                          addPopupData({
-                            [k]: {
-                              data: result[k],
-                              coordinates: evt.lngLat,
-                            },
-                          }),
-                        );
-                      });
-                    }
-                    dispatch(setWMSGetFeatureInfoLoading(false));
-                  },
-                );
-              }
-            : undefined
-        }
+        onClick={mapOnClick}
       >
         <>
           {selectedLayers.map(layer => {
@@ -420,10 +423,7 @@ function MapView({ classes }: MapViewProps) {
         </Grid>
       </Grid>
       {selectedLayerDates.length > 0 && (
-        <DateSelector
-          availableDates={selectedLayerDates}
-          selectedDateRef={selectedDateRef}
-        />
+        <DateSelector availableDates={selectedLayerDates} />
       )}
     </Grid>
   );

@@ -148,6 +148,7 @@ export const {
   removeLayer,
   updateDateRange,
   setMap,
+  // TODO unused
   updateLayerOpacity,
 } = mapStateSlice.actions;
 
