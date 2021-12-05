@@ -9,11 +9,12 @@ import {
   Select,
   styled,
   TextField,
+  TextFieldProps,
   Theme,
   Typography,
   useMediaQuery,
 } from '@material-ui/core';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { forwardRef, ReactElement, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
 import { BoundaryLayerProps } from '../../../config/types';
@@ -28,10 +29,11 @@ import { LayerData } from '../../../context/layers/layer-data';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
+  // Override the default list subheader style to make it clickable
   pointerEvents: 'inherit',
   cursor: 'pointer',
   '&:hover': {
-    backgroundColor: theme.palette.action.hover,
+    backgroundColor: theme.palette.grey[100],
   },
 }));
 const useStyles = makeStyles(() => ({
@@ -42,40 +44,46 @@ const useStyles = makeStyles(() => ({
   },
 }));
 const TIMEOUT_ANIMATION_DELAY = 5;
-const SearchField = ({
-  // important this isn't called `value` since this would confuse <Select/>
-  // the main purpose of wrapping this text-field is for this very purpose.
-  search,
-  setSearch,
-}: {
-  search: string;
-  setSearch: (val: string) => void;
-}) => {
-  const styles = useStyles();
-  return (
-    <TextField
-      onKeyDown={e => e.stopPropagation()}
-      className={styles.searchField}
-      value={search}
-      onChange={e => {
-        setSearch(e.target.value);
-        // when something is selected, and the user tries to search, this field deselects for some reason,
-        // thus reselect on change. Important to capture target as it's null inside timeout.
-        const { target } = e;
-        setTimeout(() => {
-          target.focus();
-        }, TIMEOUT_ANIMATION_DELAY);
-      }}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="end">
-            <Search />
-          </InputAdornment>
-        ),
-      }}
-    />
-  );
-};
+const SearchField = forwardRef(
+  (
+    {
+      // important this isn't called `value` since this would confuse <Select/>
+      // the main purpose of wrapping this text-field is for this very purpose.
+      search,
+      setSearch,
+    }: {
+      search: string;
+      setSearch: (val: string) => void;
+    },
+    ref: TextFieldProps['ref'],
+  ) => {
+    const styles = useStyles();
+    return (
+      <TextField
+        ref={ref}
+        onKeyDown={e => e.stopPropagation()}
+        className={styles.searchField}
+        value={search}
+        onChange={e => {
+          setSearch(e.target.value);
+          // when something is selected, and the user tries to search, this field deselects for some reason,
+          // thus reselect on change. Important to capture target as it's null inside timeout.
+          const { target } = e;
+          setTimeout(() => {
+            target.focus();
+          }, TIMEOUT_ANIMATION_DELAY);
+        }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="end">
+              <Search />
+            </InputAdornment>
+          ),
+        }}
+      />
+    );
+  },
+);
 
 /**
  * Converts the boundary layer data into a list of options for the dropdown
@@ -210,11 +218,6 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
             ...components,
             <ClickableListSubheader
               key={category.title}
-              style={{
-                // Override the default list subheader style to make it clickable
-                pointerEvents: 'inherit',
-                cursor: 'pointer',
-              }}
               onClick={e => {
                 e.preventDefault();
                 // if at least one is selected, deselect all. Otherwise select all

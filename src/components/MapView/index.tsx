@@ -3,7 +3,6 @@ import React, {
   createElement,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,7 +17,6 @@ import { countBy, pickBy } from 'lodash';
 import moment from 'moment';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
-import DatePicker from 'react-datepicker';
 import { Map } from 'mapbox-gl';
 import { bbox, inside } from '@turf/turf';
 import { Feature, MultiPolygon } from '@turf/helpers';
