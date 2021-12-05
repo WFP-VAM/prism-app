@@ -236,7 +236,7 @@ function LegendItem({
     }
   };
 
-  const legendItemLabel = ({ label, value }: LegendDefinitionItem) => {
+  const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
     if (typeof label === 'string') {
       return label;
     }
@@ -277,7 +277,7 @@ function LegendItem({
                 legend.map((item: LegendDefinitionItem) => (
                   <ColorIndicator
                     key={item.value}
-                    value={legendItemLabel(item)}
+                    value={getLegendItemLabel(item)}
                     color={item.color as string}
                     opacity={opacity as number}
                   />
