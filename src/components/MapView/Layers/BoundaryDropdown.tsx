@@ -43,7 +43,7 @@ const useStyles = makeStyles(() => ({
     },
   },
 }));
-const TIMEOUT_ANIMATION_DELAY = 5;
+const TIMEOUT_ANIMATION_DELAY = 10;
 const SearchField = forwardRef(
   (
     {
@@ -102,8 +102,8 @@ function getCategories(
   }> = [];
   data.features.forEach(feature => {
     const parentCategory =
-      feature.properties?.[boundaryLayer.adminLevelLocalNames[0]];
-    const label = feature.properties?.[boundaryLayer.adminLevelLocalNames[1]];
+      feature.properties?.[boundaryLayer.adminLevelNames[1]];
+    const label = feature.properties?.[boundaryLayer.adminLevelNames[0]];
     const code = feature.properties?.[boundaryLayer.adminCode];
     if (!label || !code || !parentCategory) {
       return;
