@@ -221,7 +221,7 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminLevelLocalNames: string[]; // Same as above, local to country
   styles: LayerStyleProps; // Mapbox line and fill properties.
   @optional
-  display?: boolean; // Flag for default boundary layers to display
+  visibility?: boolean; // Flag for default boundary layers to display
 }
 
 export enum LabelType {

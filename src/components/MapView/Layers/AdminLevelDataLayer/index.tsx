@@ -3,7 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { AdminLevelDataLayerProps, LayerKey } from '../../../../config/types';
+import {
+  AdminLevelDataLayerProps,
+  BoundaryLayerProps,
+  LayerKey,
+} from '../../../../config/types';
 import { legendToStops } from '../layer-utils';
 import {
   LayerData,
@@ -33,8 +37,11 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
         const boundaryLayers = getBoundaryLayers();
         boundaryLayers.map(l => dispatch(removeLayer(l)));
 
-        const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
+        const uniqueBoundaryLayer = LayerDefinitions[
+          boundaryId as LayerKey
+        ] as BoundaryLayerProps;
         dispatch(addLayer(uniqueBoundaryLayer));
+        dispatch(loadLayerData({ layer: uniqueBoundaryLayer }));
       } else {
         dispatch(
           addNotification({

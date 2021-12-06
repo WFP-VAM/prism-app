@@ -133,7 +133,8 @@ export function getBoundaryLayers(): BoundaryLayerProps[] {
   const boundaryLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is BoundaryLayerProps =>
       layer.type === 'boundary' &&
-      (layer as BoundaryLayerProps).display === true,
+      ((layer as BoundaryLayerProps).visibility === true ||
+        (layer as BoundaryLayerProps).visibility === undefined),
   );
   if (boundaryLayers.length === 0) {
     throw new Error(
@@ -145,7 +146,9 @@ export function getBoundaryLayers(): BoundaryLayerProps[] {
 
 export function getBoundaryLayerSingleton(): BoundaryLayerProps {
   const boundaryLayers = getBoundaryLayers();
-  const boundaryLayer = boundaryLayers.find(l => l.id === 'admin_boundaries');
+  // get boundary with visibility set to true and without visibility
+  // pick the one with the highest level instead
+  const boundaryLayer = boundaryLayers.find(l => l.type === 'boundary');
 
   if (!boundaryLayer) {
     throw new Error(

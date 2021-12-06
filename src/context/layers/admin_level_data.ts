@@ -3,9 +3,13 @@ import { get, isNull, isString } from 'lodash';
 import {
   BoundaryLayerProps,
   AdminLevelDataLayerProps,
+  LayerKey,
 } from '../../config/types';
 import type { ThunkApi } from '../store';
-import { getBoundaryLayerSingleton } from '../../config/utils';
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../config/utils';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 import { layerDataSelector } from '../mapStateSlice/selectors';
 
@@ -23,10 +27,13 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
   { layer }: LayerDataParams<AdminLevelDataLayerProps>,
   api: ThunkApi,
 ) => {
-  const { path, adminCode, dataField, featureInfoProps } = layer;
+  const { path, adminCode, dataField, featureInfoProps, boundary } = layer;
   const { getState } = api;
 
-  const adminBoundaryLayer = getBoundaryLayerSingleton();
+  const adminBoundaryLayer =
+    boundary !== undefined
+      ? (LayerDefinitions[boundary as LayerKey] as BoundaryLayerProps)
+      : getBoundaryLayerSingleton();
 
   const adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
     getState(),

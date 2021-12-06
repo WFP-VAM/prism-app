@@ -166,7 +166,8 @@ function MapView({ classes }: MapViewProps) {
       }
 
       if (Object.keys(LayerDefinitions).includes(id)) {
-        dispatch(addLayer(LayerDefinitions[id as LayerKey]));
+        const layer = LayerDefinitions[id as LayerKey];
+        dispatch(addLayer(layer));
 
         if (selectedDate && !urlDate) {
           updateHistory('date', moment(selectedDate).format('YYYY-MM-DD'));
