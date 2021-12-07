@@ -219,6 +219,7 @@ type LayerStyleProps = {
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
   path: string; // path to admin_boundries.json file - web or local.
+  adminLevel: number;
   adminCode: string;
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: string[]; // Same as above, local to country

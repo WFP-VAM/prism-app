@@ -145,10 +145,13 @@ export function getBoundaryLayers(): BoundaryLayerProps[] {
 }
 
 export function getBoundaryLayerSingleton(): BoundaryLayerProps {
-  const boundaryLayers = getBoundaryLayers();
-  // get boundary with visibility set to true and without visibility
-  // pick the one with the highest level instead
-  const boundaryLayer = boundaryLayers.find(l => l.type === 'boundary');
+  const boundaryLayers = getBoundaryLayers().filter(
+    l => l.visibility === true || l.visibility === undefined,
+  );
+  const highAdminLevel = Math.max(...boundaryLayers.map(l => l.adminLevel));
+  const boundaryLayer = boundaryLayers.find(
+    l => l.adminLevel === highAdminLevel,
+  );
 
   if (!boundaryLayer) {
     throw new Error(
