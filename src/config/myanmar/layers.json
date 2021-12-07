@@ -4,8 +4,54 @@
     "path": "../data/myanmar/admin_boundaries.json",
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
+    "admin_level_names": ["ST", "DT", "TS"],
+    "admin_level_local_names": ["mmr_polbnd", "DT_MMR4", "TS_MMR4"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.5,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "../data/myanmar/mmr_admin1_boundaries.json",
+    "opacity": 0.8,
+    "admin_code": "TS_PCODE",
     "admin_level_names": ["TS", "ST", "DT"],
-    "admin_level_local_names": ["DT_MMR4", "TS_MMR4"]
+    "admin_level_local_names": ["DT_MMR4", "TS_MMR4"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.5,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin2_boundaries": {
+    "type": "boundary",
+    "path": "../data/myanmar/mmr_admin2_boundaries.json",
+    "opacity": 0.8,
+    "admin_code": "TS_PCODE",
+    "admin_level_names": ["TS", "ST", "DT"],
+    "admin_level_local_names": ["DT_MMR4", "TS_MMR4"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
   },
   "inform": {
     "title": "Vulnerability index",
@@ -24,23 +70,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 0.2 Very low",
+        "value": 0,
+        "label": "Very Low (0 to 0.2)",
         "color": "#1a9641"
       },
       {
-        "value": "0.21 to 0.4 Low",
+        "value": 0.21,
+        "label": "Low (0.21 to 0.4)",
         "color": "#a6d96a"
       },
       {
-        "value": "0.41 to 0.6 Medium",
+        "value": 0.41,
+        "label": "Medium (0.41 to 0.6)",  
         "color": "#ffffbf"
       },
       {
-        "value": "0.61 to 0.8 High",
+        "value": 0.61,
+        "label": "High (0.61 to 0.8)",
         "color": "#fdae61"
       },
       {
-        "value": "0.8 to 1 Very high",
+        "value": 0.81,
+        "label": "Very high (0.81 to 1)",
         "color": "#d7191c"
       }
     ],
@@ -121,13 +172,13 @@
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
     "legend": [
-      { "value": 50000, "color": "#eff3ff" },
-      { "value": 100000, "color": "#bdd7e7" },
-      { "value": 150000, "color": "#6baed6" },
-      { "value": 200000, "color": "#3182bd" },
-      { "value": 255000, "color": "#08519c" }
+      { "label": "< 50,000", "value": 0, "color": "#eff3ff" },
+      { "label": "50,000 - 100,000", "value": 100000, "color": "#bdd7e7" },
+      { "label": "100,000 - 150,000", "value": 150000, "color": "#6baed6" },
+      { "label": "150,000 - 200,000", "value": 200000, "color": "#3182bd" },
+      { "label": "> 200,000", "value": 200001, "color": "#08519c" }
     ],
-    "legend_text": ""
+    "legend_text": " "
   },
   "improved_sanitation": {
     "title": "Improved sanitation",
@@ -138,11 +189,11 @@
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
     "legend": [
-      { "value": "0-20", "color": "#a50f15" },
-      { "value": "21-40", "color": "#de2d26" },
-      { "value": "41-60", "color": "#fb6a4a" },
-      { "value": "61-80", "color": "#fcae91" },
-      { "value": "81-100", "color": "#fee5d9" }
+      { "label": "<20%", "value": 0, "color": "#a50f15" },
+      { "label": "21 to 40%", "value": 21, "color": "#de2d26" },
+      { "label": "41 to 60%", "value": 41, "color": "#fb6a4a" },
+      { "label": "61 to 80%", "value": 61, "color": "#fcae91" },
+      { "label": "81 to 100%", "value": 81, "color": "#fee5d9" }
     ],
     "legend_text": "Percent of households with access to improved sanitation facilities. Source: Myanmar Population and Housing Census 2014, Department of Population, Ministry of Immigration and Population"
   },
@@ -155,11 +206,11 @@
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
     "legend": [
-      { "value": "0-20", "color": "#a50f15" },
-      { "value": "21-40", "color": "#de2d26" },
-      { "value": "41-60", "color": "#fb6a4a" },
-      { "value": "61-80", "color": "#fcae91" },
-      { "value": "81-100", "color": "#fee5d9" }
+      { "label": "<20%", "value": 0, "color": "#a50f15" },
+      { "label": "21 to 40%", "value": 21, "color": "#de2d26" },
+      { "label": "41 to 60%", "value": 41, "color": "#fb6a4a" },
+      { "label": "61 to 80%", "value": 61, "color": "#fcae91" },
+      { "label": "81 to 100%", "value": 81, "color": "#fee5d9" }
     ],
     "legend_text": "Percent of households with improved source of drinking water. Source: Myanmar Population and Housing Census 2014, Department of Population, Ministry of Immigration and Population"
   },
@@ -172,11 +223,11 @@
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
     "legend": [
-      { "value": "0-20", "color": "#fee5d9" },
-      { "value": "21-40", "color": "#fcae91" },
-      { "value": "41-60", "color": "#fb6a4a" },
-      { "value": "61-80", "color": "#de2d26" },
-      { "value": "81-100", "color": "#a50f15" }
+      { "label": "<20%", "value": 0, "color": "#fee5d9" },
+      { "label": "21 to 40%", "value": 21, "color": "#fcae91" },
+      { "label": "41 to 60%", "value": 41, "color": "#fb6a4a" },
+      { "label": "61 to 80%", "value": 61, "color": "#de2d26" },
+      { "label": "81 to 100%", "value": 81, "color": "#a50f15" }
     ],
     "legend_text": "Percent of households with poor quality housing. Source: Myanmar Population and Housing Census 2014, Department of Population, Ministry of Immigration and Population"
   },
@@ -190,16 +241,16 @@
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
     "legend": [
-      { "value": "5.6 - 10", "color": "#4091C6" },
-      { "value": "10.1 - 14.4", "color": "#5AA5B3" },
-      { "value": "14.5 - 17", "color": "#8EBDA2" },
-      { "value": "17.1 - 18.5", "color": "#BDD38F" },
-      { "value": "18.6 - 20.5", "color": "#E4E57F" },
-      { "value": "20.6 - 22.6", "color": "#FAE66A" },
-      { "value": "22.7 - 24.6", "color": "#EFB258" },
-      { "value": "24.7 - 29.3", "color": "#E58A49" },
-      { "value": "29.4 - 35.0", "color": "#DF633D" },
-      { "value": "35.1 or more", "color": "#DB3E35" }
+      { "label": "5.6 - 10", "value": 0, "color": "#4091C6" },
+      { "label": "10.1 - 14.4", "value": 10.1, "color": "#5AA5B3" },
+      { "label": "14.5 - 17", "value": 14.5, "color": "#8EBDA2" },
+      { "label": "17.1 - 18.5", "value": 17.1, "color": "#BDD38F" },
+      { "label": "18.6 - 20.5", "value": 18.6, "color": "#E4E57F" },
+      { "label": "20.6 - 22.6", "value": 20.6, "color": "#FAE66A" },
+      { "label": "22.7 - 24.6", "value": 22.7, "color": "#EFB258" },
+      { "label": "24.7 - 29.3", "value": 24.7, "color": "#E58A49" },
+      { "label": "29.4 - 35.0", "value": 29.4, "color": "#DF633D" },
+      { "label": "35.1 or more", "value": 35.1, "color": "#DB3E35" }
     ],
     "legend_text": "The index analyzes welfare using a multidimensional approach, and focuses on examining whether people are unable to fulfil their basic needs in a variety of non-monetary dimensions. Source: Ministry of Labour, Immigration and Population and the World Bank - 2018 based on census data from 2014"
   },
@@ -213,13 +264,13 @@
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
     "legend": [
-      { "value": "0-40", "color": "#fee5d9" },
-      { "value": "40-49", "color": "#fcbba1" },
-      { "value": "50-59", "color": "#fc9272" },
-      { "value": "60-69", "color": "#fb6a4a" },
-      { "value": "70-79", "color": "#ef3b2c" },
-      { "value": "80-89", "color": "#cb181d" },
-      { "value": "90-100", "color": "#99000d" }
+      { "label": "0-40", "value": 0, "color": "#fee5d9" },
+      { "label": "40-49", "value": 40, "color": "#fcbba1" },
+      { "label": "50-59", "value": 50, "color": "#fc9272" },
+      { "label": "60-69", "value": 60, "color": "#fb6a4a" },
+      { "label": "70-79", "value": 70, "color": "#ef3b2c" },
+      { "label": "80-89", "value": 80, "color": "#cb181d" },
+      { "label": "90-100", "value": 90, "color": "#99000d" }
     ],
     "legend_text": "Age dependency ratio is the ratio of dependents--people younger than 15 or older than 64--to the working-age population--those aged 15-64. Data are shown as the proportion of dependents per 100 working-age population. Source: Myanmar Population and Housing Census 2014, Department of Population, Ministry of Immigration and Population"
   },
@@ -233,11 +284,11 @@
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
     "legend": [
-      { "value": "0-20", "color": "#fee5d9" },
-      { "value": "21-25", "color": "#fcae91" },
-      { "value": "26-30", "color": "#fb6a4a" },
-      { "value": "31-35", "color": "#de2d26" },
-      { "value": "36 or more", "color": "#a50f15" }
+      { "label": "0-20%", "value": 0, "color": "#fee5d9" },
+      { "label": "21-25%", "value": 21, "color": "#fcae91" },
+      { "label": "26-30%", "value": 26, "color": "#fb6a4a" },
+      { "label": "31-35%", "value": 31, "color": "#de2d26" },
+      { "label": "36% or more", "value": 36, "color": "#a50f15" }
     ],
     "legend_text": "Percent of female headed households"
   },
@@ -251,11 +302,11 @@
     "admin_code": "TS_PCODE",
     "opacity": 0.7,
     "legend": [
-      { "value": "0-2", "color": "#fee5d9" },
-      { "value": "3-5", "color": "#fcae91" },
-      { "value": "6-8", "color": "#fb6a4a" },
-      { "value": "9-11", "color": "#de2d26" },
-      { "value": "12 or more", "color": "#a50f15" }
+      { "label": "0-2%", "value": 0, "color": "#fee5d9" },
+      { "label": "3-5%", "value": 3, "color": "#fcae91" },
+      { "label": "6-8%","value": 6, "color": "#fb6a4a" },
+      { "label": "9-11%","value": 9, "color": "#de2d26" },
+      { "label": "12% or more", "value": 12, "color": "#a50f15" }
     ],
     "legend_text": "Prevalence of disability"
   },
@@ -270,23 +321,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 0.2 Very Low",
+        "label": "Very Low (0 to 0.2)",
+        "value": 0,
         "color": "#fee5d9"
       },
       {
-        "value": "0.21 to 0.4 Low",
+        "label": "Low (0.21 to 0.4)",
+        "value": 0.21,
         "color": "#fcae91"
       },
       {
-        "value": "0.41 to 0.6 Medium",
+        "label": "Medium (0.41 to 0.6)",
+        "value": 0.41,
         "color": "#fb6a4a"
       },
       {
-        "value": "0.61 to 0.8 High",
+        "label": "High (0.61 to 0.8)",
+        "value": 0.61,
         "color": "#de2d26"
       },
       {
-        "value": "0.81 to 1 Very high",
+        "label": "Very high (0.81 to 1)",
+        "value": 0.81,
         "color": "#a50f15"
       }
     ],
@@ -305,19 +361,19 @@
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": 0 },
-      { "value": "1", "color": "#ffffff" },
-      { "value": "20", "color": "#faf5e6" },
-      { "value": "40", "color": "#faf3d2" },
-      { "value": "60", "color": "#dae3a1" },
-      { "value": "80", "color": "#a0c787" },
-      { "value": "100", "color": "#68ab79" },
-      { "value": "125", "color": "#9beafa" },
-      { "value": "150", "color": "#00b1de" },
-      { "value": "200", "color": "#005ae6" },
-      { "value": "250", "color": "#0000c8" },
-      { "value": "300", "color": "#a000fa" },
-      { "value": "350", "color": "#fa78fa" }
+      { "label": "-0", "color": "#ffffff", "alpha": 0 },
+      { "label": "1 mm", "color": "#ffffff" },
+      { "label": "20 mm", "color": "#faf5e6" },
+      { "label": "40 mm", "color": "#faf3d2" },
+      { "label": "60 mm", "color": "#dae3a1" },
+      { "label": "80 mm", "color": "#a0c787" },
+      { "label": "100 mm", "color": "#68ab79" },
+      { "label": "125 mm", "color": "#9beafa" },
+      { "label": "150 mm", "color": "#00b1de" },
+      { "label": "200 mm", "color": "#005ae6" },
+      { "label": "250 mm", "color": "#0000c8" },
+      { "label": "300 mm", "color": "#a000fa" },
+      { "label": "350 mm", "color": "#fa78fa" }
     ]
   },
   "rain_anomaly_dekad": {
@@ -330,15 +386,15 @@
     "opacity": 0.7,
     "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "1%", "color": "#d79b0b" },
-      { "value": "60%", "color": "#e1b344" },
-      { "value": "80%", "color": "#ebcb7d" },
-      { "value": "90%", "color": "#f5e3b6" },
-      { "value": "110%", "color": "#f2f2f2" },
-      { "value": "120%", "color": "#b5e7fe" },
-      { "value": "140%", "color": "#7dd4fd" },
-      { "value": "180%", "color": "#45c1fc" },
-      { "value": "> 180%", "color": "#0fb0fb" }
+      { "label": "1%", "color": "#d79b0b" },
+      { "label": "60%", "color": "#e1b344" },
+      { "label": "80%", "color": "#ebcb7d" },
+      { "label": "90%", "color": "#f5e3b6" },
+      { "label": "110%", "color": "#f2f2f2" },
+      { "label": "120%", "color": "#b5e7fe" },
+      { "label": "140%", "color": "#7dd4fd" },
+      { "label": "180%", "color": "#45c1fc" },
+      { "label": "> 180%", "color": "#0fb0fb" }
     ]
   },
   "rain_anomaly_monthly": {
@@ -351,16 +407,16 @@
     "opacity": 0.7,
     "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": -0, "color": "#ffffff", "alpha": 0 },
-      { "value": 1, "color": "#d79b0b" },
-      { "value": 60, "color": "#e1b344" },
-      { "value": 80, "color": "#ebcb7d" },
-      { "value": 90, "color": "#f5e3b6" },
-      { "value": 110, "color": "#f2f2f2" },
-      { "value": 120, "color": "#b5e7fe" },
-      { "value": 140, "color": "#7dd4fd" },
-      { "value": 180, "color": "#45c1fc" },
-      { "value": 400, "color": "#0fb0fb" }
+      { "label": "-0", "color": "#ffffff", "alpha": 0 },
+      { "label": "1%", "color": "#d79b0b" },
+      { "label": "60%", "color": "#e1b344" },
+      { "label": "80%", "color": "#ebcb7d" },
+      { "label": "90%", "color": "#f5e3b6" },
+      { "label": "110%", "color": "#f2f2f2" },
+      { "label": "120%", "color": "#b5e7fe" },
+      { "label": "140%", "color": "#7dd4fd" },
+      { "label": "180%", "color": "#45c1fc" },
+      { "label": "> 180%", "color": "#0fb0fb" }
     ]
   },
   "rainfall_agg_month": {
@@ -376,18 +432,18 @@
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      {"value": "-0", "color": "#ffffff", "alpha": 0},
-      {"value": "50", "color": "#faf3d2"},
-      {"value": "100", "color": "#dae3a1"},
-      {"value": "200", "color": "#a0c787"},
-      {"value": "300", "color": "#68ab79"},
-      {"value": "400", "color": "#9beafa"},
-      {"value": "500", "color": "#00b1de"},
-      {"value": "600", "color": "#005ae6"},
-      {"value": "800", "color": "#0000c8"},
-      {"value": "1000", "color": "#a000fa"},
-      {"value": "1500", "color": "#fa78fa"},
-      {"value": "> 1500", "color": "#ffc4ee"}
+      {"label": "-0", "color": "#ffffff", "alpha": 0},
+      {"label": "50 mm", "color": "#faf3d2"},
+      {"label": "100 mm", "color": "#dae3a1"},
+      {"label": "200 mm", "color": "#a0c787"},
+      {"label": "300 mm", "color": "#68ab79"},
+      {"label": "400 mm", "color": "#9beafa"},
+      {"label": "500 mm", "color": "#00b1de"},
+      {"label": "600 mm", "color": "#005ae6"},
+      {"label": "800 mm", "color": "#0000c8"},
+      {"label": "1000 mm", "color": "#a000fa"},
+      {"label": "1500 mm", "color": "#fa78fa"},
+      {"label": "> 1500 mm", "color": "#ffc4ee"}
     ]
   },
   "streak_dry_days": {
@@ -400,16 +456,16 @@
     "opacity": 0.7,
     "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": 0, "color": "#fff9c7" },
-      { "value": 1, "color": "#ffeea9" },
-      { "value": 4, "color": "#fede86" },
-      { "value": 6, "color": "#fec754" },
-      { "value": 10, "color": "#fea937" },
-      { "value": 14, "color": "#f88a21" },
-      { "value": 18, "color": "#e96d13" },
-      { "value": 22, "color": "#d15205" },
-      { "value": 25, "color": "#b03f03" },
-      { "value": 30, "color": "#8b3005" }
+      { "label": "0 days", "color": "#fff9c7" },
+      { "label": "1 day", "color": "#ffeea9" },
+      { "label": "4 days", "color": "#fede86" },
+      { "label": "6 days", "color": "#fec754" },
+      { "label": "10 days", "color": "#fea937" },
+      { "label": "14 days", "color": "#f88a21" },
+      { "label": "18 days", "color": "#e96d13" },
+      { "label": "22 days", "color": "#d15205" },
+      { "label": "25 days", "color": "#b03f03" },
+      { "label": "30 days", "color": "#8b3005" }
     ]
   },
   "days_heavy_rain": {
@@ -422,16 +478,16 @@
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": 0, "color": "#f2fabc" },
-      { "value": 1, "color": "#dcf1b2" },
-      { "value": 4, "color": "#bbe4b5" },
-      { "value": 6, "color": "#85cfba" },
-      { "value": 10, "color": "#57bec1" },
-      { "value": 14, "color": "#34a9c3" },
-      { "value": 18, "color": "#1d8dbe" },
-      { "value": 22, "color": "#2166ac" },
-      { "value": 25, "color": "#24479d" },
-      { "value": 30, "color": "#1d2e83" }
+      { "label": "0 days", "color": "#f2fabc" },
+      { "label": "1 day", "color": "#dcf1b2" },
+      { "label": "4 days", "color": "#bbe4b5" },
+      { "label": "6 days", "color": "#85cfba" },
+      { "label": "10 days", "color": "#57bec1" },
+      { "label": "14 days", "color": "#34a9c3" },
+      { "label": "18 days", "color": "#1d8dbe" },
+      { "label": "22 days", "color": "#2166ac" },
+      { "label": "25 days", "color": "#24479d" },
+      { "label": "30 days", "color": "#1d2e83" }
     ]
   },
   "streak_heavy_rain": {
@@ -444,16 +500,16 @@
     "opacity": 0.7,
     "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": 0, "color": "#f2fabc" },
-      { "value": 1, "color": "#dcf1b2" },
-      { "value": 4, "color": "#bbe4b5" },
-      { "value": 6, "color": "#85cfba" },
-      { "value": 10, "color": "#57bec1" },
-      { "value": 14, "color": "#34a9c3" },
-      { "value": 18, "color": "#1d8dbe" },
-      { "value": 22, "color": "#2166ac" },
-      { "value": 25, "color": "#24479d" },
-      { "value": 30, "color": "#1d2e83" }
+      { "label": "0 days", "color": "#f2fabc" },
+      { "label": "1 days", "color": "#dcf1b2" },
+      { "label": "4 days", "color": "#bbe4b5" },
+      { "label": "6 days", "color": "#85cfba" },
+      { "label": "10 days", "color": "#57bec1" },
+      { "label": "14 days", "color": "#34a9c3" },
+      { "label": "18 days", "color": "#1d8dbe" },
+      { "label": "22 days", "color": "#2166ac" },
+      { "label": "25 days", "color": "#24479d" },
+      { "label": "30 days", "color": "#1d2e83" }
     ]
   },
   "ndvi_dekad": {
@@ -466,15 +522,15 @@
     "opacity": 0.7,
     "legend_text": "LEGEND",
     "legend": [
-      { "value": 1000, "color": "#a50026" },
-      { "value": 2000, "color": "#de3f2e" },
-      { "value": 3000, "color": "#f88d52" },
-      { "value": 4000, "color": "#fed380" },
-      { "value": 5000, "color": "#ffffbf" },
-      { "value": 6000, "color": "#ccea83" },
-      { "value": 7000, "color": "#86cb66" },
-      { "value": 8000, "color": "#2da155" },
-      { "value": 9000, "color": "#006837" }
+      { "label": "-1.00", "color": "#a50026" },
+      { "label": "-0.75", "color": "#de3f2e" },
+      { "label": "-0.50", "color": "#f88d52" },
+      { "label": "-0.25", "color": "#fed380" },
+      { "label": "0.00", "color": "#ffffbf" },
+      { "label": "0.25", "color": "#ccea83" },
+      { "label": "0.50", "color": "#86cb66" },
+      { "label": "0.75", "color": "#2da155" },
+      { "label": "1.00", "color": "#006837" }
     ]
   },
   "ndvi_dekad_anomaly": {
@@ -490,15 +546,15 @@
     "opacity": 0.7,
     "legend_text": "NDVI Anomaly compared to LTA",
     "legend": [
-      { "value": 50, "color": "#732600" },
-      { "value": 70, "color": "#f06405" },
-      { "value": 80, "color": "#f5af28" },
-      { "value": 90, "color": "#e6dc96" },
-      { "value": 110, "color": "#f5f5f5" },
-      { "value": 120, "color": "#cbff1f" },
-      { "value": 130, "color": "#00f200" },
-      { "value": 150, "color": "#008f00" },
-      { "value": 200, "color": "#004d00" }
+      { "label": "50%", "color": "#732600" },
+      { "label": "70%", "color": "#f06405" },
+      { "label": "80%", "color": "#f5af28" },
+      { "label": "90%", "color": "#e6dc96" },
+      { "label": "110%", "color": "#f5f5f5" },
+      { "label": "120%", "color": "#cbff1f" },
+      { "label": "130%", "color": "#00f200" },
+      { "label": "150%", "color": "#008f00" },
+      { "label": "200%", "color": "#004d00" }
     ]
   },
   "lst_amplitude": {
@@ -511,15 +567,15 @@
     "opacity": 0.7,
     "legend_text": "LEGEND",
     "legend": [
-      { "value": -0, "color": "#ffffff", "alpha": 0 },
-      { "value": 50, "color": "#ffffd9" },
-      { "value": 200, "color": "#e8f6b1" },
-      { "value": 400, "color": "#b2e1b6" },
-      { "value": 600, "color": "#64c3bf" },
-      { "value": 800, "color": "#2ca1c2" },
-      { "value": 1000, "color": "#216daf" },
-      { "value": 1200, "color": "#253a97" },
-      { "value": 1400, "color": "#081d58" }
+      { "label": "-0", "color": "#ffffff", "alpha": 0 },
+      { "label": "50", "color": "#ffffd9" },
+      { "label": "200", "color": "#e8f6b1" },
+      { "label": "400", "color": "#b2e1b6" },
+      { "label": "600", "color": "#64c3bf" },
+      { "label": "800", "color": "#2ca1c2" },
+      { "label": "1000", "color": "#216daf" },
+      { "label": "1200", "color": "#253a97" },
+      { "label": "1400", "color": "#081d58" }
     ]
   },
   "lst_daytime": {
@@ -531,7 +587,7 @@
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.02,
-      "offset": -273,
+      "offset": -273.15,
       "pixelResolution": 64
     },
     "opacity": 0.7,
@@ -540,17 +596,17 @@
       "styles": "lst_day"
     },
     "legend": [
-      { "value": 0, "color": "#f0f9ba" },
-      { "value": 5, "color": "#edeba4" },
-      { "value": 10, "color": "#ebdd8f" },
-      { "value": 15, "color": "#eace7c" },
-      { "value": 20, "color": "#e9bf6a" },
-      { "value": 25, "color": "#e9af59" },
-      { "value": 30, "color": "#e99e4c" },
-      { "value": 35, "color": "#e98d41" },
-      { "value": 40, "color": "#e87a3a" },
-      { "value": 45, "color": "#e76636" },
-      { "value": 50, "color": "#e54f35" }
+      { "label": "0", "color": "#f0f9ba" },
+      { "label": "5", "color": "#edeba4" },
+      { "label": "10", "color": "#ebdd8f" },
+      { "label": "15", "color": "#eace7c" },
+      { "label": "20", "color": "#e9bf6a" },
+      { "label": "25", "color": "#e9af59" },
+      { "label": "30", "color": "#e99e4c" },
+      { "label": "35", "color": "#e98d41" },
+      { "label": "40", "color": "#e87a3a" },
+      { "label": "45", "color": "#e76636" },
+      { "label": "50", "color": "#e54f35" }
     ]
   },
   "lst_anomaly": {
@@ -566,15 +622,14 @@
     },
     "legend_text": "LEGEND",
     "legend": [
-      { "value": -300.0, "color": "#000004" },
-      { "value": -200.0, "color": "#210c4a" },
-      { "value": -100.0, "color": "#57106e" },
-      { "value": -50.0, "color": "#8a226a" },
-      { "value": 50.0, "color": "#bc3754" },
-      { "value": 100.0, "color": "#e45a31" },
-      { "value": 200.0, "color": "#f98e09" },
-      { "value": 300.0, "color": "#f9cb35" },
-      { "value": 5000.0, "color": "#fcffa4" }
+      { "label": "-300%", "color": "#000004" },
+      { "label": "-200%", "color": "#210c4a" },
+      { "label": "-100%", "color": "#57106e" },
+      { "label": "-50%", "color": "#8a226a" },
+      { "label": "50%", "color": "#bc3754" },
+      { "label": "100%", "color": "#e45a31" },
+      { "label": "200%", "color": "#f98e09" },
+      { "label": "300%", "color": "#f9cb35" }
     ]
   },
   "sensitvity_flood": {
@@ -588,23 +643,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 0.2 Very Low",
+        "label": "Very Low (0 to 0.2)",
+        "value": 0,
         "color": "#fee5d9"
       },
       {
-        "value": "0.21 to 0.4 Low",
+        "label": " Low (0.21 to 0.4)",
+        "value": 0.21,
         "color": "#fcae91"
       },
       {
-        "value": "0.41 to 0.6 Medium",
+        "label": "Medium (0.41 to 0.6)",
+        "value": 0.41,
         "color": "#fb6a4a"
       },
       {
-        "value": "0.61 to 0.8 High",
+        "label": "High (0.61 to 0.8)",
+        "value": 0.61,
         "color": "#de2d26"
       },
       {
-        "value": "0.81 to 1 Very high",
+        "label": "Very high (0.81 to 1)",
+        "value": 0.81,
         "color": "#a50f15"
       }
     ],
@@ -621,15 +681,18 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "1 Low",
+        "value": 1,
+        "label": "Low",
         "color": "#fee5d9"
       },
       {
-        "value": "2 Medium",
+        "value": 2,
+        "label": "Medium",
         "color": "#fb6a4a"
       },
       {
-        "value": "3 High",
+        "value": 3,
+        "label": "High",
         "color": "#a50f15"
       }
     ],
@@ -646,15 +709,18 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "1 Low",
+        "value": 1,
+        "label": "Low",
         "color": "#fee5d9"
       },
       {
-        "value": "2 Medium",
+        "value": 2,
+        "label": "Medium",
         "color": "#fb6a4a"
       },
       {
-        "value": "3 High",
+        "value": 3,
+        "label": "High",
         "color": "#a50f15"
       }
     ],
@@ -671,15 +737,18 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "1 Low",
+        "value": 1,
+        "label": "Low",
         "color": "#fee5d9"
       },
       {
-        "value": "2 Medium",
+        "value": 2,
+        "label": "Medium",
         "color": "#fb6a4a"
       },
       {
-        "value": "3 High",
+        "value": 3,
+        "label": "High",
         "color": "#a50f15"
       }
     ],
@@ -696,27 +765,33 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 10",
+        "label": "0 to 10",
+        "value": 0,
         "color": "#ffffd4"
       },
       {
-        "value": "11 to 100",
+        "label": "11 to 100",
+        "value": 11,
         "color": "#fee391"
       },
       {
-        "value": "101 to 500",
+        "label": "101 to 500",
+        "value": 101,
         "color": "#fec44f"
       },
       {
-        "value": "501 to 1000",
+        "label": "501 to 1,000",
+        "value": 501,
         "color": "#fe9929"
       },
       {
-        "value": "1001 to 5000",
+        "label": "1,001 to 5,000",
+        "value": 1001,
         "color": "#d95f0e"
       },
       {
-        "value": "5001 and above",
+        "label": "5,001 and above",
+        "value": 5001,
         "color": "#993404"
       }
     ],
@@ -733,23 +808,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 10",
+        "label": "0 to 10",
+        "value": 0,
         "color": "#ffffd4"
       },
       {
-        "value": "11 to 100",
+        "label": "11 to 100",
+        "value": 11,
         "color": "#fee391"
       },
       {
-        "value": "101 to 500",
+        "label": "101 to 500",
+        "value": 101,
         "color": "#fec44f"
       },
       {
-        "value": "501 to 1000",
+        "label": "501 to 1,000",
+        "value": 501,
         "color": "#fe9929"
       },
       {
-        "value": "1001 to 5000",
+        "label": "1,001 to 5,000",
+        "value": 1001,
         "color": "#d95f0e"
       }
     ],
@@ -766,27 +846,33 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 10",
+        "label": "0 to 10",
+        "value": 0,
         "color": "#ffffd4"
       },
       {
-        "value": "11 to 100",
+        "label": "11 to 100",
+        "value": 11,
         "color": "#fee391"
       },
       {
-        "value": "101 to 500",
+        "label": "101 to 500",
+        "value": 101,
         "color": "#fec44f"
       },
       {
-        "value": "501 to 1000",
+        "label": "501 to 1,000",
+        "value": 501,
         "color": "#fe9929"
       },
       {
-        "value": "1001 to 5000",
+        "label": "1,001 to 5,000",
+        "value": 1001,
         "color": "#d95f0e"
       },
       {
-        "value": "5001 and above",
+        "label": "5,001 and above",
+        "value": 5001,
         "color": "#993404"
       }
     ],
@@ -803,23 +889,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 0.2 Very low",
+        "label": "Very Low (0 to 0.2)",
+        "value": 0,
         "color": "#f1eef6"
       },
       {
-        "value": "0.21 to 0.4 Low",
+        "label": "Low (0.21 to 0.4)",
+        "value": 0.21,
         "color": "#d7b5d8"
       },
       {
-        "value": "0.41 to 0.6 Medium",
+        "label": "Medium (0.41 to 0.6)",
+        "value": 0.41,
         "color": "#df65b0"
       },
       {
-        "value": "0.61 to 0.8 High",
+        "label": "High (0.61 to 0.8)",
+        "value": 0.61,
         "color": "#dd1c77"
       },
       {
-        "value": "0.81 to 1 Very high",
+        "label": "Very high (0.81 to 1)",
+        "value": 0.81,
         "color": "#980043"
       }
     ],
@@ -835,15 +926,18 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 10 Very low",
+        "label": "0 to 10 Very low",
+        "value": 0,
         "color": "#ffffb2"
       },
       {
-        "value": "10 to 20 Low",
+        "label": "10 to 20 Low",
+        "value": 10,
         "color": "#d7b5d8"
       },
       {
-        "value": "20 to 30 Medium",
+        "label": "20 to 30 Medium",
+        "value": 20,
         "color": "#df65b0"
       }
     ],
@@ -860,23 +954,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 0.2 Very low",
+        "label": "Very Low (0 to 0.2)",
+        "value": 0,
         "color": "#f1eef6"
       },
       {
-        "value": "0.21 to 0.4 Low",
+        "label": "Low (0.21 to 0.4)",
+        "value": 0.21,
         "color": "#d7b5d8"
       },
       {
-        "value": "0.41 to 0.6 Medium",
+        "label": "Medium (0.41 to 0.6)",
+        "value": 0.41,
         "color": "#df65b0"
       },
       {
-        "value": "0.61 to 0.8 High",
+        "label": "High (0.61 to 0.8)",
+        "value": 0.61,
         "color": "#dd1c77"
       },
       {
-        "value": "0.81 to 1 Very high",
+        "label": "Very high (0.81 to 1)",
+        "value": 0.81,
         "color": "#980043"
       }
     ],
@@ -893,23 +992,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 0.2 Very low",
+        "label": "Very Low (0 to 0.2)",
+        "value": 0,
         "color": "#fef0d9"
       },
       {
-        "value": "0.21 to 0.4 Low",
+        "label": "Low (0.21 to 0.4)",
+        "value": 0.21,
         "color": "#fdcc8a"
       },
       {
-        "value": "0.41 to 0.6 Medium",
+        "label": "Medium (0.41 to 0.6)",
+        "value": 0.41,
         "color": "#fc8d59"
       },
       {
-        "value": "0.61 to 0.8 High",
+        "label": "High (0.61 to 0.8)",
+        "value": 0.61,
         "color": "#e34a33"
       },
       {
-        "value": "0.81 to 1 Very high",
+        "label": "Very high (0.81 to 1)",
+        "value": 0.81,
         "color": "#b30000"
       }
     ],
@@ -926,23 +1030,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 0.2 Very low",
+        "label": "Very Low (0 to 0.2)",
+        "value": 0,
         "color": "#fef0d9"
       },
       {
-        "value": "0.21 to 0.4 Low",
+        "label": "Low (0.21 to 0.4)",
+        "value": 0.21,
         "color": "#fdcc8a"
       },
       {
-        "value": "0.41 to 0.6 Medium",
+        "label": "Medium (0.41 to 0.6)",
+        "value": 0.41,
         "color": "#fc8d59"
       },
       {
-        "value": "0.61 to 0.8 High",
+        "label": "High (0.61 to 0.8)",
+        "value": 0.61,
         "color": "#e34a33"
       },
       {
-        "value": "0.81 to 1 Very high",
+        "label": "Very high (0.81 to 1)",
+        "value": 0.81,
         "color": "#b30000"
       }
     ],
@@ -959,23 +1068,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 0.2 Very low",
+        "label": "Very Low (0 to 0.2)",
+        "value": 0,
         "color": "#fef0d9"
       },
       {
-        "value": "0.21 to 0.4 Low",
+        "label": "Low (0.21 to 0.4)",
+        "value": 0.21,
         "color": "#fdcc8a"
       },
       {
-        "value": "0.41 to 0.6 Medium",
+        "label": "Medium (0.41 to 0.6)",
+        "value": 0.41,
         "color": "#fc8d59"
       },
       {
-        "value": "0.61 to 0.8 High",
+        "label": "High (0.61 to 0.8)",
+        "value": 0.61,
         "color": "#e34a33"
       },
       {
-        "value": "0.81 to 1 Very high",
+        "label": "Very high (0.81 to 1)",
+        "value": 0.81,
         "color": "#b30000"
       }
     ],
@@ -992,23 +1106,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 0.2 Very low",
+        "label": "Very Low (0 to 0.2)",
+        "value": 0,
         "color": "#fee5d9"
       },
       {
-        "value": "0.21 to 0.4 Low",
+        "label": "Low (0.21 to 0.4)",
+        "value": 0.21,
         "color": "#fcae91"
       },
       {
-        "value": "0.41 to 0.6 Medium",
+        "label": "Medium (0.41 to 0.6)",
+        "value": 0.41,
         "color": "#fb6a4a"
       },
       {
-        "value": "0.61 to 0.8 High",
+        "label": "High (0.61 to 0.8)",
+        "value": 0.61,
         "color": "#de2d26"
       },
       {
-        "value": "0.81 to 1 Very high",
+        "label": "Very high (0.81 to 1)",
+        "value": 0.81,
         "color": "#a50f15"
       }
     ],
@@ -1025,23 +1144,28 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 0.2 Very Low",
+        "label": "Very Low (0 to 0.2)",
+        "value": 0,
         "color": "#fee5d9"
       },
       {
-        "value": "0.21 to 0.4 Low",
+        "label": "Low (0.21 to 0.4)",
+        "value": 0.21,
         "color": "#fcae91"
       },
       {
-        "value": "0.41 to 0.6 Medium",
+        "label": "Medium (0.41 to 0.6)",
+        "value": 0.41,
         "color": "#fb6a4a"
       },
       {
-        "value": "0.61 to 0.8 High",
+        "label": "High (0.61 to 0.8)",
+        "value": 0.61,
         "color": "#de2d26"
       },
       {
-        "value": "0.81 to 1 Very high",
+        "label": "Very high (0.81 to 1)",
+        "value": 0.81,
         "color": "#a50f15"
       }
     ],
@@ -1058,27 +1182,33 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 100",
+        "label": "0 to 100",
+        "value": 0,
         "color": "#feedde"
       },
       {
-        "value": "101 to 500",
+        "label": "101 to 500",
+        "value": 101,
         "color": "#fdd0a2"
       },
       {
-        "value": "501 to 1000",
+        "label": "501 to 1,000",
+        "value": 501,
         "color": "#fdae6b"
       },
       {
-        "value": "1001 to 5000",
+        "label": "1,001 to 5,000",
+        "value": 1001,
         "color": "#fd8d3c"
       },
       {
-        "value": "5001 to 10000",
+        "label": "5,001 to 10,000",
+        "value": 5001,
         "color": "#e6550d"
       },
       {
-        "value": "10001 and above",
+        "label": "10,001 and above",
+        "value": 10001,
         "color": "#a63603"
       }
     ],
@@ -1095,27 +1225,33 @@
     "opacity": 0.7,
     "legend": [
       {
-        "value": "0 to 100",
+        "label": "0 to 100",
+        "value": 0,
         "color": "#feedde"
       },
       {
-        "value": "101 to 500",
+        "label": "101 to 500",
+        "value": 101,
         "color": "#fdd0a2"
       },
       {
-        "value": "501 to 1000",
+        "label": "501 to 1,000",
+        "value": 501,
         "color": "#fdae6b"
       },
       {
-        "value": "1001 to 5000",
+        "label": "1,001 to 5,000",
+        "value": 1001,
         "color": "#fd8d3c"
       },
       {
-        "value": "5001 to 10000",
+        "label": "5,001 to 10,000",
+        "value": 5001,
         "color": "#e6550d"
       },
       {
-        "value": "10001 and above",
+        "label": "10,001 and above",
+        "value": 10001,
         "color": "#a63603"
       }
     ],
