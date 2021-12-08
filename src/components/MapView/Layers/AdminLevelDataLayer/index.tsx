@@ -13,7 +13,10 @@ import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import {
+  layerDataSelector,
+  mapSelector,
+} from '../../../../context/mapStateSlice/selectors';
 import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import { getFeatureInfoPropsData } from '../../utils';
@@ -21,15 +24,16 @@ import { getBoundaryLayers, LayerDefinitions } from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
+  const boundaryId = layer.boundary || 'admin_boundaries';
   const layerData = useSelector(layerDataSelector(layer.id)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
+  const map = useSelector(mapSelector);
   const dispatch = useDispatch();
 
   const { data } = layerData || {};
   const { features } = data || {};
 
-  const boundaryId = layer.boundary || 'admin_boundaries';
   useEffect(() => {
     // before loading layer check if it has unique boundary?
     if ('boundary' in layer) {
@@ -58,6 +62,16 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   }, [dispatch, features, layer, boundaryId]);
 
   if (!features) {
+    return null;
+  }
+
+  if (
+    layer.boundary &&
+    !map
+      ?.getStyle()
+      .layers?.map(l => l.id)
+      .includes(`${boundaryId}-line`)
+  ) {
     return null;
   }
 
