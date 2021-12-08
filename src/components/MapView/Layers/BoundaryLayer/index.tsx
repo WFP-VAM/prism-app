@@ -34,7 +34,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
   return (
     <GeoJSONLayer
-      id={layer.id === 'admin_boundaries' ? 'boundaries' : layer.id}
+      id={layer.id}
       data={data}
       fillPaint={layer.styles.fill}
       linePaint={layer.styles.line}

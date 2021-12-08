@@ -29,10 +29,10 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const { data } = layerData || {};
   const { features } = data || {};
 
+  const boundaryId = layer.boundary || 'admin_boundaries';
   useEffect(() => {
     // before loading layer check if it has unique boundary?
     if ('boundary' in layer) {
-      const boundaryId = layer.boundary || '';
       if (Object.keys(LayerDefinitions).includes(boundaryId)) {
         const boundaryLayers = getBoundaryLayers();
         boundaryLayers.map(l => dispatch(removeLayer(l)));
@@ -55,7 +55,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     if (!features) {
       dispatch(loadLayerData({ layer }));
     }
-  }, [dispatch, features, layer]);
+  }, [dispatch, features, layer, boundaryId]);
 
   if (!features) {
     return null;
@@ -73,7 +73,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
 
   return (
     <GeoJSONLayer
-      before="boundaries-line"
+      before={`${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={features}
       fillPaint={fillPaintData}

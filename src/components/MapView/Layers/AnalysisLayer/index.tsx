@@ -49,7 +49,7 @@ function AnalysisLayer() {
 
   return (
     <GeoJSONLayer
-      before="boundaries-line"
+      before="admin_boundaries-line"
       id="layer-analysis"
       data={analysisData.featureCollection}
       fillPaint={fillPaintData(analysisData.legend, property)}

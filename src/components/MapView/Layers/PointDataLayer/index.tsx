@@ -47,7 +47,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
 
   return (
     <GeoJSONLayer
-      before="boundaries-line"
+      before="admin_boundaries-line"
       id={`layer-${layer.id}`}
       data={data}
       circleLayout={circleLayout}

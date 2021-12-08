@@ -36,7 +36,7 @@ function WMSLayers({
       />
 
       <Layer
-        before="boundaries-line"
+        before="admin_boundaries-line"
         type="raster"
         id={`layer-${id}`}
         sourceId={`source-${id}`}
