@@ -11,7 +11,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import Menu from '@material-ui/core/Menu';
-import { ArrowDropDown } from '@material-ui/icons';
+import { ArrowDropDown, Autorenew } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import { groupBoundaries } from '../utils';
@@ -38,9 +38,17 @@ const BoundarySelector = ({
 
   return (
     <Grid item>
-      <Button variant="contained" color="primary" onClick={handleClick}>
+      <Button
+        className={classes.selectorButton}
+        variant="contained"
+        color="primary"
+        onClick={handleClick}
+      >
         <Hidden smDown>
-          <Typography variant="body2">Go To</Typography>
+          <Autorenew fontSize="small" />
+          <Typography className={classes.label} variant="body2">
+            Go To
+          </Typography>
         </Hidden>
         <ArrowDropDown fontSize="small" />
       </Button>
@@ -68,6 +76,10 @@ const BoundarySelector = ({
 
 const styles = (theme: Theme) =>
   createStyles({
+    selectorButton: { marginTop: '10px' },
+    label: {
+      marginLeft: '10px',
+    },
     parent: {
       textTransform: 'uppercase',
       fontWeight: 'bold',

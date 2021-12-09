@@ -418,11 +418,11 @@ function MapView({ classes }: MapViewProps) {
       >
         <Grid item>
           <Analyser extent={adminBoundariesExtent} />
+          <BoundarySelector boundaryLayerData={boundaryLayerData} />
           {appConfig.alertFormActive === true ? <AlertForm /> : null}
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
-            <BoundarySelector boundaryLayerData={boundaryLayerData} />
             <Download />
             <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
           </Grid>
