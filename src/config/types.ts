@@ -219,13 +219,14 @@ type LayerStyleProps = {
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
   path: string; // path to admin_boundries.json file - web or local.
-  adminLevel: number;
   adminCode: string;
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: string[]; // Same as above, local to country
   styles: LayerStyleProps; // Mapbox line and fill properties.
   @optional
-  visibility?: boolean; // Flag for default boundary layers to display
+  primary?: boolean; // Flag for general default layer a replacement for `admin_boundaries`
+  @optional
+  visibility?: boolean; // Flag for visible layers mainly loaded by default
 }
 
 export enum LabelType {

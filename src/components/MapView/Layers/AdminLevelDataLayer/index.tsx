@@ -20,11 +20,15 @@ import {
 import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import { getFeatureInfoPropsData } from '../../utils';
-import { getBoundaryLayers, LayerDefinitions } from '../../../../config/utils';
+import {
+  getBoundaryLayers,
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
-  const boundaryId = layer.boundary || 'admin_boundaries';
+  const boundaryId = layer.boundary || getBoundaryLayerSingleton().id;
   const layerData = useSelector(layerDataSelector(layer.id)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
@@ -36,16 +40,17 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?
+    const boundaryLayers = getBoundaryLayers();
+    const boundaryLayer = LayerDefinitions[
+      boundaryId as LayerKey
+    ] as BoundaryLayerProps;
+
     if ('boundary' in layer) {
       if (Object.keys(LayerDefinitions).includes(boundaryId)) {
-        const boundaryLayers = getBoundaryLayers();
         boundaryLayers.map(l => dispatch(removeLayer(l)));
 
-        const uniqueBoundaryLayer = LayerDefinitions[
-          boundaryId as LayerKey
-        ] as BoundaryLayerProps;
-        dispatch(addLayer(uniqueBoundaryLayer));
-        dispatch(loadLayerData({ layer: uniqueBoundaryLayer }));
+        dispatch(addLayer(boundaryLayer));
+        dispatch(loadLayerData({ layer: boundaryLayer }));
       } else {
         dispatch(
           addNotification({
@@ -55,11 +60,10 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
         );
       }
     }
-
     if (!features) {
       dispatch(loadLayerData({ layer }));
     }
-  }, [dispatch, features, layer, boundaryId]);
+  }, [dispatch, features, layer, boundaryId, map]);
 
   if (!features) {
     return null;

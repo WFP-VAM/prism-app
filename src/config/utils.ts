@@ -131,10 +131,7 @@ export const LayerDefinitions: LayersMap = (() => {
 
 export function getBoundaryLayers(): BoundaryLayerProps[] {
   const boundaryLayers = Object.values(LayerDefinitions).filter(
-    (layer): layer is BoundaryLayerProps =>
-      layer.type === 'boundary' &&
-      ((layer as BoundaryLayerProps).visibility === true ||
-        (layer as BoundaryLayerProps).visibility === undefined),
+    (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
   );
   if (boundaryLayers.length === 0) {
     throw new Error(
@@ -144,18 +141,22 @@ export function getBoundaryLayers(): BoundaryLayerProps[] {
   return boundaryLayers;
 }
 
-export function getBoundaryLayerSingleton(): BoundaryLayerProps {
-  const boundaryLayers = getBoundaryLayers().filter(
+export function getVisibleBoundaryLayers(): BoundaryLayerProps[] {
+  return getBoundaryLayers().filter(
     l => l.visibility === true || l.visibility === undefined,
   );
-  const highAdminLevel = Math.max(...boundaryLayers.map(l => l.adminLevel));
-  const boundaryLayer = boundaryLayers.find(
-    l => l.adminLevel === highAdminLevel,
-  );
+}
+
+export function getBoundaryLayerSingleton(): BoundaryLayerProps {
+  const visibleBoundaryLayers = getVisibleBoundaryLayers();
+  const boundaryLayer =
+    visibleBoundaryLayers.length === 1
+      ? visibleBoundaryLayers[0]
+      : visibleBoundaryLayers.find(l => l.primary);
 
   if (!boundaryLayer) {
     throw new Error(
-      'No admin_boundaries Layer found! There should be exactly one boundary layer defined in layers.json with id admin_boundaries.',
+      'No primary Layer found! There should be at least one layer defined or with primary set true in layers.json.',
     );
   }
 

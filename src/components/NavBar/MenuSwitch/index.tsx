@@ -18,12 +18,20 @@ import {
 } from '../../../config/types';
 import { addLayer, removeLayer } from '../../../context/mapStateSlice';
 import { loadTable } from '../../../context/tableStateSlice';
-import { layersSelector } from '../../../context/mapStateSlice/selectors';
+import {
+  layersSelector,
+  mapSelector,
+} from '../../../context/mapStateSlice/selectors';
 import { useUrlHistory } from '../../../utils/url-utils';
-import { getBoundaryLayers, LayerDefinitions } from '../../../config/utils';
+import {
+  getBoundaryLayers,
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../../config/utils';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const selectedLayers = useSelector(layersSelector);
+  const map = useSelector(mapSelector);
   const dispatch = useDispatch();
   const { updateHistory, removeKeyFromUrl } = useUrlHistory();
 
@@ -37,6 +45,17 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
 
     if (checked) {
       updateHistory(urlLayerKey, layer.id);
+      const primary = getBoundaryLayerSingleton();
+      if (!('boundary' in layer)) {
+        if (
+          !map
+            ?.getStyle()
+            .layers?.map(l => l.id)
+            .includes(`${primary.id}-line`)
+        ) {
+          dispatch(addLayer(primary));
+        }
+      }
     } else {
       removeKeyFromUrl(urlLayerKey);
       dispatch(removeLayer(layer));

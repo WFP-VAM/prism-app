@@ -7,6 +7,7 @@ import { showPopup } from '../../../../context/tooltipStateSlice';
 import { BoundaryLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import { getBoundaryLayerSingleton } from '../../../../config/utils';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -40,7 +41,9 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       linePaint={layer.styles.line}
       fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
       fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
-      fillOnClick={layer.id === 'admin_boundaries' ? onClickFunc : undefined}
+      fillOnClick={
+        layer === getBoundaryLayerSingleton() ? onClickFunc : undefined
+      }
     />
   );
 }
