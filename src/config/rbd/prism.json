@@ -1,8 +1,8 @@
 {
     "country": "Regional Bureau Dakar",
     "icons": {
-      "vulnerability": "icon_vulnerable.png",
-      "exposure": "icon_basemap.png",
+      "food_security": "icon_foodsecurity.png",
+      "food_security_and_livelihoods": "icon_livelihoods.png",
       "hazards": "icon_climate.png",
       "Cadre Harmonisé": "icon_cadreharmoise2.png",
       "capacity": "icon_capacity.png",
@@ -35,8 +35,21 @@
         "temperature": ["lst_daytime"]
       },
       "Cadre Harmonisé": {
-        "Phase classification": ["ch_2021_03"]
-      } 
+        "Phase classification": ["ch_2021_03", "ch_2021_11_phase_class_current", "ch_2021_11_phase_class_projected"],
+        "Outcome phasing": [
+          "ch_2021_11_fs_phase_current", 
+          "ch_2021_11_fs_phase_projected",
+          "ch_2021_11_livelihood_phase_current", 
+          "ch_2021_11_livelihood_phase_projected",
+          "ch_2021_11_nutrition_phase_current", 
+          "ch_2021_11_nutrition_phase_projected",
+          "ch_2021_11_mortality_phase_current", 
+          "ch_2021_11_mortality_phase_projected"]
+      },
+      "food_security_and_livelihoods": {
+        "Food consumption": ["ch_2021_11_fcg", "ch_2021_11_hdds", "ch_2021_11_hhs"],
+        "Coping and livelihoods": ["ch_2021_11_rcsi", "ch_2021_11_lhcs"]
+      }
     }
   }
   
