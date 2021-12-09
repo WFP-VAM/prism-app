@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Button,
   createStyles,
@@ -34,7 +34,9 @@ const BoundarySelector = ({
     setAnchorEl(null);
   };
 
-  const bboxes = groupBoundaries(boundaryLayerData);
+  const bboxes = useMemo(() => groupBoundaries(boundaryLayerData), [
+    boundaryLayerData,
+  ]);
 
   return (
     <Grid item>
