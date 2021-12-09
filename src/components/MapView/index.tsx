@@ -1,6 +1,7 @@
 import React, {
   ComponentType,
   createElement,
+  useState,
   useEffect,
   useMemo,
   useRef,
@@ -13,7 +14,7 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { countBy, pickBy } from 'lodash';
+import { countBy, get, pickBy } from 'lodash';
 import moment from 'moment';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
@@ -106,6 +107,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
 ];
 
 function MapView({ classes }: MapViewProps) {
+  const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
   const selectedLayers = useSelector(layersSelector);
 
   const layersLoading = useSelector(isLoading);
@@ -146,10 +148,39 @@ function MapView({ classes }: MapViewProps) {
       to the hazardLayerId and baselineLayerId values. If the date field is found, the application
       status is also updated. There are guards in case the values are not valid, such as invalid
       date or layerids.
-    */
+      */
+    const HAZARD_LAYER_PARAM = 'hazardLayerId';
+    const BASELINE_LAYER_PARAM = 'baselineLayerId';
 
-    const hazardLayerId = urlParams.get('hazardLayerId');
-    const baselineLayerId = urlParams.get('baselineLayerId');
+    const hazardLayerId = urlParams.get(HAZARD_LAYER_PARAM);
+    const baselineLayerId = urlParams.get(BASELINE_LAYER_PARAM);
+
+    /*
+      In case we don't have hazard or baseline layers we will use the default
+      layer provided in the appConfig defined within `prism.json` file.
+     */
+    if (!hazardLayerId && !baselineLayerId) {
+      const defaultLayer = get(appConfig, 'defaultLayer');
+
+      if (defaultLayer) {
+        if (Object.keys(LayerDefinitions).includes(defaultLayer)) {
+          const layer = LayerDefinitions[defaultLayer as LayerKey];
+          const urlLayerKey =
+            layer.type === 'admin_level_data'
+              ? BASELINE_LAYER_PARAM
+              : HAZARD_LAYER_PARAM;
+          updateHistory(urlLayerKey, defaultLayer);
+        } else if (!defaultLayerAttempted) {
+          dispatch(
+            addNotification({
+              message: `Invalid default layer identifier: ${defaultLayer}`,
+              type: 'error',
+            }),
+          );
+          setDefaultLayerAttempted(true);
+        }
+      }
+    }
 
     if (
       (!hazardLayerId && !baselineLayerId) ||
@@ -209,6 +240,7 @@ function MapView({ classes }: MapViewProps) {
     serverAvailableDates,
     selectedDate,
     updateHistory,
+    defaultLayerAttempted,
   ]);
 
   useEffect(() => {
