@@ -17,7 +17,7 @@ import union from '@turf/union';
 import { LayerData } from '../../context/layers/layer-data';
 import { LayerDefinitions } from '../../config/utils';
 import { formatFeatureInfo } from '../../utils/server-utils';
-import { getExtent } from './Layers/raster-utils';
+import { getExtent, Extent } from './Layers/raster-utils';
 import {
   WMSLayerProps,
   FeatureInfoType,
@@ -171,7 +171,7 @@ export function getFeatureInfoPropsData(
 
 export type Boundary = {
   name: string;
-  bbox: [number, number, number, number];
+  bbox: Extent;
   parent: boolean;
 };
 
@@ -236,7 +236,7 @@ export function groupBoundaries(
 
       const parentItem: Boundary = {
         name: key,
-        bbox: bbox(unionPolygon) as [number, number, number, number],
+        bbox: bbox(unionPolygon) as Extent,
         parent: true,
       };
 
