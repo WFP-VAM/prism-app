@@ -185,7 +185,8 @@ export function groupBoundaries(
   }
 
   const { data, layer } = boundaryLayerData;
-  const [level0, level1] = layer.adminLevelLocalNames;
+  const level0 = layer.adminLevelNames[0];
+  const level1 = layer.adminLevelNames[layer.adminLevelNames.length - 1];
 
   const boundaries = data.features.reduce(
     (obj: boundaryObj, feature: Feature) => {
