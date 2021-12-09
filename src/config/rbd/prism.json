@@ -9,6 +9,7 @@
       "tables": "icon_table.png"
     },
     "alertFormActive": false,
+    "defaultLayer": "rain_anomaly_dekad",
     "serversUrls": {
       "wms": [
         "https://odc.ovio.org/wms",
