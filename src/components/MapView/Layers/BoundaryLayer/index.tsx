@@ -41,9 +41,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       linePaint={layer.styles.line}
       fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
       fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
-      fillOnClick={
-        layer === getBoundaryLayerSingleton() ? onClickFunc : undefined
-      }
+      fillOnClick={onClickFunc}
     />
   );
 }
