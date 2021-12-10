@@ -5,7 +5,7 @@
     "opacity": 0.8,
     "admin_code": "ST_PCODE",
     "admin_level_names": ["ST"],
-    "admin_level_local_names": ["mmr_polbnd", "DT_MMR4", "TS_MMR4"],
+    "admin_level_local_names": ["mmr_polbnd"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -58,7 +58,7 @@
     "title": "Test Admin1 Data",
     "type": "admin_level_data",
     "boundary": "state_admin_boundaries",
-    "path": "../data/myanmar/nso/poverty.json",
+    "path": "../data/myanmar/nso/poverty_st.json",
     "data_field": "Poverty",
     "admin_level": 1,
     "admin_code": "ST_PCODE",
@@ -873,7 +873,7 @@
   "poverty": {
     "title": "Poverty by township",
     "type": "admin_level_data",
-    "path": "../data/myanmar/nso/poverty.json",
+    "path": "../data/myanmar/nso/poverty_st.json",
     "data_field": "Poverty",
     "admin_level": 3,
     "admin_code": "TS_PCODE",
