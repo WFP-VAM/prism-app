@@ -91,22 +91,23 @@ const SearchField = forwardRef(
  * @param data
  * @param search
  */
-function getCategories(
+const getCategories = (
   data: LayerData<BoundaryLayerProps>['data'],
   search: string,
-) {
+) =>
   // Make categories based off the level of all boundaries
-  const categories: Array<{
-    title: string;
-    children: { value: string; label: string }[];
-  }> = [];
-  data.features.forEach(feature => {
+  data.features.reduce<
+    Array<{
+      title: string;
+      children: { value: string; label: string }[];
+    }>
+  >((ret, feature) => {
     const parentCategory =
       feature.properties?.[boundaryLayer.adminLevelNames[1]];
     const label = feature.properties?.[boundaryLayer.adminLevelNames[0]];
     const code = feature.properties?.[boundaryLayer.adminCode];
     if (!label || !code || !parentCategory) {
-      return;
+      return ret;
     }
     // filter via search
     const searchIncludes = (field: string) =>
@@ -117,23 +118,24 @@ function getCategories(
       !searchIncludes(code) &&
       !searchIncludes(parentCategory)
     ) {
-      return;
+      return ret;
     }
     // add to categories if exists
-    const category = categories.find(c => c.title === parentCategory);
+    const category = ret.find(c => c.title === parentCategory);
     if (category) {
       // eslint-disable-next-line fp/no-mutating-methods
       category.children.push({ value: code, label });
     } else {
-      // eslint-disable-next-line fp/no-mutating-methods
-      categories.push({
-        title: parentCategory,
-        children: [{ value: code, label }],
-      });
+      return [
+        ...ret,
+        {
+          title: parentCategory,
+          children: [{ value: code, label }],
+        },
+      ];
     }
-  });
-  return categories;
-}
+    return ret;
+  }, []);
 
 /**
  * This component allows you to give the user the ability to select several admin_boundary cells.
