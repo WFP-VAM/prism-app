@@ -21,7 +21,7 @@ import { BoundaryLayerProps } from '../../../config/types';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
-  setSelectedBoundaries,
+  setSelectedBoundaries as setSelectedBoundariesRedux,
 } from '../../../context/mapSelectionLayerStateSlice';
 import { getBoundaryLayerSingleton } from '../../../config/utils';
 import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
@@ -88,8 +88,6 @@ const SearchField = forwardRef(
 /**
  * Converts the boundary layer data into a list of options for the dropdown
  * grouped by admin level 2, with individual sections under admin level 3.
- * @param data
- * @param search
  */
 const getCategories = (
   data: LayerData<BoundaryLayerProps>['data'],
@@ -142,20 +140,16 @@ const getCategories = (
  * This component also syncs with the map automatically, allowing users to select cells by clicking the map.
  * Selection mode is automatically toggled based off this component's lifecycle.
  */
-function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
-  const dispatch = useDispatch();
+function SimpleBoundaryDropdown({
+  selectedBoundaries,
+  setSelectedBoundaries,
+  ...rest
+}: BoundaryDropdownProps) {
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.only('xs'),
   );
   const [search, setSearch] = useState('');
-  const selectedBoundaries = useSelector(getSelectedBoundaries);
-  // toggle the selection mode as this component is created and destroyed.
-  useEffect(() => {
-    dispatch(setIsSelectionMode(true));
-    return () => {
-      dispatch(setIsSelectionMode(false));
-    };
-  }, [dispatch]);
+
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -167,12 +161,10 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
   const selectOrDeselectAll = (e: React.MouseEvent) => {
     e.preventDefault();
     if (selectedBoundaries.length > 0) {
-      dispatch(setSelectedBoundaries([]));
+      setSelectedBoundaries([]);
     } else {
-      dispatch(
-        setSelectedBoundaries(
-          categories.flatMap(c => c.children.map(({ value }) => value)),
-        ),
+      setSelectedBoundaries(
+        categories.flatMap(c => c.children.map(({ value }) => value)),
       );
     }
   };
@@ -198,10 +190,8 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
           ) {
             return;
           }
-          dispatch(
-            setSelectedBoundaries(
-              Array.isArray(e.target.value) ? e.target.value : [],
-            ),
+          setSelectedBoundaries(
+            Array.isArray(e.target.value) ? e.target.value : [],
           );
         }}
       >
@@ -227,14 +217,13 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
                 const selectedChildren =
                   selectedBoundaries.filter(val => categoryValues.includes(val))
                     .length > 0;
-                dispatch(
-                  setSelectedBoundaries(
-                    selectedChildren
-                      ? selectedBoundaries.filter(
-                          val => !categoryValues.includes(val),
-                        )
-                      : [...selectedBoundaries, ...categoryValues],
-                  ),
+
+                setSelectedBoundaries(
+                  selectedChildren
+                    ? selectedBoundaries.filter(
+                        val => !categoryValues.includes(val),
+                      )
+                    : [...selectedBoundaries, ...categoryValues],
                 );
               }}
             >
@@ -257,6 +246,38 @@ function BoundaryDropdown({ ...rest }: BoundaryDropdownProps) {
 
 interface BoundaryDropdownProps {
   className?: string;
+  selectedBoundaries: string[];
+  setSelectedBoundaries: (boundaries: string[]) => void;
+}
+
+/**
+ * A HOC (higher order component) that connects the boundary dropdown to redux state
+ */
+function BoundaryDropdown({
+  ...rest
+}: Omit<
+  BoundaryDropdownProps,
+  'selectedBoundaries' | 'setSelectedBoundaries'
+>) {
+  const dispatch = useDispatch();
+  const selectedBoundaries = useSelector(getSelectedBoundaries);
+  // toggle the selection mode as this component is created and destroyed.
+  // (users can only click the map to select while this component is visible)
+  useEffect(() => {
+    dispatch(setIsSelectionMode(true));
+    return () => {
+      dispatch(setIsSelectionMode(false));
+    };
+  }, [dispatch]);
+  return (
+    <SimpleBoundaryDropdown
+      {...rest}
+      selectedBoundaries={selectedBoundaries}
+      setSelectedBoundaries={newSelectedBoundaries => {
+        dispatch(setSelectedBoundariesRedux(newSelectedBoundaries));
+      }}
+    />
+  );
 }
 
 export default BoundaryDropdown;
