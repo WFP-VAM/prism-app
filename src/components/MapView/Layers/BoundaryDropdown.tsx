@@ -14,6 +14,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@material-ui/core';
+import { last } from 'lodash';
 import React, { forwardRef, ReactElement, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
@@ -101,8 +102,11 @@ const getCategories = (
     }>
   >((ret, feature) => {
     const parentCategory =
-      feature.properties?.[boundaryLayer.adminLevelNames[1]];
-    const label = feature.properties?.[boundaryLayer.adminLevelNames[0]];
+      feature.properties?.[boundaryLayer.adminLevelNames[0]];
+    const label =
+      feature.properties?.[
+        last(boundaryLayer.adminLevelNames) || boundaryLayer.adminLevelNames[1]
+      ];
     const code = feature.properties?.[boundaryLayer.adminCode];
     if (!label || !code || !parentCategory) {
       return ret;
