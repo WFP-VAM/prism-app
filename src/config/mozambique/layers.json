@@ -4,7 +4,7 @@
     "path": "../data/mozambique/admin_boundaries_MOZ2.json",
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE",
-    "admin_level_names": ["ADM2_PT", "ADM1_PT"],
+    "admin_level_names": ["ADM1_PT", "ADM2_PT"],
     "admin_level_local_names": ["ADM1_PT", "ADM2_PT"],
     "styles:": {
       "fill": {
@@ -22,7 +22,7 @@
     "path": "../data/mozambique/moz_admin1_boundaries.json",
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE",
-    "admin_level_names": ["ADM2_PT", "ADM1_PT"],
+    "admin_level_names": ["ADM1_PT", "ADM2_PT"],
     "admin_level_local_names": ["ADM1_PT", "ADM2_PT"],
     "styles:": {
       "fill": {
@@ -479,15 +479,15 @@
     "opacity": 0.7,
     "legend_text": "LEGEND",
     "legend": [
-      { "value": 1000, "color": "#a50026" },
-      { "value": 2000, "color": "#de3f2e" },
-      { "value": 3000, "color": "#f88d52" },
-      { "value": 4000, "color": "#fed380" },
-      { "value": 5000, "color": "#ffffbf" },
-      { "value": 6000, "color": "#ccea83" },
-      { "value": 7000, "color": "#86cb66" },
-      { "value": 8000, "color": "#2da155" },
-      { "value": 9000, "color": "#006837" }
+      { "value": "-1.00", "color": "#a50026" },
+      { "value": "-0.75", "color": "#de3f2e" },
+      { "value": "-0.50", "color": "#f88d52" },
+      { "value": "-0.25", "color": "#fed380" },
+      { "value": "0.00", "color": "#ffffbf" },
+      { "value": "0.25", "color": "#ccea83" },
+      { "value": "0.50", "color": "#86cb66" },
+      { "value": "0.75", "color": "#2da155" },
+      { "value": "1.00", "color": "#006837" }
     ]
   },
   "ndvi_dekad_1": {
@@ -499,15 +499,15 @@
     "opacity": 0.7,
     "legend_text": "LEGEND",
     "legend": [
-      { "value": 1000, "color": "#a50026" },
-      { "value": 2000, "color": "#de3f2e" },
-      { "value": 3000, "color": "#f88d52" },
-      { "value": 4000, "color": "#fed380" },
-      { "value": 5000, "color": "#ffffbf" },
-      { "value": 6000, "color": "#ccea83" },
-      { "value": 7000, "color": "#86cb66" },
-      { "value": 8000, "color": "#2da155" },
-      { "value": 9000, "color": "#006837" }
+      { "value": "-1.00", "color": "#a50026" },
+      { "value": "-0.75", "color": "#de3f2e" },
+      { "value": "-0.50", "color": "#f88d52" },
+      { "value": "-0.25", "color": "#fed380" },
+      { "value": "0.00", "color": "#ffffbf" },
+      { "value": "0.25", "color": "#ccea83" },
+      { "value": "0.50", "color": "#86cb66" },
+      { "value": "0.75", "color": "#2da155" },
+      { "value": "1.00", "color": "#006837" }
     ]
   },
   "ndvi_dekad_anomaly_5": {
