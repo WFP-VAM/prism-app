@@ -18,8 +18,9 @@ import moment from 'moment';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
 import { Map } from 'mapbox-gl';
-import { bbox, inside } from '@turf/turf';
-import { Feature, MultiPolygon } from '@turf/helpers';
+import bbox from '@turf/bbox';
+import inside from '@turf/boolean-point-in-polygon';
+import type { Feature, MultiPolygon } from '@turf/helpers';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import Download from './Download';

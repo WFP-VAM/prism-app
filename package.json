@@ -15,6 +15,7 @@
   },
   "scripts": {
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
+    "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
     "build": "cross-env EXTEND_ESLINT=true react-scripts build",
     "test": "react-scripts test",
     "predeploy:prod": "yarn build",
@@ -40,9 +41,8 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@turf/bbox": "^6.5.0",
     "@turf/boolean-point-in-polygon": "^6.0.1",
-    "@turf/helpers": "^6.1.4",
-    "@turf/turf": "^6.5.0",
     "@types/dompurify": "^2.2.3",
     "@types/marked": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
@@ -114,6 +114,7 @@
     ]
   },
   "devDependencies": {
+    "@turf/helpers": "^6.1.4",
     "@types/chart.js": "^2.9.21",
     "@types/d3": "^5.7.2",
     "@types/geojson": "^7946.0.7",

@@ -11,7 +11,7 @@ import {
   isNumber,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
-import { bbox } from '@turf/turf';
+import bbox from '@turf/bbox';
 import {
   AggregationOperations,
   AsyncReturnType,
