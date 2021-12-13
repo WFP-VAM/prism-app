@@ -28,6 +28,7 @@ import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../config/utils';
+import { isMapBoundaryAvailable } from '../../../utils/map-utils';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const selectedLayers = useSelector(layersSelector);
@@ -47,12 +48,7 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
       updateHistory(urlLayerKey, layer.id);
       const primary = getBoundaryLayerSingleton();
       if (!('boundary' in layer)) {
-        if (
-          !map
-            ?.getStyle()
-            .layers?.map(l => l.id)
-            .includes(`${primary.id}-line`)
-        ) {
+        if (isMapBoundaryAvailable(map, primary.id)) {
           dispatch(addLayer(primary));
         }
       }

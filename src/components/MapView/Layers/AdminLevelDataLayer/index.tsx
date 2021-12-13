@@ -26,6 +26,7 @@ import {
   LayerDefinitions,
 } from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
+import { isMapBoundaryAvailable } from '../../../../utils/map-utils';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const boundaryId = layer.boundary || getBoundaryLayerSingleton().id;
@@ -48,7 +49,6 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     if ('boundary' in layer) {
       if (Object.keys(LayerDefinitions).includes(boundaryId)) {
         boundaryLayers.map(l => dispatch(removeLayer(l)));
-
         dispatch(addLayer(boundaryLayer));
         dispatch(loadLayerData({ layer: boundaryLayer }));
       } else {
@@ -63,19 +63,13 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     if (!features) {
       dispatch(loadLayerData({ layer }));
     }
-  }, [dispatch, features, layer, boundaryId, map]);
+  }, [dispatch, features, layer, boundaryId]);
 
   if (!features) {
     return null;
   }
 
-  if (
-    layer.boundary &&
-    !map
-      ?.getStyle()
-      .layers?.map(l => l.id)
-      .includes(`${boundaryId}-line`)
-  ) {
+  if (isMapBoundaryAvailable(map, boundaryId)) {
     return null;
   }
 
