@@ -26,7 +26,7 @@ import {
   LayerDefinitions,
 } from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
-import { isMapBoundaryAvailable } from '../../../../utils/map-utils';
+import { isLayerOnView } from '../../../../utils/map-utils';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const dispatch = useDispatch();
@@ -69,7 +69,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     return null;
   }
 
-  if (!isMapBoundaryAvailable(map, boundaryId)) {
+  if (!isLayerOnView(map, boundaryId)) {
     return null;
   }
 

@@ -1,7 +1,7 @@
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerKey } from '../config/types';
 
-export function isMapBoundaryAvailable(
+export function isLayerOnView(
   map: MapBoxMap | undefined,
   boundaryId: LayerKey,
 ) {
