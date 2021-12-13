@@ -29,13 +29,13 @@ import { addNotification } from '../../../../context/notificationStateSlice';
 import { isMapBoundaryAvailable } from '../../../../utils/map-utils';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
+  const dispatch = useDispatch();
+  const map = useSelector(mapSelector);
   const boundaryId = layer.boundary || getBoundaryLayerSingleton().id;
+
   const layerData = useSelector(layerDataSelector(layer.id)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
-  const map = useSelector(mapSelector);
-  const dispatch = useDispatch();
-
   const { data } = layerData || {};
   const { features } = data || {};
 
@@ -69,7 +69,16 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     return null;
   }
 
-  if (isMapBoundaryAvailable(map, boundaryId)) {
+  if (!isMapBoundaryAvailable(map, boundaryId)) {
+    return null;
+  }
+
+  if (
+    !map
+      ?.getStyle()
+      .layers?.map(l => l.id)
+      .includes(`${boundaryId}-line`)
+  ) {
     return null;
   }
 

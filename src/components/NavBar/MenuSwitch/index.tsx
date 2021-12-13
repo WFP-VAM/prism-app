@@ -48,7 +48,7 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
       updateHistory(urlLayerKey, layer.id);
       const primary = getBoundaryLayerSingleton();
       if (!('boundary' in layer)) {
-        if (isMapBoundaryAvailable(map, primary.id)) {
+        if (!isMapBoundaryAvailable(map, primary.id)) {
           dispatch(addLayer(primary));
         }
       }
