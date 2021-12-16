@@ -124,7 +124,7 @@ function MapView({ classes }: MapViewProps) {
       }
       if (layer.type === 'wms') {
         // some WMS layer might not have date dimension (i.e. static data)
-        return layer.id in serverAvailableDates;
+        return layer.serverLayerName in serverAvailableDates;
       }
       return dateSupportLayerTypes.includes(layer.type);
     })
