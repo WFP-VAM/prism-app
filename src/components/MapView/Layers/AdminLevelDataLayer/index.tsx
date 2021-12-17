@@ -50,7 +50,12 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       if (Object.keys(LayerDefinitions).includes(boundaryId)) {
         boundaryLayers.map(l => dispatch(removeLayer(l)));
         dispatch(addLayer(boundaryLayer));
-        dispatch(loadLayerData({ layer: boundaryLayer }));
+
+        // load unique boundary only once
+        // to avoid double loading which proven to be performance issue
+        if (!isLayerOnView(map, boundaryId)) {
+          dispatch(loadLayerData({ layer: boundaryLayer }));
+        }
       } else {
         dispatch(
           addNotification({
@@ -63,7 +68,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     if (!features) {
       dispatch(loadLayerData({ layer }));
     }
-  }, [dispatch, features, layer, boundaryId]);
+  }, [dispatch, features, layer, boundaryId, map]);
 
   if (!features) {
     return null;
