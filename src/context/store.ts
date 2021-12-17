@@ -29,8 +29,9 @@ export const store = configureStore({
     // TODO: Instead of snoozing this check, we might want to
     // serialize the state
     serializableCheck: false,
-    // TODO this is incredibly slow in development
-    immutableCheck: false,
+    immutableCheck: {
+      ignoredPaths: ['mapState.layersData', 'analysisResultState.result'],
+    },
   }).concat(errorToNotificationMiddleware),
 });
 

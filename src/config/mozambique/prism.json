@@ -1,6 +1,6 @@
 {
   "country": "Mozambique",
-  "alertFormActive": true,
+  "alertFormActive": false,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
