@@ -90,12 +90,19 @@ const SearchField = forwardRef(
  * Converts the boundary layer data into a list of options for the dropdown
  * grouped by admin level 2, with individual sections under admin level 3.
  */
-const getCategories = (
+function getCategories(
   data: LayerData<BoundaryLayerProps>['data'],
   search: string,
-) =>
+) {
+  if (!boundaryLayer.adminLevelNames.length) {
+    console.error(
+      'Boundary layer has no admin level names. Cannot generate categories.',
+    );
+    return [];
+  }
+
   // Make categories based off the level of all boundaries
-  data.features.reduce<
+  return data.features.reduce<
     Array<{
       title: string;
       children: { value: string; label: string }[];
@@ -103,10 +110,7 @@ const getCategories = (
   >((ret, feature) => {
     const parentCategory =
       feature.properties?.[boundaryLayer.adminLevelNames[0]];
-    const label =
-      feature.properties?.[
-        last(boundaryLayer.adminLevelNames) || boundaryLayer.adminLevelNames[1]
-      ];
+    const label = feature.properties?.[last(boundaryLayer.adminLevelNames)!];
     const code = feature.properties?.[boundaryLayer.adminCode];
     if (!label || !code || !parentCategory) {
       return ret;
@@ -138,6 +142,7 @@ const getCategories = (
     }
     return ret;
   }, []);
+}
 
 /**
  * This component allows you to give the user the ability to select several admin_boundary cells.
