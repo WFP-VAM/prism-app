@@ -15,7 +15,7 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { last } from 'lodash';
-import React, { forwardRef, ReactElement, useEffect, useState } from 'react';
+import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
 import { BoundaryLayerProps } from '../../../config/types';
@@ -213,33 +213,37 @@ function SimpleBoundaryDropdown({
         {search && categories.flatMap(c => c.children).length === 0 && (
           <MenuItem disabled>No Results</MenuItem>
         )}
-        {categories.reduce<ReactElement[]>(
+        {categories.reduce<ReactNode[]>(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
           (components, category) => [
             ...components,
-            <ClickableListSubheader
-              key={category.title}
-              onClick={e => {
-                e.preventDefault();
-                // if at least one is selected, deselect all. Otherwise select all
-                const categoryValues = category.children.map(c => c.value);
-                const selectedChildren =
-                  selectedBoundaries.filter(val => categoryValues.includes(val))
-                    .length > 0;
+            // don't add list subheader if there are no categories.
+            boundaryLayer.adminLevelNames.length > 1 ? (
+              <ClickableListSubheader
+                key={category.title}
+                onClick={e => {
+                  e.preventDefault();
+                  // if at least one is selected, deselect all. Otherwise select all
+                  const categoryValues = category.children.map(c => c.value);
+                  const selectedChildren =
+                    selectedBoundaries.filter(val =>
+                      categoryValues.includes(val),
+                    ).length > 0;
 
-                setSelectedBoundaries(
-                  selectedChildren
-                    ? selectedBoundaries.filter(
-                        val => !categoryValues.includes(val),
-                      )
-                    : [...selectedBoundaries, ...categoryValues],
-                );
-              }}
-            >
-              <Typography variant="body2" color="primary">
-                {category.title}
-              </Typography>
-            </ClickableListSubheader>,
+                  setSelectedBoundaries(
+                    selectedChildren
+                      ? selectedBoundaries.filter(
+                          val => !categoryValues.includes(val),
+                        )
+                      : [...selectedBoundaries, ...categoryValues],
+                  );
+                }}
+              >
+                <Typography variant="body2" color="primary">
+                  {category.title}
+                </Typography>
+              </ClickableListSubheader>
+            ) : null,
             ...category.children.map(({ label, value }) => (
               <MenuItem key={value} value={value}>
                 {label}
