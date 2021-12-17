@@ -3,9 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { showPopup } from '../../../../context/tooltipStateSlice';
+import { showPopup, hidePopup } from '../../../../context/tooltipStateSlice';
 import { BoundaryLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
+import {
+  loadDataset,
+  DatasetParams,
+} from '../../../../context/layers/boundary';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
 import { isPrimaryBoundaryLayer } from '../../../../config/utils';
@@ -28,12 +32,35 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
 
-  const onClickFunc = (evt: any) => {
+  const onHoverHandler = (evt: any) => {
+    dispatch(hidePopup());
     const coordinates = evt.lngLat;
+    const { properties } = evt.features[0];
+
+    onToggleHover('pointer', evt.target);
+
     const locationName = layer.adminLevelNames
-      .map(level => get(evt.features[0], ['properties', level], '') as string)
+      .map(level => get(properties, level, '') as string)
       .join(', ');
+
     dispatch(showPopup({ coordinates, locationName }));
+  };
+
+  const onClickFunc = (evt: any) => {
+    const { properties } = evt.features[0];
+
+    // send the selection to the map selection layer. No-op if selection mode isn't on.
+    dispatch(
+      toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),
+    );
+
+    const datasetParams: DatasetParams = {
+      id: properties[layer.adminCode],
+      filepath: 'data/mozambique/tables/moz-r1h-adm2-transposed.csv',
+    };
+
+    dispatch(loadDataset(datasetParams));
+
     // send the selection to the map selection layer. No-op if selection mode isn't on.
     dispatch(
       toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),
@@ -43,7 +70,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   // Only use mouse effects and click effects on the main layer.
   const { fillOnMouseEnter, fillOnMouseLeave, fillOnClick } = isPrimaryLayer
     ? {
-        fillOnMouseEnter: (evt: any) => onToggleHover('pointer', evt.target),
+        fillOnMouseEnter: onHoverHandler,
         fillOnMouseLeave: (evt: any) => onToggleHover('', evt.target),
         fillOnClick: onClickFunc,
       }
@@ -59,7 +86,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       data={data}
       fillPaint={layer.styles.fill}
       linePaint={layer.styles.line}
-      fillOnMouseEnter={fillOnMouseEnter}
+      fillOnMouseMove={fillOnMouseEnter}
       fillOnMouseLeave={fillOnMouseLeave}
       fillOnClick={fillOnClick}
     />

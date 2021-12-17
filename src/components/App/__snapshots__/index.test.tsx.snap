@@ -9,6 +9,7 @@ exports[`renders as expected 1`] = `
     <mock-navbar />
     <mock-mapview />
     <mock-datadrawer />
+    <mock-datadrawer />
   </div>
 </div>
 `;
