@@ -12,6 +12,7 @@ import notificationStateReduce, {
   errorToNotificationMiddleware,
 } from './notificationStateSlice';
 import analysisResultStateSlice from './analysisResultStateSlice';
+import datasetResultStateReduce from './layers/boundary';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
@@ -20,6 +21,7 @@ const reducer = combineReducers({
   tooltipState: tooltipStateReduce,
   analysisResultState: analysisResultStateSlice,
   notificationState: notificationStateReduce,
+  datasetState: datasetResultStateReduce,
 });
 
 export const store = configureStore({

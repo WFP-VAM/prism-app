@@ -6,6 +6,10 @@ import * as MapboxGL from 'mapbox-gl';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { BoundaryLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
+import {
+  loadDataset,
+  DatasetParams,
+} from '../../../../context/layers/boundary';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
@@ -26,10 +30,20 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
   const onClickFunc = (evt: any) => {
     const coordinates = evt.lngLat;
+
+    const { properties } = evt.features[0];
+
     const locationName = layer.adminLevelNames
-      .map(level => get(evt.features[0], ['properties', level], '') as string)
+      .map(level => get(properties, level, '') as string)
       .join(', ');
     dispatch(showPopup({ coordinates, locationName }));
+
+    const datasetParams: DatasetParams = {
+      id: properties[layer.adminCode],
+      filepath: 'data/mozambique/tables/moz-r1h-adm2-transposed.csv',
+    };
+
+    dispatch(loadDataset(datasetParams));
   };
 
   return (

@@ -29,7 +29,8 @@
         "rainfall_agg_3month",
         "rainfall_agg_6month",
         "rainfall_agg_9month",
-        "rainfall_agg_1year"
+        "rainfall_agg_1year",
+        "animal_deaths"
       ],
       "rainfall_anomalies": [
         "precip_blended_dekad_anomaly",
