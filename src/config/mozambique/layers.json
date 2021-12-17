@@ -2,6 +2,7 @@
   "admin_boundaries": {
     "type": "boundary",
     "path": "../data/mozambique/admin_boundaries_MOZ2.json",
+    "primary": true,
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE",
     "admin_level_names": ["ADM1_PT", "ADM2_PT"],
@@ -960,6 +961,7 @@
   "mpi": {
     "title": "Multidimensional Poverty Index",
     "type": "admin_level_data",
+    "boundary": "admin1_boundaries",
     "path": "../data/mozambique/moz-mpi-2020.json",
     "data_field": "mpi",
     "admin_level": 1,
