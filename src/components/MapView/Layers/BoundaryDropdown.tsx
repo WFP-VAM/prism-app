@@ -14,7 +14,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@material-ui/core';
-import { last } from 'lodash';
+import { last, sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
@@ -102,46 +102,57 @@ function getCategories(
   }
 
   // Make categories based off the level of all boundaries
-  return data.features.reduce<
-    Array<{
-      title: string;
-      children: { value: string; label: string }[];
-    }>
-  >((ret, feature) => {
-    const parentCategory =
-      feature.properties?.[boundaryLayer.adminLevelNames[0]];
-    const label = feature.properties?.[last(boundaryLayer.adminLevelNames)!];
-    const code = feature.properties?.[boundaryLayer.adminCode];
-    if (!label || !code || !parentCategory) {
-      return ret;
-    }
-    // filter via search
-    const searchIncludes = (field: string) =>
-      field.toLowerCase().includes(search.toLowerCase());
-    if (
-      search &&
-      !searchIncludes(label) &&
-      !searchIncludes(code) &&
-      !searchIncludes(parentCategory)
-    ) {
-      return ret;
-    }
-    // add to categories if exists
-    const category = ret.find(c => c.title === parentCategory);
-    if (category) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      category.children.push({ value: code, label });
-    } else {
-      return [
-        ...ret,
-        {
-          title: parentCategory,
-          children: [{ value: code, label }],
-        },
-      ];
-    }
-    return ret;
-  }, []);
+  return sortBy(
+    data.features
+      .reduce<
+        Array<{
+          title: string;
+          children: { value: string; label: string }[];
+        }>
+      >((ret, feature) => {
+        const parentCategory =
+          feature.properties?.[boundaryLayer.adminLevelNames[0]];
+        const label =
+          feature.properties?.[last(boundaryLayer.adminLevelNames)!];
+        const code = feature.properties?.[boundaryLayer.adminCode];
+        if (!label || !code || !parentCategory) {
+          return ret;
+        }
+        // filter via search
+        const searchIncludes = (field: string) =>
+          field.toLowerCase().includes(search.toLowerCase());
+        if (
+          search &&
+          !searchIncludes(label) &&
+          !searchIncludes(code) &&
+          !searchIncludes(parentCategory)
+        ) {
+          return ret;
+        }
+        // add to categories if exists
+        const category = ret.find(c => c.title === parentCategory);
+        if (category) {
+          // eslint-disable-next-line fp/no-mutating-methods
+          category.children.push({ value: code, label });
+        } else {
+          return [
+            ...ret,
+            {
+              title: parentCategory,
+              children: [{ value: code, label }],
+            },
+          ];
+        }
+        return ret;
+      }, [])
+      .map(category => ({
+        ...category,
+        // sort children by label
+        children: sortBy(category.children, 'label'),
+      })),
+    // then finally sort categories.
+    'title',
+  );
 }
 
 /**
@@ -167,14 +178,13 @@ function SimpleBoundaryDropdown({
     return <CircularProgress size={24} color="secondary" />;
   }
   const categories = getCategories(data, search);
+  const allChildren = categories.flatMap(c => c.children);
   const selectOrDeselectAll = (e: React.MouseEvent) => {
     e.preventDefault();
     if (selectedBoundaries.length > 0) {
       setSelectedBoundaries([]);
     } else {
-      setSelectedBoundaries(
-        categories.flatMap(c => c.children.map(({ value }) => value)),
-      );
+      setSelectedBoundaries(allChildren.map(({ value }) => value));
     }
   };
   // It's important for this to be another component, since the Select component
@@ -210,7 +220,7 @@ function SimpleBoundaryDropdown({
             {selectedBoundaries.length === 0 ? 'Select All' : 'Deselect All'}
           </MenuItem>
         )}
-        {search && categories.flatMap(c => c.children).length === 0 && (
+        {search && allChildren.length === 0 && (
           <MenuItem disabled>No Results</MenuItem>
         )}
         {categories.reduce<ReactNode[]>(
