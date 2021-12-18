@@ -223,15 +223,15 @@ function SimpleBoundaryDropdown({
                 key={category.title}
                 onClick={e => {
                   e.preventDefault();
-                  // if at least one is selected, deselect all. Otherwise select all
+                  // if all children are selected, deselect all. Otherwise select all
                   const categoryValues = category.children.map(c => c.value);
-                  const selectedChildren =
+                  const areAllChildrenSelected =
                     selectedBoundaries.filter(val =>
                       categoryValues.includes(val),
-                    ).length > 0;
+                    ).length === categoryValues.length;
 
                   setSelectedBoundaries(
-                    selectedChildren
+                    areAllChildrenSelected
                       ? selectedBoundaries.filter(
                           val => !categoryValues.includes(val),
                         )
