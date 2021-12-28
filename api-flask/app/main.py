@@ -19,6 +19,8 @@ from flask_cors import CORS
 
 from kobo import get_form_responses, parse_datetime_params
 
+from admin_level_data import get_admin_response, parse_admin_params
+
 import rasterio
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
@@ -150,6 +152,14 @@ def get_kobo_forms():
     form_responses = get_form_responses(begin_datetime, end_datetime)
 
     return Response(json.dumps(form_responses), mimetype='application/json')
+
+
+@app.route('/admin-level-data', methods=['GET'])
+def get_admin_level_data():
+    """Get admin level data from external sources."""
+    params = parse_admin_params()
+    resp = get_admin_response(params['data_url'], params['start_date'], params['end_date'])
+    return Response(json.dumps(resp), mimetype='application/json') 
 
 
 @app.route('/alerts/<id>', methods=['GET'])
