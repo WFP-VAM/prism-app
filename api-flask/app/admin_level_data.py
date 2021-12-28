@@ -1,3 +1,4 @@
+"""Collect and parse Admin Level Data URLs."""
 from flask import request
 
 import requests
@@ -7,13 +8,14 @@ from werkzeug.exceptions import BadRequest
 
 
 def get_base(url):
+    """Parse url to get the its base."""
     scheme, netloc, _, _, _, _ = urlparse(url)
     base = '{0}://{1}'.format(scheme, netloc)
     return base
 
 
 def parse_admin_params():
-    """Collect and validate request parameters"""
+    """Collect and validate request parameters."""
     data_url = request.args.get('dataUrl')
     if data_url is None:
         raise BadRequest('Missing query parameter: dataUrl')
@@ -21,8 +23,7 @@ def parse_admin_params():
 
 
 def parse_mvam_response(url):
-    """Parse response from Hunger Map Monitoring"""
-
+    """Parse response from Hunger Map Monitoring."""
     resp = requests.get(url)
 
     # instead of `resp.raise_for_status`. display the error response from mvam
@@ -45,9 +46,9 @@ def parse_mvam_response(url):
 
 
 def get_admin_response(url):
-    """Process admin level data from different sources"""
+    """Process admin level data from different sources."""
     def unsupported_source(url):
-        """Raises the bad request for unsupported sources"""
+        """Raise the bad request for unsupported sources."""
         raise BadRequest('Unsupported admin level data source', url)
 
     supported_data_sources = {
