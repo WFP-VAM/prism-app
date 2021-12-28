@@ -157,8 +157,7 @@ def get_kobo_forms():
 @app.route('/admin-level-data', methods=['GET'])
 def get_admin_level_data():
     """Get admin level data from external sources."""
-    params = parse_admin_params()
-    resp = get_admin_response(params['data_url'], params['start_date'], params['end_date'])
+    resp = get_admin_response(parse_admin_params())
     return Response(json.dumps(resp), mimetype='application/json') 
 
 

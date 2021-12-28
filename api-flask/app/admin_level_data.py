@@ -6,81 +6,55 @@ import requests
 from requests.compat import urlparse, urljoin
 
 
-def is_date(val):
-    """Check weither value is a valid date"""
-    try:
-        dateparser(val, fuzzy=False)
-        return True
-    except ValueError:
-        return False
-
-
 def get_base_and_path(url):
     scheme, netloc, path, _, _, _ = urlparse(url)
     base = '{0}://{1}'.format(scheme, netloc)
     return (base, path)
 
 
-def get_or_create_end_date(start, end, range_in_days):
-    """Based on start date, calculate end date based on range in days"""
-    today = datetime.today()
-    if end is None:
-        end_date = start + timedelta(range_in_days)
-        return end_date if end_date > today else today
-    return end
-
-
 def parse_admin_params():
     """Collect and validate request parameters"""
     data_url = request.args.get('dataUrl')
-
     if data_url is None:
         raise BadRequest('Missing query parameter: dataUrl')
-        
-    start_date = request.args.get('startDate')
-    if start_date is None:
-        raise BadRequest('Missing query parameter: startDate')
-    if is_date(start_date):
-        start_date = dateparser(start_date, fuzzy=False)
-    else:
-        raise BadRequest('Wrong startDate query parameter format')
-
-    end_date = request.args.get('endDate')
-    return dict(data_url=data_url, start_date=start_date, end_date=end_date)
+    return data_url
 
 
-def parse_mvam_response(url, start, end):
+def parse_mvam_response(url):
     """Parse response from Hunger Map Monitoring"""
 
-    MVAM_DAYS_RANGE = 100
-    end_date = get_or_create_end_date(start, end, MVAM_DAYS_RANGE)
+    resp = requests.get(url)
 
-    base, path = get_base_and_path(url)
-    full_url = urljoin(base, path)
-    start_formatted = datetime.strftime(start, "%Y-%m-%d")
-    end_formatted = datetime.strftime(end_date, "%Y-%m-%d")
-    
-    resp = requests.get(
-        full_url,
-        params={'date_start': start_formatted, 'date_end': end_formatted}
-    )
-    raw_data = resp.json()
-    return raw_data
+    # instead of `resp.raise_for_status`. display the error response from mvam
+    if not resp.ok:
+        return resp.json()
+
+    response = {'DataList': []}
+    for item in resp.json():
+        item_details = {
+            'mvam_Code': item['region']['id'],
+            'mvam_Name': item['region']['name'],
+            'population': item['region']['population'],
+            'date': item['date']
+        }
+        for metric in item['metrics']:
+            item_details['{}_people'.format(metric)] = item['metrics'][metric]['people']
+            item_details['{}_prevalence'.format(metric)] = item['metrics'][metric]['prevalence']
+        response['DataList'].append(item_details)
+    return response
 
 
-def unsupported_source():
-    """Raises the bad request for unsupported sources"""
-    raise BadRequest('Unsupported admin level data source')
-
-
-def get_admin_response(url, start, end):
+def get_admin_response(url):
     """Process admin level data from different sources"""
+    def unsupported_source(url):
+        """Raises the bad request for unsupported sources"""
+        raise BadRequest('Unsupported admin level data source', url)
+
     supported_data_sources = {
-        'https://api.hungermapdata.org': parse_mvam_response
+        'https://api.hungermapdata.org': parse_mvam_response,
+        'unsupported': unsupported_source
     }
 
     base, path = get_base_and_path(url)
     full_url = urljoin(base, path)
-    return supported_data_sources.get(base)(
-        full_url, start, end
-    )
+    return supported_data_sources.get(base, 'unsupported')(url)
