@@ -1,6 +1,8 @@
 from flask import request
+
 import requests
-from requests.compat import urlparse, urljoin
+from requests.compat import urlparse
+
 from werkzeug.exceptions import BadRequest
 
 
