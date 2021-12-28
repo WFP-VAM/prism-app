@@ -4,6 +4,8 @@ from distutils.util import strtobool
 from os import getenv
 from urllib.parse import ParseResult, urlencode, urlunparse
 
+from admin_level_data import get_admin_response, parse_admin_params
+
 from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
@@ -19,7 +21,6 @@ from flask_cors import CORS
 
 from kobo import get_form_responses, parse_datetime_params
 
-from admin_level_data import get_admin_response, parse_admin_params
 
 import rasterio
 
@@ -158,7 +159,7 @@ def get_kobo_forms():
 def get_admin_level_data():
     """Get admin level data from external sources."""
     resp = get_admin_response(parse_admin_params())
-    return Response(json.dumps(resp), mimetype='application/json') 
+    return Response(json.dumps(resp), mimetype='application/json')
 
 
 @app.route('/alerts/<id>', methods=['GET'])
