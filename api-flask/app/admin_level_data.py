@@ -1,15 +1,13 @@
 from flask import request
-from dateutil.parser import parse as dateparser
-from datetime import datetime, timedelta
-from werkzeug.exceptions import BadRequest
 import requests
 from requests.compat import urlparse, urljoin
+from werkzeug.exceptions import BadRequest
 
 
-def get_base_and_path(url):
-    scheme, netloc, path, _, _, _ = urlparse(url)
+def get_base(url):
+    scheme, netloc, _, _, _, _ = urlparse(url)
     base = '{0}://{1}'.format(scheme, netloc)
-    return (base, path)
+    return base
 
 
 def parse_admin_params():
@@ -55,6 +53,5 @@ def get_admin_response(url):
         'unsupported': unsupported_source
     }
 
-    base, path = get_base_and_path(url)
-    full_url = urljoin(base, path)
+    base = get_base(url)
     return supported_data_sources.get(base, 'unsupported')(url)
