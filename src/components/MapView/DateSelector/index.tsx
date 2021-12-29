@@ -48,14 +48,10 @@ const Input = forwardRef(
     );
   },
 );
-function DateSelector({
-  availableDates = [],
-  classes,
-  selectedDateRef,
-}: DateSelectorProps) {
+
+function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
 
-  const [selectedDate, setSelectedDate] = useState(moment(stateStartDate));
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
       value: 0,
@@ -124,11 +120,12 @@ function DateSelector({
       x: dateIndex * TIMELINE_ITEM_WIDTH,
       y: 0,
     });
-    setSelectedDate(moment(stateStartDate));
   }, [stateStartDate]);
 
   function updateStartDate(date: Date) {
     const time = date.getTime();
+    // This updates state because a useEffect in MapView updates the redux state
+    // TODO this is convoluted coupling, we should update state here if feasible.
     updateHistory('date', moment(time).format('YYYY-MM-DD'));
   }
 
@@ -208,7 +205,7 @@ function DateSelector({
 
           <DatePicker
             className={classes.datePickerInput}
-            selected={selectedDate.toDate()}
+            selected={moment(stateStartDate).toDate()}
             onChange={updateStartDate}
             maxDate={new Date()}
             todayButton="Today"
@@ -220,7 +217,6 @@ function DateSelector({
             includeDates={availableDates.map(
               d => new Date(d + USER_DATE_OFFSET),
             )}
-            ref={selectedDateRef}
           />
 
           <Hidden smUp>
@@ -360,7 +356,6 @@ const styles = (theme: Theme) =>
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
   availableDates?: number[];
-  selectedDateRef: React.RefObject<DatePicker>;
 }
 
 export default withStyles(styles)(DateSelector);

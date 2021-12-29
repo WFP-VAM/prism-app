@@ -59,6 +59,7 @@ const theme: any = createMuiTheme({
     MuiMenuItem: {
       root: {
         color: 'black',
+        paddingLeft: 25,
       },
     },
     MuiAccordion: {
@@ -81,7 +82,7 @@ const theme: any = createMuiTheme({
       },
       content: {
         '&$expanded': {
-          margin: '12px 0px', // keep height the same before/after epanded
+          margin: '12px 0px', // keep height the same before/after expanded
         },
       },
     },
@@ -90,6 +91,22 @@ const theme: any = createMuiTheme({
         backgroundColor: darkGreyBlue,
         opacity: 0.9,
         padding: 16,
+      },
+    },
+    // For <Select/> subheadings
+    MuiListSubheader: {
+      root: {
+        pointerEvents: 'none',
+        padding: 10,
+      },
+      sticky: {
+        backgroundColor: 'white',
+      },
+    },
+    MuiFormLabel: {
+      root: {
+        // Make form label white since we normally have a dark background.
+        color: 'white',
       },
     },
   },
