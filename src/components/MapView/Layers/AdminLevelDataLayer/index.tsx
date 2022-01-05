@@ -90,7 +90,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
 
   return (
     <GeoJSONLayer
-      before={`${boundaryId}-line`}
+      before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={features}
       fillPaint={fillPaintData}

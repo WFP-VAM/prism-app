@@ -39,7 +39,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
   return (
     <GeoJSONLayer
-      id={layer.id}
+      id={`layer-${layer.id}`}
       data={data}
       fillPaint={layer.styles.fill}
       linePaint={layer.styles.line}
