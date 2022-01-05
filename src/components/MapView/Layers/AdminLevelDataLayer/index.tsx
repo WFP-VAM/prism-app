@@ -78,15 +78,6 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     return null;
   }
 
-  if (
-    !map
-      ?.getStyle()
-      .layers?.map(l => l.id)
-      .includes(`${boundaryId}-line`)
-  ) {
-    return null;
-  }
-
   // We use the legend values from the config to define "intervals".
   const fillPaintData: MapboxGL.FillPaint = {
     'fill-opacity': layer.opacity || 0.3,
