@@ -44,10 +44,9 @@ import { Extent } from './Layers/raster-utils';
 import { useUrlHistory } from '../../utils/url-utils';
 
 import {
-  getBoundaryLayers,
-  getBoundaryLayerSingleton,
   LayerDefinitions,
   getDisplayBoundaryLayers,
+  getBoundaryLayerSingleton,
 } from '../../config/utils';
 
 import DateSelector from './DateSelector';

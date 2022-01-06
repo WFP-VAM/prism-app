@@ -173,8 +173,6 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
 }
 
 export function getBoundaryLayerSingleton(): BoundaryLayerProps {
-  console.log('Display Boundaries: ', getDisplayBoundaryLayers());
-  console.log('Default Boundary: ', getDisplayBoundaryLayers()[0]);
   return getDisplayBoundaryLayers()[0];
 }
 
