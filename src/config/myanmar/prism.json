@@ -14,6 +14,11 @@
     "longitude": 96.371,
     "zoom": 4.48
   },
+  "adminBoundaryDisplayOverrides": [
+    "admin_boundaries",
+    "district_admin_boundaries",
+    "state_admin_boundaries"
+  ],
   "serversUrls": {
     "wms": [
       "https://odc.ovio.org/wms",
@@ -23,11 +28,7 @@
   "categories": {
     "hazards": {
       "tropical_storms": ["adamts_buffers"],
-      "floods": [
-        "hydra_s1",
-        "hydra_s2",
-        "hydra_l8"
-      ],
+      "floods": ["hydra_s1", "hydra_s2", "hydra_l8"],
       "rainfall": [
         "rainfall_dekad",
         "rain_anomaly_dekad",
@@ -41,7 +42,11 @@
       "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
     },
     "vulnerability": {
-      "vulnerability_index": ["test_admin1_data", "multidimensional_disadvantage_index", "inform"],
+      "vulnerability_index": [
+        "test_admin1_data",
+        "multidimensional_disadvantage_index",
+        "inform"
+      ],
       "vulnerable_populations": [
         "age_dependency_ratio",
         "female_headed_hhs",

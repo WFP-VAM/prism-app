@@ -38,7 +38,6 @@
   "admin_boundaries": {
     "type": "boundary",
     "path": "../data/myanmar/admin_boundaries.json",
-    "primary": true,
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
     "admin_level_names": ["ST", "DT", "TS"],
@@ -101,7 +100,7 @@
       },
       {
         "value": 0.41,
-        "label": "Medium (0.41 to 0.6)",  
+        "label": "Medium (0.41 to 0.6)",
         "color": "#ffffbf"
       },
       {
@@ -258,8 +257,8 @@
     "legend": [
       { "label": "0-2%", "value": 0, "color": "#fee5d9" },
       { "label": "3-5%", "value": 3, "color": "#fcae91" },
-      { "label": "6-8%","value": 6, "color": "#fb6a4a" },
-      { "label": "9-11%","value": 9, "color": "#de2d26" },
+      { "label": "6-8%", "value": 6, "color": "#fb6a4a" },
+      { "label": "9-11%", "value": 9, "color": "#de2d26" },
       { "label": "12% or more", "value": 12, "color": "#a50f15" }
     ],
     "legend_text": "Prevalence of disability"
@@ -386,18 +385,18 @@
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      {"label": "-0", "color": "#ffffff", "alpha": 0},
-      {"label": "50 mm", "color": "#faf3d2"},
-      {"label": "100 mm", "color": "#dae3a1"},
-      {"label": "200 mm", "color": "#a0c787"},
-      {"label": "300 mm", "color": "#68ab79"},
-      {"label": "400 mm", "color": "#9beafa"},
-      {"label": "500 mm", "color": "#00b1de"},
-      {"label": "600 mm", "color": "#005ae6"},
-      {"label": "800 mm", "color": "#0000c8"},
-      {"label": "1000 mm", "color": "#a000fa"},
-      {"label": "1500 mm", "color": "#fa78fa"},
-      {"label": "> 1500 mm", "color": "#ffc4ee"}
+      { "label": "-0", "color": "#ffffff", "alpha": 0 },
+      { "label": "50 mm", "color": "#faf3d2" },
+      { "label": "100 mm", "color": "#dae3a1" },
+      { "label": "200 mm", "color": "#a0c787" },
+      { "label": "300 mm", "color": "#68ab79" },
+      { "label": "400 mm", "color": "#9beafa" },
+      { "label": "500 mm", "color": "#00b1de" },
+      { "label": "600 mm", "color": "#005ae6" },
+      { "label": "800 mm", "color": "#0000c8" },
+      { "label": "1000 mm", "color": "#a000fa" },
+      { "label": "1500 mm", "color": "#fa78fa" },
+      { "label": "> 1500 mm", "color": "#ffc4ee" }
     ]
   },
   "streak_dry_days": {

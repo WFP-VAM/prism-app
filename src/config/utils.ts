@@ -1,5 +1,5 @@
-import { camelCase, mapKeys } from 'lodash';
-import { rawLayers, rawTables } from '.';
+import { camelCase, mapKeys, get } from 'lodash';
+import { rawLayers, rawTables, appConfig } from '.';
 import {
   BoundaryLayerProps,
   checkRequiredKeys,
@@ -133,34 +133,49 @@ export function getBoundaryLayers(): BoundaryLayerProps[] {
   const boundaryLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
   );
-  if (boundaryLayers.length === 0) {
+
+  return boundaryLayers;
+}
+
+export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
+  const boundaryLayers = getBoundaryLayers();
+  const boundariesCount = boundaryLayers.length;
+
+  if (boundariesCount === 0) {
     throw new Error(
       'No boundary layer found. There should be at least one boundary layer defined in layers.json',
     );
   }
+
+  if (boundariesCount > 1) {
+    const adminOverrideNames: LayerKey[] = get(
+      appConfig,
+      'adminBoundaryDisplayOverrides',
+      [],
+    );
+
+    // transoformed overrides to mantain the order of boundaries
+    // since first layer in the list is defined as default
+    const adminOverrideLayers = adminOverrideNames.map(
+      id => boundaryLayers.filter(l => l.id === id)[0],
+    );
+
+    if (adminOverrideLayers.length === 0) {
+      throw new Error(
+        'Multiple boundary layers found. You must provide `adminBoundaryDisplayOverrides` in prism.json',
+      );
+    }
+
+    return adminOverrideLayers;
+  }
+
   return boundaryLayers;
 }
 
-export function getVisibleBoundaryLayers(): BoundaryLayerProps[] {
-  return getBoundaryLayers().filter(
-    l => l.visibility === true || l.visibility === undefined,
-  );
-}
-
 export function getBoundaryLayerSingleton(): BoundaryLayerProps {
-  const visibleBoundaryLayers = getVisibleBoundaryLayers();
-  const boundaryLayer =
-    visibleBoundaryLayers.length === 1
-      ? visibleBoundaryLayers[0]
-      : visibleBoundaryLayers.find(l => l.primary);
-
-  if (!boundaryLayer) {
-    throw new Error(
-      'No primary Layer found! There should be at least one layer defined or with primary set true in layers.json.',
-    );
-  }
-
-  return boundaryLayer;
+  console.log('Display Boundaries: ', getDisplayBoundaryLayers());
+  console.log('Default Boundary: ', getDisplayBoundaryLayers()[0]);
+  return getDisplayBoundaryLayers()[0];
 }
 
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {

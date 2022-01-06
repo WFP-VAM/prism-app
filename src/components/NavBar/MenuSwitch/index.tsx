@@ -24,7 +24,7 @@ import {
 } from '../../../context/mapStateSlice/selectors';
 import { useUrlHistory } from '../../../utils/url-utils';
 import {
-  getBoundaryLayers,
+  getDisplayBoundaryLayers,
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../config/utils';
@@ -65,8 +65,8 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
           const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
           dispatch(removeLayer(uniqueBoundaryLayer));
 
-          const boundaryLayers = getBoundaryLayers();
-          boundaryLayers.map(l => dispatch(addLayer(l)));
+          const displayBoundaryLayers = getDisplayBoundaryLayers();
+          displayBoundaryLayers.map(l => dispatch(addLayer(l)));
         }
       }
     }
