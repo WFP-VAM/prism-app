@@ -154,11 +154,23 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
       [],
     );
 
+    const invalidOverrides = adminOverrideNames.filter(
+      id => !boundaryLayers.map(l => l.id).includes(id),
+    );
+
+    if (invalidOverrides.length > 0) {
+      throw new Error(
+        'Some of `adminBoundaryDisplayOverrides` layer Ids are not valid. You must provide valid ids from `layers.json`',
+      );
+    }
+
     // transoformed overrides to mantain the order of boundaries
     // since first layer in the list is defined as default
     const adminOverrideLayers = adminOverrideNames.map(
       id => boundaryLayers.filter(l => l.id === id)[0],
     );
+
+    console.log('-> Overrides: ', adminOverrideLayers);
 
     if (adminOverrideLayers.length === 0) {
       throw new Error(
