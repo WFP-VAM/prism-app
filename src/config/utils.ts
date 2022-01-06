@@ -170,8 +170,6 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
       id => boundaryLayers.filter(l => l.id === id)[0],
     );
 
-    console.log('-> Overrides: ', adminOverrideLayers);
-
     if (adminOverrideLayers.length === 0) {
       throw new Error(
         'Multiple boundary layers found. You must provide `adminBoundaryDisplayOverrides` in prism.json',
