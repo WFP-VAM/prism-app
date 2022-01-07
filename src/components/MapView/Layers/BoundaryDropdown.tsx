@@ -13,19 +13,30 @@ import {
   Theme,
   Typography,
   useMediaQuery,
+  withStyles,
 } from '@material-ui/core';
 import { last, sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
+import { Feature } from 'geojson';
+import { multiPolygon, MultiPolygon, Polygon } from '@turf/helpers';
+import bbox from '@turf/bbox';
+import bboxPolygon from '@turf/bbox-polygon';
+import union from '@turf/union';
 import { useDispatch, useSelector } from 'react-redux';
-import { Search } from '@material-ui/icons';
+import { Search, CenterFocusWeak } from '@material-ui/icons';
 import { BoundaryLayerProps } from '../../../config/types';
+import { appConfig } from '../../../config';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
   setSelectedBoundaries as setSelectedBoundariesRedux,
 } from '../../../context/mapSelectionLayerStateSlice';
 import { getBoundaryLayerSingleton } from '../../../config/utils';
-import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
+import { Extent } from './raster-utils';
+import {
+  layerDataSelector,
+  mapSelector,
+} from '../../../context/mapStateSlice/selectors';
 import { LayerData } from '../../../context/layers/layer-data';
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -37,11 +48,30 @@ const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
     backgroundColor: theme.palette.grey[100],
   },
 }));
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   searchField: {
     '&>div': {
       color: 'black',
     },
+  },
+  dropdownMenu: {
+    backgroundColor: theme.palette.primary.main,
+    color: 'white',
+    display: 'inline-flex',
+    marginTop: '1em',
+    padding: '6px 16px',
+    borderRadius: '4px',
+    alignItems: 'center',
+    boxShadow:
+      '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+  },
+  formControl: {
+    width: '140px',
+    marginLeft: '10px',
+  },
+  icon: {
+    alignSelf: 'end',
+    marginBottom: '0.4em',
   },
 }));
 const TIMEOUT_ANIMATION_DELAY = 10;
@@ -163,11 +193,9 @@ function getCategories(
 function SimpleBoundaryDropdown({
   selectedBoundaries,
   setSelectedBoundaries,
+  labelMessage,
   ...rest
 }: BoundaryDropdownProps) {
-  const isMobile = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.only('xs'),
-  );
   const [search, setSearch] = useState('');
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
@@ -191,7 +219,7 @@ function SimpleBoundaryDropdown({
   // acts on the `value` prop, which we need to hide from <Select/> since this isn't a menu item.
   return (
     <FormControl {...rest}>
-      <InputLabel>{isMobile ? 'Tap' : 'Click'} the map to select</InputLabel>
+      <InputLabel>{labelMessage}</InputLabel>
       <Select
         multiple
         onClose={() => {
@@ -268,9 +296,10 @@ function SimpleBoundaryDropdown({
 }
 
 interface BoundaryDropdownProps {
-  className?: string;
+  className: string;
   selectedBoundaries: string[];
   setSelectedBoundaries: (boundaries: string[]) => void;
+  labelMessage?: string;
 }
 
 /**
@@ -280,8 +309,13 @@ function BoundaryDropdown({
   ...rest
 }: Omit<
   BoundaryDropdownProps,
-  'selectedBoundaries' | 'setSelectedBoundaries'
+  'selectedBoundaries' | 'setSelectedBoundaries' | 'labelMessage'
 >) {
+  const isMobile = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.only('xs'),
+  );
+  const labelMessage = `${isMobile ? 'Tap' : 'Click'} the map to select`;
+
   const dispatch = useDispatch();
   const selectedBoundaries = useSelector(getSelectedBoundaries);
   // toggle the selection mode as this component is created and destroyed.
@@ -299,8 +333,91 @@ function BoundaryDropdown({
       setSelectedBoundaries={newSelectedBoundaries => {
         dispatch(setSelectedBoundariesRedux(newSelectedBoundaries));
       }}
+      labelMessage={labelMessage}
     />
   );
 }
+
+export const SelectMenu = withStyles(() => {
+  return {
+    root: {
+      '& label': {
+        textTransform: 'uppercase',
+        letterSpacing: '3px',
+        fontSize: '11px',
+      },
+      '& svg': { color: 'white', fontSize: '1.25rem' },
+    },
+  };
+})(SimpleBoundaryDropdown);
+
+export const BoundaryDropdownMap = () => {
+  const map = useSelector(mapSelector);
+  const selectedBoundaries = useSelector(getSelectedBoundaries);
+  const dispatch = useDispatch();
+
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+  const { data } = boundaryLayerData || {};
+
+  const styles = useStyles();
+
+  if (!data || !map) {
+    return null;
+  }
+
+  return (
+    <div className={styles.dropdownMenu}>
+      <CenterFocusWeak fontSize="small" className={styles.icon} />
+      <SelectMenu
+        selectedBoundaries={selectedBoundaries}
+        labelMessage="Go to"
+        className={styles.formControl}
+        setSelectedBoundaries={newSelectedBoundaries => {
+          dispatch(setSelectedBoundariesRedux(newSelectedBoundaries));
+          if (newSelectedBoundaries.length === 0) {
+            const {
+              map: { latitude, longitude, zoom },
+            } = appConfig;
+
+            map.flyTo({ center: { lng: longitude, lat: latitude }, zoom });
+
+            return;
+          }
+
+          const geometries = data.features
+            .filter(f =>
+              newSelectedBoundaries.includes(
+                f.properties && f.properties[boundaryLayer.adminCode],
+              ),
+            )
+            .filter(f => f.geometry.type === 'MultiPolygon')
+            .map(f => f.geometry as MultiPolygon);
+
+          const bboxes = geometries.map(geom => {
+            const turfObj = multiPolygon(geom.coordinates);
+            const geomBbox = bbox(turfObj);
+
+            return geomBbox;
+          });
+
+          const bboxPolygons = bboxes.map(box => bboxPolygon(box));
+          const unionBbox = bboxPolygons.reduce((unionPolygon, polygon) => {
+            const unionObj = union(unionPolygon, polygon);
+            if (!unionObj) {
+              return unionPolygon;
+            }
+            return unionObj as Feature<Polygon>;
+          }, bboxPolygons[0]);
+
+          map.fitBounds(bbox(unionBbox) as Extent, {
+            padding: 30,
+          });
+        }}
+      />
+    </div>
+  );
+};
 
 export default BoundaryDropdown;
