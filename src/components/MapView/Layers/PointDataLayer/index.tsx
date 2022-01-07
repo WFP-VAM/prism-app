@@ -14,6 +14,7 @@ import {
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
+import { getBoundaryLayerSingleton } from '../../../../config/utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -44,10 +45,11 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       stops: legendToStops(layer.legend),
     },
   };
+  const boundaryId = getBoundaryLayerSingleton().id;
 
   return (
     <GeoJSONLayer
-      before="admin_boundaries-line"
+      before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={data}
       circleLayout={circleLayout}

@@ -4,6 +4,7 @@ import { Layer, Source } from 'react-mapbox-gl';
 import { WMSLayerProps } from '../../../../config/types';
 import { getWMSUrl } from '../raster-utils';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
+import { getBoundaryLayerSingleton } from '../../../../config/utils';
 
 function WMSLayers({
   layer: {
@@ -16,6 +17,8 @@ function WMSLayers({
   },
 }: LayersProps) {
   const selectedDate = useDefaultDate(serverLayerName, group);
+
+  const boundaryId = getBoundaryLayerSingleton().id;
 
   return (
     <>
@@ -36,7 +39,7 @@ function WMSLayers({
       />
 
       <Layer
-        before="admin_boundaries-line"
+        before={`layer-${boundaryId}-line`}
         type="raster"
         id={`layer-${id}`}
         sourceId={`source-${id}`}

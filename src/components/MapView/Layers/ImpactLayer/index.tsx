@@ -7,7 +7,10 @@ import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
 import { getExtent, Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { ImpactLayerProps } from '../../../../config/types';
-import { LayerDefinitions } from '../../../../config/utils';
+import {
+  LayerDefinitions,
+  getBoundaryLayerSingleton,
+} from '../../../../config/utils';
 import {
   LayerData,
   loadLayerData,
@@ -84,10 +87,11 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
   const operation = layer.operation || 'median';
   const hazardTitle = `${hazardLayerDef.title} (${operation})`;
+  const boundaryId = getBoundaryLayerSingleton().id;
 
   return (
     <GeoJSONLayer
-      before="admin_boundaries-line"
+      before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={noMatchingDistricts ? boundaries : impactFeatures}
       linePaint={linePaint}

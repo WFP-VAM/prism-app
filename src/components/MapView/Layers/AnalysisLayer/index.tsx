@@ -14,6 +14,7 @@ import {
   BaselineLayerResult,
   ExposedPopulationResult,
 } from '../../../../utils/analysis-utils';
+import { getBoundaryLayerSingleton } from '../../../../config/utils';
 
 function AnalysisLayer() {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
@@ -46,10 +47,11 @@ function AnalysisLayer() {
     analysisData instanceof ExposedPopulationResult
       ? (analysisData.statistic as string)
       : 'data';
+  const boundaryId = getBoundaryLayerSingleton().id;
 
   return (
     <GeoJSONLayer
-      before="admin_boundaries-line"
+      before={`layer-${boundaryId}-line`}
       id="layer-analysis"
       data={analysisData.featureCollection}
       fillPaint={fillPaintData(analysisData.legend, property)}
