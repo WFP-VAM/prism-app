@@ -46,10 +46,10 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
 
     if (checked) {
       updateHistory(urlLayerKey, layer.id);
-      const primary = getBoundaryLayerSingleton();
+      const defaultBoundary = getBoundaryLayerSingleton();
       if (!('boundary' in layer)) {
-        if (!isLayerOnView(map, primary.id)) {
-          dispatch(addLayer(primary));
+        if (!isLayerOnView(map, defaultBoundary.id)) {
+          dispatch(addLayer(defaultBoundary));
         }
       }
     } else {
@@ -61,12 +61,24 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
       // default boundaries
       if ('boundary' in layer) {
         const boundaryId = layer.boundary || '';
-        if (Object.keys(LayerDefinitions).includes(boundaryId)) {
-          const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
-          dispatch(removeLayer(uniqueBoundaryLayer));
 
+        if (Object.keys(LayerDefinitions).includes(boundaryId)) {
           const displayBoundaryLayers = getDisplayBoundaryLayers();
-          displayBoundaryLayers.map(l => dispatch(addLayer(l)));
+          const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
+
+          if (
+            !displayBoundaryLayers
+              .map(l => l.id)
+              .includes(uniqueBoundaryLayer.id)
+          ) {
+            dispatch(removeLayer(uniqueBoundaryLayer));
+          }
+
+          displayBoundaryLayers.forEach(l => {
+            if (!isLayerOnView(map, l.id)) {
+              dispatch(addLayer(l));
+            }
+          });
         }
       }
     }
