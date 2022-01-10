@@ -5,7 +5,7 @@ import { Layer, Source } from 'react-mapbox-gl';
 import { WMSLayerProps } from '../../../../config/types';
 import { getWMSUrl } from '../raster-utils';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
-import { onViewBoundary } from '../../../../utils/map-utils';
+import { boundaryOnView } from '../../../../utils/map-utils';
 import { mapSelector } from '../../../../context/mapStateSlice/selectors';
 
 function WMSLayers({
@@ -20,7 +20,7 @@ function WMSLayers({
 }: LayersProps) {
   const selectedDate = useDefaultDate(serverLayerName, group);
   const map = useSelector(mapSelector);
-  const boundary = onViewBoundary(map);
+  const boundary = boundaryOnView(map);
 
   return (
     <>

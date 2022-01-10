@@ -25,6 +25,7 @@ import {
 import { useUrlHistory } from '../../../utils/url-utils';
 import {
   getDisplayBoundaryLayers,
+  getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../config/utils';
 import { isLayerOnView } from '../../../utils/map-utils';
@@ -38,19 +39,23 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const toggleLayerValue = (layer: LayerType) => (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
     const { checked } = event.target;
 
     const urlLayerKey =
-      layer.type === 'admin_level_data' ? 'baselineLayerId' : 'hazardLayerId';
+      layer.type === ADMIN_LEVEL_DATA_LAYER_KEY
+        ? 'baselineLayerId'
+        : 'hazardLayerId';
 
     if (checked) {
       updateHistory(urlLayerKey, layer.id);
-      /* if (!('boundary' in layer)) {
-       *   console.log('-> ', layer);
-       *   if (!isLayerOnView(map, defaultBoundary.id)) {
-       *     dispatch(addLayer(defaultBoundary));
-       *   }
-       * } */
+
+      const defaultBoundary = getBoundaryLayerSingleton();
+      if (!('boundary' in layer) && layer.type === ADMIN_LEVEL_DATA_LAYER_KEY) {
+        if (!isLayerOnView(map, defaultBoundary.id)) {
+          dispatch(addLayer(defaultBoundary));
+        }
+      }
     } else {
       removeKeyFromUrl(urlLayerKey);
       dispatch(removeLayer(layer));

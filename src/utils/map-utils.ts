@@ -9,7 +9,7 @@ export function isLayerOnView(map: MapBoxMap | undefined, layerId: LayerKey) {
     .includes(`layer-${layerId}`);
 }
 
-export function onViewBoundary(map: MapBoxMap | undefined): BoundaryLayerProps {
+export function boundaryOnView(map: MapBoxMap | undefined): BoundaryLayerProps {
   const boundaries = getBoundaryLayers();
   const onViewLayerKeys = map
     ?.getStyle()
