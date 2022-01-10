@@ -25,7 +25,6 @@ import {
 import { useUrlHistory } from '../../../utils/url-utils';
 import {
   getDisplayBoundaryLayers,
-  getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../config/utils';
 import { isLayerOnView } from '../../../utils/map-utils';
@@ -46,12 +45,12 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
 
     if (checked) {
       updateHistory(urlLayerKey, layer.id);
-      const defaultBoundary = getBoundaryLayerSingleton();
-      if (!('boundary' in layer)) {
-        if (!isLayerOnView(map, defaultBoundary.id)) {
-          dispatch(addLayer(defaultBoundary));
-        }
-      }
+      /* if (!('boundary' in layer)) {
+       *   console.log('-> ', layer);
+       *   if (!isLayerOnView(map, defaultBoundary.id)) {
+       *     dispatch(addLayer(defaultBoundary));
+       *   }
+       * } */
     } else {
       removeKeyFromUrl(urlLayerKey);
       dispatch(removeLayer(layer));

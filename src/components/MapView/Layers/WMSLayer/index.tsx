@@ -1,10 +1,12 @@
 import React from 'react';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 import { Layer, Source } from 'react-mapbox-gl';
 import { WMSLayerProps } from '../../../../config/types';
 import { getWMSUrl } from '../raster-utils';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
-import { getBoundaryLayerSingleton } from '../../../../config/utils';
+import { onViewBoundary } from '../../../../utils/map-utils';
+import { mapSelector } from '../../../../context/mapStateSlice/selectors';
 
 function WMSLayers({
   layer: {
@@ -17,8 +19,8 @@ function WMSLayers({
   },
 }: LayersProps) {
   const selectedDate = useDefaultDate(serverLayerName, group);
-
-  const boundaryId = getBoundaryLayerSingleton().id;
+  const map = useSelector(mapSelector);
+  const boundary = onViewBoundary(map);
 
   return (
     <>
@@ -39,7 +41,7 @@ function WMSLayers({
       />
 
       <Layer
-        before={`layer-${boundaryId}-line`}
+        before={boundary && `layer-${boundary.id}-line`}
         type="raster"
         id={`layer-${id}`}
         sourceId={`source-${id}`}

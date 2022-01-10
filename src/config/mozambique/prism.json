@@ -9,6 +9,7 @@
     "tropical_storms": "icon_tropical_storm.png",
     "vulnerability": "icon_vulnerable.png"
   },
+  "adminBoundaryDisplayOverrides": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
     "wms": [
       "https://odc.ovio.org/wms",
@@ -40,10 +41,7 @@
         "rain_anomaly_9month",
         "rain_anomaly_1year"
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "heavy_rain": [
         "days_heavy_rain",
         "days_intense_rain",
@@ -56,14 +54,19 @@
     },
     "temperature": {
       "air_temperature": ["ast_max", "ast_max_anomaly"],
-      "land_surface_temperature": ["lst_daytime_blended", "lst_day_anomaly_blended", "lst_daytime_5", "lst_day_anomaly_5"]
+      "land_surface_temperature": [
+        "lst_daytime_blended",
+        "lst_day_anomaly_blended",
+        "lst_daytime_5",
+        "lst_day_anomaly_5"
+      ]
     },
     "tropical_storms": {
       "tropical_storms": ["adamts_buffers"]
     },
     "vulnerability": {
       "food_insecurity": ["ipc_phase_12_2020"],
-      "poverty": ["mpi"]   
+      "poverty": ["mpi"]
     }
   }
 }
