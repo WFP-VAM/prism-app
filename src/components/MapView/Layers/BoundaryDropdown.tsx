@@ -59,11 +59,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: 'white',
     display: 'inline-flex',
     marginTop: '1em',
-    padding: '6px 16px',
+    padding: theme.spacing(1, 2.66),
     borderRadius: '4px',
     alignItems: 'center',
-    boxShadow:
-      '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+    boxShadow: theme.shadows[2],
   },
   formControl: {
     width: '140px',
@@ -345,8 +344,12 @@ export const SelectMenu = withStyles(() => {
         textTransform: 'uppercase',
         letterSpacing: '3px',
         fontSize: '11px',
+        position: 'absolute',
+        top: '-13px',
       },
       '& svg': { color: 'white', fontSize: '1.25rem' },
+      '& .MuiInput-root': { margin: 0 },
+      '& .MuiInputLabel-shrink': { display: 'none' },
     },
   };
 })(SimpleBoundaryDropdown);

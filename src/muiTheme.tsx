@@ -22,6 +22,7 @@ const theme: any = createMuiTheme({
       500: lightGray,
     },
   },
+  spacing: 6,
   overrides: {
     MuiToolbar: {
       dense: {
