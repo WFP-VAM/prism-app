@@ -114,7 +114,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     });
     setDateRange(range);
     const dateIndex = findIndex(range, date => {
-      return date.label === moment(stateStartDate).format('DD MMM YYYY');
+      return date.label === moment(stateStartDate).format('MMM DD YYYY');
     });
     setPointerPosition({
       x: dateIndex * TIMELINE_ITEM_WIDTH,
