@@ -337,7 +337,7 @@ function BoundaryDropdown({
   );
 }
 
-export const SelectMenu = withStyles(() => ({
+export const ButtonStyleBoundaryDropdown = withStyles(() => ({
   root: {
     '& label': {
       textTransform: 'uppercase',
@@ -352,7 +352,7 @@ export const SelectMenu = withStyles(() => ({
   },
 }))(SimpleBoundaryDropdown);
 
-export const BoundaryDropdownMap = () => {
+export const GotoBoundaryDropdown = () => {
   const map = useSelector(mapSelector);
 
   const [region, setRegion] = useState<string[]>([]);
@@ -371,7 +371,7 @@ export const BoundaryDropdownMap = () => {
   return (
     <div className={styles.dropdownMenu}>
       <CenterFocusWeak fontSize="small" className={styles.icon} />
-      <SelectMenu
+      <ButtonStyleBoundaryDropdown
         selectedBoundaries={region}
         labelMessage="Go to"
         className={styles.formControl}
