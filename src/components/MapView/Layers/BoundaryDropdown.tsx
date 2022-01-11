@@ -356,8 +356,8 @@ export const SelectMenu = withStyles(() => {
 
 export const BoundaryDropdownMap = () => {
   const map = useSelector(mapSelector);
-  const selectedBoundaries = useSelector(getSelectedBoundaries);
-  const dispatch = useDispatch();
+
+  const [region, setRegion] = useState<string[]>([]);
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -374,11 +374,16 @@ export const BoundaryDropdownMap = () => {
     <div className={styles.dropdownMenu}>
       <CenterFocusWeak fontSize="small" className={styles.icon} />
       <SelectMenu
-        selectedBoundaries={selectedBoundaries}
+        selectedBoundaries={region}
         labelMessage="Go to"
         className={styles.formControl}
         setSelectedBoundaries={newSelectedBoundaries => {
-          dispatch(setSelectedBoundariesRedux(newSelectedBoundaries));
+          setRegion(
+            newSelectedBoundaries.length > 2
+              ? newSelectedBoundaries
+              : newSelectedBoundaries.slice(-1),
+          );
+
           if (newSelectedBoundaries.length === 0) {
             const {
               map: { latitude, longitude, zoom },
