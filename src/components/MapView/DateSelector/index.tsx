@@ -107,7 +107,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     ).map(date => {
       return {
         value: date.valueOf(),
-        label: date.format('DD MMM YYYY'),
+        label: date.format('MMM DD YYYY'),
         month: date.format('MMM YYYY'),
         isFirstDay: date.date() === date.startOf('month').date(),
       };
