@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Map as MapBoxMap } from 'mapbox-gl';
 import {
   Box,
   Button,
@@ -36,6 +37,24 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const dispatch = useDispatch();
   const { updateHistory, removeKeyFromUrl } = useUrlHistory();
 
+  const safeDispatchAddLayer = (
+    _map: MapBoxMap | undefined,
+    layer: LayerType,
+  ) => {
+    if (!isLayerOnView(_map, layer.id)) {
+      dispatch(addLayer(layer));
+    }
+  };
+
+  const safeDispatchRemoveLayer = (
+    _map: MapBoxMap | undefined,
+    layer: LayerType,
+  ) => {
+    if (isLayerOnView(_map, layer.id)) {
+      dispatch(removeLayer(layer));
+    }
+  };
+
   const toggleLayerValue = (layer: LayerType) => (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -52,13 +71,11 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
 
       const defaultBoundary = getBoundaryLayerSingleton();
       if (!('boundary' in layer) && layer.type === ADMIN_LEVEL_DATA_LAYER_KEY) {
-        if (!isLayerOnView(map, defaultBoundary.id)) {
-          dispatch(addLayer(defaultBoundary));
-        }
+        safeDispatchAddLayer(map, defaultBoundary);
       }
     } else {
       removeKeyFromUrl(urlLayerKey);
-      dispatch(removeLayer(layer));
+      safeDispatchRemoveLayer(map, layer);
 
       // For admin boundary layers with boundary property
       // we have to de-activate the unique boundary and re-activate
@@ -75,13 +92,11 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
               .map(l => l.id)
               .includes(uniqueBoundaryLayer.id)
           ) {
-            dispatch(removeLayer(uniqueBoundaryLayer));
+            safeDispatchRemoveLayer(map, uniqueBoundaryLayer);
           }
 
           displayBoundaryLayers.forEach(l => {
-            if (!isLayerOnView(map, l.id)) {
-              dispatch(addLayer(l));
-            }
+            safeDispatchAddLayer(map, l);
           });
         }
       }

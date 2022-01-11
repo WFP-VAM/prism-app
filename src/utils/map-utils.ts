@@ -2,6 +2,11 @@ import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerKey, BoundaryLayerProps } from '../config/types';
 import { getBoundaryLayers } from '../config/utils';
 
+/**
+ * Checks weither given layer is on view
+ * @param map the MapBox Map object
+ * @param layerId the LayerKey
+ */
 export function isLayerOnView(map: MapBoxMap | undefined, layerId: LayerKey) {
   return map
     ?.getStyle()
