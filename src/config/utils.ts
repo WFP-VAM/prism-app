@@ -147,6 +147,8 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
     );
   }
 
+  // check how many boundary layers defined in `layers.json`
+  // if they are more than one, use overrides defined in `prism.json`
   if (boundariesCount > 1) {
     const adminOverrideNames: LayerKey[] = get(
       appConfig,
@@ -164,8 +166,9 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
       );
     }
 
-    // transoformed overrides to mantain the order of boundaries
-    // since first layer in the list is defined as default
+    // get override layers from override names without
+    // disrupting the order of which they are defined
+    // since the first is considered as default
     const adminOverrideLayers = adminOverrideNames.map(
       id => boundaryLayers.filter(l => l.id === id)[0],
     );

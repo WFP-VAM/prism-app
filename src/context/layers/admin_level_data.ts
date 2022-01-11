@@ -30,6 +30,9 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
   const { path, adminCode, dataField, featureInfoProps, boundary } = layer;
   const { getState } = api;
 
+  // check unique boundary layer presence into this layer
+  // use the boundary once available or
+  // use the default boundary singleton instead
   const adminBoundaryLayer =
     boundary !== undefined
       ? (LayerDefinitions[boundary as LayerKey] as BoundaryLayerProps)

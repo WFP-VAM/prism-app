@@ -9,7 +9,13 @@ export function isLayerOnView(map: MapBoxMap | undefined, layerId: LayerKey) {
     .includes(`layer-${layerId}`);
 }
 
-export function boundaryOnView(map: MapBoxMap | undefined): BoundaryLayerProps {
+/**
+ * Get all boundaries already on the map
+ * @param map the MapBox Map object
+ */
+export function boundariesOnView(
+  map: MapBoxMap | undefined,
+): BoundaryLayerProps[] {
   const boundaries = getBoundaryLayers();
   const onViewLayerKeys = map
     ?.getStyle()
@@ -18,5 +24,5 @@ export function boundaryOnView(map: MapBoxMap | undefined): BoundaryLayerProps {
     .map(k => k && k.toString().split('layer-')[1]);
   return boundaries.filter(
     b => onViewLayerKeys && onViewLayerKeys.includes(b.id),
-  )[0];
+  );
 }
