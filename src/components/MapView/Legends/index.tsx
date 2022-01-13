@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -193,6 +193,13 @@ function LegendItem({
   const map = useSelector(mapSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const dispatch = useDispatch();
+  useEffect(() => {
+    // should this be here? Or somewhere more related to analysis?
+    if (analysisResult instanceof ExposedPopulationResult) {
+      const tableData = convertToTableData(analysisResult);
+      dispatch(addTableData(tableData));
+    }
+  }, [analysisResult, dispatch]);
 
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
@@ -229,10 +236,15 @@ function LegendItem({
     }
   };
 
-  if (analysisResult instanceof ExposedPopulationResult) {
-    const tableData = convertToTableData(analysisResult);
-    dispatch(addTableData(tableData));
-  }
+  const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
+    if (typeof label === 'string') {
+      return label;
+    }
+    if (typeof value === 'number') {
+      return Math.round(value).toLocaleString('en-US');
+    }
+    return value;
+  };
 
   return (
     <ListItem disableGutters dense>
@@ -262,15 +274,11 @@ function LegendItem({
               {legendUrl ? (
                 <img src={legendUrl} alt={title} />
               ) : (
-                legend.map(({ value, color }: LegendDefinitionItem) => (
+                legend.map((item: LegendDefinitionItem) => (
                   <ColorIndicator
-                    key={value}
-                    value={
-                      typeof value === 'number'
-                        ? Math.round(value).toLocaleString('en-US')
-                        : value
-                    }
-                    color={color as string}
+                    key={item.value}
+                    value={getLegendItemLabel(item)}
+                    color={item.color as string}
                     opacity={opacity as number}
                   />
                 ))

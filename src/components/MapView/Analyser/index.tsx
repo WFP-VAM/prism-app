@@ -202,7 +202,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   type="wms"
                   value={hazardLayerId}
                   setValue={setHazardLayerId}
-                  title="Hazard Layer"
                   className={classes.selector}
                   placeholder="Choose hazard layer"
                 />
@@ -226,7 +225,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   type="admin_level_data"
                   value={baselineLayerId}
                   setValue={setBaselineLayerId}
-                  title="Baseline Layer"
                   className={classes.selector}
                   placeholder="Choose baseline layer"
                 />

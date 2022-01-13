@@ -34,6 +34,8 @@ import {
 
 import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
 
+import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
+
 import { rbdConfig, rbdRawLayers, rbdRawTables } from './rbd';
 
 import {
@@ -47,20 +49,6 @@ import {
   zimbabweRawLayers,
   zimbabweRawTables,
 } from './zimbabwe';
-
-type Country =
-  | 'cambodia'
-  | 'global'
-  | 'indonesia'
-  | 'kyrgyzstan'
-  | 'mongolia'
-  | 'mozambique'
-  | 'myanmar'
-  | 'rbd'
-  | 'tajikistan'
-  | 'zimbabwe';
-
-const DEFAULT: Country = 'myanmar';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
@@ -109,11 +97,17 @@ const configMap = {
     rawTables: myanmarRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mmr_admin_boundaries.json`,
   },
+  namibia: {
+    appConfig: namibiaConfig,
+    rawLayers: namibiaRawLayers,
+    rawTables: namibiaRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/nam_admin2.json`,
+  },
   rbd: {
     appConfig: rbdConfig,
     rawLayers: rbdRawLayers,
     rawTables: rbdRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/rbd_admin_boundaries.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_mar2021_projected_jun2021_simple.json`,
   },
   tajikistan: {
     appConfig: tajikistanConfig,
@@ -130,10 +124,13 @@ const configMap = {
   },
 } as const;
 
+type Country = keyof typeof configMap;
+
+const DEFAULT: Country = 'myanmar';
+
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
-const safeCountry = (COUNTRY && has(configMap, COUNTRY)
-  ? COUNTRY
-  : DEFAULT) as Country;
+const safeCountry =
+  COUNTRY && has(configMap, COUNTRY) ? (COUNTRY as Country) : DEFAULT;
 
 const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
   safeCountry
