@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { showPopup } from '../../../../context/tooltipStateSlice';
+import { showPopup, hidePopup } from '../../../../context/tooltipStateSlice';
 import { BoundaryLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import {
@@ -29,15 +29,22 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
   }
 
-  const onClickFunc = (evt: any) => {
+  const onHoverHandler = (evt: any) => {
+    dispatch(hidePopup());
     const coordinates = evt.lngLat;
-
     const { properties } = evt.features[0];
+
+    onToggleHover('pointer', evt.target);
 
     const locationName = layer.adminLevelNames
       .map(level => get(properties, level, '') as string)
       .join(', ');
+
     dispatch(showPopup({ coordinates, locationName }));
+  };
+
+  const onClickFunc = (evt: any) => {
+    const { properties } = evt.features[0];
 
     const datasetParams: DatasetParams = {
       id: properties[layer.adminCode],
@@ -45,6 +52,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
     };
 
     dispatch(loadDataset(datasetParams));
+
     // send the selection to the map selection layer. No-op if selection mode isn't on.
     dispatch(
       toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),
@@ -57,7 +65,11 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       data={data}
       fillPaint={layer.styles.fill}
       linePaint={layer.styles.line}
-      fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
+      fillOnMouseMove={
+        layer.id === 'admin_boundaries'
+          ? (evt: any) => onHoverHandler(evt)
+          : undefined
+      }
       fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
       fillOnClick={layer.id === 'admin_boundaries' ? onClickFunc : undefined}
     />
