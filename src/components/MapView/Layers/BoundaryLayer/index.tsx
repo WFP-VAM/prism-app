@@ -11,6 +11,7 @@ import {
   DatasetParams,
 } from '../../../../context/layers/boundary';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -44,6 +45,10 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
     };
 
     dispatch(loadDataset(datasetParams));
+    // send the selection to the map selection layer. No-op if selection mode isn't on.
+    dispatch(
+      toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),
+    );
   };
 
   return (

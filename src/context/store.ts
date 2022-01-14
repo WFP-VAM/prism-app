@@ -3,7 +3,6 @@ import {
   configureStore,
   getDefaultMiddleware,
 } from '@reduxjs/toolkit';
-
 import mapStateReduce from './mapStateSlice';
 import serverStateReduce from './serverStateSlice';
 import tableStateReduce from './tableStateSlice';
@@ -11,7 +10,8 @@ import tooltipStateReduce from './tooltipStateSlice';
 import notificationStateReduce, {
   errorToNotificationMiddleware,
 } from './notificationStateSlice';
-import analysisResultStateSlice from './analysisResultStateSlice';
+import analysisResultStateReduce from './analysisResultStateSlice';
+import mapSelectionLayerStateReduce from './mapSelectionLayerStateSlice';
 import datasetResultStateReduce from './layers/boundary';
 
 const reducer = combineReducers({
@@ -19,16 +19,17 @@ const reducer = combineReducers({
   serverState: serverStateReduce,
   tableState: tableStateReduce,
   tooltipState: tooltipStateReduce,
-  analysisResultState: analysisResultStateSlice,
+  analysisResultState: analysisResultStateReduce,
   notificationState: notificationStateReduce,
+  mapSelectionLayerStateSlice: mapSelectionLayerStateReduce,
   datasetState: datasetResultStateReduce,
 });
 
 export const store = configureStore({
   reducer,
-  // TODO: Instead of snoozing this check, we might want to
-  // serialize the state
   middleware: getDefaultMiddleware({
+    // TODO: Instead of snoozing this check, we might want to
+    // serialize the state
     serializableCheck: false,
     immutableCheck: {
       ignoredPaths: ['mapState.layersData', 'analysisResultState.result'],
