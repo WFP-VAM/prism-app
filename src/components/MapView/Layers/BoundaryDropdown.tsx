@@ -227,7 +227,8 @@ function SimpleBoundaryDropdown({
           setTimeout(() => setSearch(''), TIMEOUT_ANIMATION_DELAY);
         }}
         value={selectedBoundaries}
-        onChange={e => {
+        // Current mui version does not have SelectChangeEvent<T>. Using any instead.
+        onChange={(e: any) => {
           // do nothing if value is invalid
           // This happens when you click list subheadings.
           if (
@@ -236,8 +237,10 @@ function SimpleBoundaryDropdown({
           ) {
             return;
           }
+
           setSelectedBoundaries(
             Array.isArray(e.target.value) ? e.target.value : [],
+            e.shiftKey,
           );
         }}
       >
@@ -273,6 +276,7 @@ function SimpleBoundaryDropdown({
                           val => !categoryValues.includes(val),
                         )
                       : [...selectedBoundaries, ...categoryValues],
+                    true,
                   );
                 }}
               >
@@ -297,7 +301,7 @@ function SimpleBoundaryDropdown({
 interface BoundaryDropdownProps {
   className: string;
   selectedBoundaries: string[];
-  setSelectedBoundaries: (boundaries: string[]) => void;
+  setSelectedBoundaries: (boundaries: string[], appendMany?: boolean) => void;
   labelMessage?: string;
 }
 
@@ -355,7 +359,7 @@ export const ButtonStyleBoundaryDropdown = withStyles(() => ({
 export const GotoBoundaryDropdown = () => {
   const map = useSelector(mapSelector);
 
-  const [region, setRegion] = useState<string[]>([]);
+  const [boundaries, setBoundaries] = useState<string[]>([]);
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -372,15 +376,17 @@ export const GotoBoundaryDropdown = () => {
     <div className={styles.dropdownMenu}>
       <CenterFocusWeak fontSize="small" className={styles.icon} />
       <ButtonStyleBoundaryDropdown
-        selectedBoundaries={region}
+        selectedBoundaries={boundaries}
         labelMessage="Go to"
         className={styles.formControl}
-        setSelectedBoundaries={newSelectedBoundaries => {
-          setRegion(
-            newSelectedBoundaries.length > 2
-              ? newSelectedBoundaries
-              : newSelectedBoundaries.slice(-1),
-          );
+        setSelectedBoundaries={(newSelectedBoundaries, appendMany) => {
+          setBoundaries(() => {
+            if (appendMany === true) {
+              return newSelectedBoundaries;
+            }
+
+            return newSelectedBoundaries.slice(-1);
+          });
 
           if (newSelectedBoundaries.length === 0) {
             const {
