@@ -8,6 +8,7 @@ import { BoundaryLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
+import { isPrimaryBoundaryLayer } from '../../../../config/utils';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -25,6 +26,8 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
   }
 
+  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+
   const onClickFunc = (evt: any) => {
     const coordinates = evt.lngLat;
     const locationName = layer.adminLevelNames
@@ -37,15 +40,28 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
     );
   };
 
+  // Only use mouse effects and click effects on the main layer.
+  const { fillOnMouseEnter, fillOnMouseLeave, fillOnClick } = isPrimaryLayer
+    ? {
+        fillOnMouseEnter: (evt: any) => onToggleHover('pointer', evt.target),
+        fillOnMouseLeave: (evt: any) => onToggleHover('', evt.target),
+        fillOnClick: onClickFunc,
+      }
+    : {
+        fillOnMouseEnter: undefined,
+        fillOnMouseLeave: undefined,
+        fillOnClick: undefined,
+      };
+
   return (
     <GeoJSONLayer
       id={`layer-${layer.id}`}
       data={data}
       fillPaint={layer.styles.fill}
       linePaint={layer.styles.line}
-      fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
-      fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
-      fillOnClick={onClickFunc}
+      fillOnMouseEnter={fillOnMouseEnter}
+      fillOnMouseLeave={fillOnMouseLeave}
+      fillOnClick={fillOnClick}
     />
   );
 }

@@ -49,7 +49,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     if ('boundary' in layer) {
       if (Object.keys(LayerDefinitions).includes(boundaryId)) {
         boundaryLayers.map(l => dispatch(removeLayer(l)));
-        dispatch(addLayer(boundaryLayer));
+        dispatch(addLayer({ ...boundaryLayer, isPrimary: true }));
 
         // load unique boundary only once
         // to avoid double loading which proven to be performance issue

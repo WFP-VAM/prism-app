@@ -189,6 +189,10 @@ export function getBoundaryLayerSingleton(): BoundaryLayerProps {
   return getDisplayBoundaryLayers()[0];
 }
 
+export const isPrimaryBoundaryLayer = (layer: BoundaryLayerProps) =>
+  (layer.type === 'boundary' && layer.isPrimary) ||
+  layer.id === getBoundaryLayerSingleton().id;
+
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
 }
