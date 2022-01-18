@@ -193,6 +193,7 @@ function SimpleBoundaryDropdown({
   selectedBoundaries,
   setSelectedBoundaries,
   labelMessage,
+  selectAll,
   ...rest
 }: BoundaryDropdownProps) {
   const [search, setSearch] = useState('');
@@ -245,7 +246,7 @@ function SimpleBoundaryDropdown({
         }}
       >
         <SearchField search={search} setSearch={setSearch} />
-        {!search && (
+        {!search && selectAll && (
           <MenuItem onClick={selectOrDeselectAll}>
             {selectedBoundaries.length === 0 ? 'Select All' : 'Deselect All'}
           </MenuItem>
@@ -303,6 +304,7 @@ interface BoundaryDropdownProps {
   selectedBoundaries: string[];
   setSelectedBoundaries: (boundaries: string[], appendMany?: boolean) => void;
   labelMessage?: string;
+  selectAll: boolean;
 }
 
 /**
@@ -312,7 +314,7 @@ function BoundaryDropdown({
   ...rest
 }: Omit<
   BoundaryDropdownProps,
-  'selectedBoundaries' | 'setSelectedBoundaries' | 'labelMessage'
+  'selectedBoundaries' | 'setSelectedBoundaries' | 'labelMessage' | 'selectAll'
 >) {
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.only('xs'),
@@ -337,6 +339,7 @@ function BoundaryDropdown({
         dispatch(setSelectedBoundariesRedux(newSelectedBoundaries));
       }}
       labelMessage={labelMessage}
+      selectAll
     />
   );
 }
@@ -377,6 +380,7 @@ export const GotoBoundaryDropdown = () => {
       <CenterFocusWeak fontSize="small" className={styles.icon} />
       <ButtonStyleBoundaryDropdown
         selectedBoundaries={boundaries}
+        selectAll={false}
         labelMessage="Go to"
         className={styles.formControl}
         setSelectedBoundaries={(newSelectedBoundaries, appendMany) => {
