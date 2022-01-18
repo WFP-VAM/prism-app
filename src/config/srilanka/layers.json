@@ -86,7 +86,7 @@
       ]
     },
     "rainfall_agg_month": {
-      "title": "1-month rainfall aggregate",
+      "title": "1-month rainfall aggregate (mm)",
       "type": "wms",
       "server_layer_name": "r1h_dekad",
       "base_url": "https://odc.ovio.org/",
@@ -109,6 +109,110 @@
         {"value": "1000", "color": "#a000fa"},
         {"value": "1500", "color": "#fa78fa"},
         {"value": "> 1500", "color": "#ffc4ee"}
+      ]
+    },
+    "rainfall_agg_3month": {
+      "title": "3-month rainfall aggregate (mm)",
+      "type": "wms",
+      "server_layer_name": "r3h_dekad",
+      "additional_query_params": {
+        "styles": "rfh_800"
+      },  
+      "base_url": "https://odc.ovio.org/",
+      "date_interval": "days",
+      "opacity": 0.7,
+      "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
+      "legend": [
+        {"value": "-0", "color": "#ffffff", "alpha": "0"},
+        { "value": "50", "color": "#faf3d2" },
+        { "value": "100", "color": "#dae3a1" },
+        { "value": "150", "color": "#a0c787" },
+        { "value": "200", "color": "#68ab79" },
+        { "value": "250", "color": "#9beafa" },
+        { "value": "300", "color": "#00b1de" },
+        { "value": "400", "color": "#005ae6" },
+        { "value": "500", "color": "#0000c8" },
+        { "value": "600", "color": "#a000fa" },
+        { "value": "800", "color": "#fa78fa" },
+        { "value": "> 800", "color": "#ffc4ee" }
+      ]
+    },
+    "rainfall_agg_6month": {
+      "title": "6-month rainfall aggregate (mm)",
+      "type": "wms",
+      "server_layer_name": "r6h_dekad",
+      "additional_query_params": {
+        "styles": "rfh_800"
+      },  
+      "base_url": "https://odc.ovio.org/",
+      "date_interval": "days",
+      "opacity": 0.7,
+      "legend_text": "CHIRPS 6 month dekadal rainfall aggregations",
+      "legend": [
+        {"value": "-0", "color": "#ffffff", "alpha": "0"},
+        { "value": "50", "color": "#faf3d2" },
+        { "value": "100", "color": "#dae3a1" },
+        { "value": "150", "color": "#a0c787" },
+        { "value": "200", "color": "#68ab79" },
+        { "value": "250", "color": "#9beafa" },
+        { "value": "300", "color": "#00b1de" },
+        { "value": "400", "color": "#005ae6" },
+        { "value": "500", "color": "#0000c8" },
+        { "value": "600", "color": "#a000fa" },
+        { "value": "800", "color": "#fa78fa" },
+        { "value": "> 800", "color": "#ffc4ee" }
+      ]
+    },
+    "rainfall_agg_9month": {
+      "title": "9-month rainfall aggregate (mm)",
+      "type": "wms",
+      "server_layer_name": "r9h_dekad",
+      "additional_query_params": {
+        "styles": "rfh_800"
+      },  
+      "base_url": "https://odc.ovio.org/",
+      "date_interval": "days",
+      "opacity": 0.7,
+      "legend_text": "CHIRPS 9 month dekadal rainfall aggregations",
+      "legend": [
+        {"value": "-0", "color": "#ffffff", "alpha": "0"},
+        { "value": "50", "color": "#faf3d2" },
+        { "value": "100", "color": "#dae3a1" },
+        { "value": "150", "color": "#a0c787" },
+        { "value": "200", "color": "#68ab79" },
+        { "value": "250", "color": "#9beafa" },
+        { "value": "300", "color": "#00b1de" },
+        { "value": "400", "color": "#005ae6" },
+        { "value": "500", "color": "#0000c8" },
+        { "value": "600", "color": "#a000fa" },
+        { "value": "800", "color": "#fa78fa" },
+        { "value": "> 800", "color": "#ffc4ee" }
+      ]
+    },
+    "rainfall_agg_1year": {
+      "title": "1-year rainfall aggregate (mm)",
+      "type": "wms",
+      "server_layer_name": "ryh_dekad",
+      "additional_query_params": {
+        "styles": "rfh_1500"
+      },  
+      "base_url": "https://odc.ovio.org/",
+      "date_interval": "days",
+      "opacity": 0.7,
+      "legend_text": "CHIRPS 1 year dekadal rainfall aggregations",
+      "legend": [
+        {"value": -0, "color": "#ffffff", "alpha": 0},
+        {"value": 50, "color": "#faf3d2"},
+        {"value": 100, "color": "#dae3a1"},
+        {"value": 200, "color": "#a0c787"},
+        {"value": 300, "color": "#68ab79"},
+        {"value": 400, "color": "#9beafa"},
+        {"value": 500, "color": "#00b1de"},
+        {"value": 600, "color": "#005ae6"},
+        {"value": 800, "color": "#0000c8"},
+        {"value": 1000, "color": "#a000fa"},
+        {"value": 1500, "color": "#fa78fa"},
+        {"value": 2000, "color": "#ffc4ee"}
       ]
     },
     "days_dry": {
@@ -247,15 +351,15 @@
       "opacity": 0.7,
       "legend_text": "LEGEND",
       "legend": [
-        { "value": 1000, "color": "#a50026" },
-        { "value": 2000, "color": "#de3f2e" },
-        { "value": 3000, "color": "#f88d52" },
-        { "value": 4000, "color": "#fed380" },
-        { "value": 5000, "color": "#ffffbf" },
-        { "value": 6000, "color": "#ccea83" },
-        { "value": 7000, "color": "#86cb66" },
-        { "value": 8000, "color": "#2da155" },
-        { "value": 9000, "color": "#006837" }
+        { "label": "-1.00", "color": "#a50026" },
+        { "label": "-0.75", "color": "#de3f2e" },
+        { "label": "-0.50", "color": "#f88d52" },
+        { "label": "-0.25", "color": "#fed380" },
+        { "label": "0.00", "color": "#ffffbf" },
+        { "label": "0.25", "color": "#ccea83" },
+        { "label": "0.50", "color": "#86cb66" },
+        { "label": "0.75", "color": "#2da155" },
+        { "label": "1.00", "color": "#006837" }
       ]
     },
     "ndvi_dekad_anomaly": {

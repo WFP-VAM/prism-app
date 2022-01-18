@@ -22,8 +22,14 @@
     },
       "categories": {
         "rainfall": {
-          "rainfall_amount": ["rainfall_dekad"],
-          "rainfall_anomalies": ["rain_anomaly_dekad"],
+          "rainfall_amount": [
+            "rainfall_dekad", 
+            "rainfall_agg_month", 
+            "rainfall_agg_3month", 
+            "rainfall_agg_6month", 
+            "rainfall_agg_9month",
+            "rainfall_agg_1year"],
+          "rainfall_anomalies": ["rain_anomaly_dekad", "rain_anomaly_monthly"],
           "dry_periods": ["days_dry", "streak_dry_days"],
           "heavy_rain": ["days_heavy_rain","days_intense_rain", "days_extreme_rain","streak_heavy_rain"]
         },
@@ -32,9 +38,6 @@
         },
         "temperature": {
           "land_surface_temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
-        },
-        "tropical_storms": {
-          "tropical_storms": ["adamts_buffers"]
         },
         "vulnerability":{
           "poverty": ["poverty_hc"]  
