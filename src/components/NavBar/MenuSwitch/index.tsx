@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Map as MapBoxMap } from 'mapbox-gl';
 import {
   Box,
   Button,
@@ -17,7 +16,6 @@ import {
   LayerType,
   TableType,
 } from '../../../config/types';
-import { addLayer, removeLayer } from '../../../context/mapStateSlice';
 import { loadTable } from '../../../context/tableStateSlice';
 import {
   layersSelector,
@@ -29,31 +27,16 @@ import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../config/utils';
-import { isLayerOnView } from '../../../utils/map-utils';
+import {
+  safeDispatchAddLayer,
+  safeDispatchRemoveLayer,
+} from '../../../utils/map-utils';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
   const dispatch = useDispatch();
   const { updateHistory, removeKeyFromUrl } = useUrlHistory();
-
-  const safeDispatchAddLayer = (
-    _map: MapBoxMap | undefined,
-    layer: LayerType,
-  ) => {
-    if (!isLayerOnView(_map, layer.id)) {
-      dispatch(addLayer(layer));
-    }
-  };
-
-  const safeDispatchRemoveLayer = (
-    _map: MapBoxMap | undefined,
-    layer: LayerType,
-  ) => {
-    if (isLayerOnView(_map, layer.id)) {
-      dispatch(removeLayer(layer));
-    }
-  };
 
   const toggleLayerValue = (layer: LayerType) => (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -71,11 +54,11 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
 
       const defaultBoundary = getBoundaryLayerSingleton();
       if (!('boundary' in layer) && layer.type === ADMIN_LEVEL_DATA_LAYER_KEY) {
-        safeDispatchAddLayer(map, defaultBoundary);
+        safeDispatchAddLayer(map, defaultBoundary, dispatch);
       }
     } else {
       removeKeyFromUrl(urlLayerKey);
-      safeDispatchRemoveLayer(map, layer);
+      safeDispatchRemoveLayer(map, layer, dispatch);
 
       // For admin boundary layers with boundary property
       // we have to de-activate the unique boundary and re-activate
@@ -92,11 +75,11 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
               .map(l => l.id)
               .includes(uniqueBoundaryLayer.id)
           ) {
-            safeDispatchRemoveLayer(map, uniqueBoundaryLayer);
+            safeDispatchRemoveLayer(map, uniqueBoundaryLayer, dispatch);
           }
 
           displayBoundaryLayers.forEach(l => {
-            safeDispatchAddLayer(map, l);
+            safeDispatchAddLayer(map, l, dispatch);
           });
         }
       }
