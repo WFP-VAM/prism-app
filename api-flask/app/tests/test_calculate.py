@@ -33,7 +33,12 @@ def test_calculate_stats_with_group_by():
     zones = '/app/tests/small_admin_boundaries.json'
     geotiff = '/app/tests/raster_sample.tif'
     features = calculate_stats(
-        zones, geotiff, group_by='ADM1_PCODE', geojson_out=False)
+        zones,
+        geotiff,
+        group_by='ADM1_PCODE',
+        geojson_out=False,
+        intersect_threshold=1
+    )
     assert len(features) == 4
     assert True
 

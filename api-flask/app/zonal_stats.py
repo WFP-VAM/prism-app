@@ -8,6 +8,8 @@ from urllib.parse import urlencode
 from app.caching import cache_file, get_json_file
 from app.timer import timed
 
+# import numpy as np
+
 import rasterio
 
 from rasterstats import zonal_stats
@@ -174,7 +176,8 @@ def calculate_stats(
     stats=DEFAULT_STATS,
     prefix='stats_',
     geojson_out=False,
-    wfs_response=None
+    wfs_response=None,
+    intersect_threshold=None,
 ):
     """Calculate stats."""
     if group_by:
@@ -193,14 +196,27 @@ def calculate_stats(
         stats_input = [s.get('geom') for s in zones]
         prefix = None
 
+    # Add function to calculate overlap percentage.
+    add_stats = None
+    if intersect_threshold:
+        def percentage_over_threshold(masked):
+            total = int(masked.count())
+            over_threshold = int(
+                masked[masked > intersect_threshold].count()
+            )
+            return over_threshold / total if total else 0
+        add_stats = {'percentage_over_threshold': percentage_over_threshold}
+
     try:
-        stats = zonal_stats(
+        stats_results = zonal_stats(
             stats_input,
             geotiff,
             stats=stats,
             prefix=prefix,
-            geojson_out=geojson_out
+            geojson_out=geojson_out,
+            add_stats=add_stats,
         )
+
     except rasterio.errors.RasterioError as e:
         logger.error(e)
         raise InternalServerError('An error occured calculating statistics.')
@@ -210,13 +226,14 @@ def calculate_stats(
 
         # Add statistics as feature property fields.
         features = [{**z,  'properties': {**z.get('properties'), **s}}
-                    for z, s in zip(zones_features, stats)]
+                    for z, s in zip(zones_features, stats_results)]
 
         # Return stats as geojson array of features.
         return features
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones)
-        stats = [{**properties, **stat}
-                 for stat, properties in zip(stats, feature_properties)]
-    return stats
+        stats_results = [
+            {**properties, **stat} for stat, properties in zip(stats_results, feature_properties)
+        ]
+    return stats_results
