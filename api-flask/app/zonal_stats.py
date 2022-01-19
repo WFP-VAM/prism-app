@@ -8,8 +8,6 @@ from urllib.parse import urlencode
 from app.caching import cache_file, get_json_file
 from app.timer import timed
 
-# import numpy as np
-
 import rasterio
 
 from rasterstats import zonal_stats
