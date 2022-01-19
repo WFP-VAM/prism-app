@@ -1,6 +1,7 @@
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { LayerKey, BoundaryLayerProps } from '../config/types';
+import { LayerKey, BoundaryLayerProps, LayerType } from '../config/types';
 import { getBoundaryLayers } from '../config/utils';
+import { addLayer, removeLayer } from '../context/mapStateSlice';
 
 /**
  * Checks weither given layer is on view
@@ -12,6 +13,26 @@ export function isLayerOnView(map: MapBoxMap | undefined, layerId: LayerKey) {
     ?.getStyle()
     .layers?.map(l => l.source)
     .includes(`layer-${layerId}`);
+}
+
+export function safeDispatchAddLayer(
+  _map: MapBoxMap | undefined,
+  layer: LayerType,
+  dispatcher: Function,
+) {
+  if (!isLayerOnView(_map, layer.id)) {
+    dispatcher(addLayer(layer));
+  }
+}
+
+export function safeDispatchRemoveLayer(
+  _map: MapBoxMap | undefined,
+  layer: LayerType,
+  dispatcher: Function,
+) {
+  if (isLayerOnView(_map, layer.id)) {
+    dispatcher(removeLayer(layer));
+  }
 }
 
 /**
