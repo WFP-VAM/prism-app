@@ -232,6 +232,7 @@ def calculate_stats(
     if not geojson_out:
         feature_properties = _extract_features_properties(zones)
         stats_results = [
-            {**properties, **stat} for stat, properties in zip(stats_results, feature_properties)
+            {**properties, **stat} for stat, properties
+            in zip(stats_results, feature_properties)
         ]
     return stats_results
