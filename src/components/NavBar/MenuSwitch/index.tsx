@@ -31,6 +31,7 @@ import {
   safeDispatchAddLayer,
   safeDispatchRemoveLayer,
 } from '../../../utils/map-utils';
+import { removeLayer } from '../../../context/mapStateSlice';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const selectedLayers = useSelector(layersSelector);
@@ -58,7 +59,7 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
       }
     } else {
       removeKeyFromUrl(urlLayerKey);
-      safeDispatchRemoveLayer(map, layer, dispatch);
+      dispatch(removeLayer(layer));
 
       // For admin boundary layers with boundary property
       // we have to de-activate the unique boundary and re-activate
