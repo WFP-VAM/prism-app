@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+  ChangeEvent,
+} from 'react';
 import {
   Box,
   Button,
@@ -21,12 +27,16 @@ import { grey } from '@material-ui/core/colors';
 import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
-import { LayerDefinitions } from '../../../config/utils';
+import {
+  LayerDefinitions,
+  getDisplayBoundaryLayers,
+} from '../../../config/utils';
 import {
   AggregationOperations,
   AdminLevelDataLayerProps,
   WMSLayerProps,
   LayerKey,
+  BoundaryLayerProps,
 } from '../../../config/types';
 
 import { Extent } from '../Layers/raster-utils';
@@ -48,9 +58,15 @@ import {
   ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
+import {
+  safeDispatchRemoveLayer,
+  safeDispatchAddLayer,
+} from '../../../utils/map-utils';
+import { mapSelector } from '../../../context/mapStateSlice/selectors';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
+  const map = useSelector(mapSelector);
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -130,7 +146,64 @@ function Analyser({ extent, classes }: AnalyserProps) {
       />
     ));
 
-  const clearAnalysis = () => dispatch(clearAnalysisResult());
+  const activateUniqueBoundary = () => {
+    if (!baselineLayerId) {
+      throw new Error('Layer should be selected to run analysis');
+    }
+    const baselineLayer = LayerDefinitions[
+      baselineLayerId
+    ] as AdminLevelDataLayerProps;
+
+    if (baselineLayer.boundary) {
+      const boundaryLayer = LayerDefinitions[
+        baselineLayer.boundary
+      ] as BoundaryLayerProps;
+      // remove displayed boundaries
+      getDisplayBoundaryLayers().forEach(l => {
+        if (l.id !== boundaryLayer.id) {
+          safeDispatchRemoveLayer(map, l, dispatch);
+        }
+      });
+
+      safeDispatchAddLayer(map, boundaryLayer, dispatch);
+    }
+  };
+
+  const deactivateUniqueBoundary = () => {
+    if (!baselineLayerId) {
+      throw new Error('Layer should be selected to run analysis');
+    }
+    const baselineLayer = LayerDefinitions[
+      baselineLayerId
+    ] as AdminLevelDataLayerProps;
+
+    if (baselineLayer.boundary) {
+      const boundaryLayer = LayerDefinitions[
+        baselineLayer.boundary
+      ] as BoundaryLayerProps;
+      if (!getDisplayBoundaryLayers().includes(boundaryLayer)) {
+        safeDispatchRemoveLayer(map, boundaryLayer, dispatch);
+      }
+    }
+
+    getDisplayBoundaryLayers().forEach(l => {
+      safeDispatchAddLayer(map, l, dispatch);
+    });
+  };
+
+  const clearAnalysis = () => {
+    dispatch(clearAnalysisResult());
+    deactivateUniqueBoundary();
+  };
+
+  const onMapSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dispatch(setIsMapLayerActive(e.target.checked));
+    if (isMapLayerActive) {
+      deactivateUniqueBoundary();
+    } else {
+      activateUniqueBoundary();
+    }
+  };
 
   const runAnalyser = async () => {
     if (analysisResult) {
@@ -155,6 +228,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
     const selectedBaselineLayer = LayerDefinitions[
       baselineLayerId
     ] as AdminLevelDataLayerProps;
+
+    activateUniqueBoundary();
 
     const params: AnalysisDispatchParams = {
       hazardLayer: selectedHazardLayer,
@@ -289,9 +364,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                         <Switch
                           color="default"
                           checked={isMapLayerActive}
-                          onChange={e =>
-                            dispatch(setIsMapLayerActive(e.target.checked))
-                          }
+                          onChange={onMapSwitchChange}
                         />
                       }
                       label="Map View"
