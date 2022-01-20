@@ -73,7 +73,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const selectedLayers = useSelector(layersSelector);
-  const { updateHistory, removeKeyFromUrl } = useUrlHistory();
+  const { removeKeyFromUrl } = useUrlHistory();
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -104,8 +104,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
   useEffect(() => {
     const dates = hazardLayerId
       ? availableDates[
-      (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
-      ]
+          (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
+        ]
       : null;
     if (!dates || dates.length === 0) {
       setSelectedDate(null);
