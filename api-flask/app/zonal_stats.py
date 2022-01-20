@@ -175,7 +175,7 @@ def calculate_stats(
     prefix='stats_',
     geojson_out=False,
     wfs_response=None,
-    intersect_threshold=None,
+    intersect_comparison=None,
 ):
     """Calculate stats."""
     if group_by:
@@ -196,14 +196,25 @@ def calculate_stats(
 
     # Add function to calculate overlap percentage.
     add_stats = None
-    if intersect_threshold is not None:
-        def percentage_over_threshold(masked):
-            total = int(masked.count())
-            over_threshold = int(
-                masked[masked > intersect_threshold].count()
-            )
-            return over_threshold / total if total else 0
-        add_stats = {'percentage_over_threshold': percentage_over_threshold}
+    if intersect_comparison is not None:
+        def intersect_percentage(masked):
+            # Get total number of elements in the boundary.
+            intersect_operator, intersect_baseline = intersect_comparison
+            total = masked.count()
+            # Avoid dividing by 0
+            if total == 0:
+                return 0
+            percentage = (intersect_operator(intersect_baseline, masked)).sum()
+            print(intersect_operator)
+            print({percentage})
+            print('over_threshold')
+            over_threshold = (masked > intersect_baseline).sum()
+            print({over_threshold})
+            result = percentage / total
+            return result  # percentage / total
+        add_stats = {
+            'intersect_percentage': intersect_percentage,
+        }
 
     try:
         stats_results = zonal_stats(
@@ -214,6 +225,7 @@ def calculate_stats(
             geojson_out=geojson_out,
             add_stats=add_stats,
         )
+        print(stats_results)
 
     except rasterio.errors.RasterioError as e:
         logger.error(e)
