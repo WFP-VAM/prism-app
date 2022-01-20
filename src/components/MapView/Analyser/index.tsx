@@ -62,11 +62,18 @@ import {
   safeDispatchRemoveLayer,
   safeDispatchAddLayer,
 } from '../../../utils/map-utils';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import {
+  mapSelector,
+  layersSelector,
+} from '../../../context/mapStateSlice/selectors';
+import { useUrlHistory } from '../../../utils/url-utils';
+import { removeLayer } from '../../../context/mapStateSlice';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
+  const selectedLayers = useSelector(layersSelector);
+  const { updateHistory, removeKeyFromUrl } = useUrlHistory();
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -87,12 +94,18 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [aboveThreshold, setAboveThreshold] = useState('');
   const [thresholdError, setThresholdError] = useState<string | null>(null);
 
+  const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
+  const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
+  const preSelectedBaselineLayer = selectedLayers.find(
+    l => l.type === ADMIN_LEVEL_DATA_LAYER_KEY,
+  );
+
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
     const dates = hazardLayerId
       ? availableDates[
-          (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
-        ]
+      (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
+      ]
       : null;
     if (!dates || dates.length === 0) {
       setSelectedDate(null);
@@ -206,6 +219,11 @@ function Analyser({ extent, classes }: AnalyserProps) {
   };
 
   const runAnalyser = async () => {
+    if (preSelectedBaselineLayer) {
+      removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
+      dispatch(removeLayer(preSelectedBaselineLayer));
+    }
+
     if (analysisResult) {
       clearAnalysis();
     }
