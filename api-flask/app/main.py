@@ -126,6 +126,14 @@ def stats():
 
         wfs_response = get_wfs_response(wfs_params)
 
+    if intersect_threshold is not None:
+        try:
+            intersect_threshold = int(intersect_threshold)
+        except ValueError:
+            raise InternalServerError(
+                'Invalid intersect_threshold format. Expecting an integer.'
+            )
+
     features = _calculate_stats(
         zones,
         geotiff,

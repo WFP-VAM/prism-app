@@ -196,7 +196,7 @@ def calculate_stats(
 
     # Add function to calculate overlap percentage.
     add_stats = None
-    if intersect_threshold:
+    if intersect_threshold is not None:
         def percentage_over_threshold(masked):
             total = int(masked.count())
             over_threshold = int(
