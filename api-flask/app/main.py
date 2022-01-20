@@ -128,10 +128,10 @@ def stats():
 
     if intersect_threshold is not None:
         try:
-            intersect_threshold = int(intersect_threshold)
+            intersect_threshold = float(intersect_threshold)
         except ValueError:
             raise InternalServerError(
-                'Invalid intersect_threshold format. Expecting an integer.'
+                'Invalid intersect_threshold format. Expecting a float.'
             )
 
     features = _calculate_stats(
