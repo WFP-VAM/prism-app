@@ -205,13 +205,7 @@ def calculate_stats(
             if total == 0:
                 return 0
             percentage = (intersect_operator(intersect_baseline, masked)).sum()
-            print(intersect_operator)
-            print({percentage})
-            print('over_threshold')
-            over_threshold = (masked > intersect_baseline).sum()
-            print({over_threshold})
-            result = percentage / total
-            return result  # percentage / total
+            return percentage / total
         add_stats = {
             'intersect_percentage': intersect_percentage,
         }
@@ -225,7 +219,6 @@ def calculate_stats(
             geojson_out=geojson_out,
             add_stats=add_stats,
         )
-        print(stats_results)
 
     except rasterio.errors.RasterioError as e:
         logger.error(e)
