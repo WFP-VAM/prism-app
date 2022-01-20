@@ -127,6 +127,7 @@ def stats():
 
         wfs_response = get_wfs_response(wfs_params)
 
+    intersect_comparison = None
     if intersect_comparison_string is not None:
         intersect_comparison = validate_intersect_parameter(
             intersect_comparison_string
@@ -260,7 +261,13 @@ def stats_demo():
 
     geojson_out = strtobool(geojson_out)
 
-    intersect_comparison = request.args.get('intersect_comparison', None)
+    intersect_comparison_string = request.args.get('intersect_comparison', None)
+
+    intersect_comparison = None
+    if intersect_comparison_string is not None:
+        intersect_comparison = validate_intersect_parameter(
+            intersect_comparison_string
+        )
 
     features = _calculate_stats(
         zones,

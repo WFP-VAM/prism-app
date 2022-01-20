@@ -1,11 +1,11 @@
 """A set of functions to validate and parse API request parameters."""
 import operator as op
-from typing import Function, Tuple
+from typing import Any, Tuple
 
 from werkzeug.exceptions import BadRequest
 
 
-def validate_intersect_parameter(intersect_comparison_string: str) -> Tuple[Function, float]:
+def validate_intersect_parameter(intersect_comparison_string: str) -> Tuple[Any, float]:
     """Validate intersect parameter and return a (comparator, baseline) tuple."""
     valid_operators = {
       '<=': op.le,
@@ -19,7 +19,7 @@ def validate_intersect_parameter(intersect_comparison_string: str) -> Tuple[Func
     # extract an intersect comparison operator
     default_operator = ('=', op.eq)
     operator_item = next((
-        op for op in valid_operators.keys()
+        op for op in valid_operators.items()
         if op[0] in intersect_comparison_string[:2]),
         default_operator)
 
