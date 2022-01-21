@@ -67,13 +67,13 @@ import {
   layersSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { useUrlHistory } from '../../../utils/url-utils';
-import { removeLayer } from '../../../context/mapStateSlice';
+import { removeLayer, addLayer } from '../../../context/mapStateSlice';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const selectedLayers = useSelector(layersSelector);
-  const { removeKeyFromUrl } = useUrlHistory();
+  const { updateHistory, removeKeyFromUrl } = useUrlHistory();
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -99,6 +99,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const preSelectedBaselineLayer = selectedLayers.find(
     l => l.type === ADMIN_LEVEL_DATA_LAYER_KEY,
   );
+  const [previousBaselineId, setPreviousBaselineId] = useState<
+    LayerKey | undefined
+  >(preSelectedBaselineLayer?.id);
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -207,19 +210,50 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const clearAnalysis = () => {
     dispatch(clearAnalysisResult());
     deactivateUniqueBoundary();
+
+    if (previousBaselineId) {
+      const previousBaseline = LayerDefinitions[
+        previousBaselineId
+      ] as AdminLevelDataLayerProps;
+      updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
+      safeDispatchAddLayer(map, previousBaseline, dispatch);
+      // check isMapLayerActive on analysis clear
+      // to avoid miss behaviour on boundary layers
+      dispatch(setIsMapLayerActive(true));
+    }
   };
 
   const onMapSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(setIsMapLayerActive(e.target.checked));
+    deactivateUniqueBoundary();
+
     if (isMapLayerActive) {
-      deactivateUniqueBoundary();
+      // check for previous baseline and bring it back
+      if (previousBaselineId) {
+        const previousBaseline = LayerDefinitions[
+          previousBaselineId
+        ] as AdminLevelDataLayerProps;
+        updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
+        safeDispatchAddLayer(map, previousBaseline, dispatch);
+      }
     } else {
+      // check for previous baseline and remove it before...
+      if (previousBaselineId) {
+        const previousBaseline = LayerDefinitions[
+          previousBaselineId
+        ] as AdminLevelDataLayerProps;
+        removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
+        safeDispatchRemoveLayer(map, previousBaseline, dispatch);
+      }
+
+      // activating the unique boundary layer
       activateUniqueBoundary();
     }
   };
 
   const runAnalyser = async () => {
     if (preSelectedBaselineLayer) {
+      setPreviousBaselineId(preSelectedBaselineLayer.id);
       removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
       dispatch(removeLayer(preSelectedBaselineLayer));
     }
