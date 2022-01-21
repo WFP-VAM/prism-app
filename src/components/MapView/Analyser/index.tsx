@@ -67,7 +67,7 @@ import {
   layersSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { useUrlHistory } from '../../../utils/url-utils';
-import { removeLayer, addLayer } from '../../../context/mapStateSlice';
+import { removeLayer } from '../../../context/mapStateSlice';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -255,6 +255,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
     if (preSelectedBaselineLayer) {
       setPreviousBaselineId(preSelectedBaselineLayer.id);
       removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
+      // no need to safely dispatch remove we are sure
       dispatch(removeLayer(preSelectedBaselineLayer));
     }
 
