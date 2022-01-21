@@ -204,7 +204,7 @@ def calculate_stats(
             # Avoid dividing by 0
             if total == 0:
                 return 0
-            percentage = (intersect_operator(intersect_baseline, masked)).sum()
+            percentage = (intersect_operator(masked, intersect_baseline)).sum()
             return percentage / total
         add_stats = {
             'intersect_percentage': intersect_percentage,
