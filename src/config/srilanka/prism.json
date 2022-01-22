@@ -29,7 +29,13 @@
             "rainfall_agg_6month", 
             "rainfall_agg_9month",
             "rainfall_agg_1year"],
-          "rainfall_anomalies": ["rain_anomaly_dekad", "rain_anomaly_monthly"],
+          "rainfall_anomalies": [
+            "rain_anomaly_dekad", 
+            "rain_anomaly_monthly",
+            "rain_anomaly_3month",
+            "rain_anomaly_6month",
+            "rain_anomaly_9month",
+            "rain_anomaly_1year"],
           "dry_periods": ["days_dry", "streak_dry_days"],
           "heavy_rain": ["days_heavy_rain","days_intense_rain", "days_extreme_rain","streak_heavy_rain"]
         },
