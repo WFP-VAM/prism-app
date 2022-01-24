@@ -182,6 +182,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
       });
 
       safeDispatchAddLayer(map, boundaryLayer, dispatch);
+    } else {
+      getDisplayBoundaryLayers().forEach(l => {
+        safeDispatchAddLayer(map, l, dispatch);
+      });
     }
   };
 
@@ -225,9 +229,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   const onMapSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(setIsMapLayerActive(e.target.checked));
-    deactivateUniqueBoundary();
 
     if (isMapLayerActive) {
+      deactivateUniqueBoundary();
       // check for previous baseline and bring it back
       if (previousBaselineId) {
         const previousBaseline = LayerDefinitions[
