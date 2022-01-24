@@ -34,11 +34,31 @@ The configuration is split into four files that you can find in `src/config`:
 This is the primary configuration file. You can define:
 
 - The server endpoints
-- Map settings (starting point, zoom)
+- Map settings (starting point, zoom, defaultDisplayBoundaries)
 - Categories
 
 The default categories are `baseline`, `climate`, `impact` and `tables`.
-For each categories, you can define sub categories as "subcategorie_name": [layers], a list of layers from `layers.json`.
+For each categories, you can define sub categories as "subcategorie_name":
+[layers], a list of layers from `layers.json`.
+
+#### Map Settings
+- defaultDisplayBoundaries
+  When in `layers.json` there are many `boundary` layers to be used.
+  If you want more than one boundary layer to be displayed at once you need to
+  define `defaultDisplayBoundaries` as an array of boundaries.
+  
+  e.g.
+  ```json
+  {
+    ...
+    "defaultDisplayBoundaries": [
+      "township_boundaries",
+      "district_boundaries",
+      "state_boundaries"
+    ]
+    ...
+  }
+  ```
 
 ### layers.json
 
@@ -121,6 +141,13 @@ The `data` field should point to a dataset defined in `baseline.ts`
 This file is used to pre-load datasets and make sure that they are formatted properly. Thanks to TypeScript, this is limitting the potential for mismatch and failed loads.
 
 ### Layer Configurations
+#### Boundary Layers
+- isPrimary
+  When you have many `boundary` layers present in layer configuration, the
+  application uses different functions to conclude ony which layer is
+  primary/default. You can impose the primary layer by using the optional flage
+  `isPrimary`
+
 #### Add Layer Contents
 In country layers. You can add `content_path` element which
 expects a path to a `.md` or `.html` file. That file must be placed in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory e.g. `public/data/myanmar/contents.md`
