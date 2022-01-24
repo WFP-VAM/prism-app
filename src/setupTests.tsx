@@ -15,6 +15,16 @@ jest.mock('mapbox-gl/dist/mapbox-gl', () => ({
   NavigationControl: jest.fn(),
 }));
 
+jest.mock('mapbox-gl/dist/maplibre-gl', () => ({
+  GeolocateControl: jest.fn(),
+  Map: jest.fn(() => ({
+    addControl: jest.fn(),
+    on: jest.fn(),
+    remove: jest.fn(),
+  })),
+  NavigationControl: jest.fn(),
+}));
+
 function stubMuiComponent(componentName: string) {
   jest.doMock(
     `@material-ui/core/${componentName}/${componentName}`,
