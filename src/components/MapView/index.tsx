@@ -410,7 +410,10 @@ function MapView({ classes }: MapViewProps) {
       )}
       <MapboxMap
         // eslint-disable-next-line react/style-prop-object
-        style="mapbox://styles/eric-ovio/ckaoo00yp0woy1ipevzqnvwzi"
+        style={
+          process.env.REACT_APP_DEFAULT_STYLE ||
+          'mapbox://styles/eric-ovio/ckaoo00yp0woy1ipevzqnvwzi'
+        }
         onStyleLoad={saveMap}
         center={[longitude, latitude]}
         zoom={[zoom]}
