@@ -14,7 +14,7 @@
     "longitude": 96.371,
     "zoom": 4.48
   },
-  "adminBoundaryDisplayOverrides": [
+  "defaultDisplayBoundaries": [
     "admin_boundaries",
     "district_admin_boundaries",
     "state_admin_boundaries"

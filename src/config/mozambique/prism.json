@@ -9,7 +9,7 @@
     "tropical_storms": "icon_tropical_storm.png",
     "vulnerability": "icon_vulnerable.png"
   },
-  "adminBoundaryDisplayOverrides": ["admin_boundaries", "admin1_boundaries"],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
     "wms": [
       "https://odc.ovio.org/wms",
