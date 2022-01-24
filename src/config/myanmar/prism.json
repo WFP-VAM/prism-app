@@ -43,7 +43,6 @@
     },
     "vulnerability": {
       "vulnerability_index": [
-        "test_admin1_data",
         "multidimensional_disadvantage_index",
         "inform"
       ],

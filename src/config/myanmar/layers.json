@@ -53,24 +53,6 @@
       }
     }
   },
-  "test_admin1_data": {
-    "title": "Test Admin1 Data",
-    "type": "admin_level_data",
-    "boundary": "state_admin_boundaries",
-    "path": "../data/myanmar/nso/poverty_st.json",
-    "data_field": "Poverty",
-    "admin_level": 1,
-    "admin_code": "ST_PCODE",
-    "opacity": 0.7,
-    "legend_text": "Poverty",
-    "legend": [
-      { "value": 0, "color": "#eff3ff" },
-      { "value": 10, "color": "#bdd7e7" },
-      { "value": 20, "color": "#6baed6" },
-      { "value": 30, "color": "#3182bd" },
-      { "value": 40, "color": "#08519c" }
-    ]
-  },
   "inform": {
     "title": "Vulnerability index",
     "type": "admin_level_data",
