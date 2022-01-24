@@ -26,7 +26,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src --ignore-path .gitignore",
     "postinstall": "npm run setup:maplibre",
     "precommit": "lint-staged",
-    "setup:maplibre": "node -e \"require('fs').copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.css', './node_modules/mapbox-gl/dist/mapbox-gl.css');\""
+    "setup:maplibre": "node -e \"const fs = require('fs'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.css', './node_modules/mapbox-gl/dist/mapbox-gl.css'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.js', './node_modules/mapbox-gl/dist/mapbox-gl.js');\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
