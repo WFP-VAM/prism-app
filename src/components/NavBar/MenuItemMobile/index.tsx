@@ -43,7 +43,7 @@ function MenuItemMobile({
         aria-controls={title}
         id={title}
       >
-        <img className={classes.icon} src={icon} alt={title} />
+        <img className={classes.icon} src={`/images/${icon}`} alt={title} />
         <Typography variant="body2">{title}</Typography>
       </AccordionSummary>
       <AccordionDetails>
