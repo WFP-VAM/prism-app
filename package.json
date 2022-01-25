@@ -24,7 +24,7 @@
     "deploy:staging": "firebase deploy --only hosting:staging-target",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src --ignore-path .gitignore",
-    "postinstall": "npm run setup:maplibre",
+    "postinstall": "yarn run setup:maplibre",
     "precommit": "lint-staged",
     "setup:maplibre": "node -e \"const fs = require('fs'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.css', './node_modules/mapbox-gl/dist/mapbox-gl.css'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.js', './node_modules/mapbox-gl/dist/mapbox-gl.js');\""
   },
