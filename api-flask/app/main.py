@@ -18,6 +18,7 @@ from flask_caching import Cache
 from flask_cors import CORS
 
 from kobo import get_form_responses, parse_datetime_params
+from ews import get_ews_responses
 
 import rasterio
 
@@ -150,6 +151,14 @@ def get_kobo_forms():
     form_responses = get_form_responses(begin_datetime, end_datetime)
 
     return Response(json.dumps(form_responses), mimetype='application/json')
+
+
+@app.route('/ews/data', methods=['GET'])
+def get_ews_data():
+    """Get all early warning from all locations"""
+    begin_datetime, end_datetime = parse_datetime_params()
+    ews_responses = get_ews_responses(begin_datetime, end_datetime)
+    return Response(json.dumps(ews_responses), mimetype='application/json')
 
 
 @app.route('/alerts/<id>', methods=['GET'])
