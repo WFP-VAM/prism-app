@@ -40,7 +40,7 @@ function AnalysisLayer() {
   }
 
   const boundaryId =
-    baselineLayer && baselineLayer.boundary && isAnalysisLayerActive
+    baselineLayer?.boundary && isAnalysisLayerActive
       ? baselineLayer.boundary
       : getBoundaryLayerSingleton().id;
 
