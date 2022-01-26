@@ -1,10 +1,12 @@
 from datetime import datetime, timedelta, timezone
 
 from dateutil.parser import parse as dtparser
+
 from flask import request
 
-from werkzeug.exceptions import BadRequest, InternalServerError
 import requests
+
+from werkzeug.exceptions import BadRequest
 
 
 def parse_datetime_params():
@@ -44,7 +46,7 @@ def get_ews_responses(begin_datetime, end_datetime):
         levels = properties['trigger_levels']
         coordinates = data['geometry']['coordinates']
 
-        if properties['status1'] == 'Operational' and properties['status']=='active':
+        if properties['status1'] == 'Operational' and properties['status'] == 'active':
             details = dict()
             details['id'] = properties['external_id']
             details['lat'] = coordinates[0]
@@ -75,7 +77,7 @@ def get_ews_responses(begin_datetime, end_datetime):
             if len(daily_levels) > 0:
                 location_data['average_level'] = round(sum(daily_levels) / len(daily_levels))
             else:
-                location_data['average_level'] =  0
+                location_data['average_level'] = 0
 
         return location_data
 
@@ -84,6 +86,8 @@ def get_ews_responses(begin_datetime, end_datetime):
     resp = requests.get(location_url)
     resp.raise_for_status()
     ews_data = resp.json().get('features')
-    location_details = list(filter(lambda item: item is not None, map(parse_location_details, ews_data)))
+    location_details = list(
+        filter(lambda item: item is not None, map(parse_location_details, ews_data))
+    )
 
-    return list(map(parse_data_by_location, location_details));
+    return list(map(parse_data_by_location, location_details))

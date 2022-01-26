@@ -11,6 +11,9 @@ from app.errors import handle_error, make_json_error
 from app.timer import timed
 from app.zonal_stats import calculate_stats, get_wfs_response
 
+
+from ews import get_ews_responses
+
 from flask import Flask, Response, json, jsonify, request
 
 from flask_caching import Cache
@@ -18,7 +21,6 @@ from flask_caching import Cache
 from flask_cors import CORS
 
 from kobo import get_form_responses, parse_datetime_params
-from ews import get_ews_responses
 
 import rasterio
 
