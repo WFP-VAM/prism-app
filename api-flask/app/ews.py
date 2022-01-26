@@ -1,3 +1,4 @@
+"""Collect and parse Cambodia EWS-1294."""
 from datetime import datetime, timedelta, timezone
 
 from dateutil.parser import parse as dtparser
@@ -35,13 +36,13 @@ def parse_datetime_params():
 
 
 def get_ews_responses(begin_datetime, end_datetime):
-    """Get all data using ews_1294 api endpoints"""
+    """Get all data using ews_1294 api endpoints."""
     start = begin_datetime.date()
     end = end_datetime.date()
     base_api = 'http://sms.ews1294.info/api/v1/'
 
     def parse_location_details(data: dict):
-        """Parse location details and format them"""
+        """Parse location details and format them."""
         properties = data['properties']
         levels = properties['trigger_levels']
         coordinates = data['geometry']['coordinates']
@@ -58,7 +59,7 @@ def get_ews_responses(begin_datetime, end_datetime):
         return None
 
     def parse_data_by_location(location_data: dict):
-        """Parse all data by this location"""
+        """Parse all data by this location."""
         location_id = location_data['id']
         data_url = '{0}sensors/sensor_event?external_id={1}&start={2}&end={3}'.format(
             base_api, location_id, start, end

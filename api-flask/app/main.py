@@ -157,7 +157,7 @@ def get_kobo_forms():
 
 @app.route('/ews/data', methods=['GET'])
 def get_ews_data():
-    """Get all early warning from all locations"""
+    """Get all early warning from all locations."""
     begin_datetime, end_datetime = parse_datetime_params()
     ews_responses = get_ews_responses(begin_datetime, end_datetime)
     return Response(json.dumps(ews_responses), mimetype='application/json')
