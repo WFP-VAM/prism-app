@@ -1,4 +1,5 @@
 """Collect and parse Cambodia EWS-1294."""
+import itertools
 from datetime import datetime, timedelta, timezone
 
 from dateutil.parser import parse as dtparser
@@ -58,9 +59,9 @@ def get_ews_responses(begin_datetime, end_datetime):
             return details
         return None
 
-    def parse_data_by_location(location_data: dict):
+    def parse_data_by_location(location: dict):
         """Parse all data by this location."""
-        location_id = location_data['id']
+        location_id = location['id']
         data_url = '{0}sensors/sensor_event?external_id={1}&start={2}&end={3}'.format(
             base_api, location_id, start, end
         )
@@ -71,16 +72,22 @@ def get_ews_responses(begin_datetime, end_datetime):
 
         days = [start + timedelta(days=d) for d in range((end - start).days + 1)]
 
-        for day in days:
-            location_data['date'] = day
-            daily_levels = [_['value'][1] for _ in data_per_location]
-            # location_data['daily_levels'] = daily_levels
+        location_data_by_day = []
+        for n in range(len(days)):
+            daily_levels = [_['value'][1] for _ in data_per_location if
+                            dtparser(_['value'][0]).date() == days[n]]
+            # # location_data['daily_levels'] = daily_levels
             if len(daily_levels) > 0:
-                location_data['average_level'] = round(sum(daily_levels) / len(daily_levels))
+                average_level = round(sum(daily_levels) / len(daily_levels))
             else:
-                location_data['average_level'] = 0
+                average_level = 0
+            location_data_by_day.append({
+                'date': days[n].strftime('%Y-%m-%d'),
+                'average_level': average_level,
+                **location
+            })
 
-        return location_data
+        return location_data_by_day
 
     location_url = '{0}location.geojson?type=river'.format(base_api)
 
@@ -91,4 +98,4 @@ def get_ews_responses(begin_datetime, end_datetime):
         filter(lambda item: item is not None, map(parse_location_details, ews_data))
     )
 
-    return list(map(parse_data_by_location, location_details))
+    return list(itertools.chain(*list(map(parse_data_by_location, location_details))))
