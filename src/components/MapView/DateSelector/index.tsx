@@ -107,14 +107,14 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     ).map(date => {
       return {
         value: date.valueOf(),
-        label: date.format('DD MMM YYYY'),
+        label: date.format('MMM DD YYYY'),
         month: date.format('MMM YYYY'),
         isFirstDay: date.date() === date.startOf('month').date(),
       };
     });
     setDateRange(range);
     const dateIndex = findIndex(range, date => {
-      return date.label === moment(stateStartDate).format('DD MMM YYYY');
+      return date.label === moment(stateStartDate).format('MMM DD YYYY');
     });
     setPointerPosition({
       x: dateIndex * TIMELINE_ITEM_WIDTH,
