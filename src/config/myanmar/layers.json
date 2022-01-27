@@ -1,4 +1,40 @@
 {
+  "state_admin_boundaries": {
+    "type": "boundary",
+    "path": "../data/myanmar/mmr_admin1_boundaries.json",
+    "opacity": 0.8,
+    "admin_code": "ST_PCODE",
+    "admin_level_names": ["ST"],
+    "admin_level_local_names": ["mmr_polbnd"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.5,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "district_admin_boundaries": {
+    "type": "boundary",
+    "path": "../data/myanmar/mmr_admin2_boundaries.json",
+    "opacity": 0.8,
+    "admin_code": "DT_PCODE",
+    "admin_level_names": ["ST", "DT"],
+    "admin_level_local_names": ["DT_MMR4", "TS_MMR4"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },
   "admin_boundaries": {
     "type": "boundary",
     "path": "../data/myanmar/admin_boundaries.json",
@@ -17,45 +53,10 @@
       }
     }
   },
-  "admin1_boundaries": {
-    "type": "boundary",
-    "path": "../data/myanmar/mmr_admin1_boundaries.json",
-    "opacity": 0.8,
-    "admin_code": "TS_PCODE",
-    "admin_level_names": ["TS", "ST", "DT"],
-    "admin_level_local_names": ["DT_MMR4", "TS_MMR4"],
-    "styles:": {
-      "fill": {
-        "fill-opacity": 0
-      },
-      "line": {
-        "line-color": "gray",
-        "line-width": 1.5,
-        "line-opacity": 0.8
-      }
-    }
-  },
-  "admin2_boundaries": {
-    "type": "boundary",
-    "path": "../data/myanmar/mmr_admin2_boundaries.json",
-    "opacity": 0.8,
-    "admin_code": "TS_PCODE",
-    "admin_level_names": ["TS", "ST", "DT"],
-    "admin_level_local_names": ["DT_MMR4", "TS_MMR4"],
-    "styles:": {
-      "fill": {
-        "fill-opacity": 0
-      },
-      "line": {
-        "line-color": "gray",
-        "line-width": 1,
-        "line-opacity": 0.8
-      }
-    }
-  },
   "inform": {
     "title": "Vulnerability index",
     "type": "admin_level_data",
+    "boundary": "admin_boundaries",
     "path": "../data/myanmar/nso/all-vuln-layers.json",
     "content_path": "data/myanmar/contents.md#vulnerability-index",
     "data_field": "mmr_inform",
@@ -81,7 +82,7 @@
       },
       {
         "value": 0.41,
-        "label": "Medium (0.41 to 0.6)",  
+        "label": "Medium (0.41 to 0.6)",
         "color": "#ffffbf"
       },
       {
@@ -238,8 +239,8 @@
     "legend": [
       { "label": "0-2%", "value": 0, "color": "#fee5d9" },
       { "label": "3-5%", "value": 3, "color": "#fcae91" },
-      { "label": "6-8%","value": 6, "color": "#fb6a4a" },
-      { "label": "9-11%","value": 9, "color": "#de2d26" },
+      { "label": "6-8%", "value": 6, "color": "#fb6a4a" },
+      { "label": "9-11%", "value": 9, "color": "#de2d26" },
       { "label": "12% or more", "value": 12, "color": "#a50f15" }
     ],
     "legend_text": "Prevalence of disability"
@@ -289,7 +290,7 @@
     "content_path": "data/myanmar/contents.md#10-day-rainfall-estimate",
     "additional_query_params": {
       "styles": "rfh_350"
-    },    
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -366,18 +367,18 @@
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      {"label": "-0", "color": "#ffffff", "alpha": 0},
-      {"label": "50 mm", "color": "#faf3d2"},
-      {"label": "100 mm", "color": "#dae3a1"},
-      {"label": "200 mm", "color": "#a0c787"},
-      {"label": "300 mm", "color": "#68ab79"},
-      {"label": "400 mm", "color": "#9beafa"},
-      {"label": "500 mm", "color": "#00b1de"},
-      {"label": "600 mm", "color": "#005ae6"},
-      {"label": "800 mm", "color": "#0000c8"},
-      {"label": "1000 mm", "color": "#a000fa"},
-      {"label": "1500 mm", "color": "#fa78fa"},
-      {"label": "> 1500 mm", "color": "#ffc4ee"}
+      { "label": "-0", "color": "#ffffff", "alpha": 0 },
+      { "label": "50 mm", "color": "#faf3d2" },
+      { "label": "100 mm", "color": "#dae3a1" },
+      { "label": "200 mm", "color": "#a0c787" },
+      { "label": "300 mm", "color": "#68ab79" },
+      { "label": "400 mm", "color": "#9beafa" },
+      { "label": "500 mm", "color": "#00b1de" },
+      { "label": "600 mm", "color": "#005ae6" },
+      { "label": "800 mm", "color": "#0000c8" },
+      { "label": "1000 mm", "color": "#a000fa" },
+      { "label": "1500 mm", "color": "#fa78fa" },
+      { "label": "> 1500 mm", "color": "#ffc4ee" }
     ]
   },
   "streak_dry_days": {
@@ -853,7 +854,7 @@
   "poverty": {
     "title": "Poverty by township",
     "type": "admin_level_data",
-    "path": "../data/myanmar/nso/poverty.json",
+    "path": "../data/myanmar/nso/poverty_st.json",
     "data_field": "Poverty",
     "admin_level": 3,
     "admin_code": "TS_PCODE",
@@ -1266,7 +1267,7 @@
     "opacity": 0,
     "legend_text": "",
     "legend": []
-  }, 
+  },
   "adamts_tracks": {
     "title": "Tropical storm - track",
     "type": "wms",
@@ -1290,10 +1291,8 @@
     "date_interval": "days",
     "opacity": 1.0,
     "legend_text": "Flood water detected from Sentinel-1 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
-    "legend": [      
-      { "value": "1 - flooded", "color": "#a50f15" }
-    ]
-  },    
+    "legend": [{ "value": "1 - flooded", "color": "#a50f15" }]
+  },
   "hydra_s2": {
     "title": "Potential flooding (Sentinel-2)",
     "type": "wms",
@@ -1302,10 +1301,8 @@
     "date_interval": "days",
     "opacity": 1.0,
     "legend_text": "Flood water detected from Sentinel-2 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
-    "legend": [      
-      { "value": "1 - flooded", "color": "#a50f15" }
-    ]
-  },  
+    "legend": [{ "value": "1 - flooded", "color": "#a50f15" }]
+  },
   "hydra_l8": {
     "title": "Potential flooding (Landsat-8)",
     "type": "wms",
@@ -1314,10 +1311,8 @@
     "date_interval": "days",
     "opacity": 1.0,
     "legend_text": "Flood water detected from Landsat-8 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
-    "legend": [      
-      { "value": "1 - flooded", "color": "#a50f15" }
-    ]
-  },  
+    "legend": [{ "value": "1 - flooded", "color": "#a50f15" }]
+  },
   "forecast": {
     "title": "10-day precipitation forecast",
     "type": "wms",
