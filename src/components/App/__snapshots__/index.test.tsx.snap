@@ -5,10 +5,44 @@ exports[`renders as expected 1`] = `
   <mock-notifier />
   <mock-navbar />
   <div
-    id="app"
+    class="Login-container-1"
   >
-    <mock-mapview />
-    <mock-datadrawer />
+    <div
+      class="MuiGrid-root Login-content-2 MuiGrid-container MuiGrid-spacing-xs-3"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <mock-typography
+          color="textPrimary"
+          gutterbottom="true"
+          variant="h3"
+        >
+          Login Required
+        </mock-typography>
+        <mock-typography
+          gutterbottom="true"
+          variant="body1"
+        >
+          This PRISM instance requires users to be authenticated using WFP credentials.
+        </mock-typography>
+        <br />
+        <mock-button
+          variant="contained"
+        >
+          Login
+        </mock-button>
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <img
+          alt="World Food Programme logo"
+          class="Login-image-3"
+          src="/images/wfp_logo.png"
+        />
+      </div>
+    </div>
   </div>
 </div>
 `;

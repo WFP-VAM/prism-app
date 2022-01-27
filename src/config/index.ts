@@ -1,5 +1,7 @@
 import { has } from 'lodash';
 
+import { PublicClientApplication } from '@azure/msal-browser';
+
 import {
   cambodiaConfig,
   cambodiaRawLayers,
@@ -136,4 +138,31 @@ const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
   safeCountry
 ];
 
-export { appConfig, defaultBoundariesFile, rawLayers, rawTables };
+const {
+  REACT_APP_OAUTH_CLIENT_ID: CLIENT_ID,
+  REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
+  REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
+} = process.env;
+
+const msalConfig = {
+  auth: {
+    clientId: CLIENT_ID!,
+    authority: AUTHORITY!,
+    redirectUri: REDIRECT_URI!,
+  },
+};
+
+const msalRequest = {
+  scopes: ['openid', 'profile'],
+};
+
+const msalInstance = new PublicClientApplication(msalConfig);
+
+export {
+  appConfig,
+  defaultBoundariesFile,
+  rawLayers,
+  rawTables,
+  msalInstance,
+  msalRequest,
+};
