@@ -12,7 +12,7 @@ from app.timer import timed
 from app.zonal_stats import calculate_stats, get_wfs_response
 
 
-from ews import get_ews_responses
+from ews import get_ews_responses, parse_ews_datetime_params
 
 from flask import Flask, Response, json, jsonify, request
 
@@ -158,7 +158,7 @@ def get_kobo_forms():
 @app.route('/ews/data', methods=['GET'])
 def get_ews_data():
     """Get all early warning from all locations."""
-    begin_datetime, end_datetime = parse_datetime_params()
+    begin_datetime, end_datetime = parse_ews_datetime_params()
     ews_responses = get_ews_responses(begin_datetime, end_datetime)
     return Response(json.dumps(ews_responses), mimetype='application/json')
 

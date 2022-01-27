@@ -6,32 +6,43 @@ from dateutil.parser import parse as dtparser
 
 from flask import request
 
+import numpy
+
 import requests
 
 from werkzeug.exceptions import BadRequest
 
 
-def parse_datetime_params():
+def parse_ews_datetime_params():
     """Transform into datetime objects used for filtering form responses."""
-    begin_datetime_str = request.args.get('beginDateTime', '2000-01-01')
-    begin_datetime = dtparser(begin_datetime_str).replace(tzinfo=timezone.utc)
+    today = datetime.now().replace(tzinfo=timezone.utc)
+    begin_datetime_str = request.args.get('beginDateTime')
+    if begin_datetime_str is not None:
+        begin_datetime = dtparser(begin_datetime_str)
+    else:
+        # yesterday
+        end_datetime = today - timedelta(days = 1)
 
     end_datetime_str = request.args.get('endDateTime')
     if end_datetime_str is not None:
         end_datetime = dtparser(end_datetime_str)
     else:
-        # 10 years.
-        end_datetime = datetime.now() + timedelta(days=365 * 10)
+        # today
+        end_datetime = today
 
+    begin_datetime = begin_datetime.replace(tzinfo=timezone.utc)
     end_datetime = end_datetime.replace(tzinfo=timezone.utc)
 
     # strptime function includes hours, minutes, and seconds as 00 by default.
     # This check is done in case the begin and end datetime values are the same.
     if end_datetime == begin_datetime:
-        end_datetime = end_datetime + timedelta(days=1)
+        begin_datetime = end_datetime - timedelta(days=1)
 
     if begin_datetime > end_datetime:
         raise BadRequest('beginDateTime value must be lower than endDateTime')
+
+    if end_datetime > today:
+        raise BadRequest('endDateTime value must be lower or equal to today')
 
     return begin_datetime, end_datetime
 
@@ -70,22 +81,24 @@ def get_ews_responses(begin_datetime, end_datetime):
         resp.raise_for_status()
         data_per_location = resp.json()
 
-        days = [start + timedelta(days=d) for d in range((end - start).days + 1)]
+        days = [start + timedelta(days=d) for d in range((end - start).days)]
 
         location_data_by_day = []
         for n in range(len(days)):
-            daily_levels = [_['value'][1] for _ in data_per_location if
-                            dtparser(_['value'][0]).date() == days[n]]
-            # # location_data['daily_levels'] = daily_levels
-            if len(daily_levels) > 0:
-                average_level = round(sum(daily_levels) / len(daily_levels))
-            else:
-                average_level = 0
-            location_data_by_day.append({
-                'date': days[n].strftime('%Y-%m-%d'),
-                'average_level': average_level,
-                **location
-            })
+            daily_levels = numpy.array(
+                [_['value'][1] for _ in data_per_location if dtparser(_['value'][0]).date() == days[n]]
+            )
+            dl_array = numpy.array(daily_levels)
+
+            if len(dl_array) > 0:
+                location_data_by_day.append({
+                    'date': days[n].strftime('%Y-%m-%d'),
+                    'min': int(numpy.min(dl_array)),
+                    'max': int(numpy.max(dl_array)),
+                    'median': round(numpy.median(dl_array), 2),
+                    'mean': round(numpy.mean(dl_array), 2),
+                    **location
+                })
 
         return location_data_by_day
 
