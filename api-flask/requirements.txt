@@ -1,6 +1,6 @@
 Flask-Caching==1.9.0
 Flask-Cors==3.0.9
-rasterstats==0.14.0
+rasterstats==0.16.0
 requests==2.23.0
 Shapely==1.7.0
 # Used by `make test` only:
