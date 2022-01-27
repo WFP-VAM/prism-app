@@ -94,10 +94,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [aboveThreshold, setAboveThreshold] = useState('');
   const [thresholdError, setThresholdError] = useState<string | null>(null);
 
-  const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
-    l => l.type === ADMIN_LEVEL_DATA_LAYER_KEY,
+    l => l.type === 'admin_level_data',
   );
   const [previousBaselineId, setPreviousBaselineId] = useState<
     LayerKey | undefined

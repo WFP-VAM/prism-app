@@ -6,7 +6,6 @@
     "admin_code": "NSO_CODE",
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
     "admin_level_local_names": ["ADM1_MN", "ADM2_MN"],
-    "isPrimary": true,
     "styles:": {
       "fill": {
         "fill-opacity": 0
