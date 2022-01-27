@@ -17,6 +17,10 @@
     "longitude": 103.111657,
     "zoom": 4.5
   },
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin1_boundaries"
+  ],
   "categories": {
     "hazards": {
       "drought_indicators": ["pasture_anomaly", "ndvi", "ModisVHI"],

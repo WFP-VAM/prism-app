@@ -50,7 +50,7 @@ function TimelineItems({
             )}
             {availableDates
               .map(availableDate =>
-                moment(availableDate + USER_DATE_OFFSET).format('DD MMM YYYY'),
+                moment(availableDate + USER_DATE_OFFSET).format('MMM DD YYYY'),
               )
               .includes(date.label) && (
               <div
