@@ -21,7 +21,7 @@ def parse_ews_datetime_params():
         begin_datetime = dtparser(begin_datetime_str)
     else:
         # yesterday
-        end_datetime = today - timedelta(days = 1)
+        end_datetime = today - timedelta(days=1)
 
     end_datetime_str = request.args.get('endDateTime')
     if end_datetime_str is not None:
@@ -86,7 +86,8 @@ def get_ews_responses(begin_datetime, end_datetime):
         location_data_by_day = []
         for n in range(len(days)):
             daily_levels = numpy.array(
-                [_['value'][1] for _ in data_per_location if dtparser(_['value'][0]).date() == days[n]]
+                [_['value'][1] for _ in data_per_location
+                 if dtparser(_['value'][0]).date() == days[n]]
             )
             dl_array = numpy.array(daily_levels)
 
