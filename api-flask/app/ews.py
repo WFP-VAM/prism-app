@@ -26,7 +26,6 @@ def parse_ews_params():
         begin_datetime = today
     begin_datetime = begin_datetime.replace(tzinfo=timezone.utc)
 
-
     end_datetime_str = request.args.get('endDateTime')
     if end_datetime_str is not None:
         end_datetime = dtparser(end_datetime_str)
@@ -127,4 +126,3 @@ def get_ews_responses(only_dates, begin_datetime, end_datetime):
     )
 
     return list(itertools.chain(*list(map(parse_data_by_location, location_details))))
-    # return [{"date": "2022-01-28", "lat": 12.293882, "lon": 103.864041, "mean": 1500}, {"date": "2022-01-28", "lat": 11.537132, "lon": 104.373833, "mean": 2500}]
