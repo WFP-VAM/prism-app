@@ -524,5 +524,59 @@
       {"value": "100 - 500", "color": "#feb24c"},
       {"value": "500 or more", "color": "#f03b20"}
     ]
-  }  
+  },
+  "river_level": {
+    "title": "Current water height (mm)",
+    "type": "point_data",
+    "data": "http://localhost/ews/data",
+    "date_url": "http://localhost/ews/data?onlyDates=true",
+    "feature_info_props": {
+      "median_daily_water_height": {
+        "type": "number",
+        "label": "Daily median water height"
+      },
+      "min_daily_water_height": {
+        "type": "number",
+        "label": "Daily minimum water height"
+      },
+      "max_daily_water_height": {
+        "type": "number",
+        "label": "Daily maximum water height"
+      }
+    },
+    "opacity": 1,
+    "measure": "mean_daily_water_height",
+    "legend_text": "This layer shows river water level in millimeters (mm). It is reported from People in Need (PIN) automated river water gauge.",
+    "legend": [
+      {
+        "value": "-6000",
+        "color": "#40004b"
+      },
+      {
+        "value": "-4000",
+        "color": "#762a83"
+      },
+      {
+        "value": "-2000",
+        "color": "#9970ab"
+      },
+      {
+        "value": "0",
+        "color": "#f7f7f7"
+      },
+
+      {
+        "value": "2000",
+        "color": "#f46d43"
+      },
+      {
+        "value": "4000",
+        "color": "#d73027"
+      },
+      {
+        "value": "5000",
+        "color": "#a50026"
+      }
+    ]
+  }
 }
