@@ -271,15 +271,19 @@ function LegendItem({
       <Paper className={classes.paper}>
         <Grid container direction="column" spacing={1}>
           <Grid item style={{ display: 'flex' }}>
-            <Typography style={{ flexGrow: 1 }} variant="h4">
+            <Typography
+              style={{ flexGrow: 1, fontWeight: 'bold' }}
+              variant="h5"
+            >
               {title}
             </Typography>
             <LayerContentPreview layerId={id} />
           </Grid>
           <Divider />
-          <Grid item className={classes.slider}>
-            <Box px={1}>
+          <Grid item>
+            <Box>
               <Slider
+                className={classes.slider}
                 value={opacity}
                 step={0.01}
                 min={0}
@@ -289,13 +293,14 @@ function LegendItem({
               />
             </Box>
           </Grid>
+          <Divider />
 
           {form &&
             form.inputs.map(input => {
               return (
                 <Grid key={input.id} item>
-                  <Typography variant="h4">{input.label}</Typography>
-                  <FormControl>
+                  <Typography variant="h5">{input.label}</Typography>
+                  <FormControl fullWidth>
                     <Select
                       className={classes.select}
                       value={input.value}
@@ -365,16 +370,18 @@ const styles = () =>
       maxHeight: '70vh',
       position: 'absolute',
       right: 16,
+      scrollbarWidth: 'thin',
     },
     select: {
       color: '#333',
+      fontSize: 12,
     },
     paper: {
       padding: 8,
-      width: 180,
+      width: 150,
     },
     slider: {
-      padding: '0 5px',
+      padding: '5px 0',
     },
   });
 

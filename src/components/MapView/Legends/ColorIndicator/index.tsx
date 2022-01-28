@@ -9,9 +9,9 @@ const useStyles = makeStyles(() =>
       alignItems: 'center',
     },
     indicator: {
-      height: 10,
+      height: 15,
       width: 10,
-      marginRight: 4,
+      marginRight: 8,
       backgroundColor: ({
         color,
         opacity,
@@ -28,7 +28,9 @@ function ColorIndicator({ value, color, opacity }: ColorIndicatorProps) {
   return (
     <div className={classes.container}>
       <div className={classes.indicator} />
-      <Typography color="textSecondary">{value}</Typography>
+      <Typography color="textSecondary" variant="h5">
+        {value}
+      </Typography>
     </div>
   );
 }
