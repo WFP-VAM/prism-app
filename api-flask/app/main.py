@@ -8,7 +8,9 @@ from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.errors import handle_error, make_json_error
+from app.kobo import get_form_responses, parse_datetime_params
 from app.timer import timed
+from app.validation import validate_intersect_parameter
 from app.zonal_stats import calculate_stats, get_wfs_response
 
 
@@ -19,8 +21,6 @@ from flask import Flask, Response, json, jsonify, request
 from flask_caching import Cache
 
 from flask_cors import CORS
-
-from kobo import get_form_responses, parse_datetime_params
 
 import rasterio
 
@@ -55,7 +55,8 @@ def _calculate_stats(zones,
                      prefix,
                      group_by,
                      geojson_out,
-                     wfs_response):
+                     wfs_response,
+                     intersect_comparison):
     """Calculate stats."""
     return calculate_stats(
         zones,
@@ -64,7 +65,8 @@ def _calculate_stats(zones,
         prefix=prefix,
         group_by=group_by,
         geojson_out=geojson_out,
-        wfs_response=wfs_response
+        wfs_response=wfs_response,
+        intersect_comparison=intersect_comparison
     )
 
 
@@ -79,6 +81,7 @@ def stats():
     geotiff_url = data.get('geotiff_url')
     zones_url = data.get('zones_url')
     zones_geojson = data.get('zones')
+    intersect_comparison_string = data.get('intersect_comparison')
 
     if geotiff_url is None:
         logger.error('Received {}'.format(data))
@@ -127,6 +130,12 @@ def stats():
 
         wfs_response = get_wfs_response(wfs_params)
 
+    intersect_comparison = None
+    if intersect_comparison_string is not None:
+        intersect_comparison = validate_intersect_parameter(
+            intersect_comparison_string
+        )
+
     features = _calculate_stats(
         zones,
         geotiff,
@@ -134,7 +143,8 @@ def stats():
         prefix='stats_',
         group_by=group_by,
         geojson_out=geojson_out,
-        wfs_response=wfs_response
+        wfs_response=wfs_response,
+        intersect_comparison=intersect_comparison
     )
 
     return jsonify(features)
@@ -171,7 +181,7 @@ def alert_by_id(id: str = '1'):
         id = int(id)
     except ValueError as e:
         logger.error(f'Failed to fetch alerts: {e}')
-        raise InternalServerError('Invalid id')
+        raise BadRequest('Invalid id')
 
     alert = alert_db.readone(id)
     if alert is None:
@@ -179,7 +189,7 @@ def alert_by_id(id: str = '1'):
 
     # secure endpoint with simple email verification
     if request.args.get('email', '').lower() != alert.email.lower():
-        raise InternalServerError('Access denied. Email addresses do not match.')
+        raise BadRequest('Access denied. Email addresses do not match.')
 
     if request.args.get('deactivate'):
         status = alert_db.deactivate(alert)
@@ -263,6 +273,14 @@ def stats_demo():
 
     geojson_out = strtobool(geojson_out)
 
+    intersect_comparison_string = request.args.get('intersect_comparison', None)
+
+    intersect_comparison = None
+    if intersect_comparison_string is not None:
+        intersect_comparison = validate_intersect_parameter(
+            intersect_comparison_string
+        )
+
     features = _calculate_stats(
         zones,
         geotiff,
@@ -270,7 +288,8 @@ def stats_demo():
         prefix='stats_',
         group_by=group_by,
         geojson_out=geojson_out,
-        wfs_response=None
+        wfs_response=None,
+        intersect_comparison=intersect_comparison
     )
 
     # TODO - Properly encode before returning. Mongolian characters are returned as hex.
