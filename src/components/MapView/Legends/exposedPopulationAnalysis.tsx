@@ -32,7 +32,7 @@ import {
   LayerKey,
   ExposedPopulationDefinition,
 } from '../../../config/types';
-import { TableDefinitions } from '../../../config/utils';
+import { TableKey } from '../../../config/utils';
 import { Extent } from '../Layers/raster-utils';
 
 const AnalysisButton = withStyles(() => ({
@@ -88,6 +88,13 @@ const ExposedPopulationAnalysis = ({
     await dispatch(requestAndStoreExposedPopulation(params));
   };
 
+  // Since the exposure analysis doesn't have predefined table in configurations
+  // and need to have a `TableKey` will use this util function to handle such case
+  // used timestamp to avoid any potential rare name collision
+  const generateUniqueTableKey = (activityName: string) => {
+    return `${activityName}_${Date.now()}`;
+  };
+
   const ResultSwitches = () => {
     const features = data?.featureCollection.features;
     const hasData = features?.length === 0;
@@ -96,7 +103,7 @@ const ExposedPopulationAnalysis = ({
       dispatch(setIsDataTableDrawerActive(e.target.checked));
       dispatch(
         setCurrentDataDefinition({
-          id: TableDefinitions.animal_deaths.id,
+          id: generateUniqueTableKey('exposure_analysis') as TableKey,
           title: data?.getTitle() || '',
           table: '',
           legendText: data?.legendText || '',
