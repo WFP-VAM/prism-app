@@ -65,7 +65,6 @@ def get_ews_responses(only_dates, begin_datetime, end_datetime):
     def parse_location_details(data: dict):
         """Parse location details and format them."""
         properties = data['properties']
-        levels = properties['trigger_levels']
         coordinates = data['geometry']['coordinates']
 
         if properties['status1'] == 'Operational' and properties['status'] == 'active':
@@ -77,11 +76,22 @@ def get_ews_responses(only_dates, begin_datetime, end_datetime):
             details['name'] = properties['name']
             details['namekh'] = properties['namekh']
             details['water_height'] = properties['water_height']
-            details['watch_trigger_level'] = levels['watch_level']
-            details['warning_trigger_level'] = levels['warning']
-            details['severe_trigger_level'] = levels['severe_warning']
+            details['trigger_levels'] = properties['trigger_levels']
             return details
         return None
+
+    def get_level_status(current_level: float, trigger_levels: dict) -> str:
+        """Calculate water level status based on sensor details."""
+        watch = trigger_levels['watch_level']
+        warning = trigger_levels['warning']
+        severe_warning = trigger_levels['severe_warning']
+
+        if current_level < warning:
+            return 0
+        elif current_level < severe_warning:
+            return 1
+        else:
+            return 2
 
     def parse_data_by_location(location: dict):
         """Parse all data by this location."""
@@ -105,12 +115,19 @@ def get_ews_responses(only_dates, begin_datetime, end_datetime):
             dl_array = numpy.array(daily_levels)
 
             if len(dl_array) > 0:
+                minimum = int(numpy.min(dl_array))
+                maximum = int(numpy.max(dl_array))
+                mean = round(numpy.mean(dl_array), 2)
+                median = round(numpy.median(dl_array), 2)
+                status = get_level_status(mean, location['trigger_levels'])
+
                 location_data_by_day.append({
                     'date': days[n].strftime('%Y-%m-%d'),
-                    'min_daily_water_height': int(numpy.min(dl_array)),
-                    'max_daily_water_height': int(numpy.max(dl_array)),
-                    'median_daily_water_height': round(numpy.median(dl_array), 2),
-                    'mean_daily_water_height': round(numpy.mean(dl_array), 2),
+                    'level_min': minimum,
+                    'level_max': maximum,
+                    'level_mean': mean,
+                    'level_median': median,
+                    'level_status': status,
                     **location
                 })
 
