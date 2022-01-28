@@ -82,7 +82,6 @@ def get_ews_responses(only_dates, begin_datetime, end_datetime):
 
     def get_level_status(current_level: float, trigger_levels: dict) -> str:
         """Calculate water level status based on sensor details."""
-        watch = trigger_levels['watch_level']
         warning = trigger_levels['warning']
         severe_warning = trigger_levels['severe_warning']
 
