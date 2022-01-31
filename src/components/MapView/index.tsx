@@ -44,9 +44,9 @@ import { Extent } from './Layers/raster-utils';
 import { useUrlHistory } from '../../utils/url-utils';
 
 import {
-  getBoundaryLayers,
-  getBoundaryLayerSingleton,
   LayerDefinitions,
+  getDisplayBoundaryLayers,
+  getBoundaryLayerSingleton,
 } from '../../config/utils';
 
 import DateSelector from './DateSelector';
@@ -253,7 +253,8 @@ function MapView({ classes }: MapViewProps) {
       }
 
       if (Object.keys(LayerDefinitions).includes(id)) {
-        dispatch(addLayer(LayerDefinitions[id as LayerKey]));
+        const layer = LayerDefinitions[id as LayerKey];
+        dispatch(addLayer(layer));
 
         if (selectedDate && !urlDate) {
           updateHistory('date', moment(selectedDate).format('YYYY-MM-DD'));
@@ -300,13 +301,13 @@ function MapView({ classes }: MapViewProps) {
 
   useEffect(() => {
     dispatch(loadAvailableDates());
-    const boundaryLayers = getBoundaryLayers();
+    const displayBoundaryLayers = getDisplayBoundaryLayers();
 
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
-    boundaryLayers.map(l => dispatch(addLayer(l)));
-    boundaryLayers.map(l => dispatch(loadLayerData({ layer: l })));
+    displayBoundaryLayers.map(l => dispatch(addLayer(l)));
+    displayBoundaryLayers.map(l => dispatch(loadLayerData({ layer: l })));
   }, [dispatch]);
 
   // calculate possible dates user can pick from the currently selected layers
