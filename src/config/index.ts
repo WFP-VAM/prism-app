@@ -32,7 +32,7 @@ import {
   mozambiqueRawTables,
 } from './mozambique';
 
-import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
+import { myanmarConfig, myanmarRawLayers } from './myanmar';
 
 import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
 
@@ -94,7 +94,7 @@ const configMap = {
   myanmar: {
     appConfig: myanmarConfig,
     rawLayers: myanmarRawLayers,
-    rawTables: myanmarRawTables,
+    rawTables: {},
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mmr_admin_boundaries.json`,
   },
   namibia: {
