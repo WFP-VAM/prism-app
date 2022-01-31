@@ -14,7 +14,10 @@ import {
   WMSLayerProps,
 } from './types';
 
-export type TableKey = keyof typeof rawTables;
+// Typescript does not handle our configuration methods very well
+// So we override the type of TableKey to make it more flexible.
+export type TableKey = string;
+
 /**
  * Check if a string is an explicitly defined table in tables.json
  * @param tableKey the string to check
@@ -198,9 +201,12 @@ function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
 }
 
 function getTableByKey(key: TableKey): TableType {
+  // Typescript does not handle our configuration methods very well
+  // So we temporarily override the type of rawTables to make it more flexible.
+  const tables = rawTables as Record<string, any>;
   const rawDefinition = {
     id: key,
-    ...mapKeys(rawTables[key], (v, k) => camelCase(k)),
+    ...mapKeys(isTableKey(key) ? tables[key] : {}, (v, k) => camelCase(k)),
   };
 
   if (isValidTableDefinition(rawDefinition)) {
