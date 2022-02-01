@@ -299,6 +299,7 @@ export enum AggregationOperations {
   Mean = 'mean',
   Median = 'median',
   Sum = 'sum',
+  Intersect = 'intersect_percentage',
 }
 
 export type ThresholdDefinition = { below?: number; above?: number };

@@ -71,6 +71,23 @@ const checkRasterLayerData = (layerData: LayerData<LayerType>): RasterLayer => {
   );
 };
 
+export type AnalysisType = 'raster' | 'vector' | 'point';
+
+export function getAnalysisType(layer: WMSLayerProps): AnalysisType {
+  if (!layer.geometry) {
+    return 'raster';
+  }
+  if (layer.geometry === 'polygon') {
+    return 'vector';
+  }
+  if (layer.geometry === 'point') {
+    return 'point';
+  }
+  throw new Error(
+    `${layer.geometry} is not supported at the moment for analysis.`,
+  );
+}
+
 const operations = {
   sum, // sum method directly from lodash
   mean, // mean method directly from lodash
@@ -85,6 +102,9 @@ const operations = {
     const floor = sortedValues.length / 2 - 1;
     const ceil = sortedValues.length / 2;
     return (sortedValues[floor] + sortedValues[ceil]) / 2;
+  },
+  intersect_percentage: (data: number[]) => {
+    return 0.1 * data.length;
   },
 };
 
@@ -185,6 +205,7 @@ export type ApiData = {
   group_by: string;
   geojson_out?: boolean;
   wfs_params?: WfsRequestParams;
+  intersect_comparison?: number;
 };
 
 /* eslint-disable camelcase */
@@ -194,6 +215,7 @@ export type AlertRequest = {
   email: string;
   max?: number;
   min?: number;
+  intersect_comparison?: number;
   prism_url: string;
   zones: object;
 };

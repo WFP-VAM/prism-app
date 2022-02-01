@@ -144,6 +144,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
     }
   };
 
+  // TODO - statisticOptions should vary by layer type
+  // raster: mean, median, max, min, percentage_over_threshold.
+  // vector: intersect_percentage, intersect (boolean), maximum, minmum (given ordered categories)
+  // point: min, max, intersect (allow for a buffer setting. Config level or frontend?)
   const statisticOptions = Object.entries(AggregationOperations)
     .filter(([, value]) => value !== AggregationOperations.Sum) // sum is used only for exposure analysis.
     .map(([key, value]) => (
@@ -274,6 +278,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       throw new Error('Date must be given to run analysis');
     }
 
+    // TODO - default to admin boundaries if no baselineLayer is selected.
     if (!hazardLayerId || !baselineLayerId) {
       throw new Error('Layer should be selected to run analysis');
     }
@@ -300,7 +305,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       isExposure: false,
     };
 
-    await dispatch(requestAndStoreAnalysis(params));
+    dispatch(requestAndStoreAnalysis(params));
   };
 
   return (
