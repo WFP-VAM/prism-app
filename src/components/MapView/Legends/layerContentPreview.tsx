@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react';
 import parse, { domToReact, HTMLReactParserOptions } from 'html-react-parser';
 import { Element } from 'domhandler/lib/node';
-import marked from 'marked';
+import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import {
   IconButton,
