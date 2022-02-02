@@ -42,7 +42,7 @@ const Wrapper = () => {
 function App() {
   const isAuthenticated = useIsAuthenticated();
 
-  const authRequired: boolean = get(appConfig, 'authRequired', false);
+  const authRequired: boolean = get(appConfig, 'WFPAuthRequired', false);
 
   return (
     <ThemeProvider theme={muiTheme}>
