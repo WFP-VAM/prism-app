@@ -84,7 +84,7 @@ import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
 
 const MapboxMap = ReactMapboxGl({
-  accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
+  accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
   preserveDrawingBuffer: true,
 });
 
@@ -401,6 +401,15 @@ function MapView({ classes }: MapViewProps) {
   // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers
   const saveMap = (map: Map) => dispatch(setMap(() => map));
 
+  const style = new URL(
+    process.env.REACT_APP_DEFAULT_STYLE ||
+      'https://api.maptiler.com/maps/4843dd76-6b03-4ea2-ae45-ccdabc913b80/style.json',
+  );
+
+  if (process.env.REACT_APP_MAPTILER_KEY) {
+    style.searchParams.set('key', process.env.REACT_APP_MAPTILER_KEY);
+  }
+
   return (
     <Grid item className={classes.container}>
       {loading && (
@@ -410,10 +419,7 @@ function MapView({ classes }: MapViewProps) {
       )}
       <MapboxMap
         // eslint-disable-next-line react/style-prop-object
-        style={
-          process.env.REACT_APP_DEFAULT_STYLE ||
-          'mapbox://styles/eric-ovio/ckaoo00yp0woy1ipevzqnvwzi'
-        }
+        style={style.toString()}
         onStyleLoad={saveMap}
         center={[longitude, latitude]}
         zoom={[zoom]}
