@@ -41,6 +41,12 @@ import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
 import { rbdConfig, rbdRawLayers, rbdRawTables } from './rbd';
 
 import {
+  srilankaConfig,
+  srilankaRawLayers,
+  srilankaRawTables,
+} from './srilanka';
+
+import {
   tajikistanConfig,
   tajikistanRawLayers,
   tajikistanRawTables,
@@ -110,6 +116,12 @@ const configMap = {
     rawLayers: rbdRawLayers,
     rawTables: rbdRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_mar2021_projected_jun2021_simple.json`,
+  },
+  srilanka: {
+    appConfig: srilankaConfig,
+    rawLayers: srilankaRawLayers,
+    rawTables: srilankaRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/lka_boundaries_admin3.json`,
   },
   tajikistan: {
     appConfig: tajikistanConfig,
