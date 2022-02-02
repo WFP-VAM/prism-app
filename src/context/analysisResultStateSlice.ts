@@ -178,12 +178,14 @@ const createAPIRequestParams = (
   date: ReturnType<Date['getTime']>,
   params: WfsRequestParams | AdminLevelDataLayerProps,
 ): ApiData => {
-  const adminBoundaries = getBoundaryLayerSingleton();
+  const { adminLevelNames } = getBoundaryLayerSingleton();
 
+  // If the analysis is related to a AdminLevelData layer, we get the index from params.
+  // For Exposed population we use the latest-level boundary indicator.
   const groupBy =
-    adminBoundaries.adminLevelNames[
-      (params as AdminLevelDataLayerProps).adminLevel - 1
-    ] || adminBoundaries.adminLevelNames[0];
+    params instanceof AdminLevelDataLayerProps
+      ? adminLevelNames[params.adminLevel - 1]
+      : adminLevelNames[adminLevelNames.length - 1];
 
   const wfsParams = (params as WfsRequestParams).layer_name
     ? { wfs_params: params as WfsRequestParams }
