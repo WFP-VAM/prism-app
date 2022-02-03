@@ -404,12 +404,8 @@ function MapView({ classes }: MapViewProps) {
 
   const style = new URL(
     process.env.REACT_APP_DEFAULT_STYLE ||
-      'https://api.maptiler.com/maps/4843dd76-6b03-4ea2-ae45-ccdabc913b80/style.json',
+      'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
   );
-
-  if (process.env.REACT_APP_MAPTILER_KEY) {
-    style.searchParams.set('key', process.env.REACT_APP_MAPTILER_KEY);
-  }
 
   return (
     <Grid item className={classes.container}>
