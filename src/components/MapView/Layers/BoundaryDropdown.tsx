@@ -369,9 +369,14 @@ export const GotoBoundaryDropdown = () => {
     | undefined;
   const { data } = boundaryLayerData || {};
 
+  const {
+    map: { latitude, longitude, zoom },
+    navigationDropdown,
+  } = appConfig;
+
   const styles = useStyles();
 
-  if (!data || !map) {
+  if (!data || !map || !navigationDropdown) {
     return null;
   }
 
@@ -393,10 +398,6 @@ export const GotoBoundaryDropdown = () => {
           });
 
           if (newSelectedBoundaries.length === 0) {
-            const {
-              map: { latitude, longitude, zoom },
-            } = appConfig;
-
             map.flyTo({ center: { lng: longitude, lat: latitude }, zoom });
 
             return;

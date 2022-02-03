@@ -1,5 +1,6 @@
 {
     "country": "Regional Bureau Dakar",
+    "navigationDropdown": false,
     "icons": {
       "vulnerability": "icon_vulnerable.png",
       "exposure": "icon_basemap.png",

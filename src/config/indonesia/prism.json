@@ -1,5 +1,6 @@
 {
   "country": "Indonesia",
+  "navigationDropdown": false,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
