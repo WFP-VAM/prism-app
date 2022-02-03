@@ -34,6 +34,7 @@ export interface LayerDataParams<T extends LayerType> {
   layer: T;
   extent?: Extent;
   date?: number;
+  availableDates?: number[];
 
   [key: string]: any;
 }

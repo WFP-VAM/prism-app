@@ -40,20 +40,76 @@ export const queryParamsToString = (queryParams?: {
         .join('&')
     : '';
 
+const getDatesFromCalendar = (
+  momentDate: moment.Moment,
+  availableDates: number[],
+): [string, string] => {
+  const startDate = momentDate.format('YYYY-MM-DD');
+
+  const endDateNumber =
+    availableDates[availableDates.findIndex(l => l > momentDate.valueOf())];
+
+  const endDate = moment(endDateNumber).format('YYYY-MM-DD');
+
+  return [startDate, endDate];
+};
+
+const getDatesFromDaysPeriod = (
+  momentDate: moment.Moment,
+  daysPeriod: number,
+): [string, string] => {
+  const startDate = momentDate
+    .clone()
+    .subtract(daysPeriod, 'days')
+    .format('YYYY-MM-DD');
+  const endDate = momentDate
+    .clone()
+    .add(daysPeriod, 'days')
+    .format('YYYY-MM-DD');
+
+  return [startDate, endDate];
+};
+
+const getDatesWithoutValidityDays = (
+  momentDate: moment.Moment,
+): [string, string] => {
+  const dateStr = momentDate.format('YYYY-MM-DD');
+
+  return [dateStr, dateStr];
+};
+
+const getDates = (
+  momentDate: moment.Moment,
+  availableDates?: number[],
+  validityDays?: number | 'calendar',
+): [string, string] => {
+  if (!validityDays || !availableDates) {
+    return getDatesWithoutValidityDays(momentDate);
+  }
+
+  if (validityDays === 'calendar') {
+    return getDatesFromCalendar(momentDate, availableDates);
+  }
+  return getDatesFromDaysPeriod(momentDate, validityDays);
+};
+
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async ({
   date,
-  layer: { data: dataUrl, fallbackData, additionalQueryParams },
+  layer: { data: dataUrl, fallbackData, additionalQueryParams, validityDays },
+  availableDates,
 }) => {
   // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
 
-  const formattedDate = date && moment(date).format('YYYY-MM-DD');
+  const momentDate = moment(date);
+
+  const [startDate, endDate] = date
+    ? ['2000-01-01', '2023-12-21']
+    : getDates(momentDate, availableDates, validityDays);
 
   // TODO exclusive to this api...
-  const dateQuery = `beginDateTime=${
-    formattedDate || '2000-01-01'
-  }&endDateTime=${formattedDate || '2023-12-21'}`;
+  const dateQuery = `beginDateTime=${startDate}&endDateTime=${endDate}`;
 
   const requestUrl = `${dataUrl}${
     dataUrl.includes('?') ? '&' : '?'
@@ -77,7 +133,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       // using moment here helps compensate for these discrepancies
       obj =>
         moment(obj.date).format('YYYY-MM-DD') ===
-        moment(formattedDate).format('YYYY-MM-DD'),
+        momentDate.format('YYYY-MM-DD'),
     );
   }
   return GeoJSON.parse(data, { Point: ['lat', 'lon'] });

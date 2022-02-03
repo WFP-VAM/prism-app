@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
 import { PointDataLayerProps } from '../../../../config/types';
 
+import { availableDatesSelector } from '../../../../context/serverStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
@@ -15,10 +16,12 @@ import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayerSingleton } from '../../../../config/utils';
+import { getPossibleDatesForLayer } from '../../../../utils/server-utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const selectedDate = useDefaultDate(layer.id);
+  const serverAvailableDates = useSelector(availableDatesSelector);
 
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<PointDataLayerProps>
@@ -27,11 +30,19 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
 
   const { data } = layerData || {};
 
+  const availableDates = getPossibleDatesForLayer(layer, serverAvailableDates);
+
   useEffect(() => {
     if (!data) {
-      dispatch(loadLayerData({ layer, date: selectedDate }));
+      dispatch(
+        loadLayerData({
+          layer,
+          date: selectedDate,
+          availableDates,
+        }),
+      );
     }
-  }, [data, dispatch, layer, selectedDate]);
+  }, [data, dispatch, layer, selectedDate, availableDates]);
 
   if (!data) {
     return null;

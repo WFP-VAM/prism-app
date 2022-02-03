@@ -1327,6 +1327,7 @@
     "type": "point_data",
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "validity_days": 20,
     "additional_query_params": {
       "form_name": "test_prism_form_v3",
       "datetime_field": "date_time",
