@@ -1,5 +1,5 @@
-import { camelCase, mapKeys } from 'lodash';
-import { rawLayers, rawTables } from '.';
+import { camelCase, mapKeys, get } from 'lodash';
+import { rawLayers, rawTables, appConfig } from '.';
 import {
   BoundaryLayerProps,
   checkRequiredKeys,
@@ -14,7 +14,10 @@ import {
   WMSLayerProps,
 } from './types';
 
-export type TableKey = keyof typeof rawTables;
+// Typescript does not handle our configuration methods very well
+// So we override the type of TableKey to make it more flexible.
+export type TableKey = string;
+
 /**
  * Check if a string is an explicitly defined table in tables.json
  * @param tableKey the string to check
@@ -133,35 +136,77 @@ export function getBoundaryLayers(): BoundaryLayerProps[] {
   const boundaryLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
   );
-  if (boundaryLayers.length === 0) {
+
+  return boundaryLayers;
+}
+
+export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
+  const boundaryLayers = getBoundaryLayers();
+  const boundariesCount = boundaryLayers.length;
+
+  if (boundariesCount === 0) {
     throw new Error(
       'No boundary layer found. There should be at least one boundary layer defined in layers.json',
     );
   }
+
+  // check how many boundary layers defined in `layers.json`
+  // if they are more than one, use `defaultDisplayBoundaries` defined in `prism.json`
+  if (boundariesCount > 1) {
+    const defaultBoundaries: LayerKey[] = get(
+      appConfig,
+      'defaultDisplayBoundaries',
+      [],
+    );
+
+    const invalidDefaults = defaultBoundaries.filter(
+      id => !boundaryLayers.map(l => l.id).includes(id),
+    );
+
+    if (invalidDefaults.length > 0) {
+      throw new Error(
+        'Some of `defaultDisplayBoundaries` layer Ids are not valid. You must provide valid ids from `layers.json`',
+      );
+    }
+
+    // get override layers from override names without
+    // disrupting the order of which they are defined
+    // since the first is considered as default
+    const defaultDisplayBoundaries = defaultBoundaries.map(
+      id => boundaryLayers.filter(l => l.id === id)[0],
+    );
+
+    if (defaultDisplayBoundaries.length === 0) {
+      throw new Error(
+        'Multiple boundary layers found. You must provide `defaultDisplayBoundaries` in prism.json',
+      );
+    }
+
+    return defaultDisplayBoundaries;
+  }
+
   return boundaryLayers;
 }
 
 export function getBoundaryLayerSingleton(): BoundaryLayerProps {
-  const boundaryLayers = getBoundaryLayers();
-  const boundaryLayer = boundaryLayers.find(l => l.id === 'admin_boundaries');
-
-  if (!boundaryLayer) {
-    throw new Error(
-      'No admin_boundaries Layer found! There should be exactly one boundary layer defined in layers.json with id admin_boundaries.',
-    );
-  }
-
-  return boundaryLayer;
+  return getDisplayBoundaryLayers()[0];
 }
+
+export const isPrimaryBoundaryLayer = (layer: BoundaryLayerProps) =>
+  (layer.type === 'boundary' && layer.isPrimary) ||
+  layer.id === getBoundaryLayerSingleton().id;
 
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
 }
 
 function getTableByKey(key: TableKey): TableType {
+  // Typescript does not handle our configuration methods very well
+  // So we temporarily override the type of rawTables to make it more flexible.
+  const tables = rawTables as Record<string, any>;
   const rawDefinition = {
     id: key,
-    ...mapKeys(rawTables[key], (v, k) => camelCase(k)),
+    ...mapKeys(isTableKey(key) ? tables[key] : {}, (v, k) => camelCase(k)),
   };
 
   if (isValidTableDefinition(rawDefinition)) {

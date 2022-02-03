@@ -32,7 +32,7 @@ def get_kobo_params():
 
     geom_field = request.args.get('geomField')
     if geom_field is None:
-        raise BadRequest('Missing parameter geomField')
+        raise BadRequest('Missing parameter: geomField')
 
     filters = {}
     filters_params = request.args.get('filters', None)
