@@ -14,8 +14,8 @@
         }
       },
       "admin_code": "adm1_pcod2",
-      "admin_level_names": ["adm0_name", "adm1_name"],
-      "admin_level_local_names": ["adm0_name", "adm1_name"]
+      "admin_level_names": ["adm0_name", "adm1_name","adm2_name"],
+      "admin_level_local_names": ["adm0_name", "adm1_name","adm2_name"]
     },
     "rainfall_dekad": {
       "title": "10-day rainfall estimate (mm)",
