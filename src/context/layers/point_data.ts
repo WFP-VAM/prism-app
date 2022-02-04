@@ -101,7 +101,8 @@ export const loadEWS1294Dataset = createAsyncThunk<
   PointDatasetParams,
   CreateAsyncThunkTypes
 >('datasetState/loadDataset', async (params: PointDatasetParams) => {
-  (await fetch(params.url)).json();
+  const data = await (await fetch(params.url)).json();
+  console.log('--> --> ', data);
   return {
     rows: [
       {

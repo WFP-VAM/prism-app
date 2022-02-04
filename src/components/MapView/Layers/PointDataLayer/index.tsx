@@ -67,18 +67,17 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   };
 
   const onClickHandler = (evt: any) => {
-    // get the `external_id`
+    const today = new Date();
+    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const start = `${weekAgo.getFullYear()}-${
+      weekAgo.getMonth() + 1
+    }-${weekAgo.getDate()}`;
+    const end = `${today.getFullYear()}-${
+      today.getMonth() + 1
+    }-${today.getDate()}`;
     const externalId = get(evt.features[0].properties, 'external_id');
-
-    // form url
-    const url = `http://sms.ews1294.info/api/v1/sensors/sensor_event?external_id=${externalId}`;
-    // form a url for 7 days of the specified sensor
-    // dispatch loadDataset with datasetparams
-    // toggleSelected point/boundary
-    const pointDatasetParams: PointDatasetParams = {
-      url:
-        'http://sms.ews1294.info/api/v1/sensors/sensor_event?external_id=TEPv4.0-013&start=2022-01-25&end=2022-01-31',
-    };
+    const url = `http://sms.ews1294.info/api/v1/sensors/sensor_event?external_id=${externalId}&start=${start}&end=${end}`;
+    const pointDatasetParams: PointDatasetParams = { url };
     dispatch(loadEWS1294Dataset(pointDatasetParams));
   };
 
