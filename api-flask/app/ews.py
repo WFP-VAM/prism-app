@@ -50,10 +50,9 @@ def parse_ews_params():
 
 def get_ews_responses(only_dates, begin_datetime, end_datetime):
     """Get all data using ews_1294 api endpoints."""
-    # NOTE: Since ews-1294 api have performance issues, we decided to take shortcut
-    # on parsing and delivering dates to PRISM frontend by limiting it to only today
-    # this can be removed once we are sure the ews-1294 have solved the
-    # preformance issue
+    # NOTE: PRISM will get todays' worth of data and parse them.
+    # only_dates is a shortcut to provide one day to the PRISM timeline
+    # without incurring computational cost
     if only_dates:
         today = datetime.now().replace(tzinfo=timezone.utc)
         return [today.strftime('%Y-%m-%d')]
