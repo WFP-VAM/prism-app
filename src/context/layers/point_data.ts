@@ -1,8 +1,11 @@
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { camelCase } from 'lodash';
 import GeoJSON from 'geojson';
 import moment from 'moment';
 import type { LazyLoader } from './layer-data';
 import { PointDataLayerProps } from '../../config/types';
+import type { CreateAsyncThunkTypes, RootState } from '../store';
+import { TableData } from '../tableStateSlice';
 
 declare module 'geojson' {
   export const version: string;
@@ -82,3 +85,67 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   }
   return GeoJSON.parse(data, { Point: ['lat', 'lon'] });
 };
+
+interface PointDatasetState {
+  data?: TableData;
+}
+
+const initialState: PointDatasetState = {};
+
+export type PointDatasetParams = {
+  url: string;
+};
+
+export const loadEWS1294Dataset = createAsyncThunk<
+  TableData,
+  PointDatasetParams,
+  CreateAsyncThunkTypes
+>('datasetState/loadDataset', async (params: PointDatasetParams) => {
+  (await fetch(params.url)).json();
+  return {
+    rows: [
+      {
+        external_id: 'External ID',
+        d1: '29/01/22',
+        d2: '30/01/22',
+        d4: '31/01/22',
+        d5: '01/02/22',
+        d6: '02/02/22',
+        d7: '03/02/22',
+      },
+      {
+        external_id: 'TEPv4.0-001',
+        d1: '3920',
+        d2: '1821',
+        d4: '2290',
+        d5: '873',
+        d6: '298',
+        d7: '2222',
+      },
+    ],
+    columns: ['external_id', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7'],
+  };
+});
+
+export const pointDatasetResultStateSlice = createSlice({
+  name: 'PointDatasetResultSlice',
+  initialState,
+  reducers: {},
+  extraReducers: builder => {
+    builder.addCase(
+      loadEWS1294Dataset.fulfilled,
+      (
+        { ...rest },
+        { payload }: PayloadAction<TableData>,
+      ): PointDatasetState => ({
+        ...rest,
+        data: payload,
+      }),
+    );
+  },
+});
+
+export const PointDatasetSelector = (state: RootState): TableData | undefined =>
+  state.pointDatasetState.data;
+
+export default pointDatasetResultStateSlice.reducer;
