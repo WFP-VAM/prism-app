@@ -14,7 +14,7 @@
     ]
   },
   "rainfall_extreme_probability": {
-    "title": "Extreme Rainfall last 5-days",
+    "title": "Extreme rainfall (last 5 days)",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_probability",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
@@ -55,7 +55,7 @@
     ],
     "date_interval": "day",
     "opacity": 0.9,
-    "legend_text": "Extreme Rainfall last 5-days",
+    "legend_text": "Extreme rainfall (last 5 days)",
     "legend": [
       {
         "value": "",
@@ -80,7 +80,7 @@
     ]
   },
   "rainfall_extreme_flood": {
-    "title": "Extreme Rainfall-triggering Flood last 5-days",
+    "title": "Extreme rainfall-triggering flood (last 5 days)",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_flood",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
@@ -115,7 +115,7 @@
     ],
     "date_interval": "day",
     "opacity": 0.9,
-    "legend_text": "Extreme Rainfall-triggering Flood last 5-days",
+    "legend_text": "Extreme rainfall-triggering floods (last 5 days)",
     "legend": [
       {
         "value": "Category 0",
@@ -136,7 +136,7 @@
     ]
   },
   "rainfall_extreme_forecast_probability": {
-    "title": "Extreme Rainfall next 5-days",
+    "title": "Extreme rainfall (next 5 days)",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_forecast_probability",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
@@ -194,7 +194,7 @@
     ],
     "date_interval": "day",
     "opacity": 0.9,
-    "legend_text": "Extreme Rainfall next 5-days",
+    "legend_text": "Extreme rainfall (next 5 days)",
     "legend": [
       {
         "value": "",
@@ -219,7 +219,7 @@
     ]
   },
   "rainfall_extreme_forecast_flood": {
-    "title": "Extreme Rainfall-triggering Flood next 5-days",
+    "title": "Extreme rainfall-triggering floods (next 5 days)",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_forecast_flood",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
@@ -298,7 +298,7 @@
     ]
   },
   "rainfall_anomaly": {
-    "title": "Rainfall Anomaly (Monthly)",
+    "title": "Rainfall anomaly (monthly)",
     "type": "wms",
     "server_layer_name": "rainfall_anomaly_monthly",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
@@ -419,7 +419,7 @@
     ]
   },
   "dslr": {
-    "title": "Days Since Last Rain",
+    "title": "# Days since last rain",
     "type": "wms",
     "server_layer_name": "days_since_last_rain_daily",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
@@ -509,12 +509,12 @@
   },
   "ndvi_dekad": {
     "type": "wms",
-    "title": "NDVI 10-days (MODIS)",
+    "title": "NDVI (10 days)",
     "server_layer_name": "mxd13c1_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.5,
-    "legend_text": "LEGEND",
+    "legend_text": "NDVI 10 days | Source: MODIS",
     "legend": [
       {
         "value": 1000,
@@ -556,7 +556,7 @@
   },
   "ndvi_dekad_anomaly": {
     "type": "wms",
-    "title": "NDVI anomaly 10 days (MODIS)",
+    "title": "NDVI anomaly (10 days)",
     "server_layer_name": "mxd13c1_viq_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
@@ -564,7 +564,7 @@
       "styles": "viq"
     },
     "opacity": 0.5,
-    "legend_text": "Anomali NDVI dibandingkan dengan rata-rata jangka panjnag",
+    "legend_text": "NDVI (MODIS) anomaly compared to long-term average | Source: MODIS",
     "legend": [
       {
         "value": 50,
@@ -606,20 +606,20 @@
   },
   "pop2020": {
     "type": "wms",
-    "title": "Population Distribution",
+    "title": "Population distribution",
     "server_layer_name": "population2018",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "opacity": 0.5,
-    "legend_text": "Sebaran Penduduk 2020 | Sumber: Landsacan",
+    "legend_text": "Population distribution 2020 | Source: Landscan",
     "legend": [
       {
-        "value": "Sebaran Penduduk",
-        "color": "#007a10"
+        "value": "Population Distribution",
+        "color": "#AD347C"
       }
     ]
   },
   "HH_AGRI": {
-    "title": "Households with Income Derived from Agriculture (%)",
+    "title": "HHs with income derived from agriculture (%)",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=agriculture",
@@ -657,7 +657,7 @@
     "legend_text": "Source: SUSENAS 2020"
   },
   "HH_FE65": {
-    "title": "Households with Food Expenditure > 65% (%)",
+    "title": "HHs with food expenditure > 65% (%)",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=food65",
@@ -696,20 +696,20 @@
   },
   "paddy_areas": {
     "type": "wms",
-    "title": "Paddy Areas",
+    "title": "Paddy areas",
     "server_layer_name": "paddy_areas_raster",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "opacity": 0.5,
-    "legend_text": "Lahan Baku Sawah 2019 | Sumber: MoA",
+    "legend_text": "Paddy areas | Source: MoA",
     "legend": [
       {
-        "value": "Lahan Sawah",
+        "value": "Paddy",
         "color": "#007a10"
       }
     ]
   },
   "desil_10%": {
-    "title": "Households With 10% Lowest Income",
+    "title": "HHs in lowest 10% income",
     "type": "wms",
     "server_layer_name": "Desil10%",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
@@ -755,7 +755,7 @@
     ]
   },
   "krtw_60": {
-    "title": "Female Headed Hosehold >60 years old",
+    "title": "Female headed HHs >60 years",
     "type": "wms",
     "server_layer_name": "KRTW_60",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
@@ -801,7 +801,7 @@
     ]
   },
   "disability": {
-    "title": "Number of Disable People",
+    "title": "Disabled people",
     "type": "wms",
     "server_layer_name": "Disability",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
@@ -847,7 +847,7 @@
     ]
   },
   "population_below_poverty": {
-    "title": "Poverty Rate (%)",
+    "title": "Poverty rate (%)",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=poverty",
@@ -885,7 +885,7 @@
     "legend_text": "Proportion of people living under the district level poverty line (%) | Source: Susenas 2019, BPS"
   },
   "pou": {
-    "title": "Prevalence of Undernoursihment (%)",
+    "title": "Prevalence of undernourishment (%)",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "POU",
@@ -923,7 +923,7 @@
     "legend_text": "Percentage of undernoursihment | Source: BPS 2018"
   },
   "OP_UNEMPLOY": {
-    "title": "Open Unemployment (%)",
+    "title": "Open unemployment (%)",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=unemploy",
@@ -961,7 +961,7 @@
     "legend_text": "Source: BPS 2019"
   },
   "FSVA_2020": {
-    "title": "FSVA 2020",
+    "title": "FSVA 2020 (Priority groups)",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "FSVA",
@@ -1000,11 +1000,11 @@
         "color": "#3b703b"
       }
     ],
-    "legend_text": "Source: BKP 2020"
+    "legend_text": "Food Security and Vulnerability Atlas | Source: BKP 2020"
   },
   "dslr_pop": {
     "type": "admin_level_data",
-    "title": "Meteorological Drought Affected Population",
+    "title": "Drought-affected populations",
     "path": "https://prism-backend-old.wfpidn.link/home/get_layer/22?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
     "date_url": "https://prism-backend-old.wfpidn.link/home/get_date/22?start=2020-01-02&end=2020-01-02",
     "data_field": "VALUE",
@@ -1037,11 +1037,11 @@
         "color": "#a50f15"
       }
     ],
-    "legend_text": ""
+    "legend_text": "Drought-affected populations"
   },
   "dslr_crops": {
     "type": "admin_level_data",
-    "title": "Rice Field Affected by Meteorological Drought (hectare)",
+    "title": "Drought-affected ricefields (hectare)",
     "path": "https://prism-backend-old.wfpidn.link/home/get_layer/25?start={YYYY-MM-DD}&end={YYYY-MM-DD}",
     "date_url": "https://prism-backend-old.wfpidn.link/home/get_date/25?start=2020-01-02&end=2020-01-02",
     "data_field": "VALUE",
@@ -1077,7 +1077,7 @@
     "legend_text": "Potensi Luas Sawah Terdampak Kekeringan Metereologis"
   },
   "HH_ELEC_2019": {
-    "title": "Electricity Access (%)",
+    "title": "Access to electricity (%)",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "Electicity",
@@ -1109,7 +1109,7 @@
     "legend_text": "Source: BPS 2020"
   },
   "HH_FOODASS": {
-    "title": "Poor Households With Access to Food Assistance (%)",
+    "title": "Poor HHs receiving food assistance (%)",
     "type": "admin_level_data",
     "path": "./data/indonesia/socio_economic.json",
     "data_field": "Depend",

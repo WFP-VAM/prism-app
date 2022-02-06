@@ -28,9 +28,9 @@
         "rainfall_extreme_forecast_probability",
         "rainfall_extreme_forecast_flood"
       ],
-      "climate_indicator": ["rainfall_anomaly", "spi"],
-      "drought_indicator": ["ModisVHI", "dslr"],
-      "vegetation_indicator": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+      "climate_indicators": ["rainfall_anomaly", "spi"],
+      "drought_indicators": ["ModisVHI", "dslr"],
+      "vegetation_indicators": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "exposure": {
       "demographics": ["pop2020", "HH_AGRI", "HH_FE65"],
