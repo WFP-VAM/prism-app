@@ -13,6 +13,9 @@ import requests
 from werkzeug.exceptions import BadRequest
 
 
+BASE_API = 'https://api.ews1294.com/v1/'
+
+
 def parse_ews_params():
     """Transform params used for ews request."""
     only_dates = True if request.args.get('onlyDates') else False
@@ -48,8 +51,39 @@ def parse_ews_params():
     return only_dates, begin_datetime, end_datetime
 
 
-def get_ews_responses(only_dates, begin_datetime, end_datetime):
-    """Get all data using ews_1294 api endpoints."""
+def get_ews_location_response(begin_datetime, end_datetime):
+    """Get datapoints for one sensor location"""
+    location_id = request.args.get('locationId')
+    if location_id is None:
+        raise BadRequest('Missing parameter locationId')
+
+    start = begin_datetime.date()
+    end = end_datetime.date()
+    url = '{0}datapoints?external_id={1}&start={2}&end={3}'.format(
+        BASE_API, location_id, start, end
+    )
+
+    resp = requests.get(url)
+    resp.raise_for_status()
+    location_data = resp.json()
+    days = [start + timedelta(days=d) for d in range((end - start).days)]
+
+    grouped_location_data = []
+    for n in range(len(days)):
+        daily_levels = numpy.array(
+            [_['value'][1] for _ in location_data
+             if dtparser(_['value'][0]).date() == days[n]]
+        )
+        dl_array = numpy.array(daily_levels)
+        mean = round(numpy.mean(dl_array), 2)
+        grouped_location_data.append([days[n].strftime('%Y-%m-%d'), mean])
+
+    rows = [{'d{}'.format(i): v} for i, v in grouped_location_data]
+    return rows
+
+
+def get_ews_response(only_dates, begin_datetime, end_datetime):
+    """Get datapoints for sensor locations."""
     # NOTE: PRISM will get todays' worth of data and parse them.
     # only_dates is a shortcut to provide one day to the PRISM timeline
     # without incurring computational cost
@@ -59,7 +93,6 @@ def get_ews_responses(only_dates, begin_datetime, end_datetime):
 
     start = begin_datetime.date()
     end = end_datetime.date()
-    base_api = 'http://sms.ews1294.info/api/v1/'
 
     def parse_location_details(data: dict):
         """Parse location details and format them."""
@@ -94,8 +127,8 @@ def get_ews_responses(only_dates, begin_datetime, end_datetime):
     def parse_data_by_location(location: dict):
         """Parse all data by this location."""
         location_id = location['external_id']
-        data_url = '{0}sensors/sensor_event?external_id={1}&start={2}&end={3}'.format(
-            base_api, location_id, start, end
+        data_url = '{0}datapoints?external_id={1}&start={2}&end={3}'.format(
+            BASE_API, location_id, start, end
         )
 
         resp = requests.get(data_url)
@@ -131,13 +164,13 @@ def get_ews_responses(only_dates, begin_datetime, end_datetime):
 
         return location_data_by_day
 
-    location_url = '{0}location.geojson?type=river'.format(base_api)
+    location_url = '{0}locations?type=river'.format(BASE_API)
 
     resp = requests.get(location_url)
     resp.raise_for_status()
-    ews_data = resp.json().get('features')
+    sensors_data = resp.json().get('features')
     location_details = list(
-        filter(lambda item: item is not None, map(parse_location_details, ews_data))
+        filter(lambda item: item is not None, map(parse_location_details, sensors_data))
     )
 
     return list(itertools.chain(*list(map(parse_data_by_location, location_details))))
