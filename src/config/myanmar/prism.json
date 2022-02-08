@@ -69,7 +69,7 @@
       ]
     },
     "exposure": {
-      "population": ["total_pop", "kobo_test"],
+      "population": ["total_pop"],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",
         "population_exposed_historical_storm_surge"
