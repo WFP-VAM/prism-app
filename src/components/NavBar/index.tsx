@@ -20,7 +20,7 @@ import LanguageSelect from './LanguageSelect';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
-import mosaLogo from '../images/mosa_logo.png';
+// import mosaLogo from '../images/mosa_logo.png';
 import wfpLogo from '../images/wfp_logo_small.png';
 import { uiLabel } from '../../config';
 
@@ -78,7 +78,7 @@ function NavBar({ classes }: NavBarProps) {
       <Toolbar variant="dense">
         <Grid container>
           <Grid item xs={3} className={classes.logoContainer}>
-            <img className={classes.orgLogo} src={mosaLogo} alt="logo mosa" />
+            {/* <img className={classes.orgLogo} src={mosaLogo} alt="logo mosa" /> */}
             <img className={classes.orgLogo} src={wfpLogo} alt="logo wfp" />
             <Typography
               variant="h6"
