@@ -51,37 +51,6 @@ def parse_ews_params():
     return only_dates, begin_datetime, end_datetime
 
 
-def get_ews_location_response(begin_datetime, end_datetime):
-    """Get datapoints for one sensor location"""
-    location_id = request.args.get('locationId')
-    if location_id is None:
-        raise BadRequest('Missing parameter locationId')
-
-    start = begin_datetime.date()
-    end = end_datetime.date()
-    url = '{0}datapoints?external_id={1}&start={2}&end={3}'.format(
-        BASE_API, location_id, start, end
-    )
-
-    resp = requests.get(url)
-    resp.raise_for_status()
-    location_data = resp.json()
-    days = [start + timedelta(days=d) for d in range((end - start).days)]
-
-    grouped_location_data = []
-    for n in range(len(days)):
-        daily_levels = numpy.array(
-            [_['value'][1] for _ in location_data
-             if dtparser(_['value'][0]).date() == days[n]]
-        )
-        dl_array = numpy.array(daily_levels)
-        mean = round(numpy.mean(dl_array), 2)
-        grouped_location_data.append([days[n].strftime('%Y-%m-%d'), mean])
-
-    rows = [{'d{}'.format(i): v} for i, v in grouped_location_data]
-    return rows
-
-
 def get_ews_response(only_dates, begin_datetime, end_datetime):
     """Get datapoints for sensor locations."""
     # NOTE: PRISM will get todays' worth of data and parse them.
@@ -139,17 +108,30 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
 
         location_data_by_day = []
         for n in range(len(days)):
-            daily_levels = numpy.array(
-                [_['value'][1] for _ in data_per_location
-                 if dtparser(_['value'][0]).date() == days[n]]
-            )
-            dl_array = numpy.array(daily_levels)
+            levels_and_dates = [
+                _['value'] for _ in data_per_location
+                if dtparser(_['value'][0]).date() == days[n]
+            ]
 
-            if len(dl_array) > 0:
-                minimum = int(numpy.min(dl_array))
-                maximum = int(numpy.max(dl_array))
-                mean = round(numpy.mean(dl_array), 2)
-                median = round(numpy.median(dl_array), 2)
+            rows = list()
+
+            dates_row = dict()
+            for count, level in enumerate(levels_and_dates):
+                dates_row[count] = level[0]
+            rows.append(dates_row)
+
+            levels_row = dict()
+            for count, level in enumerate(levels_and_dates):
+                levels_row[count] = level[1]
+            rows.append(levels_row)
+
+            daily_levels = numpy.array([_[1] for _ in levels_and_dates])
+
+            if len(daily_levels) > 0:
+                minimum = int(numpy.min(daily_levels))
+                maximum = int(numpy.max(daily_levels))
+                mean = round(numpy.mean(daily_levels), 2)
+                median = round(numpy.median(daily_levels), 2)
                 status = get_level_status(mean, location['trigger_levels'])
 
                 location_data_by_day.append({
@@ -159,6 +141,8 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
                     'level_mean': mean,
                     'level_median': median,
                     'level_status': status,
+                    'daily_levels': levels_and_dates,
+                    'daily_rows': {'rows': rows, 'columns': list(rows[0].keys())},
                     **location
                 })
 

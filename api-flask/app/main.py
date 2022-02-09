@@ -11,7 +11,7 @@ from app.errors import handle_error, make_json_error
 from app.timer import timed
 from app.zonal_stats import calculate_stats, get_wfs_response
 
-from ews import get_ews_location_response, get_ews_response, parse_ews_params
+from ews import get_ews_response, parse_ews_params
 
 from flask import Flask, Response, json, jsonify, request
 
@@ -152,14 +152,6 @@ def get_kobo_forms():
     form_responses = get_form_responses(begin_datetime, end_datetime)
 
     return Response(json.dumps(form_responses), mimetype='application/json')
-
-
-@app.route('/ews/location/data', methods=['GET'])
-def get_ews_location_data():
-    """Get datapoints for only one location."""
-    _, begin_datetime, end_datetime = parse_ews_params()
-    resp = get_ews_location_response(begin_datetime, end_datetime)
-    return Response(json.dumps(resp), mimetype='application/json')
 
 
 @app.route('/ews/data', methods=['GET'])

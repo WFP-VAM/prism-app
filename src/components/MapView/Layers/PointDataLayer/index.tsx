@@ -67,16 +67,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   };
 
   const onClickHandler = (evt: any) => {
-    const today = new Date();
-    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const start = `${weekAgo.getFullYear()}-${
-      weekAgo.getMonth() + 1
-    }-${weekAgo.getDate()}`;
-    const end = `${today.getFullYear()}-${
-      today.getMonth() + 1
-    }-${today.getDate()}`;
-    const externalId = get(evt.features[0].properties, 'external_id');
-    const url = `http://sms.ews1294.info/api/v1/sensors/sensor_event?external_id=${externalId}&start=${start}&end=${end}`;
+    const url = evt.features[0].properties.daily_rows;
     const pointDatasetParams: PointDatasetParams = { url };
     dispatch(loadEWS1294Dataset(pointDatasetParams));
   };

@@ -101,31 +101,7 @@ export const loadEWS1294Dataset = createAsyncThunk<
   PointDatasetParams,
   CreateAsyncThunkTypes
 >('datasetState/loadDataset', async (params: PointDatasetParams) => {
-  const data = await (await fetch(params.url)).json();
-  console.log('--> --> ', data);
-  return {
-    rows: [
-      {
-        external_id: 'External ID',
-        d1: '29/01/22',
-        d2: '30/01/22',
-        d4: '31/01/22',
-        d5: '01/02/22',
-        d6: '02/02/22',
-        d7: '03/02/22',
-      },
-      {
-        external_id: 'TEPv4.0-001',
-        d1: '3920',
-        d2: '1821',
-        d4: '2290',
-        d5: '873',
-        d6: '298',
-        d7: '2222',
-      },
-    ],
-    columns: ['external_id', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7'],
-  };
+  return JSON.parse(params.url);
 });
 
 export const pointDatasetResultStateSlice = createSlice({
