@@ -14,10 +14,7 @@ import {
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
-import {
-  loadEWS1294Dataset,
-  PointDatasetParams,
-} from '../../../../context/layers/point_data';
+import { addEwsDataset } from '../../../../context/chartDataStateSlice';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -67,9 +64,8 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   };
 
   const onClickHandler = (evt: any) => {
-    const url = evt.features[0].properties.daily_rows;
-    const pointDatasetParams: PointDatasetParams = { url };
-    dispatch(loadEWS1294Dataset(pointDatasetParams));
+    const pointDataset = JSON.parse(evt.features[0].properties.daily_rows);
+    dispatch(addEwsDataset(pointDataset));
   };
 
   return (

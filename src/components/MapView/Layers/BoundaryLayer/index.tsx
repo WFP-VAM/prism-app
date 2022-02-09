@@ -9,7 +9,7 @@ import { LayerData } from '../../../../context/layers/layer-data';
 import {
   loadDataset,
   DatasetParams,
-} from '../../../../context/layers/boundary';
+} from '../../../../context/chartDataStateSlice';
 import {
   mapSelector,
   layerDataSelector,

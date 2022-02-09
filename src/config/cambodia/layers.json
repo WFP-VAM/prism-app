@@ -543,9 +543,9 @@
         "type": "string",
         "label": "Water height"
       },
-      "level_median": {
+      "level_mean": {
         "type": "number",
-        "label": "Water level"
+        "label": "Mean water level"
       }
     },
     "opacity": 1,

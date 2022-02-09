@@ -8,7 +8,7 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { DatasetSelector } from '../../context/layers/boundary';
+import { DatasetSelector } from '../../context/chartDataStateSlice';
 import Chart from '../DataDrawer/Chart';
 import { ChartConfig } from '../../config/types';
 
