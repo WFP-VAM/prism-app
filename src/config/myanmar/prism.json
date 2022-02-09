@@ -1,6 +1,6 @@
 {
   "country": "Myanmar",
-  "WFPAuthRequired": true,
+  "WFPAuthRequired": false,
   "alertFormActive": false,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
