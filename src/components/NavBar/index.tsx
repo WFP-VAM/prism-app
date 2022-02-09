@@ -16,24 +16,27 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { useTranslation } from 'react-i18next';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
 
-const rightSideLinks = [
-  {
-    title: 'About',
-    icon: faInfoCircle,
-    href: 'https://innovation.wfp.org/project/prism',
-  },
-  {
-    title: 'Github',
-    icon: faGithub,
-    href: 'https://github.com/oviohub/prism-frontend',
-  },
-];
-
 function NavBar({ classes }: NavBarProps) {
+  const { t } = useTranslation();
+
+  const rightSideLinks = [
+    {
+      title: t('about'),
+      icon: faInfoCircle,
+      href: 'https://innovation.wfp.org/project/prism',
+    },
+    {
+      title: 'Github',
+      icon: faGithub,
+      href: 'https://github.com/oviohub/prism-frontend',
+    },
+  ];
+
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
 
   const menu = menuList.map(({ title, ...category }) => (
