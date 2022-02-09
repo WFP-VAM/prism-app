@@ -419,13 +419,13 @@
     ]
   },
   "dslr": {
-    "title": "# Days since last rain",
+    "title": "Consecutive dry days",
     "type": "wms",
     "server_layer_name": "days_since_last_rain_daily",
     "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
     "date_interval": "day",
     "opacity": 0.5,
-    "legend_text": "A number of days since the last rainfall above 1mm per day | Source: IMERG",
+    "legend_text": "Number of days since the last rainfall above 1mm per day | Source: IMERG",
     "legend": [
       {
         "value": "No Drought",
