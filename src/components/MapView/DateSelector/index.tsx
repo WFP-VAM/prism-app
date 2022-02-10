@@ -303,7 +303,7 @@ const styles = (theme: Theme) =>
       position: 'absolute',
       bottom: '8%',
       zIndex: theme.zIndex.modal,
-      width: '100vw',
+      width: '100%',
     },
 
     datePickerContainer: {

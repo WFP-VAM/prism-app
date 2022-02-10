@@ -14,28 +14,33 @@ import {
   Drawer,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+// import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
+import {
+  faSearchMinus,
+  faSearchPlus,
+  faBars,
+} from '@fortawesome/free-solid-svg-icons';
+// import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import LanguageSelect from './LanguageSelect';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
 // import mosaLogo from '../images/mosa_logo.png';
 import wfpLogo from '../images/wfp_logo_small.png';
-import { uiLabel } from '../../config';
+// import { uiLabel } from '../../config';
 
-const rightSideLinks = [
-  {
-    title: uiLabel('about', 'About'),
-    icon: faInfoCircle,
-    href: 'https://innovation.wfp.org/project/prism',
-  },
-  {
-    title: 'Github',
-    icon: faGithub,
-    href: 'https://github.com/oviohub/prism-frontend',
-  },
-];
+// const rightSideLinks = [
+//   {
+//     title: uiLabel('about', 'About'),
+//     icon: faInfoCircle,
+//     href: 'https://innovation.wfp.org/project/prism',
+//   },
+//   {
+//     title: 'Github',
+//     icon: faGithub,
+//     href: 'https://github.com/oviohub/prism-frontend',
+//   },
+// ];
 
 function NavBar({ classes }: NavBarProps) {
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
@@ -59,19 +64,52 @@ function NavBar({ classes }: NavBarProps) {
     />
   ));
 
-  const buttons = rightSideLinks.map(({ title, icon, href }) => (
-    <Grid item key={title}>
-      <Typography
-        variant="body2"
-        component="a"
-        target="_blank"
-        href={href}
-        onClick={() => setOpenMobileMenu(false)}
-      >
-        <FontAwesomeIcon icon={icon} /> {title}
-      </Typography>
-    </Grid>
-  ));
+  // const buttons = rightSideLinks.map(({ title, icon, href }) => (
+  //   <Grid item key={title}>
+  //     <Typography
+  //       variant="body2"
+  //       component="a"
+  //       target="_blank"
+  //       href={href}
+  //       onClick={() => setOpenMobileMenu(false)}
+  //     >
+  //       <FontAwesomeIcon icon={icon} /> {title}
+  //     </Typography>
+  //   </Grid>
+  // ));
+
+  const [zoom, setZoom] = useState(1);
+
+  const changeZoom = (modifier: number) => {
+    const z = zoom + modifier;
+    setZoom(z);
+    // eslint-disable-next-line
+    (document.body.style as any).zoom = z;
+    window.dispatchEvent(new Event('resize'));
+  };
+
+  const zoomButtons = (
+    <>
+      <Grid item>
+        <Typography
+          variant="body2"
+          style={{ cursor: 'pointer' }}
+          onClick={() => changeZoom(-0.1)}
+        >
+          <FontAwesomeIcon icon={faSearchMinus} />
+        </Typography>
+      </Grid>
+      <Grid item>
+        <Typography
+          variant="body2"
+          style={{ cursor: 'pointer' }}
+          onClick={() => changeZoom(+0.1)}
+        >
+          <FontAwesomeIcon icon={faSearchPlus} />
+        </Typography>
+      </Grid>
+    </>
+  );
 
   return (
     <AppBar position="static" className={classes.appBar}>
@@ -104,7 +142,7 @@ function NavBar({ classes }: NavBarProps) {
               xs={3}
             >
               <LanguageSelect key="language" />
-              {buttons}
+              {zoomButtons}
             </Grid>
           </Hidden>
 
@@ -127,7 +165,7 @@ function NavBar({ classes }: NavBarProps) {
                 <div className={classes.mobileDrawerContent}>
                   <Grid container spacing={3}>
                     <Grid container justify="space-around" item>
-                      {buttons}
+                      {zoomButtons}
                     </Grid>
                     <Grid container direction="column" item>
                       {menuMobile}
