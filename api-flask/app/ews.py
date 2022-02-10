@@ -8,6 +8,8 @@ from flask import request
 
 import numpy
 
+import pytz
+
 import requests
 
 from werkzeug.exceptions import BadRequest
@@ -117,7 +119,13 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
 
             dates_row = dict()
             for count, level in enumerate(levels_and_dates):
-                dates_row[count] = level[0]
+                # convert naive to timezone aware and utc
+                format_str = '%Y-%m-%dT%H:%M:%S'
+                level_date = datetime.strptime(level[0], format_str)
+                ict = pytz.timezone('Asia/Phnom_Penh')
+                level_date = ict.localize(level_date)
+                level_date = level_date.astimezone(pytz.UTC)
+                dates_row[count] = level_date
             rows.append(dates_row)
 
             levels_row = dict()
