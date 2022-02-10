@@ -259,6 +259,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - **Monitoring** Uses [Sentry.io](https://sentry.io). To send monitoring info to Sentry, simply set the `Sentry` url by adding it as `REACT_APP_SENTRY_URL` in a `.env` file at the root folder.
 - **State Management** Uses [Redux](https://redux.js.org/introduction/getting-started)
 - **Testing** Uses [Jest](https://jestjs.io/) with [Enzyme](https://enzymejs.github.io/enzyme/)
+- **WFP authentication** Uses [msal](https://github.com/AzureAD/microsoft-authentication-library-for-js). You need to include within your .env file the variables `REACT_APP_OAUTH_CLIENT_ID`, `REACT_APP_OAUTH_AUTHORITY` and `REACT_APP_OAUTH_REDIRECT_URI`. Also, set the `WFPAuthRequired` flag within the country prism.json file
 
 ### Available Scripts
 
