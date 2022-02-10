@@ -25,6 +25,7 @@ import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import Download from './Download';
 import LegendsVisibilityButton from './LegendsVisibilityButton';
+import DataViewer from './DataViewer';
 // layers
 import {
   AdminLevelDataLayer,
@@ -449,10 +450,11 @@ function MapView({ classes }: MapViewProps) {
         <Grid item>
           <Grid container spacing={1}>
             <Grid item>
-              <Grid container spacing={1}>
+              <Grid container spacing={1} justify="flex-end">
                 <Download />
                 <LegendsVisibilityButton />
               </Grid>
+              <DataViewer />
               <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
             </Grid>
           </Grid>

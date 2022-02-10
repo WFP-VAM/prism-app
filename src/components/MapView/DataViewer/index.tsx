@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   createStyles,
-  Dialog,
-  DialogTitle,
   Theme,
+  Grid,
+  Paper,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { DatasetSelector } from '../../context/chartDataStateSlice';
-import Chart from '../DataDrawer/Chart';
-import { ChartConfig } from '../../config/types';
+import { DatasetSelector } from '../../../context/chartDataStateSlice';
+import Chart from '../../DataDrawer/Chart';
+import { ChartConfig } from '../../../config/types';
 
 function DataViewer({ classes }: DatasetProps) {
   const dataset = useSelector(DatasetSelector);
@@ -34,28 +34,27 @@ function DataViewer({ classes }: DatasetProps) {
   };
 
   return (
-    <Dialog
-      maxWidth="xl"
-      open={open}
-      keepMounted
-      onClose={() => setOpen(false)}
-      aria-labelledby="dialog-preview"
-    >
-      <DialogTitle className={classes.title} id="dialog-preview">
-        Data Viewer
-      </DialogTitle>
-      <div className={classes.modal}>
-        <Chart title="Example plot" config={config} data={dataset} />
-      </div>
-    </Dialog>
+    <>
+      {open && (
+        <Grid item className={classes.container}>
+          <Paper className={classes.paper}>
+            <Chart title="Example plot" config={config} data={dataset} />
+          </Paper>
+        </Grid>
+      )}
+    </>
   );
 }
 
 const styles = (theme: Theme) =>
   createStyles({
-    modal: {
-      width: '50vw',
-      height: '50vh',
+    container: {
+      textAlign: 'right',
+      marginTop: 8,
+    },
+    paper: {
+      padding: 8,
+      width: 480,
     },
     title: {
       color: theme.palette.text.secondary,

@@ -7,7 +7,6 @@ import './app.css';
 import NavBar from '../NavBar';
 import DataDrawer from '../DataDrawer';
 import MapView from '../MapView';
-import DataViewer from '../DataViewer';
 import NotFound from '../404Page';
 import muiTheme from '../../muiTheme';
 import Notifier from '../Notifier';
@@ -34,7 +33,6 @@ function App() {
             <Route exact path="/">
               <MapView />
               <DataDrawer />
-              <DataViewer />
             </Route>
             <Route default component={NotFound} />
           </Switch>
