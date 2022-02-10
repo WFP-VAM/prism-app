@@ -5,7 +5,6 @@ import {
   createStyles,
   Divider,
   Grid,
-  Hidden,
   List,
   ListItem,
   Paper,
@@ -14,7 +13,6 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Extent } from '../Layers/raster-utils';
@@ -32,6 +30,7 @@ import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
+import { legendsVisibleSelector } from '../../../context/legendsStateSlice';
 
 import {
   BaselineLayerResult,
@@ -74,11 +73,11 @@ function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
 }
 
 function Legends({ classes, layers, extent }: LegendsProps) {
-  const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const features = analysisResult?.featureCollection.features;
   const hasData = features ? features.length > 0 : false;
+  const isVisible = useSelector(legendsVisibleSelector);
 
   const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
     e.preventDefault();
@@ -156,23 +155,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
 
   return (
     <Grid item className={classes.container}>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setOpen(!open)}
-      >
-        {open ? (
-          <VisibilityOff fontSize="small" />
-        ) : (
-          <Visibility fontSize="small" />
-        )}
-        <Hidden smDown>
-          <Typography className={classes.label} variant="body2">
-            Legend
-          </Typography>
-        </Hidden>
-      </Button>
-      {open && <List className={classes.list}>{legendItems}</List>}
+      {isVisible && <List className={classes.list}>{legendItems}</List>}
     </Grid>
   );
 }

@@ -13,6 +13,7 @@ import notificationStateReduce, {
 import analysisResultStateReduce from './analysisResultStateSlice';
 import mapSelectionLayerStateReduce from './mapSelectionLayerStateSlice';
 import datasetResultStateReduce from './chartDataStateSlice';
+import legendsStateReduce from './legendsStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
@@ -23,6 +24,7 @@ const reducer = combineReducers({
   notificationState: notificationStateReduce,
   mapSelectionLayerStateSlice: mapSelectionLayerStateReduce,
   datasetState: datasetResultStateReduce,
+  legendsState: legendsStateReduce,
 });
 
 export const store = configureStore({
