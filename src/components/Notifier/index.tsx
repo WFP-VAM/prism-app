@@ -58,7 +58,7 @@ const styles = () =>
     notificationsContainer: {
       left: '50%',
       transform: 'translateX(-50%)',
-      display: 'flex',
+      display: 'none',
       zIndex: 10,
       flexDirection: 'column',
       position: 'fixed',
