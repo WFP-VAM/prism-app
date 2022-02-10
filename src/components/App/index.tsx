@@ -28,6 +28,7 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
 const Wrapper = () => {
   return (
     <div id="app">
+      <NavBar />
       <Switch>
         <Route exact path="/">
           <MapView />
@@ -49,7 +50,6 @@ function App() {
       {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
       <Notifier />
       <Router>
-        <NavBar />
         {isAuthenticated || !authRequired ? <Wrapper /> : <Login />}
       </Router>
     </ThemeProvider>
