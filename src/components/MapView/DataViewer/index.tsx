@@ -38,7 +38,7 @@ function DataViewer({ classes }: DatasetProps) {
       {open && (
         <Grid item className={classes.container}>
           <Paper className={classes.paper}>
-            <Chart title="Example plot" config={config} data={dataset} />
+            <Chart title="" config={config} data={dataset} />
           </Paper>
         </Grid>
       )}
