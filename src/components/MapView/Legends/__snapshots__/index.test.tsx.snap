@@ -5,24 +5,6 @@ exports[`renders as expected 1`] = `
   <div
     class="MuiGrid-root Legends-container-1 MuiGrid-item"
   >
-    <mock-button
-      color="primary"
-      variant="contained"
-    >
-      <mock-visibilityoff
-        fontsize="small"
-      />
-      <mock-hidden
-        smdown="true"
-      >
-        <mock-typography
-          classname="Legends-label-2"
-          variant="body2"
-        >
-          Legend
-        </mock-typography>
-      </mock-hidden>
-    </mock-button>
     <mock-list
       classname="Legends-list-3"
     />
