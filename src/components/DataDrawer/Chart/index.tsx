@@ -34,6 +34,7 @@ function getChartConfig(stacked: boolean, title: string) {
           },
           ticks: {
             fontColor: '#CCC',
+            fontSize: 9,
           },
         },
       ],
@@ -41,6 +42,7 @@ function getChartConfig(stacked: boolean, title: string) {
         {
           ticks: {
             fontColor: '#CCC',
+            fontSize: 9,
           },
           stacked,
           gridLines: {
@@ -115,7 +117,8 @@ function formatChartData(data: TableData, config: ChartConfig) {
         fill: config.fill || false,
         backgroundColor: colors[i],
         borderColor: colors[i],
-        borderWidth: 2,
+        borderWidth: 1,
+        pointRadius: 1,
         data: indices.map(index => (row[index] as number) || null),
       }))
     : indices.map((index, i) => ({
@@ -123,7 +126,8 @@ function formatChartData(data: TableData, config: ChartConfig) {
         fill: config.fill || false,
         backgroundColor: colors[i],
         borderColor: colors[i],
-        borderWidth: 2,
+        borderWidth: 1,
+        pointRadius: 1,
         data: tableRows.map(row => (row[index] as number) || null),
       }));
 

@@ -29,10 +29,41 @@ exports[`renders as expected 1`] = `
         <div
           class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
         >
-          <mock-download />
-          <mock-legends
-            layers="[object Object],[object Object],[object Object]"
-          />
+          <div
+            class="MuiGrid-root MuiGrid-item"
+          >
+            <div
+              class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1 MuiGrid-justify-xs-flex-end"
+            >
+              <mock-download />
+              <div
+                class="MuiGrid-root MuiGrid-item"
+              >
+                <mock-button
+                  color="primary"
+                  variant="contained"
+                >
+                  <mock-visibilityoff
+                    fontsize="small"
+                  />
+                  <mock-hidden
+                    smdown="true"
+                  >
+                    <mock-typography
+                      classname="LegendsVisibilityButton-label-4"
+                      variant="body2"
+                    >
+                      Legend
+                    </mock-typography>
+                  </mock-hidden>
+                </mock-button>
+              </div>
+            </div>
+            <mock-datadrawer />
+            <mock-legends
+              layers="[object Object],[object Object],[object Object]"
+            />
+          </div>
         </div>
       </div>
     </div>

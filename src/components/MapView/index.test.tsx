@@ -14,6 +14,7 @@ jest.mock('./Legends', () => 'mock-Legends');
 jest.mock('./DateSelector', () => 'mock-DateSelector');
 jest.mock('./Analyser', () => 'mock-Analyser');
 jest.mock('./Download', () => 'mock-Download');
+jest.mock('./DataViewer', () => 'mock-DataDrawer');
 
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({

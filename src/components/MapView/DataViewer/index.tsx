@@ -54,7 +54,7 @@ const styles = (theme: Theme) =>
     },
     paper: {
       padding: 8,
-      width: 480,
+      width: 560,
     },
     title: {
       color: theme.palette.text.secondary,
