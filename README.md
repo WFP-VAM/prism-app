@@ -259,6 +259,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - **State Management** Uses [Redux](https://redux.js.org/introduction/getting-started)
 - **Testing** Uses [Jest](https://jestjs.io/) with [Enzyme](https://enzymejs.github.io/enzyme/)
 - **Mapping** Uses [MapLibre](https://maplibre.org/maplibre-gl-js-docs/api/). The app supports Maptiler and Mapbox styles. To use Mapbox styles, you will need to create a token and add it as `REACT_APP_MAPBOX_TOKEN` in a `.env` file at the root folder. Then specify your style url using `REACT_APP_DEFAULT_STYLE`.
+- **WFP authentication** Uses [msal](https://github.com/AzureAD/microsoft-authentication-library-for-js). You need to include within your .env file the variables `REACT_APP_OAUTH_CLIENT_ID`, `REACT_APP_OAUTH_AUTHORITY` and `REACT_APP_OAUTH_REDIRECT_URI`. Also, set the `WFPAuthRequired` flag within the country prism.json file
 
 ### Available Scripts
 

@@ -4,6 +4,20 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
 
+import { randomBytes } from 'crypto';
+
+Object.defineProperty(global.self, 'crypto', {
+  value: {
+    getRandomValues: <T extends ArrayBufferView | null>(arr: T) => {
+      if (!arr) {
+        return arr;
+      }
+
+      return randomBytes(arr.buffer.byteLength);
+    },
+  },
+});
+
 // Based on https://github.com/mapbox/mapbox-gl-js/issues/3436#issuecomment-485535598
 jest.mock('mapbox-gl/dist/mapbox-gl', () => ({
   GeolocateControl: jest.fn(),
