@@ -15,7 +15,7 @@ import {
   useMediaQuery,
   withStyles,
 } from '@material-ui/core';
-import { last, sortBy } from 'lodash';
+import { last, sortBy, get } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { Feature } from 'geojson';
 import { multiPolygon, MultiPolygon, Polygon } from '@turf/helpers';
@@ -369,9 +369,10 @@ export const GotoBoundaryDropdown = () => {
     | undefined;
   const { data } = boundaryLayerData || {};
 
+  const navigationDropdown = get(appConfig, 'navigationDropdown', false);
+
   const {
     map: { latitude, longitude, zoom },
-    navigationDropdown,
   } = appConfig;
 
   const styles = useStyles();
