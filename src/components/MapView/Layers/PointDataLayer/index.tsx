@@ -14,6 +14,7 @@ import {
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
+import { TableRowType } from '../../../../context/tableStateSlice';
 import { addEwsDataset } from '../../../../context/chartDataStateSlice';
 
 // Point Data, takes any GeoJSON of points and shows it.
@@ -64,8 +65,30 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   };
 
   const onClickHandler = (evt: any) => {
-    const pointDataset = JSON.parse(evt.features[0].properties.daily_rows);
-    dispatch(addEwsDataset(pointDataset));
+    const { properties } = evt.features[0];
+    const pointDataset = JSON.parse(get(properties, 'daily_rows'));
+    const triggerLevels = JSON.parse(get(properties, 'trigger_levels'));
+    const { rows, columns } = pointDataset;
+    const allRows = Object.keys(triggerLevels).reduce(
+      (acc: TableRowType[], val: string | number) => {
+        const levelData = columns.reduce(
+          (
+            accumulator: TableRowType,
+            value: string | number,
+            index: number,
+          ) => {
+            const levelKey = `level${index}`;
+            return { ...accumulator, [levelKey]: triggerLevels[val] };
+          },
+          { level: val },
+        );
+
+        return [...acc, levelData];
+      },
+      rows,
+    );
+
+    dispatch(addEwsDataset({ rows: allRows, columns }));
   };
 
   return (

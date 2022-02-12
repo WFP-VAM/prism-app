@@ -1,5 +1,4 @@
 import moment from 'moment';
-import { get } from 'lodash';
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as Papa from 'papaparse';
 import type { CreateAsyncThunkTypes, RootState } from './store';
@@ -53,10 +52,12 @@ export const datasetResultStateSlice = createSlice({
         Object.fromEntries(
           Object.keys(rows[0]).map(k => [
             k,
-            moment(rows[0][k]).local().format('HH:MM:ss'),
+            k === 'level'
+              ? rows[0][k]
+              : moment(rows[0][k]).local().format('HH:MM:ss'),
           ]),
         ),
-        rows[1],
+        ...rows.slice(1, rows.length),
       ];
 
       return { ...rest, data: { rows: formattedRows, columns } };

@@ -112,15 +112,31 @@ function formatChartData(data: TableData, config: ChartConfig) {
     : tableRows.map(row => row[config.category]);
 
   const datasets = !transpose
-    ? tableRows.map((row, i) => ({
-        label: (row[config.category] as string) || '',
-        fill: config.fill || false,
-        backgroundColor: colors[i],
-        borderColor: colors[i],
-        borderWidth: 1,
-        pointRadius: 1,
-        data: indices.map(index => (row[index] as number) || null),
-      }))
+    ? tableRows.map((row, i) => {
+        // Unique check to change appearence of baselines
+        // to show water levels in Cambodia EWS
+        const hasLevel = 'level' in row;
+        const isNormal = hasLevel && row.level === 'watch_level';
+        const isWarning = hasLevel && row.level === 'warning';
+        const isSevere = hasLevel && row.level === 'severe_warning';
+
+        return {
+          label:
+            (row[config.category] as string) ||
+            (hasLevel && (row.level as string).replace('_', ' ')) ||
+            '',
+          fill: config.fill || false,
+          backgroundColor: colors[i],
+          borderColor:
+            (isNormal && '#31a354') ||
+            (isWarning && '#fdae6b') ||
+            (isSevere && '#e34a33') ||
+            colors[i],
+          borderWidth: isNormal || isWarning || isSevere ? 2 : 1,
+          pointRadius: isNormal || isWarning || isSevere ? 0 : 1,
+          data: indices.map(index => (row[index] as number) || null),
+        };
+      })
     : indices.map((index, i) => ({
         label: header[index] as string,
         fill: config.fill || false,

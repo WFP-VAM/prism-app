@@ -117,7 +117,7 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
 
             rows = list()
 
-            dates_row = dict()
+            dates_row = {'level': 'river_level'}
             for count, level in enumerate(levels_and_dates):
                 # convert naive to timezone aware and utc
                 format_str = '%Y-%m-%dT%H:%M:%S'
@@ -125,12 +125,12 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
                 ict = pytz.timezone('Asia/Phnom_Penh')
                 level_date = ict.localize(level_date)
                 level_date = level_date.astimezone(pytz.UTC)
-                dates_row[count] = level_date
+                dates_row['level{}'.format(count)] = level_date
             rows.append(dates_row)
 
-            levels_row = dict()
+            levels_row = {'level': 'current_level'}
             for count, level in enumerate(levels_and_dates):
-                levels_row[count] = level[1]
+                levels_row['level{}'.format(count)] = level[1]
             rows.append(levels_row)
 
             daily_levels = numpy.array([_[1] for _ in levels_and_dates])
