@@ -119,6 +119,10 @@ function formatChartData(data: TableData, config: ChartConfig) {
         const isNormal = hasLevel && row.level === 'watch_level';
         const isWarning = hasLevel && row.level === 'warning';
         const isSevere = hasLevel && row.level === 'severe_warning';
+        const levelColors =
+          (isNormal && '#31a354') ||
+          (isWarning && '#fdae6b') ||
+          (isSevere && '#e34a33');
 
         return {
           label:
@@ -126,12 +130,8 @@ function formatChartData(data: TableData, config: ChartConfig) {
             (hasLevel && (row.level as string).replace('_', ' ')) ||
             '',
           fill: config.fill || false,
-          backgroundColor: colors[i],
-          borderColor:
-            (isNormal && '#31a354') ||
-            (isWarning && '#fdae6b') ||
-            (isSevere && '#e34a33') ||
-            colors[i],
+          backgroundColor: levelColors || colors[i],
+          borderColor: levelColors || colors[i],
           borderWidth: isNormal || isWarning || isSevere ? 2 : 1,
           pointRadius: isNormal || isWarning || isSevere ? 0 : 1,
           data: indices.map(index => (row[index] as number) || null),

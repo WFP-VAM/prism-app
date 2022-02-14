@@ -7,7 +7,9 @@ import {
   Paper,
   WithStyles,
   withStyles,
+  IconButton,
 } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 import { DatasetSelector } from '../../../context/chartDataStateSlice';
 import Chart from '../../DataDrawer/Chart';
 import { ChartConfig } from '../../../config/types';
@@ -38,6 +40,9 @@ function DataViewer({ classes }: DatasetProps) {
       {open && (
         <Grid item className={classes.container}>
           <Paper className={classes.paper}>
+            <IconButton size="small" onClick={() => setOpen(false)}>
+              <Close fontSize="small" />
+            </IconButton>
             <Chart title="" config={config} data={dataset} />
           </Paper>
         </Grid>
@@ -54,7 +59,7 @@ const styles = (theme: Theme) =>
     },
     paper: {
       padding: 8,
-      width: 560,
+      width: 480,
     },
     title: {
       color: theme.palette.text.secondary,

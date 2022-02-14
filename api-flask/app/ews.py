@@ -117,7 +117,7 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
 
             rows = list()
 
-            dates_row = {'level': 'river_level'}
+            dates_row = {'level': 'River levels'}
             for count, level in enumerate(levels_and_dates):
                 # convert naive to timezone aware and utc
                 format_str = '%Y-%m-%dT%H:%M:%S'

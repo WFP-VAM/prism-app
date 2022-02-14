@@ -302,7 +302,7 @@ const styles = () =>
     list: {
       overflowX: 'hidden',
       overflowY: 'auto',
-      maxHeight: '70vh',
+      maxHeight: '60vh',
       position: 'absolute',
       right: '16px',
     },
