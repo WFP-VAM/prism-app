@@ -66,7 +66,12 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
 
   const onClickHandler = (evt: any) => {
     const { properties } = evt.features[0];
-    const pointDataset = JSON.parse(get(properties, 'daily_rows'));
+    const dailyRows = get(properties, 'daily_rows');
+    if (!dailyRows) {
+      return;
+    }
+
+    const pointDataset = JSON.parse(dailyRows);
     const triggerLevels = JSON.parse(get(properties, 'trigger_levels'));
     const { rows, columns } = pointDataset;
     const allRows = Object.keys(triggerLevels).reduce(
