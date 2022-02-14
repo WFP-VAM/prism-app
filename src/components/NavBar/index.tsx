@@ -38,7 +38,6 @@ function NavBar({ classes }: NavBarProps) {
   ];
 
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
-
   const menu = menuList.map(({ title, ...category }) => (
     <MenuItem key={title} title={title} {...category} />
   ));
