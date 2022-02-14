@@ -24,6 +24,7 @@
     "categories": {
       "hazards": {
         "floods": [
+          "river_level",
           "hydra_s1",
           "hydra_s2",
           "hydra_l8"
@@ -44,7 +45,7 @@
           "poverty": ["idpoor"]
       },
       "exposure": {
-        "field_reports": ["river_level", "disaster_report"]
-    }
+        "field_reports": ["disaster_report"]
+       }
   }
 }
