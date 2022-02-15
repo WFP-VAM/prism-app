@@ -5,6 +5,7 @@ import React, {
   useState,
   ChangeEvent,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -68,6 +69,7 @@ import {
 } from '../../../context/mapStateSlice/selectors';
 import { useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
+import { safeTranslate } from '../../../i18n';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -101,6 +103,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [previousBaselineId, setPreviousBaselineId] = useState<
     LayerKey | undefined
   >(preSelectedBaselineLayer?.id);
+
+  const { t } = useTranslation();
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -157,7 +161,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
             size="small"
           />
         }
-        label={key}
+        label={safeTranslate(t, key)}
       />
     ));
 
@@ -314,7 +318,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       >
         <BarChart fontSize="small" />
         <Typography variant="body2" className={classes.analyserLabel}>
-          Run Analysis
+          {safeTranslate(t, 'Run Analysis')}
         </Typography>
         <ArrowDropDown fontSize="small" />
       </Button>
@@ -328,17 +332,21 @@ function Analyser({ extent, classes }: AnalyserProps) {
           <div>
             <div className={classes.newAnalyserContainer}>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">Hazard Layer</Typography>
+                <Typography variant="body2">
+                  {safeTranslate(t, 'Hazard Layer')}
+                </Typography>
                 <LayerDropdown
                   type="wms"
                   value={hazardLayerId}
                   setValue={setHazardLayerId}
                   className={classes.selector}
-                  placeholder="Choose hazard layer"
+                  placeholder={safeTranslate(t, 'Choose hazard layer')}
                 />
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">Statistic</Typography>
+                <Typography variant="body2">
+                  {safeTranslate(t, 'Statistic')}
+                </Typography>
                 <FormControl component="div">
                   <RadioGroup
                     name="statistics"
@@ -351,23 +359,27 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 </FormControl>
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">Baseline Layer</Typography>
+                <Typography variant="body2">
+                  {safeTranslate(t, 'Baseline Layer')}
+                </Typography>
                 <LayerDropdown
                   type="admin_level_data"
                   value={baselineLayerId}
                   setValue={setBaselineLayerId}
                   className={classes.selector}
-                  placeholder="Choose baseline layer"
+                  placeholder={safeTranslate(t, 'Choose baseline layer')}
                 />
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">Threshold</Typography>
+                <Typography variant="body2">
+                  {safeTranslate(t, 'Threshold')}
+                </Typography>
                 <TextField
                   id="filled-number"
                   error={!!thresholdError}
                   helperText={thresholdError}
                   className={classes.numberField}
-                  label="Below"
+                  label={safeTranslate(t, 'Below')}
                   type="number"
                   value={belowThreshold}
                   onChange={onThresholdOptionChange('below')}
@@ -375,7 +387,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
                 <TextField
                   id="filled-number"
-                  label="Above"
+                  label={safeTranslate(t, 'Above')}
                   className={classes.numberField}
                   value={aboveThreshold}
                   onChange={onThresholdOptionChange('above')}
@@ -384,14 +396,17 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">Date</Typography>
+                <Typography variant="body2">
+                  {safeTranslate(t, 'Date')}
+                </Typography>
                 <DatePicker
+                  locale={safeTranslate(t, 'date_locale')}
                   selected={selectedDate ? new Date(selectedDate) : null}
                   onChange={date =>
                     setSelectedDate(date?.getTime() || selectedDate)
                   }
                   maxDate={new Date()}
-                  todayButton="Today"
+                  todayButton={safeTranslate(t, 'Today')}
                   peekNextMonth
                   showMonthDropdown
                   showYearDropdown

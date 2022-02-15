@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Button,
   createStyles,
@@ -21,6 +22,7 @@ import { CloudDownload, ArrowDropDown, Image } from '@material-ui/icons';
 import { jsPDF } from 'jspdf';
 import { useSelector } from 'react-redux';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import { safeTranslate } from '../../../i18n';
 
 const ExportMenu = withStyles((theme: Theme) => ({
   paper: {
@@ -54,6 +56,8 @@ function Download({ classes }: DownloadProps) {
   const [open, setOpen] = useState(false);
   const selectedMap = useSelector(mapSelector);
   const previewRef = useRef<HTMLCanvasElement>(null);
+
+  const { t } = useTranslation();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -112,7 +116,7 @@ function Download({ classes }: DownloadProps) {
         <CloudDownload fontSize="small" />
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
-            Export
+            {safeTranslate(t, 'Export')}
           </Typography>
         </Hidden>
         <ArrowDropDown fontSize="small" />

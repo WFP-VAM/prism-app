@@ -31,7 +31,7 @@ function NavBar({ classes }: NavBarProps) {
       href: 'https://innovation.wfp.org/project/prism',
     },
     {
-      title: 'Github',
+      title: 'GitHub',
       icon: faGithub,
       href: 'https://github.com/oviohub/prism-frontend',
     },
@@ -82,7 +82,7 @@ function NavBar({ classes }: NavBarProps) {
               component={Link}
               to="/"
             >
-              Prism
+              {t('prism')}
             </Typography>
           </Grid>
 

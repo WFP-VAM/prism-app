@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core';
 import { last, sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
 import { BoundaryLayerProps } from '../../../config/types';
@@ -27,6 +28,7 @@ import {
 import { getBoundaryLayerSingleton } from '../../../config/utils';
 import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
 import { LayerData } from '../../../context/layers/layer-data';
+import { safeTranslate } from '../../../i18n';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
@@ -165,6 +167,7 @@ function SimpleBoundaryDropdown({
   setSelectedBoundaries,
   ...rest
 }: BoundaryDropdownProps) {
+  const { t } = useTranslation();
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.only('xs'),
   );
@@ -191,7 +194,9 @@ function SimpleBoundaryDropdown({
   // acts on the `value` prop, which we need to hide from <Select/> since this isn't a menu item.
   return (
     <FormControl {...rest}>
-      <InputLabel>{isMobile ? 'Tap' : 'Click'} the map to select</InputLabel>
+      <InputLabel>
+        {safeTranslate(t, `${isMobile ? 'Tap' : 'Click'} the map to select`)}
+      </InputLabel>
       <Select
         multiple
         onClose={() => {
@@ -217,11 +222,13 @@ function SimpleBoundaryDropdown({
         <SearchField search={search} setSearch={setSearch} />
         {!search && (
           <MenuItem onClick={selectOrDeselectAll}>
-            {selectedBoundaries.length === 0 ? 'Select All' : 'Deselect All'}
+            {selectedBoundaries.length === 0
+              ? safeTranslate(t, 'Select All')
+              : safeTranslate(t, 'Deselect All')}
           </MenuItem>
         )}
         {search && allChildren.length === 0 && (
-          <MenuItem disabled>No Results</MenuItem>
+          <MenuItem disabled>{safeTranslate(t, 'No Results')}</MenuItem>
         )}
         {categories.reduce<ReactNode[]>(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
@@ -250,13 +257,13 @@ function SimpleBoundaryDropdown({
                 }}
               >
                 <Typography variant="body2" color="primary">
-                  {category.title}
+                  {safeTranslate(t, category.title)}
                 </Typography>
               </ClickableListSubheader>
             ) : null,
             ...category.children.map(({ label, value }) => (
               <MenuItem key={value} value={value}>
-                {label}
+                {safeTranslate(t, label)}
               </MenuItem>
             )),
           ],

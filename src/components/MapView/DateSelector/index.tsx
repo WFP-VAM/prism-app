@@ -1,4 +1,5 @@
 import React, { forwardRef, Ref, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
@@ -23,6 +24,7 @@ import { DateRangeType } from '../../../config/types';
 import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import TimelineItems from './TimelineItems';
+import { safeTranslate } from '../../../i18n';
 
 interface InputProps {
   value?: string;
@@ -51,6 +53,7 @@ const Input = forwardRef(
 
 function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
+  const { t } = useTranslation();
 
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
@@ -204,11 +207,12 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
           </Hidden>
 
           <DatePicker
+            locale={safeTranslate(t, 'date_locale')}
             className={classes.datePickerInput}
             selected={moment(stateStartDate).toDate()}
             onChange={updateStartDate}
             maxDate={new Date()}
-            todayButton="Today"
+            todayButton={safeTranslate(t, 'Today')}
             peekNextMonth
             showMonthDropdown
             showYearDropdown

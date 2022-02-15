@@ -1,4 +1,5 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -41,6 +42,7 @@ import { convertToTableData, downloadToFile } from '../utils';
 
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
+import { safeTranslate } from '../../../i18n';
 
 /**
  * Returns layer identifier used to perform exposure analysis.
@@ -79,6 +81,8 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const analysisResult = useSelector(analysisResultSelector);
   const features = analysisResult?.featureCollection.features;
   const hasData = features ? features.length > 0 : false;
+
+  const { t } = useTranslation();
 
   const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
     e.preventDefault();
@@ -168,7 +172,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
         )}
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
-            Legend
+            {safeTranslate(t, 'Legend')}
           </Typography>
         </Hidden>
       </Button>
