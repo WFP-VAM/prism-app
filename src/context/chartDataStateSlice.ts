@@ -6,6 +6,7 @@ import { TableData } from './tableStateSlice';
 
 type DatasetState = {
   data?: TableData;
+  title?: string;
 };
 
 const initialState: DatasetState = {};
@@ -62,6 +63,9 @@ export const datasetResultStateSlice = createSlice({
 
       return { ...rest, data: { rows: formattedRows, columns } };
     },
+    addPointTitle: ({ ...rest }, { payload }: PayloadAction<string>) => {
+      return { ...rest, title: payload };
+    },
   },
   extraReducers: builder => {
     builder.addCase(
@@ -76,8 +80,10 @@ export const datasetResultStateSlice = createSlice({
 
 export const DatasetSelector = (state: RootState): TableData | undefined =>
   state.datasetState.data;
+export const PointTitleSelector = (state: RootState): string | undefined =>
+  state.datasetState.title;
 
 // Setters
-export const { addEwsDataset } = datasetResultStateSlice.actions;
+export const { addEwsDataset, addPointTitle } = datasetResultStateSlice.actions;
 
 export default datasetResultStateSlice.reducer;

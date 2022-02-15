@@ -15,7 +15,10 @@ import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { TableRowType } from '../../../../context/tableStateSlice';
-import { addEwsDataset } from '../../../../context/chartDataStateSlice';
+import {
+  addEwsDataset,
+  addPointTitle,
+} from '../../../../context/chartDataStateSlice';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -40,6 +43,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
 
   const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
   const circlePaint: MapboxGL.CirclePaint = {
+    'circle-radius': 10,
     'circle-opacity': layer.opacity || 0.3,
     'circle-color': {
       property: layer.measure,
@@ -93,6 +97,10 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       rows,
     );
 
+    const pointName = get(properties, 'name');
+    const externalId = get(properties, 'external_id');
+    const title = `River level: ${pointName} - ${externalId}`;
+    dispatch(addPointTitle(title));
     dispatch(addEwsDataset({ rows: allRows, columns }));
   };
 

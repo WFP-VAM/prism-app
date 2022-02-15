@@ -10,12 +10,16 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
-import { DatasetSelector } from '../../../context/chartDataStateSlice';
+import {
+  DatasetSelector,
+  PointTitleSelector,
+} from '../../../context/chartDataStateSlice';
 import Chart from '../../DataDrawer/Chart';
 import { ChartConfig } from '../../../config/types';
 
 function DataViewer({ classes }: DatasetProps) {
   const dataset = useSelector(DatasetSelector);
+  const title = useSelector(PointTitleSelector);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -43,7 +47,7 @@ function DataViewer({ classes }: DatasetProps) {
             <IconButton size="small" onClick={() => setOpen(false)}>
               <Close fontSize="small" />
             </IconButton>
-            <Chart title="" config={config} data={dataset} />
+            <Chart title={title || ''} config={config} data={dataset} />
           </Paper>
         </Grid>
       )}

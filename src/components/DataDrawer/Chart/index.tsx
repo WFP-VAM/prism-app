@@ -23,7 +23,7 @@ function getChartConfig(stacked: boolean, title: string) {
       fontColor: '#CCC',
       display: true,
       text: title,
-      fontSize: 20,
+      fontSize: 16,
     },
     scales: {
       xAxes: [

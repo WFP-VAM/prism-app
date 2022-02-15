@@ -396,7 +396,7 @@
     "opacity": 0,
     "legend_text": "",
     "legend": []
-  }, 
+  },
   "adamts_tracks": {
     "title": "Tropical storm - track",
     "type": "wms",
@@ -419,10 +419,10 @@
     "date_interval": "days",
     "opacity": 1.0,
     "legend_text": "Flood water detected from Sentinel-1 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
-    "legend": [      
+    "legend": [
       { "value": "1 - flooded", "color": "#a50f15" }
     ]
-  },    
+  },
   "hydra_s2": {
     "title": "Potential flooding (Sentinel-2)",
     "type": "wms",
@@ -431,10 +431,10 @@
     "date_interval": "days",
     "opacity": 1.0,
     "legend_text": "Flood water detected from Sentinel-2 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
-    "legend": [      
+    "legend": [
       { "value": "1 - flooded", "color": "#a50f15" }
     ]
-  },    
+  },
   "hydra_l8": {
     "title": "Potential flooding (Landsat)",
     "type": "wms",
@@ -443,10 +443,10 @@
     "date_interval": "days",
     "opacity": 1.0,
     "legend_text": "Flood water detected from Landsat-8 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
-    "legend": [      
+    "legend": [
       { "value": "1 - flooded", "color": "#a50f15" }
     ]
-  },    
+  },
   "forecast": {
     "title": "10-day precipitation forecast",
     "type": "wms",
