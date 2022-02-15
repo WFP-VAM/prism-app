@@ -55,7 +55,7 @@ export const resources = {
       'Run Analysis': 'Lancer une analyse',
       'Hazard Layer': 'Dangers',
       'Baseline Layer': 'Données de référence',
-      'Choose hazard layer': 'Choisisser un danger',
+      'Choose hazard layer': 'Choisissez un danger',
       'Choose baseline layer': 'Choisissez des données de référence',
       Statistic: 'Statistique',
       Threshold: 'Limite',
