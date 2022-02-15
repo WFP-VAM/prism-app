@@ -8,6 +8,12 @@ import {
   cambodiaRawTables,
 } from './cambodia';
 
+import {
+  cubaConfig,
+  cubaRawLayers,
+  cubaRawTables,
+} from './cuba';
+
 import { globalConfig, globalRawLayers, globalRawTables } from './global';
 
 import {
@@ -68,6 +74,12 @@ const configMap = {
     rawLayers: cambodiaRawLayers,
     rawTables: cambodiaRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_gov_wfp_edEarly2021.json`,
+  },
+  cuba: {
+    appConfig: cubaConfig,
+    rawLayers: cubaRawLayers,
+    rawTables: cubaRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/cub_admbnda_adm2_2019.json`,
   },
   global: {
     appConfig: globalConfig,
