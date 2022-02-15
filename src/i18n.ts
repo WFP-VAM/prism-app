@@ -67,13 +67,15 @@ export const resources = {
   },
 };
 
+// Register other date locales to be used by our DatePicker
 registerLocale('fr', fr);
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
-    lng: 'en',
+    // TODO - Switch back to English
+    lng: 'fr',
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
