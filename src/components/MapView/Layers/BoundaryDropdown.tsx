@@ -15,7 +15,7 @@ import {
   useMediaQuery,
   withStyles,
 } from '@material-ui/core';
-import { last, sortBy, get } from 'lodash';
+import { last, sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { Feature } from 'geojson';
 import { multiPolygon, MultiPolygon, Polygon } from '@turf/helpers';
@@ -25,7 +25,7 @@ import union from '@turf/union';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search, CenterFocusWeak } from '@material-ui/icons';
 import { BoundaryLayerProps } from '../../../config/types';
-import { appConfig } from '../../../config';
+import { appConfig, navigationDropdown } from '../../../config';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
@@ -368,8 +368,6 @@ export const GotoBoundaryDropdown = () => {
     | LayerData<BoundaryLayerProps>
     | undefined;
   const { data } = boundaryLayerData || {};
-
-  const navigationDropdown = get(appConfig, 'navigationDropdown', false);
 
   const {
     map: { latitude, longitude, zoom },

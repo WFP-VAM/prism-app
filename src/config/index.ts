@@ -1,4 +1,4 @@
-import { has } from 'lodash';
+import { has, get } from 'lodash';
 
 import { PublicClientApplication } from '@azure/msal-browser';
 
@@ -170,6 +170,8 @@ const msalRequest = {
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
+const navigationDropdown = get(appConfig, 'navigationDropdown', false);
+
 export {
   appConfig,
   defaultBoundariesFile,
@@ -177,4 +179,5 @@ export {
   rawTables,
   msalInstance,
   msalRequest,
+  navigationDropdown,
 };
