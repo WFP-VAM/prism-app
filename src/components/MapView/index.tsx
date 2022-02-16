@@ -82,6 +82,7 @@ import { addNotification } from '../../context/notificationStateSlice';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
+import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
@@ -442,6 +443,7 @@ function MapView({ classes }: MapViewProps) {
       >
         <Grid item>
           <Analyser extent={adminBoundariesExtent} />
+          <GotoBoundaryDropdown />
           {appConfig.alertFormActive ? (
             <AlertForm isOpen={isAlertFormOpen} setOpen={setIsAlertFormOpen} />
           ) : null}
