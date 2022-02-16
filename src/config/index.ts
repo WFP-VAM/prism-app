@@ -170,7 +170,11 @@ const msalRequest = {
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
-const navigationDropdown = get(appConfig, 'navigationDropdown', false);
+const enableNavigationDropdown = get(
+  appConfig,
+  'enableNavigationDropdown',
+  false,
+);
 
 export {
   appConfig,
@@ -179,5 +183,5 @@ export {
   rawTables,
   msalInstance,
   msalRequest,
-  navigationDropdown,
+  enableNavigationDropdown,
 };

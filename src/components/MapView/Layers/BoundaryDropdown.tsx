@@ -25,7 +25,7 @@ import union from '@turf/union';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search, CenterFocusWeak } from '@material-ui/icons';
 import { BoundaryLayerProps } from '../../../config/types';
-import { appConfig, navigationDropdown } from '../../../config';
+import { appConfig, enableNavigationDropdown } from '../../../config';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
@@ -375,7 +375,7 @@ export const GotoBoundaryDropdown = () => {
 
   const styles = useStyles();
 
-  if (!data || !map || !navigationDropdown) {
+  if (!data || !map || !enableNavigationDropdown) {
     return null;
   }
 
