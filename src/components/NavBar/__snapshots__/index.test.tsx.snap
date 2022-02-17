@@ -21,7 +21,7 @@ exports[`renders as expected 1`] = `
             to="/"
             variant="h6"
           >
-            prism
+            Prism
           </mock-typography>
         </div>
         <mock-hidden
@@ -109,6 +109,22 @@ exports[`renders as expected 1`] = `
                  
                 GitHub
               </mock-typography>
+            </div>
+            <div
+              class="LanguageSelector-label-8"
+            >
+              <button
+                style="font-weight: bold;"
+                type="submit"
+              >
+                en
+              </button>
+              <button
+                style="font-weight: normal;"
+                type="submit"
+              >
+                fr
+              </button>
             </div>
           </div>
         </mock-hidden>
