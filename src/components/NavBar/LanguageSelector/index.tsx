@@ -6,8 +6,13 @@ import { languages } from '../../../i18n';
 function LanguageSelector({ classes }: LanguageSelectorProps) {
   const { i18n } = useTranslation();
 
+  // If there is only one language, hide the selector
+  if (languages.length <= 1) {
+    return <></>;
+  }
+
   return (
-    <div className={classes.label}>
+    <div className={classes.block}>
       {languages.map(lng => (
         <button
           key={lng}
@@ -26,7 +31,7 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
-    label: {
+    block: {
       marginLeft: '10px',
     },
     title: {

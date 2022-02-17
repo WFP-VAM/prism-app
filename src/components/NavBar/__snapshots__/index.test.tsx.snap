@@ -111,7 +111,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </div>
             <div
-              class="LanguageSelector-label-8"
+              class="LanguageSelector-block-8"
             >
               <button
                 style="font-weight: bold;"
