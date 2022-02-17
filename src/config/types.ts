@@ -204,6 +204,9 @@ export class CommonLayerProps {
 
   @optional
   featureInfoProps?: { [key: string]: FeatureInfoProps };
+
+  @optional
+  validity?: number | 'calendar';
 }
 
 /*
@@ -456,4 +459,11 @@ export interface RequestFeatureInfo extends FeatureInfoType {
 export enum DownloadFormat {
   CSV,
   JSON,
+}
+
+export interface DateWithValidity {
+  value: number;
+  valid: number | undefined;
+  valueStr: string;
+  validStr: string;
 }

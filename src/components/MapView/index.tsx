@@ -38,6 +38,7 @@ import {
   DiscriminateUnion,
   LayerKey,
   LayerType,
+  DateWithValidity,
 } from '../../config/types';
 
 import { Extent } from './Layers/raster-utils';
@@ -50,7 +51,7 @@ import {
 } from '../../config/utils';
 
 import DateSelector from './DateSelector';
-import { findClosestDate } from './DateSelector/utils';
+import { findClosestDate, getEndValidDateForLayer } from './DateSelector/utils';
 import {
   dateRangeSelector,
   isLoading,
@@ -320,10 +321,32 @@ function MapView({ classes }: MapViewProps) {
        takes all the dates possible for every layer and counts the amount of times each one is duplicated.
        if a date's duplicate amount is the same as the number of layers active, then this date is compatible with all layers selected.
     */
+
+    const selectedLayersWithValidityDates: DateWithValidity[][] = selectedLayersWithDateSupport.map(
+      layer => {
+        const layerDates: number[] = getPossibleDatesForLayer(
+          layer,
+          serverAvailableDates,
+        ).filter(value => value); // null check.
+
+        const { validity } = layer;
+
+        return layerDates.map((dateNum: number) => ({
+          value: dateNum,
+          valid: getEndValidDateForLayer(dateNum, layerDates, validity),
+
+          // TODO: remove this.
+          valueStr: moment(dateNum).format('YYYY-MM-DD'),
+          validStr: moment(
+            getEndValidDateForLayer(dateNum, layerDates, validity),
+          ).format('YYYY-MM-DD'),
+        }));
+      },
+    );
+
     const selectedLayerDatesDupCount = countBy(
-      selectedLayersWithDateSupport
-        .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
-        .filter(value => value) // null check
+      selectedLayersWithValidityDates
+        .map(datesArray => datesArray.map(date => date.value))
         .flat()
         .map(value => moment(value).format('YYYY-MM-DD')),
     );

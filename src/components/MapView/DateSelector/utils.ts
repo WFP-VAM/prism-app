@@ -143,3 +143,34 @@ export function findDateIndex(
   }
   return -1;
 }
+
+/**
+ * Computes the last date that a layer is considered valid.
+ * if validity is a number, the last date will be computed.
+ * For 'calendar' it will be extracted from the serveravailabledates array.º
+ * @param date unix timestamp date
+ * @param availableDates possible dates of a layer.
+ * @param validity type number or 'calendar'
+ * @return number | undefined
+ */
+
+export const getEndValidDateForLayer = (
+  date: number,
+  availableDates: number[],
+  validity?: number | 'calendar',
+): number | undefined => {
+  if (!validity) {
+    return undefined;
+  }
+
+  if (typeof validity === 'number') {
+    return moment(date).clone().add(validity, 'days').valueOf();
+  }
+
+  const newDate = availableDates.find(d => d > date);
+  if (!newDate) {
+    return undefined;
+  }
+
+  return moment(newDate).clone().subtract(1, 'days').valueOf();
+};

@@ -1223,6 +1223,7 @@
   },
   "adamts_buffers": {
     "title": "Tropical Storms - Wind buffers",
+    "validity": "calendar",
     "type": "wms",
     "server_layer_name": "mmr_gdacs_buffers",
     "content_path": "data/myanmar/contents.md#tropical-storm-wind-buffers",
