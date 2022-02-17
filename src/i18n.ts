@@ -12,7 +12,7 @@ export const resources = {
       about: 'about',
       'Tap the map to select': 'Tap the map to select',
       'Click the map to select': 'Click the map to select',
-      PRISM: 'PRISM',
+      Prism: 'Prism',
       // Main buttons
       Export: 'Export',
       Legend: 'Legend',

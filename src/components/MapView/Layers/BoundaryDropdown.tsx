@@ -198,6 +198,7 @@ function SimpleBoundaryDropdown({
   selectAll,
   ...rest
 }: BoundaryDropdownProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
@@ -324,7 +325,10 @@ function BoundaryDropdown({
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.only('xs'),
   );
-  const labelMessage = safeTranslate(t, `${isMobile ? 'Tap' : 'Click'} the map to select`)
+  const labelMessage = safeTranslate(
+    t,
+    `${isMobile ? 'Tap' : 'Click'} the map to select`,
+  );
 
   const dispatch = useDispatch();
   const selectedBoundaries = useSelector(getSelectedBoundaries);

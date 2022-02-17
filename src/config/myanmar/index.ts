@@ -1,6 +1,14 @@
-import myanmarConfig from './prism.json';
-import myanmarRawLayers from './layers.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
+import myanmarTranslation from './translation.json';
 
-const myanmarRawTables = {};
+const rawTables = {};
+const translation = { mi: myanmarTranslation };
 
-export { myanmarConfig, myanmarRawLayers, myanmarRawTables };
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  translation,
+  defaultBoundariesFile: 'mmr_admin_boundaries.json',
+};

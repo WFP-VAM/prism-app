@@ -34,7 +34,7 @@ import {
   mozambiqueRawTables,
 } from './mozambique';
 
-import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
+import myanmar from './myanmar';
 
 import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
 
@@ -67,67 +67,62 @@ const configMap = {
     appConfig: cambodiaConfig,
     rawLayers: cambodiaRawLayers,
     rawTables: cambodiaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_gov_wfp_edEarly2021.json`,
+    defaultBoundariesFile: 'khm_bnd_admin3_gov_wfp_edEarly2021.json',
   },
   global: {
     appConfig: globalConfig,
     rawLayers: globalRawLayers,
     rawTables: globalRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/adm0_simplified.json`,
+    defaultBoundariesFile: 'adm0_simplified.json',
   },
   indonesia: {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
     rawTables: indonesiaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/idn_admin_boundaries.json`,
+    defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
   kyrgyzstan: {
     appConfig: kyrgyzstanConfig,
     rawLayers: kyrgyzstanRawLayers,
     rawTables: kyrgyzstanRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/kgz_admin_boundaries.json`,
+    defaultBoundariesFile: 'kgz_admin_boundaries.json',
   },
   mongolia: {
     appConfig: mongoliaConfig,
     rawLayers: mongoliaRawLayers,
     rawTables: mongoliaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mng_admin_boundaries.json`,
+    defaultBoundariesFile: 'mng_admin_boundaries.json',
   },
   mozambique: {
     appConfig: mozambiqueConfig,
     rawLayers: mozambiqueRawLayers,
     rawTables: mozambiqueRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/moz_admin_boundaries.json`,
+    defaultBoundariesFile: 'moz_admin_boundaries.json',
   },
-  myanmar: {
-    appConfig: myanmarConfig,
-    rawLayers: myanmarRawLayers,
-    rawTables: myanmarRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mmr_admin_boundaries.json`,
-  },
+  myanmar,
   namibia: {
     appConfig: namibiaConfig,
     rawLayers: namibiaRawLayers,
     rawTables: namibiaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/nam_admin2.json`,
+    defaultBoundariesFile: 'nam_admin2.json',
   },
   rbd: {
     appConfig: rbdConfig,
     rawLayers: rbdRawLayers,
     rawTables: rbdRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_mar2021_projected_jun2021_simple.json`,
+    defaultBoundariesFile: 'wca_CHIPC_mar2021_projected_jun2021_simple.json',
   },
   srilanka: {
     appConfig: srilankaConfig,
     rawLayers: srilankaRawLayers,
     rawTables: srilankaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/lka_boundaries_admin3.json`,
+    defaultBoundariesFile: 'lka_boundaries_admin3.json',
   },
   tajikistan: {
     appConfig: tajikistanConfig,
     rawLayers: tajikistanRawLayers,
     rawTables: tajikistanRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/tjk_admin_boundaries_v2.json`,
+    defaultBoundariesFile: 'tjk_admin_boundaries_v2.json',
   },
   zimbabwe: {
     appConfig: zimbabweConfig,
@@ -149,6 +144,8 @@ const safeCountry =
 const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
   safeCountry
 ];
+
+const translation = get(configMap[safeCountry], 'translation', {});
 
 const {
   REACT_APP_OAUTH_CLIENT_ID: CLIENT_ID,
@@ -176,12 +173,15 @@ const enableNavigationDropdown = get(
   false,
 );
 
+const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesFile}`;
+
 export {
   appConfig,
-  defaultBoundariesFile,
+  defaultBoundariesPath,
   rawLayers,
   rawTables,
   msalInstance,
   msalRequest,
   enableNavigationDropdown,
+  translation,
 };

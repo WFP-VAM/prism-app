@@ -82,7 +82,7 @@ function NavBar({ classes }: NavBarProps) {
               component={Link}
               to="/"
             >
-              {t('prism')}
+              {t('Prism')}
             </Typography>
           </Grid>
 

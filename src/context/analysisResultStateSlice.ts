@@ -3,7 +3,7 @@ import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
-import { defaultBoundariesFile } from '../config';
+import { defaultBoundariesPath } from '../config';
 import {
   AggregationOperations,
   AsyncReturnType,
@@ -87,7 +87,7 @@ function getAdminBoundariesURL() {
   }
   // do not send a local path to the API, use a fixed boundary file instead.
   if (isLocalhost) {
-    return defaultBoundariesFile;
+    return defaultBoundariesPath;
   }
   // the regex here removes the dot(s) at the beginning of a path, if there is at least one.
   // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '
