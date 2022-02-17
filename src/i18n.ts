@@ -67,6 +67,8 @@ export const resources = {
   },
 };
 
+export const languages = Object.keys(resources);
+
 // Register other date locales to be used by our DatePicker
 registerLocale('fr', fr);
 
@@ -75,12 +77,12 @@ i18n
   .init({
     resources,
     // TODO - Switch back to English
-    lng: 'fr',
+    lng: 'en',
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
     fallbackLng: 'en',
-    preload: ['en', 'fr'],
+    preload: languages,
     ns: ['translation'],
     defaultNS: 'translation',
   });

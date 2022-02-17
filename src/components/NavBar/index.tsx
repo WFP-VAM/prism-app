@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
+import LanguageSelector from './LanguageSelector';
 
 function NavBar({ classes }: NavBarProps) {
   const { t } = useTranslation();
@@ -100,6 +101,7 @@ function NavBar({ classes }: NavBarProps) {
               xs={3}
             >
               {buttons}
+              <LanguageSelector />
             </Grid>
           </Hidden>
 
