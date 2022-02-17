@@ -110,6 +110,7 @@ export const safeTranslate = (translator: any, key: string) => {
     // @ts-ignore
     return translator(key);
   }
+  // eslint-disable-next-line no-console
   console.info(
     `Translation for "${key}" is not configured in your translation file.`,
   );
