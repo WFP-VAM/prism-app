@@ -16,8 +16,14 @@ import {
 } from '../../../context/chartDataStateSlice';
 import Chart from '../../DataDrawer/Chart';
 import { ChartConfig } from '../../../config/types';
+import { isLoading } from '../../../context/mapStateSlice/selectors';
+import { isLoading as areDatesLoading } from '../../../context/serverStateSlice';
 
 function DataViewer({ classes }: DatasetProps) {
+  const layersLoading = useSelector(isLoading);
+  const datesLoading = useSelector(areDatesLoading);
+  const loading = layersLoading || datesLoading;
+
   const dataset = useSelector(DatasetSelector);
   const title = useSelector(PointTitleSelector);
   const [open, setOpen] = useState(false);
@@ -41,7 +47,7 @@ function DataViewer({ classes }: DatasetProps) {
 
   return (
     <>
-      {open && (
+      {open && !loading && (
         <Grid item className={classes.container}>
           <Paper className={classes.paper}>
             <IconButton size="small" onClick={() => setOpen(false)}>
