@@ -132,7 +132,7 @@ function Download({ classes }: DownloadProps) {
           <ListItemIcon>
             <Image fontSize="small" style={{ color: 'white' }} />
           </ListItemIcon>
-          <ListItemText primary="IMAGE" />
+          <ListItemText primary={safeTranslate(t, 'IMAGE')} />
         </ExportMenuItem>
       </ExportMenu>
       <Dialog
@@ -143,35 +143,35 @@ function Download({ classes }: DownloadProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogTitle className={classes.title} id="dialog-preview">
-          Map Preview
+          {safeTranslate(t, 'Map Preview')}
         </DialogTitle>
         <DialogContent>
           <canvas ref={previewRef} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">
-            Cancel
+            {safeTranslate(t, 'Cancel')}
           </Button>
           <Button
             variant="contained"
             onClick={() => download('png')}
             color="primary"
           >
-            Download PNG
+            {safeTranslate(t, 'Download PNG')}
           </Button>
           <Button
             variant="contained"
             onClick={() => download('jpeg')}
             color="primary"
           >
-            Download JPEG
+            {safeTranslate(t, 'Download JPEG')}
           </Button>
           <Button
             variant="contained"
             onClick={() => download('pdf')}
             color="primary"
           >
-            Download PDF
+            {safeTranslate(t, 'Download PDF')}
           </Button>
         </DialogActions>
       </Dialog>
