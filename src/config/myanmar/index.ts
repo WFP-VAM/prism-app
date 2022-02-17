@@ -3,7 +3,7 @@ import rawLayers from './layers.json';
 import myanmarTranslation from './translation.json';
 
 const rawTables = {};
-const translation = { mi: myanmarTranslation };
+const translation = { my: myanmarTranslation };
 
 export default {
   appConfig,

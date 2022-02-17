@@ -125,6 +125,12 @@ exports[`renders as expected 1`] = `
               >
                 fr
               </button>
+              <button
+                style="font-weight: normal;"
+                type="submit"
+              >
+                my
+              </button>
             </div>
           </div>
         </mock-hidden>

@@ -1,9 +1,11 @@
+import { merge } from 'lodash';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
 import fr from 'date-fns/locale/fr';
+import { translation } from './config';
 
-export const resources = {
+export const appResources = {
   en: {
     translation: {
       // Date settings
@@ -67,6 +69,22 @@ export const resources = {
   },
 };
 
+// Translations are expected to take the form {"fr": {"english sentence": "french translation", ...}
+const formattedTranslation = Object.keys(translation).reduce(
+  (a, v) => ({ ...a, [v]: { translation: translation[v] } }),
+  {},
+);
+
+const englishKeys = Object.keys(translation)
+  .flatMap(language => {
+    return Object.keys(translation[language]);
+  })
+  .reduce((a, v) => ({ ...a, [v]: v }), {});
+
+export const resources = merge(appResources, formattedTranslation, {
+  en: { translation: englishKeys },
+});
+
 export const languages = Object.keys(resources);
 
 // Register other date locales to be used by our DatePicker
@@ -92,7 +110,7 @@ export const safeTranslate = (translator: any, key: string) => {
     // @ts-ignore
     return translator(key);
   }
-  console.warn(
+  console.info(
     `Translation for "${key}" is not configured in your translation file.`,
   );
   return key;
