@@ -1,5 +1,6 @@
 """Collect and parse Cambodia EWS-1294."""
 import itertools
+from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
 
 from dateutil.parser import parse as dtparser
@@ -57,10 +58,17 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
     """Get datapoints for sensor locations."""
     # NOTE: PRISM will get todays' worth of data and parse them.
     # only_dates is a shortcut to provide one day to the PRISM timeline
-    # without incurring computational cost
+    # without incurring computational cost of querying them from the server
+
+    DATA_COLLECTION_START_DAY_STR = '2021-05-01'
+
     if only_dates:
-        today = datetime.now().replace(tzinfo=timezone.utc)
-        return [today.strftime('%Y-%m-%d')]
+        the_beginning = datetime.strptime(DATA_COLLECTION_START_DAY_STR, '%Y-%m-%d')
+        today = datetime.now()
+        # delta = today - the_beginning
+        # return [{'date': (the_beginning + timedelta(days=day)).strftime('%Y-%m-%d')} for day in range(delta.days + 1)]
+        days = [the_beginning + timedelta(days=d) for d in range((today - the_beginning).days+1)]
+        return list(map(lambda d: {'date': d.strftime('%Y-%m-%d')}, days))
 
     start = begin_datetime.date()
     end = end_datetime.date()
@@ -106,7 +114,7 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
         resp.raise_for_status()
         data_per_location = resp.json()
 
-        days = [start + timedelta(days=d) for d in range((end - start).days)]
+        days = [start + timedelta(days=d) for d in range((end - start).days+1)]
 
         location_data_by_day = []
         for n in range(len(days)):
@@ -117,7 +125,8 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
 
             rows = list()
 
-            dates_row = {'level': 'River levels'}
+            dates_row = OrderedDict()
+            dates_row['level'] = 'River levels'
             for count, level in enumerate(levels_and_dates):
                 # convert naive to timezone aware and utc
                 format_str = '%Y-%m-%dT%H:%M:%S'
@@ -128,7 +137,8 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
                 dates_row['level{}'.format(count)] = level_date
             rows.append(dates_row)
 
-            levels_row = {'level': 'current_level'}
+            levels_row = OrderedDict()
+            levels_row['level'] = 'current_level'
             for count, level in enumerate(levels_and_dates):
                 levels_row['level{}'.format(count)] = level[1]
             rows.append(levels_row)

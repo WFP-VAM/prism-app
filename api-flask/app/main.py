@@ -155,7 +155,6 @@ def get_kobo_forms():
 
 
 @app.route('/ews/data', methods=['GET'])
-@cache.cached(timeout=900, query_string=True)
 def get_ews_data():
     """Get all early warning from all locations."""
     only_dates, begin_datetime, end_datetime = parse_ews_params()
