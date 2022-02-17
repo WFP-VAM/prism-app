@@ -78,6 +78,18 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     const pointDataset = JSON.parse(dailyRows);
     const triggerLevels = JSON.parse(get(properties, 'trigger_levels'));
     const { rows, columns } = pointDataset;
+    // Dataset object are not ordered sort dates
+    const sortedRows = rows.map((row: TableRowType, index: number) => {
+      if (index === 0) {
+        return Object.fromEntries(
+          /* eslint-disable fp/no-mutating-methods */
+          Object.entries(row).sort(
+            ([, a], [, b]) => new Date(a).getTime() - new Date(b).getTime(),
+          ),
+        );
+      }
+      return row;
+    });
     const allRows = Object.keys(triggerLevels).reduce(
       (acc: TableRowType[], val: string | number) => {
         const levelData = columns.reduce(
@@ -94,7 +106,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
 
         return [...acc, levelData];
       },
-      rows,
+      sortedRows,
     );
 
     const pointName = get(properties, 'name');
