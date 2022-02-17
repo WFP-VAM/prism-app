@@ -65,8 +65,6 @@ def get_ews_response(only_dates, begin_datetime, end_datetime):
     if only_dates:
         the_beginning = datetime.strptime(DATA_COLLECTION_START_DAY_STR, '%Y-%m-%d')
         today = datetime.now()
-        # delta = today - the_beginning
-        # return [{'date': (the_beginning + timedelta(days=day)).strftime('%Y-%m-%d')} for day in range(delta.days + 1)]
         days = [the_beginning + timedelta(days=d) for d in range((today - the_beginning).days+1)]
         return list(map(lambda d: {'date': d.strftime('%Y-%m-%d')}, days))
 
