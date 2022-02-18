@@ -2,11 +2,7 @@ import { has, get } from 'lodash';
 
 import { PublicClientApplication } from '@azure/msal-browser';
 
-import {
-  cambodiaConfig,
-  cambodiaRawLayers,
-  cambodiaRawTables,
-} from './cambodia';
+import cambodia from './cambodia';
 
 import { globalConfig, globalRawLayers, globalRawTables } from './global';
 
@@ -63,12 +59,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
 const configMap = {
-  cambodia: {
-    appConfig: cambodiaConfig,
-    rawLayers: cambodiaRawLayers,
-    rawTables: cambodiaRawTables,
-    defaultBoundariesFile: 'khm_bnd_admin3_gov_wfp_edEarly2021.json',
-  },
+  cambodia,
   global: {
     appConfig: globalConfig,
     rawLayers: globalRawLayers,
