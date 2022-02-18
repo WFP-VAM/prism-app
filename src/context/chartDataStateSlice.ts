@@ -55,7 +55,7 @@ export const datasetResultStateSlice = createSlice({
             k,
             k === 'level'
               ? rows[0][k]
-              : moment(rows[0][k]).local().format('HH:MM:ss'),
+              : moment(rows[0][k]).local().format('DD/mm/YYYY HH:MM'),
           ]),
         ),
         ...rows.slice(1, rows.length),
