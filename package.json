@@ -16,6 +16,7 @@
   "scripts": {
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
+    "prebuild": "cd ./scripts && node prebuild.js",
     "build": "cross-env EXTEND_ESLINT=true react-scripts build",
     "test": "react-scripts test",
     "predeploy:prod": "yarn build",
