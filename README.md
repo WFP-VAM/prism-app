@@ -9,44 +9,83 @@ This project is the front-end interface for the World Food Programme's [PRISM pr
 The new PRISM frontend is built as a static website to minimize cross dependencies and simplify deployments as much as possible. Currently, PRISM frontend provides the ability to:
 
 - Load administrative boundaries as GeoJSON (`src/config/admin_boundaries.json`)
-- Load baseline data as JSON, and link it to administrative boundaries
+- Load admin level (vector) data as JSON, and link it to administrative boundaries
 - Display WMS layers from Geoserver or Open Data Cube endpoints, with date selection capabilities
+- Display point layers by applying symbology to numeric values associated with a geographic coordinate
 - Display CSV tables in a left side panel
 
-To chose which country to run PRISM for, you can set the environment variable `REACT_APP_COUNTRY`. Defaulting to `mongolia`, configurations currently available are:
-
-- `indonesia`
-- `mongolia`
-- `mozambique`
-- `myanmar`
+To chose which country to run PRISM for, you can set the environment variable `REACT_APP_COUNTRY`. The current default country is `myanmar`
 
 ## Configuration
 
-The configuration is split into four files that you can find in `src/config`:
+The configuration is split into three files that you can find in `src/config`:
 
 - 1. `prism.json`
 - 2. `layers.json`
 - 3. `tables.json`
-- 4. `baseline.ts`
   
 ### prism.json
 
 This is the primary configuration file. You can define:
 
+- Map settings (starting point, zoom, default boundary layers)
 - The server endpoints
-- Map settings (starting point, zoom)
-- Categories
+- Categories and their respective icons which are used to organize the top navigation
+- Alerts flag (to specify whether to activate the alerts module)
 
-The default categories are `baseline`, `climate`, `impact` and `tables`.
-For each categories, you can define sub categories as "subcategorie_name": [layers], a list of layers from `layers.json`.
+For each category, you can define sub categories as "subcategorie_name":
+[layers], a list of layers from `layers.json`.
+
+{
+  "country": "Cambodia",
+    "map": {
+    "latitude": 12.058,
+    "longitude": 105.281,
+    "zoom": 6.49
+  },
+    "serversUrls": {
+    "wms": [
+      "https://geonode.wfp.org/geoserver/prism/wms/",
+      "https://odc.ovio.org/wms"
+    ]
+  },
+  "alertFormActive": false,
+  "icons": {
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png",
+    "hazards": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "capacity": "icon_capacity.png",
+    "tables": "icon_table.png"
+  },
+    "categories": {
+      "hazards": {
+        "floods" ....
+
+#### Boundary layers
+- Configuring multiple boundary layers
+  If multiple boundary layers are configured `layers.json` you can specify which should be displayed by default by defining `defaultDisplayBoundaries` as an array of boundaries.
+  
+  e.g.
+  ```json
+  {
+    ...
+    "defaultDisplayBoundaries": [
+      "township_boundaries",
+      "district_boundaries",
+      "state_boundaries"
+    ]
+    ...
+  }
+  ```
 
 ### layers.json
 
-There are 3 main types of layers:
+There are 4 main types of layers:
 
 #### raster
 
-These layers are simply processed as raster images from a server.
+These layers are simply processed as raster images from a WMS server and are referred to as type 'wms'
 
 ```
 "pasture_anomaly": {
@@ -74,31 +113,119 @@ These layers are simply processed as raster images from a server.
 }
 ```
 
-#### baseline
+#### vector
 
-The layers are obtained by matching data from the `data` field with the administrative boundaries.
-The `data` field should point to a dataset defined in `baseline.ts`
+These layers are referred to as `admin_level_data` in PRISM and represent a data value for a polygon. The layers are obtained by matching data from the `data_field` and `admin_code` fields of the `admin_level_data` layer with the administrative boundaries. The default admin boundary file will be used unless otherwise specifed in the `admin_level_data` configuration using the `boundary` attribute
 
 ```
-"population_below_poverty": {
-    "title": "Population below national poverty line (%)",	    "title": "Poverty Headcount",
-    "server_type": "wms",	    "type": "json",
-    "server_uri": "https://mng-wfp.ovio.org:8443/geoserver/prism/wms?service=WMS&layers=poverty_HC",	    "data": "nsoPoverty",
-    "admin_code": "CODE1",
-    "has_date": false,	    "has_date": false,
-    "opacity": 0.3,	    "opacity": 0.3,
-    "legend_text": "Source: Susenas"	    "legend": [
-      { "value": "25", "color": "#fef0d9" },
-      { "value": "30", "color": "#fdcc8a" },
-      { "value": "35", "color": "#fc8d59" },
-      { "value": "40", "color": "#e34a33" },
-      { "value": "45", "color": "#b30000" }
+  "improved_drinking_water": {
+    "title": "Improved drinking water",
+    "type": "admin_level_data",
+    "path": "../data/myanmar/nso/vulnerability-layers.json",
+    "data_field": "improved_drinking_water",
+    "admin_level": 3,
+    "admin_code": "TS_PCODE",
+    "opacity": 0.7,
+    "legend": [
+      { "label": "<20%", "value": 0, "color": "#a50f15" },
+      { "label": "21 to 40%", "value": 21, "color": "#de2d26" },
+      { "label": "41 to 60%", "value": 41, "color": "#fb6a4a" },
+      { "label": "61 to 80%", "value": 61, "color": "#fcae91" },
+      { "label": "81 to 100%", "value": 81, "color": "#fee5d9" }
     ],
-    "legend_text": "The poverty headcount is the share of the population whose consumption / expenditure is below the poverty line by Aimag. Year: 2018. Source: National Statistics Office"
-}
+    "legend_text": "Percent of households with improved source of drinking water. Source: Myanmar Population and Housing Census 2014, Department of Population, Ministry of Immigration and Population"
+  }
+```
+
+#### point
+
+These layers are referred to as `point_data` in PRISM and represent a data value for a given latitude and longitude coordinate. Point data layers visualize values specified as `measure_field` as points on a map based on the `geom_field` which expect a lat, long coordinate. 
+
+```
+  "disaster_report": {
+    "title": "Disaster impact report",
+    "type": "point_data",
+    "data": "https://prism-api.ovio.org/kobo/forms",
+    "additional_query_params": {
+      "form_name": "PRISM-KHM-Disaster-Report-v1",
+      "datetime_field": "disaster_date",
+      "geom_field": "location",
+      "measure_field": "num_ppl_affected",
+    }
+    "opacity": 0.9,
+    "legend_text": "Number of people affected",
+    "legend": [
+      {"value": "0", "color": "#909090"},
+      {"value": "< 100", "color": "#ffeda0"},
+      {"value": "100 - 500", "color": "#feb24c"},
+      {"value": "500 or more", "color": "#f03b20"}
+    ]
+```
+#### boundaries
+Boundary layers are loaded by defaul when the application starts and typically show administrative bounaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data. 
+
+When more than one boundary is specified, an array of boundaries needs to also be set in `prism.json` using with the `defaultDisplayBoundaries` attribute.  
+
+```
+{
+  "state_admin_boundaries": {
+    "type": "boundary",
+    "path": "../data/myanmar/mmr_admin1_boundaries.json",
+    "opacity": 0.8,
+    "admin_code": "ST_PCODE",
+    "admin_level_names": ["ST"],
+    "admin_level_local_names": ["mmr_polbnd"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.5,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "district_admin_boundaries": {
+    "type": "boundary",
+    "path": "../data/myanmar/mmr_admin2_boundaries.json",
+    "opacity": 0.8,
+    "admin_code": "DT_PCODE",
+    "admin_level_names": ["ST", "DT"],
+    "admin_level_local_names": ["DT_MMR4", "TS_MMR4"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "../data/myanmar/admin_boundaries.json",
+    "opacity": 0.8,
+    "admin_code": "TS_PCODE",
+    "admin_level_names": ["ST", "DT", "TS"],
+    "admin_level_local_names": ["mmr_polbnd", "DT_MMR4", "TS_MMR4"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.5,
+        "line-opacity": 0.8
+      }
+    }
+  }
 ```
 
 #### impact
+Impact layers are computed by combining a raster layer with a vector layer based on raster values bound by the zones of the vector layer. The impact layer computes zonal statistics for the raster, and based on a configured threshold, will display zones where the threshold has been exceeded.  
 
 ```
 "herd_pasture_impact": {
@@ -116,15 +243,11 @@ The `data` field should point to a dataset defined in `baseline.ts`
 }
 ```
 
-### baseline.ts
+### Additional layer content
 
-This file is used to pre-load datasets and make sure that they are formatted properly. Thanks to TypeScript, this is limitting the potential for mismatch and failed loads.
-
-### Layer Configurations
 #### Add Layer Contents
-In country layers. You can add `content_path` element which
-expects a path to a `.md` or `.html` file. That file must be placed in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory e.g. `public/data/myanmar/contents.md`
-The application will use that to display layer contents as part of the Legend.
+To display additional metadata about a layer, you can add a `content_path` attribute to any layer. The attribute expects a path to a `.md` or `.html` file that is stored in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory. For example: `public/data/myanmar/contents.md`
+The application will show an icon next to the layer in the legend if this attribute is configured, and will display the content in a modal window if the icon is clicked. 
 
 ## Technical - Packages/Dependencies
 
@@ -136,6 +259,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - **Monitoring** Uses [Sentry.io](https://sentry.io). To send monitoring info to Sentry, simply set the `Sentry` url by adding it as `REACT_APP_SENTRY_URL` in a `.env` file at the root folder.
 - **State Management** Uses [Redux](https://redux.js.org/introduction/getting-started)
 - **Testing** Uses [Jest](https://jestjs.io/) with [Enzyme](https://enzymejs.github.io/enzyme/)
+- **WFP authentication** Uses [msal](https://github.com/AzureAD/microsoft-authentication-library-for-js). You need to include within your .env file the variables `REACT_APP_OAUTH_CLIENT_ID`, `REACT_APP_OAUTH_AUTHORITY` and `REACT_APP_OAUTH_REDIRECT_URI`. Also, set the `WFPAuthRequired` flag within the country prism.json file
 
 ### Available Scripts
 

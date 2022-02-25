@@ -15,6 +15,7 @@
   },
   "scripts": {
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
+    "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
     "build": "cross-env EXTEND_ESLINT=true react-scripts build",
     "test": "react-scripts test",
     "predeploy:prod": "yarn build",
@@ -26,6 +27,8 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
+    "@azure/msal-browser": "^2.19.0",
+    "@azure/msal-react": "^1.1.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-brands-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
@@ -40,11 +43,11 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "@turf/bbox": "^6.0.1",
-    "@turf/boolean-point-in-polygon": "^6.0.1",
-    "@turf/helpers": "^6.1.4",
+    "@turf/bbox": "^6.5.0",
+    "@turf/bbox-polygon": "^6.5.0",
+    "@turf/boolean-point-in-polygon": "^6.5.0",
+    "@turf/union": "^6.5.0",
     "@types/dompurify": "^2.2.3",
-    "@types/marked": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.25.0",
     "babel-eslint": "10.0.3",
@@ -73,9 +76,9 @@
     "husky": "^4.2.3",
     "jspdf": "^2.3.0",
     "lint-staged": "^10.0.8",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mapbox-gl": "^1.8.1",
-    "marked": "^3.0.2",
+    "marked": "^4.0.10",
     "moment": "^2.24.0",
     "moment-range": "^4.0.2",
     "papaparse": "^5.2.0",
@@ -114,13 +117,15 @@
     ]
   },
   "devDependencies": {
+    "@turf/helpers": "^6.1.4",
     "@types/chart.js": "^2.9.21",
     "@types/d3": "^5.7.2",
     "@types/geojson": "^7946.0.7",
     "@types/jest": "^24.0.0",
     "@types/lodash": "^4.14.149",
     "@types/mapbox-gl": "^1.8.0",
-    "@types/node": "^12.0.0",
+    "@types/marked": "^4.0.2",
+    "@types/node": "^16.0.0",
     "@types/papaparse": "^5.0.3",
     "@types/react": "^16.9.0",
     "@types/react-datepicker": "^2.11.0",
@@ -131,6 +136,6 @@
     "eslint-import-resolver-typescript": "^2.0.0"
   },
   "engines": {
-    "node": "12.x"
+    "node": "16.x"
   }
 }

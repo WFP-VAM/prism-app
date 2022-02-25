@@ -4,8 +4,8 @@
     "path": "../data/indonesia/admin_idn.json",
     "opacity": 0.8,
     "admin_code": "A2TEXT",
-    "admin_level_names": ["A2NAME", "A1NAME"],
-    "admin_level_local_names": ["A2NAME", "A1NAME"],
+    "admin_level_names": ["A1NAME", "A2NAME"],
+    "admin_level_local_names": ["A1NAME", "A2NAME"],
     "styles:": {
       "fill": {
         "fill-opacity": 0

@@ -1,5 +1,6 @@
 {
     "country": "Regional Bureau Dakar",
+    "enableNavigationDropdown": true,
     "icons": {
       "food_security": "icon_foodsecurity.png",
       "food_security_and_livelihoods": "icon_livelihoods.png",

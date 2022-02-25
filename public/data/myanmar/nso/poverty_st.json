@@ -1,0 +1,64 @@
+{
+    "DataList": [
+            {
+              "ST_PCODE": "MMR001",
+              "Poverty": 34
+            },
+            {
+              "ST_PCODE": "MMR002",
+              "Poverty": 46
+            },
+            {
+              "ST_PCODE": "MMR003",
+              "Poverty": 11
+            },
+            {
+              "ST_PCODE": "MMR004",
+              "Poverty": 10
+            },
+            {
+              "ST_PCODE": "MMR005",
+              "Poverty": 20
+            },
+            {
+              "ST_PCODE": "MMR006",
+              "Poverty": 9
+            },
+            {
+              "ST_PCODE": "MMR009",
+              "Poverty": 6
+            },
+            {
+              "ST_PCODE": "MMR010",
+              "Poverty": 7
+            },
+            {
+              "ST_PCODE": "MMR011",
+              "Poverty": 8
+            },
+            {
+              "ST_PCODE": "MMR012",
+              "Poverty": 7
+            },
+            {
+              "ST_PCODE": "MMR013",
+              "Poverty": 43
+            },
+            {
+              "ST_PCODE": "MMR017",
+              "Poverty": 41
+            },
+            {
+              "ST_PCODE": "MMR018",
+              "Poverty": 16
+            },
+            {
+              "ST_PCODE": "MMR111",
+              "Poverty": 49
+            },
+            {
+              "ST_PCODE": "MMR222",
+              "Poverty": 16
+            }
+        ]
+}

@@ -1,4 +1,6 @@
-import { has } from 'lodash';
+import { has, get } from 'lodash';
+
+import { PublicClientApplication } from '@azure/msal-browser';
 
 import {
   cambodiaConfig,
@@ -39,6 +41,12 @@ import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
 import { rbdConfig, rbdRawLayers, rbdRawTables } from './rbd';
 
 import {
+  srilankaConfig,
+  srilankaRawLayers,
+  srilankaRawTables,
+} from './srilanka';
+
+import {
   tajikistanConfig,
   tajikistanRawLayers,
   tajikistanRawTables,
@@ -49,21 +57,6 @@ import {
   zimbabweRawLayers,
   zimbabweRawTables,
 } from './zimbabwe';
-
-type Country =
-  | 'cambodia'
-  | 'global'
-  | 'indonesia'
-  | 'kyrgyzstan'
-  | 'mongolia'
-  | 'mozambique'
-  | 'myanmar'
-  | 'namibia'
-  | 'rbd'
-  | 'tajikistan'
-  | 'zimbabwe';
-
-const DEFAULT: Country = 'myanmar';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
@@ -124,6 +117,12 @@ const configMap = {
     rawTables: rbdRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_mar2021_projected_jun2021_simple.json`,
   },
+  srilanka: {
+    appConfig: srilankaConfig,
+    rawLayers: srilankaRawLayers,
+    rawTables: srilankaRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/lka_boundaries_admin3.json`,
+  },
   tajikistan: {
     appConfig: tajikistanConfig,
     rawLayers: tajikistanRawLayers,
@@ -139,13 +138,50 @@ const configMap = {
   },
 } as const;
 
+type Country = keyof typeof configMap;
+
+const DEFAULT: Country = 'myanmar';
+
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
-const safeCountry = (COUNTRY && has(configMap, COUNTRY)
-  ? COUNTRY
-  : DEFAULT) as Country;
+const safeCountry =
+  COUNTRY && has(configMap, COUNTRY) ? (COUNTRY as Country) : DEFAULT;
 
 const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
   safeCountry
 ];
 
-export { appConfig, defaultBoundariesFile, rawLayers, rawTables };
+const {
+  REACT_APP_OAUTH_CLIENT_ID: CLIENT_ID,
+  REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
+  REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
+} = process.env;
+
+const msalConfig = {
+  auth: {
+    clientId: CLIENT_ID!,
+    authority: AUTHORITY!,
+    redirectUri: REDIRECT_URI!,
+  },
+};
+
+const msalRequest = {
+  scopes: ['openid', 'profile'],
+};
+
+const msalInstance = new PublicClientApplication(msalConfig);
+
+const enableNavigationDropdown = get(
+  appConfig,
+  'enableNavigationDropdown',
+  false,
+);
+
+export {
+  appConfig,
+  defaultBoundariesFile,
+  rawLayers,
+  rawTables,
+  msalInstance,
+  msalRequest,
+  enableNavigationDropdown,
+};

@@ -3,10 +3,10 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-notifier />
-  <mock-navbar />
   <div
     id="app"
   >
+    <mock-navbar />
     <mock-mapview />
     <mock-datadrawer />
   </div>
