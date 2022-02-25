@@ -115,7 +115,7 @@ const configMap = {
     appConfig: rbdConfig,
     rawLayers: rbdRawLayers,
     rawTables: rbdRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_mar2021_projected_jun2021_simple.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_nov2021_admin1.json`,
   },
   srilanka: {
     appConfig: srilankaConfig,
