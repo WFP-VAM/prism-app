@@ -126,7 +126,9 @@ function generateTableFromApiData(
     );
 
     const name: string =
-      featureBoundary?.properties?.[adminLevelName] || 'No Name';
+      adminLayer.adminLevelNames
+        .map(level => get(featureBoundary, ['properties', level], '') as string)
+        .join(', ') || 'No Name';
     const localName: string =
       featureBoundary?.properties?.[adminLevelLocalName] || 'No Name';
 
