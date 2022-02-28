@@ -8,9 +8,11 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TableSortLabel,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
+import { orderBy } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
@@ -19,6 +21,8 @@ import { Column } from '../../../../utils/analysis-utils';
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sortColumn, setSortColumn] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const dispatch = useDispatch();
 
@@ -33,6 +37,11 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
     setPage(0);
   };
 
+  const handleChangeOrderBy = (newSortColumn: string) => {
+    const isAsc = sortColumn === newSortColumn && sortDirection === 'asc';
+    setSortColumn(newSortColumn);
+    setSortDirection(isAsc ? 'desc' : 'asc');
+  };
   return (
     <div>
       <TableContainer className={classes.tableContainer}>
@@ -41,13 +50,19 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
             <TableRow>
               {columns.map(column => (
                 <TableCell key={column.id} className={classes.tableHead}>
-                  {column.label}
+                  <TableSortLabel
+                    active={sortColumn === column.id}
+                    direction={sortColumn === column.id ? sortDirection : 'asc'}
+                    onClick={() => handleChangeOrderBy(column.id)}
+                  >
+                    {column.label}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData
+            {orderBy(tableData, sortColumn, sortDirection)
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(row => {
                 return (
