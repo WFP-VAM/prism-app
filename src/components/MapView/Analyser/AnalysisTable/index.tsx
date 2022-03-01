@@ -9,6 +9,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  Theme,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
@@ -51,6 +52,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
               {columns.map(column => (
                 <TableCell key={column.id} className={classes.tableHead}>
                   <TableSortLabel
+                    classes={{ root: classes.sortLabel }}
                     active={sortColumn === column.id}
                     direction={sortColumn === column.id ? sortDirection : 'asc'}
                     onClick={() => handleChangeOrderBy(column.id)}
@@ -113,7 +115,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   );
 }
 
-const styles = () =>
+const styles = (theme: Theme) =>
   createStyles({
     tableContainer: {
       border: '2px solid',
@@ -125,6 +127,12 @@ const styles = () =>
     },
     innerAnalysisButton: {
       backgroundColor: '#3d474a',
+    },
+    sortLabel: {
+      color: theme.palette.text.primary,
+      '&:hover': {
+        color: theme.palette.grey[100],
+      },
     },
   });
 
