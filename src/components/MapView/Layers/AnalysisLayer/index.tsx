@@ -76,12 +76,10 @@ function AnalysisLayer() {
         dispatch(
           addPopupData({
             [analysisData.getStatTitle()]: {
-              data: Math.round(
-                get(
-                  evt.features[0],
-                  ['properties', analysisData.statistic],
-                  'No Data',
-                ),
+              data: get(
+                evt.features[0],
+                ['properties', analysisData.statistic],
+                'No Data',
               ).toLocaleString('en-US'),
               coordinates,
             },
