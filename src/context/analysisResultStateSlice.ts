@@ -38,6 +38,7 @@ import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, AdminLevelDataLayerData } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
+import { getLocationName } from '../utils/name-utils';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
@@ -125,10 +126,7 @@ function generateTableFromApiData(
       feature => feature.properties?.[adminLevelName] === row[adminLevelName],
     );
 
-    const name: string =
-      adminLayer.adminLevelNames
-        .map(level => get(featureBoundary, ['properties', level], '') as string)
-        .join(', ') || 'No Name';
+    const name: string = getLocationName(adminLayer, featureBoundary);
     const localName: string =
       featureBoundary?.properties?.[adminLevelLocalName] || 'No Name';
 
