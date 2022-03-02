@@ -23,6 +23,10 @@ import {
   LayerDefinitions,
 } from '../../../../config/utils';
 
+function getRoundedData(data: number): string {
+  return data ? data.toFixed(3) : 'No Data';
+}
+
 function AnalysisLayer() {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
@@ -76,11 +80,9 @@ function AnalysisLayer() {
         dispatch(
           addPopupData({
             [analysisData.getStatTitle()]: {
-              data: get(
-                evt.features[0],
-                ['properties', analysisData.statistic],
-                'No Data',
-              ).toLocaleString('en-US'),
+              data: getRoundedData(
+                get(evt.features[0], ['properties', analysisData.statistic]),
+              ),
               coordinates,
             },
           }),
@@ -90,7 +92,7 @@ function AnalysisLayer() {
           dispatch(
             addPopupData({
               [analysisData.getBaselineLayer().title]: {
-                data: get(evt.features[0], 'properties.data', 'No Data'),
+                data: getRoundedData(get(evt.features[0], 'properties.data')),
                 coordinates,
               },
             }),
@@ -101,10 +103,8 @@ function AnalysisLayer() {
           dispatch(
             addPopupData({
               [analysisData.key]: {
-                data: get(
-                  evt.features[0],
-                  `properties.${analysisData.key}`,
-                  'No Data',
+                data: getRoundedData(
+                  get(evt.features[0], `properties.${analysisData.key}`),
                 ),
                 coordinates,
               },
