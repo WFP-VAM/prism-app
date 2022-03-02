@@ -22,7 +22,7 @@ import { Column } from '../../../../utils/analysis-utils';
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortColumn, setSortColumn] = useState('');
+  const [sortColumn, setSortColumn] = useState<Column['id']>();
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const dispatch = useDispatch();
