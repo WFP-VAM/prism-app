@@ -38,7 +38,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
     setPage(0);
   };
 
-  const handleChangeOrderBy = (newSortColumn: string) => {
+  const handleChangeOrderBy = (newSortColumn: Column['id']) => {
     const isAsc = sortColumn === newSortColumn && sortDirection === 'asc';
     setSortColumn(newSortColumn);
     setSortDirection(isAsc ? 'desc' : 'asc');
@@ -52,7 +52,10 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
               {columns.map(column => (
                 <TableCell key={column.id} className={classes.tableHead}>
                   <TableSortLabel
-                    classes={{ root: classes.sortLabel }}
+                    classes={{
+                      root: classes.tabelSortLabelRoot,
+                      icon: classes.tabelSortLabelIcon,
+                    }}
                     active={sortColumn === column.id}
                     direction={sortColumn === column.id ? sortDirection : 'asc'}
                     onClick={() => handleChangeOrderBy(column.id)}
@@ -128,10 +131,18 @@ const styles = (theme: Theme) =>
     innerAnalysisButton: {
       backgroundColor: '#3d474a',
     },
-    sortLabel: {
+    tabelSortLabelIcon: {
+      color: theme.palette.text.primary,
+      opacity: 1,
+      '&:hover': {
+        opacity: 0.5,
+      },
+    },
+    tabelSortLabelRoot: {
       color: theme.palette.text.primary,
       '&:hover': {
-        color: theme.palette.grey[100],
+        color: theme.palette.text.primary,
+        opacity: 0.5,
       },
     },
   });
