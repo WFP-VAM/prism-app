@@ -20,7 +20,9 @@ def get_idpoor_response():
         # one each year get provinces and get all communes per province
         for province in provinces_data:
             province_id = province['uuid']
-            districts_uri = '{0}/{1}/children?year={2}&{3}'.format(BASE_API, province_id, year, default_params)
+            districts_uri = '{0}/{1}/children?year={2}&{3}'.format(
+                BASE_API, province_id, year, default_params
+            )
             resp = requests.get(districts_uri)
             resp.raise_for_status()
 
@@ -28,7 +30,9 @@ def get_idpoor_response():
 
             for district in districts_data:
                 district_id = district['uuid']
-                communes_uri = '{0}/{1}/children?year={2}&{3}'.format(BASE_API, district_id, year, default_params)
+                communes_uri = '{0}/{1}/children?year={2}&{3}'.format(
+                    BASE_API, district_id, year, default_params
+                )
                 resp = requests.get(communes_uri)
                 resp.raise_for_status()
 
@@ -38,6 +42,6 @@ def get_idpoor_response():
                     key = commune['code']
                     del commune['code']
                     if key not in datalist.keys():
-                        datalist[key] = { 'Adm3_NCDD': key, **commune }
+                        datalist[key] = {'Adm3_NCDD': key, **commune}
 
-    return { 'DataList': list(datalist.values()) }
+    return {'DataList': list(datalist.values())}
