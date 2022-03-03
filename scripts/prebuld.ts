@@ -1,9 +1,9 @@
-const path = require('path');
-const fs = require('fs');
+import * as fs from 'fs';
+import * as path from 'path';
 
 const rootDir = path.dirname(__dirname);
 
-function idPoorPrebuild(country) {
+function idPoorPrebuild(country: string): void {
   const dataDir = path.join(rootDir, `public/data/${country}`);
   const file = path.join(dataDir, 'idpoor.json');
 
@@ -25,7 +25,7 @@ function idPoorPrebuild(country) {
         }
       });
 
-      fs.writeFile(file, 'ID Poor data from API', err => {
+      fs.writeFile(file, '{}', err => {
         if (err) {
           throw err;
         }
@@ -39,7 +39,7 @@ function idPoorPrebuild(country) {
   }
 }
 
-(function runPrebuild() {
+(function runPrebuild(): void {
   const COUNTRY = process.env.REACT_APP_COUNTRY;
   idPoorPrebuild(COUNTRY);
   // add prebuild function/processes here
