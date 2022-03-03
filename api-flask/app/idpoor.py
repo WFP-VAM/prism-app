@@ -1,12 +1,12 @@
+"""Collect and parse idpoor cambodia data."""
 import requests
 
-"""Collect and parse idpoor cambodia data"""
 BASE_API = 'https://mop.idpoor.gov.kh/api/analytics/public/units'
 ROUND_YEARS = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019]
 
 
 def get_idpoor_response():
-    """Get IDPoor location data"""
+    """Get IDPoor location data."""
     datalist = dict()
     default_params = 'region=ALL&isOnDemand=ALL&round=ALL'
 
