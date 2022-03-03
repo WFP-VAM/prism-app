@@ -53,15 +53,42 @@
     "opacity": 0.7,
     "legend_text": "CHIRPS rainfall anomaly dekad",
     "legend": [
-      { "value": "1%", "color": "#d79b0b" },
-      { "value": "60%", "color": "#e1b344" },
-      { "value": "80%", "color": "#ebcb7d" },
-      { "value": "90%", "color": "#f5e3b6" },
-      { "value": "110%", "color": "#f2f2f2" },
-      { "value": "120%", "color": "#b5e7fe" },
-      { "value": "140%", "color": "#7dd4fd" },
-      { "value": "180%", "color": "#45c1fc" },
-      { "value": "> 180%", "color": "#0fb0fb" }
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
     ]
   },
   "rain_anomaly_1month": {
@@ -73,16 +100,42 @@
     "opacity": 0.7,
     "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": "0" },
-      { "value": "1", "color": "#d79b0b" },
-      { "value": "60", "color": "#e1b344" },
-      { "value": "80", "color": "#ebcb7d" },
-      { "value": "90", "color": "#f5e3b6" },
-      { "value": "110", "color": "#f2f2f2" },
-      { "value": "120", "color": "#b5e7fe" },
-      { "value": "140", "color": "#7dd4fd" },
-      { "value": "180", "color": "#45c1fc" },
-      { "value": "400", "color": "#0fb0fb" }
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
     ]
   },
   "rain_anomaly_3month": {
@@ -94,16 +147,42 @@
     "opacity": 0.7,
     "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": "0" },
-      { "value": "1", "color": "#d79b0b" },
-      { "value": "60", "color": "#e1b344" },
-      { "value": "80", "color": "#ebcb7d" },
-      { "value": "90", "color": "#f5e3b6" },
-      { "value": "110", "color": "#f2f2f2" },
-      { "value": "120", "color": "#b5e7fe" },
-      { "value": "140", "color": "#7dd4fd" },
-      { "value": "180", "color": "#45c1fc" },
-      { "value": "400", "color": "#0fb0fb" }
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
     ]
   },
   "rain_anomaly_6month": {
@@ -115,16 +194,42 @@
     "opacity": 0.7,
     "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": "0" },
-      { "value": "1", "color": "#d79b0b" },
-      { "value": "60", "color": "#e1b344" },
-      { "value": "80", "color": "#ebcb7d" },
-      { "value": "90", "color": "#f5e3b6" },
-      { "value": "110", "color": "#f2f2f2" },
-      { "value": "120", "color": "#b5e7fe" },
-      { "value": "140", "color": "#7dd4fd" },
-      { "value": "180", "color": "#45c1fc" },
-      { "value": "400", "color": "#0fb0fb" }
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
     ]
   },
   "rain_anomaly_9month": {
@@ -136,37 +241,89 @@
     "opacity": 0.7,
     "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": "0" },
-      { "value": "1", "color": "#d79b0b" },
-      { "value": "60", "color": "#e1b344" },
-      { "value": "80", "color": "#ebcb7d" },
-      { "value": "90", "color": "#f5e3b6" },
-      { "value": "110", "color": "#f2f2f2" },
-      { "value": "120", "color": "#b5e7fe" },
-      { "value": "140", "color": "#7dd4fd" },
-      { "value": "180", "color": "#45c1fc" },
-      { "value": "400", "color": "#0fb0fb" }
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
     ]
   },
   "rain_anomaly_1year": {
     "title": "1-year rainfall anomaly",
     "type": "wms",
-    "server_layer_name": "ryq_blended_dekad",
+    "server_layer_name": "ryq_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": "0" },
-      { "value": "1", "color": "#d79b0b" },
-      { "value": "60", "color": "#e1b344" },
-      { "value": "80", "color": "#ebcb7d" },
-      { "value": "90", "color": "#f5e3b6" },
-      { "value": "110", "color": "#f2f2f2" },
-      { "value": "120", "color": "#b5e7fe" },
-      { "value": "140", "color": "#7dd4fd" },
-      { "value": "180", "color": "#45c1fc" },
-      { "value": "400", "color": "#0fb0fb" }
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
     ]
   },
   "rainfall_agg_1month": {
