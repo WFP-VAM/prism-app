@@ -148,7 +148,7 @@ function generateTableFromApiData(
       localName,
       [statistic]: get(row, statistic, 0),
       baselineValue,
-      coordinates: (featureBoundary?.geometry as any).coordinates[0][0][0], // TODO likely will not keep
+      coordinates: (featureBoundary?.geometry as any)?.coordinates[0][0][0], // TODO likely will not keep
     };
     return tableRow;
   });
