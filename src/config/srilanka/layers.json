@@ -434,7 +434,7 @@
         "color": "#45c1fc"
       },
       {
-        "label": "> 180%",
+        "label": ">= 200%",
         "color": "#0fb0fb"
       }
     ]
@@ -630,11 +630,11 @@
   "rain_anomaly_1year": {
     "title": "1-year rainfall anomaly",
     "type": "wms",
-    "server_layer_name": "ryq_blended_dekad",
+    "server_layer_name": "ryq_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "< 60%",
