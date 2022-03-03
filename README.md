@@ -23,7 +23,7 @@ The configuration is split into three files that you can find in `src/config`:
 - 1. `prism.json`
 - 2. `layers.json`
 - 3. `tables.json`
-  
+
 ### prism.json
 
 This is the primary configuration file. You can define:
