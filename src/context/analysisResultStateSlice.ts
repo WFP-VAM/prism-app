@@ -104,7 +104,6 @@ function generateTableFromApiData(
   }: { layer: BoundaryLayerProps; data: BoundaryLayerData },
   // baseline layer, both props and data
   {
-    layer: { adminLevel },
     data: { layerData: baselineLayerData },
   }: { layer: AdminLevelDataLayerProps; data: AdminLevelDataLayerData },
   apiRequest: ApiData,
