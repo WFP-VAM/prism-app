@@ -16,7 +16,7 @@
   "scripts": {
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
-    "prebuild": "cd ./scripts  ts-node prebuild.ts",
+    "prebuild": "cd ./scripts && ts-node prebuild.ts",
     "build": "cross-env EXTEND_ESLINT=true react-scripts build",
     "test": "react-scripts test",
     "predeploy:prod": "yarn build",
@@ -134,7 +134,8 @@
     "@types/react-redux": "^7.1.7",
     "@types/react-router-dom": "^5.1.3",
     "cross-env": "^7.0.2",
-    "eslint-import-resolver-typescript": "^2.0.0"
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "ts-node": "^10.6.0"
   },
   "engines": {
     "node": "16.x"

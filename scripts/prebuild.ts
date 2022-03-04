@@ -1,5 +1,9 @@
+// const fs = require('fs');
+// const path = require('path');
 import * as fs from 'fs';
 import * as path from 'path';
+
+console.warn('Prebuilding...');
 
 const rootDir = path.dirname(__dirname);
 
@@ -11,21 +15,30 @@ function idPoorPrebuild(country: string): void {
     case 'cambodia':
       console.warn(' Prebuild: ID Poor Cambodia');
 
-      fs.access(file, fs.constants.F_OK, err => {
-        if (!err) {
+      fs.access(file, fs.constants.F_OK, (missingFileError: unknown) => {
+        if (!missingFileError) {
+          // fetch data from idpoor api
+          // const resp = await fetch('http://localhost/idpoor/data', {
+          //   mode: 'cors',
+          // });
+
+          // console.warn('-> ', resp);
+          // once response is Ok
+          // rename the current idpoor.json to idpoor-back.json
+          // write new idpoor.json file with response
           fs.rename(
             file,
             path.join(dataDir, `idpoor${Date.now()}.json`),
-            renameErr => {
-              if (renameErr) {
-                throw renameErr;
+            (err: unknown) => {
+              if (err) {
+                throw err;
               }
             },
           );
         }
       });
 
-      fs.writeFile(file, '{}', err => {
+      fs.writeFile(file, '{}', (err: any) => {
         if (err) {
           throw err;
         }
@@ -40,7 +53,9 @@ function idPoorPrebuild(country: string): void {
 }
 
 (function runPrebuild(): void {
-  const COUNTRY = process.env.REACT_APP_COUNTRY;
+  const COUNTRY: string = process.env.REACT_APP_COUNTRY as string;
   idPoorPrebuild(COUNTRY);
   // add prebuild function/processes here
 })();
+
+console.warn('Prebuilding done.');

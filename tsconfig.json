@@ -27,5 +27,13 @@
   ],
   "files": [
     "src/custom.d.ts"
-  ]
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "types": [
+        "node"
+      ]
+    }
+  }
 }
