@@ -22,7 +22,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortColumn, setSortColumn] = useState<Column['id']>();
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [isAscending, setIsAscending] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -38,9 +38,9 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   };
 
   const handleChangeOrderBy = (newSortColumn: Column['id']) => {
-    const isAsc = sortColumn === newSortColumn && sortDirection === 'asc';
+    const newIsAsc = !(sortColumn === newSortColumn && isAscending);
     setSortColumn(newSortColumn);
-    setSortDirection(isAsc ? 'desc' : 'asc');
+    setIsAscending(newIsAsc);
   };
   return (
     <div>
@@ -52,7 +52,9 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                 <TableCell key={column.id} className={classes.tableHead}>
                   <TableSortLabel
                     active={sortColumn === column.id}
-                    direction={sortColumn === column.id ? sortDirection : 'asc'}
+                    direction={
+                      sortColumn === column.id && !isAscending ? 'desc' : 'asc'
+                    }
                     onClick={() => handleChangeOrderBy(column.id)}
                   >
                     {column.label}
@@ -62,7 +64,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orderBy(tableData, sortColumn, sortDirection)
+            {orderBy(tableData, sortColumn, isAscending ? 'asc' : 'desc')
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(row => {
                 return (
