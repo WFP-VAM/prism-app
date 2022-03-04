@@ -1,7 +1,6 @@
-// const fs = require('fs');
-// const path = require('path');
 import * as fs from 'fs';
 import * as path from 'path';
+import axios from 'axios';
 
 console.warn('Prebuilding...');
 
@@ -13,38 +12,44 @@ function idPoorPrebuild(country: string): void {
 
   switch (country) {
     case 'cambodia':
-      console.warn(' Prebuild: ID Poor Cambodia');
+      console.warn(' Prebuild: ID Poor: ', country);
 
-      fs.access(file, fs.constants.F_OK, (missingFileError: unknown) => {
-        if (!missingFileError) {
+      fs.access(file, fs.constants.F_OK, (fileMissingError: any) => {
+        if (!fileMissingError) {
+          console.warn('Loading...');
           // fetch data from idpoor api
-          // const resp = await fetch('http://localhost/idpoor/data', {
-          //   mode: 'cors',
-          // });
+          axios
+            .get('http://localhost/idpoor/data')
+            .then(resp => resp.data)
+            .then(data => {
+              // backup previous data
+              fs.rename(
+                file,
+                path.join(dataDir, `idpoor${Date.now()}.json`),
+                (fileRenameError: any) => {
+                  if (fileRenameError) {
+                    throw fileRenameError;
+                  }
+                },
+              );
 
-          // console.warn('-> ', resp);
-          // once response is Ok
-          // rename the current idpoor.json to idpoor-back.json
-          // write new idpoor.json file with response
-          fs.rename(
-            file,
-            path.join(dataDir, `idpoor${Date.now()}.json`),
-            (err: unknown) => {
-              if (err) {
-                throw err;
-              }
-            },
-          );
+              // write new data
+              fs.writeFile(
+                file,
+                JSON.stringify(data),
+                (fileWriteError: any) => {
+                  if (fileWriteError) {
+                    throw fileWriteError;
+                  }
+                },
+              );
+            })
+            .catch(error => {
+              console.warn('-> ', error);
+            });
         }
       });
 
-      fs.writeFile(file, '{}', (err: any) => {
-        if (err) {
-          throw err;
-        }
-      });
-      // call function which process and return json
-      // save the json in idpoor.json file
       break;
     default:
       console.warn(`No prebuild for ID Poor in ${country}`);

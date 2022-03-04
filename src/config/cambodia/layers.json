@@ -21,7 +21,7 @@
     "title": "IDPoor",
     "type": "admin_level_data",
     "path": "../data/cambodia/idpoor.json",
-    "data_field": "num_idpoor",
+    "data_field": "rural",
     "admin_level": 3,
     "admin_code": "Adm3_NCDD",
     "opacity": 0.9,
