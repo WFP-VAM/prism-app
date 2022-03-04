@@ -123,6 +123,7 @@ function generateTableFromApiData(
     ? groupByAdminIndex
     : adminLevelNames.length - 1;
 
+  // If we want to show all comma separated admin levels, we can use all names until "adminIndex".
   const adminLevelName = adminLevelNames[adminIndex];
   // for local name too.
   const adminLevelLocalName = adminLevelLocalNames[adminIndex];
