@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
-import { get } from 'lodash';
+import { get, isNumber } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesFile } from '../config';
 import {
@@ -107,14 +107,25 @@ function generateTableFromApiData(
     layer: { adminLevel },
     data: { layerData: baselineLayerData },
   }: { layer: AdminLevelDataLayerProps; data: AdminLevelDataLayerData },
+  apiRequest: ApiData,
 ): TableRow[] {
+  // Reuse the groupBy parameter to generate the table
+  const groupBy = apiRequest.group_by;
+
   // find the key that will let us reference the names of the bounding boxes. We get the one corresponding to the specific level of baseline, or the first if we fail.
-  const adminLevelName =
-    adminLayer.adminLevelNames[adminLevel - 1] || adminLayer.adminLevelNames[0];
+  const { adminLevelNames, adminLevelLocalNames } = adminLayer;
+
+  const groupByAdminIndex = adminLevelNames.findIndex(
+    levelName => levelName === groupBy,
+  );
+
+  const adminIndex = isNumber(groupByAdminIndex)
+    ? groupByAdminIndex
+    : adminLevelNames.length - 1;
+
+  const adminLevelName = adminLevelNames[adminIndex];
   // for local name too.
-  const adminLevelLocalName =
-    adminLayer.adminLevelLocalNames[adminLevel - 1] ||
-    adminLayer.adminLevelLocalNames[0];
+  const adminLevelLocalName = adminLevelLocalNames[adminIndex];
 
   return (aggregateData as KeyValueResponse[]).map(row => {
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
@@ -122,7 +133,9 @@ function generateTableFromApiData(
     // once we find it we can get the corresponding local name.
 
     const featureBoundary = adminLayerData.features.find(
-      feature => feature.properties?.[adminLevelName] === row[adminLevelName],
+      ({ properties }) =>
+        properties?.[groupBy] === row[groupBy] ||
+        properties?.[adminLevelName] === row[adminLevelName],
     );
 
     const name: string =
@@ -349,6 +362,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     aggregateData,
     adminBoundariesData,
     { layer: baselineLayer, data: loadedAndCheckedBaselineData },
+    apiRequest,
   );
 
   return new BaselineLayerResult(
