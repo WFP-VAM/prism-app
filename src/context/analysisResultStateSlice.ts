@@ -147,6 +147,7 @@ function generateTableFromApiData(
     // adminKey here refers to a specific feature (could be several) where the data is attached to.
     const baselineValue =
       baselineLayerData.find(({ adminKey }) => {
+        // TODO - Make this code more flexible.
         // we only check startsWith because the adminCode grows longer the deeper the level.
         // For example, 34 is state and 14 is district, therefore 3414 is a specific district in a specific state.
         // if this baseline layer only focuses on a higher level (just states) it would only contain 34, but every feature is very specific (uses the full number 3414)
