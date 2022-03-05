@@ -118,9 +118,8 @@ function generateTableFromApiData(
     levelName => levelName === groupBy,
   );
 
-  const adminIndex = isNumber(groupByAdminIndex)
-    ? groupByAdminIndex
-    : adminLevelNames.length - 1;
+  const adminIndex =
+    groupByAdminIndex !== -1 ? groupByAdminIndex : adminLevelNames.length - 1;
 
   // If we want to show all comma separated admin levels, we can use all names until "adminIndex".
   const adminLevelName = adminLevelNames[adminIndex];
@@ -192,14 +191,15 @@ const createAPIRequestParams = (
   date: ReturnType<Date['getTime']>,
   params: WfsRequestParams | AdminLevelDataLayerProps,
 ): ApiData => {
-  const { adminLevelNames } = getBoundaryLayerSingleton();
+  const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
 
   // If the analysis is related to a AdminLevelData layer, we get the index from params.
   // For Exposed population we use the latest-level boundary indicator.
-  const groupBy =
-    params instanceof AdminLevelDataLayerProps
-      ? adminLevelNames[params.adminLevel - 1]
-      : adminLevelNames[adminLevelNames.length - 1];
+  // WARNING - This change is meant for RBD only. Do we want to generalize this?
+  const groupBy = adminCode;
+  // params instanceof AdminLevelDataLayerProps
+  //   ? adminLevelNames[params.adminLevel - 1]
+  //   : adminLevelNames[adminLevelNames.length - 1];
 
   const wfsParams = (params as WfsRequestParams).layer_name
     ? { wfs_params: params as WfsRequestParams }
