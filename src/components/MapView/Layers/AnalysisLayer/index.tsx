@@ -24,7 +24,7 @@ import {
 } from '../../../../config/utils';
 
 function getRoundedData(data: number): string {
-  return data ? data.toFixed(3) : 'No Data';
+  return data ? data.toFixed(2) : 'No Data';
 }
 
 function AnalysisLayer() {
