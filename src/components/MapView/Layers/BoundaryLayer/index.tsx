@@ -8,7 +8,7 @@ import { LayerData } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
 import { isPrimaryBoundaryLayer } from '../../../../config/utils';
-import { getLocationName } from '../../../../utils/name-utils';
+import { getFullLocationName } from '../../../../utils/name-utils';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -30,7 +30,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
   const onClickFunc = (evt: any) => {
     const coordinates = evt.lngLat;
-    const locationName = getLocationName(layer, evt.features[0]);
+    const locationName = getFullLocationName(layer, evt.features[0]);
     dispatch(showPopup({ coordinates, locationName }));
     // send the selection to the map selection layer. No-op if selection mode isn't on.
     dispatch(

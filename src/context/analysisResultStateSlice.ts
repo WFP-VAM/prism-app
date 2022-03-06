@@ -30,6 +30,7 @@ import {
   ExposedPopulationResult,
   scaleFeatureStat,
 } from '../utils/analysis-utils';
+import { getFullLocationName } from '../utils/name-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
@@ -38,7 +39,6 @@ import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, AdminLevelDataLayerData } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
-import { getLocationName } from '../utils/name-utils';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
@@ -126,7 +126,7 @@ function generateTableFromApiData(
       feature => feature.properties?.[adminLevelName] === row[adminLevelName],
     );
 
-    const name: string = getLocationName(adminLayer, featureBoundary);
+    const name = getFullLocationName(adminLayer, featureBoundary);
     const localName: string =
       featureBoundary?.properties?.[adminLevelLocalName] || 'No Name';
 
