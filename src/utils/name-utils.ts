@@ -11,9 +11,7 @@ import { BoundaryLayerProps } from '../config/types';
 
 export function getFullLocationName(
   layer: BoundaryLayerProps,
-  featureBoundary:
-    | Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>
-    | undefined,
+  featureBoundary?: Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>,
 ): string {
   return (
     layer.adminLevelNames
