@@ -12,11 +12,10 @@ function idPoorPrebuild(country: string): void {
 
   switch (country) {
     case 'cambodia':
-      console.warn(' Prebuild: ID Poor: ', country);
+      console.warn('ID Poor Cambodia');
 
       fs.access(file, fs.constants.F_OK, (fileMissingError: any) => {
         if (!fileMissingError) {
-          console.warn('Loading...');
           // fetch data from idpoor api
           axios
             .get('http://localhost/idpoor/data')
@@ -35,7 +34,7 @@ function idPoorPrebuild(country: string): void {
 
               // write new data
               fs.writeFile(
-                file,
+                path.join(dataDir, 'idpoor.json'),
                 JSON.stringify(data),
                 (fileWriteError: any) => {
                   if (fileWriteError) {
@@ -62,5 +61,3 @@ function idPoorPrebuild(country: string): void {
   idPoorPrebuild(COUNTRY);
   // add prebuild function/processes here
 })();
-
-console.warn('Prebuilding done.');

@@ -2,17 +2,26 @@
 import requests
 
 BASE_API = 'https://mop.idpoor.gov.kh/api/analytics/public/units'
-ROUND_YEARS = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019]
 
 
 def get_idpoor_response():
     """Get IDPoor location data."""
     datalist = dict()
-    default_params = 'region=ALL&isOnDemand=ALL&round=ALL'
+    default_params = 'region=ALL&isOnDemand=ALL&year=ALL'
+
+    rounds_uri = '{0}/KH?{1}&round=ALL'.format(BASE_API, default_params)
+    resp = requests.get(rounds_uri)
+    resp.raise_for_status()
+
+    rounds_data = resp.json()['rounds']
+
+    rounds = list(map(lambda data: int(data['name']), rounds_data))
+    rounds.sort(reverse=True)
+
 
     # loop over reversed round years
-    for year in reversed(ROUND_YEARS):
-        provinces_uri = '{0}/KH/children?year={1}&{2}'.format(BASE_API, year, default_params)
+    for round in rounds:
+        provinces_uri = '{0}/KH/children?round={1}&{2}'.format(BASE_API, round, default_params)
         resp = requests.get(provinces_uri)
         resp.raise_for_status()
 
@@ -20,8 +29,8 @@ def get_idpoor_response():
         # one each year get provinces and get all communes per province
         for province in provinces_data:
             province_id = province['uuid']
-            districts_uri = '{0}/{1}/children?year={2}&{3}'.format(
-                BASE_API, province_id, year, default_params
+            districts_uri = '{0}/{1}/children?round={2}&{3}'.format(
+                BASE_API, province_id, round, default_params
             )
             resp = requests.get(districts_uri)
             resp.raise_for_status()
@@ -30,8 +39,8 @@ def get_idpoor_response():
 
             for district in districts_data:
                 district_id = district['uuid']
-                communes_uri = '{0}/{1}/children?year={2}&{3}'.format(
-                    BASE_API, district_id, year, default_params
+                communes_uri = '{0}/{1}/children?round={2}&{3}'.format(
+                    BASE_API, district_id, round, default_params
                 )
                 resp = requests.get(communes_uri)
                 resp.raise_for_status()
@@ -39,9 +48,8 @@ def get_idpoor_response():
                 communes_data = resp.json()
 
                 for commune in communes_data:
-                    key = commune['code']
-                    del commune['code']
+                    key = int(commune['code'])
                     if key not in datalist.keys():
-                        datalist[key] = {'Adm3_NCDD': key, **commune}
+                        datalist[key] = {'Adm3_NCDD': str(key), **commune}
 
     return {'DataList': list(datalist.values())}
