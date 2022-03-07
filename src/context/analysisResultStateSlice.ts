@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
-import { get, isNumber } from 'lodash';
+import { get } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesFile } from '../config';
 import {
