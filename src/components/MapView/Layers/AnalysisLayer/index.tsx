@@ -22,10 +22,7 @@ import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../../config/utils';
-
-function getRoundedData(data: number): string {
-  return data ? data.toFixed(2) : 'No Data';
-}
+import { getRoundedData } from '../../utils';
 
 function AnalysisLayer() {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
