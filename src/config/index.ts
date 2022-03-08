@@ -46,10 +46,10 @@ import {
   srilankaRawTables,
 } from './srilanka';
 
-import { 
+import {
   sierraleoneConfig,
   sierraleoneRawLayers,
-  sierraleoneRawTables
+  sierraleoneRawTables,
 } from './sierraleone';
 
 import {
