@@ -22,7 +22,7 @@ import {
   layerDataSelector,
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
-import { getFeatureInfoPropsData } from '../../utils';
+import { getFeatureInfoPropsData, getRoundedData } from '../../utils';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',
@@ -33,7 +33,7 @@ const linePaint: LinePaint = {
 function getHazardData(evt: any, operation: string) {
   const data = get(evt.features[0].properties, operation || 'median', null);
 
-  return data ? data.toFixed(2) : 'No Data';
+  return getRoundedData(data);
 }
 
 const ImpactLayer = ({ classes, layer }: ComponentProps) => {
