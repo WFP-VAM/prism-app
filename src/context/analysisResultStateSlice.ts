@@ -30,6 +30,7 @@ import {
   ExposedPopulationResult,
   scaleFeatureStat,
 } from '../utils/analysis-utils';
+import { getFullLocationName } from '../utils/name-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
@@ -137,8 +138,7 @@ function generateTableFromApiData(
         properties?.[adminLevelName] === row[adminLevelName],
     );
 
-    const name: string =
-      featureBoundary?.properties?.[adminLevelName] || 'No Name';
+    const name = getFullLocationName(adminLayer, featureBoundary);
     const localName: string =
       featureBoundary?.properties?.[adminLevelLocalName] || 'No Name';
 
