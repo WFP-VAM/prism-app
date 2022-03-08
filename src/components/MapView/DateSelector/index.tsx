@@ -208,6 +208,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
 
           <DatePicker
             locale={safeTranslate(t, 'date_locale')}
+            dateFormat="PP"
             className={classes.datePickerInput}
             selected={moment(stateStartDate).toDate()}
             onChange={updateStartDate}

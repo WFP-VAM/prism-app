@@ -123,12 +123,6 @@ exports[`renders as expected 1`] = `
                 style="font-weight: normal;"
                 type="submit"
               >
-                fr
-              </button>
-              <button
-                style="font-weight: normal;"
-                type="submit"
-              >
                 my
               </button>
             </div>

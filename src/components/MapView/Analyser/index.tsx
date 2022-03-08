@@ -401,6 +401,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 </Typography>
                 <DatePicker
                   locale={safeTranslate(t, 'date_locale')}
+                  dateFormat="PP"
                   selected={selectedDate ? new Date(selectedDate) : null}
                   onChange={date =>
                     setSelectedDate(date?.getTime() || selectedDate)
