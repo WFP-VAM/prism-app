@@ -438,7 +438,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                           onChange={onMapSwitchChange}
                         />
                       }
-                      label="Map View"
+                      label={safeTranslate(t, 'Map View')}
                     />
                     <FormControlLabel
                       control={
@@ -448,7 +448,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                           onChange={e => setIsTableViewOpen(e.target.checked)}
                         />
                       }
-                      label="Table View"
+                      label={safeTranslate(t, 'Table View')}
                     />
                   </FormGroup>
                   {isTableViewOpen && (
@@ -461,13 +461,17 @@ function Analyser({ extent, classes }: AnalyserProps) {
                     className={classes.innerAnalysisButton}
                     onClick={() => downloadCSVFromTableData(analysisResult)}
                   >
-                    <Typography variant="body2">Download</Typography>
+                    <Typography variant="body2">
+                      {safeTranslate(t, 'Download')}
+                    </Typography>
                   </Button>
                   <Button
                     className={classes.innerAnalysisButton}
                     onClick={clearAnalysis}
                   >
-                    <Typography variant="body2">Clear Analysis</Typography>
+                    <Typography variant="body2">
+                      {safeTranslate(t, 'Clear Analysis')}
+                    </Typography>
                   </Button>
                 </>
               )}
@@ -484,7 +488,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   isAnalysisLoading // or analysis is currently loading
                 }
               >
-                <Typography variant="body2">Run Analysis</Typography>
+                <Typography variant="body2">
+                  {safeTranslate(t, 'Run Analysis')}
+                </Typography>
               </Button>
             )}
             {isAnalysisLoading ? <LinearProgress /> : null}

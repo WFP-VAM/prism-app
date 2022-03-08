@@ -105,7 +105,10 @@ i18n
     defaultNS: 'translation',
   });
 
-export const safeTranslate = (translator: any, key: string) => {
+export const safeTranslate = (translator: any, key: string | undefined) => {
+  if (key === undefined) {
+    return undefined;
+  }
   if (key in resources.en.translation) {
     // @ts-ignore
     return translator(key);

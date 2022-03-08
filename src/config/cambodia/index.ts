@@ -3,7 +3,7 @@ import rawLayers from './layers.json';
 import cambodiaTranslation from './translation.json';
 
 const rawTables = {};
-const translation = { ខ្មែរ: cambodiaTranslation };
+const translation = { km: cambodiaTranslation };
 
 export default {
   appConfig,

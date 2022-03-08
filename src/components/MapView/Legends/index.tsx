@@ -124,7 +124,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           exposure={exposure}
           extent={extent}
         >
-          {layer.legendText}
+          {safeTranslate(t, layer.legendText)}
         </LegendItem>
       );
     }),
@@ -150,7 +150,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
                 onClick={e => handleAnalysisDownload(e)}
                 fullWidth
               >
-                Download
+                {safeTranslate(t, 'Download')}
               </Button>
             </Grid>
           </LegendItem>,
@@ -205,6 +205,8 @@ function LegendItem({
     }
   }, [analysisResult, dispatch]);
 
+  const { t } = useTranslation();
+
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
@@ -242,7 +244,7 @@ function LegendItem({
 
   const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
     if (typeof label === 'string') {
-      return label;
+      return safeTranslate(t, label);
     }
     if (typeof value === 'number') {
       return Math.round(value).toLocaleString('en-US');
@@ -256,7 +258,7 @@ function LegendItem({
         <Grid container direction="column" spacing={1}>
           <Grid item style={{ display: 'flex' }}>
             <Typography style={{ flexGrow: 1 }} variant="h4">
-              {title}
+              {safeTranslate(t, title)}
             </Typography>
             <LayerContentPreview layerId={id} />
           </Grid>
