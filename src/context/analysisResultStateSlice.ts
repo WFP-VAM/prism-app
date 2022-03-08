@@ -144,7 +144,7 @@ function generateTableFromApiData(
 
     // we are searching the data of baseline layer to find the data associated with this feature
     // adminKey here refers to a specific feature (could be several) where the data is attached to.
-    const baselineValue =
+    const rawBaselineValue =
       baselineLayerData.find(({ adminKey }) => {
         // TODO - Make this code more flexible.
         // we only check startsWith because the adminCode grows longer the deeper the level.
@@ -160,7 +160,8 @@ function generateTableFromApiData(
       name,
       localName,
       [statistic]: get(row, statistic, 0),
-      baselineValue,
+      // Force parseFloat in case data was stored as a string
+      baselineValue: parseFloat(`${rawBaselineValue}`),
       coordinates: (featureBoundary?.geometry as any)?.coordinates[0][0][0], // TODO likely will not keep
     };
     return tableRow;
