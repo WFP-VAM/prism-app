@@ -39,6 +39,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
 
   const handleChangeOrderBy = (newSortColumn: Column['id']) => {
     const newIsAsc = !(sortColumn === newSortColumn && isAscending);
+    setPage(0);
     setSortColumn(newSortColumn);
     setIsAscending(newIsAsc);
   };
