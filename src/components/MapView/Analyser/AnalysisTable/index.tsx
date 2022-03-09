@@ -73,6 +73,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                     hover
                     role="checkbox"
                     tabIndex={-1}
+                    // TODO - Use adminCode as key to guarantee unicity?
                     key={row.name}
                     onClick={() => {
                       // TODO if we decide to keep, add popup data?
