@@ -18,7 +18,6 @@ def get_idpoor_response():
     rounds = list(map(lambda data: int(data['name']), rounds_data))
     rounds.sort(reverse=True)
 
-
     # loop over reversed round years
     for round in rounds:
         provinces_uri = '{0}/KH/children?round={1}&{2}'.format(BASE_API, round, default_params)
