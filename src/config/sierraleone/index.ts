@@ -1,6 +1,13 @@
-import sierraleoneConfig from './prism.json';
-import sierraleoneRawLayers from './layers.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
 
-const sierraleoneRawTables = {};
+const rawTables = {};
+const translation = {};
 
-export { sierraleoneConfig, sierraleoneRawLayers, sierraleoneRawTables };
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  translation,
+  defaultBoundariesFile: 'sle_admin2new_boundary_20200309.json',
+};
