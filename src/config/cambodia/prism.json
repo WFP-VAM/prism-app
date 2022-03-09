@@ -21,6 +21,11 @@
     "longitude": 105.281,
     "zoom": 6.49
   },
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin1_boundaries",
+    "admin2_boundaries"
+  ],  
     "categories": {
       "hazards": {
         "floods": [
