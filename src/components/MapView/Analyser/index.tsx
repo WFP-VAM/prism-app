@@ -340,7 +340,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   value={hazardLayerId}
                   setValue={setHazardLayerId}
                   className={classes.selector}
-                  placeholder={safeTranslate(t, 'Choose hazard layer')}
+                  placeholder="Choose hazard layer"
                 />
               </div>
               <div className={classes.analyserOptions}>
@@ -367,7 +367,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   value={baselineLayerId}
                   setValue={setBaselineLayerId}
                   className={classes.selector}
-                  placeholder={safeTranslate(t, 'Choose baseline layer')}
+                  placeholder="Choose baseline layer"
                 />
               </div>
               <div className={classes.analyserOptions}>
