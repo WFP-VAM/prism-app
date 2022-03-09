@@ -10,5 +10,5 @@ export default {
   rawLayers,
   rawTables,
   translation,
-  defaultBoundariesFile: 'khm_bnd_admin3_gov_wfp_edEarly2021.json',
+  defaultBoundariesFile: 'khm_bnd_admin3_w_all_levels.json',
 };
