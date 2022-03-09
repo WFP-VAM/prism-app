@@ -110,6 +110,28 @@ const theme: any = createMuiTheme({
         color: 'white',
       },
     },
+    MuiTableSortLabel: {
+      root: {
+        color: white,
+        '&:hover': {
+          color: white,
+          opacity: 0.5,
+        },
+        '&$active': {
+          '&& $icon': {
+            opacity: 1,
+            color: white,
+          },
+        },
+      },
+      icon: {
+        color: white,
+        opacity: 0.2,
+        '&:hover': {
+          opacity: 0.5,
+        },
+      },
+    },
   },
 });
 
