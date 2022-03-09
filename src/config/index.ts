@@ -42,6 +42,8 @@ import {
   srilankaRawTables,
 } from './srilanka';
 
+import sierraleone from './sierraleone';
+
 import {
   tajikistanConfig,
   tajikistanRawLayers,
@@ -101,8 +103,9 @@ const configMap = {
     appConfig: rbdConfig,
     rawLayers: rbdRawLayers,
     rawTables: rbdRawTables,
-    defaultBoundariesFile: 'wca_CHIPC_mar2021_projected_jun2021_simple.json',
+    defaultBoundariesFile: 'wca_CHIPC_nov2021_admin1.json',
   },
+  sierraleone,
   srilanka: {
     appConfig: srilankaConfig,
     rawLayers: srilankaRawLayers,
