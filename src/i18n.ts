@@ -70,7 +70,7 @@ export const appResources = {
 };
 
 // Translations are expected to take the form {"fr": {"english sentence": "french translation", ...}
-const formattedTranslation = Object.keys(translation).reduce(
+export const formattedTranslation = Object.keys(translation).reduce(
   (a, v) => ({ ...a, [v]: { translation: translation[v] } }),
   {},
 );

@@ -14,11 +14,20 @@ import {
 } from '@material-ui/core';
 import { orderBy } from 'lodash';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { Column } from '../../../../utils/analysis-utils';
+import { formattedTranslation } from '../../../../i18n';
 
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
+  // only display local names if local language is selected, otherwise display english name
+  const { i18n } = useTranslation();
+  const filteredColumns = columns.filter(column =>
+    Object.keys(formattedTranslation).includes(i18n.resolvedLanguage)
+      ? column.id !== 'name'
+      : column.id !== 'localName',
+  );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortColumn, setSortColumn] = useState<Column['id']>();
@@ -49,7 +58,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {columns.map(column => (
+              {filteredColumns.map(column => (
                 <TableCell key={column.id} className={classes.tableHead}>
                   <TableSortLabel
                     active={sortColumn === column.id}
@@ -88,7 +97,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                     }}
                     style={{ cursor: row.coordinates ? 'pointer' : 'none' }}
                   >
-                    {columns.map(column => {
+                    {filteredColumns.map(column => {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id}>
