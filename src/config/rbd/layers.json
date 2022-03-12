@@ -1,352 +1,2186 @@
 {
-    "admin_boundaries": {
-      "type": "boundary",
-      "path": "../data/rbd/wca_CHIPC_mar2021_projected_jun2021_simple.json",
-      "opacity": 0.8,
-      "styles:": {
-        "fill": {
-          "fill-opacity": 0
-        },
-        "line": {
-          "line-color": "gray",
-          "line-width": 1,
-          "line-opacity": 0.8
-        }
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "../data/rbd/wca_CHIPC_nov2021_admin1.json",
+    "opacity": 0.8,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
       },
-      "admin_code": "adm1_pcod2",
-      "admin_level_names": ["adm0_name", "adm1_name","adm2_name"],
-      "admin_level_local_names": ["adm0_name", "adm1_name","adm2_name"]
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.5,
+        "line-opacity": 0.5
+      }
     },
-    "rainfall_dekad": {
-      "title": "10-day rainfall estimate (mm)",
-      "type": "wms",
-      "server_layer_name": "rfh_dekad",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "opacity": 0.7,
-      "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-      "legend": [
-        { "value": -0, "color": "#ffffff", "alpha": 0 },
-        { "value": 1, "color": "#ffffff" },
-        { "value": 50, "color": "#faf3d2" },
-        { "value": 100, "color": "#dae3a1" },
-        { "value": 150, "color": "#a0c787" },
-        { "value": 200, "color": "#68ab79" },
-        { "value": 250, "color": "#9beafa" },
-        { "value": 300, "color": "#00b1de" },
-        { "value": 350, "color": "#005ae6" },
-        { "value": 400, "color": "#0000c8" },
-        { "value": 500, "color": "#a000fa" },
-        { "value": 600, "color": "#fa78fa" }
-      ]
-    },
-    "rain_anomaly_dekad": {
-      "title": "10-day rainfall anomaly",
-      "type": "wms",
-      "server_layer_name": "rfq_dekad",
-      "content_path": "data/myanmar/contents.md#10-day-rainfall-anomaly",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "opacity": 0.7,
-      "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-      "legend": [
-        { "value": "1%", "color": "#d79b0b" },
-        { "value": "60%", "color": "#e1b344" },
-        { "value": "80%", "color": "#ebcb7d" },
-        { "value": "90%", "color": "#f5e3b6" },
-        { "value": "110%", "color": "#f2f2f2" },
-        { "value": "120%", "color": "#b5e7fe" },
-        { "value": "140%", "color": "#7dd4fd" },
-        { "value": "180%", "color": "#45c1fc" },
-        { "value": "> 180%", "color": "#0fb0fb" }
-      ]
-    },
-    "rain_anomaly_monthly": {
-      "title": "Monthly rainfall anomaly",
-      "type": "wms",
-      "server_layer_name": "r1q_dekad",
-      "content_path": "data/myanmar/contents.md#monthly-rainfall-anomaly",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "opacity": 0.7,
-      "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-      "legend": [
-        { "value": -0, "color": "#ffffff", "alpha": 0 },
-        { "value": 1, "color": "#d79b0b" },
-        { "value": 60, "color": "#e1b344" },
-        { "value": 80, "color": "#ebcb7d" },
-        { "value": 90, "color": "#f5e3b6" },
-        { "value": 110, "color": "#f2f2f2" },
-        { "value": 120, "color": "#b5e7fe" },
-        { "value": 140, "color": "#7dd4fd" },
-        { "value": 180, "color": "#45c1fc" },
-        { "value": 400, "color": "#0fb0fb" }
-      ]
-    },
-    "rainfall_agg_month": {
-      "title": "1-month rainfall aggregate",
-      "type": "wms",
-      "server_layer_name": "r1h_dekad",
-      "content_path": "data/myanmar/contents.md#1-month-rainfall-aggregate",
-      "additional_query_params": {
-        "styles": "rfh_1500"
+    "admin_code": "adm1_pcod2",
+    "admin_level_names": [
+      "adm0_name",
+      "adm1_name"
+    ],
+    "admin_level_local_names": [
+      "adm0_name",
+      "adm1_name"
+    ]
+  },
+  "admin0_boundaries": {
+    "type": "boundary",
+    "path": "../data/rbd/wca_shp0all.json",
+    "opacity": 0.8,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
       },
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "opacity": 0.7,
-      "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-      "legend": [
-        {"value": "-0", "color": "#ffffff", "alpha": 0},
-        {"value": "50", "color": "#faf3d2"},
-        {"value": "100", "color": "#dae3a1"},
-        {"value": "200", "color": "#a0c787"},
-        {"value": "300", "color": "#68ab79"},
-        {"value": "400", "color": "#9beafa"},
-        {"value": "500", "color": "#00b1de"},
-        {"value": "600", "color": "#005ae6"},
-        {"value": "800", "color": "#0000c8"},
-        {"value": "1000", "color": "#a000fa"},
-        {"value": "1500", "color": "#fa78fa"},
-        {"value": "> 1500", "color": "#ffc4ee"}
-      ]
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
     },
-    "streak_dry_days": {
-      "title": "Longest number of consecutive dry days",
-      "type": "wms",
-      "server_layer_name": "dlx_dekad",
-      "content_path": "data/myanmar/contents.md#longest-number-of-consecutive-dry-days",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "opacity": 0.7,
-      "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-      "legend": [
-        { "value": 0, "color": "#fff9c7" },
-        { "value": 1, "color": "#ffeea9" },
-        { "value": 4, "color": "#fede86" },
-        { "value": 6, "color": "#fec754" },
-        { "value": 10, "color": "#fea937" },
-        { "value": 14, "color": "#f88a21" },
-        { "value": 18, "color": "#e96d13" },
-        { "value": 22, "color": "#d15205" },
-        { "value": 25, "color": "#b03f03" },
-        { "value": 30, "color": "#8b3005" }
-      ]
+    "admin_code": "admin0Pcod",
+    "admin_level_names": [
+      "admin0Name"
+    ],
+    "admin_level_local_names": [
+      "admin0Name"
+    ]
+  },
+  "rainfall_dekad": {
+    "title": "10-day rainfall estimate (mm)",
+    "type": "wms",
+    "server_layer_name": "rfh_dekad",
+    "additional_query_params": {
+      "styles": "rfh_350"
     },
-    "days_heavy_rain": {
-      "title": "Number of days with heavy rainfall in the last 30 days",
-      "type": "wms",
-      "server_layer_name": "xnh_dekad",
-      "content_path": "data/myanmar/contents.md#number-of-days-with-heavy-rainfall-in-the-last-30-days",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "opacity": 0.7,
-      "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-      "legend": [
-        { "value": 0, "color": "#f2fabc" },
-        { "value": 1, "color": "#dcf1b2" },
-        { "value": 4, "color": "#bbe4b5" },
-        { "value": 6, "color": "#85cfba" },
-        { "value": 10, "color": "#57bec1" },
-        { "value": 14, "color": "#34a9c3" },
-        { "value": 18, "color": "#1d8dbe" },
-        { "value": 22, "color": "#2166ac" },
-        { "value": 25, "color": "#24479d" },
-        { "value": 30, "color": "#1d2e83" }
-      ]
-    },
-    "streak_heavy_rain": {
-      "title": "Longest consecutive number of days with heavy rainfall in the last 30 days",
-      "type": "wms",
-      "server_layer_name": "xlh_dekad",
-      "content_path": "data/myanmar/contents.md#longest-consecutive-number-of-days-with-heavy-rainfall-in-the-last-30-days",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "opacity": 0.7,
-      "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-      "legend": [
-        { "value": 0, "color": "#f2fabc" },
-        { "value": 1, "color": "#dcf1b2" },
-        { "value": 4, "color": "#bbe4b5" },
-        { "value": 6, "color": "#85cfba" },
-        { "value": 10, "color": "#57bec1" },
-        { "value": 14, "color": "#34a9c3" },
-        { "value": 18, "color": "#1d8dbe" },
-        { "value": 22, "color": "#2166ac" },
-        { "value": 25, "color": "#24479d" },
-        { "value": 30, "color": "#1d2e83" }
-      ]
-    },
-    "ndvi_dekad": {
-      "title": "10-day NDVI (MODIS)",
-      "type": "wms",
-      "server_layer_name": "mxd13a2_vim_dekad",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "opacity": 0.7,
-      "legend_text": "LEGEND",
-      "legend": [
-        { "value": 1000, "color": "#a50026" },
-        { "value": 2000, "color": "#de3f2e" },
-        { "value": 3000, "color": "#f88d52" },
-        { "value": 4000, "color": "#fed380" },
-        { "value": 5000, "color": "#ffffbf" },
-        { "value": 6000, "color": "#ccea83" },
-        { "value": 7000, "color": "#86cb66" },
-        { "value": 8000, "color": "#2da155" },
-        { "value": 9000, "color": "#006837" }
-      ]
-    },
-    "ndvi_dekad_anomaly": {
-      "title": "10-day NDVI anomaly (MODIS)",
-      "type": "wms",
-      "server_layer_name": "mxd13a2_viq_dekad",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "additional_query_params": {
-        "styles": "viq"
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS rainfall global dekad",
+    "legend": [
+      {
+        "label": "1 mm",
+        "color": "#ffffff"
       },
-      "opacity": 0.7,
-      "legend_text": "NDVI Anomaly compared to LTA",
-      "legend": [
-        { "value": 50, "color": "#732600" },
-        { "value": 70, "color": "#f06405" },
-        { "value": 80, "color": "#f5af28" },
-        { "value": 90, "color": "#e6dc96" },
-        { "value": 110, "color": "#f5f5f5" },
-        { "value": 120, "color": "#cbff1f" },
-        { "value": 130, "color": "#00f200" },
-        { "value": 150, "color": "#008f00" },
-        { "value": 200, "color": "#004d00" }
-      ]
-    },
-    "lst_amplitude": {
-      "title": "Land Surface Temperature - 10-day Amplitude (MODIS)",
-      "type": "wms",
-      "server_layer_name": "myd11a2_taa_dekad",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "opacity": 0.7,
-      "legend_text": "LEGEND",
-      "legend": [
-        { "value": -0, "color": "#ffffff", "alpha": 0 },
-        { "value": 50, "color": "#ffffd9" },
-        { "value": 200, "color": "#e8f6b1" },
-        { "value": 400, "color": "#b2e1b6" },
-        { "value": 600, "color": "#64c3bf" },
-        { "value": 800, "color": "#2ca1c2" },
-        { "value": 1000, "color": "#216daf" },
-        { "value": 1200, "color": "#253a97" },
-        { "value": 1400, "color": "#081d58" }
-      ]
-    },
-    "lst_daytime": {
-      "title": "Daytime Land Surface Temperature - 10-day (MODIS)",
-      "type": "wms",
-      "server_layer_name": "myd11a2_txa_dekad",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "wcsConfig": {
-        "scale": 0.02,
-        "offset": -273,
-        "pixelResolution": 64
+      {
+        "label": "20 mm",
+        "color": "#faf5e6"
       },
-      "opacity": 0.7,
-      "legend_text": "LEGEND",
-      "additional_query_params": {
-        "styles": "lst_day"
+      {
+        "label": "40 mm",
+        "color": "#faf3d2"
       },
-      "legend": [
-        { "value": 0, "color": "#f0f9ba" },
-        { "value": 5, "color": "#edeba4" },
-        { "value": 10, "color": "#ebdd8f" },
-        { "value": 15, "color": "#eace7c" },
-        { "value": 20, "color": "#e9bf6a" },
-        { "value": 25, "color": "#e9af59" },
-        { "value": 30, "color": "#e99e4c" },
-        { "value": 35, "color": "#e98d41" },
-        { "value": 40, "color": "#e87a3a" },
-        { "value": 45, "color": "#e76636" },
-        { "value": 50, "color": "#e54f35" }
-      ]
-    },
-    "lst_anomaly": {
-      "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)",
-      "type": "wms",
-      "server_layer_name": "myd11a2_txd_dekad",
-      "base_url": "https://odc.ovio.org/",
-      "date_interval": "days",
-      "opacity": 0.7,
-      "additional_query_params": {
-        "styles": "lst_day"
+      {
+        "label": "60 mm",
+        "color": "#dae3a1"
       },
-      "legend_text": "LEGEND",
-      "legend": [
-        { "value": -300.0, "color": "#000004" },
-        { "value": -200.0, "color": "#210c4a" },
-        { "value": -100.0, "color": "#57106e" },
-        { "value": -50.0, "color": "#8a226a" },
-        { "value": 50.0, "color": "#bc3754" },
-        { "value": 100.0, "color": "#e45a31" },
-        { "value": 200.0, "color": "#f98e09" },
-        { "value": 300.0, "color": "#f9cb35" },
-        { "value": 5000.0, "color": "#fcffa4" }
-      ]
-    },
-    "adam_earthquakes": {
-      "title": "Adam Global Earthquakes Epicenters",
-      "type": "wms",
-      "server_layer_name": "wld_eq_historical_moz",
-      "opacity": 0.9,
-      "legend": [],
-      "legend_text": "",
-      "base_url": "https://geonode.wfp.org/geoserver"
-    },
-    "ch_2021_03": {
-      "title": "Cadre Harmonisé: Projected - March to June 2021",
-      "type": "admin_level_data",
-      "path": "../data/rbd/wca_CHIPC_mar2021_projected_jun2021.json",
-      "data_field": "phase_class",
-      "admin_level": 3,
-      "admin_code": "adm1_pcod2",
-      "content_path": "data/rbd/contents.md#Cadre-Harmonisé:-Projected-March-to-June-2021",
-      "opacity": 0.7,
-      "feature_info_props": {
-        "exercise_year": {
-          "type": "string",
-          "label": "Exercise year"
-        },
-        "exercise_label": {
-          "type": "string",
-          "label": "Exercise period"
-        },
-        "phase_class": {
-          "type": "number",
-          "label": "Phase classification"
-        }
+      {
+        "label": "80 mm",
+        "color": "#a0c787"
       },
-      "legend": [
-        {
-          "value": 1,
-          "color": "#c6ffc7"
-        },
-        {
-          "value": 2,
-          "color": "#ffe718"
-        },
-        {
-          "value": 3,
-          "color": "#e88400"
-        },
-        {
-          "value": 4,
-          "color": "#e02d00"
-        },
-        {
-          "value": 5,
-          "color": "#5e0803"
-        }
-      ],
-      "legend_text": "Overall phase classification projected - March to June 2021"
-    }
+      {
+        "label": "100 mm",
+        "color": "#68ab79"
+      },
+      {
+        "label": "125 mm",
+        "color": "#9beafa"
+      },
+      {
+        "label": "150 mm",
+        "color": "#00b1de"
+      },
+      {
+        "label": "200 mm",
+        "color": "#005ae6"
+      },
+      {
+        "label": "250 mm",
+        "color": "#0000c8"
+      },
+      {
+        "label": "300 mm",
+        "color": "#a000fa"
+      },
+      {
+        "label": "350 mm",
+        "color": "#fa78fa"
+      }
+    ]
+  },
+  "rain_anomaly_dekad": {
+    "title": "10-day rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "rfq_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS rainfall anomaly dekad",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": "> 180%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rain_anomaly_1month": {
+    "title": "1-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r1q_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rain_anomaly_3month": {
+    "title": "3-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r3q_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rain_anomaly_6month": {
+    "title": "6-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r6q_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rain_anomaly_9month": {
+    "title": "9-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r9q_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rain_anomaly_1year": {
+    "title": "1-year rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "ryq_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rainfall_agg_1month": {
+    "title": "1-month rainfall aggregate",
+    "type": "wms",
+    "server_layer_name": "r1h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 1 month dekadal rainfall aggregations (mm)",
+    "legend": [
+      {
+        "label": "50 mm",
+        "color": "#faf3d2"
+      },
+      {
+        "label": "100 mm",
+        "color": "#dae3a1"
+      },
+      {
+        "label": "200 mm",
+        "color": "#a0c787"
+      },
+      {
+        "label": "300 mm",
+        "color": "#68ab79"
+      },
+      {
+        "label": "400 mm",
+        "color": "#9beafa"
+      },
+      {
+        "label": "500 mm",
+        "color": "#00b1de"
+      },
+      {
+        "label": "600 mm",
+        "color": "#005ae6"
+      },
+      {
+        "label": "800 mm",
+        "color": "#0000c8"
+      },
+      {
+        "label": "1000 mm",
+        "color": "#a000fa"
+      },
+      {
+        "label": "1500 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "label": "> 1500 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rainfall_agg_3month": {
+    "title": "3-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r3h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
+    "legend": [
+      {
+        "label": "50 mm",
+        "color": "#faf3d2"
+      },
+      {
+        "label": "100 mm",
+        "color": "#dae3a1"
+      },
+      {
+        "label": "150 mm",
+        "color": "#a0c787"
+      },
+      {
+        "label": "200 mm",
+        "color": "#68ab79"
+      },
+      {
+        "label": "250 mm",
+        "color": "#9beafa"
+      },
+      {
+        "label": "300 mm",
+        "color": "#00b1de"
+      },
+      {
+        "label": "400 mm",
+        "color": "#005ae6"
+      },
+      {
+        "label": "500 mm",
+        "color": "#0000c8"
+      },
+      {
+        "label": "600 mm",
+        "color": "#a000fa"
+      },
+      {
+        "label": "800 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "label": "> 800 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rainfall_agg_6month": {
+    "title": "6-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r6h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 6 month dekadal rainfall aggregations",
+    "legend": [
+      {
+        "label": "50 mm",
+        "color": "#faf3d2"
+      },
+      {
+        "label": "100 mm",
+        "color": "#dae3a1"
+      },
+      {
+        "label": "150 mm",
+        "color": "#a0c787"
+      },
+      {
+        "label": "200 mm",
+        "color": "#68ab79"
+      },
+      {
+        "label": "250 mm",
+        "color": "#9beafa"
+      },
+      {
+        "label": "300 mm",
+        "color": "#00b1de"
+      },
+      {
+        "label": "400 mm",
+        "color": "#005ae6"
+      },
+      {
+        "label": "500 mm",
+        "color": "#0000c8"
+      },
+      {
+        "label": "600 mm",
+        "color": "#a000fa"
+      },
+      {
+        "label": "800 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "label": "> 800 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rainfall_agg_9month": {
+    "title": "9-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r9h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 9 month dekadal rainfall aggregations",
+    "legend": [
+      {
+        "label": "50 mm",
+        "color": "#faf3d2"
+      },
+      {
+        "label": "100 mm",
+        "color": "#dae3a1"
+      },
+      {
+        "label": "150 mm",
+        "color": "#a0c787"
+      },
+      {
+        "label": "200 mm",
+        "color": "#68ab79"
+      },
+      {
+        "label": "250 mm",
+        "color": "#9beafa"
+      },
+      {
+        "label": "300 mm",
+        "color": "#00b1de"
+      },
+      {
+        "label": "400 mm",
+        "color": "#005ae6"
+      },
+      {
+        "label": "500 mm",
+        "color": "#0000c8"
+      },
+      {
+        "label": "600 mm",
+        "color": "#a000fa"
+      },
+      {
+        "label": "800 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "label": "> 800 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rainfall_agg_1year": {
+    "title": "1-year rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "ryh_dekad",
+    "additional_query_params": {
+      "styles": "rfh_1500"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 1 year dekadal rainfall aggregations",
+    "legend": [
+      {
+        "label": "50 mm",
+        "color": "#faf3d2"
+      },
+      {
+        "label": "100 mm",
+        "color": "#dae3a1"
+      },
+      {
+        "label": "200 mm",
+        "color": "#a0c787"
+      },
+      {
+        "label": "300 mm",
+        "color": "#68ab79"
+      },
+      {
+        "label": "400 mm",
+        "color": "#9beafa"
+      },
+      {
+        "label": "500 mm",
+        "color": "#00b1de"
+      },
+      {
+        "label": "600 mm",
+        "color": "#005ae6"
+      },
+      {
+        "label": "800 mm",
+        "color": "#0000c8"
+      },
+      {
+        "label": "1000 mm",
+        "color": "#a000fa"
+      },
+      {
+        "label": "1500 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "label": "2000 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "spi_1m": {
+    "title": "SPI - 1-month",
+    "type": "wms",
+    "server_layer_name": "r1s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_3m": {
+    "title": "SPI - 3-month",
+    "type": "wms",
+    "server_layer_name": "r3s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_6m": {
+    "title": "SPI - 6-month",
+    "type": "wms",
+    "server_layer_name": "r6s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_9m": {
+    "title": "SPI - 9-month",
+    "type": "wms",
+    "server_layer_name": "r9s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_1y": {
+    "title": "SPI - 1-year",
+    "type": "wms",
+    "server_layer_name": "rys_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "days_dry": {
+    "title": "Number of dry days",
+    "type": "wms",
+    "server_layer_name": "dlc_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Number of consecutive days with less than 2 mm precipitation in the last 30 days",
+    "legend": [
+      {
+        "label": "0 days",
+        "color": "#fff9c7"
+      },
+      {
+        "label": "1 day",
+        "color": "#ffeea9"
+      },
+      {
+        "label": "4 days",
+        "color": "#fede86"
+      },
+      {
+        "label": "6 days",
+        "color": "#fec754"
+      },
+      {
+        "label": "10 days",
+        "color": "#fea937"
+      },
+      {
+        "label": "14 days",
+        "color": "#f88a21"
+      },
+      {
+        "label": "18 days",
+        "color": "#e96d13"
+      },
+      {
+        "label": "22 days",
+        "color": "#d15205"
+      },
+      {
+        "label": "25 days",
+        "color": "#b03f03"
+      },
+      {
+        "label": "30 days",
+        "color": "#8b3005"
+      }
+    ]
+  },
+  "streak_dry_days": {
+    "title": "Longest number of consecutive dry days",
+    "type": "wms",
+    "server_layer_name": "dlx_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days",
+    "legend": [
+      {
+        "label": "0 days",
+        "color": "#fff9c7"
+      },
+      {
+        "label": "1 day",
+        "color": "#ffeea9"
+      },
+      {
+        "label": "4 days",
+        "color": "#fede86"
+      },
+      {
+        "label": "6 days",
+        "color": "#fec754"
+      },
+      {
+        "label": "10 days",
+        "color": "#fea937"
+      },
+      {
+        "label": "14 days",
+        "color": "#f88a21"
+      },
+      {
+        "label": "18 days",
+        "color": "#e96d13"
+      },
+      {
+        "label": "22 days",
+        "color": "#d15205"
+      },
+      {
+        "label": "25 days",
+        "color": "#b03f03"
+      },
+      {
+        "label": "30 days",
+        "color": "#8b3005"
+      }
+    ]
+  },
+  "days_heavy_rain": {
+    "title": "Number of days with heavy rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xnh_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "label": "0 days",
+        "color": "#f2fabc"
+      },
+      {
+        "label": "1 day",
+        "color": "#dcf1b2"
+      },
+      {
+        "label": "4 days",
+        "color": "#bbe4b5"
+      },
+      {
+        "label": "6 days",
+        "color": "#85cfba"
+      },
+      {
+        "label": "10 days",
+        "color": "#57bec1"
+      },
+      {
+        "label": "14 days",
+        "color": "#34a9c3"
+      },
+      {
+        "label": "18 days",
+        "color": "#1d8dbe"
+      },
+      {
+        "label": "22 days",
+        "color": "#2166ac"
+      },
+      {
+        "label": "25 days",
+        "color": "#24479d"
+      },
+      {
+        "label": "30 days",
+        "color": "#1d2e83"
+      }
+    ]
+  },
+  "days_intense_rain": {
+    "title": "Number of days with intense rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xni_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "label": "0 days",
+        "color": "#f2fabc"
+      },
+      {
+        "label": "1 day",
+        "color": "#dcf1b2"
+      },
+      {
+        "label": "4 days",
+        "color": "#bbe4b5"
+      },
+      {
+        "label": "6 days",
+        "color": "#85cfba"
+      },
+      {
+        "label": "10 days",
+        "color": "#57bec1"
+      },
+      {
+        "label": "14 days",
+        "color": "#34a9c3"
+      },
+      {
+        "label": "18 days",
+        "color": "#1d8dbe"
+      },
+      {
+        "label": "22 days",
+        "color": "#2166ac"
+      },
+      {
+        "label": "25 days",
+        "color": "#24479d"
+      },
+      {
+        "label": "30 days",
+        "color": "#1d2e83"
+      }
+    ]
+  },
+  "days_extreme_rain": {
+    "title": "Number of days with extreme rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xne_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "label": "0 days",
+        "color": "#f2fabc"
+      },
+      {
+        "label": "1 day",
+        "color": "#dcf1b2"
+      },
+      {
+        "label": "4 days",
+        "color": "#bbe4b5"
+      },
+      {
+        "label": "6 days",
+        "color": "#85cfba"
+      },
+      {
+        "label": "10 days",
+        "color": "#57bec1"
+      },
+      {
+        "label": "14 days",
+        "color": "#34a9c3"
+      },
+      {
+        "label": "18 days",
+        "color": "#1d8dbe"
+      },
+      {
+        "label": "22 days",
+        "color": "#2166ac"
+      },
+      {
+        "label": "25 days",
+        "color": "#24479d"
+      },
+      {
+        "label": "30 days",
+        "color": "#1d2e83"
+      }
+    ]
+  },
+  "streak_heavy_rain": {
+    "title": "Longest consecutive number of days with heavy rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xlh_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "label": "0 days",
+        "color": "#f2fabc"
+      },
+      {
+        "label": "1 day",
+        "color": "#dcf1b2"
+      },
+      {
+        "label": "4 days",
+        "color": "#bbe4b5"
+      },
+      {
+        "label": "6 days",
+        "color": "#85cfba"
+      },
+      {
+        "label": "10 days",
+        "color": "#57bec1"
+      },
+      {
+        "label": "14 days",
+        "color": "#34a9c3"
+      },
+      {
+        "label": "18 days",
+        "color": "#1d8dbe"
+      },
+      {
+        "label": "22 days",
+        "color": "#2166ac"
+      },
+      {
+        "label": "25 days",
+        "color": "#24479d"
+      },
+      {
+        "label": "30 days",
+        "color": "#1d2e83"
+      }
+    ]
+  },
+  "ndvi_dekad": {
+    "title": "10-day NDVI (MODIS)",
+    "type": "wms",
+    "server_layer_name": "mxd13a2_vim_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "LEGEND",
+    "legend": [
+      {
+        "label": "-1.00",
+        "color": "#a50026"
+      },
+      {
+        "label": "-0.75",
+        "color": "#de3f2e"
+      },
+      {
+        "label": "-0.50",
+        "color": "#f88d52"
+      },
+      {
+        "label": "-0.25",
+        "color": "#fed380"
+      },
+      {
+        "label": "0.00",
+        "color": "#ffffbf"
+      },
+      {
+        "label": "0.25",
+        "color": "#ccea83"
+      },
+      {
+        "label": "0.50",
+        "color": "#86cb66"
+      },
+      {
+        "label": "0.75",
+        "color": "#2da155"
+      },
+      {
+        "label": "1.00",
+        "color": "#006837"
+      }
+    ]
+  },
+  "ndvi_dekad_anomaly": {
+    "title": "10-day NDVI anomaly (MODIS)",
+    "type": "wms",
+    "server_layer_name": "mxd13a2_viq_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "additional_query_params": {
+      "styles": "viq"
+    },
+    "opacity": 0.7,
+    "legend_text": "NDVI Anomaly compared to LTA",
+    "legend": [
+      {
+        "label": "50%",
+        "color": "#732600"
+      },
+      {
+        "label": "70%",
+        "color": "#f06405"
+      },
+      {
+        "label": "80%",
+        "color": "#f5af28"
+      },
+      {
+        "label": "90%",
+        "color": "#e6dc96"
+      },
+      {
+        "label": "110%",
+        "color": "#f5f5f5"
+      },
+      {
+        "label": "120%",
+        "color": "#cbff1f"
+      },
+      {
+        "label": "130%",
+        "color": "#00f200"
+      },
+      {
+        "label": "150%",
+        "color": "#008f00"
+      },
+      {
+        "label": "200%",
+        "color": "#004d00"
+      }
+    ]
+  },
+  "lst_amplitude": {
+    "title": "Land Surface Temperature - 10-day Amplitude (MODIS)",
+    "type": "wms",
+    "server_layer_name": "myd11a2_taa_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "LEGEND",
+    "legend": [
+      {
+        "label": "-0",
+        "color": "#ffffff",
+        "alpha": 0
+      },
+      {
+        "label": "50",
+        "color": "#ffffd9"
+      },
+      {
+        "label": "200",
+        "color": "#e8f6b1"
+      },
+      {
+        "label": "400",
+        "color": "#b2e1b6"
+      },
+      {
+        "label": "600",
+        "color": "#64c3bf"
+      },
+      {
+        "label": "800",
+        "color": "#2ca1c2"
+      },
+      {
+        "label": "1000",
+        "color": "#216daf"
+      },
+      {
+        "label": "1200",
+        "color": "#253a97"
+      },
+      {
+        "label": "1400",
+        "color": "#081d58"
+      }
+    ]
+  },
+  "lst_daytime": {
+    "title": "Daytime Land Surface Temperature - 10-day (MODIS)",
+    "type": "wms",
+    "server_layer_name": "myd11a2_txa_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.02,
+      "offset": -273,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "LEGEND",
+    "additional_query_params": {
+      "styles": "lst_day"
+    },
+    "legend": [
+      {
+        "label": "0",
+        "color": "#f0f9ba"
+      },
+      {
+        "label": "5",
+        "color": "#edeba4"
+      },
+      {
+        "label": "10",
+        "color": "#ebdd8f"
+      },
+      {
+        "label": "15",
+        "color": "#eace7c"
+      },
+      {
+        "label": "20",
+        "color": "#e9bf6a"
+      },
+      {
+        "label": "25",
+        "color": "#e9af59"
+      },
+      {
+        "label": "30",
+        "color": "#e99e4c"
+      },
+      {
+        "label": "35",
+        "color": "#e98d41"
+      },
+      {
+        "label": "40",
+        "color": "#e87a3a"
+      },
+      {
+        "label": "45",
+        "color": "#e76636"
+      },
+      {
+        "label": "50",
+        "color": "#e54f35"
+      }
+    ]
+  },
+  "lst_anomaly": {
+    "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)",
+    "type": "wms",
+    "server_layer_name": "myd11a2_txd_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "additional_query_params": {
+      "styles": "lst_day"
+    },
+    "legend_text": "LEGEND",
+    "legend": [
+      {
+        "label": "-300%",
+        "color": "#000004"
+      },
+      {
+        "label": "-200%",
+        "color": "#210c4a"
+      },
+      {
+        "label": "-100%",
+        "color": "#57106e"
+      },
+      {
+        "label": "-50%",
+        "color": "#8a226a"
+      },
+      {
+        "label": "50%",
+        "color": "#bc3754"
+      },
+      {
+        "label": "100%",
+        "color": "#e45a31"
+      },
+      {
+        "label": "200%",
+        "color": "#f98e09"
+      },
+      {
+        "label": "300%",
+        "color": "#f9cb35"
+      }
+    ]
+  },
+  "adam_earthquakes": {
+    "title": "Adam Global Earthquakes Epicenters",
+    "type": "wms",
+    "server_layer_name": "wld_eq_historical_moz",
+    "opacity": 0.9,
+    "legend": [],
+    "legend_text": "",
+    "base_url": "https://geonode.wfp.org/geoserver"
+  },
+  "ch_2021_03": {
+    "title": "Projected phase classification: March to June 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_mar2021_projected_jun2021.json",
+    "data_field": "phase_class",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "content_path": "data/rbd/contents.md#Cadre-Harmonisé:-Projected-March-to-June-2021",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "exercise_year": {
+        "type": "string",
+        "label": "Exercise year"
+      },
+      "exercise_label": {
+        "type": "string",
+        "label": "Exercise period"
+      },
+      "phase_class": {
+        "type": "number",
+        "label": "Phase classification"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Overall phase classification projected - March to June 2021"
+  },
+  "ch_2021_11_phase_class_current": {
+    "title": "Current phase classification: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "phase_class",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "exercise_year": {
+        "type": "string",
+        "label": "Exercise year"
+      },
+      "exercise_label": {
+        "type": "string",
+        "label": "Exercise period"
+      },
+      "phase_class": {
+        "type": "number",
+        "label": "Phase classification"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Overall current phase classification - November 2021"
+  },
+  "ch_2021_11_phase_class_projected": {
+    "title": "Projected phase classification: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "_projected_phase_class",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "exercise_year": {
+        "type": "string",
+        "label": "Exercise year"
+      },
+      "exercise_label": {
+        "type": "string",
+        "label": "Exercise period"
+      },
+      "phase_class": {
+        "type": "number",
+        "label": "Phase classification"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Overall projected phase classification - November 2021"
+  },
+  "ch_2021_11_fs_phase_current": {
+    "title": "Current food security phase: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "foodconsumption_phase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Current food security"
+  },
+  "ch_2021_11_fs_phase_projected": {
+    "title": "Projected food security phase: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "_projected_foodconsumption_phase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Projected food security"
+  },
+  "ch_2021_11_livelihood_phase_current": {
+    "title": "Current livelihood phase: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "livelihoods_phase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Current livelihood"
+  },
+  "ch_2021_11_livelihood_phase_projected": {
+    "title": "Projected livelihood phase: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "_projected_livelihoods_phase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Projected livelihood"
+  },
+  "ch_2021_11_nutrition_phase_current": {
+    "title": "Current nutrition phase: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "nutrition_phase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Current nutrition"
+  },
+  "ch_2021_11_nutrition_phase_projected": {
+    "title": "Projected nutrition phase: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "_projected_nutrition_phase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Projected livelihood"
+  },
+  "ch_2021_11_mortality_phase_current": {
+    "title": "Current mortality phase: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "mortality_phase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Current mortality"
+  },
+  "ch_2021_11_mortality_phase_projected": {
+    "title": "Projected mortality phase: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "_projected_mortality_phase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Projected mortality"
+  },
+  "ch_2021_11_fcg": {
+    "title": "Food consumption group: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "FCG_finalphase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Food consumption group"
+  },
+  "ch_2021_11_hdds": {
+    "title": "Household dietary diversity score: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "HDDS_finalphase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Household dietary diversity score"
+  },
+  "ch_2021_11_hhs": {
+    "title": "Household hunger scale: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "HHS_finalphase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Household hunger scale"
+  },
+  "ch_2021_11_rcsi": {
+    "title": "Reduced coping strategies index: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "rCSI_finalphase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "rCSI"
+  },
+  "ch_2021_11_lhcs": {
+    "title": "Livelihood coping stategies: November 2021",
+    "type": "admin_level_data",
+    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "data_field": "LhHCSCat_finalphase",
+    "admin_level": 3,
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Livelihood coping stategies"
   }
-  
+}

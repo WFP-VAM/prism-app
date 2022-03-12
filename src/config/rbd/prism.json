@@ -1,43 +1,107 @@
 {
-    "country": "Regional Bureau Dakar",
-    "enableNavigationDropdown": true,
-    "icons": {
-      "vulnerability": "icon_vulnerable.png",
-      "exposure": "icon_basemap.png",
-      "hazards": "icon_climate.png",
-      "Cadre Harmonisé": "icon_cadreharmoise2.png",
-      "capacity": "icon_capacity.png",
-      "tables": "icon_table.png"
-    },
-    "alertFormActive": false,
-    "serversUrls": {
-      "wms": [
-        "https://odc.ovio.org/wms",
-        "https://geonode.wfp.org/geoserver/prism/wms"
+  "country": "Regional Bureau Dakar",
+  "enableNavigationDropdown": true,
+  "icons": {
+    "food_security": "icon_foodsecurity.png",
+    "food_security_and_livelihoods": "icon_livelihoods.png",
+    "Cadre Harmonisé": "icon_cadreharmoise2.png",
+    "capacity": "icon_capacity.png",
+    "tables": "icon_table.png",
+    "rainfall": "icon_rain.png",
+    "vegetation": "icon_veg.png",
+    "temperature": "icon_climate.png"
+  },
+  "alertFormActive": false,
+  "defaultLayer": "rain_anomaly_dekad",
+  "serversUrls": {
+    "wms": [
+      "https://odc.ovio.org/wms",
+      "https://geonode.wfp.org/geoserver/prism/wms"
+    ]
+  },
+  "map": {
+    "latitude": 14.61,
+    "longitude": 5.46,
+    "zoom": 3.99
+  },
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin0_boundaries"
+  ],
+  "categories": {
+    
+    "Cadre Harmonisé": {
+      "Phase classification": [
+        "ch_2021_03",
+        "ch_2021_11_phase_class_current",
+        "ch_2021_11_phase_class_projected"
+      ],
+      "Outcome phasing": [
+        "ch_2021_11_fs_phase_current",
+        "ch_2021_11_fs_phase_projected",
+        "ch_2021_11_livelihood_phase_current",
+        "ch_2021_11_livelihood_phase_projected",
+        "ch_2021_11_nutrition_phase_current",
+        "ch_2021_11_nutrition_phase_projected",
+        "ch_2021_11_mortality_phase_current",
+        "ch_2021_11_mortality_phase_projected"
       ]
     },
-    "map": {
-      "latitude": 14.61,
-      "longitude": 5.46,
-      "zoom": 3.99
+    "food_security_and_livelihoods": {
+      "Food consumption": [
+        "ch_2021_11_fcg",
+        "ch_2021_11_hdds",
+        "ch_2021_11_hhs"
+      ],
+      "Coping and livelihoods": [
+        "ch_2021_11_rcsi",
+        "ch_2021_11_lhcs"
+      ]
     },
-    "categories": {
-      "hazards": {
-        "rainfall": [
-          "rainfall_dekad",
-          "rain_anomaly_dekad",
-          "rain_anomaly_monthly",
-          "rainfall_agg_month",
-          "streak_dry_days",
-          "days_heavy_rain",
-          "streak_heavy_rain"
-        ],
-        "vegetation_conditions": ["ndvi_dekad"],
-        "temperature": ["lst_daytime"]
-      },
-      "Cadre Harmonisé": {
-        "Phase classification": ["ch_2021_03"]
-      } 
+    "rainfall": {
+      "rainfall_amount": [
+        "rainfall_dekad",
+        "rainfall_agg_1month",
+        "rainfall_agg_3month",
+        "rainfall_agg_6month",
+        "rainfall_agg_9month",
+        "rainfall_agg_1year"
+      ],
+      "rainfall_anomalies": [
+        "rain_anomaly_dekad",
+        "rain_anomaly_1month",
+        "rain_anomaly_3month",
+        "rain_anomaly_6month",
+        "rain_anomaly_9month",
+        "rain_anomaly_1year",
+        "spi_1m",
+        "spi_3m",
+        "spi_6m",
+        "spi_9m",
+        "spi_1y"
+      ],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
+      "heavy_rain": [
+        "days_heavy_rain",
+        "days_intense_rain",
+        "days_extreme_rain",
+        "streak_heavy_rain"
+      ]
+    },
+    "vegetation": {
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
+    },
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_anomaly"
+      ]
     }
   }
-  
+}

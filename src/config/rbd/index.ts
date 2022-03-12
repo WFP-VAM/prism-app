@@ -1,5 +1,6 @@
 import rbdConfig from './prism.json';
 import rbdRawLayers from './layers.json';
-import rbdRawTables from './tables.json';
+
+const rbdRawTables = {};
 
 export { rbdConfig, rbdRawLayers, rbdRawTables };
