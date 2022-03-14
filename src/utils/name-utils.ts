@@ -1,7 +1,5 @@
 import { get } from 'lodash';
 import { Feature } from '@turf/helpers';
-import { BoundaryLayerProps } from '../config/types';
-
 /**
  * Format full location name in ascending admin levels
  * @param layer admin layer, both props and data
@@ -10,11 +8,11 @@ import { BoundaryLayerProps } from '../config/types';
  */
 
 export function getFullLocationName(
-  layer: BoundaryLayerProps,
+  levelNames: string[],
   featureBoundary?: Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>,
 ): string {
   return (
-    layer.adminLevelNames
+    levelNames
       .map(level => get(featureBoundary, ['properties', level], '') as string)
       .join(', ') || 'No Name'
   );

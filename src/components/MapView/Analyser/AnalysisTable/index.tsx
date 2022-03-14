@@ -18,16 +18,16 @@ import { useTranslation } from 'react-i18next';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { Column } from '../../../../utils/analysis-utils';
-import { formattedTranslation } from '../../../../i18n';
+import { safeTranslate } from '../../../../i18n';
 
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   // only display local names if local language is selected, otherwise display english name
-  const { i18n } = useTranslation();
-  const filteredColumns = columns.filter(column =>
-    Object.keys(formattedTranslation).includes(i18n.resolvedLanguage)
-      ? column.id !== 'name'
-      : column.id !== 'localName',
-  );
+  const { t, i18n } = useTranslation();
+  const filteredColumns = columns.filter(({ id }) => id !== 'localName');
+  const filteredTableData =
+    i18n.resolvedLanguage === 'en'
+      ? tableData
+      : tableData.map(row => ({ ...row, name: row.localName }));
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortColumn, setSortColumn] = useState<Column['id']>();
@@ -67,14 +67,18 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                     }
                     onClick={() => handleChangeOrderBy(column.id)}
                   >
-                    {column.label}
+                    {safeTranslate(t, column.label)}
                   </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {orderBy(tableData, sortColumn, isAscending ? 'asc' : 'desc')
+            {orderBy(
+              filteredTableData,
+              sortColumn,
+              isAscending ? 'asc' : 'desc',
+            )
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(row => {
                 return (
@@ -121,6 +125,12 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
         page={page}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
+        labelRowsPerPage={safeTranslate(t, 'Rows Per Page')}
+        labelDisplayedRows={({ from, to, count }) => {
+          return `${from}–${to} ${safeTranslate(t, 'of')} ${
+            count !== -1 ? count : `${safeTranslate(t, 'more than')} ${to}`
+          }`;
+        }}
       />
     </div>
   );

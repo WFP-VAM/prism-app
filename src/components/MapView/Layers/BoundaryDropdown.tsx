@@ -382,6 +382,8 @@ export const GotoBoundaryDropdown = () => {
     map: { latitude, longitude, zoom },
   } = appConfig;
 
+  const { t } = useTranslation();
+
   const styles = useStyles();
 
   if (!data || !map || !enableNavigationDropdown) {
@@ -394,7 +396,7 @@ export const GotoBoundaryDropdown = () => {
       <ButtonStyleBoundaryDropdown
         selectedBoundaries={boundaries}
         selectAll={false}
-        labelMessage="Go to"
+        labelMessage={safeTranslate(t, 'Go To')}
         className={styles.formControl}
         setSelectedBoundaries={(newSelectedBoundaries, appendMany) => {
           setBoundaries(() => {

@@ -113,7 +113,7 @@ function generateTableFromApiData(
   const groupBy = apiRequest.group_by;
 
   // find the key that will let us reference the names of the bounding boxes. We get the one corresponding to the specific level of baseline, or the first if we fail.
-  const { adminLevelNames, adminLevelLocalNames } = adminLayer;
+  const { adminLevelNames } = adminLayer;
 
   const groupByAdminIndex = adminLevelNames.findIndex(
     levelName => levelName === groupBy,
@@ -124,8 +124,6 @@ function generateTableFromApiData(
 
   // If we want to show all comma separated admin levels, we can use all names until "adminIndex".
   const adminLevelName = adminLevelNames[adminIndex];
-  // for local name too.
-  const adminLevelLocalName = adminLevelLocalNames[adminIndex];
 
   return (aggregateData as KeyValueResponse[]).map(row => {
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
@@ -138,9 +136,14 @@ function generateTableFromApiData(
         properties?.[adminLevelName] === row[adminLevelName],
     );
 
-    const name = getFullLocationName(adminLayer, featureBoundary);
-    const localName: string =
-      featureBoundary?.properties?.[adminLevelLocalName] || 'No Name';
+    const name = getFullLocationName(
+      adminLayer.adminLevelNames,
+      featureBoundary,
+    );
+    const localName = getFullLocationName(
+      adminLayer.adminLevelLocalNames,
+      featureBoundary,
+    );
 
     // we are searching the data of baseline layer to find the data associated with this feature
     // adminKey here refers to a specific feature (could be several) where the data is attached to.
