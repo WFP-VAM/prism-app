@@ -24,7 +24,9 @@
     "deploy:staging": "firebase deploy --only hosting:staging-target",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src --ignore-path .gitignore",
-    "precommit": "lint-staged"
+    "postinstall": "yarn run setup:maplibre",
+    "precommit": "lint-staged",
+    "setup:maplibre": "node -e \"const fs = require('fs'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.css', './node_modules/mapbox-gl/dist/mapbox-gl.css'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.js', './node_modules/mapbox-gl/dist/mapbox-gl.js');\""
   },
   "dependencies": {
     "@azure/msal-browser": "^2.19.0",
@@ -82,7 +84,7 @@
     "jspdf": "^2.3.0",
     "lint-staged": "^10.0.8",
     "lodash": "^4.17.21",
-    "mapbox-gl": "^1.8.1",
+    "mapbox-gl": "npm:maplibre-gl@1.15.2",
     "marked": "^4.0.10",
     "moment": "^2.24.0",
     "moment-range": "^4.0.2",
@@ -104,6 +106,9 @@
     "typescript": "^3.9.7",
     "url": "^0.11.0",
     "xml-js": "^1.6.11"
+  },
+  "resolutions": {
+    "**/mapbox-gl": "npm:maplibre-gl@1.15.2"
   },
   "jest": {
     "snapshotSerializers": [
