@@ -85,7 +85,7 @@ import SelectionLayer from './Layers/SelectionLayer';
 import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
 
 const MapboxMap = ReactMapboxGl({
-  accessToken: process.env.REACT_APP_MAPBOX_TOKEN as string,
+  accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
   preserveDrawingBuffer: true,
 });
 
@@ -403,6 +403,11 @@ function MapView({ classes }: MapViewProps) {
   // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers
   const saveMap = (map: Map) => dispatch(setMap(() => map));
 
+  const style = new URL(
+    process.env.REACT_APP_DEFAULT_STYLE ||
+      'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
+  );
+
   return (
     <Grid item className={classes.container}>
       {loading && (
@@ -412,7 +417,7 @@ function MapView({ classes }: MapViewProps) {
       )}
       <MapboxMap
         // eslint-disable-next-line react/style-prop-object
-        style="mapbox://styles/eric-ovio/ckaoo00yp0woy1ipevzqnvwzi"
+        style={style.toString()}
         onStyleLoad={saveMap}
         center={[longitude, latitude]}
         zoom={[zoom]}
