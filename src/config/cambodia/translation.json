@@ -85,5 +85,19 @@
     "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps": "ការប៉ាន់ប្រមាណនៃទឹកភ្លៀងក្នុងរយៈពេល 10 ថ្ងៃដែលបានមកពី CHIRPS  (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "Name": "ឈ្មោះ",
     "of": "នៃ",
-    "more than": "ច្រើនជាង"
+    "more than": "ច្រើនជាង",
+    "Map View": "ទិដ្ឋភាពផែនទី",
+    "Table View": "ទិដ្ឋភាពតារាង",
+    "Jan": "មករា",
+    "Feb": "កុម្ភះ",
+    "Mar": "មិនា",
+    "Apr": "មេសា",
+    "May": "ឧសភា",
+    "Jun": "មិថុនា",
+    "Jul": "កក្កដា",
+    "Aug": "សីហា",
+    "Sept": "កញ្ញា",
+    "Oct": "តុលា",
+    "Nov": "វិច្ឆិកា",
+    "Dec": "ធ្នូ"
 }
