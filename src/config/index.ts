@@ -46,6 +46,8 @@ import {
   srilankaRawTables,
 } from './srilanka';
 
+import sierraleone from './sierraleone';
+
 import {
   tajikistanConfig,
   tajikistanRawLayers,
@@ -67,7 +69,7 @@ const configMap = {
     appConfig: cambodiaConfig,
     rawLayers: cambodiaRawLayers,
     rawTables: cambodiaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_gov_wfp_edEarly2021.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_w_all_levels.json`,
   },
   global: {
     appConfig: globalConfig,
@@ -115,8 +117,9 @@ const configMap = {
     appConfig: rbdConfig,
     rawLayers: rbdRawLayers,
     rawTables: rbdRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_mar2021_projected_jun2021_simple.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_nov2021_admin1.json`,
   },
+  sierraleone,
   srilanka: {
     appConfig: srilankaConfig,
     rawLayers: srilankaRawLayers,

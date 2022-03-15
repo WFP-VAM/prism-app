@@ -105,6 +105,9 @@
   "resolutions": {
     "**/mapbox-gl": "npm:maplibre-gl@1.15.2"
   },
+  "resolutions": {
+    "**/mapbox-gl": "npm:maplibre-gl@1.15.2"
+  },
   "jest": {
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

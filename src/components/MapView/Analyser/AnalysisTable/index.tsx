@@ -8,9 +8,11 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TableSortLabel,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
+import { orderBy } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
@@ -25,6 +27,8 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sortColumn, setSortColumn] = useState<Column['id']>();
+  const [isAscending, setIsAscending] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -39,6 +43,12 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
     setPage(0);
   };
 
+  const handleChangeOrderBy = (newSortColumn: Column['id']) => {
+    const newIsAsc = !(sortColumn === newSortColumn && isAscending);
+    setPage(0);
+    setSortColumn(newSortColumn);
+    setIsAscending(newIsAsc);
+  };
   return (
     <div>
       <TableContainer className={classes.tableContainer}>
@@ -47,13 +57,21 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
             <TableRow>
               {columns.map(column => (
                 <TableCell key={column.id} className={classes.tableHead}>
-                  {column.label}
+                  <TableSortLabel
+                    active={sortColumn === column.id}
+                    direction={
+                      sortColumn === column.id && !isAscending ? 'desc' : 'asc'
+                    }
+                    onClick={() => handleChangeOrderBy(column.id)}
+                  >
+                    {column.label}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData
+            {orderBy(tableData, sortColumn, isAscending ? 'asc' : 'desc')
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(row => {
                 return (
@@ -61,6 +79,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                     hover
                     role="checkbox"
                     tabIndex={-1}
+                    // TODO - Use adminCode as key to guarantee unicity?
                     key={row.name}
                     onClick={() => {
                       // TODO if we decide to keep, add popup data?

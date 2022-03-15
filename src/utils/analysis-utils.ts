@@ -527,6 +527,7 @@ export function getAnalysisTableColumns(
     {
       id: statistic,
       label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
+      // TODO - use getRoundedData here instead?
       format: (value: number) => value.toLocaleString('en-US'),
     },
 
