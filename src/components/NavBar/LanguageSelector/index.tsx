@@ -1,11 +1,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core';
-import { languages } from '../../../i18n';
+import { isLocalLanguageChosen, languages, safeTranslate } from '../../../i18n';
 
 function LanguageSelector({ classes }: LanguageSelectorProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
+  const moment = extendMoment(Moment as any);
+
+  const handleChangeLanguage = (lng: string): void => {
+    i18n.changeLanguage(lng);
+    moment.locale(
+      isLocalLanguageChosen(i18n) ? safeTranslate(t, 'date_locale') : 'en',
+    );
+  };
   // If there is only one language, hide the selector
   if (languages.length <= 1) {
     return <></>;
@@ -20,7 +30,7 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
             fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal',
           }}
           type="submit"
-          onClick={() => i18n.changeLanguage(lng)}
+          onClick={() => handleChangeLanguage(lng)}
         >
           {lng}
         </button>

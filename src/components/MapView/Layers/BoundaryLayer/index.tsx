@@ -34,7 +34,11 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       layer.adminLevelNames,
       evt.features[0],
     );
-    dispatch(showPopup({ coordinates, locationName }));
+    const locationLocalName = getFullLocationName(
+      layer.adminLevelLocalNames,
+      evt.features[0],
+    );
+    dispatch(showPopup({ coordinates, locationName, locationLocalName }));
     // send the selection to the map selection layer. No-op if selection mode isn't on.
     dispatch(
       toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),

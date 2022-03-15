@@ -18,16 +18,12 @@ import { useTranslation } from 'react-i18next';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { Column } from '../../../../utils/analysis-utils';
-import { safeTranslate } from '../../../../i18n';
+import { isLocalLanguageChosen, safeTranslate } from '../../../../i18n';
 
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   // only display local names if local language is selected, otherwise display english name
   const { t, i18n } = useTranslation();
   const filteredColumns = columns.filter(({ id }) => id !== 'localName');
-  const filteredTableData =
-    i18n.resolvedLanguage === 'en'
-      ? tableData
-      : tableData.map(row => ({ ...row, name: row.localName }));
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortColumn, setSortColumn] = useState<Column['id']>();
@@ -74,11 +70,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orderBy(
-              filteredTableData,
-              sortColumn,
-              isAscending ? 'asc' : 'desc',
-            )
+            {orderBy(tableData, sortColumn, isAscending ? 'asc' : 'desc')
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(row => {
                 return (
@@ -95,6 +87,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                           showPopup({
                             coordinates: row.coordinates,
                             locationName: row.name,
+                            locationLocalName: row.localName,
                           }),
                         );
                       }
@@ -102,7 +95,10 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                     style={{ cursor: row.coordinates ? 'pointer' : 'none' }}
                   >
                     {filteredColumns.map(column => {
-                      const value = row[column.id];
+                      const value =
+                        column.id === 'name' && isLocalLanguageChosen(i18n)
+                          ? row.localName
+                          : row[column.id];
                       return (
                         <TableCell key={column.id}>
                           {column.format && typeof value === 'number'

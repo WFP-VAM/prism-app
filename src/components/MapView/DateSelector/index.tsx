@@ -25,7 +25,7 @@ import { DateRangeType } from '../../../config/types';
 import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import TimelineItems from './TimelineItems';
-import { safeTranslate } from '../../../i18n';
+import { isLocalLanguageChosen, safeTranslate } from '../../../i18n';
 
 interface InputProps {
   value?: string;
@@ -38,8 +38,6 @@ type Point = {
 };
 
 const moment = extendMoment(Moment as any);
-moment.locale('km');
-
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
 
@@ -55,8 +53,8 @@ const Input = forwardRef(
 
 function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
-  const { t } = useTranslation();
-
+  const { t, i18n } = useTranslation();
+  // const moment = extendMoment(Moment as any);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
       value: 0,
@@ -110,6 +108,9 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         )
         .by('days'),
     ).map(date => {
+      date.locale(
+        isLocalLanguageChosen(i18n) ? safeTranslate(t, 'date_locale') : 'en',
+      );
       return {
         value: date.valueOf(),
         label: date.format('MMM DD YYYY'),
@@ -125,7 +126,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
       x: dateIndex * TIMELINE_ITEM_WIDTH,
       y: 0,
     });
-  }, [stateStartDate]);
+  }, [stateStartDate, i18n, t]);
 
   function updateStartDate(date: Date) {
     const time = date.getTime();

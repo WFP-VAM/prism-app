@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
 import fr from 'date-fns/locale/fr';
 import km from 'date-fns/locale/km';
+import en from 'date-fns/locale/en-US';
 import { translation } from './config';
 
 export const appResources = {
@@ -89,6 +90,7 @@ export const resources = merge(appResources, formattedTranslation, {
 export const languages = Object.keys(resources);
 
 // Register other date locales to be used by our DatePicker
+registerLocale('en', en);
 registerLocale('fr', fr);
 registerLocale('km', km);
 
@@ -121,5 +123,9 @@ export const safeTranslate = (translator: any, key: string | undefined) => {
   );
   return key;
 };
+
+export function isLocalLanguageChosen(lang: typeof i18n): boolean {
+  return !(lang.resolvedLanguage === 'en');
+}
 
 export default i18n;
