@@ -84,7 +84,7 @@ const configMap = {
     rawLayers: indonesiaRawLayers,
     rawTables: indonesiaRawTables,
     languageConfig: indonesiaLanguage,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/idn_admin_boundaries.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/admin_idn.json`,
   },
   kyrgyzstan: {
     appConfig: kyrgyzstanConfig,

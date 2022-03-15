@@ -51,6 +51,9 @@
   "pop2020": {
     "title": "Sebaran Penduduk"
   },
+  "pop_raster_2021": {
+    "title": "Jumlah Populasi"
+  },
   "HH_AGRI": {
     "title": "Masyarakat Hidup Dari Sektor Agrikultur"
   },

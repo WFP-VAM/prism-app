@@ -17,7 +17,7 @@
     "title": "Extreme rainfall (last 5 days)",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_probability",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "downloads": [
       {
         "label": "CSV",
@@ -301,7 +301,7 @@
     "title": "Rainfall anomaly (monthly)",
     "type": "wms",
     "server_layer_name": "rainfall_anomaly_monthly",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "date_interval": "month",
     "opacity": 0.5,
     "legend_text": "Percentage of monthly rainfall compared to a long-term average | Source: CHRIPS",
@@ -615,6 +615,38 @@
       {
         "value": "Population Distribution",
         "color": "#AD347C"
+      }
+    ]
+  },
+  "pop_raster_2021": {
+    "type": "admin_level_data",
+    "title": "Total population",
+    "path": "./data/indonesia/socio_economic.json",
+    "data_field": "Population",
+    "admin_level": 1,
+    "admin_code": "CODE",
+    "opacity": 0.5,
+    "legend_text": "Total population 2021 | Source: BPS",
+    "legend": [
+      {
+        "value": "100000",
+        "color": "#fef0d9"
+      },
+      {
+        "value": "200000",
+        "color": "#fdcc8a"
+      },
+      {
+        "value": "300000",
+        "color": "#fc8d59"
+      },
+      {
+        "value": "500000",
+        "color": "#e34a33"
+      },
+      {
+        "value": "1000000",
+        "color": "#b30000"
       }
     ]
   },
