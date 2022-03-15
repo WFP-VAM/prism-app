@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Provider } from 'react-redux';
-import { MsalProvider } from '@azure/msal-react';
+import { MsalProvider } from '@azure/msal-react'; // eslint-disable
 import App from './components/App';
 import { store } from './context/store';
 import { msalInstance } from './config';

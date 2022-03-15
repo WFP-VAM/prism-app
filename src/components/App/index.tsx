@@ -1,7 +1,7 @@
 import React from 'react';
 import { get } from 'lodash';
 import * as Sentry from '@sentry/browser';
-import { useIsAuthenticated } from '@azure/msal-react';
+import { useIsAuthenticated } from '@azure/msal-react'; // eslint-disable
 import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { appConfig } from '../../config';

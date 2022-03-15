@@ -201,6 +201,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
                 <Typography variant="body2">Hazard Layer</Typography>
                 <LayerDropdown
                   type="wms"
+                  // types={["wms"]}
                   value={hazardLayerId}
                   setValue={setHazardLayerId}
                   className={classes.selector}

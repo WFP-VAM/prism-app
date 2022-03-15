@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
+import { calculate } from 'zonal';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesFile } from '../config';
 import {
@@ -19,6 +20,7 @@ import {
 import {
   BaselineLayerResult,
   AnalysisResult,
+  PolygonAnalysisResult,
   ApiData,
   BaselineLayerData,
   checkBaselineDataLayer,
@@ -32,7 +34,12 @@ import {
 } from '../utils/analysis-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
+import {
+  getAdminNameProperty,
+  fetchAdminLayerGeoJSON,
+} from '../utils/admin-utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
+import { fetchWMSLayerAsGeoJSON } from '../utils/wfs-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, AdminLevelDataLayerData } from './layers/admin_level_data';
@@ -162,6 +169,15 @@ export type AnalysisDispatchParams = {
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
   isExposure: boolean;
+};
+
+export type PolygonAnalysisDispatchParams = {
+  hazardLayer: WMSLayerProps;
+  adminLevel: number;
+  extent: Extent;
+  // threshold: ThresholdDefinition;
+  startDate: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
+  endDate: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
 };
 
 export type ExposedPopulationDispatchParams = {
@@ -366,6 +382,57 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 });
 
+export const requestAndStorePolygonAnalysis = createAsyncThunk<
+  PolygonAnalysisResult,
+  PolygonAnalysisDispatchParams,
+  CreateAsyncThunkTypes
+>('analysisResultState/requestAndStorePolygonAnalysis', async (params, api) => {
+  console.log('starting requestAndStorePolygonAnalysis');
+
+  const { adminLevel, hazardLayer, startDate, endDate, extent } = params;
+
+  // fetch admin zones
+  const zones = await fetchAdminLayerGeoJSON(adminLevel);
+  console.log('zones:', zones);
+
+  // fetch hazard polygons (classes)
+  const classes = await fetchWMSLayerAsGeoJSON(hazardLayer);
+  console.log('classes:', classes);
+
+  const result = calculate({
+    zones,
+    zone_properties: [getAdminNameProperty(adminLevel)],
+    classes,
+    // class_properties: null, // need to capture or hard-code these to start
+    preserve_features: true,
+  });
+  console.log('zonal result:', result);
+
+  // to-do: update TableRow for vector results
+  // to-do: not sure coordinates table row makes sense because zone can have multiple rows one for each class
+  // const tableData = result.table.map((row: Object) => {
+  //   // remove prefixes from results
+  //   const newRow: any = {};
+  //   for (let key in row) {
+  //     const newKey = key.split(":")[1];
+  //     newRow[newKey] = (row as any)[key];
+  //   }
+  //   return newRow;
+  // });
+  // console.log("tableData:", tableData);
+
+  const analysisResult = new PolygonAnalysisResult(
+    result.table,
+    result.geojson,
+    hazardLayer,
+    adminLevel,
+    'percentage',
+  );
+  console.log('analysisResult:', analysisResult);
+
+  return analysisResult;
+});
+
 export const analysisResultSlice = createSlice({
   name: 'analysisResultState',
   initialState,
@@ -458,6 +525,38 @@ export const analysisResultSlice = createSlice({
 
     builder.addCase(
       requestAndStoreAnalysis.pending,
+      (state): AnalysisResultState => ({
+        ...state,
+        isLoading: true,
+      }),
+    );
+
+    // / polygon analysis
+    builder.addCase(
+      requestAndStorePolygonAnalysis.fulfilled,
+      (
+        { result, ...rest },
+        { payload }: PayloadAction<PolygonAnalysisResult>,
+      ): AnalysisResultState => ({
+        ...rest,
+        isLoading: false,
+        result: payload as any,
+      }),
+    );
+
+    builder.addCase(
+      requestAndStorePolygonAnalysis.rejected,
+      (state, action): AnalysisResultState => ({
+        ...state,
+        isLoading: false,
+        error: action.error.message
+          ? action.error.message
+          : action.error.toString(),
+      }),
+    );
+
+    builder.addCase(
+      requestAndStorePolygonAnalysis.pending,
       (state): AnalysisResultState => ({
         ...state,
         isLoading: true,

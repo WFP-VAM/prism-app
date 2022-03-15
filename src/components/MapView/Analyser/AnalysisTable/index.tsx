@@ -15,8 +15,14 @@ import { useDispatch } from 'react-redux';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { Column } from '../../../../utils/analysis-utils';
-
+/*
+PRISM To-Do
+- remove stat:/class:/zone: prefixes from columns
+- convert area to square kilometers
+*/
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
+  console.log({ classes, tableData, columns });
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 

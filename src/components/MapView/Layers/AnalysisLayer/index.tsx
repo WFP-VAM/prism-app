@@ -17,6 +17,7 @@ import {
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
+  PolygonAnalysisResult,
 } from '../../../../utils/analysis-utils';
 import {
   getBoundaryLayerSingleton,
@@ -28,6 +29,7 @@ function AnalysisLayer() {
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  console.log({ analysisData, isAnalysisLayerActive });
 
   const dispatch = useDispatch();
   const baselineLayerId = get(analysisData, 'baselineLayerId');
@@ -44,32 +46,46 @@ function AnalysisLayer() {
       ? baselineLayer.boundary
       : getBoundaryLayerSingleton().id;
 
+  let property;
+  if (analysisData instanceof ExposedPopulationResult) {
+    property = analysisData.statistic as string;
+  } else if (analysisData instanceof PolygonAnalysisResult) {
+    property = 'zonal:stat:percentage';
+  } else {
+    property = 'data';
+  }
+
   // We use the legend values from the baseline layer
-  function fillPaintData(
-    legend: LegendDefinition,
-    property: string,
-  ): MapboxGL.FillPaint {
-    return {
+  let fillPaint: MapboxGL.FillPaint;
+  if (analysisData instanceof PolygonAnalysisResult) {
+    fillPaint = {
       'fill-opacity': 0.3,
       'fill-color': {
         property,
-        stops: legendToStops(legend),
+        stops: [
+          [0, '#FFF'],
+          [1, '#F00'],
+        ],
+        type: 'interval',
+      },
+    };
+  } else {
+    fillPaint = {
+      'fill-opacity': 0.3,
+      'fill-color': {
+        property,
+        stops: legendToStops(analysisData.legend),
         type: 'interval',
       },
     };
   }
-
-  const property =
-    analysisData instanceof ExposedPopulationResult
-      ? (analysisData.statistic as string)
-      : 'data';
 
   return (
     <GeoJSONLayer
       id="layer-analysis"
       before={`layer-${boundaryId}-line`}
       data={analysisData.featureCollection}
-      fillPaint={fillPaintData(analysisData.legend, property)}
+      fillPaint={fillPaint}
       fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;
 

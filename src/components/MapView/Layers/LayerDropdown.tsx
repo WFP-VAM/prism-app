@@ -11,6 +11,7 @@ import { LayerKey, LayerType } from '../../../config/types';
 
 function LayerDropdown({
   type,
+  // types,
   value,
   setValue,
   placeholder,
@@ -24,10 +25,10 @@ function LayerDropdown({
     // 2. get rid of layers within the categories which don't match the given type
     .map(category => ({
       ...category,
-      layers: category.layers.filter(layer =>
-        layer.type === 'wms'
-          ? layer.type === type && !layer.geometry
-          : layer.type === type,
+      layers: category.layers.filter(
+        layer =>
+          layer.type === 'wms' &&
+          [undefined, 'point', 'polygon'].includes(layer.geometry),
       ),
     }))
     // 3. filter categories which don't have any layers at the end of it all.
@@ -73,6 +74,7 @@ function LayerDropdown({
 
 interface LayerSelectorProps {
   type: LayerType['type'];
+  // types: Array<LayerType['type']>;
   value?: LayerKey;
   setValue: (val: LayerKey) => void;
   className?: string;

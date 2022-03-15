@@ -1,6 +1,6 @@
 import { has, get } from 'lodash';
 
-import { PublicClientApplication } from '@azure/msal-browser';
+import { PublicClientApplication } from '@azure/msal-browser'; // eslint-disable @azure/msal-browser
 
 import {
   cambodiaConfig,

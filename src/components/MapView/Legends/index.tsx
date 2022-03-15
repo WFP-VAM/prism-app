@@ -146,7 +146,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
                 onClick={e => handleAnalysisDownload(e)}
                 fullWidth
               >
-                Download
+                Download THING
               </Button>
             </Grid>
           </LegendItem>,

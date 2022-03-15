@@ -7,7 +7,7 @@ import {
   Button,
   Grid,
 } from '@material-ui/core';
-import { useMsal } from '@azure/msal-react';
+import { useMsal } from '@azure/msal-react'; // eslint-disable import/no-unresolved
 import { msalRequest } from '../../config';
 
 import { colors } from '../../muiTheme';

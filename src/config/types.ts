@@ -12,6 +12,7 @@ const optionalMetadataKey = Symbol('optional_property');
 export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
+  // | WFSLayerProps
   | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps;
@@ -263,6 +264,24 @@ export class WMSLayerProps extends CommonLayerProps {
   geometry?: GeometryType;
 }
 
+export class WFSLayerProps extends CommonLayerProps {
+  type: 'wfs';
+  baseUrl: string;
+  serverLayerName: string;
+
+  @makeRequired
+  title: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string };
+
+  @optional
+  wcsConfig?: RawDataConfiguration;
+
+  @optional // If included, we infer the layer is a vector layer.
+  geometry?: GeometryType;
+}
+
 export class AdminLevelDataLayerProps extends CommonLayerProps {
   type: 'admin_level_data';
   path: string;
@@ -299,6 +318,11 @@ export enum AggregationOperations {
   Mean = 'mean',
   Median = 'median',
   Sum = 'sum',
+}
+
+export enum PolygonAggregationOperations {
+  Area = 'area',
+  Percentage = 'percentage',
 }
 
 export type ThresholdDefinition = { below?: number; above?: number };

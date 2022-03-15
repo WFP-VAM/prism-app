@@ -14,6 +14,7 @@ import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import {
   AggregationOperations,
+  PolygonAggregationOperations,
   AsyncReturnType,
   ImpactLayerProps,
   LayerType,
@@ -431,9 +432,86 @@ export async function loadFeaturesClientSide(
   }, [] as GeoJsonBoundary[]);
 }
 
+// not in analysisResultStateSlice to prevent import cycle
+export class PolygonAnalysisResult {
+  key: number = Date.now();
+  featureCollection: FeatureCollection;
+  tableData: any;
+  // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
+  private rawApiData?: object[];
+
+  statistic: string; // area or percentage
+  threshold?: ThresholdDefinition;
+
+  legend: LegendDefinition;
+  legendText: string;
+  hazardLayerId: WMSLayerProps['id'];
+  adminLevel: number;
+
+  constructor(
+    tableData: object[],
+    featureCollection: FeatureCollection,
+    hazardLayer: WMSLayerProps,
+    adminLevel: number,
+    statistic: string,
+    threshold?: ThresholdDefinition,
+    rawApiData?: object[],
+  ) {
+    this.featureCollection = featureCollection;
+    this.tableData = tableData;
+    this.statistic = statistic;
+    this.threshold = threshold;
+    this.legend = [
+      { value: 0, color: '#FFF' },
+      { value: 1, color: '#F00' },
+    ];
+    this.legendText = hazardLayer.legendText;
+    this.rawApiData = rawApiData;
+
+    this.hazardLayerId = hazardLayer.id;
+    // this.baselineLayerId = baselineLayer.id;
+  }
+  getHazardLayer(): WMSLayerProps {
+    return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
+  }
+
+  getTitle(): string {
+    return `${this.getHazardLayer().title} intersecting admin level ${
+      this.adminLevel
+    }`;
+  }
+
+  getStatTitle(): string {
+    return `${this.getHazardLayer().title} (${this.statistic})`;
+  }
+}
+
 export function getAnalysisTableColumns(
-  analysisResult: BaselineLayerResult,
+  analysisResult: BaselineLayerResult | PolygonAnalysisResult,
 ): Column[] {
+  console.log('starting getAnalysisTableColumns with ', analysisResult);
+
+  if (analysisResult instanceof PolygonAnalysisResult) {
+    return analysisResult.tableData.columns.map((column: string) => {
+      return {
+        id: column,
+        label: column,
+        format: (value: number | string) => {
+          if (typeof value === 'number') {
+            return value.toLocaleString('en-US');
+          }
+          if (value === null) {
+            return 'null';
+          }
+          if (value === undefined) {
+            return 'null';
+          }
+          return value;
+        },
+      };
+    });
+  }
+
   const { statistic } = analysisResult;
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;
 
