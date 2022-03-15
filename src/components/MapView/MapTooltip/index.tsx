@@ -18,6 +18,7 @@ function MapTooltip({ classes }: TooltipProps) {
       coordinates={popup.coordinates}
       className={classes.popup}
     >
+      {/* TODO - Add translation for locationName and key */}
       <h4>{popup.locationName}</h4>
       {Object.entries(popup.data)
         .filter(([, value]) => value.coordinates === popup.coordinates)
