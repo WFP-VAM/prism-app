@@ -423,8 +423,6 @@ function MapView({ classes }: MapViewProps) {
         // eslint-disable-next-line react/style-prop-object
         style={style.toString()}
         onStyleLoad={saveAndJumpMap}
-        center={[longitude, latitude]}
-        zoom={[zoom]}
         containerStyle={{
           height: '100%',
         }}
