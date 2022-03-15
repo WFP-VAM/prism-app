@@ -82,9 +82,13 @@ const englishKeys = Object.keys(translation)
   })
   .reduce((a, v) => ({ ...a, [v]: v }), {});
 
-export const resources = merge(appResources, formattedTranslation, {
-  en: { translation: englishKeys },
-});
+export const resources = merge(
+  {
+    en: { translation: englishKeys },
+  },
+  appResources,
+  formattedTranslation,
+);
 
 export const languages = Object.keys(resources);
 
