@@ -2,6 +2,7 @@ import React, { forwardRef, Ref, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import Moment from 'moment';
+import 'moment/locale/km';
 import { extendMoment } from 'moment-range';
 import {
   Button,
@@ -37,6 +38,7 @@ type Point = {
 };
 
 const moment = extendMoment(Moment as any);
+moment.locale('km');
 
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
