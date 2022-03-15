@@ -75,6 +75,7 @@
     "title": "IDPoor",
     "type": "admin_level_data",
     "path": "../data/cambodia/idpoor.json",
+    "content_path": "data/cambodia/contents.md#vulnerability-index",
     "data_field": "num_idpoor",
     "admin_level": 3,
     "admin_code": "Adm3_NCDD",
