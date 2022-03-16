@@ -1,11 +1,14 @@
 import { merge } from 'lodash';
 import i18n from 'i18next';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
 import { initReactI18next } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
 import fr from 'date-fns/locale/fr';
 import km from 'date-fns/locale/km';
 import en from 'date-fns/locale/en-US';
 import { translation } from './config';
+import 'moment/locale/km';
 
 export const appResources = {
   en: {
@@ -97,7 +100,8 @@ export const languages = Object.keys(resources);
 registerLocale('en', en);
 registerLocale('fr', fr);
 registerLocale('km', km);
-
+const moment = extendMoment(Moment as any);
+moment.locale('en');
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
@@ -122,9 +126,9 @@ export const safeTranslate = (translator: any, key: string | undefined) => {
     return translator(key);
   }
   // eslint-disable-next-line no-console
-  console.info(
-    `Translation for "${key}" is not configured in your translation file.`,
-  );
+  // console.info(
+  //   `Translation for "${key}" is not configured in your translation file.`,
+  // );
   return key;
 };
 

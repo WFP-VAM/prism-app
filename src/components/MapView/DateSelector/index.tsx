@@ -2,7 +2,6 @@ import React, { forwardRef, Ref, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import Moment from 'moment';
-import 'moment/locale/km';
 import { extendMoment } from 'moment-range';
 import {
   Button,
@@ -25,7 +24,7 @@ import { DateRangeType } from '../../../config/types';
 import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import TimelineItems from './TimelineItems';
-import { isLocalLanguageChosen, safeTranslate } from '../../../i18n';
+import { safeTranslate } from '../../../i18n';
 
 interface InputProps {
   value?: string;
@@ -53,7 +52,7 @@ const Input = forwardRef(
 
 function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   // const moment = extendMoment(Moment as any);
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
@@ -108,9 +107,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
         )
         .by('days'),
     ).map(date => {
-      date.locale(
-        isLocalLanguageChosen(i18n) ? safeTranslate(t, 'date_locale') : 'en',
-      );
+      date.locale(safeTranslate(t, 'date_locale'));
       return {
         value: date.valueOf(),
         label: date.format('MMM DD YYYY'),
@@ -120,13 +117,18 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     });
     setDateRange(range);
     const dateIndex = findIndex(range, date => {
-      return date.label === moment(stateStartDate).format('MMM DD YYYY');
+      return (
+        date.label ===
+        moment(stateStartDate)
+          .locale(safeTranslate(t, 'date_locale'))
+          .format('MMM DD YYYY')
+      );
     });
     setPointerPosition({
       x: dateIndex * TIMELINE_ITEM_WIDTH,
       y: 0,
     });
-  }, [stateStartDate, i18n, t]);
+  }, [stateStartDate, t]);
 
   function updateStartDate(date: Date) {
     const time = date.getTime();

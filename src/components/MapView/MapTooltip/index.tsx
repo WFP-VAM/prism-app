@@ -29,7 +29,7 @@ function MapTooltip({ classes }: TooltipProps) {
         .filter(([, value]) => value.coordinates === popup.coordinates)
         .map(([key, value]) => (
           <h4 key={key}>
-            {safeTranslate(t, key)}: {safeTranslate(t, value.data.toString())}
+            {safeTranslate(t, key)}: {value.data}
           </h4>
         ))}
 
