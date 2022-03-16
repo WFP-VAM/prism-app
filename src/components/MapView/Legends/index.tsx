@@ -60,9 +60,11 @@ function GetExposureFromLayer(
 }
 
 function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
+  const { t } = useTranslation();
   return (
     <>
-      Impact Analysis on {result.getBaselineLayer().legendText}
+      {safeTranslate(t, 'Impact Analysis on')}{' '}
+      {safeTranslate(t, result.getBaselineLayer().legendText)}
       <br />
       {result.threshold.above
         ? `Above Threshold: ${result.threshold.above}`
@@ -134,7 +136,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           <LegendItem
             key={analysisResult?.key}
             legend={analysisResult?.legend}
-            title={analysisResult?.getTitle()}
+            title={analysisResult?.getTitle(t)}
             classes={classes}
             opacity={0.5} // TODO: initial opacity value
           >
@@ -205,8 +207,6 @@ function LegendItem({
     }
   }, [analysisResult, dispatch]);
 
-  const { t } = useTranslation();
-
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
@@ -244,7 +244,7 @@ function LegendItem({
 
   const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
     if (typeof label === 'string') {
-      return safeTranslate(t, label);
+      return label;
     }
     if (typeof value === 'number') {
       return Math.round(value).toLocaleString('en-US');
@@ -258,7 +258,7 @@ function LegendItem({
         <Grid container direction="column" spacing={1}>
           <Grid item style={{ display: 'flex' }}>
             <Typography style={{ flexGrow: 1 }} variant="h4">
-              {safeTranslate(t, title)}
+              {title}
             </Typography>
             <LayerContentPreview layerId={id} />
           </Grid>

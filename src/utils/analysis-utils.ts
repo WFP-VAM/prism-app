@@ -43,6 +43,7 @@ import type {
 import { LayerDefinitions } from '../config/utils';
 import type { TableRow } from '../context/analysisResultStateSlice';
 import { isLocalhost } from '../serviceWorker';
+import { safeTranslate } from '../i18n';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -631,10 +632,19 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
   }
 
-  getTitle(): string {
-    return `${this.getBaselineLayer().title} exposed to ${
-      this.getHazardLayer().title
-    }`;
+  getTitle(t?: any): string {
+    return t
+      ? this.getTranslatedTitle(t)
+      : `${this.getBaselineLayer().title} exposed to ${
+          this.getHazardLayer().title
+        }`;
+  }
+
+  getTranslatedTitle(t: any): string {
+    return `${safeTranslate(t, this.getBaselineLayer().title)} ${safeTranslate(
+      t,
+      'exposed to',
+    )} ${safeTranslate(t, this.getHazardLayer().title)}`;
   }
 
   getStatTitle(): string {

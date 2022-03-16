@@ -172,7 +172,6 @@ function MapView({ classes }: MapViewProps) {
   const loading = layersLoading || datesLoading;
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
-
   const serverAvailableDates = useSelector(availableDatesSelector);
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer =>
