@@ -890,79 +890,20 @@
     "legend_text": "",
     "base_url": "https://geonode.wfp.org/geoserver"
   },
-  "disaster_report": {
-    "title": "Disaster impact report",
+  "kh_incident_report": {
+    "title": "ទម្រង់ ឧបទ្ទវហេតុ",
     "type": "point_data",
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/forms",
     "additional_query_params": {
-      "form_name": "PRISM-KHM-Disaster-Report-v1",
-      "datetime_field": "disaster_date",
+      "form_name": "test-form-admin-codes",
+      "datetime_field": "Date_report",
       "geom_field": "location",
-      "measure_field": "num_ppl_affected",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json",
-      "filters": {
-        "status": "Approved",
-        "disaster_type": "flood"
-      }
-    },
-    "feature_info_props": {
-      "disaster_type": {
-        "type": "text",
-        "label": "Type of disaster"
-      },
-      "num_ppl_affected": {
-        "type": "number",
-        "label": "Number of people affected"
-      }
+      "measure_field": "NumPeoAff",
+      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
     },
     "opacity": 0.9,
-    "measure": "num_ppl_affected",
-    "legend_text": "Number of people affected",
-    "legend": [
-      {
-        "value": "0",
-        "color": "#909090"
-      },
-      {
-        "value": "< 100",
-        "color": "#ffeda0"
-      },
-      {
-        "value": "100 - 500",
-        "color": "#feb24c"
-      },
-      {
-        "value": "500 or more",
-        "color": "#f03b20"
-      }
-    ]
-  },
-  "incident_report": {
-    "title": "Disaster impact report",
-    "type": "point_data",
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
-    "additional_query_params": {
-      "form_name": "PRISM-KHM-Disaster-Report-v1",
-      "datetime_field": "disaster_date",
-      "geom_field": "location",
-      "measure_field": "num_ppl_affected",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json",
-      "filterStatus": "Approved"
-    },
-    "feature_info_props": {
-      "disaster_type": {
-        "type": "text",
-        "label": "Type of disaster"
-      },
-      "num_ppl_affected": {
-        "type": "number",
-        "label": "Number of people affected"
-      }
-    },
-    "opacity": 0.9,
-    "measure": "num_ppl_affected",
+    "measure": "NumPeoAff",
     "legend_text": "Number of people affected",
     "legend": [
       {
