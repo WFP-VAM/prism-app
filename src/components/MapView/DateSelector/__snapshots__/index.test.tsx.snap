@@ -55,7 +55,7 @@ exports[`renders as expected 1`] = `
           <div
             class="DateSelector-timeline-8 react-draggable"
             id="dateTimelineSelector"
-            style="transform: translate(0px,0px);"
+            style="transform: translate(-1820px,0px);"
           >
             <div
               class="MuiGrid-root DateSelector-dateLabelContainer-7 MuiGrid-container"
@@ -68,7 +68,7 @@ exports[`renders as expected 1`] = `
             <div
               class="DateSelector-pointer-9 react-draggable"
               id="datePointerSelector"
-              style="transform: translate(-10px,0px);"
+              style="transform: translate(1820px,0px);"
             >
               <svg
                 aria-hidden="true"
