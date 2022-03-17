@@ -11,7 +11,7 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
   };
   // If there is only one language, hide the selector
   if (languages.length <= 1) {
-    return <></>;
+    return null;
   }
 
   return (

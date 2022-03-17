@@ -10,6 +10,8 @@ import en from 'date-fns/locale/en-US';
 import { translation } from './config';
 import 'moment/locale/km';
 
+export type i18nTranslator = typeof i18n['t'];
+
 export const appResources = {
   en: {
     translation: {
@@ -106,7 +108,6 @@ i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
-    // TODO - Switch back to English
     lng: 'en',
     interpolation: {
       escapeValue: false, // react already safes from xss
@@ -117,12 +118,14 @@ i18n
     defaultNS: 'translation',
   });
 
-export const safeTranslate = (translator: any, key: string | undefined) => {
+export const safeTranslate = (
+  translator: i18nTranslator,
+  key: string | undefined,
+): string => {
   if (key === undefined) {
-    return undefined;
+    return '';
   }
   if (key in resources.en.translation) {
-    // @ts-ignore
     return translator(key);
   }
   // eslint-disable-next-line no-console
