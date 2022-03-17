@@ -52,7 +52,7 @@ const Input = forwardRef(
 
 function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
       value: 0,
@@ -98,7 +98,9 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
 
   // Create timeline range and set pointer position
   useEffect(() => {
-    const locale = safeTranslate(t, 'date_locale') && 'en';
+    const locale = safeTranslate(t, 'date_locale')
+      ? safeTranslate(t, 'date_locale')
+      : 'en';
     const range = Array.from(
       moment()
         .range(
@@ -126,7 +128,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
       x: dateIndex * TIMELINE_ITEM_WIDTH,
       y: 0,
     });
-  }, [stateStartDate, t]);
+  }, [stateStartDate, t, i18n]);
 
   function updateStartDate(date: Date) {
     const time = date.getTime();
