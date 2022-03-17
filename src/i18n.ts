@@ -129,9 +129,9 @@ export const safeTranslate = (
     return translator(key);
   }
   // eslint-disable-next-line no-console
-  // console.info(
-  //   `Translation for "${key}" is not configured in your translation file.`,
-  // );
+  console.info(
+    `Translation for "${key}" is not configured in your translation file.`,
+  );
   return key;
 };
 

@@ -122,6 +122,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
         labelRowsPerPage={safeTranslate(t, 'Rows Per Page')}
+        // Temporary manual translation before we upgrade to MUI 5.
         labelDisplayedRows={({ from, to, count }) => {
           return `${from}–${to} ${safeTranslate(t, 'of')} ${
             count !== -1 ? count : `${safeTranslate(t, 'more than')} ${to}`

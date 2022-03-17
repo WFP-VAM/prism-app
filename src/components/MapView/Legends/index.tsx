@@ -63,15 +63,16 @@ function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
   const { t } = useTranslation();
   return (
     <>
-      {safeTranslate(t, 'Impact Analysis on')}{' '}
+      {safeTranslate(t, 'Impact Analysis on')}
+      {': '}
       {safeTranslate(t, result.getBaselineLayer().legendText)}
       <br />
       {result.threshold.above
-        ? `Above Threshold: ${result.threshold.above}`
+        ? `${safeTranslate(t, 'Above Threshold')}: ${result.threshold.above}`
         : ''}
       <br />
       {result.threshold.below
-        ? `Below Threshold: ${result.threshold.below}`
+        ? `${safeTranslate(t, 'Below Threshold')}: ${result.threshold.below}`
         : ''}
     </>
   );

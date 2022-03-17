@@ -4,6 +4,7 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FillPaint, LinePaint } from 'mapbox-gl';
 import { get } from 'lodash';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import { getExtent, Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { ImpactLayerProps } from '../../../../config/types';
@@ -23,6 +24,7 @@ import {
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
 import { getFeatureInfoPropsData, getRoundedData } from '../../utils';
+import { safeTranslate } from '../../../../i18n';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',
@@ -44,6 +46,7 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
       ImpactLayerProps
     >) || {};
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const extent: Extent = getExtent(map);
   useEffect(() => {
@@ -65,7 +68,7 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
     return selectedDate ? null : (
       <div className={classes.message}>
         <div className={classes.messageContainer}>
-          <h2>Select an available date to view data</h2>
+          <h2>{safeTranslate(t, 'Select an available date to view data')}</h2>
         </div>
       </div>
     );
@@ -85,8 +88,12 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   };
 
   const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
+  // TODO - Translate
   const operation = layer.operation || 'median';
-  const hazardTitle = `${hazardLayerDef.title} (${operation})`;
+  const hazardTitle = `${safeTranslate(
+    t,
+    hazardLayerDef.title,
+  )} (${safeTranslate(t, operation)})`;
   const boundaryId = getBoundaryLayerSingleton().id;
 
   return (
@@ -99,6 +106,7 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
       fillOnClick={(evt: any) => {
         const popupData = {
           [layer.title]: {
+            // TODO - Use getRoundedData function?
             data: get(evt.features[0], 'properties.impactValue', 'No Data'),
             coordinates: evt.lngLat,
           },
