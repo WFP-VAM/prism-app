@@ -11,34 +11,79 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import {
+  LayerKey,
   LayersCategoryType,
   LayerType,
   TableType,
 } from '../../../config/types';
-import { removeLayer } from '../../../context/mapStateSlice';
 import { loadTable } from '../../../context/tableStateSlice';
-import { layersSelector } from '../../../context/mapStateSlice/selectors';
+import {
+  layersSelector,
+  mapSelector,
+} from '../../../context/mapStateSlice/selectors';
 import { useUrlHistory } from '../../../utils/url-utils';
+import {
+  getDisplayBoundaryLayers,
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../../config/utils';
+import {
+  safeDispatchAddLayer,
+  safeDispatchRemoveLayer,
+} from '../../../utils/map-utils';
+import { removeLayer } from '../../../context/mapStateSlice';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const selectedLayers = useSelector(layersSelector);
+  const map = useSelector(mapSelector);
   const dispatch = useDispatch();
   const { updateHistory, removeKeyFromUrl } = useUrlHistory();
 
   const toggleLayerValue = (layer: LayerType) => (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
     const { checked } = event.target;
 
     const urlLayerKey =
-      layer.type === 'admin_level_data' ? 'baselineLayerId' : 'hazardLayerId';
+      layer.type === ADMIN_LEVEL_DATA_LAYER_KEY
+        ? 'baselineLayerId'
+        : 'hazardLayerId';
 
     if (checked) {
       updateHistory(urlLayerKey, layer.id);
+
+      const defaultBoundary = getBoundaryLayerSingleton();
+      if (!('boundary' in layer) && layer.type === ADMIN_LEVEL_DATA_LAYER_KEY) {
+        safeDispatchAddLayer(map, defaultBoundary, dispatch);
+      }
     } else {
       removeKeyFromUrl(urlLayerKey);
-
       dispatch(removeLayer(layer));
+
+      // For admin boundary layers with boundary property
+      // we have to de-activate the unique boundary and re-activate
+      // default boundaries
+      if ('boundary' in layer) {
+        const boundaryId = layer.boundary || '';
+
+        if (Object.keys(LayerDefinitions).includes(boundaryId)) {
+          const displayBoundaryLayers = getDisplayBoundaryLayers();
+          const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
+
+          if (
+            !displayBoundaryLayers
+              .map(l => l.id)
+              .includes(uniqueBoundaryLayer.id)
+          ) {
+            safeDispatchRemoveLayer(map, uniqueBoundaryLayer, dispatch);
+          }
+
+          displayBoundaryLayers.forEach(l => {
+            safeDispatchAddLayer(map, l, dispatch);
+          });
+        }
+      }
     }
   };
 

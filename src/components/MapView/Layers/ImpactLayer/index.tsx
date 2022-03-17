@@ -7,7 +7,10 @@ import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
 import { getExtent, Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { ImpactLayerProps } from '../../../../config/types';
-import { LayerDefinitions } from '../../../../config/utils';
+import {
+  LayerDefinitions,
+  getBoundaryLayerSingleton,
+} from '../../../../config/utils';
 import {
   LayerData,
   loadLayerData,
@@ -19,7 +22,7 @@ import {
   layerDataSelector,
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
-import { getFeatureInfoPropsData } from '../../utils';
+import { getFeatureInfoPropsData, getRoundedData } from '../../utils';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',
@@ -30,7 +33,7 @@ const linePaint: LinePaint = {
 function getHazardData(evt: any, operation: string) {
   const data = get(evt.features[0].properties, operation || 'median', null);
 
-  return data ? data.toFixed(2) : 'No Data';
+  return getRoundedData(data);
 }
 
 const ImpactLayer = ({ classes, layer }: ComponentProps) => {
@@ -84,10 +87,11 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
   const operation = layer.operation || 'median';
   const hazardTitle = `${hazardLayerDef.title} (${operation})`;
+  const boundaryId = getBoundaryLayerSingleton().id;
 
   return (
     <GeoJSONLayer
-      before="boundaries-line"
+      before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={noMatchingDistricts ? boundaries : impactFeatures}
       linePaint={linePaint}

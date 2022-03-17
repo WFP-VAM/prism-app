@@ -40,7 +40,6 @@ exports[`renders as expected 1`] = `
             <mock-layer-dropdown
               classname="Analyser-selector-10"
               placeholder="Choose hazard layer"
-              title="Hazard Layer"
               type="wms"
             />
           </div>
@@ -178,7 +177,6 @@ exports[`renders as expected 1`] = `
             <mock-layer-dropdown
               classname="Analyser-selector-10"
               placeholder="Choose baseline layer"
-              title="Baseline Layer"
               type="admin_level_data"
             />
           </div>

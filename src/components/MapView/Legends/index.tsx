@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -193,6 +193,13 @@ function LegendItem({
   const map = useSelector(mapSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const dispatch = useDispatch();
+  useEffect(() => {
+    // should this be here? Or somewhere more related to analysis?
+    if (analysisResult instanceof ExposedPopulationResult) {
+      const tableData = convertToTableData(analysisResult);
+      dispatch(addTableData(tableData));
+    }
+  }, [analysisResult, dispatch]);
 
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
@@ -238,11 +245,6 @@ function LegendItem({
     }
     return value;
   };
-
-  if (analysisResult instanceof ExposedPopulationResult) {
-    const tableData = convertToTableData(analysisResult);
-    dispatch(addTableData(tableData));
-  }
 
   return (
     <ListItem disableGutters dense>

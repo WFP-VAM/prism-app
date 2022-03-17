@@ -1,4 +1,6 @@
-import { has } from 'lodash';
+import { has, get } from 'lodash';
+
+import { PublicClientApplication } from '@azure/msal-browser';
 
 import {
   cambodiaConfig,
@@ -39,6 +41,14 @@ import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
 import { rbdConfig, rbdRawLayers, rbdRawTables } from './rbd';
 
 import {
+  srilankaConfig,
+  srilankaRawLayers,
+  srilankaRawTables,
+} from './srilanka';
+
+import sierraleone from './sierraleone';
+
+import {
   tajikistanConfig,
   tajikistanRawLayers,
   tajikistanRawTables,
@@ -50,21 +60,6 @@ import {
   zimbabweRawTables,
 } from './zimbabwe';
 
-type Country =
-  | 'cambodia'
-  | 'global'
-  | 'indonesia'
-  | 'kyrgyzstan'
-  | 'mongolia'
-  | 'mozambique'
-  | 'myanmar'
-  | 'namibia'
-  | 'rbd'
-  | 'tajikistan'
-  | 'zimbabwe';
-
-const DEFAULT: Country = 'myanmar';
-
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
@@ -74,7 +69,7 @@ const configMap = {
     appConfig: cambodiaConfig,
     rawLayers: cambodiaRawLayers,
     rawTables: cambodiaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_gov_wfp_edEarly2021.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_w_all_levels.json`,
   },
   global: {
     appConfig: globalConfig,
@@ -122,7 +117,14 @@ const configMap = {
     appConfig: rbdConfig,
     rawLayers: rbdRawLayers,
     rawTables: rbdRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_mar2021_projected_jun2021_simple.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_nov2021_admin1.json`,
+  },
+  sierraleone,
+  srilanka: {
+    appConfig: srilankaConfig,
+    rawLayers: srilankaRawLayers,
+    rawTables: srilankaRawTables,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/lka_boundaries_admin3.json`,
   },
   tajikistan: {
     appConfig: tajikistanConfig,
@@ -139,13 +141,50 @@ const configMap = {
   },
 } as const;
 
+type Country = keyof typeof configMap;
+
+const DEFAULT: Country = 'myanmar';
+
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
-const safeCountry = (COUNTRY && has(configMap, COUNTRY)
-  ? COUNTRY
-  : DEFAULT) as Country;
+const safeCountry =
+  COUNTRY && has(configMap, COUNTRY) ? (COUNTRY as Country) : DEFAULT;
 
 const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
   safeCountry
 ];
 
-export { appConfig, defaultBoundariesFile, rawLayers, rawTables };
+const {
+  REACT_APP_OAUTH_CLIENT_ID: CLIENT_ID,
+  REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
+  REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
+} = process.env;
+
+const msalConfig = {
+  auth: {
+    clientId: CLIENT_ID!,
+    authority: AUTHORITY!,
+    redirectUri: REDIRECT_URI!,
+  },
+};
+
+const msalRequest = {
+  scopes: ['openid', 'profile'],
+};
+
+const msalInstance = new PublicClientApplication(msalConfig);
+
+const enableNavigationDropdown = get(
+  appConfig,
+  'enableNavigationDropdown',
+  false,
+);
+
+export {
+  appConfig,
+  defaultBoundariesFile,
+  rawLayers,
+  rawTables,
+  msalInstance,
+  msalRequest,
+  enableNavigationDropdown,
+};

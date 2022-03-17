@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+  ChangeEvent,
+} from 'react';
 import {
   Box,
   Button,
@@ -21,12 +27,16 @@ import { grey } from '@material-ui/core/colors';
 import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
-import { LayerDefinitions } from '../../../config/utils';
+import {
+  LayerDefinitions,
+  getDisplayBoundaryLayers,
+} from '../../../config/utils';
 import {
   AggregationOperations,
   AdminLevelDataLayerProps,
   WMSLayerProps,
   LayerKey,
+  BoundaryLayerProps,
 } from '../../../config/types';
 
 import { Extent } from '../Layers/raster-utils';
@@ -48,9 +58,22 @@ import {
   ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
+import {
+  safeDispatchRemoveLayer,
+  safeDispatchAddLayer,
+} from '../../../utils/map-utils';
+import {
+  mapSelector,
+  layersSelector,
+} from '../../../context/mapStateSlice/selectors';
+import { useUrlHistory } from '../../../utils/url-utils';
+import { removeLayer } from '../../../context/mapStateSlice';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
+  const map = useSelector(mapSelector);
+  const selectedLayers = useSelector(layersSelector);
+  const { updateHistory, removeKeyFromUrl } = useUrlHistory();
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -70,6 +93,14 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [belowThreshold, setBelowThreshold] = useState('');
   const [aboveThreshold, setAboveThreshold] = useState('');
   const [thresholdError, setThresholdError] = useState<string | null>(null);
+
+  const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
+  const preSelectedBaselineLayer = selectedLayers.find(
+    l => l.type === 'admin_level_data',
+  );
+  const [previousBaselineId, setPreviousBaselineId] = useState<
+    LayerKey | undefined
+  >(preSelectedBaselineLayer?.id);
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -130,9 +161,107 @@ function Analyser({ extent, classes }: AnalyserProps) {
       />
     ));
 
-  const clearAnalysis = () => dispatch(clearAnalysisResult());
+  const activateUniqueBoundary = () => {
+    if (!baselineLayerId) {
+      throw new Error('Layer should be selected to run analysis');
+    }
+    const baselineLayer = LayerDefinitions[
+      baselineLayerId
+    ] as AdminLevelDataLayerProps;
+
+    if (baselineLayer.boundary) {
+      const boundaryLayer = LayerDefinitions[
+        baselineLayer.boundary
+      ] as BoundaryLayerProps;
+      // remove displayed boundaries
+      getDisplayBoundaryLayers().forEach(l => {
+        if (l.id !== boundaryLayer.id) {
+          safeDispatchRemoveLayer(map, l, dispatch);
+        }
+      });
+
+      safeDispatchAddLayer(map, boundaryLayer, dispatch);
+    } else {
+      getDisplayBoundaryLayers().forEach(l => {
+        safeDispatchAddLayer(map, l, dispatch);
+      });
+    }
+  };
+
+  const deactivateUniqueBoundary = () => {
+    if (!baselineLayerId) {
+      throw new Error('Layer should be selected to run analysis');
+    }
+    const baselineLayer = LayerDefinitions[
+      baselineLayerId
+    ] as AdminLevelDataLayerProps;
+
+    if (baselineLayer.boundary) {
+      const boundaryLayer = LayerDefinitions[
+        baselineLayer.boundary
+      ] as BoundaryLayerProps;
+      if (!getDisplayBoundaryLayers().includes(boundaryLayer)) {
+        safeDispatchRemoveLayer(map, boundaryLayer, dispatch);
+      }
+    }
+
+    getDisplayBoundaryLayers().forEach(l => {
+      safeDispatchAddLayer(map, l, dispatch);
+    });
+  };
+
+  const clearAnalysis = () => {
+    dispatch(clearAnalysisResult());
+    deactivateUniqueBoundary();
+
+    if (previousBaselineId) {
+      const previousBaseline = LayerDefinitions[
+        previousBaselineId
+      ] as AdminLevelDataLayerProps;
+      updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
+      safeDispatchAddLayer(map, previousBaseline, dispatch);
+      // check isMapLayerActive on analysis clear
+      // to avoid miss behaviour on boundary layers
+      dispatch(setIsMapLayerActive(true));
+    }
+  };
+
+  const onMapSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dispatch(setIsMapLayerActive(e.target.checked));
+
+    if (isMapLayerActive) {
+      deactivateUniqueBoundary();
+      // check for previous baseline and bring it back
+      if (previousBaselineId) {
+        const previousBaseline = LayerDefinitions[
+          previousBaselineId
+        ] as AdminLevelDataLayerProps;
+        updateHistory(BASELINE_URL_LAYER_KEY, previousBaselineId);
+        safeDispatchAddLayer(map, previousBaseline, dispatch);
+      }
+    } else {
+      // check for previous baseline and remove it before...
+      if (previousBaselineId) {
+        const previousBaseline = LayerDefinitions[
+          previousBaselineId
+        ] as AdminLevelDataLayerProps;
+        removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
+        safeDispatchRemoveLayer(map, previousBaseline, dispatch);
+      }
+
+      // activating the unique boundary layer
+      activateUniqueBoundary();
+    }
+  };
 
   const runAnalyser = async () => {
+    if (preSelectedBaselineLayer) {
+      setPreviousBaselineId(preSelectedBaselineLayer.id);
+      removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
+      // no need to safely dispatch remove we are sure
+      dispatch(removeLayer(preSelectedBaselineLayer));
+    }
+
     if (analysisResult) {
       clearAnalysis();
     }
@@ -155,6 +284,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
     const selectedBaselineLayer = LayerDefinitions[
       baselineLayerId
     ] as AdminLevelDataLayerProps;
+
+    activateUniqueBoundary();
 
     const params: AnalysisDispatchParams = {
       hazardLayer: selectedHazardLayer,
@@ -202,7 +333,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   type="wms"
                   value={hazardLayerId}
                   setValue={setHazardLayerId}
-                  title="Hazard Layer"
                   className={classes.selector}
                   placeholder="Choose hazard layer"
                 />
@@ -226,7 +356,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   type="admin_level_data"
                   value={baselineLayerId}
                   setValue={setBaselineLayerId}
-                  title="Baseline Layer"
                   className={classes.selector}
                   placeholder="Choose baseline layer"
                 />
@@ -291,9 +420,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                         <Switch
                           color="default"
                           checked={isMapLayerActive}
-                          onChange={e =>
-                            dispatch(setIsMapLayerActive(e.target.checked))
-                          }
+                          onChange={onMapSwitchChange}
                         />
                       }
                       label="Map View"

@@ -9,11 +9,20 @@ import {
   isAnalysisLayerActiveSelector,
 } from '../../../../context/analysisResultStateSlice';
 import { legendToStops } from '../layer-utils';
-import { LegendDefinition } from '../../../../config/types';
+import {
+  LegendDefinition,
+  LayerKey,
+  AdminLevelDataLayerProps,
+} from '../../../../config/types';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
 } from '../../../../utils/analysis-utils';
+import {
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../../../config/utils';
+import { getRoundedData } from '../../utils';
 
 function AnalysisLayer() {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
@@ -22,10 +31,19 @@ function AnalysisLayer() {
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
   const dispatch = useDispatch();
+  const baselineLayerId = get(analysisData, 'baselineLayerId');
+  const baselineLayer = LayerDefinitions[
+    baselineLayerId as LayerKey
+  ] as AdminLevelDataLayerProps;
 
   if (!analysisData || !isAnalysisLayerActive) {
     return null;
   }
+
+  const boundaryId =
+    baselineLayer?.boundary && isAnalysisLayerActive
+      ? baselineLayer.boundary
+      : getBoundaryLayerSingleton().id;
 
   // We use the legend values from the baseline layer
   function fillPaintData(
@@ -49,8 +67,8 @@ function AnalysisLayer() {
 
   return (
     <GeoJSONLayer
-      before="boundaries-line"
       id="layer-analysis"
+      before={`layer-${boundaryId}-line`}
       data={analysisData.featureCollection}
       fillPaint={fillPaintData(analysisData.legend, property)}
       fillOnClick={(evt: any) => {
@@ -59,13 +77,9 @@ function AnalysisLayer() {
         dispatch(
           addPopupData({
             [analysisData.getStatTitle()]: {
-              data: Math.round(
-                get(
-                  evt.features[0],
-                  ['properties', analysisData.statistic],
-                  'No Data',
-                ),
-              ).toLocaleString('en-US'),
+              data: getRoundedData(
+                get(evt.features[0], ['properties', analysisData.statistic]),
+              ),
               coordinates,
             },
           }),
@@ -75,7 +89,7 @@ function AnalysisLayer() {
           dispatch(
             addPopupData({
               [analysisData.getBaselineLayer().title]: {
-                data: get(evt.features[0], 'properties.data', 'No Data'),
+                data: getRoundedData(get(evt.features[0], 'properties.data')),
                 coordinates,
               },
             }),
@@ -86,10 +100,8 @@ function AnalysisLayer() {
           dispatch(
             addPopupData({
               [analysisData.key]: {
-                data: get(
-                  evt.features[0],
-                  `properties.${analysisData.key}`,
-                  'No Data',
+                data: getRoundedData(
+                  get(evt.features[0], `properties.${analysisData.key}`),
                 ),
                 coordinates,
               },
