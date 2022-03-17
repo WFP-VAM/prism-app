@@ -564,12 +564,12 @@ export class ExposedPopulationResult {
   legendText: string;
   statistic: AggregationOperations;
 
-  getTitle = (): string => {
-    return 'Population Exposure';
+  getTitle = (t?: i18nTranslator): string => {
+    return t ? safeTranslate(t, 'Population Exposure') : 'Population Exposure';
   };
 
-  getStatTitle = (): string => {
-    return this.getTitle();
+  getStatTitle = (t?: i18nTranslator): string => {
+    return this.getTitle(t);
   };
 
   constructor(
@@ -634,20 +634,21 @@ export class BaselineLayerResult {
 
   getTitle(t?: i18nTranslator): string {
     return t
-      ? this.getTranslatedTitle(t)
+      ? `${safeTranslate(t, this.getBaselineLayer().title)} ${safeTranslate(
+          t,
+          'exposed to',
+        )} ${safeTranslate(t, this.getHazardLayer().title)}`
       : `${this.getBaselineLayer().title} exposed to ${
           this.getHazardLayer().title
         }`;
   }
 
-  getTranslatedTitle(t: i18nTranslator): string {
-    return `${safeTranslate(t, this.getBaselineLayer().title)} ${safeTranslate(
-      t,
-      'exposed to',
-    )} ${safeTranslate(t, this.getHazardLayer().title)}`;
-  }
-
-  getStatTitle(): string {
-    return `${this.getHazardLayer().title} (${this.statistic})`;
+  getStatTitle(t?: i18nTranslator): string {
+    return t
+      ? `${safeTranslate(t, this.getHazardLayer().title)} (${safeTranslate(
+          t,
+          this.statistic,
+        )})`
+      : `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }

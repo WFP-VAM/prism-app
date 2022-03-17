@@ -11,6 +11,7 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import {
   ExposedPopulationResult,
   BaselineLayerResult,
@@ -62,6 +63,7 @@ const ExposedPopulationAnalysis = ({
   );
   const data = useSelector(analysisResultSelector);
 
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const runExposureAnalysis = async () => {
@@ -104,7 +106,7 @@ const ExposedPopulationAnalysis = ({
       dispatch(
         setCurrentDataDefinition({
           id: generateUniqueTableKey('exposure_analysis') as TableKey,
-          title: data?.getTitle() || '',
+          title: data?.getTitle(t) || '',
           table: '',
           legendText: data?.legendText || '',
         }),

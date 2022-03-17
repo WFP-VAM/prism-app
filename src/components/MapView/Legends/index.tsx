@@ -94,7 +94,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
         content: JSON.stringify(features),
         isUrl: false,
       },
-      analysisResult ? analysisResult.getTitle() : '',
+      analysisResult ? analysisResult.getTitle() : 'prism_extract',
       'application/json',
     );
   };
@@ -119,7 +119,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           classes={classes}
           key={layer.title}
           id={layer.id}
-          title={layer.title}
+          title={safeTranslate(t, layer.title)}
           legend={layer.legend}
           legendUrl={legendUrl}
           type={layer.type}

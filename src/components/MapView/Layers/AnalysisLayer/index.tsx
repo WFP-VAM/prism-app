@@ -3,6 +3,7 @@ import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   analysisResultSelector,
@@ -29,6 +30,7 @@ function AnalysisLayer() {
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
   const baselineLayerId = get(analysisData, 'baselineLayerId');
@@ -76,7 +78,7 @@ function AnalysisLayer() {
 
         dispatch(
           addPopupData({
-            [analysisData.getStatTitle()]: {
+            [analysisData.getStatTitle(t)]: {
               data: getRoundedData(
                 get(evt.features[0], ['properties', analysisData.statistic]),
               ),
