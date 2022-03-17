@@ -521,6 +521,7 @@ const styles = (theme: Theme) =>
       borderBottomRightRadius: '10px',
       height: 'auto',
       maxHeight: '60vh',
+      width: 'fit-content',
     },
     analyserButton: {
       height: '36px',
@@ -549,9 +550,9 @@ const styles = (theme: Theme) =>
       margin: '5px',
     },
     numberField: {
-      paddingLeft: '10px',
+      paddingRight: '10px',
       marginTop: '10px',
-      width: '85.5px',
+      maxWidth: '140px',
       '& .Mui-focused': { color: 'white' },
     },
     calendarPopper: {
