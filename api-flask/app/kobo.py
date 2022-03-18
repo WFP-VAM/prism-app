@@ -1,8 +1,8 @@
 """Collect and parse kobo forms."""
+import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
 from typing import Dict, List
-import logging
 
 from dateutil.parser import parse as dtparser
 
@@ -14,6 +14,7 @@ from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 
 logger = logging.getLogger(__name__)
+
 
 def get_kobo_params():
     """Collect and validate request parameters and environment variables."""
@@ -71,30 +72,30 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
     """Transform a Kobo form dictionary into a format that is used by the frontend."""
     form_data = {}
 
-    active_group = ""
+    active_group = ''
 
     for label_name, label_type in labels.items():
         if label_name in (form_fields.get('geom'), form_fields.get('datetime')):
             continue
-        
+
         # Add logic to handle groups. Data is returned flattened.
-        if label_type == "begin_group":
-            active_group = label_name + "/"
-        if label_type == "end_group":
-            active_group = ""
-        key_value = form_dict.get(f"{active_group}{label_name}")
+        if label_type == 'begin_group':
+            active_group = label_name + '/'
+        if label_type == 'end_group':
+            active_group = ''
+        key_value = form_dict.get(f'{active_group}{label_name}')
         if not key_value:
             continue
         form_data[label_name] = parse_form_field(key_value, label_type)
 
-    datetime_field = form_fields.get('datetime') or "DoesNotExist"
+    datetime_field = form_fields.get('datetime') or 'DoesNotExist'
     datetime_value_string = [
         value for key, value in form_dict.items()
         if key.endswith(datetime_field)
     ][0]
     datetime_value = parse_form_field(datetime_value_string, labels.get(datetime_field))
 
-    geom_field = form_fields.get('geom') or "DoesNotExist"
+    geom_field = form_fields.get('geom') or 'DoesNotExist'
     geom_value_string = [
         value for key, value in form_dict.items()
         if key.endswith(geom_field)
