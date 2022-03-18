@@ -20,17 +20,8 @@ import {
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
 
-function numberWithCommas(numberString: string) {
-  const parts = numberString.split('.');
-  // eslint-disable-next-line fp/no-mutation
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return parts.join('.');
-}
-
 export function getRoundedData(data: number, decimals: number = 3): string {
-  return data
-    ? numberWithCommas(parseFloat(data.toFixed(decimals)).toString())
-    : 'No Data';
+  return data ? parseFloat(data.toFixed(decimals)).toLocaleString() : 'No Data';
 }
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
