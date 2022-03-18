@@ -8,7 +8,6 @@ from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.errors import handle_error, make_json_error
-from app.idpoor import get_idpoor_response
 from app.kobo import get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
@@ -161,14 +160,6 @@ def get_kobo_forms():
     form_responses = get_form_responses(begin_datetime, end_datetime)
 
     return Response(json.dumps(form_responses), mimetype='application/json')
-
-
-@app.route('/idpoor/data', methods=['GET'])
-def get_idpoor_data():
-    """Get Cambodia ID Poor data."""
-    resp = get_idpoor_response()
-
-    return Response(json.dumps(resp), mimetype='application/json')
 
 
 @app.route('/alerts/<id>', methods=['GET'])
