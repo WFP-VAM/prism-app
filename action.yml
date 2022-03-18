@@ -1,0 +1,12 @@
+name: 'ID Poor'
+description: 'Cambodia ID Poor update dataset'
+author: 'MVAM'
+
+inputs:
+  GITHUB_TOKEN:
+    description: 'Github token'
+    required: true
+
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

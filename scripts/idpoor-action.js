@@ -1,0 +1,3 @@
+(async () => {
+  console.warn('Hello');
+})();
