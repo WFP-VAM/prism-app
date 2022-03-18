@@ -25,7 +25,7 @@ export function getRoundedData(data: number, decimals: number = 3): string {
     ? parseFloat(data.toFixed(decimals))
         .toString()
         // add commas
-        .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     : 'No Data';
 }
 
