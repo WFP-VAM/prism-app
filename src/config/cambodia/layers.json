@@ -21,9 +21,19 @@
     "title": "IDPoor",
     "type": "admin_level_data",
     "path": "../data/cambodia/idpoor.json",
-    "data_field": "rural",
+    "data_field": "total",
     "admin_level": 3,
     "admin_code": "Adm3_NCDD",
+    "feature_info_props": {
+      "level1": {
+        "type": "text",
+        "label": "Poor level 1"
+      },
+      "level2": {
+        "type": "text",
+        "label": "Poor level 2"
+      }
+    },
     "opacity": 0.9,
     "legend": [
       {

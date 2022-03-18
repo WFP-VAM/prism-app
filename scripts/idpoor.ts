@@ -4,78 +4,103 @@ import axios from 'axios';
 import { get } from 'lodash';
 
 const ROOT_DIR = path.dirname(__dirname);
-const BASE_API_URI = 'https://mop.idpoor.gov.kh/api/analytics/public/units';
+const BASE_URI = 'https://mop.idpoor.gov.kh/api/analytics/public/units';
+const PARAMS = 'region=ALL&isOnDemand=ALL&year=ALL';
 
-async function fetchIdPoorData() {
-  const defaultParams = 'region=ALL&isOnDemand=ALL&year=ALL&round=ALL';
-  const countryUri = `${BASE_API_URI}/KH/children?${defaultParams}`;
+const fetchIdPoor = async () => {
+  const roundsUri = `${BASE_URI}/KH?${PARAMS}&round=ALL`;
+  try {
+    // eslint-disable-next-line fp/no-mutating-methods
+    const rounds = await (await axios.get(roundsUri)).data.rounds
+      .map((r: object) => Number(get(r, 'name')))
+      .sort((n: number, nn: number) => n - nn)
+      .reduce((acc: number[], n: number) => [n, ...acc], []);
 
-  const country = await (await axios.get(countryUri)).data;
+    const all = rounds.map(async (round: number) => {
+      const pUri = `${BASE_URI}/KH/children?${PARAMS}&round=${round}`;
+      try {
+        const provinces = await (await axios.get(pUri)).data;
 
-  return country.map(async (p: object) => {
-    const provinceId = get(p, 'uuid');
-    const provinceUri = `${BASE_API_URI}/${provinceId}/children?${defaultParams}`;
+        const allD = provinces.map(async (d: object) => {
+          const dId = get(d, 'uuid');
+          const dUri = `${BASE_URI}/${dId}/children?${PARAMS}&round=${round}`;
+          try {
+            const districts = await (await axios.get(dUri)).data;
 
-    const province = await (await axios.get(provinceUri)).data;
-    return province.map(async (d: object) => {
-      const districtId = get(d, 'uuid');
-      const districtUri = `${BASE_API_URI}/${districtId}/children?${defaultParams}`;
+            const allC = districts.map(async (c: object) => {
+              const cId = get(c, 'uuid');
+              const cUri = `${BASE_URI}/${cId}/children?${PARAMS}&round=${round}`;
+              try {
+                const communes = await (await axios.get(cUri)).data;
 
-      const district = await (await axios.get(districtUri)).data;
-      return district.map(async (c: object) => {
-        // const communeId = get(c, 'uuid');
-        // const communeUri = `${BASE_API_URI}/${communeId}/children?${defaultParams}`;
+                const allStats = communes.map(async (commune: object) => {
+                  const communeId = Number(get(commune, 'uuid')).toString();
+                  const communeCode = Number(get(commune, 'code')).toString();
+                  const sUri = `${BASE_URI}/${communeId}/statistics?${PARAMS}&round=${round}`;
+                  const formattedStats = {
+                    Adm3_NCDD: communeCode,
+                    name: get(commune, 'name'),
+                    nameKm: get(commune, 'nameKm'),
+                    total: get(commune, 'rural'),
+                  };
 
-        // const commune = await (await axios.get(communeUri)).data;
-        console.warn('-> ', c);
-      });
-    });
-  });
-}
+                  try {
+                    const stats = await (await axios.get(sUri)).data;
 
-async function updateIdPoorConfig(country: string): Promise<void> {
-  const dataDir = path.join(ROOT_DIR, `public/data/${country}`);
-  const file = path.join(dataDir, 'idpoor.json');
+                    return {
+                      ...formattedStats,
+                      level1: get(stats[0], 'households'),
+                      level2: get(stats[1], 'households'),
+                    };
+                  } catch {
+                    return formattedStats;
+                  }
+                });
 
-  switch (country) {
-    case 'cambodia':
-      fs.access(
-        file,
-        fs.constants.F_OK,
-        async (fileMissingError: Error | null) => {
-          if (!fileMissingError) {
-            console.warn('- Loading...');
-            fetchIdPoorData()
-              .then(data => {
-                console.warn(data.length);
-                console.warn('- done.');
-              })
-              .catch(error => {
-                console.warn(error);
-              });
-            // writing to a file
-            // find out how instead it can generate a pr
-            // using typescript
-            // fs.writeFile(
-            //   path.join(dataDir, 'idpoor.json'),
-            //   JSON.stringify(data),
-            //   (fileWriteError: any) => {
-            //     if (fileWriteError) {
-            //       throw fileWriteError;
-            //     }
-            //   },
-            // );
+                return Promise.all(allStats);
+              } catch {
+                return null;
+              }
+            });
+
+            return Promise.all(allC);
+          } catch {
+            return null;
           }
-        },
-      );
-      break;
-    default:
-      console.warn(`No prebuild for ID Poor in ${country}`);
-      break;
-  }
-}
+        });
 
-((): void => {
+        return Promise.all(allD);
+      } catch {
+        return null;
+      }
+    });
+
+    return Promise.all(all);
+  } catch {
+    throw new Error('Failed to get rounds');
+  }
+};
+
+(async () => {
   const COUNTRY: string = process.env.REACT_APP_COUNTRY as string;
-  updateIdPoorConfig(COUNTRY);
+
+  if (COUNTRY === 'cambodia') {
+    const data = await fetchIdPoor();
+    const datalist = JSON.stringify({
+      DataList: data.flat(3).filter(d => d !== null),
+    });
+    console.warn(datalist);
+
+    const dataDir = path.join(ROOT_DIR, `public/data/${COUNTRY}`);
+    const file = path.join(dataDir, 'idpoor.json');
+    fs.writeFile(file, datalist, (fileWriteError: Error | null) => {
+      if (fileWriteError) {
+        throw fileWriteError;
+      }
+    });
+  } else {
+    console.warn(`ID Poor scrip not suppored in ${COUNTRY}`);
+  }
+
+  console.warn('- Done');
 })();
