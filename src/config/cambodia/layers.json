@@ -893,8 +893,8 @@
   "kh_incident_report": {
     "title": "ទម្រង់ ឧបទ្ទវហេតុ",
     "type": "point_data",
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "data": "http://localhost/kobo/forms",
+    "date_url": "http://localhost/kobo/forms",
     "additional_query_params": {
       "form_name": "test-form-admin-codes",
       "datetime_field": "Date_report",

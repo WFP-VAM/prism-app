@@ -2,6 +2,7 @@
 from datetime import datetime, timedelta, timezone
 from os import getenv
 from typing import Dict, List
+import logging
 
 from dateutil.parser import parse as dtparser
 
@@ -11,6 +12,8 @@ import requests
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
+
+logger = logging.getLogger(__name__)
 
 def get_kobo_params():
     """Collect and validate request parameters and environment variables."""
@@ -66,18 +69,45 @@ def parse_form_field(value: str, field_type: str):
 
 def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], labels: List[str]):
     """Transform a Kobo form dictionary into a format that is used by the frontend."""
-    form_data = {k: parse_form_field(form_dict.get(k), v) for k, v in labels.items()
-                 if k not in (form_fields.get('geom'), form_fields.get('datetime'))}
+    form_data = {}
 
-    datetime_field = form_fields.get('datetime')
-    datetime_value = parse_form_field(form_dict.get(datetime_field), labels.get(datetime_field))
+    active_group = ""
 
-    geom_field = form_fields.get('geom')
-    latlon_dict = parse_form_field(form_dict.get(geom_field), labels.get(geom_field))
+    for label_name, label_type in labels.items():
+        if label_name in (form_fields.get('geom'), form_fields.get('datetime')):
+            continue
+        
+        # Add logic to handle groups. Data is returned flattened.
+        if label_type == "begin_group":
+            active_group = label_name + "/"
+        if label_type == "end_group":
+            active_group = ""
+        key_value = form_dict.get(f"{active_group}{label_name}")
+        if not key_value:
+            continue
+        form_data[label_name] = parse_form_field(key_value, label_type)
+
+    datetime_field = form_fields.get('datetime') or "DoesNotExist"
+    datetime_value_string = [
+        value for key, value in form_dict.items()
+        if key.endswith(datetime_field)
+    ][0]
+    datetime_value = parse_form_field(datetime_value_string, labels.get(datetime_field))
+
+    geom_field = form_fields.get('geom') or "DoesNotExist"
+    geom_value_string = [
+        value for key, value in form_dict.items()
+        if key.endswith(geom_field)
+    ][0]
+    latlon_dict = parse_form_field(geom_value_string, labels.get(geom_field))
 
     status = form_dict.get('_validation_status').get('label', None)
 
     form_data = {**form_data, **latlon_dict, 'date': datetime_value, 'status': status}
+
+    # TODO - remove extra logging
+    logger.debug('form_data')
+    logger.debug(form_data)
 
     return form_data
 
