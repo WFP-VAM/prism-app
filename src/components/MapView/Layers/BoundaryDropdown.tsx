@@ -291,13 +291,13 @@ function SimpleBoundaryDropdown({
                 }}
               >
                 <Typography variant="body2" color="primary">
-                  {safeTranslate(t, category.title)}
+                  {category.title}
                 </Typography>
               </ClickableListSubheader>
             ) : null,
             ...category.children.map(({ label, value }) => (
               <MenuItem key={value} value={value}>
-                {safeTranslate(t, label)}
+                {label}
               </MenuItem>
             )),
           ],
