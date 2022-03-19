@@ -878,10 +878,10 @@
     "data": "http://localhost/kobo/forms",
     "date_url": "http://localhost/kobo/forms",
     "additional_query_params": {
-      "form_name": "test-form-admin-codes",
+      "form_name": "test-form-admin-codes-numeric-only",
       "datetime_field": "Date_report",
       "geom_field": "location",
-      "measure_field": "NumPeoAff",
+      "measure_field": "group_tc1fy38/NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
     },
     "opacity": 0.9,
@@ -895,7 +895,7 @@
         "label": "Number of people affected"
       }
     },
-    "measure": "NumPeoAff",
+    "measure": "group_tc1fy38/NumPeoAff",
     "legend_text": "Number of people affected",
     "legend": [
       {
