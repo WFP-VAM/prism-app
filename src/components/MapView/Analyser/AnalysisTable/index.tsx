@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { Column } from '../../../../utils/analysis-utils';
-import { isLocalLanguageChosen, safeTranslate } from '../../../../i18n';
+import { isEnglishLanguageSelected, safeTranslate } from '../../../../i18n';
 
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   // only display local names if local language is selected, otherwise display english name
@@ -96,7 +96,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                   >
                     {filteredColumns.map(column => {
                       const value =
-                        column.id === 'name' && isLocalLanguageChosen(i18n)
+                        column.id === 'name' && !isEnglishLanguageSelected(i18n)
                           ? row.localName
                           : row[column.id];
                       return (

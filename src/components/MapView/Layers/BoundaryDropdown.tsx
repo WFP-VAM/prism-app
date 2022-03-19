@@ -41,7 +41,7 @@ import {
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { LayerData } from '../../../context/layers/layer-data';
-import { isLocalLanguageChosen, safeTranslate } from '../../../i18n';
+import { isEnglishLanguageSelected, safeTranslate } from '../../../i18n';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
@@ -128,9 +128,9 @@ function getCategories(
   search: string,
   i18nLocale: typeof i18n,
 ) {
-  const locationLevelNames = isLocalLanguageChosen(i18nLocale)
-    ? boundaryLayer.adminLevelLocalNames
-    : boundaryLayer.adminLevelNames;
+  const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
+    ? boundaryLayer.adminLevelNames
+    : boundaryLayer.adminLevelLocalNames;
   if (!boundaryLayer.adminLevelNames.length) {
     console.error(
       'Boundary layer has no admin level names. Cannot generate categories.',

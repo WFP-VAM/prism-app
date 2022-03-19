@@ -9,7 +9,7 @@ import {
   LinearProgress,
 } from '@material-ui/core';
 import { tooltipSelector } from '../../../context/tooltipStateSlice';
-import { isLocalLanguageChosen, safeTranslate } from '../../../i18n';
+import { isEnglishLanguageSelected, safeTranslate } from '../../../i18n';
 
 function MapTooltip({ classes }: TooltipProps) {
   const popup = useSelector(tooltipSelector);
@@ -21,9 +21,9 @@ function MapTooltip({ classes }: TooltipProps) {
       className={classes.popup}
     >
       <h4>
-        {isLocalLanguageChosen(i18n)
-          ? popup.locationLocalName
-          : popup.locationName}
+        {isEnglishLanguageSelected(i18n)
+          ? popup.locationName
+          : popup.locationLocalName}
       </h4>
       {Object.entries(popup.data)
         .filter(([, value]) => value.coordinates === popup.coordinates)

@@ -135,8 +135,8 @@ export const safeTranslate = (
   return key;
 };
 
-export function isLocalLanguageChosen(lang: typeof i18n): boolean {
-  return !(lang.resolvedLanguage === 'en');
+export function isEnglishLanguageSelected(lang: typeof i18n): boolean {
+  return lang.resolvedLanguage === 'en';
 }
 
 export default i18n;
