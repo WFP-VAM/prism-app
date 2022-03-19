@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { get } from 'lodash';
 import * as MapboxGL from 'mapbox-gl';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
 import { PointDataLayerProps } from '../../../../config/types';
@@ -13,7 +14,7 @@ import {
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
-import { getFeatureInfoPropsData } from '../../utils';
+import { getFeatureInfoPropsData, getRoundedData } from '../../utils';
 import { getBoundaryLayerSingleton } from '../../../../config/utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
@@ -26,7 +27,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const dispatch = useDispatch();
 
   const { data } = layerData || {};
-
+  const { t } = useTranslation();
   useEffect(() => {
     if (!data) {
       dispatch(loadLayerData({ layer, date: selectedDate }));
@@ -59,10 +60,9 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
         dispatch(
           addPopupData({
             [layer.title]: {
-              data: get(
-                evt.features[0],
-                `properties.${layer.measure}`,
-                'No Data',
+              data: getRoundedData(
+                t,
+                get(evt.features[0], `properties.${layer.measure}`),
               ),
               coordinates: evt.lngLat,
             },

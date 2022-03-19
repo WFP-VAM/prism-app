@@ -80,6 +80,7 @@ function AnalysisLayer() {
           addPopupData({
             [analysisData.getStatTitle(t)]: {
               data: getRoundedData(
+                t,
                 get(evt.features[0], ['properties', analysisData.statistic]),
               ),
               coordinates,
@@ -91,7 +92,10 @@ function AnalysisLayer() {
           dispatch(
             addPopupData({
               [analysisData.getBaselineLayer().title]: {
-                data: getRoundedData(get(evt.features[0], 'properties.data')),
+                data: getRoundedData(
+                  t,
+                  get(evt.features[0], 'properties.data'),
+                ),
                 coordinates,
               },
             }),
@@ -103,6 +107,7 @@ function AnalysisLayer() {
             addPopupData({
               [analysisData.key]: {
                 data: getRoundedData(
+                  t,
                   get(evt.features[0], `properties.${analysisData.key}`),
                 ),
                 coordinates,

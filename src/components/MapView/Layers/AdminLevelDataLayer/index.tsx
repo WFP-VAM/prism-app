@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
+import { useTranslation } from 'react-i18next';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import {
@@ -19,7 +20,7 @@ import {
 } from '../../../../context/mapStateSlice/selectors';
 import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
-import { getFeatureInfoPropsData } from '../../utils';
+import { getFeatureInfoPropsData, getRoundedData } from '../../utils';
 import {
   getBoundaryLayers,
   getBoundaryLayerSingleton,
@@ -38,6 +39,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     | undefined;
   const { data } = layerData || {};
   const { features } = data || {};
+  const { t } = useTranslation();
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?
@@ -99,7 +101,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
         dispatch(
           addPopupData({
             [layer.title]: {
-              data: get(evt.features[0], 'properties.data', 'No Data'),
+              data: getRoundedData(t, get(evt.features[0], 'properties.data')),
               coordinates: evt.lngLat,
             },
           }),
