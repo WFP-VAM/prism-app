@@ -4,16 +4,8 @@
     "path": "../data/cambodia/khm_bnd_admin3_w_all_levels.json",
     "opacity": 0.8,
     "admin_code": "Adm3_NCDD",
-    "admin_level_names": [
-      "Adm1_Name",
-      "Adm2_Name",
-      "Adm3_Name"
-    ],
-    "admin_level_local_names": [
-      "Adm1_Name_",
-      "Adm2_Name_",
-      "Adm3_Name_"
-    ],
+    "admin_level_names": ["Adm1_Name", "Adm2_Name", "Adm3_Name"],
+    "admin_level_local_names": ["Adm1_Name_", "Adm2_Name_", "Adm3_Name_"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -30,12 +22,8 @@
     "path": "../data/cambodia/khm_bnd_admin1.json",
     "opacity": 0.8,
     "admin_code": "Adm3_NCDD",
-    "admin_level_names": [
-      "Adm1_Name"
-    ],
-    "admin_level_local_names": [
-      "Adm1_Name_"
-    ],
+    "admin_level_names": ["Adm1_Name"],
+    "admin_level_local_names": ["Adm1_Name_"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -52,14 +40,8 @@
     "path": "../data/cambodia/khm_bnd_admin2.json",
     "opacity": 0.8,
     "admin_code": "Adm3_NCDD",
-    "admin_level_names": [
-      "Adm1_Name",
-      "Adm2_Name"
-    ],
-    "admin_level_local_names": [
-      "Adm1_Name_",
-      "Adm2_Name_"
-    ],
+    "admin_level_names": ["Adm1_Name", "Adm2_Name"],
+    "admin_level_local_names": ["Adm1_Name_", "Adm2_Name_"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -899,7 +881,7 @@
       "form_name": "test-form-admin-codes",
       "datetime_field": "Date_report",
       "geom_field": "location",
-      "measure_field": "group_tc1fy38/NumPeoAff",
+      "measure_field": "NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
     },
     "opacity": 0.9,
@@ -913,7 +895,7 @@
         "label": "Number of people affected"
       }
     },
-    "measure": "group_tc1fy38/NumPeoAff",
+    "measure": "NumPeoAff",
     "legend_text": "Number of people affected",
     "legend": [
       {
