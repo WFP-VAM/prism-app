@@ -23,8 +23,9 @@ import {
   layerDataSelector,
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
-import { getFeatureInfoPropsData, getRoundedData } from '../../utils';
+import { getFeatureInfoPropsData } from '../../utils';
 import { i18nTranslator, safeTranslate } from '../../../../i18n';
+import { getRoundedData } from '../../../../utils/data-utils';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',
@@ -32,9 +33,9 @@ const linePaint: LinePaint = {
   'line-opacity': 0.3,
 };
 
-function getHazardData(t: i18nTranslator, evt: any, operation: string) {
+function getHazardData(evt: any, operation: string, t?: i18nTranslator) {
   const data = get(evt.features[0].properties, operation || 'median', null);
-  return getRoundedData(t, data);
+  return getRoundedData(data, t);
 }
 
 const ImpactLayer = ({ classes, layer }: ComponentProps) => {
@@ -106,15 +107,14 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
       fillOnClick={(evt: any) => {
         const popupData = {
           [layer.title]: {
-            // TODO - Use getRoundedData function?
             data: getRoundedData(
-              t,
               get(evt.features[0], 'properties.impactValue'),
+              t,
             ),
             coordinates: evt.lngLat,
           },
           [hazardTitle]: {
-            data: getHazardData(t, evt, operation),
+            data: getHazardData(evt, operation, t),
             coordinates: evt.lngLat,
           },
         };

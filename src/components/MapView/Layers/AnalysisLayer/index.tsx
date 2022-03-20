@@ -23,7 +23,7 @@ import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../../config/utils';
-import { getRoundedData } from '../../utils';
+import { getRoundedData } from '../../../../utils/data-utils';
 
 function AnalysisLayer() {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
@@ -80,8 +80,8 @@ function AnalysisLayer() {
           addPopupData({
             [analysisData.getStatTitle(t)]: {
               data: getRoundedData(
-                t,
                 get(evt.features[0], ['properties', analysisData.statistic]),
+                t,
               ),
               coordinates,
             },
@@ -93,8 +93,8 @@ function AnalysisLayer() {
             addPopupData({
               [analysisData.getBaselineLayer().title]: {
                 data: getRoundedData(
-                  t,
                   get(evt.features[0], 'properties.data'),
+                  t,
                 ),
                 coordinates,
               },
@@ -107,8 +107,8 @@ function AnalysisLayer() {
             addPopupData({
               [analysisData.key]: {
                 data: getRoundedData(
-                  t,
                   get(evt.features[0], `properties.${analysisData.key}`),
+                  t,
                 ),
                 coordinates,
               },

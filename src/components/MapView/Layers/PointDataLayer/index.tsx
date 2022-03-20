@@ -14,8 +14,9 @@ import {
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
-import { getFeatureInfoPropsData, getRoundedData } from '../../utils';
+import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayerSingleton } from '../../../../config/utils';
+import { getRoundedData } from '../../../../utils/data-utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -61,8 +62,8 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
           addPopupData({
             [layer.title]: {
               data: getRoundedData(
-                t,
                 get(evt.features[0], `properties.${layer.measure}`),
+                t,
               ),
               coordinates: evt.lngLat,
             },

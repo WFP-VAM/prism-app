@@ -102,7 +102,7 @@ export const languages = Object.keys(resources);
 registerLocale('en', en);
 registerLocale('fr', fr);
 registerLocale('km', km);
-const moment = extendMoment(Moment as any);
+export const moment = extendMoment(Moment as any);
 moment.locale('en');
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
@@ -120,7 +120,7 @@ i18n
 
 export const safeTranslate = (
   translator: i18nTranslator,
-  key: string | undefined,
+  key?: string,
 ): string => {
   if (key === undefined) {
     return '';

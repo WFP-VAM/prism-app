@@ -3,7 +3,7 @@ import { isNumber } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { TableRow, TableCell } from '@material-ui/core';
 import { TableRowType } from '../../../../context/tableStateSlice';
-import { getRoundedData } from '../../../MapView/utils';
+import { getRoundedData } from '../../../../utils/data-utils';
 
 export interface TableRowProps {
   className?: string;
@@ -18,7 +18,7 @@ const DataTableRow = ({ className, columns, rowData }: TableRowProps) => {
       {columns.map(column => {
         const colValue = rowData ? rowData[column] : column;
         const formattedColValue = isNumber(colValue)
-          ? getRoundedData(t, colValue)
+          ? getRoundedData(colValue, t)
           : colValue.toLocaleString();
         return (
           <TableCell className={className} key={column}>

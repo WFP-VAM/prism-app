@@ -19,17 +19,6 @@ import {
 } from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
-import { i18nTranslator, safeTranslate } from '../../i18n';
-
-export function getRoundedData(
-  t: i18nTranslator,
-  data: number,
-  decimals: number = 3,
-): string {
-  return data
-    ? parseFloat(data.toFixed(decimals)).toLocaleString()
-    : safeTranslate(t, 'No Data');
-}
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
   const matchStr = 'layer-';

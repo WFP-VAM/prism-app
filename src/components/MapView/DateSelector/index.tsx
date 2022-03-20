@@ -1,8 +1,6 @@
 import React, { forwardRef, Ref, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import Moment from 'moment';
-import { extendMoment } from 'moment-range';
 import {
   Button,
   createStyles,
@@ -24,7 +22,7 @@ import { DateRangeType } from '../../../config/types';
 import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import TimelineItems from './TimelineItems';
-import { safeTranslate } from '../../../i18n';
+import { safeTranslate, moment } from '../../../i18n';
 
 interface InputProps {
   value?: string;
@@ -36,7 +34,6 @@ type Point = {
   y: number;
 };
 
-const moment = extendMoment(Moment as any);
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
 

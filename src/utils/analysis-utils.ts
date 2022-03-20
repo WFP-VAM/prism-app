@@ -44,6 +44,7 @@ import { LayerDefinitions } from '../config/utils';
 import type { TableRow } from '../context/analysisResultStateSlice';
 import { isLocalhost } from '../serviceWorker';
 import { safeTranslate, i18nTranslator } from '../i18n';
+import { getRoundedData } from './data-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -450,8 +451,7 @@ export function getAnalysisTableColumns(
     {
       id: statistic,
       label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      // TODO - use getRoundedData here instead?
-      format: (value: number) => value.toLocaleString('en-US'),
+      format: (value: number) => getRoundedData(value),
     },
 
     {

@@ -20,7 +20,7 @@ import {
 } from '../../../../context/mapStateSlice/selectors';
 import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
-import { getFeatureInfoPropsData, getRoundedData } from '../../utils';
+import { getFeatureInfoPropsData } from '../../utils';
 import {
   getBoundaryLayers,
   getBoundaryLayerSingleton,
@@ -28,6 +28,7 @@ import {
 } from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { isLayerOnView } from '../../../../utils/map-utils';
+import { getRoundedData } from '../../../../utils/data-utils';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const dispatch = useDispatch();
@@ -101,7 +102,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
         dispatch(
           addPopupData({
             [layer.title]: {
-              data: getRoundedData(t, get(evt.features[0], 'properties.data')),
+              data: getRoundedData(get(evt.features[0], 'properties.data'), t),
               coordinates: evt.lngLat,
             },
           }),
