@@ -21,12 +21,7 @@ import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
 
 export function getRoundedData(data: number, decimals: number = 3): string {
-  return data
-    ? parseFloat(data.toFixed(decimals))
-        .toString()
-        // add commas
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-    : 'No Data';
+  return data ? parseFloat(data.toFixed(decimals)).toLocaleString() : 'No Data';
 }
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
