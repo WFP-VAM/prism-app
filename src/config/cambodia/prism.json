@@ -32,19 +32,48 @@
     "admin2_boundaries"
   ],
   "categories": {
-    "hazards": {
-      "floods": ["hydra_s1", "hydra_s2", "hydra_l8"],
-      "rainfall": [
+    "flood": {
+      "flood_events": ["hydra_s1"]
+    },
+    "rainfall": {
+      "rainfall_amount": [
         "rainfall_dekad",
-        "rain_anomaly_dekad",
-        "rain_anomaly_monthly",
-        "rainfall_agg_month",
-        "streak_dry_days",
-        "days_heavy_rain",
-        "streak_heavy_rain"
+        "rainfall_agg_1month",
+        "rainfall_agg_3month",
+        "rainfall_agg_6month",
+        "rainfall_agg_9month",
+        "rainfall_agg_1year"
       ],
-      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"],
-      "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
+      "rainfall_anomalies": [
+        "rain_anomaly_dekad",
+        "rain_anomaly_1month",
+        "rain_anomaly_3month",
+        "rain_anomaly_6month",
+        "rain_anomaly_9month",
+        "rain_anomaly_1year",
+        "spi_1m",
+        "spi_3m",
+        "spi_6m",
+        "spi_9m",
+        "spi_1y"
+      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
+      "heavy_rain": [
+        "days_heavy_rain",
+        "days_intense_rain",
+        "days_extreme_rain",
+        "streak_heavy_rain"
+      ]
+    },
+    "vegetation": {
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+    },
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_anomaly",
+        "lst_amplitude"
+      ]
     },
     "vulnerability": {
       "poverty": ["idpoor"]
