@@ -1,15 +1,14 @@
+import { isNumber } from 'lodash';
 import { i18nTranslator, safeTranslate } from '../i18n';
 
 export function getRoundedData(
-  data: number,
+  data: number | string,
   t?: i18nTranslator,
   decimals: number = 3,
 ): string {
-  if (data) {
+  if (isNumber(data)) {
     return parseFloat(data.toFixed(decimals)).toLocaleString();
   }
-  if (t) {
-    return safeTranslate(t, 'No Data');
-  }
-  return 'No Data';
+  const dataString = data || 'No Data';
+  return t ? safeTranslate(t, dataString) : dataString;
 }

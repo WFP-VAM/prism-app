@@ -106,6 +106,7 @@ function AnalysisLayer() {
           dispatch(
             addPopupData({
               [analysisData.key]: {
+                // TODO - consider using a simple safeTranslate here instead.
                 data: getRoundedData(
                   get(evt.features[0], `properties.${analysisData.key}`),
                   t,
