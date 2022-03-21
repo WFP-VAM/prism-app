@@ -88,9 +88,7 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   };
 
   const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
-  // TODO - Translate
   const operation = layer.operation || 'median';
-  // TODO - Use getStatTitle function?
   const hazardTitle = `${safeTranslate(
     t,
     hazardLayerDef.title,

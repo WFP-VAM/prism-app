@@ -21,13 +21,14 @@ import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
 import LanguageSelector from './LanguageSelector';
+import { safeTranslate } from '../../i18n';
 
 function NavBar({ classes }: NavBarProps) {
   const { t } = useTranslation();
 
   const rightSideLinks = [
     {
-      title: t('about'),
+      title: safeTranslate(t, 'about'),
       icon: faInfoCircle,
       href: 'https://innovation.wfp.org/project/prism',
     },
@@ -83,7 +84,7 @@ function NavBar({ classes }: NavBarProps) {
               component={Link}
               to="/"
             >
-              {t('Prism')}
+              {safeTranslate(t, 'Prism')}
             </Typography>
           </Grid>
 

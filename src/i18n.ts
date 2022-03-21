@@ -86,7 +86,13 @@ const englishKeys = Object.keys(translation)
   .flatMap(language => {
     return Object.keys(translation[language]);
   })
-  .reduce((a, v) => ({ ...a, [v]: v }), {});
+  .reduce(
+    (previousKeys, currentKey) => ({
+      ...previousKeys,
+      [currentKey]: currentKey,
+    }),
+    {},
+  );
 
 export const resources = merge(
   {
@@ -129,7 +135,7 @@ export const safeTranslate = (
     return translator(key);
   }
   // eslint-disable-next-line no-console
-  console.info(
+  console.warn(
     `Translation for "${key}" is not configured in your translation file.`,
   );
   return key;

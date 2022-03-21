@@ -23,6 +23,10 @@ import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import TimelineItems from './TimelineItems';
 import { safeTranslate, moment } from '../../../i18n';
+import {
+  DEFAULT_DATE_FORMAT,
+  MONTH_ONLY_DATE_FORMAT,
+} from '../../../utils/name-utils';
 
 interface InputProps {
   value?: string;
@@ -109,8 +113,8 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
       date.locale(locale);
       return {
         value: date.valueOf(),
-        label: date.format('MMM DD YYYY'),
-        month: date.format('MMM YYYY'),
+        label: date.format(DEFAULT_DATE_FORMAT),
+        month: date.format(MONTH_ONLY_DATE_FORMAT),
         isFirstDay: date.date() === date.startOf('month').date(),
       };
     });
@@ -118,7 +122,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     const dateIndex = findIndex(range, date => {
       return (
         date.label ===
-        moment(stateStartDate).locale(locale).format('MMM DD YYYY')
+        moment(stateStartDate).locale(locale).format(DEFAULT_DATE_FORMAT)
       );
     });
     setPointerPosition({
@@ -131,7 +135,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     const time = date.getTime();
     // This updates state because a useEffect in MapView updates the redux state
     // TODO this is convoluted coupling, we should update state here if feasible.
-    updateHistory('date', moment(time).format('YYYY-MM-DD'));
+    updateHistory('date', moment(time).format(DEFAULT_DATE_FORMAT));
   }
 
   function setDatePosition(date: number | undefined, increment: number) {

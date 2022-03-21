@@ -30,7 +30,7 @@ import {
   ExposedPopulationResult,
   scaleFeatureStat,
 } from '../utils/analysis-utils';
-import { getFullLocationName } from '../utils/name-utils';
+import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
@@ -247,7 +247,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   const wfsParams: WfsRequestParams = {
     url: `${wfsLayer.baseUrl}/ows`,
     layer_name: wfsLayer.serverLayerName,
-    time: moment(date).format('YYYY-MM-DD'),
+    time: moment(date).format(DEFAULT_DATE_FORMAT),
     key,
   };
 

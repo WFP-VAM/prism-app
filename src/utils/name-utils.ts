@@ -17,3 +17,7 @@ export function getFullLocationName(
       .join(', ') || 'No Name'
   );
 }
+
+export const MONTH_FIRST_DATE_FORMAT = 'MMM DD YYYY';
+export const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
+export const MONTH_ONLY_DATE_FORMAT = 'MMM YYYY';
