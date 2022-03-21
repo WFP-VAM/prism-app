@@ -83,19 +83,20 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
             active_group = label_name + '/'
         if label_type == 'end_group':
             active_group = ''
-        key_value = form_dict.get(f'{active_group}{label_name}')
-        if not key_value:
+        value = form_dict.get(f'{active_group}{label_name}')
+        if not value:
             continue
-        form_data[label_name] = parse_form_field(key_value, label_type)
+        # Insert value in form_data
+        form_data[label_name] = parse_form_field(value, label_type)
 
-    datetime_field = form_fields.get('datetime') or 'DoesNotExist'
+    datetime_field = form_fields.get('datetime', 'DoesNotExist')
     datetime_value_string = [
         value for key, value in form_dict.items()
         if key.endswith(datetime_field)
     ][0]
     datetime_value = parse_form_field(datetime_value_string, labels.get(datetime_field))
 
-    geom_field = form_fields.get('geom') or 'DoesNotExist'
+    geom_field = form_fields.get('geom', 'DoesNotExist')
     geom_value_string = [
         value for key, value in form_dict.items()
         if key.endswith(geom_field)
@@ -106,9 +107,7 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
 
     form_data = {**form_data, **latlon_dict, 'date': datetime_value, 'status': status}
 
-    # TODO - remove extra logging
-    logger.debug('form_data')
-    logger.debug(form_data)
+    logger.debug('Kobo data parsed as: %s', form_data)
 
     return form_data
 
