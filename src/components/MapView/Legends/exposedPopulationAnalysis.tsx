@@ -35,6 +35,7 @@ import {
 } from '../../../config/types';
 import { TableKey } from '../../../config/utils';
 import { Extent } from '../Layers/raster-utils';
+import { safeTranslate } from '../../../i18n';
 
 const AnalysisButton = withStyles(() => ({
   root: {
@@ -87,7 +88,7 @@ const ExposedPopulationAnalysis = ({
       wfsLayerId: id as LayerKey,
     };
 
-    await dispatch(requestAndStoreExposedPopulation(params));
+    dispatch(requestAndStoreExposedPopulation(params));
   };
 
   // Since the exposure analysis doesn't have predefined table in configurations
@@ -99,7 +100,7 @@ const ExposedPopulationAnalysis = ({
 
   const ResultSwitches = () => {
     const features = data?.featureCollection.features;
-    const hasData = features?.length === 0;
+    const hasNoData = features?.length === 0;
 
     const handleTableViewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       dispatch(setIsDataTableDrawerActive(e.target.checked));
@@ -108,7 +109,7 @@ const ExposedPopulationAnalysis = ({
           id: generateUniqueTableKey('exposure_analysis') as TableKey,
           title: data?.getTitle(t) || '',
           table: '',
-          legendText: data?.legendText || '',
+          legendText: safeTranslate(t, data?.legendText || ''),
         }),
       );
     };
@@ -120,19 +121,19 @@ const ExposedPopulationAnalysis = ({
             control={
               <Switch
                 color="primary"
-                disabled={hasData}
+                disabled={hasNoData}
                 checked={isDataTableDrawerActive}
                 onChange={handleTableViewChange}
               />
             }
-            label="Table view"
+            label={safeTranslate(t, 'Table view')}
           />
         </FormGroup>
 
-        {hasData && (
+        {hasNoData && (
           <Grid item>
             <Typography align="center" variant="h5">
-              No population was exposed
+              {safeTranslate(t, 'No population was exposed')}
             </Typography>
           </Grid>
         )}
@@ -149,7 +150,7 @@ const ExposedPopulationAnalysis = ({
           size="small"
           onClick={runExposureAnalysis}
         >
-          Exposure Analysis
+          {safeTranslate(t, 'Exposure Analysis')}
         </AnalysisButton>
 
         {analysisExposureLoading && <LinearProgress />}
@@ -165,7 +166,7 @@ const ExposedPopulationAnalysis = ({
         size="small"
         onClick={() => dispatch(clearAnalysisResult())}
       >
-        clear analysis
+        {safeTranslate(t, 'Clear Analysis')}
       </AnalysisButton>
 
       <ResultSwitches />
