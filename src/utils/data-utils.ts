@@ -2,7 +2,7 @@ import { isNumber } from 'lodash';
 import { i18nTranslator, safeTranslate } from '../i18n';
 
 export function getRoundedData(
-  data: number | string,
+  data: number,
   t?: i18nTranslator,
   decimals: number = 3,
 ): string {
