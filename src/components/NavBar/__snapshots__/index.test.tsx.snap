@@ -31,29 +31,29 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root NavBar-menuContainer-4 MuiGrid-item MuiGrid-grid-xs-6"
           >
             <mock-menuitem
-              icon="icon_climate.png"
-              layerscategories="[object Object],[object Object],[object Object]"
-              title="Hazards"
+              icon="icon_rain.png"
+              layerscategories="[object Object],[object Object],[object Object],[object Object]"
+              title="Rainfall"
             />
             <mock-menuitem
-              icon="icon_basemap.png"
+              icon="icon_veg.png"
               layerscategories="[object Object]"
-              title="Exposure"
+              title="Vegetation"
+            />
+            <mock-menuitem
+              icon="icon_climate.png"
+              layerscategories="[object Object],[object Object]"
+              title="Temperature"
+            />
+            <mock-menuitem
+              icon="icon_tropical_storm.png"
+              layerscategories="[object Object]"
+              title="Tropical Storms"
             />
             <mock-menuitem
               icon="icon_vulnerable.png"
-              layerscategories="[object Object]"
-              title="Vulnerability"
-            />
-            <mock-menuitem
-              icon="icon_capacity.png"
-              layerscategories="[object Object]"
-              title="Capacity"
-            />
-            <mock-menuitem
-              icon="icon_table.png"
               layerscategories="[object Object],[object Object]"
-              title="Tables"
+              title="Vulnerability"
             />
           </div>
           <div
@@ -218,33 +218,33 @@ exports[`renders as expected 1`] = `
                   >
                     <mock-menuitemmobile
                       expanded=""
-                      icon="icon_climate.png"
-                      layerscategories="[object Object],[object Object],[object Object]"
-                      title="Hazards"
+                      icon="icon_rain.png"
+                      layerscategories="[object Object],[object Object],[object Object],[object Object]"
+                      title="Rainfall"
                     />
                     <mock-menuitemmobile
                       expanded=""
-                      icon="icon_basemap.png"
+                      icon="icon_veg.png"
                       layerscategories="[object Object]"
-                      title="Exposure"
+                      title="Vegetation"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_climate.png"
+                      layerscategories="[object Object],[object Object]"
+                      title="Temperature"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_tropical_storm.png"
+                      layerscategories="[object Object]"
+                      title="Tropical Storms"
                     />
                     <mock-menuitemmobile
                       expanded=""
                       icon="icon_vulnerable.png"
-                      layerscategories="[object Object]"
-                      title="Vulnerability"
-                    />
-                    <mock-menuitemmobile
-                      expanded=""
-                      icon="icon_capacity.png"
-                      layerscategories="[object Object]"
-                      title="Capacity"
-                    />
-                    <mock-menuitemmobile
-                      expanded=""
-                      icon="icon_table.png"
                       layerscategories="[object Object],[object Object]"
-                      title="Tables"
+                      title="Vulnerability"
                     />
                   </div>
                 </div>
