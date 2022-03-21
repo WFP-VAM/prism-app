@@ -873,10 +873,10 @@
     "base_url": "https://geonode.wfp.org/geoserver"
   },
   "kh_incident_report": {
-    "title": "ទម្រង់ ឧបទ្ទវហេតុ",
+    "title": "Disaster impact report",
     "type": "point_data",
-    "data": "http://localhost/kobo/forms",
-    "date_url": "http://localhost/kobo/forms",
+    "data": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/forms",
     "additional_query_params": {
       "form_name": "test-form-admin-codes",
       "datetime_field": "Date_report",
