@@ -69,7 +69,7 @@ const configMap = {
     appConfig: cambodiaConfig,
     rawLayers: cambodiaRawLayers,
     rawTables: cambodiaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_w_all_levels.json`,
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_gov_ed2022.json`,
   },
   global: {
     appConfig: globalConfig,
