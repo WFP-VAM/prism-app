@@ -56,7 +56,7 @@
   "idpoor": {
     "title": "IDPoor",
     "type": "admin_level_data",
-    "path": "../data/cambodia/idpoor_revised.json",
+    "path": "../data/cambodia/idpoor.json",
     "data_field": "num_idpoor",
     "admin_level": 3,
     "admin_code": "Adm3_text",
