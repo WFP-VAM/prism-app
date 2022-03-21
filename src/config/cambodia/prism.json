@@ -1,6 +1,7 @@
 {
   "country": "Cambodia",
   "alertFormActive": false,
+  "enableNavigationDropdown": true,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
@@ -49,7 +50,7 @@
           "poverty": ["idpoor"]
       },
       "exposure": {
-        "field_reports": ["disaster_report"]
+        "field_reports": ["kh_incident_report"]
     }
   }
 }

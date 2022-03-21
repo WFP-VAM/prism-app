@@ -1,19 +1,11 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/cambodia/khm_bnd_admin3_w_all_levels.json",
+    "path": "../data/cambodia/khm_bnd_admin3_gov_ed2022.json",
     "opacity": 0.8,
-    "admin_code": "Adm3_NCDD",
-    "admin_level_names": [
-      "Adm1_Name",
-      "Adm2_Name",
-      "Adm3_Name"
-    ],
-    "admin_level_local_names": [
-      "Adm1_Name_",
-      "Adm2_Name_",
-      "Adm3_Name_"
-    ],
+    "admin_code": "Adm3_text",
+    "admin_level_names": ["Adm1_Name", "Adm2_Name", "Adm3_Name"],
+    "admin_level_local_names": ["Adm1_Name_", "Adm2_Name_", "Adm3_Name_"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -27,15 +19,11 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "../data/cambodia/khm_bnd_admin1.json",
+    "path": "../data/cambodia/khm_bnd_admin1_gov_ed2022.json",
     "opacity": 0.8,
-    "admin_code": "Adm3_NCDD",
-    "admin_level_names": [
-      "Adm1_Name"
-    ],
-    "admin_level_local_names": [
-      "Adm1_Name_"
-    ],
+    "admin_code": "Adm1_text",
+    "admin_level_names": ["Adm1_Name"],
+    "admin_level_local_names": ["Adm1_Name_"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -49,17 +37,11 @@
   },
   "admin2_boundaries": {
     "type": "boundary",
-    "path": "../data/cambodia/khm_bnd_admin2.json",
+    "path": "../data/cambodia/khm_bnd_admin2_gov_ed2022.json",
     "opacity": 0.8,
-    "admin_code": "Adm3_NCDD",
-    "admin_level_names": [
-      "Adm1_Name",
-      "Adm2_Name"
-    ],
-    "admin_level_local_names": [
-      "Adm1_Name_",
-      "Adm2_Name_"
-    ],
+    "admin_code": "Adm2_text",
+    "admin_level_names": ["Adm1_Name", "Adm2_Name"],
+    "admin_level_local_names": ["Adm1_Name_", "Adm2_Name_"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -77,7 +59,7 @@
     "path": "../data/cambodia/idpoor.json",
     "data_field": "num_idpoor",
     "admin_level": 3,
-    "admin_code": "Adm3_NCDD",
+    "admin_code": "Adm3_text",
     "opacity": 0.9,
     "legend": [
       {
@@ -890,95 +872,50 @@
     "legend_text": "",
     "base_url": "https://geonode.wfp.org/geoserver"
   },
-  "disaster_report": {
+  "kh_incident_report": {
     "title": "Disaster impact report",
     "type": "point_data",
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/forms",
     "additional_query_params": {
-      "form_name": "PRISM-KHM-Disaster-Report-v1",
-      "datetime_field": "disaster_date",
+      "form_name": "test-form-admin-codes",
+      "datetime_field": "Date_report",
       "geom_field": "location",
-      "measure_field": "num_ppl_affected",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json",
-      "filters": {
-        "status": "Approved",
-        "disaster_type": "flood"
-      }
+      "measure_field": "NumPeoAff",
+      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
     },
+    "opacity": 0.9,
     "feature_info_props": {
-      "disaster_type": {
+      "Commune": {
         "type": "text",
-        "label": "Type of disaster"
+        "label": "Commune"
       },
-      "num_ppl_affected": {
+      "NumPeoAff": {
         "type": "number",
         "label": "Number of people affected"
       }
     },
-    "opacity": 0.9,
-    "measure": "num_ppl_affected",
+    "measure": "NumPeoAff",
     "legend_text": "Number of people affected",
     "legend": [
       {
-        "value": "0",
+        "value": 0,
+        "label": 0,
         "color": "#909090"
       },
       {
-        "value": "< 100",
+        "value": 1,
+        "label": "<100",
         "color": "#ffeda0"
       },
       {
-        "value": "100 - 500",
+        "value": 100,
+        "label": "100 - 500",
         "color": "#feb24c"
       },
       {
-        "value": "500 or more",
-        "color": "#f03b20"
-      }
-    ]
-  },
-  "incident_report": {
-    "title": "Disaster impact report",
-    "type": "point_data",
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
-    "additional_query_params": {
-      "form_name": "PRISM-KHM-Disaster-Report-v1",
-      "datetime_field": "disaster_date",
-      "geom_field": "location",
-      "measure_field": "num_ppl_affected",
-      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json",
-      "filterStatus": "Approved"
-    },
-    "feature_info_props": {
-      "disaster_type": {
-        "type": "text",
-        "label": "Type of disaster"
-      },
-      "num_ppl_affected": {
-        "type": "number",
-        "label": "Number of people affected"
-      }
-    },
-    "opacity": 0.9,
-    "measure": "num_ppl_affected",
-    "legend_text": "Number of people affected",
-    "legend": [
-      {
-        "value": "0",
-        "color": "#909090"
-      },
-      {
-        "value": "< 100",
-        "color": "#ffeda0"
-      },
-      {
-        "value": "100 - 500",
-        "color": "#feb24c"
-      },
-      {
-        "value": "500 or more",
+        "value": 500,
+        "label": "500 or more",
         "color": "#f03b20"
       }
     ]
