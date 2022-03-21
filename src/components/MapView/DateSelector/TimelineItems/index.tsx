@@ -13,7 +13,7 @@ import moment from 'moment';
 import { merge } from 'lodash';
 import { DateRangeType } from '../../../../config/types';
 import { TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from '../utils';
-import { DEFAULT_DATE_FORMAT } from '../../../../utils/name-utils';
+import { MONTH_FIRST_DATE_FORMAT } from '../../../../utils/name-utils';
 
 function TimelineItems({
   classes,
@@ -52,7 +52,7 @@ function TimelineItems({
             {availableDates
               .map(availableDate =>
                 moment(availableDate + USER_DATE_OFFSET).format(
-                  DEFAULT_DATE_FORMAT,
+                  MONTH_FIRST_DATE_FORMAT,
                 ),
               )
               .includes(date.label) && (

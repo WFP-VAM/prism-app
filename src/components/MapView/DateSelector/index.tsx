@@ -25,6 +25,7 @@ import TimelineItems from './TimelineItems';
 import { safeTranslate, moment } from '../../../i18n';
 import {
   DEFAULT_DATE_FORMAT,
+  MONTH_FIRST_DATE_FORMAT,
   MONTH_ONLY_DATE_FORMAT,
 } from '../../../utils/name-utils';
 
@@ -113,7 +114,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
       date.locale(locale);
       return {
         value: date.valueOf(),
-        label: date.format(DEFAULT_DATE_FORMAT),
+        label: date.format(MONTH_FIRST_DATE_FORMAT),
         month: date.format(MONTH_ONLY_DATE_FORMAT),
         isFirstDay: date.date() === date.startOf('month').date(),
       };
@@ -122,7 +123,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
     const dateIndex = findIndex(range, date => {
       return (
         date.label ===
-        moment(stateStartDate).locale(locale).format(DEFAULT_DATE_FORMAT)
+        moment(stateStartDate).locale(locale).format(MONTH_FIRST_DATE_FORMAT)
       );
     });
     setPointerPosition({
