@@ -126,7 +126,7 @@ const ExposedPopulationAnalysis = ({
                 onChange={handleTableViewChange}
               />
             }
-            label={safeTranslate(t, 'Table view')}
+            label={safeTranslate(t, 'Table View')}
           />
         </FormGroup>
 

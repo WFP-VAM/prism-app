@@ -13,6 +13,7 @@ import {
   Box,
   Button,
 } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import {
   getCurrentDefinition as getTableDefinition,
   isLoading,
@@ -26,6 +27,7 @@ import {
 import Chart from '../Chart';
 import DataTableRow from './DataTableRow';
 import { exportDataTableToCSV, downloadToFile } from '../../MapView/utils';
+import { safeTranslate } from '../../../i18n';
 
 const styles = () =>
   createStyles({
@@ -60,6 +62,7 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
   const tableData = useSelector(getTableData);
   const analysisData = useSelector(getAnalysisData);
   const data = tableData.rows.length !== 0 ? tableData : analysisData;
+  const { t } = useTranslation();
 
   if (!definition) {
     return null;
@@ -80,6 +83,8 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
     );
   };
 
+  const downloadAsCSVTranslated = safeTranslate(t, 'Download as CSV');
+
   return (
     <div>
       <h2>{title}</h2>
@@ -88,7 +93,9 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
       {table && (
         <p>
           <Button>
-            <a href={process.env.PUBLIC_URL + table}>Download as CSV</a>
+            <a href={process.env.PUBLIC_URL + table}>
+              {downloadAsCSVTranslated}
+            </a>
           </Button>
         </p>
       )}
@@ -96,7 +103,7 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
       {csvData && (
         <p>
           <Button onClick={e => handleDownload(csvData, e)}>
-            Download as CSV
+            {downloadAsCSVTranslated}
           </Button>
         </p>
       )}
