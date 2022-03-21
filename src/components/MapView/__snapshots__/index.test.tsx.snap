@@ -31,7 +31,7 @@ exports[`renders as expected 1`] = `
         >
           <mock-download />
           <mock-legends
-            layers="[object Object],[object Object],[object Object]"
+            layers="[object Object]"
           />
         </div>
       </div>
