@@ -34,7 +34,7 @@ import myanmar from './myanmar';
 
 import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
 
-import { rbdConfig, rbdRawLayers, rbdRawTables } from './rbd';
+import rbd from './rbd';
 
 import {
   srilankaConfig,
@@ -99,12 +99,7 @@ const configMap = {
     rawTables: namibiaRawTables,
     defaultBoundariesFile: 'nam_admin2.json',
   },
-  rbd: {
-    appConfig: rbdConfig,
-    rawLayers: rbdRawLayers,
-    rawTables: rbdRawTables,
-    defaultBoundariesFile: 'wca_CHIPC_nov2021_admin1.json',
-  },
+  rbd,
   sierraleone,
   srilanka: {
     appConfig: srilankaConfig,
