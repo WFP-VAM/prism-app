@@ -1,5 +1,13 @@
 import React from 'react';
-import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core';
+import {
+  Button,
+  ButtonGroup,
+  createStyles,
+  Theme,
+  Typography,
+  withStyles,
+  WithStyles,
+} from '@material-ui/core';
 import { languages, useSafeTranslation } from '../../../i18n';
 
 function LanguageSelector({ classes }: LanguageSelectorProps) {
@@ -14,27 +22,31 @@ function LanguageSelector({ classes }: LanguageSelectorProps) {
   }
 
   return (
-    <div className={classes.block}>
+    <ButtonGroup variant="text" className={classes.block}>
       {languages.map(lng => (
-        <button
+        <Button
           key={lng}
-          style={{
-            fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal',
-          }}
           type="submit"
           onClick={() => handleChangeLanguage(lng)}
         >
-          {lng}
-        </button>
+          <Typography
+            variant="body2"
+            style={{
+              fontWeight: i18n.resolvedLanguage === lng ? 'bold' : 'normal',
+            }}
+          >
+            {lng}
+          </Typography>
+        </Button>
       ))}
-    </div>
+    </ButtonGroup>
   );
 }
 
 const styles = (theme: Theme) =>
   createStyles({
     block: {
-      marginLeft: '10px',
+      paddingLeft: '10px',
     },
     title: {
       color: theme.palette.text.secondary,
