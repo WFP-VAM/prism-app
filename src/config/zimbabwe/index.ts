@@ -1,5 +1,13 @@
-import zimbabweConfig from './prism.json';
-import zimbabweRawLayers from './layers.json';
-import zimbabweRawTables from './tables.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
 
-export { zimbabweConfig, zimbabweRawLayers, zimbabweRawTables };
+const rawTables = {};
+const translation = {};
+
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  translation,
+  defaultBoundariesFile: 'zim_admin2_boundaries_v2.json',
+};
