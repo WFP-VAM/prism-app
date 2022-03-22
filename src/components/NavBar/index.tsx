@@ -19,21 +19,25 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
-
-const rightSideLinks = [
-  {
-    title: 'About',
-    icon: faInfoCircle,
-    href: 'https://innovation.wfp.org/project/prism',
-  },
-  {
-    title: 'Github',
-    icon: faGithub,
-    href: 'https://github.com/oviohub/prism-frontend',
-  },
-];
+import LanguageSelector from './LanguageSelector';
+import { useSafeTranslation } from '../../i18n';
 
 function NavBar({ classes }: NavBarProps) {
+  const { t } = useSafeTranslation();
+
+  const rightSideLinks = [
+    {
+      title: t('about'),
+      icon: faInfoCircle,
+      href: 'https://innovation.wfp.org/project/prism',
+    },
+    {
+      title: 'GitHub',
+      icon: faGithub,
+      href: 'https://github.com/oviohub/prism-frontend',
+    },
+  ];
+
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
   const menu = menuList.map(({ title, ...category }) => (
     <MenuItem key={title} title={title} {...category} />
@@ -79,7 +83,7 @@ function NavBar({ classes }: NavBarProps) {
               component={Link}
               to="/"
             >
-              Prism
+              {t('Prism')}
             </Typography>
           </Grid>
 
@@ -97,6 +101,7 @@ function NavBar({ classes }: NavBarProps) {
               xs={3}
             >
               {buttons}
+              <LanguageSelector />
             </Grid>
           </Hidden>
 

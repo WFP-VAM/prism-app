@@ -30,8 +30,15 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
   const onClickFunc = (evt: any) => {
     const coordinates = evt.lngLat;
-    const locationName = getFullLocationName(layer, evt.features[0]);
-    dispatch(showPopup({ coordinates, locationName }));
+    const locationName = getFullLocationName(
+      layer.adminLevelNames,
+      evt.features[0],
+    );
+    const locationLocalName = getFullLocationName(
+      layer.adminLevelLocalNames,
+      evt.features[0],
+    );
+    dispatch(showPopup({ coordinates, locationName, locationLocalName }));
     // send the selection to the map selection layer. No-op if selection mode isn't on.
     dispatch(
       toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),

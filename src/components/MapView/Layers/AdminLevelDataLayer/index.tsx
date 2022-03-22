@@ -27,6 +27,8 @@ import {
 } from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { isLayerOnView } from '../../../../utils/map-utils';
+import { getRoundedData } from '../../../../utils/data-utils';
+import { useSafeTranslation } from '../../../../i18n';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const dispatch = useDispatch();
@@ -38,6 +40,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     | undefined;
   const { data } = layerData || {};
   const { features } = data || {};
+  const { t } = useSafeTranslation();
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?
@@ -99,7 +102,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
         dispatch(
           addPopupData({
             [layer.title]: {
-              data: get(evt.features[0], 'properties.data', 'No Data'),
+              data: getRoundedData(get(evt.features[0], 'properties.data'), t),
               coordinates: evt.lngLat,
             },
           }),

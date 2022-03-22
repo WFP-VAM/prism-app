@@ -20,5 +20,3 @@ declare module '*.png';
 declare module 'geotiff';
 
 declare module 'redux-async-initial-state';
-
-declare module 'colormap';

@@ -3,7 +3,7 @@ import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
-import { defaultBoundariesFile } from '../config';
+import { defaultBoundariesPath } from '../config';
 import {
   AggregationOperations,
   AsyncReturnType,
@@ -30,7 +30,7 @@ import {
   ExposedPopulationResult,
   scaleFeatureStat,
 } from '../utils/analysis-utils';
-import { getFullLocationName } from '../utils/name-utils';
+import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
@@ -88,7 +88,7 @@ function getAdminBoundariesURL() {
   }
   // do not send a local path to the API, use a fixed boundary file instead.
   if (isLocalhost) {
-    return defaultBoundariesFile;
+    return defaultBoundariesPath;
   }
   // the regex here removes the dot(s) at the beginning of a path, if there is at least one.
   // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '
@@ -113,7 +113,7 @@ function generateTableFromApiData(
   const groupBy = apiRequest.group_by;
 
   // find the key that will let us reference the names of the bounding boxes. We get the one corresponding to the specific level of baseline, or the first if we fail.
-  const { adminLevelNames, adminLevelLocalNames } = adminLayer;
+  const { adminLevelNames } = adminLayer;
 
   const groupByAdminIndex = adminLevelNames.findIndex(
     levelName => levelName === groupBy,
@@ -124,8 +124,6 @@ function generateTableFromApiData(
 
   // If we want to show all comma separated admin levels, we can use all names until "adminIndex".
   const adminLevelName = adminLevelNames[adminIndex];
-  // for local name too.
-  const adminLevelLocalName = adminLevelLocalNames[adminIndex];
 
   return (aggregateData as KeyValueResponse[]).map(row => {
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
@@ -138,9 +136,14 @@ function generateTableFromApiData(
         properties?.[adminLevelName] === row[adminLevelName],
     );
 
-    const name = getFullLocationName(adminLayer, featureBoundary);
-    const localName: string =
-      featureBoundary?.properties?.[adminLevelLocalName] || 'No Name';
+    const name = getFullLocationName(
+      adminLayer.adminLevelNames,
+      featureBoundary,
+    );
+    const localName = getFullLocationName(
+      adminLayer.adminLevelLocalNames,
+      featureBoundary,
+    );
 
     // we are searching the data of baseline layer to find the data associated with this feature
     // adminKey here refers to a specific feature (could be several) where the data is attached to.
@@ -244,7 +247,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   const wfsParams: WfsRequestParams = {
     url: `${wfsLayer.baseUrl}/ows`,
     layer_name: wfsLayer.serverLayerName,
-    time: moment(date).format('YYYY-MM-DD'),
+    time: moment(date).format(DEFAULT_DATE_FORMAT),
     key,
   };
 

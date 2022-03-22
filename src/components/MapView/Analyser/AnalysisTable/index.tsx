@@ -17,8 +17,15 @@ import { useDispatch } from 'react-redux';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { Column } from '../../../../utils/analysis-utils';
+import {
+  isEnglishLanguageSelected,
+  useSafeTranslation,
+} from '../../../../i18n';
 
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
+  // only display local names if local language is selected, otherwise display english name
+  const { t, i18n } = useSafeTranslation();
+  const filteredColumns = columns.filter(({ id }) => id !== 'localName');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortColumn, setSortColumn] = useState<Column['id']>();
@@ -49,7 +56,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {columns.map(column => (
+              {filteredColumns.map(column => (
                 <TableCell key={column.id} className={classes.tableHead}>
                   <TableSortLabel
                     active={sortColumn === column.id}
@@ -58,7 +65,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                     }
                     onClick={() => handleChangeOrderBy(column.id)}
                   >
-                    {column.label}
+                    {t(column.label)}
                   </TableSortLabel>
                 </TableCell>
               ))}
@@ -82,14 +89,18 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                           showPopup({
                             coordinates: row.coordinates,
                             locationName: row.name,
+                            locationLocalName: row.localName,
                           }),
                         );
                       }
                     }}
                     style={{ cursor: row.coordinates ? 'pointer' : 'none' }}
                   >
-                    {columns.map(column => {
-                      const value = row[column.id];
+                    {filteredColumns.map(column => {
+                      const value =
+                        column.id === 'name' && !isEnglishLanguageSelected(i18n)
+                          ? row.localName
+                          : row[column.id];
                       return (
                         <TableCell key={column.id}>
                           {column.format && typeof value === 'number'
@@ -112,6 +123,13 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
         page={page}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
+        labelRowsPerPage={t('Rows Per Page')}
+        // Temporary manual translation before we upgrade to MUI 5.
+        labelDisplayedRows={({ from, to, count }) => {
+          return `${from}–${to} ${t('of')} ${
+            count !== -1 ? count : `${t('more than')} ${to}`
+          }`;
+        }}
       />
     </div>
   );
