@@ -136,8 +136,7 @@ const configMap = {
     appConfig: zimbabweConfig,
     rawLayers: zimbabweRawLayers,
     rawTables: zimbabweRawTables,
-    // TODO - Add selected defaultBoundary to S3
-    defaultBoundariesFile: '',
+    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/zim_admin2_boundaries_v2.json`,
   },
 } as const;
 

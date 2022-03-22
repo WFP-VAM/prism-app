@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/sri-lanka/lka_boundaries_admin3.json",
+    "path": "../data/sri-lanka/lka_bnd_adm3.json",
     "opacity": 0.8,
     "admin_code": "dsd_c_1",
     "admin_level_names": [
@@ -20,11 +20,57 @@
       },
       "line": {
         "line-color": "gray",
-        "line-width": 1,
+        "line-width": 0.5,
         "line-opacity": 0.8
       }
     }
   },
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "../data/sri-lanka/lka_bnd_adm1.json",
+    "opacity": 0.8,
+    "admin_code": "province_c",
+    "admin_level_names": [
+      "province_n"
+    ],
+    "admin_level_local_names": [
+      "province_n"
+    ],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.8
+      }
+    }
+  }, 
+  "admin2_boundaries": {
+    "type": "boundary",
+    "path": "../data/sri-lanka/lka_bnd_adm2.json",
+    "opacity": 0.8,
+    "admin_code": "district_n",
+    "admin_level_names": [
+      "province_n",
+      "district_n"
+    ],
+    "admin_level_local_names": [
+      "province_n",
+      "district_n"
+    ],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },    
   "spi_1m": {
     "title": "SPI - 1-month",
     "type": "wms",
