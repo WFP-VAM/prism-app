@@ -43,7 +43,7 @@ import type {
 import { LayerDefinitions } from '../config/utils';
 import type { TableRow } from '../context/analysisResultStateSlice';
 import { isLocalhost } from '../serviceWorker';
-import { safeTranslate, i18nTranslator } from '../i18n';
+import { i18nTranslator } from '../i18n';
 import { getRoundedData } from './data-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
@@ -565,7 +565,7 @@ export class ExposedPopulationResult {
   statistic: AggregationOperations;
 
   getTitle = (t?: i18nTranslator): string => {
-    return t ? safeTranslate(t, 'Population Exposure') : 'Population Exposure';
+    return t ? t('Population Exposure') : 'Population Exposure';
   };
 
   getStatTitle = (t?: i18nTranslator): string => {
@@ -634,10 +634,9 @@ export class BaselineLayerResult {
 
   getTitle(t?: i18nTranslator): string {
     return t
-      ? `${safeTranslate(t, this.getBaselineLayer().title)} ${safeTranslate(
-          t,
-          'exposed to',
-        )} ${safeTranslate(t, this.getHazardLayer().title)}`
+      ? `${t(this.getBaselineLayer().title)} ${t('exposed to')} ${t(
+          this.getHazardLayer().title,
+        )}`
       : `${this.getBaselineLayer().title} exposed to ${
           this.getHazardLayer().title
         }`;
@@ -645,10 +644,7 @@ export class BaselineLayerResult {
 
   getStatTitle(t?: i18nTranslator): string {
     return t
-      ? `${safeTranslate(t, this.getHazardLayer().title)} (${safeTranslate(
-          t,
-          this.statistic,
-        )})`
+      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
       : `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }

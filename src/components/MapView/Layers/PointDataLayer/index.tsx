@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { get } from 'lodash';
 import * as MapboxGL from 'mapbox-gl';
-import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
 import { PointDataLayerProps } from '../../../../config/types';
@@ -17,6 +16,7 @@ import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayerSingleton } from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
+import { useSafeTranslation } from '../../../../i18n';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -28,7 +28,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const dispatch = useDispatch();
 
   const { data } = layerData || {};
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   useEffect(() => {
     if (!data) {
       dispatch(loadLayerData({ layer, date: selectedDate }));

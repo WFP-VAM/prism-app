@@ -1,5 +1,4 @@
 import React, { forwardRef, Ref, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import {
   Button,
@@ -11,6 +10,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import DatePicker from 'react-datepicker';
+import { useTranslation } from 'react-i18next';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
@@ -22,7 +22,7 @@ import { DateRangeType } from '../../../config/types';
 import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import TimelineItems from './TimelineItems';
-import { safeTranslate, moment } from '../../../i18n';
+import { moment } from '../../../i18n';
 import {
   DEFAULT_DATE_FORMAT,
   MONTH_FIRST_DATE_FORMAT,
@@ -100,9 +100,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
 
   // Create timeline range and set pointer position
   useEffect(() => {
-    const locale = safeTranslate(t, 'date_locale')
-      ? safeTranslate(t, 'date_locale')
-      : 'en';
+    const locale = t('date_locale') ? t('date_locale') : 'en';
     const range = Array.from(
       moment()
         .range(
@@ -214,13 +212,13 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
           </Hidden>
 
           <DatePicker
-            locale={safeTranslate(t, 'date_locale')}
+            locale={t('date_locale')}
             dateFormat="PP"
             className={classes.datePickerInput}
             selected={moment(stateStartDate).toDate()}
             onChange={updateStartDate}
             maxDate={new Date()}
-            todayButton={safeTranslate(t, 'Today')}
+            todayButton={t('Today')}
             peekNextMonth
             showMonthDropdown
             showYearDropdown

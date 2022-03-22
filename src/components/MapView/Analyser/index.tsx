@@ -5,7 +5,6 @@ import React, {
   useState,
   ChangeEvent,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -69,7 +68,7 @@ import {
 } from '../../../context/mapStateSlice/selectors';
 import { useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
-import { safeTranslate } from '../../../i18n';
+import { useSafeTranslation } from '../../../i18n';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -104,7 +103,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
     LayerKey | undefined
   >(preSelectedBaselineLayer?.id);
 
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -161,7 +160,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
             size="small"
           />
         }
-        label={safeTranslate(t, key)}
+        label={t(key)}
       />
     ));
 
@@ -318,7 +317,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       >
         <BarChart fontSize="small" />
         <Typography variant="body2" className={classes.analyserLabel}>
-          {safeTranslate(t, 'Run Analysis')}
+          {t('Run Analysis')}
         </Typography>
         <ArrowDropDown fontSize="small" />
       </Button>
@@ -332,9 +331,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
           <div>
             <div className={classes.newAnalyserContainer}>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">
-                  {safeTranslate(t, 'Hazard Layer')}
-                </Typography>
+                <Typography variant="body2">{t('Hazard Layer')}</Typography>
                 <LayerDropdown
                   type="wms"
                   value={hazardLayerId}
@@ -344,9 +341,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">
-                  {safeTranslate(t, 'Statistic')}
-                </Typography>
+                <Typography variant="body2">{t('Statistic')}</Typography>
                 <FormControl component="div">
                   <RadioGroup
                     name="statistics"
@@ -359,9 +354,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 </FormControl>
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">
-                  {safeTranslate(t, 'Baseline Layer')}
-                </Typography>
+                <Typography variant="body2">{t('Baseline Layer')}</Typography>
                 <LayerDropdown
                   type="admin_level_data"
                   value={baselineLayerId}
@@ -371,15 +364,13 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">
-                  {safeTranslate(t, 'Threshold')}
-                </Typography>
+                <Typography variant="body2">{t('Threshold')}</Typography>
                 <TextField
                   id="filled-number"
                   error={!!thresholdError}
                   helperText={thresholdError}
                   className={classes.numberField}
-                  label={safeTranslate(t, 'Below')}
+                  label={t('Below')}
                   type="number"
                   value={belowThreshold}
                   onChange={onThresholdOptionChange('below')}
@@ -387,7 +378,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
                 <TextField
                   id="filled-number"
-                  label={safeTranslate(t, 'Above')}
+                  label={t('Above')}
                   className={classes.numberField}
                   value={aboveThreshold}
                   onChange={onThresholdOptionChange('above')}
@@ -396,18 +387,16 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">
-                  {safeTranslate(t, 'Date')}
-                </Typography>
+                <Typography variant="body2">{t('Date')}</Typography>
                 <DatePicker
-                  locale={safeTranslate(t, 'date_locale')}
+                  locale={t('date_locale')}
                   dateFormat="PP"
                   selected={selectedDate ? new Date(selectedDate) : null}
                   onChange={date =>
                     setSelectedDate(date?.getTime() || selectedDate)
                   }
                   maxDate={new Date()}
-                  todayButton={safeTranslate(t, 'Today')}
+                  todayButton={t('Today')}
                   peekNextMonth
                   showMonthDropdown
                   showYearDropdown
@@ -439,7 +428,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                           onChange={onMapSwitchChange}
                         />
                       }
-                      label={safeTranslate(t, 'Map View')}
+                      label={t('Map View')}
                     />
                     <FormControlLabel
                       control={
@@ -449,7 +438,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                           onChange={e => setIsTableViewOpen(e.target.checked)}
                         />
                       }
-                      label={safeTranslate(t, 'Table View')}
+                      label={t('Table View')}
                     />
                   </FormGroup>
                   {isTableViewOpen && (
@@ -462,16 +451,14 @@ function Analyser({ extent, classes }: AnalyserProps) {
                     className={classes.innerAnalysisButton}
                     onClick={() => downloadCSVFromTableData(analysisResult)}
                   >
-                    <Typography variant="body2">
-                      {safeTranslate(t, 'Download')}
-                    </Typography>
+                    <Typography variant="body2">{t('Download')}</Typography>
                   </Button>
                   <Button
                     className={classes.innerAnalysisButton}
                     onClick={clearAnalysis}
                   >
                     <Typography variant="body2">
-                      {safeTranslate(t, 'Clear Analysis')}
+                      {t('Clear Analysis')}
                     </Typography>
                   </Button>
                 </>
@@ -489,9 +476,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   isAnalysisLoading // or analysis is currently loading
                 }
               >
-                <Typography variant="body2">
-                  {safeTranslate(t, 'Run Analysis')}
-                </Typography>
+                <Typography variant="body2">{t('Run Analysis')}</Typography>
               </Button>
             )}
             {isAnalysisLoading ? <LinearProgress /> : null}

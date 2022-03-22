@@ -1,10 +1,9 @@
 import React from 'react';
 import { isNumber } from 'lodash';
-import { useTranslation } from 'react-i18next';
 import { TableRow, TableCell } from '@material-ui/core';
 import { TableRowType } from '../../../../context/tableStateSlice';
 import { getRoundedData } from '../../../../utils/data-utils';
-import { safeTranslate } from '../../../../i18n';
+import { useSafeTranslation } from '../../../../i18n';
 
 export interface TableRowProps {
   className?: string;
@@ -13,14 +12,14 @@ export interface TableRowProps {
 }
 
 const DataTableRow = ({ className, columns, rowData }: TableRowProps) => {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   return (
     <TableRow>
       {columns.map(column => {
         const colValue = rowData ? rowData[column] : column;
         const formattedColValue = isNumber(colValue)
           ? getRoundedData(colValue, t)
-          : safeTranslate(t, colValue).toLocaleString();
+          : t(colValue).toLocaleString();
         return (
           <TableCell className={className} key={column}>
             {' '}

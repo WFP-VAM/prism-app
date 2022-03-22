@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
-import { useTranslation } from 'react-i18next';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import {
@@ -29,6 +28,7 @@ import {
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { isLayerOnView } from '../../../../utils/map-utils';
 import { getRoundedData } from '../../../../utils/data-utils';
+import { useSafeTranslation } from '../../../../i18n';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const dispatch = useDispatch();
@@ -40,7 +40,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     | undefined;
   const { data } = layerData || {};
   const { features } = data || {};
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?

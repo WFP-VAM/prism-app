@@ -16,19 +16,18 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { useTranslation } from 'react-i18next';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
 import LanguageSelector from './LanguageSelector';
-import { safeTranslate } from '../../i18n';
+import { useSafeTranslation } from '../../i18n';
 
 function NavBar({ classes }: NavBarProps) {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
 
   const rightSideLinks = [
     {
-      title: safeTranslate(t, 'about'),
+      title: t('about'),
       icon: faInfoCircle,
       href: 'https://innovation.wfp.org/project/prism',
     },
@@ -84,7 +83,7 @@ function NavBar({ classes }: NavBarProps) {
               component={Link}
               to="/"
             >
-              {safeTranslate(t, 'Prism')}
+              {t('Prism')}
             </Typography>
           </Grid>
 

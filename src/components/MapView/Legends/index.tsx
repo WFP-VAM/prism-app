@@ -1,5 +1,4 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -42,7 +41,7 @@ import { convertToTableData, downloadToFile } from '../utils';
 
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
-import { safeTranslate } from '../../../i18n';
+import { useSafeTranslation } from '../../../i18n';
 
 /**
  * Returns layer identifier used to perform exposure analysis.
@@ -60,19 +59,19 @@ function GetExposureFromLayer(
 }
 
 function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   return (
     <>
-      {safeTranslate(t, 'Impact Analysis on')}
+      {t('Impact Analysis on')}
       {': '}
-      {safeTranslate(t, result.getBaselineLayer().legendText)}
+      {t(result.getBaselineLayer().legendText)}
       <br />
       {result.threshold.above
-        ? `${safeTranslate(t, 'Above Threshold')}: ${result.threshold.above}`
+        ? `${t('Above Threshold')}: ${result.threshold.above}`
         : ''}
       <br />
       {result.threshold.below
-        ? `${safeTranslate(t, 'Below Threshold')}: ${result.threshold.below}`
+        ? `${t('Below Threshold')}: ${result.threshold.below}`
         : ''}
     </>
   );
@@ -85,7 +84,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const features = analysisResult?.featureCollection.features;
   const hasData = features ? features.length > 0 : false;
 
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
 
   const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
     e.preventDefault();
@@ -119,7 +118,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           classes={classes}
           key={layer.title}
           id={layer.id}
-          title={safeTranslate(t, layer.title)}
+          title={layer.title ? t(layer.title) : undefined}
           legend={layer.legend}
           legendUrl={legendUrl}
           type={layer.type}
@@ -127,7 +126,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           exposure={exposure}
           extent={extent}
         >
-          {safeTranslate(t, layer.legendText)}
+          {t(layer.legendText)}
         </LegendItem>
       );
     }),
@@ -153,7 +152,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
                 onClick={e => handleAnalysisDownload(e)}
                 fullWidth
               >
-                {safeTranslate(t, 'Download')}
+                {t('Download')}
               </Button>
             </Grid>
           </LegendItem>,
@@ -175,7 +174,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
         )}
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
-            {safeTranslate(t, 'Legend')}
+            {t('Legend')}
           </Typography>
         </Hidden>
       </Button>

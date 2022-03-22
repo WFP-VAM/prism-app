@@ -2,7 +2,7 @@ import { merge } from 'lodash';
 import i18n from 'i18next';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
-import { initReactI18next } from 'react-i18next';
+import { initReactI18next, useTranslation } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
 import fr from 'date-fns/locale/fr';
 import km from 'date-fns/locale/km';
@@ -75,22 +75,29 @@ i18n
     defaultNS: 'translation',
   });
 
-export const safeTranslate = (
-  translator: i18nTranslator,
-  key?: string,
-): string => {
-  if (key === undefined) {
-    return '';
-  }
-  if (key in resources.en.translation) {
-    return translator(key);
-  }
-  // eslint-disable-next-line no-console
-  console.warn(
-    `Translation for "${key}" is not configured in your translation file.`,
-  );
-  return key;
-};
+export function useSafeTranslation(): {
+  t: i18nTranslator;
+  i18n: typeof i18n;
+  ready: boolean;
+} {
+  const { t, ...rest } = useTranslation();
+  return {
+    t: (key: string) => {
+      if (key === undefined) {
+        return '';
+      }
+      if (key in resources.en.translation) {
+        return t(key);
+      }
+      // eslint-disable-next-line no-console
+      console.warn(
+        `Translation for "${key}" is not configured in your translation file.`,
+      );
+      return key;
+    },
+    ...rest,
+  };
+}
 
 export function isEnglishLanguageSelected(lang: typeof i18n): boolean {
   return lang.resolvedLanguage === 'en';

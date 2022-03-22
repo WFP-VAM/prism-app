@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   Button,
   createStyles,
@@ -22,7 +21,7 @@ import { CloudDownload, ArrowDropDown, Image } from '@material-ui/icons';
 import { jsPDF } from 'jspdf';
 import { useSelector } from 'react-redux';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
-import { safeTranslate } from '../../../i18n';
+import { useSafeTranslation } from '../../../i18n';
 
 const ExportMenu = withStyles((theme: Theme) => ({
   paper: {
@@ -57,7 +56,7 @@ function Download({ classes }: DownloadProps) {
   const selectedMap = useSelector(mapSelector);
   const previewRef = useRef<HTMLCanvasElement>(null);
 
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -116,7 +115,7 @@ function Download({ classes }: DownloadProps) {
         <CloudDownload fontSize="small" />
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
-            {safeTranslate(t, 'Export')}
+            {t('Export')}
           </Typography>
         </Hidden>
         <ArrowDropDown fontSize="small" />
@@ -132,7 +131,7 @@ function Download({ classes }: DownloadProps) {
           <ListItemIcon>
             <Image fontSize="small" style={{ color: 'white' }} />
           </ListItemIcon>
-          <ListItemText primary={safeTranslate(t, 'IMAGE')} />
+          <ListItemText primary={t('IMAGE')} />
         </ExportMenuItem>
       </ExportMenu>
       <Dialog
@@ -143,35 +142,35 @@ function Download({ classes }: DownloadProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogTitle className={classes.title} id="dialog-preview">
-          {safeTranslate(t, 'Map Preview')}
+          {t('Map Preview')}
         </DialogTitle>
         <DialogContent>
           <canvas ref={previewRef} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">
-            {safeTranslate(t, 'Cancel')}
+            {t('Cancel')}
           </Button>
           <Button
             variant="contained"
             onClick={() => download('png')}
             color="primary"
           >
-            {safeTranslate(t, 'Download PNG')}
+            {t('Download PNG')}
           </Button>
           <Button
             variant="contained"
             onClick={() => download('jpeg')}
             color="primary"
           >
-            {safeTranslate(t, 'Download JPEG')}
+            {t('Download JPEG')}
           </Button>
           <Button
             variant="contained"
             onClick={() => download('pdf')}
             color="primary"
           >
-            {safeTranslate(t, 'Download PDF')}
+            {t('Download PDF')}
           </Button>
         </DialogActions>
       </Dialog>

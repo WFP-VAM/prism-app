@@ -14,15 +14,17 @@ import {
 } from '@material-ui/core';
 import { orderBy } from 'lodash';
 import { useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { Column } from '../../../../utils/analysis-utils';
-import { isEnglishLanguageSelected, safeTranslate } from '../../../../i18n';
+import {
+  isEnglishLanguageSelected,
+  useSafeTranslation,
+} from '../../../../i18n';
 
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   // only display local names if local language is selected, otherwise display english name
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useSafeTranslation();
   const filteredColumns = columns.filter(({ id }) => id !== 'localName');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -63,7 +65,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                     }
                     onClick={() => handleChangeOrderBy(column.id)}
                   >
-                    {safeTranslate(t, column.label)}
+                    {t(column.label)}
                   </TableSortLabel>
                 </TableCell>
               ))}
@@ -121,11 +123,11 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
         page={page}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
-        labelRowsPerPage={safeTranslate(t, 'Rows Per Page')}
+        labelRowsPerPage={t('Rows Per Page')}
         // Temporary manual translation before we upgrade to MUI 5.
         labelDisplayedRows={({ from, to, count }) => {
-          return `${from}–${to} ${safeTranslate(t, 'of')} ${
-            count !== -1 ? count : `${safeTranslate(t, 'more than')} ${to}`
+          return `${from}–${to} ${t('of')} ${
+            count !== -1 ? count : `${t('more than')} ${to}`
           }`;
         }}
       />

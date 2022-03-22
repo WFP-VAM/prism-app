@@ -3,7 +3,6 @@ import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   analysisResultSelector,
@@ -24,13 +23,14 @@ import {
   LayerDefinitions,
 } from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
+import { useSafeTranslation } from '../../../../i18n';
 
 function AnalysisLayer() {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
 
   const dispatch = useDispatch();
   const baselineLayerId = get(analysisData, 'baselineLayerId');

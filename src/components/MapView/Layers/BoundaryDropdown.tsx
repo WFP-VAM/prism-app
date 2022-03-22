@@ -17,7 +17,6 @@ import {
 } from '@material-ui/core';
 import { last, sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 
 import { Feature } from 'geojson';
@@ -41,7 +40,7 @@ import {
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { LayerData } from '../../../context/layers/layer-data';
-import { isEnglishLanguageSelected, safeTranslate } from '../../../i18n';
+import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
@@ -202,7 +201,7 @@ function SimpleBoundaryDropdown({
   selectAll,
   ...rest
 }: BoundaryDropdownProps) {
-  const { t, i18n: i18nLocale } = useTranslation();
+  const { t, i18n: i18nLocale } = useSafeTranslation();
   const [search, setSearch] = useState('');
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
@@ -256,12 +255,12 @@ function SimpleBoundaryDropdown({
         {!search && selectAll && (
           <MenuItem onClick={selectOrDeselectAll}>
             {selectedBoundaries.length === 0
-              ? safeTranslate(t, 'Select All')
-              : safeTranslate(t, 'Deselect All')}
+              ? t('Select All')
+              : t('Deselect All')}
           </MenuItem>
         )}
         {search && allChildren.length === 0 && (
-          <MenuItem disabled>{safeTranslate(t, 'No Results')}</MenuItem>
+          <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
         {categories.reduce<ReactNode[]>(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
@@ -325,14 +324,11 @@ function BoundaryDropdown({
   BoundaryDropdownProps,
   'selectedBoundaries' | 'setSelectedBoundaries' | 'labelMessage' | 'selectAll'
 >) {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.only('xs'),
   );
-  const labelMessage = safeTranslate(
-    t,
-    `${isMobile ? 'Tap' : 'Click'} the map to select`,
-  );
+  const labelMessage = t(`${isMobile ? 'Tap' : 'Click'} the map to select`);
 
   const dispatch = useDispatch();
   const selectedBoundaries = useSelector(getSelectedBoundaries);
@@ -386,7 +382,7 @@ export const GotoBoundaryDropdown = () => {
     map: { latitude, longitude, zoom },
   } = appConfig;
 
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
 
   const styles = useStyles();
 
@@ -400,7 +396,7 @@ export const GotoBoundaryDropdown = () => {
       <ButtonStyleBoundaryDropdown
         selectedBoundaries={boundaries}
         selectAll={false}
-        labelMessage={safeTranslate(t, 'Go To')}
+        labelMessage={t('Go To')}
         className={styles.formControl}
         setSelectedBoundaries={(newSelectedBoundaries, appendMany) => {
           setBoundaries(() => {

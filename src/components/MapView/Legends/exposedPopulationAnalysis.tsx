@@ -11,7 +11,6 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
 import {
   ExposedPopulationResult,
   BaselineLayerResult,
@@ -35,7 +34,7 @@ import {
 } from '../../../config/types';
 import { TableKey } from '../../../config/utils';
 import { Extent } from '../Layers/raster-utils';
-import { safeTranslate } from '../../../i18n';
+import { useSafeTranslation } from '../../../i18n';
 
 const AnalysisButton = withStyles(() => ({
   root: {
@@ -64,7 +63,7 @@ const ExposedPopulationAnalysis = ({
   );
   const data = useSelector(analysisResultSelector);
 
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   const dispatch = useDispatch();
 
   const runExposureAnalysis = async () => {
@@ -109,7 +108,7 @@ const ExposedPopulationAnalysis = ({
           id: generateUniqueTableKey('exposure_analysis') as TableKey,
           title: data?.getTitle(t) || '',
           table: '',
-          legendText: safeTranslate(t, data?.legendText || ''),
+          legendText: t(data?.legendText || ''),
         }),
       );
     };
@@ -126,14 +125,14 @@ const ExposedPopulationAnalysis = ({
                 onChange={handleTableViewChange}
               />
             }
-            label={safeTranslate(t, 'Table View')}
+            label={t('Table View')}
           />
         </FormGroup>
 
         {hasNoData && (
           <Grid item>
             <Typography align="center" variant="h5">
-              {safeTranslate(t, 'No population was exposed')}
+              {t('No population was exposed')}
             </Typography>
           </Grid>
         )}
@@ -150,7 +149,7 @@ const ExposedPopulationAnalysis = ({
           size="small"
           onClick={runExposureAnalysis}
         >
-          {safeTranslate(t, 'Exposure Analysis')}
+          {t('Exposure Analysis')}
         </AnalysisButton>
 
         {analysisExposureLoading && <LinearProgress />}
@@ -166,7 +165,7 @@ const ExposedPopulationAnalysis = ({
         size="small"
         onClick={() => dispatch(clearAnalysisResult())}
       >
-        {safeTranslate(t, 'Clear Analysis')}
+        {t('Clear Analysis')}
       </AnalysisButton>
 
       <ResultSwitches />

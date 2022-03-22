@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import {
   Box,
   Button,
@@ -33,10 +32,10 @@ import {
   safeDispatchRemoveLayer,
 } from '../../../utils/map-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
-import { safeTranslate } from '../../../i18n';
+import { useSafeTranslation } from '../../../i18n';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
   const dispatch = useDispatch();
@@ -97,7 +96,7 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   return (
     <Grid item key={title} className={classes.categoryContainer}>
       <Typography variant="body2" className={classes.categoryTitle}>
-        {safeTranslate(t, title)}
+        {t(title)}
       </Typography>
       <hr />
 
@@ -111,10 +110,7 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
           ({ id: testId }) => testId === layerId,
         );
 
-        const validatedTitle = safeTranslate(
-          t,
-          LayerGroup?.name || layerTitle || '',
-        );
+        const validatedTitle = t(LayerGroup?.name || layerTitle || '');
 
         return (
           <Box key={layerId} display="flex" mb={1}>

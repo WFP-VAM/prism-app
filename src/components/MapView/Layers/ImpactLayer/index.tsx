@@ -4,7 +4,6 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FillPaint, LinePaint } from 'mapbox-gl';
 import { get } from 'lodash';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
 import { getExtent, Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { ImpactLayerProps } from '../../../../config/types';
@@ -24,7 +23,7 @@ import {
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
 import { getFeatureInfoPropsData } from '../../utils';
-import { i18nTranslator, safeTranslate } from '../../../../i18n';
+import { i18nTranslator, useSafeTranslation } from '../../../../i18n';
 import { getRoundedData } from '../../../../utils/data-utils';
 
 const linePaint: LinePaint = {
@@ -46,7 +45,7 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
       ImpactLayerProps
     >) || {};
   const dispatch = useDispatch();
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
 
   const extent: Extent = getExtent(map);
   useEffect(() => {
@@ -68,7 +67,7 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
     return selectedDate ? null : (
       <div className={classes.message}>
         <div className={classes.messageContainer}>
-          <h2>{safeTranslate(t, 'Select an available date to view data')}</h2>
+          <h2>{t('Select an available date to view data')}</h2>
         </div>
       </div>
     );
@@ -89,10 +88,9 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
 
   const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
   const operation = layer.operation || 'median';
-  const hazardTitle = `${safeTranslate(
-    t,
-    hazardLayerDef.title,
-  )} (${safeTranslate(t, operation)})`;
+  const hazardTitle = `${
+    hazardLayerDef.title ? t(hazardLayerDef.title) : ''
+  } (${t(operation)})`;
   const boundaryId = getBoundaryLayerSingleton().id;
 
   return (

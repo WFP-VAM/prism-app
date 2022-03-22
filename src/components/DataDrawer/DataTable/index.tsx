@@ -13,7 +13,6 @@ import {
   Box,
   Button,
 } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
 import {
   getCurrentDefinition as getTableDefinition,
   isLoading,
@@ -27,7 +26,7 @@ import {
 import Chart from '../Chart';
 import DataTableRow from './DataTableRow';
 import { exportDataTableToCSV, downloadToFile } from '../../MapView/utils';
-import { safeTranslate } from '../../../i18n';
+import { useSafeTranslation } from '../../../i18n';
 
 const styles = () =>
   createStyles({
@@ -62,7 +61,7 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
   const tableData = useSelector(getTableData);
   const analysisData = useSelector(getAnalysisData);
   const data = tableData.rows.length !== 0 ? tableData : analysisData;
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
 
   if (!definition) {
     return null;
@@ -83,7 +82,7 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
     );
   };
 
-  const downloadAsCSVTranslated = safeTranslate(t, 'Download as CSV');
+  const downloadAsCSVTranslated = t('Download as CSV');
 
   return (
     <div>

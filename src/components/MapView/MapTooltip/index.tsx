@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Popup } from 'react-mapbox-gl';
-import { useTranslation } from 'react-i18next';
 import {
   createStyles,
   withStyles,
@@ -9,11 +8,11 @@ import {
   LinearProgress,
 } from '@material-ui/core';
 import { tooltipSelector } from '../../../context/tooltipStateSlice';
-import { isEnglishLanguageSelected, safeTranslate } from '../../../i18n';
+import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
 
 function MapTooltip({ classes }: TooltipProps) {
   const popup = useSelector(tooltipSelector);
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useSafeTranslation();
   return popup.showing && popup.coordinates ? (
     <Popup
       anchor="bottom"
@@ -29,7 +28,7 @@ function MapTooltip({ classes }: TooltipProps) {
         .filter(([, value]) => value.coordinates === popup.coordinates)
         .map(([key, value]) => (
           <h4 key={key}>
-            {safeTranslate(t, key)}: {value.data}
+            {t(key)}: {value.data}
           </h4>
         ))}
 

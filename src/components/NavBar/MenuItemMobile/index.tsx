@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   createStyles,
   Grid,
@@ -14,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { MenuItemMobileType } from '../../../config/types';
 import MenuSwitch from '../MenuSwitch';
-import { safeTranslate } from '../../../i18n';
+import { useSafeTranslation } from '../../../i18n';
 
 function MenuItemMobile({
   expanded,
@@ -24,7 +23,7 @@ function MenuItemMobile({
   icon,
   layersCategories,
 }: MenuItemMobileProps) {
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
   const handleChange = (panel: string) => (
     event: React.ChangeEvent<{}>,
     newExpanded: boolean,
@@ -47,7 +46,7 @@ function MenuItemMobile({
         id={title}
       >
         <img className={classes.icon} src={`/images/${icon}`} alt={title} />
-        <Typography variant="body2">{safeTranslate(t, title)}</Typography>
+        <Typography variant="body2">{t(title)}</Typography>
       </AccordionSummary>
       <AccordionDetails>
         <Grid container direction="column">

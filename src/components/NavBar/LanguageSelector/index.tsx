@@ -1,10 +1,9 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core';
-import { languages } from '../../../i18n';
+import { languages, useSafeTranslation } from '../../../i18n';
 
 function LanguageSelector({ classes }: LanguageSelectorProps) {
-  const { i18n } = useTranslation();
+  const { i18n } = useSafeTranslation();
 
   const handleChangeLanguage = (lng: string): void => {
     i18n.changeLanguage(lng);

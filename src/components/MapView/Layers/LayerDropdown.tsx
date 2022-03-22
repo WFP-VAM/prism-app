@@ -6,10 +6,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { ReactElement } from 'react';
-import { useTranslation } from 'react-i18next';
 import { menuList } from '../../NavBar/utils';
 import { LayerKey, LayerType } from '../../../config/types';
-import { safeTranslate } from '../../../i18n';
+import { useSafeTranslation } from '../../../i18n';
 
 function LayerDropdown({
   type,
@@ -20,7 +19,7 @@ function LayerDropdown({
 }: LayerSelectorProps) {
   // this could be testable, needs to be constructed in a way that prevents it breaking whenever new layers are added. (don't put layer name in snapshot)
 
-  const { t } = useTranslation();
+  const { t } = useSafeTranslation();
 
   const categories = menuList // we could memo this but it isn't impacting performance, for now
     // 1. flatten to just the layer categories, don't need the big menus
@@ -53,19 +52,19 @@ function LayerDropdown({
             ...components,
             <ListSubheader key={category.title}>
               <Typography variant="body2" color="primary">
-                {safeTranslate(t, category.title)}
+                {t(category.title)}
               </Typography>
             </ListSubheader>,
             ...category.layers.map(layer => (
               <MenuItem key={layer.id} value={layer.id}>
-                {safeTranslate(t, layer.title)}
+                {layer.title ? t(layer.title) : ''}
               </MenuItem>
             )),
           ],
           (placeholder
             ? [
                 <MenuItem key={defaultValue} value={defaultValue} disabled>
-                  {safeTranslate(t, placeholder)}
+                  {t(placeholder)}
                 </MenuItem>,
               ]
             : []) as ReactElement[],
