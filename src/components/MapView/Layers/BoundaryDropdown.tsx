@@ -17,6 +17,8 @@ import {
 } from '@material-ui/core';
 import { last, sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
+import i18n from 'i18next';
+
 import { Feature } from 'geojson';
 import { multiPolygon, MultiPolygon, Polygon } from '@turf/helpers';
 import bbox from '@turf/bbox';
@@ -38,6 +40,7 @@ import {
   mapSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { LayerData } from '../../../context/layers/layer-data';
+import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({
@@ -122,7 +125,11 @@ const SearchField = forwardRef(
 function getCategories(
   data: LayerData<BoundaryLayerProps>['data'],
   search: string,
+  i18nLocale: typeof i18n,
 ) {
+  const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
+    ? boundaryLayer.adminLevelNames
+    : boundaryLayer.adminLevelLocalNames;
   if (!boundaryLayer.adminLevelNames.length) {
     console.error(
       'Boundary layer has no admin level names. Cannot generate categories.',
@@ -139,10 +146,8 @@ function getCategories(
           children: { value: string; label: string }[];
         }>
       >((ret, feature) => {
-        const parentCategory =
-          feature.properties?.[boundaryLayer.adminLevelNames[0]];
-        const label =
-          feature.properties?.[last(boundaryLayer.adminLevelNames)!];
+        const parentCategory = feature.properties?.[locationLevelNames[0]];
+        const label = feature.properties?.[last(locationLevelNames)!];
         const code = feature.properties?.[boundaryLayer.adminCode];
         if (!label || !code || !parentCategory) {
           return ret;
@@ -196,6 +201,7 @@ function SimpleBoundaryDropdown({
   selectAll,
   ...rest
 }: BoundaryDropdownProps) {
+  const { t, i18n: i18nLocale } = useSafeTranslation();
   const [search, setSearch] = useState('');
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
@@ -205,7 +211,7 @@ function SimpleBoundaryDropdown({
   if (!data) {
     return <CircularProgress size={24} color="secondary" />;
   }
-  const categories = getCategories(data, search);
+  const categories = getCategories(data, search, i18nLocale);
   const allChildren = categories.flatMap(c => c.children);
   const selectOrDeselectAll = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -248,11 +254,13 @@ function SimpleBoundaryDropdown({
         <SearchField search={search} setSearch={setSearch} />
         {!search && selectAll && (
           <MenuItem onClick={selectOrDeselectAll}>
-            {selectedBoundaries.length === 0 ? 'Select All' : 'Deselect All'}
+            {selectedBoundaries.length === 0
+              ? t('Select All')
+              : t('Deselect All')}
           </MenuItem>
         )}
         {search && allChildren.length === 0 && (
-          <MenuItem disabled>No Results</MenuItem>
+          <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
         {categories.reduce<ReactNode[]>(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
@@ -316,10 +324,11 @@ function BoundaryDropdown({
   BoundaryDropdownProps,
   'selectedBoundaries' | 'setSelectedBoundaries' | 'labelMessage' | 'selectAll'
 >) {
+  const { t } = useSafeTranslation();
   const isMobile = useMediaQuery((theme: Theme) =>
     theme.breakpoints.only('xs'),
   );
-  const labelMessage = `${isMobile ? 'Tap' : 'Click'} the map to select`;
+  const labelMessage = t(`${isMobile ? 'Tap' : 'Click'} the map to select`);
 
   const dispatch = useDispatch();
   const selectedBoundaries = useSelector(getSelectedBoundaries);
@@ -373,6 +382,8 @@ export const GotoBoundaryDropdown = () => {
     map: { latitude, longitude, zoom },
   } = appConfig;
 
+  const { t } = useSafeTranslation();
+
   const styles = useStyles();
 
   if (!data || !map || !enableNavigationDropdown) {
@@ -385,7 +396,7 @@ export const GotoBoundaryDropdown = () => {
       <ButtonStyleBoundaryDropdown
         selectedBoundaries={boundaries}
         selectAll={false}
-        labelMessage="Go to"
+        labelMessage={t('Go To')}
         className={styles.formControl}
         setSelectedBoundaries={(newSelectedBoundaries, appendMany) => {
           setBoundaries(() => {

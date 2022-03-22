@@ -83,6 +83,7 @@ import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
 import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
+import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
@@ -137,7 +138,7 @@ function useMapOnClick(setIsAlertFormOpen: (value: boolean) => void) {
       // Get layers that have getFeatureInfo option.
       const featureInfoLayers = getActiveFeatureInfoLayers(map);
       if (featureInfoLayers.length === 0) {
-        const dateFromRef = moment(selectedDate).format('YYYY-MM-DD');
+        const dateFromRef = moment(selectedDate).format(DEFAULT_DATE_FORMAT);
 
         const params = getFeatureInfoParams(map, evt, dateFromRef);
         dispatch(setWMSGetFeatureInfoLoading(true));
@@ -170,10 +171,8 @@ function MapView({ classes }: MapViewProps) {
   const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
   const loading = layersLoading || datesLoading;
-
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
-
   const serverAvailableDates = useSelector(availableDatesSelector);
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer =>
@@ -257,7 +256,10 @@ function MapView({ classes }: MapViewProps) {
         dispatch(addLayer(layer));
 
         if (selectedDate && !urlDate) {
-          updateHistory('date', moment(selectedDate).format('YYYY-MM-DD'));
+          updateHistory(
+            'date',
+            moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+          );
         }
       } else {
         dispatch(
@@ -325,7 +327,7 @@ function MapView({ classes }: MapViewProps) {
         .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
         .filter(value => value) // null check
         .flat()
-        .map(value => moment(value).format('YYYY-MM-DD')),
+        .map(value => moment(value).format(DEFAULT_DATE_FORMAT)),
     );
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
@@ -364,21 +366,21 @@ function MapView({ classes }: MapViewProps) {
         // we convert to date strings, so hh:ss is irrelevant
         if (
           !getPossibleDatesForLayer(layer, serverAvailableDates)
-            .map(date => moment(date).format('YYYY-MM-DD'))
-            .includes(momentSelectedDate.format('YYYY-MM-DD'))
+            .map(date => moment(date).format(DEFAULT_DATE_FORMAT))
+            .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT))
         ) {
           const closestDate = findClosestDate(selectedDate, selectedLayerDates);
 
-          updateHistory('date', closestDate.format('YYYY-MM-DD'));
+          updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
 
           dispatch(
             addNotification({
               message: `No data was found for the layer '${
                 layer.title
               }' on ${momentSelectedDate.format(
-                'YYYY-MM-DD',
+                DEFAULT_DATE_FORMAT,
               )}. The closest date ${closestDate.format(
-                'YYYY-MM-DD',
+                DEFAULT_DATE_FORMAT,
               )} has been loaded instead`,
               type: 'warning',
             }),

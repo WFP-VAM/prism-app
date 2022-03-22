@@ -7,6 +7,7 @@ import { dateRangeSelector } from '../context/mapStateSlice/selectors';
 import { USER_DATE_OFFSET } from '../components/MapView/DateSelector/utils';
 
 import { useUrlHistory } from './url-utils';
+import { DEFAULT_DATE_FORMAT } from './name-utils';
 
 /**
  * A hook designed to automatically load the default date of a layer if the user doesn't select one.
@@ -37,7 +38,7 @@ export function useDefaultDate(
       defaultDate &&
       (!layerGroup || layerGroup.main === true)
     ) {
-      updateHistory('date', moment(defaultDate).format('YYYY-MM-DD'));
+      updateHistory('date', moment(defaultDate).format(DEFAULT_DATE_FORMAT));
     }
   }, [defaultDate, dispatch, selectedDate, layerGroup, updateHistory]);
 

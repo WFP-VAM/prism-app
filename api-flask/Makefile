@@ -26,3 +26,7 @@ test:
 
 # [Dummy dependency to force a make command to always run.]
 FORCE:
+
+# Notes on docker errors
+# If you are getting "permission denied" errors while shutting/restarting the API, you can try using the following command:
+# sudo aa-remove-unknown

@@ -22,13 +22,15 @@ import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../../config/utils';
-import { getRoundedData } from '../../utils';
+import { getRoundedData } from '../../../../utils/data-utils';
+import { useSafeTranslation } from '../../../../i18n';
 
 function AnalysisLayer() {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const { t } = useSafeTranslation();
 
   const dispatch = useDispatch();
   const baselineLayerId = get(analysisData, 'baselineLayerId');
@@ -76,9 +78,10 @@ function AnalysisLayer() {
 
         dispatch(
           addPopupData({
-            [analysisData.getStatTitle()]: {
+            [analysisData.getStatTitle(t)]: {
               data: getRoundedData(
                 get(evt.features[0], ['properties', analysisData.statistic]),
+                t,
               ),
               coordinates,
             },
@@ -89,7 +92,10 @@ function AnalysisLayer() {
           dispatch(
             addPopupData({
               [analysisData.getBaselineLayer().title]: {
-                data: getRoundedData(get(evt.features[0], 'properties.data')),
+                data: getRoundedData(
+                  get(evt.features[0], 'properties.data'),
+                  t,
+                ),
                 coordinates,
               },
             }),
@@ -100,8 +106,10 @@ function AnalysisLayer() {
           dispatch(
             addPopupData({
               [analysisData.key]: {
+                // TODO - consider using a simple safeTranslate here instead.
                 data: getRoundedData(
                   get(evt.features[0], `properties.${analysisData.key}`),
+                  t,
                 ),
                 coordinates,
               },
