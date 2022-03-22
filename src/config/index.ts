@@ -24,11 +24,7 @@ import {
   mongoliaRawTables,
 } from './mongolia';
 
-import {
-  mozambiqueConfig,
-  mozambiqueRawLayers,
-  mozambiqueRawTables,
-} from './mozambique';
+import mozambique from './mozambique';
 
 import myanmar from './myanmar';
 
@@ -78,12 +74,7 @@ const configMap = {
     rawTables: mongoliaRawTables,
     defaultBoundariesFile: 'mng_admin_boundaries.json',
   },
-  mozambique: {
-    appConfig: mozambiqueConfig,
-    rawLayers: mozambiqueRawLayers,
-    rawTables: mozambiqueRawTables,
-    defaultBoundariesFile: 'moz_bnd_adm2_WFP.json',
-  },
+  mozambique,
   myanmar,
   namibia: {
     appConfig: namibiaConfig,
