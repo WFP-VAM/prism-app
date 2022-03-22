@@ -4,6 +4,7 @@ import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import { initReactI18next, useTranslation } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
+import { useCallback } from 'react';
 import fr from 'date-fns/locale/fr';
 import km from 'date-fns/locale/km';
 import en from 'date-fns/locale/en-US';
@@ -82,19 +83,22 @@ export function useSafeTranslation(): {
 } {
   const { t, ...rest } = useTranslation();
   return {
-    t: (key: string) => {
-      if (key === undefined) {
-        return '';
-      }
-      if (key in resources.en.translation) {
-        return t(key);
-      }
-      // eslint-disable-next-line no-console
-      console.warn(
-        `Translation for "${key}" is not configured in your translation file.`,
-      );
-      return key;
-    },
+    t: useCallback(
+      (key: string) => {
+        if (key === undefined) {
+          return '';
+        }
+        if (key in resources.en.translation) {
+          return t(key);
+        }
+        // eslint-disable-next-line no-console
+        console.warn(
+          `Translation for "${key}" is not configured in your translation file.`,
+        );
+        return key;
+      },
+      [t],
+    ),
     ...rest,
   };
 }

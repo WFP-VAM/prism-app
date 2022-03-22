@@ -47,6 +47,7 @@ const styles = (theme: Theme) =>
   createStyles({
     block: {
       paddingLeft: '10px',
+      paddingTop: '4px',
     },
     title: {
       color: theme.palette.text.secondary,

@@ -10,7 +10,6 @@ import {
   withStyles,
 } from '@material-ui/core';
 import DatePicker from 'react-datepicker';
-import { useTranslation } from 'react-i18next';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
@@ -22,7 +21,7 @@ import { DateRangeType } from '../../../config/types';
 import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import TimelineItems from './TimelineItems';
-import { moment } from '../../../i18n';
+import { moment, useSafeTranslation } from '../../../i18n';
 import {
   DEFAULT_DATE_FORMAT,
   MONTH_FIRST_DATE_FORMAT,
@@ -54,7 +53,7 @@ const Input = forwardRef(
 
 function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useSafeTranslation();
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
       value: 0,
