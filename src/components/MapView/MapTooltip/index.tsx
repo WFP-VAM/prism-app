@@ -8,22 +8,27 @@ import {
   LinearProgress,
 } from '@material-ui/core';
 import { tooltipSelector } from '../../../context/tooltipStateSlice';
+import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
 
 function MapTooltip({ classes }: TooltipProps) {
   const popup = useSelector(tooltipSelector);
-
+  const { t, i18n } = useSafeTranslation();
   return popup.showing && popup.coordinates ? (
     <Popup
       anchor="bottom"
       coordinates={popup.coordinates}
       className={classes.popup}
     >
-      <h4>{popup.locationName}</h4>
+      <h4>
+        {isEnglishLanguageSelected(i18n)
+          ? popup.locationName
+          : popup.locationLocalName}
+      </h4>
       {Object.entries(popup.data)
         .filter(([, value]) => value.coordinates === popup.coordinates)
         .map(([key, value]) => (
           <h4 key={key}>
-            {key}: {value.data}
+            {t(key)}: {value.data}
           </h4>
         ))}
 

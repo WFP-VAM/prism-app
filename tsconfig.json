@@ -26,6 +26,6 @@
     "src"
   ],
   "files": [
-    "src/custom.d.ts"
+    "src/types/custom.d.ts"
   ]
 }

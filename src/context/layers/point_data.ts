@@ -3,6 +3,7 @@ import GeoJSON from 'geojson';
 import moment from 'moment';
 import type { LazyLoader } from './layer-data';
 import { PointDataLayerProps } from '../../config/types';
+import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 
 declare module 'geojson' {
   export const version: string;
@@ -48,7 +49,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
 
-  const formattedDate = date && moment(date).format('YYYY-MM-DD');
+  const formattedDate = date && moment(date).format(DEFAULT_DATE_FORMAT);
 
   // TODO exclusive to this api...
   const dateQuery = `beginDateTime=${
@@ -76,8 +77,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
       // using moment here helps compensate for these discrepancies
       obj =>
-        moment(obj.date).format('YYYY-MM-DD') ===
-        moment(formattedDate).format('YYYY-MM-DD'),
+        moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
+        moment(formattedDate).format(DEFAULT_DATE_FORMAT),
     );
   }
   return GeoJSON.parse(data, { Point: ['lat', 'lon'] });
