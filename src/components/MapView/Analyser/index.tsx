@@ -68,6 +68,7 @@ import {
 } from '../../../context/mapStateSlice/selectors';
 import { useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
+import { useSafeTranslation } from '../../../i18n';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -101,6 +102,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [previousBaselineId, setPreviousBaselineId] = useState<
     LayerKey | undefined
   >(preSelectedBaselineLayer?.id);
+
+  const { t } = useSafeTranslation();
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -157,7 +160,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
             size="small"
           />
         }
-        label={key}
+        label={t(key)}
       />
     ));
 
@@ -314,7 +317,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       >
         <BarChart fontSize="small" />
         <Typography variant="body2" className={classes.analyserLabel}>
-          Run Analysis
+          {t('Run Analysis')}
         </Typography>
         <ArrowDropDown fontSize="small" />
       </Button>
@@ -328,7 +331,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
           <div>
             <div className={classes.newAnalyserContainer}>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">Hazard Layer</Typography>
+                <Typography variant="body2">{t('Hazard Layer')}</Typography>
                 <LayerDropdown
                   type="wms"
                   value={hazardLayerId}
@@ -338,7 +341,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">Statistic</Typography>
+                <Typography variant="body2">{t('Statistic')}</Typography>
                 <FormControl component="div">
                   <RadioGroup
                     name="statistics"
@@ -351,7 +354,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 </FormControl>
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">Baseline Layer</Typography>
+                <Typography variant="body2">{t('Baseline Layer')}</Typography>
                 <LayerDropdown
                   type="admin_level_data"
                   value={baselineLayerId}
@@ -361,13 +364,13 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">Threshold</Typography>
+                <Typography variant="body2">{t('Threshold')}</Typography>
                 <TextField
                   id="filled-number"
                   error={!!thresholdError}
                   helperText={thresholdError}
                   className={classes.numberField}
-                  label="Below"
+                  label={t('Below')}
                   type="number"
                   value={belowThreshold}
                   onChange={onThresholdOptionChange('below')}
@@ -375,7 +378,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
                 <TextField
                   id="filled-number"
-                  label="Above"
+                  label={t('Above')}
                   className={classes.numberField}
                   value={aboveThreshold}
                   onChange={onThresholdOptionChange('above')}
@@ -384,14 +387,16 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
               </div>
               <div className={classes.analyserOptions}>
-                <Typography variant="body2">Date</Typography>
+                <Typography variant="body2">{t('Date')}</Typography>
                 <DatePicker
+                  locale={t('date_locale')}
+                  dateFormat="PP"
                   selected={selectedDate ? new Date(selectedDate) : null}
                   onChange={date =>
                     setSelectedDate(date?.getTime() || selectedDate)
                   }
                   maxDate={new Date()}
-                  todayButton="Today"
+                  todayButton={t('Today')}
                   peekNextMonth
                   showMonthDropdown
                   showYearDropdown
@@ -423,7 +428,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                           onChange={onMapSwitchChange}
                         />
                       }
-                      label="Map View"
+                      label={t('Map View')}
                     />
                     <FormControlLabel
                       control={
@@ -433,7 +438,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                           onChange={e => setIsTableViewOpen(e.target.checked)}
                         />
                       }
-                      label="Table View"
+                      label={t('Table View')}
                     />
                   </FormGroup>
                   {isTableViewOpen && (
@@ -446,13 +451,15 @@ function Analyser({ extent, classes }: AnalyserProps) {
                     className={classes.innerAnalysisButton}
                     onClick={() => downloadCSVFromTableData(analysisResult)}
                   >
-                    <Typography variant="body2">Download</Typography>
+                    <Typography variant="body2">{t('Download')}</Typography>
                   </Button>
                   <Button
                     className={classes.innerAnalysisButton}
                     onClick={clearAnalysis}
                   >
-                    <Typography variant="body2">Clear Analysis</Typography>
+                    <Typography variant="body2">
+                      {t('Clear Analysis')}
+                    </Typography>
                   </Button>
                 </>
               )}
@@ -469,7 +476,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   isAnalysisLoading // or analysis is currently loading
                 }
               >
-                <Typography variant="body2">Run Analysis</Typography>
+                <Typography variant="body2">{t('Run Analysis')}</Typography>
               </Button>
             )}
             {isAnalysisLoading ? <LinearProgress /> : null}
@@ -499,6 +506,7 @@ const styles = (theme: Theme) =>
       borderBottomRightRadius: '10px',
       height: 'auto',
       maxHeight: '60vh',
+      width: 'fit-content',
     },
     analyserButton: {
       height: '36px',
@@ -527,9 +535,9 @@ const styles = (theme: Theme) =>
       margin: '5px',
     },
     numberField: {
-      paddingLeft: '10px',
+      paddingRight: '10px',
       marginTop: '10px',
-      width: '85.5px',
+      maxWidth: '140px',
       '& .Mui-focused': { color: 'white' },
     },
     calendarPopper: {

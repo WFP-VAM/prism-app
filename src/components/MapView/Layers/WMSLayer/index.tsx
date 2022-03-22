@@ -7,6 +7,7 @@ import { getWMSUrl } from '../raster-utils';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { boundariesOnView } from '../../../../utils/map-utils';
 import { mapSelector } from '../../../../context/mapStateSlice/selectors';
+import { DEFAULT_DATE_FORMAT } from '../../../../utils/name-utils';
 
 function WMSLayers({
   layer: {
@@ -32,7 +33,7 @@ function WMSLayers({
             `${getWMSUrl(baseUrl, serverLayerName, {
               ...additionalQueryParams,
               ...(selectedDate && {
-                time: moment(selectedDate).format('YYYY-MM-DD'),
+                time: moment(selectedDate).format(DEFAULT_DATE_FORMAT),
               }),
             })}&bbox={bbox-epsg-3857}`,
           ],
