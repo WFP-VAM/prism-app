@@ -40,11 +40,7 @@ import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
 
 import { rbdConfig, rbdRawLayers, rbdRawTables } from './rbd';
 
-import {
-  srilankaConfig,
-  srilankaRawLayers,
-  srilankaRawTables,
-} from './srilanka';
+import srilanka from './srilanka';
 
 import sierraleone from './sierraleone';
 
@@ -54,11 +50,7 @@ import {
   tajikistanRawTables,
 } from './tajikistan';
 
-import {
-  zimbabweConfig,
-  zimbabweRawLayers,
-  zimbabweRawTables,
-} from './zimbabwe';
+import zimbabwe from './zimbabwe';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
@@ -120,24 +112,14 @@ const configMap = {
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/wca_CHIPC_nov2021_admin1.json`,
   },
   sierraleone,
-  srilanka: {
-    appConfig: srilankaConfig,
-    rawLayers: srilankaRawLayers,
-    rawTables: srilankaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/lka_boundaries_admin3.json`,
-  },
+  srilanka,
   tajikistan: {
     appConfig: tajikistanConfig,
     rawLayers: tajikistanRawLayers,
     rawTables: tajikistanRawTables,
     defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/tjk_admin_boundaries_v2.json`,
   },
-  zimbabwe: {
-    appConfig: zimbabweConfig,
-    rawLayers: zimbabweRawLayers,
-    rawTables: zimbabweRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/zim_admin2_boundaries_v2.json`,
-  },
+  zimbabwe,
 } as const;
 
 type Country = keyof typeof configMap;
