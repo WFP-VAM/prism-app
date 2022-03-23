@@ -116,20 +116,26 @@
     "type": "wms",
     "server_layer_name": "dlx_dekad",
     "base_url": "https://odc.ovio.org/",
+    "additional_query_params": {
+      "styles": "dlx_new"
+    },
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      { "value": 0, "color": "#fff9c7" },
-      { "value": 1, "color": "#ffeea9" },
-      { "value": 4, "color": "#fede86" },
-      { "value": 6, "color": "#fec754" },
-      { "value": 10, "color": "#fea937" },
-      { "value": 14, "color": "#f88a21" },
-      { "value": 18, "color": "#e96d13" },
-      { "value": 22, "color": "#d15205" },
-      { "value": 25, "color": "#b03f03" },
-      { "value": 30, "color": "#8b3005" }
+    "legend": [    
+      {"label": "None", "color": "#005867" },
+      {"label": "1-4 days", "color": "#378a95"},
+      {"label": "5-6 days", "color": "#7ab2b9"}, 
+      {"label": "7-8 days", "color": "#aee0c4"}, 
+      {"label": "9-10 days", "color": "#ffec81"}, 
+      {"label": "11-12 days", "color": "#f2c063"}, 
+      {"label": "13-15 days", "color": "#e49631"}, 
+      {"label": "16-18 days", "color": "#d76c00"}, 
+      {"label": "19-21 days", "color": "#ad3a00"}, 
+      {"label": "22-24 days", "color": "#932700"}, 
+      {"label": "25-27 days", "color": "#7a1300"}, 
+      {"label": "28-30 days", "color": "#620f00"}, 
+      {"label": "> 30 days", "color": "#460000"} 
     ]
   },
   "days_heavy_rain": {
@@ -222,20 +228,26 @@
     "title": "Land Surface Temperature - 10-day Amplitude (MODIS)",
     "type": "wms",
     "server_layer_name": "myd11a2_taa_dekad",
+    "additional_query_params": {
+      "styles": "taa_new"
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "LEGEND",
     "legend": [
-      { "value": -0, "color": "#ffffff", "alpha": 0 },
-      { "value": 50, "color": "#ffffd9" },
-      { "value": 200, "color": "#e8f6b1" },
-      { "value": 400, "color": "#b2e1b6" },
-      { "value": 600, "color": "#64c3bf" },
-      { "value": 800, "color": "#2ca1c2" },
-      { "value": 1000, "color": "#216daf" },
-      { "value": 1200, "color": "#253a97" },
-      { "value": 1400, "color": "#081d58" }
+      {"label": "0ºC", "color": "#0031ac"},
+      {"label": "3ºC", "color": "#4889ce"},
+      {"label": "6ºC", "color": "#6cb4de"},
+      {"label": "9ºC", "color": "#7ecae7"},
+      {"label": "12ºC", "color": "#c3f6ff"},
+      {"label": "15ºC", "color": "#ffffc8"},
+      {"label": "18ºC", "color": "#fff196"},
+      {"label": "21ºC", "color": "#ffe464"},
+      {"label": "24ºC", "color": "#ffb800"},
+      {"label": "27ºC", "color": "#ff7900"},
+      {"label": "30ºC", "color": "#dc5f00"},
+      {"label": "33ºC", "color": "#b93700"}
     ]
   },
   "lst_daytime": {
@@ -252,20 +264,31 @@
     "opacity": 0.7,
     "legend_text": "LEGEND",
     "additional_query_params": {
-      "styles": "lst_day"
+      "styles": "lst_day_22"
     },
     "legend": [
-      { "value": 0, "color": "#f0f9ba" },
-      { "value": 5, "color": "#edeba4" },
-      { "value": 10, "color": "#ebdd8f" },
-      { "value": 15, "color": "#eace7c" },
-      { "value": 20, "color": "#e9bf6a" },
-      { "value": 25, "color": "#e9af59" },
-      { "value": 30, "color": "#e99e4c" },
-      { "value": 35, "color": "#e98d41" },
-      { "value": 40, "color": "#e87a3a" },
-      { "value": 45, "color": "#e76636" },
-      { "value": 50, "color": "#e54f35" }
+      {"label": "-24ºC", "color": "#f7badf"},
+      {"label": "-20ºC", "color": "#e095e5"},
+      {"label": "-16ºC", "color": "#c870ec"},
+      {"label": "-12ºC", "color": "#bd5def"},
+      {"label": "-8ºC", "color": "#9f2ff7"},
+      {"label": "-4ºC", "color": "#8200ff"},
+      {"label": "0ºC", "color": "#0031ac"},
+      {"label": "4ºC", "color": "#245dbd"},
+      {"label": "8ºC", "color": "#4889ce"},
+      {"label": "12ºC", "color": "#6cb4de"},
+      {"label": "16ºC", "color": "#7ecae7"},
+      {"label": "20ºC", "color": "#90e0ef"},
+      {"label": "24ºC", "color": "#c3f6ff"},
+      {"label": "28ºC", "color": "#a9e385"},
+      {"label": "32ºC", "color": "#81af38"},
+      {"label": "36ºC", "color": "#ffffc8"},
+      {"label": "40ºC", "color": "#fff196"},
+      {"label": "44ºC", "color": "#ffe464"},
+      {"label": "48ºC", "color": "#ffb800"},
+      {"label": "52ºC", "color": "#ff7900"},
+      {"label": "56ºC", "color": "#dc5f00"},
+      {"label": "60ºC", "color": "#b93700"}
     ]
   },
   "lst_anomaly": {

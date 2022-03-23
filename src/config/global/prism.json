@@ -1,6 +1,6 @@
 {
   "country": "Global",
-  "alertFormActive": false,
+  "alertFormActive": true,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
