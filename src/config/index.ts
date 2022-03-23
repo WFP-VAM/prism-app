@@ -4,7 +4,7 @@ import { PublicClientApplication } from '@azure/msal-browser';
 
 import cambodia from './cambodia';
 
-import { globalConfig, globalRawLayers, globalRawTables } from './global';
+import global from './global';
 
 import {
   indonesiaConfig,
@@ -50,12 +50,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
 
 const configMap = {
   cambodia,
-  global: {
-    appConfig: globalConfig,
-    rawLayers: globalRawLayers,
-    rawTables: globalRawTables,
-    defaultBoundariesFile: 'adm0_simplified.json',
-  },
+  global,
   indonesia: {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
