@@ -14,24 +14,43 @@
       "https://geonode.wfp.org/geoserver/prism/wms/",
       "https://odc.ovio.org/wms"
     ]
-  },   
+  },
   "map": {
     "latitude": 1.8,
     "longitude": 29.9,
     "zoom": 1.76
   },
-    "categories": {
-      "rainfall": {
-        "rainfall_amount": ["rainfall_dekad", "rainfall_agg_month"] ,
-        "rainfall_anomaly": ["rain_anomaly_dekad", "rain_anomaly_monthly"],
-        "dry_spells": ["streak_dry_days"],
-        "heavy_rain": ["days_heavy_rain", "streak_heavy_rain"]
-      },
-      "vegetation":{
-        "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
-      },
-      "temperature": {
-        "land_surface_temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
-      }
+  "categories": {
+    "rainfall": {
+      "rainfall_amount": [
+        "rainfall_dekad",
+        "rainfall_agg_month"
+      ],
+      "rainfall_anomaly": [
+        "rain_anomaly_dekad",
+        "rain_anomaly_monthly"
+      ],
+      "dry_spells": [
+        "days_dry",
+        "streak_dry_days"
+      ],
+      "heavy_rain": [
+        "days_heavy_rain",
+        "streak_heavy_rain"
+      ]
+    },
+    "vegetation": {
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
+    },
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_anomaly",
+        "lst_amplitude"
+      ]
+    }
   }
 }
