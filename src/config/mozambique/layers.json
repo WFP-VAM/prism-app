@@ -1,30 +1,11 @@
 {
-  "admin_boundaries": {
-    "type": "boundary",
-    "path": "../data/mozambique/admin_boundaries_MOZ2.json",
-    "primary": true,
-    "opacity": 0.8,
-    "admin_code": "ADM2_PCODE",
-    "admin_level_names": ["ADM1_PT", "ADM2_PT"],
-    "admin_level_local_names": ["ADM1_PT", "ADM2_PT"],
-    "styles:": {
-      "fill": {
-        "fill-opacity": 0
-      },
-      "line": {
-        "line-color": "gray",
-        "line-width": 1,
-        "line-opacity": 0.8
-      }
-    }
-  },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "../data/mozambique/moz_admin1_boundaries.json",
+    "path": "../data/mozambique/moz_bnd_adm1_WFP.json",
     "opacity": 0.8,
-    "admin_code": "ADM1_PCODE",
-    "admin_level_names": ["ADM1_PT"],
-    "admin_level_local_names": ["ADM1_PT"],
+    "admin_code": "source_id",
+    "admin_level_names": ["adm1_name"],
+    "admin_level_local_names": ["adm1_name"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -32,6 +13,25 @@
       "line": {
         "line-color": "gray",
         "line-width": 3,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin_boundaries": {
+    "type": "boundary",
+    "path": "../data/mozambique/moz_bnd_adm2_WFP.json",
+    "primary": true,
+    "opacity": 0.8,
+    "admin_code": "source_id",
+    "admin_level_names": ["adm1_name", "adm2_name"],
+    "admin_level_local_names": ["adm1_name", "adm2_name"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
         "line-opacity": 0.8
       }
     }
@@ -1014,6 +1014,306 @@
       { "value": "> 800", "color": "#ffc4ee" }
     ]
   }, 
+  "spi_1m": {
+    "title": "SPI - 1-month",
+    "type": "wms",
+    "server_layer_name": "r1s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_3m": {
+    "title": "SPI - 3-month",
+    "type": "wms",
+    "server_layer_name": "r3s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_6m": {
+    "title": "SPI - 6-month",
+    "type": "wms",
+    "server_layer_name": "r6s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_9m": {
+    "title": "SPI - 9-month",
+    "type": "wms",
+    "server_layer_name": "r9s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_1y": {
+    "title": "SPI - 1-year",
+    "type": "wms",
+    "server_layer_name": "rys_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },  
   "adamts_buffers": {
     "title": "Tropical Storms - Wind buffers",
     "type": "wms",
@@ -1083,6 +1383,90 @@
     },
     "base_url": "https://geonode.wfp.org/geoserver"
   },
+  "ipc_pop_ph3_current": {
+    "title": "Number of people currently in IPC Phase 3+",
+    "type": "admin_level_data",
+    "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+    "data_field": "ipcp_21pp",
+    "admin_level": 2,
+    "admin_code": "source_id",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "No data",
+        "color": "#f7f7f7"
+      },
+      {
+        "value": 10000,
+        "label": "< 10,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 20000,
+        "label": "10,000 - 19,999",
+        "color": "#fcae91"
+      },
+      {
+        "value": 30000,
+        "label": "20,000 - 29,999",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40000,
+        "label": "30,000 - 39,999",
+        "color": "#de2d26"
+      },
+      {
+        "value": 40001,
+        "label": ">= 40,000",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Number of people in IPC phase 3 or higher November 2021 – March 2022. Source: National IPC Technical Working Group"
+  },
+  "ipc_pop_ph3_projected": {
+    "title": "Number of people projected in IPC Phase 3+",
+    "type": "admin_level_data",
+    "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+    "data_field": "ipcp_21pp",
+    "admin_level": 2,
+    "admin_code": "source_id",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "No data",
+        "color": "#f7f7f7"
+      },
+      {
+        "value": 10000,
+        "label": "< 10,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 20000,
+        "label": "10,000 - 19,999",
+        "color": "#fcae91"
+      },
+      {
+        "value": 30000,
+        "label": "20,000 - 29,999",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40000,
+        "label": "30,000 - 39,999",
+        "color": "#de2d26"
+      },
+      {
+        "value": 40001,
+        "label": ">= 40,000",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Number of people projected to be in IPC phase 3 or higher April - September 2022. Source: National IPC Technical Working Group"
+  },
   "ipc_phase_12_2020": {
     "title": "IPC Phase Classification (Oct-Dec 2020)",
     "type": "admin_level_data",
@@ -1115,6 +1499,174 @@
     ],
     "legend_text": "Source: National IPC Technical Working Group"
   },
+  "ipc_phase_current": {
+    "title": "Current IPC Phase classification",
+    "type": "admin_level_data",
+    "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+    "data_field": "ipc_ph21",
+    "admin_level": 2,
+    "admin_code": "source_id",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "No data",
+        "color": "#f7f7f7"
+      },
+      {
+        "value": 1,
+        "label": "Phase 1 - Minimal",
+        "color": "#CDFACD"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#FAE61E"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#E67800"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#C80000"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Famine",
+        "color": "#640000"
+      }
+    ],
+    "legend_text": "IPC phase classification November 2021 – March 2022. Source: National IPC Technical Working Group"
+  },
+  "ipc_phase_projected": {
+    "title": "Projected IPC Phase classification",
+    "type": "admin_level_data",
+    "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+    "data_field": "ipc_ph22",
+    "admin_level": 2,
+    "admin_code": "source_id",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "No data",
+        "color": "#f7f7f7"
+      },
+      {
+        "value": 1,
+        "label": "Phase 1 - Minimal",
+        "color": "#CDFACD"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#FAE61E"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#E67800"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#C80000"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Famine",
+        "color": "#640000"
+      }
+    ],
+    "legend_text": "Projected IPC phase classification April - September 2022. Source: National IPC Technical Working Group"
+  },
+  "ipc_perc_ph3_projected": {
+    "title": "Percent of population projected in IPC Phase 3+",
+    "type": "admin_level_data",
+    "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+    "data_field": "ipc3p_pc22",
+    "admin_level": 2,
+    "admin_code": "source_id",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "No data",
+        "color": "#f7f7f7"
+      },
+      {
+        "value": 10,
+        "label": "< 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 20,
+        "label": "10 - 19%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 30,
+        "label": "20 - 29%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40,
+        "label": "30 - 39%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 41,
+        "label": ">= 40%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Percent of population projected to be in IPC phase 3 or higher April - September 2022. Source: National IPC Technical Working Group"
+  },
+  "ipc_perc_ph3_current": {
+    "title": "Percent of population currently in IPC Phase 3+",
+    "type": "admin_level_data",
+    "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+    "data_field": "ipc3p_pc22",
+    "admin_level": 2,
+    "admin_code": "source_id",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "No data",
+        "color": "#f7f7f7"
+      },
+      {
+        "value": 10,
+        "label": "< 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 20,
+        "label": "10 - 19%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 30,
+        "label": "20 - 29%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40,
+        "label": "30 - 39%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 41,
+        "label": ">= 40%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Percernt of population currently in IPC phase 3 or higher - November 2021 – March 2022. Source: National IPC Technical Working Group"
+  },  
   "mpi": {
     "title": "Multidimensional Poverty Index",
     "type": "admin_level_data",
@@ -1166,5 +1718,4 @@
     ],
     "legend_text": "Multidimensional Poverty Index. Source: Alkire, S., Kanagaratnam, U. and Suppa, N. (2020). ‘The Global Multidimensional Poverty Index (MPI) 2020’, OPHI MPI"
   }    
-  
 }
