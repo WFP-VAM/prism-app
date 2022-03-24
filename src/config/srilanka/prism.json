@@ -20,6 +20,11 @@
     "longitude": 80.592,
     "zoom": 6.84
   },
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin2_boundaries",
+    "admin1_boundaries"
+  ], 
   "categories": {
     "rainfall": {
       "rainfall_amount": [

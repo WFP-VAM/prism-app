@@ -1,5 +1,14 @@
-import cambodiaConfig from './prism.json';
-import cambodiaRawLayers from './layers.json';
-import cambodiaRawTables from './tables.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
+import cambodiaTranslation from './translation.json';
 
-export { cambodiaConfig, cambodiaRawLayers, cambodiaRawTables };
+const rawTables = {};
+const translation = { kh: cambodiaTranslation };
+
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  translation,
+  defaultBoundariesFile: 'khm_bnd_admin3_gov_ed2022.json',
+};
