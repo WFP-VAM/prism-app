@@ -102,5 +102,13 @@
     "INAM blended temperature estimates (10-day)": "Estimativas de temperatura combinadas do INAM (10 dias)",
     "INAM blended temperature anomaly (10-day)": "Anomalia de temperatura combinada do INAM (10 dias)",
     "Daytime Land Surface Temperature - 10-day (MODIS)": "Temperatura diurna da superfície terrestre - 10 dias (MODIS)",
-    "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)": "Temperatura diurna da superfície terrestre - anomalia de 10 dias (MODIS)"
+    "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)": "Temperatura diurna da superfície terrestre - anomalia de 10 dias (MODIS)",
+    "Current IPC Phase classification": "Classificação atual da Fase IPC",
+    "Projected IPC Phase classification": "Classificação da Fase IPC projetada",
+    "IPC Phase Classification (Oct-Dec 2020)": "Classificação de Fase IPC (outubro a dezembro de 2020)",
+    "Number of people currently in IPC Phase 3+": "Número de pessoas atualmente na Fase 3+ do IPC",
+    "Number of people projected in IPC Phase 3+": "Número de pessoas projetadas na Fase 3+ do IPC",
+    "Percent of population currently in IPC Phase 3+": "Porcentagem da população atualmente em IPC Fase 3+",
+    "Percent of population projected in IPC Phase 3+": "Porcentagem da população projetada na Fase 3+ do IPC",
+    "Multidimensional Poverty Index": "Índice de pobreza multidimensional"
 }
