@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/sri-lanka/lka_boundaries_admin3.json",
+    "path": "../data/sri-lanka/lka_bnd_adm3.json",
     "opacity": 0.8,
     "admin_code": "dsd_c_1",
     "admin_level_names": [
@@ -20,11 +20,57 @@
       },
       "line": {
         "line-color": "gray",
-        "line-width": 1,
+        "line-width": 0.5,
         "line-opacity": 0.8
       }
     }
   },
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "../data/sri-lanka/lka_bnd_adm1.json",
+    "opacity": 0.8,
+    "admin_code": "province_c",
+    "admin_level_names": [
+      "province_n"
+    ],
+    "admin_level_local_names": [
+      "province_n"
+    ],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.8
+      }
+    }
+  }, 
+  "admin2_boundaries": {
+    "type": "boundary",
+    "path": "../data/sri-lanka/lka_bnd_adm2.json",
+    "opacity": 0.8,
+    "admin_code": "district_n",
+    "admin_level_names": [
+      "province_n",
+      "district_n"
+    ],
+    "admin_level_local_names": [
+      "province_n",
+      "district_n"
+    ],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },    
   "spi_1m": {
     "title": "SPI - 1-month",
     "type": "wms",
@@ -434,7 +480,7 @@
         "color": "#45c1fc"
       },
       {
-        "label": "> 180%",
+        "label": ">= 200%",
         "color": "#0fb0fb"
       }
     ]
@@ -630,11 +676,11 @@
   "rain_anomaly_1year": {
     "title": "1-year rainfall anomaly",
     "type": "wms",
-    "server_layer_name": "ryq_blended_dekad",
+    "server_layer_name": "ryq_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "< 60%",

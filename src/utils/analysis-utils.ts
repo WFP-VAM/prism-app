@@ -43,6 +43,8 @@ import type {
 import { LayerDefinitions } from '../config/utils';
 import type { TableRow } from '../context/analysisResultStateSlice';
 import { isLocalhost } from '../serviceWorker';
+import { i18nTranslator } from '../i18n';
+import { getRoundedData } from './data-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -449,7 +451,7 @@ export function getAnalysisTableColumns(
     {
       id: statistic,
       label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      format: (value: number) => value.toLocaleString('en-US'),
+      format: (value: number) => getRoundedData(value),
     },
 
     {
@@ -562,12 +564,12 @@ export class ExposedPopulationResult {
   legendText: string;
   statistic: AggregationOperations;
 
-  getTitle = (): string => {
-    return 'Population Exposure';
+  getTitle = (t?: i18nTranslator): string => {
+    return t ? t('Population Exposure') : 'Population Exposure';
   };
 
-  getStatTitle = (): string => {
-    return this.getTitle();
+  getStatTitle = (t?: i18nTranslator): string => {
+    return this.getTitle(t);
   };
 
   constructor(
@@ -630,13 +632,19 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
   }
 
-  getTitle(): string {
-    return `${this.getBaselineLayer().title} exposed to ${
-      this.getHazardLayer().title
-    }`;
+  getTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getBaselineLayer().title)} ${t('exposed to')} ${t(
+          this.getHazardLayer().title,
+        )}`
+      : `${this.getBaselineLayer().title} exposed to ${
+          this.getHazardLayer().title
+        }`;
   }
 
-  getStatTitle(): string {
-    return `${this.getHazardLayer().title} (${this.statistic})`;
+  getStatTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
+      : `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }

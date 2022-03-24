@@ -8,17 +8,28 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TableSortLabel,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
+import { orderBy } from 'lodash';
 import { useDispatch } from 'react-redux';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { Column } from '../../../../utils/analysis-utils';
+import {
+  isEnglishLanguageSelected,
+  useSafeTranslation,
+} from '../../../../i18n';
 
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
+  // only display local names if local language is selected, otherwise display english name
+  const { t, i18n } = useSafeTranslation();
+  const filteredColumns = columns.filter(({ id }) => id !== 'localName');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sortColumn, setSortColumn] = useState<Column['id']>();
+  const [isAscending, setIsAscending] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -33,21 +44,35 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
     setPage(0);
   };
 
+  const handleChangeOrderBy = (newSortColumn: Column['id']) => {
+    const newIsAsc = !(sortColumn === newSortColumn && isAscending);
+    setPage(0);
+    setSortColumn(newSortColumn);
+    setIsAscending(newIsAsc);
+  };
   return (
     <div>
       <TableContainer className={classes.tableContainer}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {columns.map(column => (
+              {filteredColumns.map(column => (
                 <TableCell key={column.id} className={classes.tableHead}>
-                  {column.label}
+                  <TableSortLabel
+                    active={sortColumn === column.id}
+                    direction={
+                      sortColumn === column.id && !isAscending ? 'desc' : 'asc'
+                    }
+                    onClick={() => handleChangeOrderBy(column.id)}
+                  >
+                    {t(column.label)}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData
+            {orderBy(tableData, sortColumn, isAscending ? 'asc' : 'desc')
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(row => {
                 return (
@@ -55,6 +80,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                     hover
                     role="checkbox"
                     tabIndex={-1}
+                    // TODO - Use adminCode as key to guarantee unicity?
                     key={row.name}
                     onClick={() => {
                       // TODO if we decide to keep, add popup data?
@@ -63,14 +89,18 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                           showPopup({
                             coordinates: row.coordinates,
                             locationName: row.name,
+                            locationLocalName: row.localName,
                           }),
                         );
                       }
                     }}
                     style={{ cursor: row.coordinates ? 'pointer' : 'none' }}
                   >
-                    {columns.map(column => {
-                      const value = row[column.id];
+                    {filteredColumns.map(column => {
+                      const value =
+                        column.id === 'name' && !isEnglishLanguageSelected(i18n)
+                          ? row.localName
+                          : row[column.id];
                       return (
                         <TableCell key={column.id}>
                           {column.format && typeof value === 'number'
@@ -93,6 +123,13 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
         page={page}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
+        labelRowsPerPage={t('Rows Per Page')}
+        // Temporary manual translation before we upgrade to MUI 5.
+        labelDisplayedRows={({ from, to, count }) => {
+          return `${from}–${to} ${t('of')} ${
+            count !== -1 ? count : `${t('more than')} ${to}`
+          }`;
+        }}
       />
     </div>
   );

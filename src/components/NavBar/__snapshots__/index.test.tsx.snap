@@ -79,7 +79,7 @@ exports[`renders as expected 1`] = `
                   />
                 </svg>
                  
-                About
+                about
               </mock-typography>
             </div>
             <div
@@ -107,7 +107,7 @@ exports[`renders as expected 1`] = `
                   />
                 </svg>
                  
-                Github
+                GitHub
               </mock-typography>
             </div>
           </div>
@@ -176,7 +176,7 @@ exports[`renders as expected 1`] = `
                           />
                         </svg>
                          
-                        About
+                        about
                       </mock-typography>
                     </div>
                     <div
@@ -204,7 +204,7 @@ exports[`renders as expected 1`] = `
                           />
                         </svg>
                          
-                        Github
+                        GitHub
                       </mock-typography>
                     </div>
                   </div>

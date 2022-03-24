@@ -11,8 +11,10 @@ import {
 
 import { MenuItemType } from '../../../config/types';
 import MenuSwitch from '../MenuSwitch';
+import { useSafeTranslation } from '../../../i18n';
 
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
+  const { t } = useSafeTranslation();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -34,7 +36,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
         aria-describedby={id}
       >
         <img className={classes.icon} src={`/images/${icon}`} alt={title} />
-        <Typography variant="body2">{title}</Typography>
+        <Typography variant="body2">{t(title)}</Typography>
       </Button>
 
       <Popover
@@ -58,7 +60,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
         {layersCategories.map(({ title: categoryTitle, layers, tables }) => (
           <MenuSwitch
             key={categoryTitle}
-            title={categoryTitle}
+            title={t(categoryTitle)}
             layers={layers}
             tables={tables}
           />
