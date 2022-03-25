@@ -44,4 +44,4 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       # make sure that the alert password is properly set
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?err}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?"Add a password for the alerts database."}
