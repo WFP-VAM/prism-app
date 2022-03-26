@@ -1643,7 +1643,7 @@
     "title": "Disaster impact report",
     "type": "admin_level_data",
     "path": "https://prism-api.ovio.org/kobo/forms",
-    "adminCode": "commune",
+    "adminCode": "Commune",
     "adminLevel": 1,
     "dataField": "NumPeoAff",
     "data": "https://prism-api.ovio.org/kobo/forms",

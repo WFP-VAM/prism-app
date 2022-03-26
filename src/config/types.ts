@@ -287,6 +287,12 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   boundary?: LayerKey;
+
+  @optional
+  fallbackData?: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
 }
 
 export class StatsApi {
