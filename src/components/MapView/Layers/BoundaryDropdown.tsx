@@ -20,8 +20,8 @@ import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { Feature } from 'geojson';
 import { multiPolygon, MultiPolygon, Polygon } from '@turf/helpers';
 import bbox from '@turf/bbox';
-import bboxPolygon from '@turf/bbox-polygon';
-import union from '@turf/union';
+import bboxPolygon from '@turf/bbox-polygon'; // eslint-disable @turf/bbox-polygon
+import union from '@turf/union'; // eslint-disable @turf/union
 import { useDispatch, useSelector } from 'react-redux';
 import { Search, CenterFocusWeak } from '@material-ui/icons';
 import { BoundaryLayerProps } from '../../../config/types';

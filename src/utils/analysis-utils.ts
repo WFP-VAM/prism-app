@@ -14,6 +14,7 @@ import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import {
   AggregationOperations,
+  PolygonAggregationOperations,
   AsyncReturnType,
   ImpactLayerProps,
   LayerType,
@@ -23,6 +24,8 @@ import {
   ThresholdDefinition,
   WMSLayerProps,
   WfsRequestParams,
+  AdminLevelType,
+  DisplayStatsEnum,
 } from '../config/types';
 import type { ThunkApi } from '../context/store';
 import { layerDataSelector } from '../context/mapStateSlice/selectors';
@@ -126,7 +129,7 @@ function getBaselineDataForFeature(
   );
 }
 
-function mergeFeaturesByProperty(
+export function mergeFeaturesByProperty(
   baselineFeatures: Feature[],
   aggregateData: Array<object>,
   id: string,
@@ -431,9 +434,164 @@ export async function loadFeaturesClientSide(
   }, [] as GeoJsonBoundary[]);
 }
 
+export class AdminStatsResult {
+  key: number = Date.now();
+  featureCollection: FeatureCollection;
+  tableData: any;
+  tableColumns: string[];
+  // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
+  private rawApiData?: object[];
+
+  // which statistic to display on the map
+  statistic: DisplayStatsEnum;
+  adminLevel: AdminLevelType;
+  legend: LegendDefinition;
+  legendText: string;
+  hazardLayerId: WMSLayerProps['id'];
+
+  constructor(
+    tableData: any,
+    tableColumns: string[],
+    featureCollection: FeatureCollection,
+    hazardLayer: WMSLayerProps,
+    adminLevel: AdminLevelType,
+    statistic: DisplayStatsEnum,
+    legend: LegendDefinition,
+    legendText: string,
+  ) {
+    this.featureCollection = featureCollection;
+    this.tableColumns = tableColumns;
+    this.tableData = tableData;
+    this.statistic = statistic;
+    this.legend = legend;
+    this.legendText = hazardLayer.legendText;
+    // this.rawApiData = rawApiData;
+    this.hazardLayerId = hazardLayer.id;
+  }
+
+  getHazardLayer(): WMSLayerProps {
+    return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
+  }
+
+  getTitle(): string {
+    return `${this.getHazardLayer().title}`;
+  }
+
+  getStatTitle(): string {
+    return `${this.getHazardLayer().title} (${this.statistic})`;
+  }
+}
+
+// not in analysisResultStateSlice to prevent import cycle
+export class PolygonAnalysisResult {
+  key: number = Date.now();
+  featureCollection: FeatureCollection;
+  tableData: any;
+  tableColumns: string[];
+  // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
+  private rawApiData?: object[];
+
+  statistic: string; // area or percentage
+  threshold?: ThresholdDefinition;
+
+  legend: LegendDefinition;
+  legendText: string;
+  hazardLayerId: WMSLayerProps['id'];
+  adminLevel: number;
+
+  constructor(
+    tableData: object[],
+    tableColumns: string[],
+    featureCollection: FeatureCollection,
+    hazardLayer: WMSLayerProps,
+    adminLevel: number,
+    statistic: string,
+    threshold?: ThresholdDefinition,
+    rawApiData?: object[],
+  ) {
+    this.featureCollection = featureCollection;
+    this.tableData = tableData;
+    this.tableColumns = tableColumns;
+    this.statistic = statistic;
+    this.threshold = threshold;
+    this.legend = [
+      { value: 0, color: '#FFF' },
+      { value: 1, color: '#F00' },
+    ];
+    this.legendText = hazardLayer.legendText;
+    this.rawApiData = rawApiData;
+
+    this.hazardLayerId = hazardLayer.id;
+    // this.baselineLayerId = baselineLayer.id;
+  }
+  getHazardLayer(): WMSLayerProps {
+    return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
+  }
+
+  getTitle(): string {
+    return `${this.getHazardLayer().title} intersecting admin level ${
+      this.adminLevel
+    }`;
+  }
+
+  getStatTitle(): string {
+    return `${this.getHazardLayer().title} (${this.statistic})`;
+  }
+}
+
 export function getAnalysisTableColumns(
-  analysisResult: BaselineLayerResult,
+  analysisResult:
+    | BaselineLayerResult
+    | PolygonAnalysisResult
+    | AdminStatsResult,
 ): Column[] {
+  console.log('starting getAnalysisTableColumns with ', analysisResult);
+
+  if (analysisResult instanceof PolygonAnalysisResult) {
+    return analysisResult.tableColumns.map(column => {
+      return {
+        id: column as any,
+        // remove prefix from column labels
+        // example: replace "stat:area" with "area"
+        label: column.replace(/^[a-z]+:/i, ''),
+        format: (value: number | string) => {
+          if (typeof value === 'number') {
+            return value.toLocaleString('en-US');
+          }
+          if (value === null) {
+            return 'null';
+          }
+          if (value === undefined) {
+            return 'null';
+          }
+          return value;
+        },
+      };
+    });
+  }
+
+  if (analysisResult instanceof AdminStatsResult) {
+    console.log('analysisResult:', analysisResult);
+    return analysisResult.tableColumns.map(column => {
+      return {
+        id: column as any,
+        label: column,
+        format: (value: number | string | null) => {
+          if (typeof value === 'number') {
+            return value.toLocaleString('en-US');
+          }
+          if (value === null) {
+            return 'null';
+          }
+          if (value === undefined) {
+            return 'null';
+          }
+          return value;
+        },
+      };
+    });
+  }
+
   const { statistic } = analysisResult;
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;
 
@@ -461,13 +619,20 @@ export function getAnalysisTableColumns(
   ];
 }
 
-export function downloadCSVFromTableData(analysisResult: BaselineLayerResult) {
+export function downloadCSVFromTableData(
+  analysisResult:
+    | AdminStatsResult
+    | BaselineLayerResult
+    | PolygonAnalysisResult,
+) {
+  console.log('starting download csv from table data', analysisResult);
+  // debugger; // eslint-disable-line
   const { tableData, key: createdAt } = analysisResult;
   const columns = getAnalysisTableColumns(analysisResult);
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
     columns.map(col => col.label).join(','),
-    ...tableData.map(row => columns.map(col => row[col.id]).join(',')),
+    ...tableData.map((row: any) => columns.map(col => row[col.id]).join(',')),
   ];
   const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
 
@@ -494,7 +659,7 @@ export function scaleFeatureStat(
   feature: Feature,
   scale: number,
   offset: number,
-  statistic: AggregationOperations,
+  statistic: AggregationOperations | DisplayStatsEnum,
 ): Feature {
   const { properties } = feature;
   if (!properties) {
@@ -529,7 +694,7 @@ export function scaleFeatureStat(
  */
 export function createLegendFromFeatureArray(
   features: Feature[],
-  statistic: AggregationOperations,
+  statistic: AggregationOperations | DisplayStatsEnum,
 ): LegendDefinition {
   // Extract values based on aggregation operation.
   const stats: number[] = features.map(f =>

@@ -12,6 +12,7 @@ const optionalMetadataKey = Symbol('optional_property');
 export type LayerType =
   | BoundaryLayerProps
   | WMSLayerProps
+  // | WFSLayerProps
   | AdminLevelDataLayerProps
   | ImpactLayerProps
   | PointDataLayerProps;
@@ -154,12 +155,41 @@ export type RawDataConfiguration = {
   disableDateParam?: boolean;
 };
 
+export type ZonalConfig = {
+  // we're keeping snakecase here because that is what zonal uses
+  // eslint-disable-next-line camelcase
+  class_properties?: string[];
+};
+
 // Type of vector data that the layer provides
 export enum GeometryType {
   Point = 'point',
   LineString = 'linestring',
   Polygon = 'polygon',
 }
+
+export enum BasicDataType {
+  Point = 'point',
+  LineString = 'linestring',
+  Polygon = 'polygon',
+  Raster = 'raster',
+}
+
+export enum OperatorEnum {
+  lt = '<',
+  lte = '<=',
+  eq = '=',
+  gte = '>=',
+  gt = '>',
+}
+
+export enum RasterAnalysisEnum {
+  Admin = 'generate admin level statistics',
+  Exposed = 'calculate area exposed',
+  Threshold = 'threshold exceedance',
+}
+
+export type AdminLevelType = 1 | 2 | 3;
 
 export interface ExposedPopulationDefinition {
   id: LayerKey;
@@ -261,6 +291,27 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional // If included, we infer the layer is a vector layer.
   geometry?: GeometryType;
+
+  @optional // If included, zonal statistics configuration, including which property to use for classes
+  zonal?: ZonalConfig;
+}
+
+export class WFSLayerProps extends CommonLayerProps {
+  type: 'wfs';
+  baseUrl: string;
+  serverLayerName: string;
+
+  @makeRequired
+  title: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string };
+
+  @optional
+  wcsConfig?: RawDataConfiguration;
+
+  @optional // If included, we infer the layer is a vector layer.
+  geometry?: GeometryType;
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
@@ -299,6 +350,19 @@ export enum AggregationOperations {
   Mean = 'mean',
   Median = 'median',
   Sum = 'sum',
+}
+
+export enum DisplayStatsEnum {
+  Max = 'Max',
+  Mean = 'Mean',
+  Median = 'Median',
+  Min = 'Min',
+  // not sure about including std and sum because can't reuse legend
+}
+
+export enum PolygonAggregationOperations {
+  Area = 'area',
+  Percentage = 'percentage',
 }
 
 export type ThresholdDefinition = { below?: number; above?: number };

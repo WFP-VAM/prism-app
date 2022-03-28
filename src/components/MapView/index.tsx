@@ -30,6 +30,7 @@ import {
   BoundaryLayer,
   ImpactLayer,
   PointDataLayer,
+  // WFSLayer,
   WMSLayer,
 } from './Layers';
 
@@ -96,6 +97,7 @@ type LayerComponentsMap<U extends LayerType> = {
 const componentTypes: LayerComponentsMap<LayerType> = {
   boundary: BoundaryLayer,
   wms: WMSLayer,
+  // wfs: WFSLayer,
   admin_level_data: AdminLevelDataLayer,
   impact: ImpactLayer,
   point_data: PointDataLayer,
@@ -105,6 +107,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
   'point_data',
   'wms',
+  // 'wfs'
 ];
 const boundaryLayer = getBoundaryLayerSingleton();
 

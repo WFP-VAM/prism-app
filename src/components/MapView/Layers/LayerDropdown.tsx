@@ -1,16 +1,38 @@
 import {
+  Divider,
   FormControl,
   ListSubheader,
   MenuItem,
   Select,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
   Typography,
 } from '@material-ui/core';
 import React, { ReactElement } from 'react';
 import { menuList } from '../../NavBar/utils';
-import { LayerKey, LayerType } from '../../../config/types';
+import { IconPoint, IconPolygon, IconRaster } from '../Icons';
+import { LayerKey, LayerType, WMSLayerProps } from '../../../config/types';
+
+interface LayerIconProps {
+  lyr: WMSLayerProps | any;
+  style?: React.CSSProperties;
+}
+
+function LayerIcon({ lyr, style }: LayerIconProps) {
+  if (lyr.geometry === 'point') {
+    return <IconPoint style={{ height: 15, ...style }} />;
+  }
+  if (lyr.geometry === 'polygon') {
+    return <IconPolygon style={{ height: 15, ...style }} />;
+  }
+  return <IconRaster style={{ height: 15, ...style }} />;
+}
 
 function LayerDropdown({
   type,
+  // types,
   value,
   setValue,
   placeholder,
@@ -24,15 +46,17 @@ function LayerDropdown({
     // 2. get rid of layers within the categories which don't match the given type
     .map(category => ({
       ...category,
-      layers: category.layers.filter(layer =>
-        layer.type === 'wms'
-          ? layer.type === type && !layer.geometry
-          : layer.type === type,
+      layers: category.layers.filter(
+        layer =>
+          layer.type === 'wms' &&
+          [undefined, 'point', 'polygon'].includes(layer.geometry),
       ),
     }))
     // 3. filter categories which don't have any layers at the end of it all.
     .filter(category => category.layers.length > 0);
   const defaultValue = 'placeholder';
+
+  console.log('RENDERING');
 
   return (
     <FormControl {...rest}>
@@ -55,6 +79,7 @@ function LayerDropdown({
             ...category.layers.map(layer => (
               <MenuItem key={layer.id} value={layer.id}>
                 {layer.title}
+                <LayerIcon lyr={layer} style={{ marginLeft: 5 }} />
               </MenuItem>
             )),
           ],
@@ -66,6 +91,34 @@ function LayerDropdown({
               ]
             : []) as ReactElement[],
         )}
+        <Divider light />
+        <Typography variant="subtitle2" color="primary" align="center">
+          Data Types
+        </Typography>
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell align="center" style={{ width: '33%' }}>
+                <Typography variant="body2" color="primary">
+                  <IconPoint style={{ height: 15, marginRight: 5 }} />
+                  Points
+                </Typography>
+              </TableCell>
+              <TableCell align="center" style={{ width: '33%' }}>
+                <Typography variant="body2" color="primary">
+                  <IconPolygon style={{ height: 15, marginRight: 5 }} />
+                  Polygons
+                </Typography>
+              </TableCell>
+              <TableCell align="center" style={{ width: '33%' }}>
+                <Typography variant="body2" color="primary">
+                  <IconRaster style={{ height: 15, marginRight: 5 }} />
+                  Raster
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </Select>
     </FormControl>
   );
@@ -73,6 +126,7 @@ function LayerDropdown({
 
 interface LayerSelectorProps {
   type: LayerType['type'];
+  // types: Array<LayerType['type']>;
   value?: LayerKey;
   setValue: (val: LayerKey) => void;
   className?: string;

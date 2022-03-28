@@ -1,7 +1,7 @@
 import React from 'react';
 import { get } from 'lodash';
 import * as Sentry from '@sentry/browser';
-import { useIsAuthenticated } from '@azure/msal-react';
+import { useIsAuthenticated } from '@azure/msal-react'; // eslint-disable
 import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { appConfig } from '../../config';
@@ -14,6 +14,8 @@ import NotFound from '../404Page';
 import Login from '../Login';
 import muiTheme from '../../muiTheme';
 import Notifier from '../Notifier';
+
+console.log('TEST');
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {

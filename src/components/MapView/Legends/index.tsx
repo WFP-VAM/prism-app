@@ -74,12 +74,18 @@ function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
 }
 
 function Legends({ classes, layers, extent }: LegendsProps) {
+  console.log('starting Legends with', { classes, layers, extent });
   const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const features = analysisResult?.featureCollection.features;
   const hasData = features ? features.length > 0 : false;
 
+  // future work: this downloads an array of features
+  // it should be download the actual GeoJSON
+  // like { type: "FeatureCollection", features: [...] }
+  // seems like some work is going on with this here:
+  // https://github.com/WFP-VAM/prism-frontend/pull/208/files#diff-7ae5c288cb15a212f72f749c04fc8d4ed41fe529e99af7287a89af076502b178
   const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
     e.preventDefault();
     downloadToFile(
@@ -94,6 +100,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
 
   const legendItems = [
     ...layers.map(layer => {
+      // debugger; // eslint-disable-line
       if (!layer.legend || !layer.legendText) {
         // this layer doesn't have a legend (likely boundary), so lets ignore.
         return null;
@@ -107,6 +114,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
 
       const exposure = GetExposureFromLayer(layer);
 
+      console.log('layer.title:', layer, layer.title);
       return (
         <LegendItem
           classes={classes}
@@ -146,7 +154,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
                 onClick={e => handleAnalysisDownload(e)}
                 fullWidth
               >
-                Download
+                Download GeoJSON
               </Button>
             </Grid>
           </LegendItem>,
@@ -245,6 +253,8 @@ function LegendItem({
     }
     return value;
   };
+
+  console.log('legend;', legend);
 
   return (
     <ListItem disableGutters dense>

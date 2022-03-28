@@ -1,10 +1,15 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Position, FeatureCollection, Feature } from 'geojson';
+import clone from '@turf/clone';
+import { convertArea, featureCollection } from '@turf/helpers';
+import { featureEach } from '@turf/meta';
 import moment from 'moment';
 import { get } from 'lodash';
+import { calculate } from 'zonal'; // eslint-disable-line
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesFile } from '../config';
 import {
+  AdminLevelType,
   AggregationOperations,
   AsyncReturnType,
   BoundaryLayerProps,
@@ -15,10 +20,12 @@ import {
   LayerKey,
   ExposedPopulationDefinition,
   TableType,
+  DisplayStatsEnum,
 } from '../config/types';
 import {
   BaselineLayerResult,
   AnalysisResult,
+  PolygonAnalysisResult,
   ApiData,
   BaselineLayerData,
   checkBaselineDataLayer,
@@ -29,11 +36,18 @@ import {
   scaleAndFilterAggregateData,
   ExposedPopulationResult,
   scaleFeatureStat,
+  AdminStatsResult,
+  mergeFeaturesByProperty,
 } from '../utils/analysis-utils';
 import { getFullLocationName } from '../utils/name-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
+import {
+  getAdminNameProperty,
+  fetchAdminLayerGeoJSON,
+} from '../utils/admin-utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
+import { fetchWMSLayerAsGeoJSON } from '../utils/wfs-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, AdminLevelDataLayerData } from './layers/admin_level_data';
@@ -41,6 +55,8 @@ import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
+
+const AVAILABLE_API_STATS = ['max', 'mean', 'median', 'min', 'std', 'sum'];
 
 export type TableRowType = { [key: string]: string | number };
 export type TableData = {
@@ -178,6 +194,26 @@ export type AnalysisDispatchParams = {
   isExposure: boolean;
 };
 
+export type AdminStatsDispatchParams = {
+  adminLevel: AdminLevelType;
+  hazardLayer: WMSLayerProps;
+  extent: Extent;
+  date: ReturnType<Date['getTime']>;
+
+  // which statistic to display on the map
+  // all stats are displayed in the table
+  statistic: DisplayStatsEnum;
+};
+
+export type PolygonAnalysisDispatchParams = {
+  hazardLayer: WMSLayerProps;
+  adminLevel: number;
+  extent: Extent;
+  // threshold: ThresholdDefinition;
+  startDate: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
+  endDate: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
+};
+
 export type ExposedPopulationDispatchParams = {
   exposure: ExposedPopulationDefinition;
   statistic: AggregationOperations;
@@ -291,6 +327,110 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   );
 });
 
+export const requestAndStoreAdminStats = createAsyncThunk<
+  AdminStatsResult,
+  AdminStatsDispatchParams,
+  CreateAsyncThunkTypes
+>('analysisResultState/requestAndStoreAdminStats', async (params, api) => {
+  console.log('running requestAndStoreAdminStats with', { params, api });
+  const { adminLevel, date, extent, hazardLayer, statistic } = params;
+
+  const adminBoundaries = getBoundaryLayerSingleton();
+  console.log('adminBoundaries:', adminBoundaries);
+  const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
+    api.getState(),
+  ) as LayerData<BoundaryLayerProps>;
+  console.log('adminBoundariesData:', adminBoundariesData);
+
+  if (!adminBoundariesData) {
+    throw new Error('Boundary Layer not loaded!');
+  }
+
+  const apiRequest = createAPIRequestParams(hazardLayer, extent, date, {
+    adminLevel,
+  } as any);
+
+  console.log('api request:', apiRequest);
+
+  const apiRows = (await fetchApiData(
+    ANALYSIS_API_URL,
+    apiRequest,
+  )) as Object[];
+
+  // need to create function to offset/scale all relevant stats like min, median, max and mode
+  // scaleAndFilterAggregateData only applies to one stat/operation
+
+  // clone geojson of admin boundaries and pull out array of features
+  const adminBoundaryFeatures = clone((adminBoundariesData as any).data)
+    .features as Feature[];
+
+  const features = mergeFeaturesByProperty(
+    adminBoundaryFeatures,
+    apiRows,
+    adminBoundaries.adminCode,
+  );
+
+  console.log('apiRows:', apiRows);
+
+  const collection: FeatureCollection = {
+    type: 'FeatureCollection',
+    features,
+  };
+
+  console.log({ collection });
+
+  const groupBy = apiRequest.group_by;
+
+  // reuse legend from hazard layer
+  const { legend, legendText } = hazardLayer;
+
+  // future work is to support visualizing stats like sum and std by dynamically creating a legend
+  // const legend = createLegendFromFeatureArray(features, statistic);
+
+  // future work is to grab other column names instead of just groupBy
+  // so have actual name of the admin unit and not just a TS_PCODE
+
+  const tableRows = apiRows.map((apiRow: any) => {
+    const row: any = {};
+    Object.keys(apiRow).forEach((key: string) => {
+      let value = apiRow[key];
+      if (value === null) {
+        value = 'null';
+      }
+      if (key.startsWith('stats_')) {
+        row[key.replace('stats_', '')] = value;
+      } else {
+        row[key] = apiRow[key];
+      }
+    });
+
+    row.name = apiRow[groupBy]; // key for row elements in AnalysisTable
+
+    return row;
+  });
+
+  const tableColumns = [
+    groupBy,
+    statistic.toLowerCase(),
+    ...AVAILABLE_API_STATS.filter(
+      stat => stat.toLowerCase() !== statistic.toLowerCase(),
+    ),
+  ];
+
+  const result = new AdminStatsResult(
+    tableRows, // table rows
+    tableColumns,
+    collection, // featureCollection
+    hazardLayer,
+    adminLevel,
+    statistic,
+    legend,
+    legendText,
+  );
+
+  return result;
+});
+
 export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisResult,
   AnalysisDispatchParams,
@@ -381,6 +521,81 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     // we never use the raw api data besides for debugging. So lets not bother saving it in Redux for production
     process.env.NODE_ENV === 'production' ? undefined : aggregateData,
   );
+});
+
+export const requestAndStorePolygonAnalysis = createAsyncThunk<
+  PolygonAnalysisResult,
+  PolygonAnalysisDispatchParams,
+  CreateAsyncThunkTypes
+>('analysisResultState/requestAndStorePolygonAnalysis', async (params, api) => {
+  console.log('starting requestAndStorePolygonAnalysis with params', params);
+
+  const { adminLevel, hazardLayer, startDate, endDate, extent } = params;
+
+  // fetch admin zones
+  const zones = await fetchAdminLayerGeoJSON(adminLevel);
+  console.log('zones:', zones);
+
+  // fetch hazard polygons (classes)
+  const classes = await fetchWMSLayerAsGeoJSON({
+    lyr: hazardLayer,
+    startDate,
+    endDate,
+  });
+  console.log('classes:', classes);
+
+  const result = calculate({
+    zones,
+    zone_properties: [getAdminNameProperty(adminLevel)],
+    classes,
+    class_properties: hazardLayer?.zonal?.class_properties, // eslint-disable-line camelcase
+    preserve_features: true,
+  });
+  console.log('zonal result:', result);
+
+  // const zoneColumn = result.table.columns.find((column: string) => column.startsWith("zone:"));
+
+  const tableColumns = result.table.columns;
+
+  const tableRows = result.table.rows.map((row: any, i: number) => {
+    // eslint-disable-next-line no-param-reassign
+    row['stat:area'] = Math.round(
+      convertArea(row['stat:area'], 'meters', 'kilometers'),
+    );
+
+    // preformat null values as "null"
+    Object.keys(row).forEach((key: string) => {
+      const v: any = row[key];
+      if (v === null) {
+        row[key] = 'null'; // eslint-disable-line no-param-reassign
+      }
+    });
+
+    // // rename zone as name, which will play nicer with AnalysisTable
+    // // because AnalysisTable keys based on .name
+    // // eslint-disable-next-line no-param-reassign
+    // row.zone = row[zoneColumn];
+    // // eslint-disable-next-line no-param-reassign
+    // delete row[zoneColumn];
+
+    // create key for AnalysisTable
+    // eslint-disable-next-line no-param-reassign
+    row.name = i;
+
+    return row;
+  });
+
+  const analysisResult = new PolygonAnalysisResult(
+    tableRows,
+    tableColumns,
+    result.geojson,
+    hazardLayer,
+    adminLevel,
+    'percentage',
+  );
+  console.log('analysisResult:', analysisResult);
+
+  return analysisResult;
 });
 
 export const analysisResultSlice = createSlice({
@@ -480,6 +695,70 @@ export const analysisResultSlice = createSlice({
         isLoading: true,
       }),
     );
+
+    // admin stats
+    builder.addCase(
+      requestAndStoreAdminStats.fulfilled,
+      (
+        { result, ...rest },
+        { payload }: PayloadAction<AdminStatsResult>,
+      ): AnalysisResultState => ({
+        ...rest,
+        isLoading: false,
+        result: payload as any,
+      }),
+    );
+
+    builder.addCase(
+      requestAndStoreAdminStats.rejected,
+      (state, action): AnalysisResultState => ({
+        ...state,
+        isLoading: false,
+        error: action.error.message
+          ? action.error.message
+          : action.error.toString(),
+      }),
+    );
+
+    builder.addCase(
+      requestAndStoreAdminStats.pending,
+      (state): AnalysisResultState => ({
+        ...state,
+        isLoading: true,
+      }),
+    );
+
+    // polygon analysis
+    builder.addCase(
+      requestAndStorePolygonAnalysis.fulfilled,
+      (
+        { result, ...rest },
+        { payload }: PayloadAction<PolygonAnalysisResult>,
+      ): AnalysisResultState => ({
+        ...rest,
+        isLoading: false,
+        result: payload as any,
+      }),
+    );
+
+    builder.addCase(
+      requestAndStorePolygonAnalysis.rejected,
+      (state, action): AnalysisResultState => ({
+        ...state,
+        isLoading: false,
+        error: action.error.message
+          ? action.error.message
+          : action.error.toString(),
+      }),
+    );
+
+    builder.addCase(
+      requestAndStorePolygonAnalysis.pending,
+      (state): AnalysisResultState => ({
+        ...state,
+        isLoading: true,
+      }),
+    );
   },
 });
 
@@ -492,7 +771,8 @@ export const getCurrentData = (state: RootState): TableData =>
 
 export const analysisResultSelector = (
   state: RootState,
-): AnalysisResult | undefined => state.analysisResultState.result;
+): AnalysisResult | AdminStatsResult | undefined =>
+  state.analysisResultState.result;
 
 export const isAnalysisLoadingSelector = (state: RootState): boolean =>
   state.analysisResultState.isLoading;

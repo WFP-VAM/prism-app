@@ -18,6 +18,8 @@ declare module '*.css' {
 
 declare module '*.png';
 declare module 'geotiff';
+declare module 'moment';
+declare module 'zonal';
 
 declare module 'redux-async-initial-state';
 

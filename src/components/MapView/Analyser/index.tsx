@@ -9,6 +9,7 @@ import {
   Box,
   Button,
   createStyles,
+  Divider,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -32,23 +33,32 @@ import {
   getDisplayBoundaryLayers,
 } from '../../../config/utils';
 import {
+  AdminLevelType,
   AggregationOperations,
   AdminLevelDataLayerProps,
+  BasicDataType,
+  DisplayStatsEnum,
+  OperatorEnum,
   WMSLayerProps,
   LayerKey,
   BoundaryLayerProps,
+  RasterAnalysisEnum,
 } from '../../../config/types';
 
 import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import {
+  AdminStatsDispatchParams,
   AnalysisDispatchParams,
+  PolygonAnalysisDispatchParams,
   analysisResultSelector,
   clearAnalysisResult,
   isAnalysisLayerActiveSelector,
   isAnalysisLoadingSelector,
   requestAndStoreAnalysis,
+  requestAndStorePolygonAnalysis,
   setIsMapLayerActive,
+  requestAndStoreAdminStats,
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
 import {
@@ -56,8 +66,12 @@ import {
   downloadCSVFromTableData,
   BaselineLayerResult,
   ExposedPopulationResult,
+  PolygonAnalysisResult,
+  AdminStatsResult,
 } from '../../../utils/analysis-utils';
+import AdminLevelDropdown from '../Layers/AdminLevelDropdown';
 import LayerDropdown from '../Layers/LayerDropdown';
+import SimpleDropdown from '../SimpleDropdown';
 import {
   safeDispatchRemoveLayer,
   safeDispatchAddLayer,
@@ -68,6 +82,7 @@ import {
 } from '../../../context/mapStateSlice/selectors';
 import { useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
+import { IconPoint, IconPolygon, IconRaster } from '../Icons';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -86,13 +101,49 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   // form elements
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
+  const [rasterAnalysisType, setRasterAnalysisType] = useState<
+    RasterAnalysisEnum
+  >(RasterAnalysisEnum.Admin);
+  const [adminLevel, setAdminLevel] = useState<AdminLevelType>(1);
+  const [hazardDataType, setHazardDataType] = useState<BasicDataType | null>(
+    null,
+  );
   const [statistic, setStatistic] = useState(AggregationOperations.Mean);
+  const [displayStatistic, setDisplayStatistic] = useState(
+    DisplayStatsEnum.Mean,
+  );
   const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>();
+  const [operator, setOperator] = useState<OperatorType>();
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const [startDate, setStartDate] = useState<number | null>(null);
+  const [endDate, setEndDate] = useState<number | null>(null);
+
+  const [exposureOperator, setExposureOperator] = useState<OperatorEnum>(
+    OperatorEnum.eq,
+  );
 
   const [belowThreshold, setBelowThreshold] = useState('');
   const [aboveThreshold, setAboveThreshold] = useState('');
   const [thresholdError, setThresholdError] = useState<string | null>(null);
+
+  const displayDate = hazardLayerId && hazardDataType === BasicDataType.Raster;
+  // display data range if hazard data is vector based
+  const displayDateRange =
+    (hazardLayerId && hazardDataType === BasicDataType.Point) ||
+    hazardDataType === BasicDataType.LineString ||
+    hazardDataType === BasicDataType.Polygon;
+
+  // display admin level dropdown
+  const displayAdminLevelDropdown =
+    hazardLayerId &&
+    ((hazardDataType === BasicDataType.Raster &&
+      rasterAnalysisType === RasterAnalysisEnum.Admin) ||
+      hazardDataType === BasicDataType.Polygon);
+
+  const displayDownloadTableButton =
+    analysisResult instanceof BaselineLayerResult ||
+    analysisResult instanceof PolygonAnalysisResult ||
+    analysisResult instanceof AdminStatsResult;
 
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
@@ -101,6 +152,44 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [previousBaselineId, setPreviousBaselineId] = useState<
     LayerKey | undefined
   >(preSelectedBaselineLayer?.id);
+
+  function AnalysisTypeSubHeading() {
+    const height = 20;
+    if (hazardDataType === BasicDataType.Point) {
+      return (
+        <>
+          <IconPoint style={{ height, marginRight: 10 }} />
+          Point data analysis
+        </>
+      );
+    }
+
+    if (hazardDataType === BasicDataType.Polygon) {
+      return (
+        <>
+          <IconPolygon style={{ height, marginRight: 10 }} />
+          Polygon analysis
+        </>
+      );
+    }
+
+    if (hazardDataType === BasicDataType.Raster) {
+      return (
+        <>
+          <IconRaster style={{ height, marginRight: 10 }} />
+          Raster analysis
+        </>
+      );
+    }
+
+    // return placeholder
+    return (
+      <>
+        <img src="" alt="" style={{ height: 30 }} />
+        &nbsp;
+      </>
+    );
+  }
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -111,10 +200,28 @@ function Analyser({ extent, classes }: AnalyserProps) {
       : null;
     if (!dates || dates.length === 0) {
       setSelectedDate(null);
+      setStartDate(null);
+      setEndDate(null);
     } else {
-      setSelectedDate(dates[dates.length - 1]);
+      const lastDate = dates[dates.length - 1];
+      setSelectedDate(lastDate);
+      setStartDate(lastDate);
+      setEndDate(lastDate);
     }
   }, [availableDates, hazardLayerId]);
+
+  useEffect(() => {
+    if (hazardLayerId) {
+      const newHazardDataType =
+        (LayerDefinitions[hazardLayerId] as any).geometry || 'raster';
+      if (newHazardDataType !== hazardDataType) {
+        setHazardDataType(newHazardDataType);
+      }
+    } else if (hazardDataType !== null) {
+      setHazardDataType(null);
+    }
+  }, [hazardDataType, hazardLayerId]);
+  console.log({ hazardDataType });
 
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
@@ -144,22 +251,20 @@ function Analyser({ extent, classes }: AnalyserProps) {
     }
   };
 
-  const statisticOptions = Object.entries(AggregationOperations)
-    .filter(([, value]) => value !== AggregationOperations.Sum) // sum is used only for exposure analysis.
-    .map(([key, value]) => (
-      <FormControlLabel
-        key={key}
-        value={value}
-        control={
-          <Radio
-            className={classes.radioOptions}
-            color="default"
-            size="small"
-          />
-        }
-        label={key}
-      />
-    ));
+  const rasterAnalysisTypeOptions = [
+    [RasterAnalysisEnum.Admin, 'Generate admin level statistics'],
+    [RasterAnalysisEnum.Exposed, 'Calculate area exposed'],
+    [RasterAnalysisEnum.Threshold, 'Threshold exceedence'],
+  ].map(([key, label]) => (
+    <FormControlLabel
+      key={key}
+      value={key}
+      control={
+        <Radio className={classes.radioOptions} color="default" size="small" />
+      }
+      label={label}
+    />
+  ));
 
   const activateUniqueBoundary = () => {
     if (!baselineLayerId) {
@@ -190,7 +295,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   const deactivateUniqueBoundary = () => {
     if (!baselineLayerId) {
-      throw new Error('Layer should be selected to run analysis');
+      return;
+      // throw new Error('Layer should be selected to run analysis');
     }
     const baselineLayer = LayerDefinitions[
       baselineLayerId
@@ -270,38 +376,156 @@ function Analyser({ extent, classes }: AnalyserProps) {
       return;
     } // hasn't been calculated yet
 
-    if (!selectedDate) {
-      throw new Error('Date must be given to run analysis');
-    }
-
-    if (!hazardLayerId || !baselineLayerId) {
-      throw new Error('Layer should be selected to run analysis');
+    if (!hazardLayerId) {
+      throw new Error('Hazard layer should be selected to run analysis');
     }
 
     const selectedHazardLayer = LayerDefinitions[
       hazardLayerId
     ] as WMSLayerProps;
-    const selectedBaselineLayer = LayerDefinitions[
-      baselineLayerId
-    ] as AdminLevelDataLayerProps;
 
-    activateUniqueBoundary();
+    if (hazardDataType === BasicDataType.Polygon) {
+      if (!startDate) {
+        throw new Error('Date Range must be given to run analysis');
+      }
+      if (!endDate) {
+        throw new Error('Date Range must be given to run analysis');
+      }
 
-    const params: AnalysisDispatchParams = {
-      hazardLayer: selectedHazardLayer,
-      baselineLayer: selectedBaselineLayer,
-      date: selectedDate,
-      statistic,
-      extent,
-      threshold: {
-        above: parseFloat(aboveThreshold) || undefined,
-        below: parseFloat(belowThreshold) || undefined,
-      },
-      isExposure: false,
-    };
+      const params: PolygonAnalysisDispatchParams = {
+        hazardLayer: selectedHazardLayer,
+        adminLevel,
+        startDate,
+        endDate,
+        extent,
+      };
 
-    await dispatch(requestAndStoreAnalysis(params));
+      await dispatch(requestAndStorePolygonAnalysis(params));
+    } else if (
+      hazardDataType === BasicDataType.Raster ||
+      rasterAnalysisType === RasterAnalysisEnum.Admin
+    ) {
+      console.log('running raster admin analysis stats');
+
+      if (!hazardLayerId) {
+        throw new Error('Hazard layer must be selected to run analysis');
+      }
+
+      if (!selectedDate) {
+        throw new Error('Date must be given to run analysis');
+      }
+
+      const params: AdminStatsDispatchParams = {
+        adminLevel,
+        date: selectedDate,
+        extent,
+        hazardLayer: selectedHazardLayer,
+        statistic: displayStatistic,
+      };
+      console.log('params:', params);
+
+      await dispatch(requestAndStoreAdminStats(params));
+    } else {
+      if (!hazardLayerId || !baselineLayerId) {
+        throw new Error('Layer should be selected to run analysis');
+      }
+
+      const selectedBaselineLayer = LayerDefinitions[
+        baselineLayerId
+      ] as AdminLevelDataLayerProps;
+
+      activateUniqueBoundary();
+
+      if (!selectedDate) {
+        throw new Error('Date must be given to run analysis');
+      }
+
+      const params: AnalysisDispatchParams = {
+        hazardLayer: selectedHazardLayer,
+        baselineLayer: selectedBaselineLayer,
+        date: selectedDate,
+        statistic,
+        extent,
+        threshold: {
+          above: parseFloat(aboveThreshold) || undefined,
+          below: parseFloat(belowThreshold) || undefined,
+        },
+        isExposure: false,
+      };
+
+      await dispatch(requestAndStoreAnalysis(params));
+    }
   };
+
+  console.log({ setRasterAnalysisType, hazardLayerId });
+
+  console.log(availableDates);
+
+  const availableHazardLayerDates = hazardLayerId
+    ? availableDates[
+        (LayerDefinitions[hazardLayerId] as WMSLayerProps).serverLayerName
+      ]?.map(d => new Date(d)) || []
+    : [];
+  console.log('availableHazardLayerDates:', availableHazardLayerDates);
+
+  console.log('isAnalysisLoading:', isAnalysisLoading);
+  console.log('analysisResult:', analysisResult);
+
+  let tableRows;
+  if (analysisResult instanceof PolygonAnalysisResult) {
+    tableRows = analysisResult.tableData;
+  } else if (analysisResult instanceof BaselineLayerResult) {
+    tableRows = analysisResult.tableData;
+  } else if (analysisResult instanceof ExposedPopulationResult) {
+    // pass
+  } else if (analysisResult instanceof AdminStatsResult) {
+    tableRows = analysisResult.tableData;
+  }
+  console.log({ isAnalyserFormOpen, tableRows });
+
+  // const displayBaselineLayerDropdown = hazardDataType === BasicDataType.Raster && (rasterAnalysisType === RasterAnalysisEnum.Exposed || rasterAnalysisType === RasterAnalysisEnum.Threshold);
+  const displayBaselineLayerDropdown = false;
+
+  const displayExposureValue =
+    hazardLayerId &&
+    hazardDataType === BasicDataType.Raster &&
+    rasterAnalysisType === RasterAnalysisEnum.Exposed;
+
+  const displayThresholdOption =
+    hazardDataType === BasicDataType.Raster &&
+    (rasterAnalysisType === RasterAnalysisEnum.Exposed ||
+      rasterAnalysisType === RasterAnalysisEnum.Threshold);
+
+  const displayRasterAnalysisType = hazardDataType === BasicDataType.Raster;
+  const displayRunAnalysisButton = hazardLayerId && !analysisResult;
+  // const displayAggOpsDropdown = hazardDataType === BasicDataType.Raster && rasterAnalysisType === RasterAnalysisEnum.Exposed;
+  const displayAggOpsDropdown = false;
+  const displayStatDropdown =
+    hazardDataType === BasicDataType.Raster &&
+    rasterAnalysisType === RasterAnalysisEnum.Admin;
+  const displayOperatorDropdown =
+    (hazardDataType === BasicDataType.Raster &&
+      (rasterAnalysisType === RasterAnalysisEnum.Exposed ||
+        rasterAnalysisType === RasterAnalysisEnum.Threshold)) ||
+    hazardDataType === BasicDataType.Polygon ||
+    hazardDataType === BasicDataType.Point;
+
+  console.log({ displayStatDropdown, rasterAnalysisType });
+
+  const disableRunAnalysisButton =
+    !!thresholdError || // if there is a threshold error
+    !selectedDate || // or date hasn't been selected
+    !hazardLayerId || // or hazard layer hasn't been selected
+    (rasterAnalysisType !== RasterAnalysisEnum.Admin && !baselineLayerId) || // or baseline layer hasn't been selected (don't need baseline layer if doing admin stats)
+    isAnalysisLoading; // or analysis is currently loading
+
+  console.log({
+    thresholdError,
+    selectedDate,
+    hazardLayerId,
+    baselineLayerId,
+    isAnalysisLoading,
+  });
 
   return (
     <div className={classes.analyser}>
@@ -328,91 +552,188 @@ function Analyser({ extent, classes }: AnalyserProps) {
           <div>
             <div className={classes.newAnalyserContainer}>
               <div className={classes.analyserOptions}>
+                <AnalysisTypeSubHeading />
+              </div>
+              <Divider variant="middle" />
+
+              <div className={classes.analyserOptions}>
                 <Typography variant="body2">Hazard Layer</Typography>
                 <LayerDropdown
                   type="wms"
+                  // types={["wfs", "wms"]}
                   value={hazardLayerId}
                   setValue={setHazardLayerId}
                   className={classes.selector}
                   placeholder="Choose hazard layer"
                 />
               </div>
-              <div className={classes.analyserOptions}>
-                <Typography variant="body2">Statistic</Typography>
-                <FormControl component="div">
-                  <RadioGroup
-                    name="statistics"
+
+              {displayRasterAnalysisType && (
+                <div className={classes.analyserOptions}>
+                  <Typography variant="body2">Type of Analysis</Typography>
+                  <FormControl component="div">
+                    <RadioGroup
+                      name="rasterAnalysisType"
+                      value={rasterAnalysisType}
+                      onChange={onOptionChange(setRasterAnalysisType)}
+                      row
+                    >
+                      {rasterAnalysisTypeOptions}
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+              )}
+
+              {displayAggOpsDropdown && (
+                <div className={classes.analyserOptions}>
+                  <Typography variant="body2">Statistic</Typography>
+                  <SimpleDropdown
+                    options={Object.entries(AggregationOperations)}
                     value={statistic}
-                    onChange={onOptionChange(setStatistic)}
-                    row
-                  >
-                    {statisticOptions}
-                  </RadioGroup>
-                </FormControl>
-              </div>
-              <div className={classes.analyserOptions}>
-                <Typography variant="body2">Baseline Layer</Typography>
-                <LayerDropdown
-                  type="admin_level_data"
-                  value={baselineLayerId}
-                  setValue={setBaselineLayerId}
-                  className={classes.selector}
-                  placeholder="Choose baseline layer"
-                />
-              </div>
-              <div className={classes.analyserOptions}>
-                <Typography variant="body2">Threshold</Typography>
-                <TextField
-                  id="filled-number"
-                  error={!!thresholdError}
-                  helperText={thresholdError}
-                  className={classes.numberField}
-                  label="Below"
-                  type="number"
-                  value={belowThreshold}
-                  onChange={onThresholdOptionChange('below')}
-                  variant="filled"
-                />
-                <TextField
-                  id="filled-number"
-                  label="Above"
-                  className={classes.numberField}
-                  value={aboveThreshold}
-                  onChange={onThresholdOptionChange('above')}
-                  type="number"
-                  variant="filled"
-                />
-              </div>
-              <div className={classes.analyserOptions}>
-                <Typography variant="body2">Date</Typography>
-                <DatePicker
-                  selected={selectedDate ? new Date(selectedDate) : null}
-                  onChange={date =>
-                    setSelectedDate(date?.getTime() || selectedDate)
-                  }
-                  maxDate={new Date()}
-                  todayButton="Today"
-                  peekNextMonth
-                  showMonthDropdown
-                  showYearDropdown
-                  dropdownMode="select"
-                  customInput={<Input />}
-                  popperClassName={classes.calendarPopper}
-                  includeDates={
-                    hazardLayerId
-                      ? availableDates[
-                          (LayerDefinitions[hazardLayerId] as WMSLayerProps)
-                            .serverLayerName
-                        ]?.map(d => new Date(d)) || []
-                      : []
-                  }
-                />
-              </div>
+                    onChange={setStatistic}
+                  />
+                </div>
+              )}
+
+              {displayStatDropdown && (
+                <div className={classes.analyserOptions}>
+                  <Typography variant="body2">Display Statistic</Typography>
+                  <SimpleDropdown
+                    options={Object.entries(DisplayStatsEnum)}
+                    value={displayStatistic}
+                    onChange={setDisplayStatistic}
+                  />
+                </div>
+              )}
+
+              {displayAdminLevelDropdown && (
+                <div className={classes.analyserOptions}>
+                  <Typography variant="body2">Admin Level</Typography>
+                  <AdminLevelDropdown
+                    value={adminLevel}
+                    onChange={setAdminLevel}
+                  />
+                </div>
+              )}
+
+              {displayExposureValue && (
+                <div className={classes.analyserOptions}>
+                  <Typography variant="body2">Exposure Value</Typography>
+                  <Typography variant="body2">Threshold</Typography>
+                  <SimpleDropdown
+                    options={Object.entries(OperatorEnum)}
+                    value={exposureOperator}
+                    onChange={setExposureOperator}
+                  />
+                </div>
+              )}
+
+              {displayBaselineLayerDropdown && (
+                <div className={classes.analyserOptions}>
+                  <Typography variant="body2">Baseline Layer</Typography>
+                  <LayerDropdown
+                    type="admin_level_data"
+                    value={baselineLayerId}
+                    setValue={setBaselineLayerId}
+                    className={classes.selector}
+                    placeholder="Choose baseline layer"
+                  />
+                </div>
+              )}
+
+              {displayThresholdOption && (
+                <div className={classes.analyserOptions}>
+                  <Typography variant="body2">Threshold</Typography>
+                  <TextField
+                    id="filled-number"
+                    error={!!thresholdError}
+                    helperText={thresholdError}
+                    className={classes.numberField}
+                    label="Below"
+                    type="number"
+                    value={belowThreshold}
+                    onChange={onThresholdOptionChange('below')}
+                    variant="filled"
+                  />
+                  <TextField
+                    id="filled-number"
+                    label="Above"
+                    className={classes.numberField}
+                    value={aboveThreshold}
+                    onChange={onThresholdOptionChange('above')}
+                    type="number"
+                    variant="filled"
+                  />
+                </div>
+              )}
+
+              {displayDateRange && (
+                <div className={classes.analyserOptions}>
+                  <Typography variant="body2">Date Range</Typography>
+                  <div>
+                    <Typography variant="body2">Start Date</Typography>
+                    <DatePicker
+                      selected={startDate ? new Date(startDate) : null}
+                      onChange={date =>
+                        setStartDate(date?.getTime() || startDate)
+                      }
+                      maxDate={new Date()}
+                      todayButton="Today"
+                      peekNextMonth
+                      showMonthDropdown
+                      showYearDropdown
+                      dropdownMode="select"
+                      customInput={<Input />}
+                      popperClassName={classes.calendarPopper}
+                      includeDates={availableHazardLayerDates}
+                    />
+                  </div>
+                  <div>
+                    <Typography variant="body2">End Date</Typography>
+                    <DatePicker
+                      selected={endDate ? new Date(endDate) : null}
+                      onChange={date => setEndDate(date?.getTime() || endDate)}
+                      maxDate={new Date()}
+                      todayButton="Today"
+                      peekNextMonth
+                      showMonthDropdown
+                      showYearDropdown
+                      dropdownMode="select"
+                      customInput={<Input />}
+                      popperClassName={classes.calendarPopper}
+                      includeDates={availableHazardLayerDates}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {displayDate && (
+                <div className={classes.analyserOptions}>
+                  <Typography variant="body2">Date</Typography>
+                  <DatePicker
+                    selected={selectedDate ? new Date(selectedDate) : null}
+                    onChange={date =>
+                      setSelectedDate(date?.getTime() || selectedDate)
+                    }
+                    maxDate={new Date()}
+                    todayButton="Today"
+                    peekNextMonth
+                    showMonthDropdown
+                    showYearDropdown
+                    dropdownMode="select"
+                    customInput={<Input />}
+                    popperClassName={classes.calendarPopper}
+                    includeDates={availableHazardLayerDates}
+                  />
+                </div>
+              )}
             </div>
 
             {!isAnalysisLoading &&
               analysisResult &&
-              analysisResult instanceof BaselineLayerResult && (
+              (analysisResult instanceof BaselineLayerResult ||
+                analysisResult instanceof PolygonAnalysisResult ||
+                analysisResult instanceof AdminStatsResult) && (
                 <>
                   <FormGroup>
                     <FormControlLabel
@@ -438,16 +759,18 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   </FormGroup>
                   {isTableViewOpen && (
                     <AnalysisTable
-                      tableData={analysisResult.tableData}
+                      tableData={tableRows}
                       columns={getAnalysisTableColumns(analysisResult)}
                     />
                   )}
-                  <Button
-                    className={classes.innerAnalysisButton}
-                    onClick={() => downloadCSVFromTableData(analysisResult)}
-                  >
-                    <Typography variant="body2">Download</Typography>
-                  </Button>
+                  {displayDownloadTableButton && (
+                    <Button
+                      className={classes.innerAnalysisButton}
+                      onClick={() => downloadCSVFromTableData(analysisResult)}
+                    >
+                      <Typography variant="body2">Download</Typography>
+                    </Button>
+                  )}
                   <Button
                     className={classes.innerAnalysisButton}
                     onClick={clearAnalysis}
@@ -456,22 +779,17 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   </Button>
                 </>
               )}
-            {(!analysisResult ||
-              analysisResult instanceof ExposedPopulationResult) && (
+
+            {displayRunAnalysisButton && (
               <Button
                 className={classes.innerAnalysisButton}
                 onClick={runAnalyser}
-                disabled={
-                  !!thresholdError || // if there is a threshold error
-                  !selectedDate || // or date hasn't been selected
-                  !hazardLayerId || // or hazard layer hasn't been selected
-                  !baselineLayerId || // or baseline layer hasn't been selected
-                  isAnalysisLoading // or analysis is currently loading
-                }
+                disabled={disableRunAnalysisButton}
               >
                 <Typography variant="body2">Run Analysis</Typography>
               </Button>
             )}
+
             {isAnalysisLoading ? <LinearProgress /> : null}
           </div>
         ) : null}
@@ -498,7 +816,7 @@ const styles = (theme: Theme) =>
       borderTopRightRadius: '10px',
       borderBottomRightRadius: '10px',
       height: 'auto',
-      maxHeight: '60vh',
+      maxHeight: '80vh',
     },
     analyserButton: {
       height: '36px',

@@ -104,7 +104,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
           moment(stateStartDate).endOf('year'),
         )
         .by('days'),
-    ).map(date => {
+    ).map((date: any) => {
       return {
         value: date.valueOf(),
         label: date.format('MMM DD YYYY'),

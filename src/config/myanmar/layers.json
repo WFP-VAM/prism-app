@@ -296,19 +296,19 @@
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "label": "-0", "color": "#ffffff", "alpha": 0 },
-      { "label": "1 mm", "color": "#ffffff" },
-      { "label": "20 mm", "color": "#faf5e6" },
-      { "label": "40 mm", "color": "#faf3d2" },
-      { "label": "60 mm", "color": "#dae3a1" },
-      { "label": "80 mm", "color": "#a0c787" },
-      { "label": "100 mm", "color": "#68ab79" },
-      { "label": "125 mm", "color": "#9beafa" },
-      { "label": "150 mm", "color": "#00b1de" },
-      { "label": "200 mm", "color": "#005ae6" },
-      { "label": "250 mm", "color": "#0000c8" },
-      { "label": "300 mm", "color": "#a000fa" },
-      { "label": "350 mm", "color": "#fa78fa" }
+      { "label": "-0", "color": "#ffffff", "alpha": 0, "value": 0 },
+      { "label": "1 mm", "color": "#ffffff", "value": 1 },
+      { "label": "20 mm", "color": "#faf5e6", "value": 20 },
+      { "label": "40 mm", "color": "#faf3d2", "value": 40 },
+      { "label": "60 mm", "color": "#dae3a1", "value": 60 },
+      { "label": "80 mm", "color": "#a0c787", "value": 80 },
+      { "label": "100 mm", "color": "#68ab79", "value": 100 },
+      { "label": "125 mm", "color": "#9beafa", "value": 125 },
+      { "label": "150 mm", "color": "#00b1de", "value": 150 },
+      { "label": "200 mm", "color": "#005ae6", "value": 200 },
+      { "label": "250 mm", "color": "#0000c8", "value": 250 },
+      { "label": "300 mm", "color": "#a000fa", "value": 300 },
+      { "label": "350 mm", "color": "#fa78fa", "value": 350 }
     ]
   },
   "rain_anomaly_dekad": {
@@ -1251,6 +1251,9 @@
     "exposure": {
       "id": "wp_pop_cicunadj",
       "key": "label"
+    },
+    "zonal": {
+      "class_properties": ["label"]
     },
     "geometry": "polygon"
   },
