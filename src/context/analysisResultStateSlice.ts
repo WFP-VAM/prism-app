@@ -5,7 +5,11 @@ import { convertArea, featureCollection } from '@turf/helpers';
 import { featureEach } from '@turf/meta';
 import moment from 'moment';
 import { get } from 'lodash';
+<<<<<<< HEAD
 import { calculate } from 'zonal'; // eslint-disable-line
+=======
+import { calculate } from 'zonal';
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesFile } from '../config';
 import {
@@ -194,6 +198,7 @@ export type AnalysisDispatchParams = {
   isExposure: boolean;
 };
 
+<<<<<<< HEAD
 export type AdminStatsDispatchParams = {
   adminLevel: AdminLevelType;
   hazardLayer: WMSLayerProps;
@@ -205,6 +210,8 @@ export type AdminStatsDispatchParams = {
   statistic: DisplayStatsEnum;
 };
 
+=======
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
 export type PolygonAnalysisDispatchParams = {
   hazardLayer: WMSLayerProps;
   adminLevel: number;
@@ -528,7 +535,11 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   PolygonAnalysisDispatchParams,
   CreateAsyncThunkTypes
 >('analysisResultState/requestAndStorePolygonAnalysis', async (params, api) => {
+<<<<<<< HEAD
   console.log('starting requestAndStorePolygonAnalysis with params', params);
+=======
+  console.log('starting requestAndStorePolygonAnalysis');
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
 
   const { adminLevel, hazardLayer, startDate, endDate, extent } = params;
 
@@ -537,22 +548,31 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   console.log('zones:', zones);
 
   // fetch hazard polygons (classes)
+<<<<<<< HEAD
   const classes = await fetchWMSLayerAsGeoJSON({
     lyr: hazardLayer,
     startDate,
     endDate,
   });
+=======
+  const classes = await fetchWMSLayerAsGeoJSON(hazardLayer);
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
   console.log('classes:', classes);
 
   const result = calculate({
     zones,
     zone_properties: [getAdminNameProperty(adminLevel)],
     classes,
+<<<<<<< HEAD
     class_properties: hazardLayer?.zonal?.class_properties, // eslint-disable-line camelcase
+=======
+    // class_properties: null, // need to capture or hard-code these to start
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
     preserve_features: true,
   });
   console.log('zonal result:', result);
 
+<<<<<<< HEAD
   // const zoneColumn = result.table.columns.find((column: string) => column.startsWith("zone:"));
 
   const tableColumns = result.table.columns;
@@ -588,6 +608,23 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   const analysisResult = new PolygonAnalysisResult(
     tableRows,
     tableColumns,
+=======
+  // to-do: update TableRow for vector results
+  // to-do: not sure coordinates table row makes sense because zone can have multiple rows one for each class
+  // const tableData = result.table.map((row: Object) => {
+  //   // remove prefixes from results
+  //   const newRow: any = {};
+  //   for (let key in row) {
+  //     const newKey = key.split(":")[1];
+  //     newRow[newKey] = (row as any)[key];
+  //   }
+  //   return newRow;
+  // });
+  // console.log("tableData:", tableData);
+
+  const analysisResult = new PolygonAnalysisResult(
+    result.table,
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
     result.geojson,
     hazardLayer,
     adminLevel,
@@ -696,6 +733,7 @@ export const analysisResultSlice = createSlice({
       }),
     );
 
+<<<<<<< HEAD
     // admin stats
     builder.addCase(
       requestAndStoreAdminStats.fulfilled,
@@ -729,6 +767,9 @@ export const analysisResultSlice = createSlice({
     );
 
     // polygon analysis
+=======
+    // / polygon analysis
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
     builder.addCase(
       requestAndStorePolygonAnalysis.fulfilled,
       (

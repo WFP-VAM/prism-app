@@ -1877,6 +1877,15 @@
   resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-6.5.0.tgz#f79af094bd6b8ce7ed2bd3e089a8493ee6cae82e"
   integrity sha512-VbI1dV5bLFzohYYdgqwikdMVpe7pJ9X3E+dlr425wa2/sMJqYDhTO++ec38/pcPvPE6oD9WEEeU3Xu3gza+VPw==
 
+"@turf/intersect@^6.5.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/intersect/-/intersect-6.5.0.tgz#a14e161ddd0264d0f07ac4e325553c70c421f9e6"
+  integrity sha512-2legGJeKrfFkzntcd4GouPugoqPUjexPZnOvfez+3SfIMrHvulw8qV8u7pfVyn2Yqs53yoVCEjS5sEpvQ5YRQg==
+  dependencies:
+    "@turf/helpers" "^6.5.0"
+    "@turf/invariant" "^6.5.0"
+    polygon-clipping "^0.15.3"
+
 "@turf/invariant@^6.5.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-6.5.0.tgz#970afc988023e39c7ccab2341bd06979ddc7463f"
@@ -9373,9 +9382,15 @@ papaparse@^5.2.0:
   integrity sha512-ylq1wgUSnagU+MKQtNeVqrPhZuMYBvOSL00DHycFTCxownF95gpLAk1HiHdUW77N8yxRq1qHXLdlIPyBSG9NSA==
 
 papaparse@^5.3.1:
+<<<<<<< HEAD
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-5.3.2.tgz#d1abed498a0ee299f103130a6109720404fbd467"
   integrity sha512-6dNZu0Ki+gyV0eBsFKJhYr+MdQYAzFUGlBMNj3GNrmHxmz1lfRa24CjFObPXtjcetlOv5Ad299MhIK0znp3afw==
+=======
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/papaparse/-/papaparse-5.3.1.tgz#770b7a9124d821d4b2132132b7bd7dce7194b5b1"
+  integrity sha512-Dbt2yjLJrCwH2sRqKFFJaN5XgIASO9YOFeFP8rIBRG2Ain8mqk5r1M6DkfvqEVozVcz3r3HaUGw253hA1nLIcA==
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
 
 parallel-transform@^1.1.0:
   version "1.2.0"
@@ -13441,13 +13456,25 @@ yargs@^13.3.0:
     y18n "^4.0.0"
     yargs-parser "^13.1.2"
 
+<<<<<<< HEAD
 zonal@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/zonal/-/zonal-0.3.0.tgz#801a06c53800c537b5c627f7d8d86487812ac29e"
   integrity sha512-/ulF+/qWKBq9p7ACEzUWkukVN+0nDZJkAMSQ7Je0bEedN+AcuiMTys1578tsyptiJ2rkyU9zZjUHqcho9Rq07A==
+=======
+zonal@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/zonal/-/zonal-0.1.0.tgz#ade206e4c11cb37d89c9e72a04cbeba049e99d97"
+  integrity sha512-Xw6NlSO2Z5TkHjB4PhcGLC51Z0t0qpLceG6V65g6QM1o6fL3NhpxCyQ0jYlS6P+fkYQWLSigN5Hc5Yin7g1mUw==
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
   dependencies:
     "@turf/area" "^6.5.0"
     "@turf/boolean-point-in-polygon" "^6.5.0"
     "@turf/clone" "^6.5.0"
     "@turf/difference" "^6.5.0"
+<<<<<<< HEAD
+=======
+    "@turf/intersect" "^6.5.0"
+    lodash.sortby "^4.7.0"
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
     papaparse "^5.3.1"

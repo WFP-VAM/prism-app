@@ -434,6 +434,7 @@ export async function loadFeaturesClientSide(
   }, [] as GeoJsonBoundary[]);
 }
 
+<<<<<<< HEAD
 export class AdminStatsResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
@@ -482,12 +483,17 @@ export class AdminStatsResult {
   }
 }
 
+=======
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
 // not in analysisResultStateSlice to prevent import cycle
 export class PolygonAnalysisResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
   tableData: any;
+<<<<<<< HEAD
   tableColumns: string[];
+=======
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
   // for debugging purposes only, as its easy to view the raw API response via Redux Devtools. Should be left empty in production
   private rawApiData?: object[];
 
@@ -501,7 +507,10 @@ export class PolygonAnalysisResult {
 
   constructor(
     tableData: object[],
+<<<<<<< HEAD
     tableColumns: string[],
+=======
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
     featureCollection: FeatureCollection,
     hazardLayer: WMSLayerProps,
     adminLevel: number,
@@ -511,7 +520,10 @@ export class PolygonAnalysisResult {
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
+<<<<<<< HEAD
     this.tableColumns = tableColumns;
+=======
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
     this.statistic = statistic;
     this.threshold = threshold;
     this.legend = [

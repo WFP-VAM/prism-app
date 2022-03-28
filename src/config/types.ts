@@ -314,6 +314,24 @@ export class WFSLayerProps extends CommonLayerProps {
   geometry?: GeometryType;
 }
 
+export class WFSLayerProps extends CommonLayerProps {
+  type: 'wfs';
+  baseUrl: string;
+  serverLayerName: string;
+
+  @makeRequired
+  title: string;
+
+  @optional
+  additionalQueryParams?: { [key: string]: string };
+
+  @optional
+  wcsConfig?: RawDataConfiguration;
+
+  @optional // If included, we infer the layer is a vector layer.
+  geometry?: GeometryType;
+}
+
 export class AdminLevelDataLayerProps extends CommonLayerProps {
   type: 'admin_level_data';
   path: string;
@@ -352,6 +370,7 @@ export enum AggregationOperations {
   Sum = 'sum',
 }
 
+<<<<<<< HEAD
 export enum DisplayStatsEnum {
   Max = 'Max',
   Mean = 'Mean',
@@ -360,6 +379,8 @@ export enum DisplayStatsEnum {
   // not sure about including std and sum because can't reuse legend
 }
 
+=======
+>>>>>>> 0bc3acd0eaa84391c72539064cb2a1f55dc25813
 export enum PolygonAggregationOperations {
   Area = 'area',
   Percentage = 'percentage',
