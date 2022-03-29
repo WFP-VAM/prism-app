@@ -159,7 +159,7 @@ class Stats(Resource):
 #     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
 
 @api.route('/kobo/forms')
-class get_kobo_forms(Resource):
+class Get_kobo_forms(Resource):
     def get(self):
         """Get all form responses."""
         begin_datetime, end_datetime = parse_datetime_params()
@@ -170,7 +170,7 @@ class get_kobo_forms(Resource):
 
 
 @api.route('/alerts/<id>')
-class alert_by_id(Resource):
+class Alert_by_id(Resource):
     def get(self, id: str = '1'):
         """Get alert data from DB given id."""
         try:
@@ -198,7 +198,7 @@ class alert_by_id(Resource):
 
 
 @api.route('/alerts')
-class write_alerts(Resource):
+class Write_alerts(Resource):
     def post(self):
         """Post new alerts."""
         if not request.is_json:
@@ -217,7 +217,7 @@ class write_alerts(Resource):
 
 
 @api.route('/demo')
-class stats_demo(Resource):
+class Stats_demo(Resource):
     @timed
     def get(self):
         """Return examples of zonal statistics."""
