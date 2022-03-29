@@ -160,7 +160,6 @@ class Stats(Resource):
 
 @api.route('/kobo/forms')
 class get_kobo_forms(Resource):
-
     def get(self):
         """Get all form responses."""
         begin_datetime, end_datetime = parse_datetime_params()
@@ -172,7 +171,6 @@ class get_kobo_forms(Resource):
 
 @api.route('/alerts/<id>')
 class alert_by_id(Resource):
-
     def get(self, id: str = '1'):
         """Get alert data from DB given id."""
         try:
@@ -220,7 +218,6 @@ class write_alerts(Resource):
 
 @api.route('/demo')
 class stats_demo(Resource):
-
     @timed
     def get(self):
         """Return examples of zonal statistics."""
