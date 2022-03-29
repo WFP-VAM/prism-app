@@ -15,11 +15,12 @@ from app.zonal_stats import calculate_stats, get_wfs_response
 
 from flask import Flask, Response, json, jsonify, request
 
-from flask_restx import Api, Resource
-
 from flask_caching import Cache
 
 from flask_cors import CORS
+
+from flask_restx import Api, Resource
+
 
 import rasterio
 
@@ -69,6 +70,7 @@ def _calculate_stats(zones,
         wfs_response=wfs_response,
         intersect_comparison=intersect_comparison
     )
+
 
 @api.route('/stats')
 class Stats(Resource):
@@ -166,8 +168,6 @@ class Get_kobo_forms(Resource):
         form_responses = get_form_responses(begin_datetime, end_datetime)
 
         return Response(json.dumps(form_responses), mimetype='application/json')
-
-
 
 @api.route('/alerts/<id>')
 class Alert_by_id(Resource):
@@ -292,6 +292,7 @@ class Stats_demo(Resource):
 
         # TODO - Properly encode before returning. Mongolian characters are returned as hex.
         return features
+
 
 if __name__ == '__main__' and getenv('FLASK_ENV') == 'development':
     PORT = int(getenv('PORT', 80))
