@@ -1,10 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { convertArea, featureCollection } from '@turf/helpers';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
+import { calculate } from 'zonal';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesPath } from '../config';
 import {
+  AdminLevelType,
   AggregationOperations,
   AsyncReturnType,
   BoundaryLayerProps,
@@ -17,7 +20,12 @@ import {
   TableType,
 } from '../config/types';
 import {
+  getAdminNameProperty,
+  fetchAdminLayerGeoJSON,
+} from '../utils/admin-utils';
+import {
   BaselineLayerResult,
+  PolygonAnalysisResult,
   AnalysisResult,
   ApiData,
   BaselineLayerData,
@@ -34,6 +42,7 @@ import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
+import { fetchWMSLayerAsGeoJSON } from '../utils/wfs-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, AdminLevelDataLayerData } from './layers/admin_level_data';
@@ -179,6 +188,14 @@ export type AnalysisDispatchParams = {
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
   isExposure: boolean;
+};
+
+export type PolygonAnalysisDispatchParams = {
+  hazardLayer: WMSLayerProps;
+  adminLevel: AdminLevelType;
+  extent: Extent;
+  startDate: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
+  endDate: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
 };
 
 export type ExposedPopulationDispatchParams = {
@@ -386,6 +403,65 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 });
 
+export const requestAndStorePolygonAnalysis = createAsyncThunk<
+  PolygonAnalysisResult,
+  PolygonAnalysisDispatchParams,
+  CreateAsyncThunkTypes
+>('analysisResultState/requestAndStorePolygonAnalysis', async (params, api) => {
+  const { adminLevel, hazardLayer, startDate, endDate, extent } = params;
+
+  const zones = await fetchAdminLayerGeoJSON(adminLevel);
+
+  const classes = await fetchWMSLayerAsGeoJSON({
+    lyr: hazardLayer,
+    startDate,
+    endDate,
+  });
+
+  const result = calculate({
+    zones,
+    zone_properties: [getAdminNameProperty(adminLevel)],
+    classes,
+    class_properties: hazardLayer?.zonal?.class_properties, // eslint-disable-line camelcase
+    preserve_features: true,
+  });
+
+  const tableColumns = result.table.columns;
+
+  const tableRows = result.table.rows.map((row: any, i: number) => {
+    // eslint-disable-next-line no-param-reassign
+    row['stat:area'] = Math.round(
+      convertArea(row['stat:area'], 'meters', 'kilometers'),
+    );
+
+    // preformat null values as "null"
+    // so they display in the table
+    Object.keys(row).forEach((key: string) => {
+      const v: any = row[key];
+      if (v === null) {
+        row[key] = 'null'; // eslint-disable-line no-param-reassign
+      }
+    });
+
+    // create key for AnalysisTable
+    // eslint-disable-next-line no-param-reassign
+    row.name = i;
+
+    return row;
+  });
+
+  const analysisResult = new PolygonAnalysisResult(
+    tableRows,
+    tableColumns,
+    result.geojson,
+    hazardLayer,
+    adminLevel,
+    'percentage',
+  );
+
+  return analysisResult;
+});
+
 export const analysisResultSlice = createSlice({
   name: 'analysisResultState',
   initialState,
@@ -478,6 +554,37 @@ export const analysisResultSlice = createSlice({
 
     builder.addCase(
       requestAndStoreAnalysis.pending,
+      (state): AnalysisResultState => ({
+        ...state,
+        isLoading: true,
+      }),
+    );
+
+    builder.addCase(
+      requestAndStorePolygonAnalysis.fulfilled,
+      (
+        { result, ...rest },
+        { payload }: PayloadAction<PolygonAnalysisResult>,
+      ): AnalysisResultState => ({
+        ...rest,
+        isLoading: false,
+        result: payload as any,
+      }),
+    );
+
+    builder.addCase(
+      requestAndStorePolygonAnalysis.rejected,
+      (state, action): AnalysisResultState => ({
+        ...state,
+        isLoading: false,
+        error: action.error.message
+          ? action.error.message
+          : action.error.toString(),
+      }),
+    );
+
+    builder.addCase(
+      requestAndStorePolygonAnalysis.pending,
       (state): AnalysisResultState => ({
         ...state,
         isLoading: true,

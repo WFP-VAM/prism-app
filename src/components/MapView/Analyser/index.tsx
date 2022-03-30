@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   FormGroup,
   Input,
+  InputLabel,
   LinearProgress,
   Radio,
   RadioGroup,
@@ -32,30 +33,38 @@ import {
   getDisplayBoundaryLayers,
 } from '../../../config/utils';
 import {
+  AdminLevelType,
   AggregationOperations,
   AdminLevelDataLayerProps,
+  HazardDataType,
+  RasterType,
   WMSLayerProps,
   LayerKey,
   BoundaryLayerProps,
+  GeometryType,
 } from '../../../config/types';
 
 import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import {
   AnalysisDispatchParams,
+  PolygonAnalysisDispatchParams,
   analysisResultSelector,
   clearAnalysisResult,
   isAnalysisLayerActiveSelector,
   isAnalysisLoadingSelector,
   requestAndStoreAnalysis,
+  requestAndStorePolygonAnalysis,
   setIsMapLayerActive,
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
+import SimpleDropdown from '../SimpleDropdown';
 import {
   getAnalysisTableColumns,
   downloadCSVFromTableData,
   BaselineLayerResult,
   ExposedPopulationResult,
+  PolygonAnalysisResult,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 import {
@@ -95,6 +104,24 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [aboveThreshold, setAboveThreshold] = useState('');
   const [thresholdError, setThresholdError] = useState<string | null>(null);
 
+  // for polygon intersection analysis
+  const [adminLevel, setAdminLevel] = useState<AdminLevelType>(1);
+  const [startDate, setStartDate] = useState<number | null>(null);
+  const [endDate, setEndDate] = useState<number | null>(null);
+
+  // get variables derived from state
+  const hazardDataType: HazardDataType | null =
+    hazardLayerId === undefined
+      ? null
+      : (LayerDefinitions[hazardLayerId] as WMSLayerProps).geometry ||
+        RasterType.Raster;
+  const hazardServerLayerName = hazardLayerId
+    ? (LayerDefinitions[hazardLayerId] as WMSLayerProps).serverLayerName
+    : undefined;
+  const availableHazardDates = hazardServerLayerName
+    ? availableDates[hazardServerLayerName]?.map(d => new Date(d)) || []
+    : undefined;
+
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
     l => l.type === 'admin_level_data',
@@ -107,17 +134,22 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
-    const dates = hazardLayerId
-      ? availableDates[
-          (LayerDefinitions[hazardLayerId] as WMSLayerProps)?.serverLayerName
-        ]
-      : null;
-    if (!dates || dates.length === 0) {
+    if (
+      availableHazardDates === undefined ||
+      availableHazardDates.length === 0
+    ) {
       setSelectedDate(null);
+      setStartDate(null);
+      setEndDate(null);
     } else {
-      setSelectedDate(dates[dates.length - 1]);
+      const lastDate = availableHazardDates[
+        availableHazardDates.length - 1
+      ].getTime();
+      setSelectedDate(lastDate);
+      setStartDate(lastDate);
+      setEndDate(lastDate);
     }
-  }, [availableDates, hazardLayerId]);
+  }, [availableDates, availableHazardDates, hazardLayerId]);
 
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
@@ -215,7 +247,12 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   const clearAnalysis = () => {
     dispatch(clearAnalysisResult());
-    deactivateUniqueBoundary();
+
+    // vector hazards already use admin boundaries
+    // so no need for a unique boundary
+    if (hazardDataType !== GeometryType.Polygon) {
+      deactivateUniqueBoundary();
+    }
 
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[
@@ -231,6 +268,12 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   const onMapSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(setIsMapLayerActive(e.target.checked));
+
+    // hazard layer doesn't needs a display boundary
+    // because it is already a vector
+    if (hazardDataType === GeometryType.Polygon) {
+      return;
+    }
 
     if (isMapLayerActive) {
       deactivateUniqueBoundary();
@@ -273,37 +316,61 @@ function Analyser({ extent, classes }: AnalyserProps) {
       return;
     } // hasn't been calculated yet
 
-    if (!selectedDate) {
-      throw new Error('Date must be given to run analysis');
-    }
-
-    if (!hazardLayerId || !baselineLayerId) {
-      throw new Error('Layer should be selected to run analysis');
+    if (!hazardLayerId) {
+      throw new Error('Hazard layer should be selected to run analysis');
     }
 
     const selectedHazardLayer = LayerDefinitions[
       hazardLayerId
     ] as WMSLayerProps;
-    const selectedBaselineLayer = LayerDefinitions[
-      baselineLayerId
-    ] as AdminLevelDataLayerProps;
 
-    activateUniqueBoundary();
+    if (hazardDataType === GeometryType.Polygon) {
+      if (!startDate) {
+        throw new Error('Date Range must be given to run analysis');
+      }
+      if (!endDate) {
+        throw new Error('Date Range must be given to run analysis');
+      }
 
-    const params: AnalysisDispatchParams = {
-      hazardLayer: selectedHazardLayer,
-      baselineLayer: selectedBaselineLayer,
-      date: selectedDate,
-      statistic,
-      extent,
-      threshold: {
-        above: parseFloat(aboveThreshold) || undefined,
-        below: parseFloat(belowThreshold) || undefined,
-      },
-      isExposure: false,
-    };
+      const params: PolygonAnalysisDispatchParams = {
+        hazardLayer: selectedHazardLayer,
+        adminLevel,
+        startDate,
+        endDate,
+        extent,
+      };
 
-    await dispatch(requestAndStoreAnalysis(params));
+      await dispatch(requestAndStorePolygonAnalysis(params));
+    } else {
+      if (!selectedDate) {
+        throw new Error('Date must be given to run analysis');
+      }
+
+      if (!baselineLayerId) {
+        throw new Error('Baseline layer should be selected to run analysis');
+      }
+
+      const selectedBaselineLayer = LayerDefinitions[
+        baselineLayerId
+      ] as AdminLevelDataLayerProps;
+
+      activateUniqueBoundary();
+
+      const params: AnalysisDispatchParams = {
+        hazardLayer: selectedHazardLayer,
+        baselineLayer: selectedBaselineLayer,
+        date: selectedDate,
+        statistic,
+        extent,
+        threshold: {
+          above: parseFloat(aboveThreshold) || undefined,
+          below: parseFloat(belowThreshold) || undefined,
+        },
+        isExposure: false,
+      };
+
+      await dispatch(requestAndStoreAnalysis(params));
+    }
   };
 
   return (
@@ -340,84 +407,142 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   placeholder="Choose hazard layer"
                 />
               </div>
-              <div className={classes.analyserOptions}>
-                <Typography variant="body2">{t('Statistic')}</Typography>
-                <FormControl component="div">
-                  <RadioGroup
-                    name="statistics"
-                    value={statistic}
-                    onChange={onOptionChange(setStatistic)}
-                    row
-                  >
-                    {statisticOptions}
-                  </RadioGroup>
-                </FormControl>
-              </div>
-              <div className={classes.analyserOptions}>
-                <Typography variant="body2">{t('Baseline Layer')}</Typography>
-                <LayerDropdown
-                  type="admin_level_data"
-                  value={baselineLayerId}
-                  setValue={setBaselineLayerId}
-                  className={classes.selector}
-                  placeholder="Choose baseline layer"
-                />
-              </div>
-              <div className={classes.analyserOptions}>
-                <Typography variant="body2">{t('Threshold')}</Typography>
-                <TextField
-                  id="filled-number"
-                  error={!!thresholdError}
-                  helperText={thresholdError}
-                  className={classes.numberField}
-                  label={t('Below')}
-                  type="number"
-                  value={belowThreshold}
-                  onChange={onThresholdOptionChange('below')}
-                  variant="filled"
-                />
-                <TextField
-                  id="filled-number"
-                  label={t('Above')}
-                  className={classes.numberField}
-                  value={aboveThreshold}
-                  onChange={onThresholdOptionChange('above')}
-                  type="number"
-                  variant="filled"
-                />
-              </div>
-              <div className={classes.analyserOptions}>
-                <Typography variant="body2">{t('Date')}</Typography>
-                <DatePicker
-                  locale={t('date_locale')}
-                  dateFormat="PP"
-                  selected={selectedDate ? new Date(selectedDate) : null}
-                  onChange={date =>
-                    setSelectedDate(date?.getTime() || selectedDate)
-                  }
-                  maxDate={new Date()}
-                  todayButton={t('Today')}
-                  peekNextMonth
-                  showMonthDropdown
-                  showYearDropdown
-                  dropdownMode="select"
-                  customInput={<Input />}
-                  popperClassName={classes.calendarPopper}
-                  includeDates={
-                    hazardLayerId
-                      ? availableDates[
-                          (LayerDefinitions[hazardLayerId] as WMSLayerProps)
-                            .serverLayerName
-                        ]?.map(d => new Date(d)) || []
-                      : []
-                  }
-                />
-              </div>
+
+              {hazardDataType === GeometryType.Polygon && (
+                <>
+                  <div className={classes.analyserOptions}>
+                    <Typography variant="body2">Admin Level</Typography>
+                    <SimpleDropdown
+                      value={adminLevel}
+                      options={[
+                        [1, '1 - province / governorate'],
+                        [2, '2 - county'],
+                        [3, '3 - city / township'],
+                      ]}
+                      onChange={setAdminLevel}
+                    />
+                  </div>
+
+                  <div className={classes.analyserOptions}>
+                    <Typography variant="body2">Date Range</Typography>
+                    <div className={classes.dateRangePicker}>
+                      <Typography variant="body2">Start</Typography>
+                      <DatePicker
+                        selected={startDate ? new Date(startDate) : null}
+                        onChange={date =>
+                          setStartDate(date?.getTime() || startDate)
+                        }
+                        maxDate={new Date()}
+                        todayButton="Today"
+                        peekNextMonth
+                        showMonthDropdown
+                        showYearDropdown
+                        dropdownMode="select"
+                        customInput={<Input />}
+                        popperClassName={classes.calendarPopper}
+                        includeDates={availableHazardDates}
+                      />
+                    </div>
+                    <div className={classes.dateRangePicker}>
+                      <Typography variant="body2">End</Typography>
+                      <DatePicker
+                        selected={endDate ? new Date(endDate) : null}
+                        onChange={date =>
+                          setEndDate(date?.getTime() || endDate)
+                        }
+                        maxDate={new Date()}
+                        todayButton="Today"
+                        peekNextMonth
+                        showMonthDropdown
+                        showYearDropdown
+                        dropdownMode="select"
+                        customInput={<Input />}
+                        popperClassName={classes.calendarPopper}
+                        includeDates={availableHazardDates}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {hazardDataType === RasterType.Raster && (
+                <>
+                  <div className={classes.analyserOptions}>
+                    <Typography variant="body2">{t('Statistic')}</Typography>
+                    <FormControl component="div">
+                      <RadioGroup
+                        name="statistics"
+                        value={statistic}
+                        onChange={onOptionChange(setStatistic)}
+                        row
+                      >
+                        {statisticOptions}
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                  <div className={classes.analyserOptions}>
+                    <Typography variant="body2">
+                      {t('Baseline Layer')}
+                    </Typography>
+                    <LayerDropdown
+                      type="admin_level_data"
+                      value={baselineLayerId}
+                      setValue={setBaselineLayerId}
+                      className={classes.selector}
+                      placeholder="Choose baseline layer"
+                    />
+                  </div>
+                  <div className={classes.analyserOptions}>
+                    <Typography variant="body2">{t('Threshold')}</Typography>
+                    <TextField
+                      id="filled-number"
+                      error={!!thresholdError}
+                      helperText={thresholdError}
+                      className={classes.numberField}
+                      label={t('Below')}
+                      type="number"
+                      value={belowThreshold}
+                      onChange={onThresholdOptionChange('below')}
+                      variant="filled"
+                    />
+                    <TextField
+                      id="filled-number"
+                      label={t('Above')}
+                      className={classes.numberField}
+                      value={aboveThreshold}
+                      onChange={onThresholdOptionChange('above')}
+                      type="number"
+                      variant="filled"
+                    />
+                  </div>
+                  <div className={classes.analyserOptions}>
+                    <Typography variant="body2">{t('Date')}</Typography>
+                    <DatePicker
+                      locale={t('date_locale')}
+                      dateFormat="PP"
+                      selected={selectedDate ? new Date(selectedDate) : null}
+                      onChange={date =>
+                        setSelectedDate(date?.getTime() || selectedDate)
+                      }
+                      maxDate={new Date()}
+                      todayButton={t('Today')}
+                      peekNextMonth
+                      showMonthDropdown
+                      showYearDropdown
+                      dropdownMode="select"
+                      customInput={<Input />}
+                      popperClassName={classes.calendarPopper}
+                      includeDates={availableHazardDates}
+                    />
+                  </div>
+                </>
+              )}
             </div>
 
             {!isAnalysisLoading &&
               analysisResult &&
-              analysisResult instanceof BaselineLayerResult && (
+              (analysisResult instanceof BaselineLayerResult ||
+                analysisResult instanceof PolygonAnalysisResult) && (
                 <>
                   <FormGroup>
                     <FormControlLabel
@@ -470,10 +595,11 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 onClick={runAnalyser}
                 disabled={
                   !!thresholdError || // if there is a threshold error
-                  !selectedDate || // or date hasn't been selected
+                  isAnalysisLoading || // or analysis is currently loading
                   !hazardLayerId || // or hazard layer hasn't been selected
-                  !baselineLayerId || // or baseline layer hasn't been selected
-                  isAnalysisLoading // or analysis is currently loading
+                  (hazardDataType === GeometryType.Polygon
+                    ? !startDate || !endDate
+                    : !selectedDate || !baselineLayerId) // or date hasn't been selected // or baseline layer hasn't been selected
                 }
               >
                 <Typography variant="body2">{t('Run Analysis')}</Typography>
@@ -542,6 +668,12 @@ const styles = (theme: Theme) =>
     },
     calendarPopper: {
       zIndex: 3,
+    },
+    dateRangePicker: {
+      display: 'inline-block',
+      marginRight: '15px',
+      minWidth: '125px',
+      width: '100px',
     },
   });
 
