@@ -29,7 +29,8 @@ function LayerDropdown({
       ...category,
       layers: category.layers.filter(layer =>
         layer.type === 'wms'
-          ? layer.type === type && !layer.geometry
+          ? layer.type === type &&
+            [undefined, 'polygon'].includes(layer.geometry)
           : layer.type === type,
       ),
     }))
