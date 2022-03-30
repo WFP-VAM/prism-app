@@ -169,6 +169,7 @@ class Get_kobo_forms(Resource):
 
         return Response(json.dumps(form_responses), mimetype='application/json')
 
+
 @api.route('/alerts/<id>')
 class Alert_by_id(Resource):
     def get(self, id: str = '1'):
