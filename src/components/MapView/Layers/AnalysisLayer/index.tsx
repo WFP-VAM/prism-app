@@ -17,6 +17,7 @@ import {
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
+  PolygonAnalysisResult,
 } from '../../../../utils/analysis-utils';
 import {
   getBoundaryLayerSingleton,
@@ -62,10 +63,14 @@ function AnalysisLayer() {
     };
   }
 
-  const property =
-    analysisData instanceof ExposedPopulationResult
-      ? (analysisData.statistic as string)
-      : 'data';
+  let property;
+  if (analysisData instanceof ExposedPopulationResult) {
+    property = analysisData.statistic as string;
+  } else if (analysisData instanceof PolygonAnalysisResult) {
+    property = 'zonal:stat:percentage';
+  } else {
+    property = 'data';
+  }
 
   return (
     <GeoJSONLayer
