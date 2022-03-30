@@ -13,6 +13,7 @@ import {
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import {
+  AdminLevelType,
   AggregationOperations,
   AsyncReturnType,
   ImpactLayerProps,
@@ -434,8 +435,31 @@ export async function loadFeaturesClientSide(
 }
 
 export function getAnalysisTableColumns(
-  analysisResult: BaselineLayerResult,
+  analysisResult: BaselineLayerResult | PolygonAnalysisResult,
 ): Column[] {
+  if ('tableColumns' in analysisResult) {
+    return analysisResult.tableColumns.map(column => {
+      return {
+        id: column as any,
+        // remove prefix from column labels
+        // example: replace "stat:area" with "area"
+        label: column.replace(/^[a-z]+:/i, ''),
+        format: (value: number | string) => {
+          if (typeof value === 'number') {
+            return value.toLocaleString('en-US');
+          }
+          if (value === null) {
+            return 'null';
+          }
+          if (value === undefined) {
+            return 'null';
+          }
+          return value;
+        },
+      };
+    });
+  }
+
   const { statistic } = analysisResult;
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;
 
@@ -462,7 +486,9 @@ export function getAnalysisTableColumns(
   ];
 }
 
-export function downloadCSVFromTableData(analysisResult: BaselineLayerResult) {
+export function downloadCSVFromTableData(
+  analysisResult: BaselineLayerResult | PolygonAnalysisResult,
+) {
   const { tableData, key: createdAt } = analysisResult;
   const columns = getAnalysisTableColumns(analysisResult);
   // Built with https://stackoverflow.com/a/14966131/5279269
@@ -625,9 +651,11 @@ export class BaselineLayerResult {
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
   }
+
   getHazardLayer(): WMSLayerProps {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
+
   getBaselineLayer(): AdminLevelDataLayerProps {
     return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
   }
@@ -646,5 +674,61 @@ export class BaselineLayerResult {
     return t
       ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
       : `${this.getHazardLayer().title} (${this.statistic})`;
+  }
+}
+
+export class PolygonAnalysisResult {
+  key: number = Date.now();
+  featureCollection: FeatureCollection;
+  tableData: TableRow[];
+  tableColumns: string[];
+
+  statistic: 'area' | 'percentage';
+  threshold?: ThresholdDefinition;
+  legend: LegendDefinition;
+  legendText: string;
+  hazardLayerId: WMSLayerProps['id'];
+  adminLevel: AdminLevelType;
+
+  constructor(
+    tableData: TableRow[],
+    tableColumns: string[],
+    featureCollection: FeatureCollection,
+    hazardLayer: WMSLayerProps,
+    adminLevel: AdminLevelType,
+    statistic: 'area' | 'percentage',
+    threshold?: ThresholdDefinition,
+  ) {
+    this.featureCollection = featureCollection;
+    this.tableData = tableData;
+    this.tableColumns = tableColumns;
+    this.statistic = statistic;
+    this.threshold = threshold;
+    this.adminLevel = adminLevel;
+
+    // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
+    this.legend = [
+      { value: 0.2, color: '#fee5d9' },
+      { value: 0.4, color: '#fcae91' },
+      { value: 0.6, color: '#fb6a4a' },
+      { value: 0.8, color: '#de2d26' },
+      { value: 1, color: '#a50f15' },
+    ];
+
+    this.legendText = hazardLayer.legendText;
+    this.hazardLayerId = hazardLayer.id;
+  }
+  getHazardLayer(): WMSLayerProps {
+    return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
+  }
+
+  getTitle(): string {
+    return `${this.getHazardLayer().title} intersecting admin level ${
+      this.adminLevel
+    }`;
+  }
+
+  getStatTitle(): string {
+    return `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }
