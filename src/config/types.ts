@@ -161,6 +161,29 @@ export enum GeometryType {
   Polygon = 'polygon',
 }
 
+export enum RasterType {
+  Raster = 'raster',
+}
+
+export type HazardDataType = GeometryType | RasterType;
+
+// not including standard deviation and sum quite yet
+// because we won't be able to re-use the WMS legend
+export enum DisplayZonalStatsEnum {
+  Max = 'Max',
+  Mean = 'Mean',
+  Median = 'Median',
+  Min = 'Min',
+}
+
+export type ZonalConfig = {
+  // we're keeping snakecase here because that is what zonal uses
+  // eslint-disable-next-line camelcase
+  class_properties?: string[];
+};
+
+export type AdminLevelType = 1 | 2 | 3;
+
 export interface ExposedPopulationDefinition {
   id: LayerKey;
 
@@ -261,6 +284,9 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional // If included, we infer the layer is a vector layer.
   geometry?: GeometryType;
+
+  @optional // If included, zonal statistics configuration, including which property to use for classes
+  zonal?: ZonalConfig;
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
