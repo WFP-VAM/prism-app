@@ -73,6 +73,11 @@
     },
     "vulnerability": {
       "food insecurity": [
+        "cereal_insecurity_2021",
+        "5_year_avg_cereal_insecurity",
+        "10_year_avg_cereal_insecurity",
+        "poor_fc",
+        "borderline_fc",
         "vac_food_insec",
         "ipc_phase_10_2020"
       ]
