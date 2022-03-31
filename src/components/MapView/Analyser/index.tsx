@@ -149,7 +149,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       setStartDate(lastDate);
       setEndDate(lastDate);
     }
-  }, [availableDates, availableHazardDates, hazardLayerId]);
+  }, [availableDates, availableHazardDates?.toString(), hazardLayerId]);
 
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
