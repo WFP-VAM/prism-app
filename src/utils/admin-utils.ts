@@ -1,29 +1,21 @@
 import { FeatureCollection } from 'geojson';
 
-// TODO
+import {
+  getBoundaryLayerSingleton,
+  getDisplayBoundaryLayers,
+} from '../config/utils';
+
 export function getAdminLayerURL(adminLevel = 1): string {
-  switch (adminLevel) {
-    case 3:
-      return './data/myanmar/admin_boundaries.json';
-    case 2:
-      return './data/myanmar/mmr_admin2_boundaries.json';
-    case 1:
-    default:
-      return './data/myanmar/mmr_admin1_boundaries.json';
-  }
+  const lyrs = getDisplayBoundaryLayers();
+  const adminLayer = lyrs.find(
+    lyr => lyr.adminLevelNames.length === adminLevel,
+  );
+  return adminLayer ? adminLayer.path : lyrs[0].path;
 }
 
-// TODO
 export function getAdminNameProperty(adminLevel: number = 1): string {
-  switch (adminLevel) {
-    case 3:
-      return 'TS';
-    case 2:
-      return 'DT';
-    case 1:
-    default:
-      return 'ST';
-  }
+  const { adminLevelNames } = getBoundaryLayerSingleton();
+  return adminLevelNames[adminLevel - 1];
 }
 
 export function fetchAdminLayerGeoJSON(
