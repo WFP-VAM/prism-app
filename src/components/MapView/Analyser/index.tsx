@@ -112,13 +112,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
   // get variables derived from state
   const selectedHazardLayer = hazardLayerId
     ? (LayerDefinitions[hazardLayerId] as WMSLayerProps)
-    : undefined;
-
-  const hazardDataType: HazardDataType | null =
-    hazardLayerId === undefined
-      ? null
-      : (LayerDefinitions[hazardLayerId] as WMSLayerProps).geometry ||
-        RasterType.Raster;
+    : null;
+  const hazardDataType: HazardDataType | null = selectedHazardLayer
+    ? selectedHazardLayer.geometry || RasterType.Raster
+    : null;
   const availableHazardDates = selectedHazardLayer
     ? getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
         d => new Date(d),
