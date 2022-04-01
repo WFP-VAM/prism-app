@@ -1,6 +1,7 @@
 import {
   get,
   has,
+  isNil,
   isNull,
   isString,
   mean,
@@ -448,13 +449,7 @@ export function getAnalysisTableColumns(
           if (typeof value === 'number') {
             return value.toLocaleString('en-US');
           }
-          if (value === null) {
-            return 'null';
-          }
-          if (value === undefined) {
-            return 'null';
-          }
-          return value;
+          return isNil(value) ? 'null' : value;
         },
       };
     });
