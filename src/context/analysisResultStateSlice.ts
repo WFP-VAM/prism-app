@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { convertArea, featureCollection } from '@turf/helpers';
+import { convertArea } from '@turf/helpers';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
 import { get, isNil } from 'lodash';
