@@ -5,7 +5,6 @@ import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
 import { legendToStops } from '../layer-utils';
 import { PointDataLayerProps } from '../../../../config/types';
-
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
@@ -28,16 +27,36 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const dispatch = useDispatch();
 
   const { data } = layerData || {};
+  const { features } = data || {};
   const { t } = useSafeTranslation();
   useEffect(() => {
-    if (!data) {
+    if (!features) {
       dispatch(loadLayerData({ layer, date: selectedDate }));
     }
-  }, [data, dispatch, layer, selectedDate]);
+  }, [features, dispatch, layer, selectedDate]);
 
-  if (!data) {
+  if (!features) {
     return null;
   }
+
+  const onClickFunc = async (evt: any) => {
+    // by default add `measure` to the tooltip
+    dispatch(
+      addPopupData({
+        [layer.title]: {
+          data: getRoundedData(
+            get(evt.features[0], `properties.${layer.measure}`),
+            t,
+          ),
+          coordinates: evt.lngLat,
+        },
+      }),
+    );
+    // then add feature_info_props as extra fields to the tooltip
+    dispatch(
+      addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
+    );
+  };
 
   const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
   const circlePaint: MapboxGL.CirclePaint = {
@@ -49,33 +68,34 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   };
   const boundaryId = getBoundaryLayerSingleton().id;
 
+  // We use the legend values from the config to define "intervals".
+  const fillPaintData: MapboxGL.FillPaint = {
+    'fill-opacity': layer.opacity || 0.3,
+    'fill-color': {
+      property: 'data',
+      stops: legendToStops(layer.legend),
+      type: 'interval',
+    },
+  };
+  if (layer.adminLevelDisplay) {
+    return (
+      <GeoJSONLayer
+        before={`layer-${boundaryId}-line`}
+        id={`layer-${layer.id}`}
+        data={features}
+        fillPaint={fillPaintData}
+        fillOnClick={onClickFunc}
+      />
+    );
+  }
   return (
     <GeoJSONLayer
       before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
-      data={data}
+      data={features}
       circleLayout={circleLayout}
       circlePaint={circlePaint}
-      circleOnClick={async (evt: any) => {
-        // by default add `measure` to the tooltip
-        dispatch(
-          addPopupData({
-            [layer.title]: {
-              data: getRoundedData(
-                get(evt.features[0], `properties.${layer.measure}`),
-                t,
-              ),
-              coordinates: evt.lngLat,
-            },
-          }),
-        );
-        // then add feature_info_props as extra fields to the tooltip
-        dispatch(
-          addPopupData(
-            getFeatureInfoPropsData(layer.featureInfoProps || {}, evt),
-          ),
-        );
-      }}
+      circleOnClick={onClickFunc}
     />
   );
 }

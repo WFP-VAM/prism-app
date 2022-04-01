@@ -14,15 +14,19 @@ declare module 'geojson' {
     data: object,
     properties: object,
     callback?: Function,
-  ): PointLayerData;
+  ): PointData[];
 }
 
-export type PointLayerData = {
+export type PointData = {
   lat: number;
   lon: number;
   date: number; // in unix time.
   [key: string]: any;
-}[];
+};
+
+export type PointLayerData = {
+  features: PointData[];
+};
 
 export const queryParamsToString = (queryParams?: {
   [key: string]: string | { [key: string]: string };
@@ -80,13 +84,13 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       await fetch(requestUrl, {
         mode: 'cors',
       })
-    ).json()) as PointLayerData;
+    ).json()) as PointData[];
   } catch (ignored) {
     // fallback data isn't filtered, therefore we must filter it.
     // eslint-disable-next-line fp/no-mutation
     data = ((await (
       await fetch(fallbackData || '')
-    ).json()) as PointLayerData).filter(
+    ).json()) as PointData[]).filter(
       // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
       // using moment here helps compensate for these discrepancies
       obj =>
@@ -106,5 +110,5 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       getState,
     );
   }
-  return GeoJSON.parse(data, { Point: ['lat', 'lon'] });
+  return { features: GeoJSON.parse(data, { Point: ['lat', 'lon'] }) };
 };
