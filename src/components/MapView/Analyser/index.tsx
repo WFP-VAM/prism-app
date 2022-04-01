@@ -148,7 +148,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       setStartDate(lastDate);
       setEndDate(lastDate);
     }
-  }, [availableDates, availableHazardDates?.toString(), hazardLayerId]);
+  }, [availableDates, availableHazardDates?.toString(), hazardLayerId]); // eslint-disable-line @typescript-eslint/no-base-to-string, react-hooks/exhaustive-deps
 
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
