@@ -63,14 +63,16 @@ function AnalysisLayer() {
     };
   }
 
-  let property;
-  if (analysisData instanceof ExposedPopulationResult) {
-    property = analysisData.statistic as string; // eslint-disable-line fp/no-mutation
-  } else if (analysisData instanceof PolygonAnalysisResult) {
-    property = 'zonal:stat:percentage'; // eslint-disable-line fp/no-mutation
-  } else {
-    property = 'data'; // eslint-disable-line fp/no-mutation
-  }
+  const property = (() => {
+    switch (true) {
+      case analysisData instanceof ExposedPopulationResult:
+        return analysisData.statistic as string;
+      case analysisData instanceof PolygonAnalysisResult:
+        return 'zonal:stat:percentage';
+      default:
+        return 'data';
+    }
+  })();
 
   return (
     <GeoJSONLayer
