@@ -6,11 +6,11 @@ import {
 } from '../config/utils';
 
 export function getAdminLayerURL(adminLevel = 1): string {
-  const lyrs = getDisplayBoundaryLayers();
-  const adminLayer = lyrs.find(
-    lyr => lyr.adminLevelNames.length === adminLevel,
+  const layers = getDisplayBoundaryLayers();
+  const adminLayer = layers.find(
+    layer => layer.adminLevelNames.length === adminLevel,
   );
-  return adminLayer ? adminLayer.path : lyrs[0].path;
+  return adminLayer ? adminLayer.path : layers[0].path;
 }
 
 export function getAdminNameProperty(adminLevel: number = 1): string {
