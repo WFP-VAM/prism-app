@@ -51,7 +51,6 @@
     "@turf/clone": "^6.5.0",
     "@turf/meta": "^6.5.0",
     "@turf/union": "^6.5.0",
-    "@types/colormap": "^2.3.1",
     "@types/dompurify": "^2.2.3",
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.25.0",
@@ -133,6 +132,7 @@
   "devDependencies": {
     "@turf/helpers": "^6.5.0",
     "@types/chart.js": "^2.9.21",
+    "@types/colormap": "^2.3.1",
     "@types/d3": "^5.7.2",
     "@types/geojson": "^7946.0.7",
     "@types/jest": "^24.0.0",
