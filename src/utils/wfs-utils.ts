@@ -14,7 +14,9 @@ export function fetchWMSLayerAsGeoJSON(
   const { lyr, startDate, endDate } = options;
 
   if (lyr.type !== 'wms') {
-    throw Error('unexpected layer type');
+    throw Error(
+      `Unexpected layer type. Expected: "wms". Actual: "${lyr.type}"`,
+    );
   }
 
   const wfsServerURL = `${lyr.baseUrl}/wfs`;
