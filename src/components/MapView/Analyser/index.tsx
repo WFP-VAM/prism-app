@@ -13,7 +13,6 @@ import {
   FormControlLabel,
   FormGroup,
   Input,
-  InputLabel,
   LinearProgress,
   Radio,
   RadioGroup,
