@@ -708,11 +708,11 @@ export class PolygonAnalysisResult {
 
     // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
     this.legend = [
-      { value: 0.2, color: '#fee5d9' },
-      { value: 0.4, color: '#fcae91' },
-      { value: 0.6, color: '#fb6a4a' },
-      { value: 0.8, color: '#de2d26' },
-      { value: 1, color: '#a50f15' },
+      { label: '20%', value: 0.2, color: '#fee5d9' },
+      { label: '40%', value: 0.4, color: '#fcae91' },
+      { label: '60%', value: 0.6, color: '#fb6a4a' },
+      { label: '80%', value: 0.8, color: '#de2d26' },
+      { label: '100%', value: 1, color: '#a50f15' },
     ];
 
     this.legendText = hazardLayer.legendText;
