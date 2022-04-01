@@ -43,7 +43,12 @@ export const queryParamsToString = (queryParams?: {
 
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async ({
   date,
-  layer: { data: dataUrl, fallbackData, additionalQueryParams },
+  layer: {
+    data: dataUrl,
+    fallbackData,
+    additionalQueryParams,
+    adminLevelDisplay,
+  },
 }) => {
   // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,

@@ -1641,7 +1641,8 @@
   },
   "kh_incident_report": {
     "title": "Disaster impact report",
-    "type": "admin_level_data",
+    "type": "point_data",
+    "admin_level_display": true,
     "path": "https://prism-api.ovio.org/kobo/forms",
     "adminCode": "Commune",
     "adminLevel": 1,

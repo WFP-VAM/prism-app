@@ -1,6 +1,5 @@
 import { FeatureCollection } from 'geojson';
 import { get, isNull, isString } from 'lodash';
-import moment from 'moment';
 import {
   BoundaryLayerProps,
   AdminLevelDataLayerProps,
@@ -13,8 +12,6 @@ import {
 } from '../../config/utils';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 import { layerDataSelector } from '../mapStateSlice/selectors';
-import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
-import { PointLayerData, queryParamsToString } from './point_data';
 
 export type DataRecord = {
   adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
@@ -26,21 +23,20 @@ export type AdminLevelDataLayerData = {
   layerData: DataRecord[];
 };
 
-export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> = () => async (
-  { layer, date }: LayerDataParams<AdminLevelDataLayerProps>,
-  api: ThunkApi,
-) => {
-  const {
-    path,
+export function getAdminLevelDataLayerData(
+  data: { [key: string]: any }[],
+  {
+    boundary,
     adminCode,
     dataField,
     featureInfoProps,
-    boundary,
-    additionalQueryParams,
-    fallbackData,
-  } = layer;
+  }: Pick<
+    AdminLevelDataLayerProps,
+    'boundary' | 'adminCode' | 'dataField' | 'featureInfoProps'
+  >,
+  api: ThunkApi,
+) {
   const { getState } = api;
-
   // check unique boundary layer presence into this layer
   // use the boundary once available or
   // use the default boundary singleton instead
@@ -57,51 +53,6 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
     throw new Error('Boundary Layer not loaded!');
   }
   const adminBoundaries = adminBoundariesLayer.data;
-
-  // TODO avoid any use, the json should be typed. See issue #307
-  let data: { [key: string]: any }[];
-  if (dataField === 'NumPeoAff') {
-    const formattedDate = date && moment(date).format(DEFAULT_DATE_FORMAT);
-
-    // TODO exclusive to this api...
-    const dateQuery = `beginDateTime=${
-      formattedDate || '2000-01-01'
-    }&endDateTime=${formattedDate || '2023-12-21'}`;
-
-    const requestUrl = `${path}${
-      path.includes('?') ? '&' : '?'
-    }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
-
-    try {
-      // eslint-disable-next-line fp/no-mutation
-      data = (await (
-        await fetch(requestUrl, {
-          mode: 'cors',
-        })
-      ).json()) as PointLayerData;
-    } catch (ignored) {
-      // fallback data isn't filtered, therefore we must filter it.
-      // eslint-disable-next-line fp/no-mutation
-      data = ((await (
-        await fetch(fallbackData || '')
-      ).json()) as PointLayerData).filter(
-        // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
-        // using moment here helps compensate for these discrepancies
-        obj =>
-          moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
-          moment(formattedDate).format(DEFAULT_DATE_FORMAT),
-      );
-    }
-  } else {
-    // eslint-disable-next-line fp/no-mutation
-    data = (
-      await (
-        await fetch(path, {
-          mode: path.includes('http') ? 'cors' : 'same-origin',
-        })
-      ).json()
-    ).DataList;
-  }
 
   const layerData = (data || [])
     .map(point => {
@@ -152,9 +103,30 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
       })
       .filter(f => f !== undefined),
   } as FeatureCollection;
-
   return {
     features,
     layerData,
   };
+}
+
+export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> = () => async (
+  { layer }: LayerDataParams<AdminLevelDataLayerProps>,
+  api: ThunkApi,
+) => {
+  const { path, adminCode, dataField, featureInfoProps, boundary } = layer;
+
+  // TODO avoid any use, the json should be typed. See issue #307
+  const data: { [key: string]: any }[] = (
+    await (
+      await fetch(path, {
+        mode: path.includes('http') ? 'cors' : 'same-origin',
+      })
+    ).json()
+  ).DataList;
+
+  return getAdminLevelDataLayerData(
+    data,
+    { boundary, adminCode, dataField, featureInfoProps },
+    api,
+  );
 };
