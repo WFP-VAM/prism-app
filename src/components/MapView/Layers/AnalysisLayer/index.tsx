@@ -65,11 +65,11 @@ function AnalysisLayer() {
 
   let property;
   if (analysisData instanceof ExposedPopulationResult) {
-    property = analysisData.statistic as string;
+    property = analysisData.statistic as string; // eslint-disable-line fp/no-mutation
   } else if (analysisData instanceof PolygonAnalysisResult) {
-    property = 'zonal:stat:percentage';
+    property = 'zonal:stat:percentage'; // eslint-disable-line fp/no-mutation
   } else {
-    property = 'data';
+    property = 'data'; // eslint-disable-line fp/no-mutation
   }
 
   return (
