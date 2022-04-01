@@ -4,8 +4,8 @@ import { WMSLayerProps } from '../config/types';
 
 interface propTypes {
   lyr: WMSLayerProps;
-  startDate: any;
-  endDate: any;
+  startDate: number;
+  endDate: number;
 }
 
 export function fetchWMSLayerAsGeoJSON(
