@@ -408,7 +408,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   PolygonAnalysisDispatchParams,
   CreateAsyncThunkTypes
 >('analysisResultState/requestAndStorePolygonAnalysis', async (params, api) => {
-  const { adminLevel, hazardLayer, startDate, endDate, extent } = params;
+  const { adminLevel, hazardLayer, startDate, endDate } = params;
 
   const zones = await fetchAdminLayerGeoJSON(adminLevel);
 
@@ -423,7 +423,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     zone_properties: [getAdminNameProperty(adminLevel)],
     classes,
     class_properties: hazardLayer?.zonal?.class_properties, // eslint-disable-line camelcase
-    preserve_features: true,
+    preserve_features: false, // this makes sure we aren't modifying the existing boundary layers
   });
 
   const tableColumns = result.table.columns.map((column: string) => {
@@ -442,25 +442,23 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   });
 
   const tableRows = result.table.rows.map((row: any, i: number) => {
-    // eslint-disable-next-line no-param-reassign
-    row['stat:area'] = Math.round(
-      convertArea(row['stat:area'], 'meters', 'kilometers'),
-    );
+    return {
+      // create key for AnalysisTable
+      name: i,
 
-    // preformat null values as "null"
-    // so they display in the table
-    Object.keys(row).forEach((key: string) => {
-      const v: any = row[key];
-      if (v === null) {
-        row[key] = 'null'; // eslint-disable-line no-param-reassign
-      }
-    });
+      'stat:area': Math.round(
+        convertArea(row['stat:area'], 'meters', 'kilometers'),
+      ),
 
-    // create key for AnalysisTable
-    // eslint-disable-next-line no-param-reassign
-    row.name = i;
+      'stat:percentage': row['stat:percentage'],
 
-    return row;
+      // other keys
+      ...Object.fromEntries(
+        Object.entries(row)
+          .filter(entry => !entry[0].startsWith('stat:'))
+          .map(([key, value]) => [key, isNil(value) ? 'null' : value]),
+      ),
+    };
   });
 
   const analysisResult = new PolygonAnalysisResult(
