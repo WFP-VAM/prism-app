@@ -74,6 +74,7 @@ import {
   mapSelector,
   layersSelector,
 } from '../../../context/mapStateSlice/selectors';
+import { getPossibleDatesForLayer } from '../../../utils/server-utils';
 import { useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
@@ -109,16 +110,19 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [endDate, setEndDate] = useState<number | null>(null);
 
   // get variables derived from state
+  const selectedHazardLayer = hazardLayerId
+    ? (LayerDefinitions[hazardLayerId] as WMSLayerProps)
+    : undefined;
+
   const hazardDataType: HazardDataType | null =
     hazardLayerId === undefined
       ? null
       : (LayerDefinitions[hazardLayerId] as WMSLayerProps).geometry ||
         RasterType.Raster;
-  const hazardServerLayerName = hazardLayerId
-    ? (LayerDefinitions[hazardLayerId] as WMSLayerProps).serverLayerName
-    : undefined;
-  const availableHazardDates = hazardServerLayerName
-    ? availableDates[hazardServerLayerName]?.map(d => new Date(d)) || []
+  const availableHazardDates = selectedHazardLayer
+    ? getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
+        d => new Date(d),
+      ) || []
     : undefined;
 
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
@@ -315,13 +319,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
       return;
     } // hasn't been calculated yet
 
-    if (!hazardLayerId) {
+    if (!selectedHazardLayer) {
       throw new Error('Hazard layer should be selected to run analysis');
     }
-
-    const selectedHazardLayer = LayerDefinitions[
-      hazardLayerId
-    ] as WMSLayerProps;
 
     if (hazardDataType === GeometryType.Polygon) {
       if (!startDate) {
