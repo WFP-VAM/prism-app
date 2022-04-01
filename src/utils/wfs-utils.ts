@@ -1,4 +1,6 @@
 import { FeatureCollection } from 'geojson';
+import moment from 'moment';
+import { DEFAULT_DATE_FORMAT } from './name-utils';
 
 import { WMSLayerProps } from '../config/types';
 
@@ -28,7 +30,12 @@ export function fetchWMSLayerAsGeoJSON(
   params.set('outputFormat', 'application/json'); // per https://docs.geoserver.org/latest/en/user/services/wfs/outputformats.html
 
   if (startDate && endDate) {
-    params.set('cql_filter', `timestamp BETWEEN ${startDate} AND ${endDate}`);
+    params.set(
+      'cql_filter',
+      `timestamp BETWEEN ${moment(startDate).format(
+        DEFAULT_DATE_FORMAT,
+      )} AND ${moment(endDate).format(DEFAULT_DATE_FORMAT)}`,
+    );
   }
 
   // may want/need to add additionalQueryParams like srsName and bbox
