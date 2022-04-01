@@ -4,6 +4,7 @@ import moment from 'moment';
 import type { LazyLoader } from './layer-data';
 import { PointDataLayerProps } from '../../config/types';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
+import { getAdminLevelDataLayerData } from './admin_level_data';
 
 declare module 'geojson' {
   export const version: string;
@@ -41,15 +42,22 @@ export const queryParamsToString = (queryParams?: {
         .join('&')
     : '';
 
-export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async ({
-  date,
-  layer: {
-    data: dataUrl,
-    fallbackData,
-    additionalQueryParams,
-    adminLevelDisplay,
+export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async (
+  {
+    date,
+    layer: {
+      data: dataUrl,
+      fallbackData,
+      additionalQueryParams,
+      adminLevelDisplay,
+      boundary,
+      adminCode,
+      dataField,
+      featureInfoProps,
+    },
   },
-}) => {
+  { getState },
+) => {
   // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
@@ -84,6 +92,18 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       obj =>
         moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
         moment(formattedDate).format(DEFAULT_DATE_FORMAT),
+    );
+  }
+  if (adminLevelDisplay) {
+    return getAdminLevelDataLayerData(
+      data,
+      {
+        boundary,
+        adminCode: adminCode || '',
+        dataField: dataField || '',
+        featureInfoProps,
+      },
+      getState,
     );
   }
   return GeoJSON.parse(data, { Point: ['lat', 'lon'] });

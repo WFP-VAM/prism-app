@@ -354,6 +354,18 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   adminLevelDisplay?: boolean;
+
+  @optional
+  adminCode?: string;
+
+  @optional
+  adminLevel?: number;
+
+  @optional
+  dataField?: string;
+
+  @optional
+  boundary?: LayerKey;
 }
 
 export type RequiredKeys<T> = {

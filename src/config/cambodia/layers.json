@@ -1650,7 +1650,7 @@
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/forms",
     "additional_query_params": {
-      "form_name": "test-form-admin-codes",
+      "form_name": "test-form-admin-codes-no-groups",
       "datetime_field": "Date_report",
       "geom_field": "location",
       "measure_field": "NumPeoAff",

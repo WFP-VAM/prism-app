@@ -5,7 +5,7 @@ import {
   AdminLevelDataLayerProps,
   LayerKey,
 } from '../../config/types';
-import type { ThunkApi } from '../store';
+import type { RootState, ThunkApi } from '../store';
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
@@ -34,9 +34,8 @@ export function getAdminLevelDataLayerData(
     AdminLevelDataLayerProps,
     'boundary' | 'adminCode' | 'dataField' | 'featureInfoProps'
   >,
-  api: ThunkApi,
+  getState: () => RootState,
 ) {
-  const { getState } = api;
   // check unique boundary layer presence into this layer
   // use the boundary once available or
   // use the default boundary singleton instead
@@ -127,6 +126,6 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
   return getAdminLevelDataLayerData(
     data,
     { boundary, adminCode, dataField, featureInfoProps },
-    api,
+    api.getState,
   );
 };
