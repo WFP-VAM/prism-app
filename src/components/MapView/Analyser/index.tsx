@@ -568,7 +568,13 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   {isTableViewOpen && (
                     <AnalysisTable
                       tableData={analysisResult.tableData}
-                      columns={getAnalysisTableColumns(analysisResult)}
+                      columns={
+                        'tableColumns' in analysisResult
+                          ? // have to add "as any" here because typescript compiler mistakenly thinks
+                            // analysisResult is a union of BaselineLayerResult and PolygonAnalysisResult
+                            (analysisResult as any).tableColumns
+                          : getAnalysisTableColumns(analysisResult)
+                      }
                     />
                   )}
                   <Button

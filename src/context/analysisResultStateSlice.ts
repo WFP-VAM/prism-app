@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { convertArea, featureCollection } from '@turf/helpers';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { calculate } from 'zonal';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesPath } from '../config';
@@ -426,7 +426,20 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     preserve_features: true,
   });
 
-  const tableColumns = result.table.columns;
+  const tableColumns = result.table.columns.map((column: string) => {
+    return {
+      id: column as any,
+      // remove prefix from column labels
+      // example: replace "stat:area" with "area"
+      label: column.replace(/^[a-z]+:/i, ''),
+      format: (value: number | string) => {
+        if (typeof value === 'number') {
+          return value.toLocaleString('en-US');
+        }
+        return isNil(value) ? 'null' : value;
+      },
+    };
+  });
 
   const tableRows = result.table.rows.map((row: any, i: number) => {
     // eslint-disable-next-line no-param-reassign

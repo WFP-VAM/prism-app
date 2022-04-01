@@ -1,7 +1,6 @@
 import {
   get,
   has,
-  isNil,
   isNull,
   isString,
   mean,
@@ -436,25 +435,8 @@ export async function loadFeaturesClientSide(
 }
 
 export function getAnalysisTableColumns(
-  analysisResult: BaselineLayerResult | PolygonAnalysisResult,
+  analysisResult: BaselineLayerResult,
 ): Column[] {
-  if ('tableColumns' in analysisResult) {
-    return analysisResult.tableColumns.map(column => {
-      return {
-        id: column as any,
-        // remove prefix from column labels
-        // example: replace "stat:area" with "area"
-        label: column.replace(/^[a-z]+:/i, ''),
-        format: (value: number | string) => {
-          if (typeof value === 'number') {
-            return value.toLocaleString('en-US');
-          }
-          return isNil(value) ? 'null' : value;
-        },
-      };
-    });
-  }
-
   const { statistic } = analysisResult;
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;
 
@@ -485,7 +467,10 @@ export function downloadCSVFromTableData(
   analysisResult: BaselineLayerResult | PolygonAnalysisResult,
 ) {
   const { tableData, key: createdAt } = analysisResult;
-  const columns = getAnalysisTableColumns(analysisResult);
+  const columns =
+    'tableColumns' in analysisResult
+      ? analysisResult.tableColumns
+      : getAnalysisTableColumns(analysisResult);
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
     columns.map(col => col.label).join(','),
@@ -676,7 +661,7 @@ export class PolygonAnalysisResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
   tableData: TableRow[];
-  tableColumns: string[];
+  tableColumns: Column[];
 
   statistic: 'area' | 'percentage';
   threshold?: ThresholdDefinition;
@@ -687,7 +672,7 @@ export class PolygonAnalysisResult {
 
   constructor(
     tableData: TableRow[],
-    tableColumns: string[],
+    tableColumns: Column[],
     featureCollection: FeatureCollection,
     hazardLayer: WMSLayerProps,
     adminLevel: AdminLevelType,
