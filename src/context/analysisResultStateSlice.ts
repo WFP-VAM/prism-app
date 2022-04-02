@@ -20,10 +20,7 @@ import {
   TableType,
   ZonalPolygonRow,
 } from '../config/types';
-import {
-  getAdminNameProperty,
-  fetchAdminLayerGeoJSON,
-} from '../utils/admin-utils';
+import { getAdminNameProperty } from '../utils/admin-utils';
 import {
   BaselineLayerResult,
   PolygonAnalysisResult,
@@ -194,6 +191,7 @@ export type AnalysisDispatchParams = {
 export type PolygonAnalysisDispatchParams = {
   hazardLayer: WMSLayerProps;
   adminLevel: AdminLevelType;
+  adminLevelData: FeatureCollection;
   extent: Extent;
   startDate: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   endDate: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
@@ -409,9 +407,13 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   PolygonAnalysisDispatchParams,
   CreateAsyncThunkTypes
 >('analysisResultState/requestAndStorePolygonAnalysis', async params => {
-  const { adminLevel, hazardLayer, startDate, endDate } = params;
-
-  const zones = await fetchAdminLayerGeoJSON(adminLevel);
+  const {
+    adminLevel,
+    adminLevelData,
+    hazardLayer,
+    startDate,
+    endDate,
+  } = params;
 
   const classes = await fetchWMSLayerAsGeoJSON({
     lyr: hazardLayer,
@@ -420,11 +422,12 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   });
 
   const result = calculate({
-    zones,
+    // clone the data, so zone, class and stats properties can be safely added
+    // without encountering an "object is not extensible" error
+    zones: JSON.parse(JSON.stringify(adminLevelData)),
     zone_properties: [getAdminNameProperty(adminLevel)],
     classes,
     class_properties: hazardLayer?.zonal?.class_properties, // eslint-disable-line camelcase
-    preserve_features: false, // this makes sure we aren't modifying the existing boundary layers
   });
 
   const tableColumns = result.table.columns.map((column: string) => {

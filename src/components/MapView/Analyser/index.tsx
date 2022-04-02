@@ -44,6 +44,7 @@ import {
   GeometryType,
 } from '../../../config/types';
 
+import { getAdminLevelLayer } from '../../../utils/admin-utils';
 import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import {
@@ -71,9 +72,11 @@ import {
   safeDispatchRemoveLayer,
   safeDispatchAddLayer,
 } from '../../../utils/map-utils';
+import { LayerData } from '../../../context/layers/layer-data';
 import {
   mapSelector,
   layersSelector,
+  layerDataSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { getPossibleDatesForLayer } from '../../../utils/server-utils';
 import { useUrlHistory } from '../../../utils/url-utils';
@@ -109,6 +112,12 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [adminLevel, setAdminLevel] = useState<AdminLevelType>(1);
   const [startDate, setStartDate] = useState<number | null>(null);
   const [endDate, setEndDate] = useState<number | null>(null);
+
+  // find layer for the given adminLevel
+  const adminLevelLayer = getAdminLevelLayer(adminLevel);
+  const adminLevelLayerData = useSelector(
+    layerDataSelector(adminLevelLayer.id),
+  ) as LayerData<BoundaryLayerProps> | undefined;
 
   // get variables derived from state
   const selectedHazardLayer = hazardLayerId
@@ -326,10 +335,19 @@ function Analyser({ extent, classes }: AnalyserProps) {
       if (!endDate) {
         throw new Error('Date Range must be given to run analysis');
       }
+      if (!adminLevelLayerData) {
+        // technically we can't get here because the run analaysis button
+        // is disabled while the admin level data loads
+        // but we have to put this in so the typescript compiler
+        // doesn't throw an error when we try to access the data
+        // property of adminLevelLayerData
+        throw new Error('Admin level data is still loading');
+      }
 
       const params: PolygonAnalysisDispatchParams = {
         hazardLayer: selectedHazardLayer,
         adminLevel,
+        adminLevelData: adminLevelLayerData.data,
         startDate,
         endDate,
         extent,
@@ -599,7 +617,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   isAnalysisLoading || // or analysis is currently loading
                   !hazardLayerId || // or hazard layer hasn't been selected
                   (hazardDataType === GeometryType.Polygon
-                    ? !startDate || !endDate
+                    ? !startDate || !endDate || !adminLevelLayerData
                     : !selectedDate || !baselineLayerId) // or date hasn't been selected // or baseline layer hasn't been selected
                 }
               >
