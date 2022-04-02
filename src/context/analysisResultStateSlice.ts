@@ -18,6 +18,7 @@ import {
   LayerKey,
   ExposedPopulationDefinition,
   TableType,
+  ZonalPolygonRow,
 } from '../config/types';
 import {
   getAdminNameProperty,
@@ -407,7 +408,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
   PolygonAnalysisResult,
   PolygonAnalysisDispatchParams,
   CreateAsyncThunkTypes
->('analysisResultState/requestAndStorePolygonAnalysis', async (params, api) => {
+>('analysisResultState/requestAndStorePolygonAnalysis', async params => {
   const { adminLevel, hazardLayer, startDate, endDate } = params;
 
   const zones = await fetchAdminLayerGeoJSON(adminLevel);
@@ -441,7 +442,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     };
   });
 
-  const tableRows = result.table.rows.map((row: any, i: number) => {
+  const tableRows = result.table.rows.map((row: ZonalPolygonRow, i: number) => {
     return {
       // create key for AnalysisTable
       name: i,
