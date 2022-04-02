@@ -182,6 +182,16 @@ export type ZonalConfig = {
   class_properties?: string[];
 };
 
+// this is the row object found in the table.rows array
+// of the result object returned by zonal.calculate
+export type ZonalPolygonRow = {
+  'stat:area': number;
+  'stat:percentage': number;
+  // additional dynamic properties
+  // like zone:name or class:wind_speed
+  [key: string]: number | string | null;
+};
+
 export type AdminLevelType = 1 | 2 | 3;
 
 export interface ExposedPopulationDefinition {
