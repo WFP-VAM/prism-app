@@ -43,7 +43,7 @@ import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
-import { fetchWMSLayerAsGeoJSON } from '../utils/wfs-utils';
+import { fetchWMSLayerAsGeoJSON } from '../utils/server-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord, AdminLevelDataLayerData } from './layers/admin_level_data';
