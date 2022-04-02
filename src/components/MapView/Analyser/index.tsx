@@ -27,6 +27,7 @@ import { grey } from '@material-ui/core/colors';
 import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
+import { isNil } from 'lodash';
 import {
   LayerDefinitions,
   getDisplayBoundaryLayers,
@@ -121,6 +122,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
         d => new Date(d),
       ) || []
     : undefined;
+  const lastAvailableHazardDate =
+    Array.isArray(availableHazardDates) && availableHazardDates.length > 0
+      ? availableHazardDates[availableHazardDates.length - 1].getTime()
+      : null;
 
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
@@ -134,22 +139,16 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
-    if (
-      availableHazardDates === undefined ||
-      availableHazardDates.length === 0
-    ) {
+    if (isNil(lastAvailableHazardDate)) {
       setSelectedDate(null);
       setStartDate(null);
       setEndDate(null);
     } else {
-      const lastDate = availableHazardDates[
-        availableHazardDates.length - 1
-      ].getTime();
-      setSelectedDate(lastDate);
-      setStartDate(lastDate);
-      setEndDate(lastDate);
+      setSelectedDate(lastAvailableHazardDate);
+      setStartDate(lastAvailableHazardDate);
+      setEndDate(lastAvailableHazardDate);
     }
-  }, [availableDates, availableHazardDates?.toString(), hazardLayerId]); // eslint-disable-line @typescript-eslint/no-base-to-string, react-hooks/exhaustive-deps
+  }, [availableDates, hazardLayerId, lastAvailableHazardDate]);
 
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
