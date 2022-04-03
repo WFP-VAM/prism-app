@@ -169,7 +169,7 @@ export type HazardDataType = GeometryType | RasterType;
 
 // not including standard deviation and sum quite yet
 // because we won't be able to re-use the WMS legend
-export enum DisplayZonalStatsEnum {
+export enum DisplayZonalStats {
   Max = 'Max',
   Mean = 'Mean',
   Median = 'Median',
