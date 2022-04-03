@@ -690,12 +690,13 @@ export class PolygonAnalysisResult {
     this.adminLevel = adminLevel;
 
     // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
+    // this legend of red-like colors goes from very light to dark
     this.legend = [
-      { label: '20%', value: 0.2, color: '#fee5d9' }, // HSL: 0.05, 0.95, 0.92
-      { label: '40%', value: 0.4, color: '#fcae91' }, // HSL: 0.05, 0.95, 0.78
-      { label: '60%', value: 0.6, color: '#fb6a4a' }, // HSL: 0.03, 0.96, 0.64
-      { label: '80%', value: 0.8, color: '#de2d26' }, // HSL: 0.01, 0.74, 0.51
-      { label: '100%', value: 1, color: '#a50f15' }, // HSL: 0.99 0.83 0.35
+      { label: '20%', value: 0.2, color: '#fee5d9' }, // very light red-orange, HSL: 0.05, 0.95, 0.92,
+      { label: '40%', value: 0.4, color: '#fcae91' }, // rose bud, HSL: 0.05, 0.95, 0.78,
+      { label: '60%', value: 0.6, color: '#fb6a4a' }, // red-orange, HSL: 0.03, 0.96, 0.64
+      { label: '80%', value: 0.8, color: '#de2d26' }, // medium red-orange HSL: 0.01, 0.74, 0.51
+      { label: '100%', value: 1, color: '#a50f15' }, // dark tamarillo red: 0.99 0.83 0.35, dark red
     ];
 
     this.legendText = hazardLayer.legendText;
