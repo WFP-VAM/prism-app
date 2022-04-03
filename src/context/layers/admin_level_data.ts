@@ -87,14 +87,18 @@ export function getAdminLevelDataLayerData(
         );
         if (matchProperties && !isNull(matchProperties.value)) {
           // Do we want support for non-numeric values (like string colors?)
+          const value = isString(matchProperties.value)
+            ? parseFloat(matchProperties.value)
+            : matchProperties.value;
           return {
             ...feature,
             properties: {
               ...properties,
               ...matchProperties,
-              data: isString(matchProperties.value)
-                ? parseFloat(matchProperties.value)
-                : matchProperties.value,
+              // TODO - standardize the field we use to store that data
+              // Some functions use "dataField" while others use "data"
+              data: value,
+              [dataField]: value,
             },
           };
         }

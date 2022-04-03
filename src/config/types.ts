@@ -330,6 +330,9 @@ export class ImpactLayerProps extends CommonLayerProps {
 export class PointDataLayerProps extends CommonLayerProps {
   type: 'point_data';
   data: string;
+  dataField: string;
+  // URL to fetch all possible dates from
+  dateUrl: string;
 
   @makeRequired
   title: string;
@@ -340,11 +343,8 @@ export class PointDataLayerProps extends CommonLayerProps {
   @makeRequired
   legendText: string;
 
-  dataField: string;
   @optional
   fallbackData?: string;
-  // URL to fetch all possible dates from
-  dateUrl: string;
 
   @optional
   additionalQueryParams?: { [key: string]: string | { [key: string]: string } };

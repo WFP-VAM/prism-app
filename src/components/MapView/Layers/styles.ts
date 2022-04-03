@@ -3,14 +3,13 @@ import { CommonLayerProps, PointDataLayerProps } from '../../../config/types';
 import { legendToStops } from './layer-utils';
 
 export const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
-export const circlePaint = ({
-  opacity,
-  dataField,
-  legend,
-}: PointDataLayerProps): MapboxGL.CirclePaint => ({
+export const circlePaint = (
+  { opacity, legend }: CommonLayerProps,
+  property: string,
+): MapboxGL.CirclePaint => ({
   'circle-opacity': opacity || 0.3,
   'circle-color': {
-    property: dataField,
+    property,
     stops: legendToStops(legend),
   },
 });

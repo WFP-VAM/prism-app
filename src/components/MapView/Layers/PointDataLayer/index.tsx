@@ -65,7 +65,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
         before={`layer-${boundaryId}-line`}
         id={`layer-${layer.id}`}
         data={features}
-        fillPaint={fillPaintData(layer)}
+        fillPaint={fillPaintData(layer, layer.dataField)}
         fillOnClick={onClickFunc}
       />
     );
@@ -76,7 +76,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       id={`layer-${layer.id}`}
       data={features}
       circleLayout={circleLayout}
-      circlePaint={circlePaint(layer)}
+      circlePaint={circlePaint(layer, layer.dataField)}
       circleOnClick={onClickFunc}
     />
   );

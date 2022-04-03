@@ -1645,9 +1645,9 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
-    "admin_level": 1,
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_name": "test-form-admin-codes",
       "datetime_field": "Date_report",
@@ -1662,7 +1662,6 @@
         "label": "Commune"
       }
     },
-    "data_field": "NumPeoAff",
     "legend_text": "Number of people affected",
     "legend": [
       {
