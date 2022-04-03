@@ -116,7 +116,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
   // find layer for the given adminLevel
   const adminLevelLayer = getAdminLevelLayer(adminLevel);
   const adminLevelLayerData = useSelector(
-    layerDataSelector(adminLevelLayer.id),
+    // if we couldn't find an admin layer, just return undefined
+    adminLevelLayer ? layerDataSelector(adminLevelLayer.id) : () => undefined,
   ) as LayerData<BoundaryLayerProps> | undefined;
 
   // get variables derived from state
