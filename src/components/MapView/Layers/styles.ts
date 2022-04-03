@@ -1,5 +1,5 @@
 import * as MapboxGL from 'mapbox-gl';
-import { CommonLayerProps, PointDataLayerProps } from '../../../config/types';
+import { CommonLayerProps } from '../../../config/types';
 import { legendToStops } from './layer-utils';
 
 export const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
