@@ -340,7 +340,7 @@ export class PointDataLayerProps extends CommonLayerProps {
   @makeRequired
   legendText: string;
 
-  measure: string;
+  dataField: string;
   @optional
   fallbackData?: string;
   // URL to fetch all possible dates from
@@ -353,16 +353,7 @@ export class PointDataLayerProps extends CommonLayerProps {
   featureInfoProps?: FeatureInfoObject;
 
   @optional
-  adminLevelDisplay?: boolean;
-
-  @optional
-  adminCode?: string;
-
-  @optional
-  adminLevel?: number;
-
-  @optional
-  dataField?: string;
+  adminLevelDisplay?: AdminLevelDisplayType;
 
   @optional
   boundary?: LayerKey;
@@ -472,3 +463,8 @@ export enum DownloadFormat {
   CSV,
   JSON,
 }
+
+type AdminLevelDisplayType = {
+  adminCode: string;
+  dataField: string;
+};

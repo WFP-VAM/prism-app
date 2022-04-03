@@ -55,7 +55,6 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       additionalQueryParams,
       adminLevelDisplay,
       boundary,
-      adminCode,
       dataField,
       featureInfoProps,
     },
@@ -99,12 +98,14 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     );
   }
   if (adminLevelDisplay) {
+    const { adminCode } = adminLevelDisplay;
+
     return getAdminLevelDataLayerData(
       data,
       {
         boundary,
-        adminCode: adminCode || '',
-        dataField: dataField || '',
+        adminCode,
+        dataField,
         featureInfoProps,
       },
       getState,

@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { get } from 'lodash';
-import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
-import { legendToStops } from '../layer-utils';
 import { PointDataLayerProps } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
@@ -16,6 +14,7 @@ import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayerSingleton } from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
+import { circleLayout, circlePaint, fillPaintData } from '../styles';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -40,12 +39,12 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   }
 
   const onClickFunc = async (evt: any) => {
-    // by default add `measure` to the tooltip
+    // by default add `dataField` to the tooltip
     dispatch(
       addPopupData({
         [layer.title]: {
           data: getRoundedData(
-            get(evt.features[0], `properties.${layer.measure}`),
+            get(evt.features[0], `properties.${layer.dataField}`),
             t,
           ),
           coordinates: evt.lngLat,
@@ -58,32 +57,15 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     );
   };
 
-  const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
-  const circlePaint: MapboxGL.CirclePaint = {
-    'circle-opacity': layer.opacity || 0.3,
-    'circle-color': {
-      property: layer.measure,
-      stops: legendToStops(layer.legend),
-    },
-  };
   const boundaryId = getBoundaryLayerSingleton().id;
 
-  // We use the legend values from the config to define "intervals".
-  const fillPaintData: MapboxGL.FillPaint = {
-    'fill-opacity': layer.opacity || 0.3,
-    'fill-color': {
-      property: 'data',
-      stops: legendToStops(layer.legend),
-      type: 'interval',
-    },
-  };
   if (layer.adminLevelDisplay) {
     return (
       <GeoJSONLayer
         before={`layer-${boundaryId}-line`}
         id={`layer-${layer.id}`}
         data={features}
-        fillPaint={fillPaintData}
+        fillPaint={fillPaintData(layer)}
         fillOnClick={onClickFunc}
       />
     );
@@ -94,7 +76,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       id={`layer-${layer.id}`}
       data={features}
       circleLayout={circleLayout}
-      circlePaint={circlePaint}
+      circlePaint={circlePaint(layer)}
       circleOnClick={onClickFunc}
     />
   );
