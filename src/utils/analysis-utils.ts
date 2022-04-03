@@ -464,7 +464,7 @@ export function getAnalysisTableColumns(
 }
 
 export function downloadCSVFromTableData(
-  analysisResult: BaselineLayerResult | PolygonAnalysisResult,
+  analysisResult: TabularAnalysisResult,
 ) {
   const { tableData, key: createdAt } = analysisResult;
   const columns =
@@ -712,3 +712,7 @@ export class PolygonAnalysisResult {
     return `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }
+
+// type of results that have the tableData property
+// and are displayed in the left-hand "RUN ANALYSIS" panel
+export type TabularAnalysisResult = BaselineLayerResult | PolygonAnalysisResult;
