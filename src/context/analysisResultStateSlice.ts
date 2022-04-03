@@ -36,6 +36,7 @@ import {
   ExposedPopulationResult,
   scaleFeatureStat,
 } from '../utils/analysis-utils';
+import { getRoundedData } from '../utils/data-utils';
 import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
@@ -438,10 +439,10 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
       // example: replace "stat:area" with "area"
       label: column.replace(/^[a-z]+:/i, ''),
       format: (value: number | string) => {
-        if (typeof value === 'number') {
-          return value.toLocaleString('en-US');
+        if (typeof value === 'string') {
+          return value;
         }
-        return isNil(value) ? 'null' : value;
+        return getRoundedData(value);
       },
     };
   });
@@ -461,7 +462,16 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
       ...Object.fromEntries(
         Object.entries(row)
           .filter(entry => !entry[0].startsWith('stat:'))
-          .map(([key, value]) => [key, isNil(value) ? 'null' : value]),
+          .map(([key, value]) => {
+            // the zonal library uses null values to indicate
+            // areas of a zone that aren't overlapped by a class
+            // in order to make things clearer to the user,
+            // we replace this null value with the string "no class"
+            if (key.startsWith('class') && isNil(value)) {
+              return [key, 'no class']; // to-do: use safe translation
+            }
+            return [key, value];
+          }),
       ),
     };
   });
