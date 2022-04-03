@@ -1,29 +1,23 @@
 import { FormControl, MenuItem, Select } from '@material-ui/core';
 import React from 'react';
 
-type OptionValue = number | string;
 type OptionLabel = string;
-type DropdownOption = [OptionValue, OptionLabel];
 
-interface SimpleDropdownProps {
-  options: DropdownOption[];
-  value: OptionValue;
-  // want to do (val: OptionValue)
-  // but this causes type conflicts when a user knows that val will be an enum
-  onChange: (val: any) => void;
-}
-
-export default function SimpleDropdown({
+export default function SimpleDropdown<OptionValue extends number | string>({
   options,
-  value = '',
+  value,
   onChange,
   ...rest
-}: SimpleDropdownProps) {
+}: {
+  options: [OptionValue, OptionLabel][];
+  value: OptionValue;
+  onChange: (value: OptionValue) => void;
+}) {
   return (
     <FormControl {...rest}>
       <Select
-        value={value}
-        onChange={(e: any) => {
+        value={value === undefined ? '' : value}
+        onChange={e => {
           onChange(e.target.value as OptionValue);
         }}
       >
