@@ -490,7 +490,10 @@ export function downloadCSVFromTableData(
   link.click();
 }
 
-export type AnalysisResult = BaselineLayerResult | ExposedPopulationResult;
+export type AnalysisResult =
+  | BaselineLayerResult
+  | ExposedPopulationResult
+  | PolygonAnalysisResult;
 
 /**
  * Computes the feature property value according to the scale, offset values and statistic property
