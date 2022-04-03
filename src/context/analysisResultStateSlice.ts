@@ -433,7 +433,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 
   const tableColumns = result.table.columns.map((column: string) => {
     return {
-      id: column as any,
+      id: column,
       // remove prefix from column labels
       // example: replace "stat:area" with "area"
       label: column.replace(/^[a-z]+:/i, ''),
