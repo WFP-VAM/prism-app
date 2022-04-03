@@ -193,8 +193,9 @@ export type PolygonAnalysisDispatchParams = {
   adminLevel: AdminLevelType;
   adminLevelData: FeatureCollection;
   extent: Extent;
-  startDate: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
-  endDate: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
+  // just a hint to developers that we give a date number here, not just any number
+  startDate: ReturnType<Date['getTime']>;
+  endDate: ReturnType<Date['getTime']>;
 };
 
 export type ExposedPopulationDispatchParams = {
