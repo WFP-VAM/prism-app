@@ -20,7 +20,7 @@ type LayerSpecificDataTypes = {
   // eslint-disable-next-line camelcase
   admin_level_data: AdminLevelDataLayerData;
   // eslint-disable-next-line camelcase
-  point_data: PointLayerData;
+  point_data: PointLayerData | AdminLevelDataLayerData;
 };
 
 export interface LayerData<L extends LayerType> {
