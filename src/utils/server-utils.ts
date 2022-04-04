@@ -236,6 +236,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     additionalQueryParams,
   } = layer;
   const loadPointLayerDataFromURL = async (fetchUrl: string) => {
+    // TODO - merge formatUrl and queryParamsToString
     const fetchUrlWithParams = `${fetchUrl}${
       fetchUrl.includes('?') ? '&' : '?'
     }${queryParamsToString(additionalQueryParams)}`;

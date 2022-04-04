@@ -13527,10 +13527,10 @@ yargs@^13.3.0:
     y18n "^4.0.0"
     yargs-parser "^13.1.2"
 
-zonal@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/zonal/-/zonal-0.3.0.tgz#801a06c53800c537b5c627f7d8d86487812ac29e"
-  integrity sha512-/ulF+/qWKBq9p7ACEzUWkukVN+0nDZJkAMSQ7Je0bEedN+AcuiMTys1578tsyptiJ2rkyU9zZjUHqcho9Rq07A==
+zonal@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/zonal/-/zonal-0.4.0.tgz#03176b1991c9af07c0dfa8107118839af766572f"
+  integrity sha512-807IIfrTJj8kjmXlgFi2fpOPxs7bWIRgwErG3qcUXfuCy6qOaoILj3AaE8infuXxTDEUJVLwYdiztYt53XF7+g==
   dependencies:
     "@turf/area" "^6.5.0"
     "@turf/boolean-point-in-polygon" "^6.5.0"
