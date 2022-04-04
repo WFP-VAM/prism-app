@@ -430,6 +430,8 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     zone_properties: [getAdminNameProperty(adminLevel)],
     classes,
     class_properties: hazardLayer?.zonal?.class_properties, // eslint-disable-line camelcase
+    preserve_features: false,
+    remove_features_with_no_overlap: true,
   });
 
   const tableColumns = result.table.columns.map((column: string) => {

@@ -107,7 +107,7 @@
     "typescript": "^3.9.7",
     "url": "^0.11.0",
     "xml-js": "^1.6.11",
-    "zonal": "^0.3.0"
+    "zonal": "^0.4.0"
   },
   "resolutions": {
     "**/mapbox-gl": "npm:maplibre-gl@1.15.2"
