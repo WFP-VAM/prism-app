@@ -63,7 +63,7 @@ function AnalysisLayer() {
     };
   }
 
-  const property = (() => {
+  const defaultProperty = (() => {
     switch (true) {
       case analysisData instanceof ExposedPopulationResult:
         return analysisData.statistic as string;
@@ -79,15 +79,20 @@ function AnalysisLayer() {
       id="layer-analysis"
       before={`layer-${boundaryId}-line`}
       data={analysisData.featureCollection}
-      fillPaint={fillPaintData(analysisData.legend, property)}
+      fillPaint={fillPaintData(analysisData.legend, defaultProperty)}
+      // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data
       fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;
-
+        // Statistic Data
+        const statisticKey =
+          analysisData instanceof PolygonAnalysisResult
+            ? defaultProperty
+            : analysisData.statistic;
         dispatch(
           addPopupData({
             [analysisData.getStatTitle(t)]: {
               data: getRoundedData(
-                get(evt.features[0], ['properties', analysisData.statistic]),
+                get(evt.features[0], ['properties', statisticKey]),
                 t,
               ),
               coordinates,
