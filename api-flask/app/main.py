@@ -74,6 +74,8 @@ def _calculate_stats(zones,
 
 @api.route('/stats')
 class Stats(Resource):
+    """Class Stats which takes a post method."""
+
     @timed
     def post(self):
         """Return zonal statistics."""
@@ -162,6 +164,8 @@ class Stats(Resource):
 
 @api.route('/kobo/forms')
 class Get_kobo_forms(Resource):
+    """Class Get_kobo_forms which takes a get method."""
+
     def get(self):
         """Get all form responses."""
         begin_datetime, end_datetime = parse_datetime_params()
@@ -172,6 +176,8 @@ class Get_kobo_forms(Resource):
 
 @api.route('/alerts/<id>')
 class Alert_by_id(Resource):
+    """Class Alert_by_id which takes a get method."""
+
     def get(self, id: str = '1'):
         """Get alert data from DB given id."""
         try:
@@ -200,6 +206,8 @@ class Alert_by_id(Resource):
 
 @api.route('/alerts')
 class Write_alerts(Resource):
+    """Class Write_alerts which takes a post method."""
+
     def post(self):
         """Post new alerts."""
         if not request.is_json:
@@ -219,6 +227,8 @@ class Write_alerts(Resource):
 
 @api.route('/demo')
 class Stats_demo(Resource):
+    """Class Stats_demo which takes a get method."""
+
     @timed
     def get(self):
         """Return examples of zonal statistics."""
