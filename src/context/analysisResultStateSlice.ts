@@ -432,6 +432,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     class_properties: hazardLayer?.zonal?.class_properties, // eslint-disable-line camelcase
     preserve_features: false,
     remove_features_with_no_overlap: true,
+    include_null_class_rows: false,
   });
 
   const tableColumns = result.table.columns.map((column: string) => {
