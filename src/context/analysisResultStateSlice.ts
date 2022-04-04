@@ -464,17 +464,9 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
       // other keys
       ...Object.fromEntries(
         Object.entries(row)
-          .filter(entry => !entry[0].startsWith('stat:'))
-          .map(([key, value]) => {
-            // the zonal library uses null values to indicate
-            // areas of a zone that aren't overlapped by a class
-            // in order to make things clearer to the user,
-            // we replace this null value with the string "no class"
-            if (key.startsWith('class') && isNil(value)) {
-              return [key, 'no class']; // to-do: use safe translation
-            }
-            return [key, value];
-          }),
+          // filter out statistic columns because they
+          // are already included above
+          .filter(entry => !entry[0].startsWith('stat:')),
       ),
     };
   });
