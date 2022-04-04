@@ -466,5 +466,4 @@ export enum DownloadFormat {
 
 type AdminLevelDisplayType = {
   adminCode: string;
-  dataField: string;
 };
