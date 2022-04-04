@@ -257,12 +257,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const clearAnalysis = () => {
     dispatch(clearAnalysisResult());
 
-    // vector hazards already use admin boundaries
-    // so no need for a unique boundary
-    if (hazardDataType !== GeometryType.Polygon) {
-      deactivateUniqueBoundary();
-    }
-
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[
         previousBaselineId
