@@ -433,9 +433,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   </div>
 
                   <div className={classes.analyserOptions}>
-                    <Typography variant="body2">Date Range</Typography>
+                    <Typography variant="body2">{t('Date Range')}</Typography>
                     <div className={classes.dateRangePicker}>
-                      <Typography variant="body2">Start</Typography>
+                      <Typography variant="body2">{t('Start')}</Typography>
                       <DatePicker
                         selected={startDate ? new Date(startDate) : null}
                         onChange={date =>
@@ -453,7 +453,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                       />
                     </div>
                     <div className={classes.dateRangePicker}>
-                      <Typography variant="body2">End</Typography>
+                      <Typography variant="body2">{t('End')}</Typography>
                       <DatePicker
                         selected={endDate ? new Date(endDate) : null}
                         onChange={date =>
