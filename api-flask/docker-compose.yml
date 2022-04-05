@@ -10,7 +10,7 @@ services:
     environment:
       - WORKERS_PER_CORE=1
       # Kobo credentials
-      - KOBO_USERNAME=${KOBO_USERNAME:"kobo_user"}
+      - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
       - KOBO_PW
       # Alerts database
       - DATABASE_URL

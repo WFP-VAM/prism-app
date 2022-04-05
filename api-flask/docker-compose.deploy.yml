@@ -47,5 +47,5 @@ services:
       # make sure that the alert password is properly set
       - DATABASE_URL=${DATABASE_URL:?"Provide a URL for the alerts database."}
       - KOBO_PW=${KOBO_PW:?"Add a password to access KOBO data."}
-      - KOBO_USERNAME=${KOBO_USERNAME:"kobo_user"}
+      - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
     restart: unless-stopped
