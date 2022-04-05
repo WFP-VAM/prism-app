@@ -110,6 +110,49 @@ exports[`renders as expected 1`] = `
                 GitHub
               </mock-typography>
             </div>
+            <div
+              class="MuiButtonGroup-root LanguageSelector-block-8"
+              role="group"
+            >
+              <mock-button
+                classname="MuiButtonGroup-grouped MuiButtonGroup-groupedHorizontal MuiButtonGroup-groupedText MuiButtonGroup-groupedTextHorizontal MuiButtonGroup-groupedText"
+                color="default"
+                disabled="false"
+                disableelevation="false"
+                disablefocusripple="false"
+                disableripple="false"
+                fullwidth="false"
+                size="medium"
+                type="submit"
+                variant="text"
+              >
+                <mock-typography
+                  style="font-weight: bold;"
+                  variant="body2"
+                >
+                  en
+                </mock-typography>
+              </mock-button>
+              <mock-button
+                classname="MuiButtonGroup-grouped MuiButtonGroup-groupedHorizontal MuiButtonGroup-groupedText MuiButtonGroup-groupedTextHorizontal MuiButtonGroup-groupedText"
+                color="default"
+                disabled="false"
+                disableelevation="false"
+                disablefocusripple="false"
+                disableripple="false"
+                fullwidth="false"
+                size="medium"
+                type="submit"
+                variant="text"
+              >
+                <mock-typography
+                  style="font-weight: normal;"
+                  variant="body2"
+                >
+                  kh
+                </mock-typography>
+              </mock-button>
+            </div>
           </div>
         </mock-hidden>
         <mock-hidden
