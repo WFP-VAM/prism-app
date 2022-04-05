@@ -330,7 +330,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       if (!endDate) {
         throw new Error('Date Range must be given to run analysis');
       }
-      if (!adminLevelLayerData) {
+      if (!adminLevelLayer || !adminLevelLayerData) {
         // technically we can't get here because the run analaysis button
         // is disabled while the admin level data loads
         // but we have to put this in so the typescript compiler
@@ -342,6 +342,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       const params: PolygonAnalysisDispatchParams = {
         hazardLayer: selectedHazardLayer,
         adminLevel,
+        adminLevelLayer,
         adminLevelData: adminLevelLayerData.data,
         startDate,
         endDate,

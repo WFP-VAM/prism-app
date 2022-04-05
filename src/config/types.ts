@@ -337,6 +337,15 @@ export enum AggregationOperations {
   Sum = 'sum',
 }
 
+export enum PolygonalAggregationOperations {
+  Area = 'area',
+  Percentage = 'percentage',
+}
+
+export type AllAggregationOperations =
+  | AggregationOperations
+  | PolygonalAggregationOperations;
+
 export type ThresholdDefinition = { below?: number; above?: number };
 
 export class ImpactLayerProps extends CommonLayerProps {

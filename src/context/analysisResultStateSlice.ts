@@ -2,13 +2,14 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { convertArea } from '@turf/helpers';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
-import { get, isNil } from 'lodash';
+import { get } from 'lodash';
 import { calculate } from 'zonal';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesPath } from '../config';
 import {
   AdminLevelType,
   AggregationOperations,
+  AllAggregationOperations,
   AsyncReturnType,
   BoundaryLayerProps,
   AdminLevelDataLayerProps,
@@ -19,10 +20,12 @@ import {
   ExposedPopulationDefinition,
   TableType,
   ZonalPolygonRow,
+  PolygonalAggregationOperations,
 } from '../config/types';
 import { getAdminNameProperty } from '../utils/admin-utils';
 import {
   BaselineLayerResult,
+  Column,
   PolygonAnalysisResult,
   AnalysisResult,
   ApiData,
@@ -44,7 +47,7 @@ import { Extent } from '../components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from '../utils/server-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
-import { DataRecord, AdminLevelDataLayerData } from './layers/admin_level_data';
+import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
 
@@ -68,11 +71,14 @@ type AnalysisResultState = {
 };
 
 export type TableRow = {
+  key: string;
   localName: string;
   name: string;
   baselineValue: DataRecord['value'];
   coordinates?: Position;
-} & { [k in AggregationOperations]?: number };
+} & {
+  [k in AggregationOperations]?: number;
+} & { [key: string]: number | string }; // extra columns like wind speed or earthquake magnitude
 
 const initialState: AnalysisResultState = {
   isLoading: false,
@@ -104,22 +110,17 @@ function getAdminBoundariesURL() {
 }
 
 function generateTableFromApiData(
-  statistic: AggregationOperations,
+  statistics: AllAggregationOperations[],
   aggregateData: AsyncReturnType<typeof fetchApiData>, // data from api
   // admin layer, both props and data. Aimed to closely match LayerData<BoundaryLayerProps>
   {
     layer: adminLayer,
     data: adminLayerData,
   }: { layer: BoundaryLayerProps; data: BoundaryLayerData },
-  // baseline layer, both props and data
-  {
-    data: { layerData: baselineLayerData },
-  }: { layer: AdminLevelDataLayerProps; data: AdminLevelDataLayerData },
-  apiRequest: ApiData,
+  groupBy: string, // Reuse the groupBy parameter to generate the table
+  baselineLayerData: DataRecord[] | null,
+  extraColumns: string[],
 ): TableRow[] {
-  // Reuse the groupBy parameter to generate the table
-  const groupBy = apiRequest.group_by;
-
   // find the key that will let us reference the names of the bounding boxes. We get the one corresponding to the specific level of baseline, or the first if we fail.
   const { adminLevelNames } = adminLayer;
 
@@ -133,7 +134,7 @@ function generateTableFromApiData(
   // If we want to show all comma separated admin levels, we can use all names until "adminIndex".
   const adminLevelName = adminLevelNames[adminIndex];
 
-  return (aggregateData as KeyValueResponse[]).map(row => {
+  return (aggregateData as KeyValueResponse[]).map((row, i) => {
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
     // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
@@ -156,7 +157,7 @@ function generateTableFromApiData(
     // we are searching the data of baseline layer to find the data associated with this feature
     // adminKey here refers to a specific feature (could be several) where the data is attached to.
     const rawBaselineValue =
-      baselineLayerData.find(({ adminKey }) => {
+      baselineLayerData?.find(({ adminKey }) => {
         // TODO - Make this code more flexible.
         // we only check startsWith because the adminCode grows longer the deeper the level.
         // For example, 34 is state and 14 is district, therefore 3414 is a specific district in a specific state.
@@ -166,14 +167,23 @@ function generateTableFromApiData(
           adminKey,
         );
       })?.value || 'No Data';
-
     const tableRow: TableRow = {
+      key: i.toString(), // primary key, identifying a unique row in the table
       name,
       localName,
-      [statistic]: get(row, statistic, 0),
+      // copy multiple statistics to the new table row
+      ...Object.fromEntries(
+        statistics.map(statistic => [statistic, get(row, statistic, 0)]),
+      ),
       // Force parseFloat in case data was stored as a string
-      baselineValue: parseFloat(`${rawBaselineValue}`),
+      baselineValue:
+        rawBaselineValue === 'No Data'
+          ? 'No Data'
+          : parseFloat(`${rawBaselineValue}`),
       coordinates: (featureBoundary?.geometry as any)?.coordinates[0][0][0], // TODO likely will not keep
+      ...Object.fromEntries(
+        extraColumns.map(extraColumn => [extraColumn, get(row, extraColumn)]),
+      ),
     };
     return tableRow;
   });
@@ -192,6 +202,7 @@ export type AnalysisDispatchParams = {
 export type PolygonAnalysisDispatchParams = {
   hazardLayer: WMSLayerProps;
   adminLevel: AdminLevelType;
+  adminLevelLayer: BoundaryLayerProps;
   adminLevelData: FeatureCollection;
   extent: Extent;
   // just a hint to developers that we give a date number here, not just any number
@@ -382,11 +393,12 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   const tableRows: TableRow[] = generateTableFromApiData(
-    statistic,
+    [statistic],
     aggregateData,
     adminBoundariesData,
-    { layer: baselineLayer, data: loadedAndCheckedBaselineData },
-    apiRequest,
+    apiRequest.group_by,
+    loadedAndCheckedBaselineData.layerData,
+    [], // no extra columns
   );
 
   return new BaselineLayerResult(
@@ -411,6 +423,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 >('analysisResultState/requestAndStorePolygonAnalysis', async params => {
   const {
     adminLevel,
+    adminLevelLayer,
     adminLevelData,
     hazardLayer,
     startDate,
@@ -423,53 +436,70 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     endDate,
   });
 
+  const adminLevelName = getAdminNameProperty(adminLevel);
+
+  const classProperties = hazardLayer?.zonal?.class_properties; // eslint-disable-line camelcase
+
   const result = calculate({
     // clone the data, so zone, class and stats properties can be safely added
     // without encountering an "object is not extensible" error
     zones: JSON.parse(JSON.stringify(adminLevelData)),
-    zone_properties: [getAdminNameProperty(adminLevel)],
+    zone_properties: [adminLevelName],
     classes,
-    class_properties: hazardLayer?.zonal?.class_properties, // eslint-disable-line camelcase
+    class_properties: classProperties,
     preserve_features: false,
     remove_features_with_no_overlap: true,
     include_null_class_rows: false,
   });
 
-  const tableColumns = result.table.columns.map((column: string) => {
+  const tableColumns: Column[] = [
+    { id: 'name', label: 'name' },
+    { id: 'localName', label: 'localName' },
+    ...(classProperties || []).map(classProperty => ({
+      id: classProperty,
+      label: classProperty,
+    })),
+    {
+      id: PolygonalAggregationOperations.Area,
+      label: PolygonalAggregationOperations.Area,
+      format: value => getRoundedData(value as number),
+    },
+    {
+      id: PolygonalAggregationOperations.Percentage,
+      label: PolygonalAggregationOperations.Percentage,
+      format: value => getRoundedData(value as number),
+    },
+  ];
+
+  const zonalTableRows = result.table.rows.map((row: ZonalPolygonRow) => {
     return {
-      id: column,
-      // remove prefix from column labels
-      // example: replace "stat:area" with "area"
-      label: column.replace(/^[a-z]+:/i, ''),
-      format: (value: number | string) => {
-        if (typeof value === 'string') {
-          return value;
-        }
-        return getRoundedData(value);
-      },
-    };
-  });
+      area: Math.round(convertArea(row['stat:area'], 'meters', 'kilometers')),
 
-  const tableRows = result.table.rows.map((row: ZonalPolygonRow, i: number) => {
-    return {
-      // create key for AnalysisTable
-      name: i,
-
-      'stat:area': Math.round(
-        convertArea(row['stat:area'], 'meters', 'kilometers'),
-      ),
-
-      'stat:percentage': row['stat:percentage'],
+      percentage: row['stat:percentage'],
 
       // other keys
       ...Object.fromEntries(
         Object.entries(row)
           // filter out statistic columns because they
           // are already included above
-          .filter(entry => !entry[0].startsWith('stat:')),
+          .filter(entry => !entry[0].startsWith('stat:'))
+          // remove prefix from column labels
+          .map(([key, value]) => [key.replace(/^[a-z]+:/i, ''), value]),
       ),
     };
   });
+
+  const tableRows: TableRow[] = generateTableFromApiData(
+    [
+      PolygonalAggregationOperations.Area,
+      PolygonalAggregationOperations.Percentage,
+    ], // statistics
+    zonalTableRows, // aggregate data
+    { layer: adminLevelLayer, data: adminLevelData },
+    adminLevelName,
+    null, // no baseline layer
+    classProperties || [], // extra columns
+  );
 
   const analysisResult = new PolygonAnalysisResult(
     tableRows,
@@ -477,7 +507,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     result.geojson,
     hazardLayer,
     adminLevel,
-    'percentage',
+    PolygonalAggregationOperations.Percentage,
   );
 
   return analysisResult;

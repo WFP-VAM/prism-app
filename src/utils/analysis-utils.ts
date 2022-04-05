@@ -54,7 +54,7 @@ type RasterLayer = LayerData<WMSLayerProps>;
 export type Column = {
   id: keyof TableRow;
   label: string;
-  format?: (value: number) => string;
+  format?: (value: number | string) => string;
 };
 
 const hasKeys = (obj: any, keys: string[]): boolean =>
@@ -452,9 +452,8 @@ export function getAnalysisTableColumns(
     {
       id: statistic,
       label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      format: (value: number) => getRoundedData(value),
+      format: value => getRoundedData(value as number),
     },
-
     {
       id: 'baselineValue',
       label: baselineLayerTitle,
