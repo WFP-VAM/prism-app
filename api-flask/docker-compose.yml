@@ -8,7 +8,9 @@ services:
       - ./.flake8:/app/.flake8:ro
       - ./app:/usr/local/lib/python3.8/site-packages/app:ro
     environment:
-      - DATABASE_URL
       - WORKERS_PER_CORE=1
-      - KOBO_USERNAME=prism_kobo
-      - KOBO_PW=8XQ9aHRqU5
+      # Kobo credentials
+      - KOBO_USERNAME=${KOBO_USERNAME:"kobo_user"}
+      - KOBO_PW
+      # Alerts database
+      - DATABASE_URL
