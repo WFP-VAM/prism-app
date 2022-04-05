@@ -36,6 +36,8 @@ import srilanka from './srilanka';
 
 import sierraleone from './sierraleone';
 
+import colombia from './colombia';
+
 import {
   tajikistanConfig,
   tajikistanRawLayers,
@@ -85,6 +87,7 @@ const configMap = {
   rbd,
   sierraleone,
   srilanka,
+  colombia,
   tajikistan: {
     appConfig: tajikistanConfig,
     rawLayers: tajikistanRawLayers,

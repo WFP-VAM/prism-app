@@ -1,0 +1,60 @@
+{
+  "country": "Colombia",
+  "alertFormActive": false,
+  "icons": {
+    "rainfall": "icon_rain.png",
+    "vegetation": "icon_veg.png",
+    "temperature": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "tropical_storms": "icon_tropical_storm.png",
+    "vulnerability": "icon_vulnerable.png"
+  },
+  "serversUrls": {
+    "wms": [
+      "https://geonode.wfp.org/geoserver/prism/wms/",
+      "https://odc.ovio.org/wms"
+    ]
+  },
+  "map": {
+    "latitude": 4.5709,
+    "longitude": -74.2973,
+    "zoom": 4.7
+  },
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin1_boundaries"
+  ], 
+  "categories": {
+    "tropical_storms": {
+      "tropical_storms": ["adamts_buffers"]
+    },
+    "rainfall": {
+      "rainfall_amount": [
+        "rainfall_dekad",
+        "rainfall_agg_month"
+      ],
+      "rainfall_anomalies": [
+        "spi_1m",
+        "rain_anomaly_dekad"
+      ],
+      "dry_periods": [
+        "days_dry"
+      ],
+      "heavy_rain": [
+        "days_heavy_rain",
+        "days_intense_rain"
+      ]
+    },
+    "vegetation": {
+      "vegetation_conditions": [
+        "ndvi_dekad"
+      ]
+    },
+    "vulnerability": {
+      "poverty": [
+        "avg_pop_flood",
+        "ipm_total"
+      ]
+    }
+  }
+}
