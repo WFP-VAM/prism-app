@@ -6,6 +6,8 @@ import cambodia from './cambodia';
 
 import global from './global';
 
+import cuba from './cuba';
+
 import {
   indonesiaConfig,
   indonesiaRawLayers,
@@ -49,6 +51,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
 const configMap = {
+  cuba,
   cambodia,
   global,
   indonesia: {
