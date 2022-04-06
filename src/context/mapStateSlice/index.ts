@@ -48,27 +48,25 @@ export const mapStateSlice = createSlice({
   initialState,
   reducers: {
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => {
-      // Check if a layer belongs to a group.
-      if (!payload.group) {
-        return {
-          ...rest,
-          layers: layers
-            .filter(layer => keepLayer(layer, payload))
-            .concat(payload),
-        };
-      }
+      const { name: groupName } = payload?.group || {};
 
-      const { name } = payload.group;
-      // Get all layers that belong to a group.
-      const groupedLayer = Object.values(LayerDefinitions).filter(
-        l => l.group?.name === name,
-      );
+      const layerToAdd = groupName
+        ? Object.values(LayerDefinitions).filter(
+            l => l.group?.name === groupName,
+          )
+        : [payload];
+
+      const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
+
+      // Keep boundary layers at the top of our stack
+      const newLayers =
+        payload.type === 'boundary'
+          ? [...layerToAdd, ...filteredLayers]
+          : [...filteredLayers, ...layerToAdd];
 
       return {
         ...rest,
-        layers: layers
-          .filter(layer => keepLayer(layer, payload))
-          .concat(groupedLayer),
+        layers: newLayers,
       };
     },
 
