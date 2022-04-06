@@ -50,7 +50,7 @@ export const mapStateSlice = createSlice({
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => {
       const { name: groupName } = payload?.group || {};
 
-      const layerToAdd = groupName
+      const layersToAdd = groupName
         ? Object.values(LayerDefinitions).filter(
             l => l.group?.name === groupName,
           )
@@ -61,8 +61,8 @@ export const mapStateSlice = createSlice({
       // Keep boundary layers at the top of our stack
       const newLayers =
         payload.type === 'boundary'
-          ? [...layerToAdd, ...filteredLayers]
-          : [...filteredLayers, ...layerToAdd];
+          ? [...layersToAdd, ...filteredLayers]
+          : [...filteredLayers, ...layersToAdd];
 
       return {
         ...rest,
