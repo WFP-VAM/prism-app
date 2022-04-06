@@ -13,13 +13,13 @@
   "serversUrls": {
     "wms": [
       "https://geonode.wfp.org/geoserver/prism/wms/",
-      "https://ows.earthobservation.vam.wfp.org/wms"
+      "https://odc.ovio.org/wms"
     ]
   },
   "map": {
     "latitude": 8.48,
     "longitude": -11.818,
-    "zoom": 7.00
+    "zoom": 7.0
   },
   "categories": {
     "rainfall": {
@@ -44,10 +44,7 @@
         "rain_anomaly_9month",
         "rain_anomaly_1year"
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "heavy_rain": [
         "days_heavy_rain",
         "days_intense_rain",
@@ -56,10 +53,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -68,11 +62,7 @@
         "lst_amplitude"
       ]
     },
-    "vulnerability": {
-
-    },
-    "exposure": {
-
-    }
+    "vulnerability": {},
+    "exposure": {}
   }
 }

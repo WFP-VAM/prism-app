@@ -10,7 +10,7 @@
   "alertFormActive": false,
   "serversUrls": {
     "wms": [
-      "https://ows.earthobservation.vam.wfp.org/wms",
+      "https://odc.ovio.org/wms",
       "https://geonode.wfp.org/geoserver/prism/wms"
     ]
   },
@@ -39,10 +39,7 @@
         "rain_anomaly_9month",
         "rain_anomaly_1year"
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "heavy_rain": [
         "days_heavy_rain",
         "days_intense_rain",
@@ -57,7 +54,7 @@
       "land_surface_temperature": ["lst_daytime_5", "lst_day_anomaly_5"]
     },
     "vulnerability": {
-      "poverty": ["poor_hhs"]   
+      "poverty": ["poor_hhs"]
     }
   }
 }

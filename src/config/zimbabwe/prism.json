@@ -3,7 +3,7 @@
   "alertFormActive": false,
   "serversUrls": {
     "wms": [
-      "https://ows.earthobservation.vam.wfp.org/wms",
+      "https://odc.ovio.org/wms",
       "https://geonode.wfp.org/geoserver/prism/wms"
     ]
   },
@@ -16,14 +16,11 @@
     "vulnerability": "icon_vulnerable.png"
   },
   "map": {
-    "latitude": -19.110,
+    "latitude": -19.11,
     "longitude": 30.095,
     "zoom": 5.99
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "rainfall": {
       "rainfall_amount": [
@@ -47,10 +44,7 @@
         "rain_anomaly_9month",
         "rain_anomaly_1year"
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "heavy_rain": [
         "days_heavy_rain",
         "days_intense_rain",
@@ -59,10 +53,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -83,9 +74,7 @@
       ]
     },
     "exposure": {
-      "demographics": [
-        "pop_2020"
-      ]
+      "demographics": ["pop_2020"]
     }
   }
 }

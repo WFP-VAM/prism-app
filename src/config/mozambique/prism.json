@@ -9,13 +9,10 @@
     "tropical_storms": "icon_tropical_storm.png",
     "vulnerability": "icon_vulnerable.png"
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
     "wms": [
-      "https://ows.earthobservation.vam.wfp.org/wms",
+      "https://odc.ovio.org/wms",
       "https://geonode.wfp.org/geoserver/prism/wms"
     ]
   },
@@ -42,17 +39,14 @@
         "rain_anomaly_3month",
         "rain_anomaly_6month",
         "rain_anomaly_9month",
-        "rain_anomaly_1year",        
+        "rain_anomaly_1year",
         "spi_1m",
         "spi_3m",
         "spi_6m",
         "spi_9m",
         "spi_1y"
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "heavy_rain": [
         "days_heavy_rain",
         "days_intense_rain",
@@ -61,16 +55,10 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad_5",
-        "ndvi_dekad_anomaly_5"
-      ]
+      "vegetation_conditions": ["ndvi_dekad_5", "ndvi_dekad_anomaly_5"]
     },
     "temperature": {
-      "air_temperature": [
-        "ast_max",
-        "ast_max_anomaly"
-      ],
+      "air_temperature": ["ast_max", "ast_max_anomaly"],
       "land_surface_temperature": [
         "lst_daytime_blended",
         "lst_day_anomaly_blended",
@@ -79,9 +67,7 @@
       ]
     },
     "tropical_storms": {
-      "tropical_storms": [
-        "adamts_buffers"
-      ]
+      "tropical_storms": ["adamts_buffers"]
     },
     "vulnerability": {
       "food_insecurity": [
@@ -93,9 +79,7 @@
         "ipc_perc_ph3_current",
         "ipc_perc_ph3_projected"
       ],
-      "poverty": [
-        "mpi"
-      ]
+      "poverty": ["mpi"]
     }
   }
 }

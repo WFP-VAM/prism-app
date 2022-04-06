@@ -15,7 +15,7 @@
   "defaultLayer": "rain_anomaly_dekad",
   "serversUrls": {
     "wms": [
-      "https://ows.earthobservation.vam.wfp.org/wms",
+      "https://odc.ovio.org/wms",
       "https://geonode.wfp.org/geoserver/prism/wms"
     ]
   },
@@ -24,12 +24,8 @@
     "longitude": 5.46,
     "zoom": 3.99
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin0_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin0_boundaries"],
   "categories": {
-    
     "Cadre Harmonisé": {
       "Phase classification": [
         "ch_2021_03",
@@ -53,10 +49,7 @@
         "ch_2021_11_hdds",
         "ch_2021_11_hhs"
       ],
-      "Coping and livelihoods": [
-        "ch_2021_11_rcsi",
-        "ch_2021_11_lhcs"
-      ]
+      "Coping and livelihoods": ["ch_2021_11_rcsi", "ch_2021_11_lhcs"]
     },
     "rainfall": {
       "rainfall_amount": [
@@ -80,10 +73,7 @@
         "spi_9m",
         "spi_1y"
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "heavy_rain": [
         "days_heavy_rain",
         "days_intense_rain",
@@ -92,16 +82,10 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
-      "land_surface_temperature": [
-        "lst_daytime",
-        "lst_anomaly"
-      ]
+      "land_surface_temperature": ["lst_daytime", "lst_anomaly"]
     }
   }
 }

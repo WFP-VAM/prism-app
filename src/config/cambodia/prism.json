@@ -17,7 +17,7 @@
   "serversUrls": {
     "wms": [
       "https://geonode.wfp.org/geoserver/prism/wms/",
-      "https://ows.earthobservation.vam.wfp.org/wms"
+      "https://odc.ovio.org/wms"
     ]
   },
   "map": {
