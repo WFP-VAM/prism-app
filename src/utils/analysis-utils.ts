@@ -3,7 +3,9 @@ import {
   has,
   isNull,
   isString,
+  max,
   mean,
+  min,
   invert,
   sum,
   omit,
@@ -75,6 +77,8 @@ const checkRasterLayerData = (layerData: LayerData<LayerType>): RasterLayer => {
 };
 
 const operations = {
+  min: (data: number[]) => min(data),
+  max: (data: number[]) => max(data),
   sum, // sum method directly from lodash
   mean, // mean method directly from lodash
   median: (data: number[]) => {
@@ -410,6 +414,10 @@ export async function loadFeaturesClientSide(
       const raw = operations[operation](
         noData ? values.filter(value => value !== noData) : values,
       );
+      // If the aggregate is not valid, return early
+      if (raw === undefined) {
+        return acc;
+      }
       const scaled = scaleValueIfDefined(raw, scale, offset);
       const aggregateValue = thresholdOrNaN(scaled, layer.threshold);
       if (!Number.isNaN(aggregateValue)) {

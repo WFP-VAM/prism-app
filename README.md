@@ -23,7 +23,7 @@ The configuration is split into three files that you can find in `src/config`:
 - 1. `prism.json`
 - 2. `layers.json`
 - 3. `tables.json`
-  
+
 ### prism.json
 
 This is the primary configuration file. You can define:
@@ -46,7 +46,7 @@ For each category, you can define sub categories as "subcategorie_name":
     "serversUrls": {
     "wms": [
       "https://geonode.wfp.org/geoserver/prism/wms/",
-      "https://odc.ovio.org/wms"
+      "https://ows.earthobservation.vam.wfp.org/wms"
     ]
   },
   "alertFormActive": false,
