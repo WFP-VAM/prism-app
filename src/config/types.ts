@@ -296,8 +296,10 @@ export class StatsApi {
 }
 
 export enum AggregationOperations {
+  Max = 'max',
   Mean = 'mean',
   Median = 'median',
+  Min = 'min',
   Sum = 'sum',
 }
 
