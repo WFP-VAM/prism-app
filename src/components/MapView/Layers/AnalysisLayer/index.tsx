@@ -67,8 +67,6 @@ function AnalysisLayer() {
       ? (analysisData.statistic as string)
       : 'data';
 
-  console.log(analysisData.featureCollection);
-
   return (
     <GeoJSONLayer
       id="layer-analysis"

@@ -165,7 +165,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
     ));
 
   const activateUniqueBoundary = () => {
-    console.log('activateUniqueBoundary');
     if (!baselineLayerId) {
       throw new Error('Layer should be selected to run analysis');
     }
@@ -174,7 +173,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
     ] as AdminLevelDataLayerProps;
 
     if (baselineLayer.boundary) {
-      console.log(baselineLayer);
       const boundaryLayer = LayerDefinitions[
         baselineLayer.boundary
       ] as BoundaryLayerProps;

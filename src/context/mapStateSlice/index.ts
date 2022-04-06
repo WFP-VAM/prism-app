@@ -37,7 +37,10 @@ const initialState: MapState = {
 
 function keepLayer(layer: LayerType, payload: LayerType) {
   // Simple function to control which layers can overlap.
-  return payload.type !== layer.type || payload.type === 'boundary';
+  return (
+    payload.id !== layer.id &&
+    (payload.type !== layer.type || payload.type === 'boundary')
+  );
 }
 
 export const mapStateSlice = createSlice({
@@ -70,6 +73,19 @@ export const mapStateSlice = createSlice({
     },
 
     removeLayer: (
+      { layers, ...rest },
+      { payload }: PayloadAction<LayerType>,
+    ) => ({
+      ...rest,
+      layers: layers.filter(({ id, group }) =>
+        // Keep layers without group and layers with group and different group name.
+        payload.group
+          ? !group || group?.name !== payload.group.name
+          : id !== payload.id,
+      ),
+    }),
+
+    updateLayer: (
       { layers, ...rest },
       { payload }: PayloadAction<LayerType>,
     ) => ({
