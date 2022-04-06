@@ -1,6 +1,13 @@
-import cubaConfig from './prism.json';
-import cubaRawLayers from './layers.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
 
-const cubaRawTables = {};
+const rawTables = {};
+const translation = {};
 
-export { cubaConfig, cubaRawLayers, cubaRawTables };
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  translation,
+  defaultBoundariesFile: 'cub_admbnda_adm2_2019.json',
+};

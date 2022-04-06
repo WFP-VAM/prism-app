@@ -4,11 +4,7 @@ import { PublicClientApplication } from '@azure/msal-browser';
 
 import cambodia from './cambodia';
 
-import {
-  cubaConfig,
-  cubaRawLayers,
-  cubaRawTables,
-} from './cuba';
+import cuba from './cuba';
 
 import { globalConfig, globalRawLayers, globalRawTables } from './global';
 
@@ -55,12 +51,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
 const configMap = {
-  cuba: {
-    appConfig: cubaConfig,
-    rawLayers: cubaRawLayers,
-    rawTables: cubaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/cub_admbnda_adm2_2019.json`,
-  },
+  cuba,
   cambodia,
   global: {
     appConfig: globalConfig,
