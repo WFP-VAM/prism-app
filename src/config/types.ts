@@ -330,6 +330,9 @@ export class ImpactLayerProps extends CommonLayerProps {
 export class PointDataLayerProps extends CommonLayerProps {
   type: 'point_data';
   data: string;
+  dataField: string;
+  // URL to fetch all possible dates from
+  dateUrl: string;
 
   @makeRequired
   title: string;
@@ -340,17 +343,20 @@ export class PointDataLayerProps extends CommonLayerProps {
   @makeRequired
   legendText: string;
 
-  measure: string;
   @optional
   fallbackData?: string;
-  // URL to fetch all possible dates from
-  dateUrl: string;
 
   @optional
   additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
 
   @optional
   featureInfoProps?: FeatureInfoObject;
+
+  @optional
+  adminLevelDisplay?: AdminLevelDisplayType;
+
+  @optional
+  boundary?: LayerKey;
 }
 
 export type RequiredKeys<T> = {
@@ -457,3 +463,7 @@ export enum DownloadFormat {
   CSV,
   JSON,
 }
+
+type AdminLevelDisplayType = {
+  adminCode: string;
+};
