@@ -112,8 +112,9 @@ function generateTableFromApiData(
   // Reuse the groupBy parameter to generate the table
   const groupBy = apiRequest.group_by;
 
-  // find the key that will let us reference the names of the bounding boxes. We get the one corresponding to the specific level of baseline, or the first if we fail.
-  const { adminLevelNames } = adminLayer;
+  // find the key that will let us reference the names of the bounding boxes.
+  // We get the one corresponding to the specific level of baseline, or the first if we fail.
+  const { adminLevelNames, adminLevelLocalNames } = adminLayer;
 
   const groupByAdminIndex = adminLevelNames.findIndex(
     levelName => levelName === groupBy,
@@ -137,11 +138,11 @@ function generateTableFromApiData(
     );
 
     const name = getFullLocationName(
-      adminLayer.adminLevelNames,
+      adminLevelNames.slice(0, adminIndex + 1),
       featureBoundary,
     );
     const localName = getFullLocationName(
-      adminLayer.adminLevelLocalNames,
+      adminLevelLocalNames.slice(0, adminIndex + 1),
       featureBoundary,
     );
 
