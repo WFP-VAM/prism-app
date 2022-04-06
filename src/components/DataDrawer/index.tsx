@@ -40,6 +40,7 @@ const styles = (theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       padding: 16,
       width: '40vw',
+      height: '100%',
     },
   });
 
