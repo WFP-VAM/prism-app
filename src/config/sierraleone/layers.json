@@ -4,14 +4,8 @@
     "path": "../data/sierra-leone/sle_admin2new_boundary_20200309.json",
     "opacity": 0.8,
     "admin_code": "adm2_id",
-    "admin_level_names": [
-      "adm1_name",
-      "adm2_name"
-    ],
-    "admin_level_local_names": [
-      "adm1_name",
-      "adm2_name"
-    ],
+    "admin_level_names": ["adm1_name", "adm2_name"],
+    "admin_level_local_names": ["adm1_name", "adm2_name"],
     "styles:": {
       "fill": {
         "fill-opacity": 0

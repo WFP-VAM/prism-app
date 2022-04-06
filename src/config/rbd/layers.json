@@ -14,14 +14,8 @@
       }
     },
     "admin_code": "adm1_pcod2",
-    "admin_level_names": [
-      "adm0_name",
-      "adm1_name"
-    ],
-    "admin_level_local_names": [
-      "adm0_name",
-      "adm1_name"
-    ]
+    "admin_level_names": ["adm0_name", "adm1_name"],
+    "admin_level_local_names": ["adm0_name", "adm1_name"]
   },
   "admin0_boundaries": {
     "type": "boundary",
@@ -38,12 +32,8 @@
       }
     },
     "admin_code": "admin0Pcod",
-    "admin_level_names": [
-      "admin0Name"
-    ],
-    "admin_level_local_names": [
-      "admin0Name"
-    ]
+    "admin_level_names": ["admin0Name"],
+    "admin_level_local_names": ["admin0Name"]
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
