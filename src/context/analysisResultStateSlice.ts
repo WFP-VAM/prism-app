@@ -207,10 +207,6 @@ const createAPIRequestParams = (
       ? adminLevelNames[adminLevel - 1]
       : adminCode || adminLevelNames[adminLevelNames.length - 1];
 
-  console.log(groupBy);
-  console.log(params);
-  console.log(params instanceof AdminLevelDataLayerProps);
-
   const wfsParams = (params as WfsRequestParams).layer_name
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
