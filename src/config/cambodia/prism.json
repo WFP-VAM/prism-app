@@ -16,7 +16,6 @@
   },
   "serversUrls": {
     "wms": [
-      "https://www.prism-kh.info:8443/geoserver/Prism/wms",
       "https://geonode.wfp.org/geoserver/prism/wms/",
       "https://odc.ovio.org/wms"
     ]
