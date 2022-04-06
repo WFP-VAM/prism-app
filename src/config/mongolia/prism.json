@@ -23,7 +23,7 @@
   ],
   "categories": {
     "hazards": {
-      "drought_indicators": ["pasture_anomaly", "ndvi", "ModisVHI"],
+      "drought_indicators": ["pasture_anomaly", "pasture_biomass", "ndvi", "ModisVHI"],
       "winter_conditions": ["ModisSnowPercentage", "ModisLST"]
     },
     "exposure": {
@@ -59,7 +59,13 @@
     "tables": {
       "socioeconomic_data": ["poverty"],
       "livestock_data": ["animal_deaths"],
-      "price_data": ["hay_prices"]
+      "hay_prices": ["hay_prices"],
+      "livestock_prices": [
+        "camel_prices",
+        "cattle_prices",
+        "goat_prices",
+        "horse_prices",
+        "sheep_prices"]
     }
   }
 }

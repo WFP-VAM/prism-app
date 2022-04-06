@@ -43,7 +43,7 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE1",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "25",
@@ -76,7 +76,7 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "2000",
@@ -113,7 +113,7 @@
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "500",
@@ -146,12 +146,12 @@
   "elderly": {
     "title": "Single-headed elderly households (aimag)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Single_Elderly_Admin1_Total.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_Single_Elderly_Admin1_Total.json",
     "boundary": "admin1_boundaries",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "1000",
@@ -184,43 +184,53 @@
   "herders": {
     "title": "Herder households (soum)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Herder_HHs_Admin2.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_Herder_HHs_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
-        "value": "300",
+        "label": "<= 300",
+        "value": 0,
         "color": "#fef0d9"
       },
       {
-        "value": "400",
-        "color": "#fdcc8a"
+        "label": "301 to 400",
+        "value": 301,
+        "color": "#fdd49e"
       },
       {
-        "value": "500",
+        "label": "401 to 500",
+        "value": 401,
+        "color": "#fdbb84"
+      },
+      {
+        "label": "501 to 600",
+        "value": 501,
         "color": "#fc8d59"
       },
       {
-        "value": "600",
+        "label": "601 to > 700",
+        "value": 601,
         "color": "#e34a33"
       },
       {
-        "value": "700",
+        "label": "> 700",
+        "value": 701,
         "color": "#b30000"
       }
     ],
-    "legend_text": "Number of herder households - defined as herding as the main source of income by Soum. Year: 2019. Source: National Statistical Office"
+    "legend_text": "Number of herder households - defined as herding as the main source of income by Soum. Year: 2020. Source: National Statistical Office"
   },
   "livestock": {
     "title": "Number of livestock in thousands (soum)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Livestock_Count_ths_Admin2.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_Livestock_Count_ths_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "100",
@@ -248,11 +258,11 @@
   "child": {
     "title": "Number of children under 5 (soum)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Child_U5_Admin2.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_ChildrenU5_Admin2_All.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "200",
@@ -281,12 +291,12 @@
   "herd_200": {
     "title": "Small herder households (aimag)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Herd_Size_Admin1_LT_200.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_Herd_Size_Admin1_LT_200.json",
     "boundary": "admin1_boundaries",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE1",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "2000",
@@ -314,16 +324,16 @@
         "color": "#b30000"
       }
     ],
-    "legend_text": "Number of households with less than 200 heads of livestock by Aimag. Year: 2019. Source: National Statistics Office"
+    "legend_text": "Number of households with less than 200 heads of livestock by Aimag. Year: 2020. Source: National Statistics Office"
   },
   "population_total": {
     "title": "Total population (soum)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Population_Admin2_Total.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_Population_Admin2_Total.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "2500",
@@ -359,7 +369,7 @@
     "server_layer_name": "ModisAnomaly",
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "days",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Compares the current pasture conditions to the long term average to calculate pasture anomaly",
     "wcsConfig": {
       "no_data": 65535,
@@ -414,6 +424,40 @@
       }
     ]
   },
+  "pasture_biomass": {
+    "title": "Pasture biomass",
+    "type": "wms",
+    "server_layer_name": "ModisPastureBiomass",
+    "additional_query_params": {
+      "styles": "pasture_biomass"
+    },
+    "base_url": "https://mongolia.sibelius-datacube.org:5000",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "label": "0 kg/ha",
+        "color": "#905C00"
+      },
+      {
+        "label": "250 kg/ha",
+        "color": "#E4AF3F"
+      },
+      {
+        "label": "500 kg/ha",
+        "color": "#98BB64"
+      },
+      {
+        "label": "750 kg/ha",
+        "color": "#9CF84C"
+      },
+      {
+        "label": "1,000 kg/ha",
+        "color": "#CDFD63"
+      }
+    ],
+    "legend_text": "Converts the NDVI to pasture (kg/ha) values."
+  },
   "ndvi": {
     "title": "Vegetation index (NDVI)",
     "type": "wms",
@@ -423,7 +467,7 @@
     },
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "days",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Median averaged Normalized Difference Vegetation Index (NDVI) from composite satellite imagery",
     "legend": [
       {
@@ -479,7 +523,7 @@
       "pixelResolution": 64
     },
     "date_interval": "day",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Median value of Land Surface Temperature in degrees Celsius over a 10-day period (MODIS)",
     "legend": [
       {
@@ -535,7 +579,7 @@
     },
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "day",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
     "legend": [
       {
@@ -566,7 +610,7 @@
     "server_layer_name": "ModisSnowPercentage",
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "day",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Snow Percentage for a 10-day period, where the value represent the percentage of times that a pixel had snow",
     "legend": [
       {
@@ -598,7 +642,7 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "0",
@@ -634,7 +678,7 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "0",
@@ -671,7 +715,7 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "0",
@@ -708,7 +752,7 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "2000",
@@ -744,7 +788,7 @@
     "base_url": "https://mng-wfp.ovio.org:8443/geoserver/prism",
     "server_layer_name": "DZUDRM12312",
     "date_interval": "month",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "The dzud risk map is produced by the Mongolia Information and Research Institute of Meteorology, Hydrology and Environment (IRIMHE) and measures dzud risk based on a combination of climate hazards, pasture conditions and capacity, and risk exposure to livestock. Latest version: December 2019",
     "legend": [
       {
@@ -778,7 +822,7 @@
     "threshold": {
       "below": -25
     },
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -25%",
     "legend": [
       {
@@ -812,7 +856,7 @@
     "threshold": {
       "above": 3
     },
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Number of small herder households within an aimag with very high risk of dzud",
     "legend": [
       {
@@ -842,7 +886,7 @@
     "threshold": {
       "above": 25
     },
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Number of livestock within a soum with very high risk of dzud",
     "legend": [
       {
@@ -872,7 +916,7 @@
     "threshold": {
       "below": 0.25
     },
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Number of livestock (in thousands) within a soum with drought conditions as measured through the Vegetation Health Index",
     "legend": [
       {
@@ -905,7 +949,7 @@
     "threshold": {
       "below": -25
     },
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Number of livestock (in thousands) within a soum with average temperatures below -25 Celsius",
     "legend": [
       {
