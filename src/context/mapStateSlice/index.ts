@@ -85,19 +85,6 @@ export const mapStateSlice = createSlice({
       ),
     }),
 
-    updateLayer: (
-      { layers, ...rest },
-      { payload }: PayloadAction<LayerType>,
-    ) => ({
-      ...rest,
-      layers: layers.filter(({ id, group }) =>
-        // Keep layers without group and layers with group and different group name.
-        payload.group
-          ? !group || group?.name !== payload.group.name
-          : id !== payload.id,
-      ),
-    }),
-
     updateDateRange: (state, { payload }: PayloadAction<DateRange>) => ({
       ...state,
       dateRange: payload,
