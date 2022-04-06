@@ -437,7 +437,7 @@ export async function fetchWMSLayerAsGeoJSON(options: {
         startDate && endDate
           ? `timestamp BETWEEN ${moment(startDate).format(
               DEFAULT_DATE_FORMAT,
-            )} AND ${moment(endDate).format(DEFAULT_DATE_FORMAT)}`
+            )} AND ${moment(endDate).format(DEFAULT_DATE_FORMAT)}T23:59:59`
           : undefined,
     };
 
