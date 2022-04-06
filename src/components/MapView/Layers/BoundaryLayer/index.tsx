@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { showPopup } from '../../../../context/tooltipStateSlice';
@@ -9,6 +8,7 @@ import { LayerData } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
 import { isPrimaryBoundaryLayer } from '../../../../config/utils';
+import { getFullLocationName } from '../../../../utils/name-utils';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -30,10 +30,15 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
   const onClickFunc = (evt: any) => {
     const coordinates = evt.lngLat;
-    const locationName = layer.adminLevelNames
-      .map(level => get(evt.features[0], ['properties', level], '') as string)
-      .join(', ');
-    dispatch(showPopup({ coordinates, locationName }));
+    const locationName = getFullLocationName(
+      layer.adminLevelNames,
+      evt.features[0],
+    );
+    const locationLocalName = getFullLocationName(
+      layer.adminLevelLocalNames,
+      evt.features[0],
+    );
+    dispatch(showPopup({ coordinates, locationName, locationLocalName }));
     // send the selection to the map selection layer. No-op if selection mode isn't on.
     dispatch(
       toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),

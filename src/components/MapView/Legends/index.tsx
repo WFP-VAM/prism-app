@@ -41,6 +41,7 @@ import { convertToTableData, downloadToFile } from '../utils';
 
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
+import { useSafeTranslation } from '../../../i18n';
 
 /**
  * Returns layer identifier used to perform exposure analysis.
@@ -58,16 +59,19 @@ function GetExposureFromLayer(
 }
 
 function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
+  const { t } = useSafeTranslation();
   return (
     <>
-      Impact Analysis on {result.getBaselineLayer().legendText}
+      {t('Impact Analysis on')}
+      {': '}
+      {t(result.getBaselineLayer().legendText)}
       <br />
       {result.threshold.above
-        ? `Above Threshold: ${result.threshold.above}`
+        ? `${t('Above Threshold')}: ${result.threshold.above}`
         : ''}
       <br />
       {result.threshold.below
-        ? `Below Threshold: ${result.threshold.below}`
+        ? `${t('Below Threshold')}: ${result.threshold.below}`
         : ''}
     </>
   );
@@ -80,6 +84,8 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const features = analysisResult?.featureCollection.features;
   const hasData = features ? features.length > 0 : false;
 
+  const { t } = useSafeTranslation();
+
   const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
     e.preventDefault();
     downloadToFile(
@@ -87,7 +93,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
         content: JSON.stringify(features),
         isUrl: false,
       },
-      analysisResult ? analysisResult.getTitle() : '',
+      analysisResult ? analysisResult.getTitle() : 'prism_extract',
       'application/json',
     );
   };
@@ -112,7 +118,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           classes={classes}
           key={layer.title}
           id={layer.id}
-          title={layer.title}
+          title={layer.title ? t(layer.title) : undefined}
           legend={layer.legend}
           legendUrl={legendUrl}
           type={layer.type}
@@ -120,7 +126,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           exposure={exposure}
           extent={extent}
         >
-          {layer.legendText}
+          {t(layer.legendText)}
         </LegendItem>
       );
     }),
@@ -130,7 +136,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           <LegendItem
             key={analysisResult?.key}
             legend={analysisResult?.legend}
-            title={analysisResult?.getTitle()}
+            title={analysisResult?.getTitle(t)}
             classes={classes}
             opacity={0.5} // TODO: initial opacity value
           >
@@ -146,7 +152,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
                 onClick={e => handleAnalysisDownload(e)}
                 fullWidth
               >
-                Download
+                {t('Download')}
               </Button>
             </Grid>
           </LegendItem>,
@@ -168,7 +174,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
         )}
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
-            Legend
+            {t('Legend')}
           </Typography>
         </Hidden>
       </Button>

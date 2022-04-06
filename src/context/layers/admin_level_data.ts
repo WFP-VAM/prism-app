@@ -5,7 +5,7 @@ import {
   AdminLevelDataLayerProps,
   LayerKey,
 } from '../../config/types';
-import type { ThunkApi } from '../store';
+import type { RootState, ThunkApi } from '../store';
 import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
@@ -23,13 +23,19 @@ export type AdminLevelDataLayerData = {
   layerData: DataRecord[];
 };
 
-export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> = () => async (
-  { layer }: LayerDataParams<AdminLevelDataLayerProps>,
-  api: ThunkApi,
-) => {
-  const { path, adminCode, dataField, featureInfoProps, boundary } = layer;
-  const { getState } = api;
-
+export function getAdminLevelDataLayerData(
+  data: { [key: string]: any }[],
+  {
+    boundary,
+    adminCode,
+    dataField,
+    featureInfoProps,
+  }: Pick<
+    AdminLevelDataLayerProps,
+    'boundary' | 'adminCode' | 'dataField' | 'featureInfoProps'
+  >,
+  getState: () => RootState,
+) {
   // check unique boundary layer presence into this layer
   // use the boundary once available or
   // use the default boundary singleton instead
@@ -46,12 +52,8 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
     throw new Error('Boundary Layer not loaded!');
   }
   const adminBoundaries = adminBoundariesLayer.data;
-  // TODO avoid any use, the json should be typed. See issue #307
-  const { DataList: rawJSONs }: { DataList: { [key: string]: any }[] } = await (
-    await fetch(path, { mode: path.includes('http') ? 'cors' : 'same-origin' })
-  ).json();
 
-  const layerData = (rawJSONs || [])
+  const layerData = (data || [])
     .map(point => {
       const adminKey = point[adminCode] as string;
       if (!adminKey) {
@@ -67,7 +69,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         },
         {},
       );
-      return { adminKey, value, ...featureInfoPropsValues };
+      return { adminKey, value, ...featureInfoPropsValues } as DataRecord;
     })
     .filter((v): v is DataRecord => v !== undefined);
 
@@ -85,14 +87,18 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         );
         if (matchProperties && !isNull(matchProperties.value)) {
           // Do we want support for non-numeric values (like string colors?)
+          const value = isString(matchProperties.value)
+            ? parseFloat(matchProperties.value)
+            : matchProperties.value;
           return {
             ...feature,
             properties: {
               ...properties,
               ...matchProperties,
-              data: isString(matchProperties.value)
-                ? parseFloat(matchProperties.value)
-                : matchProperties.value,
+              // TODO - standardize the field we use to store that data
+              // Some functions use "dataField" while others use "data"
+              data: value,
+              [dataField]: value,
             },
           };
         }
@@ -100,9 +106,30 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
       })
       .filter(f => f !== undefined),
   } as FeatureCollection;
-
   return {
     features,
     layerData,
   };
+}
+
+export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> = () => async (
+  { layer }: LayerDataParams<AdminLevelDataLayerProps>,
+  api: ThunkApi,
+) => {
+  const { path, adminCode, dataField, featureInfoProps, boundary } = layer;
+
+  // TODO avoid any use, the json should be typed. See issue #307
+  const data: { [key: string]: any }[] = (
+    await (
+      await fetch(path, {
+        mode: path.includes('http') ? 'cors' : 'same-origin',
+      })
+    ).json()
+  ).DataList;
+
+  return getAdminLevelDataLayerData(
+    data,
+    { boundary, adminCode, dataField, featureInfoProps },
+    api.getState,
+  );
 };

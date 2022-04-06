@@ -1,0 +1,78 @@
+{
+  "country": "Sierra Leone",
+  "alertFormActive": false,
+  "enableNavigationDropdown": true,
+  "icons": {
+    "rainfall": "icon_rain.png",
+    "vegetation": "icon_veg.png",
+    "temperature": "icon_climate.png",
+    "risk": "icon_impact.png",
+    "tropical_storms": "icon_tropical_storm.png",
+    "vulnerability": "icon_vulnerable.png"
+  },
+  "serversUrls": {
+    "wms": [
+      "https://geonode.wfp.org/geoserver/prism/wms/",
+      "https://odc.ovio.org/wms"
+    ]
+  },
+  "map": {
+    "latitude": 8.48,
+    "longitude": -11.818,
+    "zoom": 7.00
+  },
+  "categories": {
+    "rainfall": {
+      "rainfall_amount": [
+        "rainfall_dekad",
+        "rainfall_agg_month",
+        "rainfall_agg_3month",
+        "rainfall_agg_6month",
+        "rainfall_agg_9month",
+        "rainfall_agg_1year"
+      ],
+      "rainfall_anomalies": [
+        "spi_1m",
+        "spi_3m",
+        "spi_6m",
+        "spi_9m",
+        "spi_1y",
+        "rain_anomaly_dekad",
+        "rain_anomaly_monthly",
+        "rain_anomaly_3month",
+        "rain_anomaly_6month",
+        "rain_anomaly_9month",
+        "rain_anomaly_1year"
+      ],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
+      "heavy_rain": [
+        "days_heavy_rain",
+        "days_intense_rain",
+        "days_extreme_rain",
+        "streak_heavy_rain"
+      ]
+    },
+    "vegetation": {
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
+    },
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_anomaly",
+        "lst_amplitude"
+      ]
+    },
+    "vulnerability": {
+
+    },
+    "exposure": {
+
+    }
+  }
+}

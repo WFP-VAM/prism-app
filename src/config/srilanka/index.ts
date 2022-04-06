@@ -1,6 +1,13 @@
-import srilankaConfig from './prism.json';
-import srilankaRawLayers from './layers.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
 
-const srilankaRawTables = {};
+const rawTables = {};
+const translation = {};
 
-export { srilankaConfig, srilankaRawLayers, srilankaRawTables };
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  translation,
+  defaultBoundariesFile: 'lka_boundaries_admin3.json',
+};

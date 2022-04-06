@@ -2,13 +2,11 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
-import * as MapboxGL from 'mapbox-gl';
 import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
   LayerKey,
 } from '../../../../config/types';
-import { legendToStops } from '../layer-utils';
 import {
   LayerData,
   loadLayerData,
@@ -27,6 +25,9 @@ import {
 } from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { isLayerOnView } from '../../../../utils/map-utils';
+import { getRoundedData } from '../../../../utils/data-utils';
+import { useSafeTranslation } from '../../../../i18n';
+import { fillPaintData } from '../styles';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     | undefined;
   const { data } = layerData || {};
   const { features } = data || {};
+  const { t } = useSafeTranslation();
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?
@@ -78,28 +80,18 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     return null;
   }
 
-  // We use the legend values from the config to define "intervals".
-  const fillPaintData: MapboxGL.FillPaint = {
-    'fill-opacity': layer.opacity || 0.3,
-    'fill-color': {
-      property: 'data',
-      stops: legendToStops(layer.legend),
-      type: 'interval',
-    },
-  };
-
   return (
     <GeoJSONLayer
       before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={features}
-      fillPaint={fillPaintData}
+      fillPaint={fillPaintData(layer)}
       fillOnClick={async (evt: any) => {
         // by default add `data_field` to the tooltip
         dispatch(
           addPopupData({
             [layer.title]: {
-              data: get(evt.features[0], 'properties.data', 'No Data'),
+              data: getRoundedData(get(evt.features[0], 'properties.data'), t),
               coordinates: evt.lngLat,
             },
           }),

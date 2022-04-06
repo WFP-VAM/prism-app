@@ -27,7 +27,7 @@ exports[`renders as expected 1`] = `
             <mock-button
               variant="outlined"
             >
-              07/02/2018
+              Jul 2, 2018
             </mock-button>
           </div>
         </div>

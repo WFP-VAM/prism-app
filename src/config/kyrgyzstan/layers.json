@@ -629,7 +629,7 @@
       "date_url": "",
       "fallback_data": "../data/kyrgyzstan/viirs_fires_2020.json",
       "opacity": 0.8,
-      "measure": "bright_ti4",
+      "data_field": "bright_ti4",
       "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
       "legend": [
         {
