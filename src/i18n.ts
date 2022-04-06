@@ -92,9 +92,9 @@ export function useSafeTranslation(): {
           return t(key);
         }
         // eslint-disable-next-line no-console
-        console.warn(
-          `Translation for "${key}" is not configured in your translation file.`,
-        );
+        // console.warn(
+        //   `Translation for "${key}" is not configured in your translation file.`,
+        // );
         return key;
       },
       [t],

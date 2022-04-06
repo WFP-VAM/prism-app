@@ -200,11 +200,15 @@ const createAPIRequestParams = (
   // If the analysis is related to a AdminLevelData layer, we get the index from params.
   // For Exposed population we use the latest-level boundary indicator.
   // WARNING - This change is meant for RBD only. Do we want to generalize this?
+  const { adminLevel } = params as any;
   const groupBy =
-    adminCode ||
-    (params instanceof AdminLevelDataLayerProps
-      ? adminLevelNames[params.adminLevel - 1]
-      : adminLevelNames[adminLevelNames.length - 1]);
+    adminLevel !== undefined
+      ? adminLevelNames[adminLevel - 1]
+      : adminCode || adminLevelNames[adminLevelNames.length - 1];
+
+  console.log(groupBy);
+  console.log(params);
+  console.log(params instanceof AdminLevelDataLayerProps);
 
   const wfsParams = (params as WfsRequestParams).layer_name
     ? { wfs_params: params as WfsRequestParams }
