@@ -17,7 +17,7 @@
   "serversUrls": {
     "wms": [
       "https://geonode.wfp.org/geoserver/prism/wms/",
-      "http://35.157.118.162/wms"
+      "https://ows.earthobservation.vam.wfp.org/wms"
     ]
   },
   "map": {

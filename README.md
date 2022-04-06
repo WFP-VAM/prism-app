@@ -46,7 +46,7 @@ For each category, you can define sub categories as "subcategorie_name":
     "serversUrls": {
     "wms": [
       "https://geonode.wfp.org/geoserver/prism/wms/",
-      "https://odc.ovio.org/wms"
+      "https://ows.earthobservation.vam.wfp.org/wms"
     ]
   },
   "alertFormActive": false,
