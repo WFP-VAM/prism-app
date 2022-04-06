@@ -37,7 +37,10 @@ const initialState: MapState = {
 
 function keepLayer(layer: LayerType, payload: LayerType) {
   // Simple function to control which layers can overlap.
-  return payload.type !== layer.type || payload.type === 'boundary';
+  return (
+    payload.id !== layer.id &&
+    (payload.type !== layer.type || payload.type === 'boundary')
+  );
 }
 
 export const mapStateSlice = createSlice({
@@ -45,27 +48,25 @@ export const mapStateSlice = createSlice({
   initialState,
   reducers: {
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => {
-      // Check if a layer belongs to a group.
-      if (!payload.group) {
-        return {
-          ...rest,
-          layers: layers
-            .filter(layer => keepLayer(layer, payload))
-            .concat(payload),
-        };
-      }
+      const { name: groupName } = payload?.group || {};
 
-      const { name } = payload.group;
-      // Get all layers that belong to a group.
-      const groupedLayer = Object.values(LayerDefinitions).filter(
-        l => l.group?.name === name,
-      );
+      const layersToAdd = groupName
+        ? Object.values(LayerDefinitions).filter(
+            l => l.group?.name === groupName,
+          )
+        : [payload];
+
+      const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
+
+      // Keep boundary layers at the top of our stack
+      const newLayers =
+        payload.type === 'boundary'
+          ? [...layersToAdd, ...filteredLayers]
+          : [...filteredLayers, ...layersToAdd];
 
       return {
         ...rest,
-        layers: layers
-          .filter(layer => keepLayer(layer, payload))
-          .concat(groupedLayer),
+        layers: newLayers,
       };
     },
 

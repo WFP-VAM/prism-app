@@ -183,7 +183,11 @@ function Analyser({ extent, classes }: AnalyserProps) {
         }
       });
 
-      safeDispatchAddLayer(map, boundaryLayer, dispatch);
+      safeDispatchAddLayer(
+        map,
+        { ...boundaryLayer, isPrimary: true },
+        dispatch,
+      );
     } else {
       getDisplayBoundaryLayers().forEach(l => {
         safeDispatchAddLayer(map, l, dispatch);
@@ -303,7 +307,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       isExposure: false,
     };
 
-    await dispatch(requestAndStoreAnalysis(params));
+    dispatch(requestAndStoreAnalysis(params));
   };
 
   return (
