@@ -27,6 +27,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   }
 
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+  console.log({ layer, boundaryLayer, isPrimaryLayer });
 
   const onClickFunc = (evt: any) => {
     const coordinates = evt.lngLat;

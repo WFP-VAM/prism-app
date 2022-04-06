@@ -165,6 +165,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
     ));
 
   const activateUniqueBoundary = () => {
+    console.log('activateUniqueBoundary');
     if (!baselineLayerId) {
       throw new Error('Layer should be selected to run analysis');
     }
@@ -173,6 +174,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
     ] as AdminLevelDataLayerProps;
 
     if (baselineLayer.boundary) {
+      console.log(baselineLayer);
       const boundaryLayer = LayerDefinitions[
         baselineLayer.boundary
       ] as BoundaryLayerProps;
@@ -183,7 +185,11 @@ function Analyser({ extent, classes }: AnalyserProps) {
         }
       });
 
-      safeDispatchAddLayer(map, boundaryLayer, dispatch);
+      safeDispatchAddLayer(
+        map,
+        { ...boundaryLayer, isPrimary: true },
+        dispatch,
+      );
     } else {
       getDisplayBoundaryLayers().forEach(l => {
         safeDispatchAddLayer(map, l, dispatch);
@@ -303,7 +309,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       isExposure: false,
     };
 
-    await dispatch(requestAndStoreAnalysis(params));
+    dispatch(requestAndStoreAnalysis(params));
   };
 
   return (
