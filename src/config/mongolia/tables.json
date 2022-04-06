@@ -11,6 +11,61 @@
       "data": "Year"
     }
   },
+  "camel_prices": {
+    "title": "Monthly camel prices",
+    "table": "../data/mongolia/tables/2021-02-06/NSO_Camel_Price_Monthly_2021.csv",
+    "legend_text": "Price of adult camel by month. Source: National Statistics Office",
+    "chart": {
+      "type": "line",
+      "stacked": false,
+      "category": "Category_EN",
+      "data": "Month"
+    }
+  },
+  "cattle_prices": {
+    "title": "Monthly cattle prices",
+    "table": "../data/mongolia/tables/2021-02-06/NSO_Cattle_Price_Monthly_2021.csv",
+    "legend_text": "Price of adult cattle by month. Source: National Statistics Office",
+    "chart": {
+      "type": "line",
+      "stacked": false,
+      "category": "Category_EN",
+      "data": "Month"
+    }
+  },
+  "goat_prices": {
+    "title": "Monthly goat prices",
+    "table": "../data/mongolia/tables/2021-02-06/NSO_Goat_Price_Monthly_2021.csv",
+    "legend_text": "Price of adult goat by month. Source: National Statistics Office",
+    "chart": {
+      "type": "line",
+      "stacked": false,
+      "category": "Category_EN",
+      "data": "Month"
+    }
+  },
+  "horse_prices": {
+    "title": "Monthly horse prices",
+    "table": "../data/mongolia/tables/2021-02-06/NSO_Horse_Price_Monthly_2021.csv",
+    "legend_text": "Price of adult horse month. Source: National Statistics Office",
+    "chart": {
+      "type": "line",
+      "stacked": false,
+      "category": "Category_EN",
+      "data": "Month"
+    }
+  },
+  "sheep_prices": {
+    "title": "Monthly sheep prices",
+    "table": "../data/mongolia/tables/2021-02-06/NSO_Sheep_Price_Monthly_2021.csv",
+    "legend_text": "Price of adult sheep by month. Source: National Statistics Office",
+    "chart": {
+      "type": "line",
+      "stacked": false,
+      "category": "Category_EN",
+      "data": "Month"
+    }
+  },
   "hay_prices": {
     "title": "Monthly hay prices",
     "table": "../data/mongolia/tables/NSO_Bale_Hay_Price_Monthly_Avg2.csv",
