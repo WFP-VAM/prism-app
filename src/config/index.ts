@@ -4,6 +4,8 @@ import { PublicClientApplication } from '@azure/msal-browser';
 
 import cambodia from './cambodia';
 
+import cuba from './cuba';
+
 import { globalConfig, globalRawLayers, globalRawTables } from './global';
 
 import {
@@ -49,6 +51,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
 const configMap = {
+  cuba,
   cambodia,
   global: {
     appConfig: globalConfig,
