@@ -1,11 +1,8 @@
 import React, { useEffect } from 'react';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { get } from 'lodash';
-import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
-import { legendToStops } from '../layer-utils';
 import { PointDataLayerProps } from '../../../../config/types';
-
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
@@ -15,6 +12,9 @@ import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayerSingleton } from '../../../../config/utils';
+import { getRoundedData } from '../../../../utils/data-utils';
+import { useSafeTranslation } from '../../../../i18n';
+import { circleLayout, circlePaint, fillPaintData } from '../styles';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -26,55 +26,58 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const dispatch = useDispatch();
 
   const { data } = layerData || {};
-
+  const { features } = data || {};
+  const { t } = useSafeTranslation();
   useEffect(() => {
-    if (!data) {
+    if (!features) {
       dispatch(loadLayerData({ layer, date: selectedDate }));
     }
-  }, [data, dispatch, layer, selectedDate]);
+  }, [features, dispatch, layer, selectedDate]);
 
-  if (!data) {
+  if (!features) {
     return null;
   }
 
-  const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };
-  const circlePaint: MapboxGL.CirclePaint = {
-    'circle-opacity': layer.opacity || 0.3,
-    'circle-color': {
-      property: layer.measure,
-      stops: legendToStops(layer.legend),
-    },
+  const onClickFunc = async (evt: any) => {
+    // by default add `dataField` to the tooltip
+    dispatch(
+      addPopupData({
+        [layer.title]: {
+          data: getRoundedData(
+            get(evt.features[0], `properties.${layer.dataField}`),
+            t,
+          ),
+          coordinates: evt.lngLat,
+        },
+      }),
+    );
+    // then add feature_info_props as extra fields to the tooltip
+    dispatch(
+      addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
+    );
   };
+
   const boundaryId = getBoundaryLayerSingleton().id;
 
+  if (layer.adminLevelDisplay) {
+    return (
+      <GeoJSONLayer
+        before={`layer-${boundaryId}-line`}
+        id={`layer-${layer.id}`}
+        data={features}
+        fillPaint={fillPaintData(layer, layer.dataField)}
+        fillOnClick={onClickFunc}
+      />
+    );
+  }
   return (
     <GeoJSONLayer
       before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
-      data={data}
+      data={features}
       circleLayout={circleLayout}
-      circlePaint={circlePaint}
-      circleOnClick={async (evt: any) => {
-        // by default add `measure` to the tooltip
-        dispatch(
-          addPopupData({
-            [layer.title]: {
-              data: get(
-                evt.features[0],
-                `properties.${layer.measure}`,
-                'No Data',
-              ),
-              coordinates: evt.lngLat,
-            },
-          }),
-        );
-        // then add feature_info_props as extra fields to the tooltip
-        dispatch(
-          addPopupData(
-            getFeatureInfoPropsData(layer.featureInfoProps || {}, evt),
-          ),
-        );
-      }}
+      circlePaint={circlePaint(layer, layer.dataField)}
+      circleOnClick={onClickFunc}
     />
   );
 }

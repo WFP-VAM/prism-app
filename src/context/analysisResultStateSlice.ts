@@ -3,7 +3,7 @@ import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
 import type { CreateAsyncThunkTypes, RootState } from './store';
-import { defaultBoundariesFile } from '../config';
+import { defaultBoundariesPath } from '../config';
 import {
   AggregationOperations,
   AsyncReturnType,
@@ -30,6 +30,7 @@ import {
   ExposedPopulationResult,
   scaleFeatureStat,
 } from '../utils/analysis-utils';
+import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
 import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
@@ -87,7 +88,7 @@ function getAdminBoundariesURL() {
   }
   // do not send a local path to the API, use a fixed boundary file instead.
   if (isLocalhost) {
-    return defaultBoundariesFile;
+    return defaultBoundariesPath;
   }
   // the regex here removes the dot(s) at the beginning of a path, if there is at least one.
   // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '
@@ -104,17 +105,25 @@ function generateTableFromApiData(
   }: { layer: BoundaryLayerProps; data: BoundaryLayerData },
   // baseline layer, both props and data
   {
-    layer: { adminLevel },
     data: { layerData: baselineLayerData },
   }: { layer: AdminLevelDataLayerProps; data: AdminLevelDataLayerData },
+  apiRequest: ApiData,
 ): TableRow[] {
+  // Reuse the groupBy parameter to generate the table
+  const groupBy = apiRequest.group_by;
+
   // find the key that will let us reference the names of the bounding boxes. We get the one corresponding to the specific level of baseline, or the first if we fail.
-  const adminLevelName =
-    adminLayer.adminLevelNames[adminLevel - 1] || adminLayer.adminLevelNames[0];
-  // for local name too.
-  const adminLevelLocalName =
-    adminLayer.adminLevelLocalNames[adminLevel - 1] ||
-    adminLayer.adminLevelLocalNames[0];
+  const { adminLevelNames } = adminLayer;
+
+  const groupByAdminIndex = adminLevelNames.findIndex(
+    levelName => levelName === groupBy,
+  );
+
+  const adminIndex =
+    groupByAdminIndex !== -1 ? groupByAdminIndex : adminLevelNames.length - 1;
+
+  // If we want to show all comma separated admin levels, we can use all names until "adminIndex".
+  const adminLevelName = adminLevelNames[adminIndex];
 
   return (aggregateData as KeyValueResponse[]).map(row => {
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
@@ -122,18 +131,25 @@ function generateTableFromApiData(
     // once we find it we can get the corresponding local name.
 
     const featureBoundary = adminLayerData.features.find(
-      feature => feature.properties?.[adminLevelName] === row[adminLevelName],
+      ({ properties }) =>
+        properties?.[groupBy] === row[groupBy] ||
+        properties?.[adminLevelName] === row[adminLevelName],
     );
 
-    const name: string =
-      featureBoundary?.properties?.[adminLevelName] || 'No Name';
-    const localName: string =
-      featureBoundary?.properties?.[adminLevelLocalName] || 'No Name';
+    const name = getFullLocationName(
+      adminLayer.adminLevelNames,
+      featureBoundary,
+    );
+    const localName = getFullLocationName(
+      adminLayer.adminLevelLocalNames,
+      featureBoundary,
+    );
 
     // we are searching the data of baseline layer to find the data associated with this feature
     // adminKey here refers to a specific feature (could be several) where the data is attached to.
-    const baselineValue =
+    const rawBaselineValue =
       baselineLayerData.find(({ adminKey }) => {
+        // TODO - Make this code more flexible.
         // we only check startsWith because the adminCode grows longer the deeper the level.
         // For example, 34 is state and 14 is district, therefore 3414 is a specific district in a specific state.
         // if this baseline layer only focuses on a higher level (just states) it would only contain 34, but every feature is very specific (uses the full number 3414)
@@ -147,8 +163,9 @@ function generateTableFromApiData(
       name,
       localName,
       [statistic]: get(row, statistic, 0),
-      baselineValue,
-      coordinates: (featureBoundary?.geometry as any).coordinates[0][0][0], // TODO likely will not keep
+      // Force parseFloat in case data was stored as a string
+      baselineValue: parseFloat(`${rawBaselineValue}`),
+      coordinates: (featureBoundary?.geometry as any)?.coordinates[0][0][0], // TODO likely will not keep
     };
     return tableRow;
   });
@@ -178,14 +195,16 @@ const createAPIRequestParams = (
   date: ReturnType<Date['getTime']>,
   params: WfsRequestParams | AdminLevelDataLayerProps,
 ): ApiData => {
-  const { adminLevelNames } = getBoundaryLayerSingleton();
+  const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
 
   // If the analysis is related to a AdminLevelData layer, we get the index from params.
   // For Exposed population we use the latest-level boundary indicator.
+  // WARNING - This change is meant for RBD only. Do we want to generalize this?
   const groupBy =
-    params instanceof AdminLevelDataLayerProps
+    adminCode ||
+    (params instanceof AdminLevelDataLayerProps
       ? adminLevelNames[params.adminLevel - 1]
-      : adminLevelNames[adminLevelNames.length - 1];
+      : adminLevelNames[adminLevelNames.length - 1]);
 
   const wfsParams = (params as WfsRequestParams).layer_name
     ? { wfs_params: params as WfsRequestParams }
@@ -228,7 +247,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   const wfsParams: WfsRequestParams = {
     url: `${wfsLayer.baseUrl}/ows`,
     layer_name: wfsLayer.serverLayerName,
-    time: moment(date).format('YYYY-MM-DD'),
+    time: moment(date).format(DEFAULT_DATE_FORMAT),
     key,
   };
 
@@ -349,6 +368,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     aggregateData,
     adminBoundariesData,
     { layer: baselineLayer, data: loadedAndCheckedBaselineData },
+    apiRequest,
   );
 
   return new BaselineLayerResult(
