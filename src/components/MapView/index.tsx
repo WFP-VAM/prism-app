@@ -365,6 +365,9 @@ function MapView({ classes }: MapViewProps) {
 
         // we convert to date strings, so hh:ss is irrelevant
         if (
+          // TODO - Replace the serverAvailableDates check by a loading flag
+          // to know if dates haven't been loaded yet?
+          Object.keys(serverAvailableDates).length !== 0 &&
           !getPossibleDatesForLayer(layer, serverAvailableDates)
             .map(date => moment(date).format(DEFAULT_DATE_FORMAT))
             .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT))
