@@ -83,22 +83,40 @@ function AnalysisLayer() {
       // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data
       fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;
+
         // Statistic Data
-        const statisticKey =
-          analysisData instanceof PolygonAnalysisResult
-            ? defaultProperty
-            : analysisData.statistic;
-        dispatch(
-          addPopupData({
-            [analysisData.getStatTitle(t)]: {
-              data: getRoundedData(
-                get(evt.features[0], ['properties', statisticKey]),
-                t,
-              ),
-              coordinates,
-            },
-          }),
-        );
+        if (analysisData instanceof PolygonAnalysisResult) {
+          const stats = JSON.parse(
+            evt.features[0].properties['zonal:stat:classes'],
+          );
+          // keys are the zonal classes like ['60 km/h', 'Uncertainty Cones']
+          const keys = Object.keys(stats).filter(key => key !== 'null');
+          const popupData = Object.fromEntries(
+            keys.map(key => [
+              key,
+              {
+                // we convert the percentage from a number like 0.832 to something that is
+                // more intuitive and can fit in the popup better like "83%"
+                data: `${Math.round(stats[key].percentage * 100)}%`,
+                coordinates,
+              },
+            ]),
+          );
+          dispatch(addPopupData(popupData));
+        } else {
+          const statisticKey = analysisData.statistic;
+          dispatch(
+            addPopupData({
+              [analysisData.getStatTitle(t)]: {
+                data: getRoundedData(
+                  get(evt.features[0], ['properties', statisticKey]),
+                  t,
+                ),
+                coordinates,
+              },
+            }),
+          );
+        }
 
         if (analysisData instanceof BaselineLayerResult) {
           dispatch(
