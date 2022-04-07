@@ -23,6 +23,8 @@ from flask_restx import Api, Resource, fields
 
 import rasterio
 
+import json
+
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 
@@ -47,34 +49,35 @@ for code in [400, 401, 403, 404, 405, 500]:
     app.register_error_handler(code, make_json_error)
 app.register_error_handler(Exception, handle_error)
 
+with open('statsdata.txt', encoding='utf-8') as f:
+    stats_data = f.read()
+
+file_stats_dic = json.loads(stats_data)
+
+with open('alertdata.txt', encoding='utf-8') as f:
+    alert_data = f.read()
+
+file_alert_dic = json.loads(alert_data)
+
 stats_dic = {
-    'geotiff_url': fields.String(),
-    'zones_url': fields.String(),
-    'zones': fields.String(),
-    'intersect_comparison': fields.String(),
-    'geojson_out': fields.String(),
-    'group_by': fields.String(),
-    'wfs_params': fields.Raw()
-    }
+    'geotiff_url': fields.String(file_stats_dic["geotiff_url"]),
+    'zones_url': fields.String(file_stats_dic["zones_url"]),
+    'group_by': fields.String(file_stats_dic["group_by"]),
+}
 
 stats_model = api.model('Stats', stats_dic)
 
 alerts_dic = {
-    'id': fields.Integer(),
-    'email': fields.String(),
-    'prism_url': fields.String(),
-    'alert_Name': fields.String(),
-    'alert_config': fields.Raw(),
-    'min': fields.Integer(),
-    'max': fields.Integer(),
-    'zones': fields.Raw(),
-    'active': fields.Boolean(),
-    'created_at': fields.DateTime(),
-    'updated_at': fields.DateTime(),
-    'last_triggered': fields.DateTime()
-    }
-alerts_model = api.model('Alerts', alerts_dic)
+    'email': fields.String(file_alert_dic["email"]),
+    'prism_url': fields.String(file_alert_dic["prism_url"]),
+    'alert_Name': fields.String(file_alert_dic["alert_name"]),
+    'alert_config': fields.Raw(file_alert_dic["alert_config"]),
+    'zones': fields.Raw(file_alert_dic["zones"]),
+}
 
+logger.debug(file_alert_dic["zones"])
+
+alerts_model = api.model('Alerts', alerts_dic)
 
 @timed
 @cache.memoize(3600)
