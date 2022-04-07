@@ -224,7 +224,11 @@ function Analyser({ extent, classes }: AnalyserProps) {
         }
       });
 
-      safeDispatchAddLayer(map, boundaryLayer, dispatch);
+      safeDispatchAddLayer(
+        map,
+        { ...boundaryLayer, isPrimary: true },
+        dispatch,
+      );
     } else {
       getDisplayBoundaryLayers().forEach(l => {
         safeDispatchAddLayer(map, l, dispatch);
@@ -349,7 +353,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
         extent,
       };
 
-      await dispatch(requestAndStorePolygonAnalysis(params));
+      dispatch(requestAndStorePolygonAnalysis(params));
     } else {
       if (!selectedDate) {
         throw new Error('Date must be given to run analysis');
@@ -378,7 +382,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
         isExposure: false,
       };
 
-      await dispatch(requestAndStoreAnalysis(params));
+      dispatch(requestAndStoreAnalysis(params));
     }
   };
 
