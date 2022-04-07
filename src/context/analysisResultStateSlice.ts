@@ -112,8 +112,9 @@ function generateTableFromApiData(
   // Reuse the groupBy parameter to generate the table
   const groupBy = apiRequest.group_by;
 
-  // find the key that will let us reference the names of the bounding boxes. We get the one corresponding to the specific level of baseline, or the first if we fail.
-  const { adminLevelNames } = adminLayer;
+  // find the key that will let us reference the names of the bounding boxes.
+  // We get the one corresponding to the specific level of baseline, or the first if we fail.
+  const { adminLevelNames, adminLevelLocalNames } = adminLayer;
 
   const groupByAdminIndex = adminLevelNames.findIndex(
     levelName => levelName === groupBy,
@@ -137,11 +138,11 @@ function generateTableFromApiData(
     );
 
     const name = getFullLocationName(
-      adminLayer.adminLevelNames,
+      adminLevelNames.slice(0, adminIndex + 1),
       featureBoundary,
     );
     const localName = getFullLocationName(
-      adminLayer.adminLevelLocalNames,
+      adminLevelLocalNames.slice(0, adminIndex + 1),
       featureBoundary,
     );
 
@@ -200,11 +201,11 @@ const createAPIRequestParams = (
   // If the analysis is related to a AdminLevelData layer, we get the index from params.
   // For Exposed population we use the latest-level boundary indicator.
   // WARNING - This change is meant for RBD only. Do we want to generalize this?
+  const { adminLevel } = params as any;
   const groupBy =
-    adminCode ||
-    (params instanceof AdminLevelDataLayerProps
-      ? adminLevelNames[params.adminLevel - 1]
-      : adminLevelNames[adminLevelNames.length - 1]);
+    adminLevel !== undefined
+      ? adminLevelNames[adminLevel - 1]
+      : adminCode || adminLevelNames[adminLevelNames.length - 1];
 
   const wfsParams = (params as WfsRequestParams).layer_name
     ? { wfs_params: params as WfsRequestParams }
