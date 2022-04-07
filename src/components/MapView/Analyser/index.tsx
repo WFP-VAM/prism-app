@@ -27,7 +27,7 @@ import { grey } from '@material-ui/core/colors';
 import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
-import { isNil } from 'lodash';
+import { isNil, range } from 'lodash';
 import {
   LayerDefinitions,
   getDisplayBoundaryLayers,
@@ -44,7 +44,10 @@ import {
   GeometryType,
 } from '../../../config/types';
 
-import { getAdminLevelLayer } from '../../../utils/admin-utils';
+import {
+  getAdminLevelCount,
+  getAdminLevelLayer,
+} from '../../../utils/admin-utils';
 import { Extent } from '../Layers/raster-utils';
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import {
@@ -427,11 +430,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
                     <Typography variant="body2">Admin Level</Typography>
                     <SimpleDropdown
                       value={adminLevel}
-                      options={[
-                        [1, 'Admin 1'],
-                        [2, 'Admin 2'],
-                        [3, 'Admin 3'],
-                      ]}
+                      options={range(getAdminLevelCount()).map(i => [
+                        (i + 1) as AdminLevelType,
+                        `Admin ${i + 1}`,
+                      ])}
                       onChange={setAdminLevel}
                     />
                   </div>
