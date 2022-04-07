@@ -70,12 +70,10 @@ stats_model = api.model('Stats', stats_dic)
 alerts_dic = {
     'email': fields.String(file_alert_dic["email"]),
     'prism_url': fields.String(file_alert_dic["prism_url"]),
-    'alert_Name': fields.String(file_alert_dic["alert_name"]),
-    'alert_config': fields.Raw(file_alert_dic["alert_config"]),
-    'zones': fields.Raw(file_alert_dic["zones"]),
+    'alert_name': fields.String(file_alert_dic["alert_name"]),
+    # 'alert_config': fields.Raw(file_alert_dic["alert_config"]),
+    # 'zones': fields.Raw(file_alert_dic["zones"]),
 }
-
-logger.debug(file_alert_dic["zones"])
 
 alerts_model = api.model('Alerts', alerts_dic)
 
