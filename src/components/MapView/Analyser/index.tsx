@@ -424,9 +424,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
                     <SimpleDropdown
                       value={adminLevel}
                       options={[
-                        [1, '1 - province / governorate'],
-                        [2, '2 - county'],
-                        [3, '3 - city / township'],
+                        [1, 'Admin 1'],
+                        [2, 'Admin 2'],
+                        [3, 'Admin 3'],
                       ]}
                       onChange={setAdminLevel}
                     />
