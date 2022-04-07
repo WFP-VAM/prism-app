@@ -1,37 +1,121 @@
 {
-  "country": "Global",
-  "alertFormActive": false,
-  "icons": {
-    "rainfall": "icon_rain.png",
-    "vegetation": "icon_veg.png",
-    "temperature": "icon_climate.png",
-    "risk": "icon_impact.png",
-    "capacity": "icon_capacity.png",
-    "tables": "icon_table.png"
-  },
-  "serversUrls": {
-    "wms": [
-      "https://geonode.wfp.org/geoserver/prism/wms/",
-      "https://odc.ovio.org/wms"
-    ]
-  },   
-  "map": {
-    "latitude": 1.8,
-    "longitude": 29.9,
-    "zoom": 1.76
-  },
+    "country": "Global",
+    "alertFormActive": false,
+    "icons": {
+      "rainfall_aggregation": "icon_rain.png",
+      "rainfall_anomaly": "icon_rain.png",
+      "vegetation": "icon_veg.png",
+      "temperature": "icon_climate.png",
+      "dry_spells": "icon_rain.png",
+      "capacity": "icon_capacity.png",
+      "tables": "icon_table.png"
+    },
+    "serversUrls": {
+      "wms": [
+        "https://odc.ovio.org/wms"
+      ]
+    },
+    "map": {
+      "latitude": 1.8,
+      "longitude": 29.9,
+      "zoom": 1.76
+    },
     "categories": {
-      "rainfall": {
-        "rainfall_amount": ["rainfall_dekad", "rainfall_agg_month"] ,
-        "rainfall_anomaly": ["rain_anomaly_dekad", "rain_anomaly_monthly"],
-        "dry_spells": ["streak_dry_days"],
-        "heavy_rain": ["days_heavy_rain", "streak_heavy_rain"]
+      "rainfall_aggregation": {
+        "10-day_rainfall": [
+          "rfh_12_0_1800_v2",
+          "rfh_16_0_2400_v2",
+          "rfh_20_0_3100_v2",
+          "rfh_24_0_4000_v2",
+          "precip_blended_dekad"
+        ],
+        "1-month_rainfall": [
+          "1m_rfh_12_0_1800_v2",
+          "1m_rfh_16_0_2400_v2",
+          "1m_rfh_20_0_3100_v2",
+          "1m_rfh_24_0_4000_v2"
+        ],
+        "3-month_rainfall": [
+          "3m_rfh_12_0_1800_v2",
+          "3m_rfh_16_0_2400_v2",
+          "3m_rfh_20_0_3100_v2",
+          "3m_rfh_24_0_4000_v2"
+        ],
+        "6-month_rainfall": [
+          "6m_rfh_12_0_1800_v2",
+          "6m_rfh_16_0_2400_v2",
+          "6m_rfh_20_0_3100_v2",
+          "6m_rfh_24_0_4000_v2"
+        ],
+        "9-month_rainfall": [
+          "9m_rfh_12_0_1800_v2",
+          "9m_rfh_16_0_2400_v2",
+          "9m_rfh_20_0_3100_v2",
+          "9m_rfh_24_0_4000_v2"
+        ],
+        "1-year_rainfall": [
+          "1y_rfh_12_0_1800_v2",
+          "1y_rfh_16_0_2400_v2",
+          "1y_rfh_20_0_3100_v2",
+          "1y_rfh_24_0_4000_v2"
+        ]
       },
-      "vegetation":{
-        "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+      "rainfall_anomaly": {
+        "10-day_rainfall_anomaly": [
+          "rfq_12_30_200",
+          "rfq_12_50_200"
+        ],
+        "1-month_rainfall_anomaly": [
+          "1m_rfq_12_30_200",
+          "1m_rfq_12_50_200"
+        ],
+        "3-month_rainfall_anomaly": [
+          "3m_rfq_12_30_200",
+          "3m_rfq_12_50_200"
+        ],
+        "6-month_rainfall_anomaly": [
+          "6m_rfq_12_30_200",
+          "6m_rfq_12_50_200"
+        ],
+        "9-month_rainfall_anomaly": [
+          "9m_rfq_12_30_200",
+          "9m_rfq_12_50_200"
+        ],
+        "1-year_rainfall_anomaly": [
+          "ryq_12_20_300_v2_orange",
+          "ryq_12_20_300_v2_brown",
+          "ryq_12_30_250_new"
+        ]
+      },
+      "dry_spells": {
+        "dry_spells": [
+          "dlx_13_4_30_v2",
+          "dlx_jh"
+        ],
+        "number_of_dry_days": [
+          "dlc_13_0_30"      ]
+      },
+      "vegetation": {
+        "ndvi_anomaly": [
+          "viq_12_50_150_new",
+          "viq_12_60_150_new"
+        ],
+        "ndvi": [
+          "vim_12_0_1"
+        ]
       },
       "temperature": {
-        "land_surface_temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
+        "land_surface_temperature": [
+          "lst_day_22__24p60_gray_v2"
+        ],
+        "lst_anomaly":[
+          "lst_anomaly_day_13__12p12_v2",
+          "lst_anomaly_day_13__15p15"
+        ],
+        "lst_amplitude":[
+          "taa_12_0_34_v2",
+          "taa_13_0_38_v2"
+        ]
       }
+    }
   }
-}
