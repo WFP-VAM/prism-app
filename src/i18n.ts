@@ -11,6 +11,7 @@ import en from 'date-fns/locale/en-US';
 import { translation } from './config';
 import 'moment/locale/km';
 
+const TRANSLATION_DEBUG = false;
 // Register other date locales to be used by our DatePicker
 // TODO - extract registerLocale and moment/locale imports and loading into a separate file for clarity.
 registerLocale('en', en);
@@ -91,10 +92,11 @@ export function useSafeTranslation(): {
         if (key in resources.en.translation) {
           return t(key);
         }
-        // eslint-disable-next-line no-console
-        console.warn(
-          `Translation for "${key}" is not configured in your translation file.`,
-        );
+        if (TRANSLATION_DEBUG) {
+          console.warn(
+            `Translation for "${key}" is not configured in your translation file.`,
+          );
+        }
         return key;
       },
       [t],
