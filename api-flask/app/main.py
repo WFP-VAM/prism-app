@@ -23,8 +23,6 @@ from flask_restx import Api, Resource, fields
 
 import rasterio
 
-import json
-
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 
@@ -60,22 +58,23 @@ with open('alertdata.txt', encoding='utf-8') as f:
 file_alert_dic = json.loads(alert_data)
 
 stats_dic = {
-    'geotiff_url': fields.String(file_stats_dic["geotiff_url"]),
-    'zones_url': fields.String(file_stats_dic["zones_url"]),
-    'group_by': fields.String(file_stats_dic["group_by"]),
+    'geotiff_url': fields.String(file_stats_dic['geotiff_url']),
+    'zones_url': fields.String(file_stats_dic['zones_url']),
+    'group_by': fields.String(file_stats_dic['group_by']),
 }
 
 stats_model = api.model('Stats', stats_dic)
 
 alerts_dic = {
-    'email': fields.String(file_alert_dic["email"]),
-    'prism_url': fields.String(file_alert_dic["prism_url"]),
-    'alert_name': fields.String(file_alert_dic["alert_name"]),
-    # 'alert_config': fields.Raw(file_alert_dic["alert_config"]),
-    # 'zones': fields.Raw(file_alert_dic["zones"]),
+    'email': fields.String(file_alert_dic['email']),
+    'prism_url': fields.String(file_alert_dic['prism_url']),
+    'alert_name': fields.String(file_alert_dic['alert_name']),
+    # 'alert_config': fields.Raw(file_alert_dic['alert_config']),
+    # 'zones': fields.Raw(file_alert_dic['zones']),
 }
 
 alerts_model = api.model('Alerts', alerts_dic)
+
 
 @timed
 @cache.memoize(3600)
