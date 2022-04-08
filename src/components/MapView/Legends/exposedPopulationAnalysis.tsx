@@ -140,7 +140,7 @@ const ExposedPopulationAnalysis = ({
     );
   };
 
-  if (!result || result instanceof BaselineLayerResult) {
+  if (!result || !(result instanceof ExposedPopulationResult)) {
     return (
       <>
         <AnalysisButton
