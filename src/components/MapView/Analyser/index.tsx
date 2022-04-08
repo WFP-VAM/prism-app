@@ -207,11 +207,27 @@ function Analyser({ extent, classes }: AnalyserProps) {
         label={t(key)}
       />
     ));
+  const activateUniqueBoundary = (forceAdminLevel?: BoundaryLayerProps) => {
+    if (forceAdminLevel) {
+      // remove displayed boundaries
+      getDisplayBoundaryLayers().forEach(l => {
+        if (l.id !== forceAdminLevel.id) {
+          safeDispatchRemoveLayer(map, l, dispatch);
+        }
+      });
 
-  const activateUniqueBoundary = () => {
+      safeDispatchAddLayer(
+        map,
+        { ...forceAdminLevel, isPrimary: true },
+        dispatch,
+      );
+      return;
+    }
+
     if (!baselineLayerId) {
       throw new Error('Layer should be selected to run analysis');
     }
+
     const baselineLayer = LayerDefinitions[
       baselineLayerId
     ] as AdminLevelDataLayerProps;
@@ -355,7 +371,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
         endDate,
         extent,
       };
-
+      activateUniqueBoundary(adminLevelLayer);
       dispatch(requestAndStorePolygonAnalysis(params));
     } else {
       if (!selectedDate) {
