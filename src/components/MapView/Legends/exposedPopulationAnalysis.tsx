@@ -11,10 +11,7 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import {
-  ExposedPopulationResult,
-  BaselineLayerResult,
-} from '../../../utils/analysis-utils';
+import { ExposedPopulationResult } from '../../../utils/analysis-utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import {
   isDataTableDrawerActiveSelector,
