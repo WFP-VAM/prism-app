@@ -105,8 +105,10 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
   });
 
   const headlessRows = groupedRowDataWithAllLabels.map(row => {
-    const total = fields.map(f => row[f]).reduce((a, b) => a + b);
-    return assign(row, { Total: total });
+    // TODO - Switch between MAX and SUM depending on the polygon source.
+    // const total = fields.map(f => row[f]).reduce((a, b) => a + b);
+    // return assign(row, { Total: total });
+    return row;
   });
 
   const columns = [groupBy, ...fields, 'Total'];
