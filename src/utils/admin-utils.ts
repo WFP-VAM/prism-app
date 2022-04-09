@@ -7,15 +7,14 @@ import {
 export function getAdminLevelLayer(
   adminLevel: AdminLevelType = 1,
 ): BoundaryLayerProps {
-  const layers = getDisplayBoundaryLayers();
+  const boundaryLayers = getDisplayBoundaryLayers();
   return (
-    layers.find(layer => layer.adminLevelNames.length === adminLevel) ||
-    layers[0]
+    boundaryLayers.find(layer => layer.adminLevelNames.length === adminLevel) ||
+    boundaryLayers[0]
   );
 }
 
 export function getAdminLayerURL(adminLevel: AdminLevelType = 1): string {
-  const boundaryLayers = getDisplayBoundaryLayers();
   const adminLayer = getAdminLevelLayer(adminLevel);
   return adminLayer.path;
 }
