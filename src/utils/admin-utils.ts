@@ -6,15 +6,18 @@ import {
 
 export function getAdminLevelLayer(
   adminLevel: AdminLevelType = 1,
-): BoundaryLayerProps | undefined {
+): BoundaryLayerProps {
   const layers = getDisplayBoundaryLayers();
-  return layers.find(layer => layer.adminLevelNames.length === adminLevel);
+  return (
+    layers.find(layer => layer.adminLevelNames.length === adminLevel) ||
+    layers[0]
+  );
 }
 
 export function getAdminLayerURL(adminLevel: AdminLevelType = 1): string {
   const boundaryLayers = getDisplayBoundaryLayers();
   const adminLayer = getAdminLevelLayer(adminLevel);
-  return adminLayer ? adminLayer.path : boundaryLayers[0].path;
+  return adminLayer.path;
 }
 
 export function getAdminNameProperty(adminLevel: AdminLevelType = 1): string {
