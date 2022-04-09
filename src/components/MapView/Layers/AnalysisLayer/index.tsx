@@ -9,20 +9,12 @@ import {
   isAnalysisLayerActiveSelector,
 } from '../../../../context/analysisResultStateSlice';
 import { legendToStops } from '../layer-utils';
-import {
-  LegendDefinition,
-  LayerKey,
-  AdminLevelDataLayerProps,
-} from '../../../../config/types';
+import { LegendDefinition } from '../../../../config/types';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
 } from '../../../../utils/analysis-utils';
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 
@@ -34,19 +26,10 @@ function AnalysisLayer() {
   const { t } = useSafeTranslation();
 
   const dispatch = useDispatch();
-  const baselineLayerId = get(analysisData, 'baselineLayerId');
-  const baselineLayer = LayerDefinitions[
-    baselineLayerId as LayerKey
-  ] as AdminLevelDataLayerProps;
 
   if (!analysisData || !isAnalysisLayerActive) {
     return null;
   }
-
-  const boundaryId =
-    baselineLayer?.boundary && isAnalysisLayerActive
-      ? baselineLayer.boundary
-      : getBoundaryLayerSingleton().id;
 
   // We use the legend values from the baseline layer
   function fillPaintData(
@@ -77,7 +60,6 @@ function AnalysisLayer() {
   return (
     <GeoJSONLayer
       id="layer-analysis"
-      before={`layer-${boundaryId}-line`}
       data={analysisData.featureCollection}
       fillPaint={fillPaintData(analysisData.legend, defaultProperty)}
       // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data
