@@ -3,7 +3,8 @@ import { convertArea } from '@turf/helpers';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
-import { calculate } from 'zonal';
+import { calculate } from '../utils/zonal-utils';
+
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesPath } from '../config';
 import {
@@ -441,7 +442,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 
   const classProperties = hazardLayer?.zonal?.class_properties; // eslint-disable-line camelcase
 
-  const result = calculate({
+  const result = await calculate({
     // clone the data, so zone, class and stats properties can be safely added
     // without encountering an "object is not extensible" error
     zones: JSON.parse(JSON.stringify(adminLevelData)),

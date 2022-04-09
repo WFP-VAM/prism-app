@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { FillPaint, LinePaint } from 'mapbox-gl';
+import { GeoJSON } from 'geojson';
 import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
@@ -181,6 +182,19 @@ export type ZonalConfig = {
   // eslint-disable-next-line camelcase
   class_properties?: string[];
 };
+
+/* eslint-disable camelcase */
+export type ZonalOptions = {
+  zones: GeoJSON;
+  zone_properties?: string[];
+  classes: GeoJSON;
+  class_properties?: string[];
+  preserve_features?: boolean;
+  class_properties_delimiter?: string;
+  remove_features_with_no_overlap?: boolean;
+  include_null_class_rows?: boolean;
+};
+/* eslint-enable camelcase */
 
 // this is the row object found in the table.rows array
 // of the result object returned by zonal.calculate

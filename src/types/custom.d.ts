@@ -17,6 +17,7 @@ declare module '*.css' {
 }
 
 declare module '*.png';
+declare module 'comlink';
 declare module 'geotiff';
 declare module 'zonal';
 
