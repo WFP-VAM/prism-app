@@ -5,6 +5,7 @@ app/.coverage
 
 # Cached files
 *.cache
+*.tif
 
 # Test files
 **.json.*
