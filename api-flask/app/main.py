@@ -1,4 +1,5 @@
 """Flask API for geospatial utils."""
+from sample_requests import stats_data, alert_data
 import logging
 from distutils.util import strtobool
 from os import getenv
@@ -47,30 +48,21 @@ for code in [400, 401, 403, 404, 405, 500]:
     app.register_error_handler(code, make_json_error)
 app.register_error_handler(Exception, handle_error)
 
-with open('statsdata.txt', encoding='utf-8') as f:
-    stats_data = f.read()
-
-file_stats_dic = json.loads(stats_data)
-
-with open('alertdata.txt', encoding='utf-8') as f:
-    alert_data = f.read()
-
-file_alert_dic = json.loads(alert_data)
 
 stats_dic = {
-    'geotiff_url': fields.String(file_stats_dic['geotiff_url']),
-    'zones_url': fields.String(file_stats_dic['zones_url']),
-    'group_by': fields.String(file_stats_dic['group_by']),
+    'geotiff_url': fields.String(stats_data['geotiff_url']),
+    'zones_url': fields.String(stats_data['zones_url']),
+    'group_by': fields.String(stats_data['group_by']),
 }
 
 stats_model = api.model('Stats', stats_dic)
 
 alerts_dic = {
-    'email': fields.String(file_alert_dic['email']),
-    'prism_url': fields.String(file_alert_dic['prism_url']),
-    'alert_name': fields.String(file_alert_dic['alert_name']),
-    # 'alert_config': fields.Raw(file_alert_dic['alert_config']),
-    # 'zones': fields.Raw(file_alert_dic['zones']),
+    'email': fields.String(alert_data['email']),
+    'prism_url': fields.String(alert_data['prism_url']),
+    'alert_name': fields.String(alert_data['alert_name']),
+    'alert_config': fields.Raw(alert_data['alert_config']),
+    'zones': fields.Raw(alert_data['zones']),
 }
 
 alerts_model = api.model('Alerts', alerts_dic)
