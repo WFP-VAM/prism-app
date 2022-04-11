@@ -1,5 +1,4 @@
 """Collect and parse kobo forms."""
-import json
 import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
@@ -58,19 +57,18 @@ def parse_form_field(value: str, field_type: str):
     """Parse strings into type according to field_type provided."""
     if field_type == 'decimal':
         return float(value)
-    elif field_type == 'integer':
+    if field_type == 'integer':
         return int(value)
-    elif field_type in ('datetime', 'date'):
+    if field_type in ('datetime', 'date'):
         return dtparser(value).astimezone(timezone.utc)
-    elif field_type == 'geopoint':
+    if field_type == 'geopoint':
         try:
             lat, lon, _, _ = value.split(' ')
             return {'lat': float(lat), 'lon': float(lon)}
-        except TypeError:
-            logger.warning(value)
+        except (TypeError, AttributeError):
+            logger.warning('geopoint %s coud not be parsed to {lat,lon}', value)
             return {}
-    else:
-        return value
+    return value
 
 
 def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], labels: List[str]):
@@ -109,7 +107,7 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
 
     geom_field_type = labels.get(geom_field)
 
-    latlon_dict = parse_form_field(geom_value_string, geom_field_type or "geopoint")
+    latlon_dict = parse_form_field(geom_value_string, geom_field_type or 'geopoint')
 
     status = form_dict.get('_validation_status').get('label', None)
     form_data = {**form_data, **latlon_dict, 'date': datetime_value, 'status': status}
