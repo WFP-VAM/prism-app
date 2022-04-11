@@ -1645,8 +1645,8 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "data": "http://localhost/kobo/forms",
+    "date_url": "http://localhost/kobo/forms",
     "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_name": "test-form-admin-codes",
