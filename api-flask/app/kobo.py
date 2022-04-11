@@ -63,9 +63,14 @@ def parse_form_field(value: str, field_type: str):
         return dtparser(value).astimezone(timezone.utc)
     if field_type == 'geopoint':
         try:
-            lat, lon, _, _ = value.split(' ')
+            if isinstance(value, str):
+                lat, lon, _, _ = value.split(' ')
+            elif isinstance(value, list):
+                [lat, lon] = value
+            else:
+                lat, lon = None, None
             return {'lat': float(lat), 'lon': float(lon)}
-        except (TypeError, AttributeError):
+        except TypeError:
             logger.warning('geopoint %s coud not be parsed to {lat,lon}', value)
             return {}
     return value
