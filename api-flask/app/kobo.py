@@ -98,15 +98,18 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
     datetime_value = parse_form_field(datetime_value_string, labels.get(datetime_field))
 
     geom_field = form_fields.get('geom', 'DoesNotExist')
-    geom_value_string = [
+    geom_values = [
         value for key, value in form_dict.items()
         if key.endswith(geom_field)
     ][0]
 
-    if geom_field is None:
-        latlon_dict = parse_form_field(geom_value_string, labels.get(geom_field))
-    else:
+    geom_field_type = labels.get(geom_field)
+    
+    if geom_field_type is None:
         latlon_dict = {}
+    else:
+        latlon_dict = parse_form_field(geom_values, geom_field_type)
+
     status = form_dict.get('_validation_status').get('label', None)
     form_data = {**form_data, **latlon_dict, 'date': datetime_value, 'status': status}
 
