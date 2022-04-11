@@ -105,9 +105,9 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
         if key.endswith(geom_field)
     ][0]
 
-    geom_field_type = labels.get(geom_field)
-
-    latlon_dict = parse_form_field(geom_value_string, geom_field_type or 'geopoint')
+    # Some forms do not have geom_field properly setup. So we default to
+    # 'geopoint' here and handle edge cases in parse_form_field.
+    latlon_dict = parse_form_field(geom_value_string, labels.get(geom_field, 'geopoint'))
 
     status = form_dict.get('_validation_status').get('label', None)
     form_data = {**form_data, **latlon_dict, 'date': datetime_value, 'status': status}
