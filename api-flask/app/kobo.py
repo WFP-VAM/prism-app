@@ -63,8 +63,12 @@ def parse_form_field(value: str, field_type: str):
     elif field_type in ('datetime', 'date'):
         return dtparser(value).astimezone(timezone.utc)
     elif field_type == 'geopoint':
-        lat, lon, _, _ = value.split(' ')
-        return {'lat': float(lat), 'lon': float(lon)}
+        try:
+            lat, lon, _, _ = value.split(' ')
+            return {'lat': float(lat), 'lon': float(lon)}
+        except TypeError:
+            logger.warning(value)
+            return {}
     else:
         return value
 
@@ -98,17 +102,14 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
     datetime_value = parse_form_field(datetime_value_string, labels.get(datetime_field))
 
     geom_field = form_fields.get('geom', 'DoesNotExist')
-    geom_values = [
+    geom_value_string = [
         value for key, value in form_dict.items()
         if key.endswith(geom_field)
     ][0]
 
     geom_field_type = labels.get(geom_field)
-    
-    if geom_field_type is None:
-        latlon_dict = {}
-    else:
-        latlon_dict = parse_form_field(geom_values, geom_field_type)
+
+    latlon_dict = parse_form_field(geom_value_string, geom_field_type or "geopoint")
 
     status = form_dict.get('_validation_status').get('label', None)
     form_data = {**form_data, **latlon_dict, 'date': datetime_value, 'status': status}
@@ -187,7 +188,7 @@ def get_form_responses(begin_datetime, end_datetime):
     auth, form_fields = get_kobo_params()
 
     form_responses, form_labels = get_responses_from_kobo(auth, form_fields.get('name'))
-    
+
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
     filtered_forms = []
