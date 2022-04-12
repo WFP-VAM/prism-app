@@ -23,9 +23,9 @@ from flask_restx import Api, Resource, fields
 
 import rasterio
 
-from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
-
 from sample_requests import alert_data, stats_data
+
+from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -183,7 +183,7 @@ class Stats(Resource):
 #     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
 
 @api.route('/kobo/forms')
-class Get_kobo_forms(Resource):
+class GetKoboForms(Resource):
     """Class Get_kobo_forms which takes a get method."""
 
     def get(self):
@@ -195,7 +195,7 @@ class Get_kobo_forms(Resource):
 
 
 @api.route('/alerts/<id>')
-class Alert_by_id(Resource):
+class AlertById(Resource):
     """Class Alert_by_id which takes a get method."""
 
     def get(self, id: str = '1'):
@@ -225,7 +225,7 @@ class Alert_by_id(Resource):
 
 
 @api.route('/alerts')
-class Write_alerts(Resource):
+class WriteAlerts(Resource):
     """Class Write_alerts which takes a post method."""
 
     @api.expect(alerts_model)
@@ -247,7 +247,7 @@ class Write_alerts(Resource):
 
 
 @api.route('/demo')
-class Stats_demo(Resource):
+class StatsDemo(Resource):
     """Class Stats_demo which takes a get method."""
 
     @timed
