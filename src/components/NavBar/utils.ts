@@ -1,4 +1,4 @@
-import { map, startCase, get } from 'lodash';
+import { filter, flattenDeep, get, map, startCase, values } from 'lodash';
 
 import { appConfig } from '../../config';
 import {
@@ -10,6 +10,7 @@ import {
 import {
   isLayerKey,
   LayerKey,
+  LayerMenuGroup,
   LayersCategoryType,
   MenuItemType,
 } from '../../config/types';
@@ -18,13 +19,27 @@ type LayersCategoriesType = LayersCategoryType[];
 
 type MenuItemsType = MenuItemType[];
 
+type MenuGroupType = LayerMenuGroup[];
+
 function formatLayersCategories(layersList: {
   [key: string]: Array<LayerKey | TableKey>;
 }): LayersCategoriesType {
   return map(layersList, (layerKeys, layersListKey) => {
     return {
       title: startCase(layersListKey),
-      layers: layerKeys.filter(isLayerKey).map(key => LayerDefinitions[key]),
+      layers: layerKeys.filter(isLayerKey).map(key => {
+        if (typeof key === 'object') {
+          const { layers } = key as LayerMenuGroup;
+          // use first layer in group as default
+          const layer = LayerDefinitions[layers[0].id as LayerKey];
+          // eslint-disable-next-line fp/no-mutation
+          layer.title = (key as LayerMenuGroup).title;
+          // eslint-disable-next-line fp/no-mutation
+          layer.layerMenuGroup = layers;
+          return layer;
+        }
+        return LayerDefinitions[key as LayerKey];
+      }),
       tables: layerKeys.filter(isTableKey).map(key => TableDefinitions[key]),
     };
   });
@@ -62,5 +77,17 @@ export const menuList: MenuItemsType = map(
       icon: get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
       layersCategories: formatLayersCategories(layersCategories),
     };
+  },
+);
+
+export const menuGroup: MenuGroupType = map(
+  filter(
+    flattenDeep(
+      map(appConfig.categories, layersCategories => values(layersCategories)),
+    ),
+    layer => typeof layer === 'object',
+  ),
+  layerGroup => {
+    return layerGroup || { title: '', layers: [] };
   },
 );

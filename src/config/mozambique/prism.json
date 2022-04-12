@@ -25,26 +25,41 @@
     "rainfall": {
       "rainfall_amount": [
         "precip_blended_dekad",
-        "rainfall_dekad",
-        "rainfall_agg_1month",
-        "rainfall_agg_3month",
-        "rainfall_agg_6month",
-        "rainfall_agg_9month",
-        "rainfall_agg_1year"
+        {
+          "title": "Rainfall Aggregate",
+          "layers": [
+            {"label": "10-day", "id": "rainfall_dekad"},
+            {"label": "1-month", "id": "rainfall_agg_1month"},
+            {"label": "3-month", "id": "rainfall_agg_3month"},
+            {"label": "6-month", "id": "rainfall_agg_6month"},
+            {"label": "9-month", "id": "rainfall_agg_9month"},
+            {"label": "1-year", "id": "rainfall_agg_1year"}
+          ]
+        }
       ],
       "rainfall_anomalies": [
         "precip_blended_dekad_anomaly",
-        "rain_anomaly_dekad",
-        "rain_anomaly_1month",
-        "rain_anomaly_3month",
-        "rain_anomaly_6month",
-        "rain_anomaly_9month",
-        "rain_anomaly_1year",
-        "spi_1m",
-        "spi_3m",
-        "spi_6m",
-        "spi_9m",
-        "spi_1y"
+        {
+          "title": "Rainfall Anomaly",
+          "layers": [
+            {"label": "10-day", "id": "rain_anomaly_dekad"},
+            {"label": "1-month", "id": "rain_anomaly_1month"},
+            {"label": "3-month", "id": "rain_anomaly_3month"},
+            {"label": "6-month", "id": "rain_anomaly_6month"},
+            {"label": "9-month", "id": "rain_anomaly_9month"},
+            {"label": "1-year", "id": "rain_anomaly_1year"}
+          ]
+        },
+        {
+          "title": "SPI",
+          "layers": [
+            {"label": "1-month", "id": "spi_1m"},
+            {"label": "3-month", "id": "spi_3m"},
+            {"label": "6-month", "id": "spi_6m"},
+            {"label": "9-month", "id": "spi_9m"},
+            {"label": "1-year", "id": "spi_1y"}
+          ]
+        }
       ],
       "dry_periods": ["days_dry", "streak_dry_days"],
       "heavy_rain": [

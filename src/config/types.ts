@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { FillPaint, LinePaint } from 'mapbox-gl';
+import { map, every } from 'lodash';
 import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
@@ -17,12 +18,31 @@ export type LayerType =
   | PointDataLayerProps;
 
 export type LayerKey = keyof typeof rawLayers;
+
+export type LayerMenuGroupItem = {
+  id: string;
+  label: string;
+};
+
+export type LayerMenuGroup = {
+  title: string;
+  layers: LayerMenuGroupItem[];
+};
+
 /**
- * Check if a string is an explicitly defined layer in layers.json
- * @param layerKey the string to check
+ * Check if a string/object is an explicitly defined layer in layers.json
+ * @param layerKey the string/object to check
  */
-export const isLayerKey = (layerKey: string): layerKey is LayerKey =>
-  layerKey in rawLayers;
+export const isLayerKey = (layerKey: string | LayerMenuGroup) => {
+  if (typeof layerKey === 'string') {
+    return layerKey in rawLayers;
+  }
+  if (typeof layerKey === 'object') {
+    const layers = map(layerKey.layers, 'id');
+    return every(layers, layer => layer in rawLayers);
+  }
+  return false;
+};
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
@@ -204,6 +224,9 @@ export class CommonLayerProps {
 
   @optional
   featureInfoProps?: { [key: string]: FeatureInfoProps };
+
+  @optional
+  layerMenuGroup?: LayerMenuGroupItem[];
 }
 
 /*

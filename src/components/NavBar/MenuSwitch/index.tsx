@@ -101,14 +101,22 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
       <hr />
 
       {layers.map(layer => {
-        const { id: layerId, title: layerTitle, group: LayerGroup } = layer;
+        const {
+          id: layerId,
+          title: layerTitle,
+          group: LayerGroup,
+          layerMenuGroup: menuGroup,
+        } = layer;
         if (LayerGroup && !LayerGroup.main) {
           return null;
         }
 
-        const selected = selectedLayers.some(
-          ({ id: testId }) => testId === layerId,
-        );
+        const selected = selectedLayers.some(({ id: testId }) => {
+          return (
+            testId === layerId ||
+            (menuGroup && menuGroup.some(menu => menu.id === testId))
+          );
+        });
 
         const validatedTitle = t(LayerGroup?.name || layerTitle || '');
 
