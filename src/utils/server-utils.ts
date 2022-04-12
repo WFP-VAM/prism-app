@@ -119,17 +119,21 @@ const isArrayOfFlatLayerContainers = (
 };
 
 function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
-  if ('Layer' in rawLayers) {
-    return flattenLayers(rawLayers.Layer);
-  }
   if (!Array.isArray(rawLayers) || rawLayers.length === 0) {
     return [];
   }
   if (isArrayOfFlatLayerContainers(rawLayers)) {
-    return rawLayers.reduce(
-      (acc, { Layer }) => acc.concat(Layer),
-      [] as FlatLayer[],
-    );
+    return rawLayers.reduce((acc, { Layer }) => {
+      if ('Layer' in Layer) {
+        return acc.concat(
+          ...flattenLayers((Layer.Layer as unknown) as LayerContainer),
+        );
+      }
+      if (Array.isArray(Layer)) {
+        return acc.concat(...flattenLayers(Layer));
+      }
+      return acc.concat(Layer);
+    }, [] as FlatLayer[]);
   }
   return rawLayers as FlatLayer[];
 }
@@ -240,10 +244,15 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
       fetchUrl.includes('?') ? '&' : '?'
     }${queryParamsToString(additionalQueryParams)}`;
 
-    const data = (await (
-      await fetch(fetchUrlWithParams || '')
-    ).json()) as PointDataDates; // raw data comes in as { date: yyyy-mm-dd }[]
-    return data;
+    if (!fetchUrlWithParams) {
+      return [];
+    }
+    const response = await fetch(fetchUrlWithParams);
+    if (response.status !== 200) {
+      console.error(`Impossible to get point data dates for ${layer.id}`);
+      return [];
+    }
+    return (await response.json()) as PointDataDates;
   };
   // eslint-disable-next-line fp/no-mutation
   const data = await (pointDataFetchPromises[url] =

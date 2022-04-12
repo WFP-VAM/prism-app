@@ -4,14 +4,8 @@
     "path": "../data/zimbabwe/zim_admin2_boundaries_v2.json",
     "opacity": 0.8,
     "admin_code": "distrpc",
-    "admin_level_names": [
-      "PROVNAMEFU",
-      "DIST_NAME_"
-    ],
-    "admin_level_local_names": [
-      "PROVNAMEFU",
-      "DIST_NAME_"
-    ],
+    "admin_level_names": ["PROVNAMEFU", "DIST_NAME_"],
+    "admin_level_local_names": ["PROVNAMEFU", "DIST_NAME_"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -28,12 +22,8 @@
     "path": "../data/zimbabwe/zwe_polbnda_adm1_250k_cso.json",
     "opacity": 0.8,
     "admin_code": "PROV_CODE",
-    "admin_level_names": [
-      "PROVINCE"
-    ],
-    "admin_level_local_names": [
-      "PROVINCE"
-    ],
+    "admin_level_names": ["PROVINCE"],
+    "admin_level_local_names": ["PROVINCE"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -1653,5 +1643,190 @@
       }
     ],
     "legend_text": "Source: National IPC Technical Working Group"
+  },
+  "cereal_insecurity_2021": {
+    "title": "Cereal insecurity 2021",
+    "type": "admin_level_data",
+    "path": "../data/zimbabwe/zim_fs_2021.json",
+    "data_field": "cereal_insecurity_2021",
+    "admin_level": 2,
+    "admin_code": "district_pcode",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 15%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 16,
+        "label": "16 - 30%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 31,
+        "label": "31 - 40%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 41,
+        "label": "41 - 50%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 51,
+        "label": "> 50%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Cereal Insecurity 2021"
+  },
+  "10_year_avg_cereal_insecurity": {
+    "title": "10-year average cereal insecurity",
+    "type": "admin_level_data",
+    "path": "../data/zimbabwe/zim_fs_2021.json",
+    "data_field": "10_year_avg_cereal_insecurity",
+    "admin_level": 2,
+    "admin_code": "district_pcode",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 15%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 16,
+        "label": "16 - 30%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 31,
+        "label": "31 - 40%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 41,
+        "label": "41 - 50%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 51,
+        "label": "> 50%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "10-year average cereal insecurity"
+  },
+  "5_year_avg_cereal_insecurity": {
+    "title": "5-year average cereal insecurity",
+    "type": "admin_level_data",
+    "path": "../data/zimbabwe/zim_fs_2021.json",
+    "data_field": "5_year_avg_cereal_insecurity",
+    "admin_level": 2,
+    "admin_code": "district_pcode",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 15%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 16,
+        "label": "16 - 30%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 31,
+        "label": "31 - 40%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 41,
+        "label": "41 - 50%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 51,
+        "label": "> 50%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "5-year average cereal insecurity"
+  },
+  "poor_fc": {
+    "title": "Poor food consumption",
+    "type": "admin_level_data",
+    "path": "../data/zimbabwe/zim_fs_2021.json",
+    "data_field": "poor_fc",
+    "admin_level": 2,
+    "admin_code": "district_pcode",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 20%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 21,
+        "label": "21 - 30%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 31,
+        "label": "31 - 40%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 41,
+        "label": "41 - 50%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 51,
+        "label": "> 50%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Prevalence of poor food consumption. Food consumption score <= 28"
+  },
+  "borderline_fc": {
+    "title": "Borderline food consumption",
+    "type": "admin_level_data",
+    "path": "../data/zimbabwe/zim_fs_2021.json",
+    "data_field": "borderline_fc",
+    "admin_level": 2,
+    "admin_code": "district_pcode",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 20",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 21,
+        "label": "16 - 30%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 31,
+        "label": "31 - 40%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 41,
+        "label": "41 - 50%",
+        "color": "#cb181d"
+      },
+      {
+        "value": 51,
+        "label": "> 50%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Prevalence of borderline food consumption. Food consumption score 28 to 42"
   }
 }

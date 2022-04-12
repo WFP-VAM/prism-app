@@ -1642,8 +1642,12 @@
   "kh_incident_report": {
     "title": "Disaster impact report",
     "type": "point_data",
+    "admin_level_display": {
+      "adminCode": "Commune"
+    },
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_name": "test-form-admin-codes",
       "datetime_field": "Date_report",
@@ -1656,13 +1660,8 @@
       "Commune": {
         "type": "text",
         "label": "Commune"
-      },
-      "NumPeoAff": {
-        "type": "number",
-        "label": "Number of people affected"
       }
     },
-    "measure": "NumPeoAff",
     "legend_text": "Number of people affected",
     "legend": [
       {
