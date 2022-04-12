@@ -4,8 +4,12 @@
     "path": "../data/mozambique/moz_bnd_adm1_WFP.json",
     "opacity": 0.8,
     "admin_code": "source_id",
-    "admin_level_names": ["adm1_name"],
-    "admin_level_local_names": ["adm1_name"],
+    "admin_level_names": [
+      "adm1_name"
+    ],
+    "admin_level_local_names": [
+      "adm1_name"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -23,8 +27,14 @@
     "primary": true,
     "opacity": 0.8,
     "admin_code": "source_id",
-    "admin_level_names": ["adm1_name", "adm2_name"],
-    "admin_level_local_names": ["adm1_name", "adm2_name"],
+    "admin_level_names": [
+      "adm1_name",
+      "adm2_name"
+    ],
+    "admin_level_local_names": [
+      "adm1_name",
+      "adm2_name"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -48,19 +58,59 @@
     "opacity": 0.7,
     "legend_text": "CHIRPS rainfall global dekad",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": 0 },
-      { "value": "1", "color": "#ffffff" },
-      { "value": "20", "color": "#faf5e6" },
-      { "value": "40", "color": "#faf3d2" },
-      { "value": "60", "color": "#dae3a1" },
-      { "value": "80", "color": "#a0c787" },
-      { "value": "100", "color": "#68ab79" },
-      { "value": "125", "color": "#9beafa" },
-      { "value": "150", "color": "#00b1de" },
-      { "value": "200", "color": "#005ae6" },
-      { "value": "250", "color": "#0000c8" },
-      { "value": "300", "color": "#a000fa" },
-      { "value": "350", "color": "#fa78fa" }
+      {
+        "value": "-0",
+        "color": "#ffffff",
+        "alpha": 0
+      },
+      {
+        "value": "1",
+        "color": "#ffffff"
+      },
+      {
+        "value": "20",
+        "color": "#faf5e6"
+      },
+      {
+        "value": "40",
+        "color": "#faf3d2"
+      },
+      {
+        "value": "60",
+        "color": "#dae3a1"
+      },
+      {
+        "value": "80",
+        "color": "#a0c787"
+      },
+      {
+        "value": "100",
+        "color": "#68ab79"
+      },
+      {
+        "value": "125",
+        "color": "#9beafa"
+      },
+      {
+        "value": "150",
+        "color": "#00b1de"
+      },
+      {
+        "value": "200",
+        "color": "#005ae6"
+      },
+      {
+        "value": "250",
+        "color": "#0000c8"
+      },
+      {
+        "value": "300",
+        "color": "#a000fa"
+      },
+      {
+        "value": "350",
+        "color": "#fa78fa"
+      }
     ]
   },
   "rain_anomaly_dekad": {
@@ -357,18 +407,55 @@
     "opacity": 0.7,
     "legend_text": "CHIRPS 1 month dekadal rainfall aggregations (mm)",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": "0" },
-      { "value": "50", "color": "#faf3d2" },
-      { "value": "100", "color": "#dae3a1" },
-      { "value": "150", "color": "#a0c787" },
-      { "value": "200", "color": "#68ab79" },
-      { "value": "250", "color": "#9beafa" },
-      { "value": "300", "color": "#00b1de" },
-      { "value": "400", "color": "#005ae6" },
-      { "value": "500", "color": "#0000c8" },
-      { "value": "600", "color": "#a000fa" },
-      { "value": "800", "color": "#fa78fa" },
-      { "value": "> 800", "color": "#ffc4ee" }
+      {
+        "value": "-0",
+        "color": "#ffffff",
+        "alpha": "0"
+      },
+      {
+        "value": "50",
+        "color": "#faf3d2"
+      },
+      {
+        "value": "100",
+        "color": "#dae3a1"
+      },
+      {
+        "value": "150",
+        "color": "#a0c787"
+      },
+      {
+        "value": "200",
+        "color": "#68ab79"
+      },
+      {
+        "value": "250",
+        "color": "#9beafa"
+      },
+      {
+        "value": "300",
+        "color": "#00b1de"
+      },
+      {
+        "value": "400",
+        "color": "#005ae6"
+      },
+      {
+        "value": "500",
+        "color": "#0000c8"
+      },
+      {
+        "value": "600",
+        "color": "#a000fa"
+      },
+      {
+        "value": "800",
+        "color": "#fa78fa"
+      },
+      {
+        "value": "> 800",
+        "color": "#ffc4ee"
+      }
     ]
   },
   "rainfall_agg_2month": {
@@ -383,18 +470,55 @@
     "opacity": 0.7,
     "legend_text": "CHIRPS 2 month dekadal rainfall aggregations (mm)",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": "0" },
-      { "value": "50", "color": "#faf3d2" },
-      { "value": "100", "color": "#dae3a1" },
-      { "value": "150", "color": "#a0c787" },
-      { "value": "200", "color": "#68ab79" },
-      { "value": "250", "color": "#9beafa" },
-      { "value": "300", "color": "#00b1de" },
-      { "value": "400", "color": "#005ae6" },
-      { "value": "500", "color": "#0000c8" },
-      { "value": "600", "color": "#a000fa" },
-      { "value": "800", "color": "#fa78fa" },
-      { "value": "> 800", "color": "#ffc4ee" }
+      {
+        "value": "-0",
+        "color": "#ffffff",
+        "alpha": "0"
+      },
+      {
+        "value": "50",
+        "color": "#faf3d2"
+      },
+      {
+        "value": "100",
+        "color": "#dae3a1"
+      },
+      {
+        "value": "150",
+        "color": "#a0c787"
+      },
+      {
+        "value": "200",
+        "color": "#68ab79"
+      },
+      {
+        "value": "250",
+        "color": "#9beafa"
+      },
+      {
+        "value": "300",
+        "color": "#00b1de"
+      },
+      {
+        "value": "400",
+        "color": "#005ae6"
+      },
+      {
+        "value": "500",
+        "color": "#0000c8"
+      },
+      {
+        "value": "600",
+        "color": "#a000fa"
+      },
+      {
+        "value": "800",
+        "color": "#fa78fa"
+      },
+      {
+        "value": "> 800",
+        "color": "#ffc4ee"
+      }
     ]
   },
   "rainfall_agg_3month": {
@@ -409,18 +533,55 @@
     "opacity": 0.7,
     "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": "0" },
-      { "value": "50", "color": "#faf3d2" },
-      { "value": "100", "color": "#dae3a1" },
-      { "value": "150", "color": "#a0c787" },
-      { "value": "200", "color": "#68ab79" },
-      { "value": "250", "color": "#9beafa" },
-      { "value": "300", "color": "#00b1de" },
-      { "value": "400", "color": "#005ae6" },
-      { "value": "500", "color": "#0000c8" },
-      { "value": "600", "color": "#a000fa" },
-      { "value": "800", "color": "#fa78fa" },
-      { "value": "> 800", "color": "#ffc4ee" }
+      {
+        "value": "-0",
+        "color": "#ffffff",
+        "alpha": "0"
+      },
+      {
+        "value": "50",
+        "color": "#faf3d2"
+      },
+      {
+        "value": "100",
+        "color": "#dae3a1"
+      },
+      {
+        "value": "150",
+        "color": "#a0c787"
+      },
+      {
+        "value": "200",
+        "color": "#68ab79"
+      },
+      {
+        "value": "250",
+        "color": "#9beafa"
+      },
+      {
+        "value": "300",
+        "color": "#00b1de"
+      },
+      {
+        "value": "400",
+        "color": "#005ae6"
+      },
+      {
+        "value": "500",
+        "color": "#0000c8"
+      },
+      {
+        "value": "600",
+        "color": "#a000fa"
+      },
+      {
+        "value": "800",
+        "color": "#fa78fa"
+      },
+      {
+        "value": "> 800",
+        "color": "#ffc4ee"
+      }
     ]
   },
   "rainfall_agg_6month": {
@@ -435,18 +596,55 @@
     "opacity": 0.7,
     "legend_text": "CHIRPS 6 month dekadal rainfall aggregations",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": "0" },
-      { "value": "50", "color": "#faf3d2" },
-      { "value": "100", "color": "#dae3a1" },
-      { "value": "150", "color": "#a0c787" },
-      { "value": "200", "color": "#68ab79" },
-      { "value": "250", "color": "#9beafa" },
-      { "value": "300", "color": "#00b1de" },
-      { "value": "400", "color": "#005ae6" },
-      { "value": "500", "color": "#0000c8" },
-      { "value": "600", "color": "#a000fa" },
-      { "value": "800", "color": "#fa78fa" },
-      { "value": "> 800", "color": "#ffc4ee" }
+      {
+        "value": "-0",
+        "color": "#ffffff",
+        "alpha": "0"
+      },
+      {
+        "value": "50",
+        "color": "#faf3d2"
+      },
+      {
+        "value": "100",
+        "color": "#dae3a1"
+      },
+      {
+        "value": "150",
+        "color": "#a0c787"
+      },
+      {
+        "value": "200",
+        "color": "#68ab79"
+      },
+      {
+        "value": "250",
+        "color": "#9beafa"
+      },
+      {
+        "value": "300",
+        "color": "#00b1de"
+      },
+      {
+        "value": "400",
+        "color": "#005ae6"
+      },
+      {
+        "value": "500",
+        "color": "#0000c8"
+      },
+      {
+        "value": "600",
+        "color": "#a000fa"
+      },
+      {
+        "value": "800",
+        "color": "#fa78fa"
+      },
+      {
+        "value": "> 800",
+        "color": "#ffc4ee"
+      }
     ]
   },
   "rainfall_agg_9month": {
@@ -461,18 +659,55 @@
     "opacity": 0.7,
     "legend_text": "CHIRPS 9 month dekadal rainfall aggregations",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": "0" },
-      { "value": "50", "color": "#faf3d2" },
-      { "value": "100", "color": "#dae3a1" },
-      { "value": "150", "color": "#a0c787" },
-      { "value": "200", "color": "#68ab79" },
-      { "value": "250", "color": "#9beafa" },
-      { "value": "300", "color": "#00b1de" },
-      { "value": "400", "color": "#005ae6" },
-      { "value": "500", "color": "#0000c8" },
-      { "value": "600", "color": "#a000fa" },
-      { "value": "800", "color": "#fa78fa" },
-      { "value": "> 800", "color": "#ffc4ee" }
+      {
+        "value": "-0",
+        "color": "#ffffff",
+        "alpha": "0"
+      },
+      {
+        "value": "50",
+        "color": "#faf3d2"
+      },
+      {
+        "value": "100",
+        "color": "#dae3a1"
+      },
+      {
+        "value": "150",
+        "color": "#a0c787"
+      },
+      {
+        "value": "200",
+        "color": "#68ab79"
+      },
+      {
+        "value": "250",
+        "color": "#9beafa"
+      },
+      {
+        "value": "300",
+        "color": "#00b1de"
+      },
+      {
+        "value": "400",
+        "color": "#005ae6"
+      },
+      {
+        "value": "500",
+        "color": "#0000c8"
+      },
+      {
+        "value": "600",
+        "color": "#a000fa"
+      },
+      {
+        "value": "800",
+        "color": "#fa78fa"
+      },
+      {
+        "value": "> 800",
+        "color": "#ffc4ee"
+      }
     ]
   },
   "rainfall_agg_1year": {
@@ -487,18 +722,55 @@
     "opacity": 0.7,
     "legend_text": "CHIRPS 1 year dekadal rainfall aggregations",
     "legend": [
-      { "value": -0, "color": "#ffffff", "alpha": 0 },
-      { "value": 50, "color": "#faf3d2" },
-      { "value": 100, "color": "#dae3a1" },
-      { "value": 200, "color": "#a0c787" },
-      { "value": 300, "color": "#68ab79" },
-      { "value": 400, "color": "#9beafa" },
-      { "value": 500, "color": "#00b1de" },
-      { "value": 600, "color": "#005ae6" },
-      { "value": 800, "color": "#0000c8" },
-      { "value": 1000, "color": "#a000fa" },
-      { "value": 1500, "color": "#fa78fa" },
-      { "value": 2000, "color": "#ffc4ee" }
+      {
+        "value": -0,
+        "color": "#ffffff",
+        "alpha": 0
+      },
+      {
+        "value": 50,
+        "color": "#faf3d2"
+      },
+      {
+        "value": 100,
+        "color": "#dae3a1"
+      },
+      {
+        "value": 200,
+        "color": "#a0c787"
+      },
+      {
+        "value": 300,
+        "color": "#68ab79"
+      },
+      {
+        "value": 400,
+        "color": "#9beafa"
+      },
+      {
+        "value": 500,
+        "color": "#00b1de"
+      },
+      {
+        "value": 600,
+        "color": "#005ae6"
+      },
+      {
+        "value": 800,
+        "color": "#0000c8"
+      },
+      {
+        "value": 1000,
+        "color": "#a000fa"
+      },
+      {
+        "value": 1500,
+        "color": "#fa78fa"
+      },
+      {
+        "value": 2000,
+        "color": "#ffc4ee"
+      }
     ]
   },
   "days_dry": {
@@ -510,16 +782,46 @@
     "opacity": 0.7,
     "legend_text": "Number of consecutive days with less than 2 mm precipitation in the last 30 days",
     "legend": [
-      { "value": 0, "color": "#fff9c7" },
-      { "value": 1, "color": "#ffeea9" },
-      { "value": 4, "color": "#fede86" },
-      { "value": 6, "color": "#fec754" },
-      { "value": 10, "color": "#fea937" },
-      { "value": 14, "color": "#f88a21" },
-      { "value": 18, "color": "#e96d13" },
-      { "value": 22, "color": "#d15205" },
-      { "value": 25, "color": "#b03f03" },
-      { "value": 30, "color": "#8b3005" }
+      {
+        "value": 0,
+        "color": "#fff9c7"
+      },
+      {
+        "value": 1,
+        "color": "#ffeea9"
+      },
+      {
+        "value": 4,
+        "color": "#fede86"
+      },
+      {
+        "value": 6,
+        "color": "#fec754"
+      },
+      {
+        "value": 10,
+        "color": "#fea937"
+      },
+      {
+        "value": 14,
+        "color": "#f88a21"
+      },
+      {
+        "value": 18,
+        "color": "#e96d13"
+      },
+      {
+        "value": 22,
+        "color": "#d15205"
+      },
+      {
+        "value": 25,
+        "color": "#b03f03"
+      },
+      {
+        "value": 30,
+        "color": "#8b3005"
+      }
     ]
   },
   "streak_dry_days": {
@@ -531,16 +833,46 @@
     "opacity": 0.7,
     "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days",
     "legend": [
-      { "value": 0, "color": "#fff9c7" },
-      { "value": 1, "color": "#ffeea9" },
-      { "value": 4, "color": "#fede86" },
-      { "value": 6, "color": "#fec754" },
-      { "value": 10, "color": "#fea937" },
-      { "value": 14, "color": "#f88a21" },
-      { "value": 18, "color": "#e96d13" },
-      { "value": 22, "color": "#d15205" },
-      { "value": 25, "color": "#b03f03" },
-      { "value": 30, "color": "#8b3005" }
+      {
+        "value": 0,
+        "color": "#fff9c7"
+      },
+      {
+        "value": 1,
+        "color": "#ffeea9"
+      },
+      {
+        "value": 4,
+        "color": "#fede86"
+      },
+      {
+        "value": 6,
+        "color": "#fec754"
+      },
+      {
+        "value": 10,
+        "color": "#fea937"
+      },
+      {
+        "value": 14,
+        "color": "#f88a21"
+      },
+      {
+        "value": 18,
+        "color": "#e96d13"
+      },
+      {
+        "value": 22,
+        "color": "#d15205"
+      },
+      {
+        "value": 25,
+        "color": "#b03f03"
+      },
+      {
+        "value": 30,
+        "color": "#8b3005"
+      }
     ]
   },
   "days_heavy_rain": {
@@ -552,16 +884,46 @@
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
     "legend": [
-      { "value": 0, "color": "#f2fabc" },
-      { "value": 1, "color": "#dcf1b2" },
-      { "value": 4, "color": "#bbe4b5" },
-      { "value": 6, "color": "#85cfba" },
-      { "value": 10, "color": "#57bec1" },
-      { "value": 14, "color": "#34a9c3" },
-      { "value": 18, "color": "#1d8dbe" },
-      { "value": 22, "color": "#2166ac" },
-      { "value": 25, "color": "#24479d" },
-      { "value": 30, "color": "#1d2e83" }
+      {
+        "value": 0,
+        "color": "#f2fabc"
+      },
+      {
+        "value": 1,
+        "color": "#dcf1b2"
+      },
+      {
+        "value": 4,
+        "color": "#bbe4b5"
+      },
+      {
+        "value": 6,
+        "color": "#85cfba"
+      },
+      {
+        "value": 10,
+        "color": "#57bec1"
+      },
+      {
+        "value": 14,
+        "color": "#34a9c3"
+      },
+      {
+        "value": 18,
+        "color": "#1d8dbe"
+      },
+      {
+        "value": 22,
+        "color": "#2166ac"
+      },
+      {
+        "value": 25,
+        "color": "#24479d"
+      },
+      {
+        "value": 30,
+        "color": "#1d2e83"
+      }
     ]
   },
   "days_intense_rain": {
@@ -573,16 +935,46 @@
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
     "legend": [
-      { "value": 0, "color": "#f2fabc" },
-      { "value": 1, "color": "#dcf1b2" },
-      { "value": 4, "color": "#bbe4b5" },
-      { "value": 6, "color": "#85cfba" },
-      { "value": 10, "color": "#57bec1" },
-      { "value": 14, "color": "#34a9c3" },
-      { "value": 18, "color": "#1d8dbe" },
-      { "value": 22, "color": "#2166ac" },
-      { "value": 25, "color": "#24479d" },
-      { "value": 30, "color": "#1d2e83" }
+      {
+        "value": 0,
+        "color": "#f2fabc"
+      },
+      {
+        "value": 1,
+        "color": "#dcf1b2"
+      },
+      {
+        "value": 4,
+        "color": "#bbe4b5"
+      },
+      {
+        "value": 6,
+        "color": "#85cfba"
+      },
+      {
+        "value": 10,
+        "color": "#57bec1"
+      },
+      {
+        "value": 14,
+        "color": "#34a9c3"
+      },
+      {
+        "value": 18,
+        "color": "#1d8dbe"
+      },
+      {
+        "value": 22,
+        "color": "#2166ac"
+      },
+      {
+        "value": 25,
+        "color": "#24479d"
+      },
+      {
+        "value": 30,
+        "color": "#1d2e83"
+      }
     ]
   },
   "days_extreme_rain": {
@@ -594,16 +986,46 @@
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
     "legend": [
-      { "value": 0, "color": "#f2fabc" },
-      { "value": 1, "color": "#dcf1b2" },
-      { "value": 4, "color": "#bbe4b5" },
-      { "value": 6, "color": "#85cfba" },
-      { "value": 10, "color": "#57bec1" },
-      { "value": 14, "color": "#34a9c3" },
-      { "value": 18, "color": "#1d8dbe" },
-      { "value": 22, "color": "#2166ac" },
-      { "value": 25, "color": "#24479d" },
-      { "value": 30, "color": "#1d2e83" }
+      {
+        "value": 0,
+        "color": "#f2fabc"
+      },
+      {
+        "value": 1,
+        "color": "#dcf1b2"
+      },
+      {
+        "value": 4,
+        "color": "#bbe4b5"
+      },
+      {
+        "value": 6,
+        "color": "#85cfba"
+      },
+      {
+        "value": 10,
+        "color": "#57bec1"
+      },
+      {
+        "value": 14,
+        "color": "#34a9c3"
+      },
+      {
+        "value": 18,
+        "color": "#1d8dbe"
+      },
+      {
+        "value": 22,
+        "color": "#2166ac"
+      },
+      {
+        "value": 25,
+        "color": "#24479d"
+      },
+      {
+        "value": 30,
+        "color": "#1d2e83"
+      }
     ]
   },
   "streak_heavy_rain": {
@@ -615,17 +1037,51 @@
     "opacity": 0.7,
     "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
     "legend": [
-      { "value": 0, "color": "#f2fabc" },
-      { "value": 1, "color": "#dcf1b2" },
-      { "value": 4, "color": "#bbe4b5" },
-      { "value": 6, "color": "#85cfba" },
-      { "value": 10, "color": "#57bec1" },
-      { "value": 14, "color": "#34a9c3" },
-      { "value": 18, "color": "#1d8dbe" },
-      { "value": 22, "color": "#2166ac" },
-      { "value": 25, "color": "#24479d" },
-      { "value": 30, "color": "#1d2e83" },
-      { "value": "255 - no value", "color": "#ffffff", "alpha": 0 }
+      {
+        "value": 0,
+        "color": "#f2fabc"
+      },
+      {
+        "value": 1,
+        "color": "#dcf1b2"
+      },
+      {
+        "value": 4,
+        "color": "#bbe4b5"
+      },
+      {
+        "value": 6,
+        "color": "#85cfba"
+      },
+      {
+        "value": 10,
+        "color": "#57bec1"
+      },
+      {
+        "value": 14,
+        "color": "#34a9c3"
+      },
+      {
+        "value": 18,
+        "color": "#1d8dbe"
+      },
+      {
+        "value": 22,
+        "color": "#2166ac"
+      },
+      {
+        "value": 25,
+        "color": "#24479d"
+      },
+      {
+        "value": 30,
+        "color": "#1d2e83"
+      },
+      {
+        "value": "255 - no value",
+        "color": "#ffffff",
+        "alpha": 0
+      }
     ]
   },
   "ndvi_dekad_5": {
@@ -637,15 +1093,42 @@
     "opacity": 0.7,
     "legend_text": "LEGEND",
     "legend": [
-      { "value": "-1.00", "color": "#a50026" },
-      { "value": "-0.75", "color": "#de3f2e" },
-      { "value": "-0.50", "color": "#f88d52" },
-      { "value": "-0.25", "color": "#fed380" },
-      { "value": "0.00", "color": "#ffffbf" },
-      { "value": "0.25", "color": "#ccea83" },
-      { "value": "0.50", "color": "#86cb66" },
-      { "value": "0.75", "color": "#2da155" },
-      { "value": "1.00", "color": "#006837" }
+      {
+        "value": "-1.00",
+        "color": "#a50026"
+      },
+      {
+        "value": "-0.75",
+        "color": "#de3f2e"
+      },
+      {
+        "value": "-0.50",
+        "color": "#f88d52"
+      },
+      {
+        "value": "-0.25",
+        "color": "#fed380"
+      },
+      {
+        "value": "0.00",
+        "color": "#ffffbf"
+      },
+      {
+        "value": "0.25",
+        "color": "#ccea83"
+      },
+      {
+        "value": "0.50",
+        "color": "#86cb66"
+      },
+      {
+        "value": "0.75",
+        "color": "#2da155"
+      },
+      {
+        "value": "1.00",
+        "color": "#006837"
+      }
     ]
   },
   "ndvi_dekad_1": {
@@ -657,15 +1140,42 @@
     "opacity": 0.7,
     "legend_text": "LEGEND",
     "legend": [
-      { "value": "-1.00", "color": "#a50026" },
-      { "value": "-0.75", "color": "#de3f2e" },
-      { "value": "-0.50", "color": "#f88d52" },
-      { "value": "-0.25", "color": "#fed380" },
-      { "value": "0.00", "color": "#ffffbf" },
-      { "value": "0.25", "color": "#ccea83" },
-      { "value": "0.50", "color": "#86cb66" },
-      { "value": "0.75", "color": "#2da155" },
-      { "value": "1.00", "color": "#006837" }
+      {
+        "value": "-1.00",
+        "color": "#a50026"
+      },
+      {
+        "value": "-0.75",
+        "color": "#de3f2e"
+      },
+      {
+        "value": "-0.50",
+        "color": "#f88d52"
+      },
+      {
+        "value": "-0.25",
+        "color": "#fed380"
+      },
+      {
+        "value": "0.00",
+        "color": "#ffffbf"
+      },
+      {
+        "value": "0.25",
+        "color": "#ccea83"
+      },
+      {
+        "value": "0.50",
+        "color": "#86cb66"
+      },
+      {
+        "value": "0.75",
+        "color": "#2da155"
+      },
+      {
+        "value": "1.00",
+        "color": "#006837"
+      }
     ]
   },
   "ndvi_dekad_anomaly_5": {
@@ -680,15 +1190,42 @@
     "opacity": 0.7,
     "legend_text": "NDVI Anomaly compared to LTA",
     "legend": [
-      { "value": 50, "color": "#732600" },
-      { "value": 70, "color": "#f06405" },
-      { "value": 80, "color": "#f5af28" },
-      { "value": 90, "color": "#e6dc96" },
-      { "value": 110, "color": "#f5f5f5" },
-      { "value": 120, "color": "#cbff1f" },
-      { "value": 130, "color": "#00f200" },
-      { "value": 150, "color": "#008f00" },
-      { "value": 200, "color": "#004d00" }
+      {
+        "value": 50,
+        "color": "#732600"
+      },
+      {
+        "value": 70,
+        "color": "#f06405"
+      },
+      {
+        "value": 80,
+        "color": "#f5af28"
+      },
+      {
+        "value": 90,
+        "color": "#e6dc96"
+      },
+      {
+        "value": 110,
+        "color": "#f5f5f5"
+      },
+      {
+        "value": 120,
+        "color": "#cbff1f"
+      },
+      {
+        "value": 130,
+        "color": "#00f200"
+      },
+      {
+        "value": 150,
+        "color": "#008f00"
+      },
+      {
+        "value": 200,
+        "color": "#004d00"
+      }
     ]
   },
   "ndvi_dekad_anomaly_1": {
@@ -703,15 +1240,42 @@
     "opacity": 0.7,
     "legend_text": "NDVI Anomaly compared to LTA",
     "legend": [
-      { "value": 50, "color": "#732600" },
-      { "value": 70, "color": "#f06405" },
-      { "value": 80, "color": "#f5af28" },
-      { "value": 90, "color": "#e6dc96" },
-      { "value": 110, "color": "#f5f5f5" },
-      { "value": 120, "color": "#cbff1f" },
-      { "value": 130, "color": "#00f200" },
-      { "value": 150, "color": "#008f00" },
-      { "value": 200, "color": "#004d00" }
+      {
+        "value": 50,
+        "color": "#732600"
+      },
+      {
+        "value": 70,
+        "color": "#f06405"
+      },
+      {
+        "value": 80,
+        "color": "#f5af28"
+      },
+      {
+        "value": 90,
+        "color": "#e6dc96"
+      },
+      {
+        "value": 110,
+        "color": "#f5f5f5"
+      },
+      {
+        "value": 120,
+        "color": "#cbff1f"
+      },
+      {
+        "value": 130,
+        "color": "#00f200"
+      },
+      {
+        "value": 150,
+        "color": "#008f00"
+      },
+      {
+        "value": 200,
+        "color": "#004d00"
+      }
     ]
   },
   "lst_amplitude": {
@@ -723,15 +1287,43 @@
     "opacity": 0.7,
     "legend_text": "LEGEND",
     "legend": [
-      { "value": -0, "color": "#ffffff", "alpha": 0 },
-      { "value": 50, "color": "#ffffd9" },
-      { "value": 200, "color": "#e8f6b1" },
-      { "value": 400, "color": "#b2e1b6" },
-      { "value": 600, "color": "#64c3bf" },
-      { "value": 800, "color": "#2ca1c2" },
-      { "value": 1000, "color": "#216daf" },
-      { "value": 1200, "color": "#253a97" },
-      { "value": 1400, "color": "#081d58" }
+      {
+        "value": -0,
+        "color": "#ffffff",
+        "alpha": 0
+      },
+      {
+        "value": 50,
+        "color": "#ffffd9"
+      },
+      {
+        "value": 200,
+        "color": "#e8f6b1"
+      },
+      {
+        "value": 400,
+        "color": "#b2e1b6"
+      },
+      {
+        "value": 600,
+        "color": "#64c3bf"
+      },
+      {
+        "value": 800,
+        "color": "#2ca1c2"
+      },
+      {
+        "value": 1000,
+        "color": "#216daf"
+      },
+      {
+        "value": 1200,
+        "color": "#253a97"
+      },
+      {
+        "value": 1400,
+        "color": "#081d58"
+      }
     ]
   },
   "lst_daytime_5": {
@@ -751,17 +1343,50 @@
       "styles": "lst_day"
     },
     "legend": [
-      { "value": 0, "color": "#f0f9ba" },
-      { "value": 5, "color": "#edeba4" },
-      { "value": 10, "color": "#ebdd8f" },
-      { "value": 15, "color": "#eace7c" },
-      { "value": 20, "color": "#e9bf6a" },
-      { "value": 25, "color": "#e9af59" },
-      { "value": 30, "color": "#e99e4c" },
-      { "value": 35, "color": "#e98d41" },
-      { "value": 40, "color": "#e87a3a" },
-      { "value": 45, "color": "#e76636" },
-      { "value": 50, "color": "#e54f35" }
+      {
+        "value": 0,
+        "color": "#f0f9ba"
+      },
+      {
+        "value": 5,
+        "color": "#edeba4"
+      },
+      {
+        "value": 10,
+        "color": "#ebdd8f"
+      },
+      {
+        "value": 15,
+        "color": "#eace7c"
+      },
+      {
+        "value": 20,
+        "color": "#e9bf6a"
+      },
+      {
+        "value": 25,
+        "color": "#e9af59"
+      },
+      {
+        "value": 30,
+        "color": "#e99e4c"
+      },
+      {
+        "value": 35,
+        "color": "#e98d41"
+      },
+      {
+        "value": 40,
+        "color": "#e87a3a"
+      },
+      {
+        "value": 45,
+        "color": "#e76636"
+      },
+      {
+        "value": 50,
+        "color": "#e54f35"
+      }
     ]
   },
   "lst_daytime_1": {
@@ -781,17 +1406,50 @@
       "styles": "lst_day"
     },
     "legend": [
-      { "value": 0, "color": "#f0f9ba" },
-      { "value": 5, "color": "#edeba4" },
-      { "value": 10, "color": "#ebdd8f" },
-      { "value": 15, "color": "#eace7c" },
-      { "value": 20, "color": "#e9bf6a" },
-      { "value": 25, "color": "#e9af59" },
-      { "value": 30, "color": "#e99e4c" },
-      { "value": 35, "color": "#e98d41" },
-      { "value": 40, "color": "#e87a3a" },
-      { "value": 45, "color": "#e76636" },
-      { "value": 50, "color": "#e54f35" }
+      {
+        "value": 0,
+        "color": "#f0f9ba"
+      },
+      {
+        "value": 5,
+        "color": "#edeba4"
+      },
+      {
+        "value": 10,
+        "color": "#ebdd8f"
+      },
+      {
+        "value": 15,
+        "color": "#eace7c"
+      },
+      {
+        "value": 20,
+        "color": "#e9bf6a"
+      },
+      {
+        "value": 25,
+        "color": "#e9af59"
+      },
+      {
+        "value": 30,
+        "color": "#e99e4c"
+      },
+      {
+        "value": 35,
+        "color": "#e98d41"
+      },
+      {
+        "value": 40,
+        "color": "#e87a3a"
+      },
+      {
+        "value": 45,
+        "color": "#e76636"
+      },
+      {
+        "value": 50,
+        "color": "#e54f35"
+      }
     ]
   },
   "ast_max": {
@@ -806,19 +1464,58 @@
       "styles": "txb"
     },
     "legend": [
-      { "value": 20, "color": "#2b83ba" },
-      { "value": 22, "color": "#59a4b2" },
-      { "value": 24, "color": "#88c5aa" },
-      { "value": 26, "color": "#b3e0a7" },
-      { "value": 28, "color": "#d2edb0" },
-      { "value": 30, "color": "#f0f9ba" },
-      { "value": 32, "color": "#fff1ae" },
-      { "value": 34, "color": "#fed38c" },
-      { "value": 36, "color": "#feb669" },
-      { "value": 38, "color": "#f3854e" },
-      { "value": 40, "color": "#e54f35" },
-      { "value": 42, "color": "#d7191c" },
-      { "value": 44, "color": "#ad0003" }
+      {
+        "value": 20,
+        "color": "#2b83ba"
+      },
+      {
+        "value": 22,
+        "color": "#59a4b2"
+      },
+      {
+        "value": 24,
+        "color": "#88c5aa"
+      },
+      {
+        "value": 26,
+        "color": "#b3e0a7"
+      },
+      {
+        "value": 28,
+        "color": "#d2edb0"
+      },
+      {
+        "value": 30,
+        "color": "#f0f9ba"
+      },
+      {
+        "value": 32,
+        "color": "#fff1ae"
+      },
+      {
+        "value": 34,
+        "color": "#fed38c"
+      },
+      {
+        "value": 36,
+        "color": "#feb669"
+      },
+      {
+        "value": 38,
+        "color": "#f3854e"
+      },
+      {
+        "value": 40,
+        "color": "#e54f35"
+      },
+      {
+        "value": 42,
+        "color": "#d7191c"
+      },
+      {
+        "value": 44,
+        "color": "#ad0003"
+      }
     ]
   },
   "ast_max_anomaly": {
@@ -833,15 +1530,42 @@
       "styles": "txd"
     },
     "legend": [
-      { "value": -300.0, "color": "#000004" },
-      { "value": -200.0, "color": "#210c4a" },
-      { "value": -100.0, "color": "#57106e" },
-      { "value": -50.0, "color": "#8a226a" },
-      { "value": 50.0, "color": "#bc3754" },
-      { "value": 100.0, "color": "#e45a31" },
-      { "value": 200.0, "color": "#f98e09" },
-      { "value": 300.0, "color": "#f9cb35" },
-      { "value": 500.0, "color": "#fcffa4" }
+      {
+        "value": -300.0,
+        "color": "#000004"
+      },
+      {
+        "value": -200.0,
+        "color": "#210c4a"
+      },
+      {
+        "value": -100.0,
+        "color": "#57106e"
+      },
+      {
+        "value": -50.0,
+        "color": "#8a226a"
+      },
+      {
+        "value": 50.0,
+        "color": "#bc3754"
+      },
+      {
+        "value": 100.0,
+        "color": "#e45a31"
+      },
+      {
+        "value": 200.0,
+        "color": "#f98e09"
+      },
+      {
+        "value": 300.0,
+        "color": "#f9cb35"
+      },
+      {
+        "value": 500.0,
+        "color": "#fcffa4"
+      }
     ]
   },
   "lst_daytime_blended": {
@@ -858,19 +1582,58 @@
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with MODIS daytime land surface temperature estimates",
     "legend": [
-      { "value": 20, "color": "#2b83ba" },
-      { "value": 22, "color": "#59a4b2" },
-      { "value": 24, "color": "#88c5aa" },
-      { "value": 26, "color": "#b3e0a7" },
-      { "value": 28, "color": "#d2edb0" },
-      { "value": 30, "color": "#f0f9ba" },
-      { "value": 32, "color": "#fff1ae" },
-      { "value": 34, "color": "#fed38c" },
-      { "value": 36, "color": "#feb669" },
-      { "value": 38, "color": "#f3854e" },
-      { "value": 40, "color": "#e54f35" },
-      { "value": 42, "color": "#d7191c" },
-      { "value": 44, "color": "#ad0003" }
+      {
+        "value": 20,
+        "color": "#2b83ba"
+      },
+      {
+        "value": 22,
+        "color": "#59a4b2"
+      },
+      {
+        "value": 24,
+        "color": "#88c5aa"
+      },
+      {
+        "value": 26,
+        "color": "#b3e0a7"
+      },
+      {
+        "value": 28,
+        "color": "#d2edb0"
+      },
+      {
+        "value": 30,
+        "color": "#f0f9ba"
+      },
+      {
+        "value": 32,
+        "color": "#fff1ae"
+      },
+      {
+        "value": 34,
+        "color": "#fed38c"
+      },
+      {
+        "value": 36,
+        "color": "#feb669"
+      },
+      {
+        "value": 38,
+        "color": "#f3854e"
+      },
+      {
+        "value": 40,
+        "color": "#e54f35"
+      },
+      {
+        "value": 42,
+        "color": "#d7191c"
+      },
+      {
+        "value": 44,
+        "color": "#ad0003"
+      }
     ]
   },
   "lst_day_anomaly_5": {
@@ -885,15 +1648,42 @@
     },
     "legend_text": "LEGEND",
     "legend": [
-      { "value": -300.0, "color": "#000004" },
-      { "value": -200.0, "color": "#210c4a" },
-      { "value": -100.0, "color": "#57106e" },
-      { "value": -50.0, "color": "#8a226a" },
-      { "value": 50.0, "color": "#bc3754" },
-      { "value": 100.0, "color": "#e45a31" },
-      { "value": 200.0, "color": "#f98e09" },
-      { "value": 300.0, "color": "#f9cb35" },
-      { "value": 500.0, "color": "#fcffa4" }
+      {
+        "value": -300.0,
+        "color": "#000004"
+      },
+      {
+        "value": -200.0,
+        "color": "#210c4a"
+      },
+      {
+        "value": -100.0,
+        "color": "#57106e"
+      },
+      {
+        "value": -50.0,
+        "color": "#8a226a"
+      },
+      {
+        "value": 50.0,
+        "color": "#bc3754"
+      },
+      {
+        "value": 100.0,
+        "color": "#e45a31"
+      },
+      {
+        "value": 200.0,
+        "color": "#f98e09"
+      },
+      {
+        "value": 300.0,
+        "color": "#f9cb35"
+      },
+      {
+        "value": 500.0,
+        "color": "#fcffa4"
+      }
     ]
   },
   "lst_day_anomaly_1": {
@@ -908,15 +1698,42 @@
     },
     "legend_text": "LEGEND",
     "legend": [
-      { "value": -300.0, "color": "#000004" },
-      { "value": -200.0, "color": "#210c4a" },
-      { "value": -100.0, "color": "#57106e" },
-      { "value": -50.0, "color": "#8a226a" },
-      { "value": 50.0, "color": "#bc3754" },
-      { "value": 100.0, "color": "#e45a31" },
-      { "value": 200.0, "color": "#f98e09" },
-      { "value": 300.0, "color": "#f9cb35" },
-      { "value": 500.0, "color": "#fcffa4" }
+      {
+        "value": -300.0,
+        "color": "#000004"
+      },
+      {
+        "value": -200.0,
+        "color": "#210c4a"
+      },
+      {
+        "value": -100.0,
+        "color": "#57106e"
+      },
+      {
+        "value": -50.0,
+        "color": "#8a226a"
+      },
+      {
+        "value": 50.0,
+        "color": "#bc3754"
+      },
+      {
+        "value": 100.0,
+        "color": "#e45a31"
+      },
+      {
+        "value": 200.0,
+        "color": "#f98e09"
+      },
+      {
+        "value": 300.0,
+        "color": "#f9cb35"
+      },
+      {
+        "value": 500.0,
+        "color": "#fcffa4"
+      }
     ]
   },
   "lst_day_anomaly_blended": {
@@ -928,15 +1745,42 @@
     "opacity": 0.7,
     "legend_text": "Temperature anomaly based on long term average compared to local station data from INAM blended with MODIS daytime land surface temperature estimates",
     "legend": [
-      { "value": -300.0, "color": "#000004" },
-      { "value": -200.0, "color": "#210c4a" },
-      { "value": -100.0, "color": "#57106e" },
-      { "value": -50.0, "color": "#8a226a" },
-      { "value": 50.0, "color": "#bc3754" },
-      { "value": 100.0, "color": "#e45a31" },
-      { "value": 200.0, "color": "#f98e09" },
-      { "value": 300.0, "color": "#f9cb35" },
-      { "value": 500.0, "color": "#fcffa4" }
+      {
+        "value": -300.0,
+        "color": "#000004"
+      },
+      {
+        "value": -200.0,
+        "color": "#210c4a"
+      },
+      {
+        "value": -100.0,
+        "color": "#57106e"
+      },
+      {
+        "value": -50.0,
+        "color": "#8a226a"
+      },
+      {
+        "value": 50.0,
+        "color": "#bc3754"
+      },
+      {
+        "value": 100.0,
+        "color": "#e45a31"
+      },
+      {
+        "value": 200.0,
+        "color": "#f98e09"
+      },
+      {
+        "value": 300.0,
+        "color": "#f9cb35"
+      },
+      {
+        "value": 500.0,
+        "color": "#fcffa4"
+      }
     ]
   },
   "precip_blended_dekad": {
@@ -951,19 +1795,59 @@
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": 0 },
-      { "value": "1", "color": "#ffffff" },
-      { "value": "20", "color": "#faf5e6" },
-      { "value": "40", "color": "#faf3d2" },
-      { "value": "60", "color": "#dae3a1" },
-      { "value": "80", "color": "#a0c787" },
-      { "value": "100", "color": "#68ab79" },
-      { "value": "125", "color": "#9beafa" },
-      { "value": "150", "color": "#00b1de" },
-      { "value": "200", "color": "#005ae6" },
-      { "value": "250", "color": "#0000c8" },
-      { "value": "300", "color": "#a000fa" },
-      { "value": "350", "color": "#fa78fa" }
+      {
+        "value": "-0",
+        "color": "#ffffff",
+        "alpha": 0
+      },
+      {
+        "value": "1",
+        "color": "#ffffff"
+      },
+      {
+        "value": "20",
+        "color": "#faf5e6"
+      },
+      {
+        "value": "40",
+        "color": "#faf3d2"
+      },
+      {
+        "value": "60",
+        "color": "#dae3a1"
+      },
+      {
+        "value": "80",
+        "color": "#a0c787"
+      },
+      {
+        "value": "100",
+        "color": "#68ab79"
+      },
+      {
+        "value": "125",
+        "color": "#9beafa"
+      },
+      {
+        "value": "150",
+        "color": "#00b1de"
+      },
+      {
+        "value": "200",
+        "color": "#005ae6"
+      },
+      {
+        "value": "250",
+        "color": "#0000c8"
+      },
+      {
+        "value": "300",
+        "color": "#a000fa"
+      },
+      {
+        "value": "350",
+        "color": "#fa78fa"
+      }
     ]
   },
   "precip_blended_dekad_anomaly": {
@@ -978,15 +1862,42 @@
     "opacity": 0.7,
     "legend_text": "Rainfall anomaly based on long term averaged from local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
-      { "value": "1%", "color": "#d79b0b" },
-      { "value": "60%", "color": "#e1b344" },
-      { "value": "80%", "color": "#ebcb7d" },
-      { "value": "90%", "color": "#f5e3b6" },
-      { "value": "110%", "color": "#f2f2f2" },
-      { "value": "120%", "color": "#b5e7fe" },
-      { "value": "140%", "color": "#7dd4fd" },
-      { "value": "180%", "color": "#45c1fc" },
-      { "value": "> 180%", "color": "#0fb0fb" }
+      {
+        "value": "1%",
+        "color": "#d79b0b"
+      },
+      {
+        "value": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "value": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "value": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "value": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "value": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "value": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "value": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "value": "> 180%",
+        "color": "#0fb0fb"
+      }
     ]
   },
   "precip_blended_dekad_agg": {
@@ -1001,17 +1912,50 @@
     },
     "legend_text": "Monthly aggregate rainfall based on local station data from INAM blended with CHIRP estimates",
     "legend": [
-      { "value": "50", "color": "#faf3d2" },
-      { "value": "100", "color": "#dae3a1" },
-      { "value": "150", "color": "#a0c787" },
-      { "value": "200", "color": "#68ab79" },
-      { "value": "250", "color": "#9beafa" },
-      { "value": "300", "color": "#00b1de" },
-      { "value": "400", "color": "#005ae6" },
-      { "value": "500", "color": "#0000c8" },
-      { "value": "600", "color": "#a000fa" },
-      { "value": "800", "color": "#fa78fa" },
-      { "value": "> 800", "color": "#ffc4ee" }
+      {
+        "value": "50",
+        "color": "#faf3d2"
+      },
+      {
+        "value": "100",
+        "color": "#dae3a1"
+      },
+      {
+        "value": "150",
+        "color": "#a0c787"
+      },
+      {
+        "value": "200",
+        "color": "#68ab79"
+      },
+      {
+        "value": "250",
+        "color": "#9beafa"
+      },
+      {
+        "value": "300",
+        "color": "#00b1de"
+      },
+      {
+        "value": "400",
+        "color": "#005ae6"
+      },
+      {
+        "value": "500",
+        "color": "#0000c8"
+      },
+      {
+        "value": "600",
+        "color": "#a000fa"
+      },
+      {
+        "value": "800",
+        "color": "#fa78fa"
+      },
+      {
+        "value": "> 800",
+        "color": "#ffc4ee"
+      }
     ]
   },
   "spi_1m": {
@@ -1717,5 +2661,52 @@
       }
     ],
     "legend_text": "Multidimensional Poverty Index. Source: Alkire, S., Kanagaratnam, U. and Suppa, N. (2020). ‘The Global Multidimensional Poverty Index (MPI) 2020’, OPHI MPI"
+  },
+  "census": {
+    "title": "Total population",
+    "type": "admin_level_data",
+    "path": "../data/mozambique/moz-pop-projc-2022-INE.json",
+    "data_field": "2022_Tot",
+    "admin_level": 2,
+    "admin_code": "source_id",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "Tot_Urb_20": {
+        "type": "text",
+        "label": "Total urban population"
+      },
+      "2022_Rur_T": {
+        "type": "number",
+        "label": "Total rural population"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 50,000",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 100,000",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 100000,
+        "label": "100,000 - 250,000",
+        "color": "#6baed6"
+      },
+      {
+        "value": 250000,
+        "label": "250,000 - 500,000",
+        "color": "#3182bd"
+      },
+      {
+        "value": 500000,
+        "label": "> 500,000",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Projected 2022 population data. Source: INE"
   }
 }
