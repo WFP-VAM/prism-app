@@ -16,6 +16,11 @@ from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 logger = logging.getLogger(__name__)
 
 
+def get_first(items_list: list):
+    """Safely return the first element of a list."""
+    return items_list[0] if items_list else None
+
+
 def get_kobo_params():
     """Collect and validate request parameters and environment variables."""
     kobo_username = getenv('KOBO_USERNAME')
@@ -89,26 +94,38 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
         # Add logic to handle groups. Data is returned flattened.
         if label_type == 'begin_group':
             active_group = label_name + '/'
+            continue
+
         if label_type == 'end_group':
             active_group = ''
-        value = form_dict.get(f'{active_group}{label_name}')
-        if not value:
+            continue
+
+        # Try to get value using the active group name.
+        value = form_dict.get(f'{active_group}{label_name}', None)
+
+        # Otherwise, use the label as the end of the dictionary key.
+        if value is None:
+            value = get_first(
+                [value for key, value in form_dict.items() if key.endswith(label_name)]
+            )
+        # If the value is still None, no need to parse.
+        if value is None:
             continue
         # Insert value in form_data
         form_data[label_name] = parse_form_field(value, label_type)
 
     datetime_field = form_fields.get('datetime', 'DoesNotExist')
-    datetime_value_string = [
+    datetime_value_string = get_first([
         value for key, value in form_dict.items()
         if key.endswith(datetime_field)
-    ][0]
+    ])
     datetime_value = parse_form_field(datetime_value_string, labels.get(datetime_field))
 
     geom_field = form_fields.get('geom', 'DoesNotExist')
-    geom_value_string = [
+    geom_value_string = get_first([
         value for key, value in form_dict.items()
         if key.endswith(geom_field)
-    ][0]
+    ])
 
     # Some forms do not have geom_field properly setup. So we default to
     # 'geopoint' here and handle edge cases in parse_form_field.
