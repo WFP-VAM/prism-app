@@ -71,7 +71,7 @@ def parse_form_field(value: str, field_type: str):
                 lat, lon = None, None
             return {'lat': float(lat), 'lon': float(lon)}
         except TypeError:
-            logger.warning('geopoint %s coud not be parsed to {lat,lon}', value)
+            logger.debug('geopoint %s coud not be parsed to {lat,lon}', value)
             return {}
     return value
 
