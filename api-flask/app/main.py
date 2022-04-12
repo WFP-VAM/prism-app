@@ -1,5 +1,4 @@
 """Flask API for geospatial utils."""
-from sample_requests import stats_data, alert_data
 import logging
 from distutils.util import strtobool
 from os import getenv
@@ -26,6 +25,7 @@ import rasterio
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
+from sample_requests import alert_data, stats_data
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

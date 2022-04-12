@@ -3,9 +3,11 @@
 app/.flake8
 app/.coverage
 
+#Cached folder
+cache/
+
 # Cached files
 *.cache
-*.tif
 
 # Test files
 **.json.*
