@@ -25,9 +25,6 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# Package-lock
-.package-lock.json
-
 # Firebase
 .firebase/
 
