@@ -191,8 +191,10 @@ export type ZonalOptions = {
   class_properties?: string[];
   preserve_features?: boolean;
   class_properties_delimiter?: string;
+  dissolve_classes?: boolean;
   remove_features_with_no_overlap?: boolean;
   include_null_class_rows?: boolean;
+  on_after_each_zone_feature?: Function;
 };
 /* eslint-enable camelcase */
 

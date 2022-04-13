@@ -447,8 +447,9 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     // without encountering an "object is not extensible" error
     zones: JSON.parse(JSON.stringify(adminLevelData)),
     zone_properties: [adminLevelName],
-    classes,
+    classes: JSON.parse(JSON.stringify(classes)),
     class_properties: classProperties,
+    dissolve_classes: true,
     preserve_features: false,
     remove_features_with_no_overlap: true,
     include_null_class_rows: false,

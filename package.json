@@ -107,8 +107,7 @@
     "reflect-metadata": "^0.1.13",
     "typescript": "^3.9.7",
     "url": "^0.11.0",
-    "xml-js": "^1.6.11",
-    "zonal": "^0.5.0"
+    "xml-js": "^1.6.11"
   },
   "resolutions": {
     "**/mapbox-gl": "npm:maplibre-gl@1.15.2"
