@@ -26,6 +26,7 @@ export type LayerMenuGroupItem = {
 
 export type LayerMenuGroup = {
   title: string;
+  optionTitle: string;
   layers: LayerMenuGroupItem[];
 };
 

@@ -313,10 +313,13 @@ function LegendItem({
 
           {activeLayerGroup && (
             <Grid item>
-              <Typography variant="h5">Layer Option</Typography>
+              <Typography variant="h5">
+                {activeLayerGroup.optionTitle}
+              </Typography>
               <FormControl fullWidth>
                 <Select
                   className={classes.select}
+                  classes={{ root: classes.selectItem }}
                   value={activeLayer}
                   onChange={e => handleChangeFormInput(e)}
                 >
@@ -391,6 +394,9 @@ const styles = () =>
     select: {
       color: '#333',
       fontSize: 14,
+    },
+    selectItem: {
+      whiteSpace: 'normal',
     },
     slider: {
       padding: '0 5px',

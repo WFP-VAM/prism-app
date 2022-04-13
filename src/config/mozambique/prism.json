@@ -27,6 +27,7 @@
         "precip_blended_dekad",
         {
           "title": "Rainfall Aggregate",
+          "optionTitle": "Rainfall Aggregate Option",
           "layers": [
             {"label": "10-day", "id": "rainfall_dekad"},
             {"label": "1-month", "id": "rainfall_agg_1month"},
@@ -41,6 +42,7 @@
         "precip_blended_dekad_anomaly",
         {
           "title": "Rainfall Anomaly",
+          "optionTitle": "Rainfall Anomaly Option",
           "layers": [
             {"label": "10-day", "id": "rain_anomaly_dekad"},
             {"label": "1-month", "id": "rain_anomaly_1month"},
@@ -52,6 +54,7 @@
         },
         {
           "title": "SPI",
+          "optionTitle": "SPI Layer Option",
           "layers": [
             {"label": "1-month", "id": "spi_1m"},
             {"label": "3-month", "id": "spi_3m"},
@@ -85,16 +88,43 @@
       "tropical_storms": ["adamts_buffers"]
     },
     "vulnerability": {
+      "poverty": ["mpi"],
       "food_insecurity": [
-        "ipc_phase_current",
-        "ipc_phase_projected",
-        "ipc_phase_12_2020",
-        "ipc_pop_ph3_current",
-        "ipc_pop_ph3_projected",
-        "ipc_perc_ph3_current",
-        "ipc_perc_ph3_projected"
-      ],
-      "poverty": ["mpi"]
+        {
+          "title": "IPC",
+          "optionTitle": "IPC Layer Option",
+          "layers": [
+            {
+              "label": "Current phase classification",
+              "id": "ipc_phase_current"
+            },
+            {
+              "label": "Projected phase classification",
+              "id": "ipc_phase_projected"
+            },
+            {
+              "label": "December 2020 phase classification",
+              "id": "ipc_phase_12_2020"
+            },
+            {
+              "label": "Current population in phase 3+",
+              "id": "ipc_pop_ph3_current"
+            },
+            {
+              "label": "Projected population in phase 3+",
+              "id": "ipc_pop_ph3_projected"
+            },
+            {
+              "label": "Current percent of population in phase 3+",
+              "id": "ipc_perc_ph3_current"
+            },
+            {
+              "label": "Projected percent of population in phase 3+",
+              "id": "ipc_perc_ph3_projected"
+            }
+          ]
+        }
+      ]
     }
   }
 }

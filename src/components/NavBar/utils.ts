@@ -29,11 +29,11 @@ function formatLayersCategories(layersList: {
       title: startCase(layersListKey),
       layers: layerKeys.filter(isLayerKey).map(key => {
         if (typeof key === 'object') {
-          const { layers } = key as LayerMenuGroup;
+          const { title, layers } = key as LayerMenuGroup;
           // use first layer in group as default
           const layer = LayerDefinitions[layers[0].id as LayerKey];
           // eslint-disable-next-line fp/no-mutation
-          layer.title = (key as LayerMenuGroup).title;
+          layer.title = title;
           // eslint-disable-next-line fp/no-mutation
           layer.layerMenuGroup = layers;
           return layer;
@@ -88,6 +88,6 @@ export const menuGroup: MenuGroupType = map(
     layer => typeof layer === 'object',
   ),
   layerGroup => {
-    return layerGroup || { title: '', layers: [] };
+    return layerGroup || { title: '', optionTitle: '', layers: [] };
   },
 );
