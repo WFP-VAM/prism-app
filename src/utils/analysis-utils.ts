@@ -470,6 +470,10 @@ export function getAnalysisTableColumns(
   ];
 }
 
+export function quoteAndEscapeCell(value: number | string) {
+  return `"${value.toString().replaceAll('"', '""')}"`;
+}
+
 export function downloadCSVFromTableData(
   analysisResult: TabularAnalysisResult,
 ) {
@@ -480,8 +484,10 @@ export function downloadCSVFromTableData(
       : getAnalysisTableColumns(analysisResult);
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
-    columns.map(col => col.label).join(','),
-    ...tableData.map(row => columns.map(col => row[col.id]).join(',')),
+    columns.map(col => quoteAndEscapeCell(col.label)).join(','),
+    ...tableData.map(row =>
+      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
+    ),
   ];
   const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
 
