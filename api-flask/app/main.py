@@ -19,11 +19,11 @@ from flask_caching import Cache
 
 from flask_cors import CORS
 
-from flask_restx import Api, Resource, fields
+from flask_restx import Api, Resource
 
 import rasterio
 
-from sample_requests import alert_data, stats_data
+from sample_requests import alerts_dic, stats_dic
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
@@ -49,23 +49,8 @@ for code in [400, 401, 403, 404, 405, 500]:
 app.register_error_handler(Exception, handle_error)
 
 
-stats_dic = {
-    'geotiff_url': fields.String(stats_data['geotiff_url']),
-    'zones_url': fields.String(stats_data['zones_url']),
-    'group_by': fields.String(stats_data['group_by']),
-}
-
-stats_model = api.model('Stats', stats_dic)
-
-alerts_dic = {
-    'email': fields.String(alert_data['email']),
-    'prism_url': fields.String(alert_data['prism_url']),
-    'alert_name': fields.String(alert_data['alert_name']),
-    'alert_config': fields.Raw(alert_data['alert_config']),
-    'zones': fields.Raw(alert_data['zones']),
-}
-
 alerts_model = api.model('Alerts', alerts_dic)
+stats_model = api.model('Stats', stats_dic)
 
 
 @timed
