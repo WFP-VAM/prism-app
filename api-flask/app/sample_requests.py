@@ -3,11 +3,11 @@ from flask_restx import fields
 
 
 stats_data = {
-     'geotiff_url': """https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0
-      &coverage=r1h_dekad&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=
-      2304&format=GeoTIFF&time=2022-04-11""",
-     'zones_url': """https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_b
-      oundaries.json""",
+     'geotiff_url': ("https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0",
+        "&coverage=r1h_dekad&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098",
+        "&height=2304&format=GeoTIFF&time=2022-04-11"),
+     'zones_url': ("https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/",
+        "mmr_admin_boundaries.json"),
      'group_by': 'TS'
 }
 
@@ -22,8 +22,9 @@ alert_data = {
         'baseUrl': 'https://odc.ovio.org/',
         'dateInterval': 'days',
         'opacity': 0.7,
-        'legendText': """Monthly precipitation anomaly compared to the long term average. Derived
-         from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps""",
+        'legendText': ("Monthly precipitation anomaly compared to the long term average.",
+            " Derived from CHIRPS (UCSB Climate Hazards Group).",
+            " https://www.chc.ucsb.edu/data/chirps"),
         'legend': [
             {
                 'label': '-0',
