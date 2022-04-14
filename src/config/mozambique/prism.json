@@ -27,7 +27,7 @@
         "precip_blended_dekad",
         {
           "title": "Rainfall Aggregate",
-          "optionTitle": "Rainfall Aggregate Option",
+          "optionTitle": "Choose a time interval",
           "layers": [
             {"label": "10-day", "id": "rainfall_dekad"},
             {"label": "1-month", "id": "rainfall_agg_1month"},
@@ -42,7 +42,7 @@
         "precip_blended_dekad_anomaly",
         {
           "title": "Rainfall Anomaly",
-          "optionTitle": "Rainfall Anomaly Option",
+          "optionTitle": "Choose a time interval",
           "layers": [
             {"label": "10-day", "id": "rain_anomaly_dekad"},
             {"label": "1-month", "id": "rain_anomaly_1month"},
@@ -54,7 +54,7 @@
         },
         {
           "title": "SPI",
-          "optionTitle": "SPI Layer Option",
+          "optionTitle": "Choose a time interval",
           "layers": [
             {"label": "1-month", "id": "spi_1m"},
             {"label": "3-month", "id": "spi_3m"},
@@ -92,7 +92,7 @@
       "food_insecurity": [
         {
           "title": "IPC",
-          "optionTitle": "IPC Layer Option",
+          "optionTitle": "Choose an IPC dataset",
           "layers": [
             {
               "label": "Current phase classification",
