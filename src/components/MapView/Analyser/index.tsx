@@ -604,7 +604,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
                         'tableColumns' in analysisResult
                           ? // have to add "as any" here because typescript compiler mistakenly thinks
                             // analysisResult is a union of BaselineLayerResult and PolygonAnalysisResult
-                            (analysisResult as any).tableColumns
+                            (analysisResult as PolygonAnalysisResult)
+                              .tableColumns
                           : getAnalysisTableColumns(analysisResult)
                       }
                     />
