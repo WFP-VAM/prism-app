@@ -36,7 +36,12 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 app.debug = True
 CORS(app)
 
-api = Api(app)
+api = Api(
+    app,
+    title='PRISM Geospatial API by WFP',
+    description='A geospatial API enabling aggregation and intersection calculations '
+                'between rasters and polygons.'
+)
 
 # For more configuration options, check out the documentation
 # Caching durations are in seconds.
