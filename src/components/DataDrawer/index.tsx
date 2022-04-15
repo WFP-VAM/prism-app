@@ -26,7 +26,12 @@ function DataDrawer({ classes }: DataDrawerProps) {
   };
 
   return (
-    <Drawer anchor="left" open={isShowing} onClose={handleClose}>
+    <Drawer
+      anchor="left"
+      open={isShowing}
+      onClose={handleClose}
+      classes={{ paper: classes.drawerBackground }}
+    >
       <div className={classes.drawerContent}>
         {isShowing && <DataTable maxResults={1000} />}
       </div>
@@ -36,8 +41,10 @@ function DataDrawer({ classes }: DataDrawerProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
-    drawerContent: {
+    drawerBackground: {
       backgroundColor: theme.palette.primary.main,
+    },
+    drawerContent: {
       padding: 16,
       width: '40vw',
       height: '100%',
