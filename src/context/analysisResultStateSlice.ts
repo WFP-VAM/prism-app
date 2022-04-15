@@ -622,7 +622,7 @@ export const analysisResultSlice = createSlice({
       ): AnalysisResultState => ({
         ...rest,
         isLoading: false,
-        result: payload as any,
+        result: payload as PolygonAnalysisResult,
       }),
     );
 
