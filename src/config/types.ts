@@ -522,11 +522,6 @@ export interface RequestFeatureInfo extends FeatureInfoType {
   styles: string;
 }
 
-export enum DownloadFormat {
-  CSV,
-  JSON,
-}
-
 type AdminLevelDisplayType = {
   adminCode: string;
 };
