@@ -62,7 +62,7 @@ import {
   setIsMapLayerActive,
 } from '../../../context/analysisResultStateSlice';
 import AnalysisTable from './AnalysisTable';
-import SimpleDropdown from '../SimpleDropdown';
+import SimpleDropdown from '../../Common/SimpleDropdown';
 import {
   getAnalysisTableColumns,
   downloadCSVFromTableData,
