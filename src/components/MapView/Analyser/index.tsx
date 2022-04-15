@@ -398,7 +398,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
           above: parseFloat(aboveThreshold) || undefined,
           below: parseFloat(belowThreshold) || undefined,
         },
-        isExposure: false,
       };
 
       dispatch(requestAndStoreAnalysis(params));

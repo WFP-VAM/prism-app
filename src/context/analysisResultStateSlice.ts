@@ -198,7 +198,6 @@ export type AnalysisDispatchParams = {
   threshold: ThresholdDefinition;
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
-  isExposure: boolean;
 };
 
 export type PolygonAnalysisDispatchParams = {
