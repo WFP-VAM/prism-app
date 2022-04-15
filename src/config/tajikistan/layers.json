@@ -319,11 +319,6 @@
       "id": "wp_pop_cicunadj",
       "key": "label"
     },
-    "zonal": {
-      "class_properties": [
-        "label"
-      ]
-    },
     "feature_info_props": {
       "mmi": {
         "type": "text",

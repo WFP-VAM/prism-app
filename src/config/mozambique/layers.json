@@ -1339,9 +1339,6 @@
       "id": "wp_pop_cicunadj",
       "key": "label"
     },
-    "zonal": {
-      "class_properties": ["label"]
-    },
     "geometry": "polygon"
   },
   "wp_pop_cicunadj": {

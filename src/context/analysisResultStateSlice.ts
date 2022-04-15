@@ -440,7 +440,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 
   const adminLevelName = getAdminNameProperty(adminLevel);
 
-  const classProperties = hazardLayer?.zonal?.class_properties; // eslint-disable-line camelcase
+  const classProperties = hazardLayer?.zonal?.class_properties || ['label']; // eslint-disable-line camelcase
 
   const result = await calculate({
     // clone the data, so zone, class and stats properties can be safely added
