@@ -47,7 +47,6 @@ const styles = (theme: Theme) =>
     drawerContent: {
       padding: 16,
       width: '40vw',
-      height: '100%',
     },
   });
 
