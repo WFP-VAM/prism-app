@@ -3,6 +3,9 @@
 app/.flake8
 app/.coverage
 
+#Cached folder
+cache/
+
 # Cached files
 *.cache
 
