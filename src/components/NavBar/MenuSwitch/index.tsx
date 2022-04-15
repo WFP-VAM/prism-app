@@ -33,6 +33,7 @@ import {
 } from '../../../utils/map-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
+import { clearDataset } from '../../../context/datasetStateSlice';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const { t } = useSafeTranslation();
@@ -62,6 +63,10 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
     } else {
       removeKeyFromUrl(urlLayerKey);
       dispatch(removeLayer(layer));
+
+      // clear previous table dataset loaded first
+      // to close the dataseries and thus close chart
+      dispatch(clearDataset());
 
       // For admin boundary layers with boundary property
       // we have to de-activate the unique boundary and re-activate

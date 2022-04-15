@@ -2,10 +2,20 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { showPopup } from '../../../../context/tooltipStateSlice';
-import { BoundaryLayerProps } from '../../../../config/types';
+import { showPopup, hidePopup } from '../../../../context/tooltipStateSlice';
+import { BoundaryLayerProps, WMSLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import {
+  loadDataset,
+  DatasetParams,
+  setBoundaryParams,
+  AdminBoundaryParams,
+} from '../../../../context/datasetStateSlice';
+
+import {
+  layerDataSelector,
+  layersSelector,
+} from '../../../../context/mapStateSlice/selectors';
 import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
 import { isPrimaryBoundaryLayer } from '../../../../config/utils';
 import { getFullLocationName } from '../../../../utils/name-utils';
@@ -17,6 +27,8 @@ function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
 
 function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   const dispatch = useDispatch();
+  const selectedLayers = useSelector(layersSelector);
+
   const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -28,27 +40,86 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
 
-  const onClickFunc = (evt: any) => {
+  const onHoverHandler = (evt: any) => {
+    dispatch(hidePopup());
+    onToggleHover('pointer', evt.target);
     const coordinates = evt.lngLat;
     const locationName = getFullLocationName(
       layer.adminLevelNames,
       evt.features[0],
     );
+
     const locationLocalName = getFullLocationName(
       layer.adminLevelLocalNames,
       evt.features[0],
     );
+
     dispatch(showPopup({ coordinates, locationName, locationLocalName }));
+  };
+
+  const onClickFunc = (evt: any) => {
+    const { properties } = evt.features[0];
+
     // send the selection to the map selection layer. No-op if selection mode isn't on.
     dispatch(
       toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),
     );
+
+    const selectedLayerWMS: undefined | WMSLayerProps = selectedLayers.find(
+      l => l.type === 'wms',
+    ) as WMSLayerProps;
+
+    if (!selectedLayerWMS) {
+      return;
+    }
+
+    const { serverLayerName, title } = selectedLayerWMS;
+
+    if (
+      !layer.dataset ||
+      layer.dataset.layers.includes(serverLayerName) === false
+    ) {
+      return;
+    }
+
+    const { levels, url } = layer.dataset;
+
+    const lowestLevelId = levels[levels.length - 1].id;
+
+    const boundaryProps = levels.reduce(
+      (obj, item) => ({
+        ...obj,
+        [item.id]: {
+          code: properties[item.id],
+          urlPath: item.path,
+          name: properties[item.name],
+        },
+      }),
+      {},
+    );
+
+    const adminBoundaryParams: AdminBoundaryParams = {
+      title,
+      boundaryProps,
+      serverParams: { layerName: serverLayerName, url },
+    };
+
+    dispatch(setBoundaryParams(adminBoundaryParams));
+
+    const datasetParams: DatasetParams = {
+      id: lowestLevelId,
+      boundaryProps,
+      url,
+      serverLayerName,
+    };
+
+    dispatch(loadDataset(datasetParams));
   };
 
   // Only use mouse effects and click effects on the main layer.
   const { fillOnMouseEnter, fillOnMouseLeave, fillOnClick } = isPrimaryLayer
     ? {
-        fillOnMouseEnter: (evt: any) => onToggleHover('pointer', evt.target),
+        fillOnMouseEnter: onHoverHandler,
         fillOnMouseLeave: (evt: any) => onToggleHover('', evt.target),
         fillOnClick: onClickFunc,
       }

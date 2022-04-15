@@ -34,6 +34,22 @@
         "line-width": 1,
         "line-opacity": 0.8
       }
+    },
+    "dataset": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
+      "levels": [
+        {
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "layers": ["rfq_dekad", "mxd13a2_vim_dekad", "mxd13a2_viq_dekad", "rfh_dekad", "r1s_dekad"]
     }
   },
   "rainfall_dekad": {

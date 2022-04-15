@@ -216,6 +216,18 @@ type LayerStyleProps = {
   line: LinePaint;
 };
 
+type DatasetLevel = {
+  path: string;
+  id: string;
+  name: string;
+};
+
+type DatasetProps = {
+  url: string;
+  levels: DatasetLevel[];
+  layers: string[];
+};
+
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
   path: string; // path to admin_boundries.json file - web or local.
@@ -226,6 +238,9 @@ export class BoundaryLayerProps extends CommonLayerProps {
 
   @optional
   isPrimary?: boolean | undefined;
+
+  @optional
+  dataset?: DatasetProps;
 }
 
 export enum LabelType {
