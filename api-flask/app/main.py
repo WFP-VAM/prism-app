@@ -15,9 +15,9 @@ from app.zonal_stats import calculate_stats, get_wfs_response
 
 from flask import Flask, Response, json, request
 
-from fastapi import FastAPI
+# from fastapi import FastAPI
 
-# from flask_caching import Cache
+from flask_caching import Cache
 
 from flask_cors import CORS
 
