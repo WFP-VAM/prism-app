@@ -1,7 +1,6 @@
 """Flask API for geospatial utils."""
 import logging
 from distutils.util import strtobool
-from os import getenv
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 from app.caching import cache_file, cache_geojson
@@ -13,33 +12,27 @@ from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import calculate_stats, get_wfs_response
 
-from flask import Flask, Response, json, request
+from typing import Optional
 
-# from fastapi import FastAPI
+from fastapi import FastAPI, Path, Response
 
-from flask_caching import Cache
-
-from flask_cors import CORS
-
-from flask_restx import Api, Resource
+from fastapi.encoders import jsonable_encoder
 
 import rasterio
 
-from sample_requests import alerts_dic, stats_dic
+from sample_requests import StatsModel, AlertsModel
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
-app.config['JSON_AS_ASCII'] = False
-app.config['PROPAGATE_EXCEPTIONS'] = True
-app.debug = True
-CORS(app)
+# app.config['JSON_AS_ASCII'] = False
+# app.config['PROPAGATE_EXCEPTIONS'] = True
+# app.debug = True
+# CORS(app)
 
-api = Api(
-    app,
+app = FastAPI(
     title='PRISM Geospatial API by WFP',
     description='A geospatial API enabling aggregation and intersection calculations '
                 'between rasters and polygons.'
@@ -47,7 +40,7 @@ api = Api(
 
 # For more configuration options, check out the documentation
 # Caching durations are in seconds.
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+# cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 alert_db = AlertsDataBase()
 
@@ -56,12 +49,7 @@ for code in [400, 401, 403, 404, 405, 500]:
 app.register_error_handler(Exception, handle_error)
 
 
-alerts_model = api.model('Alerts', alerts_dic)
-stats_model = api.model('Stats', stats_dic)
-
-
 @timed
-@cache.memoize(3600)
 def _calculate_stats(zones,
                      geotiff,
                      stats,
@@ -82,90 +70,85 @@ def _calculate_stats(zones,
         intersect_comparison=intersect_comparison
     )
 
+@timed
+@app.post('/stats')
+def stats(stats_model: StatsModel):
+    
+    """Return zonal statistics."""
+    # Accept data as json or form.
+    logger.debug('New stats request:')
+    logger.debug(stats_model)
+    data = jsonable_encoder(stats_model)
+    geotiff_url = data.get('geotiff_url')
+    zones_url = data.get('zones_url')
+    zones_geojson = data.get('zones')
+    intersect_comparison_string = data.get('intersect_comparison')
 
-@api.route('/stats')
-class Stats(Resource):
-    """Class Stats which takes a post method."""
+    if geotiff_url is None:
+        logger.error('Received {}'.format(data))
+        raise BadRequest('geotiff_url is required.')
 
-    @timed
-    @api.expect(stats_model)
-    def post(self):
-        """Return zonal statistics."""
-        # Accept data as json or form.
-        logger.debug('New stats request:')
-        logger.debug(request)
-        data = request.get_json() or request.form
-        geotiff_url = data.get('geotiff_url')
-        zones_url = data.get('zones_url')
-        zones_geojson = data.get('zones')
-        intersect_comparison_string = data.get('intersect_comparison')
+    if zones_geojson is None and zones_url is None:
+        logger.error('Received {}'.format(data))
+        raise BadRequest('One of zones or zones_url is required.')
 
-        if geotiff_url is None:
-            logger.error('Received {}'.format(data))
-            raise BadRequest('geotiff_url is required.')
+    geojson_out = strtobool(data.get('geojson_out', 'False'))
+    group_by = data.get('group_by')
 
-        if zones_geojson is None and zones_url is None:
-            logger.error('Received {}'.format(data))
-            raise BadRequest('One of zones or zones_url is required.')
+    geotiff = cache_file(
+        prefix='raster',
+        url=geotiff_url,
+        extension='tif'
+    )
 
-        geojson_out = strtobool(data.get('geojson_out', 'False'))
-        group_by = data.get('group_by')
-
-        geotiff = cache_file(
-            prefix='raster',
-            url=geotiff_url,
-            extension='tif'
+    # TODO - Add validation for zones.
+    if (zones_geojson is not None):
+        zones = cache_geojson(
+            prefix='zones_geojson',
+            geojson=zones_geojson
+        )
+    else:
+        zones = cache_file(
+            prefix='zones',
+            url=zones_url,
+            extension='json',
         )
 
-        # TODO - Add validation for zones.
-        if (zones_geojson is not None):
-            zones = cache_geojson(
-                prefix='zones_geojson',
-                geojson=zones_geojson
-            )
-        else:
-            zones = cache_file(
-                prefix='zones',
-                url=zones_url,
-                extension='json',
-            )
+    wfs_params = data.get('wfs_params', None)
 
-        wfs_params = data.get('wfs_params', None)
+    wfs_response = None
+    if wfs_params is not None:
+        # Validate required keys.
+        required_keys = ['layer_name', 'url', 'time']
+        missing = [f for f in required_keys if f not in wfs_params.keys()]
 
-        wfs_response = None
-        if wfs_params is not None:
-            # Validate required keys.
-            required_keys = ['layer_name', 'url', 'time']
-            missing = [f for f in required_keys if f not in wfs_params.keys()]
+        if len(missing) > 0:
+            logger.error('Received {}'.format(data))
+            err_message = '{} required within wfs_params object'
+            joined_missing = ','.join(missing)
 
-            if len(missing) > 0:
-                logger.error('Received {}'.format(data))
-                err_message = '{} required within wfs_params object'
-                joined_missing = ','.join(missing)
+            raise BadRequest(err_message.format(joined_missing))
 
-                raise BadRequest(err_message.format(joined_missing))
+        wfs_response = get_wfs_response(wfs_params)
 
-            wfs_response = get_wfs_response(wfs_params)
-
-        intersect_comparison = None
-        if intersect_comparison_string is not None:
-            intersect_comparison = validate_intersect_parameter(
-                intersect_comparison_string
-            )
-
-        features = _calculate_stats(
-            zones,
-            geotiff,
-            stats=['min', 'max', 'mean', 'median', 'sum', 'std'],
-            prefix='stats_',
-            group_by=group_by,
-            geojson_out=geojson_out,
-            wfs_response=wfs_response,
-            intersect_comparison=intersect_comparison
+    intersect_comparison = None
+    if intersect_comparison_string is not None:
+        intersect_comparison = validate_intersect_parameter(
+            intersect_comparison_string
         )
 
-        return features
+    features = _calculate_stats(
+        zones,
+        geotiff,
+        stats=['min', 'max', 'mean', 'median', 'sum', 'std'],
+        prefix='stats_',
+        group_by=group_by,
+        geojson_out=geojson_out,
+        wfs_response=wfs_response,
+        intersect_comparison=intersect_comparison
+    )
 
+    return features
 
 # TODO - Secure endpoint
 # @app.route('/alerts-all', methods=['GET'])
@@ -174,151 +157,129 @@ class Stats(Resource):
 #     results = alert_db.readall()
 #     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
 
-@api.route('/kobo/forms')
-class GetKoboForms(Resource):
-    """Class Get_kobo_forms which takes a get method."""
+@app.get('/kobo/forms')
+def get_kobo_forms():
+    """Get all form responses."""
+    begin_datetime, end_datetime = parse_datetime_params()
+    form_responses = get_form_responses(begin_datetime, end_datetime)
 
-    def get(self):
-        """Get all form responses."""
-        begin_datetime, end_datetime = parse_datetime_params()
-        form_responses = get_form_responses(begin_datetime, end_datetime)
+    return form_responses
 
-        return Response(json.dumps(form_responses), mimetype='application/json')
+@app.get('/alerts/{id}')
+def alert_by_id(email: str, deactivate: Optional[str] = None, id: str = Path('1', description='The ID of the alert')):
+    try:
+        id = int(id)
+    except ValueError as e:
+        logger.error(f'Failed to fetch alerts: {e}')
+        raise BadRequest('Invalid id')
+    
+    alert = alert_db.readone(id)
+    if alert is None:
+        raise NotFound(f'No alert was found with id {id}')
 
+    # secure endpoint with simple email verification
+    if email.lower() != alert.email.lower():
+        raise BadRequest('Access denied. Email addresses do not match.')
 
-@api.route('/alerts/<id>')
-class AlertById(Resource):
-    """Class Alert_by_id which takes a get method."""
+    if deactivate:
+        status = alert_db.deactivate(alert)
+        if not status:
+            raise InternalServerError('Failed to deactivate alert')
 
-    def get(self, id: str = '1'):
-        """Get alert data from DB given id."""
-        try:
-            id = int(id)
-        except ValueError as e:
-            logger.error(f'Failed to fetch alerts: {e}')
-            raise BadRequest('Invalid id')
+        return Response(content='Alert successfully deactivated.', status_code=200)
 
-        alert = alert_db.readone(id)
-        if alert is None:
-            raise NotFound(f'No alert was found with id {id}')
-
-        # secure endpoint with simple email verification
-        if request.args.get('email', '').lower() != alert.email.lower():
-            raise BadRequest('Access denied. Email addresses do not match.')
-
-        if request.args.get('deactivate'):
-            status = alert_db.deactivate(alert)
-            if not status:
-                raise InternalServerError('Failed to deactivate alert')
-
-            return Response(response='Alert successfully deactivated.', status=200)
-
-        return Response(json.dumps(alert, cls=AlchemyEncoder), mimetype='application/json')
+    return Response(jsonable_encoder(alert, custom_encoder=AlchemyEncoder), media_type='application/json')
 
 
-@api.route('/alerts')
-class WriteAlerts(Resource):
-    """Class Write_alerts which takes a post method."""
+@app.post('/alerts')
+def write_alerts(alerts_model: AlertsModel):
 
-    @api.expect(alerts_model)
-    def post(self):
-        """Post new alerts."""
-        if not request.is_json:
-            raise InternalServerError('InvalidInput')
+    """Post new alerts."""
+    # if not request.is_json:
+    #     raise InternalServerError('InvalidInput')
 
-        try:
-            data = request.json
-            alert = AlertModel(**data)
-            alert_db.write(alert)
+    try:
+        data = jsonable_encoder(alerts_model)
+        alert = AlertModel(**data)
+        alert_db.write(alert)
 
-        except rasterio.errors.RasterioError as e:
-            logger.error(e)
-            raise e
+    except rasterio.errors.RasterioError as e:
+        logger.error(e)
+        raise e
 
-        return Response(response='Success', status=200)
+    return Response(content='Success', status_code=200)
 
+@timed
+@app.get('/demo')
+def stats_demo(geojson_out: Optional[str] = False, group_by: Optional[str] = None, intersect_comparison: Optional[str] = None):
 
-@api.route('/demo')
-class StatsDemo(Resource):
-    """Class Stats_demo which takes a get method."""
+    """Return examples of zonal statistics."""
+    # The GET endpoint is used for demo purposes only
+    geotiff_url = urlunparse(
+        ParseResult(
+            scheme='https',
+            netloc='mongolia.sibelius-datacube.org:5000',
+            path='/',
+            params='',
+            query=urlencode({
+                'service': 'WCS',
+                'request': 'GetCoverage',
+                'version': '1.0.0',
+                'coverage': 'ModisAnomaly',
+                'crs': 'EPSG:4326',
+                'bbox': '86.5,36.7,119.7,55.3',
+                'width': '1196',
+                'height': '672',
+                'format': 'GeoTIFF',
+                'time': '2020-03-01'
+            }),
+            fragment='',
+        )
+    )
 
-    @timed
-    def get(self):
-        """Return examples of zonal statistics."""
-        # The GET endpoint is used for demo purposes only
-        geotiff_url = urlunparse(
-            ParseResult(
-                scheme='https',
-                netloc='mongolia.sibelius-datacube.org:5000',
-                path='/',
-                params='',
-                query=urlencode({
-                    'service': 'WCS',
-                    'request': 'GetCoverage',
-                    'version': '1.0.0',
-                    'coverage': 'ModisAnomaly',
-                    'crs': 'EPSG:4326',
-                    'bbox': '86.5,36.7,119.7,55.3',
-                    'width': '1196',
-                    'height': '672',
-                    'format': 'GeoTIFF',
-                    'time': '2020-03-01'
-                }),
-                fragment='',
-            )
+    zones_url = urlunparse(
+        ParseResult(
+            scheme='https',
+            netloc='prism-admin-boundaries.s3.us-east-2.amazonaws.com',
+            path='mng_admin_boundaries.json',
+            params='',
+            query='',
+            fragment=''
+        )
+    )
+
+    geotiff = cache_file(
+        prefix='raster_test',
+        url=geotiff_url,
+        extension='tif'
+    )
+
+    zones = cache_file(
+        prefix='zones_test',
+        url=zones_url
+    )
+
+    geojson_out = strtobool(geojson_out)
+
+    parameter_intersect_comparison_string = intersect_comparison
+
+    intersect_comparison = None
+    if parameter_intersect_comparison_string is not None:
+        intersect_comparison = validate_intersect_parameter(
+            parameter_intersect_comparison_string
         )
 
-        zones_url = urlunparse(
-            ParseResult(
-                scheme='https',
-                netloc='prism-admin-boundaries.s3.us-east-2.amazonaws.com',
-                path='mng_admin_boundaries.json',
-                params='',
-                query='',
-                fragment=''
-            )
-        )
+    features = _calculate_stats(
+        zones,
+        geotiff,
+        stats=['min', 'max', 'mean', 'median', 'sum', 'std'],
+        prefix='stats_',
+        group_by=group_by,
+        geojson_out=geojson_out,
+        wfs_response=None,
+        intersect_comparison=intersect_comparison
+    )
 
-        geotiff = cache_file(
-            prefix='raster_test',
-            url=geotiff_url,
-            extension='tif'
-        )
+    # TODO - Properly encode before returning. Mongolian characters are returned as hex.
+    return features
 
-        zones = cache_file(
-            prefix='zones_test',
-            url=zones_url
-        )
-
-        geojson_out = request.args.get('geojson_out', 'False')
-        group_by = request.args.get('group_by', None)
-
-        geojson_out = strtobool(geojson_out)
-
-        intersect_comparison_string = request.args.get('intersect_comparison', None)
-
-        intersect_comparison = None
-        if intersect_comparison_string is not None:
-            intersect_comparison = validate_intersect_parameter(
-                intersect_comparison_string
-            )
-
-        features = _calculate_stats(
-            zones,
-            geotiff,
-            stats=['min', 'max', 'mean', 'median', 'sum', 'std'],
-            prefix='stats_',
-            group_by=group_by,
-            geojson_out=geojson_out,
-            wfs_response=None,
-            intersect_comparison=intersect_comparison
-        )
-
-        # TODO - Properly encode before returning. Mongolian characters are returned as hex.
-        return features
-
-
-if __name__ == '__main__' and getenv('FLASK_ENV') == 'development':
-    PORT = int(getenv('PORT', 80))
-    # Only for debugging while developing
-    app.run(host='0.0.0.0', debug=True, port=PORT)

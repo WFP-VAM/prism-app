@@ -1,5 +1,5 @@
 """Sample Data for stats and alert."""
-from flask_restx import fields
+from pydantic import BaseModel
 
 
 stats_data = {
@@ -124,16 +124,21 @@ alert_data = {
     'prism_url': 'https://prism-mongolia.org'
 }
 
-stats_dic = {
-    'geotiff_url': fields.String(stats_data['geotiff_url']),
-    'zones_url': fields.String(stats_data['zones_url']),
-    'group_by': fields.String(stats_data['group_by']),
-}
+class StatsModel(BaseModel):
+    geotiff_url: str
+    zones_url: str
+    group_by: str
 
-alerts_dic = {
-    'email': fields.String(alert_data['email']),
-    'prism_url': fields.String(alert_data['prism_url']),
-    'alert_name': fields.String(alert_data['alert_name']),
-    'alert_config': fields.Raw(alert_data['alert_config']),
-    'zones': fields.Raw(alert_data['zones']),
-}
+    class Config:
+        schema_extra = stats_data
+
+class AlertsModel(BaseModel):
+    email: str
+    prism_url: str
+    alert_name: str
+    alert_config: dict
+    zones: dict
+
+    class Config:
+        schema_extra = alert_data
+
