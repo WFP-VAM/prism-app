@@ -182,18 +182,50 @@
     "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
-      { "value": 1000, "color": "#a50026" },
-      { "value": 2000, "color": "#de3f2e" },
-      { "value": 3000, "color": "#f88d52" },
-      { "value": 4000, "color": "#fed380" },
-      { "value": 5000, "color": "#ffffbf" },
-      { "value": 6000, "color": "#ccea83" },
-      { "value": 7000, "color": "#86cb66" },
-      { "value": 8000, "color": "#2da155" },
-      { "value": 9000, "color": "#006837" }
+      {
+        "label": "-1.00",
+        "color": "#a50026"
+      },
+      {
+        "label": "-0.75",
+        "color": "#de3f2e"
+      },
+      {
+        "label": "-0.50",
+        "color": "#f88d52"
+      },
+      {
+        "label": "-0.25",
+        "color": "#fed380"
+      },
+      {
+        "label": "0.00",
+        "color": "#ffffbf"
+      },
+      {
+        "label": "0.25",
+        "color": "#ccea83"
+      },
+      {
+        "label": "0.50",
+        "color": "#86cb66"
+      },
+      {
+        "label": "0.75",
+        "color": "#2da155"
+      },
+      {
+        "label": "1.00",
+        "color": "#006837"
+      }
     ]
   },
   "ndvi_dekad_anomaly": {
