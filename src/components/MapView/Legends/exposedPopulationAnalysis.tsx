@@ -11,10 +11,7 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import {
-  ExposedPopulationResult,
-  BaselineLayerResult,
-} from '../../../utils/analysis-utils';
+import { ExposedPopulationResult } from '../../../utils/analysis-utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import {
   isDataTableDrawerActiveSelector,
@@ -140,7 +137,7 @@ const ExposedPopulationAnalysis = ({
     );
   };
 
-  if (!result || result instanceof BaselineLayerResult) {
+  if (!result || !(result instanceof ExposedPopulationResult)) {
     return (
       <>
         <AnalysisButton
