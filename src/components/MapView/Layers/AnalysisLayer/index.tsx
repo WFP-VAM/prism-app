@@ -9,19 +9,12 @@ import {
   isAnalysisLayerActiveSelector,
 } from '../../../../context/analysisResultStateSlice';
 import { legendToStops } from '../layer-utils';
-import {
-  LegendDefinition,
-  LayerKey,
-  AdminLevelDataLayerProps,
-} from '../../../../config/types';
+import { LegendDefinition } from '../../../../config/types';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
+  PolygonAnalysisResult,
 } from '../../../../utils/analysis-utils';
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 
@@ -33,19 +26,10 @@ function AnalysisLayer() {
   const { t } = useSafeTranslation();
 
   const dispatch = useDispatch();
-  const baselineLayerId = get(analysisData, 'baselineLayerId');
-  const baselineLayer = LayerDefinitions[
-    baselineLayerId as LayerKey
-  ] as AdminLevelDataLayerProps;
 
   if (!analysisData || !isAnalysisLayerActive) {
     return null;
   }
-
-  const boundaryId =
-    baselineLayer?.boundary && isAnalysisLayerActive
-      ? baselineLayer.boundary
-      : getBoundaryLayerSingleton().id;
 
   // We use the legend values from the baseline layer
   function fillPaintData(
@@ -62,31 +46,59 @@ function AnalysisLayer() {
     };
   }
 
-  const property =
-    analysisData instanceof ExposedPopulationResult
-      ? (analysisData.statistic as string)
-      : 'data';
+  const defaultProperty = (() => {
+    switch (true) {
+      case analysisData instanceof ExposedPopulationResult:
+        return analysisData.statistic as string;
+      case analysisData instanceof PolygonAnalysisResult:
+        return 'zonal:stat:percentage';
+      default:
+        return 'data';
+    }
+  })();
 
   return (
     <GeoJSONLayer
       id="layer-analysis"
-      before={`layer-${boundaryId}-line`}
       data={analysisData.featureCollection}
-      fillPaint={fillPaintData(analysisData.legend, property)}
+      fillPaint={fillPaintData(analysisData.legend, defaultProperty)}
+      // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data
       fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;
 
-        dispatch(
-          addPopupData({
-            [analysisData.getStatTitle(t)]: {
-              data: getRoundedData(
-                get(evt.features[0], ['properties', analysisData.statistic]),
-                t,
-              ),
-              coordinates,
-            },
-          }),
-        );
+        // Statistic Data
+        if (analysisData instanceof PolygonAnalysisResult) {
+          const stats = JSON.parse(
+            evt.features[0].properties['zonal:stat:classes'],
+          );
+          // keys are the zonal classes like ['60 km/h', 'Uncertainty Cones']
+          const keys = Object.keys(stats).filter(key => key !== 'null');
+          const popupData = Object.fromEntries(
+            keys.map(key => [
+              key,
+              {
+                // we convert the percentage from a number like 0.832 to something that is
+                // more intuitive and can fit in the popup better like "83%"
+                data: `${Math.round(stats[key].percentage * 100)}%`,
+                coordinates,
+              },
+            ]),
+          );
+          dispatch(addPopupData(popupData));
+        } else {
+          const statisticKey = analysisData.statistic;
+          dispatch(
+            addPopupData({
+              [analysisData.getStatTitle(t)]: {
+                data: getRoundedData(
+                  get(evt.features[0], ['properties', statisticKey]),
+                  t,
+                ),
+                coordinates,
+              },
+            }),
+          );
+        }
 
         if (analysisData instanceof BaselineLayerResult) {
           dispatch(

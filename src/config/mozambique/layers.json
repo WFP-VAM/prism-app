@@ -20,7 +20,6 @@
   "admin_boundaries": {
     "type": "boundary",
     "path": "../data/mozambique/moz_bnd_adm2_WFP.json",
-    "primary": true,
     "opacity": 0.8,
     "admin_code": "source_id",
     "admin_level_names": ["adm1_name", "adm2_name"],

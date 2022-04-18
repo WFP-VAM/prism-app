@@ -14,8 +14,8 @@ import {
   FeatureInfoType,
   LabelType,
 } from '../config/types';
-
 import { queryParamsToString } from '../context/layers/point_data';
+import { DEFAULT_DATE_FORMAT } from './name-utils';
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
@@ -240,6 +240,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     additionalQueryParams,
   } = layer;
   const loadPointLayerDataFromURL = async (fetchUrl: string) => {
+    // TODO - merge formatUrl and queryParamsToString
     const fetchUrlWithParams = `${fetchUrl}${
       fetchUrl.includes('?') ? '&' : '?'
     }${queryParamsToString(additionalQueryParams)}`;
@@ -412,4 +413,51 @@ export async function makeFeatureInfoRequest(
   return Promise.all(requests)
     .then(r => r.reduce((obj, item) => ({ ...obj, ...item }), {}))
     .then(obj => (Object.keys(obj).length === 0 ? null : obj));
+}
+
+export async function fetchWMSLayerAsGeoJSON(options: {
+  lyr: WMSLayerProps;
+  startDate?: number;
+  endDate?: number;
+}): Promise<GeoJSON.FeatureCollection> {
+  try {
+    const { lyr, startDate, endDate } = options;
+
+    if (lyr.type !== 'wms') {
+      throw Error(
+        `Unexpected layer type. Expected: "wms". Actual: "${lyr.type}"`,
+      );
+    }
+
+    const wfsServerURL = `${lyr.baseUrl}/wfs`;
+
+    // to-do: add additionalQueryParams like srsName and bbox
+    const requestParams = {
+      service: 'WFS',
+      request: 'GetFeature',
+      outputFormat: 'application/json', // per https://docs.geoserver.org/latest/en/user/services/wfs/outputformats.html
+      typeNames: lyr.serverLayerName, // per https://docs.geoserver.org/latest/en/user/services/wfs/reference.html
+      cql_filter:
+        startDate && endDate
+          ? `timestamp BETWEEN ${moment(startDate).format(
+              DEFAULT_DATE_FORMAT,
+            )} AND ${moment(endDate).format(DEFAULT_DATE_FORMAT)}T23:59:59`
+          : undefined,
+    };
+
+    const url = formatUrl(wfsServerURL, requestParams);
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`${response.status}: ${response.statusText}`);
+    }
+
+    const featureCollection: GeoJSON.FeatureCollection = await response.json();
+
+    return featureCollection;
+  } catch (error) {
+    console.error(error);
+    return { type: 'FeatureCollection', features: [] };
+  }
 }
