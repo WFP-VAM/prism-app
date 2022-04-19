@@ -3,7 +3,9 @@ import {
   has,
   isNull,
   isString,
+  max,
   mean,
+  min,
   invert,
   sum,
   omit,
@@ -13,6 +15,7 @@ import {
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import {
+  AdminLevelType,
   AggregationOperations,
   AsyncReturnType,
   ImpactLayerProps,
@@ -53,7 +56,7 @@ type RasterLayer = LayerData<WMSLayerProps>;
 export type Column = {
   id: keyof TableRow;
   label: string;
-  format?: (value: number) => string;
+  format?: (value: number | string) => string;
 };
 
 const hasKeys = (obj: any, keys: string[]): boolean =>
@@ -74,6 +77,8 @@ const checkRasterLayerData = (layerData: LayerData<LayerType>): RasterLayer => {
 };
 
 const operations = {
+  min: (data: number[]) => min(data),
+  max: (data: number[]) => max(data),
   sum, // sum method directly from lodash
   mean, // mean method directly from lodash
   median: (data: number[]) => {
@@ -409,6 +414,10 @@ export async function loadFeaturesClientSide(
       const raw = operations[operation](
         noData ? values.filter(value => value !== noData) : values,
       );
+      // If the aggregate is not valid, return early
+      if (raw === undefined) {
+        return acc;
+      }
       const scaled = scaleValueIfDefined(raw, scale, offset);
       const aggregateValue = thresholdOrNaN(scaled, layer.threshold);
       if (!Number.isNaN(aggregateValue)) {
@@ -451,9 +460,8 @@ export function getAnalysisTableColumns(
     {
       id: statistic,
       label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      format: (value: number) => getRoundedData(value),
+      format: value => getRoundedData(value as number),
     },
-
     {
       id: 'baselineValue',
       label: baselineLayerTitle,
@@ -462,13 +470,24 @@ export function getAnalysisTableColumns(
   ];
 }
 
-export function downloadCSVFromTableData(analysisResult: BaselineLayerResult) {
+export function quoteAndEscapeCell(value: number | string) {
+  return `"${value.toString().replaceAll('"', '""')}"`;
+}
+
+export function downloadCSVFromTableData(
+  analysisResult: TabularAnalysisResult,
+) {
   const { tableData, key: createdAt } = analysisResult;
-  const columns = getAnalysisTableColumns(analysisResult);
+  const columns =
+    'tableColumns' in analysisResult
+      ? analysisResult.tableColumns
+      : getAnalysisTableColumns(analysisResult);
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
-    columns.map(col => col.label).join(','),
-    ...tableData.map(row => columns.map(col => row[col.id]).join(',')),
+    columns.map(col => quoteAndEscapeCell(col.label)).join(','),
+    ...tableData.map(row =>
+      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
+    ),
   ];
   const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
 
@@ -484,7 +503,10 @@ export function downloadCSVFromTableData(analysisResult: BaselineLayerResult) {
   link.click();
 }
 
-export type AnalysisResult = BaselineLayerResult | ExposedPopulationResult;
+export type AnalysisResult =
+  | BaselineLayerResult
+  | ExposedPopulationResult
+  | PolygonAnalysisResult;
 
 /**
  * Computes the feature property value according to the scale, offset values and statistic property
@@ -625,9 +647,11 @@ export class BaselineLayerResult {
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
   }
+
   getHazardLayer(): WMSLayerProps {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
+
   getBaselineLayer(): AdminLevelDataLayerProps {
     return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
   }
@@ -648,3 +672,64 @@ export class BaselineLayerResult {
       : `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }
+
+export class PolygonAnalysisResult {
+  key: number = Date.now();
+  featureCollection: FeatureCollection;
+  tableData: TableRow[];
+  tableColumns: Column[];
+
+  statistic: 'area' | 'percentage';
+  threshold?: ThresholdDefinition;
+  legend: LegendDefinition;
+  legendText: string;
+  hazardLayerId: WMSLayerProps['id'];
+  adminLevel: AdminLevelType;
+
+  constructor(
+    tableData: TableRow[],
+    tableColumns: Column[],
+    featureCollection: FeatureCollection,
+    hazardLayer: WMSLayerProps,
+    adminLevel: AdminLevelType,
+    statistic: 'area' | 'percentage',
+    threshold?: ThresholdDefinition,
+  ) {
+    this.featureCollection = featureCollection;
+    this.tableData = tableData;
+    this.tableColumns = tableColumns;
+    this.statistic = statistic;
+    this.threshold = threshold;
+    this.adminLevel = adminLevel;
+
+    // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
+    // this legend of red-like colors goes from very light to dark
+    this.legend = [
+      { label: '20%', value: 0.2, color: '#fee5d9' }, // very light red-orange, HSL: 0.05, 0.95, 0.92,
+      { label: '40%', value: 0.4, color: '#fcae91' }, // rose bud, HSL: 0.05, 0.95, 0.78,
+      { label: '60%', value: 0.6, color: '#fb6a4a' }, // red-orange, HSL: 0.03, 0.96, 0.64
+      { label: '80%', value: 0.8, color: '#de2d26' }, // medium red-orange HSL: 0.01, 0.74, 0.51
+      { label: '100%', value: 1, color: '#a50f15' }, // dark tamarillo red: 0.99 0.83 0.35, dark red
+    ];
+
+    this.legendText = hazardLayer.legendText;
+    this.hazardLayerId = hazardLayer.id;
+  }
+  getHazardLayer(): WMSLayerProps {
+    return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
+  }
+
+  getTitle(): string {
+    return `${this.getHazardLayer().title} intersecting admin level ${
+      this.adminLevel
+    }`;
+  }
+
+  getStatTitle(): string {
+    return `${this.getHazardLayer().title} (${this.statistic})`;
+  }
+}
+
+// type of results that have the tableData property
+// and are displayed in the left-hand "RUN ANALYSIS" panel
+export type TabularAnalysisResult = BaselineLayerResult | PolygonAnalysisResult;

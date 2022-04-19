@@ -25,7 +25,7 @@ export function safeDispatchAddLayer(
   layer: LayerType,
   dispatcher: Function,
 ) {
-  if (!isLayerOnView(_map, layer.id)) {
+  if (!isLayerOnView(_map, layer.id) || layer.type === 'boundary') {
     dispatcher(addLayer(layer));
   }
 }

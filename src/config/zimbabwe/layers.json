@@ -4,14 +4,8 @@
     "path": "../data/zimbabwe/zim_admin2_boundaries_v2.json",
     "opacity": 0.8,
     "admin_code": "distrpc",
-    "admin_level_names": [
-      "PROVNAMEFU",
-      "DIST_NAME_"
-    ],
-    "admin_level_local_names": [
-      "PROVNAMEFU",
-      "DIST_NAME_"
-    ],
+    "admin_level_names": ["PROVNAMEFU", "DIST_NAME_"],
+    "admin_level_local_names": ["PROVNAMEFU", "DIST_NAME_"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -28,12 +22,8 @@
     "path": "../data/zimbabwe/zwe_polbnda_adm1_250k_cso.json",
     "opacity": 0.8,
     "admin_code": "PROV_CODE",
-    "admin_level_names": [
-      "PROVINCE"
-    ],
-    "admin_level_local_names": [
-      "PROVINCE"
-    ],
+    "admin_level_names": ["PROVINCE"],
+    "admin_level_local_names": ["PROVINCE"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -1297,7 +1287,12 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
       {
         "label": "-1.00",

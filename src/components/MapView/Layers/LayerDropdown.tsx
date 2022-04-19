@@ -9,6 +9,7 @@ import React, { ReactElement } from 'react';
 import { menuList } from '../../NavBar/utils';
 import { LayerKey, LayerType } from '../../../config/types';
 import { useSafeTranslation } from '../../../i18n';
+import { getLayerGeometryIcon } from './layer-utils';
 
 function LayerDropdown({
   type,
@@ -29,7 +30,8 @@ function LayerDropdown({
       ...category,
       layers: category.layers.filter(layer =>
         layer.type === 'wms'
-          ? layer.type === type && !layer.geometry
+          ? layer.type === type &&
+            [undefined, 'polygon'].includes(layer.geometry)
           : layer.type === type,
       ),
     }))
@@ -57,7 +59,8 @@ function LayerDropdown({
             </ListSubheader>,
             ...category.layers.map(layer => (
               <MenuItem key={layer.id} value={layer.id}>
-                {layer.title ? t(layer.title) : ''}
+                {t(layer.title || '')}
+                {getLayerGeometryIcon(layer)}
               </MenuItem>
             )),
           ],

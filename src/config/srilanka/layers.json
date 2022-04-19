@@ -4,16 +4,8 @@
     "path": "../data/sri-lanka/lka_bnd_adm3.json",
     "opacity": 0.8,
     "admin_code": "dsd_c_1",
-    "admin_level_names": [
-      "province_n",
-      "district_n",
-      "dsd_n_1"
-    ],
-    "admin_level_local_names": [
-      "province_n",
-      "district_n",
-      "dsd_n_1"
-    ],
+    "admin_level_names": ["province_n", "district_n", "dsd_n_1"],
+    "admin_level_local_names": ["province_n", "district_n", "dsd_n_1"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -30,12 +22,8 @@
     "path": "../data/sri-lanka/lka_bnd_adm1.json",
     "opacity": 0.8,
     "admin_code": "province_c",
-    "admin_level_names": [
-      "province_n"
-    ],
-    "admin_level_local_names": [
-      "province_n"
-    ],
+    "admin_level_names": ["province_n"],
+    "admin_level_local_names": ["province_n"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -46,20 +34,14 @@
         "line-opacity": 0.8
       }
     }
-  }, 
+  },
   "admin2_boundaries": {
     "type": "boundary",
     "path": "../data/sri-lanka/lka_bnd_adm2.json",
     "opacity": 0.8,
     "admin_code": "district_n",
-    "admin_level_names": [
-      "province_n",
-      "district_n"
-    ],
-    "admin_level_local_names": [
-      "province_n",
-      "district_n"
-    ],
+    "admin_level_names": ["province_n", "district_n"],
+    "admin_level_local_names": ["province_n", "district_n"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -70,7 +52,7 @@
         "line-opacity": 0.8
       }
     }
-  },    
+  },
   "spi_1m": {
     "title": "SPI - 1-month",
     "type": "wms",
@@ -1322,8 +1304,13 @@
     "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
       {
         "label": "-1.00",

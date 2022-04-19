@@ -20,7 +20,6 @@
   "admin_boundaries": {
     "type": "boundary",
     "path": "../data/mozambique/moz_bnd_adm2_WFP.json",
-    "primary": true,
     "opacity": 0.8,
     "admin_code": "source_id",
     "admin_level_names": ["adm1_name", "adm2_name"],
@@ -42,7 +41,7 @@
     "server_layer_name": "rfh_dekad",
     "additional_query_params": {
       "styles": "rfh_350"
-    },  
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -351,13 +350,13 @@
     "server_layer_name": "r1h_dekad",
     "additional_query_params": {
       "styles": "rfh_800"
-    },  
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 1 month dekadal rainfall aggregations (mm)",
     "legend": [
-      {"value": "-0", "color": "#ffffff", "alpha": "0"},
+      { "value": "-0", "color": "#ffffff", "alpha": "0" },
       { "value": "50", "color": "#faf3d2" },
       { "value": "100", "color": "#dae3a1" },
       { "value": "150", "color": "#a0c787" },
@@ -377,13 +376,13 @@
     "server_layer_name": "r2h_dekad",
     "additional_query_params": {
       "styles": "rfh_800"
-    },  
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 2 month dekadal rainfall aggregations (mm)",
     "legend": [
-      {"value": "-0", "color": "#ffffff", "alpha": "0"},
+      { "value": "-0", "color": "#ffffff", "alpha": "0" },
       { "value": "50", "color": "#faf3d2" },
       { "value": "100", "color": "#dae3a1" },
       { "value": "150", "color": "#a0c787" },
@@ -403,13 +402,13 @@
     "server_layer_name": "r3h_dekad",
     "additional_query_params": {
       "styles": "rfh_800"
-    },  
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
     "legend": [
-      {"value": "-0", "color": "#ffffff", "alpha": "0"},
+      { "value": "-0", "color": "#ffffff", "alpha": "0" },
       { "value": "50", "color": "#faf3d2" },
       { "value": "100", "color": "#dae3a1" },
       { "value": "150", "color": "#a0c787" },
@@ -429,13 +428,13 @@
     "server_layer_name": "r6h_dekad",
     "additional_query_params": {
       "styles": "rfh_800"
-    },  
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 6 month dekadal rainfall aggregations",
     "legend": [
-      {"value": "-0", "color": "#ffffff", "alpha": "0"},
+      { "value": "-0", "color": "#ffffff", "alpha": "0" },
       { "value": "50", "color": "#faf3d2" },
       { "value": "100", "color": "#dae3a1" },
       { "value": "150", "color": "#a0c787" },
@@ -455,13 +454,13 @@
     "server_layer_name": "r9h_dekad",
     "additional_query_params": {
       "styles": "rfh_800"
-    },  
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 9 month dekadal rainfall aggregations",
     "legend": [
-      {"value": "-0", "color": "#ffffff", "alpha": "0"},
+      { "value": "-0", "color": "#ffffff", "alpha": "0" },
       { "value": "50", "color": "#faf3d2" },
       { "value": "100", "color": "#dae3a1" },
       { "value": "150", "color": "#a0c787" },
@@ -481,24 +480,24 @@
     "server_layer_name": "ryh_dekad",
     "additional_query_params": {
       "styles": "rfh_1500"
-    },  
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 1 year dekadal rainfall aggregations",
     "legend": [
-      {"value": -0, "color": "#ffffff", "alpha": 0},
-      {"value": 50, "color": "#faf3d2"},
-      {"value": 100, "color": "#dae3a1"},
-      {"value": 200, "color": "#a0c787"},
-      {"value": 300, "color": "#68ab79"},
-      {"value": 400, "color": "#9beafa"},
-      {"value": 500, "color": "#00b1de"},
-      {"value": 600, "color": "#005ae6"},
-      {"value": 800, "color": "#0000c8"},
-      {"value": 1000, "color": "#a000fa"},
-      {"value": 1500, "color": "#fa78fa"},
-      {"value": 2000, "color": "#ffc4ee"}
+      { "value": -0, "color": "#ffffff", "alpha": 0 },
+      { "value": 50, "color": "#faf3d2" },
+      { "value": 100, "color": "#dae3a1" },
+      { "value": 200, "color": "#a0c787" },
+      { "value": 300, "color": "#68ab79" },
+      { "value": 400, "color": "#9beafa" },
+      { "value": 500, "color": "#00b1de" },
+      { "value": 600, "color": "#005ae6" },
+      { "value": 800, "color": "#0000c8" },
+      { "value": 1000, "color": "#a000fa" },
+      { "value": 1500, "color": "#fa78fa" },
+      { "value": 2000, "color": "#ffc4ee" }
     ]
   },
   "days_dry": {
@@ -634,18 +633,50 @@
     "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
-      { "value": "-1.00", "color": "#a50026" },
-      { "value": "-0.75", "color": "#de3f2e" },
-      { "value": "-0.50", "color": "#f88d52" },
-      { "value": "-0.25", "color": "#fed380" },
-      { "value": "0.00", "color": "#ffffbf" },
-      { "value": "0.25", "color": "#ccea83" },
-      { "value": "0.50", "color": "#86cb66" },
-      { "value": "0.75", "color": "#2da155" },
-      { "value": "1.00", "color": "#006837" }
+      {
+        "label": "-1.00",
+        "color": "#a50026"
+      },
+      {
+        "label": "-0.75",
+        "color": "#de3f2e"
+      },
+      {
+        "label": "-0.50",
+        "color": "#f88d52"
+      },
+      {
+        "label": "-0.25",
+        "color": "#fed380"
+      },
+      {
+        "label": "0.00",
+        "color": "#ffffbf"
+      },
+      {
+        "label": "0.25",
+        "color": "#ccea83"
+      },
+      {
+        "label": "0.50",
+        "color": "#86cb66"
+      },
+      {
+        "label": "0.75",
+        "color": "#2da155"
+      },
+      {
+        "label": "1.00",
+        "color": "#006837"
+      }
     ]
   },
   "ndvi_dekad_1": {
@@ -654,18 +685,50 @@
     "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
-      { "value": "-1.00", "color": "#a50026" },
-      { "value": "-0.75", "color": "#de3f2e" },
-      { "value": "-0.50", "color": "#f88d52" },
-      { "value": "-0.25", "color": "#fed380" },
-      { "value": "0.00", "color": "#ffffbf" },
-      { "value": "0.25", "color": "#ccea83" },
-      { "value": "0.50", "color": "#86cb66" },
-      { "value": "0.75", "color": "#2da155" },
-      { "value": "1.00", "color": "#006837" }
+      {
+        "label": "-1.00",
+        "color": "#a50026"
+      },
+      {
+        "label": "-0.75",
+        "color": "#de3f2e"
+      },
+      {
+        "label": "-0.50",
+        "color": "#f88d52"
+      },
+      {
+        "label": "-0.25",
+        "color": "#fed380"
+      },
+      {
+        "label": "0.00",
+        "color": "#ffffbf"
+      },
+      {
+        "label": "0.25",
+        "color": "#ccea83"
+      },
+      {
+        "label": "0.50",
+        "color": "#86cb66"
+      },
+      {
+        "label": "0.75",
+        "color": "#2da155"
+      },
+      {
+        "label": "1.00",
+        "color": "#006837"
+      }
     ]
   },
   "ndvi_dekad_anomaly_5": {
@@ -713,7 +776,7 @@
       { "value": 150, "color": "#008f00" },
       { "value": 200, "color": "#004d00" }
     ]
-  },  
+  },
   "lst_amplitude": {
     "title": "Land Surface Temperature - 10-day Amplitude (MODIS)",
     "type": "wms",
@@ -918,7 +981,7 @@
       { "value": 300.0, "color": "#f9cb35" },
       { "value": 500.0, "color": "#fcffa4" }
     ]
-  }, 
+  },
   "lst_day_anomaly_blended": {
     "title": "INAM blended temperature anomaly (10-day)",
     "type": "wms",
@@ -938,41 +1001,41 @@
       { "value": 300.0, "color": "#f9cb35" },
       { "value": 500.0, "color": "#fcffa4" }
     ]
-  }, 
+  },
   "precip_blended_dekad": {
     "title": "INAM blended rainfall estimates (10-day)",
     "type": "wms",
     "server_layer_name": "rfb_blended_dekad",
     "additional_query_params": {
       "styles": "rfb_350"
-    },  
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Local station data from INAM blended with CHIRP rainfall estimates",
     "legend": [
-        { "value": "-0", "color": "#ffffff", "alpha": 0 },
-        { "value": "1", "color": "#ffffff" },
-        { "value": "20", "color": "#faf5e6" },
-        { "value": "40", "color": "#faf3d2" },
-        { "value": "60", "color": "#dae3a1" },
-        { "value": "80", "color": "#a0c787" },
-        { "value": "100", "color": "#68ab79" },
-        { "value": "125", "color": "#9beafa" },
-        { "value": "150", "color": "#00b1de" },
-        { "value": "200", "color": "#005ae6" },
-        { "value": "250", "color": "#0000c8" },
-        { "value": "300", "color": "#a000fa" },
-        { "value": "350", "color": "#fa78fa" }
+      { "value": "-0", "color": "#ffffff", "alpha": 0 },
+      { "value": "1", "color": "#ffffff" },
+      { "value": "20", "color": "#faf5e6" },
+      { "value": "40", "color": "#faf3d2" },
+      { "value": "60", "color": "#dae3a1" },
+      { "value": "80", "color": "#a0c787" },
+      { "value": "100", "color": "#68ab79" },
+      { "value": "125", "color": "#9beafa" },
+      { "value": "150", "color": "#00b1de" },
+      { "value": "200", "color": "#005ae6" },
+      { "value": "250", "color": "#0000c8" },
+      { "value": "300", "color": "#a000fa" },
+      { "value": "350", "color": "#fa78fa" }
     ]
-  }, 
+  },
   "precip_blended_dekad_anomaly": {
     "title": "INAM blended rainfall anomaly (10-day)",
     "type": "wms",
     "server_layer_name": "rfq_blended_dekad",
     "additional_query_params": {
       "styles": "rfq"
-    },  
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -988,7 +1051,7 @@
       { "value": "180%", "color": "#45c1fc" },
       { "value": "> 180%", "color": "#0fb0fb" }
     ]
-  }, 
+  },
   "precip_blended_dekad_agg": {
     "title": "INAM blended monthly aggregate rainfall",
     "type": "wms",
@@ -1013,7 +1076,7 @@
       { "value": "800", "color": "#fa78fa" },
       { "value": "> 800", "color": "#ffc4ee" }
     ]
-  }, 
+  },
   "spi_1m": {
     "title": "SPI - 1-month",
     "type": "wms",
@@ -1313,7 +1376,7 @@
         "color": "#ad03e6"
       }
     ]
-  },  
+  },
   "adamts_buffers": {
     "title": "Tropical Storms - Wind buffers",
     "type": "wms",
@@ -1356,7 +1419,7 @@
     "opacity": 0,
     "legend_text": "",
     "legend": []
-  }, 
+  },
   "adamts_nodes": {
     "title": "Tropical Storms - Nodes",
     "type": "wms",
@@ -1482,19 +1545,19 @@
       },
       {
         "value": "2 - Stressed",
-        "color": "#FAE61E" 
+        "color": "#FAE61E"
       },
       {
         "value": "3 - Crisis",
-        "color": "#E67800" 
+        "color": "#E67800"
       },
       {
         "value": "4 - Emergency",
-        "color": "#C80000" 
+        "color": "#C80000"
       },
       {
         "value": "5 - Famine",
-        "color": "#640000" 
+        "color": "#640000"
       }
     ],
     "legend_text": "Source: National IPC Technical Working Group"
@@ -1666,7 +1729,7 @@
       }
     ],
     "legend_text": "Percernt of population currently in IPC phase 3 or higher - November 2021 – March 2022. Source: National IPC Technical Working Group"
-  },  
+  },
   "mpi": {
     "title": "Multidimensional Poverty Index",
     "type": "admin_level_data",
@@ -1701,21 +1764,21 @@
       },
       {
         "value": "0.31 - 0.4",
-        "color": "#fcae91" 
+        "color": "#fcae91"
       },
       {
         "value": "0.41 - 0.5",
-        "color": "#fb6a4a" 
+        "color": "#fb6a4a"
       },
       {
         "value": "0.51 - 0.6",
-        "color": "#de2d26" 
+        "color": "#de2d26"
       },
       {
         "value": "0.61 or more",
-        "color": "#a50f15" 
+        "color": "#a50f15"
       }
     ],
     "legend_text": "Multidimensional Poverty Index. Source: Alkire, S., Kanagaratnam, U. and Suppa, N. (2020). ‘The Global Multidimensional Poverty Index (MPI) 2020’, OPHI MPI"
-  }    
+  }
 }

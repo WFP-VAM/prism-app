@@ -171,7 +171,7 @@ def calculate_stats(
     zones,
     geotiff,
     group_by=None,
-    stats=DEFAULT_STATS,
+    stats=None,
     prefix='stats_',
     geojson_out=False,
     wfs_response=None,
@@ -210,6 +210,8 @@ def calculate_stats(
             'intersect_percentage': intersect_percentage,
         }
 
+    if stats is None:
+        stats = DEFAULT_STATS
     try:
         stats_results = zonal_stats(
             stats_input,
@@ -220,8 +222,8 @@ def calculate_stats(
             add_stats=add_stats,
         )
 
-    except rasterio.errors.RasterioError as e:
-        logger.error(e)
+    except rasterio.errors.RasterioError as error:
+        logger.error(error)
         raise InternalServerError('An error occured calculating statistics.')
 
     if wfs_response:
