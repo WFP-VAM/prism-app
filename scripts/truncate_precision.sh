@@ -10,3 +10,6 @@ for file in $rootdir/public/data/*/*.json; do
   echo "updating $file"
   sed -i.bak -E 's/([0-9]+\.[0-9]{9})([0-9]+)/\1/g' $file;
 done
+
+# delete all backup files
+rm -f $rootdir/public/data/*/*.json.bak
