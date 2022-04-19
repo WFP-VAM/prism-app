@@ -48,6 +48,10 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
     const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
     const { checked } = event.target;
 
+    // clear previous table dataset loaded first
+    // to close the dataseries and thus close chart
+    dispatch(clearDataset());
+
     const urlLayerKey =
       layer.type === ADMIN_LEVEL_DATA_LAYER_KEY
         ? 'baselineLayerId'
@@ -63,10 +67,6 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
     } else {
       removeKeyFromUrl(urlLayerKey);
       dispatch(removeLayer(layer));
-
-      // clear previous table dataset loaded first
-      // to close the dataseries and thus close chart
-      dispatch(clearDataset());
 
       // For admin boundary layers with boundary property
       // we have to de-activate the unique boundary and re-activate
