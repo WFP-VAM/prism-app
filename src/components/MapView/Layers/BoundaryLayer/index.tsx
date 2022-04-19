@@ -74,13 +74,13 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
     const { serverLayerName, title } = selectedLayerWMS;
 
     if (
-      !layer.dataset ||
-      layer.dataset.layers.includes(serverLayerName) === false
+      !layer.chartData ||
+      layer.chartData.layers.includes(serverLayerName) === false
     ) {
       return;
     }
 
-    const { levels, url } = layer.dataset;
+    const { levels, url } = layer.chartData;
 
     const lowestLevelId = levels[levels.length - 1].id;
 

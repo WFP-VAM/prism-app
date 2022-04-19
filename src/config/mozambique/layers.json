@@ -34,7 +34,7 @@
         "line-opacity": 0.8
       }
     },
-    "dataset": {
+    "chart_data": {
       "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
       "levels": [
         {

@@ -289,7 +289,7 @@ export class BoundaryLayerProps extends CommonLayerProps {
   isPrimary?: boolean | undefined;
 
   @optional
-  dataset?: DatasetProps;
+  chartData?: DatasetProps;
 }
 
 export enum LabelType {
