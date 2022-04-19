@@ -17,6 +17,8 @@ declare module '*.css' {
 }
 
 declare module '*.png';
+declare module 'comlink';
 declare module 'geotiff';
+declare module 'zonal';
 
 declare module 'redux-async-initial-state';
