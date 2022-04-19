@@ -37,6 +37,7 @@ export type AdminBoundaryParams = {
   boundaryProps: BoundaryPropsDict;
   serverParams: ServerParams;
   title: string;
+  id: string;
 };
 
 export type DatasetParams = {
@@ -44,6 +45,7 @@ export type DatasetParams = {
   boundaryProps: BoundaryPropsDict;
   url: string;
   serverLayerName: string;
+  selectedDate: number;
 };
 
 type DataItem = {
@@ -84,7 +86,7 @@ export const loadDataset = createAsyncThunk<
   DatasetParams,
   CreateAsyncThunkTypes
 >('datasetState/loadDataset', async (params: DatasetParams) => {
-  const endDate = moment();
+  const endDate = moment(params.selectedDate);
   const startDate = endDate.clone().subtract(1, 'year');
 
   const years = [endDate.year(), startDate.year()];
@@ -147,6 +149,14 @@ export const datasetResultStateSlice = createSlice({
       title: payload.title,
       serverParams: payload.serverParams,
       boundaryProps: payload.boundaryProps,
+      id: payload.id,
+    }),
+    updateAdminId: (
+      state,
+      { payload }: PayloadAction<string>,
+    ): DatasetState => ({
+      ...state,
+      id: payload,
     }),
   },
   extraReducers: builder => {
@@ -170,7 +180,7 @@ export const datasetResultStateSlice = createSlice({
   },
 });
 
-export const DatasetSelector = (state: RootState): DatasetState =>
+export const datasetSelector = (state: RootState): DatasetState =>
   state.datasetState;
 export const loadingDatasetSelector = (state: RootState): boolean =>
   state.datasetState.isLoading;
@@ -179,6 +189,7 @@ export const loadingDatasetSelector = (state: RootState): boolean =>
 export const {
   clearDataset,
   setBoundaryParams,
+  updateAdminId,
 } = datasetResultStateSlice.actions;
 
 export default datasetResultStateSlice.reducer;

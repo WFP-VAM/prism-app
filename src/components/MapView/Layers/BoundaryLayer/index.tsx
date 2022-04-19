@@ -6,8 +6,6 @@ import { showPopup, hidePopup } from '../../../../context/tooltipStateSlice';
 import { BoundaryLayerProps, WMSLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import {
-  loadDataset,
-  DatasetParams,
   setBoundaryParams,
   AdminBoundaryParams,
 } from '../../../../context/datasetStateSlice';
@@ -102,18 +100,10 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       title,
       boundaryProps,
       serverParams: { layerName: serverLayerName, url },
+      id: lowestLevelId,
     };
 
     dispatch(setBoundaryParams(adminBoundaryParams));
-
-    const datasetParams: DatasetParams = {
-      id: lowestLevelId,
-      boundaryProps,
-      url,
-      serverLayerName,
-    };
-
-    dispatch(loadDataset(datasetParams));
   };
 
   // Only use mouse effects and click effects on the main layer.

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createStyles,
@@ -13,22 +13,39 @@ import {
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import {
-  DatasetSelector,
+  datasetSelector,
   loadingDatasetSelector,
   clearDataset,
   loadDataset,
   DatasetParams,
+  updateAdminId,
 } from '../../context/datasetStateSlice';
+import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
 import Chart from '../DataDrawer/Chart';
 import { ChartConfig } from '../../config/types';
 
 function DataViewer({ classes }: DatasetProps) {
   const dispatch = useDispatch();
   const isDatasetLoading = useSelector(loadingDatasetSelector);
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const { data: dataset, boundaryProps, id, serverParams, title } = useSelector(
-    DatasetSelector,
+    datasetSelector,
   );
+
+  useEffect(() => {
+    if (boundaryProps && serverParams && id && selectedDate) {
+      const datasetParams: DatasetParams = {
+        id,
+        boundaryProps,
+        url: serverParams.url,
+        serverLayerName: serverParams.layerName,
+        selectedDate,
+      };
+
+      dispatch(loadDataset(datasetParams));
+    }
+  }, [id, boundaryProps, dispatch, serverParams, selectedDate]);
 
   if (!boundaryProps || !dataset || !serverParams || !title || !id) {
     return null;
@@ -41,23 +58,12 @@ function DataViewer({ classes }: DatasetProps) {
     category: id,
   };
 
-  const updateChart = (adminId: string) => {
-    const datasetParams: DatasetParams = {
-      id: adminId,
-      boundaryProps,
-      url: serverParams.url,
-      serverLayerName: serverParams.layerName,
-    };
-
-    dispatch(loadDataset(datasetParams));
-  };
-
   const boundaryButtons = Object.entries(boundaryProps).map(
     ([adminId, level]) => (
       <Button
         id={adminId}
         className={classes.adminButton}
-        onClick={() => updateChart(adminId)}
+        onClick={() => dispatch(updateAdminId(adminId))}
         size="small"
         color="primary"
         variant={id === adminId ? 'contained' : 'text'}
