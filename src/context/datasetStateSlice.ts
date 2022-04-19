@@ -66,8 +66,7 @@ const getDatasetFromUrl = async (
   const serverUrl = `${url}/${urlPath}/${year}.json`;
 
   const resp = await fetch(serverUrl);
-  const temporaryFix = await resp.text();
-  const results = JSON.parse(temporaryFix.replaceAll('NaN', 'null'));
+  const results = await resp.json();
 
   const filteredRows = results.DataList.filter(
     (item: any) => item[id] === adminCode,
