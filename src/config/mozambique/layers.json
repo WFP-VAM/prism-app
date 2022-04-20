@@ -36,8 +36,7 @@
     },
     "chart_data": {
       "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
-      "levels": [
-        {
+      "levels": [{
           "path": "level1",
           "id": "adm1_id",
           "name": "adm1_name"
@@ -48,7 +47,22 @@
           "name": "adm2_name"
         }
       ],
-      "layers": ["rfq_dekad", "mxd13a2_vim_dekad", "mxd13a2_viq_dekad", "rfh_dekad", "r1s_dekad"]
+      "layers": [{
+        "name": "rfq_dekad",
+        "type": "bar"
+      }, {
+        "name": "mxd13a2_vim_dekad",
+        "type": "line"
+      }, {
+        "name": "mxd13a2_viq_dekad",
+        "type": "line"
+      }, {
+        "name": "rfh_dekad",
+        "type": "bar"
+      }, {
+        "name": "r1s_dekad",
+        "type": "line"
+      }]
     }
   },
   "rainfall_dekad": {

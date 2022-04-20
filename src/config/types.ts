@@ -271,10 +271,20 @@ type DatasetLevel = {
   name: string;
 };
 
+export enum ChartType {
+  Bar = 'bar',
+  Line = 'line',
+}
+
+type LayerChartType = {
+  name: string;
+  type: ChartType;
+};
+
 type DatasetProps = {
   url: string;
   levels: DatasetLevel[];
-  layers: string[];
+  layers: LayerChartType[];
 };
 
 export class BoundaryLayerProps extends CommonLayerProps {

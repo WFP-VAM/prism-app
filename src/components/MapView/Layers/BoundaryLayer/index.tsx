@@ -73,14 +73,20 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
     const { serverLayerName, title } = selectedLayerWMS;
 
-    if (
-      !layer.chartData ||
-      layer.chartData.layers.includes(serverLayerName) === false
-    ) {
+    if (!layer.chartData) {
+      return;
+    }
+
+    const layerChartData = layer.chartData.layers.find(
+      l => l.name === serverLayerName,
+    );
+
+    if (!layerChartData) {
       return;
     }
 
     const { levels, url } = layer.chartData;
+    const { name, type: chartType } = layerChartData;
 
     const lowestLevelId = levels[levels.length - 1].id;
 
@@ -99,8 +105,9 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
     const adminBoundaryParams: AdminBoundaryParams = {
       title,
       boundaryProps,
-      serverParams: { layerName: serverLayerName, url },
+      serverParams: { layerName: name, url },
       id: lowestLevelId,
+      chartType,
     };
 
     dispatch(setBoundaryParams(adminBoundaryParams));

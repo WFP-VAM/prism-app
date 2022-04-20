@@ -29,9 +29,14 @@ function DataViewer({ classes }: DatasetProps) {
   const isDatasetLoading = useSelector(loadingDatasetSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
-  const { data: dataset, boundaryProps, id, serverParams, title } = useSelector(
-    datasetSelector,
-  );
+  const {
+    data: dataset,
+    boundaryProps,
+    id,
+    serverParams,
+    title,
+    chartType,
+  } = useSelector(datasetSelector);
 
   useEffect(() => {
     if (boundaryProps && serverParams && id && selectedDate) {
@@ -47,12 +52,19 @@ function DataViewer({ classes }: DatasetProps) {
     }
   }, [id, boundaryProps, dispatch, serverParams, selectedDate]);
 
-  if (!boundaryProps || !dataset || !serverParams || !title || !id) {
+  if (
+    !boundaryProps ||
+    !dataset ||
+    !serverParams ||
+    !title ||
+    !id ||
+    !chartType
+  ) {
     return null;
   }
 
   const config: ChartConfig = {
-    type: 'line',
+    type: chartType,
     stacked: false,
     fill: false,
     category: id,

@@ -3,6 +3,7 @@ import { orderBy } from 'lodash';
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
+import { ChartType } from '../config/types';
 
 type BoundaryPropsDict = { [key: string]: BoundaryProps };
 
@@ -18,6 +19,7 @@ type DatasetState = {
   boundaryProps?: BoundaryPropsDict;
   id?: string;
   serverParams?: ServerParams;
+  chartType?: ChartType;
 };
 
 const initialState: DatasetState = { isLoading: false };
@@ -38,6 +40,7 @@ export type AdminBoundaryParams = {
   serverParams: ServerParams;
   title: string;
   id: string;
+  chartType: ChartType;
 };
 
 export type DatasetParams = {
@@ -149,6 +152,7 @@ export const datasetResultStateSlice = createSlice({
       serverParams: payload.serverParams,
       boundaryProps: payload.boundaryProps,
       id: payload.id,
+      chartType: payload.chartType,
     }),
     updateAdminId: (
       state,
