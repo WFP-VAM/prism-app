@@ -49,7 +49,7 @@
       ],
       "layers": [{
         "name": "rfq_dekad",
-        "type": "bar"
+        "type": "line"
       }, {
         "name": "mxd13a2_vim_dekad",
         "type": "line"
