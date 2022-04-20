@@ -44,9 +44,9 @@ app = FastAPI(
 
 alert_db = AlertsDataBase()
 
-for code in [400, 401, 403, 404, 405, 500]:
-    app.register_error_handler(code, make_json_error)
-app.register_error_handler(Exception, handle_error)
+# for code in [400, 401, 403, 404, 405, 500]:
+#     app.register_error_handler(code, make_json_error)
+# app.register_error_handler(Exception, handle_error)
 
 
 @timed
