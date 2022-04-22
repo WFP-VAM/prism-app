@@ -89,7 +89,7 @@ exports[`renders as expected 1`] = `
                   </mock-typography>
                   <hr />
                   <div
-                    class="MuiBox-root MuiBox-root-4"
+                    class="MuiBox-root MuiBox-root-5"
                   >
                     <mock-switch
                       checked="false"
@@ -99,7 +99,7 @@ exports[`renders as expected 1`] = `
                     />
                      
                     <mock-typography
-                      variant="body1"
+                      classname="MenuSwitch-title-4"
                     >
                       layer
                     </mock-typography>

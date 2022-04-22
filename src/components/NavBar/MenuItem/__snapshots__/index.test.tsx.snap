@@ -34,7 +34,7 @@ exports[`renders as expected 1`] = `
       </mock-typography>
       <hr />
       <div
-        class="MuiBox-root MuiBox-root-7"
+        class="MuiBox-root MuiBox-root-8"
       >
         <mock-switch
           checked="false"
@@ -44,7 +44,7 @@ exports[`renders as expected 1`] = `
         />
          
         <mock-typography
-          variant="body1"
+          classname="MenuSwitch-title-7"
         >
           layer
         </mock-typography>

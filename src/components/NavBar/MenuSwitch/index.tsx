@@ -33,6 +33,7 @@ import {
 } from '../../../utils/map-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
+import MenuGroup from './MenuGroup';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const { t } = useSafeTranslation();
@@ -41,11 +42,8 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const dispatch = useDispatch();
   const { updateHistory, removeKeyFromUrl } = useUrlHistory();
 
-  const toggleLayerValue = (layer: LayerType) => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const toggleLayerValue = (layer: LayerType, checked: boolean) => {
     const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
-    const { checked } = event.target;
 
     const urlLayerKey =
       layer.type === ADMIN_LEVEL_DATA_LAYER_KEY
@@ -120,18 +118,33 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
 
         const validatedTitle = t(LayerGroup?.name || layerTitle || '');
 
+        const menuTitle =
+          layer.layerMenuGroup && selected ? (
+            <>
+              <Typography className={classes.title}>
+                {validatedTitle}
+              </Typography>
+              <MenuGroup
+                menuGroup={layer.layerMenuGroup}
+                toggleLayerValue={toggleLayerValue}
+              />
+            </>
+          ) : (
+            <Typography className={classes.title}>{validatedTitle}</Typography>
+          );
+
         return (
           <Box key={layerId} display="flex" mb={1}>
             <Switch
               size="small"
               color="default"
               checked={selected}
-              onChange={toggleLayerValue(layer)}
+              onChange={e => toggleLayerValue(layer, e.target.checked)}
               inputProps={{
                 'aria-label': validatedTitle,
               }}
             />{' '}
-            <Typography variant="body1">{validatedTitle}</Typography>
+            {menuTitle}
           </Box>
         );
       })}
@@ -157,10 +170,12 @@ const styles = () =>
         marginBottom: 0,
       },
     },
-
     categoryTitle: {
       fontWeight: 'bold',
       textAlign: 'left',
+    },
+    title: {
+      lineHeight: 1.8,
     },
   });
 

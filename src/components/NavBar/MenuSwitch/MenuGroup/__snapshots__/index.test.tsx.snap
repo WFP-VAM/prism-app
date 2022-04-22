@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="MuiInputBase-root MuiInput-root MuiInput-underline MenuGroup-select-1"
+  >
+    <div
+      aria-haspopup="listbox"
+      class="MuiSelect-root MenuGroup-selectItem-2 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+      role="button"
+      tabindex="0"
+    >
+      label
+    </div>
+    <input
+      aria-hidden="true"
+      class="MuiSelect-nativeInput"
+      tabindex="-1"
+      value="id"
+    />
+    <svg
+      aria-hidden="true"
+      class="MuiSvgIcon-root MuiSelect-icon"
+      focusable="false"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M7 10l5 5 5-5z"
+      />
+    </svg>
+    <mock-menu
+      anchorel="[object HTMLDivElement]"
+      id="menu-"
+      menulistprops="[object Object]"
+      open="false"
+      paperprops="[object Object]"
+    >
+      <mock-menuitem
+        aria-selected="true"
+        data-value="id"
+        role="option"
+        selected="true"
+      >
+        label
+      </mock-menuitem>
+    </mock-menu>
+  </div>
+</div>
+`;
