@@ -27,7 +27,6 @@ export type MenuGroupItem = {
 
 export type MenuGroup = {
   title: string;
-  optionTitle: string;
   layers: MenuGroupItem[];
 };
 
@@ -276,10 +275,7 @@ export class CommonLayerProps {
   featureInfoProps?: { [key: string]: FeatureInfoProps };
 
   @optional
-  menuGroup?: MenuGroupItem[];
-
-  @optional
-  menuGroupTitle?: string;
+  menuGroup?: MenuGroup;
 }
 
 /*

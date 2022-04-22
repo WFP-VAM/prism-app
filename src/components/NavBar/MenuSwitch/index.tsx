@@ -112,12 +112,12 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
         const selected = selectedLayers.some(({ id: testId }) => {
           return (
             testId === layerId ||
-            (menuGroup && menuGroup.some(menu => menu.id === testId))
+            (menuGroup && menuGroup.layers.some(menu => menu.id === testId))
           );
         });
 
         const validatedTitle = t(
-          LayerGroup?.name || layer.menuGroupTitle || layerTitle || '',
+          LayerGroup?.name || layer.menuGroup?.title || layerTitle || '',
         );
 
         const menuTitle =

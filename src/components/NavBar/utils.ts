@@ -29,13 +29,11 @@ function formatLayersCategories(layersList: {
       title: startCase(layersListKey),
       layers: layerKeys.filter(isLayerKey).map(key => {
         if (typeof key === 'object') {
-          const { title, layers } = key as MenuGroup;
+          const { layers } = key as MenuGroup;
           // use first layer in group as default
           const layer = LayerDefinitions[layers[0].id as LayerKey];
           // eslint-disable-next-line fp/no-mutation
-          layer.menuGroup = layers;
-          // eslint-disable-next-line fp/no-mutation
-          layer.menuGroupTitle = title;
+          layer.menuGroup = key;
           return layer;
         }
         return LayerDefinitions[key as LayerKey];

@@ -31,7 +31,7 @@ function LayerDropdown({
       if (layerCategory.layers.some(f => f.menuGroup)) {
         const layers = layerCategory.layers.map(layer => {
           if (layer.menuGroup) {
-            return layer.menuGroup.map(layerKey => {
+            return layer.menuGroup.layers.map(layerKey => {
               return LayerDefinitions[layerKey.id as LayerKey];
             });
           }

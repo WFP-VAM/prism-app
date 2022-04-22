@@ -7,14 +7,14 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { LayerKey, LayerType, MenuGroupItem } from '../../../../config/types';
+import { LayerKey, LayerType, MenuGroup } from '../../../../config/types';
 import { LayerDefinitions } from '../../../../config/utils';
 import { layersSelector } from '../../../../context/mapStateSlice/selectors';
 
 function GroupItem({ classes, menuGroup, toggleLayerValue }: MenuGroupProps) {
   const selectedLayers = useSelector(layersSelector);
   const selected = selectedLayers.filter(layer => {
-    return menuGroup.map(menu => menu.id).includes(layer.id);
+    return menuGroup.layers.map(menu => menu.id).includes(layer.id);
   });
   const [activeLayer, setActiveLayer] = useState(selected[0]?.id as string);
 
@@ -34,7 +34,7 @@ function GroupItem({ classes, menuGroup, toggleLayerValue }: MenuGroupProps) {
       value={activeLayer}
       onChange={e => handleChange(e)}
     >
-      {menuGroup.map(menu => (
+      {menuGroup.layers.map(menu => (
         <MenuItem key={menu.id} value={menu.id}>
           {menu.label}
         </MenuItem>
@@ -60,7 +60,7 @@ const styles = () =>
   });
 
 export interface MenuGroupProps extends WithStyles<typeof styles> {
-  menuGroup: MenuGroupItem[];
+  menuGroup: MenuGroup;
   toggleLayerValue: (layer: LayerType, checked: boolean) => void;
 }
 
