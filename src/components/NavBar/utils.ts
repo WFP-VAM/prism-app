@@ -1,4 +1,4 @@
-import { filter, flattenDeep, get, map, startCase, values } from 'lodash';
+import { get, map, startCase } from 'lodash';
 
 import { appConfig } from '../../config';
 import {
@@ -75,17 +75,5 @@ export const menuList: MenuItemsType = map(
       icon: get(appConfig, `icons.${categoryKey}`, 'icon_vulnerable.png'),
       layersCategories: formatLayersCategories(layersCategories),
     };
-  },
-);
-
-export const menuGroup: MenuGroupType = map(
-  filter(
-    flattenDeep(
-      map(appConfig.categories, layersCategories => values(layersCategories)),
-    ),
-    layer => typeof layer === 'object',
-  ),
-  layerGroup => {
-    return layerGroup || { title: '', optionTitle: '', layers: [] };
   },
 );

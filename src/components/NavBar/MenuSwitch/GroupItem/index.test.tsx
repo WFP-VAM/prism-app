@@ -4,10 +4,13 @@ import { render } from '@testing-library/react';
 
 import GroupItem from '.';
 import { store } from '../../../../context/store';
-import { MenuGroupItem } from '../../../../config/types';
+import { MenuGroup, MenuGroupItem } from '../../../../config/types';
 
 const props = {
-  menuGroup: [{ id: 'id', label: 'label' }] as MenuGroupItem[],
+  menuGroup: {
+    title: 'title',
+    layers: [{ id: 'id', label: 'label' }] as MenuGroupItem[],
+  } as MenuGroup,
   toggleLayerValue: () => {},
 };
 
