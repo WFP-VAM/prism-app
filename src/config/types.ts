@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { FillPaint, LinePaint } from 'mapbox-gl';
 import { map, every } from 'lodash';
+import { GeoJSON } from 'geojson';
 import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
@@ -182,6 +183,54 @@ export enum GeometryType {
   Polygon = 'polygon',
 }
 
+export enum RasterType {
+  Raster = 'raster',
+}
+
+export type HazardDataType = GeometryType | RasterType;
+
+// not including standard deviation and sum quite yet
+// because we won't be able to re-use the WMS legend
+export enum DisplayZonalStats {
+  Max = 'Max',
+  Mean = 'Mean',
+  Median = 'Median',
+  Min = 'Min',
+}
+
+export type ZonalConfig = {
+  // we're keeping snakecase here because that is what zonal uses
+  // eslint-disable-next-line camelcase
+  class_properties?: string[];
+};
+
+/* eslint-disable camelcase */
+export type ZonalOptions = {
+  zones: GeoJSON;
+  zone_properties?: string[];
+  classes: GeoJSON;
+  class_properties?: string[];
+  preserve_features?: boolean;
+  class_properties_delimiter?: string;
+  dissolve_classes?: boolean;
+  remove_features_with_no_overlap?: boolean;
+  include_null_class_rows?: boolean;
+  on_after_each_zone_feature?: Function;
+};
+/* eslint-enable camelcase */
+
+// this is the row object found in the table.rows array
+// of the result object returned by zonal.calculate
+export type ZonalPolygonRow = {
+  'stat:area': number;
+  'stat:percentage': number;
+  // additional dynamic properties
+  // like zone:name or class:wind_speed
+  [key: string]: number | string | null;
+};
+
+export type AdminLevelType = 1 | 2 | 3 | 4 | 5;
+
 export interface ExposedPopulationDefinition {
   id: LayerKey;
 
@@ -288,6 +337,9 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional // If included, we infer the layer is a vector layer.
   geometry?: GeometryType;
+
+  @optional // If included, zonal statistics configuration, including which property to use for classes
+  zonal?: ZonalConfig;
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
@@ -329,6 +381,15 @@ export enum AggregationOperations {
   Min = 'min',
   Sum = 'sum',
 }
+
+export enum PolygonalAggregationOperations {
+  Area = 'area',
+  Percentage = 'percentage',
+}
+
+export type AllAggregationOperations =
+  | AggregationOperations
+  | PolygonalAggregationOperations;
 
 export type ThresholdDefinition = { below?: number; above?: number };
 
@@ -486,11 +547,6 @@ export interface RequestFeatureInfo extends FeatureInfoType {
   featureCount: number;
   format: string;
   styles: string;
-}
-
-export enum DownloadFormat {
-  CSV,
-  JSON,
 }
 
 type AdminLevelDisplayType = {
