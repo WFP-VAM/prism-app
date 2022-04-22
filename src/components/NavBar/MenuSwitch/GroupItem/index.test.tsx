@@ -1,8 +1,10 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-import { MenuGroupItem } from '../../../../config/types';
 
 import GroupItem from '.';
+import { store } from '../../../../context/store';
+import { MenuGroupItem } from '../../../../config/types';
 
 const props = {
   menuGroup: [{ id: 'id', label: 'label' }] as MenuGroupItem[],
@@ -10,6 +12,10 @@ const props = {
 };
 
 test('renders as expected', () => {
-  const { container } = render(<GroupItem {...props} />);
+  const { container } = render(
+    <Provider store={store}>
+      <GroupItem {...props} />
+    </Provider>,
+  );
   expect(container).toMatchSnapshot();
 });

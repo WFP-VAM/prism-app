@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   createStyles,
   MenuItem,
@@ -8,9 +9,14 @@ import {
 } from '@material-ui/core';
 import { LayerKey, LayerType, MenuGroupItem } from '../../../../config/types';
 import { LayerDefinitions } from '../../../../config/utils';
+import { layersSelector } from '../../../../context/mapStateSlice/selectors';
 
 function GroupItem({ classes, menuGroup, toggleLayerValue }: MenuGroupProps) {
-  const [activeLayer, setActiveLayer] = useState(menuGroup[0].id);
+  const selectedLayers = useSelector(layersSelector);
+  const selected = selectedLayers.filter(layer => {
+    return menuGroup.map(menu => menu.id).includes(layer.id);
+  });
+  const [activeLayer, setActiveLayer] = useState(selected[0]?.id as string);
 
   const handleChange = (
     event: React.ChangeEvent<{ value: string | unknown }>,

@@ -11,13 +11,15 @@ exports[`renders as expected 1`] = `
       role="button"
       tabindex="0"
     >
-      label
+      <span>
+        ​
+      </span>
     </div>
     <input
       aria-hidden="true"
       class="MuiSelect-nativeInput"
       tabindex="-1"
-      value="id"
+      value=""
     />
     <svg
       aria-hidden="true"
@@ -37,10 +39,9 @@ exports[`renders as expected 1`] = `
       paperprops="[object Object]"
     >
       <mock-menuitem
-        aria-selected="true"
         data-value="id"
         role="option"
-        selected="true"
+        selected="false"
       >
         label
       </mock-menuitem>
