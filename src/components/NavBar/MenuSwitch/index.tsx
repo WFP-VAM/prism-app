@@ -33,7 +33,7 @@ import {
 } from '../../../utils/map-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
-import MenuGroup from './MenuGroup';
+import GroupItem from './GroupItem';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const { t } = useSafeTranslation();
@@ -103,7 +103,7 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
           id: layerId,
           title: layerTitle,
           group: LayerGroup,
-          layerMenuGroup: menuGroup,
+          menuGroup,
         } = layer;
         if (LayerGroup && !LayerGroup.main) {
           return null;
@@ -116,16 +116,18 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
           );
         });
 
-        const validatedTitle = t(LayerGroup?.name || layerTitle || '');
+        const validatedTitle = t(
+          LayerGroup?.name || layer.menuGroupTitle || layerTitle || '',
+        );
 
         const menuTitle =
-          layer.layerMenuGroup && selected ? (
+          layer.menuGroup && selected ? (
             <>
               <Typography className={classes.title}>
                 {validatedTitle}
               </Typography>
-              <MenuGroup
-                menuGroup={layer.layerMenuGroup}
+              <GroupItem
+                menuGroup={layer.menuGroup}
                 toggleLayerValue={toggleLayerValue}
               />
             </>

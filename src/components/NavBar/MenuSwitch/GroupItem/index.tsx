@@ -6,14 +6,10 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import {
-  LayerKey,
-  LayerType,
-  LayerMenuGroupItem,
-} from '../../../../config/types';
+import { LayerKey, LayerType, MenuGroupItem } from '../../../../config/types';
 import { LayerDefinitions } from '../../../../config/utils';
 
-function MenuGroup({ classes, menuGroup, toggleLayerValue }: MenuGroupProps) {
+function GroupItem({ classes, menuGroup, toggleLayerValue }: MenuGroupProps) {
   const [activeLayer, setActiveLayer] = useState(menuGroup[0].id);
 
   const handleChange = (
@@ -58,8 +54,8 @@ const styles = () =>
   });
 
 export interface MenuGroupProps extends WithStyles<typeof styles> {
-  menuGroup: LayerMenuGroupItem[];
+  menuGroup: MenuGroupItem[];
   toggleLayerValue: (layer: LayerType, checked: boolean) => void;
 }
 
-export default withStyles(styles)(MenuGroup);
+export default withStyles(styles)(GroupItem);

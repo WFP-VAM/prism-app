@@ -27,10 +27,10 @@ function LayerDropdown({
     .flatMap(menu => menu.layersCategories)
     // 2. breakdown grouped layer back into flat list of layers
     .map(layerCategory => {
-      if (layerCategory.layers.some(f => f.layerMenuGroup)) {
+      if (layerCategory.layers.some(f => f.menuGroup)) {
         const layers = layerCategory.layers.map(layer => {
-          if (layer.layerMenuGroup) {
-            return layer.layerMenuGroup.map(layerKey => {
+          if (layer.menuGroup) {
+            return layer.menuGroup.map(layerKey => {
               return LayerDefinitions[layerKey.id as LayerKey];
             });
           }

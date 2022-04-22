@@ -19,22 +19,22 @@ export type LayerType =
 
 export type LayerKey = keyof typeof rawLayers;
 
-export type LayerMenuGroupItem = {
+export type MenuGroupItem = {
   id: string;
   label: string;
 };
 
-export type LayerMenuGroup = {
+export type MenuGroup = {
   title: string;
   optionTitle: string;
-  layers: LayerMenuGroupItem[];
+  layers: MenuGroupItem[];
 };
 
 /**
  * Check if a string/object is an explicitly defined layer in layers.json
  * @param layerKey the string/object to check
  */
-export const isLayerKey = (layerKey: string | LayerMenuGroup) => {
+export const isLayerKey = (layerKey: string | MenuGroup) => {
   if (typeof layerKey === 'string') {
     return layerKey in rawLayers;
   }
@@ -227,7 +227,10 @@ export class CommonLayerProps {
   featureInfoProps?: { [key: string]: FeatureInfoProps };
 
   @optional
-  layerMenuGroup?: LayerMenuGroupItem[];
+  menuGroup?: MenuGroupItem[];
+
+  @optional
+  menuGroupTitle?: string;
 }
 
 /*

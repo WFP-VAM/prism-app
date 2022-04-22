@@ -10,8 +10,8 @@ import {
 import {
   isLayerKey,
   LayerKey,
-  LayerMenuGroup,
   LayersCategoryType,
+  MenuGroup,
   MenuItemType,
 } from '../../config/types';
 
@@ -19,7 +19,7 @@ type LayersCategoriesType = LayersCategoryType[];
 
 type MenuItemsType = MenuItemType[];
 
-type MenuGroupType = LayerMenuGroup[];
+type MenuGroupType = MenuGroup[];
 
 function formatLayersCategories(layersList: {
   [key: string]: Array<LayerKey | TableKey>;
@@ -29,13 +29,13 @@ function formatLayersCategories(layersList: {
       title: startCase(layersListKey),
       layers: layerKeys.filter(isLayerKey).map(key => {
         if (typeof key === 'object') {
-          const { title, layers } = key as LayerMenuGroup;
+          const { title, layers } = key as MenuGroup;
           // use first layer in group as default
           const layer = LayerDefinitions[layers[0].id as LayerKey];
           // eslint-disable-next-line fp/no-mutation
-          layer.title = title;
+          layer.menuGroup = layers;
           // eslint-disable-next-line fp/no-mutation
-          layer.layerMenuGroup = layers;
+          layer.menuGroupTitle = title;
           return layer;
         }
         return LayerDefinitions[key as LayerKey];

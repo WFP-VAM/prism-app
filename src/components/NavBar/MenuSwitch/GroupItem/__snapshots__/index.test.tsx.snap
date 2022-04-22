@@ -3,11 +3,11 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiInputBase-root MuiInput-root MuiInput-underline MenuGroup-select-1"
+    class="MuiInputBase-root MuiInput-root MuiInput-underline GroupItem-select-1"
   >
     <div
       aria-haspopup="listbox"
-      class="MuiSelect-root MenuGroup-selectItem-2 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+      class="MuiSelect-root GroupItem-selectItem-2 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
       role="button"
       tabindex="0"
     >

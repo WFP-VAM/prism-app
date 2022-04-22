@@ -4,14 +4,11 @@ import {
   Button,
   createStyles,
   Divider,
-  FormControl,
   Grid,
   Hidden,
   List,
   ListItem,
-  MenuItem,
   Paper,
-  Select,
   Slider,
   Typography,
   WithStyles,
@@ -24,32 +21,23 @@ import { Extent } from '../Layers/raster-utils';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
 import {
-  LayerKey,
   LayerType,
   GeometryType,
   ExposedPopulationDefinition,
   LegendDefinitionItem,
 } from '../../../config/types';
-import {
-  LayerDefinitions,
-  getBoundaryLayerSingleton,
-} from '../../../config/utils';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
   addTableData,
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
-import { safeDispatchAddLayer } from '../../../utils/map-utils';
-import { useUrlHistory } from '../../../utils/url-utils';
 
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
 import { convertToTableData, downloadToFile } from '../utils';
-
-import { menuGroup } from '../../NavBar/utils';
 
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
@@ -211,12 +199,6 @@ function LegendItem({
   const map = useSelector(mapSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const dispatch = useDispatch();
-  const { updateHistory } = useUrlHistory();
-
-  const [activeLayer, setActiveLayer] = useState(id);
-  const activeLayerGroup = menuGroup.find(menu => {
-    return menu.layers.some(layer => layer.id === id);
-  });
 
   useEffect(() => {
     // should this be here? Or somewhere more related to analysis?
@@ -229,22 +211,6 @@ function LegendItem({
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
-
-  const handleChangeFormInput = (event: any) => {
-    const layerId: LayerKey = event.target.value;
-    const layer = LayerDefinitions[layerId];
-    const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
-    const urlLayerKey =
-      layer.type === ADMIN_LEVEL_DATA_LAYER_KEY
-        ? 'baselineLayerId'
-        : 'hazardLayerId';
-    setActiveLayer(layerId);
-    updateHistory(urlLayerKey, layerId);
-    const defaultBoundary = getBoundaryLayerSingleton();
-    if (!('boundary' in layer) && layer.type === ADMIN_LEVEL_DATA_LAYER_KEY) {
-      safeDispatchAddLayer(map, defaultBoundary, dispatch);
-    }
-  };
 
   const handleChangeOpacity = (
     event: React.ChangeEvent<{}>,
@@ -310,28 +276,6 @@ function LegendItem({
               />
             </Box>
           </Grid>
-
-          {activeLayerGroup && (
-            <Grid item>
-              <Typography variant="h5">
-                {activeLayerGroup.optionTitle}
-              </Typography>
-              <FormControl fullWidth>
-                <Select
-                  className={classes.select}
-                  classes={{ root: classes.selectItem }}
-                  value={activeLayer}
-                  onChange={e => handleChangeFormInput(e)}
-                >
-                  {activeLayerGroup.layers.map(layer => (
-                    <MenuItem key={layer.id} value={layer.id}>
-                      {layer.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          )}
 
           {legend && (
             <Grid item>
