@@ -13,7 +13,8 @@
   "serversUrls": {
     "wms": [
       "https://odc.ovio.org/wms",
-      "https://geonode.wfp.org/geoserver/prism/wms"
+      "https://geonode.wfp.org/geoserver/prism/wms",
+      "https://ows.digitalearth.africa/wms"
     ]
   },
   "map": {
@@ -63,7 +64,8 @@
         "lst_daytime_blended",
         "lst_day_anomaly_blended",
         "lst_daytime_5",
-        "lst_day_anomaly_5"
+        "lst_day_anomaly_5",
+        "lst_amplitude"
       ]
     },
     "tropical_storms": {

@@ -1382,45 +1382,45 @@
     "type": "wms",
     "server_layer_name": "myd11a2_taa_dekad",
     "base_url": "https://odc.ovio.org/",
+    "wcsConfig": {
+      "scale": 0.02,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Land Surface Temperature Amplitude refers to the difference between the maximum and minimum temperature in degrees Celsius",
     "legend": [
       {
-        "label": "-0",
-        "color": "#ffffff",
-        "alpha": 0
-      },
-      {
-        "label": "50",
+        "label": "1°",
         "color": "#ffffd9"
       },
       {
-        "label": "200",
+        "label": "4°",
         "color": "#e8f6b1"
       },
       {
-        "label": "400",
+        "label": "8°",
         "color": "#b2e1b6"
       },
       {
-        "label": "600",
+        "label": "12°",
         "color": "#64c3bf"
       },
       {
-        "label": "800",
+        "label": "16°",
         "color": "#2ca1c2"
       },
       {
-        "label": "1000",
+        "label": "20°",
         "color": "#216daf"
       },
       {
-        "label": "1200",
+        "label": "24°",
         "color": "#253a97"
       },
       {
-        "label": "1400",
+        "label": "28°",
         "color": "#081d58"
       }
     ]
