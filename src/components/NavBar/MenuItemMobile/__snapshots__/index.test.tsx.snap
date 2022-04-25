@@ -78,33 +78,11 @@ exports[`renders as expected 1`] = `
               <div
                 class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
               >
-                <div
-                  class="MuiGrid-root MenuSwitch-categoryContainer-2 MuiGrid-item"
-                >
-                  <mock-typography
-                    classname="MenuSwitch-categoryTitle-3"
-                    variant="body2"
-                  >
-                    Category 1
-                  </mock-typography>
-                  <hr />
-                  <div
-                    class="MuiBox-root MuiBox-root-5"
-                  >
-                    <mock-switch
-                      checked="false"
-                      color="default"
-                      inputprops="[object Object]"
-                      size="small"
-                    />
-                     
-                    <mock-typography
-                      classname="MenuSwitch-title-4"
-                    >
-                      layer
-                    </mock-typography>
-                  </div>
-                </div>
+                <mock-menuswitch
+                  layers="[object Object]"
+                  tables=""
+                  title="Category 1"
+                />
               </div>
             </div>
           </div>

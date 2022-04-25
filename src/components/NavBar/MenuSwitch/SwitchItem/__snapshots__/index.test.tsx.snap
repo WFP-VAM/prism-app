@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    class="MuiBox-root MuiBox-root-4"
+  >
+    <mock-switch
+      checked="false"
+      color="default"
+      inputprops="[object Object]"
+      size="small"
+    />
+     
+    <mock-typography
+      classname="SwitchItem-title-1"
+    />
+  </div>
+</div>
+`;

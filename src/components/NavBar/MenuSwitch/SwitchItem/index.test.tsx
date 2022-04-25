@@ -2,22 +2,27 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 
-import GroupItem from '.';
+import SwitchItem from '.';
 import { store } from '../../../../context/store';
-import { MenuGroup, MenuGroupItem } from '../../../../config/types';
+import { LayerType } from '../../../../config/types';
+
+jest.mock('react-router-dom', () => ({
+  useHistory: () => ({
+    replace: jest.fn(),
+    location: {
+      search: '',
+    },
+  }),
+}));
 
 const props = {
-  menuGroup: {
-    title: 'title',
-    layers: [{ id: 'id', label: 'label' }] as MenuGroupItem[],
-  } as MenuGroup,
-  toggleLayerValue: () => {},
+  layer: {} as LayerType,
 };
 
 test('renders as expected', () => {
   const { container } = render(
     <Provider store={store}>
-      <GroupItem {...props} />
+      <SwitchItem {...props} />
     </Provider>,
   );
   expect(container).toMatchSnapshot();

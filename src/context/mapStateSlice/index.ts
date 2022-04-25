@@ -76,13 +76,10 @@ export const mapStateSlice = createSlice({
     ) => ({
       ...rest,
       layers: layers.filter(({ id, group }) => {
-        const inMenuGroup = payload.menuGroup?.layers.some(
-          menu => menu.id === id,
-        );
         // Keep layers without group and layers with group and different group name.
         return payload.group
           ? !group || group?.name !== payload.group.name
-          : id !== payload.id && !inMenuGroup;
+          : id !== payload.id;
       }),
     }),
 

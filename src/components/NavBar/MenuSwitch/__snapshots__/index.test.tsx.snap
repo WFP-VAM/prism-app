@@ -12,22 +12,9 @@ exports[`renders as expected 1`] = `
       Category 1
     </mock-typography>
     <hr />
-    <div
-      class="MuiBox-root MuiBox-root-4"
-    >
-      <mock-switch
-        checked="false"
-        color="default"
-        inputprops="[object Object]"
-        size="small"
-      />
-       
-      <mock-typography
-        classname="MenuSwitch-title-3"
-      >
-        layer
-      </mock-typography>
-    </div>
+    <mock-switchitem
+      layer="[object Object]"
+    />
   </div>
 </div>
 `;
