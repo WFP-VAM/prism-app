@@ -1645,7 +1645,7 @@
     "base_url": "https://geonode.wfp.org/geoserver"
   },
   "ews_remote": {
-    "title": "EWS sensor data",
+    "title": "EWS 1294 river level data",
     "processing": "ews",
     "type": "point_data",
     "data": "",

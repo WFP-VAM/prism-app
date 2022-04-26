@@ -32,6 +32,7 @@
   ],
   "categories": {
     "flood": {
+      "early_warning": ["ews_remote"],
       "flood_events": ["hydra_s1"]
     },
     "rainfall": {
@@ -61,8 +62,7 @@
         "days_heavy_rain",
         "days_intense_rain",
         "days_extreme_rain",
-        "streak_heavy_rain",
-        "ews_remote"
+        "streak_heavy_rain"
       ]
     },
     "vegetation": {
