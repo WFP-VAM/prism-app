@@ -63,7 +63,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   );
 
   const validatedTitle = t(
-    LayerGroup?.name || layer.menuGroup?.title || layerTitle || '',
+    LayerGroup?.name || menuGroup?.title || layerTitle || '',
   );
 
   const toggleLayerValue = (selectedLayerId: string, checked: boolean) => {
@@ -122,12 +122,10 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   ) => {
     const selectedId = event.target.value;
     setActiveLayer(selectedId as string);
-    if (selected) {
-      toggleLayerValue(selectedId as string, true);
-    }
+    toggleLayerValue(selectedId as string, true);
   };
 
-  const menuTitle = layer.menuGroup ? (
+  const menuTitle = menuGroup ? (
     <>
       <Typography className={classes.title}>{validatedTitle}</Typography>
       <Select
@@ -136,7 +134,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
         value={activeLayer}
         onChange={e => handleSelect(e)}
       >
-        {layer.menuGroup.layers.map(menu => (
+        {menuGroup.layers.map(menu => (
           <MenuItem key={menu.id} value={menu.id}>
             {menu.label}
           </MenuItem>
