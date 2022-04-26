@@ -2,8 +2,13 @@ import { camelCase } from 'lodash';
 import GeoJSON from 'geojson';
 import moment from 'moment';
 import type { LazyLoader } from './layer-data';
-import { PointDataLayerProps } from '../../config/types';
+import {
+  PointDataLayerProps,
+  PointDataProcessing,
+  PointData,
+} from '../../config/types';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
+import { fetchEWSData } from '../../utils/ews-utils';
 import { getAdminLevelDataLayerData } from './admin_level_data';
 
 declare module 'geojson' {
@@ -16,17 +21,6 @@ declare module 'geojson' {
     callback?: Function,
   ): PointData[];
 }
-
-export type PointData = {
-  lat: number;
-  lon: number;
-  date: number; // in unix time.
-  [key: string]: any;
-};
-
-export type PointLayerData = {
-  features: PointData[];
-};
 
 export const queryParamsToString = (queryParams?: {
   [key: string]: string | { [key: string]: string };
@@ -57,6 +51,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       boundary,
       dataField,
       featureInfoProps,
+      processing,
     },
   },
   { getState },
@@ -64,6 +59,11 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
+
+  if (date && processing === PointDataProcessing.EWS) {
+    const ewsData = await fetchEWSData(date);
+    return { features: GeoJSON.parse(ewsData, { Point: ['lat', 'lon'] }) };
+  }
 
   const formattedDate = date && moment(date).format(DEFAULT_DATE_FORMAT);
 

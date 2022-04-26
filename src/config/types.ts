@@ -390,6 +390,10 @@ export class ImpactLayerProps extends CommonLayerProps {
   api?: StatsApi;
 }
 
+export enum PointDataProcessing {
+  EWS = 'ews',
+}
+
 export class PointDataLayerProps extends CommonLayerProps {
   type: 'point_data';
   data: string;
@@ -420,6 +424,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   boundary?: LayerKey;
+
+  @optional
+  processing?: PointDataProcessing;
 }
 
 export type RequiredKeys<T> = {
@@ -524,4 +531,15 @@ export interface RequestFeatureInfo extends FeatureInfoType {
 
 type AdminLevelDisplayType = {
   adminCode: string;
+};
+
+export type PointData = {
+  lat: number;
+  lon: number;
+  date: number; // in unix time.
+  [key: string]: any;
+};
+
+export type PointLayerData = {
+  features: PointData[];
 };

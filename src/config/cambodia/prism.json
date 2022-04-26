@@ -61,7 +61,8 @@
         "days_heavy_rain",
         "days_intense_rain",
         "days_extreme_rain",
-        "streak_heavy_rain"
+        "streak_heavy_rain",
+        "ews_remote"
       ]
     },
     "vegetation": {

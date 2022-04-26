@@ -1644,6 +1644,42 @@
     "legend_text": "",
     "base_url": "https://geonode.wfp.org/geoserver"
   },
+  "ews_remote": {
+    "title": "EWS sensor data",
+    "processing": "ews",
+    "type": "point_data",
+    "data": "",
+    "date_url": "",
+    "opacity": 0.8,
+    "data_field": "max",
+    "legend_text": "Sensor height",
+    "legend": [
+      {
+        "value": "200",
+        "color": "#7ab1c0"
+      },
+      {
+        "value": "250",
+        "color": "#9fc3b3"
+      },
+      {
+        "value": "300",
+        "color": "#d9e79a"
+      },
+      {
+        "value": "350",
+        "color": "#f3f88e"
+      },
+      {
+        "value": "400",
+        "color": "#f0d779"
+      },
+      {
+        "value": "1000",
+        "color": "#fdae61"
+      }
+    ]
+  },
   "kh_incident_report": {
     "title": "Disaster impact report",
     "type": "point_data",
