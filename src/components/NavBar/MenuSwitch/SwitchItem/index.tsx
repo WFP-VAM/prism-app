@@ -63,7 +63,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   );
 
   const validatedTitle = t(
-    LayerGroup?.name || menuGroup?.title || layerTitle || '',
+    LayerGroup?.name || menuGroup?.menuGroupTitle || layerTitle || '',
   );
 
   const toggleLayerValue = (selectedLayerId: string, checked: boolean) => {
@@ -150,12 +150,13 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
       <Switch
         size="small"
         color="default"
+        className={classes.switch}
         checked={selected}
         onChange={e => toggleLayerValue(activeLayer, e.target.checked)}
         inputProps={{
           'aria-label': validatedTitle,
         }}
-      />{' '}
+      />
       {menuTitle}
     </Box>
   );
@@ -177,6 +178,9 @@ const styles = () =>
       fontWeight: 300,
       padding: 0,
       marginLeft: 5,
+    },
+    switch: {
+      marginRight: 2,
     },
   });
 

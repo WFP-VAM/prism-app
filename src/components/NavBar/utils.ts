@@ -1,4 +1,4 @@
-import { get, map, startCase } from 'lodash';
+import { camelCase, get, map, mapKeys, startCase } from 'lodash';
 
 import { appConfig } from '../../config';
 import {
@@ -29,11 +29,13 @@ function formatLayersCategories(layersList: {
       title: startCase(layersListKey),
       layers: layerKeys.filter(isLayerKey).map(key => {
         if (typeof key === 'object') {
-          const { layers } = key as MenuGroup;
-          // use first layer in group as default
-          const layer = LayerDefinitions[layers[0].id as LayerKey];
+          const menuGroup = (mapKeys(key, (_v, k: string) =>
+            camelCase(k),
+          ) as unknown) as MenuGroup;
+          // use first layer as default
+          const layer = LayerDefinitions[menuGroup.layers[0].id as LayerKey];
           // eslint-disable-next-line fp/no-mutation
-          layer.menuGroup = key;
+          layer.menuGroup = menuGroup;
           return layer;
         }
         return LayerDefinitions[key as LayerKey];

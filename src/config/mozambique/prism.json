@@ -27,38 +27,38 @@
       "rainfall_amount": [
         "precip_blended_dekad",
         {
-          "title": "Rainfall Aggregate",
+          "menu_group_title": "Rainfall Aggregate",
           "layers": [
-            {"label": "10-day", "id": "rainfall_dekad"},
-            {"label": "1-month", "id": "rainfall_agg_1month"},
-            {"label": "3-month", "id": "rainfall_agg_3month"},
-            {"label": "6-month", "id": "rainfall_agg_6month"},
-            {"label": "9-month", "id": "rainfall_agg_9month"},
-            {"label": "1-year", "id": "rainfall_agg_1year"}
+            {"id": "rainfall_dekad", "label": "10-day"},
+            {"id": "rainfall_agg_1month", "label": "1-month"},
+            {"id": "rainfall_agg_3month", "label": "3-month"},
+            {"id": "rainfall_agg_6month", "label": "6-month"},
+            {"id": "rainfall_agg_9month", "label": "9-month"},
+            {"id": "rainfall_agg_1year", "label": "1-year"}
           ]
         }
       ],
       "rainfall_anomalies": [
         "precip_blended_dekad_anomaly",
         {
-          "title": "Rainfall Anomaly",
+          "menu_group_title": "Rainfall Anomaly",
           "layers": [
-            {"label": "10-day", "id": "rain_anomaly_dekad"},
-            {"label": "1-month", "id": "rain_anomaly_1month"},
-            {"label": "3-month", "id": "rain_anomaly_3month"},
-            {"label": "6-month", "id": "rain_anomaly_6month"},
-            {"label": "9-month", "id": "rain_anomaly_9month"},
-            {"label": "1-year", "id": "rain_anomaly_1year"}
+            {"id": "rain_anomaly_dekad", "label": "10-day"},
+            {"id": "rain_anomaly_1month", "label": "1-month"},
+            {"id": "rain_anomaly_3month", "label": "3-month"},
+            {"id": "rain_anomaly_6month", "label": "6-month"},
+            {"id": "rain_anomaly_9month", "label": "9-month"},
+            {"id": "rain_anomaly_1year", "label": "1-year"}
           ]
         },
         {
-          "title": "SPI",
+          "menu_group_title": "SPI",
           "layers": [
-            {"label": "1-month", "id": "spi_1m"},
-            {"label": "3-month", "id": "spi_3m"},
-            {"label": "6-month", "id": "spi_6m"},
-            {"label": "9-month", "id": "spi_9m"},
-            {"label": "1-year", "id": "spi_1y"}
+            {"id": "spi_1m", "label": "1-month"},
+            {"id": "spi_3m", "label": "3-month"},
+            {"id": "spi_6m", "label": "6-month"},
+            {"id": "spi_9m", "label": "9-month"},
+            {"id": "spi_1y", "label": "1-year"}
           ]
         }
       ],
@@ -90,35 +90,35 @@
       "poverty": ["mpi"],
       "food_insecurity": [
         {
-          "title": "IPC",
+          "menu_group_title": "IPC",
           "layers": [
             {
-              "label": "Current phase classification",
-              "id": "ipc_phase_current"
+              "id": "ipc_phase_current",
+              "label": "Current phase classification"
             },
             {
-              "label": "Projected phase classification",
-              "id": "ipc_phase_projected"
+              "id": "ipc_phase_projected",
+              "label": "Projected phase classification"
             },
             {
-              "label": "December 2020 phase classification",
-              "id": "ipc_phase_12_2020"
+              "id": "ipc_phase_12_2020",
+              "label": "December 2020 phase classification"
             },
             {
-              "label": "Current population in phase 3+",
-              "id": "ipc_pop_ph3_current"
+              "id": "ipc_pop_ph3_current",
+              "label": "Current population in phase 3+"
             },
             {
-              "label": "Projected population in phase 3+",
-              "id": "ipc_pop_ph3_projected"
+              "id": "ipc_pop_ph3_projected",
+              "label": "Projected population in phase 3+"
             },
             {
-              "label": "Current percent of population in phase 3+",
-              "id": "ipc_perc_ph3_current"
+              "id": "ipc_perc_ph3_current",
+              "label": "Current percent of population in phase 3+"
             },
             {
-              "label": "Projected percent of population in phase 3+",
-              "id": "ipc_perc_ph3_projected"
+              "id": "ipc_perc_ph3_projected",
+              "label": "Projected percent of population in phase 3+"
             }
           ]
         }
