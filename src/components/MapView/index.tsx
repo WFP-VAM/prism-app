@@ -56,6 +56,7 @@ import {
   isLoading,
   layerDataSelector,
   layersSelector,
+  tileLoadingSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
 import {
@@ -171,6 +172,7 @@ function MapView({ classes }: MapViewProps) {
   const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
   const loading = layersLoading || datesLoading;
+  const tileLoading = useSelector(tileLoadingSelector);
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -410,8 +412,12 @@ function MapView({ classes }: MapViewProps) {
   const saveAndJumpMap = (map: Map) => {
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
+    setInterval(() => {
+      console.log('areti', map.areTilesLoaded());
+    }, 1000);
+    map.on('dataloading', ()=>console.log('dataloading'));
+    map.on('idle', ()=>console.log('idle coeg'));
   };
-
   const style = new URL(
     process.env.REACT_APP_DEFAULT_STYLE ||
       'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
@@ -462,6 +468,7 @@ function MapView({ classes }: MapViewProps) {
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
+            <div>pop {{ loadingS</div>
             <Download />
             <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
           </Grid>

@@ -13,6 +13,8 @@ export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
   state.mapState.dateRange;
 export const mapSelector = (state: RootState): MapBoxMap | undefined =>
   state.mapState.mapboxMap();
+export const tileLoadingSelector = (state: RootState): MapState['tileLoading'] =>
+  state.mapState.tileLoading;
 
 export const layerDataSelector = (id: LayerKey, date?: number) => (
   state: RootState,
