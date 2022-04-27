@@ -1,7 +1,9 @@
 import React from 'react';
 import moment from 'moment';
+import { get } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Layer, Source } from 'react-mapbox-gl';
+import { appConfig } from '../../../../config';
 import { WMSLayerProps } from '../../../../config/types';
 import { getWMSUrl } from '../raster-utils';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
@@ -22,6 +24,7 @@ function WMSLayers({
   const selectedDate = useDefaultDate(serverLayerName, group);
   const map = useSelector(mapSelector);
   const boundary = boundariesOnView(map)[0];
+  const wmsBounds = get(appConfig.map, 'wmsBounds');
 
   return (
     <>
@@ -38,6 +41,7 @@ function WMSLayers({
             })}&bbox={bbox-epsg-3857}`,
           ],
           tileSize: 256,
+          ...(wmsBounds ? { bounds: wmsBounds } : {}),
         }}
       />
 
