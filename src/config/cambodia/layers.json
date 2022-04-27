@@ -1668,9 +1668,8 @@
         "label": "Mean water level"
       }
     },
-    "data_field": "mean",
+    "data_field": "status",
     "opacity": 1,
-    "measure": "status",
     "legend_text": "This layer shows river water level in millimeters (mm). It is reported from People in Need (PIN) automated river water gauge.",
     "legend": [
       {"label": "0 - Normal", "value": 0, "color": "#31a354"},
