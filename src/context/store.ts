@@ -12,6 +12,7 @@ import notificationStateReduce, {
 } from './notificationStateSlice';
 import analysisResultStateReduce from './analysisResultStateSlice';
 import mapSelectionLayerStateReduce from './mapSelectionLayerStateSlice';
+import mapTileLoadingStateReduce from './mapTileLoadingStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
@@ -21,6 +22,7 @@ const reducer = combineReducers({
   analysisResultState: analysisResultStateReduce,
   notificationState: notificationStateReduce,
   mapSelectionLayerStateSlice: mapSelectionLayerStateReduce,
+  mapTileLoadingState: mapTileLoadingStateReduce,
 });
 
 export const store = configureStore({

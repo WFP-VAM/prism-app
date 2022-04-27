@@ -24,6 +24,7 @@ import type { Feature, MultiPolygon } from '@turf/helpers';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import Download from './Download';
+import TileLoadingIcon from './TileLoadingIcon';
 // layers
 import {
   AdminLevelDataLayer,
@@ -56,9 +57,9 @@ import {
   isLoading,
   layerDataSelector,
   layersSelector,
-  tileLoadingSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
+import { setLoading as setMapTileLoading } from '../../context/mapTileLoadingStateSlice';
 import {
   addPopupData,
   hidePopup,
@@ -172,7 +173,6 @@ function MapView({ classes }: MapViewProps) {
   const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
   const loading = layersLoading || datesLoading;
-  const tileLoading = useSelector(tileLoadingSelector);
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -412,11 +412,23 @@ function MapView({ classes }: MapViewProps) {
   const saveAndJumpMap = (map: Map) => {
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
-    setInterval(() => {
-      console.log('areti', map.areTilesLoaded());
-    }, 1000);
-    map.on('dataloading', ()=>console.log('dataloading'));
-    map.on('idle', ()=>console.log('idle coeg'));
+
+    // TODO: better approach to set tileLoading
+    let tileLoading = false;
+    map.on('dataloading', () => {
+      if (!tileLoading) {
+        // eslint-disable-next-line fp/no-mutation
+        tileLoading = true;
+        dispatch(setMapTileLoading(tileLoading));
+      }
+    });
+    map.on('idle', () => {
+      if (tileLoading) {
+        // eslint-disable-next-line fp/no-mutation
+        tileLoading = false;
+        dispatch(setMapTileLoading(tileLoading));
+      }
+    });
   };
   const style = new URL(
     process.env.REACT_APP_DEFAULT_STYLE ||
@@ -468,7 +480,7 @@ function MapView({ classes }: MapViewProps) {
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
-            <div>pop {{ loadingS</div>
+            <TileLoadingIcon />
             <Download />
             <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
           </Grid>

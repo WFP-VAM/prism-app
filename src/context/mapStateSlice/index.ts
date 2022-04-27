@@ -15,7 +15,6 @@ export type MapState = {
   dateRange: DateRange;
   mapboxMap: MapGetter;
   loading: number;
-  tileLoading: boolean;
   errors: string[];
   // TODO this shouldn't be any
   layersData: LayerData<any>[];
@@ -32,7 +31,6 @@ const initialState: MapState = {
   mapboxMap: (() => {}) as MapGetter,
   // Keep track of loading state with reference counting
   loading: 0,
-  tileLoading: false,
   errors: [],
   layersData: [],
 };
@@ -112,11 +110,6 @@ export const mapStateSlice = createSlice({
         ...layer,
         opacity: layer.id === payload.id ? payload.opacity : layer.opacity,
       })),
-    }),
-
-    setTileLoading: (state, { payload }: PayloadAction<boolean>) => ({
-      ...state,
-      mapTileLoading: payload
     }),
   },
   extraReducers: builder => {
