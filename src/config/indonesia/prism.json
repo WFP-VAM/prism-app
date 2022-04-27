@@ -33,9 +33,9 @@
       "vegetation_indicators": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "exposure": {
-      "demographics": ["pop2020", "pop_raster_2021", "HH_AGRI", "HH_FE65"],
+      "demographics": ["pop_raster_2021", "HH_AGRI", "HH_FE65"],
       "ricefield": ["paddy_areas"],
-      "dtks_2015": ["desil_10%", "krtw_60", "disability"]
+      "dtks_2015": ["desil_10%"]
     },
     "vulnerability": {
       "vulnerable_groups": [

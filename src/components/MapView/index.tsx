@@ -23,6 +23,7 @@ import bbox from '@turf/bbox';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import Download from './Download';
+import TileLoadingIcon from './TileLoadingIcon';
 // layers
 import {
   BoundaryLayer,
@@ -56,6 +57,7 @@ import {
   layerDataSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
+import { setLoading as setMapTileLoading } from '../../context/mapTileLoadingStateSlice';
 import {
   hidePopup,
   addPopupData,
@@ -330,6 +332,23 @@ function MapView({ classes }: MapViewProps) {
   const saveAndJumpMap = (map: Map) => {
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
+
+    // TODO: better approach to set tileLoading
+    let tileLoading = false;
+    map.on('dataloading', () => {
+      if (!tileLoading) {
+        // eslint-disable-next-line fp/no-mutation
+        tileLoading = true;
+        dispatch(setMapTileLoading(tileLoading));
+      }
+    });
+    map.on('idle', () => {
+      if (tileLoading) {
+        // eslint-disable-next-line fp/no-mutation
+        tileLoading = false;
+        dispatch(setMapTileLoading(tileLoading));
+      }
+    });
   };
 
   return (
@@ -404,6 +423,7 @@ function MapView({ classes }: MapViewProps) {
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
+            <TileLoadingIcon />
             <Download />
             <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
           </Grid>

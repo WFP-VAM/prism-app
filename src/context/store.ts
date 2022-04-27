@@ -12,6 +12,7 @@ import notificationStateReduce, {
   errorToNotificationMiddleware,
 } from './notificationStateSlice';
 import analysisResultStateSlice from './analysisResultStateSlice';
+import mapTileLoadingStateReduce from './mapTileLoadingStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
@@ -20,6 +21,7 @@ const reducer = combineReducers({
   tooltipState: tooltipStateReduce,
   analysisResultState: analysisResultStateSlice,
   notificationState: notificationStateReduce,
+  mapTileLoadingState: mapTileLoadingStateReduce,
 });
 
 export const store = configureStore({
