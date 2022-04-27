@@ -77,9 +77,10 @@ const getLevelStatus = (
     return EWSLevelStatus.NORMAL;
   }
 
-  if (currentLevel < levels.severe_warning) {
+  if (currentLevel >= levels.warning && currentLevel < levels.severe_warning) {
     return EWSLevelStatus.WARNING;
   }
+
   return EWSLevelStatus.SEVEREWARNING;
 };
 

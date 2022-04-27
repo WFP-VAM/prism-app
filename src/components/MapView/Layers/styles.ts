@@ -7,7 +7,7 @@ export const circlePaint = (
   { opacity, legend }: CommonLayerProps,
   property: string = 'data',
 ): MapboxGL.CirclePaint => ({
-  'circle-radius': 10,
+  'circle-radius': 8,
   'circle-opacity': opacity || 0.3,
   'circle-color': {
     property,
