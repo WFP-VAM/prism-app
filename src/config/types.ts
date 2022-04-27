@@ -276,15 +276,10 @@ export enum ChartType {
   Line = 'line',
 }
 
-type LayerChartType = {
-  name: string;
-  type: ChartType;
-};
-
 type DatasetProps = {
   url: string;
   levels: DatasetLevel[];
-  layers: LayerChartType[];
+  type: ChartType;
 };
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -297,9 +292,6 @@ export class BoundaryLayerProps extends CommonLayerProps {
 
   @optional
   isPrimary?: boolean | undefined;
-
-  @optional
-  chartData?: DatasetProps;
 }
 
 export enum LabelType {
@@ -338,6 +330,9 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional // If included, zonal statistics configuration, including which property to use for classes
   zonal?: ZonalConfig;
+
+  @optional
+  chartData?: DatasetProps;
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {

@@ -33,6 +33,14 @@
         "line-width": 1,
         "line-opacity": 0.8
       }
+    }
+  },
+  "rainfall_dekad": {
+    "title": "10-day rainfall estimate (mm)",
+    "type": "wms",
+    "server_layer_name": "rfh_dekad",
+    "additional_query_params": {
+      "styles": "rfh_350"
     },
     "chart_data": {
       "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
@@ -47,30 +55,7 @@
           "name": "adm2_name"
         }
       ],
-      "layers": [{
-        "name": "rfq_dekad",
-        "type": "line"
-      }, {
-        "name": "mxd13a2_vim_dekad",
-        "type": "line"
-      }, {
-        "name": "mxd13a2_viq_dekad",
-        "type": "line"
-      }, {
-        "name": "rfh_dekad",
-        "type": "bar"
-      }, {
-        "name": "r1s_dekad",
-        "type": "line"
-      }]
-    }
-  },
-  "rainfall_dekad": {
-    "title": "10-day rainfall estimate (mm)",
-    "type": "wms",
-    "server_layer_name": "rfh_dekad",
-    "additional_query_params": {
-      "styles": "rfh_350"
+      "type": "bar"
     },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
@@ -137,7 +122,22 @@
         "label": ">= 200%",
         "color": "#0fb0fb"
       }
-    ]
+    ],
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
+      "levels": [{
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
   },
   "rain_anomaly_1month": {
     "title": "1-month rainfall anomaly",
@@ -668,6 +668,21 @@
       "offset": 0,
       "pixelResolution": 64
     },
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
+      "levels": [{
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    },
     "opacity": 0.7,
     "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
@@ -769,6 +784,21 @@
     "date_interval": "days",
     "additional_query_params": {
       "styles": "viq"
+    },
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
+      "levels": [{
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
     },
     "opacity": 0.7,
     "legend_text": "NDVI Anomaly compared to LTA",
@@ -1111,6 +1141,21 @@
     "title": "SPI - 1-month",
     "type": "wms",
     "server_layer_name": "r1s_dekad",
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
+      "levels": [{
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "wcsConfig": {

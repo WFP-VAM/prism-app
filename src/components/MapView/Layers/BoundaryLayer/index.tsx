@@ -64,29 +64,16 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
     );
 
     const selectedLayerWMS: undefined | WMSLayerProps = selectedLayers.find(
-      l => l.type === 'wms',
+      l => l.type === 'wms' && l.chartData,
     ) as WMSLayerProps;
 
     if (!selectedLayerWMS) {
       return;
     }
 
-    const { serverLayerName, title } = selectedLayerWMS;
+    const { serverLayerName, title, chartData } = selectedLayerWMS;
 
-    if (!layer.chartData) {
-      return;
-    }
-
-    const layerChartData = layer.chartData.layers.find(
-      l => l.name === serverLayerName,
-    );
-
-    if (!layerChartData) {
-      return;
-    }
-
-    const { levels, url } = layer.chartData;
-    const { name, type: chartType } = layerChartData;
+    const { levels, url, type: chartType } = chartData!;
 
     const lowestLevelId = levels[levels.length - 1].id;
 
@@ -105,10 +92,12 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
     const adminBoundaryParams: AdminBoundaryParams = {
       title,
       boundaryProps,
-      serverParams: { layerName: name, url },
+      serverParams: { layerName: serverLayerName, url },
       id: lowestLevelId,
       chartType,
     };
+
+    console.log(adminBoundaryParams);
 
     dispatch(setBoundaryParams(adminBoundaryParams));
   };
