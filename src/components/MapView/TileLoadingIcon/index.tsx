@@ -5,11 +5,14 @@ import { loadingSelector } from '../../../context/mapTileLoadingStateSlice';
 
 function TileLoadingIcon() {
   const loading = useSelector(loadingSelector);
-  return (
-    <div style={{ paddingTop: '0.3rem', paddingRight: '0.3rem' }}>
-      {loading && <CircularProgress size="2rem" />}
-    </div>
-  );
+  if (loading) {
+    return (
+      <div style={{ paddingTop: '0.3rem', paddingRight: '0.3rem' }}>
+        {loading && <CircularProgress size="2rem" />}
+      </div>
+    );
+  }
+  return <></>;
 }
 
 export default TileLoadingIcon;
