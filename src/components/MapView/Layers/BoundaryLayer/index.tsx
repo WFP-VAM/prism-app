@@ -97,8 +97,6 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       chartType,
     };
 
-    console.log(adminBoundaryParams);
-
     dispatch(setBoundaryParams(adminBoundaryParams));
   };
 
