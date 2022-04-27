@@ -101,14 +101,14 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   };
 
   // Only use mouse effects and click effects on the main layer.
-  const { fillOnMouseEnter, fillOnMouseLeave, fillOnClick } = isPrimaryLayer
+  const { fillOnMouseMove, fillOnMouseLeave, fillOnClick } = isPrimaryLayer
     ? {
-        fillOnMouseEnter: onHoverHandler,
+        fillOnMouseMove: onHoverHandler,
         fillOnMouseLeave: (evt: any) => onToggleHover('', evt.target),
         fillOnClick: onClickFunc,
       }
     : {
-        fillOnMouseEnter: undefined,
+        fillOnMouseMove: undefined,
         fillOnMouseLeave: undefined,
         fillOnClick: undefined,
       };
@@ -119,7 +119,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       data={data}
       fillPaint={layer.styles.fill}
       linePaint={layer.styles.line}
-      fillOnMouseEnter={fillOnMouseEnter}
+      fillOnMouseMove={fillOnMouseMove}
       fillOnMouseLeave={fillOnMouseLeave}
       fillOnClick={fillOnClick}
     />
