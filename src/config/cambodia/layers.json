@@ -1650,34 +1650,32 @@
     "type": "point_data",
     "data": "",
     "date_url": "",
-    "opacity": 0.8,
-    "data_field": "max",
-    "legend_text": "Sensor height",
-    "legend": [
-      {
-        "value": "200",
-        "color": "#7ab1c0"
+    "feature_info_props": {
+      "external_id": {
+        "type": "string",
+        "label": "External ID"
       },
-      {
-        "value": "250",
-        "color": "#9fc3b3"
+      "name": {
+        "type": "string",
+        "label": "Name"
       },
-      {
-        "value": "300",
-        "color": "#d9e79a"
+      "water_height": {
+        "type": "string",
+        "label": "Water height"
       },
-      {
-        "value": "350",
-        "color": "#f3f88e"
-      },
-      {
-        "value": "400",
-        "color": "#f0d779"
-      },
-      {
-        "value": "1000",
-        "color": "#fdae61"
+      "mean": {
+        "type": "number",
+        "label": "Mean water level"
       }
+    },
+    "data_field": "mean",
+    "opacity": 1,
+    "measure": "status",
+    "legend_text": "This layer shows river water level in millimeters (mm). It is reported from People in Need (PIN) automated river water gauge.",
+    "legend": [
+      {"label": "0 - Normal", "value": 0, "color": "#31a354"},
+      {"label": "1 - Warning", "value": 1, "color": "#fdae6b"},
+      {"label": "2 - Severe Warning", "value": 2, "color": "#e34a33"}
     ]
   },
   "kh_incident_report": {

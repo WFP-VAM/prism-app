@@ -5,15 +5,27 @@ import { PointData } from '../config/types';
 const BASE_URL = 'http://sms.ews1294.info/api/v1';
 
 type statsEWS = {
-  max: number | null;
-  mean: number | null;
-  min: number | null;
+  max: number;
+  mean: number;
+  min: number;
 };
+
+enum EWSLevelStatus {
+  NORMAL = 0,
+  WARNING = 1,
+  SEVEREWARNING = 2,
+}
 
 /* eslint-disable camelcase */
 type EWSSensorData = {
   location_id: number;
   value: [string, number];
+};
+
+type EWSTriggerLevels = {
+  warning: number;
+  severe_warning: number;
+  watch_level: number;
 };
 /* eslint-enable camelcase */
 
@@ -57,20 +69,18 @@ const fetchEWSDataPoints = async (date: number): Promise<EWSSensorData[]> => {
   return values;
 };
 
-const createEWSstats = (values: number[]): statsEWS => {
-  if (values.length === 0) {
-    return {
-      mean: null,
-      max: null,
-      min: null,
-    };
+const getLevelStatus = (
+  currentLevel: number,
+  levels: EWSTriggerLevels,
+): EWSLevelStatus => {
+  if (currentLevel < levels.warning) {
+    return EWSLevelStatus.NORMAL;
   }
 
-  return {
-    mean: values.reduce((acc, item) => acc + item, 0) / values.length,
-    max: Math.max(...values),
-    min: Math.min(...values),
-  };
+  if (currentLevel < levels.severe_warning) {
+    return EWSLevelStatus.WARNING;
+  }
+  return EWSLevelStatus.SEVEREWARNING;
 };
 
 export const fetchEWSData = async (date: number): Promise<PointData[]> => {
@@ -86,11 +96,20 @@ export const fetchEWSData = async (date: number): Promise<PointData[]> => {
       if (!properties) {
         return pointDataArray;
       }
+
       const locationValues: number[] = values
         .filter(v => v.location_id === properties.id)
         .map(v => v.value[1]);
 
-      const statsProperties: statsEWS = createEWSstats(locationValues);
+      if (locationValues.length === 0) {
+        return pointDataArray;
+      }
+
+      const mean =
+        locationValues.reduce((acc, item) => acc + item, 0) /
+        locationValues.length;
+      const min = Math.min(...locationValues);
+      const max = Math.max(...locationValues);
 
       const { coordinates } = geometry as Point;
 
@@ -98,8 +117,14 @@ export const fetchEWSData = async (date: number): Promise<PointData[]> => {
         lon: coordinates[0],
         lat: coordinates[1],
         date,
+        mean: parseFloat(mean.toFixed(2)),
+        min,
+        max,
         ...properties,
-        ...statsProperties,
+        status: getLevelStatus(
+          mean,
+          properties.trigger_levels as EWSTriggerLevels,
+        ),
       };
 
       return [...pointDataArray, pointData];
