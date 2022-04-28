@@ -1086,7 +1086,7 @@
   "ndvi_dekad": {
     "title": "10-day NDVI (MODIS)",
     "type": "wms",
-    "server_layer_name": "mxd13q1_vim_dekad",
+    "server_layer_name": "mxd13a2_vim_dekad",
     "additional_query_params": {
       "styles": "vim_12_0_1"
     },
