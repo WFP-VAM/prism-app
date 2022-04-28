@@ -1087,6 +1087,9 @@
     "title": "10-day NDVI (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13q1_vim_dekad",
+    "additional_query_params": {
+      "styles": "vim_12_0_1"
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "wcsConfig": {
@@ -1098,40 +1101,64 @@
     "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
       {
-        "label": "-1.00",
-        "color": "#a50026"
+        "value": 0,
+        "label": "0",
+        "color": "#fffae6"
       },
       {
-        "label": "-0.75",
-        "color": "#de3f2e"
+        "value": 500,
+        "label": "0.05",
+        "color": "#fff0be"
       },
       {
-        "label": "-0.50",
-        "color": "#f88d52"
+        "value": 1000,
+        "label": "0.1",
+        "color": "#ffe191"
       },
       {
-        "label": "-0.25",
-        "color": "#fed380"
+        "value": 2000,
+        "label": "0.2",
+        "color": "#dae3a1"
       },
       {
-        "label": "0.00",
-        "color": "#ffffbf"
+        "value": 3000,
+        "label": "0.3",
+        "color": "#b8d49b"
       },
       {
-        "label": "0.25",
-        "color": "#ccea83"
+        "value": 4000,
+        "label": "0.4",
+        "color": "#95c594"
       },
       {
-        "label": "0.50",
-        "color": "#86cb66"
+        "value": 5000,
+        "label": "0.5",
+        "color": "#64a77e"
       },
       {
-        "label": "0.75",
-        "color": "#2da155"
+        "value": 6000,
+        "label": "0.6",
+        "color": "#328968"
       },
       {
-        "label": "1.00",
-        "color": "#006837"
+        "value": 7000,
+        "label": "0.7",
+        "color": "#006b52"
+      },
+      {
+        "value": 8000,
+        "label": "0.8",
+        "color": "#00543f"
+      },
+      {
+        "value": 9000,
+        "label": "0.9",
+        "color": "#004231"
+      },
+      {
+        "value": 10000,
+        "label": "1.0",
+        "color": "#002a1e"
       }
     ]
   },
