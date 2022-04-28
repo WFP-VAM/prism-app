@@ -1138,50 +1138,74 @@
   "ndvi_dekad_anomaly": {
     "title": "10-day NDVI anomaly (MODIS)",
     "type": "wms",
-    "server_layer_name": "mxd13q1_viq_dekad",
+    "server_layer_name": "mxd13a2_viq_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "additional_query_params": {
-      "styles": "viq"
+      "styles": "viq_12_50_150_new"
     },
     "opacity": 0.7,
     "legend_text": "NDVI Anomaly compared to LTA",
     "legend": [
       {
-        "label": "< 50%",
-        "color": "#732600"
+        "value": 50,
+        "label": "< 50 %",
+        "color": "#a50026"
       },
       {
-        "label": "50 - 70%",
-        "color": "#f06405"
+        "value": 60,
+        "label": "50 - 60 %",
+        "color": "#d73027"
       },
       {
-        "label": "70 - 80%",
-        "color": "#f5af28"
+        "value": 70,
+        "label": "60 - 70 %",
+        "color": "#f46d43"
       },
       {
-        "label": "80 - 90%",
-        "color": "#e6dc96"
+        "value": 80,
+        "label": "70 - 80 %",
+        "color": "#fdae61"
       },
       {
-        "label": "90 - 110%",
-        "color": "#f5f5f5"
+        "value": 90,
+        "label": "80 - 90 %",
+        "color": "#fee090"
       },
       {
-        "label": "110 - 120%",
-        "color": "#cbff1f"
+        "value": 95,
+        "label": "90 - 95 %",
+        "color": "#ffffbf"
       },
       {
-        "label": "120 - 130%",
-        "color": "#00f200"
+        "value": 105,
+        "label": "95 - 105 %",
+        "color": "#fafafa"
       },
       {
-        "label": "130 - 150%",
-        "color": "#008f00"
+        "value": 110,
+        "label": "105 - 110 %",
+        "color": "#00ff00"
       },
       {
-        "label": "> 150%",
-        "color": "#004d00"
+        "value": 120,
+        "label": "110 - 120 %",
+        "color": "#00c800"
+      },
+      {
+        "value": 130,
+        "label": "120 - 130 %",
+        "color": "#009600"
+      },
+      {
+        "value": 150,
+        "label": "130 - 150 %",
+        "color": "#006400"
+      },
+      {
+        "value": 151,
+        "label": "> 150 %",
+        "color": "#003200"
       }
     ]
   },
@@ -1189,6 +1213,9 @@
     "title": "Land Surface Temperature - 10-day Amplitude (MODIS)",
     "type": "wms",
     "server_layer_name": "myd11a2_taa_dekad",
+    "additional_query_params": {
+      "styles": "taa_13_0_38_v2"
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1197,43 +1224,72 @@
       "offset": -273,
       "pixelResolution": 64
     },
-    "legend_text": "LEGEND",
+    "legend_text": "Land Surface Temperature - 10-day Amplitude (MODIS)",
     "legend": [
       {
-        "value": -0,
-        "color": "#ffffff"
+        "value": 0,
+        "label": "0ºC",
+        "color": "#001450"
       },
       {
-        "value": 50,
-        "color": "#ffffd9"
+        "value": 100,
+        "label": "2ºC",
+        "color": "#00238c"
       },
       {
         "value": 200,
-        "color": "#e8f6b1"
+        "label": "4ºC",
+        "color": "#0032c8"
+      },
+      {
+        "value": 300,
+        "label": "6ºC",
+        "color": "#267dff"
       },
       {
         "value": 400,
-        "color": "#b2e1b6"
+        "label": "8ºC",
+        "color": "#61c0ff"
       },
       {
-        "value": 600,
-        "color": "#64c3bf"
+        "value": 500,
+        "label": "10ºC",
+        "color": "#b4e1ff"
       },
       {
-        "value": 800,
-        "color": "#2ca1c2"
+        "value": 700,
+        "label": "14ºC",
+        "color": "#dcffc8"
       },
       {
-        "value": 1000,
-        "color": "#216daf"
+        "value": 900,
+        "label": "18ºC",
+        "color": "#f3ffe5"
       },
       {
-        "value": 1200,
-        "color": "#253a97"
+        "value": 1100,
+        "label": "22ºC",
+        "color": "#fddbc7"
       },
       {
-        "value": 1400,
-        "color": "#081d58"
+        "value": 1300,
+        "label": "26ºC",
+        "color": "#f4a582"
+      },
+      {
+        "value": 1500,
+        "label": "30ºC",
+        "color": "#d6604d"
+      },
+      {
+        "value": 1700,
+        "label": "34ºC",
+        "color": "#b2182b"
+      },
+      {
+        "value": 1900,
+        "label": "38ºC",
+        "color": "#67001f"
       }
     ]
   },
@@ -1249,54 +1305,95 @@
       "pixelResolution": 64
     },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Daytime Land Surface Temperature",
     "additional_query_params": {
-      "styles": "lst_day"
+      "styles": "lst_day_22__24p60_gray_v2"
     },
     "legend": [
       {
-        "label": "0°",
-        "color": "#f0f9ba"
+        "value": 12458,
+        "label": "-24ºC",
+        "color": "#ffffff"
       },
       {
-        "label": "5°",
-        "color": "#edeba4"
+        "value": 12658,
+        "label": "-20ºC",
+        "color": "#fafafa"
       },
       {
-        "label": "10°",
-        "color": "#ebdd8f"
+        "value": 12858,
+        "label": "-16ºC",
+        "color": "#f5f5f5"
       },
       {
-        "label": "15°",
-        "color": "#eace7c"
+        "value": 13058,
+        "label": "-12ºC",
+        "color": "#ebebeb"
       },
       {
-        "label": "20°",
-        "color": "#e9bf6a"
+        "value": 13258,
+        "label": "-8ºC",
+        "color": "#e1e1e1"
       },
       {
-        "label": "25°",
-        "color": "#e9af59"
+        "value": 13458,
+        "label": "-4ºC",
+        "color": "#c8c8c8"
       },
       {
-        "label": "30°",
-        "color": "#e99e4c"
+        "value": 13658,
+        "label": "0ºC",
+        "color": "#0031ac"
       },
       {
-        "label": "35°",
-        "color": "#e98d41"
+        "value": 13858,
+        "label": "4ºC",
+        "color": "#245dbd"
       },
       {
-        "label": "40°",
-        "color": "#e87a3a"
+        "value": 14058,
+        "label": "8ºC",
+        "color": "#4889ce"
       },
       {
-        "label": "45°",
-        "color": "#e76636"
+        "value": 14258,
+        "label": "12ºC",
+        "color": "#6cb4de"
       },
       {
-        "label": "50°",
-        "color": "#e54f35"
+        "value": 14458,
+        "label": "16ºC",
+        "color": "#7ecae7"
+      },
+      {
+        "value": 14658,
+        "label": "20ºC",
+        "color": "#90e0ef"
+      },
+      {
+        "value": 14858,
+        "label": "24ºC",
+        "color": "#c3f6ff"
+      },
+      {
+        "value": 15058,
+        "label": "28ºC",
+        "color": "#e8ffde"
+      },
+      {
+        "value": 15258,
+        "label": "32ºC",
+        "color": "#fee0d2"
+      },
+      {
+        "value": 15458,
+        "label": "36ºC",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 15658,
+        "label": "40ºC",
+        "color": "#fc9272"
       }
     ]
   },
@@ -1308,45 +1405,74 @@
     "date_interval": "days",
     "opacity": 0.7,
     "additional_query_params": {
-      "styles": "lst_anomaly_day"
+      "styles": "lst_anomaly_day_13__12p12_v2"
     },
-    "legend_text": "LEGEND",
+    "legend_text": "Daytime Land Surface Temperature - 10-day Anomaly 1km (MODIS)",
     "legend": [
       {
-        "label": "< -200%",
-        "color": "#000004"
+        "value": -600,
+        "label": "< -12 deg",
+        "color": "#0031ac"
       },
       {
-        "label": "-200 to -100%",
-        "color": "#210c4a"
+        "value": -500,
+        "label": "-12 to -10 deg",
+        "color": "#4889ce"
       },
       {
-        "label": "-100 to -50%",
-        "color": "#57106e"
+        "value": -400,
+        "label": "-10 to -8 deg",
+        "color": "#6cb4de"
       },
       {
-        "label": "-50 to 50%",
-        "color": "#8a226a"
+        "value": -300,
+        "label": "-8 to -6 deg",
+        "color": "#7ecae7"
       },
       {
-        "label": "50 to 100%",
-        "color": "#bc3754"
+        "value": -200,
+        "label": "-6 to -4 deg",
+        "color": "#c3f6ff"
       },
       {
-        "label": "100 to 200%",
-        "color": "#e45a31"
+        "value": -100,
+        "label": "-4 to -2 deg",
+        "color": "#e8ffde"
       },
       {
-        "label": "200 to 300%",
-        "color": "#f98e09"
+        "value": 0,
+        "label": "-2 to +2 deg",
+        "color": "#fafafa"
       },
       {
-        "label": "300 to 500%",
-        "color": "#f9cb35"
+        "value": 100,
+        "label": "+2 to +4 deg",
+        "color": "#ffeee5"
       },
       {
-        "label": "> 500%",
-        "color": "#fcffa4"
+        "value": 200,
+        "label": "+4 to +6 deg",
+        "color": "#fddbc7"
+      },
+      {
+        "value": 300,
+        "label": "+6 to +8 deg",
+        "color": "#f4a582"
+      },
+      {
+        "value": 400,
+        "label": "+8 to +10 deg",
+        "color": "#d6604d"
+      },
+      {
+        "value": 500,
+        "label": "+10 to +12 deg",
+        "color": "#b2182b"
+      },
+      {
+        "value": 600,
+        "label": "> +12 deg",
+        "color": "#67001f"
       }
     ]
   },
