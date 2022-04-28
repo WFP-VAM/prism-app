@@ -60,10 +60,8 @@
       "vegetation_conditions": ["ndvi_dekad_5", "ndvi_dekad_anomaly_5"]
     },
     "temperature": {
-      "air_temperature": ["ast_max", "ast_max_anomaly"],
+      "blended_temperature_estimates": ["lst_daytime_blended", "lst_day_anomaly_blended"],
       "land_surface_temperature": [
-        "lst_daytime_blended",
-        "lst_day_anomaly_blended",
         "lst_daytime_5",
         "lst_day_anomaly_5"
       ]

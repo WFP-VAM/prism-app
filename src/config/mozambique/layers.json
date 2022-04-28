@@ -24,7 +24,6 @@
   "admin_boundaries": {
     "type": "boundary",
     "path": "../data/mozambique/moz_bnd_adm2_WFP.json",
-    "primary": true,
     "opacity": 0.8,
     "admin_code": "source_id",
     "admin_level_names": [
@@ -723,7 +722,7 @@
     "legend_text": "CHIRPS 1 year dekadal rainfall aggregations",
     "legend": [
       {
-        "value": -0,
+        "value": 0,
         "color": "#ffffff",
         "alpha": 0
       },
@@ -1090,43 +1089,48 @@
     "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
       {
-        "value": "-1.00",
+        "label": "-1.00",
         "color": "#a50026"
       },
       {
-        "value": "-0.75",
+        "label": "-0.75",
         "color": "#de3f2e"
       },
       {
-        "value": "-0.50",
+        "label": "-0.50",
         "color": "#f88d52"
       },
       {
-        "value": "-0.25",
+        "label": "-0.25",
         "color": "#fed380"
       },
       {
-        "value": "0.00",
+        "label": "0.00",
         "color": "#ffffbf"
       },
       {
-        "value": "0.25",
+        "label": "0.25",
         "color": "#ccea83"
       },
       {
-        "value": "0.50",
+        "label": "0.50",
         "color": "#86cb66"
       },
       {
-        "value": "0.75",
+        "label": "0.75",
         "color": "#2da155"
       },
       {
-        "value": "1.00",
+        "label": "1.00",
         "color": "#006837"
       }
     ]
@@ -1137,43 +1141,48 @@
     "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
       {
-        "value": "-1.00",
+        "label": "-1.00",
         "color": "#a50026"
       },
       {
-        "value": "-0.75",
+        "label": "-0.75",
         "color": "#de3f2e"
       },
       {
-        "value": "-0.50",
+        "label": "-0.50",
         "color": "#f88d52"
       },
       {
-        "value": "-0.25",
+        "label": "-0.25",
         "color": "#fed380"
       },
       {
-        "value": "0.00",
+        "label": "0.00",
         "color": "#ffffbf"
       },
       {
-        "value": "0.25",
+        "label": "0.25",
         "color": "#ccea83"
       },
       {
-        "value": "0.50",
+        "label": "0.50",
         "color": "#86cb66"
       },
       {
-        "value": "0.75",
+        "label": "0.75",
         "color": "#2da155"
       },
       {
-        "value": "1.00",
+        "label": "1.00",
         "color": "#006837"
       }
     ]
@@ -1283,45 +1292,45 @@
     "type": "wms",
     "server_layer_name": "myd11a2_taa_dekad",
     "base_url": "https://odc.ovio.org/",
+    "wcsConfig": {
+      "scale": 0.02,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Land Surface Temperature Amplitude refers to the difference between the maximum and minimum temperature in degrees Celsius",
     "legend": [
       {
-        "value": -0,
-        "color": "#ffffff",
-        "alpha": 0
-      },
-      {
-        "value": 50,
+        "label": "1°",
         "color": "#ffffd9"
       },
       {
-        "value": 200,
+        "label": "4°",
         "color": "#e8f6b1"
       },
       {
-        "value": 400,
+        "label": "8°",
         "color": "#b2e1b6"
       },
       {
-        "value": 600,
+        "label": "12°",
         "color": "#64c3bf"
       },
       {
-        "value": 800,
+        "label": "16°",
         "color": "#2ca1c2"
       },
       {
-        "value": 1000,
+        "label": "20°",
         "color": "#216daf"
       },
       {
-        "value": 1200,
+        "label": "24°",
         "color": "#253a97"
       },
       {
-        "value": 1400,
+        "label": "28°",
         "color": "#081d58"
       }
     ]
@@ -1452,124 +1461,8 @@
       }
     ]
   },
-  "ast_max": {
-    "title": "INAM blended air temperature daily max (10-day)",
-    "type": "wms",
-    "server_layer_name": "myd11a2_blended_txb_dekad",
-    "base_url": "https://odc.ovio.org/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "LEGEND",
-    "additional_query_params": {
-      "styles": "txb"
-    },
-    "legend": [
-      {
-        "value": 20,
-        "color": "#2b83ba"
-      },
-      {
-        "value": 22,
-        "color": "#59a4b2"
-      },
-      {
-        "value": 24,
-        "color": "#88c5aa"
-      },
-      {
-        "value": 26,
-        "color": "#b3e0a7"
-      },
-      {
-        "value": 28,
-        "color": "#d2edb0"
-      },
-      {
-        "value": 30,
-        "color": "#f0f9ba"
-      },
-      {
-        "value": 32,
-        "color": "#fff1ae"
-      },
-      {
-        "value": 34,
-        "color": "#fed38c"
-      },
-      {
-        "value": 36,
-        "color": "#feb669"
-      },
-      {
-        "value": 38,
-        "color": "#f3854e"
-      },
-      {
-        "value": 40,
-        "color": "#e54f35"
-      },
-      {
-        "value": 42,
-        "color": "#d7191c"
-      },
-      {
-        "value": 44,
-        "color": "#ad0003"
-      }
-    ]
-  },
-  "ast_max_anomaly": {
-    "title": "INAM blended air temperature max anomaly (10-day)",
-    "type": "wms",
-    "server_layer_name": "myd11a2_blended_txd_dekad",
-    "base_url": "https://odc.ovio.org/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "LEGEND",
-    "additional_query_params": {
-      "styles": "txd"
-    },
-    "legend": [
-      {
-        "value": -300.0,
-        "color": "#000004"
-      },
-      {
-        "value": -200.0,
-        "color": "#210c4a"
-      },
-      {
-        "value": -100.0,
-        "color": "#57106e"
-      },
-      {
-        "value": -50.0,
-        "color": "#8a226a"
-      },
-      {
-        "value": 50.0,
-        "color": "#bc3754"
-      },
-      {
-        "value": 100.0,
-        "color": "#e45a31"
-      },
-      {
-        "value": 200.0,
-        "color": "#f98e09"
-      },
-      {
-        "value": 300.0,
-        "color": "#f9cb35"
-      },
-      {
-        "value": 500.0,
-        "color": "#fcffa4"
-      }
-    ]
-  },
   "lst_daytime_blended": {
-    "title": "INAM blended temperature estimates (10-day)",
+    "title": "INAM blended mean maximum air temperature (10-day)",
     "type": "wms",
     "server_layer_name": "myd11a2_blended_txb_dekad",
     "base_url": "https://odc.ovio.org/",
@@ -1649,39 +1542,39 @@
     "legend_text": "LEGEND",
     "legend": [
       {
-        "value": -300.0,
+        "value": -300,
         "color": "#000004"
       },
       {
-        "value": -200.0,
+        "value": -200,
         "color": "#210c4a"
       },
       {
-        "value": -100.0,
+        "value": -100,
         "color": "#57106e"
       },
       {
-        "value": -50.0,
+        "value": -50,
         "color": "#8a226a"
       },
       {
-        "value": 50.0,
+        "value": 50,
         "color": "#bc3754"
       },
       {
-        "value": 100.0,
+        "value": 100,
         "color": "#e45a31"
       },
       {
-        "value": 200.0,
+        "value": 200,
         "color": "#f98e09"
       },
       {
-        "value": 300.0,
+        "value": 300,
         "color": "#f9cb35"
       },
       {
-        "value": 500.0,
+        "value": 500,
         "color": "#fcffa4"
       }
     ]
@@ -1699,45 +1592,45 @@
     "legend_text": "LEGEND",
     "legend": [
       {
-        "value": -300.0,
+        "value": -300,
         "color": "#000004"
       },
       {
-        "value": -200.0,
+        "value": -200,
         "color": "#210c4a"
       },
       {
-        "value": -100.0,
+        "value": -100,
         "color": "#57106e"
       },
       {
-        "value": -50.0,
+        "value": -50,
         "color": "#8a226a"
       },
       {
-        "value": 50.0,
+        "value": 50,
         "color": "#bc3754"
       },
       {
-        "value": 100.0,
+        "value": 100,
         "color": "#e45a31"
       },
       {
-        "value": 200.0,
+        "value": 200,
         "color": "#f98e09"
       },
       {
-        "value": 300.0,
+        "value": 300,
         "color": "#f9cb35"
       },
       {
-        "value": 500.0,
+        "value": 500,
         "color": "#fcffa4"
       }
     ]
   },
   "lst_day_anomaly_blended": {
-    "title": "INAM blended temperature anomaly (10-day)",
+    "title": "INAM blended mean maximum air temperature anomaly (10-day)",
     "type": "wms",
     "server_layer_name": "myd11a2_blended_txd_dekad",
     "base_url": "https://odc.ovio.org/",
@@ -1746,39 +1639,39 @@
     "legend_text": "Temperature anomaly based on long term average compared to local station data from INAM blended with MODIS daytime land surface temperature estimates",
     "legend": [
       {
-        "value": -300.0,
+        "value": -300,
         "color": "#000004"
       },
       {
-        "value": -200.0,
+        "value": -200,
         "color": "#210c4a"
       },
       {
-        "value": -100.0,
+        "value": -100,
         "color": "#57106e"
       },
       {
-        "value": -50.0,
+        "value": -50,
         "color": "#8a226a"
       },
       {
-        "value": 50.0,
+        "value": 50,
         "color": "#bc3754"
       },
       {
-        "value": 100.0,
+        "value": 100,
         "color": "#e45a31"
       },
       {
-        "value": 200.0,
+        "value": 200,
         "color": "#f98e09"
       },
       {
-        "value": 300.0,
+        "value": 300,
         "color": "#f9cb35"
       },
       {
-        "value": 500.0,
+        "value": 500,
         "color": "#fcffa4"
       }
     ]
