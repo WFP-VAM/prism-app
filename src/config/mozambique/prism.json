@@ -1,13 +1,15 @@
 {
   "country": "Mozambique",
   "alertFormActive": false,
+  "enableNavigationDropdown": true,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
     "temperature": "icon_climate.png",
     "risk": "icon_impact.png",
     "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png"
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
@@ -74,10 +76,8 @@
       "vegetation_conditions": ["ndvi_dekad_5", "ndvi_dekad_anomaly_5"]
     },
     "temperature": {
-      "air_temperature": ["ast_max", "ast_max_anomaly"],
+      "blended_temperature_estimates": ["lst_daytime_blended", "lst_day_anomaly_blended"],
       "land_surface_temperature": [
-        "lst_daytime_blended",
-        "lst_day_anomaly_blended",
         "lst_daytime_5",
         "lst_day_anomaly_5",
         "lst_amplitude"
@@ -123,6 +123,8 @@
           ]
         }
       ]
+    "exposure": {
+      "population": ["census"]
     }
   }
 }
