@@ -11,7 +11,10 @@
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png"
   },
-  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin1_boundaries"
+  ],
   "serversUrls": {
     "wms": [
       "https://odc.ovio.org/wms",
@@ -31,12 +34,30 @@
         {
           "menu_group_title": "Rainfall Aggregate",
           "layers": [
-            {"id": "rainfall_dekad", "label": "10-day"},
-            {"id": "rainfall_agg_1month", "label": "1-month"},
-            {"id": "rainfall_agg_3month", "label": "3-month"},
-            {"id": "rainfall_agg_6month", "label": "6-month"},
-            {"id": "rainfall_agg_9month", "label": "9-month"},
-            {"id": "rainfall_agg_1year", "label": "1-year"}
+            {
+              "id": "rainfall_dekad",
+              "label": "10-day"
+            },
+            {
+              "id": "rainfall_agg_1month",
+              "label": "1-month"
+            },
+            {
+              "id": "rainfall_agg_3month",
+              "label": "3-month"
+            },
+            {
+              "id": "rainfall_agg_6month",
+              "label": "6-month"
+            },
+            {
+              "id": "rainfall_agg_9month",
+              "label": "9-month"
+            },
+            {
+              "id": "rainfall_agg_1year",
+              "label": "1-year"
+            }
           ]
         }
       ],
@@ -45,26 +66,62 @@
         {
           "menu_group_title": "Rainfall Anomaly",
           "layers": [
-            {"id": "rain_anomaly_dekad", "label": "10-day"},
-            {"id": "rain_anomaly_1month", "label": "1-month"},
-            {"id": "rain_anomaly_3month", "label": "3-month"},
-            {"id": "rain_anomaly_6month", "label": "6-month"},
-            {"id": "rain_anomaly_9month", "label": "9-month"},
-            {"id": "rain_anomaly_1year", "label": "1-year"}
+            {
+              "id": "rain_anomaly_dekad",
+              "label": "10-day"
+            },
+            {
+              "id": "rain_anomaly_1month",
+              "label": "1-month"
+            },
+            {
+              "id": "rain_anomaly_3month",
+              "label": "3-month"
+            },
+            {
+              "id": "rain_anomaly_6month",
+              "label": "6-month"
+            },
+            {
+              "id": "rain_anomaly_9month",
+              "label": "9-month"
+            },
+            {
+              "id": "rain_anomaly_1year",
+              "label": "1-year"
+            }
           ]
         },
         {
           "menu_group_title": "SPI",
           "layers": [
-            {"id": "spi_1m", "label": "1-month"},
-            {"id": "spi_3m", "label": "3-month"},
-            {"id": "spi_6m", "label": "6-month"},
-            {"id": "spi_9m", "label": "9-month"},
-            {"id": "spi_1y", "label": "1-year"}
+            {
+              "id": "spi_1m",
+              "label": "1-month"
+            },
+            {
+              "id": "spi_3m",
+              "label": "3-month"
+            },
+            {
+              "id": "spi_6m",
+              "label": "6-month"
+            },
+            {
+              "id": "spi_9m",
+              "label": "9-month"
+            },
+            {
+              "id": "spi_1y",
+              "label": "1-year"
+            }
           ]
         }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days"],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
       "heavy_rain": [
         "days_heavy_rain",
         "days_intense_rain",
@@ -73,10 +130,16 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": ["ndvi_dekad_5", "ndvi_dekad_anomaly_5"]
+      "vegetation_conditions": [
+        "ndvi_dekad_5",
+        "ndvi_dekad_anomaly_5"
+      ]
     },
     "temperature": {
-      "blended_temperature_estimates": ["lst_daytime_blended", "lst_day_anomaly_blended"],
+      "blended_temperature_estimates": [
+        "lst_daytime_blended",
+        "lst_day_anomaly_blended"
+      ],
       "land_surface_temperature": [
         "lst_daytime_5",
         "lst_day_anomaly_5",
@@ -84,10 +147,14 @@
       ]
     },
     "tropical_storms": {
-      "tropical_storms": ["adamts_buffers"]
+      "tropical_storms": [
+        "adamts_buffers"
+      ]
     },
     "vulnerability": {
-      "poverty": ["mpi"],
+      "poverty": [
+        "mpi"
+      ],
       "food_insecurity": [
         {
           "menu_group_title": "IPC",
@@ -123,8 +190,11 @@
           ]
         }
       ]
+    },
     "exposure": {
-      "population": ["census"]
+      "population": [
+        "census"
+      ]
     }
   }
 }
