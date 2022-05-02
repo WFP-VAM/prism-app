@@ -6,13 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  CircularProgress,
-  createStyles,
-  Grid,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
+import { createStyles, Grid, WithStyles, withStyles } from '@material-ui/core';
 import { countBy, get, pickBy } from 'lodash';
 import moment from 'moment';
 // map
@@ -24,7 +18,6 @@ import type { Feature, MultiPolygon } from '@turf/helpers';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import Download from './Download';
-import TileLoadingIcon from './TileLoadingIcon';
 // layers
 import {
   AdminLevelDataLayer,
@@ -54,7 +47,6 @@ import DateSelector from './DateSelector';
 import { findClosestDate } from './DateSelector/utils';
 import {
   dateRangeSelector,
-  isLoading,
   layerDataSelector,
   layersSelector,
 } from '../../context/mapStateSlice/selectors';
@@ -67,7 +59,6 @@ import {
 } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
-  isLoading as areDatesLoading,
   loadAvailableDates,
 } from '../../context/serverStateSlice';
 
@@ -86,6 +77,7 @@ import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
 import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
+import Loading from './Loading';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
@@ -170,9 +162,6 @@ function MapView({ classes }: MapViewProps) {
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
   const selectedLayers = useSelector(layersSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const layersLoading = useSelector(isLoading);
-  const datesLoading = useSelector(areDatesLoading);
-  const loading = layersLoading || datesLoading;
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -437,11 +426,7 @@ function MapView({ classes }: MapViewProps) {
 
   return (
     <Grid item className={classes.container}>
-      {loading && (
-        <div className={classes.loading}>
-          <CircularProgress size={100} />
-        </div>
-      )}
+      <Loading />
       <MapboxMap
         // eslint-disable-next-line react/style-prop-object
         style={style.toString()}
@@ -480,7 +465,6 @@ function MapView({ classes }: MapViewProps) {
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
-            <TileLoadingIcon />
             <Download />
             <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
           </Grid>
@@ -512,17 +496,6 @@ const styles = () =>
       top: 0,
       width: '100%',
       padding: '16px',
-    },
-    loading: {
-      position: 'absolute',
-      height: '100%',
-      width: '100%',
-      backgroundColor: 'black',
-      opacity: 0.75,
-      zIndex: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
     },
   });
 
