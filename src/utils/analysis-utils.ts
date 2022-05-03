@@ -443,18 +443,18 @@ export async function loadFeaturesClientSide(
 }
 
 export function getAnalysisTableColumns(
-  analysisResult: BaselineLayerResult,
+  analysisResult: BaselineLayerResult | PolygonAnalysisResult,
+  withLocalName = false,
 ): Column[] {
+  if ('tableColumns' in analysisResult) {
+    return (analysisResult as PolygonAnalysisResult).tableColumns;
+  }
   const { statistic } = analysisResult;
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;
 
   return [
     {
-      id: 'localName',
-      label: 'Local Name',
-    },
-    {
-      id: 'name',
+      id: withLocalName ? 'localName' : 'name',
       label: 'Name',
     },
     {
@@ -476,12 +476,9 @@ export function quoteAndEscapeCell(value: number | string) {
 
 export function downloadCSVFromTableData(
   analysisResult: TabularAnalysisResult,
+  columns: Column[],
 ) {
   const { tableData, key: createdAt } = analysisResult;
-  const columns =
-    'tableColumns' in analysisResult
-      ? analysisResult.tableColumns
-      : getAnalysisTableColumns(analysisResult);
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
     columns.map(col => quoteAndEscapeCell(col.label)).join(','),

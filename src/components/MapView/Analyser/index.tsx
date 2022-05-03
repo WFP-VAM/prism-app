@@ -84,7 +84,7 @@ import {
 import { getPossibleDatesForLayer } from '../../../utils/server-utils';
 import { useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
-import { useSafeTranslation } from '../../../i18n';
+import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -115,6 +115,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [adminLevel, setAdminLevel] = useState<AdminLevelType>(1);
   const [startDate, setStartDate] = useState<number | null>(null);
   const [endDate, setEndDate] = useState<number | null>(null);
+  // const { t, i18n } = useSafeTranslation();
 
   // find layer for the given adminLevel
   const adminLevelLayer = getAdminLevelLayer(adminLevel);
@@ -148,7 +149,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
     LayerKey | undefined
   >(preSelectedBaselineLayer?.id);
 
-  const { t } = useSafeTranslation();
+  const { t, i18n } = useSafeTranslation();
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -404,6 +405,15 @@ function Analyser({ extent, classes }: AnalyserProps) {
     }
   };
 
+  const getTranslatedColumn = (
+    analysis: BaselineLayerResult | PolygonAnalysisResult,
+  ) => {
+    return getAnalysisTableColumns(
+      analysis,
+      !isEnglishLanguageSelected(i18n),
+    ).map(col => ({ ...col, label: t(col.label) }));
+  };
+
   return (
     <div className={classes.analyser}>
       <Button
@@ -599,17 +609,17 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   {isTableViewOpen && (
                     <AnalysisTable
                       tableData={analysisResult.tableData}
-                      columns={
-                        'tableColumns' in analysisResult
-                          ? (analysisResult as PolygonAnalysisResult)
-                              .tableColumns
-                          : getAnalysisTableColumns(analysisResult)
-                      }
+                      columns={getTranslatedColumn(analysisResult)}
                     />
                   )}
                   <Button
                     className={classes.innerAnalysisButton}
-                    onClick={() => downloadCSVFromTableData(analysisResult)}
+                    onClick={() =>
+                      downloadCSVFromTableData(
+                        analysisResult,
+                        getTranslatedColumn(analysisResult),
+                      )
+                    }
                   >
                     <Typography variant="body2">{t('Download')}</Typography>
                   </Button>
