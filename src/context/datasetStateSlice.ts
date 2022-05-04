@@ -24,11 +24,6 @@ type DatasetState = {
 
 const initialState: DatasetState = { isLoading: false };
 
-type DatasetResult = {
-  data: TableData;
-  id: string;
-};
-
 type BoundaryProps = {
   code: number;
   urlPath: string;
@@ -84,7 +79,7 @@ const getDatasetFromUrl = async (
 };
 
 export const loadDataset = createAsyncThunk<
-  DatasetResult,
+  TableData,
   DatasetParams,
   CreateAsyncThunkTypes
 >('datasetState/loadDataset', async (params: DatasetParams) => {
@@ -130,12 +125,7 @@ export const loadDataset = createAsyncThunk<
     columns,
   };
 
-  const datasetResult: DatasetResult = {
-    data,
-    id: params.id,
-  };
-
-  return new Promise<DatasetResult>(resolve => resolve(datasetResult));
+  return new Promise<TableData>(resolve => resolve(data));
 });
 
 export const datasetResultStateSlice = createSlice({
@@ -165,13 +155,9 @@ export const datasetResultStateSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(
       loadDataset.fulfilled,
-      (
-        { ...rest },
-        { payload }: PayloadAction<DatasetResult>,
-      ): DatasetState => ({
+      ({ ...rest }, { payload }: PayloadAction<TableData>): DatasetState => ({
         ...rest,
-        data: payload.data,
-        id: payload.id,
+        data: payload,
         isLoading: false,
       }),
     );
