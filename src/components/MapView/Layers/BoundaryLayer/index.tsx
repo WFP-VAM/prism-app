@@ -39,9 +39,8 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
 
-  const onHoverHandler = (evt: any) => {
+  const onClickShowPopup = (evt: any) => {
     dispatch(hidePopup());
-    onToggleHover('pointer', evt.target);
     const coordinates = evt.lngLat;
     const locationName = getFullLocationName(
       layer.adminLevelNames,
@@ -69,6 +68,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
     ) as WMSLayerProps;
 
     if (!selectedLayerWMS) {
+      onClickShowPopup(evt);
       return;
     }
 
@@ -102,14 +102,14 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   };
 
   // Only use mouse effects and click effects on the main layer.
-  const { fillOnMouseMove, fillOnMouseLeave, fillOnClick } = isPrimaryLayer
+  const { fillOnMouseEnter, fillOnMouseLeave, fillOnClick } = isPrimaryLayer
     ? {
-        fillOnMouseMove: onHoverHandler,
+        fillOnMouseEnter: (evt: any) => onToggleHover('pointer', evt.target),
         fillOnMouseLeave: (evt: any) => onToggleHover('', evt.target),
         fillOnClick: onClickFunc,
       }
     : {
-        fillOnMouseMove: undefined,
+        fillOnMouseEnter: undefined,
         fillOnMouseLeave: undefined,
         fillOnClick: undefined,
       };
@@ -120,7 +120,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       data={data}
       fillPaint={layer.styles.fill}
       linePaint={layer.styles.line}
-      fillOnMouseMove={fillOnMouseMove}
+      fillOnMouseEnter={fillOnMouseEnter}
       fillOnMouseLeave={fillOnMouseLeave}
       fillOnClick={fillOnClick}
     />
