@@ -115,7 +115,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [adminLevel, setAdminLevel] = useState<AdminLevelType>(1);
   const [startDate, setStartDate] = useState<number | null>(null);
   const [endDate, setEndDate] = useState<number | null>(null);
-  // const { t, i18n } = useSafeTranslation();
 
   // find layer for the given adminLevel
   const adminLevelLayer = getAdminLevelLayer(adminLevel);
