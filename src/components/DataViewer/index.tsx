@@ -59,7 +59,7 @@ function DataViewer({ classes }: DatasetProps) {
     category: id,
   };
 
-  const boundaryButtons = Object.entries(boundaryProps).map(
+  const adminBoundaryLevelButtons = Object.entries(boundaryProps).map(
     ([adminId, level]) => (
       <Button
         id={adminId}
@@ -82,7 +82,7 @@ function DataViewer({ classes }: DatasetProps) {
             <Close fontSize="small" />
           </IconButton>
           <Grid item className={classes.boundarySelector}>
-            {boundaryButtons}
+            {adminBoundaryLevelButtons}
           </Grid>
           {isDatasetLoading ? (
             <div className={classes.loading}>
