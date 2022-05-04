@@ -17,7 +17,6 @@ import {
   loadingDatasetSelector,
   clearDataset,
   loadDataset,
-  DatasetParams,
   updateAdminId,
 } from '../../context/datasetStateSlice';
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
@@ -29,39 +28,29 @@ function DataViewer({ classes }: DatasetProps) {
   const isDatasetLoading = useSelector(loadingDatasetSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
-  const {
-    data: dataset,
-    boundaryProps,
-    id,
-    serverParams,
-    title,
-    chartType,
-  } = useSelector(datasetSelector);
+  const { data: dataset, adminBoundaryParams: params, id } = useSelector(
+    datasetSelector,
+  );
 
   useEffect(() => {
-    if (boundaryProps && serverParams && id && selectedDate) {
-      const datasetParams: DatasetParams = {
-        id,
-        boundaryProps,
-        url: serverParams.url,
-        serverLayerName: serverParams.layerName,
-        selectedDate,
-      };
-
-      dispatch(loadDataset(datasetParams));
+    if (params && selectedDate && id) {
+      dispatch(
+        loadDataset({
+          id,
+          boundaryProps: params.boundaryProps,
+          url: params.serverParams.url,
+          serverLayerName: params.serverParams.layerName,
+          selectedDate,
+        }),
+      );
     }
-  }, [id, boundaryProps, dispatch, serverParams, selectedDate]);
+  }, [params, dispatch, selectedDate, id]);
 
-  if (
-    !boundaryProps ||
-    !dataset ||
-    !serverParams ||
-    !title ||
-    !id ||
-    !chartType
-  ) {
+  if (!params || !dataset || !id) {
     return null;
   }
+
+  const { boundaryProps, title, chartType } = params;
 
   const config: ChartConfig = {
     type: chartType,

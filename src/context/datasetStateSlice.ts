@@ -14,12 +14,9 @@ type ServerParams = {
 
 type DatasetState = {
   data?: TableData;
-  title?: string;
   isLoading: boolean;
-  boundaryProps?: BoundaryPropsDict;
+  adminBoundaryParams?: AdminBoundaryParams;
   id?: string;
-  serverParams?: ServerParams;
-  chartType?: ChartType;
 };
 
 const initialState: DatasetState = { isLoading: false };
@@ -34,7 +31,6 @@ export type AdminBoundaryParams = {
   boundaryProps: BoundaryPropsDict;
   serverParams: ServerParams;
   title: string;
-  id: string;
   chartType: ChartType;
 };
 
@@ -138,11 +134,7 @@ export const datasetResultStateSlice = createSlice({
       { payload }: PayloadAction<AdminBoundaryParams>,
     ): DatasetState => ({
       ...state,
-      title: payload.title,
-      serverParams: payload.serverParams,
-      boundaryProps: payload.boundaryProps,
-      id: payload.id,
-      chartType: payload.chartType,
+      adminBoundaryParams: payload,
     }),
     updateAdminId: (
       state,

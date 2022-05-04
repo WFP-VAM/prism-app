@@ -8,6 +8,7 @@ import { LayerData } from '../../../../context/layers/layer-data';
 import {
   setBoundaryParams,
   AdminBoundaryParams,
+  updateAdminId,
 } from '../../../../context/datasetStateSlice';
 
 import {
@@ -93,11 +94,11 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       title,
       boundaryProps,
       serverParams: { layerName: serverLayerName, url },
-      id: lowestLevelId,
       chartType,
     };
 
     dispatch(setBoundaryParams(adminBoundaryParams));
+    dispatch(updateAdminId(lowestLevelId));
   };
 
   // Only use mouse effects and click effects on the main layer.
