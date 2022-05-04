@@ -266,9 +266,9 @@ type LayerStyleProps = {
 };
 
 type DatasetLevel = {
-  path: string;
-  id: string;
-  name: string;
+  path: string; // Url substring that represents admin level.
+  id: string; // Geojson property field for admin boundary id.
+  name: string; // Geojson property field for admin boundary name.
 };
 
 export enum ChartType {
@@ -332,7 +332,7 @@ export class WMSLayerProps extends CommonLayerProps {
   zonal?: ZonalConfig;
 
   @optional
-  chartData?: DatasetProps;
+  chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
