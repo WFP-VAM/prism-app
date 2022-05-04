@@ -63,12 +63,13 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),
     );
 
+    onClickShowPopup(evt);
+
     const selectedLayerWMS: undefined | WMSLayerProps = selectedLayers.find(
       l => l.type === 'wms' && l.chartData,
     ) as WMSLayerProps;
 
     if (!selectedLayerWMS) {
-      onClickShowPopup(evt);
       return;
     }
 
