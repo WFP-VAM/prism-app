@@ -13,7 +13,6 @@ import {
   isNumber,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
-import { useMemo } from 'react';
 import bbox from '@turf/bbox';
 import {
   AdminLevelType,
@@ -685,19 +684,17 @@ export function useAnalysisTableColumns(
   analysisTableColumns: Column[];
 } {
   const { t, i18n } = useSafeTranslation();
-  return useMemo(() => {
-    const analysisTableColumns = getAnalysisTableColumns(
-      analysisResult,
-      !isEnglishLanguageSelected(i18n),
-    );
-    return {
-      analysisTableColumns,
-      translatedColumns: analysisTableColumns.map(col => ({
-        ...col,
-        label: t(col.label),
-      })),
-    };
-  }, [i18n, t, analysisResult]);
+  const analysisTableColumns = getAnalysisTableColumns(
+    analysisResult,
+    !isEnglishLanguageSelected(i18n),
+  );
+  return {
+    analysisTableColumns,
+    translatedColumns: analysisTableColumns.map(col => ({
+      ...col,
+      label: t(col.label),
+    })),
+  };
 }
 
 export class PolygonAnalysisResult {
