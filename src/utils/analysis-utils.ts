@@ -13,6 +13,7 @@ import {
   isNumber,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
+import { useMemo } from 'react';
 import bbox from '@turf/bbox';
 import {
   AdminLevelType,
@@ -46,7 +47,11 @@ import type {
 import { LayerDefinitions } from '../config/utils';
 import type { TableRow } from '../context/analysisResultStateSlice';
 import { isLocalhost } from '../serviceWorker';
-import { i18nTranslator } from '../i18n';
+import {
+  i18nTranslator,
+  isEnglishLanguageSelected,
+  useSafeTranslation,
+} from '../i18n';
 import { getRoundedData } from './data-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
@@ -442,34 +447,6 @@ export async function loadFeaturesClientSide(
   }, [] as GeoJsonBoundary[]);
 }
 
-export function getAnalysisTableColumns(
-  analysisResult: BaselineLayerResult | PolygonAnalysisResult,
-  withLocalName = false,
-): Column[] {
-  if ('tableColumns' in analysisResult) {
-    return (analysisResult as PolygonAnalysisResult).tableColumns;
-  }
-  const { statistic } = analysisResult;
-  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
-
-  return [
-    {
-      id: withLocalName ? 'localName' : 'name',
-      label: 'Name',
-    },
-    {
-      id: statistic,
-      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      format: value => getRoundedData(value as number),
-    },
-    {
-      id: 'baselineValue',
-      label: baselineLayerTitle,
-      format: (value: number | string) => value.toLocaleString('en-US'),
-    },
-  ];
-}
-
 export function quoteAndEscapeCell(value: number | string) {
   return `"${value.toString().replaceAll('"', '""')}"`;
 }
@@ -668,6 +645,59 @@ export class BaselineLayerResult {
       ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
       : `${this.getHazardLayer().title} (${this.statistic})`;
   }
+}
+
+export function getAnalysisTableColumns(
+  analysisResult?: AnalysisResult,
+  withLocalName = false,
+): Column[] {
+  if (!analysisResult || analysisResult instanceof ExposedPopulationResult) {
+    return [];
+  }
+  if ('tableColumns' in analysisResult) {
+    return (analysisResult as PolygonAnalysisResult).tableColumns;
+  }
+  const { statistic } = analysisResult;
+  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
+
+  return [
+    {
+      id: withLocalName ? 'localName' : 'name',
+      label: 'Name',
+    },
+    {
+      id: statistic,
+      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
+      format: value => getRoundedData(value as number),
+    },
+    {
+      id: 'baselineValue',
+      label: baselineLayerTitle,
+      format: (value: number | string) => value.toLocaleString('en-US'),
+    },
+  ];
+}
+
+export function useAnalysisTableColumns(
+  analysisResult?: AnalysisResult,
+): {
+  translatedColumns: Column[];
+  analysisTableColumns: Column[];
+} {
+  const { t, i18n } = useSafeTranslation();
+  return useMemo(() => {
+    const analysisTableColumns = getAnalysisTableColumns(
+      analysisResult,
+      !isEnglishLanguageSelected(i18n),
+    );
+    return {
+      analysisTableColumns,
+      translatedColumns: analysisTableColumns.map(col => ({
+        ...col,
+        label: t(col.label),
+      })),
+    };
+  }, [i18n, t, analysisResult]);
 }
 
 export class PolygonAnalysisResult {

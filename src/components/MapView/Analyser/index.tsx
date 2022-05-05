@@ -64,11 +64,11 @@ import {
 import AnalysisTable from './AnalysisTable';
 import SimpleDropdown from '../../Common/SimpleDropdown';
 import {
-  getAnalysisTableColumns,
   downloadCSVFromTableData,
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
+  useAnalysisTableColumns,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 import {
@@ -84,7 +84,7 @@ import {
 import { getPossibleDatesForLayer } from '../../../utils/server-utils';
 import { useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
-import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
+import { useSafeTranslation } from '../../../i18n';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -148,7 +148,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
     LayerKey | undefined
   >(preSelectedBaselineLayer?.id);
 
-  const { t, i18n } = useSafeTranslation();
+  const { t } = useSafeTranslation();
+
+  const { translatedColumns } = useAnalysisTableColumns(analysisResult);
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -404,15 +406,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
     }
   };
 
-  const getTranslatedColumn = (
-    analysis: BaselineLayerResult | PolygonAnalysisResult,
-  ) => {
-    return getAnalysisTableColumns(
-      analysis,
-      !isEnglishLanguageSelected(i18n),
-    ).map(col => ({ ...col, label: t(col.label) }));
-  };
-
   return (
     <div className={classes.analyser}>
       <Button
@@ -608,7 +601,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   {isTableViewOpen && (
                     <AnalysisTable
                       tableData={analysisResult.tableData}
-                      columns={getTranslatedColumn(analysisResult)}
+                      columns={translatedColumns}
                     />
                   )}
                   <Button
@@ -616,7 +609,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                     onClick={() =>
                       downloadCSVFromTableData(
                         analysisResult,
-                        getTranslatedColumn(analysisResult),
+                        translatedColumns,
                       )
                     }
                   >
