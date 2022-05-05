@@ -7,7 +7,6 @@ import { BoundaryLayerProps, WMSLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import {
   setBoundaryParams,
-  AdminBoundaryParams,
   updateAdminId,
 } from '../../../../context/datasetStateSlice';
 
@@ -18,6 +17,11 @@ import {
 import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
 import { isPrimaryBoundaryLayer } from '../../../../config/utils';
 import { getFullLocationName } from '../../../../utils/name-utils';
+
+import {
+  getChartLowestBoundaryLevelId,
+  getChartAdminBoundaryParams,
+} from '../../../../utils/admin-utils';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -73,30 +77,12 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       return;
     }
 
-    const { serverLayerName, title, chartData } = selectedLayerWMS;
-
-    const { levels, url, type: chartType } = chartData!;
-
-    const lowestLevelId = levels[levels.length - 1].id;
-
-    const boundaryProps = levels.reduce(
-      (obj, item) => ({
-        ...obj,
-        [item.id]: {
-          code: properties[item.id],
-          urlPath: item.path,
-          name: properties[item.name],
-        },
-      }),
-      {},
+    const adminBoundaryParams = getChartAdminBoundaryParams(
+      selectedLayerWMS,
+      properties,
     );
 
-    const adminBoundaryParams: AdminBoundaryParams = {
-      title,
-      boundaryProps,
-      serverParams: { layerName: serverLayerName, url },
-      chartType,
-    };
+    const lowestLevelId = getChartLowestBoundaryLevelId(selectedLayerWMS);
 
     dispatch(setBoundaryParams(adminBoundaryParams));
     dispatch(updateAdminId(lowestLevelId));
