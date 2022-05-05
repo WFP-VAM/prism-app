@@ -52,6 +52,21 @@
     "additional_query_params": {
       "styles": "rfh_350"
     },
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
+      "levels": [{
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "bar"
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -116,6 +131,21 @@
     "title": "10-day rainfall anomaly",
     "type": "wms",
     "server_layer_name": "rfq_dekad",
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
+      "levels": [{
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1087,6 +1117,21 @@
     "title": "10-day NDVI (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13a2_vim_dekad",
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
+      "levels": [{
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "wcsConfig": {
@@ -1191,6 +1236,21 @@
     "title": "10-day NDVI anomaly (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13a2_viq_dekad",
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
+      "levels": [{
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "additional_query_params": {
@@ -1855,6 +1915,21 @@
       "title": "SPI - 1-month",
       "type": "wms",
       "server_layer_name": "r1s_dekad",
+      "chart_data": {
+        "url": "https://dev.earthobservation.vam.wfp.org/prism/moz",
+        "levels": [{
+            "path": "level1",
+            "id": "adm1_id",
+            "name": "adm1_name"
+          },
+          {
+            "path": "level2",
+            "id": "adm2_id",
+            "name": "adm2_name"
+          }
+        ],
+        "type": "line"
+      },
       "base_url": "https://odc.ovio.org/",
       "date_interval": "days",
       "wcsConfig": {
