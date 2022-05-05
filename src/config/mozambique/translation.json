@@ -92,5 +92,13 @@
     "Total population": "População total",
     "Exposure": "Exposição",
     "Below": "Abaixo",
-    "Above": "Acima"
+    "Above": "Acima",
+    "Rainfall Aggregate" :"Precipitação Cumulative",
+    "Rainfall Anomaly": "Anomalia de precipitação",
+    "10-day": "10-dias",
+    "1-month": "1-mês",
+    "3-month": "3-meses",
+    "6-month": "6-meses",
+    "9-month": "9-meses",
+    "1-year": "1-ano"
 }
