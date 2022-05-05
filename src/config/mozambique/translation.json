@@ -100,5 +100,13 @@
     "3-month": "3-meses",
     "6-month": "6-meses",
     "9-month": "9-meses",
-    "1-year": "1-ano"
+    "1-year": "1-ano",
+    "Current phase classification": "Classificação da fase atual",
+    "Projected phase classification": "Classificação de fase projetada",
+    "December 2020 phase classification": "Classificação da fase de dezembro de 2020",
+    "Current population in phase 3+": "População atual na fase 3+",
+    "Projected population in phase 3+": "População projetada na fase 3+",
+    "Current percent of population in phase 3+": "Porcentagem atual da população na fase 3+",
+    "Projected percent of population in phase 3+": "Porcentagem projetada da população na fase 3+"
+
 }
