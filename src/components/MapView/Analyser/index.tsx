@@ -105,6 +105,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
   const [statistic, setStatistic] = useState(AggregationOperations.Mean);
   const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>();
+  const [
+    analysedBaselineLayerId,
+    setAnalysedBaselineLayerId,
+  ] = useState<LayerKey | null>();
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
   const [belowThreshold, setBelowThreshold] = useState('');
@@ -279,6 +283,14 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   const clearAnalysis = () => {
     dispatch(clearAnalysisResult());
+    if (analysedBaselineLayerId) {
+      const currentlyAnalysedBaseline = LayerDefinitions[
+        analysedBaselineLayerId
+      ] as AdminLevelDataLayerProps;
+      removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
+      safeDispatchRemoveLayer(map, currentlyAnalysedBaseline, dispatch);
+      setAnalysedBaselineLayerId(null);
+    }
 
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[
@@ -381,6 +393,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
       if (!baselineLayerId) {
         throw new Error('Baseline layer should be selected to run analysis');
       }
+
+      updateHistory(BASELINE_URL_LAYER_KEY, baselineLayerId);
+      setAnalysedBaselineLayerId(baselineLayerId);
 
       const selectedBaselineLayer = LayerDefinitions[
         baselineLayerId
