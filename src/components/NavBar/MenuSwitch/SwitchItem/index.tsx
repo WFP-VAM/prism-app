@@ -27,6 +27,7 @@ import {
 import { useUrlHistory } from '../../../../utils/url-utils';
 import { removeLayer } from '../../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../../i18n';
+import { clearDataset } from '../../../../context/datasetStateSlice';
 
 function SwitchItem({ classes, layer }: SwitchItemProps) {
   const { t } = useSafeTranslation();
@@ -68,6 +69,11 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
 
   const toggleLayerValue = (selectedLayerId: string, checked: boolean) => {
     const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
+
+    // clear previous table dataset loaded first
+    // to close the dataseries and thus close chart
+    dispatch(clearDataset());
+
     const urlLayerKey =
       layer.type === ADMIN_LEVEL_DATA_LAYER_KEY
         ? 'baselineLayerId'
