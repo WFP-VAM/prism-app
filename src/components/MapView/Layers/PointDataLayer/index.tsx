@@ -2,7 +2,10 @@ import React, { useEffect } from 'react';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
-import { PointDataLayerProps } from '../../../../config/types';
+import {
+  PointDataLayerProps,
+  PointDataProcessing,
+} from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
@@ -15,6 +18,7 @@ import { getBoundaryLayerSingleton } from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { circleLayout, circlePaint, fillPaintData } from '../styles';
+import { loadEWSDataset } from '../../../../context/datasetStateSlice';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -39,12 +43,14 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   }
 
   const onClickFunc = async (evt: any) => {
+    const feature = evt.features[0];
+
     // by default add `dataField` to the tooltip
     dispatch(
       addPopupData({
         [layer.title]: {
           data: getRoundedData(
-            get(evt.features[0], `properties.${layer.dataField}`),
+            get(feature, `properties.${layer.dataField}`),
             t,
           ),
           coordinates: evt.lngLat,
@@ -55,6 +61,15 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     dispatch(
       addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
     );
+
+    if (layer.processing === PointDataProcessing.EWS && selectedDate) {
+      dispatch(
+        loadEWSDataset({
+          date: selectedDate,
+          externalId: feature.properties.external_id,
+        }),
+      );
+    }
   };
 
   const boundaryId = getBoundaryLayerSingleton().id;

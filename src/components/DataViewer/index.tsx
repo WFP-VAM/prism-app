@@ -17,6 +17,7 @@ import {
   loadingDatasetSelector,
   clearDataset,
   loadDataset,
+  loadEWSDataset,
   updateAdminId,
 } from '../../context/datasetStateSlice';
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';

@@ -4,6 +4,10 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 import { ChartType } from '../config/types';
+import {
+  fetchEWSDataPointsByLocation,
+  EWSSensorData,
+} from '../utils/ews-utils';
 
 type BoundaryPropsDict = { [key: string]: BoundaryProps };
 
@@ -47,6 +51,16 @@ type DataItem = {
   value: number;
 };
 
+type EWSDataPointsRequestParams = {
+  date: number;
+  externalId: string;
+};
+
+export enum TableDataFormat {
+  DATE = 'date',
+  TIME = 'time',
+}
+
 const getDatasetFromUrl = async (
   year: number,
   params: DatasetParams,
@@ -74,6 +88,66 @@ const getDatasetFromUrl = async (
   return filteredRows;
 };
 
+const createTableData = (
+  results: DataItem[],
+  format: TableDataFormat,
+): TableData => {
+  const prefix = format === TableDataFormat.DATE ? 'd' : 't';
+  const momentFormat = format === TableDataFormat.DATE ? 'YYYY-MM-DD' : 'hh:mm';
+
+  const sortedRows = orderBy(results, item => item.date).map((item, index) => ({
+    ...item,
+    day: `${prefix}${index + 1}`,
+  }));
+
+  const datesRows = sortedRows.reduce(
+    (acc, obj) => ({
+      ...acc,
+      [obj.day]: moment(obj.date).format(momentFormat),
+    }),
+    {},
+  );
+
+  const valuesRows = sortedRows.reduce((acc, obj) => {
+    if (!obj.value) {
+      return acc;
+    }
+
+    return { ...acc, [obj.day]: obj.value.toString() };
+  }, {});
+
+  const columns = Object.keys(valuesRows);
+  const data: TableData = {
+    rows: [datesRows, valuesRows],
+    columns,
+  };
+
+  return data;
+};
+
+export const loadEWSDataset = createAsyncThunk<
+  TableData,
+  EWSDataPointsRequestParams,
+  CreateAsyncThunkTypes
+>('datasetState/loadEWSDataset', async (params: EWSDataPointsRequestParams) => {
+  const { date, externalId } = params;
+
+  const dataPoints: EWSSensorData[] = await fetchEWSDataPointsByLocation(
+    date,
+    externalId,
+  );
+
+  const results: DataItem[] = dataPoints.map(item => {
+    const [measureDate, value] = item.value;
+
+    return { date: moment(measureDate).valueOf(), value };
+  });
+
+  const tableData = createTableData(results, TableDataFormat.TIME);
+
+  return new Promise<TableData>(resolve => resolve(tableData));
+});
+
 export const loadDataset = createAsyncThunk<
   TableData,
   DatasetParams,
@@ -94,34 +168,9 @@ export const loadDataset = createAsyncThunk<
     [],
   );
 
-  const sortedRows = orderBy(results, item => item.date).map((item, index) => ({
-    ...item,
-    day: `d${index + 1}`,
-  }));
+  const tableData = createTableData(results, TableDataFormat.DATE);
 
-  const datesRows = sortedRows.reduce(
-    (acc, obj) => ({
-      ...acc,
-      [obj.day]: moment(obj.date).format('YYYY-MM-DD'),
-    }),
-    {},
-  );
-
-  const valuesRows = sortedRows.reduce((acc, obj) => {
-    if (!obj.value) {
-      return acc;
-    }
-
-    return { ...acc, [obj.day]: obj.value.toString() };
-  }, {});
-
-  const columns = Object.keys(valuesRows);
-  const data: TableData = {
-    rows: [datesRows, valuesRows],
-    columns,
-  };
-
-  return new Promise<TableData>(resolve => resolve(data));
+  return new Promise<TableData>(resolve => resolve(tableData));
 });
 
 export const datasetResultStateSlice = createSlice({
@@ -155,6 +204,18 @@ export const datasetResultStateSlice = createSlice({
     );
 
     builder.addCase(loadDataset.pending, state => ({
+      ...state,
+      isLoading: true,
+    }));
+    builder.addCase(
+      loadEWSDataset.fulfilled,
+      ({ ...rest }, { payload }: PayloadAction<TableData>): DatasetState => ({
+        ...rest,
+        data: payload,
+        isLoading: false,
+      }),
+    );
+    builder.addCase(loadEWSDataset.pending, state => ({
       ...state,
       isLoading: true,
     }));

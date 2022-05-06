@@ -17,7 +17,7 @@ enum EWSLevelStatus {
 }
 
 /* eslint-disable camelcase */
-type EWSSensorData = {
+export type EWSSensorData = {
   location_id: number;
   value: [string, number];
 };
@@ -55,7 +55,7 @@ const fetchEWSLocations = async (): Promise<FeatureCollection> => {
   return featureCollection;
 };
 
-const fetchEWSDataPoints = async (
+export const fetchEWSDataPointsByLocation = async (
   date: number,
   externalId?: string,
 ): Promise<EWSSensorData[]> => {
@@ -92,7 +92,7 @@ const getLevelStatus = (
 export const fetchEWSData = async (date: number): Promise<PointData[]> => {
   const [locations, values] = await Promise.all([
     fetchEWSLocations(),
-    fetchEWSDataPoints(date),
+    fetchEWSDataPointsByLocation(date),
   ]);
 
   const processedFeatures: PointData[] = locations.features.reduce(
