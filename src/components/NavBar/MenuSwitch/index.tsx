@@ -33,6 +33,7 @@ import {
 } from '../../../utils/map-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
+import { clearDataset } from '../../../context/datasetStateSlice';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   const { t } = useSafeTranslation();
@@ -46,6 +47,10 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
   ) => {
     const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
     const { checked } = event.target;
+
+    // clear previous table dataset loaded first
+    // to close the dataseries and thus close chart
+    dispatch(clearDataset());
 
     const urlLayerKey =
       layer.type === ADMIN_LEVEL_DATA_LAYER_KEY

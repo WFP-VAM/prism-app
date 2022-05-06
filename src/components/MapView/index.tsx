@@ -84,6 +84,7 @@ import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
 import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
+import DataViewer from '../DataViewer';
 
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
@@ -471,6 +472,7 @@ function MapView({ classes }: MapViewProps) {
           {appConfig.alertFormActive ? (
             <AlertForm isOpen={isAlertFormOpen} setOpen={setIsAlertFormOpen} />
           ) : null}
+          <DataViewer />
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
