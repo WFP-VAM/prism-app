@@ -17,7 +17,6 @@ import {
   loadingDatasetSelector,
   clearDataset,
   loadDataset,
-  loadEWSDataset,
   updateAdminId,
 } from '../../context/datasetStateSlice';
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
@@ -31,51 +30,54 @@ function DataViewer({ classes }: DatasetProps) {
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { t } = useSafeTranslation();
 
-  const { data: dataset, adminBoundaryParams: params, id } = useSelector(
-    datasetSelector,
-  );
+  const {
+    data: dataset,
+    adminBoundaryParams: params,
+    title,
+    chartType,
+  } = useSelector(datasetSelector);
 
   useEffect(() => {
-    if (params && selectedDate && id) {
+    if (params && selectedDate) {
+      const { id, boundaryProps, url, serverLayerName } = params;
+
       dispatch(
         loadDataset({
           id,
-          boundaryProps: params.boundaryProps,
-          url: params.serverParams.url,
-          serverLayerName: params.serverParams.layerName,
+          boundaryProps,
+          url,
+          serverLayerName,
           selectedDate,
         }),
       );
     }
-  }, [params, dispatch, selectedDate, id]);
+  }, [params, dispatch, selectedDate]);
 
-  if (!params || !dataset || !id) {
+  if (!dataset) {
     return null;
   }
-
-  const { boundaryProps, title, chartType } = params;
 
   const config: ChartConfig = {
     type: chartType,
     stacked: false,
     fill: false,
-    category: id,
+    category: params ? params.id : 'N/A',
   };
 
-  const adminBoundaryLevelButtons = Object.entries(boundaryProps).map(
-    ([adminId, level]) => (
-      <Button
-        id={adminId}
-        className={classes.adminButton}
-        onClick={() => dispatch(updateAdminId(adminId))}
-        size="small"
-        color="primary"
-        variant={id === adminId ? 'contained' : 'text'}
-      >
-        {level.name}
-      </Button>
-    ),
-  );
+  const adminBoundaryLevelButtons = params
+    ? Object.entries(params.boundaryProps).map(([adminId, level]) => (
+        <Button
+          id={adminId}
+          className={classes.adminButton}
+          onClick={() => dispatch(updateAdminId(adminId))}
+          size="small"
+          color="primary"
+          variant={params.id === adminId ? 'contained' : 'text'}
+        >
+          {level.name}
+        </Button>
+      ))
+    : null;
 
   return (
     <>

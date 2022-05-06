@@ -9,21 +9,19 @@ import {
   EWSSensorData,
 } from '../utils/ews-utils';
 
-type BoundaryPropsDict = { [key: string]: BoundaryProps };
-
-type ServerParams = {
-  url: string;
-  layerName: string;
-};
-
 type DatasetState = {
   data?: TableData;
   isLoading: boolean;
   adminBoundaryParams?: AdminBoundaryParams;
-  id?: string;
+  chartType: ChartType;
+  title: string;
 };
 
-const initialState: DatasetState = { isLoading: false };
+const initialState: DatasetState = {
+  isLoading: false,
+  chartType: ChartType.Line,
+  title: '',
+};
 
 type BoundaryProps = {
   code: number;
@@ -31,11 +29,13 @@ type BoundaryProps = {
   name: string;
 };
 
+type BoundaryPropsDict = { [key: string]: BoundaryProps };
+
 export type AdminBoundaryParams = {
   boundaryProps: BoundaryPropsDict;
-  serverParams: ServerParams;
-  title: string;
-  chartType: ChartType;
+  url: string;
+  serverLayerName: string;
+  id: string;
 };
 
 export type DatasetParams = {
@@ -185,13 +185,26 @@ export const datasetResultStateSlice = createSlice({
       ...state,
       adminBoundaryParams: payload,
     }),
+    setDatasetTitle: (
+      state,
+      { payload }: PayloadAction<string>,
+    ): DatasetState => ({ ...state, title: payload }),
+    setDatasetChartType: (
+      state,
+      { payload }: PayloadAction<ChartType>,
+    ): DatasetState => ({ ...state, chartType: payload }),
     updateAdminId: (
       state,
       { payload }: PayloadAction<string>,
-    ): DatasetState => ({
-      ...state,
-      id: payload,
-    }),
+    ): DatasetState => {
+      if (!state.adminBoundaryParams) {
+        return state;
+      }
+
+      const adminBoundaryParams = { ...state.adminBoundaryParams, id: payload };
+
+      return { ...state, adminBoundaryParams };
+    },
   },
   extraReducers: builder => {
     builder.addCase(
@@ -232,6 +245,8 @@ export const {
   clearDataset,
   setBoundaryParams,
   updateAdminId,
+  setDatasetTitle,
+  setDatasetChartType,
 } = datasetResultStateSlice.actions;
 
 export default datasetResultStateSlice.reducer;
