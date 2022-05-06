@@ -21,6 +21,7 @@ import { circleLayout, circlePaint, fillPaintData } from '../styles';
 import {
   loadEWSDataset,
   setDatasetTitle,
+  setEWSExternalId,
 } from '../../../../context/datasetStateSlice';
 
 // Point Data, takes any GeoJSON of points and shows it.
@@ -77,6 +78,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
 
       /* eslint-enable camelcase */
 
+      dispatch(setEWSExternalId(ewsDatasetParams.externalId));
       dispatch(setDatasetTitle(chartTitle));
 
       dispatch(loadEWSDataset(ewsDatasetParams));

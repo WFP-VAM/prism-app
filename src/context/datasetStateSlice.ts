@@ -9,10 +9,14 @@ import {
   EWSSensorData,
 } from '../utils/ews-utils';
 
+export type EWSParams = {
+  externalId: string;
+};
+
 type DatasetState = {
   data?: TableData;
   isLoading: boolean;
-  adminBoundaryParams?: AdminBoundaryParams;
+  datasetParams?: AdminBoundaryParams | EWSParams;
   chartType: ChartType;
   title: string;
 };
@@ -183,7 +187,7 @@ export const datasetResultStateSlice = createSlice({
       { payload }: PayloadAction<AdminBoundaryParams>,
     ): DatasetState => ({
       ...state,
-      adminBoundaryParams: payload,
+      datasetParams: payload,
     }),
     setDatasetTitle: (
       state,
@@ -193,17 +197,21 @@ export const datasetResultStateSlice = createSlice({
       state,
       { payload }: PayloadAction<ChartType>,
     ): DatasetState => ({ ...state, chartType: payload }),
+    setEWSExternalId: (
+      state,
+      { payload }: PayloadAction<string>,
+    ): DatasetState => ({ ...state, datasetParams: { externalId: payload } }),
     updateAdminId: (
       state,
       { payload }: PayloadAction<string>,
     ): DatasetState => {
-      if (!state.adminBoundaryParams) {
+      if (!state.datasetParams) {
         return state;
       }
 
-      const adminBoundaryParams = { ...state.adminBoundaryParams, id: payload };
+      const adminBoundaryParams = { ...state.datasetParams, id: payload };
 
-      return { ...state, adminBoundaryParams };
+      return { ...state, datasetParams: adminBoundaryParams };
     },
   },
   extraReducers: builder => {
@@ -247,6 +255,7 @@ export const {
   updateAdminId,
   setDatasetTitle,
   setDatasetChartType,
+  setEWSExternalId,
 } = datasetResultStateSlice.actions;
 
 export default datasetResultStateSlice.reducer;

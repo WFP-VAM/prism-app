@@ -18,6 +18,9 @@ import {
   clearDataset,
   loadDataset,
   updateAdminId,
+  AdminBoundaryParams,
+  EWSParams,
+  loadEWSDataset,
 } from '../../context/datasetStateSlice';
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
 import Chart from '../DataDrawer/Chart';
@@ -32,14 +35,19 @@ function DataViewer({ classes }: DatasetProps) {
 
   const {
     data: dataset,
-    adminBoundaryParams: params,
+    datasetParams: params,
     title,
     chartType,
   } = useSelector(datasetSelector);
 
   useEffect(() => {
-    if (params && selectedDate) {
-      const { id, boundaryProps, url, serverLayerName } = params;
+    if ((params as AdminBoundaryParams)?.id && selectedDate) {
+      const {
+        id,
+        boundaryProps,
+        url,
+        serverLayerName,
+      } = params as AdminBoundaryParams;
 
       dispatch(
         loadDataset({
@@ -51,32 +59,51 @@ function DataViewer({ classes }: DatasetProps) {
         }),
       );
     }
+
+    if ((params as EWSParams)?.externalId && selectedDate) {
+      dispatch(
+        loadEWSDataset({
+          date: selectedDate,
+          externalId: (params as EWSParams).externalId,
+        }),
+      );
+    }
   }, [params, dispatch, selectedDate]);
 
-  if (!dataset) {
+  if (!dataset || !params) {
     return null;
   }
+
+  const category = (params as AdminBoundaryParams).id
+    ? (params as AdminBoundaryParams).id
+    : (params as EWSParams).externalId;
 
   const config: ChartConfig = {
     type: chartType,
     stacked: false,
     fill: false,
-    category: params ? params.id : 'N/A',
+    category,
   };
 
-  const adminBoundaryLevelButtons = params
-    ? Object.entries(params.boundaryProps).map(([adminId, level]) => (
-        <Button
-          id={adminId}
-          className={classes.adminButton}
-          onClick={() => dispatch(updateAdminId(adminId))}
-          size="small"
-          color="primary"
-          variant={params.id === adminId ? 'contained' : 'text'}
-        >
-          {level.name}
-        </Button>
-      ))
+  const adminBoundaryLevelButtons = (params as AdminBoundaryParams).id
+    ? Object.entries((params as AdminBoundaryParams).boundaryProps).map(
+        ([adminId, level]) => (
+          <Button
+            id={adminId}
+            className={classes.adminButton}
+            onClick={() => dispatch(updateAdminId(adminId))}
+            size="small"
+            color="primary"
+            variant={
+              (params as AdminBoundaryParams).id === adminId
+                ? 'contained'
+                : 'text'
+            }
+          >
+            {level.name}
+          </Button>
+        ),
+      )
     : null;
 
   return (
