@@ -18,7 +18,10 @@ import { getBoundaryLayerSingleton } from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { circleLayout, circlePaint, fillPaintData } from '../styles';
-import { loadEWSDataset } from '../../../../context/datasetStateSlice';
+import {
+  loadEWSDataset,
+  setDatasetTitle,
+} from '../../../../context/datasetStateSlice';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -63,12 +66,20 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     );
 
     if (layer.processing === PointDataProcessing.EWS && selectedDate) {
-      dispatch(
-        loadEWSDataset({
-          date: selectedDate,
-          externalId: feature.properties.external_id,
-        }),
-      );
+      /* eslint-disable camelcase */
+      const { name, external_id } = feature.properties;
+      const chartTitle = `River level - ${name} (${external_id})`;
+
+      const ewsDatasetParams = {
+        date: selectedDate,
+        externalId: external_id,
+      };
+
+      /* eslint-enable camelcase */
+
+      dispatch(setDatasetTitle(chartTitle));
+
+      dispatch(loadEWSDataset(ewsDatasetParams));
     }
   };
 
