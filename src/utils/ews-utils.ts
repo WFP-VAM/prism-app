@@ -55,7 +55,10 @@ const fetchEWSLocations = async (): Promise<FeatureCollection> => {
   return featureCollection;
 };
 
-const fetchEWSDataPoints = async (date: number): Promise<EWSSensorData[]> => {
+const fetchEWSDataPoints = async (
+  date: number,
+  externalId?: string,
+): Promise<EWSSensorData[]> => {
   const momentDate = moment(date).utc();
 
   const startDate = momentDate.startOf('day').format();
@@ -63,7 +66,9 @@ const fetchEWSDataPoints = async (date: number): Promise<EWSSensorData[]> => {
 
   const url = `${BASE_URL}/sensors/sensor_event?start=${startDate}&end=${endDate}`;
 
-  const resp = await fetch(url);
+  const resp = await fetch(
+    externalId ? `${url}&external_id=${externalId}` : url,
+  );
   const values: EWSSensorData[] = await resp.json();
 
   return values;
