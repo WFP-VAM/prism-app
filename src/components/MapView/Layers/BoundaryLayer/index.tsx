@@ -2,13 +2,26 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { showPopup } from '../../../../context/tooltipStateSlice';
-import { BoundaryLayerProps } from '../../../../config/types';
+import { showPopup, hidePopup } from '../../../../context/tooltipStateSlice';
+import { BoundaryLayerProps, WMSLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import {
+  setBoundaryParams,
+  updateAdminId,
+} from '../../../../context/datasetStateSlice';
+
+import {
+  layerDataSelector,
+  layersSelector,
+} from '../../../../context/mapStateSlice/selectors';
 import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
 import { isPrimaryBoundaryLayer } from '../../../../config/utils';
 import { getFullLocationName } from '../../../../utils/name-utils';
+
+import {
+  getChartLowestBoundaryLevelId,
+  getChartAdminBoundaryParams,
+} from '../../../../utils/admin-utils';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -17,6 +30,8 @@ function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
 
 function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
   const dispatch = useDispatch();
+  const selectedLayers = useSelector(layersSelector);
+
   const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -28,21 +43,49 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
 
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
 
-  const onClickFunc = (evt: any) => {
+  const onClickShowPopup = (evt: any) => {
+    dispatch(hidePopup());
     const coordinates = evt.lngLat;
     const locationName = getFullLocationName(
       layer.adminLevelNames,
       evt.features[0],
     );
+
     const locationLocalName = getFullLocationName(
       layer.adminLevelLocalNames,
       evt.features[0],
     );
+
     dispatch(showPopup({ coordinates, locationName, locationLocalName }));
+  };
+
+  const onClickFunc = (evt: any) => {
+    const { properties } = evt.features[0];
+
     // send the selection to the map selection layer. No-op if selection mode isn't on.
     dispatch(
       toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),
     );
+
+    onClickShowPopup(evt);
+
+    const selectedLayerWMS: undefined | WMSLayerProps = selectedLayers.find(
+      l => l.type === 'wms' && l.chartData,
+    ) as WMSLayerProps;
+
+    if (!selectedLayerWMS) {
+      return;
+    }
+
+    const adminBoundaryParams = getChartAdminBoundaryParams(
+      selectedLayerWMS,
+      properties,
+    );
+
+    const lowestLevelId = getChartLowestBoundaryLevelId(selectedLayerWMS);
+
+    dispatch(setBoundaryParams(adminBoundaryParams));
+    dispatch(updateAdminId(lowestLevelId));
   };
 
   // Only use mouse effects and click effects on the main layer.
