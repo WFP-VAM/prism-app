@@ -274,7 +274,19 @@ export class CommonLayerProps {
   @optional
   featureInfoProps?: { [key: string]: FeatureInfoProps };
 
-  @optional // only for layer that has grouped menu
+  /*
+  * only for layer that has grouped menu.
+  * can be set in config/{country}/prism.json by changing the LayerKey (string) into object:
+    {
+      "menu_group_title": "Rainfall Anomaly" // the title of grouped menu
+      "layers" : [ // layer list of layers.json to be grouped
+        {"id": "rain_anomaly_1month", "label": "1-month"},
+        {"id": "rain_anomaly_3month", "label": "3-month"},
+        ...
+      ]
+    },
+  */
+  @optional
   menuGroup?: MenuGroup;
 }
 

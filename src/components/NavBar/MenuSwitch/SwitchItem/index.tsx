@@ -136,7 +136,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
       >
         {menuGroup.layers.map(menu => (
           <MenuItem key={menu.id} value={menu.id}>
-            {menu.label}
+            {t(menu.label)}
           </MenuItem>
         ))}
       </Select>

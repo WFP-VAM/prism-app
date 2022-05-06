@@ -335,13 +335,6 @@ const styles = () =>
       padding: 8,
       width: 180,
     },
-    select: {
-      color: '#333',
-      fontSize: 14,
-    },
-    selectItem: {
-      whiteSpace: 'normal',
-    },
     slider: {
       padding: '0 5px',
     },
