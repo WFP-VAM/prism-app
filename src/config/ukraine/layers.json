@@ -52,6 +52,22 @@
     "additional_query_params": {
       "styles": "rfh_350"
     },
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/ukr",
+      "levels": [
+        {
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "bar"
+    },
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1097,6 +1113,22 @@
       "offset": 0,
       "pixelResolution": 64
     },
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/ukr",
+      "levels": [
+        {
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "line"
+    },
     "opacity": 0.7,
     "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
@@ -1170,6 +1202,22 @@
     "date_interval": "days",
     "additional_query_params": {
       "styles": "viq_12_50_150_new"
+    },
+    "chart_data": {
+      "url": "https://dev.earthobservation.vam.wfp.org/prism/ukr",
+      "levels": [
+        {
+          "path": "level1",
+          "id": "adm1_id",
+          "name": "ADM1_EN"
+        },
+        {
+          "path": "level2",
+          "id": "adm2_id",
+          "name": "ADM2_EN"
+        }
+      ],
+      "type": "line"
     },
     "opacity": 0.7,
     "legend_text": "NDVI Anomaly compared to LTA",
