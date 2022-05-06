@@ -22,11 +22,13 @@ import {
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
 import Chart from '../DataDrawer/Chart';
 import { ChartConfig } from '../../config/types';
+import { useSafeTranslation } from '../../i18n';
 
 function DataViewer({ classes }: DatasetProps) {
   const dispatch = useDispatch();
   const isDatasetLoading = useSelector(loadingDatasetSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const { t } = useSafeTranslation();
 
   const { data: dataset, adminBoundaryParams: params, id } = useSelector(
     datasetSelector,
@@ -89,7 +91,7 @@ function DataViewer({ classes }: DatasetProps) {
               <CircularProgress size={50} />
             </div>
           ) : (
-            <Chart title={title} config={config} data={dataset} />
+            <Chart title={t(title)} config={config} data={dataset} />
           )}
         </Paper>
       </Grid>
