@@ -124,15 +124,23 @@ alert_data = {
     'prism_url': 'https://prism-mongolia.org'
 }
 
+
 class StatsModel(BaseModel):
+    """Example of stats data."""
+
     geotiff_url: str
     zones_url: str
     group_by: str
 
     class Config:
+        """Config file for Stats."""
+
         schema_extra = stats_data
 
+
 class AlertsModel(BaseModel):
+    """Example of alert data."""
+
     email: str
     prism_url: str
     alert_name: str
@@ -140,5 +148,6 @@ class AlertsModel(BaseModel):
     zones: dict
 
     class Config:
-        schema_extra = alert_data
+        """Config file for Alerts."""
 
+        schema_extra = alert_data

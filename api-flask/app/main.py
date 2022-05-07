@@ -1,26 +1,25 @@
 """Flask API for geospatial utils."""
+
 import logging
 from distutils.util import strtobool
+from typing import Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
-from app.errors import handle_error, make_json_error
+# from app.errors import handle_error, make_json_error
 from app.kobo import get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import calculate_stats, get_wfs_response
 
-from typing import Optional
-
 from fastapi import FastAPI, Path, Response
-
 from fastapi.encoders import jsonable_encoder
 
 import rasterio
 
-from sample_requests import StatsModel, AlertsModel
+from sample_requests import AlertsModel, StatsModel
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
@@ -70,10 +69,10 @@ def _calculate_stats(zones,
         intersect_comparison=intersect_comparison
     )
 
+
 @timed
 @app.post('/stats')
 def stats(stats_model: StatsModel):
-    
     """Return zonal statistics."""
     # Accept data as json or form.
     logger.debug('New stats request:')
@@ -157,6 +156,7 @@ def stats(stats_model: StatsModel):
 #     results = alert_db.readall()
 #     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
 
+
 @app.get('/kobo/forms')
 def get_kobo_forms():
     """Get all form responses."""
@@ -165,14 +165,17 @@ def get_kobo_forms():
 
     return form_responses
 
+
 @app.get('/alerts/{id}')
-def alert_by_id(email: str, deactivate: Optional[str] = None, id: str = Path('1', description='The ID of the alert')):
+def alert_by_id(email: str, deactivate: Optional[str] = None,
+                id: str = Path('1', description='The ID of the alert')):
+    """Get alert with an ID."""
     try:
         id = int(id)
     except ValueError as e:
         logger.error(f'Failed to fetch alerts: {e}')
         raise BadRequest('Invalid id')
-    
+
     alert = alert_db.readone(id)
     if alert is None:
         raise NotFound(f'No alert was found with id {id}')
@@ -188,12 +191,12 @@ def alert_by_id(email: str, deactivate: Optional[str] = None, id: str = Path('1'
 
         return Response(content='Alert successfully deactivated.', status_code=200)
 
-    return Response(jsonable_encoder(alert, custom_encoder=AlchemyEncoder), media_type='application/json')
+    return Response(jsonable_encoder(alert, custom_encoder=AlchemyEncoder),
+                    media_type='application/json')
 
 
 @app.post('/alerts')
 def write_alerts(alerts_model: AlertsModel):
-
     """Post new alerts."""
     # if not request.is_json:
     #     raise InternalServerError('InvalidInput')
@@ -209,10 +212,11 @@ def write_alerts(alerts_model: AlertsModel):
 
     return Response(content='Success', status_code=200)
 
+
 @timed
 @app.get('/demo')
-def stats_demo(geojson_out: Optional[str] = False, group_by: Optional[str] = None, intersect_comparison: Optional[str] = None):
-
+def stats_demo(geojson_out: Optional[str] = False, group_by: Optional[str] = None,
+               intersect_comparison: Optional[str] = None):
     """Return examples of zonal statistics."""
     # The GET endpoint is used for demo purposes only
     geotiff_url = urlunparse(
@@ -282,4 +286,3 @@ def stats_demo(geojson_out: Optional[str] = False, group_by: Optional[str] = Non
 
     # TODO - Properly encode before returning. Mongolian characters are returned as hex.
     return features
-
