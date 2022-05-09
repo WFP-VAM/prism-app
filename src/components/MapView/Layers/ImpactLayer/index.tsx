@@ -37,7 +37,7 @@ function getHazardData(evt: any, operation: string, t?: i18nTranslator) {
   return getRoundedData(data, t);
 }
 
-const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
+const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   const map = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { data, date } =
@@ -95,7 +95,7 @@ const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
 
   return (
     <GeoJSONLayer
-      before={before || `layer-${boundaryId}-line`}
+      before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={noMatchingDistricts ? boundaries : impactFeatures}
       linePaint={linePaint}
@@ -148,7 +148,6 @@ const styles = (theme: Theme) =>
 
 interface ComponentProps extends WithStyles<typeof styles> {
   layer: ImpactLayerProps;
-  before: string | null;
 }
 
 export default withStyles(styles)(ImpactLayer);
