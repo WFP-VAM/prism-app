@@ -27,6 +27,11 @@ import Chart from '../DataDrawer/Chart';
 import { ChartConfig } from '../../config/types';
 import { useSafeTranslation } from '../../i18n';
 
+const isAdminBoundary = (
+  params: AdminBoundaryParams | EWSParams,
+): params is AdminBoundaryParams =>
+  (params as AdminBoundaryParams).id !== undefined;
+
 function DataViewer({ classes }: DatasetProps) {
   const dispatch = useDispatch();
   const isDatasetLoading = useSelector(loadingDatasetSelector);
@@ -41,14 +46,12 @@ function DataViewer({ classes }: DatasetProps) {
   } = useSelector(datasetSelector);
 
   useEffect(() => {
-    if ((params as AdminBoundaryParams)?.id && selectedDate) {
-      const {
-        id,
-        boundaryProps,
-        url,
-        serverLayerName,
-      } = params as AdminBoundaryParams;
+    if (!params || !selectedDate) {
+      return;
+    }
 
+    if (isAdminBoundary(params)) {
+      const { id, boundaryProps, url, serverLayerName } = params;
       dispatch(
         loadDataset({
           id,
@@ -58,13 +61,11 @@ function DataViewer({ classes }: DatasetProps) {
           selectedDate,
         }),
       );
-    }
-
-    if ((params as EWSParams)?.externalId && selectedDate) {
+    } else {
       dispatch(
         loadEWSDataset({
           date: selectedDate,
-          externalId: (params as EWSParams).externalId,
+          externalId: params.externalId,
         }),
       );
     }
@@ -74,9 +75,7 @@ function DataViewer({ classes }: DatasetProps) {
     return null;
   }
 
-  const category = (params as AdminBoundaryParams).id
-    ? (params as AdminBoundaryParams).id
-    : (params as EWSParams).externalId;
+  const category = isAdminBoundary(params) ? params.id : params.externalId;
 
   const config: ChartConfig = {
     type: chartType,
@@ -85,25 +84,19 @@ function DataViewer({ classes }: DatasetProps) {
     category,
   };
 
-  const adminBoundaryLevelButtons = (params as AdminBoundaryParams).id
-    ? Object.entries((params as AdminBoundaryParams).boundaryProps).map(
-        ([adminId, level]) => (
-          <Button
-            id={adminId}
-            className={classes.adminButton}
-            onClick={() => dispatch(updateAdminId(adminId))}
-            size="small"
-            color="primary"
-            variant={
-              (params as AdminBoundaryParams).id === adminId
-                ? 'contained'
-                : 'text'
-            }
-          >
-            {level.name}
-          </Button>
-        ),
-      )
+  const adminBoundaryLevelButtons = isAdminBoundary(params)
+    ? Object.entries(params.boundaryProps).map(([adminId, level]) => (
+        <Button
+          id={adminId}
+          className={classes.adminButton}
+          onClick={() => dispatch(updateAdminId(adminId))}
+          size="small"
+          color="primary"
+          variant={params.id === adminId ? 'contained' : 'text'}
+        >
+          {level.name}
+        </Button>
+      ))
     : null;
 
   return (
