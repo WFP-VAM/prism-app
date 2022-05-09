@@ -93,7 +93,6 @@ const MapboxMap = ReactMapboxGl({
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: ComponentType<{
     layer: DiscriminateUnion<U, 'type', T>;
-    before?: string;
   }>;
 };
 
