@@ -413,6 +413,7 @@ function MapView({ classes }: MapViewProps) {
   // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers.
   // Jump map to center here instead of map initial state to prevent map re-centering on layer changes
   const saveAndJumpMap = (map: Map) => {
+    // Find the first symbol on the map to make sure we add layers below them.
     const { layers } = map.getStyle();
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
