@@ -17,7 +17,7 @@ function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
 
 interface ComponentProps {
   layer: BoundaryLayerProps;
-  before: string | null;
+  before?: string;
 }
 
 function BoundaryLayer({ layer, before }: ComponentProps) {

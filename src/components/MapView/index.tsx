@@ -93,7 +93,7 @@ const MapboxMap = ReactMapboxGl({
 type LayerComponentsMap<U extends LayerType> = {
   [T in U['type']]: ComponentType<{
     layer: DiscriminateUnion<U, 'type', T>;
-    before: string | null;
+    before?: string;
   }>;
 };
 
@@ -177,7 +177,9 @@ function MapView({ classes }: MapViewProps) {
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const serverAvailableDates = useSelector(availableDatesSelector);
-  const [firstSymbolId, setFirstSymbolId] = useState<string | null>(null);
+  const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
+    undefined,
+  );
 
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer =>
@@ -414,9 +416,7 @@ function MapView({ classes }: MapViewProps) {
   // Jump map to center here instead of map initial state to prevent map re-centering on layer changes
   const saveAndJumpMap = (map: Map) => {
     const { layers } = map.getStyle();
-    setFirstSymbolId(
-      layers?.find(layer => layer.type === 'symbol')?.id || null,
-    );
+    setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
   };
@@ -445,7 +445,7 @@ function MapView({ classes }: MapViewProps) {
         {selectedLayers.map(layer => {
           const component: ComponentType<{
             layer: any;
-            before: string | null;
+            before?: string;
           }> = componentTypes[layer.type];
           return createElement(component, {
             key: layer.id,
