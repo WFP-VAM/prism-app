@@ -415,6 +415,8 @@ function MapView({ classes }: MapViewProps) {
   const saveAndJumpMap = (map: Map) => {
     // Find the first symbol on the map to make sure we add layers below them.
     const { layers } = map.getStyle();
+    // Find from layers list first layer with symbol type and save it id
+    // Then we can use it to place new layer below this
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
@@ -453,8 +455,8 @@ function MapView({ classes }: MapViewProps) {
           });
         })}
         {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer />
-        <SelectionLayer />
+        <AnalysisLayer before={firstSymbolId} />
+        <SelectionLayer before={firstSymbolId} />
         <MapTooltip />
       </MapboxMap>
       <Grid
