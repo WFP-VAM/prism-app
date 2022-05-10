@@ -413,6 +413,8 @@ function MapView({ classes }: MapViewProps) {
   // Jump map to center here instead of map initial state to prevent map re-centering on layer changes
   const saveAndJumpMap = (map: Map) => {
     const { layers } = map.getStyle();
+    // Find from layers list first layer with symbol type and save it id
+    // Then we can use it to place new layer below this
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
@@ -451,8 +453,8 @@ function MapView({ classes }: MapViewProps) {
           });
         })}
         {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer />
-        <SelectionLayer />
+        <AnalysisLayer before={firstSymbolId} />
+        <SelectionLayer before={firstSymbolId} />
         <MapTooltip />
       </MapboxMap>
       <Grid
