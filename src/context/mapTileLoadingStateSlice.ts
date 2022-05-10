@@ -21,7 +21,8 @@ export const mapTileLoadingState = createSlice({
 
 export const { setLoading } = mapTileLoadingState.actions;
 
-export const isLoading = (state: RootState): MapTileLoadingState['loading'] =>
-  state.mapTileLoadingState.loading;
+export const loadingSelector = (
+  state: RootState,
+): MapTileLoadingState['loading'] => state.mapTileLoadingState.loading;
 
 export default mapTileLoadingState.reducer;
