@@ -415,8 +415,7 @@ function MapView({ classes }: MapViewProps) {
   const saveAndJumpMap = (map: Map) => {
     // Find the first symbol on the map to make sure we add layers below them.
     const { layers } = map.getStyle();
-    // Find from layers list first layer with symbol type and save it id
-    // Then we can use it to place new layer below this
+    // Find the first symbol on the map to make sure we add layers below them.
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
