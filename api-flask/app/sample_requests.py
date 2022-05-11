@@ -1,5 +1,5 @@
 """Sample Data for stats and alert."""
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 stats_data = {
@@ -128,26 +128,16 @@ alert_data = {
 class StatsModel(BaseModel):
     """Example of stats data."""
 
-    geotiff_url: str
-    zones_url: str
-    group_by: str
-
-    class Config:
-        """Config file for Stats."""
-
-        schema_extra = stats_data
+    geotiff_url: str = Field(..., example=stats_data['geotiff_url'])
+    zones_url: str = Field(..., example=stats_data['zones_url'])
+    group_by: str = Field(..., example=stats_data['group_by'])
 
 
 class AlertsModel(BaseModel):
     """Example of alert data."""
 
-    email: str
-    prism_url: str
-    alert_name: str
-    alert_config: dict
-    zones: dict
-
-    class Config:
-        """Config file for Alerts."""
-
-        schema_extra = alert_data
+    email: str = Field(..., example=alert_data['email'])
+    prism_url: str = Field(..., example=alert_data['prism_url'])
+    alert_name: str = Field(..., example=alert_data['alert_name'])
+    alert_config: dict = Field(..., example=alert_data['alert_config'])
+    zones: dict = Field(..., example=alert_data['zones'])
