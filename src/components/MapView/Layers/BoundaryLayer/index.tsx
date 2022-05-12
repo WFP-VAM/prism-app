@@ -26,7 +26,12 @@ function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   targetMap.getCanvas().style.cursor = cursor;
 }
 
-function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
+interface ComponentProps {
+  layer: BoundaryLayerProps;
+  before?: string;
+}
+
+function BoundaryLayer({ layer, before }: ComponentProps) {
   const dispatch = useDispatch();
   const selectedLayers = useSelector(layersSelector);
 
@@ -108,6 +113,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       fillOnMouseEnter={fillOnMouseEnter}
       fillOnMouseLeave={fillOnMouseLeave}
       fillOnClick={fillOnClick}
+      before={before}
     />
   );
 }
