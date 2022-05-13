@@ -66,6 +66,7 @@ function DataViewer({ classes }: DatasetProps) {
         loadEWSDataset({
           date: selectedDate,
           externalId: params.externalId,
+          triggerLevels: params.triggerLevels,
         }),
       );
     }

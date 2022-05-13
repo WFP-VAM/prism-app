@@ -14,6 +14,20 @@ export type EWSParams = {
   triggerLevels: EWSTriggerLevels;
 };
 
+type EWSDatasetResult = EWSParams & {
+  data: TableData;
+};
+
+type EWSTriggerLevels = {
+  watchLevel: number;
+  warning: number;
+  severeWarning: number;
+};
+
+type EWSDataPointsRequestParams = EWSParams & {
+  date: number;
+};
+
 type DatasetState = {
   data?: TableData;
   isLoading: boolean;
@@ -54,17 +68,6 @@ export type DatasetParams = {
 type DataItem = {
   date: number;
   value: number;
-};
-
-type EWSTriggerLevels = {
-  watchLevel: number;
-  warning: number;
-  severeWarning: number;
-};
-
-type EWSDataPointsRequestParams = {
-  date: number;
-  externalId: string;
 };
 
 export enum TableDataFormat {
@@ -137,11 +140,11 @@ const createTableData = (
 };
 
 export const loadEWSDataset = createAsyncThunk<
-  TableData,
+  EWSDatasetResult,
   EWSDataPointsRequestParams,
   CreateAsyncThunkTypes
 >('datasetState/loadEWSDataset', async (params: EWSDataPointsRequestParams) => {
-  const { date, externalId } = params;
+  const { date, externalId, triggerLevels } = params;
 
   const dataPoints: EWSSensorData[] = await fetchEWSDataPointsByLocation(
     date,
@@ -156,7 +159,9 @@ export const loadEWSDataset = createAsyncThunk<
 
   const tableData = createTableData(results, TableDataFormat.TIME);
 
-  return new Promise<TableData>(resolve => resolve(tableData));
+  return new Promise<EWSDatasetResult>(resolve =>
+    resolve({ data: tableData, externalId, triggerLevels }),
+  );
 });
 
 export const loadDataset = createAsyncThunk<
@@ -204,10 +209,6 @@ export const datasetResultStateSlice = createSlice({
       state,
       { payload }: PayloadAction<ChartType>,
     ): DatasetState => ({ ...state, chartType: payload }),
-    setEWSChartParams: (
-      state,
-      { payload }: PayloadAction<EWSParams>,
-    ): DatasetState => ({ ...state, datasetParams: payload }),
     updateAdminId: (
       state,
       { payload }: PayloadAction<string>,
@@ -237,11 +238,25 @@ export const datasetResultStateSlice = createSlice({
     }));
     builder.addCase(
       loadEWSDataset.fulfilled,
-      ({ ...rest }, { payload }: PayloadAction<TableData>): DatasetState => ({
-        ...rest,
-        data: payload,
-        isLoading: false,
-      }),
+      (
+        { ...state },
+        { payload }: PayloadAction<EWSDatasetResult>,
+      ): DatasetState => {
+        const obj = { ...state, isLoading: false, data: payload.data };
+        if (state.datasetParams) {
+          return obj;
+        }
+
+        const { triggerLevels, externalId } = payload;
+
+        return {
+          ...obj,
+          datasetParams: {
+            triggerLevels,
+            externalId,
+          },
+        };
+      },
     );
     builder.addCase(loadEWSDataset.pending, state => ({
       ...state,
@@ -262,7 +277,6 @@ export const {
   updateAdminId,
   setDatasetTitle,
   setDatasetChartType,
-  setEWSChartParams,
 } = datasetResultStateSlice.actions;
 
 export default datasetResultStateSlice.reducer;
