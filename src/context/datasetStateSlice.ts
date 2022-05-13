@@ -57,11 +57,7 @@ export type AdminBoundaryParams = {
   id: string;
 };
 
-export type DatasetParams = {
-  id: string;
-  boundaryProps: BoundaryPropsDict;
-  url: string;
-  serverLayerName: string;
+export type DatasetParams = AdminBoundaryParams & {
   selectedDate: number;
 };
 
@@ -221,6 +217,18 @@ export const datasetResultStateSlice = createSlice({
 
       return { ...state, datasetParams: adminBoundaryParams };
     },
+    setEWSParams: (
+      state,
+      { payload }: PayloadAction<EWSParams & { chartTitle: string }>,
+    ): DatasetState => {
+      const { externalId, chartTitle, triggerLevels } = payload;
+
+      return {
+        ...state,
+        datasetParams: { externalId, triggerLevels },
+        title: chartTitle,
+      };
+    },
   },
   extraReducers: builder => {
     builder.addCase(
@@ -277,6 +285,7 @@ export const {
   updateAdminId,
   setDatasetTitle,
   setDatasetChartType,
+  setEWSParams,
 } = datasetResultStateSlice.actions;
 
 export default datasetResultStateSlice.reducer;
