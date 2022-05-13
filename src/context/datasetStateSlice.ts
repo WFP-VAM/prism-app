@@ -11,6 +11,7 @@ import {
 
 export type EWSParams = {
   externalId: string;
+  triggerLevels: EWSTriggerLevels;
 };
 
 type DatasetState = {
@@ -53,6 +54,12 @@ export type DatasetParams = {
 type DataItem = {
   date: number;
   value: number;
+};
+
+type EWSTriggerLevels = {
+  watchLevel: number;
+  warning: number;
+  severeWarning: number;
 };
 
 type EWSDataPointsRequestParams = {
@@ -197,10 +204,10 @@ export const datasetResultStateSlice = createSlice({
       state,
       { payload }: PayloadAction<ChartType>,
     ): DatasetState => ({ ...state, chartType: payload }),
-    setEWSExternalId: (
+    setEWSChartParams: (
       state,
-      { payload }: PayloadAction<string>,
-    ): DatasetState => ({ ...state, datasetParams: { externalId: payload } }),
+      { payload }: PayloadAction<EWSParams>,
+    ): DatasetState => ({ ...state, datasetParams: payload }),
     updateAdminId: (
       state,
       { payload }: PayloadAction<string>,
@@ -255,7 +262,7 @@ export const {
   updateAdminId,
   setDatasetTitle,
   setDatasetChartType,
-  setEWSExternalId,
+  setEWSChartParams,
 } = datasetResultStateSlice.actions;
 
 export default datasetResultStateSlice.reducer;

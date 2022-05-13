@@ -21,7 +21,7 @@ import { circleLayout, circlePaint, fillPaintData } from '../styles';
 import {
   loadEWSDataset,
   setDatasetTitle,
-  setEWSExternalId,
+  setEWSChartParams,
 } from '../../../../context/datasetStateSlice';
 
 // Point Data, takes any GeoJSON of points and shows it.
@@ -68,17 +68,29 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
 
     if (layer.processing === PointDataProcessing.EWS && selectedDate) {
       /* eslint-disable camelcase */
-      const { name, external_id } = feature.properties;
+      const { name, external_id, trigger_levels } = feature.properties;
       const chartTitle = `River level - ${name} (${external_id})`;
+
+      const triggerLevels = JSON.parse(trigger_levels);
 
       const ewsDatasetParams = {
         date: selectedDate,
         externalId: external_id,
       };
 
+      dispatch(
+        setEWSChartParams({
+          externalId: ewsDatasetParams.externalId,
+          triggerLevels: {
+            watchLevel: triggerLevels.watch_level,
+            warning: triggerLevels.warning,
+            severeWarning: triggerLevels.severe_warning,
+          },
+        }),
+      );
+
       /* eslint-enable camelcase */
 
-      dispatch(setEWSExternalId(ewsDatasetParams.externalId));
       dispatch(setDatasetTitle(chartTitle));
 
       dispatch(loadEWSDataset(ewsDatasetParams));
