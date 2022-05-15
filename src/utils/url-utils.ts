@@ -30,3 +30,18 @@ export const useUrlHistory = () => {
 
   return { urlParams, updateHistory, clearHistory, removeKeyFromUrl };
 };
+
+export function copyTextToClipboard(text: string): Promise<void> {
+  if (navigator?.clipboard) {
+    return navigator?.clipboard.writeText(text);
+  }
+  // If navigator.clipboard is not supported, fallback to execCommand
+  const tmpElement = document.createElement('input');
+  document.body.appendChild(tmpElement);
+  // eslint-disable-next-line fp/no-mutation
+  tmpElement.value = text;
+  tmpElement.select();
+  document.execCommand('copy');
+  document.body.removeChild(tmpElement);
+  return Promise.resolve();
+}

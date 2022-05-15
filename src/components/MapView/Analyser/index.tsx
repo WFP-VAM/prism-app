@@ -28,6 +28,7 @@ import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { isNil, range } from 'lodash';
+import moment from 'moment';
 import {
   LayerDefinitions,
   getDisplayBoundaryLayers,
@@ -82,9 +83,19 @@ import {
   layerDataSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { getPossibleDatesForLayer } from '../../../utils/server-utils';
-import { useUrlHistory } from '../../../utils/url-utils';
+import { copyTextToClipboard, useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
+import { addNotification } from '../../../context/notificationStateSlice';
+import {
+  ANALYSIS_ABOVE_PARAM_KEY,
+  ANALYSIS_BASELINE_PARAM_KEY,
+  ANALYSIS_BELOW_PARAM_KEY,
+  ANALYSIS_DATE_PARAM_KEY,
+  ANALYSIS_HAZARD_PARAM_KEY,
+  ANALYSIS_STATISTIC_PARAM_KEY,
+} from '../../../utils/constants';
+import { DEFAULT_DATE_FORMAT } from '../../../utils/name-utils';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -104,11 +115,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
   // form elements
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
   const [statistic, setStatistic] = useState(AggregationOperations.Mean);
-  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>();
-  const [
-    analysedBaselineLayerId,
-    setAnalysedBaselineLayerId,
-  ] = useState<LayerKey | null>();
+  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey | null>(null);
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
   const [belowThreshold, setBelowThreshold] = useState('');
@@ -281,16 +288,58 @@ function Analyser({ extent, classes }: AnalyserProps) {
     });
   };
 
+  const resetAnalysisParams = () => {
+    if (baselineLayerId) {
+      removeKeyFromUrl(ANALYSIS_BASELINE_PARAM_KEY);
+      // setBaselineLayerId(null);
+    }
+    if (hazardLayerId) {
+      removeKeyFromUrl(ANALYSIS_HAZARD_PARAM_KEY);
+      // setHazardLayerId(null);
+    }
+
+    if (selectedDate) {
+      removeKeyFromUrl(ANALYSIS_DATE_PARAM_KEY);
+    }
+    if (statistic) {
+      removeKeyFromUrl(ANALYSIS_STATISTIC_PARAM_KEY);
+    }
+    if (aboveThreshold) {
+      removeKeyFromUrl(ANALYSIS_ABOVE_PARAM_KEY);
+    }
+    if (belowThreshold) {
+      removeKeyFromUrl(ANALYSIS_BELOW_PARAM_KEY);
+    }
+  };
+
+  const updateAnalysisParams = () => {
+    if (baselineLayerId) {
+      updateHistory(ANALYSIS_BASELINE_PARAM_KEY, baselineLayerId);
+    }
+    if (hazardLayerId) {
+      updateHistory(ANALYSIS_HAZARD_PARAM_KEY, hazardLayerId);
+    }
+    if (selectedDate) {
+      updateHistory(
+        ANALYSIS_DATE_PARAM_KEY,
+        moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+      );
+    }
+    if (statistic) {
+      updateHistory(ANALYSIS_STATISTIC_PARAM_KEY, statistic);
+    }
+    if (aboveThreshold) {
+      updateHistory(ANALYSIS_ABOVE_PARAM_KEY, aboveThreshold);
+    }
+    if (belowThreshold) {
+      updateHistory(ANALYSIS_BELOW_PARAM_KEY, belowThreshold);
+    }
+  };
+
   const clearAnalysis = () => {
     dispatch(clearAnalysisResult());
-    if (analysedBaselineLayerId) {
-      const currentlyAnalysedBaseline = LayerDefinitions[
-        analysedBaselineLayerId
-      ] as AdminLevelDataLayerProps;
-      removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
-      safeDispatchRemoveLayer(map, currentlyAnalysedBaseline, dispatch);
-      setAnalysedBaselineLayerId(null);
-    }
+
+    resetAnalysisParams();
 
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[
@@ -302,6 +351,18 @@ function Analyser({ extent, classes }: AnalyserProps) {
       // to avoid miss behaviour on boundary layers
       dispatch(setIsMapLayerActive(true));
     }
+  };
+
+  const shareAnalysis = () => {
+    copyTextToClipboard(window.location.href).then(() => {
+      // displaySuccessMessage('Copied to clipboard!');
+      dispatch(
+        addNotification({
+          message: 'Analysis copied to clipboard!',
+          type: 'success',
+        }),
+      );
+    });
   };
 
   const onMapSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -394,9 +455,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
         throw new Error('Baseline layer should be selected to run analysis');
       }
 
-      updateHistory(BASELINE_URL_LAYER_KEY, baselineLayerId);
-      setAnalysedBaselineLayerId(baselineLayerId);
-
       const selectedBaselineLayer = LayerDefinitions[
         baselineLayerId
       ] as AdminLevelDataLayerProps;
@@ -414,6 +472,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
           below: parseFloat(belowThreshold) || undefined,
         },
       };
+
+      // update history
+      updateAnalysisParams();
 
       dispatch(requestAndStoreAnalysis(params));
     }
@@ -531,7 +592,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                     </Typography>
                     <LayerDropdown
                       type="admin_level_data"
-                      value={baselineLayerId}
+                      value={baselineLayerId || undefined}
                       setValue={setBaselineLayerId}
                       className={classes.selector}
                       placeholder="Choose baseline layer"
@@ -634,6 +695,14 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   >
                     <Typography variant="body2">
                       {t('Clear Analysis')}
+                    </Typography>
+                  </Button>
+                  <Button
+                    className={classes.innerAnalysisButton}
+                    onClick={shareAnalysis}
+                  >
+                    <Typography variant="body2">
+                      {t('Share Analysis')}
                     </Typography>
                   </Button>
                 </>
