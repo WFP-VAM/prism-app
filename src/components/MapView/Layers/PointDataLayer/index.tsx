@@ -22,6 +22,7 @@ import {
   setEWSParams,
   clearDataset,
 } from '../../../../context/datasetStateSlice';
+import { createEWSDatasetParams } from '../../../../utils/ews-utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -66,26 +67,9 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     );
 
     if (layer.processing === PointDataProcessing.EWS && selectedDate) {
-      /* eslint-disable camelcase */
-      const { name, external_id, trigger_levels } = feature.properties;
-      const chartTitle = `River level - ${name} (${external_id})`;
-
-      const parsedLevels = JSON.parse(trigger_levels);
-      const triggerLevels = {
-        watchLevel: parsedLevels.watch_level,
-        warning: parsedLevels.warning,
-        severeWarning: parsedLevels.severe_warning,
-      };
-
-      const ewsDatasetParams = {
-        externalId: external_id,
-        triggerLevels,
-        chartTitle,
-      };
-
-      /* eslint-enable camelcase */
       dispatch(clearDataset());
 
+      const ewsDatasetParams = createEWSDatasetParams(feature.properties);
       dispatch(setEWSParams(ewsDatasetParams));
     }
   };

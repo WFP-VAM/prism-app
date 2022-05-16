@@ -165,3 +165,26 @@ export const fetchEWSData = async (date: number): Promise<PointData[]> => {
 
   return processedFeatures;
 };
+
+export const createEWSDatasetParams = (featureProperties: any) => {
+  /* eslint-disable camelcase */
+  const { name, external_id, trigger_levels } = featureProperties;
+  const chartTitle = `River level - ${name} (${external_id})`;
+
+  const parsedLevels = JSON.parse(trigger_levels);
+  const triggerLevels = {
+    watchLevel: parsedLevels.watch_level,
+    warning: parsedLevels.warning,
+    severeWarning: parsedLevels.severe_warning,
+  };
+
+  const ewsDatasetParams = {
+    externalId: external_id,
+    triggerLevels,
+    chartTitle,
+  };
+
+  /* eslint-enable camelcase */
+
+  return ewsDatasetParams;
+};
