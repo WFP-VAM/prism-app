@@ -57,7 +57,7 @@ type EWSTriggerLevels = {
 export const createEWSDatesArray = (): number[] => {
   const datesArray = [];
   const endDate = moment(
-    moment().utcOffset('+0700').format('YYYY-MM-DD'),
+    moment.utc().utcOffset('+0700').format('YYYY-MM-DD'),
   ).valueOf(); // Asia/Phnom_Penh
 
   const tempDate = moment('2021-01-01');
