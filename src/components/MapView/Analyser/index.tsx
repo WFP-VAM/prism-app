@@ -88,12 +88,12 @@ import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
 import { addNotification } from '../../../context/notificationStateSlice';
 import {
-  ANALYSIS_ABOVE_PARAM_KEY,
   ANALYSIS_BASELINE_PARAM_KEY,
-  ANALYSIS_BELOW_PARAM_KEY,
   ANALYSIS_DATE_PARAM_KEY,
   ANALYSIS_HAZARD_PARAM_KEY,
   ANALYSIS_STATISTIC_PARAM_KEY,
+  ANALYSIS_THRESHOLD_ABOVE_PARAM_KEY,
+  ANALYSIS_THRESHOLD_BELOW_PARAM_KEY,
 } from '../../../utils/constants';
 import { DEFAULT_DATE_FORMAT } from '../../../utils/name-utils';
 
@@ -101,7 +101,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const selectedLayers = useSelector(layersSelector);
-  const { updateHistory, removeKeyFromUrl } = useUrlHistory();
+  const { urlParams, updateHistory, removeKeyFromUrl } = useUrlHistory();
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -109,18 +109,46 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
   const isMapLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
-  const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState(false);
-  const [isTableViewOpen, setIsTableViewOpen] = useState(true);
+  const hazardLayerIdFromUrl = urlParams.get(ANALYSIS_HAZARD_PARAM_KEY)
+    ? (urlParams.get(ANALYSIS_HAZARD_PARAM_KEY) as LayerKey)
+    : undefined;
+  const baselineLayerIdFromUrl = urlParams.get(
+    ANALYSIS_BASELINE_PARAM_KEY,
+  ) as LayerKey;
+  const selectedDateFromUrl = urlParams.get(ANALYSIS_DATE_PARAM_KEY);
+  const selectedStatisticFromUrl = urlParams.get(ANALYSIS_STATISTIC_PARAM_KEY)
+    ? (urlParams.get(ANALYSIS_STATISTIC_PARAM_KEY) as AggregationOperations)
+    : AggregationOperations.Mean;
+  const aboveThresholdFromUrl = urlParams.get(
+    ANALYSIS_THRESHOLD_ABOVE_PARAM_KEY,
+  );
+  const belowThresholdFromUrl = urlParams.get(
+    ANALYSIS_THRESHOLD_BELOW_PARAM_KEY,
+  );
 
   // form elements
-  const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
-  const [statistic, setStatistic] = useState(AggregationOperations.Mean);
-  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey | null>(null);
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
-
-  const [belowThreshold, setBelowThreshold] = useState('');
-  const [aboveThreshold, setAboveThreshold] = useState('');
+  const [hazardLayerId, setHazardLayerId] = useState<LayerKey | undefined>(
+    hazardLayerIdFromUrl,
+  );
+  const [statistic, setStatistic] = useState(selectedStatisticFromUrl);
+  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>(
+    baselineLayerIdFromUrl || undefined,
+  );
+  const [selectedDate, setSelectedDate] = useState<number | null>(
+    selectedDateFromUrl ? Date.parse(selectedDateFromUrl) : null,
+  );
+  const [belowThreshold, setBelowThreshold] = useState(
+    aboveThresholdFromUrl || '',
+  );
+  const [aboveThreshold, setAboveThreshold] = useState(
+    belowThresholdFromUrl || '',
+  );
   const [thresholdError, setThresholdError] = useState<string | null>(null);
+
+  const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState<boolean>(
+    hazardLayerIdFromUrl !== undefined,
+  );
+  const [isTableViewOpen, setIsTableViewOpen] = useState(true);
 
   // for polygon intersection analysis
   const [adminLevel, setAdminLevel] = useState<AdminLevelType>(1);
@@ -146,9 +174,17 @@ function Analyser({ extent, classes }: AnalyserProps) {
         d => new Date(d),
       ) || []
     : undefined;
+  // check if there is any available date from the url, otherwise use last available date for the selected hazard layer
   const lastAvailableHazardDate =
     Array.isArray(availableHazardDates) && availableHazardDates.length > 0
-      ? availableHazardDates[availableHazardDates.length - 1].getTime()
+      ? availableHazardDates
+          .find(
+            date =>
+              date.toDateString() ===
+              new Date(selectedDateFromUrl || '').toDateString(),
+          )
+          ?.getTime() ||
+        availableHazardDates[availableHazardDates.length - 1].getTime()
       : null;
 
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
@@ -291,11 +327,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const resetAnalysisParams = () => {
     if (baselineLayerId) {
       removeKeyFromUrl(ANALYSIS_BASELINE_PARAM_KEY);
-      // setBaselineLayerId(null);
     }
     if (hazardLayerId) {
       removeKeyFromUrl(ANALYSIS_HAZARD_PARAM_KEY);
-      // setHazardLayerId(null);
     }
 
     if (selectedDate) {
@@ -305,10 +339,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
       removeKeyFromUrl(ANALYSIS_STATISTIC_PARAM_KEY);
     }
     if (aboveThreshold) {
-      removeKeyFromUrl(ANALYSIS_ABOVE_PARAM_KEY);
+      removeKeyFromUrl(ANALYSIS_THRESHOLD_ABOVE_PARAM_KEY);
     }
     if (belowThreshold) {
-      removeKeyFromUrl(ANALYSIS_BELOW_PARAM_KEY);
+      removeKeyFromUrl(ANALYSIS_THRESHOLD_BELOW_PARAM_KEY);
     }
   };
 
@@ -329,10 +363,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
       updateHistory(ANALYSIS_STATISTIC_PARAM_KEY, statistic);
     }
     if (aboveThreshold) {
-      updateHistory(ANALYSIS_ABOVE_PARAM_KEY, aboveThreshold);
+      updateHistory(ANALYSIS_THRESHOLD_ABOVE_PARAM_KEY, aboveThreshold);
     }
     if (belowThreshold) {
-      updateHistory(ANALYSIS_BELOW_PARAM_KEY, belowThreshold);
+      updateHistory(ANALYSIS_THRESHOLD_BELOW_PARAM_KEY, belowThreshold);
     }
   };
 
