@@ -155,8 +155,21 @@ export const loadEWSDataset = createAsyncThunk<
 
   const tableData = createTableData(results, TableDataFormat.TIME);
 
+  const chartThresholds = Object.entries(triggerLevels).reduce(
+    (acc, [key, value]) => ({
+      ...acc,
+      [key]: tableData.columns.map(() => value.toString()),
+    }),
+    {},
+  );
+
+  const tableDataWithThresholds: TableData = {
+    ...tableData,
+    thresholds: chartThresholds,
+  };
+
   return new Promise<EWSDatasetResult>(resolve =>
-    resolve({ data: tableData, externalId, triggerLevels }),
+    resolve({ data: tableDataWithThresholds, externalId, triggerLevels }),
   );
 });
 

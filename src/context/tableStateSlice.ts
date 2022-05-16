@@ -8,6 +8,7 @@ export type TableRowType = { [key: string]: string | number };
 export type TableData = {
   columns: string[];
   rows: TableRowType[];
+  thresholds?: { [key: string]: number[] };
 };
 
 type TableState = {

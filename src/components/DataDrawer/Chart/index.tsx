@@ -127,9 +127,24 @@ function formatChartData(data: TableData, config: ChartConfig) {
         data: tableRows.map(row => (row[index] as number) || null),
       }));
 
+  const indexes = ['#31a354', '#fdae6b', '#e34a33'];
+
+  const thresholds = data.thresholds
+    ? Object.entries(data.thresholds).map(([key, values], index) => ({
+        label: key,
+        backgroundColor: indexes[index],
+        borderColor: indexes[index],
+        borderWidth: 2,
+        data: values,
+        fill: false,
+      }))
+    : [];
+
+  const datasetsWithTriggers = [...datasets, ...thresholds];
+
   return {
     labels,
-    datasets,
+    datasets: datasetsWithTriggers,
   };
 }
 
