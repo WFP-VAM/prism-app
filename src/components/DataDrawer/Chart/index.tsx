@@ -123,7 +123,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         fill: config.fill || false,
         backgroundColor: colors[i],
         borderColor: colors[i],
-        borderWidth: 2,
+        borderWidth: 1,
         data: tableRows.map(row => (row[index] as number) || null),
       }));
 
@@ -135,6 +135,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         backgroundColor: indexes[index],
         borderColor: indexes[index],
         borderWidth: 2,
+        pointRadius: 0,
         data: values,
         fill: false,
       }))
