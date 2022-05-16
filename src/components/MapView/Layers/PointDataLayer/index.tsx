@@ -18,7 +18,10 @@ import { getBoundaryLayerSingleton } from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { circleLayout, circlePaint, fillPaintData } from '../styles';
-import { setEWSParams } from '../../../../context/datasetStateSlice';
+import {
+  setEWSParams,
+  clearDataset,
+} from '../../../../context/datasetStateSlice';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
@@ -81,6 +84,8 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       };
 
       /* eslint-enable camelcase */
+      dispatch(clearDataset());
+
       dispatch(setEWSParams(ewsDatasetParams));
     }
   };

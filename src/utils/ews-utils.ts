@@ -4,6 +4,31 @@ import { PointData } from '../config/types';
 
 const BASE_URL = 'http://sms.ews1294.info/api/v1';
 
+type EWSChartConfig = {
+  label: string;
+  color: string;
+};
+
+type EWSChartItem = EWSChartConfig & { values: number[] };
+
+export type EWSChartConfigObject = { [key: string]: EWSChartConfig };
+export type EWSChartItemsObject = { [key: string]: EWSChartItem };
+
+export const EWSTriggersConfig: EWSChartConfigObject = {
+  watchLevel: {
+    label: 'watch level',
+    color: '#31a354',
+  },
+  warning: {
+    label: 'warning',
+    color: '#fdae6b',
+  },
+  severeWarning: {
+    label: 'severe warning',
+    color: '#e34a33',
+  },
+};
+
 type statsEWS = {
   max: number;
   mean: number;

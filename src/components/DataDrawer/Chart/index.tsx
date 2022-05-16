@@ -127,25 +127,23 @@ function formatChartData(data: TableData, config: ChartConfig) {
         data: tableRows.map(row => (row[index] as number) || null),
       }));
 
-  const indexes = ['#31a354', '#fdae6b', '#e34a33'];
-
-  const thresholds = data.thresholds
-    ? Object.entries(data.thresholds).map(([key, values], index) => ({
-        label: key,
-        backgroundColor: indexes[index],
-        borderColor: indexes[index],
+  const EWSthresholds = data.EWSConfig
+    ? Object.values(data.EWSConfig).map(obj => ({
+        label: obj.label,
+        backgroundColor: obj.color,
+        borderColor: obj.color,
         borderWidth: 2,
         pointRadius: 0,
-        data: values,
+        data: obj.values,
         fill: false,
       }))
     : [];
 
-  const datasetsWithTriggers = [...datasets, ...thresholds];
+  const datasetsWithTresholds = [...datasets, ...EWSthresholds];
 
   return {
     labels,
-    datasets: datasetsWithTriggers,
+    datasets: datasetsWithTresholds,
   };
 }
 
