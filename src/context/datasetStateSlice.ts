@@ -144,11 +144,15 @@ export const loadEWSDataset = createAsyncThunk<
     externalId,
   );
 
-  const results: DataItem[] = dataPoints.map(item => {
-    const [measureDate, value] = item.value;
+  const filterDate = moment(date).endOf('day').valueOf();
 
-    return { date: moment(measureDate).valueOf(), value };
-  });
+  const results: DataItem[] = dataPoints
+    .map(item => {
+      const [measureDate, value] = item.value;
+
+      return { date: moment(measureDate).valueOf(), value };
+    })
+    .filter(item => item.date <= filterDate); // Api returns items day after.
 
   const tableData = createTableData(results, TableDataFormat.TIME);
 
