@@ -116,6 +116,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         backgroundColor: colors[i],
         borderColor: colors[i],
         borderWidth: 2,
+        pointRadius: data.EWSConfig ? 0 : undefined,
         data: indices.map(index => (row[index] as number) || null),
       }))
     : indices.map((index, i) => ({
@@ -123,7 +124,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         fill: config.fill || false,
         backgroundColor: colors[i],
         borderColor: colors[i],
-        borderWidth: 1,
+        borderWidth: 2,
         data: tableRows.map(row => (row[index] as number) || null),
       }));
 
