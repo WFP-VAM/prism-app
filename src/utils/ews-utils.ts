@@ -86,12 +86,22 @@ export const fetchEWSDataPointsByLocation = async (
 ): Promise<EWSSensorData[]> => {
   const momentDate = moment(date);
 
+  const now = moment();
+
+  const hoursDiff = now.diff(momentDate, 'hours');
+
   const format = 'YYYY-MM-DDTHH:mm:ss';
 
-  const startDate = momentDate.startOf('day').format(format);
-  const endDate = momentDate.clone().endOf('day').format(format);
+  const startDate =
+    hoursDiff < 24
+      ? now.clone().subtract(1, 'days').utcOffset('+0700')
+      : momentDate.startOf('day');
+  const endDate =
+    hoursDiff < 24 ? now.utcOffset('+0700') : momentDate.clone().endOf('day');
 
-  const url = `${BASE_URL}/sensors/sensor_event?start=${startDate}&end=${endDate}`;
+  const url = `${BASE_URL}/sensors/sensor_event?start=${startDate.format(
+    format,
+  )}&end=${endDate.format(format)}`;
 
   const resp = await fetch(
     externalId ? `${url}&external_id=${externalId}` : url,
