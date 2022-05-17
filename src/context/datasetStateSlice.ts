@@ -100,7 +100,7 @@ const createTableData = (
   format: TableDataFormat,
 ): TableData => {
   const prefix = format === TableDataFormat.DATE ? 'd' : 't';
-  const momentFormat = format === TableDataFormat.DATE ? 'YYYY-MM-DD' : 'hh:mm';
+  const momentFormat = format === TableDataFormat.DATE ? 'YYYY-MM-DD' : 'HH:mm';
 
   const sortedRows = orderBy(results, item => item.date).map((item, index) => ({
     ...item,
