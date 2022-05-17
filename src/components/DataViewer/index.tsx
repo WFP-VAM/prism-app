@@ -115,7 +115,16 @@ function DataViewer({ classes }: DatasetProps) {
               <CircularProgress size={50} />
             </div>
           ) : (
-            <Chart title={t(title)} config={config} data={dataset} />
+            <Chart
+              title={t(title)}
+              config={config}
+              data={dataset}
+              xAxisLabel={
+                isAdminBoundary(params)
+                  ? undefined
+                  : t('Timestamps reflect local time in Cambodia')
+              }
+            />
           )}
         </Paper>
       </Grid>
