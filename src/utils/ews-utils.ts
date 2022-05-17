@@ -56,14 +56,14 @@ type EWSTriggerLevels = {
 
 export const createEWSDatesArray = (): number[] => {
   const datesArray = [];
-  const endDate = moment(
-    moment.utc().utcOffset('+0700').format('YYYY-MM-DD'),
-  ).valueOf(); // Asia/Phnom_Penh
+
+  const endDate = moment(moment.utc().format('YYYY-MM-DD')).valueOf();
 
   const tempDate = moment('2021-01-01');
+
   while (tempDate.valueOf() <= endDate) {
     // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(tempDate.valueOf());
+    datesArray.push(tempDate.clone().set({ hour: 12 }).valueOf());
 
     tempDate.add(1, 'days');
   }
@@ -84,7 +84,7 @@ export const fetchEWSDataPointsByLocation = async (
   date: number,
   externalId?: string,
 ): Promise<EWSSensorData[]> => {
-  const momentDate = moment(date).utc();
+  const momentDate = moment(date);
 
   const startDate = momentDate.startOf('day').format();
   const endDate = momentDate.clone().endOf('day').format();
