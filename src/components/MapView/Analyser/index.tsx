@@ -27,7 +27,7 @@ import { grey } from '@material-ui/core/colors';
 import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
-import { range } from 'lodash';
+import { isNil, range } from 'lodash';
 import moment from 'moment';
 import {
   LayerDefinitions,
@@ -143,9 +143,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>(
     baselineLayerIdFromUrl || undefined,
   );
-  const [selectedDate, setSelectedDate] = useState<number | null>(
-    selectedDateFromUrl ? Date.parse(selectedDateFromUrl) : null,
-  );
+  const [selectedDate, setSelectedDate] = useState<number | null>(null);
   const [belowThreshold, setBelowThreshold] = useState(
     aboveThresholdFromUrl || '',
   );
@@ -163,12 +161,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
     Number(adminLevelFromUrl) as AdminLevelType,
   );
-  const [startDate, setStartDate] = useState<number | null>(
-    selectedStartDateFromUrl ? Date.parse(selectedStartDateFromUrl) : null,
-  );
-  const [endDate, setEndDate] = useState<number | null>(
-    selectedEndDateFromUrl ? Date.parse(selectedEndDateFromUrl) : null,
-  );
+  const [startDate, setStartDate] = useState<number | null>(null);
+  const [endDate, setEndDate] = useState<number | null>(null);
 
   // find layer for the given adminLevel
   const adminLevelLayer = getAdminLevelLayer(adminLevel);
@@ -200,43 +194,49 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   const { t } = useSafeTranslation();
 
+  // check if there is any available date from the url, otherwise use last available date for the selected hazard layer
+  const lastAvailableHazardDate = availableHazardDates
+    ? getDateFromList(
+        selectedDateFromUrl ? new Date(selectedDateFromUrl) : null,
+        availableHazardDates,
+      )?.getTime() || null
+    : null;
+  const lastAvailableHazardStartDate = availableHazardDates
+    ? getDateFromList(
+        selectedStartDateFromUrl ? new Date(selectedStartDateFromUrl) : null,
+        availableHazardDates,
+      )?.getTime() || null
+    : null;
+  const lastAvailableHazardEndDate = availableHazardDates
+    ? getDateFromList(
+        selectedEndDateFromUrl ? new Date(selectedEndDateFromUrl) : null,
+        availableHazardDates,
+      )?.getTime() || null
+    : null;
+
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
-    if (Array.isArray(availableHazardDates)) {
-      // check if there is any available date from the url, otherwise use last available date for the selected hazard layer
-      const lastAvailableHazardDate = selectedDateFromUrl
-        ? getDateFromList(
-            new Date(selectedDateFromUrl),
-            availableHazardDates,
-          )?.getTime() || null
-        : null;
-      const lastAvailableHazardStartDate = selectedStartDateFromUrl
-        ? getDateFromList(
-            new Date(selectedStartDateFromUrl),
-            availableHazardDates,
-          )?.getTime() || null
-        : null;
-      const lastAvailableHazardEndDate = selectedEndDateFromUrl
-        ? getDateFromList(
-            new Date(selectedEndDateFromUrl),
-            availableHazardDates,
-          )?.getTime() || null
-        : null;
-      setSelectedDate(lastAvailableHazardDate);
-      setStartDate(lastAvailableHazardStartDate);
-      setEndDate(lastAvailableHazardEndDate);
-    } else {
+    if (isNil(lastAvailableHazardDate)) {
       setSelectedDate(null);
+    } else {
+      setSelectedDate(lastAvailableHazardDate);
+    }
+    if (isNil(lastAvailableHazardStartDate)) {
       setStartDate(null);
+    } else {
+      setStartDate(lastAvailableHazardStartDate);
+    }
+    if (isNil(lastAvailableHazardEndDate)) {
       setEndDate(null);
+    } else {
+      setEndDate(lastAvailableHazardEndDate);
     }
   }, [
     availableDates,
     hazardLayerId,
-    availableHazardDates,
-    selectedDateFromUrl,
-    selectedStartDateFromUrl,
-    selectedEndDateFromUrl,
+    lastAvailableHazardDate,
+    lastAvailableHazardStartDate,
+    lastAvailableHazardEndDate,
   ]);
 
   const onOptionChange = <T extends string>(

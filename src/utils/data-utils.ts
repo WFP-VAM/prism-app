@@ -38,11 +38,14 @@ export function coordFirst(data: GeoJSON): number[] {
 
 // check if a date is in a list of given available date (ignoring times)
 export function getDateFromList(
-  checkingDate: Date,
+  checkingDate: Date | null,
   availableDates: Date[],
 ): Date | null {
   if (availableDates.length === 0) {
     return null;
+  }
+  if (!checkingDate) {
+    return availableDates[availableDates.length - 1];
   }
   const foundDate = availableDates.find(
     date => date.toDateString() === checkingDate.toDateString(),
