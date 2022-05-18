@@ -175,6 +175,9 @@ function MapView({ classes }: MapViewProps) {
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const serverAvailableDates = useSelector(availableDatesSelector);
+  const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
+    undefined,
+  );
   const selectedLayersWithGroup = selectedLayers.filter(sl => sl.menuGroup);
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer =>
@@ -415,6 +418,10 @@ function MapView({ classes }: MapViewProps) {
   // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers.
   // Jump map to center here instead of map initial state to prevent map re-centering on layer changes
   const saveAndJumpMap = (map: Map) => {
+    // Find the first symbol on the map to make sure we add layers below them.
+    const { layers } = map.getStyle();
+    // Find the first symbol on the map to make sure we add layers below them.
+    setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
   };
@@ -440,19 +447,20 @@ function MapView({ classes }: MapViewProps) {
         }}
         onClick={mapOnClick}
       >
-        <>
-          {selectedLayers.map(layer => {
-            const component: ComponentType<{ layer: any }> =
-              componentTypes[layer.type];
-            return createElement(component, {
-              key: layer.id,
-              layer,
-            });
-          })}
-        </>
+        {selectedLayers.map(layer => {
+          const component: ComponentType<{
+            layer: any;
+            before?: string;
+          }> = componentTypes[layer.type];
+          return createElement(component, {
+            key: layer.id,
+            layer,
+            before: firstSymbolId,
+          });
+        })}
         {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer />
-        <SelectionLayer />
+        <AnalysisLayer before={firstSymbolId} />
+        <SelectionLayer before={firstSymbolId} />
         <MapTooltip />
       </MapboxMap>
       <Grid
