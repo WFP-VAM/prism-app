@@ -1666,6 +1666,10 @@
       "mean": {
         "type": "number",
         "label": "Mean water level"
+      },
+      "max": {
+        "type": "number",
+        "label": "Max water level"
       }
     },
     "data_field": "status",

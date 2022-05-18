@@ -165,7 +165,7 @@ export const fetchEWSData = async (date: number): Promise<PointData[]> => {
         max,
         ...properties,
         status: getLevelStatus(
-          mean,
+          max,
           properties.trigger_levels as EWSTriggerLevels,
         ),
       };
