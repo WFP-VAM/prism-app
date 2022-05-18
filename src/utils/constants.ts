@@ -4,3 +4,6 @@ export const ANALYSIS_DATE_PARAM_KEY = 'analysisDate';
 export const ANALYSIS_STATISTIC_PARAM_KEY = 'analysisStatistic';
 export const ANALYSIS_THRESHOLD_ABOVE_PARAM_KEY = 'analysisThresholdAbove';
 export const ANALYSIS_THRESHOLD_BELOW_PARAM_KEY = 'analysisThresholdBelow';
+export const ANALYSIS_ADMIN_LEVEL_PARAM_KEY = 'analysisAdminLevel';
+export const ANALYSIS_START_DATE_PARAM_KEY = 'analysisStartDate';
+export const ANALYSIS_END_DATE_PARAM_KEY = 'analysisEndDate';

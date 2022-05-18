@@ -27,7 +27,7 @@ import { grey } from '@material-ui/core/colors';
 import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
-import { isNil, range } from 'lodash';
+import { range } from 'lodash';
 import moment from 'moment';
 import {
   LayerDefinitions,
@@ -88,14 +88,18 @@ import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
 import { addNotification } from '../../../context/notificationStateSlice';
 import {
+  ANALYSIS_ADMIN_LEVEL_PARAM_KEY,
   ANALYSIS_BASELINE_PARAM_KEY,
   ANALYSIS_DATE_PARAM_KEY,
+  ANALYSIS_END_DATE_PARAM_KEY,
   ANALYSIS_HAZARD_PARAM_KEY,
+  ANALYSIS_START_DATE_PARAM_KEY,
   ANALYSIS_STATISTIC_PARAM_KEY,
   ANALYSIS_THRESHOLD_ABOVE_PARAM_KEY,
   ANALYSIS_THRESHOLD_BELOW_PARAM_KEY,
 } from '../../../utils/constants';
 import { DEFAULT_DATE_FORMAT } from '../../../utils/name-utils';
+import { getDateFromList } from '../../../utils/data-utils';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -126,6 +130,11 @@ function Analyser({ extent, classes }: AnalyserProps) {
     ANALYSIS_THRESHOLD_BELOW_PARAM_KEY,
   );
 
+  const adminLevelFromUrl =
+    urlParams.get(ANALYSIS_ADMIN_LEVEL_PARAM_KEY) || '1';
+  const selectedStartDateFromUrl = urlParams.get(ANALYSIS_START_DATE_PARAM_KEY);
+  const selectedEndDateFromUrl = urlParams.get(ANALYSIS_END_DATE_PARAM_KEY);
+
   // form elements
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey | undefined>(
     hazardLayerIdFromUrl,
@@ -151,9 +160,15 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [isTableViewOpen, setIsTableViewOpen] = useState(true);
 
   // for polygon intersection analysis
-  const [adminLevel, setAdminLevel] = useState<AdminLevelType>(1);
-  const [startDate, setStartDate] = useState<number | null>(null);
-  const [endDate, setEndDate] = useState<number | null>(null);
+  const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
+    Number(adminLevelFromUrl) as AdminLevelType,
+  );
+  const [startDate, setStartDate] = useState<number | null>(
+    selectedStartDateFromUrl ? Date.parse(selectedStartDateFromUrl) : null,
+  );
+  const [endDate, setEndDate] = useState<number | null>(
+    selectedEndDateFromUrl ? Date.parse(selectedEndDateFromUrl) : null,
+  );
 
   // find layer for the given adminLevel
   const adminLevelLayer = getAdminLevelLayer(adminLevel);
@@ -174,18 +189,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
         d => new Date(d),
       ) || []
     : undefined;
-  // check if there is any available date from the url, otherwise use last available date for the selected hazard layer
-  const lastAvailableHazardDate =
-    Array.isArray(availableHazardDates) && availableHazardDates.length > 0
-      ? availableHazardDates
-          .find(
-            date =>
-              date.toDateString() ===
-              new Date(selectedDateFromUrl || '').toDateString(),
-          )
-          ?.getTime() ||
-        availableHazardDates[availableHazardDates.length - 1].getTime()
-      : null;
 
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
@@ -199,16 +202,42 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
-    if (isNil(lastAvailableHazardDate)) {
+    if (Array.isArray(availableHazardDates)) {
+      // check if there is any available date from the url, otherwise use last available date for the selected hazard layer
+      const lastAvailableHazardDate = selectedDateFromUrl
+        ? getDateFromList(
+            new Date(selectedDateFromUrl),
+            availableHazardDates,
+          )?.getTime() || null
+        : null;
+      const lastAvailableHazardStartDate = selectedStartDateFromUrl
+        ? getDateFromList(
+            new Date(selectedStartDateFromUrl),
+            availableHazardDates,
+          )?.getTime() || null
+        : null;
+      const lastAvailableHazardEndDate = selectedEndDateFromUrl
+        ? getDateFromList(
+            new Date(selectedEndDateFromUrl),
+            availableHazardDates,
+          )?.getTime() || null
+        : null;
+      setSelectedDate(lastAvailableHazardDate);
+      setStartDate(lastAvailableHazardStartDate);
+      setEndDate(lastAvailableHazardEndDate);
+    } else {
       setSelectedDate(null);
       setStartDate(null);
       setEndDate(null);
-    } else {
-      setSelectedDate(lastAvailableHazardDate);
-      setStartDate(lastAvailableHazardDate);
-      setEndDate(lastAvailableHazardDate);
     }
-  }, [availableDates, hazardLayerId, lastAvailableHazardDate]);
+  }, [
+    availableDates,
+    hazardLayerId,
+    availableHazardDates,
+    selectedDateFromUrl,
+    selectedStartDateFromUrl,
+    selectedEndDateFromUrl,
+  ]);
 
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
@@ -344,20 +373,31 @@ function Analyser({ extent, classes }: AnalyserProps) {
     if (belowThreshold) {
       removeKeyFromUrl(ANALYSIS_THRESHOLD_BELOW_PARAM_KEY);
     }
+
+    if (adminLevel) {
+      removeKeyFromUrl(ANALYSIS_ADMIN_LEVEL_PARAM_KEY);
+    }
+    if (startDate) {
+      removeKeyFromUrl(ANALYSIS_START_DATE_PARAM_KEY);
+    }
+    if (endDate) {
+      removeKeyFromUrl(ANALYSIS_END_DATE_PARAM_KEY);
+    }
   };
 
   const updateAnalysisParams = () => {
-    if (baselineLayerId) {
-      updateHistory(ANALYSIS_BASELINE_PARAM_KEY, baselineLayerId);
-    }
     if (hazardLayerId) {
       updateHistory(ANALYSIS_HAZARD_PARAM_KEY, hazardLayerId);
     }
-    if (selectedDate) {
-      updateHistory(
-        ANALYSIS_DATE_PARAM_KEY,
-        moment(selectedDate).format(DEFAULT_DATE_FORMAT),
-      );
+
+    if (baselineLayerId) {
+      updateHistory(ANALYSIS_BASELINE_PARAM_KEY, baselineLayerId);
+      if (selectedDate) {
+        updateHistory(
+          ANALYSIS_DATE_PARAM_KEY,
+          moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+        );
+      }
     }
     if (statistic) {
       updateHistory(ANALYSIS_STATISTIC_PARAM_KEY, statistic);
@@ -367,6 +407,22 @@ function Analyser({ extent, classes }: AnalyserProps) {
     }
     if (belowThreshold) {
       updateHistory(ANALYSIS_THRESHOLD_BELOW_PARAM_KEY, belowThreshold);
+    }
+
+    if (adminLevel) {
+      updateHistory(ANALYSIS_ADMIN_LEVEL_PARAM_KEY, adminLevel.toString());
+      if (startDate) {
+        updateHistory(
+          ANALYSIS_START_DATE_PARAM_KEY,
+          moment(startDate).format(DEFAULT_DATE_FORMAT),
+        );
+      }
+      if (endDate) {
+        updateHistory(
+          ANALYSIS_END_DATE_PARAM_KEY,
+          moment(endDate).format(DEFAULT_DATE_FORMAT),
+        );
+      }
     }
   };
 
@@ -479,6 +535,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
         extent,
       };
       activateUniqueBoundary(adminLevelLayer);
+      // update history
+      updateAnalysisParams();
       dispatch(requestAndStorePolygonAnalysis(params));
     } else {
       if (!selectedDate) {
