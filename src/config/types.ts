@@ -23,10 +23,12 @@ export type LayerKey = keyof typeof rawLayers;
 export type MenuGroupItem = {
   id: string;
   label: string;
+  main: boolean;
 };
 
 export type MenuGroup = {
   menuGroupTitle: string;
+  activateAll: boolean;
   layers: MenuGroupItem[];
 };
 
@@ -279,9 +281,18 @@ export class CommonLayerProps {
   * can be set in config/{country}/prism.json by changing the LayerKey (string) into object:
     {
       "menu_group_title": "Rainfall Anomaly" // the title of grouped menu
+      "activate_all": true // if true then hide layer options and activate all layers at the same time
       "layers" : [ // layer list of layers.json to be grouped
-        {"id": "rain_anomaly_1month", "label": "1-month"},
-        {"id": "rain_anomaly_3month", "label": "3-month"},
+        {
+          "id": "rain_anomaly_1month",
+          "label": "1-month",
+          "main": true
+        },
+        {
+          "id": "rain_anomaly_3month",
+          "label": "3-month",
+          "main": false
+        },
         ...
       ]
     },

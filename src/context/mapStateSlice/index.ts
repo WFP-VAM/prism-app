@@ -48,11 +48,9 @@ export const mapStateSlice = createSlice({
   initialState,
   reducers: {
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => {
-      const { name: groupName } = payload?.group || {};
-
-      const layersToAdd = groupName
-        ? Object.values(LayerDefinitions).filter(
-            l => l.group?.name === groupName,
+      const layersToAdd = payload?.menuGroup?.activateAll
+        ? Object.values(LayerDefinitions).filter(l =>
+            payload?.menuGroup?.layers?.map(layer => layer.id).includes(l.id),
           )
         : [payload];
 
@@ -75,10 +73,10 @@ export const mapStateSlice = createSlice({
       { payload }: PayloadAction<LayerType>,
     ) => ({
       ...rest,
-      layers: layers.filter(({ id, group }) =>
-        // Keep layers without group and layers with group and different group name.
-        payload.group
-          ? !group || group?.name !== payload.group.name
+      layers: layers.filter(({ id }) =>
+        // Keep layers without group and layers with group from different group.
+        payload.menuGroup
+          ? !payload.menuGroup.layers.map(l => l.id).includes(id)
           : id !== payload.id,
       ),
     }),

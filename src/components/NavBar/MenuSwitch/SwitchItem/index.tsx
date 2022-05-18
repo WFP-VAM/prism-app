@@ -36,12 +36,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   const dispatch = useDispatch();
   const { updateHistory, removeKeyFromUrl } = useUrlHistory();
 
-  const {
-    id: layerId,
-    title: layerTitle,
-    group: LayerGroup,
-    menuGroup,
-  } = layer;
+  const { id: layerId, title: layerTitle, menuGroup } = layer;
 
   const selected = selectedLayers.some(({ id: testId }) => {
     return (
@@ -52,7 +47,12 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
 
   const selectedActiveLayer = selected
     ? selectedLayers.filter(l => {
-        return menuGroup?.layers.map(menu => menu.id).includes(l.id);
+        return (
+          (menuGroup?.activateAll &&
+            menuGroup?.layers.find(menu => menu.id === l.id && menu.main)) ||
+          (!menuGroup?.activateAll &&
+            menuGroup?.layers.map(menu => menu.id).includes(l.id))
+        );
       })
     : [];
 
@@ -60,12 +60,10 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
     selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : null;
 
   const [activeLayer, setActiveLayer] = useState(
-    initialActiveLayer || (menuGroup?.layers[0].id as string),
+    initialActiveLayer || (menuGroup?.layers?.find(l => l.main)?.id as string),
   );
 
-  const validatedTitle = t(
-    LayerGroup?.name || menuGroup?.menuGroupTitle || layerTitle || '',
-  );
+  const validatedTitle = t(menuGroup?.menuGroupTitle || layerTitle || '');
 
   const toggleLayerValue = (selectedLayerId: string, checked: boolean) => {
     const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
@@ -134,18 +132,20 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   const menuTitle = menuGroup ? (
     <>
       <Typography className={classes.title}>{validatedTitle}</Typography>
-      <Select
-        className={classes.select}
-        classes={{ root: classes.selectItem }}
-        value={activeLayer}
-        onChange={e => handleSelect(e)}
-      >
-        {menuGroup.layers.map(menu => (
-          <MenuItem key={menu.id} value={menu.id}>
-            {t(menu.label)}
-          </MenuItem>
-        ))}
-      </Select>
+      {!menuGroup.activateAll && (
+        <Select
+          className={classes.select}
+          classes={{ root: classes.selectItem }}
+          value={activeLayer}
+          onChange={e => handleSelect(e)}
+        >
+          {menuGroup.layers.map(menu => (
+            <MenuItem key={menu.id} value={menu.id}>
+              {t(menu.label)}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
     </>
   ) : (
     <Typography className={classes.title}>{validatedTitle}</Typography>

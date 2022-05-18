@@ -28,7 +28,29 @@
   },
   "categories": {
     "hazards": {
-      "tropical_storms": ["adamts_buffers"],
+      "tropical_storms": [
+        {
+          "menu_group_title": "Tropical Storms",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "adamts_buffers",
+              "label": "Wind buffers",
+              "main": true
+            },
+            {
+              "id": "adamts_nodes",
+              "label": "Nodes",
+              "main": false
+            },
+            {
+              "id": "adamts_tracks",
+              "label": "Tracks",
+              "main": false
+            }
+          ]
+        }
+      ],
       "floods": ["hydra_s1", "hydra_s2", "hydra_l8"],
       "rainfall": [
         "rainfall_dekad",

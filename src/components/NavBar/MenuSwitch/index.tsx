@@ -29,7 +29,10 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
       <hr />
 
       {layers.map(layer => {
-        if (layer.group && !layer.group.main) {
+        if (
+          layer.menuGroup &&
+          layer.menuGroup.layers.find(l => l.id === layer.id && !l.main)
+        ) {
           return null;
         }
         return <SwitchItem key={layer.id} layer={layer} />;

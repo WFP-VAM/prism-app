@@ -175,11 +175,17 @@ function MapView({ classes }: MapViewProps) {
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const serverAvailableDates = useSelector(availableDatesSelector);
+  const selectedLayersWithGroup = selectedLayers.filter(sl => sl.menuGroup);
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer =>
       dateSupportLayerTypes.includes(layer.type),
     )
-    .filter(layer => !layer.group || layer.group.main);
+    .filter(
+      layer =>
+        !selectedLayersWithGroup.some(sl =>
+          sl.menuGroup?.layers?.find(l => l.id === layer.id && !l.main),
+        ),
+    );
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>

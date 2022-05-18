@@ -26,11 +26,11 @@ function LayerDropdown({
   const categories = menuList // we could memo this but it isn't impacting performance, for now
     // 1. flatten to just the layer categories, don't need the big menus
     .flatMap(menu => menu.layersCategories)
-    // 2. breakdown grouped layer back into flat list of layers
+    // 2. breakdown grouped layer back into flat list of layers if activate_all = false
     .map(layerCategory => {
       if (layerCategory.layers.some(f => f.menuGroup)) {
         const layers = layerCategory.layers.map(layer => {
-          if (layer.menuGroup) {
+          if (layer.menuGroup && !layer.menuGroup.activateAll) {
             return layer.menuGroup.layers.map(layerKey => {
               return LayerDefinitions[layerKey.id as LayerKey];
             });

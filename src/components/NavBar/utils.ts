@@ -32,8 +32,8 @@ function formatLayersCategories(layersList: {
           const menuGroup = (mapKeys(key, (_v, k: string) =>
             camelCase(k),
           ) as unknown) as MenuGroup;
-          // use first layer as default
-          const layer = LayerDefinitions[menuGroup.layers[0].id as LayerKey];
+          const mainLayer = menuGroup.layers.find(l => l.main);
+          const layer = LayerDefinitions[mainLayer?.id as LayerKey];
           // eslint-disable-next-line fp/no-mutation
           layer.menuGroup = menuGroup;
           return layer;
