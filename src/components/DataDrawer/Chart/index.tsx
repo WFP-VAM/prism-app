@@ -140,7 +140,8 @@ function formatChartData(data: TableData, config: ChartConfig) {
         borderColor: obj.color,
         borderWidth: 2,
         pointRadius: 0,
-        data: obj.values,
+        // Deep copy is needed: https://github.com/reactchartjs/react-chartjs-2/issues/524#issuecomment-722814079
+        data: [...obj.values],
         fill: false,
       }))
     : [];
