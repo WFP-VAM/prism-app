@@ -30,8 +30,8 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
 
       {layers.map(layer => {
         if (
-          layer.menuGroup &&
-          layer.menuGroup.layers.find(l => l.id === layer.id && !l.main)
+          layer.group &&
+          layer.group.layers.find(l => l.id === layer.id && !l.main)
         ) {
           return null;
         }

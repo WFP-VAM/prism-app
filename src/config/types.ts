@@ -20,14 +20,14 @@ export type LayerType =
 
 export type LayerKey = keyof typeof rawLayers;
 
-export type MenuGroupItem = {
+type MenuGroupItem = {
   id: string;
   label: string;
   main: boolean;
 };
 
 export type MenuGroup = {
-  menuGroupTitle: string;
+  groupTitle: string;
   activateAll: boolean;
   layers: MenuGroupItem[];
 };
@@ -151,12 +151,6 @@ export type LegendDefinitionItem = {
 
 export type LegendDefinition = LegendDefinitionItem[];
 
-export type GroupDefinition = {
-  name: string;
-  // Main layer of a group of layers. Secondary layers will not trigger notifications.
-  main: boolean;
-};
-
 export enum WcsGetCoverageVersion {
   oneZeroZero = '1.0.0',
   twoZeroZero = '2.0.0',
@@ -264,9 +258,6 @@ export class CommonLayerProps {
   @optional // only optional for boundary layer
   legendText?: string;
 
-  @optional // only optional for boundary layer
-  group?: GroupDefinition;
-
   @optional // Perform population exposure analysis using this layer.
   exposure?: ExposedPopulationDefinition;
 
@@ -277,10 +268,10 @@ export class CommonLayerProps {
   featureInfoProps?: { [key: string]: FeatureInfoProps };
 
   /*
-  * only for layer that has grouped menu.
+  * only for layer that has grouped menu and always assigned to main layer of group (../components/Navbar/utils.ts)
   * can be set in config/{country}/prism.json by changing the LayerKey (string) into object:
     {
-      "menu_group_title": "Rainfall Anomaly" // the title of grouped menu
+      "group_title": "Rainfall Anomaly" // the title of group
       "activate_all": true // if true then hide layer options and activate all layers at the same time
       "layers" : [ // layer list of layers.json to be grouped
         {
@@ -298,7 +289,7 @@ export class CommonLayerProps {
     },
   */
   @optional
-  menuGroup?: MenuGroup;
+  group?: MenuGroup;
 }
 
 /*

@@ -178,16 +178,16 @@ function MapView({ classes }: MapViewProps) {
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     undefined,
   );
-  const selectedLayersWithGroup = selectedLayers.filter(sl => sl.menuGroup);
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer =>
       dateSupportLayerTypes.includes(layer.type),
     )
     .filter(
       layer =>
-        !selectedLayersWithGroup.some(sl =>
-          sl.menuGroup?.layers?.find(l => l.id === layer.id && !l.main),
-        ),
+        layer.group ||
+        !selectedLayers
+          .filter(sl => sl.group)
+          .some(sl => sl.group?.layers?.find(l => l.id === layer.id)),
     );
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as

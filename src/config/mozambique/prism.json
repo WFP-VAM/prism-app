@@ -32,7 +32,7 @@
       "rainfall_amount": [
         "precip_blended_dekad",
         {
-          "menu_group_title": "Rainfall Aggregate",
+          "group_title": "Rainfall Aggregate",
           "activate_all": false,
           "layers": [
             {
@@ -71,7 +71,7 @@
       "rainfall_anomalies": [
         "precip_blended_dekad_anomaly",
         {
-          "menu_group_title": "Rainfall Anomaly",
+          "group_title": "Rainfall Anomaly",
           "activate_all": false,
           "layers": [
             {
@@ -107,7 +107,7 @@
           ]
         },
         {
-          "menu_group_title": "SPI",
+          "group_title": "SPI",
           "activate_all": false,
           "layers": [
             {
@@ -169,7 +169,7 @@
     "tropical_storms": {
       "tropical_storms": [
         {
-          "menu_group_title": "Tropical Storms",
+          "group_title": "Tropical Storms",
           "activate_all": true,
           "layers": [
             {
@@ -197,7 +197,7 @@
       ],
       "food_insecurity": [
         {
-          "menu_group_title": "IPC",
+          "group_title": "IPC",
           "activate_all": false,
           "layers": [
             {

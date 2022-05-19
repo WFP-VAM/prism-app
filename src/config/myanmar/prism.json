@@ -30,7 +30,7 @@
     "hazards": {
       "tropical_storms": [
         {
-          "menu_group_title": "Tropical Storms",
+          "group_title": "Tropical Storms",
           "activate_all": true,
           "layers": [
             {

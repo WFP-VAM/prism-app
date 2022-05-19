@@ -26,11 +26,10 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
   const contentRef = useRef<HTMLHeadingElement>(null);
   const layer = LayerDefinitions[layerId || 'admin_boundaries'];
   const selectedLayers = useSelector(layersSelector);
-  const selectedLayersWithGroup = selectedLayers.filter(sl => sl.menuGroup);
-  // display if layer dont have menuGroup or is main layer in the group
-  const canDisplayContent = !selectedLayersWithGroup.some(sl =>
-    sl.menuGroup?.layers?.find(l => l.id === layerId && !l.main),
-  );
+  // display if layer without group or main layer in group
+  const canDisplayContent = !selectedLayers
+    .filter(sl => sl.group)
+    .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.main));
   const hasContent = layer.contentPath?.length;
   const domId = layer.contentPath?.split('#')?.[1];
 

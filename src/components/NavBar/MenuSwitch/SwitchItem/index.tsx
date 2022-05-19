@@ -36,22 +36,20 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   const dispatch = useDispatch();
   const { updateHistory, removeKeyFromUrl } = useUrlHistory();
 
-  const { id: layerId, title: layerTitle, menuGroup } = layer;
+  const { id: layerId, title: layerTitle, group } = layer;
 
   const selected = selectedLayers.some(({ id: testId }) => {
     return (
-      testId === layerId ||
-      (menuGroup && menuGroup.layers.some(menu => menu.id === testId))
+      testId === layerId || (group && group.layers.some(l => l.id === testId))
     );
   });
 
   const selectedActiveLayer = selected
-    ? selectedLayers.filter(l => {
+    ? selectedLayers.filter(sl => {
         return (
-          (menuGroup?.activateAll &&
-            menuGroup?.layers.find(menu => menu.id === l.id && menu.main)) ||
-          (!menuGroup?.activateAll &&
-            menuGroup?.layers.map(menu => menu.id).includes(l.id))
+          (group?.activateAll &&
+            group?.layers.find(l => l.id === sl.id && l.main)) ||
+          (!group?.activateAll && group?.layers.map(l => l.id).includes(sl.id))
         );
       })
     : [];
@@ -60,10 +58,10 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
     selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : null;
 
   const [activeLayer, setActiveLayer] = useState(
-    initialActiveLayer || (menuGroup?.layers?.find(l => l.main)?.id as string),
+    initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
   );
 
-  const validatedTitle = t(menuGroup?.menuGroupTitle || layerTitle || '');
+  const validatedTitle = t(group?.groupTitle || layerTitle || '');
 
   const toggleLayerValue = (selectedLayerId: string, checked: boolean) => {
     const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
@@ -77,7 +75,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
         ? 'baselineLayerId'
         : 'hazardLayerId';
 
-    const selectedLayer = menuGroup
+    const selectedLayer = group
       ? LayerDefinitions[selectedLayerId as LayerKey]
       : layer;
 
@@ -129,17 +127,17 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
     toggleLayerValue(selectedId as string, true);
   };
 
-  const menuTitle = menuGroup ? (
+  const menuTitle = group ? (
     <>
       <Typography className={classes.title}>{validatedTitle}</Typography>
-      {!menuGroup.activateAll && (
+      {!group.activateAll && (
         <Select
           className={classes.select}
           classes={{ root: classes.selectItem }}
           value={activeLayer}
           onChange={e => handleSelect(e)}
         >
-          {menuGroup.layers.map(menu => (
+          {group.layers.map(menu => (
             <MenuItem key={menu.id} value={menu.id}>
               {t(menu.label)}
             </MenuItem>
