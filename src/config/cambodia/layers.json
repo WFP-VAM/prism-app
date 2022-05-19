@@ -1651,17 +1651,9 @@
     "data": "",
     "date_url": "",
     "feature_info_props": {
-      "external_id": {
-        "type": "string",
-        "label": "External ID"
-      },
       "name": {
         "type": "string",
-        "label": "Name"
-      },
-      "water_height": {
-        "type": "string",
-        "label": "Water height"
+        "label": "Location name"
       },
       "mean": {
         "type": "number",
