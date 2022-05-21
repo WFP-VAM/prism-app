@@ -40,11 +40,20 @@ export const isLayerKey = (layerKey: string | MenuGroup) => {
   if (typeof layerKey === 'string') {
     return layerKey in rawLayers;
   }
-  if (typeof layerKey === 'object') {
-    const layers = map(layerKey.layers, 'id');
-    return every(layers, layer => layer in rawLayers);
-  }
-  return false;
+  // check every layer in group
+  const layers = map(layerKey.layers, 'id');
+  return every(layers, layer => layer in rawLayers);
+};
+
+/**
+ * Check if a layer is without group, or is the main layer in the group
+ * @param layerId
+ * @param layers
+ */
+export const isMainLayer = (layerId: string, layers: LayerType[]) => {
+  return !layers
+    .filter(sl => sl.group)
+    .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.main));
 };
 
 /**

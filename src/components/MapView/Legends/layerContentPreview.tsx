@@ -16,7 +16,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
-import { LayerType } from '../../../config/types';
+import { isMainLayer, LayerType } from '../../../config/types';
 import { LayerDefinitions } from '../../../config/utils';
 import { layersSelector } from '../../../context/mapStateSlice/selectors';
 
@@ -27,9 +27,7 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
   const layer = LayerDefinitions[layerId || 'admin_boundaries'];
   const selectedLayers = useSelector(layersSelector);
   // display if layer without group or main layer in group
-  const canDisplayContent = !selectedLayers
-    .filter(sl => sl.group)
-    .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.main));
+  const canDisplayContent = isMainLayer(layerId as string, selectedLayers);
   const hasContent = layer.contentPath?.length;
   const domId = layer.contentPath?.split('#')?.[1];
 
