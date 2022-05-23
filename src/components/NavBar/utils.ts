@@ -1,4 +1,4 @@
-import { map, startCase, get } from 'lodash';
+import { camelCase, get, map, mapKeys, startCase } from 'lodash';
 
 import { appConfig } from '../../config';
 import {
@@ -11,6 +11,7 @@ import {
   isLayerKey,
   LayerKey,
   LayersCategoryType,
+  MenuGroup,
   MenuItemType,
 } from '../../config/types';
 
@@ -18,13 +19,27 @@ type LayersCategoriesType = LayersCategoryType[];
 
 type MenuItemsType = MenuItemType[];
 
+type MenuGroupType = MenuGroup[];
+
 function formatLayersCategories(layersList: {
   [key: string]: Array<LayerKey | TableKey>;
 }): LayersCategoriesType {
   return map(layersList, (layerKeys, layersListKey) => {
     return {
       title: startCase(layersListKey),
-      layers: layerKeys.filter(isLayerKey).map(key => LayerDefinitions[key]),
+      layers: layerKeys.filter(isLayerKey).map(key => {
+        if (typeof key === 'object') {
+          const group = (mapKeys(key, (_v, k: string) =>
+            camelCase(k),
+          ) as unknown) as MenuGroup;
+          const mainLayer = group.layers.find(l => l.main);
+          const layer = LayerDefinitions[mainLayer?.id as LayerKey];
+          // eslint-disable-next-line fp/no-mutation
+          layer.group = group;
+          return layer;
+        }
+        return LayerDefinitions[key as LayerKey];
+      }),
       tables: layerKeys.filter(isTableKey).map(key => TableDefinitions[key]),
     };
   });

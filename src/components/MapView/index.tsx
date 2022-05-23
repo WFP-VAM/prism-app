@@ -36,6 +36,7 @@ import {
 import {
   BoundaryLayerProps,
   DiscriminateUnion,
+  isMainLayer,
   LayerKey,
   LayerType,
 } from '../../config/types';
@@ -178,12 +179,11 @@ function MapView({ classes }: MapViewProps) {
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     undefined,
   );
-
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer =>
       dateSupportLayerTypes.includes(layer.type),
     )
-    .filter(layer => !layer.group || layer.group.main);
+    .filter(layer => isMainLayer(layer.id, selectedLayers));
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
