@@ -11,7 +11,10 @@
   "alertFormActive": false,
   "serversUrls": {
     "wcs": [],
-    "wms": ["https://prism-geoserver.wfpidn.link/geoserver/prism/wms"]
+    "wms": [
+      "https://odc.ovio.org/wms",
+      "https://prism-geoserver.wfpidn.link/geoserver/prism/wms"
+    ]
   },
   "map": {
     "latitude": -4.0682689,
