@@ -60,9 +60,13 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
 
-  if (date && loader === PointDataLoader.EWS) {
-    const ewsData = await fetchEWSData(date);
-    return { features: GeoJSON.parse(ewsData, { Point: ['lat', 'lon'] }) };
+  if (date) {
+    switch (loader) {
+      case PointDataLoader.EWS:
+        return fetchEWSData(date);
+      default:
+        break;
+    }
   }
 
   const formattedDate = date && moment(date).format(DEFAULT_DATE_FORMAT);

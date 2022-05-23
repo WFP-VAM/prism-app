@@ -1,6 +1,6 @@
-import { FeatureCollection, Point } from 'geojson';
+import GeoJSON, { FeatureCollection, Point } from 'geojson';
 import moment from 'moment';
-import { PointData } from '../config/types';
+import { PointData, PointLayerData } from '../config/types';
 
 const BASE_URL = 'http://sms.ews1294.info/api/v1';
 
@@ -126,7 +126,7 @@ const getLevelStatus = (
   return EWSLevelStatus.SEVEREWARNING;
 };
 
-export const fetchEWSData = async (date: number): Promise<PointData[]> => {
+export const fetchEWSData = async (date: number): Promise<PointLayerData> => {
   const [locations, values] = await Promise.all([
     fetchEWSLocations(),
     fetchEWSDataPointsByLocation(date),
@@ -175,7 +175,11 @@ export const fetchEWSData = async (date: number): Promise<PointData[]> => {
     [] as PointData[],
   );
 
-  return processedFeatures;
+  return {
+    features: GeoJSON.parse(processedFeatures, {
+      Point: ['lat', 'lon'],
+    }),
+  };
 };
 
 export const createEWSDatasetParams = (featureProperties: any) => {

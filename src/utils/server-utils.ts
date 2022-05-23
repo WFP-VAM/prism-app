@@ -259,8 +259,11 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     return (await response.json()) as PointDataDates;
   };
 
-  if (loader === PointDataLoader.EWS) {
-    return createEWSDatesArray();
+  switch (loader) {
+    case PointDataLoader.EWS:
+      return createEWSDatesArray();
+    default:
+      break;
   }
 
   // eslint-disable-next-line fp/no-mutation
