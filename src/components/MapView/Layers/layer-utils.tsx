@@ -28,9 +28,9 @@ export function getLayerGeometry(
 
 // TODO - load icons from within "src" to leverage compiler saftey
 const geometryIconSrc = {
-  point: '/images/icon_point.svg',
-  raster: '/images/icon_raster.svg',
-  polygon: '/images/icon_polygon.svg',
+  point: 'images/icon_point.svg',
+  raster: 'images/icon_raster.svg',
+  polygon: 'images/icon_polygon.svg',
 };
 
 export function getLayerGeometryIcon(layer: LayerType) {

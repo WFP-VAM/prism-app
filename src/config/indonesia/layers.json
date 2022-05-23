@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/indonesia/admin_idn.json",
+    "path": "data/indonesia/admin_idn.json",
     "opacity": 0.8,
     "admin_code": "A2TEXT",
     "admin_level_names": ["A1NAME", "A2NAME"],
@@ -813,7 +813,7 @@
   "pop_raster_2021": {
     "type": "admin_level_data",
     "title": "Total population",
-    "path": "./data/indonesia/socio_economic.json",
+    "path": "data/indonesia/socio_economic.json",
     "data_field": "Population",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -850,7 +850,7 @@
   "HH_AGRI": {
     "title": "HHs with income derived from agriculture (%)",
     "type": "admin_level_data",
-    "path": "./data/indonesia/socio_economic.json",
+    "path": "data/indonesia/socio_economic.json",
     "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=agriculture",
     "data_field": "HHAgri",
     "admin_level": 1,
@@ -888,7 +888,7 @@
   "HH_FE65": {
     "title": "HHs with food expenditure > 65% (%)",
     "type": "admin_level_data",
-    "path": "./data/indonesia/socio_economic.json",
+    "path": "data/indonesia/socio_economic.json",
     "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=food65",
     "data_field": "FoodExp",
     "admin_level": 1,
@@ -1078,7 +1078,7 @@
   "population_below_poverty": {
     "title": "Poverty rate (%)",
     "type": "admin_level_data",
-    "path": "./data/indonesia/socio_economic.json",
+    "path": "data/indonesia/socio_economic.json",
     "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=poverty",
     "data_field": "Poverty",
     "admin_level": 1,
@@ -1116,7 +1116,7 @@
   "pou": {
     "title": "Prevalence of undernourishment (%)",
     "type": "admin_level_data",
-    "path": "./data/indonesia/socio_economic.json",
+    "path": "data/indonesia/socio_economic.json",
     "data_field": "POU",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -1154,7 +1154,7 @@
   "OP_UNEMPLOY": {
     "title": "Open unemployment (%)",
     "type": "admin_level_data",
-    "path": "./data/indonesia/socio_economic.json",
+    "path": "data/indonesia/socio_economic.json",
     "popup_url": "https://prism-backend.wfpidn.link/p/socio_economic/fsva?indicator=unemploy",
     "data_field": "Unemp",
     "admin_level": 1,
@@ -1192,7 +1192,7 @@
   "FSVA_2020": {
     "title": "FSVA 2020 (Priority groups)",
     "type": "admin_level_data",
-    "path": "./data/indonesia/socio_economic.json",
+    "path": "data/indonesia/socio_economic.json",
     "data_field": "FSVA",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -1308,7 +1308,7 @@
   "HH_ELEC_2019": {
     "title": "Access to electricity (%)",
     "type": "admin_level_data",
-    "path": "./data/indonesia/socio_economic.json",
+    "path": "data/indonesia/socio_economic.json",
     "data_field": "Electicity",
     "admin_level": 1,
     "admin_code": "CODE",
@@ -1340,7 +1340,7 @@
   "HH_FOODASS": {
     "title": "Poor HHs receiving food assistance (%)",
     "type": "admin_level_data",
-    "path": "./data/indonesia/socio_economic.json",
+    "path": "data/indonesia/socio_economic.json",
     "data_field": "Depend",
     "admin_level": 1,
     "admin_code": "CODE",
