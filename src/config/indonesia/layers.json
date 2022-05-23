@@ -301,6 +301,189 @@
       }
     ]
   },
+  "rainfall_dekad": {
+    "title": "10-day rainfall estimate (mm)",
+    "type": "wms",
+    "server_layer_name": "rfh_dekad",
+    "additional_query_params": {
+      "styles": "rfh_350"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS rainfall global dekad",
+    "legend": [
+      { "value": "-0", "color": "#ffffff", "alpha": 0 },
+      { "value": "1", "color": "#ffffff" },
+      { "value": "20", "color": "#faf5e6" },
+      { "value": "40", "color": "#faf3d2" },
+      { "value": "60", "color": "#dae3a1" },
+      { "value": "80", "color": "#a0c787" },
+      { "value": "100", "color": "#68ab79" },
+      { "value": "125", "color": "#9beafa" },
+      { "value": "150", "color": "#00b1de" },
+      { "value": "200", "color": "#005ae6" },
+      { "value": "250", "color": "#0000c8" },
+      { "value": "300", "color": "#a000fa" },
+      { "value": "350", "color": "#fa78fa" }
+    ]
+  },
+  "rainfall_agg_1month": {
+    "title": "1-month rainfall aggregate",
+    "type": "wms",
+    "server_layer_name": "r1h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 1 month dekadal rainfall aggregations (mm)",
+    "legend": [
+      { "value": "-0", "color": "#ffffff", "alpha": "0" },
+      { "value": "50", "color": "#faf3d2" },
+      { "value": "100", "color": "#dae3a1" },
+      { "value": "150", "color": "#a0c787" },
+      { "value": "200", "color": "#68ab79" },
+      { "value": "250", "color": "#9beafa" },
+      { "value": "300", "color": "#00b1de" },
+      { "value": "400", "color": "#005ae6" },
+      { "value": "500", "color": "#0000c8" },
+      { "value": "600", "color": "#a000fa" },
+      { "value": "800", "color": "#fa78fa" },
+      { "value": "> 800", "color": "#ffc4ee" }
+    ]
+  },
+  "rainfall_agg_2month": {
+    "title": "2-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r2h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 2 month dekadal rainfall aggregations (mm)",
+    "legend": [
+      { "value": "-0", "color": "#ffffff", "alpha": "0" },
+      { "value": "50", "color": "#faf3d2" },
+      { "value": "100", "color": "#dae3a1" },
+      { "value": "150", "color": "#a0c787" },
+      { "value": "200", "color": "#68ab79" },
+      { "value": "250", "color": "#9beafa" },
+      { "value": "300", "color": "#00b1de" },
+      { "value": "400", "color": "#005ae6" },
+      { "value": "500", "color": "#0000c8" },
+      { "value": "600", "color": "#a000fa" },
+      { "value": "800", "color": "#fa78fa" },
+      { "value": "> 800", "color": "#ffc4ee" }
+    ]
+  },
+  "rainfall_agg_3month": {
+    "title": "3-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r3h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
+    "legend": [
+      { "value": "-0", "color": "#ffffff", "alpha": "0" },
+      { "value": "50", "color": "#faf3d2" },
+      { "value": "100", "color": "#dae3a1" },
+      { "value": "150", "color": "#a0c787" },
+      { "value": "200", "color": "#68ab79" },
+      { "value": "250", "color": "#9beafa" },
+      { "value": "300", "color": "#00b1de" },
+      { "value": "400", "color": "#005ae6" },
+      { "value": "500", "color": "#0000c8" },
+      { "value": "600", "color": "#a000fa" },
+      { "value": "800", "color": "#fa78fa" },
+      { "value": "> 800", "color": "#ffc4ee" }
+    ]
+  },
+  "rainfall_agg_6month": {
+    "title": "6-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r6h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 6 month dekadal rainfall aggregations",
+    "legend": [
+      { "value": "-0", "color": "#ffffff", "alpha": "0" },
+      { "value": "50", "color": "#faf3d2" },
+      { "value": "100", "color": "#dae3a1" },
+      { "value": "150", "color": "#a0c787" },
+      { "value": "200", "color": "#68ab79" },
+      { "value": "250", "color": "#9beafa" },
+      { "value": "300", "color": "#00b1de" },
+      { "value": "400", "color": "#005ae6" },
+      { "value": "500", "color": "#0000c8" },
+      { "value": "600", "color": "#a000fa" },
+      { "value": "800", "color": "#fa78fa" },
+      { "value": "> 800", "color": "#ffc4ee" }
+    ]
+  },
+  "rainfall_agg_9month": {
+    "title": "9-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r9h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 9 month dekadal rainfall aggregations",
+    "legend": [
+      { "value": "-0", "color": "#ffffff", "alpha": "0" },
+      { "value": "50", "color": "#faf3d2" },
+      { "value": "100", "color": "#dae3a1" },
+      { "value": "150", "color": "#a0c787" },
+      { "value": "200", "color": "#68ab79" },
+      { "value": "250", "color": "#9beafa" },
+      { "value": "300", "color": "#00b1de" },
+      { "value": "400", "color": "#005ae6" },
+      { "value": "500", "color": "#0000c8" },
+      { "value": "600", "color": "#a000fa" },
+      { "value": "800", "color": "#fa78fa" },
+      { "value": "> 800", "color": "#ffc4ee" }
+    ]
+  },
+  "rainfall_agg_1year": {
+    "title": "1-year rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "ryh_dekad",
+    "additional_query_params": {
+      "styles": "rfh_1500"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 1 year dekadal rainfall aggregations",
+    "legend": [
+      { "value": -0, "color": "#ffffff", "alpha": 0 },
+      { "value": 50, "color": "#faf3d2" },
+      { "value": 100, "color": "#dae3a1" },
+      { "value": 200, "color": "#a0c787" },
+      { "value": 300, "color": "#68ab79" },
+      { "value": 400, "color": "#9beafa" },
+      { "value": 500, "color": "#00b1de" },
+      { "value": 600, "color": "#005ae6" },
+      { "value": 800, "color": "#0000c8" },
+      { "value": 1000, "color": "#a000fa" },
+      { "value": 1500, "color": "#fa78fa" },
+      { "value": 2000, "color": "#ffc4ee" }
+    ]
+  },
   "rainfall_anomaly": {
     "title": "Rainfall anomaly (monthly)",
     "type": "wms",
@@ -512,98 +695,103 @@
     ]
   },
   "ndvi_dekad": {
+    "title": "10-day NDVI (MODIS)",
     "type": "wms",
-    "title": "NDVI (10 days)",
-    "server_layer_name": "mxd13c1_vim_dekad",
+    "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
-    "opacity": 0.5,
-    "legend_text": "NDVI 10 days | Source: MODIS",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
       {
-        "value": 1000,
+        "label": "-1.00",
         "color": "#a50026"
       },
       {
-        "value": 2000,
+        "label": "-0.75",
         "color": "#de3f2e"
       },
       {
-        "value": 3000,
+        "label": "-0.50",
         "color": "#f88d52"
       },
       {
-        "value": 4000,
+        "label": "-0.25",
         "color": "#fed380"
       },
       {
-        "value": 5000,
+        "label": "0.00",
         "color": "#ffffbf"
       },
       {
-        "value": 6000,
+        "label": "0.25",
         "color": "#ccea83"
       },
       {
-        "value": 7000,
+        "label": "0.50",
         "color": "#86cb66"
       },
       {
-        "value": 8000,
+        "label": "0.75",
         "color": "#2da155"
       },
       {
-        "value": 9000,
+        "label": "1.00",
         "color": "#006837"
       }
     ]
   },
   "ndvi_dekad_anomaly": {
+    "title": "10-day NDVI anomaly (MODIS)",
     "type": "wms",
-    "title": "NDVI anomaly (10 days)",
-    "server_layer_name": "mxd13c1_viq_dekad",
+    "server_layer_name": "mxd13a2_viq_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "additional_query_params": {
       "styles": "viq"
     },
-    "opacity": 0.5,
-    "legend_text": "NDVI (MODIS) anomaly compared to long-term average | Source: MODIS",
+    "opacity": 0.7,
+    "legend_text": "NDVI Anomaly compared to LTA",
     "legend": [
       {
-        "value": 50,
+        "label": "50%",
         "color": "#732600"
       },
       {
-        "value": 70,
+        "label": "70%",
         "color": "#f06405"
       },
       {
-        "value": 80,
+        "label": "80%",
         "color": "#f5af28"
       },
       {
-        "value": 90,
+        "label": "90%",
         "color": "#e6dc96"
       },
       {
-        "value": 110,
+        "label": "110%",
         "color": "#f5f5f5"
       },
       {
-        "value": 120,
+        "label": "120%",
         "color": "#cbff1f"
       },
       {
-        "value": 130,
+        "label": "130%",
         "color": "#00f200"
       },
       {
-        "value": 150,
+        "label": "150%",
         "color": "#008f00"
       },
       {
-        "value": 200,
+        "label": "200%",
         "color": "#004d00"
       }
     ]
@@ -633,24 +821,29 @@
     "legend_text": "Total population 2021 | Source: BPS",
     "legend": [
       {
-        "value": "100000",
-        "color": "#fef0d9"
+        "value": 0,
+        "color": "#FFFE80",
+        "label": "≤ 100K"
       },
       {
-        "value": "200000",
-        "color": "#fdcc8a"
+        "value": 100000,
+        "color": "#FFFE80",
+        "label": "100K - 300K"
       },
       {
-        "value": "300000",
-        "color": "#fc8d59"
+        "value": 300000,
+        "color": "#F1A82F",
+        "label": "300K - 500K"
       },
       {
-        "value": "500000",
-        "color": "#e34a33"
+        "value": 500000,
+        "color": "#AD5312",
+        "label": "500K - 1M"
       },
       {
-        "value": "1000000",
-        "color": "#b30000"
+        "value": 1000000,
+        "color": "#660200",
+        "label": ">1M"
       }
     ]
   },

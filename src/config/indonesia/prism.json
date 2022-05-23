@@ -31,6 +31,44 @@
         "rainfall_extreme_forecast_probability",
         "rainfall_extreme_forecast_flood"
       ],
+      "rainfall": [
+        {
+          "group_title": "Rainfall Aggregate",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rainfall_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rainfall_agg_1month",
+              "label": "1-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_3month",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_6month",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_9month",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_1year",
+              "label": "1-year",
+              "main": false
+            }
+          ]
+        }
+      ],
       "climate_indicators": ["rainfall_anomaly", "spi"],
       "drought_indicators": ["ModisVHI", "dslr"],
       "vegetation_indicators": ["ndvi_dekad", "ndvi_dekad_anomaly"]
