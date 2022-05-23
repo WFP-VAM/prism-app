@@ -153,7 +153,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
     <Box key={layerId} display="flex" mb={1}>
       <Switch
         size="small"
-        color="default"
+        color="secondary"
         className={classes.switch}
         checked={selected}
         onChange={e => toggleLayerValue(activeLayer, e.target.checked)}
