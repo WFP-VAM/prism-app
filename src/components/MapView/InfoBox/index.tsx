@@ -25,7 +25,6 @@ import {
   VisibilityOff,
 } from '@material-ui/icons';
 import clsx from 'clsx';
-import numeral from 'numeral';
 import { ITEMS } from './utils';
 
 function InfoBox({ classes }: InfoBoxProps) {
@@ -103,7 +102,7 @@ function InfoBox({ classes }: InfoBoxProps) {
                           className={classes.itemTitle}
                           color="textSecondary"
                         >
-                          {numeral(item.amount).format('0,0')}
+                          {item.amount.toLocaleString()}
                         </Typography>
                         <Typography
                           className={classes.itemSubtitle}

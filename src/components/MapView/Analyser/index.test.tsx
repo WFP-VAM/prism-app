@@ -6,6 +6,14 @@ import Analyser from '.';
 import { store } from '../../../context/store';
 
 jest.mock('../Layers/LayerDropdown', () => 'mock-Layer-Dropdown');
+jest.mock('react-router-dom', () => ({
+  useHistory: () => ({
+    replace: jest.fn(),
+    location: {
+      search: '',
+    },
+  }),
+}));
 
 test('renders as expected', () => {
   const rendered = render(

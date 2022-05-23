@@ -7,7 +7,6 @@ import { useHistory } from 'react-router-dom';
 */
 export const useUrlHistory = () => {
   const { replace, location } = useHistory();
-
   const urlParams = new URLSearchParams(location.search);
 
   const clearHistory = () => {

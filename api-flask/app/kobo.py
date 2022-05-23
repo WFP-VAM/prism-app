@@ -1,4 +1,5 @@
 """Collect and parse kobo forms."""
+import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
 from typing import Dict, List
@@ -10,6 +11,14 @@ from flask import request
 import requests
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
+
+
+logger = logging.getLogger(__name__)
+
+
+def get_first(items_list: list):
+    """Safely return the first element of a list."""
+    return items_list[0] if items_list else None
 
 
 def get_kobo_params():
@@ -32,7 +41,7 @@ def get_kobo_params():
 
     geom_field = request.args.get('geomField')
     if geom_field is None:
-        raise BadRequest('Missing parameter geomField')
+        raise BadRequest('Missing parameter: geomField')
 
     filters = {}
     filters_params = request.args.get('filters', None)
@@ -53,31 +62,79 @@ def parse_form_field(value: str, field_type: str):
     """Parse strings into type according to field_type provided."""
     if field_type == 'decimal':
         return float(value)
-    elif field_type == 'integer':
+    if field_type == 'integer':
         return int(value)
-    elif field_type in ('datetime', 'date'):
+    if field_type in ('datetime', 'date'):
         return dtparser(value).astimezone(timezone.utc)
-    elif field_type == 'geopoint':
-        lat, lon, _, _ = value.split(' ')
-        return {'lat': float(lat), 'lon': float(lon)}
-    else:
-        return value
+    if field_type == 'geopoint':
+        try:
+            if isinstance(value, str):
+                lat, lon, _, _ = value.split(' ')
+            elif isinstance(value, list):
+                [lat, lon] = value
+            else:
+                lat, lon = None, None
+            return {'lat': float(lat), 'lon': float(lon)}
+        except TypeError:
+            logger.debug('geopoint %s coud not be parsed to {lat,lon}', value)
+            return {}
+    return value
 
 
 def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], labels: List[str]):
     """Transform a Kobo form dictionary into a format that is used by the frontend."""
-    form_data = {k: parse_form_field(form_dict.get(k), v) for k, v in labels.items()
-                 if k not in (form_fields.get('geom'), form_fields.get('datetime'))}
+    form_data = {}
 
-    datetime_field = form_fields.get('datetime')
-    datetime_value = parse_form_field(form_dict.get(datetime_field), labels.get(datetime_field))
+    active_group = ''
 
-    geom_field = form_fields.get('geom')
-    latlon_dict = parse_form_field(form_dict.get(geom_field), labels.get(geom_field))
+    for label_name, label_type in labels.items():
+        if label_name in (form_fields.get('geom'), form_fields.get('datetime')):
+            continue
+
+        # Add logic to handle groups. Data is returned flattened.
+        if label_type == 'begin_group':
+            active_group = label_name + '/'
+            continue
+
+        if label_type == 'end_group':
+            active_group = ''
+            continue
+
+        # Try to get value using the active group name.
+        value = form_dict.get(f'{active_group}{label_name}', None)
+
+        # Otherwise, use the label as the end of the dictionary key.
+        if value is None:
+            value = get_first(
+                [value for key, value in form_dict.items() if key.endswith(label_name)]
+            )
+        # If the value is still None, no need to parse.
+        if value is None:
+            continue
+        # Insert value in form_data
+        form_data[label_name] = parse_form_field(value, label_type)
+
+    datetime_field = form_fields.get('datetime', 'DoesNotExist')
+    datetime_value_string = get_first([
+        value for key, value in form_dict.items()
+        if key.endswith(datetime_field)
+    ])
+    datetime_value = parse_form_field(datetime_value_string, labels.get(datetime_field))
+
+    geom_field = form_fields.get('geom', 'DoesNotExist')
+    geom_value_string = get_first([
+        value for key, value in form_dict.items()
+        if key.endswith(geom_field)
+    ])
+
+    # Some forms do not have geom_field properly setup. So we default to
+    # 'geopoint' here and handle edge cases in parse_form_field.
+    latlon_dict = parse_form_field(geom_value_string, labels.get(geom_field, 'geopoint'))
 
     status = form_dict.get('_validation_status').get('label', None)
-
     form_data = {**form_data, **latlon_dict, 'date': datetime_value, 'status': status}
+
+    logger.debug('Kobo data parsed as: %s', form_data)
 
     return form_data
 

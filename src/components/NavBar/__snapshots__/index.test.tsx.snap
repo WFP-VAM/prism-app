@@ -15,18 +15,8 @@ exports[`renders as expected 1`] = `
         <div
           class="MuiGrid-root NavBar-logoContainer-2 MuiGrid-item MuiGrid-grid-xs-3"
         >
-          <img
-            alt="logo mosa"
-            class="NavBar-orgLogo-3"
-            src="mosa_logo.png"
-          />
-          <img
-            alt="logo wfp"
-            class="NavBar-orgLogo-3"
-            src="wfp_logo_small.png"
-          />
           <mock-typography
-            classname="NavBar-logo-4"
+            classname="NavBar-logo-3"
             component="[object Object]"
             to="/"
             variant="h6"
@@ -38,7 +28,7 @@ exports[`renders as expected 1`] = `
           smdown="true"
         >
           <div
-            class="MuiGrid-root NavBar-menuContainer-5 MuiGrid-item MuiGrid-grid-xs-6"
+            class="MuiGrid-root NavBar-menuContainer-4 MuiGrid-item MuiGrid-grid-xs-6"
           >
             <mock-menuitem
               icon="icon_climate.png"
@@ -88,8 +78,8 @@ exports[`renders as expected 1`] = `
                     fill="currentColor"
                   />
                 </svg>
-
-                About
+                 
+                about
               </mock-typography>
             </div>
             <div
@@ -116,8 +106,8 @@ exports[`renders as expected 1`] = `
                     fill="currentColor"
                   />
                 </svg>
-
-                Github
+                 
+                GitHub
               </mock-typography>
             </div>
           </div>
@@ -126,11 +116,11 @@ exports[`renders as expected 1`] = `
           mdup="true"
         >
           <div
-            class="MuiGrid-root NavBar-mobileMenuContainer-8 MuiGrid-item MuiGrid-grid-xs-9"
+            class="MuiGrid-root NavBar-mobileMenuContainer-7 MuiGrid-item MuiGrid-grid-xs-9"
           >
             <mock-button
               aria-haspopup="true"
-              classname="NavBar-menuBars-7"
+              classname="NavBar-menuBars-6"
             >
               <svg
                 aria-hidden="true"
@@ -153,7 +143,7 @@ exports[`renders as expected 1`] = `
               open="false"
             >
               <div
-                class="NavBar-mobileDrawerContent-6"
+                class="NavBar-mobileDrawerContent-5"
               >
                 <div
                   class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3"
@@ -185,8 +175,8 @@ exports[`renders as expected 1`] = `
                             fill="currentColor"
                           />
                         </svg>
-
-                        About
+                         
+                        about
                       </mock-typography>
                     </div>
                     <div
@@ -213,8 +203,8 @@ exports[`renders as expected 1`] = `
                             fill="currentColor"
                           />
                         </svg>
-
-                        Github
+                         
+                        GitHub
                       </mock-typography>
                     </div>
                   </div>

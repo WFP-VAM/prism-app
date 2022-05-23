@@ -1,16 +1,10 @@
-import { has } from 'lodash';
-import {
-  getSelectedLanguage,
-  LanguageConfig,
-  translateAppConfig,
-  translateRawLayers,
-} from './language';
+import { has, get } from 'lodash';
 
-import {
-  cambodiaConfig,
-  cambodiaRawLayers,
-  cambodiaRawTables,
-} from './cambodia';
+import { PublicClientApplication } from '@azure/msal-browser';
+
+import cambodia from './cambodia';
+
+import cuba from './cuba';
 
 import { globalConfig, globalRawLayers, globalRawTables } from './global';
 
@@ -18,7 +12,6 @@ import {
   indonesiaConfig,
   indonesiaRawLayers,
   indonesiaRawTables,
-  indonesiaLanguage,
 } from './indonesia';
 
 import {
@@ -33,15 +26,17 @@ import {
   mongoliaRawTables,
 } from './mongolia';
 
-import {
-  mozambiqueConfig,
-  mozambiqueRawLayers,
-  mozambiqueRawTables,
-} from './mozambique';
+import mozambique from './mozambique';
 
-import { myanmarConfig, myanmarRawLayers, myanmarRawTables } from './myanmar';
+import myanmar from './myanmar';
 
-import { rbdConfig, rbdRawLayers, rbdRawTables } from './rbd';
+import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
+
+import rbd from './rbd';
+
+import srilanka from './srilanka';
+
+import sierraleone from './sierraleone';
 
 import {
   tajikistanConfig,
@@ -49,123 +44,108 @@ import {
   tajikistanRawTables,
 } from './tajikistan';
 
-type Country =
-  | 'cambodia'
-  | 'global'
-  | 'indonesia'
-  | 'kyrgyzstan'
-  | 'mongolia'
-  | 'mozambique'
-  | 'myanmar'
-  | 'rbd'
-  | 'tajikistan';
-
-const DEFAULT: Country = 'myanmar';
+import zimbabwe from './zimbabwe';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
 const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
 const configMap = {
-  cambodia: {
-    appConfig: cambodiaConfig,
-    rawLayers: cambodiaRawLayers,
-    rawTables: cambodiaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/khm_bnd_admin3_gov_wfp_edEarly2021.json`,
-  },
+  cuba,
+  cambodia,
   global: {
     appConfig: globalConfig,
     rawLayers: globalRawLayers,
     rawTables: globalRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/adm0_simplified.json`,
+    defaultBoundariesFile: 'adm0_simplified.json',
   },
   indonesia: {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
     rawTables: indonesiaRawTables,
-    languageConfig: indonesiaLanguage,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/admin_idn.json`,
+    defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
   kyrgyzstan: {
     appConfig: kyrgyzstanConfig,
     rawLayers: kyrgyzstanRawLayers,
     rawTables: kyrgyzstanRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/kgz_admin_boundaries.json`,
+    defaultBoundariesFile: 'kgz_admin_boundaries.json',
   },
   mongolia: {
     appConfig: mongoliaConfig,
     rawLayers: mongoliaRawLayers,
     rawTables: mongoliaRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mng_admin_boundaries.json`,
+    defaultBoundariesFile: 'mng_admin_boundaries.json',
   },
-  mozambique: {
-    appConfig: mozambiqueConfig,
-    rawLayers: mozambiqueRawLayers,
-    rawTables: mozambiqueRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/moz_admin_boundaries.json`,
+  mozambique,
+  myanmar,
+  namibia: {
+    appConfig: namibiaConfig,
+    rawLayers: namibiaRawLayers,
+    rawTables: namibiaRawTables,
+    defaultBoundariesFile: 'nam_admin2.json',
   },
-  myanmar: {
-    appConfig: myanmarConfig,
-    rawLayers: myanmarRawLayers,
-    rawTables: myanmarRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/mmr_admin_boundaries.json`,
-  },
-  rbd: {
-    appConfig: rbdConfig,
-    rawLayers: rbdRawLayers,
-    rawTables: rbdRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/rbd_admin_boundaries.json`,
-  },
+  rbd,
+  sierraleone,
+  srilanka,
   tajikistan: {
     appConfig: tajikistanConfig,
     rawLayers: tajikistanRawLayers,
     rawTables: tajikistanRawTables,
-    defaultBoundariesFile: `${DEFAULT_BOUNDARIES_FOLDER}/tjk_admin_boundaries_v2.json`,
+    defaultBoundariesFile: 'tjk_admin_boundaries_v2.json',
   },
+  zimbabwe,
 } as const;
 
+type Country = keyof typeof configMap;
+
+const DEFAULT: Country = 'myanmar';
+
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
-const safeCountry = (COUNTRY && has(configMap, COUNTRY)
-  ? COUNTRY
-  : DEFAULT) as Country;
+const safeCountry =
+  COUNTRY && has(configMap, COUNTRY) ? (COUNTRY as Country) : DEFAULT;
 
-const countryConfig = configMap[safeCountry];
+const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
+  safeCountry
+];
 
-const DefaultLanguageConfig: LanguageConfig = {
-  default: 'en',
-  languages: [
-    {
-      id: 'en',
-      label: 'EN',
-      layers: {},
-      categories: {},
-      uiLabels: {},
-    },
-  ],
+const translation = get(configMap[safeCountry], 'translation', {});
+
+const {
+  REACT_APP_OAUTH_CLIENT_ID: CLIENT_ID,
+  REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
+  REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
+} = process.env;
+
+const msalConfig = {
+  auth: {
+    clientId: CLIENT_ID!,
+    authority: AUTHORITY!,
+    redirectUri: REDIRECT_URI!,
+  },
 };
 
-const { defaultBoundariesFile, rawTables, languageConfig } = {
-  languageConfig: DefaultLanguageConfig,
-  ...countryConfig,
+const msalRequest = {
+  scopes: ['openid', 'profile'],
 };
 
-const languageOption = getSelectedLanguage(languageConfig);
+const msalInstance = new PublicClientApplication(msalConfig);
 
-function uiLabel(key: string, defaultLabel: string): string {
-  const { uiLabels } = languageOption;
-  return key in uiLabels ? uiLabels[key] : defaultLabel;
-}
+const enableNavigationDropdown = get(
+  appConfig,
+  'enableNavigationDropdown',
+  false,
+);
 
-const appConfig = translateAppConfig(countryConfig.appConfig, languageOption);
-
-const rawLayers = translateRawLayers(countryConfig.rawLayers, languageOption);
+const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesFile}`;
 
 export {
   appConfig,
-  defaultBoundariesFile,
-  languageConfig,
-  languageOption,
+  defaultBoundariesPath,
   rawLayers,
   rawTables,
-  uiLabel,
+  msalInstance,
+  msalRequest,
+  enableNavigationDropdown,
+  translation,
 };

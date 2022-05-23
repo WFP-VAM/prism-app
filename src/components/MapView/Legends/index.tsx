@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -11,8 +11,8 @@ import {
   ListItem,
   MenuItem,
   Paper,
-  Slider,
   Select,
+  Slider,
   Typography,
   WithStyles,
   withStyles,
@@ -21,8 +21,12 @@ import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Extent } from '../Layers/raster-utils';
+import {
+  mapSelector,
+  layerFormSelector,
+} from '../../../context/mapStateSlice/selectors';
+import { setFormInputValue } from '../../../context/mapStateSlice';
 import ColorIndicator from './ColorIndicator';
-import { uiLabel } from '../../../config';
 import {
   LayerFormInput,
   LayerType,
@@ -31,11 +35,6 @@ import {
   LegendDefinitionItem,
 } from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
-import { setFormInputValue } from '../../../context/mapStateSlice';
-import {
-  mapSelector,
-  layerFormSelector,
-} from '../../../context/mapStateSlice/selectors';
 import {
   addTableData,
   analysisResultSelector,
@@ -50,6 +49,7 @@ import { convertToTableData, downloadToFile } from '../utils';
 
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
+import { useSafeTranslation } from '../../../i18n';
 
 /**
  * Returns layer identifier used to perform exposure analysis.
@@ -67,16 +67,19 @@ function GetExposureFromLayer(
 }
 
 function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
+  const { t } = useSafeTranslation();
   return (
     <>
-      Impact Analysis on {result.getBaselineLayer().legendText}
+      {t('Impact Analysis on')}
+      {': '}
+      {t(result.getBaselineLayer().legendText)}
       <br />
       {result.threshold.above
-        ? `Above Threshold: ${result.threshold.above}`
+        ? `${t('Above Threshold')}: ${result.threshold.above}`
         : ''}
       <br />
       {result.threshold.below
-        ? `Below Threshold: ${result.threshold.below}`
+        ? `${t('Below Threshold')}: ${result.threshold.below}`
         : ''}
     </>
   );
@@ -89,6 +92,8 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const features = analysisResult?.featureCollection.features;
   const hasData = features ? features.length > 0 : false;
 
+  const { t } = useSafeTranslation();
+
   const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
     e.preventDefault();
     downloadToFile(
@@ -96,7 +101,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
         content: JSON.stringify(features),
         isUrl: false,
       },
-      analysisResult ? analysisResult.getTitle() : '',
+      analysisResult ? analysisResult.getTitle() : 'prism_extract',
       'application/json',
     );
   };
@@ -119,9 +124,9 @@ function Legends({ classes, layers, extent }: LegendsProps) {
       return (
         <LegendItem
           classes={classes}
-          key={layer.title}
+          key={layer.id}
           id={layer.id}
-          title={layer.title}
+          title={layer.title ? t(layer.title) : undefined}
           legend={layer.legend}
           legendUrl={legendUrl}
           type={layer.type}
@@ -129,7 +134,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           exposure={exposure}
           extent={extent}
         >
-          {layer.legendText}
+          {t(layer.legendText)}
         </LegendItem>
       );
     }),
@@ -139,7 +144,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           <LegendItem
             key={analysisResult?.key}
             legend={analysisResult?.legend}
-            title={analysisResult?.getTitle()}
+            title={analysisResult?.getTitle(t)}
             classes={classes}
             opacity={0.5} // TODO: initial opacity value
           >
@@ -155,7 +160,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
                 onClick={e => handleAnalysisDownload(e)}
                 fullWidth
               >
-                Download
+                {t('Download')}
               </Button>
             </Grid>
           </LegendItem>,
@@ -177,7 +182,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
         )}
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
-            {uiLabel('legend', 'Legend')}
+            {t('Legend')}
           </Typography>
         </Hidden>
       </Button>
@@ -216,6 +221,14 @@ function LegendItem({
     );
   };
 
+  useEffect(() => {
+    // should this be here? Or somewhere more related to analysis?
+    if (analysisResult instanceof ExposedPopulationResult) {
+      const tableData = convertToTableData(analysisResult);
+      dispatch(addTableData(tableData));
+    }
+  }, [analysisResult, dispatch]);
+
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
@@ -251,12 +264,7 @@ function LegendItem({
     }
   };
 
-  if (analysisResult instanceof ExposedPopulationResult) {
-    const tableData = convertToTableData(analysisResult);
-    dispatch(addTableData(tableData));
-  }
-
-  const legendItemLabel = ({ label, value }: LegendDefinitionItem) => {
+  const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
     if (typeof label === 'string') {
       return label;
     }
@@ -271,19 +279,15 @@ function LegendItem({
       <Paper className={classes.paper}>
         <Grid container direction="column" spacing={1}>
           <Grid item style={{ display: 'flex' }}>
-            <Typography
-              style={{ flexGrow: 1, fontWeight: 'bold' }}
-              variant="h5"
-            >
+            <Typography style={{ flexGrow: 1 }} variant="h4">
               {title}
             </Typography>
             <LayerContentPreview layerId={id} />
           </Grid>
           <Divider />
-          <Grid item>
-            <Box>
+          <Grid item className={classes.slider}>
+            <Box px={1}>
               <Slider
-                className={classes.slider}
                 value={opacity}
                 step={0.01}
                 min={0}
@@ -293,7 +297,6 @@ function LegendItem({
               />
             </Box>
           </Grid>
-          <Divider />
 
           {form &&
             form.inputs.map(input => {
@@ -324,8 +327,8 @@ function LegendItem({
               ) : (
                 legend.map((item: LegendDefinitionItem) => (
                   <ColorIndicator
-                    key={item.value}
-                    value={legendItemLabel(item)}
+                    key={item.value || item.label}
+                    value={getLegendItemLabel(item)}
                     color={item.color as string}
                     opacity={opacity as number}
                   />
@@ -369,8 +372,7 @@ const styles = () =>
       overflowY: 'auto',
       maxHeight: '70vh',
       position: 'absolute',
-      right: 16,
-      scrollbarWidth: 'thin',
+      right: '16px',
     },
     select: {
       color: '#333',
@@ -378,10 +380,10 @@ const styles = () =>
     },
     paper: {
       padding: 8,
-      width: 150,
+      width: 180,
     },
     slider: {
-      padding: '5px 0',
+      padding: '0 5px',
     },
   });
 

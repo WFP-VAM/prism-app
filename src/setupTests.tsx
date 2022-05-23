@@ -3,6 +3,46 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
+import { randomBytes } from 'crypto';
+
+// Mock Workers
+// eslint-disable-next-line fp/no-mutation
+global.URL.createObjectURL = jest.fn(() => 'worker');
+class Worker {
+  constructor(stringUrl) {
+    this.url = stringUrl;
+    this.onmessage = () => {};
+  }
+
+  postMessage(msg) {
+    this.onmessage(msg);
+  }
+}
+// eslint-disable-next-line fp/no-mutation
+window.Worker = Worker;
+
+jest.mock('mapbox-gl/dist/maplibre-gl', () => ({
+  GeolocateControl: jest.fn(),
+  Map: jest.fn(() => ({
+    addControl: jest.fn(),
+    on: jest.fn(),
+    remove: jest.fn(),
+  })),
+  NavigationControl: jest.fn(),
+}));
+
+// eslint-disable-next-line fp/no-mutating-methods
+Object.defineProperty(global.self, 'crypto', {
+  value: {
+    getRandomValues: <T extends ArrayBufferView | null>(arr: T) => {
+      if (!arr) {
+        return arr;
+      }
+
+      return randomBytes(arr.buffer.byteLength);
+    },
+  },
+});
 
 // Based on https://github.com/mapbox/mapbox-gl-js/issues/3436#issuecomment-485535598
 jest.mock('mapbox-gl/dist/mapbox-gl', () => ({

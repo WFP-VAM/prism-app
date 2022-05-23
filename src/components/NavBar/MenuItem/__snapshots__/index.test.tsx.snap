@@ -38,7 +38,7 @@ exports[`renders as expected 1`] = `
       >
         <mock-switch
           checked="false"
-          color="secondary"
+          color="default"
           inputprops="[object Object]"
           size="small"
         />
@@ -50,6 +50,11 @@ exports[`renders as expected 1`] = `
         </mock-typography>
       </div>
     </div>
+    <mock-menuswitch
+      layers="[object Object]"
+      tables=""
+      title="Category 1"
+    />
   </mock-popover>
 </div>
 `;

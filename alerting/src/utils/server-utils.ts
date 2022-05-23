@@ -87,17 +87,21 @@ const isArrayOfFlatLayerContainers = (
 };
 
 function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
-  if ('Layer' in rawLayers) {
-    return flattenLayers(rawLayers.Layer);
-  }
   if (!Array.isArray(rawLayers) || rawLayers.length === 0) {
     return [];
   }
   if (isArrayOfFlatLayerContainers(rawLayers)) {
-    return rawLayers.reduce(
-      (acc, { Layer }) => acc.concat(Layer),
-      [] as FlatLayer[],
-    );
+    return rawLayers.reduce((acc, { Layer }) => {
+      if ('Layer' in Layer) {
+        return acc.concat(
+          ...flattenLayers((Layer.Layer as unknown) as LayerContainer),
+        );
+      }
+      if (Array.isArray(Layer)) {
+        return acc.concat(...flattenLayers(Layer));
+      }
+      return acc.concat(Layer);
+    }, [] as FlatLayer[]);
   }
   return rawLayers as FlatLayer[];
 }

@@ -26,6 +26,7 @@ const theme: any = createMuiTheme({
       500: lightGray,
     },
   },
+  spacing: 6,
   overrides: {
     MuiToolbar: {
       dense: {
@@ -63,6 +64,7 @@ const theme: any = createMuiTheme({
     MuiMenuItem: {
       root: {
         color: 'black',
+        paddingLeft: 25,
       },
     },
     MuiAccordion: {
@@ -94,6 +96,44 @@ const theme: any = createMuiTheme({
         backgroundColor: darkGreyBlue,
         opacity: 0.9,
         padding: 16,
+      },
+    },
+    // For <Select/> subheadings
+    MuiListSubheader: {
+      root: {
+        pointerEvents: 'none',
+        padding: 10,
+      },
+      sticky: {
+        backgroundColor: 'white',
+      },
+    },
+    MuiFormLabel: {
+      root: {
+        // Make form label white since we normally have a dark background.
+        color: 'white',
+      },
+    },
+    MuiTableSortLabel: {
+      root: {
+        color: white,
+        '&:hover': {
+          color: white,
+          opacity: 0.5,
+        },
+        '&$active': {
+          '&& $icon': {
+            opacity: 1,
+            color: white,
+          },
+        },
+      },
+      icon: {
+        color: white,
+        opacity: 0.2,
+        '&:hover': {
+          opacity: 0.5,
+        },
       },
     },
   },

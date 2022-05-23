@@ -1,0 +1,23 @@
+{
+  "date_locale": "fr",
+  "Today": "Aujourd'hui",
+  "about": "Apropos",
+  "Click the map to select": "Cliquez sur la carte pour séléctionner",
+  "Export": "Exporter",
+  "Legend": "Légende",
+  "Hazards": "Dangers",
+  "Vulnerability": "Vulnerabilités",
+  "Exposure": "Exposition",
+  "Risk": "Risques",
+  "Run Analysis": "Lancer une analyse",
+  "Hazard Layer": "Dangers",
+  "Baseline Layer": "Données de référence",
+  "Choose hazard layer": "Choisissez un danger",
+  "Choose baseline layer": "Choisissez des données de référence",
+  "Statistic": "Statistique",
+  "Threshold": "Limite",
+  "Above": "Au dessus de",
+  "Below": "En dessous de",
+  "Mean": "Moyenne",
+  "Median": "Medianne"
+}

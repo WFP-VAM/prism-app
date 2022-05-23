@@ -1,7 +1,5 @@
 import React, { forwardRef, Ref, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Moment from 'moment';
-import { extendMoment } from 'moment-range';
 import {
   Button,
   createStyles,
@@ -23,6 +21,12 @@ import { DateRangeType } from '../../../config/types';
 import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import TimelineItems from './TimelineItems';
+import { moment, useSafeTranslation } from '../../../i18n';
+import {
+  DEFAULT_DATE_FORMAT,
+  MONTH_FIRST_DATE_FORMAT,
+  MONTH_ONLY_DATE_FORMAT,
+} from '../../../utils/name-utils';
 
 interface InputProps {
   value?: string;
@@ -33,8 +37,6 @@ type Point = {
   x: number;
   y: number;
 };
-
-const moment = extendMoment(Moment as any);
 
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
@@ -48,14 +50,10 @@ const Input = forwardRef(
     );
   },
 );
-function DateSelector({
-  availableDates = [],
-  classes,
-  selectedDateRef,
-}: DateSelectorProps) {
-  const { startDate: stateStartDate } = useSelector(dateRangeSelector);
 
-  const [selectedDate, setSelectedDate] = useState(moment(stateStartDate));
+function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
+  const { startDate: stateStartDate } = useSelector(dateRangeSelector);
+  const { t, i18n } = useSafeTranslation();
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
       value: 0,
@@ -101,6 +99,7 @@ function DateSelector({
 
   // Create timeline range and set pointer position
   useEffect(() => {
+    const locale = t('date_locale') ? t('date_locale') : 'en';
     const range = Array.from(
       moment()
         .range(
@@ -109,27 +108,32 @@ function DateSelector({
         )
         .by('days'),
     ).map(date => {
+      date.locale(locale);
       return {
         value: date.valueOf(),
-        label: date.format('DD MMM YYYY'),
-        month: date.format('MMM YYYY'),
+        label: date.format(MONTH_FIRST_DATE_FORMAT),
+        month: date.format(MONTH_ONLY_DATE_FORMAT),
         isFirstDay: date.date() === date.startOf('month').date(),
       };
     });
     setDateRange(range);
     const dateIndex = findIndex(range, date => {
-      return date.label === moment(stateStartDate).format('DD MMM YYYY');
+      return (
+        date.label ===
+        moment(stateStartDate).locale(locale).format(MONTH_FIRST_DATE_FORMAT)
+      );
     });
     setPointerPosition({
       x: dateIndex * TIMELINE_ITEM_WIDTH,
       y: 0,
     });
-    setSelectedDate(moment(stateStartDate));
-  }, [stateStartDate]);
+  }, [stateStartDate, t, i18n]);
 
   function updateStartDate(date: Date) {
     const time = date.getTime();
-    updateHistory('date', moment(time).format('YYYY-MM-DD'));
+    // This updates state because a useEffect in MapView updates the redux state
+    // TODO this is convoluted coupling, we should update state here if feasible.
+    updateHistory('date', moment(time).format(DEFAULT_DATE_FORMAT));
   }
 
   function setDatePosition(date: number | undefined, increment: number) {
@@ -207,11 +211,13 @@ function DateSelector({
           </Hidden>
 
           <DatePicker
+            locale={t('date_locale')}
+            dateFormat="PP"
             className={classes.datePickerInput}
-            selected={selectedDate.toDate()}
+            selected={moment(stateStartDate).toDate()}
             onChange={updateStartDate}
             maxDate={new Date()}
-            todayButton="Today"
+            todayButton={t('Today')}
             peekNextMonth
             showMonthDropdown
             showYearDropdown
@@ -220,7 +226,6 @@ function DateSelector({
             includeDates={availableDates.map(
               d => new Date(d + USER_DATE_OFFSET),
             )}
-            ref={selectedDateRef}
           />
 
           <Hidden smUp>
@@ -360,7 +365,6 @@ const styles = (theme: Theme) =>
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
   availableDates?: number[];
-  selectedDateRef: React.RefObject<DatePicker>;
 }
 
 export default withStyles(styles)(DateSelector);

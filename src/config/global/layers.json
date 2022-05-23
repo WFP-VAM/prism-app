@@ -5,7 +5,17 @@
     "opacity": 0.8,
     "admin_code": "iso3",
     "admin_level_names": ["adm0_name"],
-    "admin_level_local_names": ["adm0_name"]
+    "admin_level_local_names": ["adm0_name"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
@@ -171,18 +181,50 @@
     "server_layer_name": "mxd13a2_vim_dekad",
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.0001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
-      { "value": 1000, "color": "#a50026" },
-      { "value": 2000, "color": "#de3f2e" },
-      { "value": 3000, "color": "#f88d52" },
-      { "value": 4000, "color": "#fed380" },
-      { "value": 5000, "color": "#ffffbf" },
-      { "value": 6000, "color": "#ccea83" },
-      { "value": 7000, "color": "#86cb66" },
-      { "value": 8000, "color": "#2da155" },
-      { "value": 9000, "color": "#006837" }
+      {
+        "label": "-1.00",
+        "color": "#a50026"
+      },
+      {
+        "label": "-0.75",
+        "color": "#de3f2e"
+      },
+      {
+        "label": "-0.50",
+        "color": "#f88d52"
+      },
+      {
+        "label": "-0.25",
+        "color": "#fed380"
+      },
+      {
+        "label": "0.00",
+        "color": "#ffffbf"
+      },
+      {
+        "label": "0.25",
+        "color": "#ccea83"
+      },
+      {
+        "label": "0.50",
+        "color": "#86cb66"
+      },
+      {
+        "label": "0.75",
+        "color": "#2da155"
+      },
+      {
+        "label": "1.00",
+        "color": "#006837"
+      }
     ]
   },
   "ndvi_dekad_anomaly": {
@@ -213,19 +255,47 @@
     "type": "wms",
     "server_layer_name": "myd11a2_taa_dekad",
     "base_url": "https://odc.ovio.org/",
+    "wcsConfig": {
+      "scale": 0.02,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Land Surface Temperature Amplitude refers to the difference between the maximum and minimum temperature in degrees Celsius",
     "legend": [
-      { "value": -0, "color": "#ffffff", "alpha": 0 },
-      { "value": 50, "color": "#ffffd9" },
-      { "value": 200, "color": "#e8f6b1" },
-      { "value": 400, "color": "#b2e1b6" },
-      { "value": 600, "color": "#64c3bf" },
-      { "value": 800, "color": "#2ca1c2" },
-      { "value": 1000, "color": "#216daf" },
-      { "value": 1200, "color": "#253a97" },
-      { "value": 1400, "color": "#081d58" }
+      {
+        "label": "1°",
+        "color": "#ffffd9"
+      },
+      {
+        "label": "4°",
+        "color": "#e8f6b1"
+      },
+      {
+        "label": "8°",
+        "color": "#b2e1b6"
+      },
+      {
+        "label": "12°",
+        "color": "#64c3bf"
+      },
+      {
+        "label": "16°",
+        "color": "#2ca1c2"
+      },
+      {
+        "label": "20°",
+        "color": "#216daf"
+      },
+      {
+        "label": "24°",
+        "color": "#253a97"
+      },
+      {
+        "label": "28°",
+        "color": "#081d58"
+      }
     ]
   },
   "lst_daytime": {
@@ -289,10 +359,6 @@
     "legend": [],
     "legend_text": "Tropical storm - nodes",
     "base_url": "https://geonode.wfp.org/geoserver",
-    "group": {
-      "name": "Tropical Storms",
-      "main": false
-    },
     "feature_info_props": {
       "event_name": {
         "type": "text",
@@ -316,10 +382,6 @@
     "opacity": 0.7,
     "legend": [],
     "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
-    "group": {
-      "name": "Tropical Storms",
-      "main": true
-    },
     "base_url": "https://geonode.wfp.org/geoserver",
     "feature_info_props": {
       "event_name": {
@@ -354,7 +416,7 @@
     "opacity": 0,
     "legend_text": "",
     "legend": []
-  }, 
+  },
   "adamts_tracks": {
     "title": "Tropical storm - track",
     "type": "wms",
@@ -363,10 +425,6 @@
     "legend": [],
     "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
     "base_url": "https://geonode.wfp.org/geoserver",
-    "group": {
-      "name": "Tropical Storms",
-      "main": false
-    },
     "geometry": "linestring"
   }
 }

@@ -19,6 +19,7 @@ export interface PopupRemoteData {
 export interface MapTooltipState {
   coordinates?: GeoJSON.Position;
   locationName: string;
+  locationLocalName: string;
   data: PopupData;
   remoteData: PopupRemoteData | null;
   showing: boolean;
@@ -29,10 +30,12 @@ export interface MapTooltipState {
 type ShowPopupType = {
   coordinates: GeoJSON.Position;
   locationName: string;
+  locationLocalName: string;
 };
 
 const initialState: MapTooltipState = {
   locationName: '',
+  locationLocalName: '',
   data: {},
   remoteData: null,
   showing: false,
@@ -88,6 +91,7 @@ export const tooltipStateSlice = createSlice({
       ...state,
       showing: true,
       locationName: payload.locationName,
+      locationLocalName: payload.locationLocalName,
       coordinates: payload.coordinates,
     }),
 

@@ -1,96 +1,121 @@
 import React from 'react';
-import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
-import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import {
-  showPopup,
-  fetchPopupData,
-  clearRemotePopupData,
-} from '../../../../context/tooltipStateSlice';
-import { languageOption } from '../../../../config';
-import { BoundaryLayerProps } from '../../../../config/types';
+import { showPopup, hidePopup } from '../../../../context/tooltipStateSlice';
+import { BoundaryLayerProps, WMSLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import {
-  layersSelector,
-  layerDataSelector,
-  dateRangeSelector,
-} from '../../../../context/mapStateSlice/selectors';
+  setBoundaryParams,
+  updateAdminId,
+} from '../../../../context/datasetStateSlice';
 
-/**
- * To activate fillOnClick option, we "fill in"
- * polygons with opacity 0.
- */
-const fillPaint: MapboxGL.FillPaint = {
-  'fill-opacity': 0,
-};
+import {
+  layerDataSelector,
+  layersSelector,
+} from '../../../../context/mapStateSlice/selectors';
+import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
+import { isPrimaryBoundaryLayer } from '../../../../config/utils';
+import { getFullLocationName } from '../../../../utils/name-utils';
+
+import {
+  getChartLowestBoundaryLevelId,
+  getChartAdminBoundaryParams,
+} from '../../../../utils/admin-utils';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
   targetMap.getCanvas().style.cursor = cursor;
 }
 
-const getLinePaintOptions: (
-  layer: BoundaryLayerProps,
-) => MapboxGL.LinePaint = layer => {
-  return {
-    'line-color': 'grey',
-    'line-width': 1,
-    'line-opacity': layer.opacity,
-  };
-};
+interface ComponentProps {
+  layer: BoundaryLayerProps;
+  before?: string;
+}
 
-function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
+function BoundaryLayer({ layer, before }: ComponentProps) {
   const dispatch = useDispatch();
+  const selectedLayers = useSelector(layersSelector);
+
   const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
-  const layers = useSelector(layersSelector);
-  const { startDate } = useSelector(dateRangeSelector);
   const { data } = boundaryLayer || {};
+
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
   }
-  // use last layer as reference for popup content
-  // start with index 1 because index 0 is boundary layer itself
-  const lastLayer = layers[1];
+
+  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+
+  const onClickShowPopup = (evt: any) => {
+    dispatch(hidePopup());
+    const coordinates = evt.lngLat;
+    const locationName = getFullLocationName(
+      layer.adminLevelNames,
+      evt.features[0],
+    );
+
+    const locationLocalName = getFullLocationName(
+      layer.adminLevelLocalNames,
+      evt.features[0],
+    );
+
+    dispatch(showPopup({ coordinates, locationName, locationLocalName }));
+  };
+
+  const onClickFunc = (evt: any) => {
+    const { properties } = evt.features[0];
+
+    // send the selection to the map selection layer. No-op if selection mode isn't on.
+    dispatch(
+      toggleSelectedBoundary(evt.features[0].properties[layer.adminCode]),
+    );
+
+    onClickShowPopup(evt);
+
+    const selectedLayerWMS: undefined | WMSLayerProps = selectedLayers.find(
+      l => l.type === 'wms' && l.chartData,
+    ) as WMSLayerProps;
+
+    if (!selectedLayerWMS) {
+      return;
+    }
+
+    const adminBoundaryParams = getChartAdminBoundaryParams(
+      selectedLayerWMS,
+      properties,
+    );
+
+    const lowestLevelId = getChartLowestBoundaryLevelId(selectedLayerWMS);
+
+    dispatch(setBoundaryParams(adminBoundaryParams));
+    dispatch(updateAdminId(lowestLevelId));
+  };
+
+  // Only use mouse effects and click effects on the main layer.
+  const { fillOnMouseEnter, fillOnMouseLeave, fillOnClick } = isPrimaryLayer
+    ? {
+        fillOnMouseEnter: (evt: any) => onToggleHover('pointer', evt.target),
+        fillOnMouseLeave: (evt: any) => onToggleHover('', evt.target),
+        fillOnClick: onClickFunc,
+      }
+    : {
+        fillOnMouseEnter: undefined,
+        fillOnMouseLeave: undefined,
+        fillOnClick: undefined,
+      };
+
   return (
     <GeoJSONLayer
-      id="boundaries"
+      id={`layer-${layer.id}`}
       data={data}
-      fillPaint={fillPaint}
-      linePaint={getLinePaintOptions(layer)}
-      fillOnMouseEnter={(evt: any) => onToggleHover('pointer', evt.target)}
-      fillOnMouseLeave={(evt: any) => onToggleHover('', evt.target)}
-      fillOnClick={(evt: any) => {
-        const coordinates = evt.lngLat;
-        const locationNames = layer.adminLevelNames.map(
-          level => get(evt.features[0], ['properties', level], '') as string,
-        );
-        const params = {
-          coordinates,
-          locationName: locationNames.join(', '),
-          popupUrl: lastLayer ? lastLayer.popupUrl : undefined,
-        };
-        const featureProperties = evt.features[0].properties;
-        const areacode = featureProperties[layer.adminCode];
-        dispatch(clearRemotePopupData());
-        if (params.popupUrl) {
-          const url = new URL(params.popupUrl);
-          url.searchParams.set('lon', coordinates.lng.toString());
-          url.searchParams.set('lat', coordinates.lat.toString());
-          url.searchParams.set('location', JSON.stringify(locationNames));
-          url.searchParams.set('areacode', areacode);
-          url.searchParams.set('language', languageOption.id);
-          url.searchParams.set(
-            'date',
-            startDate ? moment(startDate).format('YYYY-MM-DD') : '',
-          );
-          dispatch(fetchPopupData(url.toString()));
-        }
-        dispatch(showPopup(params));
-      }}
+      fillPaint={layer.styles.fill}
+      linePaint={layer.styles.line}
+      fillOnMouseEnter={fillOnMouseEnter}
+      fillOnMouseLeave={fillOnMouseLeave}
+      fillOnClick={fillOnClick}
+      before={before}
     />
   );
 }

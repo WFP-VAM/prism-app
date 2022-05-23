@@ -7,7 +7,10 @@ import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
 import { getExtent, Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { ImpactLayerProps } from '../../../../config/types';
-import { LayerDefinitions } from '../../../../config/utils';
+import {
+  LayerDefinitions,
+  getBoundaryLayerSingleton,
+} from '../../../../config/utils';
 import {
   LayerData,
   loadLayerData,
@@ -20,6 +23,8 @@ import {
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
 import { getFeatureInfoPropsData } from '../../utils';
+import { i18nTranslator, useSafeTranslation } from '../../../../i18n';
+import { getRoundedData } from '../../../../utils/data-utils';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',
@@ -27,10 +32,9 @@ const linePaint: LinePaint = {
   'line-opacity': 0.3,
 };
 
-function getHazardData(evt: any, operation: string) {
+function getHazardData(evt: any, operation: string, t?: i18nTranslator) {
   const data = get(evt.features[0].properties, operation || 'median', null);
-
-  return data ? data.toFixed(2) : 'No Data';
+  return getRoundedData(data, t);
 }
 
 const ImpactLayer = ({ classes, layer }: ComponentProps) => {
@@ -41,6 +45,7 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
       ImpactLayerProps
     >) || {};
   const dispatch = useDispatch();
+  const { t } = useSafeTranslation();
 
   const extent: Extent = getExtent(map);
   useEffect(() => {
@@ -62,7 +67,7 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
     return selectedDate ? null : (
       <div className={classes.message}>
         <div className={classes.messageContainer}>
-          <h2>Select an available date to view data</h2>
+          <h2>{t('Select an available date to view data')}</h2>
         </div>
       </div>
     );
@@ -83,11 +88,14 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
 
   const hazardLayerDef = LayerDefinitions[layer.hazardLayer];
   const operation = layer.operation || 'median';
-  const hazardTitle = `${hazardLayerDef.title} (${operation})`;
+  const hazardTitle = `${
+    hazardLayerDef.title ? t(hazardLayerDef.title) : ''
+  } (${t(operation)})`;
+  const boundaryId = getBoundaryLayerSingleton().id;
 
   return (
     <GeoJSONLayer
-      before="boundaries-line"
+      before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={noMatchingDistricts ? boundaries : impactFeatures}
       linePaint={linePaint}
@@ -95,11 +103,14 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
       fillOnClick={(evt: any) => {
         const popupData = {
           [layer.title]: {
-            data: get(evt.features[0], 'properties.impactValue', 'No Data'),
+            data: getRoundedData(
+              get(evt.features[0], 'properties.impactValue'),
+              t,
+            ),
             coordinates: evt.lngLat,
           },
           [hazardTitle]: {
-            data: getHazardData(evt, operation),
+            data: getHazardData(evt, operation, t),
             coordinates: evt.lngLat,
           },
         };

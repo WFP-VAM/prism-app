@@ -5,16 +5,45 @@
     "opacity": 0.8,
     "admin_code": "NSO_CODE",
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["ADM1_MN", "ADM2_MN"]
+    "admin_level_local_names": ["ADM1_MN", "ADM2_MN"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 0.8,
+        "line-opacity": 0.8
+      }
+    }
   },
+    "admin1_boundaries": {
+      "type": "boundary",
+      "path": "../data/mongolia/mng_adm1_nso_match_1212_mn.json",
+      "opacity": 0.8,
+      "admin_code": "NSO_CODE",
+      "admin_level_names": ["ADM1_EN"],
+      "admin_level_local_names": ["ADM1_MN"],
+      "styles:": {
+        "fill": {
+          "fill-opacity": 0
+        },
+        "line": {
+          "line-color": "gray",
+          "line-width": 2.5,
+          "line-opacity": 0.8
+        }
+      }
+    },
   "population_below_poverty": {
     "title": "Poverty headcount (aimag)",
     "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Poverty_Headcount_Admin1.json",
+    "boundary": "admin1_boundaries",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE1",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "25",
@@ -43,29 +72,35 @@
     "title": "Number of disabled people (aimag)",
     "type": "admin_level_data",
     "path": "../data/mongolia/nso/NSO_Disabled_Admin1_Total.json",
+    "boundary": "admin1_boundaries",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "2000",
+        "label": "2,000",
         "color": "#fef0d9"
       },
       {
         "value": "3000",
+        "label": "3,000",
         "color": "#fdcc8a"
       },
       {
         "value": "4000",
+        "label": "4,000",
         "color": "#fc8d59"
       },
       {
         "value": "5000",
+        "label": "5,000",
         "color": "#e34a33"
       },
       {
         "value": "6000",
+        "label": "6,000",
         "color": "#b30000"
       }
     ],
@@ -78,26 +113,31 @@
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "500",
+        "label": "500",
         "color": "#edf8fb"
       },
       {
         "value": "1000",
+        "label": "1,000",
         "color": "#b2e2e2"
       },
       {
         "value": "3000",
+        "label": "3,000",
         "color": "#66c2a4"
       },
       {
         "value": "5000",
+        "label": "5,000",
         "color": "#2ca25f"
       },
       {
         "value": "7000",
+        "label": "7,000",
         "color": "#006d2c"
       }
     ],
@@ -106,30 +146,36 @@
   "elderly": {
     "title": "Single-headed elderly households (aimag)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Single_Elderly_Admin1_Total.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_Single_Elderly_Admin1_Total.json",
+    "boundary": "admin1_boundaries",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "1000",
+        "label": "1,000",
         "color": "#fef0d9"
       },
       {
         "value": "1500",
+        "label": "1,500",
         "color": "#fdcc8a"
       },
       {
         "value": "2000",
+        "label": "2,000",
         "color": "#fc8d59"
       },
       {
         "value": "2500",
+        "label": "2,500",
         "color": "#e34a33"
       },
       {
         "value": "3000",
+        "label": "3,000",
         "color": "#b30000"
       }
     ],
@@ -138,43 +184,53 @@
   "herders": {
     "title": "Herder households (soum)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Herder_HHs_Admin2.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_Herder_HHs_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
-        "value": "300",
+        "label": "<= 300",
+        "value": 0,
         "color": "#fef0d9"
       },
       {
-        "value": "400",
-        "color": "#fdcc8a"
+        "label": "301 to 400",
+        "value": 301,
+        "color": "#fdd49e"
       },
       {
-        "value": "500",
+        "label": "401 to 500",
+        "value": 401,
+        "color": "#fdbb84"
+      },
+      {
+        "label": "501 to 600",
+        "value": 501,
         "color": "#fc8d59"
       },
       {
-        "value": "600",
+        "label": "601 to > 700",
+        "value": 601,
         "color": "#e34a33"
       },
       {
-        "value": "700",
+        "label": "> 700",
+        "value": 701,
         "color": "#b30000"
       }
     ],
-    "legend_text": "Number of herder households - defined as herding as the main source of income by Soum. Year: 2019. Source: National Statistical Office"
+    "legend_text": "Number of herder households - defined as herding as the main source of income by Soum. Year: 2020. Source: National Statistical Office"
   },
   "livestock": {
     "title": "Number of livestock in thousands (soum)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Livestock_Count_ths_Admin2.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_Livestock_Count_ths_Admin2.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "100",
@@ -202,11 +258,11 @@
   "child": {
     "title": "Number of children under 5 (soum)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Child_U5_Admin2.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_ChildrenU5_Admin2_All.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "200",
@@ -226,6 +282,7 @@
       },
       {
         "value": "1000",
+        "label": "1,000",
         "color": "#b30000"
       }
     ],
@@ -234,62 +291,73 @@
   "herd_200": {
     "title": "Small herder households (aimag)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Herd_Size_Admin1_LT_200.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_Herd_Size_Admin1_LT_200.json",
+    "boundary": "admin1_boundaries",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE1",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "2000",
+        "label": "2,000",
         "color": "#fef0d9"
       },
       {
         "value": "4000",
+        "label": "4,000",
         "color": "#fdcc8a"
       },
       {
         "value": "6000",
+        "label": "6,000",
         "color": "#fc8d59"
       },
       {
         "value": "8000",
+        "label": "8,000",
         "color": "#e34a33"
       },
       {
         "value": "10000",
+        "label": "10,000",
         "color": "#b30000"
       }
     ],
-    "legend_text": "Number of households with less than 200 heads of livestock by Aimag. Year: 2019. Source: National Statistics Office"
+    "legend_text": "Number of households with less than 200 heads of livestock by Aimag. Year: 2020. Source: National Statistics Office"
   },
   "population_total": {
     "title": "Total population (soum)",
     "type": "admin_level_data",
-    "path": "../data/mongolia/nso/NSO_Population_Admin2_Total.json",
+    "path": "../data/mongolia/nso/2022-02-06/NSO_Population_Admin2_Total.json",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "2500",
+        "label": "2,500",
         "color": "#fef0d9"
       },
       {
         "value": "5000",
+        "label": "5,000",
         "color": "#fdcc8a"
       },
       {
         "value": "7500",
+        "label": "7,500",
         "color": "#fc8d59"
       },
       {
         "value": "10000",
+        "label": "10,000",
         "color": "#e34a33"
       },
       {
         "value": "12500",
+        "label": "12,500",
         "color": "#b30000"
       }
     ],
@@ -301,7 +369,7 @@
     "server_layer_name": "ModisAnomaly",
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "days",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Compares the current pasture conditions to the long term average to calculate pasture anomaly",
     "wcsConfig": {
       "no_data": 65535,
@@ -311,50 +379,84 @@
     },
     "legend": [
       {
-        "value": "-80%",
+        "label": "-80%",
         "color": "#ff0000"
       },
       {
-        "value": "-60%",
+        "label": "-60%",
         "color": "#ff5900"
       },
       {
-        "value": "-40%",
+        "label": "-40%",
         "color": "#ff8400"
       },
       {
-        "value": "-20%",
+        "label": "-20%",
         "color": "#ffce63"
       },
       {
-        "value": "-10%",
+        "label": "-10%",
         "color": "#ffdd94"
       },
       {
-        "value": "0",
+        "label": "0",
         "color": "#ffffbf"
       },
       {
-        "value": "+10%",
+        "label": "+10%",
         "color": "#dee09f"
       },
       {
-        "value": "+20%",
+        "label": "+20%",
         "color": "#bbbf7c"
       },
       {
-        "value": "+40%",
+        "label": "+40%",
         "color": "#9da360"
       },
       {
-        "value": "+60%",
+        "label": "+60%",
         "color": "#7e8745"
       },
       {
-        "value": "+80%",
+        "label": "+80%",
         "color": "#5b6e00"
       }
     ]
+  },
+  "pasture_biomass": {
+    "title": "Pasture biomass",
+    "type": "wms",
+    "server_layer_name": "ModisPastureBiomass",
+    "additional_query_params": {
+      "styles": "pasture_biomass"
+    },
+    "base_url": "https://mongolia.sibelius-datacube.org:5000",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "label": "0 kg/ha",
+        "color": "#905C00"
+      },
+      {
+        "label": "250 kg/ha",
+        "color": "#E4AF3F"
+      },
+      {
+        "label": "500 kg/ha",
+        "color": "#98BB64"
+      },
+      {
+        "label": "750 kg/ha",
+        "color": "#9CF84C"
+      },
+      {
+        "label": "1,000 kg/ha",
+        "color": "#CDFD63"
+      }
+    ],
+    "legend_text": "Converts the NDVI to pasture (kg/ha) values."
   },
   "ndvi": {
     "title": "Vegetation index (NDVI)",
@@ -365,47 +467,47 @@
     },
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "days",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Median averaged Normalized Difference Vegetation Index (NDVI) from composite satellite imagery",
     "legend": [
       {
-        "value": "0.00",
+        "label": "0.00",
         "color": "#ece0d7"
       },
       {
-        "value": "0.11",
+        "label": "0.11",
         "color": "#d7c8b1"
       },
       {
-        "value": "0.22",
+        "label": "0.22",
         "color": "#bfb186"
       },
       {
-        "value": "0.33",
+        "label": "0.33",
         "color": "#a59e59"
       },
       {
-        "value": "0.44",
+        "label": "0.44",
         "color": "#878a31"
       },
       {
-        "value": "0.55",
+        "label": "0.55",
         "color": "#69761f"
       },
       {
-        "value": "0.66",
+        "label": "0.66",
         "color": "#4f6021"
       },
       {
-        "value": "0.77",
+        "label": "0.77",
         "color": "#374b1b"
       },
       {
-        "value": "0.88",
+        "label": "0.88",
         "color": "#1c3800"
       },
       {
-        "value": "1.00",
+        "label": "1.00",
         "color": "#000000"
       }
     ]
@@ -421,23 +523,23 @@
       "pixelResolution": 64
     },
     "date_interval": "day",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Median value of Land Surface Temperature in degrees Celsius over a 10-day period (MODIS)",
     "legend": [
       {
-        "value": "-50",
+        "label": "-50",
         "color": "#5c9fc8"
       },
       {
-        "value": "-40",
+        "label": "-40",
         "color": "#7ab1c0"
       },
       {
-        "value": "-30",
+        "label": "-30",
         "color": "#9fc3b3"
       },
       {
-        "value": "-20",
+        "label": "-20",
         "color": "#d9e79a"
       },
       {
@@ -445,23 +547,23 @@
         "color": "#f3f88e"
       },
       {
-        "value": "5",
+        "label": "5",
         "color": "#f0d779"
       },
       {
-        "value": "15",
+        "label": "15",
         "color": "#eeb563"
       },
       {
-        "value": "25",
+        "label": "25",
         "color": "#e98f51"
       },
       {
-        "value": "40",
+        "label": "40",
         "color": "#e2633e"
       },
       {
-        "value": "50",
+        "label": "50",
         "color": "#da402e"
       }
     ]
@@ -477,27 +579,27 @@
     },
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "day",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
     "legend": [
       {
-        "value": "0.10",
+        "label": "0.10",
         "color": "#ef1000"
       },
       {
-        "value": "0.17",
+        "label": "0.17",
         "color": "#bf4000"
       },
       {
-        "value": "0.26",
+        "label": "0.26",
         "color": "#ba7500"
       },
       {
-        "value": "0.34",
+        "label": "0.34",
         "color": "#ead500"
       },
       {
-        "value": "1.00",
+        "label": "1.00",
         "color": "#5ea100"
       }
     ]
@@ -508,27 +610,27 @@
     "server_layer_name": "ModisSnowPercentage",
     "base_url": "https://mongolia.sibelius-datacube.org:5000",
     "date_interval": "day",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Snow Percentage for a 10-day period, where the value represent the percentage of times that a pixel had snow",
     "legend": [
       {
-        "value": "0",
+        "label": "0%",
         "color": "#a8a8a8"
       },
       {
-        "value": "25",
+        "label": "25%",
         "color": "#c6c6c6"
       },
       {
-        "value": "50",
+        "label": "50%",
         "color": "#e0e0e0"
       },
       {
-        "value": "75",
+        "label": "75%",
         "color": "#f4f4f4"
       },
       {
-        "value": "100",
+        "label": "100%",
         "color": "#ffffff"
       }
     ]
@@ -540,26 +642,30 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "0",
         "color": "#d7191c"
       },
       {
-        "value": "1 - 20",
+        "value": "1",
+        "label": "1 - 20",
         "color": "#fdae61"
       },
       {
-        "value": "21 - 40",
+        "value": "21",
+        "label": "21 - 40",
         "color": "#ffffbf"
       },
       {
-        "value": "41 - 60",
+        "value": "41",
+        "label": "41 - 60",
         "color": "#a6d96a"
       },
       {
-        "value": "60 +",
+        "value": "61",
+        "label": "60 +",
         "color": "#1a9641"
       }
     ],
@@ -572,26 +678,31 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "0",
+        "label": "0",
         "color": "#d7191c"
       },
       {
-        "value": "1 - 10",
+        "value": "1",
+        "label": "1 - 10",
         "color": "#fdae61"
       },
       {
-        "value": "11 - 20",
+        "value": "11",
+        "label": "11 - 20",
         "color": "#ffffbf"
       },
       {
-        "value": "21 - 30",
+        "value": "21",
+        "label": "21 - 30",
         "color": "#a6d96a"
       },
       {
-        "value": "30",
+        "value": "31",
+        "label": "31 +",
         "color": "#1a9641"
       }
     ],
@@ -604,26 +715,31 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
         "value": "0",
+        "label": "0",
         "color": "#d7191c"
       },
       {
-        "value": "1 - 5",
+        "value": "1",
+        "label": "1 - 5",
         "color": "#fdae61"
       },
       {
-        "value": "6 - 10",
+        "value": "6",
+        "label": "6 - 10",
         "color": "#ffffbf"
       },
       {
-        "value": "11 - 15",
+        "value": "11",
+        "label": "11 - 15",
         "color": "#a6d96a"
       },
       {
-        "value": "15 +",
+        "value": "15",
+        "label": "15 +",
         "color": "#1a9641"
       }
     ],
@@ -636,26 +752,31 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend": [
       {
-        "value": "2000 - 4000",
+        "value": "2000",
+        "label": "2,000 - 4,000",
         "color": "#1a9641"
       },
       {
-        "value": "4001 - 6000",
+        "value": "4001",
+        "label": "4,001 - 6,000",
         "color": "#a6d96a"
       },
       {
-        "value": "6001 - 8000",
+        "value": "6001",
+        "label": "6,001 - 8,000",
         "color": "#ffffbf"
       },
       {
-        "value": "8001 - 10000",
+        "value": "8001",
+        "label": "8,001 - 10,000",
         "color": "#fdae61"
       },
       {
-        "value": "10001 and above",
+        "value": "10001",
+        "label": "10,001 and above",
         "color": "#d7191c"
       }
     ],
@@ -667,7 +788,7 @@
     "base_url": "https://mng-wfp.ovio.org:8443/geoserver/prism",
     "server_layer_name": "DZUDRM12312",
     "date_interval": "month",
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "The dzud risk map is produced by the Mongolia Information and Research Institute of Meteorology, Hydrology and Environment (IRIMHE) and measures dzud risk based on a combination of climate hazards, pasture conditions and capacity, and risk exposure to livestock. Latest version: December 2019",
     "legend": [
       {
@@ -692,213 +813,6 @@
       }
     ]
   },
-  "avg_temperature_groundstations": {
-    "title": "10-day average temperature",
-    "type": "point_data",
-    "data": "https://mng.prism.services/temp/Temperature",
-    "date_url": "https://mng.prism.services/temp/getDates",
-    "fallback_data": "../data/mongolia/groundstations/IRIMHE_temperature_2020-01-d1.json",
-    "opacity": 0.5,
-    "measure": "ttt_aver",
-    "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
-    "legend": [
-      {
-        "value": "-40",
-        "color": "#7ab1c0"
-      },
-      {
-        "value": "-30",
-        "color": "#9fc3b3"
-      },
-      {
-        "value": "-20",
-        "color": "#d9e79a"
-      },
-      {
-        "value": "-10",
-        "color": "#f3f88e"
-      },
-      {
-        "value": "0",
-        "color": "#f0d779"
-      },
-      {
-        "value": "10",
-        "color": "#fdae61"
-      },
-      {
-        "value": "20",
-        "color": "#f46d43"
-      },
-      {
-        "value": "30",
-        "color": "#d53e4f"
-      },
-      {
-        "value": "40",
-        "color": "#9e0142"
-      }
-    ]
-  },
-  "min_temperature_groundstations": {
-    "title": "10-day minimum temperature",
-    "type": "point_data",
-    "data": "https://mng.prism.services/temp/Temperature",
-    "date_url": "https://mng.prism.services/temp/getDates",
-    "fallback_data": "../data/mongolia/groundstations/IRIMHE_temperature_2020-01-d1.json",
-    "opacity": 0.5,
-    "measure": "ttt_min",
-    "legend_text": "Minimum temperature over a 10-day period from ground station data reported in degrees Celsius",
-    "legend": [
-      {
-        "value": "-40",
-        "color": "#7ab1c0"
-      },
-      {
-        "value": "-30",
-        "color": "#9fc3b3"
-      },
-      {
-        "value": "-20",
-        "color": "#d9e79a"
-      },
-      {
-        "value": "-10",
-        "color": "#f3f88e"
-      },
-      {
-        "value": "0",
-        "color": "#f0d779"
-      },
-      {
-        "value": "10",
-        "color": "#fdae61"
-      },
-      {
-        "value": "20",
-        "color": "#f46d43"
-      },
-      {
-        "value": "30",
-        "color": "#d53e4f"
-      },
-      {
-        "value": "40",
-        "color": "#9e0142"
-      }
-    ]
-  },
-  "max_temperature_groundstations": {
-    "title": "10-day maximum temperature",
-    "type": "point_data",
-    "data": "https://mng.prism.services/temp/Temperature",
-    "date_url": "https://mng.prism.services/temp/getDates",
-    "fallback_data": "../data/mongolia/groundstations/IRIMHE_temperature_2020-01-d1.json",
-    "opacity": 0.5,
-    "measure": "ttt_max",
-    "legend_text": "Maximum temperature over a 10-day period from ground station data reported in degrees Celsius",
-    "legend": [
-      {
-        "value": "-40",
-        "color": "#7ab1c0"
-      },
-      {
-        "value": "-30",
-        "color": "#9fc3b3"
-      },
-      {
-        "value": "-20",
-        "color": "#d9e79a"
-      },
-      {
-        "value": "-10",
-        "color": "#f3f88e"
-      },
-      {
-        "value": "0",
-        "color": "#f0d779"
-      },
-      {
-        "value": "10",
-        "color": "#fdae61"
-      },
-      {
-        "value": "20",
-        "color": "#f46d43"
-      },
-      {
-        "value": "30",
-        "color": "#d53e4f"
-      },
-      {
-        "value": "40",
-        "color": "#9e0142"
-      }
-    ]
-  },
-  "total_precipitation_groundstations": {
-    "title": "Total 10-day precipitation",
-    "type": "point_data",
-    "data": "https://mng.prism.services/temp/percipitation",
-    "date_url": "https://mng.prism.services/temp/getDates",
-    "fallback_data": "../data/mongolia/groundstations/IRIMHE_precipitation_2020-05-01.json",
-    "opacity": 0.5,
-    "measure": "sum_rrr",
-    "legend_text": "Total precipitation over a 10-day period from ground station data reported in centimeters",
-    "legend": [
-      {
-        "value": "0",
-        "color": "#f1eef6"
-      },
-      {
-        "value": "5",
-        "color": "#bdc9e1"
-      },
-      {
-        "value": "10",
-        "color": "#74a9cf"
-      },
-      {
-        "value": "15",
-        "color": "#2b8cbe"
-      },
-      {
-        "value": "20",
-        "color": "#045a8d"
-      }
-    ]
-  },
-  "avg_precipitation_groundstations": {
-    "title": "10-day average precipitation",
-    "type": "point_data",
-    "data": "https://mng.prism.services/temp/soil",
-    "date_url": "https://mng.prism.services/temp/getDates",
-    "opacity": 0.5,
-    "measure": "ttt_aver",
-    "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
-    "legend": [
-      {
-        "value": "-40",
-        "color": "#7ab1c0"
-      },
-      {
-        "value": "-30",
-        "color": "#9fc3b3"
-      },
-      {
-        "value": "-20",
-        "color": "#d9e79a"
-      },
-      {
-        "value": "-10",
-        "color": "#f3f88e"
-      },
-      {
-        "value": "0",
-        "color": "#f0d779"
-      }
-    ]
-  },
   "herd_pasture_impact": {
     "title": "Herders exposed to severe pasture anomaly (soum)",
     "type": "impact",
@@ -908,7 +822,7 @@
     "threshold": {
       "below": -25
     },
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -25%",
     "legend": [
       {
@@ -942,7 +856,7 @@
     "threshold": {
       "above": 3
     },
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Number of small herder households within an aimag with very high risk of dzud",
     "legend": [
       {
@@ -972,7 +886,7 @@
     "threshold": {
       "above": 25
     },
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Number of livestock within a soum with very high risk of dzud",
     "legend": [
       {
@@ -1002,7 +916,7 @@
     "threshold": {
       "below": 0.25
     },
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Number of livestock (in thousands) within a soum with drought conditions as measured through the Vegetation Health Index",
     "legend": [
       {
@@ -1035,7 +949,7 @@
     "threshold": {
       "below": -25
     },
-    "opacity": 0.5,
+    "opacity": 0.7,
     "legend_text": "Number of livestock (in thousands) within a soum with average temperatures below -25 Celsius",
     "legend": [
       {

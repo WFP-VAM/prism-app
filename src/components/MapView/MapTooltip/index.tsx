@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Popup } from 'react-mapbox-gl';
 import {
-  CircularProgress,
   createStyles,
   withStyles,
   WithStyles,
@@ -10,26 +9,31 @@ import {
 } from '@material-ui/core';
 import { tooltipSelector } from '../../../context/tooltipStateSlice';
 import TooltipComponents from './Components/index';
+import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
 
 function MapTooltip({ classes }: TooltipProps) {
   const popup = useSelector(tooltipSelector);
-
+  const { t, i18n } = useSafeTranslation();
   return popup.showing && popup.coordinates ? (
     <Popup
       anchor="bottom"
       coordinates={popup.coordinates}
       className={classes.popup}
     >
-      <h4>{popup.locationName}</h4>
+      <h4>
+        {isEnglishLanguageSelected(i18n)
+          ? popup.locationName
+          : popup.locationLocalName}
+      </h4>
       {Object.entries(popup.data)
         .filter(([, value]) => value.coordinates === popup.coordinates)
         .map(([key, value]) => (
           <h4 key={key}>
-            {key}: {value.data}
+            {t(key)}: {value.data}
           </h4>
         ))}
       {popup.remoteData && popup.remoteData.components.map(TooltipComponents)}
-      {popup.remoteDataLoading ? <CircularProgress /> : null}
+      {popup.remoteDataLoading ? <LinearProgress /> : null}
       {popup.wmsGetFeatureInfoLoading ? <LinearProgress /> : null}
     </Popup>
   ) : null;
@@ -39,7 +43,12 @@ const styles = () =>
   createStyles({
     popup: {
       '& div.mapboxgl-popup-content': {
+        background: 'black',
+        color: 'white',
         padding: '10px 10px 10px',
+      },
+      '& div.mapboxgl-popup-tip': {
+        'border-top-color': 'black',
       },
     },
   });

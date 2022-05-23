@@ -11,10 +11,7 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import {
-  ExposedPopulationResult,
-  BaselineLayerResult,
-} from '../../../utils/analysis-utils';
+import { ExposedPopulationResult } from '../../../utils/analysis-utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import {
   isDataTableDrawerActiveSelector,
@@ -32,8 +29,9 @@ import {
   LayerKey,
   ExposedPopulationDefinition,
 } from '../../../config/types';
-import { TableDefinitions } from '../../../config/utils';
+import { TableKey } from '../../../config/utils';
 import { Extent } from '../Layers/raster-utils';
+import { useSafeTranslation } from '../../../i18n';
 
 const AnalysisButton = withStyles(() => ({
   root: {
@@ -62,6 +60,7 @@ const ExposedPopulationAnalysis = ({
   );
   const data = useSelector(analysisResultSelector);
 
+  const { t } = useSafeTranslation();
   const dispatch = useDispatch();
 
   const runExposureAnalysis = async () => {
@@ -85,21 +84,28 @@ const ExposedPopulationAnalysis = ({
       wfsLayerId: id as LayerKey,
     };
 
-    await dispatch(requestAndStoreExposedPopulation(params));
+    dispatch(requestAndStoreExposedPopulation(params));
+  };
+
+  // Since the exposure analysis doesn't have predefined table in configurations
+  // and need to have a `TableKey` will use this util function to handle such case
+  // used timestamp to avoid any potential rare name collision
+  const generateUniqueTableKey = (activityName: string) => {
+    return `${activityName}_${Date.now()}`;
   };
 
   const ResultSwitches = () => {
     const features = data?.featureCollection.features;
-    const hasData = features?.length === 0;
+    const hasNoData = features?.length === 0;
 
     const handleTableViewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       dispatch(setIsDataTableDrawerActive(e.target.checked));
       dispatch(
         setCurrentDataDefinition({
-          id: TableDefinitions.animal_deaths.id,
-          title: data?.getTitle() || '',
+          id: generateUniqueTableKey('exposure_analysis') as TableKey,
+          title: data?.getTitle(t) || '',
           table: '',
-          legendText: data?.legendText || '',
+          legendText: t(data?.legendText || ''),
         }),
       );
     };
@@ -111,19 +117,19 @@ const ExposedPopulationAnalysis = ({
             control={
               <Switch
                 color="primary"
-                disabled={hasData}
+                disabled={hasNoData}
                 checked={isDataTableDrawerActive}
                 onChange={handleTableViewChange}
               />
             }
-            label="Table view"
+            label={t('Table View')}
           />
         </FormGroup>
 
-        {hasData && (
+        {hasNoData && (
           <Grid item>
             <Typography align="center" variant="h5">
-              No population was exposed
+              {t('No population was exposed')}
             </Typography>
           </Grid>
         )}
@@ -131,7 +137,7 @@ const ExposedPopulationAnalysis = ({
     );
   };
 
-  if (!result || result instanceof BaselineLayerResult) {
+  if (!result || !(result instanceof ExposedPopulationResult)) {
     return (
       <>
         <AnalysisButton
@@ -140,7 +146,7 @@ const ExposedPopulationAnalysis = ({
           size="small"
           onClick={runExposureAnalysis}
         >
-          Exposure Analysis
+          {t('Exposure Analysis')}
         </AnalysisButton>
 
         {analysisExposureLoading && <LinearProgress />}
@@ -156,7 +162,7 @@ const ExposedPopulationAnalysis = ({
         size="small"
         onClick={() => dispatch(clearAnalysisResult())}
       >
-        clear analysis
+        {t('Clear Analysis')}
       </AnalysisButton>
 
       <ResultSwitches />

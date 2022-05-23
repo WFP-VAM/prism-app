@@ -1,4 +1,7 @@
 import 'reflect-metadata';
+import { FillPaint, LinePaint } from 'mapbox-gl';
+import { map, every } from 'lodash';
+import { GeoJSON } from 'geojson';
 import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
@@ -16,12 +19,42 @@ export type LayerType =
   | PointDataLayerProps;
 
 export type LayerKey = keyof typeof rawLayers;
+
+type MenuGroupItem = {
+  id: string;
+  label: string;
+  main: boolean;
+};
+
+export type MenuGroup = {
+  groupTitle: string;
+  activateAll: boolean;
+  layers: MenuGroupItem[];
+};
+
 /**
- * Check if a string is an explicitly defined layer in layers.json
- * @param layerKey the string to check
+ * Check if a string/object is an explicitly defined layer in layers.json
+ * @param layerKey the string/object to check
  */
-export const isLayerKey = (layerKey: string): layerKey is LayerKey =>
-  layerKey in rawLayers;
+export const isLayerKey = (layerKey: string | MenuGroup) => {
+  if (typeof layerKey === 'string') {
+    return layerKey in rawLayers;
+  }
+  // check every layer in group
+  const layers = map(layerKey.layers, 'id');
+  return every(layers, layer => layer in rawLayers);
+};
+
+/**
+ * Check if a layer is without group, or is the main layer in the group
+ * @param layerId
+ * @param layers
+ */
+export const isMainLayer = (layerId: string, layers: LayerType[]) => {
+  return !layers
+    .filter(sl => sl.group)
+    .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.main));
+};
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
@@ -120,26 +153,17 @@ export function checkRequiredKeys<T>(
 export type LegendDefinitionItem = {
   value: string | number;
   color: string;
+  // Optional, to create custom label like '≤50'. if label is not defined
+  // then value attribute will be shown instead
   label?: string;
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
 
-export type GroupDefinition = {
-  name: string;
-  // Main layer of a group of layers. Secondary layers will not trigger notifications.
-  main: boolean;
-};
-
 export enum WcsGetCoverageVersion {
   oneZeroZero = '1.0.0',
   twoZeroZero = '2.0.0',
 }
-
-export type DownloadDefinition = {
-  label: string;
-  url: string;
-};
 
 export type RawDataConfiguration = {
   scale?: number;
@@ -162,6 +186,54 @@ export enum GeometryType {
   LineString = 'linestring',
   Polygon = 'polygon',
 }
+
+export enum RasterType {
+  Raster = 'raster',
+}
+
+export type HazardDataType = GeometryType | RasterType;
+
+// not including standard deviation and sum quite yet
+// because we won't be able to re-use the WMS legend
+export enum DisplayZonalStats {
+  Max = 'Max',
+  Mean = 'Mean',
+  Median = 'Median',
+  Min = 'Min',
+}
+
+export type ZonalConfig = {
+  // we're keeping snakecase here because that is what zonal uses
+  // eslint-disable-next-line camelcase
+  class_properties?: string[];
+};
+
+/* eslint-disable camelcase */
+export type ZonalOptions = {
+  zones: GeoJSON;
+  zone_properties?: string[];
+  classes: GeoJSON;
+  class_properties?: string[];
+  preserve_features?: boolean;
+  class_properties_delimiter?: string;
+  dissolve_classes?: boolean;
+  remove_features_with_no_overlap?: boolean;
+  include_null_class_rows?: boolean;
+  on_after_each_zone_feature?: Function;
+};
+/* eslint-enable camelcase */
+
+// this is the row object found in the table.rows array
+// of the result object returned by zonal.calculate
+export type ZonalPolygonRow = {
+  'stat:area': number;
+  'stat:percentage': number;
+  // additional dynamic properties
+  // like zone:name or class:wind_speed
+  [key: string]: number | string | null;
+};
+
+export type AdminLevelType = 1 | 2 | 3 | 4 | 5;
 
 export interface ExposedPopulationDefinition {
   id: LayerKey;
@@ -195,9 +267,6 @@ export class CommonLayerProps {
   @optional // only optional for boundary layer
   legendText?: string;
 
-  @optional // only optional for boundary layer
-  group?: GroupDefinition;
-
   @optional // Perform population exposure analysis using this layer.
   exposure?: ExposedPopulationDefinition;
 
@@ -207,12 +276,57 @@ export class CommonLayerProps {
   @optional
   featureInfoProps?: { [key: string]: FeatureInfoProps };
 
+  /*
+  * only for layer that has grouped menu and always assigned to main layer of group (../components/Navbar/utils.ts)
+  * can be set in config/{country}/prism.json by changing the LayerKey (string) into object:
+    {
+      "group_title": "Rainfall Anomaly" // the title of group
+      "activate_all": true // if true then hide layer options and activate all layers at the same time
+      "layers" : [ // layer list of layers.json to be grouped
+        {
+          "id": "rain_anomaly_1month",
+          "label": "1-month",
+          "main": true
+        },
+        {
+          "id": "rain_anomaly_3month",
+          "label": "3-month",
+          "main": false
+        },
+        ...
+      ]
+    },
+  */
   @optional
-  downloads?: DownloadDefinition[];
-
-  @optional
-  popupUrl?: string;
+  group?: MenuGroup;
 }
+
+/*
+  To get possible values for fill and lines, go to:
+  https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#line
+  https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#fill
+*/
+type LayerStyleProps = {
+  fill: FillPaint;
+  line: LinePaint;
+};
+
+type DatasetLevel = {
+  path: string; // Url substring that represents admin level.
+  id: string; // Geojson property field for admin boundary id.
+  name: string; // Geojson property field for admin boundary name.
+};
+
+export enum ChartType {
+  Bar = 'bar',
+  Line = 'line',
+}
+
+type DatasetProps = {
+  url: string;
+  levels: DatasetLevel[];
+  type: ChartType;
+};
 
 export class BoundaryLayerProps extends CommonLayerProps {
   type: 'boundary';
@@ -220,6 +334,10 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminCode: string;
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: string[]; // Same as above, local to country
+  styles: LayerStyleProps; // Mapbox line and fill properties.,
+
+  @optional
+  isPrimary?: boolean | undefined;
 }
 
 export enum LabelType {
@@ -258,17 +376,23 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional // If included, we infer the layer is a vector layer.
   geometry?: GeometryType;
+
+  @optional // If included, zonal statistics configuration, including which property to use for classes
+  zonal?: ZonalConfig;
+
+  @optional
+  chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
   type: 'admin_level_data';
   path: string;
 
-  @optional
-  dateUrl?: string;
-
   @makeRequired
   title: string;
+
+  @optional
+  dateUrl?: string;
 
   @makeRequired
   legend: LegendDefinition;
@@ -284,6 +408,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @makeRequired
   dataField: string;
+
+  @optional
+  boundary?: LayerKey;
 }
 
 export class LayerForm {
@@ -301,6 +428,7 @@ export class LayerFormInput {
     },
   ];
 }
+
 export class StatsApi {
   url: string;
   zonesUrl: string;
@@ -308,10 +436,21 @@ export class StatsApi {
 }
 
 export enum AggregationOperations {
+  Max = 'max',
   Mean = 'mean',
   Median = 'median',
+  Min = 'min',
   Sum = 'sum',
 }
+
+export enum PolygonalAggregationOperations {
+  Area = 'area',
+  Percentage = 'percentage',
+}
+
+export type AllAggregationOperations =
+  | AggregationOperations
+  | PolygonalAggregationOperations;
 
 export type ThresholdDefinition = { below?: number; above?: number };
 
@@ -342,6 +481,9 @@ export class ImpactLayerProps extends CommonLayerProps {
 export class PointDataLayerProps extends CommonLayerProps {
   type: 'point_data';
   data: string;
+  dataField: string;
+  // URL to fetch all possible dates from
+  dateUrl: string;
 
   @makeRequired
   title: string;
@@ -352,17 +494,20 @@ export class PointDataLayerProps extends CommonLayerProps {
   @makeRequired
   legendText: string;
 
-  measure: string;
   @optional
   fallbackData?: string;
-  // URL to fetch all possible dates from
-  dateUrl: string;
 
   @optional
   additionalQueryParams?: { [key: string]: string | { [key: string]: string } };
 
   @optional
   featureInfoProps?: FeatureInfoObject;
+
+  @optional
+  adminLevelDisplay?: AdminLevelDisplayType;
+
+  @optional
+  boundary?: LayerKey;
 }
 
 export type RequiredKeys<T> = {
@@ -465,7 +610,6 @@ export interface RequestFeatureInfo extends FeatureInfoType {
   styles: string;
 }
 
-export enum DownloadFormat {
-  CSV,
-  JSON,
-}
+type AdminLevelDisplayType = {
+  adminCode: string;
+};

@@ -14,37 +14,31 @@ import {
   Drawer,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
-import {
-  faSearchMinus,
-  faSearchPlus,
-  faBars,
-} from '@fortawesome/free-solid-svg-icons';
-// import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import LanguageSelect from './LanguageSelect';
+import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
-// import mosaLogo from '../images/mosa_logo.png';
-import wfpLogo from '../images/wfp_logo_small.png';
-// import { uiLabel } from '../../config';
-
-// const rightSideLinks = [
-//   {
-//     title: uiLabel('about', 'About'),
-//     icon: faInfoCircle,
-//     href: 'https://innovation.wfp.org/project/prism',
-//   },
-//   {
-//     title: 'Github',
-//     icon: faGithub,
-//     href: 'https://github.com/oviohub/prism-frontend',
-//   },
-// ];
+import LanguageSelector from './LanguageSelector';
+import { useSafeTranslation } from '../../i18n';
 
 function NavBar({ classes }: NavBarProps) {
-  const [openMobileMenu, setOpenMobileMenu] = useState(false);
+  const { t } = useSafeTranslation();
 
+  const rightSideLinks = [
+    {
+      title: t('about'),
+      icon: faInfoCircle,
+      href: 'https://innovation.wfp.org/project/prism',
+    },
+    {
+      title: 'GitHub',
+      icon: faGithub,
+      href: 'https://github.com/oviohub/prism-frontend',
+    },
+  ];
+
+  const [openMobileMenu, setOpenMobileMenu] = useState(false);
   const menu = menuList.map(({ title, ...category }) => (
     <MenuItem key={title} title={title} {...category} />
   ));
@@ -64,67 +58,32 @@ function NavBar({ classes }: NavBarProps) {
     />
   ));
 
-  // const buttons = rightSideLinks.map(({ title, icon, href }) => (
-  //   <Grid item key={title}>
-  //     <Typography
-  //       variant="body2"
-  //       component="a"
-  //       target="_blank"
-  //       href={href}
-  //       onClick={() => setOpenMobileMenu(false)}
-  //     >
-  //       <FontAwesomeIcon icon={icon} /> {title}
-  //     </Typography>
-  //   </Grid>
-  // ));
-
-  const [zoom, setZoom] = useState(1);
-
-  const changeZoom = (modifier: number) => {
-    const z = zoom + modifier;
-    setZoom(z);
-    // eslint-disable-next-line
-    (document.body.style as any).zoom = z;
-    window.dispatchEvent(new Event('resize'));
-  };
-
-  const zoomButtons = (
-    <>
-      <Grid item>
-        <Typography
-          variant="body2"
-          style={{ cursor: 'pointer' }}
-          onClick={() => changeZoom(-0.1)}
-        >
-          <FontAwesomeIcon icon={faSearchMinus} />
-        </Typography>
-      </Grid>
-      <Grid item>
-        <Typography
-          variant="body2"
-          style={{ cursor: 'pointer' }}
-          onClick={() => changeZoom(+0.1)}
-        >
-          <FontAwesomeIcon icon={faSearchPlus} />
-        </Typography>
-      </Grid>
-    </>
-  );
+  const buttons = rightSideLinks.map(({ title, icon, href }) => (
+    <Grid item key={title}>
+      <Typography
+        variant="body2"
+        component="a"
+        target="_blank"
+        href={href}
+        onClick={() => setOpenMobileMenu(false)}
+      >
+        <FontAwesomeIcon icon={icon} /> {title}
+      </Typography>
+    </Grid>
+  ));
 
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
         <Grid container>
           <Grid item xs={3} className={classes.logoContainer}>
-            {/* <img className={classes.orgLogo} src={mosaLogo} alt="logo mosa" /> */}
-            <img className={classes.orgLogo} src={wfpLogo} alt="logo wfp" />
             <Typography
               variant="h6"
               className={classes.logo}
               component={Link}
               to="/"
             >
-              Prism
+              {t('Prism')}
             </Typography>
           </Grid>
 
@@ -141,8 +100,8 @@ function NavBar({ classes }: NavBarProps) {
               item
               xs={3}
             >
-              <LanguageSelect key="language" />
-              {zoomButtons}
+              {buttons}
+              <LanguageSelector />
             </Grid>
           </Hidden>
 
@@ -165,7 +124,7 @@ function NavBar({ classes }: NavBarProps) {
                 <div className={classes.mobileDrawerContent}>
                   <Grid container spacing={3}>
                     <Grid container justify="space-around" item>
-                      {zoomButtons}
+                      {buttons}
                     </Grid>
                     <Grid container direction="column" item>
                       {menuMobile}
@@ -191,11 +150,6 @@ const styles = (theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-    },
-
-    orgLogo: {
-      width: 28,
-      marginRight: 15,
     },
 
     logo: {

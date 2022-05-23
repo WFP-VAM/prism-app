@@ -16,7 +16,7 @@ DB_URI = getenv('DATABASE_URL') or \
     'postgresql://{user}:{password}@{host}:{port}/{database}' \
     .format(
         host=getenv('POSTGRES_HOST', 'alerting-db'),
-        port=getenv('POSTGRES_PORT', 5432),
+        port=getenv('POSTGRES_PORT', '5432'),
         database=getenv('POSTGRES_DB', 'postgres'),
         user=getenv('POSTGRES_USER', 'postgres'),
         password=getenv('POSTGRES_PASSWORD')

@@ -1,5 +1,14 @@
-import mozambiqueConfig from './prism.json';
-import mozambiqueRawLayers from './layers.json';
-import mozambiqueRawTables from './tables.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
+import mozambiqueTranslation from './translation.json';
 
-export { mozambiqueConfig, mozambiqueRawLayers, mozambiqueRawTables };
+const rawTables = {};
+const translation = { pt: mozambiqueTranslation };
+
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  translation,
+  defaultBoundariesFile: 'moz_bnd_adm2_WFP.json',
+};

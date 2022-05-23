@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import moment from 'moment';
 import {
   Button,
   createStyles,
@@ -18,30 +17,16 @@ import {
   withStyles,
 } from '@material-ui/core';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
-import {
-  CloudDownload,
-  ArrowDropDown,
-  Image,
-  Description,
-} from '@material-ui/icons';
+import { CloudDownload, ArrowDropDown, Image } from '@material-ui/icons';
 import { jsPDF } from 'jspdf';
 import { useSelector } from 'react-redux';
-import {
-  mapSelector,
-  layersSelector,
-  dateRangeSelector,
-} from '../../../context/mapStateSlice/selectors';
-import { uiLabel } from '../../../config';
-
-type ExtraDownloadRequest = {
-  url: string;
-  date: number | undefined;
-};
+import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import { useSafeTranslation } from '../../../i18n';
 
 const ExportMenu = withStyles((theme: Theme) => ({
   paper: {
     border: '1px solid #d3d4d5',
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: theme.palette.primary.main,
   },
 }))((props: MenuProps) => (
   <Menu
@@ -70,6 +55,8 @@ function Download({ classes }: DownloadProps) {
   const [open, setOpen] = useState(false);
   const selectedMap = useSelector(mapSelector);
   const previewRef = useRef<HTMLCanvasElement>(null);
+
+  const { t } = useSafeTranslation();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -122,31 +109,13 @@ function Download({ classes }: DownloadProps) {
     }
   };
 
-  function downloadExtra(request: ExtraDownloadRequest) {
-    const url = new URL(request.url);
-    if (request.date) {
-      url.searchParams.append(
-        'date',
-        moment(request.date).format('YYYY-MM-DD'),
-      );
-    }
-    window.open(url.toString());
-  }
-
-  const layers = useSelector(layersSelector);
-  // first layer is always boundary layer
-  const lastLayer = layers.length > 1 ? layers[layers.length - 1] : null;
-  const extraDownloads =
-    lastLayer && lastLayer.downloads ? lastLayer.downloads : [];
-  const selectedDate = useSelector(dateRangeSelector);
-
   return (
     <Grid item>
       <Button variant="contained" color="primary" onClick={handleClick}>
         <CloudDownload fontSize="small" />
         <Hidden smDown>
           <Typography className={classes.label} variant="body2">
-            {uiLabel('export', 'Export')}
+            {t('Export')}
           </Typography>
         </Hidden>
         <ArrowDropDown fontSize="small" />
@@ -162,24 +131,8 @@ function Download({ classes }: DownloadProps) {
           <ListItemIcon>
             <Image fontSize="small" style={{ color: 'white' }} />
           </ListItemIcon>
-          <ListItemText primary="IMAGE" />
+          <ListItemText primary={t('IMAGE')} />
         </ExportMenuItem>
-        {extraDownloads.map(ed => (
-          <ExportMenuItem
-            key={ed.label}
-            onClick={() => {
-              downloadExtra({
-                date: selectedDate.startDate,
-                url: ed.url,
-              });
-            }}
-          >
-            <ListItemIcon>
-              <Description fontSize="small" style={{ color: 'white' }} />
-            </ListItemIcon>
-            <ListItemText primary={ed.label} />
-          </ExportMenuItem>
-        ))}
       </ExportMenu>
       <Dialog
         maxWidth="xl"
@@ -189,35 +142,35 @@ function Download({ classes }: DownloadProps) {
         aria-labelledby="dialog-preview"
       >
         <DialogTitle className={classes.title} id="dialog-preview">
-          Map Preview
+          {t('Map Preview')}
         </DialogTitle>
         <DialogContent>
           <canvas ref={previewRef} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button
             variant="contained"
             onClick={() => download('png')}
             color="primary"
           >
-            Download PNG
+            {t('Download PNG')}
           </Button>
           <Button
             variant="contained"
             onClick={() => download('jpeg')}
             color="primary"
           >
-            Download JPEG
+            {t('Download JPEG')}
           </Button>
           <Button
             variant="contained"
             onClick={() => download('pdf')}
             color="primary"
           >
-            Download PDF
+            {t('Download PDF')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -229,9 +182,6 @@ const styles = (theme: Theme) =>
   createStyles({
     label: {
       marginLeft: '10px',
-    },
-    menuList: {
-      color: theme.palette.primary.dark,
     },
     title: {
       color: theme.palette.text.secondary,

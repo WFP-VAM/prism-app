@@ -2,60 +2,96 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
-import * as MapboxGL from 'mapbox-gl';
-import { AdminLevelDataLayerProps } from '../../../../config/types';
-import { legendToStops } from '../layer-utils';
+import {
+  AdminLevelDataLayerProps,
+  BoundaryLayerProps,
+  LayerKey,
+} from '../../../../config/types';
 import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import {
+  layerDataSelector,
+  mapSelector,
+} from '../../../../context/mapStateSlice/selectors';
+import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import { getFeatureInfoPropsData } from '../../utils';
-import { useDefaultDate } from '../../../../utils/useDefaultDate';
+import {
+  getBoundaryLayers,
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../../../../config/utils';
+import { addNotification } from '../../../../context/notificationStateSlice';
+import { isLayerOnView } from '../../../../utils/map-utils';
+import { getRoundedData } from '../../../../utils/data-utils';
+import { useSafeTranslation } from '../../../../i18n';
+import { fillPaintData } from '../styles';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
-  const date = useDefaultDate(layer.id);
-  const layerData = useSelector(layerDataSelector(layer.id, date)) as
+  const dispatch = useDispatch();
+  const map = useSelector(mapSelector);
+  const boundaryId = layer.boundary || getBoundaryLayerSingleton().id;
+
+  const layerData = useSelector(layerDataSelector(layer.id)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
-  const dispatch = useDispatch();
-
   const { data } = layerData || {};
   const { features } = data || {};
+  const { t } = useSafeTranslation();
 
   useEffect(() => {
-    if (!features) {
-      dispatch(loadLayerData({ layer, date }));
+    // before loading layer check if it has unique boundary?
+    const boundaryLayers = getBoundaryLayers();
+    const boundaryLayer = LayerDefinitions[
+      boundaryId as LayerKey
+    ] as BoundaryLayerProps;
+
+    if ('boundary' in layer) {
+      if (Object.keys(LayerDefinitions).includes(boundaryId)) {
+        boundaryLayers.map(l => dispatch(removeLayer(l)));
+        dispatch(addLayer({ ...boundaryLayer, isPrimary: true }));
+
+        // load unique boundary only once
+        // to avoid double loading which proven to be performance issue
+        if (!isLayerOnView(map, boundaryId)) {
+          dispatch(loadLayerData({ layer: boundaryLayer }));
+        }
+      } else {
+        dispatch(
+          addNotification({
+            message: `Invalid unique boundary: ${boundaryId} for ${layer.id}`,
+            type: 'error',
+          }),
+        );
+      }
     }
-  }, [dispatch, features, layer, date]);
+    if (!features) {
+      dispatch(loadLayerData({ layer }));
+    }
+  }, [dispatch, features, layer, boundaryId, map]);
 
   if (!features) {
     return null;
   }
 
-  // We use the legend values from the config to define "intervals".
-  const fillPaintData: MapboxGL.FillPaint = {
-    'fill-opacity': layer.opacity || 0.3,
-    'fill-color': {
-      property: 'data',
-      stops: legendToStops(layer.legend),
-      type: 'interval',
-    },
-  };
+  if (!isLayerOnView(map, boundaryId)) {
+    return null;
+  }
 
   return (
     <GeoJSONLayer
-      before="boundaries-line"
+      before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={features}
-      fillPaint={fillPaintData}
+      fillPaint={fillPaintData(layer)}
       fillOnClick={async (evt: any) => {
         // by default add `data_field` to the tooltip
         dispatch(
           addPopupData({
             [layer.title]: {
-              data: get(evt.features[0], 'properties.data', 'No Data'),
+              data: getRoundedData(get(evt.features[0], 'properties.data'), t),
               coordinates: evt.lngLat,
             },
           }),

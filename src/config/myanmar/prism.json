@@ -1,5 +1,6 @@
 {
   "country": "Myanmar",
+  "WFPAuthRequired": false,
   "alertFormActive": false,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
@@ -14,6 +15,11 @@
     "longitude": 96.371,
     "zoom": 4.48
   },
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "district_admin_boundaries",
+    "state_admin_boundaries"
+  ],
   "serversUrls": {
     "wms": [
       "https://odc.ovio.org/wms",
@@ -22,12 +28,30 @@
   },
   "categories": {
     "hazards": {
-      "tropical_storms": ["adamts_buffers"],
-      "floods": [
-        "hydra_s1",
-        "hydra_s2",
-        "hydra_l8"
+      "tropical_storms": [
+        {
+          "group_title": "Tropical Storms",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "adamts_buffers",
+              "label": "Wind buffers",
+              "main": true
+            },
+            {
+              "id": "adamts_nodes",
+              "label": "Nodes",
+              "main": false
+            },
+            {
+              "id": "adamts_tracks",
+              "label": "Tracks",
+              "main": false
+            }
+          ]
+        }
       ],
+      "floods": ["hydra_s1", "hydra_s2", "hydra_l8"],
       "rainfall": [
         "rainfall_dekad",
         "rain_anomaly_dekad",
@@ -64,7 +88,7 @@
       ]
     },
     "exposure": {
-      "population": ["total_pop", "kobo_test"],
+      "population": ["total_pop"],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",
         "population_exposed_historical_storm_surge"

@@ -8,6 +8,7 @@ import {
   TransformMatrix,
   WCSRequestUrl,
 } from '../../components/MapView/Layers/raster-utils';
+import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 
 export type WMSLayerData = {
   image: GeoTiffImage;
@@ -28,7 +29,7 @@ export function getWCSLayerUrl({
 
   return WCSRequestUrl(
     layer,
-    date ? moment(date).format('YYYY-MM-DD') : undefined,
+    date ? moment(date).format(DEFAULT_DATE_FORMAT) : undefined,
     extent,
   );
 }

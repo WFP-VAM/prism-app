@@ -8,12 +8,13 @@ The API has two endpoints for now.
 
 ### `/stats` (POST)
 
-Calculate zonal statistics for a raster / zones combination.Which takes as inputs through POST:
+Calculate zonal statistics for a raster / zones combination. Which takes as inputs through POST:
 
 - `geotiff_url`, the link to a geotiff
-- `zones_url`, the link to a geojson with admin boundaries
+- `zones_url` OR `zones`, the link to a geojson with admin boundaries / a geojson with boundaries
 - `?group_by`, a key to use to group zones in the geojson
 - `?geojson_out`, decide if the output should be a geojson or a list of data. Default is false -> List.
+- `?intersect_comparison`, ask the API to calcuate and return `intersect_percentage`. Formatted as `>=10.1`. Comparison defaults to equality if omitted.
 - `?wfs_params`, A dictionary of parameters to compute statistics using the intersection between WFS FeatureCollection response polygons with admin boundaries. The parameters are the following.
   - `url`, WFS remote service url.
   - `layer_name`, the name of the vector layer. Geometry must be POLYGON or MULTIPOLYGON.
@@ -58,7 +59,7 @@ curl --location --request POST 'localhost:80/alerts' \
 ```
 
 The following endpoints are related to data retrieval from KoboToolbox. Make sure
-you have set the environment variables KOBO_USER, KOBO_PW
+you have set the environment variables KOBO_USERNAME, KOBO_PW
 
 ### `/kobo/forms` (GET)
 

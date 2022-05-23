@@ -13,13 +13,17 @@ import { LegendDefinition } from '../../../../config/types';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
+  PolygonAnalysisResult,
 } from '../../../../utils/analysis-utils';
+import { getRoundedData } from '../../../../utils/data-utils';
+import { useSafeTranslation } from '../../../../i18n';
 
-function AnalysisLayer() {
+function AnalysisLayer({ before }: { before?: string }) {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
+  const { t } = useSafeTranslation();
 
   const dispatch = useDispatch();
 
@@ -42,40 +46,69 @@ function AnalysisLayer() {
     };
   }
 
-  const property =
-    analysisData instanceof ExposedPopulationResult
-      ? (analysisData.statistic as string)
-      : 'data';
+  const defaultProperty = (() => {
+    switch (true) {
+      case analysisData instanceof ExposedPopulationResult:
+        return analysisData.statistic as string;
+      case analysisData instanceof PolygonAnalysisResult:
+        return 'zonal:stat:percentage';
+      default:
+        return 'data';
+    }
+  })();
 
   return (
     <GeoJSONLayer
-      before="boundaries-line"
       id="layer-analysis"
+      before={before}
       data={analysisData.featureCollection}
-      fillPaint={fillPaintData(analysisData.legend, property)}
+      fillPaint={fillPaintData(analysisData.legend, defaultProperty)}
+      // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data
       fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;
 
-        dispatch(
-          addPopupData({
-            [analysisData.getStatTitle()]: {
-              data: Math.round(
-                get(
-                  evt.features[0],
-                  ['properties', analysisData.statistic],
-                  'No Data',
+        // Statistic Data
+        if (analysisData instanceof PolygonAnalysisResult) {
+          const stats = JSON.parse(
+            evt.features[0].properties['zonal:stat:classes'],
+          );
+          // keys are the zonal classes like ['60 km/h', 'Uncertainty Cones']
+          const keys = Object.keys(stats).filter(key => key !== 'null');
+          const popupData = Object.fromEntries(
+            keys.map(key => [
+              key,
+              {
+                // we convert the percentage from a number like 0.832 to something that is
+                // more intuitive and can fit in the popup better like "83%"
+                data: `${Math.round(stats[key].percentage * 100)}%`,
+                coordinates,
+              },
+            ]),
+          );
+          dispatch(addPopupData(popupData));
+        } else {
+          const statisticKey = analysisData.statistic;
+          dispatch(
+            addPopupData({
+              [analysisData.getStatTitle(t)]: {
+                data: getRoundedData(
+                  get(evt.features[0], ['properties', statisticKey]),
+                  t,
                 ),
-              ).toLocaleString('en-US'),
-              coordinates,
-            },
-          }),
-        );
+                coordinates,
+              },
+            }),
+          );
+        }
 
         if (analysisData instanceof BaselineLayerResult) {
           dispatch(
             addPopupData({
               [analysisData.getBaselineLayer().title]: {
-                data: get(evt.features[0], 'properties.data', 'No Data'),
+                data: getRoundedData(
+                  get(evt.features[0], 'properties.data'),
+                  t,
+                ),
                 coordinates,
               },
             }),
@@ -86,10 +119,10 @@ function AnalysisLayer() {
           dispatch(
             addPopupData({
               [analysisData.key]: {
-                data: get(
-                  evt.features[0],
-                  `properties.${analysisData.key}`,
-                  'No Data',
+                // TODO - consider using a simple safeTranslate here instead.
+                data: getRoundedData(
+                  get(evt.features[0], `properties.${analysisData.key}`),
+                  t,
                 ),
                 coordinates,
               },
