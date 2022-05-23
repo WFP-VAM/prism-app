@@ -4,7 +4,7 @@ import moment from 'moment';
 import type { LazyLoader } from './layer-data';
 import {
   PointDataLayerProps,
-  PointDataProcessing,
+  PointDataLoader,
   PointData,
 } from '../../config/types';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
@@ -51,7 +51,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       boundary,
       dataField,
       featureInfoProps,
-      processing,
+      loader,
     },
   },
   { getState },
@@ -60,7 +60,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
 
-  if (date && processing === PointDataProcessing.EWS) {
+  if (date && loader === PointDataLoader.EWS) {
     const ewsData = await fetchEWSData(date);
     return { features: GeoJSON.parse(ewsData, { Point: ['lat', 'lon'] }) };
   }

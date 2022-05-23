@@ -1646,7 +1646,7 @@
   },
   "ews_remote": {
     "title": "EWS 1294 river level data",
-    "processing": "ews",
+    "loader": "ews",
     "type": "point_data",
     "data": "",
     "date_url": "",

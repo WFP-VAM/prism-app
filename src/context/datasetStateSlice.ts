@@ -4,6 +4,8 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 import { ChartType } from '../config/types';
+import { DEFAULT_DATE_FORMAT } from '../utils/name-utils';
+
 import {
   fetchEWSDataPointsByLocation,
   EWSSensorData,
@@ -100,7 +102,8 @@ const createTableData = (
   format: TableDataFormat,
 ): TableData => {
   const prefix = format === TableDataFormat.DATE ? 'd' : 't';
-  const momentFormat = format === TableDataFormat.DATE ? 'YYYY-MM-DD' : 'HH:mm';
+  const momentFormat =
+    format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'HH:mm';
 
   const sortedRows = orderBy(results, item => item.date).map((item, index) => ({
     ...item,

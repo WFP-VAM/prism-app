@@ -121,7 +121,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         backgroundColor: colors[i],
         borderColor: colors[i],
         borderWidth: 2,
-        pointRadius: data.EWSConfig ? 0 : undefined,
+        pointRadius: data.EWSConfig ? 0 : undefined, // Disable point rendering for EWS only.
         data: indices.map(index => (row[index] as number) || null),
       }))
     : indices.map((index, i) => ({

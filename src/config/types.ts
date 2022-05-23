@@ -456,7 +456,8 @@ export class ImpactLayerProps extends CommonLayerProps {
   api?: StatsApi;
 }
 
-export enum PointDataProcessing {
+// Fetch and transform data to match PointDataLayer format.
+export enum PointDataLoader {
   EWS = 'ews',
 }
 
@@ -492,7 +493,7 @@ export class PointDataLayerProps extends CommonLayerProps {
   boundary?: LayerKey;
 
   @optional
-  processing?: PointDataProcessing;
+  loader?: PointDataLoader;
 }
 
 export type RequiredKeys<T> = {

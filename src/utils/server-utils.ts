@@ -13,7 +13,7 @@ import {
   WMSLayerProps,
   FeatureInfoType,
   LabelType,
-  PointDataProcessing,
+  PointDataLoader,
 } from '../config/types';
 import { queryParamsToString } from '../context/layers/point_data';
 import { DEFAULT_DATE_FORMAT } from './name-utils';
@@ -240,7 +240,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     fallbackData: fallbackUrl,
     id,
     additionalQueryParams,
-    processing,
+    loader,
   } = layer;
   const loadPointLayerDataFromURL = async (fetchUrl: string) => {
     // TODO - merge formatUrl and queryParamsToString
@@ -259,7 +259,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     return (await response.json()) as PointDataDates;
   };
 
-  if (processing === PointDataProcessing.EWS) {
+  if (loader === PointDataLoader.EWS) {
     return createEWSDatesArray();
   }
 

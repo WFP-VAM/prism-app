@@ -2,10 +2,7 @@ import React, { useEffect } from 'react';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  PointDataLayerProps,
-  PointDataProcessing,
-} from '../../../../config/types';
+import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   LayerData,
@@ -66,10 +63,10 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
     );
 
-    if (layer.processing === PointDataProcessing.EWS && selectedDate) {
+    if (layer.loader === PointDataLoader.EWS && selectedDate) {
       dispatch(clearDataset());
 
-      const ewsDatasetParams = createEWSDatasetParams(feature.properties);
+      const ewsDatasetParams = createEWSDatasetParams(feature?.properties);
       dispatch(setEWSParams(ewsDatasetParams));
     }
   };
