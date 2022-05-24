@@ -610,6 +610,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                       downloadCSVFromTableData(
                         analysisResult,
                         translatedColumns,
+                        selectedDate,
                       )
                     }
                   >

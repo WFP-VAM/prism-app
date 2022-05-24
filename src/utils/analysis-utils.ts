@@ -450,32 +450,6 @@ export function quoteAndEscapeCell(value: number | string) {
   return `"${value.toString().replaceAll('"', '""')}"`;
 }
 
-export function downloadCSVFromTableData(
-  analysisResult: TabularAnalysisResult,
-  columns: Column[],
-) {
-  const { tableData, key: createdAt } = analysisResult;
-  // Built with https://stackoverflow.com/a/14966131/5279269
-  const csvLines = [
-    columns.map(col => quoteAndEscapeCell(col.label)).join(','),
-    ...tableData.map(row =>
-      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
-    ),
-  ];
-  const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
-
-  const encodedUri = encodeURI(rawCsv);
-  const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
-  link.setAttribute(
-    'download',
-    `analysis_${new Date(createdAt).toDateString()}.csv`,
-  );
-  document.body.appendChild(link); // Required for FF
-
-  link.click();
-}
-
 export type AnalysisResult =
   | BaselineLayerResult
   | ExposedPopulationResult
@@ -752,6 +726,55 @@ export class PolygonAnalysisResult {
   getStatTitle(): string {
     return `${this.getHazardLayer().title} (${this.statistic})`;
   }
+}
+
+export function downloadCSVFromTableData(
+  analysisResult: TabularAnalysisResult,
+  columns: Column[],
+  selectedDate: number | null,
+) {
+  const {
+    hazardLayerId,
+    threshold,
+    statistic,
+    tableData,
+    key: createdAt,
+  } = analysisResult;
+  const aboveThreshold =
+    threshold && threshold.above !== undefined ? threshold.above : undefined;
+  const belowThreshold =
+    threshold && threshold.below !== undefined ? threshold.below : undefined;
+  const baselineLayerId =
+    analysisResult instanceof BaselineLayerResult
+      ? analysisResult.baselineLayerId
+      : undefined;
+  const adminLevel =
+    analysisResult instanceof PolygonAnalysisResult
+      ? analysisResult.adminLevel
+      : undefined;
+  // Built with https://stackoverflow.com/a/14966131/5279269
+  const csvLines = [
+    columns.map(col => quoteAndEscapeCell(col.label)).join(','),
+    ...tableData.map(row =>
+      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
+    ),
+  ];
+  const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
+
+  const encodedUri = encodeURI(rawCsv);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute(
+    'download',
+    `analysis_${hazardLayerId}${baselineLayerId ? `_${baselineLayerId}` : ''}${
+      adminLevel ? `_${adminLevel}` : ''
+    }${aboveThreshold ? `_${aboveThreshold}` : ''}${
+      belowThreshold ? `_${belowThreshold}` : ''
+    }_${statistic}_${new Date(selectedDate || createdAt).toDateString()}.csv`,
+  );
+  document.body.appendChild(link); // Required for FF
+
+  link.click();
 }
 
 // type of results that have the tableData property
