@@ -311,7 +311,7 @@ type LayerStyleProps = {
   line: LinePaint;
 };
 
-type DatasetLevel = {
+export type DatasetLevel = {
   path: string; // Url substring that represents admin level.
   id: string; // Geojson property field for admin boundary id.
   name: string; // Geojson property field for admin boundary name.

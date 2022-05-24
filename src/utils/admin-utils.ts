@@ -1,5 +1,6 @@
 import {
   AdminLevelType,
+  DatasetLevel,
   BoundaryLayerProps,
   WMSLayerProps,
 } from '../config/types';
@@ -38,6 +39,10 @@ export function getAdminLevelCount(): number {
   );
 }
 
+// Returns the lowest admin boundary level from chartData (latest element from levels array).
+const getLowestLevelBoundaryId = (levels: DatasetLevel[]): string =>
+  levels[levels.length - 1].id;
+
 // Creates the AdminBoundaryParams object used to display administrative boundary information within chart component.
 export const getChartAdminBoundaryParams = (
   layer: WMSLayerProps,
@@ -63,7 +68,7 @@ export const getChartAdminBoundaryParams = (
     boundaryProps,
     serverLayerName,
     url,
-    id: levels[levels.length - 1].id,
+    id: getLowestLevelBoundaryId(levels),
   };
 
   return adminBoundaryParams;
