@@ -10,16 +10,9 @@ import { mapSelector } from '../../../../context/mapStateSlice/selectors';
 import { DEFAULT_DATE_FORMAT } from '../../../../utils/name-utils';
 
 function WMSLayers({
-  layer: {
-    id,
-    baseUrl,
-    serverLayerName,
-    additionalQueryParams,
-    opacity,
-    group,
-  },
+  layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
 }: LayersProps) {
-  const selectedDate = useDefaultDate(serverLayerName, group);
+  const selectedDate = useDefaultDate(serverLayerName, id);
   const map = useSelector(mapSelector);
   const boundary = boundariesOnView(map)[0];
 

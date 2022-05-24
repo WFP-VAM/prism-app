@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react';
+import { useSelector } from 'react-redux';
 import parse, { domToReact, HTMLReactParserOptions } from 'html-react-parser';
 import { Element } from 'domhandler/lib/node';
 import { marked } from 'marked';
@@ -15,15 +16,18 @@ import {
   withStyles,
 } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
-import { LayerType } from '../../../config/types';
+import { isMainLayer, LayerType } from '../../../config/types';
 import { LayerDefinitions } from '../../../config/utils';
+import { layersSelector } from '../../../context/mapStateSlice/selectors';
 
 const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState('');
   const contentRef = useRef<HTMLHeadingElement>(null);
   const layer = LayerDefinitions[layerId || 'admin_boundaries'];
-  const canDisplayContent = !layer.group || layer.group.main;
+  const selectedLayers = useSelector(layersSelector);
+  // display if layer without group or main layer in group
+  const canDisplayContent = isMainLayer(layerId as string, selectedLayers);
   const hasContent = layer.contentPath?.length;
   const domId = layer.contentPath?.split('#')?.[1];
 
