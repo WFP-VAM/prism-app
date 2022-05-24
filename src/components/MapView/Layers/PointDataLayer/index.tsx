@@ -66,7 +66,10 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     if (layer.loader === PointDataLoader.EWS && selectedDate) {
       dispatch(clearDataset());
 
-      const ewsDatasetParams = createEWSDatasetParams(feature?.properties);
+      const ewsDatasetParams = createEWSDatasetParams(
+        feature?.properties,
+        layer.data,
+      );
       dispatch(setEWSParams(ewsDatasetParams));
     }
   };

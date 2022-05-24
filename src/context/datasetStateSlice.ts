@@ -15,6 +15,7 @@ import {
 export type EWSParams = {
   externalId: string;
   triggerLevels: EWSTriggerLevels;
+  baseUrl: string;
 };
 
 type EWSTriggerLevels = {
@@ -140,9 +141,10 @@ export const loadEWSDataset = createAsyncThunk<
   EWSDataPointsRequestParams,
   CreateAsyncThunkTypes
 >('datasetState/loadEWSDataset', async (params: EWSDataPointsRequestParams) => {
-  const { date, externalId, triggerLevels } = params;
+  const { date, externalId, triggerLevels, baseUrl } = params;
 
   const dataPoints: EWSSensorData[] = await fetchEWSDataPointsByLocation(
+    baseUrl,
     date,
     externalId,
   );
@@ -240,11 +242,11 @@ export const datasetResultStateSlice = createSlice({
       state,
       { payload }: PayloadAction<EWSParams & { chartTitle: string }>,
     ): DatasetState => {
-      const { externalId, chartTitle, triggerLevels } = payload;
+      const { externalId, chartTitle, triggerLevels, baseUrl } = payload;
 
       return {
         ...state,
-        datasetParams: { externalId, triggerLevels },
+        datasetParams: { externalId, triggerLevels, baseUrl },
         title: chartTitle,
       };
     },

@@ -2,8 +2,6 @@ import GeoJSON, { FeatureCollection, Point } from 'geojson';
 import moment from 'moment';
 import { PointData, PointLayerData } from '../config/types';
 
-const BASE_URL = 'http://sms.ews1294.info/api/v1';
-
 type EWSChartConfig = {
   label: string;
   color: string;
@@ -71,8 +69,10 @@ export const createEWSDatesArray = (): number[] => {
   return datesArray;
 };
 
-const fetchEWSLocations = async (): Promise<FeatureCollection> => {
-  const url = `${BASE_URL}/location.geojson?type=River`;
+const fetchEWSLocations = async (
+  baseUrl: string,
+): Promise<FeatureCollection> => {
+  const url = `${baseUrl}/location.geojson?type=River`;
 
   const resp = await fetch(url);
   const featureCollection: FeatureCollection = await resp.json();
@@ -81,6 +81,7 @@ const fetchEWSLocations = async (): Promise<FeatureCollection> => {
 };
 
 export const fetchEWSDataPointsByLocation = async (
+  baseUrl: string,
   date: number,
   externalId?: string,
 ): Promise<EWSSensorData[]> => {
@@ -99,7 +100,7 @@ export const fetchEWSDataPointsByLocation = async (
   const endDate =
     hoursDiff < 24 ? now.utcOffset('+0700') : momentDate.clone().endOf('day');
 
-  const url = `${BASE_URL}/sensors/sensor_event?start=${startDate.format(
+  const url = `${baseUrl}/sensors/sensor_event?start=${startDate.format(
     format,
   )}&end=${endDate.format(format)}`;
 
@@ -126,10 +127,13 @@ const getLevelStatus = (
   return EWSLevelStatus.SEVEREWARNING;
 };
 
-export const fetchEWSData = async (date: number): Promise<PointLayerData> => {
+export const fetchEWSData = async (
+  baseUrl: string,
+  date: number,
+): Promise<PointLayerData> => {
   const [locations, values] = await Promise.all([
-    fetchEWSLocations(),
-    fetchEWSDataPointsByLocation(date),
+    fetchEWSLocations(baseUrl),
+    fetchEWSDataPointsByLocation(baseUrl, date),
   ]);
 
   const processedFeatures: PointData[] = locations.features.reduce(
@@ -182,7 +186,10 @@ export const fetchEWSData = async (date: number): Promise<PointLayerData> => {
   };
 };
 
-export const createEWSDatasetParams = (featureProperties: any) => {
+export const createEWSDatasetParams = (
+  featureProperties: any,
+  baseUrl: string,
+) => {
   /* eslint-disable camelcase */
   const { name, external_id, trigger_levels } = featureProperties;
   const chartTitle = `River level - ${name} (${external_id})`;
@@ -198,6 +205,7 @@ export const createEWSDatasetParams = (featureProperties: any) => {
     externalId: external_id,
     triggerLevels,
     chartTitle,
+    baseUrl,
   };
 
   /* eslint-enable camelcase */

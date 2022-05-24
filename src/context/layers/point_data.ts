@@ -63,7 +63,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   if (date) {
     switch (loader) {
       case PointDataLoader.EWS:
-        return fetchEWSData(date);
+        return fetchEWSData(dataUrl, date);
       default:
         break;
     }

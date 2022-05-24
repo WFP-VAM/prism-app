@@ -67,6 +67,7 @@ function DataViewer({ classes }: DatasetProps) {
           date: selectedDate,
           externalId: params.externalId,
           triggerLevels: params.triggerLevels,
+          baseUrl: params.baseUrl,
         }),
       );
     }
