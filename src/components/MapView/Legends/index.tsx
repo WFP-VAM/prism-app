@@ -116,7 +116,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
       return (
         <LegendItem
           classes={classes}
-          key={layer.title}
+          key={layer.id}
           id={layer.id}
           title={layer.title ? t(layer.title) : undefined}
           legend={layer.legend}
@@ -199,6 +199,7 @@ function LegendItem({
   const map = useSelector(mapSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const dispatch = useDispatch();
+
   useEffect(() => {
     // should this be here? Or somewhere more related to analysis?
     if (analysisResult instanceof ExposedPopulationResult) {
@@ -275,6 +276,7 @@ function LegendItem({
               />
             </Box>
           </Grid>
+
           {legend && (
             <Grid item>
               {legendUrl ? (
@@ -282,7 +284,7 @@ function LegendItem({
               ) : (
                 legend.map((item: LegendDefinitionItem) => (
                   <ColorIndicator
-                    key={item.value}
+                    key={item.value || item.label}
                     value={getLegendItemLabel(item)}
                     color={item.color as string}
                     opacity={opacity as number}
