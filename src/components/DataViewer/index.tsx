@@ -20,7 +20,7 @@ import {
   updateAdminId,
   AdminBoundaryParams,
   EWSParams,
-  loadEWSDataset,
+  DatasetRequestParams,
 } from '../../context/datasetStateSlice';
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
 import Chart from '../DataDrawer/Chart';
@@ -50,27 +50,22 @@ function DataViewer({ classes }: DatasetProps) {
       return;
     }
 
-    if (isAdminBoundary(params)) {
-      const { id, boundaryProps, url, serverLayerName } = params;
-      dispatch(
-        loadDataset({
-          id,
-          boundaryProps,
-          url,
-          serverLayerName,
+    const requestParams: DatasetRequestParams = isAdminBoundary(params)
+      ? {
+          id: params.id,
+          boundaryProps: params.boundaryProps,
+          url: params.url,
+          serverLayerName: params.serverLayerName,
           selectedDate,
-        }),
-      );
-    } else {
-      dispatch(
-        loadEWSDataset({
+        }
+      : {
           date: selectedDate,
           externalId: params.externalId,
           triggerLevels: params.triggerLevels,
           baseUrl: params.baseUrl,
-        }),
-      );
-    }
+        };
+
+    dispatch(loadDataset(requestParams));
   }, [params, dispatch, selectedDate]);
 
   if (!dataset || !params) {

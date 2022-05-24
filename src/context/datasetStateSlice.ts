@@ -57,9 +57,13 @@ export type AdminBoundaryParams = {
   id: string;
 };
 
-export type DatasetParams = AdminBoundaryParams & {
+export type AdminBoundaryRequestParams = AdminBoundaryParams & {
   selectedDate: number;
 };
+
+export type DatasetRequestParams =
+  | AdminBoundaryRequestParams
+  | EWSDataPointsRequestParams;
 
 type DataItem = {
   date: number;
@@ -73,7 +77,7 @@ export enum TableDataFormat {
 
 const getDatasetFromUrl = async (
   year: number,
-  params: DatasetParams,
+  params: AdminBoundaryRequestParams,
   startDate: number,
   endDate: number,
 ): Promise<DataItem[]> => {
@@ -136,11 +140,9 @@ const createTableData = (
   return data;
 };
 
-export const loadEWSDataset = createAsyncThunk<
-  TableData,
-  EWSDataPointsRequestParams,
-  CreateAsyncThunkTypes
->('datasetState/loadEWSDataset', async (params: EWSDataPointsRequestParams) => {
+export const loadEWSDataset = async (
+  params: EWSDataPointsRequestParams,
+): Promise<TableData> => {
   const { date, externalId, triggerLevels, baseUrl } = params;
 
   const dataPoints: EWSSensorData[] = await fetchEWSDataPointsByLocation(
@@ -179,13 +181,11 @@ export const loadEWSDataset = createAsyncThunk<
   };
 
   return new Promise<TableData>(resolve => resolve(tableDataWithEWSConfig));
-});
+};
 
-export const loadDataset = createAsyncThunk<
-  TableData,
-  DatasetParams,
-  CreateAsyncThunkTypes
->('datasetState/loadDataset', async (params: DatasetParams) => {
+export const loadAdminBoundaryDataset = async (
+  params: AdminBoundaryRequestParams,
+): Promise<TableData> => {
   const endDate = moment(params.selectedDate);
   const startDate = endDate.clone().subtract(1, 'year');
 
@@ -204,6 +204,18 @@ export const loadDataset = createAsyncThunk<
   const tableData = createTableData(results, TableDataFormat.DATE);
 
   return new Promise<TableData>(resolve => resolve(tableData));
+};
+
+export const loadDataset = createAsyncThunk<
+  TableData,
+  DatasetRequestParams,
+  CreateAsyncThunkTypes
+>('datasetState/loadDataset', async (params: DatasetRequestParams) => {
+  const results = (params as AdminBoundaryRequestParams).id
+    ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams)
+    : loadEWSDataset(params as EWSDataPointsRequestParams);
+
+  return results;
 });
 
 export const datasetResultStateSlice = createSlice({
@@ -262,18 +274,6 @@ export const datasetResultStateSlice = createSlice({
     );
 
     builder.addCase(loadDataset.pending, state => ({
-      ...state,
-      isLoading: true,
-    }));
-    builder.addCase(
-      loadEWSDataset.fulfilled,
-      ({ ...state }, { payload }: PayloadAction<TableData>): DatasetState => ({
-        ...state,
-        isLoading: false,
-        data: payload,
-      }),
-    );
-    builder.addCase(loadEWSDataset.pending, state => ({
       ...state,
       isLoading: true,
     }));
