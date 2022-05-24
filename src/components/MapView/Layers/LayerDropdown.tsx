@@ -8,6 +8,7 @@ import {
 import React, { ReactElement } from 'react';
 import { menuList } from '../../NavBar/utils';
 import { LayerKey, LayerType } from '../../../config/types';
+import { LayerDefinitions } from '../../../config/utils';
 import { useSafeTranslation } from '../../../i18n';
 import { getLayerGeometryIcon } from './layer-utils';
 
@@ -25,7 +26,26 @@ function LayerDropdown({
   const categories = menuList // we could memo this but it isn't impacting performance, for now
     // 1. flatten to just the layer categories, don't need the big menus
     .flatMap(menu => menu.layersCategories)
-    // 2. get rid of layers within the categories which don't match the given type
+    // 2. breakdown grouped layer back into flat list of layers if activate_all = false
+    .map(layerCategory => {
+      if (layerCategory.layers.some(f => f.group)) {
+        const layers = layerCategory.layers.map(layer => {
+          if (layer.group && !layer.group.activateAll) {
+            return layer.group.layers.map(layerKey => {
+              return LayerDefinitions[layerKey.id as LayerKey];
+            });
+          }
+          return layer;
+        });
+        return {
+          title: layerCategory.title,
+          layers: layers.flat(),
+          tables: layerCategory.tables,
+        };
+      }
+      return layerCategory;
+    })
+    // 3. get rid of layers within the categories which don't match the given type
     .map(category => ({
       ...category,
       layers: category.layers.filter(layer =>
@@ -35,7 +55,7 @@ function LayerDropdown({
           : layer.type === type,
       ),
     }))
-    // 3. filter categories which don't have any layers at the end of it all.
+    // 4. filter categories which don't have any layers at the end of it all.
     .filter(category => category.layers.length > 0);
   const defaultValue = 'placeholder';
 
