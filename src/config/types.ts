@@ -311,7 +311,7 @@ type LayerStyleProps = {
   line: LinePaint;
 };
 
-type DatasetLevel = {
+export type DatasetLevel = {
   path: string; // Url substring that represents admin level.
   id: string; // Geojson property field for admin boundary id.
   name: string; // Geojson property field for admin boundary name.
@@ -456,6 +456,11 @@ export class ImpactLayerProps extends CommonLayerProps {
   api?: StatsApi;
 }
 
+// Fetch and transform data to match PointDataLayer format.
+export enum PointDataLoader {
+  EWS = 'ews',
+}
+
 export class PointDataLayerProps extends CommonLayerProps {
   type: 'point_data';
   data: string;
@@ -486,6 +491,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   boundary?: LayerKey;
+
+  @optional
+  loader?: PointDataLoader;
 }
 
 export type RequiredKeys<T> = {
@@ -590,4 +598,15 @@ export interface RequestFeatureInfo extends FeatureInfoType {
 
 type AdminLevelDisplayType = {
   adminCode: string;
+};
+
+export type PointData = {
+  lat: number;
+  lon: number;
+  date: number; // in unix time.
+  [key: string]: any;
+};
+
+export type PointLayerData = {
+  features: PointData[];
 };

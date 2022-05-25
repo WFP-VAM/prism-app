@@ -4,22 +4,43 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 import { ChartType } from '../config/types';
+import { DEFAULT_DATE_FORMAT } from '../utils/name-utils';
 
-type BoundaryPropsDict = { [key: string]: BoundaryProps };
+import {
+  fetchEWSDataPointsByLocation,
+  EWSSensorData,
+  EWSTriggersConfig,
+} from '../utils/ews-utils';
 
-type ServerParams = {
-  url: string;
-  layerName: string;
+export type EWSParams = {
+  externalId: string;
+  triggerLevels: EWSTriggerLevels;
+  baseUrl: string;
+};
+
+type EWSTriggerLevels = {
+  watchLevel: number;
+  warning: number;
+  severeWarning: number;
+};
+
+type EWSDataPointsRequestParams = EWSParams & {
+  date: number;
 };
 
 type DatasetState = {
   data?: TableData;
   isLoading: boolean;
-  adminBoundaryParams?: AdminBoundaryParams;
-  id?: string;
+  datasetParams?: AdminBoundaryParams | EWSParams;
+  chartType: ChartType;
+  title: string;
 };
 
-const initialState: DatasetState = { isLoading: false };
+const initialState: DatasetState = {
+  isLoading: false,
+  chartType: ChartType.Line,
+  title: '',
+};
 
 type BoundaryProps = {
   code: number;
@@ -27,29 +48,36 @@ type BoundaryProps = {
   name: string;
 };
 
-export type AdminBoundaryParams = {
-  boundaryProps: BoundaryPropsDict;
-  serverParams: ServerParams;
-  title: string;
-  chartType: ChartType;
-};
+type BoundaryPropsDict = { [key: string]: BoundaryProps };
 
-export type DatasetParams = {
-  id: string;
+export type AdminBoundaryParams = {
   boundaryProps: BoundaryPropsDict;
   url: string;
   serverLayerName: string;
+  id: string;
+};
+
+export type AdminBoundaryRequestParams = AdminBoundaryParams & {
   selectedDate: number;
 };
+
+export type DatasetRequestParams =
+  | AdminBoundaryRequestParams
+  | EWSDataPointsRequestParams;
 
 type DataItem = {
   date: number;
   value: number;
 };
 
+export enum TableDataFormat {
+  DATE = 'date',
+  TIME = 'time',
+}
+
 const getDatasetFromUrl = async (
   year: number,
-  params: DatasetParams,
+  params: AdminBoundaryRequestParams,
   startDate: number,
   endDate: number,
 ): Promise<DataItem[]> => {
@@ -74,35 +102,23 @@ const getDatasetFromUrl = async (
   return filteredRows;
 };
 
-export const loadDataset = createAsyncThunk<
-  TableData,
-  DatasetParams,
-  CreateAsyncThunkTypes
->('datasetState/loadDataset', async (params: DatasetParams) => {
-  const endDate = moment(params.selectedDate);
-  const startDate = endDate.clone().subtract(1, 'year');
-
-  const years = [endDate.year(), startDate.year()];
-
-  const promises = years.map(year =>
-    getDatasetFromUrl(year, params, startDate.valueOf(), endDate.valueOf()),
-  );
-  const resultsAll = await Promise.all(promises);
-
-  const results: DataItem[] = resultsAll.reduce(
-    (acc, item) => [...acc, ...item],
-    [],
-  );
+const createTableData = (
+  results: DataItem[],
+  format: TableDataFormat,
+): TableData => {
+  const prefix = format === TableDataFormat.DATE ? 'd' : 't';
+  const momentFormat =
+    format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'HH:mm';
 
   const sortedRows = orderBy(results, item => item.date).map((item, index) => ({
     ...item,
-    day: `d${index + 1}`,
+    day: `${prefix}${index + 1}`,
   }));
 
   const datesRows = sortedRows.reduce(
     (acc, obj) => ({
       ...acc,
-      [obj.day]: moment(obj.date).format('YYYY-MM-DD'),
+      [obj.day]: moment(obj.date).format(momentFormat),
     }),
     {},
   );
@@ -121,7 +137,85 @@ export const loadDataset = createAsyncThunk<
     columns,
   };
 
-  return new Promise<TableData>(resolve => resolve(data));
+  return data;
+};
+
+export const loadEWSDataset = async (
+  params: EWSDataPointsRequestParams,
+): Promise<TableData> => {
+  const { date, externalId, triggerLevels, baseUrl } = params;
+
+  const dataPoints: EWSSensorData[] = await fetchEWSDataPointsByLocation(
+    baseUrl,
+    date,
+    externalId,
+  );
+
+  const filterDate = moment(date).endOf('day').valueOf();
+
+  const results: DataItem[] = dataPoints
+    .map(item => {
+      const [measureDate, value] = item.value;
+
+      return { date: moment(measureDate).valueOf(), value };
+    })
+    .filter(item => item.date <= filterDate); // Api returns items day after.
+
+  const tableData = createTableData(results, TableDataFormat.TIME);
+
+  const EWSConfig = Object.entries(triggerLevels).reduce(
+    (acc, [key, value]) => {
+      const obj = {
+        ...EWSTriggersConfig[key],
+        values: tableData.columns.map(() => value),
+      };
+
+      return { ...acc, [key]: obj };
+    },
+    {},
+  );
+
+  const tableDataWithEWSConfig: TableData = {
+    ...tableData,
+    EWSConfig,
+  };
+
+  return new Promise<TableData>(resolve => resolve(tableDataWithEWSConfig));
+};
+
+export const loadAdminBoundaryDataset = async (
+  params: AdminBoundaryRequestParams,
+): Promise<TableData> => {
+  const endDate = moment(params.selectedDate);
+  const startDate = endDate.clone().subtract(1, 'year');
+
+  const years = [endDate.year(), startDate.year()];
+
+  const promises = years.map(year =>
+    getDatasetFromUrl(year, params, startDate.valueOf(), endDate.valueOf()),
+  );
+  const resultsAll = await Promise.all(promises);
+
+  const results: DataItem[] = resultsAll.reduce(
+    (acc, item) => [...acc, ...item],
+    [],
+  );
+
+  const tableData = createTableData(results, TableDataFormat.DATE);
+
+  return new Promise<TableData>(resolve => resolve(tableData));
+};
+
+export const loadDataset = createAsyncThunk<
+  TableData,
+  DatasetRequestParams,
+  CreateAsyncThunkTypes
+>('datasetState/loadDataset', async (params: DatasetRequestParams) => {
+  const results = (params as AdminBoundaryRequestParams).id
+    ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams)
+    : loadEWSDataset(params as EWSDataPointsRequestParams);
+
+  return results;
 });
 
 export const datasetResultStateSlice = createSlice({
@@ -134,15 +228,40 @@ export const datasetResultStateSlice = createSlice({
       { payload }: PayloadAction<AdminBoundaryParams>,
     ): DatasetState => ({
       ...state,
-      adminBoundaryParams: payload,
+      datasetParams: payload,
     }),
+    setDatasetTitle: (
+      state,
+      { payload }: PayloadAction<string>,
+    ): DatasetState => ({ ...state, title: payload }),
+    setDatasetChartType: (
+      state,
+      { payload }: PayloadAction<ChartType>,
+    ): DatasetState => ({ ...state, chartType: payload }),
     updateAdminId: (
       state,
       { payload }: PayloadAction<string>,
-    ): DatasetState => ({
-      ...state,
-      id: payload,
-    }),
+    ): DatasetState => {
+      if (!state.datasetParams) {
+        return state;
+      }
+
+      const adminBoundaryParams = { ...state.datasetParams, id: payload };
+
+      return { ...state, datasetParams: adminBoundaryParams };
+    },
+    setEWSParams: (
+      state,
+      { payload }: PayloadAction<EWSParams & { chartTitle: string }>,
+    ): DatasetState => {
+      const { externalId, chartTitle, triggerLevels, baseUrl } = payload;
+
+      return {
+        ...state,
+        datasetParams: { externalId, triggerLevels, baseUrl },
+        title: chartTitle,
+      };
+    },
   },
   extraReducers: builder => {
     builder.addCase(
@@ -171,6 +290,9 @@ export const {
   clearDataset,
   setBoundaryParams,
   updateAdminId,
+  setDatasetTitle,
+  setDatasetChartType,
+  setEWSParams,
 } = datasetResultStateSlice.actions;
 
 export default datasetResultStateSlice.reducer;
