@@ -14,6 +14,7 @@ import {
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
+import moment from 'moment';
 import {
   AdminLevelType,
   AggregationOperations,
@@ -52,6 +53,7 @@ import {
   useSafeTranslation,
 } from '../i18n';
 import { getRoundedData } from './data-utils';
+import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -764,13 +766,16 @@ export function downloadCSVFromTableData(
   const encodedUri = encodeURI(rawCsv);
   const link = document.createElement('a');
   link.setAttribute('href', encodedUri);
+  const dateString = moment(selectedDate || createdAt).format(
+    DEFAULT_DATE_FORMAT_SNAKE_CASE,
+  );
   link.setAttribute(
     'download',
     `analysis_${hazardLayerId}${baselineLayerId ? `_${baselineLayerId}` : ''}${
       adminLevel ? `_${adminLevel}` : ''
     }${aboveThreshold ? `_${aboveThreshold}` : ''}${
       belowThreshold ? `_${belowThreshold}` : ''
-    }_${statistic}_${new Date(selectedDate || createdAt).toDateString()}.csv`,
+    }_${statistic}_${dateString}.csv`,
   );
   document.body.appendChild(link); // Required for FF
 

@@ -13,6 +13,7 @@ import {
   Box,
   Button,
 } from '@material-ui/core';
+import { snakeCase } from 'lodash';
 import {
   getCurrentDefinition as getTableDefinition,
   isLoading,
@@ -76,7 +77,7 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
         content: payload,
         isUrl: false,
       },
-      `${id}_${legendText}`,
+      `${snakeCase(id)}_${snakeCase(legendText)}`,
       'text/csv',
     );
   };
