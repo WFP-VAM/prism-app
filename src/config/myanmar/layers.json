@@ -1260,10 +1260,6 @@
     "legend": [],
     "legend_text": "Tropical storm - nodes",
     "base_url": "https://geonode.wfp.org/geoserver",
-    "group": {
-      "name": "Tropical Storms",
-      "main": false
-    },
     "feature_info_props": {
       "event_name": {
         "type": "text",
@@ -1288,10 +1284,6 @@
     "opacity": 0.7,
     "legend": [],
     "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
-    "group": {
-      "name": "Tropical Storms",
-      "main": true
-    },
     "base_url": "https://geonode.wfp.org/geoserver",
     "feature_info_props": {
       "event_name": {
@@ -1336,10 +1328,6 @@
     "legend": [],
     "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
     "base_url": "https://geonode.wfp.org/geoserver",
-    "group": {
-      "name": "Tropical Storms",
-      "main": false
-    },
     "geometry": "linestring"
   },
   "hydra_s1": {

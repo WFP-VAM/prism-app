@@ -107,8 +107,9 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
   const headlessRows = groupedRowDataWithAllLabels.map(row => {
     // TODO - Switch between MAX and SUM depending on the polygon source.
     // Then re-add "Total" to the list of columns
-    const total = fields.map(f => row[f]).reduce((a, b) => a + b);
-    return assign(row, { Total: total });
+    // const total = fields.map(f => row[f]).reduce((a, b) => a + b);
+    // return assign(row, { Total: total });
+    return row;
   });
 
   const columns = [groupBy, ...fields]; // 'Total'

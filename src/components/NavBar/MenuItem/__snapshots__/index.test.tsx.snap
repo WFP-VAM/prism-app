@@ -23,33 +23,11 @@ exports[`renders as expected 1`] = `
     paperprops="[object Object]"
     transformorigin="[object Object]"
   >
-    <div
-      class="MuiGrid-root MenuSwitch-categoryContainer-5 MuiGrid-item"
-    >
-      <mock-typography
-        classname="MenuSwitch-categoryTitle-6"
-        variant="body2"
-      >
-        Category 1
-      </mock-typography>
-      <hr />
-      <div
-        class="MuiBox-root MuiBox-root-7"
-      >
-        <mock-switch
-          checked="false"
-          color="default"
-          inputprops="[object Object]"
-          size="small"
-        />
-         
-        <mock-typography
-          variant="body1"
-        >
-          layer
-        </mock-typography>
-      </div>
-    </div>
+    <mock-menuswitch
+      layers="[object Object]"
+      tables=""
+      title="Category 1"
+    />
   </mock-popover>
 </div>
 `;
