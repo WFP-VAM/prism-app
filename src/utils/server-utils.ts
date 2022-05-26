@@ -13,9 +13,11 @@ import {
   WMSLayerProps,
   FeatureInfoType,
   LabelType,
+  PointDataLoader,
 } from '../config/types';
 import { queryParamsToString } from '../context/layers/point_data';
 import { DEFAULT_DATE_FORMAT } from './name-utils';
+import { createEWSDatesArray } from './ews-utils';
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
@@ -238,6 +240,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     fallbackData: fallbackUrl,
     id,
     additionalQueryParams,
+    loader,
   } = layer;
   const loadPointLayerDataFromURL = async (fetchUrl: string) => {
     // TODO - merge formatUrl and queryParamsToString
@@ -255,6 +258,14 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     }
     return (await response.json()) as PointDataDates;
   };
+
+  switch (loader) {
+    case PointDataLoader.EWS:
+      return createEWSDatesArray();
+    default:
+      break;
+  }
+
   // eslint-disable-next-line fp/no-mutation
   const data = await (pointDataFetchPromises[url] =
     pointDataFetchPromises[url] || loadPointLayerDataFromURL(url)).catch(
