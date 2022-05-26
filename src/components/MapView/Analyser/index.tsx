@@ -64,11 +64,11 @@ import {
 import AnalysisTable from './AnalysisTable';
 import SimpleDropdown from '../../Common/SimpleDropdown';
 import {
-  getAnalysisTableColumns,
   downloadCSVFromTableData,
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
+  useAnalysisTableColumns,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 import {
@@ -149,6 +149,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
   >(preSelectedBaselineLayer?.id);
 
   const { t } = useSafeTranslation();
+
+  const { translatedColumns } = useAnalysisTableColumns(analysisResult);
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -599,17 +601,18 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   {isTableViewOpen && (
                     <AnalysisTable
                       tableData={analysisResult.tableData}
-                      columns={
-                        'tableColumns' in analysisResult
-                          ? (analysisResult as PolygonAnalysisResult)
-                              .tableColumns
-                          : getAnalysisTableColumns(analysisResult)
-                      }
+                      columns={translatedColumns}
                     />
                   )}
                   <Button
                     className={classes.innerAnalysisButton}
-                    onClick={() => downloadCSVFromTableData(analysisResult)}
+                    onClick={() =>
+                      downloadCSVFromTableData(
+                        analysisResult,
+                        translatedColumns,
+                        selectedDate,
+                      )
+                    }
                   >
                     <Typography variant="body2">{t('Download')}</Typography>
                   </Button>

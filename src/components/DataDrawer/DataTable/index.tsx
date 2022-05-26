@@ -13,6 +13,7 @@ import {
   Box,
   Button,
 } from '@material-ui/core';
+import { snakeCase } from 'lodash';
 import {
   getCurrentDefinition as getTableDefinition,
   isLoading,
@@ -67,9 +68,8 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
     return null;
   }
 
-  const { table, title, legendText, chart } = definition;
+  const { table, title, id, legendText, chart } = definition;
   const csvData = exportDataTableToCSV(analysisData);
-
   const handleDownload = (payload: string, e: React.ChangeEvent<{}>) => {
     e.preventDefault();
     downloadToFile(
@@ -77,7 +77,7 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
         content: payload,
         isUrl: false,
       },
-      title,
+      `${snakeCase(id)}_${snakeCase(legendText)}`,
       'text/csv',
     );
   };
