@@ -133,10 +133,10 @@ function Analyser({ extent, classes }: AnalyserProps) {
   );
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
   const [belowThreshold, setBelowThreshold] = useState(
-    aboveThresholdFromUrl || '',
+    belowThresholdFromUrl || '',
   );
   const [aboveThreshold, setAboveThreshold] = useState(
-    belowThresholdFromUrl || '',
+    aboveThresholdFromUrl || '',
   );
   const [thresholdError, setThresholdError] = useState<string | null>(null);
 
