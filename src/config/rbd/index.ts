@@ -11,5 +11,5 @@ export default {
   rawLayers,
   rawTables,
   translation,
-  defaultBoundariesFile: 'wca_CHIPC_nov2021_admin1.json',
+  defaultBoundariesFile: 'wca_admbnda_adm2_ocha.json',
 };
