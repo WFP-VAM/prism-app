@@ -361,10 +361,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   const shareAnalysis = () => {
     copyTextToClipboard(window.location.href).then(() => {
-      // displaySuccessMessage('Copied to clipboard!');
       dispatch(
         addNotification({
-          message: 'Analysis copied to clipboard!',
+          message: 'Link to this analysis copied to clipboard!',
           type: 'success',
         }),
       );
