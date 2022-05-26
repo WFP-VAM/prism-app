@@ -87,17 +87,6 @@ import { copyTextToClipboard, useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
 import { addNotification } from '../../../context/notificationStateSlice';
-import {
-  ANALYSIS_ADMIN_LEVEL_PARAM_KEY,
-  ANALYSIS_BASELINE_PARAM_KEY,
-  ANALYSIS_DATE_PARAM_KEY,
-  ANALYSIS_END_DATE_PARAM_KEY,
-  ANALYSIS_HAZARD_PARAM_KEY,
-  ANALYSIS_START_DATE_PARAM_KEY,
-  ANALYSIS_STATISTIC_PARAM_KEY,
-  ANALYSIS_THRESHOLD_ABOVE_PARAM_KEY,
-  ANALYSIS_THRESHOLD_BELOW_PARAM_KEY,
-} from '../../../utils/constants';
 import { DEFAULT_DATE_FORMAT } from '../../../utils/name-utils';
 import { getDateFromList } from '../../../utils/data-utils';
 
@@ -105,7 +94,13 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const selectedLayers = useSelector(layersSelector);
-  const { urlParams, updateHistory, removeKeyFromUrl } = useUrlHistory();
+  const {
+    updateHistory,
+    removeKeyFromUrl,
+    resetAnalysisParams,
+    updateAnalysisParams,
+    getAnalysisParams,
+  } = useUrlHistory();
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -113,35 +108,28 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
   const isMapLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
-  const hazardLayerIdFromUrl = urlParams.get(ANALYSIS_HAZARD_PARAM_KEY)
-    ? (urlParams.get(ANALYSIS_HAZARD_PARAM_KEY) as LayerKey)
-    : undefined;
-  const baselineLayerIdFromUrl = urlParams.get(
-    ANALYSIS_BASELINE_PARAM_KEY,
-  ) as LayerKey;
-  const selectedDateFromUrl = urlParams.get(ANALYSIS_DATE_PARAM_KEY);
-  const selectedStatisticFromUrl = urlParams.get(ANALYSIS_STATISTIC_PARAM_KEY)
-    ? (urlParams.get(ANALYSIS_STATISTIC_PARAM_KEY) as AggregationOperations)
-    : AggregationOperations.Mean;
-  const aboveThresholdFromUrl = urlParams.get(
-    ANALYSIS_THRESHOLD_ABOVE_PARAM_KEY,
-  );
-  const belowThresholdFromUrl = urlParams.get(
-    ANALYSIS_THRESHOLD_BELOW_PARAM_KEY,
-  );
-
-  const adminLevelFromUrl =
-    urlParams.get(ANALYSIS_ADMIN_LEVEL_PARAM_KEY) || '1';
-  const selectedStartDateFromUrl = urlParams.get(ANALYSIS_START_DATE_PARAM_KEY);
-  const selectedEndDateFromUrl = urlParams.get(ANALYSIS_END_DATE_PARAM_KEY);
+  const {
+    analysisHazardLayerId: hazardLayerIdFromUrl,
+    analysisBaselineLayerId: baselineLayerIdFromUrl,
+    analysisDate: selectedDateFromUrl,
+    analysisStatistic: selectedStatisticFromUrl,
+    analysisThresholdAbove: aboveThresholdFromUrl,
+    analysisThresholdBelow: belowThresholdFromUrl,
+    analysisAdminLevel: adminLevelFromUrl,
+    analysisStartDate: selectedStartDateFromUrl,
+    analysisEndDate: selectedEndDateFromUrl,
+  } = getAnalysisParams();
 
   // form elements
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey | undefined>(
     hazardLayerIdFromUrl,
   );
-  const [statistic, setStatistic] = useState(selectedStatisticFromUrl);
-  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>(
-    baselineLayerIdFromUrl || undefined,
+  const [statistic, setStatistic] = useState(
+    (selectedStatisticFromUrl as AggregationOperations) ||
+      AggregationOperations.Mean,
+  );
+  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey | undefined>(
+    baselineLayerIdFromUrl,
   );
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
   const [belowThreshold, setBelowThreshold] = useState(
@@ -159,7 +147,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   // for polygon intersection analysis
   const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
-    Number(adminLevelFromUrl) as AdminLevelType,
+    Number(adminLevelFromUrl || '1') as AdminLevelType,
   );
   const [startDate, setStartDate] = useState<number | null>(null);
   const [endDate, setEndDate] = useState<number | null>(null);
@@ -354,79 +342,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
     });
   };
 
-  const resetAnalysisParams = () => {
-    if (baselineLayerId) {
-      removeKeyFromUrl(ANALYSIS_BASELINE_PARAM_KEY);
-    }
-    if (hazardLayerId) {
-      removeKeyFromUrl(ANALYSIS_HAZARD_PARAM_KEY);
-    }
-
-    if (selectedDate) {
-      removeKeyFromUrl(ANALYSIS_DATE_PARAM_KEY);
-    }
-    if (statistic) {
-      removeKeyFromUrl(ANALYSIS_STATISTIC_PARAM_KEY);
-    }
-    if (aboveThreshold) {
-      removeKeyFromUrl(ANALYSIS_THRESHOLD_ABOVE_PARAM_KEY);
-    }
-    if (belowThreshold) {
-      removeKeyFromUrl(ANALYSIS_THRESHOLD_BELOW_PARAM_KEY);
-    }
-
-    if (adminLevel) {
-      removeKeyFromUrl(ANALYSIS_ADMIN_LEVEL_PARAM_KEY);
-    }
-    if (startDate) {
-      removeKeyFromUrl(ANALYSIS_START_DATE_PARAM_KEY);
-    }
-    if (endDate) {
-      removeKeyFromUrl(ANALYSIS_END_DATE_PARAM_KEY);
-    }
-  };
-
-  const updateAnalysisParams = () => {
-    if (hazardLayerId) {
-      updateHistory(ANALYSIS_HAZARD_PARAM_KEY, hazardLayerId);
-    }
-
-    if (baselineLayerId) {
-      updateHistory(ANALYSIS_BASELINE_PARAM_KEY, baselineLayerId);
-      if (selectedDate) {
-        updateHistory(
-          ANALYSIS_DATE_PARAM_KEY,
-          moment(selectedDate).format(DEFAULT_DATE_FORMAT),
-        );
-      }
-    }
-    if (statistic) {
-      updateHistory(ANALYSIS_STATISTIC_PARAM_KEY, statistic);
-    }
-    if (aboveThreshold) {
-      updateHistory(ANALYSIS_THRESHOLD_ABOVE_PARAM_KEY, aboveThreshold);
-    }
-    if (belowThreshold) {
-      updateHistory(ANALYSIS_THRESHOLD_BELOW_PARAM_KEY, belowThreshold);
-    }
-
-    if (adminLevel) {
-      updateHistory(ANALYSIS_ADMIN_LEVEL_PARAM_KEY, adminLevel.toString());
-      if (startDate) {
-        updateHistory(
-          ANALYSIS_START_DATE_PARAM_KEY,
-          moment(startDate).format(DEFAULT_DATE_FORMAT),
-        );
-      }
-      if (endDate) {
-        updateHistory(
-          ANALYSIS_END_DATE_PARAM_KEY,
-          moment(endDate).format(DEFAULT_DATE_FORMAT),
-        );
-      }
-    }
-  };
-
   const clearAnalysis = () => {
     dispatch(clearAnalysisResult());
 
@@ -537,7 +452,13 @@ function Analyser({ extent, classes }: AnalyserProps) {
       };
       activateUniqueBoundary(adminLevelLayer);
       // update history
-      updateAnalysisParams();
+      updateAnalysisParams({
+        analysisHazardLayerId: hazardLayerId,
+        analysisAdminLevel: adminLevel.toString(),
+        analysisStartDate: moment(startDate).format(DEFAULT_DATE_FORMAT),
+        analysisEndDate: moment(endDate).format(DEFAULT_DATE_FORMAT),
+        analysisStatistic: statistic,
+      });
       dispatch(requestAndStorePolygonAnalysis(params));
     } else {
       if (!selectedDate) {
@@ -567,7 +488,14 @@ function Analyser({ extent, classes }: AnalyserProps) {
       };
 
       // update history
-      updateAnalysisParams();
+      updateAnalysisParams({
+        analysisHazardLayerId: hazardLayerId,
+        analysisBaselineLayerId: baselineLayerId,
+        analysisDate: moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+        analysisStatistic: statistic,
+        analysisThresholdAbove: aboveThreshold || undefined,
+        analysisThresholdBelow: belowThreshold || undefined,
+      });
 
       dispatch(requestAndStoreAnalysis(params));
     }
