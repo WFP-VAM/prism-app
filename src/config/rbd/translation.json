@@ -53,8 +53,8 @@
   "Longest consecutive number of days with heavy rainfall in the last 30 days": "Plus long nombre de jours consécutifs avec de fortes pluies au cours des 30 derniers jours",
   "10-day NDVI (MODIS)": "NDVI sur 10 jours (MODIS)",
   "10-day NDVI anomaly (MODIS)": "Anomalie NDVI à 10 jours (MODIS)",
-  "Daytime Land Surface Temperature - 10-day (MODIS)": "Température diurne de la surface terrestre - 10 jours (MODIS)",
-  "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)": "Température diurne de la surface terrestre - Anomalie sur 10 jours (MODIS)",
+  "Daytime Land Surface Temperature - 10-day (MODIS)": "Température diurne au sol - 10 jours (MODIS)",
+  "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)": "Température diurne au sol - Anomalie sur 10 jours (MODIS)",
   "10-day": "10-jours",
   "1-month": "1-mois",
   "3-month": "3-mois",
@@ -101,6 +101,6 @@
   "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad": "Plus long nombre consécutif de jours de fortes pluies (pluies > 75e centile) au cours des 30 derniers jours de la décade",
   "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA": "Indice de végétation par différence normalisée (NDVI) dérivé de MODIS TERRA/AQUA",
   "Normalized Difference Vegetation Index (NDVI) anomaly when compared to the long-term average": "Anomalie de l'indice de végétation par différence normalisée (NDVI) par rapport à la moyenne à long terme",
-  "Daytime land surface temperature": "Température diurne de la surface terrestre",
-  "Daytime land surface temperature anomaly when compared to long-term average": "Anomalie de la température diurne de la surface terrestre par rapport à la moyenne à long terme"
+  "Daytime land surface temperature": "Température diurne au sol",
+  "Daytime land surface temperature anomaly when compared to long-term average": "Anomalie de la température diurne au sol par rapport à la moyenne à long terme"
 }
