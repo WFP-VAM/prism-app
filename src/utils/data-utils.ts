@@ -35,3 +35,20 @@ export function coordFirst(data: GeoJSON): number[] {
     'you called coordFirst on data that is not a GeoJSON or GeoJSON Geometry',
   );
 }
+
+// check if a date is in a list of given available date (ignoring times)
+export function getDateFromList(
+  checkingDate: Date | null,
+  availableDates: Date[],
+): Date | null {
+  if (availableDates.length === 0) {
+    return null;
+  }
+  if (!checkingDate) {
+    return availableDates[availableDates.length - 1];
+  }
+  const foundDate = availableDates.find(
+    date => date.toDateString() === checkingDate.toDateString(),
+  );
+  return foundDate || availableDates[availableDates.length - 1];
+}
