@@ -5,9 +5,10 @@ import { extendMoment } from 'moment-range';
 import { initReactI18next, useTranslation } from 'react-i18next';
 import { registerLocale } from 'react-datepicker';
 import { useCallback } from 'react';
+import en from 'date-fns/locale/en-US';
 import fr from 'date-fns/locale/fr';
 import km from 'date-fns/locale/km';
-import en from 'date-fns/locale/en-US';
+import pt from 'date-fns/locale/pt';
 import { translation } from './config';
 import 'moment/locale/km';
 
@@ -17,6 +18,7 @@ const TRANSLATION_DEBUG = false;
 registerLocale('en', en);
 registerLocale('fr', fr);
 registerLocale('km', km);
+registerLocale('pt', pt);
 export const moment = extendMoment(Moment as any);
 moment.locale('en');
 
