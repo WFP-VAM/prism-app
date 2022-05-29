@@ -24,7 +24,6 @@ jobs:
       - run: yarn test
       - run: yarn lint
       - run: GENERATE_SOURCEMAP=false yarn build
-      - run: yarn surge
 
   build_api:
     machine:
@@ -48,10 +47,21 @@ jobs:
       - run:
           name: Run tests
           command: cd api-flask && make api-test
+  
+  deploy:
+    steps:
+      - checkout
+      - run:
+        name: deploy on surge
+        command: yarn surge
 
 workflows:
   version: 2.1
-  build:
+  build-and-deploy:
     jobs:
       - build_frontend
       - build_api
+      - deploy:
+        requires:
+        - build_frontend
+        - build_api
