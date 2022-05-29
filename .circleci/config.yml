@@ -63,5 +63,5 @@ workflows:
       - build_api
       - deploy:
         requires:
-        - build_frontend
-        - build_api
+          - build_frontend
+          - build_api
