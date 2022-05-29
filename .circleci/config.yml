@@ -24,6 +24,7 @@ jobs:
       - run: yarn test
       - run: yarn lint
       - run: GENERATE_SOURCEMAP=false yarn build
+      - run: yarn surge
 
   build_api:
     machine:
