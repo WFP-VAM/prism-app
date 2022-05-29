@@ -17,7 +17,7 @@
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
     "build": "cross-env EXTEND_ESLINT=true react-scripts build",
-    "surge": "surge --project ./build --domain prism-frontend.surge.sh",
+    "surge": "surge --project ./build --domain \"prism-frontend.surge.sh\"",
     "test": "react-scripts test",
     "predeploy:prod": "yarn build",
     "predeploy:staging": "yarn build",
