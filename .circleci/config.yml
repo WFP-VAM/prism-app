@@ -24,7 +24,7 @@ jobs:
       - run: yarn test
       - run: yarn lint
       - run: GENERATE_SOURCEMAP=false yarn build
-      - run: surge --project ./build --domain "prism-${{ github.event.pull_request.head.ref }}.surge.sh"
+      - run: surge --project ./build --domain "prism-${{ github.ref_name }}.surge.sh"
 
   build_api:
     machine:
