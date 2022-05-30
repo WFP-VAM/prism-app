@@ -73,7 +73,7 @@ workflows:
   build-and-deploy:
     jobs:
       - frontend_tests
-      - frontend_build_and_deploy
-        requires:
+      - frontend_build_and_deploy:
+          requires:
             - frontend_tests
       - build_api
