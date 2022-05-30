@@ -34,10 +34,10 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - resore_cache:
-        keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies-
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
       - run: 
           name: build frontend
           command: GENERATE_SOURCEMAP=false yarn build
