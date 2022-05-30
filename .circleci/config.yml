@@ -43,7 +43,7 @@ jobs:
           command: GENERATE_SOURCEMAP=false yarn build
       - run:
           name: deploy on surge
-          command: yarn surge --domain "prism-{{ github.head_ref  }}.surge.sh"
+          command: yarn deploy:surge --domain "prism-{{ github.head_ref  }}.surge.sh"
 
   build_api:
     machine:
