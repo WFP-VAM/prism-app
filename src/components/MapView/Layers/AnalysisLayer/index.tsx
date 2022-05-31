@@ -18,7 +18,7 @@ import {
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 
-function AnalysisLayer() {
+function AnalysisLayer({ before }: { before?: string }) {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
@@ -60,6 +60,7 @@ function AnalysisLayer() {
   return (
     <GeoJSONLayer
       id="layer-analysis"
+      before={before}
       data={analysisData.featureCollection}
       fillPaint={fillPaintData(analysisData.legend, defaultProperty)}
       // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data

@@ -17,15 +17,11 @@ import { useDispatch } from 'react-redux';
 import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
 import { showPopup } from '../../../../context/tooltipStateSlice';
 import { Column } from '../../../../utils/analysis-utils';
-import {
-  isEnglishLanguageSelected,
-  useSafeTranslation,
-} from '../../../../i18n';
+import { useSafeTranslation } from '../../../../i18n';
 
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   // only display local names if local language is selected, otherwise display english name
-  const { t, i18n } = useSafeTranslation();
-  const filteredColumns = columns.filter(({ id }) => id !== 'localName');
+  const { t } = useSafeTranslation();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortColumn, setSortColumn] = useState<Column['id']>();
@@ -56,7 +52,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              {filteredColumns.map(column => (
+              {columns.map(column => (
                 <TableCell key={column.id} className={classes.tableHead}>
                   <TableSortLabel
                     active={sortColumn === column.id}
@@ -95,11 +91,8 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                     }}
                     style={{ cursor: row.coordinates ? 'pointer' : 'none' }}
                   >
-                    {filteredColumns.map(column => {
-                      const value =
-                        column.id === 'name' && !isEnglishLanguageSelected(i18n)
-                          ? row.localName
-                          : row[column.id];
+                    {columns.map(column => {
+                      const value = row[column.id];
                       return (
                         <TableCell key={column.id}>
                           {column.format && typeof value === 'number'

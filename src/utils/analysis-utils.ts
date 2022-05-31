@@ -14,6 +14,7 @@ import {
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
+import moment from 'moment';
 import {
   AdminLevelType,
   AggregationOperations,
@@ -46,8 +47,13 @@ import type {
 import { LayerDefinitions } from '../config/utils';
 import type { TableRow } from '../context/analysisResultStateSlice';
 import { isLocalhost } from '../serviceWorker';
-import { i18nTranslator } from '../i18n';
+import {
+  i18nTranslator,
+  isEnglishLanguageSelected,
+  useSafeTranslation,
+} from '../i18n';
 import { getRoundedData } from './data-utils';
+import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -442,65 +448,8 @@ export async function loadFeaturesClientSide(
   }, [] as GeoJsonBoundary[]);
 }
 
-export function getAnalysisTableColumns(
-  analysisResult: BaselineLayerResult,
-): Column[] {
-  const { statistic } = analysisResult;
-  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
-
-  return [
-    {
-      id: 'localName',
-      label: 'Local Name',
-    },
-    {
-      id: 'name',
-      label: 'Name',
-    },
-    {
-      id: statistic,
-      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      format: value => getRoundedData(value as number),
-    },
-    {
-      id: 'baselineValue',
-      label: baselineLayerTitle,
-      format: (value: number | string) => value.toLocaleString('en-US'),
-    },
-  ];
-}
-
 export function quoteAndEscapeCell(value: number | string) {
   return `"${value.toString().replaceAll('"', '""')}"`;
-}
-
-export function downloadCSVFromTableData(
-  analysisResult: TabularAnalysisResult,
-) {
-  const { tableData, key: createdAt } = analysisResult;
-  const columns =
-    'tableColumns' in analysisResult
-      ? analysisResult.tableColumns
-      : getAnalysisTableColumns(analysisResult);
-  // Built with https://stackoverflow.com/a/14966131/5279269
-  const csvLines = [
-    columns.map(col => quoteAndEscapeCell(col.label)).join(','),
-    ...tableData.map(row =>
-      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
-    ),
-  ];
-  const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
-
-  const encodedUri = encodeURI(rawCsv);
-  const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
-  link.setAttribute(
-    'download',
-    `analysis_${new Date(createdAt).toDateString()}.csv`,
-  );
-  document.body.appendChild(link); // Required for FF
-
-  link.click();
 }
 
 export type AnalysisResult =
@@ -673,6 +622,57 @@ export class BaselineLayerResult {
   }
 }
 
+export function getAnalysisTableColumns(
+  analysisResult?: AnalysisResult,
+  withLocalName = false,
+): Column[] {
+  if (!analysisResult || analysisResult instanceof ExposedPopulationResult) {
+    return [];
+  }
+  if ('tableColumns' in analysisResult) {
+    return (analysisResult as PolygonAnalysisResult).tableColumns;
+  }
+  const { statistic } = analysisResult;
+  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
+
+  return [
+    {
+      id: withLocalName ? 'localName' : 'name',
+      label: 'Name',
+    },
+    {
+      id: statistic,
+      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
+      format: value => getRoundedData(value as number),
+    },
+    {
+      id: 'baselineValue',
+      label: baselineLayerTitle,
+      format: (value: number | string) => value.toLocaleString('en-US'),
+    },
+  ];
+}
+
+export function useAnalysisTableColumns(
+  analysisResult?: AnalysisResult,
+): {
+  translatedColumns: Column[];
+  analysisTableColumns: Column[];
+} {
+  const { t, i18n } = useSafeTranslation();
+  const analysisTableColumns = getAnalysisTableColumns(
+    analysisResult,
+    !isEnglishLanguageSelected(i18n),
+  );
+  return {
+    analysisTableColumns,
+    translatedColumns: analysisTableColumns.map(col => ({
+      ...col,
+      label: t(col.label),
+    })),
+  };
+}
+
 export class PolygonAnalysisResult {
   key: number = Date.now();
   featureCollection: FeatureCollection;
@@ -728,6 +728,58 @@ export class PolygonAnalysisResult {
   getStatTitle(): string {
     return `${this.getHazardLayer().title} (${this.statistic})`;
   }
+}
+
+export function downloadCSVFromTableData(
+  analysisResult: TabularAnalysisResult,
+  columns: Column[],
+  selectedDate: number | null,
+) {
+  const {
+    hazardLayerId,
+    threshold,
+    statistic,
+    tableData,
+    key: createdAt,
+  } = analysisResult;
+  const aboveThreshold =
+    threshold && threshold.above !== undefined ? threshold.above : undefined;
+  const belowThreshold =
+    threshold && threshold.below !== undefined ? threshold.below : undefined;
+  const baselineLayerId =
+    analysisResult instanceof BaselineLayerResult
+      ? analysisResult.baselineLayerId
+      : undefined;
+  const adminLevel =
+    analysisResult instanceof PolygonAnalysisResult
+      ? analysisResult.adminLevel
+      : undefined;
+  // Built with https://stackoverflow.com/a/14966131/5279269
+  const csvLines = [
+    columns.map(col => quoteAndEscapeCell(col.label)).join(','),
+    ...tableData.map(row =>
+      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
+    ),
+  ];
+  const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
+
+  const encodedUri = encodeURI(rawCsv);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  const dateString = moment(selectedDate || createdAt).format(
+    DEFAULT_DATE_FORMAT_SNAKE_CASE,
+  );
+  link.setAttribute(
+    'download',
+    `analysis_${hazardLayerId}${baselineLayerId ? `_${baselineLayerId}` : ''}${
+      adminLevel ? `_${adminLevel}` : ''
+    }${aboveThreshold ? `_${aboveThreshold}` : ''}${
+      belowThreshold ? `_${belowThreshold}` : ''
+    }_${statistic}_${dateString}.csv`,
+  );
+  document.body.appendChild(link); // Required for FF
+
+  link.click();
 }
 
 // type of results that have the tableData property

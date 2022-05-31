@@ -1,5 +1,9 @@
 import { createAsyncThunk, AsyncThunk } from '@reduxjs/toolkit';
-import { DiscriminateUnion, LayerType } from '../../config/types';
+import {
+  DiscriminateUnion,
+  LayerType,
+  PointLayerData,
+} from '../../config/types';
 import { Extent } from '../../components/MapView/Layers/raster-utils';
 
 import {
@@ -7,7 +11,7 @@ import {
   AdminLevelDataLayerData,
 } from './admin_level_data';
 import { fetchWCSLayerData, WMSLayerData } from './wms';
-import { fetchPointLayerData, PointLayerData } from './point_data';
+import { fetchPointLayerData } from './point_data';
 import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
 import { fetchImpactLayerData, ImpactLayerData } from './impact';
 

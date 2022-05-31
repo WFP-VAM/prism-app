@@ -14,7 +14,7 @@
       "https://geonode.wfp.org/geoserver/prism/wms/",
       "https://odc.ovio.org/wms"
     ]
-  },   
+  },
   "map": {
     "latitude": 1.8,
     "longitude": 29.9,

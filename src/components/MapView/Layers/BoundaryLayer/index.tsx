@@ -7,7 +7,8 @@ import { BoundaryLayerProps, WMSLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import {
   setBoundaryParams,
-  updateAdminId,
+  setDatasetTitle,
+  setDatasetChartType,
 } from '../../../../context/datasetStateSlice';
 
 import {
@@ -18,17 +19,19 @@ import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerSta
 import { isPrimaryBoundaryLayer } from '../../../../config/utils';
 import { getFullLocationName } from '../../../../utils/name-utils';
 
-import {
-  getChartLowestBoundaryLevelId,
-  getChartAdminBoundaryParams,
-} from '../../../../utils/admin-utils';
+import { getChartAdminBoundaryParams } from '../../../../utils/admin-utils';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
   targetMap.getCanvas().style.cursor = cursor;
 }
 
-function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
+interface ComponentProps {
+  layer: BoundaryLayerProps;
+  before?: string;
+}
+
+function BoundaryLayer({ layer, before }: ComponentProps) {
   const dispatch = useDispatch();
   const selectedLayers = useSelector(layersSelector);
 
@@ -77,15 +80,15 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       return;
     }
 
+    dispatch(setDatasetTitle(selectedLayerWMS.title));
+    dispatch(setDatasetChartType(selectedLayerWMS.chartData!.type));
+
     const adminBoundaryParams = getChartAdminBoundaryParams(
       selectedLayerWMS,
       properties,
     );
 
-    const lowestLevelId = getChartLowestBoundaryLevelId(selectedLayerWMS);
-
     dispatch(setBoundaryParams(adminBoundaryParams));
-    dispatch(updateAdminId(lowestLevelId));
   };
 
   // Only use mouse effects and click effects on the main layer.
@@ -110,6 +113,7 @@ function BoundaryLayer({ layer }: { layer: BoundaryLayerProps }) {
       fillOnMouseEnter={fillOnMouseEnter}
       fillOnMouseLeave={fillOnMouseLeave}
       fillOnClick={fillOnClick}
+      before={before}
     />
   );
 }
