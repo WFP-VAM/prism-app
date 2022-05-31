@@ -16,9 +16,7 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
-      - run:
-          name: "What branch am I on now?"
-          command: echo $CIRCLE_BRANCH
+
       - run: yarn install
       
       - save_cache:
@@ -45,7 +43,7 @@ jobs:
           command: GENERATE_SOURCEMAP=false yarn build
       - run:
           name: deploy on surge
-          command: yarn deploy:surge --domain "prism-$CIRCLE_BRANCH.surge.sh"
+          command: yarn deploy:surge --domain "prism-${PR_NUMBER}-${CIRCLE_PR_USERNAME}.surge.sh"
 
   build_api:
     machine:
