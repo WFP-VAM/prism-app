@@ -1683,9 +1683,9 @@
     "date_url": "https://prism-api.ovio.org/kobo/forms",
     "data_field": "NumPeoAff",
     "additional_query_params": {
-      "form_name": "test-form-admin-codes",
+      "form_name": "ទម្រង់ ឧបទ្ទវហេតុ",
       "datetime_field": "Date_report",
-      "geom_field": "location",
+      "geom_field": "Commune",
       "measure_field": "NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
     },
@@ -1700,23 +1700,33 @@
     "legend": [
       {
         "value": 0,
-        "label": 0,
+        "label": "0",
         "color": "#909090"
       },
       {
         "value": 1,
-        "label": "<100",
-        "color": "#ffeda0"
+        "label": "< 10",
+        "color": "#ffffb2"
       },
       {
-        "value": 100,
-        "label": "100 - 500",
-        "color": "#feb24c"
+        "value": 11,
+        "label": "11 - 25",
+        "color": "#fecc5c"
       },
       {
-        "value": 500,
-        "label": "500 or more",
+        "value": 26,
+        "label": "26 - 50",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 51,
+        "label": "51 - 100",
         "color": "#f03b20"
+      },
+      {
+        "value": 101,
+        "label": "> 100",
+        "color": "#bd0026"
       }
     ]
   }
