@@ -43,7 +43,7 @@ jobs:
           command: GENERATE_SOURCEMAP=false yarn build
       - run:
           name: deploy on surge
-          command: yarn deploy:surge --domain "prism-${PR_NUMBER}-${CIRCLE_PR_USERNAME}.surge.sh"
+          command: yarn deploy:surge --domain "prism-$CIRCLE_SHA1.surge.sh"
 
   build_api:
     machine:
