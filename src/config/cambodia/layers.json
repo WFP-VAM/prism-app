@@ -1668,9 +1668,9 @@
     "opacity": 1,
     "legend_text": "This layer shows river water level in millimeters (mm). It is reported from People in Need (PIN) automated river water gauge.",
     "legend": [
-      {"label": "0 - Normal", "value": 0, "color": "#31a354"},
-      {"label": "1 - Warning", "value": 1, "color": "#fdae6b"},
-      {"label": "2 - Severe Warning", "value": 2, "color": "#e34a33"}
+      { "label": "0 - Normal", "value": 0, "color": "#31a354" },
+      { "label": "1 - Warning", "value": 1, "color": "#fdae6b" },
+      { "label": "2 - Severe Warning", "value": 2, "color": "#e34a33" }
     ]
   },
   "kh_incident_report": {
@@ -1683,9 +1683,9 @@
     "date_url": "https://prism-api.ovio.org/kobo/forms",
     "data_field": "NumPeoAff",
     "additional_query_params": {
-      "form_name": "ទម្រង់ ឧបទ្ទវហេតុ",
+      "form_name": "2. ទម្រង់ ឧបទ្ទវហេតុ",
       "datetime_field": "Date_report",
-      "geom_field": "Commune",
+      "geom_field": "location",
       "measure_field": "NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
     },
