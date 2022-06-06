@@ -28,6 +28,7 @@ import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { isNil, range } from 'lodash';
+import moment from 'moment';
 import {
   LayerDefinitions,
   getDisplayBoundaryLayers,
@@ -64,11 +65,11 @@ import {
 import AnalysisTable from './AnalysisTable';
 import SimpleDropdown from '../../Common/SimpleDropdown';
 import {
-  getAnalysisTableColumns,
   downloadCSVFromTableData,
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
+  useAnalysisTableColumns,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 import {
@@ -82,15 +83,24 @@ import {
   layerDataSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { getPossibleDatesForLayer } from '../../../utils/server-utils';
-import { useUrlHistory } from '../../../utils/url-utils';
+import { copyTextToClipboard, useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
+import { addNotification } from '../../../context/notificationStateSlice';
+import { DEFAULT_DATE_FORMAT } from '../../../utils/name-utils';
+import { getDateFromList } from '../../../utils/data-utils';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const selectedLayers = useSelector(layersSelector);
-  const { updateHistory, removeKeyFromUrl } = useUrlHistory();
+  const {
+    updateHistory,
+    removeKeyFromUrl,
+    resetAnalysisParams,
+    updateAnalysisParams,
+    getAnalysisParams,
+  } = useUrlHistory();
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -98,21 +108,47 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
   const isMapLayerActive = useSelector(isAnalysisLayerActiveSelector);
 
-  const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState(false);
-  const [isTableViewOpen, setIsTableViewOpen] = useState(true);
+  const {
+    analysisHazardLayerId: hazardLayerIdFromUrl,
+    analysisBaselineLayerId: baselineLayerIdFromUrl,
+    analysisDate: selectedDateFromUrl,
+    analysisStatistic: selectedStatisticFromUrl,
+    analysisThresholdAbove: aboveThresholdFromUrl,
+    analysisThresholdBelow: belowThresholdFromUrl,
+    analysisAdminLevel: adminLevelFromUrl,
+    analysisStartDate: selectedStartDateFromUrl,
+    analysisEndDate: selectedEndDateFromUrl,
+  } = getAnalysisParams();
 
   // form elements
-  const [hazardLayerId, setHazardLayerId] = useState<LayerKey>();
-  const [statistic, setStatistic] = useState(AggregationOperations.Mean);
-  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey>();
+  const [hazardLayerId, setHazardLayerId] = useState<LayerKey | undefined>(
+    hazardLayerIdFromUrl,
+  );
+  const [statistic, setStatistic] = useState(
+    (selectedStatisticFromUrl as AggregationOperations) ||
+      AggregationOperations.Mean,
+  );
+  const [baselineLayerId, setBaselineLayerId] = useState<LayerKey | undefined>(
+    baselineLayerIdFromUrl,
+  );
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
-
-  const [belowThreshold, setBelowThreshold] = useState('');
-  const [aboveThreshold, setAboveThreshold] = useState('');
+  const [belowThreshold, setBelowThreshold] = useState(
+    belowThresholdFromUrl || '',
+  );
+  const [aboveThreshold, setAboveThreshold] = useState(
+    aboveThresholdFromUrl || '',
+  );
   const [thresholdError, setThresholdError] = useState<string | null>(null);
 
+  const [isAnalyserFormOpen, setIsAnalyserFormOpen] = useState<boolean>(
+    hazardLayerIdFromUrl !== undefined,
+  );
+  const [isTableViewOpen, setIsTableViewOpen] = useState(true);
+
   // for polygon intersection analysis
-  const [adminLevel, setAdminLevel] = useState<AdminLevelType>(1);
+  const [adminLevel, setAdminLevel] = useState<AdminLevelType>(
+    Number(adminLevelFromUrl || '1') as AdminLevelType,
+  );
   const [startDate, setStartDate] = useState<number | null>(null);
   const [endDate, setEndDate] = useState<number | null>(null);
 
@@ -135,10 +171,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
         d => new Date(d),
       ) || []
     : undefined;
-  const lastAvailableHazardDate =
-    Array.isArray(availableHazardDates) && availableHazardDates.length > 0
-      ? availableHazardDates[availableHazardDates.length - 1].getTime()
-      : null;
 
   const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
   const preSelectedBaselineLayer = selectedLayers.find(
@@ -150,18 +182,51 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   const { t } = useSafeTranslation();
 
+  // check if there is any available date from the url, otherwise use last available date for the selected hazard layer
+  const lastAvailableHazardDate = availableHazardDates
+    ? getDateFromList(
+        selectedDateFromUrl ? new Date(selectedDateFromUrl) : null,
+        availableHazardDates,
+      )?.getTime() || null
+    : null;
+  const lastAvailableHazardStartDate = availableHazardDates
+    ? getDateFromList(
+        selectedStartDateFromUrl ? new Date(selectedStartDateFromUrl) : null,
+        availableHazardDates,
+      )?.getTime() || null
+    : null;
+  const lastAvailableHazardEndDate = availableHazardDates
+    ? getDateFromList(
+        selectedEndDateFromUrl ? new Date(selectedEndDateFromUrl) : null,
+        availableHazardDates,
+      )?.getTime() || null
+    : null;
+  const { translatedColumns } = useAnalysisTableColumns(analysisResult);
+
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
     if (isNil(lastAvailableHazardDate)) {
       setSelectedDate(null);
-      setStartDate(null);
-      setEndDate(null);
     } else {
       setSelectedDate(lastAvailableHazardDate);
-      setStartDate(lastAvailableHazardDate);
-      setEndDate(lastAvailableHazardDate);
     }
-  }, [availableDates, hazardLayerId, lastAvailableHazardDate]);
+    if (isNil(lastAvailableHazardStartDate)) {
+      setStartDate(null);
+    } else {
+      setStartDate(lastAvailableHazardStartDate);
+    }
+    if (isNil(lastAvailableHazardEndDate)) {
+      setEndDate(null);
+    } else {
+      setEndDate(lastAvailableHazardEndDate);
+    }
+  }, [
+    availableDates,
+    hazardLayerId,
+    lastAvailableHazardDate,
+    lastAvailableHazardStartDate,
+    lastAvailableHazardEndDate,
+  ]);
 
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
@@ -280,6 +345,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const clearAnalysis = () => {
     dispatch(clearAnalysisResult());
 
+    resetAnalysisParams();
+
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[
         previousBaselineId
@@ -290,6 +357,17 @@ function Analyser({ extent, classes }: AnalyserProps) {
       // to avoid miss behaviour on boundary layers
       dispatch(setIsMapLayerActive(true));
     }
+  };
+
+  const shareAnalysis = () => {
+    copyTextToClipboard(window.location.href).then(() => {
+      dispatch(
+        addNotification({
+          message: 'Link to this analysis copied to clipboard!',
+          type: 'success',
+        }),
+      );
+    });
   };
 
   const onMapSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -372,6 +450,14 @@ function Analyser({ extent, classes }: AnalyserProps) {
         extent,
       };
       activateUniqueBoundary(adminLevelLayer);
+      // update history
+      updateAnalysisParams({
+        analysisHazardLayerId: hazardLayerId,
+        analysisAdminLevel: adminLevel.toString(),
+        analysisStartDate: moment(startDate).format(DEFAULT_DATE_FORMAT),
+        analysisEndDate: moment(endDate).format(DEFAULT_DATE_FORMAT),
+        analysisStatistic: statistic,
+      });
       dispatch(requestAndStorePolygonAnalysis(params));
     } else {
       if (!selectedDate) {
@@ -399,6 +485,16 @@ function Analyser({ extent, classes }: AnalyserProps) {
           below: parseFloat(belowThreshold) || undefined,
         },
       };
+
+      // update history
+      updateAnalysisParams({
+        analysisHazardLayerId: hazardLayerId,
+        analysisBaselineLayerId: baselineLayerId,
+        analysisDate: moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+        analysisStatistic: statistic,
+        analysisThresholdAbove: aboveThreshold || undefined,
+        analysisThresholdBelow: belowThreshold || undefined,
+      });
 
       dispatch(requestAndStoreAnalysis(params));
     }
@@ -516,7 +612,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                     </Typography>
                     <LayerDropdown
                       type="admin_level_data"
-                      value={baselineLayerId}
+                      value={baselineLayerId || undefined}
                       setValue={setBaselineLayerId}
                       className={classes.selector}
                       placeholder="Choose baseline layer"
@@ -599,17 +695,18 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   {isTableViewOpen && (
                     <AnalysisTable
                       tableData={analysisResult.tableData}
-                      columns={
-                        'tableColumns' in analysisResult
-                          ? (analysisResult as PolygonAnalysisResult)
-                              .tableColumns
-                          : getAnalysisTableColumns(analysisResult)
-                      }
+                      columns={translatedColumns}
                     />
                   )}
                   <Button
                     className={classes.innerAnalysisButton}
-                    onClick={() => downloadCSVFromTableData(analysisResult)}
+                    onClick={() =>
+                      downloadCSVFromTableData(
+                        analysisResult,
+                        translatedColumns,
+                        selectedDate,
+                      )
+                    }
                   >
                     <Typography variant="body2">{t('Download')}</Typography>
                   </Button>
@@ -619,6 +716,14 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   >
                     <Typography variant="body2">
                       {t('Clear Analysis')}
+                    </Typography>
+                  </Button>
+                  <Button
+                    className={classes.innerAnalysisButton}
+                    onClick={shareAnalysis}
+                  >
+                    <Typography variant="body2">
+                      {t('Share Analysis')}
                     </Typography>
                   </Button>
                 </>

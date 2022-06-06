@@ -6,14 +6,8 @@ import MenuItem from '.';
 import { store } from '../../../context/store';
 import { LayerKey, MenuItemType } from '../../../config/types';
 
-jest.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    replace: jest.fn(),
-    location: {
-      search: '',
-    },
-  }),
-}));
+jest.mock('../MenuSwitch', () => 'mock-MenuSwitch');
+
 const props: MenuItemType = {
   title: 'title',
   icon: 'icon.png',

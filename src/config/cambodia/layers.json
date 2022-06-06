@@ -1644,6 +1644,35 @@
     "legend_text": "",
     "base_url": "https://geonode.wfp.org/geoserver"
   },
+  "ews_remote": {
+    "title": "EWS 1294 river level data",
+    "loader": "ews",
+    "type": "point_data",
+    "data": "http://sms.ews1294.info/api/v1",
+    "date_url": "",
+    "feature_info_props": {
+      "name": {
+        "type": "string",
+        "label": "Location name"
+      },
+      "mean": {
+        "type": "number",
+        "label": "Mean water level"
+      },
+      "max": {
+        "type": "number",
+        "label": "Max water level"
+      }
+    },
+    "data_field": "status",
+    "opacity": 1,
+    "legend_text": "This layer shows river water level in millimeters (mm). It is reported from People in Need (PIN) automated river water gauge.",
+    "legend": [
+      {"label": "0 - Normal", "value": 0, "color": "#31a354"},
+      {"label": "1 - Warning", "value": 1, "color": "#fdae6b"},
+      {"label": "2 - Severe Warning", "value": 2, "color": "#e34a33"}
+    ]
+  },
   "kh_incident_report": {
     "title": "Disaster impact report",
     "type": "point_data",
