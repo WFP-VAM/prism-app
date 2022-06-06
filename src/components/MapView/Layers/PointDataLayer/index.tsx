@@ -4,6 +4,7 @@ import { get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
+import { layerAccessTokenSelector } from '../../../../context/serverStateSlice';
 import {
   LayerData,
   loadLayerData,
@@ -24,6 +25,7 @@ import { createEWSDatasetParams } from '../../../../utils/ews-utils';
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const selectedDate = useDefaultDate(layer.id);
+  const accessToken = useSelector(layerAccessTokenSelector);
 
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<PointDataLayerProps>
@@ -35,9 +37,9 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const { t } = useSafeTranslation();
   useEffect(() => {
     if (!features) {
-      dispatch(loadLayerData({ layer, date: selectedDate }));
+      dispatch(loadLayerData({ layer, date: selectedDate, accessToken }));
     }
-  }, [features, dispatch, layer, selectedDate]);
+  }, [features, dispatch, layer, selectedDate, accessToken]);
 
   if (!features) {
     return null;

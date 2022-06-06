@@ -14,6 +14,7 @@ import NotFound from '../404Page';
 import Login from '../Login';
 import muiTheme from '../../muiTheme';
 import Notifier from '../Notifier';
+import AuthModal from '../AuthModal';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {
@@ -33,6 +34,7 @@ const Wrapper = () => {
         <Route exact path="/">
           <MapView />
           <DataDrawer />
+          <AuthModal />
         </Route>
         <Route default component={NotFound} />
       </Switch>

@@ -7,6 +7,7 @@ type ServerState = {
   availableDates: AvailableDates;
   loading: boolean;
   error?: string;
+  accessToken?: string;
 };
 
 const initialState: ServerState = {
@@ -16,9 +17,11 @@ const initialState: ServerState = {
 
 export const loadAvailableDates = createAsyncThunk<
   AvailableDates,
-  void,
+  string | undefined,
   CreateAsyncThunkTypes
->('serverState/loadAvailableDates', () => getLayersAvailableDates());
+>('serverState/loadAvailableDates', (accessToken?: string) =>
+  getLayersAvailableDates(accessToken),
+);
 
 export const serverStateSlice = createSlice({
   name: 'serverState',
@@ -30,6 +33,10 @@ export const serverStateSlice = createSlice({
     ) => ({
       ...state,
       availableDates: payload,
+    }),
+    setLayerAccessToken: (state, { payload }: PayloadAction<string>) => ({
+      ...state,
+      accessToken: payload,
     }),
   },
   extraReducers: builder => {
@@ -68,7 +75,14 @@ export const isLoading = (state: RootState): ServerState['loading'] =>
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverState.error;
 
+export const layerAccessTokenSelector = (
+  state: RootState,
+): string | undefined => state.serverState.accessToken;
+
 // Setters
-export const { updateLayersCapabilities } = serverStateSlice.actions;
+export const {
+  updateLayersCapabilities,
+  setLayerAccessToken,
+} = serverStateSlice.actions;
 
 export default serverStateSlice.reducer;

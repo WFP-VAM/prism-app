@@ -10,7 +10,7 @@ from flask import request
 
 import requests
 
-from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
+from werkzeug.exceptions import BadRequest, InternalServerError, NotFound, Unauthorized
 
 
 logger = logging.getLogger(__name__)
@@ -21,8 +21,23 @@ def get_first(items_list: list):
     return items_list[0] if items_list else None
 
 
+def validate_access_token():
+    """Validate that access token received within the request matches the one in the server."""
+    access_token = request.args.get('accessToken')
+
+    server_access_token = getenv('KOBO_ACCESS_TOKEN')
+
+    if server_access_token is None:
+        raise Unauthorized()
+
+    if access_token != server_access_token:
+        raise Unauthorized('Invalid access token')
+
+
 def get_kobo_params():
     """Collect and validate request parameters and environment variables."""
+    validate_access_token()
+
     kobo_username = getenv('KOBO_USERNAME')
     if kobo_username is None:
         raise InternalServerError('Missing backend parameter: KOBO_USERNAME')

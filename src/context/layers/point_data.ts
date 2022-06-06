@@ -42,6 +42,7 @@ export const queryParamsToString = (queryParams?: {
 
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async (
   {
+    accessToken,
     date,
     layer: {
       data: dataUrl,
@@ -52,6 +53,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       dataField,
       featureInfoProps,
       loader,
+      tokenRequired,
     },
   },
   { getState },
@@ -80,11 +82,15 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     dataUrl.includes('?') ? '&' : '?'
   }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
 
+  const fetchUrl = tokenRequired
+    ? `${requestUrl}&accessToken=${accessToken}`
+    : requestUrl;
+
   let data;
   try {
     // eslint-disable-next-line fp/no-mutation
     data = (await (
-      await fetch(requestUrl, {
+      await fetch(fetchUrl, {
         mode: 'cors',
       })
     ).json()) as PointData[];

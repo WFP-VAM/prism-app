@@ -12,5 +12,6 @@ services:
       # Kobo credentials
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
       - KOBO_PW
+      - KOBO_ACCESS_TOKEN=${KOBO_ACCESS_TOKEN:-12345}
       # Alerts database
       - DATABASE_URL
