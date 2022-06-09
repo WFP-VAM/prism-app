@@ -29,12 +29,40 @@ import { removeLayer } from '../../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../../i18n';
 import { clearDataset } from '../../../../context/datasetStateSlice';
 
+const appendLayerToUrl = (
+  urlLayers: string | null,
+  selectedLayers: LayerType[],
+  layer: LayerType,
+): string => {
+  const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
+
+  const filteredSelectedLayers = selectedLayers
+    .filter(l => selectedLayersUrl.includes(l.id) && l.type !== layer.type)
+    .map(l => l.id);
+
+  const updatedUrl =
+    filteredSelectedLayers.length !== 0
+      ? [...filteredSelectedLayers, layer.id]
+      : [layer.id];
+
+  return updatedUrl.join(',');
+};
+
+const removeLayerFromUrl = (
+  urlLayers: string | null,
+  layerId: string,
+): string => {
+  const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
+
+  return selectedLayersUrl.filter(l => l !== layerId).join(',');
+};
+
 function SwitchItem({ classes, layer }: SwitchItemProps) {
   const { t } = useSafeTranslation();
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
   const dispatch = useDispatch();
-  const { updateHistory, removeKeyFromUrl } = useUrlHistory();
+  const { updateHistory, removeKeyFromUrl, urlParams } = useUrlHistory();
 
   const { id: layerId, title: layerTitle, group } = layer;
 
@@ -80,7 +108,13 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
       : layer;
 
     if (checked) {
-      updateHistory(urlLayerKey, selectedLayer.id);
+      const updatedUrl = appendLayerToUrl(
+        urlParams.get(urlLayerKey),
+        selectedLayers,
+        selectedLayer,
+      );
+
+      updateHistory(urlLayerKey, updatedUrl);
 
       const defaultBoundary = getBoundaryLayerSingleton();
       if (
@@ -90,7 +124,17 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
         safeDispatchAddLayer(map, defaultBoundary, dispatch);
       }
     } else {
-      removeKeyFromUrl(urlLayerKey);
+      const updatedUrl = removeLayerFromUrl(
+        urlParams.get(urlLayerKey),
+        selectedLayer.id,
+      );
+
+      if (updatedUrl === '') {
+        removeKeyFromUrl(urlLayerKey);
+      } else {
+        updateHistory(urlLayerKey, updatedUrl);
+      }
+
       dispatch(removeLayer(selectedLayer));
 
       // For admin boundary layers with boundary property
