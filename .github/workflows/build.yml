@@ -3,15 +3,77 @@ on: [push]
 
 jobs:
   build:
-    name: Build
+    name: frontend_tests
     runs-on: ubuntu-latest
+    container: circleci/node:16.13.1-browsers
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.13.1
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            **/node_modules
+            **/.eslintcache
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+      
+      - name: yarn lint
+        run: yarn lint
+      
+      - name: yarn test
+        run: yarn test
+      
+
+  frontend_build_and_deploy:
+    needs: frontend_tests
+    name: frontend_build_and_deploy
+    runs-on: ubuntu-latest
+    container: circleci/node:16.13.1-browsers
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.13.1
-      - name: Install project dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true' # Over here!
-        run: yarn
+      - name: Install dependencies if needed.
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile
+
+      - name: build frontend
+        run: GENERATE_SOURCEMAP=false yarn build
+      - name: deploy on surge
+        command: yarn deploy:surge --domain "prism-${{ github.event.pull_request.head.sha }}"
+
+  build_api:
+    name: build api
+    runs-on: ubuntu-latest
+    container: ubuntu-2004:202201-02
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install Docker Compose
+        run: |
+          curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+          chmod +x ~/docker-compose
+          sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - name: Build containers
+        run: cd api-flask && docker-compose build api
+      - name: Run linters
+        run: cd api-flask && make api-lint
+      - name: Run tests
+        run: cd api-flask && make api-test
+
+
