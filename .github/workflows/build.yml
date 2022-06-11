@@ -2,7 +2,7 @@ name: Build
 on: [push]
 
 jobs:
-  build:
+  frontend_tests:
     name: frontend_tests
     runs-on: ubuntu-latest
     container: circleci/node:16.13.1-browsers
