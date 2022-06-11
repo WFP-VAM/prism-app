@@ -47,7 +47,7 @@ jobs:
     container: circleci/node:16.13.1-browsers
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
@@ -63,7 +63,7 @@ jobs:
     container: ubuntu-2004:202201-02
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Install Docker Compose
         run: |
           curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
