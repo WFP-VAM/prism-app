@@ -1,4 +1,5 @@
 """Collect and parse kobo forms."""
+import json
 import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
@@ -24,11 +25,20 @@ def get_first(items_list: list):
 def validate_access_token():
     """Validate that access token received within the request matches the one in the server."""
     access_token = request.args.get('accessToken')
+    adm_name = request.args.get('admName')
 
-    server_access_token = getenv('KOBO_ACCESS_TOKEN')
+    # Check configuration for kobo forms tokens.
+    env_tokens_file = 'KOBO_TOKENS_FILE'
+    tokens_file = getenv(env_tokens_file)
+    if tokens_file is None:
+        raise InternalServerError(f'missing environment variable {env_tokens_file}')
 
+    with open(tokens_file, 'r') as f:
+        tokens = json.load(f)
+
+    server_access_token = tokens.get(adm_name)
     if server_access_token is None:
-        raise Unauthorized()
+        raise Unauthorized('access token not found for provided admName')
 
     if access_token != server_access_token:
         raise Unauthorized('Invalid access token')

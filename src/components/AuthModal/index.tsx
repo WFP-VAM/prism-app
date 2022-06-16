@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Feature } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createStyles,
@@ -10,19 +11,41 @@ import {
   Typography,
   TextField,
   Button,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
+  Box,
 } from '@material-ui/core';
-import { LayerType } from '../../config/types';
+import { LayerType, BoundaryLayerProps } from '../../config/types';
+import { getBoundaryLayerSingleton } from '../../config/utils';
 import { useSafeTranslation } from '../../i18n';
-import { layersSelector } from '../../context/mapStateSlice/selectors';
+import {
+  layersSelector,
+  layerDataSelector,
+} from '../../context/mapStateSlice/selectors';
 
 import { setLayerAccessToken } from '../../context/serverStateSlice';
+import { LayerData } from '../../context/layers/layer-data';
+
+type AuthParams = {
+  region: string;
+  token: string;
+};
 
 const AuthModal = ({ classes }: AuthModalProps) => {
   const [layerWithAuth, setLayers] = useState<LayerType>();
   const [open, setOpen] = useState(true);
-  const [textFieldValue, setTextField] = useState<string>('');
+  const [authParams, setAuthParams] = useState<AuthParams>({
+    region: '',
+    token: '',
+  });
   const selectedLayers = useSelector(layersSelector);
   const dispatch = useDispatch();
+  const boundaryLayer = getBoundaryLayerSingleton();
+  const boundaryData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
 
   const { t } = useSafeTranslation();
 
@@ -33,12 +56,21 @@ const AuthModal = ({ classes }: AuthModalProps) => {
     setLayers(layersWithAuthRequired);
   }, [selectedLayers]);
 
-  if (!layerWithAuth) {
+  if (!layerWithAuth || !boundaryData) {
     return null;
   }
 
+  const admName =
+    boundaryLayer.adminLevelNames[boundaryLayer.adminLevelNames.length - 1];
+
+  console.log(boundaryData.data.features, admName);
+
+  const boundaryNames = boundaryData.data.features.map(
+    (boundary: Feature) => boundary.properties![admName],
+  );
+
   const validateToken = () => {
-    dispatch(setLayerAccessToken(textFieldValue));
+    dispatch(setLayerAccessToken(authParams.token));
     setOpen(false);
   };
 
@@ -59,14 +91,39 @@ const AuthModal = ({ classes }: AuthModalProps) => {
           {t('The following layer  requires an access token')}:{' '}
           {layerWithAuth.title}
         </Typography>
-        <TextField
-          id="access_token"
-          label="Access Token"
-          value={textFieldValue}
-          className={classes.textField}
-          onChange={e => setTextField(e.target.value)}
-        />
 
+        <Box width="70%" display="flex" justifyContent="space-between">
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={authParams.region}
+            placeholder="Region"
+            onChange={e =>
+              setAuthParams(params => ({
+                ...params,
+                region: e.target.value as string,
+              }))
+            }
+            className={classes.select}
+          >
+            {boundaryNames.map(b => {
+              return <MenuItem value={b}>{b}</MenuItem>;
+            })}
+          </Select>
+
+          <TextField
+            id="access_token"
+            placeholder="Access Token"
+            value={authParams.token}
+            className={classes.textField}
+            onChange={e =>
+              setAuthParams(params => ({
+                ...params,
+                token: e.target.value as string,
+              }))
+            }
+          />
+        </Box>
         <div className={classes.container}>
           <div className={classes.buttonWrapper}>
             <Button variant="contained" color="primary" onClick={validateToken}>
@@ -101,6 +158,10 @@ const styles = (theme: Theme) =>
     },
     textField: {
       marginTop: '1em',
+      '& .MuiInputBase-input': { color: theme.palette.text.secondary },
+    },
+    select: {
+      width: '50%',
       '& .MuiInputBase-input': { color: theme.palette.text.secondary },
     },
     container: {
