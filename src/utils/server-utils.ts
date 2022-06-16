@@ -251,9 +251,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     if (!fetchUrlWithParams) {
       return [];
     }
-
     const response = await fetch(fetchUrlWithParams);
-
     if (response.status !== 200) {
       console.error(`Impossible to get point data dates for ${layer.id}`);
       return [];
