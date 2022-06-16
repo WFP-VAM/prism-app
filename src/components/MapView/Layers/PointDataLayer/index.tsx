@@ -36,7 +36,10 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const { features } = data || {};
   const { t } = useSafeTranslation();
   useEffect(() => {
-    if (!features) {
+    if (
+      !features &&
+      ((layer.tokenRequired && accessToken) || !layer.tokenRequired)
+    ) {
       dispatch(loadLayerData({ layer, date: selectedDate, accessToken }));
     }
   }, [features, dispatch, layer, selectedDate, accessToken]);
