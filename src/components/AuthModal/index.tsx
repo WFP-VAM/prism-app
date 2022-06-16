@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   createStyles,
   Dialog,
@@ -11,26 +11,27 @@ import {
   TextField,
   Button,
 } from '@material-ui/core';
-import { LayerDefinitions } from '../../config/utils';
 import { LayerType } from '../../config/types';
 import { useSafeTranslation } from '../../i18n';
+import { layersSelector } from '../../context/mapStateSlice/selectors';
+
 import { setLayerAccessToken } from '../../context/serverStateSlice';
 
 const AuthModal = ({ classes }: AuthModalProps) => {
   const [layerWithAuth, setLayers] = useState<LayerType>();
   const [open, setOpen] = useState(true);
   const [textFieldValue, setTextField] = useState<string>('');
+  const selectedLayers = useSelector(layersSelector);
   const dispatch = useDispatch();
 
   const { t } = useSafeTranslation();
 
   useEffect(() => {
-    const layerwithAuthRequired = Object.values(LayerDefinitions).find(
+    const layersWithAuthRequired = selectedLayers.find(
       layer => layer.type === 'point_data' && layer.tokenRequired,
     );
-
-    setLayers(layerwithAuthRequired);
-  }, []);
+    setLayers(layersWithAuthRequired);
+  }, [selectedLayers]);
 
   if (!layerWithAuth) {
     return null;

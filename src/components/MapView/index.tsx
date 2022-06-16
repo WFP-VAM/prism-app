@@ -68,7 +68,6 @@ import {
   availableDatesSelector,
   isLoading as areDatesLoading,
   loadAvailableDates,
-  layerAccessTokenSelector,
 } from '../../context/serverStateSlice';
 
 import { appConfig } from '../../config';
@@ -175,7 +174,6 @@ function MapView({ classes }: MapViewProps) {
   const datesLoading = useSelector(areDatesLoading);
   const loading = layersLoading || datesLoading;
   const dispatch = useDispatch();
-  const accessToken = useSelector(layerAccessTokenSelector);
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const serverAvailableDates = useSelector(availableDatesSelector);
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
@@ -309,13 +307,7 @@ function MapView({ classes }: MapViewProps) {
   ]);
 
   useEffect(() => {
-    const layerWithAuthRequired = Object.values(LayerDefinitions).find(
-      layer => layer.type === 'point_data' && layer.tokenRequired,
-    );
-
-    if (!layerWithAuthRequired || (accessToken && layerWithAuthRequired)) {
-      dispatch(loadAvailableDates(accessToken));
-    }
+    dispatch(loadAvailableDates());
     const displayBoundaryLayers = getDisplayBoundaryLayers();
 
     // we must load boundary layer here for two reasons
@@ -323,7 +315,7 @@ function MapView({ classes }: MapViewProps) {
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
     displayBoundaryLayers.map(l => dispatch(addLayer(l)));
     displayBoundaryLayers.map(l => dispatch(loadLayerData({ layer: l })));
-  }, [dispatch, accessToken]);
+  }, [dispatch]);
 
   // calculate possible dates user can pick from the currently selected layers
   const selectedLayerDates: number[] = useMemo(() => {

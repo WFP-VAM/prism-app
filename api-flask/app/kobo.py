@@ -36,7 +36,7 @@ def validate_access_token():
 
 def get_kobo_params():
     """Collect and validate request parameters and environment variables."""
-    validate_access_token()
+    #validate_access_token()
 
     kobo_username = getenv('KOBO_USERNAME')
     if kobo_username is None:

@@ -234,10 +234,7 @@ const pointDataFetchPromises: {
 /**
  * Gets the available dates for a point data layer.
  */
-async function getPointDataCoverage(
-  layer: PointDataLayerProps,
-  accessToken?: string,
-) {
+async function getPointDataCoverage(layer: PointDataLayerProps) {
   const {
     dateUrl: url,
     fallbackData: fallbackUrl,
@@ -255,11 +252,8 @@ async function getPointDataCoverage(
       return [];
     }
 
-    const urlWithToken = accessToken
-      ? `${fetchUrlWithParams}&accessToken=${accessToken}`
-      : fetchUrlWithParams;
+    const response = await fetch(fetchUrlWithParams);
 
-    const response = await fetch(urlWithToken);
     if (response.status !== 200) {
       console.error(`Impossible to get point data dates for ${layer.id}`);
       return [];
@@ -302,9 +296,7 @@ async function getPointDataCoverage(
  *
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
  */
-export async function getLayersAvailableDates(
-  accessToken?: string,
-): Promise<AvailableDates> {
+export async function getLayersAvailableDates(): Promise<AvailableDates> {
   const wmsServerUrls: string[] = get(appConfig, 'serversUrls.wms', []);
   const wcsServerUrls: string[] = get(appConfig, 'serversUrls.wcs', []);
 
@@ -316,7 +308,7 @@ export async function getLayersAvailableDates(
     ...wmsServerUrls.map(url => getWMSCapabilities(url)),
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
     ...pointDataLayers.map(async layer => ({
-      [layer.id]: await getPointDataCoverage(layer, accessToken),
+      [layer.id]: await getPointDataCoverage(layer),
     })),
   ]);
 
