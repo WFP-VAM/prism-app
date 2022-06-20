@@ -2,6 +2,7 @@
 import json
 import logging
 from datetime import datetime, timedelta, timezone
+from distutils.util import strtobool
 from os import getenv
 from typing import Dict, List
 
@@ -46,7 +47,8 @@ def validate_access_token():
 
 def get_kobo_params():
     """Collect and validate request parameters and environment variables."""
-    #validate_access_token()
+    if strtobool(request.args.get('validateToken', 'False')) == True:
+        validate_access_token()
 
     kobo_username = getenv('KOBO_USERNAME')
     if kobo_username is None:
