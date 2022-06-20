@@ -11,13 +11,15 @@ import {
   Typography,
   TextField,
   Button,
-  InputLabel,
   Select,
   MenuItem,
-  FormControl,
   Box,
 } from '@material-ui/core';
-import { LayerType, BoundaryLayerProps } from '../../config/types';
+import {
+  LayerType,
+  BoundaryLayerProps,
+  KoboAuthParams,
+} from '../../config/types';
 import { getBoundaryLayerSingleton } from '../../config/utils';
 import { useSafeTranslation } from '../../i18n';
 import {
@@ -28,15 +30,10 @@ import {
 import { setLayerAccessToken } from '../../context/serverStateSlice';
 import { LayerData } from '../../context/layers/layer-data';
 
-type AuthParams = {
-  region: string;
-  token: string;
-};
-
 const AuthModal = ({ classes }: AuthModalProps) => {
   const [layerWithAuth, setLayers] = useState<LayerType>();
   const [open, setOpen] = useState(true);
-  const [authParams, setAuthParams] = useState<AuthParams>({
+  const [authParams, setAuthParams] = useState<KoboAuthParams>({
     region: '',
     token: '',
   });
@@ -63,14 +60,12 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   const admName =
     boundaryLayer.adminLevelNames[boundaryLayer.adminLevelNames.length - 1];
 
-  console.log(boundaryData.data.features, admName);
-
   const boundaryNames = boundaryData.data.features.map(
     (boundary: Feature) => boundary.properties![admName],
   );
 
   const validateToken = () => {
-    dispatch(setLayerAccessToken(authParams.token));
+    dispatch(setLayerAccessToken(authParams));
     setOpen(false);
   };
 
@@ -105,8 +100,8 @@ const AuthModal = ({ classes }: AuthModalProps) => {
             }
             className={classes.select}
           >
-            {boundaryNames.map(b => {
-              return <MenuItem value={b}>{b}</MenuItem>;
+            {boundaryNames.map(boundary => {
+              return <MenuItem value={boundary}>{boundary}</MenuItem>;
             })}
           </Select>
 

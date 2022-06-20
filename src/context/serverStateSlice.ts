@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { AvailableDates } from '../config/types';
+import { AvailableDates, KoboAuthParams } from '../config/types';
 import { getLayersAvailableDates } from '../utils/server-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
@@ -7,7 +7,7 @@ type ServerState = {
   availableDates: AvailableDates;
   loading: boolean;
   error?: string;
-  accessToken?: string;
+  koboAuthParams?: KoboAuthParams;
 };
 
 const initialState: ServerState = {
@@ -32,9 +32,12 @@ export const serverStateSlice = createSlice({
       ...state,
       availableDates: payload,
     }),
-    setLayerAccessToken: (state, { payload }: PayloadAction<string>) => ({
+    setLayerAccessToken: (
+      state,
+      { payload }: PayloadAction<KoboAuthParams>,
+    ) => ({
       ...state,
-      accessToken: payload,
+      koboAuthParams: payload,
     }),
   },
   extraReducers: builder => {
@@ -73,9 +76,9 @@ export const isLoading = (state: RootState): ServerState['loading'] =>
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverState.error;
 
-export const layerAccessTokenSelector = (
+export const koboAuthParamsSelector = (
   state: RootState,
-): string | undefined => state.serverState.accessToken;
+): KoboAuthParams | undefined => state.serverState.koboAuthParams;
 
 // Setters
 export const {

@@ -4,7 +4,7 @@ import { get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
-import { layerAccessTokenSelector } from '../../../../context/serverStateSlice';
+import { koboAuthParamsSelector } from '../../../../context/serverStateSlice';
 import {
   LayerData,
   loadLayerData,
@@ -25,7 +25,7 @@ import { createEWSDatasetParams } from '../../../../utils/ews-utils';
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const selectedDate = useDefaultDate(layer.id);
-  const accessToken = useSelector(layerAccessTokenSelector);
+  const koboAuthParams = useSelector(koboAuthParamsSelector);
 
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<PointDataLayerProps>
@@ -38,11 +38,11 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   useEffect(() => {
     if (
       !features &&
-      ((layer.tokenRequired && accessToken) || !layer.tokenRequired)
+      ((layer.tokenRequired && koboAuthParams) || !layer.tokenRequired)
     ) {
-      dispatch(loadLayerData({ layer, date: selectedDate, accessToken }));
+      dispatch(loadLayerData({ layer, date: selectedDate, koboAuthParams }));
     }
-  }, [features, dispatch, layer, selectedDate, accessToken]);
+  }, [features, dispatch, layer, selectedDate, koboAuthParams]);
 
   if (!features) {
     return null;
