@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Feature } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
+import { sortBy } from 'lodash';
 import {
   createStyles,
   Dialog,
@@ -15,6 +16,8 @@ import {
   MenuItem,
   Box,
 } from '@material-ui/core';
+import { multiPolygon } from '@turf/helpers';
+import bbox from '@turf/bbox';
 import {
   LayerType,
   BoundaryLayerProps,
@@ -34,8 +37,9 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   const [layerWithAuth, setLayers] = useState<LayerType>();
   const [open, setOpen] = useState(true);
   const [authParams, setAuthParams] = useState<KoboAuthParams>({
-    region: '',
-    token: '',
+    region: 'Bu Sra',
+    token: '4f427c96-0d7a-44dd-9636-e12a5bc48e3d',
+    bbox: '107.379994329,12.373605513,107.589547299,12.70470675',
   });
   const selectedLayers = useSelector(layersSelector);
   const dispatch = useDispatch();
@@ -60,9 +64,25 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   const admName =
     boundaryLayer.adminLevelNames[boundaryLayer.adminLevelNames.length - 1];
 
-  const boundaryNames = boundaryData.data.features.map(
-    (boundary: Feature) => boundary.properties![admName],
-  );
+  const admNameHigher =
+    boundaryLayer.adminLevelNames[boundaryLayer.adminLevelNames.length - 2];
+
+  const boundaries = boundaryData.data.features.map((feature: Feature) => {
+    const { geometry, properties } = feature;
+
+    if (!properties || geometry.type !== 'MultiPolygon') {
+      return undefined;
+    }
+
+    const turfObj = multiPolygon(geometry.coordinates);
+    const geomBbox = bbox(turfObj);
+
+    const name = `${properties[admNameHigher]},${properties[admName]}`;
+
+    return { value: geomBbox.join(','), name };
+  });
+
+  const sortedBoundaries = sortBy(boundaries, 'name');
 
   const validateToken = () => {
     dispatch(setLayerAccessToken(authParams));
@@ -88,20 +108,27 @@ const AuthModal = ({ classes }: AuthModalProps) => {
         </Typography>
 
         <Box width="70%" display="flex" justifyContent="space-between">
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={authParams.region}
-            onChange={e =>
-              setAuthParams(params => ({
-                ...params,
-                region: e.target.value as string,
-              }))
-            }
-            className={classes.select}
-          >
-            {boundaryNames.map(boundary => {
-              return <MenuItem value={boundary}>{boundary}</MenuItem>;
+          <Select value={authParams.bbox} className={classes.select}>
+            {sortedBoundaries.map(boundary => {
+              if (!boundary) {
+                return null;
+              }
+
+              return (
+                <MenuItem
+                  title={boundary.name}
+                  value={boundary.value}
+                  onClick={() =>
+                    setAuthParams(params => ({
+                      ...params,
+                      region: boundary.name.split(',')[1],
+                      bbox: boundary.value,
+                    }))
+                  }
+                >
+                  {boundary.name}
+                </MenuItem>
+              );
             })}
           </Select>
 

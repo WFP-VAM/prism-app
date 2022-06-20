@@ -617,4 +617,5 @@ export type PointLayerData = {
 export type KoboAuthParams = {
   region: string;
   token: string;
+  bbox: string;
 };
