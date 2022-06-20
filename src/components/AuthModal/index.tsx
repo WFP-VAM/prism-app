@@ -97,7 +97,6 @@ const AuthModal = ({ classes }: AuthModalProps) => {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={authParams.region}
-            placeholder="Region"
             onChange={e =>
               setAuthParams(params => ({
                 ...params,
