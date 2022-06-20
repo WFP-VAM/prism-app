@@ -12,6 +12,8 @@ from flask import request
 
 import requests
 
+from shapely.geometry import box, Point
+
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound, Unauthorized
 
 
@@ -239,12 +241,25 @@ def get_form_responses(begin_datetime, end_datetime):
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
     filtered_forms = []
+
+    bbox = [float(p) for p in request.args.get('bbox').split(',')]
+    geom_bbox = box(*bbox)
+
+    boom = [Point(f["lon"], f["lat"]) for f in forms]
+
+    test = [geom_bbox.contains(f) for f in boom]
+
     for form in forms:
         date_value = form.get('date')
 
         conditions = [form.get(k) == v for k, v in form_fields.get('filters').items()]
         conditions.append(begin_datetime <= date_value)
         conditions.append(date_value < end_datetime)
+
+        point = Point(form.get("lon"), form.get("lat"))
+
+        # Geospatial filter.
+        conditions.append(geom_bbox.contains(point))
 
         if all(conditions) is False:
             continue
