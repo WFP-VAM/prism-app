@@ -8,7 +8,7 @@ from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.errors import handle_error, make_json_error
-from app.kobo import get_form_responses, parse_datetime_params
+from app.kobo import get_form_responses, parse_datetime_params, get_form_dates
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import calculate_stats, get_wfs_response
@@ -171,6 +171,15 @@ class Stats(Resource):
 #     """Get all alerts in current table."""
 #     results = alert_db.readall()
 #     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
+@api.route('/kobo/dates')
+class GetKoboDates(Resource):
+    """Class Get_kobo_forms which takes a get method."""
+
+    def get(self):
+        """Get all form responses."""
+        form_dates = get_form_dates()
+        return Response(json.dumps(form_dates), mimetype='application/json')
+
 
 @api.route('/kobo/forms')
 class GetKoboForms(Resource):

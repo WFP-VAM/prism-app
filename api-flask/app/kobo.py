@@ -28,7 +28,7 @@ def get_first(items_list: list):
 def validate_access_token():
     """Validate that access token received within the request matches the one in the server."""
     access_token = request.args.get('accessToken')
-    adm_name = request.args.get('admName')
+    adm_code = request.args.get('adminCode')
 
     # Check configuration for kobo forms tokens.
     env_tokens_file = 'KOBO_TOKENS_FILE'
@@ -39,7 +39,7 @@ def validate_access_token():
     with open(tokens_file, 'r') as f:
         tokens = json.load(f)
 
-    server_access_token = tokens.get(adm_name)
+    server_access_token = tokens.get(adm_code)
     if server_access_token is None:
         raise Unauthorized('access token not found for provided admName')
 
@@ -49,9 +49,6 @@ def validate_access_token():
 
 def get_kobo_params():
     """Collect and validate request parameters and environment variables."""
-    if strtobool(request.args.get('validateToken', 'False')) == True:
-        validate_access_token()
-
     kobo_username = getenv('KOBO_USERNAME')
     if kobo_username is None:
         raise InternalServerError('Missing backend parameter: KOBO_USERNAME')
@@ -232,8 +229,23 @@ def get_responses_from_kobo(auth, form_name):
     return form_responses, form_labels
 
 
+def get_form_dates():
+    """Get all form responses using Kobo api."""
+    auth, form_fields = get_kobo_params()
+
+    form_responses, form_labels = get_responses_from_kobo(auth, form_fields.get('name'))
+
+    forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
+
+    dates_list = set([f.get('date').date().isoformat() for f in forms])
+
+    return [{'date': d} for d in dates_list]
+
+
 def get_form_responses(begin_datetime, end_datetime):
     """Get all form responses using Kobo api."""
+    validate_access_token()
+
     auth, form_fields = get_kobo_params()
 
     form_responses, form_labels = get_responses_from_kobo(auth, form_fields.get('name'))
@@ -244,10 +256,6 @@ def get_form_responses(begin_datetime, end_datetime):
 
     bbox = [float(p) for p in request.args.get('bbox').split(',')]
     geom_bbox = box(*bbox)
-
-    boom = [Point(f["lon"], f["lat"]) for f in forms]
-
-    test = [geom_bbox.contains(f) for f in boom]
 
     for form in forms:
         date_value = form.get('date')

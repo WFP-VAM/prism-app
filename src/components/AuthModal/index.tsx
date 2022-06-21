@@ -88,6 +88,8 @@ const AuthModal = ({ classes }: AuthModalProps) => {
 
   const sortedBoundaries = sortBy(boundaries, 'adminName');
 
+  console.log(JSON.stringify(sortedBoundaries));
+
   const validateToken = () => {
     dispatch(setLayerAccessToken(authParams));
     setOpen(false);
