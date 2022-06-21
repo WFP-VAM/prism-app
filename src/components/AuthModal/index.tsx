@@ -23,7 +23,7 @@ import {
   BoundaryLayerProps,
   KoboAuthParams,
 } from '../../config/types';
-import { getBoundaryLayerSingleton } from '../../config/utils';
+import { getBoundaryLayers } from '../../config/utils';
 import { useSafeTranslation } from '../../i18n';
 import {
   layersSelector,
@@ -37,13 +37,21 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   const [layerWithAuth, setLayers] = useState<LayerType>();
   const [open, setOpen] = useState(true);
   const [authParams, setAuthParams] = useState<KoboAuthParams>({
-    region: 'Bu Sra',
-    token: '4f427c96-0d7a-44dd-9636-e12a5bc48e3d',
-    bbox: '107.379994329,12.373605513,107.589547299,12.70470675',
+    adminCode: '',
+    token: '',
+    bbox: '',
   });
   const selectedLayers = useSelector(layersSelector);
   const dispatch = useDispatch();
-  const boundaryLayer = getBoundaryLayerSingleton();
+
+  // Get the admin boundary layer, with lowest number of level names (provinces).
+
+  const boundaryLayer = getBoundaryLayers().reduce((boundary, item) =>
+    boundary.adminLevelNames.length > item.adminLevelNames.length
+      ? item
+      : boundary,
+  );
+
   const boundaryData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
@@ -61,12 +69,6 @@ const AuthModal = ({ classes }: AuthModalProps) => {
     return null;
   }
 
-  const admName =
-    boundaryLayer.adminLevelNames[boundaryLayer.adminLevelNames.length - 1];
-
-  const admNameHigher =
-    boundaryLayer.adminLevelNames[boundaryLayer.adminLevelNames.length - 2];
-
   const boundaries = boundaryData.data.features.map((feature: Feature) => {
     const { geometry, properties } = feature;
 
@@ -77,12 +79,14 @@ const AuthModal = ({ classes }: AuthModalProps) => {
     const turfObj = multiPolygon(geometry.coordinates);
     const geomBbox = bbox(turfObj);
 
-    const name = `${properties[admNameHigher]},${properties[admName]}`;
-
-    return { value: geomBbox.join(','), name };
+    return {
+      bbox: geomBbox.join(','),
+      adminName: properties[boundaryLayer.adminLevelNames[0]],
+      adminCode: properties[boundaryLayer.adminCode],
+    };
   });
 
-  const sortedBoundaries = sortBy(boundaries, 'name');
+  const sortedBoundaries = sortBy(boundaries, 'adminName');
 
   const validateToken = () => {
     dispatch(setLayerAccessToken(authParams));
@@ -109,40 +113,33 @@ const AuthModal = ({ classes }: AuthModalProps) => {
 
         <Box width="70%" display="flex" justifyContent="space-between">
           <Select value={authParams.bbox} className={classes.select}>
-            {sortedBoundaries.map(boundary => {
-              if (!boundary) {
-                return null;
-              }
-
-              return (
+            {sortedBoundaries.map(boundary =>
+              boundary ? (
                 <MenuItem
-                  title={boundary.name}
-                  value={boundary.value}
+                  title={boundary.adminName}
+                  value={boundary.bbox}
                   onClick={() =>
-                    setAuthParams(params => ({
-                      ...params,
-                      region: boundary.name.split(',')[1],
-                      bbox: boundary.value,
-                    }))
+                    setAuthParams(params => ({ ...params, ...boundary }))
                   }
                 >
-                  {boundary.name}
+                  {boundary.adminName}
                 </MenuItem>
-              );
-            })}
+              ) : null,
+            )}
           </Select>
 
           <TextField
-            id="access_token"
+            id="accesstoken"
             placeholder="Access Token"
             value={authParams.token}
             className={classes.textField}
-            onChange={e =>
+            onChange={e => {
+              const { value } = e.target;
               setAuthParams(params => ({
                 ...params,
-                token: e.target.value as string,
-              }))
-            }
+                token: value,
+              }));
+            }}
           />
         </Box>
         <div className={classes.container}>
