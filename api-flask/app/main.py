@@ -189,7 +189,9 @@ class GetKoboForms(Resource):
         """Get all form responses."""
         validate_access_token()
         begin_datetime, end_datetime = parse_datetime_params()
-        form_responses = get_form_responses(begin_datetime, end_datetime)
+
+        geom_bbox = request.args.get('bbox', None)
+        form_responses = get_form_responses(begin_datetime, end_datetime, geom_bbox)
 
         return Response(json.dumps(form_responses), mimetype='application/json')
 

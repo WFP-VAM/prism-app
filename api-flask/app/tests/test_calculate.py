@@ -98,7 +98,7 @@ def test_kobo_response_form(kobo_params, kobo_data):
 
     begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
     end = datetime(2030, 1, 1).replace(tzinfo=timezone.utc)
-    forms = get_form_responses(begin, end)
+    forms = get_form_responses(begin, end, None)
 
     assert len(forms) == 2
 
@@ -117,14 +117,14 @@ def test_kobo_response_form(kobo_params, kobo_data):
         }
     }
     kobo_params.return_value = (('test', 'test'), form_fields)
-    forms = get_form_responses(begin, end)
+    forms = get_form_responses(begin, end, None)
 
     assert len(forms) == 1
 
     # Test Filter
     begin = datetime(2000, 1, 1).replace(tzinfo=timezone.utc)
     end = datetime(2020, 1, 1).replace(tzinfo=timezone.utc)
-    forms = get_form_responses(begin, end)
+    forms = get_form_responses(begin, end, None)
     assert len(forms) == 1
 
     assert True
