@@ -2,7 +2,6 @@
 import json
 import logging
 from datetime import datetime, timedelta, timezone
-from distutils.util import strtobool
 from os import getenv
 from typing import Dict, List
 
@@ -12,7 +11,7 @@ from flask import request
 
 import requests
 
-from shapely.geometry import box, Point
+from shapely.geometry import Point, box
 
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound, Unauthorized
 
@@ -264,7 +263,7 @@ def get_form_responses(begin_datetime, end_datetime):
         conditions.append(begin_datetime <= date_value)
         conditions.append(date_value < end_datetime)
 
-        point = Point(form.get("lon"), form.get("lat"))
+        point = Point(form.get('lon'), form.get('lat'))
 
         # Geospatial filter.
         conditions.append(geom_bbox.contains(point))
