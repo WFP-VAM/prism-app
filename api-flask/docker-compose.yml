@@ -13,5 +13,6 @@ services:
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
       - KOBO_PW
       - KOBO_ACCESS_TOKEN=${KOBO_ACCESS_TOKEN:-12345}
+      - KOBO_TOKENS_FILE=${KOBO_TOKENS_FILE:test.json}
       # Alerts database
       - DATABASE_URL
