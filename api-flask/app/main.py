@@ -8,7 +8,7 @@ from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.errors import handle_error, make_json_error
-from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
+from app.kobo import get_form_dates, get_form_responses, parse_datetime_params, validate_access_token
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import calculate_stats, get_wfs_response
@@ -187,6 +187,7 @@ class GetKoboForms(Resource):
 
     def get(self):
         """Get all form responses."""
+        validate_access_token()
         begin_datetime, end_datetime = parse_datetime_params()
         form_responses = get_form_responses(begin_datetime, end_datetime)
 

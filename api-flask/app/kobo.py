@@ -243,8 +243,6 @@ def get_form_dates():
 
 def get_form_responses(begin_datetime, end_datetime):
     """Get all form responses using Kobo api."""
-    validate_access_token()
-
     auth, form_fields = get_kobo_params()
 
     form_responses, form_labels = get_responses_from_kobo(auth, form_fields.get('name'))
@@ -253,8 +251,10 @@ def get_form_responses(begin_datetime, end_datetime):
 
     filtered_forms = []
 
-    bbox = [float(p) for p in request.args.get('bbox').split(',')]
-    geom_bbox = box(*bbox)
+    geom_bbox = request.args.get('bbox', None)
+    if geom_bbox is not None:
+        bbox = [float(p) for p in request.args.get('bbox').split(',')]
+        geom_bbox = box(*bbox)
 
     for form in forms:
         date_value = form.get('date')
@@ -263,10 +263,10 @@ def get_form_responses(begin_datetime, end_datetime):
         conditions.append(begin_datetime <= date_value)
         conditions.append(date_value < end_datetime)
 
-        point = Point(form.get('lon'), form.get('lat'))
-
         # Geospatial filter.
-        conditions.append(geom_bbox.contains(point))
+        if geom_bbox is not None:
+            point = Point(form.get('lon'), form.get('lat'))
+            conditions.append(geom_bbox.contains(point))
 
         if all(conditions) is False:
             continue
