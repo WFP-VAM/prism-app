@@ -31,6 +31,7 @@ import LayerDropdown from '../Layers/LayerDropdown';
 import BoundaryDropdown from '../Layers/BoundaryDropdown';
 import { getSelectedBoundaries } from '../../../context/mapSelectionLayerStateSlice';
 import { addNotification } from '../../../context/notificationStateSlice';
+import { useSafeTranslation } from '../../../i18n';
 
 // Not fully RFC-compliant, but should filter out obviously-invalid emails.
 // Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
@@ -63,6 +64,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
   const [alertName, setAlertName] = useState('');
   const [alertWaiting, setAlertWaiting] = useState(false);
 
+  const { t } = useSafeTranslation();
   const regionCodesToFeatureData: { [k: string]: object } = useMemo(() => {
     if (!boundaryLayerData) {
       // Not loaded yet. Will proceed when it is.
@@ -212,7 +214,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
                 <TextField
                   id="filled-number"
                   error={!!thresholdError}
-                  helperText={thresholdError}
+                  helperText={t(thresholdError || '')}
                   className={classes.numberField}
                   label="Below"
                   type="number"
