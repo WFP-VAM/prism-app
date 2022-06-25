@@ -53,7 +53,12 @@ jobs:
       - name: build frontend
         run: GENERATE_SOURCEMAP=false yarn build
       - name: deploy on surge
-        run: yarn deploy:surge --domain "prism-${{ github.event.pull_request.head.sha }}"
+        uses: dswistowski/surge-sh-action@v1
+        with: 
+          domain: 'foo-bar.surge.sh'
+          project: 'build/.'
+          login: ${{ secrets.surge_login }}
+          token: ${{ secrets.surge_token }}
 
   build_api:
     name: build api
