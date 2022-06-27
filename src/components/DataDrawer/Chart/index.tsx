@@ -36,10 +36,14 @@ function getChartConfig(stacked: boolean, title: string, xAxisLabel?: string) {
           ticks: {
             fontColor: '#CCC',
           },
-          scaleLabel: xAxisLabel && {
-            labelString: xAxisLabel,
-            display: true,
-          },
+          ...(xAxisLabel
+            ? {
+                scaleLabel: {
+                  labelString: xAxisLabel,
+                  display: true,
+                },
+              }
+            : {}),
         },
       ],
       yAxes: [
