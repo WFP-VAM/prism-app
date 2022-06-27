@@ -10,4 +10,4 @@ cache/
 *.cache
 
 # Test files
-**.json.*
+#**.json.*
