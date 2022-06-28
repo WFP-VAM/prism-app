@@ -6,6 +6,8 @@ import cambodia from './cambodia';
 
 import cuba from './cuba';
 
+import ecuador from './ecuador';
+
 import { globalConfig, globalRawLayers, globalRawTables } from './global';
 
 import {
@@ -53,6 +55,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
 const configMap = {
   cuba,
   cambodia,
+  ecuador,
   global: {
     appConfig: globalConfig,
     rawLayers: globalRawLayers,
