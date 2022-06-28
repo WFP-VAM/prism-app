@@ -253,7 +253,7 @@ def get_form_responses(begin_datetime, end_datetime, geom_bbox):
 
     bbox = None
     if geom_bbox is not None:
-        geom_bbox = box(*[float(p) for p in geom_bbox.split(',')])
+        bbox = box(*[float(p) for p in geom_bbox.split(',')])
 
     for form in forms:
         date_value = form.get('date')
