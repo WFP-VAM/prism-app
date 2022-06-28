@@ -186,7 +186,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
       >
         <Notifications fontSize="small" />
         <Typography variant="body2" className={classes.alertLabel}>
-          Create Alert
+          {t('Create Alert')}
         </Typography>
         <ArrowDropDown fontSize="small" />
       </Button>
@@ -200,7 +200,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
           <div>
             <div className={classes.newAlertFormContainer}>
               <div className={classes.alertFormOptions}>
-                <Typography variant="body2">Hazard Layer</Typography>
+                <Typography variant="body2">{t('Hazard Layer')}</Typography>
                 <LayerDropdown
                   type="wms"
                   value={hazardLayerId}
@@ -210,13 +210,13 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
                 />
               </div>
               <div className={classes.alertFormOptions}>
-                <Typography variant="body2">Threshold</Typography>
+                <Typography variant="body2">{t('Threshold')}</Typography>
                 <TextField
                   id="filled-number"
                   error={!!thresholdError}
                   helperText={t(thresholdError || '')}
                   className={classes.numberField}
-                  label="Below"
+                  label={t('Below')}
                   type="number"
                   value={belowThreshold}
                   onChange={onThresholdOptionChange('below')}
@@ -224,7 +224,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
                 />
                 <TextField
                   id="filled-number"
-                  label="Above"
+                  label={t('Above')}
                   className={classes.numberField}
                   style={{ paddingLeft: '10px' }}
                   value={aboveThreshold}
@@ -234,13 +234,13 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
                 />
               </div>
               <div className={classes.alertFormOptions}>
-                <Typography variant="body2">Regions</Typography>
+                <Typography variant="body2">{t('Regions')}</Typography>
                 <BoundaryDropdown className={classes.regionSelector} />
               </div>
               <div className={classes.alertFormOptions}>
                 <TextField
                   id="alert-name"
-                  label="Alert Name"
+                  label={t('Alert Name')}
                   type="text"
                   variant="filled"
                   value={alertName}
@@ -251,7 +251,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
               <div className={classes.alertFormOptions}>
                 <TextField
                   id="email-address"
-                  label="Email Address"
+                  label={t('Email Address')}
                   type="text"
                   variant="filled"
                   onChange={onChangeEmail}
@@ -270,7 +270,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
                 regionsList.length === 0
               }
             >
-              <Typography variant="body2">Create Alert</Typography>
+              <Typography variant="body2">{t('Create Alert')}</Typography>
             </Button>
           </div>
         ) : null}

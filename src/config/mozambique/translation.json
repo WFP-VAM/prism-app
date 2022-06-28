@@ -109,5 +109,12 @@
     "Current percent of population in phase 3+": "Porcentagem atual da população na fase 3+",
     "Projected percent of population in phase 3+": "Porcentagem projetada da população na fase 3+",
     "Share Analysis": "Compartilhar análise",
-    "Below threshold is larger than above threshold!": "Abaixo do limite é maior do que acima do limite!"
+    "Below threshold is larger than above threshold!": "Abaixo do limite é maior do que acima do limite!",
+    "Create Alert": "Criar alerta",
+    "Regions": "Regiões",
+    "Alert Name": "Nome do alerta",
+    "Email Address": "Endereço de email",
+    "Click the map to select": "Clique no mapa para selecionar",
+    "Select All": "Selecionar tudo",
+    "Go To": "Vá para"
 }
