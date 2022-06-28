@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
+import moment from 'moment';
 import { GeoJSONLayer } from 'react-mapbox-gl';
+import { FeatureCollection } from 'geojson';
 import { get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
@@ -10,6 +12,7 @@ import {
   loadLayerData,
 } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayerSingleton } from '../../../../config/utils';
@@ -35,12 +38,28 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const { data } = layerData || {};
   const { features } = data || {};
   const { t } = useSafeTranslation();
+
   useEffect(() => {
     if (
       !features &&
       ((layer.tokenRequired && koboAuthParams) || !layer.tokenRequired)
     ) {
       dispatch(loadLayerData({ layer, date: selectedDate, koboAuthParams }));
+    }
+
+    if (
+      features &&
+      (features as FeatureCollection).features.length === 0 &&
+      layer.tokenRequired
+    ) {
+      dispatch(
+        addNotification({
+          message: `Data not found for provided date: ${moment(
+            selectedDate,
+          ).format('YYYY-MM-DD')}`,
+          type: 'warning',
+        }),
+      );
     }
   }, [features, dispatch, layer, selectedDate, koboAuthParams]);
 
