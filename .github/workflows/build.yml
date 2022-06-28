@@ -1,6 +1,6 @@
 # for comment on PR, follow instruction for: https://github.com/marketplace/actions/add-pr-comment
 name: Build
-on: [push]
+on: [pull_request]
 
 jobs:
   frontend_tests:
@@ -48,8 +48,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Get yarn cache directory path
+      - name: test
+        run: |
+          echo "My current surge url is $ {{ env.surge_url }}"
 
+      - name: Get yarn cache directory path
+      
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
