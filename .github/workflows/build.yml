@@ -44,7 +44,7 @@ jobs:
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
     env:
-      surge_url: ${{ github.event.pull_request.head.sha }}.surge.sh
+      surge_url: prism-${{ github.event.pull_request.head.sha }}.surge.sh
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -85,7 +85,7 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            Build succeeded and deployed at ${{ env.surge_url }}
+            Build succeeded and deployed at http://${{ env.surge_url }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: false # This is the default
