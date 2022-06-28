@@ -9,16 +9,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-
-      - name: Comment PR
-        uses: mshick/add-pr-comment@v1
-        with:
-          message: |
-            Testing.. ! :wave:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
-          allow-repeats: false # This is the default
-      
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -53,6 +43,8 @@ jobs:
     needs: frontend_tests
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
+    env:
+      surge_url: ${{ github.event.pull_request.head.sha }}.surge.sh
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -81,10 +73,18 @@ jobs:
       - name: deploy on surge
         uses: dswistowski/surge-sh-action@v1
         with: 
-          domain: 'foo-bar.surge.sh'
+          domain: $surge_url
           project: 'build/.'
           login: ${{ secrets.surge_login }}
           token: ${{ secrets.surge_token }}
+      - name: Comment PR
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            Build succeeded and deployed at $surge_url
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: false # This is the default
 
   build_api:
     name: build api
