@@ -1676,8 +1676,8 @@
   "kh_incident_report": {
     "title": "Disaster impact report",
     "type": "point_data",
-    "data": "http://localhost:5000/kobo/forms",
-    "date_url": "http://localhost:5000/kobo/dates",
+    "data": "http://localhost/kobo/forms",
+    "date_url": "http://localhost/kobo/dates",
     "token_required": true,
     "data_field": "NumPeoAff",
     "additional_query_params": {
