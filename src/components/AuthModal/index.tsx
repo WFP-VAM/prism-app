@@ -111,38 +111,54 @@ const AuthModal = ({ classes }: AuthModalProps) => {
           {layerWithAuth.title}
         </Typography>
 
-        <Box width="70%" display="flex" justifyContent="space-between">
-          <Select value={authParams.bbox} className={classes.select}>
-            {sortedBoundaries.map(boundary =>
-              boundary ? (
-                <MenuItem
-                  title={boundary.adminName}
-                  value={boundary.bbox}
-                  onClick={() =>
-                    setAuthParams(params => ({ ...params, ...boundary }))
-                  }
-                >
-                  {boundary.adminName}
-                </MenuItem>
-              ) : null,
-            )}
-          </Select>
-
-          <TextField
-            id="accesstoken"
-            placeholder="Access Token"
-            value={authParams.token}
-            className={classes.textField}
-            onChange={e => {
-              const { value } = e.target;
-              setAuthParams(params => ({
-                ...params,
-                token: value,
-              }));
-            }}
-          />
+        <Box
+          width="70%"
+          display="flex"
+          justifyContent="space-between"
+          marginTop="2em"
+        >
+          <Box width="48%">
+            <Typography className={classes.label} variant="body2">
+              {t('region')}
+            </Typography>
+            <Select value={authParams.bbox} className={classes.select}>
+              {sortedBoundaries.map(boundary =>
+                boundary ? (
+                  <MenuItem
+                    title={boundary.adminName}
+                    value={boundary.bbox}
+                    onClick={() =>
+                      setAuthParams(params => ({ ...params, ...boundary }))
+                    }
+                  >
+                    {boundary.adminName}
+                  </MenuItem>
+                ) : null,
+              )}
+            </Select>
+          </Box>
+          <Box width="48%">
+            <Typography className={classes.label} variant="body2">
+              {t('password')}
+            </Typography>
+            <TextField
+              id="accesstoken"
+              placeholder="Access Token"
+              value={authParams.token}
+              type="password"
+              className={classes.textField}
+              onChange={e => {
+                const { value } = e.target;
+                setAuthParams(params => ({
+                  ...params,
+                  token: value,
+                }));
+              }}
+            />
+          </Box>
         </Box>
-        <div className={classes.container}>
+
+        <Box display="flex" justifyContent="flex-end">
           <div className={classes.buttonWrapper}>
             <Button variant="contained" color="primary" onClick={validateToken}>
               {t('Accept')}
@@ -155,44 +171,48 @@ const AuthModal = ({ classes }: AuthModalProps) => {
               {t('Cancel')}
             </Button>
           </div>
-        </div>
+        </Box>
       </div>
     </Dialog>
   );
 };
 
-const styles = (theme: Theme) =>
-  createStyles({
+const styles = (theme: Theme) => {
+  const { secondary } = theme.palette.text;
+
+  const color = {
+    color: secondary,
+  };
+
+  const inputColor = {
+    '& .MuiInputBase-input': color,
+  };
+
+  return createStyles({
     modal: {
       width: '40vw',
-      height: '26vh',
-      color: theme.palette.text.secondary,
       padding: '1em 0.75em',
     },
     title: {
-      color: theme.palette.text.secondary,
       marginBottom: '1.5em',
       padding: 0,
+      ...color,
     },
-    textField: {
-      marginTop: '1em',
-      '& .MuiInputBase-input': { color: theme.palette.text.secondary },
-    },
+    label: color,
+    textField: inputColor,
     select: {
-      width: '50%',
-      '& .MuiInputBase-input': { color: theme.palette.text.secondary },
-    },
-    container: {
-      display: 'flex',
-      justifyContent: 'flex-end',
+      width: '100%',
+      ...inputColor,
     },
     buttonWrapper: {
-      marginTop: '1em',
+      marginTop: '2em',
+      marginBottom: '1em',
       display: 'flex',
       width: '33%',
       justifyContent: 'space-between',
     },
   });
+};
 
 export interface AuthModalProps extends WithStyles<typeof styles> {}
 
