@@ -44,7 +44,7 @@ jobs:
     name: frontend_build_and_deploy
     runs-on: ubuntu-latest
     env:
-      surge_url: prism-${{ github.event.pull_request.head.sha }}.surge.sh
+      surge_url: prism-${{ github.event.pull_request.base.sha }}.surge.sh
     steps:
       - name: Checkout
         uses: actions/checkout@v1
