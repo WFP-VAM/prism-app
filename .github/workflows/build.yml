@@ -73,7 +73,7 @@ jobs:
       - name: deploy on surge
         uses: dswistowski/surge-sh-action@v1
         with: 
-          domain: $surge_url
+          domain: ${{ env.surge_url }}
           project: 'build/.'
           login: ${{ secrets.surge_login }}
           token: ${{ secrets.surge_token }}
@@ -81,7 +81,7 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            Build succeeded and deployed at $surge_url
+            Build succeeded and deployed at ${{ env.surge_url }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
           allow-repeats: false # This is the default
