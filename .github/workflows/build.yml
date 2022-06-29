@@ -90,7 +90,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
             Build succeeded and deployed at http://${{ env.surge_url }} 
-            (hash ${{ github.event.pull_request.number }} deployed at ${{ steps.date.outputs.date }} )
+            (hash ${{ github.event.pull_request.head.sha }} deployed at ${{ steps.date.outputs.date }})
 
 
 
