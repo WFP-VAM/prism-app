@@ -623,7 +623,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                     <TextField
                       id="filled-number"
                       error={!!thresholdError}
-                      helperText={thresholdError}
+                      helperText={t(thresholdError || '')}
                       className={classes.numberField}
                       label={t('Below')}
                       type="number"
