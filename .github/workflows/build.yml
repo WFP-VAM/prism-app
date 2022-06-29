@@ -1,6 +1,12 @@
 # for comment on PR, follow instruction for: https://github.com/marketplace/actions/sticky-pull-request-comment
 name: Build and deploy to surge
-on: pull_request
+
+on:
+  # Run on all pull requests and on pushes to main.
+  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
   frontend_tests:
@@ -12,7 +18,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
-      
+
       - name: Use Node.js 16.x
         uses: actions/setup-node@v2
         with:
@@ -31,13 +37,12 @@ jobs:
 
       - name: Install packages
         run: yarn install --frozen-lockfile
-      
+
       - name: yarn lint
         run: yarn lint
-      
+
       - name: yarn test
         run: yarn test
-      
 
   frontend_build_and_deploy:
     needs: frontend_tests
@@ -53,7 +58,7 @@ jobs:
           echo "My current surge url is ${{ env.surge_url }}"
 
       - name: Get yarn cache directory path
-      
+
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
@@ -76,7 +81,7 @@ jobs:
         run: GENERATE_SOURCEMAP=false yarn build
       - name: deploy on surge
         uses: dswistowski/surge-sh-action@v1
-        with: 
+        with:
           domain: ${{ env.surge_url }}
           project: 'build/.'
           login: ${{ secrets.surge_login }}
@@ -91,8 +96,6 @@ jobs:
           message: |
             Build succeeded and deployed at http://${{ env.surge_url }} 
             (hash ${{ github.event.pull_request.head.sha }} deployed at ${{ steps.date.outputs.date }})
-
-
 
   build_api:
     name: build api
@@ -111,4 +114,3 @@ jobs:
         run: cd api-flask && make api-lint
       - name: Run tests
         run: cd api-flask && make api-test
-
