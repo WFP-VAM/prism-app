@@ -1,5 +1,6 @@
 import { useHistory } from 'react-router-dom';
 import { AnalysisParams } from './types';
+import { LayerType } from '../config/types';
 
 /*
   This custom hook tracks the browser url string, which is defined by the useHistory hook.
@@ -19,12 +20,50 @@ const dummyAnalysisParams: AnalysisParams = {
   analysisAdminLevel: '',
 };
 
+export enum UrlLayerKey {
+  HAZARD = 'hazardLayerIds',
+  ADMINLEVEL = 'baselineLayerId',
+}
+
+export const getUrlKey = (layer: LayerType): UrlLayerKey =>
+  layer.type === 'admin_level_data'
+    ? UrlLayerKey.ADMINLEVEL
+    : UrlLayerKey.HAZARD;
+
 export const useUrlHistory = () => {
   const { replace, location } = useHistory();
   const urlParams = new URLSearchParams(location.search);
 
   const clearHistory = () => {
     replace({ search: '' });
+  };
+
+  const appendHazardLayerToUrl = (
+    selectedLayers: LayerType[],
+    layer: LayerType,
+  ): string => {
+    const urlLayers = urlParams.get(UrlLayerKey.HAZARD);
+
+    const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
+
+    const filteredSelectedLayers = selectedLayers
+      .filter(l => selectedLayersUrl.includes(l.id) && l.type !== layer.type)
+      .map(l => l.id);
+
+    const updatedUrl =
+      filteredSelectedLayers.length !== 0
+        ? [...filteredSelectedLayers, layer.id]
+        : [layer.id];
+
+    return updatedUrl.join(',');
+  };
+
+  const removeHazardLayerFromUrl = (layerId: string): string => {
+    const urlLayers = urlParams.get(UrlLayerKey.HAZARD);
+
+    const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
+
+    return selectedLayersUrl.filter(l => l !== layerId).join(',');
   };
 
   const updateAnalysisParams = (analysisParams: AnalysisParams) => {
@@ -74,6 +113,8 @@ export const useUrlHistory = () => {
     updateAnalysisParams,
     resetAnalysisParams,
     getAnalysisParams,
+    appendHazardLayerToUrl,
+    removeHazardLayerFromUrl,
   };
 };
 

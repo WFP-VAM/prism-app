@@ -24,45 +24,22 @@ import {
   layersSelector,
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
-import { useUrlHistory } from '../../../../utils/url-utils';
+import { useUrlHistory, getUrlKey } from '../../../../utils/url-utils';
 import { removeLayer } from '../../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../../i18n';
 import { clearDataset } from '../../../../context/datasetStateSlice';
-
-const appendLayerToUrl = (
-  urlLayers: string | null,
-  selectedLayers: LayerType[],
-  layer: LayerType,
-): string => {
-  const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
-
-  const filteredSelectedLayers = selectedLayers
-    .filter(l => selectedLayersUrl.includes(l.id) && l.type !== layer.type)
-    .map(l => l.id);
-
-  const updatedUrl =
-    filteredSelectedLayers.length !== 0
-      ? [...filteredSelectedLayers, layer.id]
-      : [layer.id];
-
-  return updatedUrl.join(',');
-};
-
-const removeLayerFromUrl = (
-  urlLayers: string | null,
-  layerId: string,
-): string => {
-  const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
-
-  return selectedLayersUrl.filter(l => l !== layerId).join(',');
-};
 
 function SwitchItem({ classes, layer }: SwitchItemProps) {
   const { t } = useSafeTranslation();
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
   const dispatch = useDispatch();
-  const { updateHistory, removeKeyFromUrl, urlParams } = useUrlHistory();
+  const {
+    updateHistory,
+    removeKeyFromUrl,
+    appendHazardLayerToUrl,
+    removeHazardLayerFromUrl,
+  } = useUrlHistory();
 
   const { id: layerId, title: layerTitle, group } = layer;
 
@@ -92,42 +69,30 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   const validatedTitle = t(group?.groupTitle || layerTitle || '');
 
   const toggleLayerValue = (selectedLayerId: string, checked: boolean) => {
-    const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
-
     // clear previous table dataset loaded first
     // to close the dataseries and thus close chart
     dispatch(clearDataset());
-
-    const urlLayerKey =
-      layer.type === ADMIN_LEVEL_DATA_LAYER_KEY
-        ? 'baselineLayerId'
-        : 'hazardLayerId';
 
     const selectedLayer = group
       ? LayerDefinitions[selectedLayerId as LayerKey]
       : layer;
 
+    const urlLayerKey = getUrlKey(selectedLayer);
+
     if (checked) {
-      const updatedUrl = appendLayerToUrl(
-        urlParams.get(urlLayerKey),
-        selectedLayers,
-        selectedLayer,
-      );
+      const updatedUrl = appendHazardLayerToUrl(selectedLayers, selectedLayer);
 
       updateHistory(urlLayerKey, updatedUrl);
 
       const defaultBoundary = getBoundaryLayerSingleton();
       if (
         !('boundary' in selectedLayer) &&
-        selectedLayer.type === ADMIN_LEVEL_DATA_LAYER_KEY
+        selectedLayer.type === 'admin_level_data'
       ) {
         safeDispatchAddLayer(map, defaultBoundary, dispatch);
       }
     } else {
-      const updatedUrl = removeLayerFromUrl(
-        urlParams.get(urlLayerKey),
-        selectedLayer.id,
-      );
+      const updatedUrl = removeHazardLayerFromUrl(selectedLayer.id);
 
       if (updatedUrl === '') {
         removeKeyFromUrl(urlLayerKey);

@@ -42,7 +42,7 @@ import {
 } from '../../config/types';
 
 import { Extent } from './Layers/raster-utils';
-import { useUrlHistory } from '../../utils/url-utils';
+import { useUrlHistory, UrlLayerKey, getUrlKey } from '../../utils/url-utils';
 
 import {
   LayerDefinitions,
@@ -208,11 +208,8 @@ function MapView({ classes }: MapViewProps) {
       status is also updated. There are guards in case the values are not valid, such as invalid
       date or layerids.
       */
-    const HAZARD_LAYER_PARAM = 'hazardLayerId';
-    const BASELINE_LAYER_PARAM = 'baselineLayerId';
-
-    const hazardLayerIds = urlParams.get(HAZARD_LAYER_PARAM);
-    const baselineLayerId = urlParams.get(BASELINE_LAYER_PARAM);
+    const hazardLayerIds = urlParams.get(UrlLayerKey.HAZARD);
+    const baselineLayerId = urlParams.get(UrlLayerKey.ADMINLEVEL);
 
     /*
       In case we don't have hazard or baseline layers we will use the default
@@ -224,10 +221,7 @@ function MapView({ classes }: MapViewProps) {
       if (defaultLayer) {
         if (Object.keys(LayerDefinitions).includes(defaultLayer)) {
           const layer = LayerDefinitions[defaultLayer as LayerKey];
-          const urlLayerKey =
-            layer.type === 'admin_level_data'
-              ? BASELINE_LAYER_PARAM
-              : HAZARD_LAYER_PARAM;
+          const urlLayerKey: UrlLayerKey = getUrlKey(layer);
           updateHistory(urlLayerKey, defaultLayer);
         } else if (!defaultLayerAttempted) {
           dispatch(
@@ -255,7 +249,7 @@ function MapView({ classes }: MapViewProps) {
 
     const urlLayerIds = [
       ...hazardLayersArray,
-      ...(baselineLayerId === null ? [] : baselineLayerId),
+      ...(baselineLayerId === null ? [] : [baselineLayerId]),
     ];
 
     // Check for invalid layer ids.
