@@ -283,7 +283,7 @@ function MapView({ classes }: MapViewProps) {
 
     const dateInt = moment(urlDate).valueOf();
 
-    if (urlDate === null || dateInt === selectedDate) {
+    if (!urlDate || dateInt === selectedDate) {
       return;
     }
 
