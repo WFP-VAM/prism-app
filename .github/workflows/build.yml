@@ -1,4 +1,4 @@
-# for comment on PR, follow instruction for: https://github.com/marketplace/actions/add-pr-comment
+# for comment on PR, follow instruction for: https://github.com/marketplace/actions/sticky-pull-request-comment
 name: Build
 on: [pull_request]
 
@@ -81,14 +81,18 @@ jobs:
           project: 'build/.'
           login: ${{ secrets.surge_login }}
           token: ${{ secrets.surge_token }}
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
       - name: Comment PR
-        uses: mshick/add-pr-comment@v1
+        uses: marocchino/sticky-pull-request-comment@v1
         with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
-            Build succeeded and deployed at http://${{ env.surge_url }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
-          allow-repeats: false # This is the default
+            Build succeeded and deployed at http://${{ env.surge_url }} 
+            (hash ${{ github.event.pull_request.number }} deployed at ${{ steps.date.outputs.date }} )
+
+
 
   build_api:
     name: build api
