@@ -37,8 +37,8 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   const {
     updateHistory,
     removeKeyFromUrl,
-    appendHazardLayerToUrl,
-    removeHazardLayerFromUrl,
+    appendLayerToUrl,
+    removeLayerFromUrl,
   } = useUrlHistory();
 
   const { id: layerId, title: layerTitle, group } = layer;
@@ -80,7 +80,11 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
     const urlLayerKey = getUrlKey(selectedLayer);
 
     if (checked) {
-      const updatedUrl = appendHazardLayerToUrl(selectedLayers, selectedLayer);
+      const updatedUrl = appendLayerToUrl(
+        urlLayerKey,
+        selectedLayers,
+        selectedLayer,
+      );
 
       updateHistory(urlLayerKey, updatedUrl);
 
@@ -92,7 +96,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
         safeDispatchAddLayer(map, defaultBoundary, dispatch);
       }
     } else {
-      const updatedUrl = removeHazardLayerFromUrl(selectedLayer.id);
+      const updatedUrl = removeLayerFromUrl(urlLayerKey, selectedLayer.id);
 
       if (updatedUrl === '') {
         removeKeyFromUrl(urlLayerKey);

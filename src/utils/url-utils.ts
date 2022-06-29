@@ -38,11 +38,12 @@ export const useUrlHistory = () => {
     replace({ search: '' });
   };
 
-  const appendHazardLayerToUrl = (
+  const appendLayerToUrl = (
+    layerKey: UrlLayerKey,
     selectedLayers: LayerType[],
     layer: LayerType,
   ): string => {
-    const urlLayers = urlParams.get(UrlLayerKey.HAZARD);
+    const urlLayers = urlParams.get(layerKey);
 
     const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
 
@@ -58,8 +59,11 @@ export const useUrlHistory = () => {
     return updatedUrl.join(',');
   };
 
-  const removeHazardLayerFromUrl = (layerId: string): string => {
-    const urlLayers = urlParams.get(UrlLayerKey.HAZARD);
+  const removeLayerFromUrl = (
+    layerKey: UrlLayerKey,
+    layerId: string,
+  ): string => {
+    const urlLayers = urlParams.get(layerKey);
 
     const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
 
@@ -98,7 +102,7 @@ export const useUrlHistory = () => {
   const removeKeyFromUrl = (key: string) => {
     urlParams.delete(key);
 
-    if (key === 'hazardLayerId') {
+    if (key === UrlLayerKey.HAZARD) {
       urlParams.delete('date');
     }
 
@@ -113,8 +117,8 @@ export const useUrlHistory = () => {
     updateAnalysisParams,
     resetAnalysisParams,
     getAnalysisParams,
-    appendHazardLayerToUrl,
-    removeHazardLayerFromUrl,
+    appendLayerToUrl,
+    removeLayerFromUrl,
   };
 };
 
