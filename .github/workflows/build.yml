@@ -1,6 +1,6 @@
 # for comment on PR, follow instruction for: https://github.com/marketplace/actions/sticky-pull-request-comment
-name: Build
-on: [pull_request]
+name: Build and deploy to surge
+on: pull_request
 
 jobs:
   frontend_tests:
