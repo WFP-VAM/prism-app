@@ -42,7 +42,7 @@ import {
 } from '../../config/types';
 
 import { Extent } from './Layers/raster-utils';
-import { useUrlHistory, UrlLayerKey, getUrlKey } from '../../utils/url-utils';
+import { useUrlHistory } from '../../utils/url-utils';
 
 import {
   LayerDefinitions,
@@ -208,20 +208,26 @@ function MapView({ classes }: MapViewProps) {
       status is also updated. There are guards in case the values are not valid, such as invalid
       date or layerids.
       */
-    const hazardLayerIds = urlParams.get(UrlLayerKey.HAZARD);
-    const baselineLayerId = urlParams.get(UrlLayerKey.ADMINLEVEL);
+    const HAZARD_LAYER_PARAM = 'hazardLayerId';
+    const BASELINE_LAYER_PARAM = 'baselineLayerId';
+
+    const hazardLayerId = urlParams.get(HAZARD_LAYER_PARAM);
+    const baselineLayerId = urlParams.get(BASELINE_LAYER_PARAM);
 
     /*
       In case we don't have hazard or baseline layers we will use the default
       layer provided in the appConfig defined within `prism.json` file.
      */
-    if (!hazardLayerIds && !baselineLayerId) {
+    if (!hazardLayerId && !baselineLayerId) {
       const defaultLayer = get(appConfig, 'defaultLayer');
 
       if (defaultLayer) {
         if (Object.keys(LayerDefinitions).includes(defaultLayer)) {
           const layer = LayerDefinitions[defaultLayer as LayerKey];
-          const urlLayerKey: UrlLayerKey = getUrlKey(layer);
+          const urlLayerKey =
+            layer.type === 'admin_level_data'
+              ? BASELINE_LAYER_PARAM
+              : HAZARD_LAYER_PARAM;
           updateHistory(urlLayerKey, defaultLayer);
         } else if (!defaultLayerAttempted) {
           dispatch(
@@ -236,7 +242,7 @@ function MapView({ classes }: MapViewProps) {
     }
 
     if (
-      (!hazardLayerIds && !baselineLayerId) ||
+      (!hazardLayerId && !baselineLayerId) ||
       Object.keys(serverAvailableDates).length === 0
     ) {
       return;
@@ -244,60 +250,51 @@ function MapView({ classes }: MapViewProps) {
 
     const selectedLayersIds: LayerKey[] = selectedLayers.map(layer => layer.id);
 
-    const hazardLayersArray =
-      hazardLayerIds !== null ? hazardLayerIds.split(',') : [];
+    // Check for layers in url and add them.
+    [hazardLayerId, baselineLayerId].forEach(id => {
+      if (!id || selectedLayersIds.includes(id as LayerKey)) {
+        return;
+      }
 
-    const urlLayerIds = [
-      ...hazardLayersArray,
-      ...(baselineLayerId === null ? [] : [baselineLayerId]),
-    ];
+      if (Object.keys(LayerDefinitions).includes(id)) {
+        const layer = LayerDefinitions[id as LayerKey];
+        dispatch(addLayer(layer));
 
-    // Check for invalid layer ids.
-    const layerDefinitionIds = Object.keys(LayerDefinitions);
-    const invalidLayersIds = urlLayerIds.filter(
-      layerId => layerDefinitionIds.includes(layerId) === false,
-    );
-
-    if (invalidLayersIds.length > 0) {
-      const invalidLayersStr = invalidLayersIds.join(',');
-
-      dispatch(
-        addNotification({
-          message: `Invalid layer identifier(s): ${invalidLayersStr}`,
-          type: 'error',
-        }),
-      );
-
-      return;
-    }
-
-    // Check for layers that have not been included.
-    const missingLayers = urlLayerIds.filter(
-      layerId => selectedLayersIds.includes(layerId as LayerKey) === false,
-    );
-
-    missingLayers.forEach(layerId => {
-      const layer = LayerDefinitions[layerId as LayerKey];
-      dispatch(addLayer(layer));
+        if (selectedDate && !urlDate) {
+          updateHistory(
+            'date',
+            moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+          );
+        }
+      } else {
+        dispatch(
+          addNotification({
+            message: `Invalid layer identifier: ${id}`,
+            type: 'error',
+          }),
+        );
+      }
     });
 
-    const dateInt = moment(urlDate).valueOf();
-
-    if (!urlDate || dateInt === selectedDate) {
-      return;
+    if (
+      urlDate &&
+      moment(urlDate).valueOf() !== selectedDate &&
+      selectedLayersIds.includes(hazardLayerId as LayerKey)
+    ) {
+      const dateInt = moment(urlDate).valueOf();
+      if (Number.isNaN(dateInt)) {
+        dispatch(
+          addNotification({
+            message: 'Invalid date found. Using most recent date',
+            type: 'warning',
+          }),
+        );
+      } else {
+        dispatch(updateDateRange({ startDate: dateInt }));
+      }
     }
 
-    if (Number.isNaN(dateInt)) {
-      dispatch(
-        addNotification({
-          message: 'Invalid date found. Using most recent date',
-          type: 'warning',
-        }),
-      );
-    } else {
-      dispatch(updateDateRange({ startDate: dateInt }));
-      updateHistory('date', moment(dateInt).format(DEFAULT_DATE_FORMAT));
-    }
+    // Validate hazardLayer.
   }, [
     urlParams,
     urlDate,

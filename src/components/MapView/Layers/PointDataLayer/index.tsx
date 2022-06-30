@@ -8,10 +8,7 @@ import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import {
-  layerDataSelector,
-  mapSelector,
-} from '../../../../context/mapStateSlice/selectors';
+import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayerSingleton } from '../../../../config/utils';
@@ -33,21 +30,16 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     | undefined;
   const dispatch = useDispatch();
 
-  const map = useSelector(mapSelector);
-
   const { data } = layerData || {};
   const { features } = data || {};
   const { t } = useSafeTranslation();
-
-  const { id: layerId } = layer;
-
   useEffect(() => {
     if (!features) {
       dispatch(loadLayerData({ layer, date: selectedDate }));
     }
   }, [features, dispatch, layer, selectedDate]);
 
-  if (!features || map?.getSource(layerId)) {
+  if (!features) {
     return null;
   }
 
@@ -88,7 +80,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     return (
       <GeoJSONLayer
         before={`layer-${boundaryId}-line`}
-        id={layerId}
+        id={`layer-${layer.id}`}
         data={features}
         fillPaint={fillPaintData(layer, layer.dataField)}
         fillOnClick={onClickFunc}
@@ -98,7 +90,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   return (
     <GeoJSONLayer
       before={`layer-${boundaryId}-line`}
-      id={layerId}
+      id={`layer-${layer.id}`}
       data={features}
       circleLayout={circleLayout}
       circlePaint={circlePaint(layer, layer.dataField)}
