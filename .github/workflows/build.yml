@@ -18,7 +18,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
-
+        
       - name: Use Node.js 16.x
         uses: actions/setup-node@v2
         with:
@@ -77,8 +77,22 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
+      - name: Find country variable
+        id: country
+        uses: AsasInnab/regex-action@v1
+        with: 
+          regex_pattern: 'COUNTRY-+[a-zA-Z]+-'
+          regex_flags: 'gim'
+          search_string: ${{ github.event.pull_request.title }}
+      - name: Echo country variable
+        run: echo "My country env is ${{ steps.country.outputs.first_match }}"
+
+      - id: extract_country_env
+        run: |
+          REACT_APP_COUNTRY=$(echo ${{steps.country.outputs.first_match}} | cut -d- -f2)
+          echo "::set-output name=REACT_APP_COUNTRY::$REACT_APP_COUNTRY"
       - name: build frontend
-        run: GENERATE_SOURCEMAP=false yarn build
+        run: GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.extract_country_env.outputs.REACT_APP_COUNTRY }} yarn build
       - name: deploy on surge
         uses: dswistowski/surge-sh-action@v1
         with:
