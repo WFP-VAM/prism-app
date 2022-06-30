@@ -121,7 +121,7 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
     ])
     datetime_value = parse_form_field(datetime_value_string, labels.get(datetime_field))
 
-    geom_field = form_fields.get('geom_field', 'DoesNotExist')
+    geom_field = form_fields.get('geom_field') or "DoesNotExist"
     geom_value_string = get_first([
         value for key, value in form_dict.items()
         if key.endswith(geom_field)
