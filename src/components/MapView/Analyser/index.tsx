@@ -60,14 +60,11 @@ import {
   requestAndStorePolygonAnalysis,
   setIsMapLayerActive,
 } from '../../../context/analysisResultStateSlice';
-import AnalysisTable from './AnalysisTable';
 import SimpleDropdown from '../../Common/SimpleDropdown';
 import {
-  downloadCSVFromTableData,
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
-  useAnalysisTableColumns,
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 import {
@@ -81,14 +78,14 @@ import {
   layerDataSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { getPossibleDatesForLayer } from '../../../utils/server-utils';
-import { copyTextToClipboard, useUrlHistory } from '../../../utils/url-utils';
+import { useUrlHistory } from '../../../utils/url-utils';
 import { removeLayer } from '../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../i18n';
-import { addNotification } from '../../../context/notificationStateSlice';
 import { DEFAULT_DATE_FORMAT } from '../../../utils/name-utils';
 import { getDateFromList } from '../../../utils/data-utils';
 import AnalyserButton from './AnalyserButton';
 import OpenAnalyserFormButton from './OpenAnalyserFormButton';
+import AnalyserResult from './AnalyserResultButtonGroup';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -201,7 +198,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
         availableHazardDates,
       )?.getTime() || null
     : null;
-  const { translatedColumns } = useAnalysisTableColumns(analysisResult);
 
   // set default date after dates finish loading and when hazard layer changes
   useEffect(() => {
@@ -357,17 +353,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
       // to avoid miss behaviour on boundary layers
       dispatch(setIsMapLayerActive(true));
     }
-  };
-
-  const shareAnalysis = () => {
-    copyTextToClipboard(window.location.href).then(() => {
-      dispatch(
-        addNotification({
-          message: 'Link to this analysis copied to clipboard!',
-          type: 'success',
-        }),
-      );
-    });
   };
 
   const onMapSwitchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -682,29 +667,11 @@ function Analyser({ extent, classes }: AnalyserProps) {
                       label={t('Table View')}
                     />
                   </FormGroup>
-                  {isTableViewOpen && (
-                    <AnalysisTable
-                      tableData={analysisResult.tableData}
-                      columns={translatedColumns}
-                    />
-                  )}
-                  <AnalyserButton
-                    label={t('Download')}
-                    onClick={() =>
-                      downloadCSVFromTableData(
-                        analysisResult,
-                        translatedColumns,
-                        selectedDate,
-                      )
-                    }
-                  />
-                  <AnalyserButton
-                    label={t('Clear Analysis')}
-                    onClick={clearAnalysis}
-                  />
-                  <AnalyserButton
-                    label={t('Share Analysis')}
-                    onClick={shareAnalysis}
+                  <AnalyserResult
+                    isTableViewOpen
+                    analysisResult={analysisResult}
+                    clearAnalysis={clearAnalysis}
+                    selectedDate={selectedDate}
                   />
                 </>
               )}
