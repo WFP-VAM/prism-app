@@ -89,6 +89,7 @@ import { useSafeTranslation } from '../../../i18n';
 import { addNotification } from '../../../context/notificationStateSlice';
 import { DEFAULT_DATE_FORMAT } from '../../../utils/name-utils';
 import { getDateFromList } from '../../../utils/data-utils';
+import AnalyserButton from './AnalyserButton';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -698,8 +699,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
                       columns={translatedColumns}
                     />
                   )}
-                  <Button
-                    className={classes.innerAnalysisButton}
+                  <AnalyserButton
+                    label={t('Download')}
                     onClick={() =>
                       downloadCSVFromTableData(
                         analysisResult,
@@ -707,31 +708,20 @@ function Analyser({ extent, classes }: AnalyserProps) {
                         selectedDate,
                       )
                     }
-                  >
-                    <Typography variant="body2">{t('Download')}</Typography>
-                  </Button>
-                  <Button
-                    className={classes.innerAnalysisButton}
+                  />
+                  <AnalyserButton
+                    label={t('Clear Analysis')}
                     onClick={clearAnalysis}
-                  >
-                    <Typography variant="body2">
-                      {t('Clear Analysis')}
-                    </Typography>
-                  </Button>
-                  <Button
-                    className={classes.innerAnalysisButton}
+                  />
+                  <AnalyserButton
+                    label={t('Share Analysis')}
                     onClick={shareAnalysis}
-                  >
-                    <Typography variant="body2">
-                      {t('Share Analysis')}
-                    </Typography>
-                  </Button>
+                  />
                 </>
               )}
             {(!analysisResult ||
               analysisResult instanceof ExposedPopulationResult) && (
-              <Button
-                className={classes.innerAnalysisButton}
+              <AnalyserButton
                 onClick={runAnalyser}
                 disabled={
                   !!thresholdError || // if there is a threshold error
@@ -741,9 +731,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
                     ? !startDate || !endDate || !adminLevelLayerData
                     : !selectedDate || !baselineLayerId) // or date hasn't been selected // or baseline layer hasn't been selected
                 }
-              >
-                <Typography variant="body2">{t('Run Analysis')}</Typography>
-              </Button>
+                label={t('Run Analysis')}
+              />
             )}
             {isAnalysisLoading ? <LinearProgress /> : null}
           </div>
@@ -788,11 +777,6 @@ const styles = (theme: Theme) =>
     radioOptions: {
       '&.Mui-checked': { color: grey[50] },
       padding: '2px 10px 2px 20px',
-    },
-    innerAnalysisButton: {
-      backgroundColor: '#3d474a',
-      margin: '10px',
-      '&.Mui-disabled': { opacity: 0.5 },
     },
     selectorLabel: {
       '&.Mui-focused': { color: 'white' },
