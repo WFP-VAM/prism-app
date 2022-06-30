@@ -1,6 +1,5 @@
 # for comment on PR, follow instruction for: https://github.com/marketplace/actions/sticky-pull-request-comment
 name: Build and deploy to surge
-
 on:
   # Run on all pull requests and on pushes to main.
   pull_request:
