@@ -11,7 +11,10 @@ import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
+import {
+  layerDataSelector,
+  mapSelector,
+} from '../../../../context/mapStateSlice/selectors';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
@@ -35,9 +38,13 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     | undefined;
   const dispatch = useDispatch();
 
+  const map = useSelector(mapSelector);
+
   const { data } = layerData || {};
   const { features } = data || {};
   const { t } = useSafeTranslation();
+
+  const { id: layerId } = layer;
 
   useEffect(() => {
     if (
@@ -63,7 +70,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     }
   }, [features, dispatch, layer, selectedDate, koboAuthParams]);
 
-  if (!features) {
+  if (!features || map?.getSource(layerId)) {
     return null;
   }
 
@@ -104,7 +111,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     return (
       <GeoJSONLayer
         before={`layer-${boundaryId}-line`}
-        id={`layer-${layer.id}`}
+        id={layerId}
         data={features}
         fillPaint={fillPaintData(layer, layer.dataField)}
         fillOnClick={onClickFunc}
@@ -114,7 +121,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   return (
     <GeoJSONLayer
       before={`layer-${boundaryId}-line`}
-      id={`layer-${layer.id}`}
+      id={layerId}
       data={features}
       circleLayout={circleLayout}
       circlePaint={circlePaint(layer, layer.dataField)}
