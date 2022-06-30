@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import {
   Box,
-  Button,
   createStyles,
   FormControl,
   FormControlLabel,
@@ -24,7 +23,6 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import { ArrowDropDown, BarChart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { isNil, range } from 'lodash';
@@ -90,6 +88,7 @@ import { addNotification } from '../../../context/notificationStateSlice';
 import { DEFAULT_DATE_FORMAT } from '../../../utils/name-utils';
 import { getDateFromList } from '../../../utils/data-utils';
 import AnalyserButton from './AnalyserButton';
+import OpenAnalyserFormButton from './OpenAnalyserFormButton';
 
 function Analyser({ extent, classes }: AnalyserProps) {
   const dispatch = useDispatch();
@@ -503,19 +502,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   return (
     <div className={classes.analyser}>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => {
-          setIsAnalyserFormOpen(!isAnalyserFormOpen);
-        }}
-      >
-        <BarChart fontSize="small" />
-        <Typography variant="body2" className={classes.analyserLabel}>
-          {t('Run Analysis')}
-        </Typography>
-        <ArrowDropDown fontSize="small" />
-      </Button>
+      <OpenAnalyserFormButton
+        onClick={() => setIsAnalyserFormOpen(!isAnalyserFormOpen)}
+      />
 
       <Box
         className={classes.analyserMenu}
@@ -747,9 +736,6 @@ const styles = (theme: Theme) =>
     analyser: {
       zIndex: theme.zIndex.drawer,
       textAlign: 'left',
-    },
-    analyserLabel: {
-      marginLeft: '10px',
     },
     analyserMenu: {
       backgroundColor: '#5A686C',
