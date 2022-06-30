@@ -31,7 +31,7 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
       {layers.map(layer => {
         if (
           layer.group &&
-          layer.group.layers.find(l => l.id === layer.id && !l.main)
+          layer.group.layers.find(l => l.id === layer.id && !l.default)
         ) {
           return null;
         }

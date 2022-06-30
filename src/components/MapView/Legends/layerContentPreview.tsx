@@ -16,7 +16,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
-import { isMainLayer, LayerType } from '../../../config/types';
+import { isDefaultLayer, LayerType } from '../../../config/types';
 import { LayerDefinitions } from '../../../config/utils';
 import { layersSelector } from '../../../context/mapStateSlice/selectors';
 
@@ -26,8 +26,8 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
   const contentRef = useRef<HTMLHeadingElement>(null);
   const layer = LayerDefinitions[layerId || 'admin_boundaries'];
   const selectedLayers = useSelector(layersSelector);
-  // display if layer without group or main layer in group
-  const canDisplayContent = isMainLayer(layerId as string, selectedLayers);
+  // display if layer without group or default layer in group
+  const canDisplayContent = isDefaultLayer(layerId as string, selectedLayers);
   const hasContent = layer.contentPath?.length;
   const domId = layer.contentPath?.split('#')?.[1];
 

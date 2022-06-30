@@ -36,17 +36,15 @@
             {
               "id": "adamts_buffers",
               "label": "Wind buffers",
-              "main": true
+              "default": true
             },
             {
               "id": "adamts_nodes",
-              "label": "Nodes",
-              "main": false
+              "label": "Nodes"
             },
             {
               "id": "adamts_tracks",
-              "label": "Tracks",
-              "main": false
+              "label": "Tracks"
             }
           ]
         }

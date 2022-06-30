@@ -23,7 +23,7 @@ export type LayerKey = keyof typeof rawLayers;
 type MenuGroupItem = {
   id: string;
   label: string;
-  main: boolean;
+  default?: boolean;
 };
 
 export type MenuGroup = {
@@ -46,14 +46,14 @@ export const isLayerKey = (layerKey: string | MenuGroup) => {
 };
 
 /**
- * Check if a layer is without group, or is the main layer in the group
+ * Check if a layer is without group, or is the default layer in the group
  * @param layerId
  * @param layers
  */
-export const isMainLayer = (layerId: string, layers: LayerType[]) => {
+export const isDefaultLayer = (layerId: string, layers: LayerType[]) => {
   return !layers
     .filter(sl => sl.group)
-    .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.main));
+    .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.default));
 };
 
 /**
@@ -277,7 +277,7 @@ export class CommonLayerProps {
   featureInfoProps?: { [key: string]: FeatureInfoProps };
 
   /*
-  * only for layer that has grouped menu and always assigned to main layer of group (../components/Navbar/utils.ts)
+  * only for layer that has grouped menu and always assigned to default layer of group (../components/Navbar/utils.ts)
   * can be set in config/{country}/prism.json by changing the LayerKey (string) into object:
     {
       "group_title": "Rainfall Anomaly" // the title of group
@@ -286,12 +286,11 @@ export class CommonLayerProps {
         {
           "id": "rain_anomaly_1month",
           "label": "1-month",
-          "main": true
+          "default": true
         },
         {
           "id": "rain_anomaly_3month",
-          "label": "3-month",
-          "main": false
+          "label": "3-month"
         },
         ...
       ]
