@@ -14,7 +14,7 @@ function WMSLayers({
 }: LayersProps) {
   const selectedDate = useDefaultDate(serverLayerName, id);
   const map = useSelector(mapSelector);
-  const boundary = boundariesOnView(map)[0];
+  const boundary = boundariesOnView(map).slice(-1)[0];
 
   return (
     <>
