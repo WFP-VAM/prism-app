@@ -1,5 +1,5 @@
 # for comment on PR, follow instruction for: https://github.com/marketplace/actions/sticky-pull-request-comment
-name: Build and deploy to surge
+name: PRISM CI
 on:
   # Run on all pull requests and on pushes to main.
   pull_request:
@@ -77,21 +77,16 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Find country variable
-        id: country
-        uses: AsasInnab/regex-action@v1
+        id: country_regex
+        uses: actions-ecosystem/action-regex-match@v2
         with:
-          regex_pattern: 'COUNTRY=+[a-zA-Z]+ '
-          regex_flags: 'gim'
-          search_string: ${{ github.event.pull_request.title }}
+          text: ${{ github.event.pull_request.title }}
+          regex: 'COUNTRY=(\w+)'
       - name: Echo country variable
-        run: echo "My country env is ${{ steps.country.outputs.first_match }}"
+        run: echo "Country env is ${{ steps.country_regex.outputs.group1 }}"
 
-      - id: extract_country_env
-        run: |
-          REACT_APP_COUNTRY=$(echo ${{steps.country.outputs.first_match}} | cut -d- -f2)
-          echo "::set-output name=REACT_APP_COUNTRY::$REACT_APP_COUNTRY"
       - name: build frontend
-        run: GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.extract_country_env.outputs.REACT_APP_COUNTRY }} yarn build
+        run: GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 }} yarn build
       - name: deploy on surge
         uses: dswistowski/surge-sh-action@v1
         with:
