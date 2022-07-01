@@ -22,6 +22,7 @@
     "predeploy:staging": "yarn build",
     "deploy:prod": "firebase deploy --only hosting:prod-target",
     "deploy:staging": "firebase deploy --only hosting:staging-target",
+    "deploy:surge": "surge --project ./build",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src --ignore-path .gitignore",
     "postinstall": "yarn run setup:maplibre",
