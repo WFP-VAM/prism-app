@@ -1105,11 +1105,6 @@
       {
         "value": 30,
         "color": "#1d2e83"
-      },
-      {
-        "value": "255 - no value",
-        "color": "#ffffff",
-        "alpha": 0
       }
     ]
   },
@@ -1257,7 +1252,7 @@
       "styles": "viq"
     },
     "opacity": 0.7,
-    "legend_text": "NDVI Anomaly compared to LTA",
+    "legend_text": "NDVI anomaly compared to long term average",
     "legend": [
       {
         "value": 50,
@@ -1407,7 +1402,7 @@
       "pixelResolution": 64
     },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Daytime land surface temperature",
     "additional_query_params": {
       "styles": "lst_day"
     },
@@ -1470,7 +1465,7 @@
       "pixelResolution": 64
     },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Daytime land surface temperature",
     "additional_query_params": {
       "styles": "lst_day"
     },
@@ -1599,7 +1594,7 @@
       "additional_query_params": {
         "styles": "lst_day"
       },
-      "legend_text": "LEGEND",
+      "legend_text": "Daytime land surface temperature anomaly",
       "legend": [
         {
           "value": -300,
@@ -1649,7 +1644,7 @@
       "additional_query_params": {
         "styles": "lst_day"
       },
-      "legend_text": "LEGEND",
+      "legend_text": "Daytime land surface temperature anomaly",
       "legend": [
         {
           "value": -300,
@@ -2565,7 +2560,7 @@
           "color": "#a50f15"
         }
       ],
-      "legend_text": "Percernt of population currently in IPC phase 3 or higher - November 2021 – March 2022. Source: National IPC Technical Working Group"
+      "legend_text": "Percent of population currently in IPC phase 3 or higher - November 2021 – March 2022. Source: National IPC Technical Working Group"
     },
     "mpi": {
       "title": "Multidimensional Poverty Index",
