@@ -17,7 +17,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
-        
+
       - name: Use Node.js 16.x
         uses: actions/setup-node@v2
         with:
@@ -79,8 +79,8 @@ jobs:
       - name: Find country variable
         id: country
         uses: AsasInnab/regex-action@v1
-        with: 
-          regex_pattern: 'COUNTRY-+[a-zA-Z]+-'
+        with:
+          regex_pattern: 'COUNTRY=+[a-zA-Z]+ '
           regex_flags: 'gim'
           search_string: ${{ github.event.pull_request.title }}
       - name: Echo country variable

@@ -298,7 +298,4 @@ By default, a pre-commit hook is defined to run linting tasks on all _staged_ co
 
 ### Creating pull request and deploying on Surge
 
-By default, everytime a pull request is created, a CI/CD pipeline will run tests and deploy the code on a surge page (http://prism-[pr number].surge.sh). To specify a country that the build will be run on, in the Pull request title you can add:
-COUNTRY-[country name]- to the PR title
-for example:
-COUNTRY-cambodia-test pull request.
+By default, everytime a pull request is created, a CI/CD pipeline will run tests and deploy the code on a surge page (http://prism-[pr number].surge.sh). To specify a country that the build will be run on, start your pull request title with `COUNTRY=[country name]`. For example: `COUNTRY=cambodia Add new config options`.
