@@ -178,6 +178,8 @@
     },
     "exposure": {
       "field_reports": [
+        "flood_report",
+        "drought_report",
         "kh_incident_report"
       ]
     }
