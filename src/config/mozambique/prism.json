@@ -1,15 +1,20 @@
 {
   "country": "Mozambique",
   "alertFormActive": false,
+  "enableNavigationDropdown": true,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
     "temperature": "icon_climate.png",
     "risk": "icon_impact.png",
     "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
+    "vulnerability": "icon_vulnerable.png",
+    "exposure": "icon_basemap.png"
   },
-  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin1_boundaries"
+  ],
   "serversUrls": {
     "wms": [
       "https://odc.ovio.org/wms",
@@ -26,28 +31,117 @@
     "rainfall": {
       "rainfall_amount": [
         "precip_blended_dekad",
-        "rainfall_dekad",
-        "rainfall_agg_1month",
-        "rainfall_agg_3month",
-        "rainfall_agg_6month",
-        "rainfall_agg_9month",
-        "rainfall_agg_1year"
+        {
+          "group_title": "Rainfall Aggregate",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rainfall_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rainfall_agg_1month",
+              "label": "1-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_3month",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_6month",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_9month",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_1year",
+              "label": "1-year",
+              "main": false
+            }
+          ]
+        }
       ],
       "rainfall_anomalies": [
         "precip_blended_dekad_anomaly",
-        "rain_anomaly_dekad",
-        "rain_anomaly_1month",
-        "rain_anomaly_3month",
-        "rain_anomaly_6month",
-        "rain_anomaly_9month",
-        "rain_anomaly_1year",
-        "spi_1m",
-        "spi_3m",
-        "spi_6m",
-        "spi_9m",
-        "spi_1y"
+        {
+          "group_title": "Rainfall Anomaly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rain_anomaly_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rain_anomaly_1month",
+              "label": "1-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_3month",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_6month",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_9month",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_1year",
+              "label": "1-year",
+              "main": false
+            }
+          ]
+        },
+        {
+          "group_title": "SPI",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "spi_1m",
+              "label": "1-month",
+              "main": true
+            },
+            {
+              "id": "spi_3m",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "spi_6m",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "spi_9m",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "spi_1y",
+              "label": "1-year",
+              "main": false
+            }
+          ]
+        }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days"],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
       "heavy_rain": [
         "days_heavy_rain",
         "days_intense_rain",
@@ -56,32 +150,99 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": ["ndvi_dekad_5", "ndvi_dekad_anomaly_5"]
+      "vegetation_conditions": [
+        "ndvi_dekad_5",
+        "ndvi_dekad_anomaly_5"
+      ]
     },
     "temperature": {
-      "air_temperature": ["ast_max", "ast_max_anomaly"],
-      "land_surface_temperature": [
+      "blended_temperature_estimates": [
         "lst_daytime_blended",
-        "lst_day_anomaly_blended",
+        "lst_day_anomaly_blended"
+      ],
+      "land_surface_temperature": [
         "lst_daytime_5",
         "lst_day_anomaly_5",
         "lst_amplitude"
       ]
     },
     "tropical_storms": {
-      "tropical_storms": ["adamts_buffers"]
+      "tropical_storms": [
+        {
+          "group_title": "Tropical Storms",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "adamts_buffers",
+              "label": "Wind buffers",
+              "main": true
+            },
+            {
+              "id": "adamts_nodes",
+              "label": "Nodes",
+              "main": false
+            },
+            {
+              "id": "adamts_tracks",
+              "label": "Tracks",
+              "main": false
+            }
+          ]
+        }
+      ]
     },
     "vulnerability": {
-      "food_insecurity": [
-        "ipc_phase_current",
-        "ipc_phase_projected",
-        "ipc_phase_12_2020",
-        "ipc_pop_ph3_current",
-        "ipc_pop_ph3_projected",
-        "ipc_perc_ph3_current",
-        "ipc_perc_ph3_projected"
+      "poverty": [
+        "mpi"
       ],
-      "poverty": ["mpi"]
+      "food_insecurity": [
+        {
+          "group_title": "IPC",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ipc_phase_current",
+              "label": "Current phase classification",
+              "main": true
+            },
+            {
+              "id": "ipc_phase_projected",
+              "label": "Projected phase classification",
+              "main": false
+            },
+            {
+              "id": "ipc_phase_12_2020",
+              "label": "December 2020 phase classification",
+              "main": false
+            },
+            {
+              "id": "ipc_pop_ph3_current",
+              "label": "Current population in phase 3+",
+              "main": false
+            },
+            {
+              "id": "ipc_pop_ph3_projected",
+              "label": "Projected population in phase 3+",
+              "main": false
+            },
+            {
+              "id": "ipc_perc_ph3_current",
+              "label": "Current percent of population in phase 3+",
+              "main": false
+            },
+            {
+              "id": "ipc_perc_ph3_projected",
+              "label": "Projected percent of population in phase 3+",
+              "main": false
+            }
+          ]
+        }
+      ]
+    },
+    "exposure": {
+      "population": [
+        "census"
+      ]
     }
   }
 }

@@ -22,7 +22,7 @@ const LINE_PAINT_DATA: MapboxGL.LinePaint = {
  * To select a layer, use the Redux slice and provide which cell you want to select.
  * We currently only support granular selection (i.e. selecting a single cell on level 2).
  */
-function SelectionLayer() {
+function SelectionLayer({ before }: { before?: string }) {
   const isSelectionMode = useSelector(getIsSelectionMode);
   const selectedBoundaries = useSelector(getSelectedBoundaries);
   const boundaryLayerState = useSelector(
@@ -43,6 +43,7 @@ function SelectionLayer() {
   return (
     <GeoJSONLayer
       id="map-selection-layer"
+      before={before}
       data={filteredData}
       linePaint={LINE_PAINT_DATA}
     />
