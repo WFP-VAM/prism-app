@@ -39,13 +39,16 @@ export const appResources = {
 
 // Translations are expected to take the form {"fr": {"english sentence": "french translation", ...}
 export const formattedTranslation = Object.keys(translation).reduce(
-  (a, v) => ({ ...a, [v]: { translation: translation[v] } }),
+  (a, v) => ({
+    ...a,
+    [v]: { translation: translation[v as keyof typeof translation] },
+  }),
   {},
 );
 
 const englishKeys = Object.keys(translation)
   .flatMap(language => {
-    return Object.keys(translation[language]);
+    return Object.keys(translation[language as keyof typeof translation]);
   })
   .reduce(
     (previousKeys, currentKey) => ({
