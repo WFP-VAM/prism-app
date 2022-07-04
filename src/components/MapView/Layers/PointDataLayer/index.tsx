@@ -56,6 +56,21 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
 
     if (
       features &&
+      !(features as FeatureCollection).features &&
+      layer.tokenRequired
+    ) {
+      dispatch(
+        addNotification({
+          message: 'Invalid credentials',
+          type: 'error',
+        }),
+      );
+
+      return;
+    }
+
+    if (
+      features &&
       (features as FeatureCollection).features.length === 0 &&
       layer.tokenRequired
     ) {
