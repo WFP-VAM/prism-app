@@ -385,6 +385,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
   type: 'admin_level_data';
   path: string;
 
+  @optional
+  dateUrl?: string;
+
   @makeRequired
   title: string;
 

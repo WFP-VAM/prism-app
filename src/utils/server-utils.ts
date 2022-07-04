@@ -9,6 +9,7 @@ import type {
   RequestFeatureInfo,
 } from '../config/types';
 import {
+  AdminLevelDataLayerProps,
   ImpactLayerProps,
   WMSLayerProps,
   FeatureInfoType,
@@ -28,6 +29,7 @@ const xml2jsOptions = {
   ignoreComment: true,
 };
 export type DateCompatibleLayer =
+  | AdminLevelDataLayerProps
   | WMSLayerProps
   | ImpactLayerProps
   | PointDataLayerProps;
@@ -45,6 +47,7 @@ export const getPossibleDatesForLayer = (
         (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
       ];
     case 'point_data':
+    case 'admin_level_data':
       return serverAvailableDates[layer.id];
   }
 };
@@ -289,6 +292,18 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   return possibleDates;
 }
 
+async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
+  const url = layer.dateUrl;
+  if (!url) {
+    return [];
+  }
+  // raw data comes in as {"dates": ["YYYY-MM-DD"]}
+  const { dates }: { dates: string[] } = await fetch(url, {
+    mode: url.startsWith('http') ? 'cors' : 'same-origin',
+  }).then(resp => resp.json());
+  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+}
+
 /**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
@@ -302,11 +317,19 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     (layer): layer is PointDataLayerProps => layer.type === 'point_data',
   );
 
+  const adminWithDateLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is AdminLevelDataLayerProps =>
+      layer.type === 'admin_level_data' && Boolean(layer.dateUrl),
+  );
+
   const layerDates: AvailableDates[] = await Promise.all([
     ...wmsServerUrls.map(url => getWMSCapabilities(url)),
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer),
+    })),
+    ...adminWithDateLayers.map(async layer => ({
+      [layer.id]: await getAdminLevelDataCoverage(layer),
     })),
   ]);
 

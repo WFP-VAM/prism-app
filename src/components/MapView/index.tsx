@@ -180,9 +180,16 @@ function MapView({ classes }: MapViewProps) {
     undefined,
   );
   const selectedLayersWithDateSupport = selectedLayers
-    .filter((layer): layer is DateCompatibleLayer =>
-      dateSupportLayerTypes.includes(layer.type),
-    )
+    .filter((layer): layer is DateCompatibleLayer => {
+      if (layer.type === 'admin_level_data') {
+        return Boolean(layer.dateUrl);
+      }
+      if (layer.type === 'wms') {
+        // some WMS layer might not have date dimension (i.e. static data)
+        return layer.serverLayerName in serverAvailableDates;
+      }
+      return dateSupportLayerTypes.includes(layer.type);
+    })
     .filter(layer => isMainLayer(layer.id, selectedLayers));
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
