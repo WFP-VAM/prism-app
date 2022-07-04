@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/rbd/wca_CHIPC_nov2021_admin1.json",
+    "path": "data/rbd/wca_admbnda_adm2_ocha.json",
     "opacity": 0.8,
     "styles:": {
       "fill": {
@@ -13,13 +13,21 @@
         "line-opacity": 0.5
       }
     },
-    "admin_code": "adm1_pcod2",
-    "admin_level_names": ["adm0_name", "adm1_name"],
-    "admin_level_local_names": ["adm0_name", "adm1_name"]
+    "admin_code": "admin2Pcod",
+    "admin_level_names": [
+      "admin0Name",
+      "admin1Name",
+      "admin2Name"
+    ],
+    "admin_level_local_names": [
+      "admin0Name",
+      "admin1Name",
+      "admin2Name"
+    ]
   },
-  "admin0_boundaries": {
+  "admin1_boundaries": {
     "type": "boundary",
-    "path": "data/rbd/wca_shp0all.json",
+    "path": "data/rbd/wca_admbnda_adm1_ocha.json",
     "opacity": 0.8,
     "styles:": {
       "fill": {
@@ -27,13 +35,41 @@
       },
       "line": {
         "line-color": "gray",
-        "line-width": 1,
+        "line-width": 1.5,
         "line-opacity": 0.8
       }
     },
+    "admin_code": "admin1Pcod",
+    "admin_level_names": [
+      "admin0Name",
+      "admin1Name"
+    ],
+    "admin_level_local_names": [
+      "admin0Name",
+      "admin1Name"
+    ]
+  },
+  "admin0_boundaries": {
+    "type": "boundary",
+    "path": "data/rbd/wca_admbnda_adm0_ocha.json",
+    "opacity": 0.8,
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2,
+        "line-opacity": 0.9
+      }
+    },
     "admin_code": "admin0Pcod",
-    "admin_level_names": ["admin0Name"],
-    "admin_level_local_names": ["admin0Name"]
+    "admin_level_names": [
+      "admin0Name"
+    ],
+    "admin_level_local_names": [
+      "admin0Name"
+    ]
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
@@ -45,7 +81,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "CHIRPS rainfall global dekad",
+    "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "1 mm",
@@ -104,7 +140,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "CHIRPS rainfall anomaly dekad",
+    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "< 60%",
@@ -339,7 +375,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "< 60%",
@@ -380,7 +416,7 @@
     ]
   },
   "rainfall_agg_1month": {
-    "title": "1-month rainfall aggregate",
+    "title": "1-month rainfall aggregate (mm)",
     "type": "wms",
     "server_layer_name": "r1h_dekad",
     "additional_query_params": {
@@ -389,7 +425,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "CHIRPS 1 month dekadal rainfall aggregations (mm)",
+    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "50 mm",
@@ -447,7 +483,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
+    "legend_text": "Total aggregate precipitation over a 3-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "50 mm",
@@ -505,7 +541,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "CHIRPS 6 month dekadal rainfall aggregations",
+    "legend_text": "Total aggregate precipitation over a 6-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "50 mm",
@@ -563,7 +599,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "CHIRPS 9 month dekadal rainfall aggregations",
+    "legend_text": "Total aggregate precipitation over a 9-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "50 mm",
@@ -621,7 +657,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "CHIRPS 1 year dekadal rainfall aggregations",
+    "legend_text": "Total aggregate precipitation over a 1-year period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "50 mm",
@@ -1337,7 +1373,7 @@
       "styles": "viq"
     },
     "opacity": 0.7,
-    "legend_text": "NDVI Anomaly compared to LTA",
+    "legend_text": "Normalized Difference Vegetation Index (NDVI) anomaly when compared to the long-term average",
     "legend": [
       {
         "label": "50%",
@@ -1437,53 +1473,53 @@
       "pixelResolution": 64
     },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "Daytime land surface temperature",
     "additional_query_params": {
       "styles": "lst_day"
     },
     "legend": [
       {
-        "label": "0",
+        "label": "0°",
         "color": "#f0f9ba"
       },
       {
-        "label": "5",
+        "label": "5°",
         "color": "#edeba4"
       },
       {
-        "label": "10",
+        "label": "10°",
         "color": "#ebdd8f"
       },
       {
-        "label": "15",
+        "label": "15°",
         "color": "#eace7c"
       },
       {
-        "label": "20",
+        "label": "20°",
         "color": "#e9bf6a"
       },
       {
-        "label": "25",
+        "label": "25°",
         "color": "#e9af59"
       },
       {
-        "label": "30",
+        "label": "30°",
         "color": "#e99e4c"
       },
       {
-        "label": "35",
+        "label": "35°",
         "color": "#e98d41"
       },
       {
-        "label": "40",
+        "label": "40°",
         "color": "#e87a3a"
       },
       {
-        "label": "45",
+        "label": "45°",
         "color": "#e76636"
       },
       {
-        "label": "50",
+        "label": "50°",
         "color": "#e54f35"
       }
     ]
@@ -1498,7 +1534,7 @@
     "additional_query_params": {
       "styles": "lst_day"
     },
-    "legend_text": "LEGEND",
+    "legend_text": "Daytime land surface temperature anomaly when compared to long-term average",
     "legend": [
       {
         "label": "-300%",
@@ -1533,15 +1569,6 @@
         "color": "#f9cb35"
       }
     ]
-  },
-  "adam_earthquakes": {
-    "title": "Adam Global Earthquakes Epicenters",
-    "type": "wms",
-    "server_layer_name": "wld_eq_historical_moz",
-    "opacity": 0.9,
-    "legend": [],
-    "legend_text": "",
-    "base_url": "https://geonode.wfp.org/geoserver"
   },
   "ch_2021_03": {
     "title": "Projected phase classification: March to June 2021",
