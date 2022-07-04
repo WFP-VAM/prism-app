@@ -1,28 +1,30 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { LayerKey } from '../config/types';
 import type { RootState } from './store';
 
 type MapTileLoadingState = {
-  loading: boolean;
+  loadingLayerIds: LayerKey[];
 };
 
 export const mapTileLoadingState = createSlice({
   name: 'mapTileLoadingState',
   initialState: {
-    loading: false,
+    loadingLayerIds: [],
   } as MapTileLoadingState,
   reducers: {
-    setLoading: (state, { payload }: PayloadAction<boolean>) => {
+    setLoadingLayerIds: (state, { payload }: PayloadAction<LayerKey[]>) => {
       return {
-        loading: payload,
+        loadingLayerIds: payload,
       };
     },
   },
 });
 
-export const { setLoading } = mapTileLoadingState.actions;
+export const { setLoadingLayerIds } = mapTileLoadingState.actions;
 
-export const loadingSelector = (
+export const loadingLayerIdsSelector = (
   state: RootState,
-): MapTileLoadingState['loading'] => state.mapTileLoadingState.loading;
+): MapTileLoadingState['loadingLayerIds'] =>
+  state.mapTileLoadingState.loadingLayerIds;
 
 export default mapTileLoadingState.reducer;

@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Extent } from '../Layers/raster-utils';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
+import LoadingBar from './LoadingBar';
 import {
   LayerType,
   GeometryType,
@@ -294,7 +295,7 @@ function LegendItem({
             </Grid>
           )}
 
-          <Divider />
+          {id && <LoadingBar layerId={id} />}
 
           {children && (
             <Grid item>

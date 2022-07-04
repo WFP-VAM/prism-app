@@ -24,7 +24,6 @@ import type { Feature, MultiPolygon } from '@turf/helpers';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
 import Download from './Download';
-import TileLoadingIcon from './TileLoadingIcon';
 // layers
 import {
   AdminLevelDataLayer,
@@ -60,7 +59,7 @@ import {
   layersSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
-import { setLoading as setMapTileLoading } from '../../context/mapTileLoadingStateSlice';
+import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';
 import {
   addPopupData,
   hidePopup,
@@ -409,6 +408,25 @@ function MapView({ classes }: MapViewProps) {
     urlDate,
   ]);
 
+  // Listen for MapSourceData events to track WMS Layers that are currently loading.
+  const trackLoadingLayers = (map: Map) => {
+    // Track with local state to minimize expensive dispatch call
+    const layerIds = new Set<LayerKey>();
+    map.on('sourcedata', e => {
+      if (e.sourceId.startsWith('source-')) {
+        const layerId = e.sourceId.substring('source-'.length) as LayerKey;
+        const included = layerIds.has(layerId);
+        if (!included && !e.isSourceLoaded) {
+          layerIds.add(layerId);
+          dispatch(setLoadingLayerIds([...layerIds]));
+        } else if (included && e.isSourceLoaded) {
+          layerIds.delete(layerId);
+          dispatch(setLoadingLayerIds([...layerIds]));
+        }
+      }
+    });
+  };
+
   const {
     map: { latitude, longitude, zoom },
   } = appConfig;
@@ -421,24 +439,9 @@ function MapView({ classes }: MapViewProps) {
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
-
-    // TODO: better approach to set tileLoading
-    let tileLoading = false;
-    map.on('dataloading', () => {
-      if (!tileLoading) {
-        // eslint-disable-next-line fp/no-mutation
-        tileLoading = true;
-        dispatch(setMapTileLoading(tileLoading));
-      }
-    });
-    map.on('idle', () => {
-      if (tileLoading) {
-        // eslint-disable-next-line fp/no-mutation
-        tileLoading = false;
-        dispatch(setMapTileLoading(tileLoading));
-      }
-    });
+    trackLoadingLayers(map);
   };
+
   const style = new URL(
     process.env.REACT_APP_DEFAULT_STYLE ||
       'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
@@ -491,7 +494,6 @@ function MapView({ classes }: MapViewProps) {
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
-            <TileLoadingIcon />
             <Download />
             <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
           </Grid>
