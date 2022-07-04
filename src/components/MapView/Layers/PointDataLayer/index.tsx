@@ -6,7 +6,10 @@ import { get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
-import { koboAuthParamsSelector } from '../../../../context/serverStateSlice';
+import {
+  koboAuthParamsSelector,
+  clearKoboParams,
+} from '../../../../context/serverStateSlice';
 import {
   LayerData,
   loadLayerData,
@@ -15,6 +18,7 @@ import {
   layerDataSelector,
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
+import { removeLayerData } from '../../../../context/mapStateSlice';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
@@ -66,6 +70,8 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
         }),
       );
 
+      dispatch(removeLayerData(layer));
+      dispatch(clearKoboParams());
       return;
     }
 
@@ -82,6 +88,9 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
           type: 'warning',
         }),
       );
+
+      dispatch(removeLayerData(layer));
+      dispatch(clearKoboParams());
     }
   }, [features, dispatch, layer, selectedDate, koboAuthParams]);
 

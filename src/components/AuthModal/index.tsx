@@ -30,7 +30,10 @@ import {
   layerDataSelector,
 } from '../../context/mapStateSlice/selectors';
 
-import { setLayerAccessToken } from '../../context/serverStateSlice';
+import {
+  setLayerAccessToken,
+  koboAuthParamsSelector,
+} from '../../context/serverStateSlice';
 import { LayerData } from '../../context/layers/layer-data';
 
 const AuthModal = ({ classes }: AuthModalProps) => {
@@ -42,6 +45,7 @@ const AuthModal = ({ classes }: AuthModalProps) => {
     bbox: '',
   });
   const selectedLayers = useSelector(layersSelector);
+  const koboAuthParams = useSelector(koboAuthParamsSelector);
   const dispatch = useDispatch();
 
   // Get the admin boundary layer, with lowest number of level names (provinces).
@@ -63,7 +67,15 @@ const AuthModal = ({ classes }: AuthModalProps) => {
       layer => layer.type === 'point_data' && layer.tokenRequired,
     );
     setLayers(layersWithAuthRequired);
+
+    setOpen(true);
   }, [selectedLayers]);
+
+  useEffect(() => {
+    if (!koboAuthParams) {
+      setOpen(true);
+    }
+  }, [koboAuthParams]);
 
   if (!layerWithAuth || !boundaryData) {
     return null;

@@ -39,6 +39,10 @@ export const serverStateSlice = createSlice({
       ...state,
       koboAuthParams: payload,
     }),
+    clearKoboParams: state => ({
+      ...state,
+      koboAuthParams: undefined,
+    }),
   },
   extraReducers: builder => {
     builder.addCase(
@@ -84,6 +88,7 @@ export const koboAuthParamsSelector = (
 export const {
   updateLayersCapabilities,
   setLayerAccessToken,
+  clearKoboParams,
 } = serverStateSlice.actions;
 
 export default serverStateSlice.reducer;
