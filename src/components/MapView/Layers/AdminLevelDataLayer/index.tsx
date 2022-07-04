@@ -17,6 +17,7 @@ import {
 } from '../../../../context/mapStateSlice/selectors';
 import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
+import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import {
   getBoundaryLayers,
@@ -34,7 +35,10 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const map = useSelector(mapSelector);
   const boundaryId = layer.boundary || getBoundaryLayerSingleton().id;
 
-  const layerData = useSelector(layerDataSelector(layer.id)) as
+  const selectedDate = useDefaultDate(layer.id);
+  // use undefined date for layers without date dimension
+  const date = layer.dateUrl ? selectedDate : undefined;
+  const layerData = useSelector(layerDataSelector(layer.id, date)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
   const { data } = layerData || {};
@@ -68,9 +72,9 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       }
     }
     if (!features) {
-      dispatch(loadLayerData({ layer }));
+      dispatch(loadLayerData({ layer, date }));
     }
-  }, [dispatch, features, layer, boundaryId, map]);
+  }, [dispatch, features, layer, date, boundaryId, map]);
 
   if (!features) {
     return null;
