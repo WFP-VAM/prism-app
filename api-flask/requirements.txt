@@ -17,3 +17,4 @@ pydocstyle==5.0.2
 psycopg2==2.8.6
 sqlalchemy==1.4.5
 python-dateutil==2.8.2
+PyJWT==2.4.0
