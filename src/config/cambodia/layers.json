@@ -1690,13 +1690,17 @@
     },
     "opacity": 0.9,
     "feature_info_props": {
-      "Commune": {
+      "date": {
         "type": "text",
-        "label": "Commune"
+        "label": "Event date"
       },
       "NumVillAff": {
         "type": "text",
         "label": "Number of villages affected"
+      },
+      "NumPeoAff": {
+        "type": "text",
+        "label": "Number of people affected"
       }
     },
     "legend_text": "Number of people affected",
@@ -1750,9 +1754,13 @@
     },
     "opacity": 0.9,
     "feature_info_props": {
-      "Commune": {
+      "date": {
         "type": "text",
-        "label": "Commune"
+        "label": "Event date"
+      },
+      "NumPeoAff": {
+        "type": "text",
+        "label": "Number of people affected"
       }
     },
     "legend_text": "Number of people affected",
@@ -1806,17 +1814,9 @@
     },
     "opacity": 0.9,
     "feature_info_props": {
-      "Commune": {
-        "type": "text",
-        "label": "Commune"
-      },
       "date": {
         "type": "text",
         "label": "Event date"
-      },
-      "Date_report": {
-        "type": "date",
-        "label": "Report date"
       },
       "NumPeoAff": {
         "type": "text",
