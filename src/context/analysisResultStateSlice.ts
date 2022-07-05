@@ -105,7 +105,9 @@ function getAdminBoundariesURL() {
   if (isLocalhost) {
     return defaultBoundariesPath;
   }
-  return window.location.origin + window.location.pathname + adminBoundariesPath;
+  return (
+    window.location.origin + window.location.pathname + adminBoundariesPath
+  );
 }
 
 function generateTableFromApiData(
