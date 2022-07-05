@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
-  koboAuthParamsSelector,
-  clearKoboParams,
+  jwtAccessTokenSelector,
+  clearJwtAccessToken,
 } from '../../../../context/serverStateSlice';
 import {
   LayerData,
@@ -35,7 +35,7 @@ import { createEWSDatasetParams } from '../../../../utils/ews-utils';
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const selectedDate = useDefaultDate(layer.id);
-  const koboAuthParams = useSelector(koboAuthParamsSelector);
+  const jwtAccessToken = useSelector(jwtAccessTokenSelector);
 
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<PointDataLayerProps>
@@ -53,9 +53,9 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   useEffect(() => {
     if (
       !features &&
-      ((layer.tokenRequired && koboAuthParams) || !layer.tokenRequired)
+      ((layer.tokenRequired && jwtAccessToken) || !layer.tokenRequired)
     ) {
-      dispatch(loadLayerData({ layer, date: selectedDate, koboAuthParams }));
+      dispatch(loadLayerData({ layer, date: selectedDate, jwtAccessToken }));
     }
 
     if (
@@ -71,7 +71,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       );
 
       dispatch(removeLayerData(layer));
-      dispatch(clearKoboParams());
+      dispatch(clearJwtAccessToken());
       return;
     }
 
@@ -90,9 +90,9 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       );
 
       dispatch(removeLayerData(layer));
-      dispatch(clearKoboParams());
+      dispatch(clearJwtAccessToken());
     }
-  }, [features, dispatch, layer, selectedDate, koboAuthParams]);
+  }, [features, dispatch, layer, selectedDate, jwtAccessToken]);
 
   if (!features || map?.getSource(layerId)) {
     return null;

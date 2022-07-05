@@ -1,5 +1,4 @@
 """Collect and parse kobo forms."""
-import json
 import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
@@ -13,7 +12,7 @@ import requests
 
 from shapely.geometry import Point, box
 
-from werkzeug.exceptions import BadRequest, InternalServerError, NotFound, Unauthorized
+from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 
 logger = logging.getLogger(__name__)
@@ -22,28 +21,6 @@ logger = logging.getLogger(__name__)
 def get_first(items_list: list):
     """Safely return the first element of a list."""
     return items_list[0] if items_list else None
-
-
-def validate_access_token():
-    """Validate that access token received within the request matches the one in the server."""
-    access_token = request.args.get('accessToken')
-    adm_code = request.args.get('adminCode')
-
-    # Check configuration for kobo forms tokens.
-    env_tokens_file = 'KOBO_TOKENS_FILE'
-    tokens_file = getenv(env_tokens_file)
-    if tokens_file is None:
-        raise InternalServerError(f'missing environment variable {env_tokens_file}')
-
-    with open(tokens_file, 'r') as f:
-        tokens = json.load(f)
-
-    server_access_token = tokens.get(adm_code)
-    if server_access_token is None:
-        raise Unauthorized('access token not found for provided admName')
-
-    if access_token != server_access_token:
-        raise Unauthorized('Invalid access token')
 
 
 def get_kobo_params():

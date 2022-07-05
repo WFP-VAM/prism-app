@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Feature } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
-import { sortBy } from 'lodash';
 import {
   createStyles,
   Dialog,
@@ -12,17 +10,9 @@ import {
   Typography,
   TextField,
   Button,
-  Select,
-  MenuItem,
   Box,
 } from '@material-ui/core';
-import { multiPolygon } from '@turf/helpers';
-import bbox from '@turf/bbox';
-import {
-  LayerType,
-  BoundaryLayerProps,
-  KoboAuthParams,
-} from '../../config/types';
+import { LayerType, BoundaryLayerProps } from '../../config/types';
 import { getBoundaryLayers } from '../../config/utils';
 import { useSafeTranslation } from '../../i18n';
 import {
@@ -31,21 +21,17 @@ import {
 } from '../../context/mapStateSlice/selectors';
 
 import {
+  jwtAccessTokenSelector,
   setLayerAccessToken,
-  koboAuthParamsSelector,
 } from '../../context/serverStateSlice';
 import { LayerData } from '../../context/layers/layer-data';
 
 const AuthModal = ({ classes }: AuthModalProps) => {
   const [layerWithAuth, setLayers] = useState<LayerType>();
   const [open, setOpen] = useState(true);
-  const [authParams, setAuthParams] = useState<KoboAuthParams>({
-    adminCode: '',
-    token: '',
-    bbox: '',
-  });
+  const [jwtValue, setJwtValue] = useState<string>('');
   const selectedLayers = useSelector(layersSelector);
-  const koboAuthParams = useSelector(koboAuthParamsSelector);
+  const jwtAccessToken = useSelector(jwtAccessTokenSelector);
   const dispatch = useDispatch();
 
   // Get the admin boundary layer, with lowest number of level names (provinces).
@@ -72,36 +58,17 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   }, [selectedLayers]);
 
   useEffect(() => {
-    if (!koboAuthParams) {
+    if (!jwtAccessToken) {
       setOpen(true);
     }
-  }, [koboAuthParams]);
+  }, [jwtAccessToken]);
 
   if (!layerWithAuth || !boundaryData) {
     return null;
   }
 
-  const boundaries = boundaryData.data.features.map((feature: Feature) => {
-    const { geometry, properties } = feature;
-
-    if (!properties || geometry.type !== 'MultiPolygon') {
-      return undefined;
-    }
-
-    const turfObj = multiPolygon(geometry.coordinates);
-    const geomBbox = bbox(turfObj);
-
-    return {
-      bbox: geomBbox.join(','),
-      adminName: properties[boundaryLayer.adminLevelNames[0]],
-      adminCode: properties[boundaryLayer.adminCode],
-    };
-  });
-
-  const sortedBoundaries = sortBy(boundaries, 'adminName');
-
   const validateToken = () => {
-    dispatch(setLayerAccessToken(authParams));
+    dispatch(setLayerAccessToken(jwtValue));
     setOpen(false);
   };
 
@@ -129,42 +96,17 @@ const AuthModal = ({ classes }: AuthModalProps) => {
           justifyContent="space-between"
           marginTop="2em"
         >
-          <Box width="48%">
+          <Box width="70%">
             <Typography className={classes.label} variant="body2">
-              {t('region')}
-            </Typography>
-            <Select value={authParams.bbox} className={classes.select}>
-              {sortedBoundaries.map(boundary =>
-                boundary ? (
-                  <MenuItem
-                    title={boundary.adminName}
-                    value={boundary.bbox}
-                    onClick={() =>
-                      setAuthParams(params => ({ ...params, ...boundary }))
-                    }
-                  >
-                    {boundary.adminName}
-                  </MenuItem>
-                ) : null,
-              )}
-            </Select>
-          </Box>
-          <Box width="48%">
-            <Typography className={classes.label} variant="body2">
-              {t('password')}
+              {t('access token')}
             </Typography>
             <TextField
               id="accesstoken"
-              placeholder="Access Token"
-              value={authParams.token}
-              type="password"
+              value={jwtValue}
               className={classes.textField}
               onChange={e => {
                 const { value } = e.target;
-                setAuthParams(params => ({
-                  ...params,
-                  token: value,
-                }));
+                setJwtValue(value);
               }}
             />
           </Box>
@@ -211,11 +153,7 @@ const styles = (theme: Theme) => {
       ...color,
     },
     label: color,
-    textField: inputColor,
-    select: {
-      width: '100%',
-      ...inputColor,
-    },
+    textField: { ...inputColor, width: '100%' },
     buttonWrapper: {
       marginTop: '2em',
       marginBottom: '1em',

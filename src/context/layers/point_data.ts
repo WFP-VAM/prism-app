@@ -42,7 +42,7 @@ export const queryParamsToString = (queryParams?: {
 
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async (
   {
-    koboAuthParams,
+    jwtAccessToken,
     date,
     layer: {
       data: dataUrl,
@@ -83,7 +83,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
 
   const fetchUrl = tokenRequired
-    ? `${requestUrl}&accessToken=${koboAuthParams.token}&adminCode=${koboAuthParams.adminCode}&bbox=${koboAuthParams.bbox}`
+    ? `${requestUrl}&accessToken=${jwtAccessToken}`
     : requestUrl;
 
   let data;

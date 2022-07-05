@@ -12,7 +12,6 @@ from app.kobo import (
     get_form_dates,
     get_form_responses,
     parse_datetime_params,
-    validate_access_token
 )
 from app.timer import timed
 from app.validation import validate_intersect_parameter
@@ -26,11 +25,14 @@ from flask_cors import CORS
 
 from flask_restx import Api, Resource
 
+import jwt
+from jwt.exceptions import DecodeError, InvalidSignatureError
+
 import rasterio
 
 from sample_requests import alerts_dic, stats_dic
 
-from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
+from werkzeug.exceptions import BadRequest, InternalServerError, NotFound, Unauthorized
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -192,10 +194,28 @@ class GetKoboForms(Resource):
 
     def get(self):
         """Get all form responses."""
-        validate_access_token()
+        begin_datetime, end_datetime = parse_datetime_params()
+        form_responses = get_form_responses(begin_datetime, end_datetime, None)
+
+        return Response(json.dumps(form_responses), mimetype='application/json')
+
+
+@api.route('/cambodia/kobo/forms')
+class GetCambodiaKoboForms(Resource):
+    """Class Get_kobo_forms which takes a get method."""
+
+    def get(self):
+        """Get all form responses."""
+        jwt_token = request.args.get('accessToken')
+
+        try:
+            decoded_data = jwt.decode(jwt_token, getenv('JWT_SECRET_KEY'), algorithms=['HS256'])
+        except (DecodeError, InvalidSignatureError):
+            raise Unauthorized('Invalid access token')
+
         begin_datetime, end_datetime = parse_datetime_params()
 
-        geom_bbox = request.args.get('bbox', None)
+        geom_bbox = decoded_data.get('bbox', None)
         form_responses = get_form_responses(begin_datetime, end_datetime, geom_bbox)
 
         return Response(json.dumps(form_responses), mimetype='application/json')
