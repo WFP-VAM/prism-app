@@ -10,7 +10,6 @@ import './app.css';
 import NavBar from '../NavBar';
 import DataDrawer from '../DataDrawer';
 import MapView from '../MapView';
-import NotFound from '../404Page';
 import Login from '../Login';
 import muiTheme from '../../muiTheme';
 import Notifier from '../Notifier';
@@ -31,12 +30,11 @@ const Wrapper = () => {
     <div id="app">
       <NavBar />
       <Switch>
-        <Route exact path="/">
+        <Route default>
           <MapView />
           <DataDrawer />
           <AuthModal />
         </Route>
-        <Route default component={NotFound} />
       </Switch>
     </div>
   );

@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/cambodia/khm_bnd_admin3_gov_ed2022.json",
+    "path": "data/cambodia/khm_bnd_admin3_gov_ed2022.json",
     "opacity": 0.8,
     "admin_code": "Adm3_text",
     "admin_level_names": ["Adm1_Name", "Adm2_Name", "Adm3_Name"],
@@ -19,7 +19,7 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "../data/cambodia/khm_bnd_admin1_gov_ed2022.json",
+    "path": "data/cambodia/khm_bnd_admin1_gov_ed2022.json",
     "opacity": 0.8,
     "admin_code": "Adm1_text",
     "admin_level_names": ["Adm1_Name"],
@@ -37,7 +37,7 @@
   },
   "admin2_boundaries": {
     "type": "boundary",
-    "path": "../data/cambodia/khm_bnd_admin2_gov_ed2022.json",
+    "path": "data/cambodia/khm_bnd_admin2_gov_ed2022.json",
     "opacity": 0.8,
     "admin_code": "Adm2_text",
     "admin_level_names": ["Adm1_Name", "Adm2_Name"],
@@ -56,7 +56,7 @@
   "idpoor": {
     "title": "IDPoor",
     "type": "admin_level_data",
-    "path": "../data/cambodia/idpoor.json",
+    "path": "data/cambodia/idpoor.json",
     "content_path": "data/cambodia/contents.md#vulnerability-index",
     "data_field": "num_idpoor",
     "admin_level": 3,
