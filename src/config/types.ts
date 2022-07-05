@@ -613,9 +613,3 @@ export type PointData = {
 export type PointLayerData = {
   features: PointData[];
 };
-
-export type KoboAuthParams = {
-  token: string;
-  bbox: string;
-  adminCode: string;
-};

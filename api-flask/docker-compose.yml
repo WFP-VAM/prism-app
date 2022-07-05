@@ -12,6 +12,5 @@ services:
       # Kobo credentials
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
       - KOBO_PW
-      - KOBO_TOKENS_FILE=${KOBO_TOKENS_FILE:-../tokens/cambodia_test.json}
       # Alerts database
       - DATABASE_URL
