@@ -65,7 +65,7 @@ For each category, you can define sub categories as "subcategorie_name":
 #### Boundary layers
 - Configuring multiple boundary layers
   If multiple boundary layers are configured `layers.json` you can specify which should be displayed by default by defining `defaultDisplayBoundaries` as an array of boundaries.
-  
+
   e.g.
   ```json
   {
@@ -121,7 +121,7 @@ These layers are referred to as `admin_level_data` in PRISM and represent a data
   "improved_drinking_water": {
     "title": "Improved drinking water",
     "type": "admin_level_data",
-    "path": "../data/myanmar/nso/vulnerability-layers.json",
+    "path": "data/myanmar/nso/vulnerability-layers.json",
     "data_field": "improved_drinking_water",
     "admin_level": 3,
     "admin_code": "TS_PCODE",
@@ -139,7 +139,7 @@ These layers are referred to as `admin_level_data` in PRISM and represent a data
 
 #### point
 
-These layers are referred to as `point_data` in PRISM and represent a data value for a given latitude and longitude coordinate. Point data layers visualize values specified as `measure_field` as points on a map based on the `geom_field` which expect a lat, long coordinate. 
+These layers are referred to as `point_data` in PRISM and represent a data value for a given latitude and longitude coordinate. Point data layers visualize values specified as `measure_field` as points on a map based on the `geom_field` which expect a lat, long coordinate.
 
 ```
   "disaster_report": {
@@ -162,15 +162,15 @@ These layers are referred to as `point_data` in PRISM and represent a data value
     ]
 ```
 #### boundaries
-Boundary layers are loaded by defaul when the application starts and typically show administrative bounaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data. 
+Boundary layers are loaded by defaul when the application starts and typically show administrative bounaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data.
 
-When more than one boundary is specified, an array of boundaries needs to also be set in `prism.json` using with the `defaultDisplayBoundaries` attribute.  
+When more than one boundary is specified, an array of boundaries needs to also be set in `prism.json` using with the `defaultDisplayBoundaries` attribute.
 
 ```
 {
   "state_admin_boundaries": {
     "type": "boundary",
-    "path": "../data/myanmar/mmr_admin1_boundaries.json",
+    "path": "data/myanmar/mmr_admin1_boundaries.json",
     "opacity": 0.8,
     "admin_code": "ST_PCODE",
     "admin_level_names": ["ST"],
@@ -188,7 +188,7 @@ When more than one boundary is specified, an array of boundaries needs to also b
   },
   "district_admin_boundaries": {
     "type": "boundary",
-    "path": "../data/myanmar/mmr_admin2_boundaries.json",
+    "path": "data/myanmar/mmr_admin2_boundaries.json",
     "opacity": 0.8,
     "admin_code": "DT_PCODE",
     "admin_level_names": ["ST", "DT"],
@@ -206,7 +206,7 @@ When more than one boundary is specified, an array of boundaries needs to also b
   },
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/myanmar/admin_boundaries.json",
+    "path": "data/myanmar/admin_boundaries.json",
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
     "admin_level_names": ["ST", "DT", "TS"],
@@ -225,7 +225,7 @@ When more than one boundary is specified, an array of boundaries needs to also b
 ```
 
 #### impact
-Impact layers are computed by combining a raster layer with a vector layer based on raster values bound by the zones of the vector layer. The impact layer computes zonal statistics for the raster, and based on a configured threshold, will display zones where the threshold has been exceeded.  
+Impact layers are computed by combining a raster layer with a vector layer based on raster values bound by the zones of the vector layer. The impact layer computes zonal statistics for the raster, and based on a configured threshold, will display zones where the threshold has been exceeded.
 
 ```
 "herd_pasture_impact": {
@@ -247,7 +247,7 @@ Impact layers are computed by combining a raster layer with a vector layer based
 
 #### Add Layer Contents
 To display additional metadata about a layer, you can add a `content_path` attribute to any layer. The attribute expects a path to a `.md` or `.html` file that is stored in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory. For example: `public/data/myanmar/contents.md`
-The application will show an icon next to the layer in the legend if this attribute is configured, and will display the content in a modal window if the icon is clicked. 
+The application will show an icon next to the layer in the legend if this attribute is configured, and will display the content in a modal window if the icon is clicked.
 
 ## Technical - Packages/Dependencies
 
