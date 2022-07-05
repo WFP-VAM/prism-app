@@ -38,7 +38,7 @@ const Login = ({ classes }: LoginProps) => {
         <Grid item>
           <img
             className={classes.image}
-            src="/images/wfp_logo.png"
+            src="images/wfp_logo.png"
             alt="World Food Programme logo"
           />
         </Grid>

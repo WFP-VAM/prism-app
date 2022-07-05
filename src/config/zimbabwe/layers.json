@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/zimbabwe/zim_admin2_boundaries_v2.json",
+    "path": "data/zimbabwe/zim_admin2_boundaries_v2.json",
     "opacity": 0.8,
     "admin_code": "distrpc",
     "admin_level_names": ["PROVNAMEFU", "DIST_NAME_"],
@@ -19,7 +19,7 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "../data/zimbabwe/zwe_polbnda_adm1_250k_cso.json",
+    "path": "data/zimbabwe/zwe_polbnda_adm1_250k_cso.json",
     "opacity": 0.8,
     "admin_code": "PROV_CODE",
     "admin_level_names": ["PROVINCE"],
@@ -1546,7 +1546,7 @@
   "vac_food_insec": {
     "title": "Food insecurity prevalence (ZimVAC 2020)",
     "type": "admin_level_data",
-    "path": "../data/zimbabwe/zim_vac_food_insec_2020.json",
+    "path": "data/zimbabwe/zim_vac_food_insec_2020.json",
     "data_field": "food_insecurity_prevalence",
     "admin_level": 2,
     "admin_code": "district_pcode",
@@ -1583,7 +1583,7 @@
   "pop_2020": {
     "title": "Population (UNFPA - 2020)",
     "type": "admin_level_data",
-    "path": "../data/zimbabwe/zim_pop_2020.json",
+    "path": "data/zimbabwe/zim_pop_2020.json",
     "data_field": "total_population",
     "admin_level": 2,
     "admin_code": "district_pcode",
@@ -1620,7 +1620,7 @@
   "ipc_phase_10_2020": {
     "title": "IPC Phase Classification (Oct 2020)",
     "type": "admin_level_data",
-    "path": "../data/zimbabwe/zim_ipc_2020_10.json",
+    "path": "data/zimbabwe/zim_ipc_2020_10.json",
     "data_field": "ipc_phase_2020_10",
     "admin_level": 2,
     "admin_code": "district_pcode",
@@ -1657,7 +1657,7 @@
   "cereal_insecurity_2021": {
     "title": "Cereal insecurity 2021",
     "type": "admin_level_data",
-    "path": "../data/zimbabwe/zim_fs_2021.json",
+    "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "cereal_insecurity_2021",
     "admin_level": 2,
     "admin_code": "district_pcode",
@@ -1694,7 +1694,7 @@
   "10_year_avg_cereal_insecurity": {
     "title": "10-year average cereal insecurity",
     "type": "admin_level_data",
-    "path": "../data/zimbabwe/zim_fs_2021.json",
+    "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "10_year_avg_cereal_insecurity",
     "admin_level": 2,
     "admin_code": "district_pcode",
@@ -1731,7 +1731,7 @@
   "5_year_avg_cereal_insecurity": {
     "title": "5-year average cereal insecurity",
     "type": "admin_level_data",
-    "path": "../data/zimbabwe/zim_fs_2021.json",
+    "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "5_year_avg_cereal_insecurity",
     "admin_level": 2,
     "admin_code": "district_pcode",
@@ -1768,7 +1768,7 @@
   "poor_fc": {
     "title": "Poor food consumption",
     "type": "admin_level_data",
-    "path": "../data/zimbabwe/zim_fs_2021.json",
+    "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "poor_fc",
     "admin_level": 2,
     "admin_code": "district_pcode",
@@ -1805,7 +1805,7 @@
   "borderline_fc": {
     "title": "Borderline food consumption",
     "type": "admin_level_data",
-    "path": "../data/zimbabwe/zim_fs_2021.json",
+    "path": "data/zimbabwe/zim_fs_2021.json",
     "data_field": "borderline_fc",
     "admin_level": 2,
     "admin_code": "district_pcode",
