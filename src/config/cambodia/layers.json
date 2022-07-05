@@ -1810,7 +1810,7 @@
         "type": "text",
         "label": "Commune"
       },
-      "Date_Dis": {
+      "date": {
         "type": "text",
         "label": "Event date"
       },

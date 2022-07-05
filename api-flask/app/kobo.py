@@ -88,7 +88,7 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
     active_group = ''
 
     for label_name, label_type in labels.items():
-        if label_name in (form_fields.get('geom_field'), form_fields.get('datetime')):
+        if label_name in (form_fields.get('geom_field')):
             continue
 
         # Add logic to handle groups. Data is returned flattened.
