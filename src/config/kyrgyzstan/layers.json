@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/kyrgyzstan/kgz_admbnda_adm2_moes_20181119.json",
+    "path": "data/kyrgyzstan/kgz_admbnda_adm2_moes_20181119.json",
     "opacity": 1,
     "admin_code": "ADM2_PCODE",
     "admin_level_names": ["ADM1_EN", "ADM2_EN"],
@@ -20,7 +20,7 @@
   "recurrence_mudflows": {
     "title": "Recurrence of mudflows",
     "type": "admin_level_data",
-    "path": "../data/kyrgyzstan/mudflows_w_admin.json",
+    "path": "data/kyrgyzstan/mudflows_w_admin.json",
     "data_field": "mudflow",
     "admin_level": 2,
     "admin_code": "ADM2_PCODE",
@@ -681,7 +681,7 @@
     "type": "point_data",
     "data": "",
     "date_url": "",
-    "fallback_data": "../data/kyrgyzstan/viirs_fires_2020.json",
+    "fallback_data": "data/kyrgyzstan/viirs_fires_2020.json",
     "opacity": 0.8,
     "data_field": "bright_ti4",
     "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",

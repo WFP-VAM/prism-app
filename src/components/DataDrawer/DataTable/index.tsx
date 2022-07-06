@@ -92,9 +92,7 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
       {table && (
         <p>
           <Button>
-            <a href={process.env.PUBLIC_URL + table}>
-              {downloadAsCSVTranslated}
-            </a>
+            <a href={table}> {downloadAsCSVTranslated} </a>
           </Button>
         </p>
       )}
