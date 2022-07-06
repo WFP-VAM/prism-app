@@ -1,7 +1,7 @@
 {
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "../data/mozambique/moz_bnd_adm1_WFP.json",
+    "path": "data/mozambique/moz_bnd_adm1_WFP.json",
     "opacity": 0.8,
     "admin_code": "source_id",
     "admin_level_names": [
@@ -23,7 +23,7 @@
   },
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/mozambique/moz_bnd_adm2_WFP.json",
+    "path": "data/mozambique/moz_bnd_adm2_WFP.json",
     "opacity": 0.8,
     "admin_code": "source_id",
     "admin_level_names": [
@@ -2286,7 +2286,7 @@
     "ipc_pop_ph3_current": {
       "title": "Number of people currently in IPC Phase 3+",
       "type": "admin_level_data",
-      "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+      "path": "data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
       "data_field": "ipcp_21pp",
       "admin_level": 2,
       "admin_code": "source_id",
@@ -2328,7 +2328,7 @@
     "ipc_pop_ph3_projected": {
       "title": "Number of people projected in IPC Phase 3+",
       "type": "admin_level_data",
-      "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+      "path": "data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
       "data_field": "ipcp_21pp",
       "admin_level": 2,
       "admin_code": "source_id",
@@ -2370,7 +2370,7 @@
     "ipc_phase_12_2020": {
       "title": "IPC Phase Classification (Oct-Dec 2020)",
       "type": "admin_level_data",
-      "path": "../data/mozambique/moz-ipc-2020-12.json",
+      "path": "data/mozambique/moz-ipc-2020-12.json",
       "data_field": "overall_phase",
       "admin_level": 2,
       "admin_code": "ADM2_PCODE",
@@ -2402,7 +2402,7 @@
     "ipc_phase_current": {
       "title": "Current IPC Phase classification",
       "type": "admin_level_data",
-      "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+      "path": "data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
       "data_field": "ipc_ph21",
       "admin_level": 2,
       "admin_code": "source_id",
@@ -2444,7 +2444,7 @@
     "ipc_phase_projected": {
       "title": "Projected IPC Phase classification",
       "type": "admin_level_data",
-      "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+      "path": "data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
       "data_field": "ipc_ph22",
       "admin_level": 2,
       "admin_code": "source_id",
@@ -2486,7 +2486,7 @@
     "ipc_perc_ph3_projected": {
       "title": "Percent of population projected in IPC Phase 3+",
       "type": "admin_level_data",
-      "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+      "path": "data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
       "data_field": "ipc3p_pc22",
       "admin_level": 2,
       "admin_code": "source_id",
@@ -2528,7 +2528,7 @@
     "ipc_perc_ph3_current": {
       "title": "Percent of population currently in IPC Phase 3+",
       "type": "admin_level_data",
-      "path": "../data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
+      "path": "data/mozambique/moz_vam_foodinsecadm2_ipc_01112021.json",
       "data_field": "ipc3p_pc22",
       "admin_level": 2,
       "admin_code": "source_id",
@@ -2571,7 +2571,7 @@
       "title": "Multidimensional Poverty Index",
       "type": "admin_level_data",
       "boundary": "admin1_boundaries",
-      "path": "../data/mozambique/moz-mpi-2020.json",
+      "path": "data/mozambique/moz-mpi-2020.json",
       "data_field": "mpi",
       "admin_level": 1,
       "admin_code": "ADM1_PCODE",
@@ -2621,7 +2621,7 @@
     "census": {
       "title": "Total population",
       "type": "admin_level_data",
-      "path": "../data/mozambique/moz-pop-projc-2022-INE.json",
+      "path": "data/mozambique/moz-pop-projc-2022-INE.json",
       "data_field": "2022_Tot",
       "admin_level": 2,
       "admin_code": "source_id",
