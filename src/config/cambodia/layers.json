@@ -1668,13 +1668,13 @@
     "opacity": 1,
     "legend_text": "This layer shows river water level in millimeters (mm). It is reported from People in Need (PIN) automated river water gauge.",
     "legend": [
-      {"label": "0 - Normal", "value": 0, "color": "#31a354"},
-      {"label": "1 - Warning", "value": 1, "color": "#fdae6b"},
-      {"label": "2 - Severe Warning", "value": 2, "color": "#e34a33"}
+      { "label": "0 - Normal", "value": 0, "color": "#31a354" },
+      { "label": "1 - Warning", "value": 1, "color": "#fdae6b" },
+      { "label": "2 - Severe Warning", "value": 2, "color": "#e34a33" }
     ]
   },
-  "kh_incident_report": {
-    "title": "Disaster impact report",
+  "flood_report": {
+    "title": "Flood report",
     "type": "point_data",
     "admin_level_display": {
       "adminCode": "Commune"
@@ -1683,40 +1683,197 @@
     "date_url": "https://prism-api.ovio.org/kobo/forms",
     "data_field": "NumPeoAff",
     "additional_query_params": {
-      "form_name": "test-form-admin-codes",
-      "datetime_field": "Date_report",
-      "geom_field": "location",
+      "form_name": "1. ទម្រង់គ្រោះទឹកជំនន់",
+      "datetime_field": "Date_Dis",
       "measure_field": "NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
     },
     "opacity": 0.9,
     "feature_info_props": {
-      "Commune": {
+      "date": {
         "type": "text",
-        "label": "Commune"
+        "label": "Event date"
+      },
+      "NumVillAff": {
+        "type": "text",
+        "label": "Number of villages affected"
+      },
+      "NumPeoAff": {
+        "type": "text",
+        "label": "Number of people affected"
       }
     },
     "legend_text": "Number of people affected",
     "legend": [
       {
         "value": 0,
-        "label": 0,
+        "label": "0",
         "color": "#909090"
       },
       {
         "value": 1,
-        "label": "<100",
-        "color": "#ffeda0"
+        "label": "< 10",
+        "color": "#ffffb2"
       },
       {
-        "value": 100,
-        "label": "100 - 500",
-        "color": "#feb24c"
+        "value": 11,
+        "label": "11 - 25",
+        "color": "#fecc5c"
       },
       {
-        "value": 500,
-        "label": "500 or more",
+        "value": 26,
+        "label": "26 - 50",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 51,
+        "label": "51 - 100",
         "color": "#f03b20"
+      },
+      {
+        "value": 101,
+        "label": "> 100",
+        "color": "#bd0026"
+      }
+    ]
+  },
+  "drought_report": {
+    "title": "Drought report",
+    "type": "point_data",
+    "admin_level_display": {
+      "adminCode": "Commune"
+    },
+    "data": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "data_field": "NumPeoAff",
+    "additional_query_params": {
+      "form_name": "3. ទម្រង់គ្រោះរាំងស្ងួត",
+      "datetime_field": "Date_Dis",
+      "measure_field": "NumPeoAff",
+      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
+    },
+    "opacity": 0.9,
+    "feature_info_props": {
+      "date": {
+        "type": "text",
+        "label": "Event date"
+      },
+      "NumPeoAff": {
+        "type": "text",
+        "label": "Number of people affected"
+      }
+    },
+    "legend_text": "Number of people affected",
+    "legend": [
+      {
+        "value": 0,
+        "label": "0",
+        "color": "#909090"
+      },
+      {
+        "value": 1,
+        "label": "< 10",
+        "color": "#ffffb2"
+      },
+      {
+        "value": 11,
+        "label": "11 - 25",
+        "color": "#fecc5c"
+      },
+      {
+        "value": 26,
+        "label": "26 - 50",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 51,
+        "label": "51 - 100",
+        "color": "#f03b20"
+      },
+      {
+        "value": 101,
+        "label": "> 100",
+        "color": "#bd0026"
+      }
+    ]
+  },
+  "kh_incident_report": {
+    "title": "Incident report",
+    "type": "point_data",
+    "admin_level_display": {
+      "adminCode": "Commune"
+    },
+    "data": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "data_field": "DisTyp",
+    "additional_query_params": {
+      "form_name": "2. ទម្រង់ ឧបទ្ទវហេតុ",
+      "datetime_field": "Date_Dis",
+      "measure_field": "DisTyp",
+      "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets.json"
+    },
+    "opacity": 0.9,
+    "feature_info_props": {
+      "date": {
+        "type": "text",
+        "label": "Event date"
+      },
+      "NumPeoAff": {
+        "type": "text",
+        "label": "Number of people affected"
+      }
+    },
+    "legend_text": "Type of disaster",
+    "legend": [
+      {
+        "value": 3,
+        "label": "Storm",
+        "color": "#00008b"
+      },
+      {
+        "value": 4,
+        "label": "Fire",
+        "color": "#ff0000"
+      },
+      {
+        "value": 5,
+        "label": "Lightning",
+        "color": "#ffff00"
+      },
+      {
+        "value": 6,
+        "label": "Epidemic",
+        "color": "#006400"
+      },
+      {
+        "value": 7,
+        "label": "Riverbank collapse",
+        "color": "#6495ed"
+      },
+      {
+        "value": 8,
+        "label": "Insect",
+        "color": "#ff00ff"
+      },
+      {
+        "value": 9,
+        "label": "Traffic accident",
+        "color": "#00ff00"
+      },
+      {
+        "value": 10,
+        "label": "Drowning",
+        "color": "#00ffff"
+      },
+      {
+        "value": 11,
+        "label": "Building collapse",
+        "color": "#ffe4b5"
+      },
+      {
+        "value": 12,
+        "label": "Exploded weapon",
+        "color": "#b03060"
       }
     ]
   }
