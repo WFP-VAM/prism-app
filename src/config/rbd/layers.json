@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/rbd/wca_admbnda_adm2_ocha.json",
+    "path": "data/rbd/wca_admbnda_adm2_ocha.json",
     "opacity": 0.8,
     "styles:": {
       "fill": {
@@ -27,7 +27,7 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "../data/rbd/wca_admbnda_adm1_ocha.json",
+    "path": "data/rbd/wca_admbnda_adm1_ocha.json",
     "opacity": 0.8,
     "styles:": {
       "fill": {
@@ -48,10 +48,10 @@
       "admin0Name",
       "admin1Name"
     ]
-  }, 
+  },
   "admin0_boundaries": {
     "type": "boundary",
-    "path": "../data/rbd/wca_admbnda_adm0_ocha.json",
+    "path": "data/rbd/wca_admbnda_adm0_ocha.json",
     "opacity": 0.8,
     "styles:": {
       "fill": {
@@ -1636,7 +1636,7 @@
   "ch_2021_03": {
     "title": "Projected phase classification: March to June 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_mar2021_projected_jun2021.json",
+    "path": "data/rbd/wca_CHIPC_mar2021_projected_jun2021.json",
     "data_field": "phase_class",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -1688,7 +1688,7 @@
   "ch_2021_11_phase_class_current": {
     "title": "Current phase classification: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "phase_class",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -1739,7 +1739,7 @@
   "ch_2021_11_phase_class_projected": {
     "title": "Projected phase classification: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "_projected_phase_class",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -1790,7 +1790,7 @@
   "ch_2021_11_fs_phase_current": {
     "title": "Current food security phase: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "foodconsumption_phase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -1827,7 +1827,7 @@
   "ch_2021_11_fs_phase_projected": {
     "title": "Projected food security phase: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "_projected_foodconsumption_phase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -1864,7 +1864,7 @@
   "ch_2021_11_livelihood_phase_current": {
     "title": "Current livelihood phase: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "livelihoods_phase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -1901,7 +1901,7 @@
   "ch_2021_11_livelihood_phase_projected": {
     "title": "Projected livelihood phase: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "_projected_livelihoods_phase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -1938,7 +1938,7 @@
   "ch_2021_11_nutrition_phase_current": {
     "title": "Current nutrition phase: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "nutrition_phase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -1975,7 +1975,7 @@
   "ch_2021_11_nutrition_phase_projected": {
     "title": "Projected nutrition phase: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "_projected_nutrition_phase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -2012,7 +2012,7 @@
   "ch_2021_11_mortality_phase_current": {
     "title": "Current mortality phase: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "mortality_phase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -2049,7 +2049,7 @@
   "ch_2021_11_mortality_phase_projected": {
     "title": "Projected mortality phase: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "_projected_mortality_phase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -2086,7 +2086,7 @@
   "ch_2021_11_fcg": {
     "title": "Food consumption group: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "FCG_finalphase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -2123,7 +2123,7 @@
   "ch_2021_11_hdds": {
     "title": "Household dietary diversity score: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "HDDS_finalphase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -2160,7 +2160,7 @@
   "ch_2021_11_hhs": {
     "title": "Household hunger scale: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "HHS_finalphase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -2197,7 +2197,7 @@
   "ch_2021_11_rcsi": {
     "title": "Reduced coping strategies index: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "rCSI_finalphase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -2234,7 +2234,7 @@
   "ch_2021_11_lhcs": {
     "title": "Livelihood coping stategies: November 2021",
     "type": "admin_level_data",
-    "path": "../data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
+    "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
     "data_field": "LhHCSCat_finalphase",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",

@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/tajikistan/tjk_admin_boundaries_v2.json",
+    "path": "data/tajikistan/tjk_admin_boundaries_v2.json",
     "opacity": 0.8,
     "admin_code": "admin2_pcode",
     "admin_level_names": ["admin1Name_en", "admin2Name_en"],

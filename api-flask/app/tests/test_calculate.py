@@ -69,7 +69,7 @@ def test_kobo_response_form(kobo_params, kobo_data):
     form_fields = {
         'name': 'name',
         'datetime': 'date',
-        'geom': 'geom',
+        'geom_field': 'geom',
         'filters': {
             'status': 'Approved'
         }
