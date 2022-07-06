@@ -30,9 +30,7 @@ export const loadTable = createAsyncThunk<
   keyof typeof TableDefinitions,
   CreateAsyncThunkTypes
 >('tableState/loadTable', async (key: keyof typeof TableDefinitions) => {
-  const { table } = TableDefinitions[key];
-  const url = process.env.PUBLIC_URL + table;
-
+  const url = TableDefinitions[key].table;
   return new Promise<TableData>((resolve, reject) =>
     Papa.parse(url, {
       header: true,
