@@ -43,7 +43,7 @@ def get_kobo_params():
 
     geom_field = request.args.get('geomField')
     if geom_field is None:
-        raise BadRequest('Missing parameter: geomField')
+        logger.debug('Parameter geomField is not set.')
 
     filters = {}
     filters_params = request.args.get('filters', None)
@@ -52,7 +52,7 @@ def get_kobo_params():
 
     form_fields = dict(name=form_name,
                        datetime=datetime_field,
-                       geom=geom_field,
+                       geom_field=geom_field,
                        filters=filters)
 
     auth = (kobo_username, kobo_pw)
@@ -90,9 +90,6 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
     active_group = ''
 
     for label_name, label_type in labels.items():
-        if label_name in (form_fields.get('geom'), form_fields.get('datetime')):
-            continue
-
         # Add logic to handle groups. Data is returned flattened.
         if label_type == 'begin_group':
             active_group = label_name + '/'
@@ -123,7 +120,7 @@ def parse_form_response(form_dict: Dict[str, str], form_fields: Dict[str, str], 
     ])
     datetime_value = parse_form_field(datetime_value_string, labels.get(datetime_field))
 
-    geom_field = form_fields.get('geom', 'DoesNotExist')
+    geom_field = form_fields.get('geom_field') or 'DoesNotExist'
     geom_value_string = get_first([
         value for key, value in form_dict.items()
         if key.endswith(geom_field)
