@@ -457,7 +457,7 @@ function MapView({ classes }: MapViewProps) {
           });
         })}
         {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer />
+        <AnalysisLayer before={boundaryLayer} />
         <SelectionLayer before={firstSymbolId} />
         <MapTooltip />
       </MapboxMap>
