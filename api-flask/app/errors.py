@@ -26,7 +26,7 @@ def make_json_error(ex: Exception):
     status = ex.code if isinstance(ex, HTTPException) else 500
     response: Response = jsonify(error=str(ex), status=status)
     response.status_code = status
-    logError("HTTP Error %s: %s" % (status, str(ex)))
+    logError('HTTP Error %s: %s' % (status, str(ex)))
     return response
 
 
@@ -41,22 +41,27 @@ def handle_error(e: Exception):
     error_traceback = tb.splitlines()
 
     if isinstance(e, sqlalchemy.exc.DatabaseError):
-        kind = "Database error"
+        kind = 'Database error'
     else:
-        kind = "Internal server error"
+        kind = 'Internal server error'
 
     short_message = e.args[0]
     if isinstance(short_message, str):
-        short_message = short_message.partition("\n")[0]
+        short_message = short_message.partition('\n')[0]
 
-    error_message = "%s: %s" % (kind, short_message)
+    error_message = '%s: %s' % (kind, short_message)
 
     if current_app.debug:
         response: Response = jsonify(
-            error=error_message, status=status, details={"traceback": error_traceback}
+            error=error_message,
+            status=status,
+            details={'traceback': error_traceback}
         )
     else:
-        response: Response = jsonify(error=kind, status=status)
+        response: Response = jsonify(
+            error=kind,
+            status=status
+        )
 
     response.status_code = status
     logError(error_message, traceback=tb)
