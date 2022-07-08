@@ -1,7 +1,7 @@
 # for comment on PR, follow instruction for: https://github.com/marketplace/actions/sticky-pull-request-comment
 name: PRISM CI
 on:
-  # Run on all pull requests and on pushes to main.
+  # Run on all pull requests and on pushes to master.
   pull_request:
   push:
     branches:
@@ -50,8 +50,8 @@ jobs:
       ORG_LEVEL_TOKEN: ${{secrets.ORG_LEVEL_TOKEN}}
     strategy:
       matrix:
-        python-version: [ "3.10", 3.9, 3.8, 3.7 ]
-      # run the matrix jobs one after the other so they can benefit from caching
+        python-version: ['3.10', 3.9, 3.8, 3.7]
+      # run the matrix jobs one after the other, so they can benefit from caching
       max-parallel: 1
 
     steps:

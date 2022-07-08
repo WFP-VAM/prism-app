@@ -12,15 +12,15 @@ from sqlalchemy.orm.session import Session
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-DB_URI = getenv('DATABASE_URL') or \
-    'postgresql://{user}:{password}@{host}:{port}/{database}' \
-    .format(
-        host=getenv('POSTGRES_HOST', 'alerting-db'),
-        port=getenv('POSTGRES_PORT', '5432'),
-        database=getenv('POSTGRES_DB', 'postgres'),
-        user=getenv('POSTGRES_USER', 'postgres'),
-        password=getenv('POSTGRES_PASSWORD')
-    )
+DB_URI = getenv(
+    "DATABASE_URL"
+) or "postgresql://{user}:{password}@{host}:{port}/{database}".format(
+    host=getenv("POSTGRES_HOST", "alerting-db"),
+    port=getenv("POSTGRES_PORT", "5432"),
+    database=getenv("POSTGRES_DB", "postgres"),
+    user=getenv("POSTGRES_USER", "postgres"),
+    password=getenv("POSTGRES_PASSWORD"),
+)
 
 
 class AlertsDataBase:
@@ -35,7 +35,7 @@ class AlertsDataBase:
         """Alerts Database initializer."""
         _eng = create_engine(DB_URI)
         self.session: Session = sessionmaker(_eng)()
-        logger.info('DB connection is initialized.')
+        logger.info("DB connection is initialized.")
 
     def write(self, alert: AlertModel):
         """Write an alert to the alerts table."""
@@ -88,7 +88,7 @@ class AlertsDataBase:
             deactivation_successful = True
         except Exception as e:
             self.session.rollback()
-            logger.error(f'Failed to deactivate alert: {e}')
+            logger.error(f"Failed to deactivate alert: {e}")
         finally:
             self.session.close()
 
@@ -108,7 +108,7 @@ class AlertsDataBase:
             delete_successful = True
         except Exception as e:
             self.session.rollback()
-            logger.error(f'Failed to delete alert: {e}')
+            logger.error(f"Failed to delete alert: {e}")
         finally:
             self.session.close()
 
@@ -116,8 +116,8 @@ class AlertsDataBase:
 
 
 # Local test
-if __name__ == '__main__':
+if __name__ == "__main__":
     alert_db = AlertsDataBase()
     alerts = alert_db.session.query(AlertModel).all()
-    for row in alert_db.read(AlertModel.alert_name.startswith('alert')):
+    for row in alert_db.read(AlertModel.alert_name.startswith("alert")):
         print(row.email)
