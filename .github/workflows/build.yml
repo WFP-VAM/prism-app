@@ -69,8 +69,8 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       - name: Check formatting with black and isort
         run: |
-          poetry run black --check .
-          poetry run isort --check .
+          poetry run black .
+          poetry run isort .
 
   frontend_build_and_deploy:
     needs: frontend_tests
