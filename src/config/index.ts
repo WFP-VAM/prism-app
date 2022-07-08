@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { has, get } from 'lodash';
 
 import { PublicClientApplication } from '@azure/msal-browser';
