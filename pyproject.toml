@@ -2,6 +2,8 @@
 name = "prism-frontend"
 version = "1.1.1"
 description = "Frontend interface for WFP PRISM"
+authors = ["Ovio"]
+license = "Apache 2.0"
 
 [tool.poetry.dependencies]
 PyJWT = "2.4.0"
