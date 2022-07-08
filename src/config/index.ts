@@ -16,6 +16,8 @@ import {
   indonesiaRawTables,
 } from './indonesia';
 
+import jordan from './jordan';
+
 import {
   kyrgyzstanConfig,
   kyrgyzstanRawLayers,
@@ -68,6 +70,7 @@ const configMap = {
     rawTables: indonesiaRawTables,
     defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
+  jordan,
   kyrgyzstan: {
     appConfig: kyrgyzstanConfig,
     rawLayers: kyrgyzstanRawLayers,
