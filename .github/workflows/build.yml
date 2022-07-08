@@ -43,6 +43,35 @@ jobs:
       - name: yarn test
         run: yarn test
 
+  api_tests:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      ORG_LEVEL_TOKEN: ${{secrets.ORG_LEVEL_TOKEN}}
+    strategy:
+      matrix:
+        python-version: [ "3.10", 3.9, 3.8, 3.7 ]
+      # run the matrix jobs one after the other so they can benefit from caching
+      max-parallel: 1
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          # Version of Poetry to use
+          version: 1.1.13
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      - name: Install dependencies
+        run: |
+          poetry install
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      - name: Check formatting with black and isort
+        run: |
+          poetry run black --check .
+          poetry run isort --check .
+
   frontend_build_and_deploy:
     needs: frontend_tests
     name: frontend_build_and_deploy
