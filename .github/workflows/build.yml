@@ -43,35 +43,6 @@ jobs:
       - name: yarn test
         run: yarn test
 
-  api_tests:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      ORG_LEVEL_TOKEN: ${{secrets.ORG_LEVEL_TOKEN}}
-    strategy:
-      matrix:
-        python-version: ['3.10', 3.9, 3.8, 3.7]
-      # run the matrix jobs one after the other, so they can benefit from caching
-      max-parallel: 1
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          # Version of Poetry to use
-          version: 1.1.13
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-      - name: Install dependencies
-        run: |
-          poetry install
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-      - name: Check formatting with black and isort
-        run: |
-          poetry run black --check .
-          poetry run isort --check .
-
   frontend_build_and_deploy:
     needs: frontend_tests
     name: frontend_build_and_deploy
@@ -133,8 +104,36 @@ jobs:
           message: |
             Build succeeded and deployed at http://${{ env.surge_url }} 
             (hash ${{ github.event.pull_request.head.sha }} deployed at ${{ steps.date.outputs.date }})
+  api_lint:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      ORG_LEVEL_TOKEN: ${{secrets.ORG_LEVEL_TOKEN}}
+    strategy:
+      matrix:
+        python-version: ['3.10', 3.9, 3.8, 3.7]
+      # run the matrix jobs one after the other, so they can benefit from caching
+      max-parallel: 1
 
-  build_api:
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          # Version of Poetry to use
+          version: 1.1.13
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      - name: Install dependencies
+        run: |
+          poetry install
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      - name: Check formatting with black and isort
+        run: |
+          poetry run black --check .
+          poetry run isort --check .
+
+  api_build:
     name: build api
     runs-on: ubuntu-latest
     steps:
@@ -145,9 +144,7 @@ jobs:
           curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
           chmod +x ~/docker-compose
           sudo mv ~/docker-compose /usr/local/bin/docker-compose
-      - name: Build containers
-        run: cd api-flask && docker-compose build api
-      - name: Run linters
-        run: cd api-flask && make api-lint
       - name: Run tests
         run: cd api-flask && make api-test
+      - name: Build containers
+        run: cd api-flask && docker-compose build api
