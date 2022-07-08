@@ -99,7 +99,7 @@ const configMap = {
 
 type Country = keyof typeof configMap;
 
-const DEFAULT: Country = 'cuba';
+const DEFAULT: Country = 'myanmar';
 
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
 const safeCountry =
