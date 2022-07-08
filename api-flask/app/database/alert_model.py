@@ -3,11 +3,8 @@ import datetime
 import logging
 
 from flask import json
-
-from sqlalchemy import Column, DateTime, String
-from sqlalchemy import Identity, Integer, JSON, TIMESTAMP
-from sqlalchemy.ext.declarative import DeclarativeMeta
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import JSON, TIMESTAMP, Column, DateTime, Identity, Integer, String
+from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.sql.sqltypes import Boolean
 
 logging.basicConfig(level=logging.INFO)

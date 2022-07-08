@@ -4,12 +4,9 @@ import json
 import logging
 import os
 
-from app.timer import timed
-
 import rasterio
-
 import requests
-
+from app.timer import timed
 from werkzeug.exceptions import InternalServerError
 
 logger = logging.getLogger(__name__)

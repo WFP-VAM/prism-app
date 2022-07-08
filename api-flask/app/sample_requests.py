@@ -1,7 +1,6 @@
 """Sample Data for stats and alert."""
 from flask_restx import fields
 
-
 stats_data = {
     "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0"
     "&coverage=r1h_dekad&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098"

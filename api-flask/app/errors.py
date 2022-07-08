@@ -1,10 +1,8 @@
 """Error handling module."""
 import traceback
 
-from flask import Response, current_app, jsonify, redirect
-
 import sqlalchemy.exc
-
+from flask import Response, current_app, jsonify, redirect
 from werkzeug.exceptions import HTTPException
 from werkzeug.routing import RequestRedirect
 

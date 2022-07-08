@@ -4,6 +4,7 @@ from distutils.util import strtobool
 from os import getenv
 from urllib.parse import ParseResult, urlencode, urlunparse
 
+import rasterio
 from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
@@ -12,19 +13,11 @@ from app.kobo import get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import calculate_stats, get_wfs_response
-
 from flask import Flask, Response, json, request
-
 from flask_caching import Cache
-
 from flask_cors import CORS
-
 from flask_restx import Api, Resource
-
-import rasterio
-
 from sample_requests import alerts_dic, stats_dic
-
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 logging.basicConfig(level=logging.DEBUG)
