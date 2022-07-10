@@ -45,9 +45,6 @@ jobs:
 
   api_tests:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      ORG_LEVEL_TOKEN: ${{secrets.ORG_LEVEL_TOKEN}}
     strategy:
       matrix:
         python-version: ['3.10', 3.9, 3.8, 3.7]
