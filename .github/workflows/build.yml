@@ -144,7 +144,7 @@ jobs:
           curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
           chmod +x ~/docker-compose
           sudo mv ~/docker-compose /usr/local/bin/docker-compose
-      - name: Run tests
-        run: cd api-flask && make api-test
       - name: Build containers
         run: cd api-flask && docker-compose build api
+      - name: Run tests
+        run: cd api-flask && make api-test
