@@ -108,9 +108,17 @@ const { REACT_APP_COUNTRY: COUNTRY } = process.env;
 const safeCountry =
   COUNTRY && has(configMap, COUNTRY) ? (COUNTRY as Country) : DEFAULT;
 
-const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
-  safeCountry
-];
+const {
+  appConfig,
+  defaultBoundariesFile,
+  rawLayers,
+  rawTables,
+}: {
+  appConfig: Record<string, any>;
+  defaultBoundariesFile: string;
+  rawLayers: Record<string, any>;
+  rawTables: Record<string, any>;
+} = configMap[safeCountry];
 
 const translation = get(configMap[safeCountry], 'translation', {});
 
