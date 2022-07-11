@@ -199,6 +199,7 @@ function SimpleBoundaryDropdown({
   setSelectedBoundaries,
   labelMessage,
   selectAll,
+  onlyNewCategory,
   ...rest
 }: BoundaryDropdownProps) {
   const { t, i18n: i18nLocale } = useSafeTranslation();
@@ -279,12 +280,16 @@ function SimpleBoundaryDropdown({
                       categoryValues.includes(val),
                     ).length === categoryValues.length;
 
+                  const newBoundariesValue = onlyNewCategory
+                    ? categoryValues
+                    : [...selectedBoundaries, ...categoryValues];
+
                   setSelectedBoundaries(
                     areAllChildrenSelected
                       ? selectedBoundaries.filter(
                           val => !categoryValues.includes(val),
                         )
-                      : [...selectedBoundaries, ...categoryValues],
+                      : newBoundariesValue,
                     true,
                   );
                 }}
@@ -312,6 +317,7 @@ interface BoundaryDropdownProps {
   selectedBoundaries: string[];
   setSelectedBoundaries: (boundaries: string[], appendMany?: boolean) => void;
   labelMessage?: string;
+  onlyNewCategory?: boolean;
   selectAll: boolean;
 }
 
@@ -396,6 +402,7 @@ export const GotoBoundaryDropdown = () => {
       <ButtonStyleBoundaryDropdown
         selectedBoundaries={boundaries}
         selectAll={false}
+        onlyNewCategory
         labelMessage={t('Go To')}
         className={styles.formControl}
         setSelectedBoundaries={(newSelectedBoundaries, appendMany) => {
