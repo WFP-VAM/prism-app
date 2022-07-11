@@ -90,7 +90,7 @@
     "lodash": "^4.17.21",
     "mapbox-gl": "npm:maplibre-gl@1.15.2",
     "marked": "^4.0.10",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "moment-range": "^4.0.2",
     "papaparse": "^5.2.0",
     "prettier": "^2.0.5",
