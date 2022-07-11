@@ -106,7 +106,9 @@ const DEFAULT: Country = 'myanmar';
 
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
 const safeCountry =
-  COUNTRY && has(configMap, COUNTRY) ? (COUNTRY as Country) : DEFAULT;
+  COUNTRY && has(configMap, COUNTRY.toLocaleLowerCase())
+    ? (COUNTRY.toLocaleLowerCase() as Country)
+    : DEFAULT;
 
 const {
   appConfig,
