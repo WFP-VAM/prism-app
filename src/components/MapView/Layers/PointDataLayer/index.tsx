@@ -18,12 +18,17 @@ import {
   layerDataSelector,
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
-import { removeLayerData } from '../../../../context/mapStateSlice';
+import {
+  removeLayerData,
+  removeLayer,
+} from '../../../../context/mapStateSlice';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayerSingleton } from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
+import { useUrlHistory, getUrlKey } from '../../../../utils/url-utils';
+
 import { useSafeTranslation } from '../../../../i18n';
 import { circleLayout, circlePaint, fillPaintData } from '../styles';
 import {
@@ -41,6 +46,12 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     | LayerData<PointDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
+  const {
+    updateHistory,
+    removeKeyFromUrl,
+    appendLayerToUrl,
+    removeLayerFromUrl,
+  } = useUrlHistory();
 
   const map = useSelector(mapSelector);
 
@@ -91,8 +102,30 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
 
       dispatch(removeLayerData(layer));
       dispatch(clearJwtAccessToken());
+
+      // Remove layer from url.
+      const urlLayerKey = getUrlKey(layer);
+
+      const updatedUrl = removeLayerFromUrl(urlLayerKey, layer.id);
+
+      if (updatedUrl === '') {
+        removeKeyFromUrl(urlLayerKey);
+      } else {
+        updateHistory(urlLayerKey, updatedUrl);
+      }
+
+      dispatch(removeLayer(layer));
     }
-  }, [features, dispatch, layer, selectedDate, jwtAccessToken]);
+  }, [
+    features,
+    dispatch,
+    layer,
+    selectedDate,
+    jwtAccessToken,
+    removeKeyFromUrl,
+    removeLayerFromUrl,
+    updateHistory,
+  ]);
 
   if (!features || map?.getSource(layerId)) {
     return null;
