@@ -179,6 +179,7 @@ function MapView({ classes }: MapViewProps) {
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     undefined,
   );
+  const [boundaryId, setBoundaryId] = useState<string | undefined>(undefined);
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer =>
       dateSupportLayerTypes.includes(layer.type),
@@ -416,10 +417,11 @@ function MapView({ classes }: MapViewProps) {
   // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers.
   // Jump map to center here instead of map initial state to prevent map re-centering on layer changes
   const saveAndJumpMap = (map: Map) => {
-    // Find the first symbol on the map to make sure we add layers below them.
     const { layers } = map.getStyle();
-    // Find the first symbol on the map to make sure we add layers below them.
+    // Find the first symbol on the map to make sure we add boundary layers below them.
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
+    // and add other layers below boundary layer
+    setBoundaryId(boundaryLayer.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
   };
@@ -453,11 +455,14 @@ function MapView({ classes }: MapViewProps) {
           return createElement(component, {
             key: layer.id,
             layer,
-            before: firstSymbolId,
+            before:
+              layer.type === 'boundary'
+                ? firstSymbolId
+                : `layer-${boundaryId}-line`,
           });
         })}
         {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer before={boundaryLayer} />
+        <AnalysisLayer before={`layer-${boundaryId}-line`} />
         <SelectionLayer before={firstSymbolId} />
         <MapTooltip />
       </MapboxMap>
