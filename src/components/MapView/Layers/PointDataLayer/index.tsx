@@ -49,7 +49,6 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const {
     updateHistory,
     removeKeyFromUrl,
-    appendLayerToUrl,
     removeLayerFromUrl,
   } = useUrlHistory();
 
