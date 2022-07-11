@@ -17,7 +17,7 @@ import { countBy, get, pickBy } from 'lodash';
 import moment from 'moment';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
-import { Map } from 'mapbox-gl';
+import { Map, MapSourceDataEvent } from 'mapbox-gl';
 import bbox from '@turf/bbox';
 import inside from '@turf/boolean-point-in-polygon';
 import type { Feature, MultiPolygon } from '@turf/helpers';
@@ -415,8 +415,8 @@ function MapView({ classes }: MapViewProps) {
   const trackLoadingLayers = (map: Map) => {
     // Track with local state to minimize expensive dispatch call
     const layerIds = new Set<LayerKey>();
-    map.on('sourcedata', e => {
-      if (e.sourceId.startsWith('source-')) {
+    const listener = (e: MapSourceDataEvent) => {
+      if (e.sourceId && e.sourceId.startsWith('source-')) {
         const layerId = e.sourceId.substring('source-'.length) as LayerKey;
         const included = layerIds.has(layerId);
         if (!included && !e.isSourceLoaded) {
@@ -426,6 +426,14 @@ function MapView({ classes }: MapViewProps) {
           layerIds.delete(layerId);
           dispatch(setLoadingLayerIds([...layerIds]));
         }
+      }
+    };
+    map.on('dataloading', listener);
+    map.on('data', listener);
+    map.on('idle', () => {
+      if (layerIds.size > 0) {
+        layerIds.clear();
+        dispatch(setLoadingLayerIds([...layerIds]));
       }
     });
   };

@@ -257,61 +257,59 @@ function LegendItem({
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
-        <Grid container direction="column" spacing={1}>
-          <Grid item style={{ display: 'flex' }}>
-            <Typography style={{ flexGrow: 1 }} variant="h4">
-              {title}
-            </Typography>
-            <LayerContentPreview layerId={id} />
-          </Grid>
-          <Divider />
-          <Grid item className={classes.slider}>
-            <Box px={1}>
-              <Slider
-                value={opacity}
-                step={0.01}
-                min={0}
-                max={1}
-                aria-labelledby="opacity-slider"
-                onChange={handleChangeOpacity}
-              />
-            </Box>
-          </Grid>
-
-          {legend && (
-            <Grid item>
-              {legendUrl ? (
-                <img src={legendUrl} alt={title} />
-              ) : (
-                legend.map((item: LegendDefinitionItem) => (
-                  <ColorIndicator
-                    key={item.value || item.label}
-                    value={getLegendItemLabel(item)}
-                    color={item.color as string}
-                    opacity={opacity as number}
-                  />
-                ))
-              )}
-            </Grid>
-          )}
-
-          {id && <LoadingBar layerId={id} />}
-
-          {children && (
-            <Grid item>
-              <Typography variant="h5">{children}</Typography>
-            </Grid>
-          )}
-
-          {exposure && (
-            <ExposedPopulationAnalysis
-              result={analysisResult as ExposedPopulationResult}
-              id={id!}
-              extent={extent!}
-              exposure={exposure}
-            />
-          )}
+        <Grid item style={{ display: 'flex' }}>
+          <Typography style={{ flexGrow: 1 }} variant="h4">
+            {title}
+          </Typography>
+          <LayerContentPreview layerId={id} />
         </Grid>
+        <Divider />
+        <Grid item className={classes.slider}>
+          <Box px={1}>
+            <Slider
+              value={opacity}
+              step={0.01}
+              min={0}
+              max={1}
+              aria-labelledby="opacity-slider"
+              onChange={handleChangeOpacity}
+            />
+          </Box>
+        </Grid>
+
+        {legend && (
+          <Grid item>
+            {legendUrl ? (
+              <img src={legendUrl} alt={title} />
+            ) : (
+              legend.map((item: LegendDefinitionItem) => (
+                <ColorIndicator
+                  key={item.value || item.label}
+                  value={getLegendItemLabel(item)}
+                  color={item.color as string}
+                  opacity={opacity as number}
+                />
+              ))
+            )}
+          </Grid>
+        )}
+
+        <LoadingBar layerId={id} />
+
+        {children && (
+          <Grid item>
+            <Typography variant="h5">{children}</Typography>
+          </Grid>
+        )}
+
+        {exposure && (
+          <ExposedPopulationAnalysis
+            result={analysisResult as ExposedPopulationResult}
+            id={id!}
+            extent={extent!}
+            exposure={exposure}
+          />
+        )}
       </Paper>
     </ListItem>
   );
