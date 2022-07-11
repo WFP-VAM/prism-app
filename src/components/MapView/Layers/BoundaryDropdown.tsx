@@ -75,6 +75,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignSelf: 'end',
     marginBottom: '0.4em',
   },
+  list: {
+    '& .Mui-selected': { backgroundColor: '#ADD8E6' },
+  },
 }));
 const TIMEOUT_ANIMATION_DELAY = 10;
 const SearchField = forwardRef(
@@ -202,6 +205,7 @@ function SimpleBoundaryDropdown({
   onlyNewCategory,
   ...rest
 }: BoundaryDropdownProps) {
+  const styles = useStyles();
   const { t, i18n: i18nLocale } = useSafeTranslation();
   const [search, setSearch] = useState('');
 
@@ -229,6 +233,9 @@ function SimpleBoundaryDropdown({
       <InputLabel>{labelMessage}</InputLabel>
       <Select
         multiple
+        MenuProps={{
+          classes: { list: styles.list },
+        }}
         onClose={() => {
           // empty search so that component shows correct options
           // otherwise, we would only show selected options which satisfy the search
