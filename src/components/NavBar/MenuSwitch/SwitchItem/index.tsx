@@ -53,7 +53,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
     ? selectedLayers.filter(sl => {
         return (
           (group?.activateAll &&
-            group?.layers.find(l => l.id === sl.id && l.default)) ||
+            group?.layers.find(l => l.id === sl.id && l.main)) ||
           (!group?.activateAll && group?.layers.map(l => l.id).includes(sl.id))
         );
       })
@@ -63,7 +63,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
     selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : null;
 
   const [activeLayer, setActiveLayer] = useState(
-    initialActiveLayer || (group?.layers?.find(l => l.default)?.id as string),
+    initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
   );
 
   const validatedTitle = t(group?.groupTitle || layerTitle || '');

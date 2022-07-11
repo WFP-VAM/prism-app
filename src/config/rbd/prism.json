@@ -38,7 +38,7 @@
             {
               "id": "rainfall_dekad",
               "label": "10-day",
-              "default": true
+              "main": true
             },
             {
               "id": "rainfall_agg_1month",
@@ -71,7 +71,7 @@
             {
               "id": "rain_anomaly_dekad",
               "label": "10-day",
-              "default": true
+              "main": true
             },
             {
               "id": "rain_anomaly_1month",
@@ -102,7 +102,7 @@
             {
               "id": "spi_1m",
               "label": "1-month",
-              "default": true
+              "main": true
             },
             {
               "id": "spi_3m",

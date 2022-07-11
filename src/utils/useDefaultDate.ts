@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import moment from 'moment';
-import { AvailableDates, isDefaultLayer, LayerKey } from '../config/types';
+import { AvailableDates, isMainLayer, LayerKey } from '../config/types';
 import { availableDatesSelector } from '../context/serverStateSlice';
 import {
   dateRangeSelector,
@@ -23,8 +23,8 @@ export function useDefaultDate(
 ): number | undefined {
   const dispatch = useDispatch();
   const selectedLayers = useSelector(layersSelector);
-  // check layer without group or default layer in group
-  const defaultLayer = isDefaultLayer(layerId as string, selectedLayers);
+  // check layer without group or main layer in group
+  const mainLayer = isMainLayer(layerId as string, selectedLayers);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const { updateHistory } = useUrlHistory();
@@ -39,10 +39,10 @@ export function useDefaultDate(
   // React doesn't allow updating other components within another component
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
   useEffect(() => {
-    if (!selectedDate && defaultDate && defaultLayer) {
+    if (!selectedDate && defaultDate && mainLayer) {
       updateHistory('date', moment(defaultDate).format(DEFAULT_DATE_FORMAT));
     }
-  }, [defaultDate, dispatch, selectedDate, updateHistory, defaultLayer]);
+  }, [defaultDate, dispatch, selectedDate, updateHistory, mainLayer]);
 
   return selectedDate || defaultDate;
 }

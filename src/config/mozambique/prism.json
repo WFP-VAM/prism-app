@@ -38,7 +38,7 @@
             {
               "id": "rainfall_dekad",
               "label": "10-day",
-              "default": true
+              "main": true
             },
             {
               "id": "rainfall_agg_1month",
@@ -72,7 +72,7 @@
             {
               "id": "rain_anomaly_dekad",
               "label": "10-day",
-              "default": true
+              "main": true
             },
             {
               "id": "rain_anomaly_1month",
@@ -103,7 +103,7 @@
             {
               "id": "spi_1m",
               "label": "1-month",
-              "default": true
+              "main": true
             },
             {
               "id": "spi_3m",
@@ -161,7 +161,7 @@
             {
               "id": "adamts_buffers",
               "label": "Wind buffers",
-              "default": true
+              "main": true
             },
             {
               "id": "adamts_nodes",
@@ -187,7 +187,7 @@
             {
               "id": "ipc_phase_current",
               "label": "Current phase classification",
-              "default": true
+              "main": true
             },
             {
               "id": "ipc_phase_projected",
