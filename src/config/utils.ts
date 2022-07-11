@@ -189,7 +189,7 @@ export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
 }
 
 export function getBoundaryLayerSingleton(): BoundaryLayerProps {
-  return getDisplayBoundaryLayers().slice(-1)[0];
+  return getDisplayBoundaryLayers()[0];
 }
 
 export const isPrimaryBoundaryLayer = (layer: BoundaryLayerProps) =>

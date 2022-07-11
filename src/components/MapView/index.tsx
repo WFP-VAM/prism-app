@@ -312,7 +312,12 @@ function MapView({ classes }: MapViewProps) {
 
   useEffect(() => {
     dispatch(loadAvailableDates());
-    const displayBoundaryLayers = getDisplayBoundaryLayers();
+    /*
+      reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
+      to prevent other boundary layers being covered by any layers
+    */
+    // eslint-disable-next-line fp/no-mutating-methods
+    const displayBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
