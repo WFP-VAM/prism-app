@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "prism-frontend"
+version = "1.1.1"
+description = "Frontend interface for WFP PRISM"
+authors = ["Ovio"]
+license = "Apache 2.0"
+
+[tool.poetry.dependencies]
+PyJWT = "2.4.0"
+python = "<3.11,>=3.7.2"
+requests = "^2.25.1"
+
+[tool.poetry.dev-dependencies]
+black = "^22.1.0"
+isort = "^5.10.1"
+
+[[tool.mypy.overrides]]
+module = [
+    "backoff",
+]
+ignore_missing_imports = true
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3 # Vertical Hanging Indent
+src_paths = "prism-frontend/api-flask"
+
+[build-system]
+requires = ["poetry-core>=1.0.8"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+# CLI declaration
+tap-github = 'prism-frontend.tap:cli'
