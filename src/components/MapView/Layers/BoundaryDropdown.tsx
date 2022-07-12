@@ -399,6 +399,46 @@ export const GotoBoundaryDropdown = () => {
 
   const styles = useStyles();
 
+  useEffect(() => {
+    if (!data || !map) {
+      return;
+    }
+
+    if (boundaries.length === 0) {
+      map.flyTo({ center: { lng: longitude, lat: latitude }, zoom });
+
+      return;
+    }
+
+    const geometries = data.features
+      .filter(f =>
+        boundaries.includes(
+          f.properties && f.properties[boundaryLayer.adminCode],
+        ),
+      )
+      .filter(f => f.geometry.type === 'MultiPolygon')
+      .map(f => f.geometry as MultiPolygon);
+
+    const bboxes = geometries.map(geom => {
+      const turfObj = multiPolygon(geom.coordinates);
+      return bbox(turfObj);
+    });
+
+    const bboxPolygons = bboxes.map(box => bboxPolygon(box));
+    const unionBbox = bboxPolygons.reduce((unionPolygon, polygon) => {
+      const unionObj = union(unionPolygon, polygon);
+      if (!unionObj) {
+        return unionPolygon;
+      }
+      return unionObj as Feature<Polygon>;
+    }, bboxPolygons[0]);
+
+    map.fitBounds(bbox(unionBbox) as Extent, {
+      padding: 30,
+    });
+    //  eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boundaries]);
+
   if (!data || !map || !enableNavigationDropdown) {
     return null;
   }
@@ -413,48 +453,11 @@ export const GotoBoundaryDropdown = () => {
         labelMessage={t('Go To')}
         className={styles.formControl}
         setSelectedBoundaries={(newSelectedBoundaries, appendMany) => {
-          setBoundaries(() => {
-            if (appendMany === true) {
-              return newSelectedBoundaries;
-            }
-
-            return newSelectedBoundaries.slice(-1);
-          });
-
-          if (newSelectedBoundaries.length === 0) {
-            map.flyTo({ center: { lng: longitude, lat: latitude }, zoom });
-
-            return;
-          }
-
-          const geometries = data.features
-            .filter(f =>
-              newSelectedBoundaries.includes(
-                f.properties && f.properties[boundaryLayer.adminCode],
-              ),
-            )
-            .filter(f => f.geometry.type === 'MultiPolygon')
-            .map(f => f.geometry as MultiPolygon);
-
-          const bboxes = geometries.map(geom => {
-            const turfObj = multiPolygon(geom.coordinates);
-            const geomBbox = bbox(turfObj);
-
-            return geomBbox;
-          });
-
-          const bboxPolygons = bboxes.map(box => bboxPolygon(box));
-          const unionBbox = bboxPolygons.reduce((unionPolygon, polygon) => {
-            const unionObj = union(unionPolygon, polygon);
-            if (!unionObj) {
-              return unionPolygon;
-            }
-            return unionObj as Feature<Polygon>;
-          }, bboxPolygons[0]);
-
-          map.fitBounds(bbox(unionBbox) as Extent, {
-            padding: 30,
-          });
+          setBoundaries(
+            appendMany === true
+              ? newSelectedBoundaries
+              : newSelectedBoundaries.slice(-1),
+          );
         }}
       />
     </div>
