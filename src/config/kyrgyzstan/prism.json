@@ -169,7 +169,8 @@
     "snow": {
       "snow_conditions": [
         "snow_cover",
-        "modis_snow_percentage"
+        "modis_snow_percentage",
+        "flood_mudflows"
       ]
     }
   }

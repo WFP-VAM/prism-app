@@ -51,31 +51,73 @@
     "path": "data/kyrgyzstan/mudflows_w_admin.json",
     "data_field": "mudflow",
     "admin_level": 2,
-    "admin_code": "ADM2_PCODE",
+    "admin_code": "Adm2_Code",
     "opacity": 0.6,
     "legend": [
       {
-        "value": "1 to 2",
+        "value": 1,
+        "label": "1 to 2",
         "color": "#1a9641"
       },
       {
-        "value": "2 to 3",
+        "value": 2,
+        "label": "2 to 3",
         "color": "#a6d96a"
       },
       {
-        "value": "3 to 5",
+        "value": 3,
+        "label": "3 to 5",
         "color": "#ffffbf"
       },
       {
-        "value": "5 to 10",
+        "value": 5,
+        "label": "5 to 10",
         "color": "#fdae61"
       },
       {
-        "value": "10 to 30",
+        "value": 10,
+        "label": "10 to 30",
         "color": "#d7191c"
       }
     ],
     "legend_text": "Recurrence of mudflows, Ministry of Emergency Situations 2009"
+  },
+  "flood_mudflows": {
+    "title": "Number of floods and mudflows",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "flood_mudflow",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": 2,
+        "label": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 3,
+        "label": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 5,
+        "label": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": 10,
+        "label": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Number of floods and mudflows (1999 - 2021)"
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
