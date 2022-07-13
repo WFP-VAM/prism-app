@@ -86,6 +86,43 @@
     ],
     "legend_text": "This layer shows number of households of IDPoor level 1 and 2 at commune level. The identification of poor households (IDPoor) is established to collect and share poor household information nationwide in order to enhance targeting services and assistance for poverty reduction."
   },
+  "flood_hazard": {
+    "title": "Flood hazard index",
+    "type": "admin_level_data",
+    "path": "data/cambodia/flood-hazard-index.json",
+    "data_field": "flood_hazard_index",
+    "admin_level": 3,
+    "admin_code": "commune",
+    "opacity": 0.9,
+    "legend": [
+      {
+        "value": 0,
+        "label": "0 - 3",
+        "color": "#ffffff"
+      },
+      {
+        "value": 3,
+        "label": "3 - 10",
+        "color": "#fcae91"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 21,
+        "label": "21 - 30",
+        "color": "#de2d26"
+      },
+      {
+        "value": 31,
+        "label": "31 or more",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Flood Hazard Index (higher value indicates more frequent floods)"
+  },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
     "type": "wms",
