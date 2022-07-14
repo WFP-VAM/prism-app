@@ -2,7 +2,6 @@ import json
 from argparse import ArgumentParser
 
 import jwt
-
 from shapely.geometry import shape
 
 

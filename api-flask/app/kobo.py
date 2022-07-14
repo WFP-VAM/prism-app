@@ -4,13 +4,10 @@ from datetime import datetime, timedelta, timezone
 from os import getenv
 from typing import Dict, List
 
+import requests
 from dateutil.parser import parse as dtparser
 from flask import request
-
-import requests
-
 from shapely.geometry import Point, box
-
 from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 logger = logging.getLogger(__name__)
