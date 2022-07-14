@@ -428,8 +428,8 @@ function MapView({ classes }: MapViewProps) {
         }
       }
     };
-    map.on('dataloading', listener);
-    map.on('data', listener);
+    map.on('sourcedataloading', listener);
+    map.on('sourcedata', listener);
     map.on('idle', () => {
       if (layerIds.size > 0) {
         layerIds.clear();
