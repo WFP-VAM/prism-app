@@ -209,13 +209,13 @@ def get_form_dates():
     """Get all form responses using Kobo api."""
     auth, form_fields = get_kobo_params()
 
-    form_responses, form_labels = get_responses_from_kobo(auth, form_fields.get('name'))
+    form_responses, form_labels = get_responses_from_kobo(auth, form_fields.get("name"))
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
-    dates_list = set([f.get('date').date().isoformat() for f in forms])
+    dates_list = set([f.get("date").date().isoformat() for f in forms])
 
-    return [{'date': d} for d in dates_list]
+    return [{"date": d} for d in dates_list]
 
 
 def get_form_responses(begin_datetime, end_datetime, geom_bbox):
@@ -230,7 +230,7 @@ def get_form_responses(begin_datetime, end_datetime, geom_bbox):
 
     bbox = None
     if geom_bbox is not None:
-        bbox = box(*[float(p) for p in geom_bbox.split(',')])
+        bbox = box(*[float(p) for p in geom_bbox.split(",")])
 
     for form in forms:
         date_value = form.get("date")
@@ -241,7 +241,7 @@ def get_form_responses(begin_datetime, end_datetime, geom_bbox):
 
         # Geospatial filter.
         if bbox is not None:
-            point = Point(form.get('lon'), form.get('lat'))
+            point = Point(form.get("lon"), form.get("lat"))
             conditions.append(bbox.contains(point))
 
         if all(conditions) is False:

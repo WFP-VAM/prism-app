@@ -126,7 +126,7 @@ def test_kobo_response_form(kobo_params, kobo_data):
         "filters": {"status": "Approved", "username": "jorge"},
     }
 
-    kobo_params.return_value = (('test', 'test'), form_fields)
+    kobo_params.return_value = (("test", "test"), form_fields)
     forms = get_form_responses(begin, end, None)
 
     assert len(forms) == 1

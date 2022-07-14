@@ -170,15 +170,14 @@ class Stats(Resource):
 #     """Get all alerts in current table."""
 #     results = alert_db.readall()
 #     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
-@api.route('/kobo/dates')
+@api.route("/kobo/dates")
 class GetKoboDates(Resource):
     """Class Get_kobo_forms which takes a get method."""
 
     def get(self):
         """Get all form responses."""
         form_dates = get_form_dates()
-        return Response(json.dumps(form_dates), mimetype='application/json')
-
+        return Response(json.dumps(form_dates), mimetype="application/json")
 
 
 @api.route("/kobo/forms")
@@ -190,25 +189,27 @@ class GetKoboForms(Resource):
         begin_datetime, end_datetime = parse_datetime_params()
         form_responses = get_form_responses(begin_datetime, end_datetime, None)
 
-        return Response(json.dumps(form_responses), mimetype='application/json')
+        return Response(json.dumps(form_responses), mimetype="application/json")
 
 
-@api.route('/cambodia/kobo/forms')
+@api.route("/cambodia/kobo/forms")
 class GetCambodiaKoboForms(Resource):
     """Class Get_kobo_forms which takes a get method."""
 
     def get(self):
         """Get all form responses."""
-        jwt_token = request.args.get('accessToken')
+        jwt_token = request.args.get("accessToken")
 
         try:
-            decoded_data = jwt.decode(jwt_token, getenv('JWT_SECRET_KEY'), algorithms=['HS256'])
+            decoded_data = jwt.decode(
+                jwt_token, getenv("JWT_SECRET_KEY"), algorithms=["HS256"]
+            )
         except (DecodeError, InvalidSignatureError):
-            raise Unauthorized('Invalid access token')
+            raise Unauthorized("Invalid access token")
 
         begin_datetime, end_datetime = parse_datetime_params()
 
-        geom_bbox = decoded_data.get('bbox', None)
+        geom_bbox = decoded_data.get("bbox", None)
         form_responses = get_form_responses(begin_datetime, end_datetime, geom_bbox)
 
         return Response(json.dumps(form_responses), mimetype="application/json")
