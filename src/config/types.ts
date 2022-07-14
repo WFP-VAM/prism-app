@@ -29,7 +29,7 @@ export type LayerKey = keyof UnionToIntersection<typeof rawLayers>;
 type MenuGroupItem = {
   id: string;
   label: string;
-  main: boolean;
+  main?: boolean;
 };
 
 export type MenuGroup = {
@@ -296,8 +296,7 @@ export class CommonLayerProps {
         },
         {
           "id": "rain_anomaly_3month",
-          "label": "3-month",
-          "main": false
+          "label": "3-month"
         },
         ...
       ]

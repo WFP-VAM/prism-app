@@ -40,13 +40,11 @@
             },
             {
               "id": "adamts_nodes",
-              "label": "Nodes",
-              "main": false
+              "label": "Nodes"
             },
             {
               "id": "adamts_tracks",
-              "label": "Tracks",
-              "main": false
+              "label": "Tracks"
             }
           ]
         }
