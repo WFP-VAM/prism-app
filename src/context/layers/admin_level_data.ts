@@ -83,7 +83,7 @@ export function getAdminLevelDataLayerData(
           adminBoundaryLayer.adminCode,
         ) as string;
         const matchProperties = layerData.find(({ adminKey }) =>
-          adminBoundaryCode.startsWith(adminKey),
+          adminBoundaryCode?.startsWith(adminKey),
         );
         if (matchProperties && !isNull(matchProperties.value)) {
           // Do we want support for non-numeric values (like string colors?)
