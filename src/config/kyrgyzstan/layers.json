@@ -93,31 +93,295 @@
     "legend": [
       {
         "value": 1,
-        "label": "1 to 2",
-        "color": "#1a9641"
+        "label": "< 10",
+        "color": "#fee5d9"
       },
       {
-        "value": 2,
-        "label": "2 to 3",
-        "color": "#a6d96a"
+        "value": 11,
+        "label": "11 - 20",
+        "color": "#fcae91"
       },
       {
-        "value": 3,
-        "label": "3 to 5",
-        "color": "#ffffbf"
+        "value": 21,
+        "label": "21 to 30",
+        "color": "#fb6a4a"
       },
       {
-        "value": 5,
-        "label": "5 to 10",
-        "color": "#fdae61"
+        "value": 31,
+        "label": "31 to 40",
+        "color": "#de2d26"
       },
       {
-        "value": 10,
-        "label": "10 to 30",
-        "color": "#d7191c"
+        "value": 41,
+        "label": "> 40",
+        "color": "#a50f15"
       }
     ],
     "legend_text": "Number of floods and mudflows (1999 - 2021)"
+  },
+  "poverty": {
+    "title": "Population below the poverty line",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "poverty",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 21,
+        "label": "21 to 30%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 31,
+        "label": "31 to 40%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 41,
+        "label": "41 to 50%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 51,
+        "label": "> 50%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Share of population with income below the poverty line (MLSD, 2020)"
+  },
+  "population": {
+    "title": "Population 2021",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Population_2021",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 50,000",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 50001,
+        "label": "50,000 - 100,000",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 100001,
+        "label": "100,000 - 150,000",
+        "color": "#6baed6"
+      },
+      {
+        "value": 150001,
+        "label": "150,000 - 200,000",
+        "color": "#3182bd"
+      },
+      {
+        "value": 200001,
+        "label": "> 200,000",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Total population (2021)"
+  },
+  "wheat": {
+    "title": "Wheat production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Wheat_production_2021_ha",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 5,000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 5001,
+        "label": "5,000 - 10,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 10001,
+        "label": "10,000 - 15,000",
+        "color": "#74c476"
+      },
+      {
+        "value": 15001,
+        "label": "15,000 - 20,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 20001,
+        "label": "> 20,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Wheat production 2021 in hectares"
+  },
+  "potato": {
+    "title": "Potato production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Potato_production_2021_ha",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 20,000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 20001,
+        "label": "20,000 - 40,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 40001,
+        "label": "40,000 - 60,000",
+        "color": "#74c476"
+      },
+      {
+        "value": 60001,
+        "label": "60,000 - 80,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 80001,
+        "label": "> 80,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Potato production 2021 in hectares"
+  },
+  "veg": {
+    "title": "Vegetable production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Vegetables_production_2021_ha",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 20,000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 20001,
+        "label": "20,000 - 40,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 40001,
+        "label": "40,000 - 60,000",
+        "color": "#74c476"
+      },
+      {
+        "value": 60001,
+        "label": "60,000 - 80,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 80001,
+        "label": "> 80,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Vegetable production 2021 in hectares"
+  },
+  "fruit": {
+    "title": "Fruit production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Fruits_production_2021",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 2,500",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 2501,
+        "label": "2,500 - 5,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 5001,
+        "label": "5,000 - 7,500",
+        "color": "#74c476"
+      },
+      {
+        "value": 7501,
+        "label": "7,500 - 10,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 10001,
+        "label": "> 10,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Fruit production 2021 in hectares"
+  },
+  "livestock": {
+    "title": "Livestock",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Livestock_head_count_2021",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 25,000",
+        "color": "#feedde"
+      },
+      {
+        "value": 25001,
+        "label": "25,000 - 50,000",
+        "color": "#fdbe85"
+      },
+      {
+        "value": 50001,
+        "label": "50,00 - 75,000",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 75001,
+        "label": "75,000 - 100,000",
+        "color": "#e6550d"
+      },
+      {
+        "value": 100001,
+        "label": "> 100,000",
+        "color": "#a63603"
+      }
+    ],
+    "legend_text": "Livestock headcount in 2021"
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
