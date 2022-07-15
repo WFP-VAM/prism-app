@@ -43,22 +43,36 @@ function keepLayer(layer: LayerType, payload: LayerType) {
   );
 }
 
+const DEFAULT_BOUNDARY_PATH =
+  process.env.REACR_APP_DEFAULT_BOUNDARY_PATH || window.location.origin;
+
 export const mapStateSlice = createSlice({
   name: 'mapState',
   initialState,
   reducers: {
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => {
-      const layersToAdd = payload?.group?.activateAll
-        ? Object.values(LayerDefinitions).filter(l =>
-            payload?.group?.layers?.map(layer => layer.id).includes(l.id),
-          )
-        : [payload];
+      const updatedPayload = {
+        ...payload,
+        ...(payload.type === 'boundary' && {
+          path: `${DEFAULT_BOUNDARY_PATH}/${payload.path}`,
+        }),
+      };
 
-      const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
+      const layersToAdd = updatedPayload?.group?.activateAll
+        ? Object.values(LayerDefinitions).filter(l =>
+            updatedPayload?.group?.layers
+              ?.map(layer => layer.id)
+              .includes(l.id),
+          )
+        : [updatedPayload];
+
+      const filteredLayers = layers.filter(layer =>
+        keepLayer(layer, updatedPayload),
+      );
 
       // Keep boundary layers at the top of our stack
       const newLayers =
-        payload.type === 'boundary'
+        updatedPayload.type === 'boundary'
           ? [...layersToAdd, ...filteredLayers]
           : [...filteredLayers, ...layersToAdd];
 
