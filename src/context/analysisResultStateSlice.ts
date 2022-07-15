@@ -6,7 +6,6 @@ import { get } from 'lodash';
 import { calculate } from '../utils/zonal-utils';
 
 import type { CreateAsyncThunkTypes, RootState } from './store';
-import { defaultBoundariesPath } from '../config';
 import {
   AdminLevelType,
   AggregationOperations,
@@ -50,7 +49,6 @@ import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
-import { isLocalhost } from '../serviceWorker';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
@@ -100,10 +98,6 @@ function getAdminBoundariesURL() {
   // already a remote location, so return it.
   if (adminBoundariesPath.startsWith('http')) {
     return adminBoundariesPath;
-  }
-  // do not send a local path to the API, use a fixed boundary file instead.
-  if (isLocalhost) {
-    return defaultBoundariesPath;
   }
   return (
     window.location.origin + window.location.pathname + adminBoundariesPath
