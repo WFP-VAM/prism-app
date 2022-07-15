@@ -294,7 +294,13 @@ function LegendItem({
           </Grid>
         )}
 
-        <LoadingBar layerId={id} />
+        {type === 'wms' ? (
+          <LoadingBar layerId={id} />
+        ) : (
+          <Box my={1}>
+            <Divider />
+          </Box>
+        )}
 
         {children && (
           <Grid item>
