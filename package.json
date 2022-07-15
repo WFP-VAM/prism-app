@@ -3,6 +3,7 @@
   "description": "Frontend interface for WFP PRISM",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"

@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/sierra-leone/sle_admin2new_boundary_20200309.json",
+    "path": "data/sierra-leone/sle_admin2new_boundary_20200309.json",
     "opacity": 0.8,
     "admin_code": "adm2_id",
     "admin_level_names": ["adm1_name", "adm2_name"],
@@ -1604,7 +1604,7 @@
   "poverty_hc": {
     "type": "admin_level_data",
     "title": "Poverty headcount",
-    "path": "../data/sri-lanka/lka_admin_layers.json",
+    "path": "data/sri-lanka/lka_admin_layers.json",
     "data_field": "esthc_pc",
     "admin_level": 3,
     "admin_code": "dsd_c_1",
@@ -1641,7 +1641,7 @@
   "pop_21": {
     "type": "admin_level_data",
     "title": "Total population",
-    "path": "../data/sri-lanka/lka_admin_layers.json",
+    "path": "data/sri-lanka/lka_admin_layers.json",
     "data_field": "pproj_2021",
     "admin_level": 3,
     "admin_code": "dsd_c_1",
@@ -1678,7 +1678,7 @@
   "num_hhs": {
     "type": "admin_level_data",
     "title": "Number of households",
-    "path": "../data/sri-lanka/lka_admin_layers.json",
+    "path": "data/sri-lanka/lka_admin_layers.json",
     "data_field": "Tot_HH",
     "admin_level": 3,
     "admin_code": "dsd_c_1",
