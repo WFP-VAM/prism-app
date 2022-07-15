@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/global/adm0_simplified.json",
+    "path": "data/global/adm0_simplified.json",
     "opacity": 0.8,
     "admin_code": "iso3",
     "admin_level_names": ["adm0_name"],
