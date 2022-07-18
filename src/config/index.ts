@@ -108,7 +108,9 @@ const {
   appConfig,
   rawLayers,
   rawTables,
+  defaultUrl: countryBaseURL,
 }: {
+  defaultUrl?: string;
   appConfig: Record<string, any>;
   rawLayers: Record<string, any>;
   rawTables: Record<string, any>;
@@ -150,4 +152,5 @@ export {
   msalRequest,
   enableNavigationDropdown,
   translation,
+  countryBaseURL,
 };

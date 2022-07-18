@@ -3,6 +3,7 @@ import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerType } from '../../config/types';
 import { LayerDefinitions } from '../../config/utils';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
+import { countryBaseURL } from '../../config';
 
 interface DateRange {
   startDate?: number;
@@ -43,9 +44,6 @@ function keepLayer(layer: LayerType, payload: LayerType) {
   );
 }
 
-const DEFAULT_BOUNDARY_PATH =
-  process.env.REACR_APP_DEFAULT_BOUNDARY_PATH || window.location.origin;
-
 export const mapStateSlice = createSlice({
   name: 'mapState',
   initialState,
@@ -53,9 +51,10 @@ export const mapStateSlice = createSlice({
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => {
       const updatedPayload = {
         ...payload,
-        ...(payload.type === 'boundary' && {
-          path: `${DEFAULT_BOUNDARY_PATH}/${payload.path}`,
-        }),
+        ...(payload.type === 'boundary' &&
+          countryBaseURL && {
+            path: `${countryBaseURL}/${payload.path}`,
+          }),
       };
 
       const layersToAdd = updatedPayload?.group?.activateAll
