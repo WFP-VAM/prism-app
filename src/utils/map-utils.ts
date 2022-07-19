@@ -57,3 +57,14 @@ export function boundariesOnView(
     b => onViewLayerKeys && onViewLayerKeys.includes(b.id),
   );
 }
+
+/**
+ * Get first boundary id already on the map
+ * @param map the MapBox Map object
+ */
+export function firstBoundaryOnView(map: MapBoxMap | undefined): LayerKey {
+  return map
+    ?.getStyle()
+    .layers?.find(l => l.id.endsWith('boundaries-line'))
+    ?.id?.split('-')[1] as LayerKey;
+}

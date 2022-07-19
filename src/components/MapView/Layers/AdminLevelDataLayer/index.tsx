@@ -18,13 +18,12 @@ import {
 import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import { getFeatureInfoPropsData } from '../../utils';
-import {
-  getBoundaryLayers,
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../../../config/utils';
+import { getBoundaryLayers, LayerDefinitions } from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
-import { isLayerOnView } from '../../../../utils/map-utils';
+import {
+  firstBoundaryOnView,
+  isLayerOnView,
+} from '../../../../utils/map-utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { fillPaintData } from '../styles';
@@ -32,7 +31,8 @@ import { fillPaintData } from '../styles';
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
-  const boundaryId = layer.boundary || getBoundaryLayerSingleton().id;
+
+  const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
   const layerData = useSelector(layerDataSelector(layer.id)) as
     | LayerData<AdminLevelDataLayerProps>
