@@ -425,7 +425,7 @@ function MapView({ classes }: MapViewProps) {
     const { layers } = map.getStyle();
     // Find the first symbol on the map to make sure we add boundary layers below them.
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-    // and add other layers below boundary layer
+    // and add other layers below boundary layers
     setBoundaryId(boundaryLayer.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
