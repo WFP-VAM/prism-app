@@ -6,8 +6,12 @@ from shapely.geometry import shape
 
 
 def process_feature(admin_key, dict_key, group_field, filter_field, features):
-    admin_codes = [i["properties"][dict_key] for i in features if i["properties"][group_field] == admin_key]
-    item =  {
+    admin_codes = [
+        i["properties"][dict_key]
+        for i in features
+        if i["properties"][group_field] == admin_key
+    ]
+    item = {
         "adm1_code": admin_key,
         "adm3_codes": admin_codes,
         "filter": filter_field,
@@ -35,7 +39,12 @@ def main():
         data = json.load(f)
 
     keys = set([d["properties"][args.group_key] for d in data["features"]])
-    codes = [process_feature(k, args.group_item, args.group_key, args.filter_field, data["features"]) for k in keys]
+    codes = [
+        process_feature(
+            k, args.group_item, args.group_key, args.filter_field, data["features"]
+        )
+        for k in keys
+    ]
 
     admin_codes_jwt = [encode_item(i, args.secret) for i in codes]
 
