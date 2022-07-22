@@ -61,7 +61,7 @@ def parse_form_field(value: str, field_type: str):
     if field_type == "integer":
         return int(value)
     if field_type in ("datetime", "date"):
-        return dtparser(value).astimezone(timezone.utc)
+        return dtparser(value).replace(tzinfo=timezone.utc)
     if field_type == "geopoint":
         try:
             if isinstance(value, str):
