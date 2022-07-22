@@ -211,8 +211,9 @@ def get_form_dates():
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
     dates_list = set([f.get("date").date().isoformat() for f in forms])
+    sorted_dates_list = sorted(dates_list)
 
-    return [{"date": d} for d in dates_list]
+    return [{"date": d} for d in sorted_dates_list]
 
 
 def get_form_responses(begin_datetime, end_datetime, decoded_data):
@@ -223,9 +224,10 @@ def get_form_responses(begin_datetime, end_datetime, decoded_data):
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
-    filtered_forms = []
+    sorted_forms = sorted(forms, key=lambda x: x.get("date"))
 
-    for form in forms:
+    filtered_forms = []
+    for form in sorted_forms:
         date_value = form.get("date")
 
         conditions = [form.get(k) == v for k, v in form_fields.get("filters").items()]
@@ -238,16 +240,13 @@ def get_form_responses(begin_datetime, end_datetime, decoded_data):
             conditions.append(form.get(filter_field) in decoded_data.get("adm3_codes"))
 
         if all(conditions) is False:
-            print("AAAA")
             continue
 
         filtered_forms.append(form)
 
-    sorted_forms = sorted(filtered_forms, key=lambda x: x.get("date"))
-
     # Transform date into string.
-    sorted_forms = [
-        {**f, "date": f.get("date").date().isoformat()} for f in sorted_forms
+    forms_isoformat = [
+        {**f, "date": f.get("date").date().isoformat()} for f in filtered_forms
     ]
 
-    return sorted_forms
+    return forms_isoformat

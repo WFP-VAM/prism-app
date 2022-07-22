@@ -18,16 +18,13 @@ import {
   layerDataSelector,
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
-import {
-  removeLayerData,
-  removeLayer,
-} from '../../../../context/mapStateSlice';
+import { removeLayerData } from '../../../../context/mapStateSlice';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayerSingleton } from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
-import { useUrlHistory, getUrlKey } from '../../../../utils/url-utils';
+import { useUrlHistory } from '../../../../utils/url-utils';
 
 import { useSafeTranslation } from '../../../../i18n';
 import { circleLayout, circlePaint, fillPaintData } from '../styles';
@@ -101,22 +98,6 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
           type: 'warning',
         }),
       );
-
-      dispatch(removeLayerData(layer));
-      dispatch(clearJwtAccessToken());
-
-      // Remove layer from url.
-      const urlLayerKey = getUrlKey(layer);
-
-      const updatedUrl = removeLayerFromUrl(urlLayerKey, layer.id);
-
-      if (updatedUrl === '') {
-        removeKeyFromUrl(urlLayerKey);
-      } else {
-        updateHistory(urlLayerKey, updatedUrl);
-      }
-
-      dispatch(removeLayer(layer));
     }
   }, [
     features,
