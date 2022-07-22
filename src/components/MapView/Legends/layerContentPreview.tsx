@@ -43,10 +43,8 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
   });
 
   useEffect(() => {
-    const path = `${process.env.PUBLIC_URL}/${layer.contentPath}`;
-
-    if (hasContent) {
-      fetch(path)
+    if (layer.contentPath) {
+      fetch(layer.contentPath)
         .then(response => response.text())
         .then(text => setContent(text));
     }

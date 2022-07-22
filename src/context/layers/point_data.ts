@@ -81,6 +81,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
 
   let data;
+  // TODO - Better error handling.
   try {
     // eslint-disable-next-line fp/no-mutation
     data = (await (

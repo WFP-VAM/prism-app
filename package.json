@@ -3,6 +3,7 @@
   "description": "Frontend interface for WFP PRISM",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -22,6 +23,7 @@
     "predeploy:staging": "yarn build",
     "deploy:prod": "firebase deploy --only hosting:prod-target",
     "deploy:staging": "firebase deploy --only hosting:staging-target",
+    "deploy:surge": "surge --project ./build",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src --ignore-path .gitignore",
     "postinstall": "yarn run setup:maplibre",
@@ -88,7 +90,7 @@
     "lodash": "^4.17.21",
     "mapbox-gl": "npm:maplibre-gl@1.15.2",
     "marked": "^4.0.10",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "moment-range": "^4.0.2",
     "papaparse": "^5.2.0",
     "prettier": "^2.0.5",
