@@ -108,7 +108,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
         moment(formattedDate).format(DEFAULT_DATE_FORMAT),
     );
   }
-  if (adminLevelDisplay) {
+
+  if (adminLevelDisplay && !Object.keys(data).includes('message')) {
     const { adminCode } = adminLevelDisplay;
 
     return getAdminLevelDataLayerData(
