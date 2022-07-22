@@ -215,7 +215,7 @@ def get_form_dates():
     return [{"date": d} for d in dates_list]
 
 
-def get_form_responses(begin_datetime, end_datetime, geom_bbox):
+def get_form_responses(begin_datetime, end_datetime, decoded_data):
     """Get all form responses using Kobo api."""
     auth, form_fields = get_kobo_params()
 
@@ -225,10 +225,6 @@ def get_form_responses(begin_datetime, end_datetime, geom_bbox):
 
     filtered_forms = []
 
-    bbox = None
-    if geom_bbox is not None:
-        bbox = box(*[float(p) for p in geom_bbox.split(",")])
-
     for form in forms:
         date_value = form.get("date")
 
@@ -237,11 +233,12 @@ def get_form_responses(begin_datetime, end_datetime, geom_bbox):
         conditions.append(date_value < end_datetime)
 
         # Geospatial filter.
-        if bbox is not None:
-            point = Point(form.get("lon"), form.get("lat"))
-            conditions.append(bbox.contains(point))
+        if decoded_data is not None:
+            filter_field = decoded_data["filter"]
+            conditions.append(form.get(filter_field) in decoded_data.get("adm3_codes"))
 
         if all(conditions) is False:
+            print("AAAA")
             continue
 
         filtered_forms.append(form)

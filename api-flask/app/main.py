@@ -200,8 +200,7 @@ class GetCambodiaKoboForms(Resource):
 
         begin_datetime, end_datetime = parse_datetime_params()
 
-        geom_bbox = decoded_data.get("bbox", None)
-        form_responses = get_form_responses(begin_datetime, end_datetime, geom_bbox)
+        form_responses = get_form_responses(begin_datetime, end_datetime, decoded_data)
 
         return Response(json.dumps(form_responses), mimetype="application/json")
 

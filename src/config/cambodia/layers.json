@@ -1715,6 +1715,9 @@
     "type": "point_data",
     "data": "http://localhost/cambodia/kobo/forms",
     "date_url": "http://localhost/kobo/dates",
+    "admin_level_display": {
+      "adminCode": "Commune"
+    },
     "token_required": true,
     "data_field": "NumPeoAff",
     "additional_query_params": {

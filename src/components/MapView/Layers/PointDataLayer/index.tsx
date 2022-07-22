@@ -61,13 +61,16 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   const { id: layerId } = layer;
 
   useEffect(() => {
-    if (
-      !features &&
-      ((layer.tokenRequired && jwtAccessToken) || !layer.tokenRequired)
-    ) {
-      dispatch(loadLayerData({ layer, date: selectedDate, jwtAccessToken }));
+    if (layer.tokenRequired && !jwtAccessToken) {
+      return;
     }
 
+    if (!features) {
+      dispatch(loadLayerData({ layer, date: selectedDate, jwtAccessToken }));
+    }
+  }, [features, dispatch, jwtAccessToken, layer, selectedDate]);
+
+  useEffect(() => {
     if (
       features &&
       !(features as FeatureCollection).features &&
