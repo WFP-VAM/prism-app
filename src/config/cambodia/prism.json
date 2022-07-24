@@ -32,6 +32,9 @@
   ],
   "categories": {
     "flood": {
+      "flood_risk": [
+        "flood_hazard"
+      ],
       "early_warning": [
         "ews_remote"
       ],
