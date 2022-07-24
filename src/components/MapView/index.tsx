@@ -312,18 +312,23 @@ function MapView({ classes }: MapViewProps) {
 
   useEffect(() => {
     dispatch(loadAvailableDates());
+
+    const displayBoundaryLayers = getDisplayBoundaryLayers();
     /*
       reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
       to prevent other boundary layers being covered by any layers
     */
     // eslint-disable-next-line fp/no-mutating-methods
-    const displayBoundaryLayers = getDisplayBoundaryLayers().reverse();
+    const reversedBoundaryLayer = displayBoundaryLayers
+      .map(l => l.id)
+      .reverse()
+      .map(id => displayBoundaryLayers.filter(l => l.id === id)[0]);
 
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
     // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
-    displayBoundaryLayers.map(l => dispatch(addLayer(l)));
-    displayBoundaryLayers.map(l => dispatch(loadLayerData({ layer: l })));
+    reversedBoundaryLayer.map(l => dispatch(addLayer(l)));
+    reversedBoundaryLayer.map(l => dispatch(loadLayerData({ layer: l })));
   }, [dispatch]);
 
   // calculate possible dates user can pick from the currently selected layers
