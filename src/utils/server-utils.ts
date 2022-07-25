@@ -128,7 +128,7 @@ function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
     return rawLayers.reduce((acc, { Layer }) => {
       if ('Layer' in Layer) {
         return acc.concat(
-          ...flattenLayers((Layer.Layer as unknown) as LayerContainer),
+          ...flattenLayers(Layer.Layer as unknown as LayerContainer),
         );
       }
       if (Array.isArray(Layer)) {

@@ -24,12 +24,10 @@ function MenuItemMobile({
   layersCategories,
 }: MenuItemMobileProps) {
   const { t } = useSafeTranslation();
-  const handleChange = (panel: string) => (
-    event: React.ChangeEvent<{}>,
-    newExpanded: boolean,
-  ) => {
-    selectAccordion(newExpanded ? panel : '');
-  };
+  const handleChange =
+    (panel: string) => (event: React.ChangeEvent<{}>, newExpanded: boolean) => {
+      selectAccordion(newExpanded ? panel : '');
+    };
 
   return (
     <Accordion

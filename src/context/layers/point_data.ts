@@ -40,81 +40,83 @@ export const queryParamsToString = (queryParams?: {
         .join('&')
     : '';
 
-export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async (
-  {
-    date,
-    layer: {
-      data: dataUrl,
-      fallbackData,
-      additionalQueryParams,
-      adminLevelDisplay,
-      boundary,
-      dataField,
-      featureInfoProps,
-      loader,
-    },
-  },
-  { getState },
-) => {
-  // This function fetches point data from the API.
-  // If this endpoint is not available or we run into an error,
-  // we should get the data from the local public file in layer.fallbackData
-
-  if (date) {
-    switch (loader) {
-      case PointDataLoader.EWS:
-        return fetchEWSData(dataUrl, date);
-      default:
-        break;
-    }
-  }
-
-  const formattedDate = date && moment(date).format(DEFAULT_DATE_FORMAT);
-
-  // TODO exclusive to this api...
-  const dateQuery = `beginDateTime=${
-    formattedDate || '2000-01-01'
-  }&endDateTime=${formattedDate || '2023-12-21'}`;
-
-  const requestUrl = `${dataUrl}${
-    dataUrl.includes('?') ? '&' : '?'
-  }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
-
-  let data;
-  // TODO - Better error handling.
-  try {
-    // eslint-disable-next-line fp/no-mutation
-    data = (await (
-      await fetch(requestUrl, {
-        mode: 'cors',
-      })
-    ).json()) as PointData[];
-  } catch (ignored) {
-    // fallback data isn't filtered, therefore we must filter it.
-    // eslint-disable-next-line fp/no-mutation
-    data = ((await (
-      await fetch(fallbackData || '')
-    ).json()) as PointData[]).filter(
-      // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
-      // using moment here helps compensate for these discrepancies
-      obj =>
-        moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
-        moment(formattedDate).format(DEFAULT_DATE_FORMAT),
-    );
-  }
-  if (adminLevelDisplay) {
-    const { adminCode } = adminLevelDisplay;
-
-    return getAdminLevelDataLayerData(
-      data,
-      {
+export const fetchPointLayerData: LazyLoader<PointDataLayerProps> =
+  () =>
+  async (
+    {
+      date,
+      layer: {
+        data: dataUrl,
+        fallbackData,
+        additionalQueryParams,
+        adminLevelDisplay,
         boundary,
-        adminCode,
         dataField,
         featureInfoProps,
+        loader,
       },
-      getState,
-    );
-  }
-  return { features: GeoJSON.parse(data, { Point: ['lat', 'lon'] }) };
-};
+    },
+    { getState },
+  ) => {
+    // This function fetches point data from the API.
+    // If this endpoint is not available or we run into an error,
+    // we should get the data from the local public file in layer.fallbackData
+
+    if (date) {
+      switch (loader) {
+        case PointDataLoader.EWS:
+          return fetchEWSData(dataUrl, date);
+        default:
+          break;
+      }
+    }
+
+    const formattedDate = date && moment(date).format(DEFAULT_DATE_FORMAT);
+
+    // TODO exclusive to this api...
+    const dateQuery = `beginDateTime=${
+      formattedDate || '2000-01-01'
+    }&endDateTime=${formattedDate || '2023-12-21'}`;
+
+    const requestUrl = `${dataUrl}${
+      dataUrl.includes('?') ? '&' : '?'
+    }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
+
+    let data;
+    // TODO - Better error handling.
+    try {
+      // eslint-disable-next-line fp/no-mutation
+      data = (await (
+        await fetch(requestUrl, {
+          mode: 'cors',
+        })
+      ).json()) as PointData[];
+    } catch (ignored) {
+      // fallback data isn't filtered, therefore we must filter it.
+      // eslint-disable-next-line fp/no-mutation
+      data = (
+        (await (await fetch(fallbackData || '')).json()) as PointData[]
+      ).filter(
+        // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
+        // using moment here helps compensate for these discrepancies
+        obj =>
+          moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
+          moment(formattedDate).format(DEFAULT_DATE_FORMAT),
+      );
+    }
+    if (adminLevelDisplay) {
+      const { adminCode } = adminLevelDisplay;
+
+      return getAdminLevelDataLayerData(
+        data,
+        {
+          boundary,
+          adminCode,
+          dataField,
+          featureInfoProps,
+        },
+        getState,
+      );
+    }
+    return { features: GeoJSON.parse(data, { Point: ['lat', 'lon'] }) };
+  };

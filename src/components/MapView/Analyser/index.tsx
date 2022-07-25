@@ -228,33 +228,33 @@ function Analyser({ extent, classes }: AnalyserProps) {
     lastAvailableHazardEndDate,
   ]);
 
-  const onOptionChange = <T extends string>(
-    setterFunc: Dispatch<SetStateAction<T>>,
-  ) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value as T;
-    setterFunc(value);
-    return value;
-  };
+  const onOptionChange =
+    <T extends string>(setterFunc: Dispatch<SetStateAction<T>>) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value as T;
+      setterFunc(value);
+      return value;
+    };
   // specially for threshold values, also does error checking
-  const onThresholdOptionChange = (thresholdType: 'above' | 'below') => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const setterFunc =
-      thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
-    const changedOption = onOptionChange(setterFunc)(event);
-    // setting a value doesn't update the existing value until next render, therefore we must decide whether to access the old one or the newly change one here.
-    const aboveThresholdValue = parseFloat(
-      thresholdType === 'above' ? changedOption : aboveThreshold,
-    );
-    const belowThresholdValue = parseFloat(
-      thresholdType === 'below' ? changedOption : belowThreshold,
-    );
-    if (belowThresholdValue > aboveThresholdValue) {
-      setThresholdError('Below threshold is larger than above threshold!');
-    } else {
-      setThresholdError(null);
-    }
-  };
+  const onThresholdOptionChange =
+    (thresholdType: 'above' | 'below') =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const setterFunc =
+        thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
+      const changedOption = onOptionChange(setterFunc)(event);
+      // setting a value doesn't update the existing value until next render, therefore we must decide whether to access the old one or the newly change one here.
+      const aboveThresholdValue = parseFloat(
+        thresholdType === 'above' ? changedOption : aboveThreshold,
+      );
+      const belowThresholdValue = parseFloat(
+        thresholdType === 'below' ? changedOption : belowThreshold,
+      );
+      if (belowThresholdValue > aboveThresholdValue) {
+        setThresholdError('Below threshold is larger than above threshold!');
+      } else {
+        setThresholdError(null);
+      }
+    };
 
   const statisticOptions = Object.entries(AggregationOperations)
     .filter(([, value]) => value !== AggregationOperations.Sum) // sum is used only for exposure analysis.

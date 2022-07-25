@@ -29,9 +29,9 @@ function formatLayersCategories(layersList: {
       title: startCase(layersListKey),
       layers: layerKeys.filter(isLayerKey).map(key => {
         if (typeof key === 'object') {
-          const group = (mapKeys(key, (_v, k: string) =>
+          const group = mapKeys(key, (_v, k: string) =>
             camelCase(k),
-          ) as unknown) as MenuGroup;
+          ) as unknown as MenuGroup;
           const mainLayer = group.layers.find(l => l.main);
           const layer = LayerDefinitions[mainLayer?.id as LayerKey];
           // eslint-disable-next-line fp/no-mutation
