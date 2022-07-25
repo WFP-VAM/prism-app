@@ -4,11 +4,10 @@
     "airbnb",
     "plugin:jsx-a11y/recommended",
     "prettier",
-    "prettier/react",
-    "plugin:json/recommended"
+    "prettier/react"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["jsx-a11y", "fp", "@typescript-eslint", "prettier", "import", "json"],
+  "plugins": ["jsx-a11y", "fp", "@typescript-eslint", "prettier", "import"],
   "rules": {
     // Allow JSX within .js files
     "react/jsx-filename-extension": [
