@@ -50,7 +50,7 @@ jobs:
       surge_url: prism-${{ github.event.pull_request.number }}.surge.sh
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: test
         run: |
           echo "My current surge url is ${{ env.surge_url }}"
