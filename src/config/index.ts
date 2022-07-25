@@ -16,6 +16,8 @@ import {
   indonesiaRawTables,
 } from './indonesia';
 
+import jordan from './jordan';
+
 import {
   kyrgyzstanConfig,
   kyrgyzstanRawLayers,
@@ -64,6 +66,7 @@ const configMap = {
     rawTables: indonesiaRawTables,
     defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
+  jordan,
   kyrgyzstan: {
     appConfig: kyrgyzstanConfig,
     rawLayers: kyrgyzstanRawLayers,
@@ -102,7 +105,9 @@ const DEFAULT: Country = 'myanmar';
 
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
 const safeCountry =
-  COUNTRY && has(configMap, COUNTRY) ? (COUNTRY as Country) : DEFAULT;
+  COUNTRY && has(configMap, COUNTRY.toLocaleLowerCase())
+    ? (COUNTRY.toLocaleLowerCase() as Country)
+    : DEFAULT;
 
 const {
   appConfig,
