@@ -1713,8 +1713,8 @@
   "flood_report": {
     "title": "Flood report",
     "type": "point_data",
-    "data": "http://localhost/cambodia/kobo/forms",
-    "date_url": "http://localhost/kobo/dates",
+    "data": "http://localhost:80/cambodia/kobo/forms",
+    "date_url": "http://localhost:80/kobo/dates",
     "admin_level_display": {
       "adminCode": "Commune"
     },
@@ -1781,8 +1781,9 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "token_required": true,
+    "data": "http://localhost:80/kobo/forms",
+    "date_url": "http://localhost:80//kobo/forms",
     "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_name": "3. ទម្រង់គ្រោះរាំងស្ងួត",
@@ -1841,8 +1842,9 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "token_required": true,
+    "data": "http://localhost:80/kobo/forms",
+    "date_url": "http://localhost:80/kobo/forms",
     "data_field": "DisTyp",
     "additional_query_params": {
       "form_name": "2. ទម្រង់ ឧបទ្ទវហេតុ",
