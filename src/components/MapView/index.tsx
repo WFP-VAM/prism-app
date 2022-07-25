@@ -57,6 +57,7 @@ import {
   isLoading,
   layerDataSelector,
   layersSelector,
+  mapSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
 import {
@@ -85,6 +86,7 @@ import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
 import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
+import { firstBoundaryOnView } from '../../utils/map-utils';
 import DataViewer from '../DataViewer';
 
 const MapboxMap = ReactMapboxGl({
@@ -169,6 +171,7 @@ function useMapOnClick(setIsAlertFormOpen: (value: boolean) => void) {
 function MapView({ classes }: MapViewProps) {
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
   const selectedLayers = useSelector(layersSelector);
+  const selectedMap = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
@@ -179,7 +182,6 @@ function MapView({ classes }: MapViewProps) {
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     undefined,
   );
-  const [boundaryId, setBoundaryId] = useState<string | undefined>(undefined);
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer =>
       dateSupportLayerTypes.includes(layer.type),
@@ -430,8 +432,6 @@ function MapView({ classes }: MapViewProps) {
     const { layers } = map.getStyle();
     // Find the first symbol on the map to make sure we add boundary layers below them.
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-    // and add other layers below boundary layers
-    setBoundaryId(boundaryLayer.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
   };
@@ -440,6 +440,8 @@ function MapView({ classes }: MapViewProps) {
     process.env.REACT_APP_DEFAULT_STYLE ||
       'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
   );
+
+  const firstBoundaryId = `layer-${firstBoundaryOnView(selectedMap)}-line`;
 
   return (
     <Grid item className={classes.container}>
@@ -465,14 +467,11 @@ function MapView({ classes }: MapViewProps) {
           return createElement(component, {
             key: layer.id,
             layer,
-            before:
-              layer.type === 'boundary'
-                ? firstSymbolId
-                : `layer-${boundaryId}-line`,
+            before: layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
           });
         })}
         {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer before={`layer-${boundaryId}-line`} />
+        <AnalysisLayer before={firstBoundaryId} />
         <SelectionLayer before={firstSymbolId} />
         <MapTooltip />
       </MapboxMap>
