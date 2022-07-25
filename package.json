@@ -20,7 +20,6 @@
     "build": "cross-env EXTEND_ESLINT=true react-scripts build",
     "test": "react-scripts test",
     "prettier:json-fix": "NODE_OPTIONS=--max_old_space_size=16384 prettier --write 'public/data/*/**.json'",
-    "prettier:json-check": "NODE_OPTIONS=--max_old_space_size=16384 prettier --check 'public/data/*/**.json'",
     "predeploy:prod": "yarn build",
     "predeploy:staging": "yarn build",
     "deploy:prod": "firebase deploy --only hosting:prod-target",
