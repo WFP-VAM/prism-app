@@ -1,0 +1,33 @@
+trigger: TL
+title: TL
+description: Use this tool to build MOPs related task lists
+surfaces:
+- issue
+steps:
+- type: form
+  style: embedded
+  body:
+  - type: dropdown
+    attributes:
+      label: region
+      description: Select your region
+      options:
+      - label: AMER
+        value: AMER
+      - label: EMEA
+        value: EMEA
+      - label: APAC
+        value: APAC
+  - type: input
+    attributes:
+      label: campaign_name
+      description: Please add the campaign name only
+      placeholder: 2022Q2-wbr-APAC-JP-DevSecOps2
+- type: fill
+  template: |
+            ---
+            **MOPs sub-issues tracking list:**
+            
+            - [ ] Task: email-build-step - {{ data.region }} - {{ data.campaign_name }}
+            - [ ] Task: landing-page-build-step - {{ data.region }} - {{ data.campaign_name }}
+            - [ ] Task: lead-upload-step - {{ data.region }} - {{ data.campaign_name }}
