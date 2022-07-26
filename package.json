@@ -95,7 +95,7 @@
     "moment": "^2.29.4",
     "moment-range": "^4.0.2",
     "papaparse": "^5.2.0",
-    "prettier": "^2.0.5",
+    "prettier": "2.0.5",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
     "react-chartjs-2": "^2.9.0",
