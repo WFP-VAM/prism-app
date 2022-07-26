@@ -42,6 +42,9 @@ jobs:
 
       - name: yarn test
         run: yarn test
+
+      - name: json check
+        run: yarn prettier:json-check
   frontend_build_and_deploy:
     needs: frontend_tests
     name: frontend_build_and_deploy
