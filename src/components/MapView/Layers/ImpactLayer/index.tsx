@@ -41,9 +41,9 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   const map = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { data, date } =
-    (useSelector(
-      layerDataSelector(layer.id, selectedDate),
-    ) as LayerData<ImpactLayerProps>) || {};
+    (useSelector(layerDataSelector(layer.id, selectedDate)) as LayerData<
+      ImpactLayerProps
+    >) || {};
   const dispatch = useDispatch();
   const { t } = useSafeTranslation();
 

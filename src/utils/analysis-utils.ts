@@ -653,7 +653,9 @@ export function getAnalysisTableColumns(
   ];
 }
 
-export function useAnalysisTableColumns(analysisResult?: AnalysisResult): {
+export function useAnalysisTableColumns(
+  analysisResult?: AnalysisResult,
+): {
   translatedColumns: Column[];
   analysisTableColumns: Column[];
 } {

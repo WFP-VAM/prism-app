@@ -329,8 +329,14 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisDispatchParams,
   CreateAsyncThunkTypes
 >('analysisResultState/requestAndStoreAnalysis', async (params, api) => {
-  const { hazardLayer, date, baselineLayer, extent, statistic, threshold } =
-    params;
+  const {
+    hazardLayer,
+    date,
+    baselineLayer,
+    extent,
+    statistic,
+    threshold,
+  } = params;
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
   ) as LayerData<AdminLevelDataLayerProps>;
@@ -362,10 +368,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     const {
       payload: { data },
     } = (await api.dispatch(
-      loadLayerData({
-        layer: baselineLayer,
-        extent,
-      } as LayerDataParams<AdminLevelDataLayerProps>),
+      loadLayerData({ layer: baselineLayer, extent } as LayerDataParams<
+        AdminLevelDataLayerProps
+      >),
     )) as { payload: { data: unknown } };
 
     // eslint-disable-next-line fp/no-mutation

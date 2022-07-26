@@ -34,14 +34,16 @@ export function getWCSLayerUrl({
   );
 }
 
-export const fetchWCSLayerData: LazyLoader<WMSLayerProps> =
-  () =>
-  async ({ layer, extent, date }: LayerDataParams<WMSLayerProps>) => {
-    if (!extent) {
-      throw new Error(
-        `Can't fetch WCS data for layer ${layer.id} without providing an extent!`,
-      );
-    }
+export const fetchWCSLayerData: LazyLoader<WMSLayerProps> = () => async ({
+  layer,
+  extent,
+  date,
+}: LayerDataParams<WMSLayerProps>) => {
+  if (!extent) {
+    throw new Error(
+      `Can't fetch WCS data for layer ${layer.id} without providing an extent!`,
+    );
+  }
 
-    return loadGeoTiff(getWCSLayerUrl({ layer, extent, date }));
-  };
+  return loadGeoTiff(getWCSLayerUrl({ layer, extent, date }));
+};

@@ -118,28 +118,24 @@ export function getAdminLevelDataLayerData(
   };
 }
 
-export const fetchAdminLevelDataLayerData: LazyLoader<
-  AdminLevelDataLayerProps
-> =
-  () =>
-  async (
-    { layer }: LayerDataParams<AdminLevelDataLayerProps>,
-    api: ThunkApi,
-  ) => {
-    const { path, adminCode, dataField, featureInfoProps, boundary } = layer;
+export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> = () => async (
+  { layer }: LayerDataParams<AdminLevelDataLayerProps>,
+  api: ThunkApi,
+) => {
+  const { path, adminCode, dataField, featureInfoProps, boundary } = layer;
 
-    // TODO avoid any use, the json should be typed. See issue #307
-    const data: { [key: string]: any }[] = (
-      await (
-        await fetch(path, {
-          mode: path.includes('http') ? 'cors' : 'same-origin',
-        })
-      ).json()
-    ).DataList;
+  // TODO avoid any use, the json should be typed. See issue #307
+  const data: { [key: string]: any }[] = (
+    await (
+      await fetch(path, {
+        mode: path.includes('http') ? 'cors' : 'same-origin',
+      })
+    ).json()
+  ).DataList;
 
-    return getAdminLevelDataLayerData(
-      data,
-      { boundary, adminCode, dataField, featureInfoProps },
-      api.getState,
-    );
-  };
+  return getAdminLevelDataLayerData(
+    data,
+    { boundary, adminCode, dataField, featureInfoProps },
+    api.getState,
+  );
+};

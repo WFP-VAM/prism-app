@@ -14,12 +14,12 @@ export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
 export const mapSelector = (state: RootState): MapBoxMap | undefined =>
   state.mapState.mapboxMap();
 
-export const layerDataSelector =
-  (id: LayerKey, date?: number) =>
-  (state: RootState): LayerDataTypes | undefined =>
-    state.mapState.layersData.find(
-      ({ layer, date: dataDate }) =>
-        layer.id === id && (!date || date === dataDate),
-    );
+export const layerDataSelector = (id: LayerKey, date?: number) => (
+  state: RootState,
+): LayerDataTypes | undefined =>
+  state.mapState.layersData.find(
+    ({ layer, date: dataDate }) =>
+      layer.id === id && (!date || date === dataDate),
+  );
 export const isLoading = (state: RootState): boolean =>
   state.mapState.loading > 0;
