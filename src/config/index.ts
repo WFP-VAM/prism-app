@@ -77,7 +77,7 @@ const configMap = {
     appConfig: kyrgyzstanConfig,
     rawLayers: kyrgyzstanRawLayers,
     rawTables: kyrgyzstanRawTables,
-    defaultBoundariesFile: 'kgz_admin_boundaries.json',
+    defaultBoundariesFile: 'District_KRYG.json',
   },
   mongolia: {
     appConfig: mongoliaConfig,
