@@ -8,8 +8,8 @@ logs:
 	docker-compose -f docker-compose.yml -f docker-compose.deploy.yml logs -f
 
 api-lint:
-	docker-compose run --no-deps api bash -c "flake8 ."
-	docker-compose run --no-deps api bash -c "pydocstyle ."
+	docker-compose run --no-deps api bash -c "black ."
+	docker-compose run --no-deps api bash -c "isort ."
 
 api-test:
 	docker-compose run --no-deps api bash -c "pytest -s tests"
