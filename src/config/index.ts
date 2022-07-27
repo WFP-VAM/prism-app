@@ -48,6 +48,8 @@ import {
   tajikistanRawTables,
 } from './tajikistan';
 
+import ukraine from './ukraine';
+
 import zimbabwe from './zimbabwe';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
@@ -100,6 +102,7 @@ const configMap = {
     rawTables: tajikistanRawTables,
     defaultBoundariesFile: 'tjk_admin_boundaries_v2.json',
   },
+  ukraine,
   zimbabwe,
 } as const;
 

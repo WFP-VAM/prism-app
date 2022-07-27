@@ -430,6 +430,18 @@ function MapView({ classes }: MapViewProps) {
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
+    const maxBounds = get(appConfig.map, 'maxBounds');
+    const minZoom = get(appConfig.map, 'minZoom');
+    const maxZoom = get(appConfig.map, 'maxZoom');
+    if (maxBounds) {
+      map.setMaxBounds(maxBounds);
+    }
+    if (minZoom) {
+      map.setMinZoom(minZoom);
+    }
+    if (maxZoom) {
+      map.setMaxZoom(maxZoom);
+    }
   };
 
   const style = new URL(
