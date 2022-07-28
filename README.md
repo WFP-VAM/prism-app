@@ -162,7 +162,7 @@ These layers are referred to as `point_data` in PRISM and represent a data value
     ]
 ```
 #### boundaries
-Boundary layers are loaded by defaul when the application starts and typically show administrative bounaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data.
+Boundary layers are loaded by defaul when the application starts and typically show administrative boundaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data.
 
 When more than one boundary is specified, an array of boundaries needs to also be set in `prism.json` using with the `defaultDisplayBoundaries` attribute.
 
