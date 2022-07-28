@@ -54,7 +54,6 @@ import DateSelector from './DateSelector';
 import { findClosestDate } from './DateSelector/utils';
 import {
   dateRangeSelector,
-  isLoading,
   layerDataSelector,
   layersSelector,
 } from '../../context/mapStateSlice/selectors';
@@ -171,9 +170,7 @@ function MapView({ classes }: MapViewProps) {
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
   const selectedLayers = useSelector(layersSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
-  const loading = layersLoading || datesLoading;
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -460,7 +457,7 @@ function MapView({ classes }: MapViewProps) {
 
   return (
     <Grid item className={classes.container}>
-      {loading && (
+      {datesLoading && (
         <div className={classes.loading}>
           <CircularProgress size={100} />
         </div>
