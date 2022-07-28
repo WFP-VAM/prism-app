@@ -2,8 +2,8 @@ import React from 'react';
 import { makeStyles, LinearProgress } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { LayerKey } from '../../../config/types';
-import { loadingLayerIdsSelector as tileIdsSelector } from '../../../context/mapTileLoadingStateSlice';
-import { loadingLayerIdsSelector as vectorIdsSelector } from '../../../context/mapStateSlice/selectors';
+import { loadingLayerIdsSelector as tileLayerIdsSelector } from '../../../context/mapTileLoadingStateSlice';
+import { loadingLayerIdsSelector as vectorLayerIdsSelector } from '../../../context/mapStateSlice/selectors';
 
 export interface LoadingBarProps {
   layerId: LayerKey | undefined;
@@ -24,10 +24,10 @@ const useStyles = makeStyles({
 });
 
 function LoadingBar({ layerId }: LoadingBarProps) {
-  const tileIds = useSelector(tileIdsSelector);
-  const vectorIds = useSelector(vectorIdsSelector);
+  const tileLayerIds = useSelector(tileLayerIdsSelector);
+  const vectorLayerIds = useSelector(vectorLayerIdsSelector);
   const loading = layerId
-    ? vectorIds.includes(layerId) || tileIds.includes(layerId)
+    ? tileLayerIds.includes(layerId) || vectorLayerIds.includes(layerId)
     : false;
   const classes = useStyles();
   return (
