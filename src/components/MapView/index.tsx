@@ -438,7 +438,10 @@ function MapView({ classes }: MapViewProps) {
     onZoomend();
   };
 
-  const showBoundaryInfo = process.env.REACT_APP_SHOW_BOUNDARY_INFO === 'true';
+  const showBoundaryInfo = JSON.parse(
+    process.env.REACT_APP_SHOW_BOUNDARY_INFO || 'false',
+  );
+
   const {
     map: { latitude, longitude, zoom },
   } = appConfig;
