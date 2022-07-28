@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import omit from 'lodash/omit';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import {
@@ -8,10 +9,15 @@ import {
   removeNotification,
 } from '../../context/notificationStateSlice';
 
+const AUTO_CLOSE_TIME = 10 * 1000;
+
 function Notifier({ classes }: NotifierProps) {
   const dispatch = useDispatch();
   const notifications = useSelector(notificationsSelector);
   const [topOffset, setTopOffset] = useState(65);
+  const [notificationTimers, setNotificationTimers] = useState<
+    Record<string, NodeJS.Timeout>
+  >({});
 
   // make sure the notifications don't overlap the nav bar.
   useEffect(() => {
@@ -34,6 +40,28 @@ function Notifier({ classes }: NotifierProps) {
   const handleClose = (notification: Notification) => () => {
     dispatch(removeNotification(notification.key));
   };
+
+  const autoClose = (notification: Notification) => () => {
+    clearTimeout(notificationTimers[notification.key]);
+    setNotificationTimers(omit(notificationTimers, notification.key));
+    dispatch(removeNotification(notification.key));
+  };
+
+  useEffect(() => {
+    notifications.forEach(notification => {
+      if (!Object.keys(notificationTimers).includes(String(notification.key))) {
+        setNotificationTimers(prev => ({
+          ...prev,
+          [notification.key]: setTimeout(
+            autoClose(notification),
+            AUTO_CLOSE_TIME,
+          ),
+        }));
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notifications]);
+
   return (
     <div className={classes.notificationsContainer} style={{ top: topOffset }}>
       {notifications.map(notification => {
