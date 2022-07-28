@@ -60,6 +60,7 @@ import {
   mapSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
+import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
 import {
   addPopupData,
   hidePopup,
@@ -85,6 +86,7 @@ import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
 import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
+import BoundaryInfoBox from './BoundaryInfoBox';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { firstBoundaryOnView } from '../../utils/map-utils';
 import DataViewer from '../DataViewer';
@@ -419,6 +421,27 @@ function MapView({ classes }: MapViewProps) {
     urlDate,
   ]);
 
+  const watchBoundaryChange = (map: Map) => {
+    const { setBounds, setLocation } = boundaryInfoStateSlice;
+    const onDragend = () => {
+      const bounds = map.getBounds();
+      dispatch(setBounds(bounds));
+    };
+    const onZoomend = () => {
+      const bounds = map.getBounds();
+      const newZoom = map.getZoom();
+      dispatch(setLocation({ bounds, zoom: newZoom }));
+    };
+    map.on('dragend', onDragend);
+    map.on('zoomend', onZoomend);
+    // Show initial value
+    onZoomend();
+  };
+
+  const showBoundaryInfo = JSON.parse(
+    process.env.REACT_APP_SHOW_MAP_INFO || 'false',
+  );
+
   const {
     map: { latitude, longitude, zoom },
   } = appConfig;
@@ -434,8 +457,10 @@ function MapView({ classes }: MapViewProps) {
     map.setMaxBounds(maxBounds);
     map.setMinZoom(minZoom);
     map.setMaxZoom(maxZoom);
+    if (showBoundaryInfo) {
+      watchBoundaryChange(map);
+    }
   };
-
   const style = new URL(
     process.env.REACT_APP_DEFAULT_STYLE ||
       'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
@@ -498,6 +523,7 @@ function MapView({ classes }: MapViewProps) {
       {selectedLayerDates.length > 0 && (
         <DateSelector availableDates={selectedLayerDates} />
       )}
+      {showBoundaryInfo && <BoundaryInfoBox />}
     </Grid>
   );
 }
