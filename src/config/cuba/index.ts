@@ -9,6 +9,5 @@ export default {
   rawLayers,
   rawTables,
   translation,
-  defaultUrl: 'prism-cuba.org',
   defaultBoundariesFile: 'cub_admbnda_adm2_2019.json',
 };
