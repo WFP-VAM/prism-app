@@ -439,7 +439,7 @@ function MapView({ classes }: MapViewProps) {
   };
 
   const showBoundaryInfo = JSON.parse(
-    process.env.REACT_APP_SHOW_BOUNDARY_INFO || 'false',
+    process.env.REACT_APP_SHOW_MAP_INFO || 'false',
   );
 
   const {
