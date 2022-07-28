@@ -56,6 +56,7 @@ import {
   dateRangeSelector,
   layerDataSelector,
   layersSelector,
+  mapSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
 import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';
@@ -85,6 +86,7 @@ import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
 import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
+import { firstBoundaryOnView } from '../../utils/map-utils';
 import DataViewer from '../DataViewer';
 
 const MapboxMap = ReactMapboxGl({
@@ -169,6 +171,7 @@ function useMapOnClick(setIsAlertFormOpen: (value: boolean) => void) {
 function MapView({ classes }: MapViewProps) {
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
   const selectedLayers = useSelector(layersSelector);
+  const selectedMap = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const datesLoading = useSelector(areDatesLoading);
   const dispatch = useDispatch();
@@ -309,7 +312,13 @@ function MapView({ classes }: MapViewProps) {
 
   useEffect(() => {
     dispatch(loadAvailableDates());
-    const displayBoundaryLayers = getDisplayBoundaryLayers();
+
+    /*
+      reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
+      to prevent other boundary layers being covered by any layers
+    */
+    // eslint-disable-next-line fp/no-mutating-methods
+    const displayBoundaryLayers = getDisplayBoundaryLayers().reverse();
 
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
@@ -408,7 +417,7 @@ function MapView({ classes }: MapViewProps) {
     urlDate,
   ]);
 
-  // Listen for MapSourceData events to track WMS Layers that are currently loading.
+  // Listen for MapSourceData events to track WMS Layers that are currently loading its tile images.
   const trackLoadingLayers = (map: Map) => {
     // Track with local state to minimize expensive dispatch call
     const layerIds = new Set<LayerKey>();
@@ -441,12 +450,16 @@ function MapView({ classes }: MapViewProps) {
   // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers.
   // Jump map to center here instead of map initial state to prevent map re-centering on layer changes
   const saveAndJumpMap = (map: Map) => {
-    // Find the first symbol on the map to make sure we add layers below them.
     const { layers } = map.getStyle();
-    // Find the first symbol on the map to make sure we add layers below them.
+    // Find the first symbol on the map to make sure we add boundary layers below them.
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
+    const { maxBounds, minZoom, maxZoom } = appConfig.map;
+    map.setMaxBounds(maxBounds);
+    map.setMinZoom(minZoom);
+    map.setMaxZoom(maxZoom);
+
     trackLoadingLayers(map);
   };
 
@@ -454,6 +467,8 @@ function MapView({ classes }: MapViewProps) {
     process.env.REACT_APP_DEFAULT_STYLE ||
       'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
   );
+
+  const firstBoundaryId = `layer-${firstBoundaryOnView(selectedMap)}-line`;
 
   return (
     <Grid item className={classes.container}>
@@ -479,11 +494,11 @@ function MapView({ classes }: MapViewProps) {
           return createElement(component, {
             key: layer.id,
             layer,
-            before: firstSymbolId,
+            before: layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
           });
         })}
         {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer before={firstSymbolId} />
+        <AnalysisLayer before={firstBoundaryId} />
         <SelectionLayer before={firstSymbolId} />
         <MapTooltip />
       </MapboxMap>

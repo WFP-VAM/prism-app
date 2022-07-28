@@ -1,6 +1,6 @@
 import { AnyLayer, AnySourceData, Map as MapBoxMap } from 'mapbox-gl';
 import { LayerKey, BoundaryLayerProps, LayerType } from '../config/types';
-import { getBoundaryLayers } from '../config/utils';
+import { getDisplayBoundaryLayers } from '../config/utils';
 import { addLayer, removeLayer } from '../context/mapStateSlice';
 
 // fixes the issue that property 'source' is not guaranteed to exist on type 'AnyLayer'
@@ -47,7 +47,7 @@ export function safeDispatchRemoveLayer(
 export function boundariesOnView(
   map: MapBoxMap | undefined,
 ): BoundaryLayerProps[] {
-  const boundaries = getBoundaryLayers();
+  const boundaries = getDisplayBoundaryLayers();
   const onViewLayerKeys = map
     ?.getStyle()
     .layers?.map((l: CustomAnyLayer) => l.source)
@@ -56,4 +56,33 @@ export function boundariesOnView(
   return boundaries.filter(
     b => onViewLayerKeys && onViewLayerKeys.includes(b.id),
   );
+}
+
+/**
+ * Get first boundary id already on the map
+ * @param map the MapBox Map object
+ */
+export function firstBoundaryOnView(map: MapBoxMap | undefined): LayerKey {
+  return map
+    ?.getStyle()
+    .layers?.find(l => l.id.endsWith('boundaries-line'))
+    ?.id?.split('-')[1] as LayerKey;
+}
+
+/**
+ * Refresh boundary layers
+ * @param map the MapBox Map object
+ * @param dispatcher dispatch function
+ */
+export function refreshBoundaries(
+  map: MapBoxMap | undefined,
+  dispatcher: Function,
+) {
+  const activeBoundaryLayers = boundariesOnView(map);
+  // remove active boundary layers
+  activeBoundaryLayers.map(l => safeDispatchRemoveLayer(map, l, dispatcher));
+
+  const boundaryLayers = getDisplayBoundaryLayers();
+  // re-add boundary layers
+  boundaryLayers.map(l => safeDispatchAddLayer(map, l, dispatcher));
 }
