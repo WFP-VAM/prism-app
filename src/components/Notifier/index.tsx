@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import omit from 'lodash/omit';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
@@ -15,9 +15,11 @@ function Notifier({ classes }: NotifierProps) {
   const dispatch = useDispatch();
   const notifications = useSelector(notificationsSelector);
   const [topOffset, setTopOffset] = useState(65);
-  const [notificationTimers, setNotificationTimers] = useState<
-    Record<string, NodeJS.Timeout>
-  >({});
+  // const [notificationTimers, setNotificationTimers] = useState<
+  //   Record<string, NodeJS.Timeout>
+  // >({});
+
+  const notificationTimers = useRef<Record<string, NodeJS.Timeout>>({});
 
   // make sure the notifications don't overlap the nav bar.
   useEffect(() => {
@@ -42,21 +44,24 @@ function Notifier({ classes }: NotifierProps) {
   };
 
   const autoClose = (notification: Notification) => () => {
-    clearTimeout(notificationTimers[notification.key]);
-    setNotificationTimers(omit(notificationTimers, notification.key));
+    clearTimeout(notificationTimers.current[notification.key]);
+    notificationTimers.current = omit(
+      notificationTimers.current,
+      notification.key,
+    );
     dispatch(removeNotification(notification.key));
   };
 
   useEffect(() => {
     notifications.forEach(notification => {
       if (!Object.keys(notificationTimers).includes(String(notification.key))) {
-        setNotificationTimers(prev => ({
-          ...prev,
+        notificationTimers.current = {
+          ...notificationTimers.current,
           [notification.key]: setTimeout(
             autoClose(notification),
             AUTO_CLOSE_TIME,
           ),
-        }));
+        };
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
