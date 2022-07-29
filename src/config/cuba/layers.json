@@ -1,7 +1,7 @@
 {
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "../data/cuba/cub_admbnda_adm1_2019.json",
+    "path": "data/cuba/cub_admbnda_adm1_2019.json",
     "opacity": 0.8,
     "admin_code": "ADM1_PCODE",
     "admin_level_names": ["ADM1_REF"],
@@ -19,7 +19,7 @@
   },
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/cuba/cub_admbnda_adm2_2019.json",
+    "path": "data/cuba/cub_admbnda_adm2_2019.json",
     "opacity": 0.8,
     "admin_code": "ADM2_PCODE",
     "admin_level_names": ["ADM1_REF", "ADM2_REF"],

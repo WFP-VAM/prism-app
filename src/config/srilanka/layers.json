@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/sri-lanka/lka_bnd_adm3.json",
+    "path": "data/sri-lanka/lka_bnd_adm3.json",
     "opacity": 0.8,
     "admin_code": "dsd_c_1",
     "admin_level_names": ["province_n", "district_n", "dsd_n_1"],
@@ -19,7 +19,7 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "../data/sri-lanka/lka_bnd_adm1.json",
+    "path": "data/sri-lanka/lka_bnd_adm1.json",
     "opacity": 0.8,
     "admin_code": "province_c",
     "admin_level_names": ["province_n"],
@@ -37,7 +37,7 @@
   },
   "admin2_boundaries": {
     "type": "boundary",
-    "path": "../data/sri-lanka/lka_bnd_adm2.json",
+    "path": "data/sri-lanka/lka_bnd_adm2.json",
     "opacity": 0.8,
     "admin_code": "district_n",
     "admin_level_names": ["province_n", "district_n"],
@@ -1640,7 +1640,7 @@
   "poverty_hc": {
     "type": "admin_level_data",
     "title": "Poverty headcount",
-    "path": "../data/sri-lanka/lka_admin_layers.json",
+    "path": "data/sri-lanka/lka_admin_layers.json",
     "data_field": "esthc_pc",
     "admin_level": 3,
     "admin_code": "dsd_c_1",
@@ -1677,7 +1677,7 @@
   "pop_21": {
     "type": "admin_level_data",
     "title": "Total population",
-    "path": "../data/sri-lanka/lka_admin_layers.json",
+    "path": "data/sri-lanka/lka_admin_layers.json",
     "data_field": "pproj_2021",
     "admin_level": 3,
     "admin_code": "dsd_c_1",
@@ -1714,7 +1714,7 @@
   "num_hhs": {
     "type": "admin_level_data",
     "title": "Number of households",
-    "path": "../data/sri-lanka/lka_admin_layers.json",
+    "path": "data/sri-lanka/lka_admin_layers.json",
     "data_field": "Tot_HH",
     "admin_level": 3,
     "admin_code": "dsd_c_1",

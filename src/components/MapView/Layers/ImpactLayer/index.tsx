@@ -7,10 +7,7 @@ import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
 import { getExtent, Extent } from '../raster-utils';
 import { legendToStops } from '../layer-utils';
 import { ImpactLayerProps } from '../../../../config/types';
-import {
-  LayerDefinitions,
-  getBoundaryLayerSingleton,
-} from '../../../../config/utils';
+import { LayerDefinitions } from '../../../../config/utils';
 import {
   LayerData,
   loadLayerData,
@@ -37,7 +34,7 @@ function getHazardData(evt: any, operation: string, t?: i18nTranslator) {
   return getRoundedData(data, t);
 }
 
-const ImpactLayer = ({ classes, layer }: ComponentProps) => {
+const ImpactLayer = ({ classes, layer, before }: ComponentProps) => {
   const map = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { data, date } =
@@ -91,11 +88,10 @@ const ImpactLayer = ({ classes, layer }: ComponentProps) => {
   const hazardTitle = `${
     hazardLayerDef.title ? t(hazardLayerDef.title) : ''
   } (${t(operation)})`;
-  const boundaryId = getBoundaryLayerSingleton().id;
 
   return (
     <GeoJSONLayer
-      before={`layer-${boundaryId}-line`}
+      before={before}
       id={`layer-${layer.id}`}
       data={noMatchingDistricts ? boundaries : impactFeatures}
       linePaint={linePaint}
@@ -148,6 +144,7 @@ const styles = (theme: Theme) =>
 
 interface ComponentProps extends WithStyles<typeof styles> {
   layer: ImpactLayerProps;
+  before?: string;
 }
 
 export default withStyles(styles)(ImpactLayer);

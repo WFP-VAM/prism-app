@@ -83,8 +83,14 @@ export function getAdminLevelDataLayerData(
           properties,
           adminBoundaryLayer.adminCode,
         ) as string;
+        if (!adminBoundaryCode) {
+          console.warn(
+            `There seem to be an issue with the admin boundary file ${adminBoundaryLayer.id}.
+             Some properties are missing the amdin code ${adminBoundaryLayer.adminCode}`,
+          );
+        }
         const matchProperties = layerData.find(({ adminKey }) =>
-          adminBoundaryCode.startsWith(adminKey),
+          adminBoundaryCode?.startsWith(adminKey),
         );
         if (matchProperties && !isNull(matchProperties.value)) {
           // Do we want support for non-numeric values (like string colors?)

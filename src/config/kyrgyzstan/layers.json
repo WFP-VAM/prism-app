@@ -1,11 +1,17 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/kyrgyzstan/kgz_admbnda_adm2_moes_20181119.json",
+    "path": "data/kyrgyzstan/District_KRYG.json",
     "opacity": 1,
-    "admin_code": "ADM2_PCODE",
-    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["ADM1_KY", "ADM2_KY"],
+    "admin_code": "Adm2_Code",
+    "admin_level_names": [
+      "Adm1_RU",
+      "Adm2_RU"
+    ],
+    "admin_level_local_names": [
+      "Adm1_KR",
+      "Adm2_KR"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -17,37 +23,365 @@
       }
     }
   },
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "data/kyrgyzstan/Province_KYRG.json",
+    "opacity": 1,
+    "admin_code": "Adm1_Code",
+    "admin_level_names": [
+      "Adm1_RU"
+    ],
+    "admin_level_local_names": [
+      "Adm1_KR"
+    ],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.5,
+        "line-opacity": 0.8
+      }
+    }
+  },
   "recurrence_mudflows": {
     "title": "Recurrence of mudflows",
     "type": "admin_level_data",
-    "path": "../data/kyrgyzstan/mudflows_w_admin.json",
+    "path": "data/kyrgyzstan/mudflows_w_admin.json",
     "data_field": "mudflow",
     "admin_level": 2,
-    "admin_code": "ADM2_PCODE",
+    "admin_code": "Adm2_Code",
     "opacity": 0.6,
     "legend": [
       {
-        "value": "1 to 2",
+        "value": 1,
+        "label": "1 to 2",
         "color": "#1a9641"
       },
       {
-        "value": "2 to 3",
+        "value": 2,
+        "label": "2 to 3",
         "color": "#a6d96a"
       },
       {
-        "value": "3 to 5",
+        "value": 3,
+        "label": "3 to 5",
         "color": "#ffffbf"
       },
       {
-        "value": "5 to 10",
+        "value": 5,
+        "label": "5 to 10",
         "color": "#fdae61"
       },
       {
-        "value": "10 to 30",
+        "value": 10,
+        "label": "10 to 30",
         "color": "#d7191c"
       }
     ],
     "legend_text": "Recurrence of mudflows, Ministry of Emergency Situations 2009"
+  },
+  "flood_mudflows": {
+    "title": "Number of floods and mudflows",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "flood_mudflow",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20",
+        "color": "#fcae91"
+      },
+      {
+        "value": 21,
+        "label": "21 to 30",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 31,
+        "label": "31 to 40",
+        "color": "#de2d26"
+      },
+      {
+        "value": 41,
+        "label": "> 40",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Number of floods and mudflows (1999 - 2021)"
+  },
+  "poverty": {
+    "title": "Population below the poverty line",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "poverty",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20%",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 21,
+        "label": "21 to 30%",
+        "color": "#fc9272"
+      },
+      {
+        "value": 31,
+        "label": "31 to 40%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 41,
+        "label": "41 to 50%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 51,
+        "label": "> 50%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Share of population with income below the poverty line (MLSD, 2020)"
+  },
+  "population": {
+    "title": "Population 2021",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Population_2021",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 50,000",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 50001,
+        "label": "50,000 - 100,000",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 100001,
+        "label": "100,000 - 150,000",
+        "color": "#6baed6"
+      },
+      {
+        "value": 150001,
+        "label": "150,000 - 200,000",
+        "color": "#3182bd"
+      },
+      {
+        "value": 200001,
+        "label": "> 200,000",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Total population (2021)"
+  },
+  "wheat": {
+    "title": "Wheat production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Wheat_production_2021_ha",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 5,000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 5001,
+        "label": "5,000 - 10,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 10001,
+        "label": "10,000 - 15,000",
+        "color": "#74c476"
+      },
+      {
+        "value": 15001,
+        "label": "15,000 - 20,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 20001,
+        "label": "> 20,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Wheat production 2021 in hectares"
+  },
+  "potato": {
+    "title": "Potato production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Potato_production_2021_ha",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 20,000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 20001,
+        "label": "20,000 - 40,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 40001,
+        "label": "40,000 - 60,000",
+        "color": "#74c476"
+      },
+      {
+        "value": 60001,
+        "label": "60,000 - 80,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 80001,
+        "label": "> 80,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Potato production 2021 in hectares"
+  },
+  "veg": {
+    "title": "Vegetable production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Vegetables_production_2021_ha",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 20,000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 20001,
+        "label": "20,000 - 40,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 40001,
+        "label": "40,000 - 60,000",
+        "color": "#74c476"
+      },
+      {
+        "value": 60001,
+        "label": "60,000 - 80,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 80001,
+        "label": "> 80,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Vegetable production 2021 in hectares"
+  },
+  "fruit": {
+    "title": "Fruit production",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Fruits_production_2021",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 2,500",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 2501,
+        "label": "2,500 - 5,000",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 5001,
+        "label": "5,000 - 7,500",
+        "color": "#74c476"
+      },
+      {
+        "value": 7501,
+        "label": "7,500 - 10,000",
+        "color": "#31a354"
+      },
+      {
+        "value": 10001,
+        "label": "> 10,000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Fruit production 2021 in hectares"
+  },
+  "livestock": {
+    "title": "Livestock",
+    "type": "admin_level_data",
+    "path": "data/kyrgyzstan/kyr-admin-level-datasets.json",
+    "data_field": "Livestock_head_count_2021",
+    "admin_level": 2,
+    "admin_code": "Adm2_Code",
+    "opacity": 0.6,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 25,000",
+        "color": "#feedde"
+      },
+      {
+        "value": 25001,
+        "label": "25,000 - 50,000",
+        "color": "#fdbe85"
+      },
+      {
+        "value": 50001,
+        "label": "50,00 - 75,000",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 75001,
+        "label": "75,000 - 100,000",
+        "color": "#e6550d"
+      },
+      {
+        "value": 100001,
+        "label": "> 100,000",
+        "color": "#a63603"
+      }
+    ],
+    "legend_text": "Livestock headcount in 2021"
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
@@ -61,20 +395,63 @@
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": 0 },
-      { "value": "1", "color": "#ffffff" },
-      { "value": "3", "color": "#faf5e6" },
-      { "value": "10", "color": "#faf3d2" },
-      { "value": "20", "color": "#dae3a1" },
-      { "value": "30", "color": "#a0c787" },
-      { "value": "40", "color": "#68ab79" },
-      { "value": "60", "color": "#9beafa" },
-      { "value": "80", "color": "#00b1de" },
-      { "value": "100", "color": "#005ae6" },
-      { "value": "120", "color": "#0000c8" },
-      { "value": "150", "color": "#a000fa" },
-      { "value": "200", "color": "#fa78fa" },
-      { "value": "400", "color": "#ffc4ee" }
+      {
+        "value": "-0",
+        "color": "#ffffff",
+        "alpha": 0
+      },
+      {
+        "value": "1",
+        "color": "#ffffff"
+      },
+      {
+        "value": "3",
+        "color": "#faf5e6"
+      },
+      {
+        "value": "10",
+        "color": "#faf3d2"
+      },
+      {
+        "value": "20",
+        "color": "#dae3a1"
+      },
+      {
+        "value": "30",
+        "color": "#a0c787"
+      },
+      {
+        "value": "40",
+        "color": "#68ab79"
+      },
+      {
+        "value": "60",
+        "color": "#9beafa"
+      },
+      {
+        "value": "80",
+        "color": "#00b1de"
+      },
+      {
+        "value": "100",
+        "color": "#005ae6"
+      },
+      {
+        "value": "120",
+        "color": "#0000c8"
+      },
+      {
+        "value": "150",
+        "color": "#a000fa"
+      },
+      {
+        "value": "200",
+        "color": "#fa78fa"
+      },
+      {
+        "value": "400",
+        "color": "#ffc4ee"
+      }
     ]
   },
   "rain_anomaly_dekad": {
@@ -86,18 +463,45 @@
     "opacity": 0.7,
     "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "1%", "color": "#d79b0b" },
-      { "value": "60%", "color": "#e1b344" },
-      { "value": "80%", "color": "#ebcb7d" },
-      { "value": "90%", "color": "#f5e3b6" },
-      { "value": "110%", "color": "#f2f2f2" },
-      { "value": "120%", "color": "#b5e7fe" },
-      { "value": "140%", "color": "#7dd4fd" },
-      { "value": "180%", "color": "#45c1fc" },
-      { "value": "> 180%", "color": "#0fb0fb" }
+      {
+        "value": "1%",
+        "color": "#d79b0b"
+      },
+      {
+        "value": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "value": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "value": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "value": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "value": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "value": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "value": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "value": "> 180%",
+        "color": "#0fb0fb"
+      }
     ]
   },
-  "rain_anomaly_monthly": {
+  "rain_anomaly_1month": {
     "title": "Monthly rainfall anomaly",
     "type": "wms",
     "server_layer_name": "rfq_dekad",
@@ -106,18 +510,233 @@
     "opacity": 0.7,
     "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "1%", "color": "#d79b0b" },
-      { "value": "60%", "color": "#e1b344" },
-      { "value": "80%", "color": "#ebcb7d" },
-      { "value": "90%", "color": "#f5e3b6" },
-      { "value": "110%", "color": "#f2f2f2" },
-      { "value": "120%", "color": "#b5e7fe" },
-      { "value": "140%", "color": "#7dd4fd" },
-      { "value": "180%", "color": "#45c1fc" },
-      { "value": "> 180%", "color": "#0fb0fb" }
+      {
+        "value": "1%",
+        "color": "#d79b0b"
+      },
+      {
+        "value": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "value": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "value": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "value": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "value": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "value": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "value": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "value": "> 180%",
+        "color": "#0fb0fb"
+      }
     ]
   },
-  "rainfall_agg_month": {
+  "rain_anomaly_3month": {
+    "title": "3-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r3q_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rain_anomaly_6month": {
+    "title": "6-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r6q_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rain_anomaly_9month": {
+    "title": "9-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r9q_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rain_anomaly_1year": {
+    "title": "1-year rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "ryq_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "label": "< 60%",
+        "color": "#d79b0b"
+      },
+      {
+        "label": "60%",
+        "color": "#e1b344"
+      },
+      {
+        "label": "80%",
+        "color": "#ebcb7d"
+      },
+      {
+        "label": "90%",
+        "color": "#f5e3b6"
+      },
+      {
+        "label": "110%",
+        "color": "#f2f2f2"
+      },
+      {
+        "label": "120%",
+        "color": "#b5e7fe"
+      },
+      {
+        "label": "140%",
+        "color": "#7dd4fd"
+      },
+      {
+        "label": "180%",
+        "color": "#45c1fc"
+      },
+      {
+        "label": ">= 200%",
+        "color": "#0fb0fb"
+      }
+    ]
+  },
+  "rainfall_agg_1month": {
     "title": "1-month rainfall aggregate",
     "type": "wms",
     "server_layer_name": "r1h_dekad",
@@ -129,19 +748,642 @@
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": "-0", "color": "#ffffff", "alpha": 0 },
-      { "value": "1", "color": "#ffffff" },
-      { "value": "20", "color": "#faf5e6" },
-      { "value": "40", "color": "#faf3d2" },
-      { "value": "60", "color": "#dae3a1" },
-      { "value": "80", "color": "#a0c787" },
-      { "value": "100", "color": "#68ab79" },
-      { "value": "125", "color": "#9beafa" },
-      { "value": "150", "color": "#00b1de" },
-      { "value": "200", "color": "#005ae6" },
-      { "value": "250", "color": "#0000c8" },
-      { "value": "300", "color": "#a000fa" },
-      { "value": "350", "color": "#fa78fa" }
+      {
+        "value": "-0",
+        "color": "#ffffff",
+        "alpha": 0
+      },
+      {
+        "value": "1",
+        "color": "#ffffff"
+      },
+      {
+        "value": "20",
+        "color": "#faf5e6"
+      },
+      {
+        "value": "40",
+        "color": "#faf3d2"
+      },
+      {
+        "value": "60",
+        "color": "#dae3a1"
+      },
+      {
+        "value": "80",
+        "color": "#a0c787"
+      },
+      {
+        "value": "100",
+        "color": "#68ab79"
+      },
+      {
+        "value": "125",
+        "color": "#9beafa"
+      },
+      {
+        "value": "150",
+        "color": "#00b1de"
+      },
+      {
+        "value": "200",
+        "color": "#005ae6"
+      },
+      {
+        "value": "250",
+        "color": "#0000c8"
+      },
+      {
+        "value": "300",
+        "color": "#a000fa"
+      },
+      {
+        "value": "350",
+        "color": "#fa78fa"
+      }
+    ]
+  },
+  "rainfall_agg_3month": {
+    "title": "3-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r3h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
+    "legend": [
+      {
+        "label": "50 mm",
+        "color": "#faf3d2"
+      },
+      {
+        "label": "100 mm",
+        "color": "#dae3a1"
+      },
+      {
+        "label": "150 mm",
+        "color": "#a0c787"
+      },
+      {
+        "label": "200 mm",
+        "color": "#68ab79"
+      },
+      {
+        "label": "250 mm",
+        "color": "#9beafa"
+      },
+      {
+        "label": "300 mm",
+        "color": "#00b1de"
+      },
+      {
+        "label": "400 mm",
+        "color": "#005ae6"
+      },
+      {
+        "label": "500 mm",
+        "color": "#0000c8"
+      },
+      {
+        "label": "600 mm",
+        "color": "#a000fa"
+      },
+      {
+        "label": "800 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "label": "> 800 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rainfall_agg_6month": {
+    "title": "6-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r6h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 6 month dekadal rainfall aggregations",
+    "legend": [
+      {
+        "label": "50 mm",
+        "color": "#faf3d2"
+      },
+      {
+        "label": "100 mm",
+        "color": "#dae3a1"
+      },
+      {
+        "label": "150 mm",
+        "color": "#a0c787"
+      },
+      {
+        "label": "200 mm",
+        "color": "#68ab79"
+      },
+      {
+        "label": "250 mm",
+        "color": "#9beafa"
+      },
+      {
+        "label": "300 mm",
+        "color": "#00b1de"
+      },
+      {
+        "label": "400 mm",
+        "color": "#005ae6"
+      },
+      {
+        "label": "500 mm",
+        "color": "#0000c8"
+      },
+      {
+        "label": "600 mm",
+        "color": "#a000fa"
+      },
+      {
+        "label": "800 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "label": "> 800 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rainfall_agg_9month": {
+    "title": "9-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r9h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_800"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 9 month dekadal rainfall aggregations",
+    "legend": [
+      {
+        "label": "50 mm",
+        "color": "#faf3d2"
+      },
+      {
+        "label": "100 mm",
+        "color": "#dae3a1"
+      },
+      {
+        "label": "150 mm",
+        "color": "#a0c787"
+      },
+      {
+        "label": "200 mm",
+        "color": "#68ab79"
+      },
+      {
+        "label": "250 mm",
+        "color": "#9beafa"
+      },
+      {
+        "label": "300 mm",
+        "color": "#00b1de"
+      },
+      {
+        "label": "400 mm",
+        "color": "#005ae6"
+      },
+      {
+        "label": "500 mm",
+        "color": "#0000c8"
+      },
+      {
+        "label": "600 mm",
+        "color": "#a000fa"
+      },
+      {
+        "label": "800 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "label": "> 800 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rainfall_agg_1year": {
+    "title": "1-year rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "ryh_dekad",
+    "additional_query_params": {
+      "styles": "rfh_1500"
+    },
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 1 year dekadal rainfall aggregations",
+    "legend": [
+      {
+        "label": "50 mm",
+        "color": "#faf3d2"
+      },
+      {
+        "label": "100 mm",
+        "color": "#dae3a1"
+      },
+      {
+        "label": "200 mm",
+        "color": "#a0c787"
+      },
+      {
+        "label": "300 mm",
+        "color": "#68ab79"
+      },
+      {
+        "label": "400 mm",
+        "color": "#9beafa"
+      },
+      {
+        "label": "500 mm",
+        "color": "#00b1de"
+      },
+      {
+        "label": "600 mm",
+        "color": "#005ae6"
+      },
+      {
+        "label": "800 mm",
+        "color": "#0000c8"
+      },
+      {
+        "label": "1000 mm",
+        "color": "#a000fa"
+      },
+      {
+        "label": "1500 mm",
+        "color": "#fa78fa"
+      },
+      {
+        "label": "2000 mm",
+        "color": "#ffc4ee"
+      }
+    ]
+  },
+  "spi_1m": {
+    "title": "SPI - 1-month",
+    "type": "wms",
+    "server_layer_name": "r1s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_3m": {
+    "title": "SPI - 3-month",
+    "type": "wms",
+    "server_layer_name": "r3s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_6m": {
+    "title": "SPI - 6-month",
+    "type": "wms",
+    "server_layer_name": "r6s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_9m": {
+    "title": "SPI - 9-month",
+    "type": "wms",
+    "server_layer_name": "r9s_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "spi_1y": {
+    "title": "SPI - 1-year",
+    "type": "wms",
+    "server_layer_name": "rys_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "wcsConfig": {
+      "scale": 0.001,
+      "offset": 0,
+      "pixelResolution": 64
+    },
+    "opacity": 0.7,
+    "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
+    "legend": [
+      {
+        "label": "< -2",
+        "color": "#730000"
+      },
+      {
+        "label": "-1.5 to -2",
+        "color": "#e70001"
+      },
+      {
+        "label": "-1.2 to -1.5",
+        "color": "#ffaa01"
+      },
+      {
+        "label": "-0.7 to -1.2",
+        "color": "#ffd37b"
+      },
+      {
+        "label": "-0.5 to -0.7",
+        "color": "#ffff02"
+      },
+      {
+        "label": "0.5 to -0.5 ",
+        "color": "#f0f0f0"
+      },
+      {
+        "label": "0.5 to 0.7",
+        "color": "#beebff"
+      },
+      {
+        "label": "0.7 to 1.2",
+        "color": "#73b2ff"
+      },
+      {
+        "label": "1.2 to 1.5",
+        "color": "#0271ff"
+      },
+      {
+        "label": "1.5 to 2.0",
+        "color": "#004dad"
+      },
+      {
+        "label": "> 2.0",
+        "color": "#ad03e6"
+      }
+    ]
+  },
+  "days_dry": {
+    "title": "Number of dry days",
+    "type": "wms",
+    "server_layer_name": "dlc_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Number of consecutive days with less than 2 mm precipitation in the last 30 days",
+    "legend": [
+      {
+        "label": "0 days",
+        "color": "#fff9c7"
+      },
+      {
+        "label": "1 day",
+        "color": "#ffeea9"
+      },
+      {
+        "label": "4 days",
+        "color": "#fede86"
+      },
+      {
+        "label": "6 days",
+        "color": "#fec754"
+      },
+      {
+        "label": "10 days",
+        "color": "#fea937"
+      },
+      {
+        "label": "14 days",
+        "color": "#f88a21"
+      },
+      {
+        "label": "18 days",
+        "color": "#e96d13"
+      },
+      {
+        "label": "22 days",
+        "color": "#d15205"
+      },
+      {
+        "label": "25 days",
+        "color": "#b03f03"
+      },
+      {
+        "label": "30 days",
+        "color": "#8b3005"
+      }
     ]
   },
   "streak_dry_days": {
@@ -153,16 +1395,148 @@
     "opacity": 0.7,
     "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": 0, "color": "#fff9c7" },
-      { "value": 1, "color": "#ffeea9" },
-      { "value": 4, "color": "#fede86" },
-      { "value": 6, "color": "#fec754" },
-      { "value": 10, "color": "#fea937" },
-      { "value": 14, "color": "#f88a21" },
-      { "value": 18, "color": "#e96d13" },
-      { "value": 22, "color": "#d15205" },
-      { "value": 25, "color": "#b03f03" },
-      { "value": 30, "color": "#8b3005" }
+      {
+        "value": 0,
+        "color": "#fff9c7"
+      },
+      {
+        "value": 1,
+        "color": "#ffeea9"
+      },
+      {
+        "value": 4,
+        "color": "#fede86"
+      },
+      {
+        "value": 6,
+        "color": "#fec754"
+      },
+      {
+        "value": 10,
+        "color": "#fea937"
+      },
+      {
+        "value": 14,
+        "color": "#f88a21"
+      },
+      {
+        "value": 18,
+        "color": "#e96d13"
+      },
+      {
+        "value": 22,
+        "color": "#d15205"
+      },
+      {
+        "value": 25,
+        "color": "#b03f03"
+      },
+      {
+        "value": 30,
+        "color": "#8b3005"
+      }
+    ]
+  },
+  "days_intense_rain": {
+    "title": "Number of days with intense rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xni_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "label": "0 days",
+        "color": "#f2fabc"
+      },
+      {
+        "label": "1 day",
+        "color": "#dcf1b2"
+      },
+      {
+        "label": "4 days",
+        "color": "#bbe4b5"
+      },
+      {
+        "label": "6 days",
+        "color": "#85cfba"
+      },
+      {
+        "label": "10 days",
+        "color": "#57bec1"
+      },
+      {
+        "label": "14 days",
+        "color": "#34a9c3"
+      },
+      {
+        "label": "18 days",
+        "color": "#1d8dbe"
+      },
+      {
+        "label": "22 days",
+        "color": "#2166ac"
+      },
+      {
+        "label": "25 days",
+        "color": "#24479d"
+      },
+      {
+        "label": "30 days",
+        "color": "#1d2e83"
+      }
+    ]
+  },
+  "days_extreme_rain": {
+    "title": "Number of days with extreme rainfall in the last 30 days",
+    "type": "wms",
+    "server_layer_name": "xne_dekad",
+    "base_url": "https://odc.ovio.org/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
+    "legend": [
+      {
+        "label": "0 days",
+        "color": "#f2fabc"
+      },
+      {
+        "label": "1 day",
+        "color": "#dcf1b2"
+      },
+      {
+        "label": "4 days",
+        "color": "#bbe4b5"
+      },
+      {
+        "label": "6 days",
+        "color": "#85cfba"
+      },
+      {
+        "label": "10 days",
+        "color": "#57bec1"
+      },
+      {
+        "label": "14 days",
+        "color": "#34a9c3"
+      },
+      {
+        "label": "18 days",
+        "color": "#1d8dbe"
+      },
+      {
+        "label": "22 days",
+        "color": "#2166ac"
+      },
+      {
+        "label": "25 days",
+        "color": "#24479d"
+      },
+      {
+        "label": "30 days",
+        "color": "#1d2e83"
+      }
     ]
   },
   "days_heavy_rain": {
@@ -174,16 +1548,46 @@
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": 0, "color": "#f2fabc" },
-      { "value": 1, "color": "#dcf1b2" },
-      { "value": 4, "color": "#bbe4b5" },
-      { "value": 6, "color": "#85cfba" },
-      { "value": 10, "color": "#57bec1" },
-      { "value": 14, "color": "#34a9c3" },
-      { "value": 18, "color": "#1d8dbe" },
-      { "value": 22, "color": "#2166ac" },
-      { "value": 25, "color": "#24479d" },
-      { "value": 30, "color": "#1d2e83" }
+      {
+        "value": 0,
+        "color": "#f2fabc"
+      },
+      {
+        "value": 1,
+        "color": "#dcf1b2"
+      },
+      {
+        "value": 4,
+        "color": "#bbe4b5"
+      },
+      {
+        "value": 6,
+        "color": "#85cfba"
+      },
+      {
+        "value": 10,
+        "color": "#57bec1"
+      },
+      {
+        "value": 14,
+        "color": "#34a9c3"
+      },
+      {
+        "value": 18,
+        "color": "#1d8dbe"
+      },
+      {
+        "value": 22,
+        "color": "#2166ac"
+      },
+      {
+        "value": 25,
+        "color": "#24479d"
+      },
+      {
+        "value": 30,
+        "color": "#1d2e83"
+      }
     ]
   },
   "streak_heavy_rain": {
@@ -195,17 +1599,51 @@
     "opacity": 0.7,
     "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      { "value": 0, "color": "#f2fabc" },
-      { "value": 1, "color": "#dcf1b2" },
-      { "value": 4, "color": "#bbe4b5" },
-      { "value": 6, "color": "#85cfba" },
-      { "value": 10, "color": "#57bec1" },
-      { "value": 14, "color": "#34a9c3" },
-      { "value": 18, "color": "#1d8dbe" },
-      { "value": 22, "color": "#2166ac" },
-      { "value": 25, "color": "#24479d" },
-      { "value": 30, "color": "#1d2e83" },
-      { "value": "255 - no value", "color": "#ffffff", "alpha": 0 }
+      {
+        "value": 0,
+        "color": "#f2fabc"
+      },
+      {
+        "value": 1,
+        "color": "#dcf1b2"
+      },
+      {
+        "value": 4,
+        "color": "#bbe4b5"
+      },
+      {
+        "value": 6,
+        "color": "#85cfba"
+      },
+      {
+        "value": 10,
+        "color": "#57bec1"
+      },
+      {
+        "value": 14,
+        "color": "#34a9c3"
+      },
+      {
+        "value": 18,
+        "color": "#1d8dbe"
+      },
+      {
+        "value": 22,
+        "color": "#2166ac"
+      },
+      {
+        "value": 25,
+        "color": "#24479d"
+      },
+      {
+        "value": 30,
+        "color": "#1d2e83"
+      },
+      {
+        "value": "255 - no value",
+        "color": "#ffffff",
+        "alpha": 0
+      }
     ]
   },
   "ndvi_dekad": {
@@ -272,15 +1710,42 @@
     "opacity": 0.7,
     "legend_text": "NDVI Anomaly compared to LTA",
     "legend": [
-      { "value": 50, "color": "#732600" },
-      { "value": 70, "color": "#f06405" },
-      { "value": 80, "color": "#f5af28" },
-      { "value": 90, "color": "#e6dc96" },
-      { "value": 110, "color": "#f5f5f5" },
-      { "value": 120, "color": "#cbff1f" },
-      { "value": 130, "color": "#00f200" },
-      { "value": 150, "color": "#008f00" },
-      { "value": 200, "color": "#004d00" }
+      {
+        "value": 50,
+        "color": "#732600"
+      },
+      {
+        "value": 70,
+        "color": "#f06405"
+      },
+      {
+        "value": 80,
+        "color": "#f5af28"
+      },
+      {
+        "value": 90,
+        "color": "#e6dc96"
+      },
+      {
+        "value": 110,
+        "color": "#f5f5f5"
+      },
+      {
+        "value": 120,
+        "color": "#cbff1f"
+      },
+      {
+        "value": 130,
+        "color": "#00f200"
+      },
+      {
+        "value": 150,
+        "color": "#008f00"
+      },
+      {
+        "value": 200,
+        "color": "#004d00"
+      }
     ]
   },
   "lst_amplitude": {
@@ -348,17 +1813,50 @@
       "styles": "lst_day"
     },
     "legend": [
-      { "value": 0, "color": "#f0f9ba" },
-      { "value": 5, "color": "#edeba4" },
-      { "value": 10, "color": "#ebdd8f" },
-      { "value": 15, "color": "#eace7c" },
-      { "value": 20, "color": "#e9bf6a" },
-      { "value": 25, "color": "#e9af59" },
-      { "value": 30, "color": "#e99e4c" },
-      { "value": 35, "color": "#e98d41" },
-      { "value": 40, "color": "#e87a3a" },
-      { "value": 45, "color": "#e76636" },
-      { "value": 50, "color": "#e54f35" }
+      {
+        "value": 0,
+        "color": "#f0f9ba"
+      },
+      {
+        "value": 5,
+        "color": "#edeba4"
+      },
+      {
+        "value": 10,
+        "color": "#ebdd8f"
+      },
+      {
+        "value": 15,
+        "color": "#eace7c"
+      },
+      {
+        "value": 20,
+        "color": "#e9bf6a"
+      },
+      {
+        "value": 25,
+        "color": "#e9af59"
+      },
+      {
+        "value": 30,
+        "color": "#e99e4c"
+      },
+      {
+        "value": 35,
+        "color": "#e98d41"
+      },
+      {
+        "value": 40,
+        "color": "#e87a3a"
+      },
+      {
+        "value": 45,
+        "color": "#e76636"
+      },
+      {
+        "value": 50,
+        "color": "#e54f35"
+      }
     ]
   },
   "lst_anomaly": {
@@ -371,17 +1869,53 @@
     "additional_query_params": {
       "styles": "lst_day"
     },
+    "wcsConfig": {
+      "scale": 0.02,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "legend_text": "LEGEND",
     "legend": [
-      { "value": -300.0, "color": "#000004" },
-      { "value": -200.0, "color": "#210c4a" },
-      { "value": -100.0, "color": "#57106e" },
-      { "value": -50.0, "color": "#8a226a" },
-      { "value": 50.0, "color": "#bc3754" },
-      { "value": 100.0, "color": "#e45a31" },
-      { "value": 200.0, "color": "#f98e09" },
-      { "value": 300.0, "color": "#f9cb35" },
-      { "value": 5000.0, "color": "#fcffa4" }
+      {
+        "value": -6,
+        "label": "-6°",
+        "color": "#000004"
+      },
+      {
+        "value": -4,
+        "label": "-4°",
+        "color": "#210c4a"
+      },
+      {
+        "value": -2,
+        "label": "-2°",
+        "color": "#57106e"
+      },
+      {
+        "value": -1,
+        "label": "-1°",
+        "color": "#8a226a"
+      },
+      {
+        "value": 1,
+        "label": "+1°",
+        "color": "#bc3754"
+      },
+      {
+        "value": 2,
+        "label": "+2°",
+        "color": "#e45a31"
+      },
+      {
+        "value": 4,
+        "label": "+4°",
+        "color": "#f98e09"
+      },
+      {
+        "value": 6,
+        "label": "+6°",
+        "color": "#f9cb35"
+      }
     ]
   },
   "snow_cover": {
@@ -395,7 +1929,12 @@
       "styles": "snow_cover"
     },
     "legend_text": "LEGEND",
-    "legend": [{ "value": "1 = snow detected", "color": "#ffffff" }]
+    "legend": [
+      {
+        "value": "1 = snow detected",
+        "color": "#ffffff"
+      }
+    ]
   },
   "snow_percentage": {
     "title": "Snow cover (%)",
@@ -659,7 +2198,12 @@
       "time": "2021-02-11/2021-02-20"
     },
     "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 24 hours",
-    "legend": [{ "value": "Fire detected", "color": "#FF0000" }]
+    "legend": [
+      {
+        "value": "Fire detected",
+        "color": "#FF0000"
+      }
+    ]
   },
   "active_fires_7days": {
     "title": "Active fires in the past 7 days",
@@ -670,45 +2214,21 @@
     "opacity": 0.8,
     "legend_text": "Provides VIIRS 375m Fires/Hotspots for the past 7 days",
     "legend": [
-      { "value": "0 to < 6 hours", "color": "#8B0000" },
-      { "value": "6 to < 12 hours", "color": "#FF0000" },
-      { "value": "12 to < 24 hours", "color": "#FFA500" },
-      { "value": "24 + hours", "color": "#FFFF00" }
-    ]
-  },
-  "fires_2020": {
-    "title": "Fires detected in 2020",
-    "type": "point_data",
-    "data": "",
-    "date_url": "",
-    "fallback_data": "../data/kyrgyzstan/viirs_fires_2020.json",
-    "opacity": 0.8,
-    "data_field": "bright_ti4",
-    "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
-    "legend": [
       {
-        "value": "200",
-        "color": "#7ab1c0"
+        "value": "0 to < 6 hours",
+        "color": "#8B0000"
       },
       {
-        "value": "250",
-        "color": "#9fc3b3"
+        "value": "6 to < 12 hours",
+        "color": "#FF0000"
       },
       {
-        "value": "300",
-        "color": "#d9e79a"
+        "value": "12 to < 24 hours",
+        "color": "#FFA500"
       },
       {
-        "value": "350",
-        "color": "#f3f88e"
-      },
-      {
-        "value": "400",
-        "color": "#f0d779"
-      },
-      {
-        "value": "10",
-        "color": "#fdae61"
+        "value": "24 + hours",
+        "color": "#FFFF00"
       }
     ]
   }

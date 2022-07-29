@@ -245,16 +245,17 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     additionalQueryParams,
     loader,
   } = layer;
-  const loadPointLayerDataFromURL = async (fetchUrl: string) => {
-    // TODO - merge formatUrl and queryParamsToString
-    const fetchUrlWithParams = `${fetchUrl}${
-      fetchUrl.includes('?') ? '&' : '?'
-    }${queryParamsToString(additionalQueryParams)}`;
 
-    if (!fetchUrlWithParams) {
+  // TODO - merge formatUrl and queryParamsToString
+  const fetchUrlWithParams = `${url}${
+    url.includes('?') ? '&' : '?'
+  }${queryParamsToString(additionalQueryParams)}`;
+
+  const loadPointLayerDataFromURL = async (fetchUrl: string) => {
+    if (!fetchUrl) {
       return [];
     }
-    const response = await fetch(fetchUrlWithParams);
+    const response = await fetch(fetchUrl);
     if (response.status !== 200) {
       console.error(`Impossible to get point data dates for ${layer.id}`);
       return [];
@@ -270,16 +271,15 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   }
 
   // eslint-disable-next-line fp/no-mutation
-  const data = await (pointDataFetchPromises[url] =
-    pointDataFetchPromises[url] || loadPointLayerDataFromURL(url)).catch(
-    err => {
-      console.error(err);
-      console.warn(
-        `Failed loading point data layer: ${id}. Attempting to load fallback URL...`,
-      );
-      return loadPointLayerDataFromURL(fallbackUrl || '');
-    },
-  );
+  const data = await (pointDataFetchPromises[fetchUrlWithParams] =
+    pointDataFetchPromises[fetchUrlWithParams] ||
+    loadPointLayerDataFromURL(fetchUrlWithParams)).catch(err => {
+    console.error(err);
+    console.warn(
+      `Failed loading point data layer: ${id}. Attempting to load fallback URL...`,
+    );
+    return loadPointLayerDataFromURL(fallbackUrl || '');
+  });
 
   const possibleDates = data
     // adding 12 hours to avoid  errors due to daylight saving, and convert to number

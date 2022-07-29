@@ -18,12 +18,18 @@ export type LayerType =
   | ImpactLayerProps
   | PointDataLayerProps;
 
-export type LayerKey = keyof typeof rawLayers;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I,
+) => void
+  ? I
+  : never;
+
+export type LayerKey = keyof UnionToIntersection<typeof rawLayers>;
 
 type MenuGroupItem = {
   id: string;
   label: string;
-  main: boolean;
+  main?: boolean;
 };
 
 export type MenuGroup = {
@@ -290,8 +296,7 @@ export class CommonLayerProps {
         },
         {
           "id": "rain_anomaly_3month",
-          "label": "3-month",
-          "main": false
+          "label": "3-month"
         },
         ...
       ]

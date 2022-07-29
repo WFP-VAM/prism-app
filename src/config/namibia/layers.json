@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/namibia/nam_admin1.json",
+    "path": "data/namibia/nam_admin1.json",
     "opacity": 0.8,
     "admin_code": "ADM1_PCODE",
     "admin_level_names": ["ADM1_EN"],
@@ -1105,7 +1105,7 @@
   "poor_hhs": {
     "title": "Proportion of poor households",
     "type": "admin_level_data",
-    "path": "../data/namibia/poverty.json",
+    "path": "data/namibia/poverty.json",
     "data_field": "pph",
     "admin_level": 1,
     "admin_code": "ADM1_PCODE",
