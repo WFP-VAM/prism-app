@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, merge, union, snakeCase } from 'lodash';
+import formatUrl from '../../packages/format-url';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
@@ -48,15 +49,6 @@ export const getPossibleDatesForLayer = (
       return serverAvailableDates[layer.id];
   }
 };
-
-export function formatUrl(
-  baseUrl: string,
-  params: { [key: string]: any } = {},
-): string {
-  const url = new URL(baseUrl);
-  Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
-  return url.toString();
-}
 
 /**
  * Format the raw data to { [layerId]: availableDates }

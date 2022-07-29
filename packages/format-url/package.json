@@ -1,0 +1,13 @@
+{
+  "name": "format-url",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Create a URL String given a Base URL and Params Object",
+  "main": "index.ts",
+  "scripts": {
+    "test": "npx ts-node ./test.ts"
+  },
+  "devDependencies": {
+    "flug": "^2.3.1"
+  }
+}
