@@ -33,3 +33,6 @@ yarn-error.log*
 .idea/
 .log/
 *.bak
+
+# ignore shared code packages build files
+packages/*/*.js

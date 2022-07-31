@@ -1,6 +1,6 @@
 // we use "t" instead of "test" because "test" is reserved by Jest
 import t from "flug";
-import formatUrl from "./index";
+import formatUrl from ".";
 
 t("format-url: base url with no params should return itself", ({ eq }) => {
   const baseUrl = "https://example.org/";
