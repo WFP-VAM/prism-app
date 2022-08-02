@@ -1869,43 +1869,52 @@
     "additional_query_params": {
       "styles": "lst_day"
     },
+    "wcsConfig": {
+      "scale": 0.02,
+      "offset": 0,
+      "pixelResolution": 64
+    },
     "legend_text": "LEGEND",
     "legend": [
       {
-        "value": -300.0,
+        "value": -6,
+        "label": "-6°",
         "color": "#000004"
       },
       {
-        "value": -200.0,
+        "value": -4,
+        "label": "-4°",
         "color": "#210c4a"
       },
       {
-        "value": -100.0,
+        "value": -2,
+        "label": "-2°",
         "color": "#57106e"
       },
       {
-        "value": -50.0,
+        "value": -1,
+        "label": "-1°",
         "color": "#8a226a"
       },
       {
-        "value": 50.0,
+        "value": 1,
+        "label": "+1°",
         "color": "#bc3754"
       },
       {
-        "value": 100.0,
+        "value": 2,
+        "label": "+2°",
         "color": "#e45a31"
       },
       {
-        "value": 200.0,
+        "value": 4,
+        "label": "+4°",
         "color": "#f98e09"
       },
       {
-        "value": 300.0,
+        "value": 6,
+        "label": "+6°",
         "color": "#f9cb35"
-      },
-      {
-        "value": 5000.0,
-        "color": "#fcffa4"
       }
     ]
   },
@@ -2220,42 +2229,6 @@
       {
         "value": "24 + hours",
         "color": "#FFFF00"
-      }
-    ]
-  },
-  "fires_2020": {
-    "title": "Fires detected in 2020",
-    "type": "point_data",
-    "data": "",
-    "date_url": "",
-    "fallback_data": "data/kyrgyzstan/viirs_fires_2020.json",
-    "opacity": 0.8,
-    "data_field": "bright_ti4",
-    "legend_text": "Average temperature over a 10-day period from ground station data reported in degrees Celsius",
-    "legend": [
-      {
-        "value": "200",
-        "color": "#7ab1c0"
-      },
-      {
-        "value": "250",
-        "color": "#9fc3b3"
-      },
-      {
-        "value": "300",
-        "color": "#d9e79a"
-      },
-      {
-        "value": "350",
-        "color": "#f3f88e"
-      },
-      {
-        "value": "400",
-        "color": "#f0d779"
-      },
-      {
-        "value": "10",
-        "color": "#fdae61"
       }
     ]
   }

@@ -575,6 +575,7 @@ export class BaselineLayerResult {
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
   baselineLayerId: AdminLevelDataLayerProps['id'];
+  baselineLayerBoundary: AdminLevelDataLayerProps['boundary'];
 
   constructor(
     tableData: TableRow[],
@@ -595,6 +596,7 @@ export class BaselineLayerResult {
 
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
+    this.baselineLayerBoundary = baselineLayer.boundary;
   }
 
   getHazardLayer(): WMSLayerProps {
