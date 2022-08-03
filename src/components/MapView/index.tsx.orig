@@ -59,8 +59,11 @@ import {
   mapSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
-import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
+<<<<<<< HEAD
 import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';
+=======
+import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
+>>>>>>> master
 import {
   addPopupData,
   hidePopup,
@@ -419,6 +422,7 @@ function MapView({ classes }: MapViewProps) {
     urlDate,
   ]);
 
+<<<<<<< HEAD
   // Listen for MapSourceData events to track WMS Layers that are currently loading its tile images.
   const trackLoadingLayers = (map: Map) => {
     // Track with local state to minimize expensive dispatch call
@@ -446,6 +450,7 @@ function MapView({ classes }: MapViewProps) {
     });
   };
 
+=======
   const watchBoundaryChange = (map: Map) => {
     const { setBounds, setLocation } = boundaryInfoStateSlice;
     const onDragend = () => {
@@ -467,6 +472,7 @@ function MapView({ classes }: MapViewProps) {
     process.env.REACT_APP_SHOW_MAP_INFO || 'false',
   );
 
+>>>>>>> master
   const {
     map: { latitude, longitude, zoom },
   } = appConfig;
@@ -482,12 +488,15 @@ function MapView({ classes }: MapViewProps) {
     map.setMaxBounds(maxBounds);
     map.setMinZoom(minZoom);
     map.setMaxZoom(maxZoom);
+<<<<<<< HEAD
+
+    trackLoadingLayers(map);
+=======
     if (showBoundaryInfo) {
       watchBoundaryChange(map);
     }
-    trackLoadingLayers(map);
+>>>>>>> master
   };
-
   const style = new URL(
     process.env.REACT_APP_DEFAULT_STYLE ||
       'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
