@@ -6,13 +6,12 @@
     "food_security_and_livelihoods": "icon_livelihoods.png",
     "Cadre Harmonisé": "icon_cadreharmoise2.png",
     "capacity": "icon_capacity.png",
-    "tables": "icon_table.png",
+    "risk_analysis": "icon_table.png",
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
     "temperature": "icon_climate.png"
   },
   "alertFormActive": false,
-  "defaultLayer": "rain_anomaly_dekad",
   "serversUrls": {
     "wms": [
       "https://odc.ovio.org/wms"
@@ -146,6 +145,27 @@
         "lst_nighttime",
         "lst_anomaly",
         "lst_amplitude"
+      ]
+    },
+    "risk_analysis": {
+      "integrated_context_analysis": [
+        "ica_fs_national",
+        "ica_fs_regional",
+        "ica_drought_national",
+        "ica_drought_regional",
+        "ica_flood",
+        "ica_landslide",
+        "ica_combined_hazard_risk_natl",
+        "ica_combined_hazard_risk_reg",
+        "ica_area_natl",
+        "ica_area_regional"
+      ],
+      "multidimensional_risk_analysis": [
+        "mdr_struct_vuln",
+        "mdr_stressors",
+        "mdr_coping_capacity",
+        "mdr_fsn_outcomes",
+        "mdr_index"
       ]
     }
   }
