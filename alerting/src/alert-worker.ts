@@ -4,7 +4,11 @@ import { ANALYSIS_API_URL } from './constants';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
-import { getWCSCoverage, getWMSCapabilities } from './utils/server-utils';
+import {
+  formatUrl,
+  getWCSCoverage,
+  getWMSCapabilities,
+} from './utils/server-utils';
 
 async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   const { baseUrl, serverLayerName, type } = alert.alertConfig;
@@ -40,6 +44,11 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   url.searchParams.append('deactivate', 'true');
   url.searchParams.append('email', email);
 
+  const urlWithParams = formatUrl(prismUrl, {
+    hazardLayerIds: serverLayerName,
+    date: maxDate.toISOString().slice(0, 10),
+  });
+
   if (alertMessage) {
     const emailMessage = `
         Your alert${alertName ? ` ${alertName}` : ''} has been triggered.
@@ -47,7 +56,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
         Layer: ${serverLayerName}
         Date: ${maxDate}
 
-        Go to ${prismUrl} for more information.
+        Go to ${urlWithParams} for more information.
   
         Alert: ${alertMessage}`;
 
