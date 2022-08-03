@@ -177,6 +177,19 @@ def calculate_stats(
     intersect_comparison=None,
 ):
     """Calculate stats."""
+
+    # Add mask option for flood data
+    # flood_mask = "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hfs1_sfw_mask_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-07-29"
+    # # get mask
+    # # update nodata to zeros, and all other values to ones?
+    # # resample - https://gis.stackexchange.com/questions/432161/how-to-find-dominant-pixel-count-of-one-raster-in-another-raster-with-different
+    # # raster math, multiply the two datasets
+    # mask = rasterio.open(flood_mask)
+    # print(mask)
+
+    geotiff_r = rasterio.open(geotiff)
+    logger.error(geotiff_r.profile)
+
     if group_by:
         zones = _group_zones(zones, group_by)
 

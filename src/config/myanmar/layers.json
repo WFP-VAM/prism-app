@@ -1252,13 +1252,13 @@
     "legend_text": "Population exposed to historical storm surges per year (MUDRA)"
   },
   "adamts_nodes": {
-    "title": "Tropical storm - nodes",
+    "title": "Tropical Storms - Nodes",
     "type": "wms",
     "server_layer_name": "wld_gdacs_tc_events_nodes",
     "content_path": "data/myanmar/contents.md#tropical-storm-nodes",
     "opacity": 0.7,
     "legend": [],
-    "legend_text": "Tropical storm - nodes",
+    "legend_text": "Tropical Storms - Nodes",
     "base_url": "https://geonode.wfp.org/geoserver",
     "feature_info_props": {
       "event_name": {
@@ -1277,7 +1277,7 @@
     "geometry": "point"
   },
   "adamts_buffers": {
-    "title": "Tropical Storms - Wind buffers",
+    "title": "Tropical Storms - Wind Buffers",
     "type": "wms",
     "server_layer_name": "mmr_gdacs_buffers",
     "content_path": "data/myanmar/contents.md#tropical-storm-wind-buffers",
@@ -1320,7 +1320,7 @@
     "legend": []
   },
   "adamts_tracks": {
-    "title": "Tropical storm - track",
+    "title": "Tropical Storms - Tracks",
     "type": "wms",
     "server_layer_name": "wld_gdacs_tc_events_tracks",
     "content_path": "data/myanmar/contents.md#tropical-storm-track",
