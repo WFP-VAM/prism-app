@@ -20,7 +20,8 @@ module.exports = override(
           test: [
             {
               folder: './data',
-              method: absPath => !new RegExp(country, 'm').test(absPath),
+              method: absPath =>
+                !new RegExp(country.toLowerCase(), 'm').test(absPath),
               recursive: true,
             },
           ],
