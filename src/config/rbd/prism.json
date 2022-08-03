@@ -149,16 +149,68 @@
     },
     "risk_analysis": {
       "integrated_context_analysis": [
-        "ica_fs_national",
-        "ica_fs_regional",
-        "ica_drought_national",
-        "ica_drought_regional",
+        {
+          "group_title": "Food insecurity recurrence",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_fs_national",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_fs_regional",
+              "label": "Regional"
+            }
+          ]
+        },
+        {
+          "group_title": "Drought recurrence",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_drought_national",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_drought_regional",
+              "label": "Regional"
+            }
+          ]
+        },
         "ica_flood",
         "ica_landslide",
-        "ica_combined_hazard_risk_natl",
-        "ica_combined_hazard_risk_reg",
-        "ica_area_natl",
-        "ica_area_regional"
+        {
+          "group_title": "Combined hazard risk",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_combined_hazard_risk_natl",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_combined_hazard_risk_reg",
+              "label": "Regional"
+            }
+          ]
+        },
+        {
+          "group_title": "ICA aread classification",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_area_natl",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_area_regional",
+              "label": "Regional"
+            }
+          ]
+        }
       ],
       "multidimensional_risk_analysis": [
         "mdr_struct_vuln",

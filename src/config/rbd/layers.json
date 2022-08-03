@@ -2271,7 +2271,7 @@
   "ica_fs_national": {
     "title": "Food security recurrence - national",
     "type": "admin_level_data",
-    "path": "data/rbd/ica_test.json",
+    "path": "data/rbd/ica.json",
     "data_field": "fs_recurrence_nat",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2298,7 +2298,7 @@
   "ica_fs_regional": {
     "title": "Food security recurrence - regional",
     "type": "admin_level_data",
-    "path": "data/rbd/ica_test.json",
+    "path": "data/rbd/ica.json",
     "data_field": "fs_recurrence_reg",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2325,7 +2325,7 @@
   "ica_drought_national": {
     "title": "Drought recurrence - national",
     "type": "admin_level_data",
-    "path": "data/rbd/ica_test.json",
+    "path": "data/rbd/ica.json",
     "data_field": "npgs_classnat",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2352,7 +2352,7 @@
   "ica_drought_regional": {
     "title": "Drought recurrence - regional",
     "type": "admin_level_data",
-    "path": "data/rbd/ica_test.json",
+    "path": "data/rbd/ica.json",
     "data_field": "npgs_classreg",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2379,7 +2379,7 @@
   "ica_flood": {
     "title": "Flood recurrence",
     "type": "admin_level_data",
-    "path": "data/rbd/ica_test.json",
+    "path": "data/rbd/ica.json",
     "data_field": "floodclass",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2406,7 +2406,7 @@
   "ica_landslide": {
     "title": "Landslide recurrence",
     "type": "admin_level_data",
-    "path": "data/rbd/ica_test.json",
+    "path": "data/rbd/ica.json",
     "data_field": "lsclass",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2433,7 +2433,7 @@
   "ica_combined_hazard_risk_natl": {
     "title": "Combined hazard risk - national",
     "type": "admin_level_data",
-    "path": "data/rbd/ica_test.json",
+    "path": "data/rbd/ica.json",
     "data_field": "combined_hazard_risk_nat",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2460,7 +2460,7 @@
   "ica_combined_hazard_risk_reg": {
     "title": "Combined hazard risk - regional",
     "type": "admin_level_data",
-    "path": "data/rbd/ica_test.json",
+    "path": "data/rbd/ica.json",
     "data_field": "combined_hazard_risk_reg",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2487,7 +2487,7 @@
   "ica_area_natl": {
     "title": "ICA focus areas - national",
     "type": "admin_level_data",
-    "path": "data/rbd/ica_test.json",
+    "path": "data/rbd/ica.json",
     "data_field": "ica_area_nat",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2544,7 +2544,7 @@
   "ica_area_regional": {
     "title": "ICA focus areas - regional",
     "type": "admin_level_data",
-    "path": "data/rbd/ica_test.json",
+    "path": "data/rbd/ica.json",
     "data_field": "ica_area_reg",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
