@@ -36,6 +36,7 @@ This is the primary configuration file. You can define:
 For each category, you can define sub categories as "subcategorie_name":
 [layers], a list of layers from `layers.json`.
 
+```
 {
   "country": "Cambodia",
     "map": {
@@ -61,12 +62,25 @@ For each category, you can define sub categories as "subcategorie_name":
     "categories": {
       "hazards": {
         "floods" ....
+```
+
+#### Map settings
+
+For each country, you will need to specify the starting point (lat, long) and zoom. In addition, you can also set
+
+- maxBounds
+- minZoom
+- maxZoom
+
+To find these attributes, we created a help mode that you can activate by setting the env `REACT_APP_SHOW_MAP_INFO=true`
 
 #### Boundary layers
+
 - Configuring multiple boundary layers
   If multiple boundary layers are configured `layers.json` you can specify which should be displayed by default by defining `defaultDisplayBoundaries` as an array of boundaries.
 
   e.g.
+
   ```json
   {
     ...
@@ -161,7 +175,9 @@ These layers are referred to as `point_data` in PRISM and represent a data value
       {"value": "500 or more", "color": "#f03b20"}
     ]
 ```
+
 #### boundaries
+
 Boundary layers are loaded by defaul when the application starts and typically show administrative boundaries and are defined as type `boundary`. Multiple boundary files can be configured in layers.json. Multiple boundary files can be used to create different styles for each boundary, or to toggle between admin_level_data layers which correspond to a separate geographic specification; for example to use one boundary file for district level data, and another boundary file for ecological data.
 
 When more than one boundary is specified, an array of boundaries needs to also be set in `prism.json` using with the `defaultDisplayBoundaries` attribute.
@@ -225,6 +241,7 @@ When more than one boundary is specified, an array of boundaries needs to also b
 ```
 
 #### impact
+
 Impact layers are computed by combining a raster layer with a vector layer based on raster values bound by the zones of the vector layer. The impact layer computes zonal statistics for the raster, and based on a configured threshold, will display zones where the threshold has been exceeded.
 
 ```
@@ -246,6 +263,7 @@ Impact layers are computed by combining a raster layer with a vector layer based
 ### Additional layer content
 
 #### Add Layer Contents
+
 To display additional metadata about a layer, you can add a `content_path` attribute to any layer. The attribute expects a path to a `.md` or `.html` file that is stored in `public/data/${REACT_APP_COUNTRY}/filename.ext` directory. For example: `public/data/myanmar/contents.md`
 The application will show an icon next to the layer in the legend if this attribute is configured, and will display the content in a modal window if the icon is clicked.
 

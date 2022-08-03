@@ -17,7 +17,7 @@ import { countBy, get, pickBy } from 'lodash';
 import moment from 'moment';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
-import { Map } from 'mapbox-gl';
+import { Map, MapSourceDataEvent } from 'mapbox-gl';
 import bbox from '@turf/bbox';
 import inside from '@turf/boolean-point-in-polygon';
 import type { Feature, MultiPolygon } from '@turf/helpers';
@@ -54,12 +54,13 @@ import DateSelector from './DateSelector';
 import { findClosestDate } from './DateSelector/utils';
 import {
   dateRangeSelector,
-  isLoading,
   layerDataSelector,
   layersSelector,
   mapSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
+import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
+import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';
 import {
   addPopupData,
   hidePopup,
@@ -85,6 +86,7 @@ import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
 import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
+import BoundaryInfoBox from './BoundaryInfoBox';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { firstBoundaryOnView } from '../../utils/map-utils';
 import DataViewer from '../DataViewer';
@@ -173,9 +175,7 @@ function MapView({ classes }: MapViewProps) {
   const selectedLayers = useSelector(layersSelector);
   const selectedMap = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const layersLoading = useSelector(isLoading);
   const datesLoading = useSelector(areDatesLoading);
-  const loading = layersLoading || datesLoading;
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -419,6 +419,54 @@ function MapView({ classes }: MapViewProps) {
     urlDate,
   ]);
 
+  // Listen for MapSourceData events to track WMS Layers that are currently loading its tile images.
+  const trackLoadingLayers = (map: Map) => {
+    // Track with local state to minimize expensive dispatch call
+    const layerIds = new Set<LayerKey>();
+    const listener = (e: MapSourceDataEvent) => {
+      if (e.sourceId && e.sourceId.startsWith('source-')) {
+        const layerId = e.sourceId.substring('source-'.length) as LayerKey;
+        const included = layerIds.has(layerId);
+        if (!included && !e.isSourceLoaded) {
+          layerIds.add(layerId);
+          dispatch(setLoadingLayerIds([...layerIds]));
+        } else if (included && e.isSourceLoaded) {
+          layerIds.delete(layerId);
+          dispatch(setLoadingLayerIds([...layerIds]));
+        }
+      }
+    };
+    map.on('sourcedataloading', listener);
+    map.on('sourcedata', listener);
+    map.on('idle', () => {
+      if (layerIds.size > 0) {
+        layerIds.clear();
+        dispatch(setLoadingLayerIds([...layerIds]));
+      }
+    });
+  };
+
+  const watchBoundaryChange = (map: Map) => {
+    const { setBounds, setLocation } = boundaryInfoStateSlice;
+    const onDragend = () => {
+      const bounds = map.getBounds();
+      dispatch(setBounds(bounds));
+    };
+    const onZoomend = () => {
+      const bounds = map.getBounds();
+      const newZoom = map.getZoom();
+      dispatch(setLocation({ bounds, zoom: newZoom }));
+    };
+    map.on('dragend', onDragend);
+    map.on('zoomend', onZoomend);
+    // Show initial value
+    onZoomend();
+  };
+
+  const showBoundaryInfo = JSON.parse(
+    process.env.REACT_APP_SHOW_MAP_INFO || 'false',
+  );
+
   const {
     map: { latitude, longitude, zoom },
   } = appConfig;
@@ -430,6 +478,14 @@ function MapView({ classes }: MapViewProps) {
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
     map.jumpTo({ center: [longitude, latitude], zoom });
+    const { maxBounds, minZoom, maxZoom } = appConfig.map;
+    map.setMaxBounds(maxBounds);
+    map.setMinZoom(minZoom);
+    map.setMaxZoom(maxZoom);
+    if (showBoundaryInfo) {
+      watchBoundaryChange(map);
+    }
+    trackLoadingLayers(map);
   };
 
   const style = new URL(
@@ -441,7 +497,7 @@ function MapView({ classes }: MapViewProps) {
 
   return (
     <Grid item className={classes.container}>
-      {loading && (
+      {datesLoading && (
         <div className={classes.loading}>
           <CircularProgress size={100} />
         </div>
@@ -494,6 +550,7 @@ function MapView({ classes }: MapViewProps) {
       {selectedLayerDates.length > 0 && (
         <DateSelector availableDates={selectedLayerDates} />
       )}
+      {showBoundaryInfo && <BoundaryInfoBox />}
     </Grid>
   );
 }
