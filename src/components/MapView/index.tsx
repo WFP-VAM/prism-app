@@ -59,6 +59,7 @@ import {
   mapSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
+import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
 import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';
 import {
   addPopupData,
@@ -85,6 +86,7 @@ import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
 import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
+import BoundaryInfoBox from './BoundaryInfoBox';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { firstBoundaryOnView } from '../../utils/map-utils';
 import DataViewer from '../DataViewer';
@@ -444,6 +446,27 @@ function MapView({ classes }: MapViewProps) {
     });
   };
 
+  const watchBoundaryChange = (map: Map) => {
+    const { setBounds, setLocation } = boundaryInfoStateSlice;
+    const onDragend = () => {
+      const bounds = map.getBounds();
+      dispatch(setBounds(bounds));
+    };
+    const onZoomend = () => {
+      const bounds = map.getBounds();
+      const newZoom = map.getZoom();
+      dispatch(setLocation({ bounds, zoom: newZoom }));
+    };
+    map.on('dragend', onDragend);
+    map.on('zoomend', onZoomend);
+    // Show initial value
+    onZoomend();
+  };
+
+  const showBoundaryInfo = JSON.parse(
+    process.env.REACT_APP_SHOW_MAP_INFO || 'false',
+  );
+
   const {
     map: { latitude, longitude, zoom },
   } = appConfig;
@@ -459,7 +482,9 @@ function MapView({ classes }: MapViewProps) {
     map.setMaxBounds(maxBounds);
     map.setMinZoom(minZoom);
     map.setMaxZoom(maxZoom);
-
+    if (showBoundaryInfo) {
+      watchBoundaryChange(map);
+    }
     trackLoadingLayers(map);
   };
 
@@ -525,6 +550,7 @@ function MapView({ classes }: MapViewProps) {
       {selectedLayerDates.length > 0 && (
         <DateSelector availableDates={selectedLayerDates} />
       )}
+      {showBoundaryInfo && <BoundaryInfoBox />}
     </Grid>
   );
 }
