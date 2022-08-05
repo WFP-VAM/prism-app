@@ -1,0 +1,615 @@
+{
+    "admin_boundaries": {
+      "type": "boundary",
+      "path": "data/global/adm0_simplified.json",
+      "opacity": 0.8,
+      "admin_code": "iso3",
+      "admin_level_names": ["adm0_name"],
+      "admin_level_local_names": ["adm0_name"],
+      "styles:": {
+        "fill": {
+          "fill-opacity": 0
+        },
+        "line": {
+          "line-color": "gray",
+          "line-width": 1,
+          "line-opacity": 0.8
+        }
+      }
+    },
+    "rfh_16_0_300": {
+      "title": "rfh_16_0_300",
+      "type": "wms",
+      "server_layer_name": "rfh_dekad",
+      "additional_query_params": {
+        "styles": "rfh_16_0_300"
+      },
+      "base_url": "https://odc.ovio.org/",
+      "date_interval": "days",
+      "opacity": 0.7,
+      "legend_text": "rfh_16_0_300",
+      "legend": [
+        { "value": 0, "label": "0 mm", "color": "#fafafa" },
+        { "value": 0.01, "label": "1-2 mm", "color": "#fffadf" },
+        { "value": 2, "label": "2-5 mm", "color": "#d3f9d0" },
+        { "value": 5, "label": "5-10 mm", "color": "#a9e4a3" },
+        { "value": 10, "label": "10-20 mm", "color": "#7cc594" },
+        { "value": 20, "label": "20-30 mm", "color": "#5eab91" },
+        { "value": 30, "label": "30-40 mm", "color": "#9fffe8" },
+        { "value": 40, "label": "40-50 mm", "color": "#90e0ef" },
+        { "value": 50, "label": "50-60 mm", "color": "#00b1de" },
+        { "value": 60, "label": "60-80 mm", "color": "#0083f3" },
+        { "value": 80, "label": "80-100 mm", "color": "#0052cd" },
+        { "value": 100, "label": "100-120 mm", "color": "#0000c8" },
+        { "value": 120, "label": "120-150 mm", "color": "#6003b8" },
+        { "value": 150, "label": "150-200 mm", "color": "#a002fa" },
+        { "value": 200, "label": "200-300 mm", "color": "#fa78fa" },
+        { "value": 300, "label": ">= 300 mm", "color": "#ffc4ee" }
+      ]
+    },
+    "rfh_16_0_400": {
+        "title": "rfh_16_0_400",
+        "type": "wms",
+        "server_layer_name": "rfh_dekad",
+        "additional_query_params": {
+          "styles": "rfh_16_0_400"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "rfh_16_0_400",
+        "legend": [
+            { "value": 0, "label": "0 mm", "color": "#fafafa" },
+            { "value": 0.01, "label": "1-5 mm", "color": "#fffadf" },
+            { "value": 5, "label": "5-10 mm", "color": "#d3f9d0" },
+            { "value": 10, "label": "10-20 mm", "color": "#a9e4a3" },
+            { "value": 20, "label": "20-30 mm", "color": "#7cc594" },
+            { "value": 30, "label": "30-40 mm", "color": "#5eab91" },
+            { "value": 40, "label": "40-60 mm", "color": "#9fffe8" },
+            { "value": 60, "label": "60-90 mm", "color": "#90e0ef" },
+            { "value": 90, "label": "90-120 mm", "color": "#00b1de" },
+            { "value": 120, "label": "120-150 mm", "color": "#0083f3" },
+            { "value": 150, "label": "150-200 mm", "color": "#0052cd" },
+            { "value": 200, "label": "200-250 mm", "color": "#0000c8" },
+            { "value": 250, "label": "250-300 mm", "color": "#6003b8" },
+            { "value": 300, "label": "300-350 mm", "color": "#a002fa" },
+            { "value": 350, "label": "350-400 mm", "color": "#fa78fa" },
+            { "value": 400, "label": ">= 400 mm", "color": "#ffc4ee" }
+        ]
+    },
+    "rfh_16_0_600": {
+        "title": "rfh_16_0_600",
+        "type": "wms",
+        "server_layer_name": "rfh_dekad",
+        "additional_query_params": {
+          "styles": "rfh_16_0_600"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "rfh_16_0_600",
+        "legend": [
+            { "value": 0, "label": "0 mm", "color": "#fafafa" },
+            { "value": 0.01, "label": "1-5 mm", "color": "#fffadf" },
+            { "value": 5, "label": "5-10 mm", "color": "#d3f9d0" },
+            { "value": 10, "label": "10-20 mm", "color": "#a9e4a3" },
+            { "value": 20, "label": "20-30 mm", "color": "#7cc594" },
+            { "value": 30, "label": "30-50 mm", "color": "#5eab91" },
+            { "value": 50, "label": "50-80 mm", "color": "#9fffe8" },
+            { "value": 80, "label": "80-100 mm", "color": "#90e0ef" },
+            { "value": 100, "label": "100-150 mm", "color": "#00b1de" },
+            { "value": 150, "label": "150-200 mm", "color": "#0083f3" },
+            { "value": 200, "label": "200-250 mm", "color": "#0052cd" },
+            { "value": 250, "label": "250-300 mm", "color": "#0000c8" },
+            { "value": 300, "label": "300-400 mm", "color": "#6003b8" },
+            { "value": 400, "label": "400-500 mm", "color": "#a002fa" },
+            { "value": 500, "label": "500-700 mm", "color": "#fa78fa" },
+            { "value": 700, "label": "> 700 mm", "color": "#ffc4ee" }
+        ]
+      },
+      "rfh_16_0_800": {
+        "title": "rfh_16_0_800",
+        "type": "wms",
+        "server_layer_name": "rfh_dekad",
+        "additional_query_params": {
+          "styles": "rfh_16_0_800"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "rfh_16_0_800",
+        "legend": [
+            { "value": 0, "label": "0 mm", "color": "#fafafa" },
+            { "value": 0.01, "label": "1-10 mm", "color": "#fffadf" },
+            { "value": 10, "label": "10-20 mm", "color": "#d3f9d0" },
+            { "value": 20, "label": "20-30 mm", "color": "#a9e4a3" },
+            { "value": 30, "label": "30-50 mm", "color": "#7cc594" },
+            { "value": 50, "label": "50-80 mm", "color": "#5eab91" },
+            { "value": 80, "label": "80-100 mm", "color": "#9fffe8" },
+            { "value": 100, "label": "100-150 mm", "color": "#90e0ef" },
+            { "value": 150, "label": "150-200 mm", "color": "#00b1de" },
+            { "value": 200, "label": "200-300 mm", "color": "#0083f3" },
+            { "value": 300, "label": "300-400 mm", "color": "#0052cd" },
+            { "value": 400, "label": "400-500 mm", "color": "#0000c8" },
+            { "value": 500, "label": "500-600 mm", "color": "#6003b8" },
+            { "value": 600, "label": "600-700 mm", "color": "#a002fa" },
+            { "value": 700, "label": "700-800 mm", "color": "#fa78fa" },
+            { "value": 800, "label": "> 800 mm", "color": "#ffc4ee" }
+        ]
+      },
+      "rfh_16_0_1000": {
+        "title": "rfh_16_0_1000",
+        "type": "wms",
+        "server_layer_name": "rfh_dekad",
+        "additional_query_params": {
+          "styles": "rfh_16_0_1000"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "rfh_16_0_1000",
+        "legend": [
+            { "value": 0, "label": "0 mm", "color": "#fafafa" },
+            { "value": 0.01, "label": "1-10 mm", "color": "#fffadf" },
+            { "value": 10, "label": "10-20 mm", "color": "#d3f9d0" },
+            { "value": 20, "label": "20-30 mm", "color": "#a9e4a3" },
+            { "value": 30, "label": "30-50 mm", "color": "#7cc594" },
+            { "value": 50, "label": "50-100 mm", "color": "#5eab91" },
+            { "value": 100, "label": "100-200 mm", "color": "#9fffe8" },
+            { "value": 200, "label": "200-300 mm", "color": "#90e0ef" },
+            { "value": 300, "label": "300-400 mm", "color": "#00b1de" },
+            { "value": 400, "label": "400-500 mm", "color": "#0083f3" },
+            { "value": 500, "label": "500-600 mm", "color": "#0052cd" },
+            { "value": 600, "label": "600-700 mm", "color": "#0000c8" },
+            { "value": 700, "label": "700-800 mm", "color": "#6003b8" },
+            { "value": 800, "label": "800-900 mm", "color": "#a002fa" },
+            { "value": 900, "label": "900-1000 mm", "color": "#fa78fa" },
+            { "value": 1000, "label": "> 1000 mm", "color": "#ffc4ee" }
+        ]
+      },
+      "rfh_16_0_1600": {
+        "title": "rfh_16_0_1600",
+        "type": "wms",
+        "server_layer_name": "rfh_dekad",
+        "additional_query_params": {
+          "styles": "rfh_16_0_1600"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "rfh_16_0_1600",
+        "legend": [
+            { "value": 0, "label": "0 mm", "color": "#fafafa" },
+            { "value": 0.01, "label": "1-10 mm", "color": "#fffadf" },
+            { "value": 10, "label": "10-20 mm", "color": "#d3f9d0" },
+            { "value": 20, "label": "20-50 mm", "color": "#a9e4a3" },
+            { "value": 50, "label": "50-100 mm", "color": "#7cc594" },
+            { "value": 100, "label": "100-200 mm", "color": "#5eab91" },
+            { "value": 200, "label": "200-300 mm", "color": "#9fffe8" },
+            { "value": 300, "label": "300-400 mm", "color": "#90e0ef" },
+            { "value": 400, "label": "400-600 mm", "color": "#00b1de" },
+            { "value": 600, "label": "600-800 mm", "color": "#0083f3" },
+            { "value": 800, "label": "800-900 mm", "color": "#0052cd" },
+            { "value": 900, "label": "900-1000 mm", "color": "#0000c8" },
+            { "value": 1000, "label": "1000-1200 mm", "color": "#6003b8" },
+            { "value": 1200, "label": "1200-1400 mm", "color": "#a002fa" },
+            { "value": 1400, "label": "1400-1600 mm", "color": "#fa78fa" },
+            { "value": 1600, "label": "> 1600 mm", "color": "#ffc4ee" }
+        ]
+      },
+      "rfh_16_0_2000": {
+        "title": "rfh_16_0_2000",
+        "type": "wms",
+        "server_layer_name": "rfh_dekad",
+        "additional_query_params": {
+          "styles": "rfh_16_0_2000"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "rfh_16_0_2000",
+        "legend": [
+            { "value": 0, "label": "0 mm", "color": "#fafafa" },
+            { "value": 0.01, "label": "1-10 mm", "color": "#fffadf" },
+            { "value": 10, "label": "10-50 mm", "color": "#d3f9d0" },
+            { "value": 50, "label": "50-100 mm", "color": "#a9e4a3" },
+            { "value": 100, "label": "100-200 mm", "color": "#7cc594" },
+            { "value": 200, "label": "200-300 mm", "color": "#5eab91" },
+            { "value": 300, "label": "300-400 mm", "color": "#9fffe8" },
+            { "value": 400, "label": "400-600 mm", "color": "#90e0ef" },
+            { "value": 600, "label": "600-800 mm", "color": "#00b1de" },
+            { "value": 800, "label": "800-1000 mm", "color": "#0083f3" },
+            { "value": 1000, "label": "1000-1200 mm", "color": "#0052cd" },
+            { "value": 1200, "label": "1200-1400 mm", "color": "#0000c8" },
+            { "value": 1400, "label": "1400-1600 mm", "color": "#6003b8" },
+            { "value": 1600, "label": "1600-1800 mm", "color": "#a002fa" },
+            { "value": 1800, "label": "1800-2000 mm", "color": "#fa78fa" },
+            { "value": 2000, "label": "> 2000 mm", "color": "#ffc4ee" }
+        ]
+      },
+      "rfh_16_0_2400": {
+        "title": "rfh_16_0_2400",
+        "type": "wms",
+        "server_layer_name": "rfh_dekad",
+        "additional_query_params": {
+          "styles": "rfh_16_0_2400"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "rfh_16_0_2400",
+        "legend": [
+            { "value": 0, "label": "0 mm", "color": "#fafafa" },
+            { "value": 0.01, "label": "1-10 mm", "color": "#fffadf" },
+            { "value": 10, "label": "10-50 mm", "color": "#d3f9d0" },
+            { "value": 50, "label": "50-100 mm", "color": "#a9e4a3" },
+            { "value": 100, "label": "100-200 mm", "color": "#7cc594" },
+            { "value": 200, "label": "200-400 mm", "color": "#5eab91" },
+            { "value": 400, "label": "400-600 mm", "color": "#9fffe8" },
+            { "value": 600, "label": "600-800 mm", "color": "#90e0ef" },
+            { "value": 800, "label": "800-1000 mm", "color": "#00b1de" },
+            { "value": 1000, "label": "1000-1200 mm", "color": "#0083f3" },
+            { "value": 1200, "label": "1200-1400 mm", "color": "#0052cd" },
+            { "value": 1400, "label": "1400-1600 mm", "color": "#0000c8" },
+            { "value": 1600, "label": "1600-1800 mm", "color": "#6003b8" },
+            { "value": 1800, "label": "1800-2000 mm", "color": "#a002fa" },
+            { "value": 2000, "label": "2000-2400 mm", "color": "#fa78fa" },
+            { "value": 2400, "label": "> 2400 mm", "color": "#ffc4ee" }
+        ]
+      },
+      "rfh_16_0_4000": {
+        "title": "rfh_16_0_4000",
+        "type": "wms",
+        "server_layer_name": "rfh_dekad",
+        "additional_query_params": {
+          "styles": "rfh_16_0_4000"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "rfh_16_0_4000",
+        "legend": [
+            { "value": 0, "label": "0 mm", "color": "#fafafa" },
+            { "value": 0.01, "label": "1-50 mm", "color": "#fffadf" },
+            { "value": 50, "label": "50-100 mm", "color": "#d3f9d0" },
+            { "value": 100, "label": "100-200 mm", "color": "#a9e4a3" },
+            { "value": 200, "label": "200-300 mm", "color": "#7cc594" },
+            { "value": 300, "label": "300-400 mm", "color": "#5eab91" },
+            { "value": 400, "label": "400-600 mm", "color": "#9fffe8" },
+            { "value": 600, "label": "600-800 mm", "color": "#90e0ef" },
+            { "value": 800, "label": "800-1000 mm", "color": "#00b1de" },
+            { "value": 1000, "label": "1000-1500 mm", "color": "#0083f3" },
+            { "value": 1500, "label": "1500-2000 mm", "color": "#0052cd" },
+            { "value": 2000, "label": "2000-2500 mm", "color": "#0000c8" },
+            { "value": 2500, "label": "2500-3000 mm", "color": "#6003b8" },
+            { "value": 3000, "label": "3000-3500 mm", "color": "#a002fa" },
+            { "value": 3500, "label": "3500-4000 mm", "color": "#fa78fa" },
+            { "value": 4000, "label": "> 4000 mm", "color": "#ffc4ee" }
+        ]
+      },
+      "rfq_14_20_400": {
+        "title": "rfq_14_20_400",
+        "type": "wms",
+        "server_layer_name": "rfq_dekad",
+        "additional_query_params": {
+          "styles": "rfq_14_20_400"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "rfq_14_20_400",
+        "legend": [
+            { "value": 0, "label": "< 20%", "color": "#8c4800" },
+            { "value": 20, "label": "20-40%", "color": "#af6b27" },
+            { "value": 40, "label": "40-60%", "color": "#d58c3e" },
+            { "value": 60, "label": "60-70%", "color": "#eaa83d" },
+            { "value": 70, "label": "70-80%", "color": "#f5c878" },
+            { "value": 80, "label": "80-90%", "color": "#fff0c4" },
+            { "value": 90, "label": "90-110%", "color": "#fafafa" },
+            { "value": 110, "label": "110-120%", "color": "#befafa" },
+            { "value": 120, "label": "120-130%", "color": "#78e2f0" },
+            { "value": 130, "label": "130-150%", "color": "#00b9de" },
+            { "value": 150, "label": "150-200%", "color": "#0083f3" },
+            { "value": 200, "label": "200-300%", "color": "#0052cd" },
+            { "value": 300, "label": "300-400%", "color": "#0000c8" },
+            { "value": 400, "label": "> 400%", "color": "#a002fa" }
+        ]
+      },
+      "ryq_14_50_200": {
+        "title": "ryq_14_50_200",
+        "type": "wms",
+        "server_layer_name": "rfq_dekad",
+        "additional_query_params": {
+          "styles": "ryq_14_50_200"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "ryq_14_50_200",
+        "legend": [
+            { "value": 0, "label": "&lt; 50%", "color": "#8c4800" },
+            { "value": 50, "label": "50-60%", "color": "#af6b27" },
+            { "value": 60, "label": "60-70%", "color": "#d58c3e" },
+            { "value": 70, "label": "70-80%", "color": "#eaa83d" },
+            { "value": 80, "label": "80-90%", "color": "#f5c878" },
+            { "value": 90, "label": "90-95%", "color": "#fff0c4" },
+            { "value": 95, "label": "95-105%", "color": "#fafafa" },
+            { "value": 105, "label": "105-110%", "color": "#befafa" },
+            { "value": 110, "label": "110-120%", "color": "#78e2f0" },
+            { "value": 120, "label": "120-130%", "color": "#00b9de" },
+            { "value": 130, "label": "130-150%", "color": "#0083f3" },
+            { "value": 150, "label": "150-170%", "color": "#0052cd" },
+            { "value": 170, "label": "170-200%", "color": "#0000c8" },
+            { "value": 200, "label": "> 200%", "color": "#a002fa" }
+        ]
+      },
+      "viq_13_50_150": {
+        "title": "viq_13_50_150",
+        "type": "wms",
+        "server_layer_name": "rfq_dekad",
+        "additional_query_params": {
+          "styles": "viq_13_50_150"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "viq_13_50_150",
+        "legend": [
+            { "value": 0, "label": "&lt; 50%", "color": "#732600" },
+            { "value": 50, "label": "50-60%", "color": "#d73027" },
+            { "value": 60, "label": "60-70%", "color": "#f06405" },
+            { "value": 70, "label": "70-80%", "color": "#fdae61" },
+            { "value": 80, "label": "80-90%", "color": "#fed380" },
+            { "value": 90, "label": "90-95%", "color": "#ffffbf" },
+            { "value": 95, "label": "95-105%", "color": "#fafafa" },
+            { "value": 105, "label": "105-110%", "color": "#cbff1f" },
+            { "value": 110, "label": "110-120%", "color": "#00ff00" },
+            { "value": 120, "label": "120-130%", "color": "#00c900" },
+            { "value": 130, "label": "130-140%", "color": "#009600" },
+            { "value": 140, "label": "140-150%", "color": "#006400" },
+            { "value": 150, "label": "> 150%", "color": "#003200" }
+        ]
+      },
+      "xlhie_12_0_10": {
+        "title": "xlhie_12_0_10",
+        "type": "wms",
+        "server_layer_name": "xlh_dekad",
+        "additional_query_params": {
+          "styles": "xlhie_12_0_10"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "xlhie_12_0_10",
+        "legend": [
+            { "value": 0, "label": "None", "color": "#fafafa" },
+            { "value": 1, "label": "1 Day", "color": "#fffadf" },
+            { "value": 2, "label": "2 Days", "color": "#d3f9d0" },
+            { "value": 3, "label": "3 Days", "color": "#a9e4a3" },
+            { "value": 4, "label": "4 Days", "color": "#7cc594" },
+            { "value": 5, "label": "5 Days", "color": "#5eab91" },
+            { "value": 6, "label": "6 Days", "color": "#9fffe8" },
+            { "value": 7, "label": "7 Days", "color": "#90e0ef" },
+            { "value": 10, "label": "8-10 Days", "color": "#00b1de" },
+            { "value": 15, "label": "11-15 Days", "color": "#0083f3" },
+            { "value": 20, "label": "16-20 Days", "color": "#0052cd" },
+            { "value": 21, "label": "> 20 Days", "color": "#0000c8" }
+        ]
+      },
+      "dlx_13_0_26": {
+        "title": "dlx_13_0_26",
+        "type": "wms",
+        "server_layer_name": "dlx_dekad",
+        "additional_query_params": {
+          "styles": "dlx_13_0_26"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "dlx_13_0_26",
+        "legend": [
+            { "value": 0, "label": "None", "color": "#6c9fa4" },
+            { "value": 5, "label": "1-5 Days", "color": "#aee0c4" },
+            { "value": 7, "label": "6-7 Days", "color": "#a0c787" },
+            { "value": 9, "label": "8-9 Days", "color": "#c8d0a7" },
+            { "value": 11, "label": "10-11 Days", "color": "#efeac4" },
+            { "value": 13, "label": "12-13 Days", "color": "#ffffc3" },
+            { "value": 15, "label": "14-15 Days", "color": "#ffeebd" },
+            { "value": 18, "label": "16-18 Days", "color": "#ffec81" },
+            { "value": 21, "label": "19-21 Days", "color": "#f2c063" },
+            { "value": 24, "label": "22-24 Days", "color": "#d79b0b" },
+            { "value": 27, "label": "25-27 Days", "color": "#d76c00" },
+            { "value": 30, "label": "28-30 Days", "color": "#932700" },
+            { "value": 31, "label": ">30 Days", "color": "#aa5a00" }
+        ]
+      },
+      "vim_14_01_09": {
+        "title": "vim_14_01_09",
+        "type": "wms",
+        "server_layer_name": "mxd13a2_vim_dekad",
+        "additional_query_params": {
+          "styles": "vim_14_01_09"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "vim_14_01_09",
+        "legend": [
+            { "value": 0, "label": "< 0.10", "color": "#fffae6" },
+            { "value": 0.1, "label": "0.10-0.15", "color": "#fff0be" },
+            { "value": 0.15, "label": "0.15-0.20", "color": "#dae3a1" },
+            { "value": 0.20, "label": "0.20-0.25", "color": "#ccea83" },
+            { "value": 0.25, "label": "0.25-0.30", "color": "#cbff1f" },
+            { "value": 0.30, "label": "0.30-0.35", "color": "#86cb66" },
+            { "value": 0.35, "label": "0.35-0.40", "color": "#2da155" },
+            { "value": 0.40, "label": "0.40-0.50", "color": "#009600" },
+            { "value": 0.50, "label": "0.50-0.60", "color": "#006400" },
+            { "value": 0.60, "label": "0.60-0.70", "color": "#64a77e" },
+            { "value": 0.70, "label": "0.70-0.80", "color": "#328968" },
+            { "value": 0.80, "label": "0.80-0.85", "color": "#006b52" },
+            { "value": 0.85, "label": "0.85-0.90", "color": "#004e33" },
+            { "value": 0.90, "label": "> 0.90", "color": "#002a1e" }
+        ]
+      }, 
+      "lst_42_n24_70": {
+        "title": "lst_42_n24_70",
+        "type": "wms",
+        "server_layer_name": "myd11a2_txa_dekad",
+        "additional_query_params": {
+          "styles": "lst_42_n24_70"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "lst_42_n24_70",
+        "legend": [
+            { "value": -100, "label": "< -24C", "color": "#ffffff" },
+            { "value": -24, "label": "-24C - -20C", "color": "#fafafa" },
+            { "value": -20, "label": "-20C - -16C", "color": "#f5f5f5" },
+            { "value": -16, "label": "-16C - -12C", "color": "#ebebeb" },
+            { "value": -12, "label": "-12C - -8C", "color": "#e1e1e1" },
+            { "value": -8, "label": "-8C - -4C", "color": "#c8c8c8" },
+            { "value": -4, "label": "-4C - 0C", "color": "#05284b" },
+            { "value": 0, "label": "0C - 2C", "color": "#1d2e83" },
+            { "value": 2, "label": "2C - 4C", "color": "#24479d" },
+            { "value": 4, "label": "4C - 6C", "color": "#2166ac" },
+            { "value": 6, "label": "6C - 8C", "color": "#0564c3" },
+            { "value": 8, "label": "8C - 10C", "color": "#1d8dbe" },
+            { "value": 10, "label": "10C - 12C", "color": "#34a9c3" },
+            { "value": 12, "label": "12C - 14C", "color": "#005867" },
+            { "value": 14, "label": "14C - 16C", "color": "#378a95" },
+            { "value": 16, "label": "16C - 18C", "color": "#6c9fa4" },
+            { "value": 18, "label": "18C - 20C", "color": "#7ab2b9" },
+            { "value": 20, "label": "20C - 22C", "color": "#57bec1" },
+            { "value": 22, "label": "22C - 24C", "color": "#85cfba" },
+            { "value": 24, "label": "24C - 26C", "color": "#aee0c4" },
+            { "value": 26, "label": "26C - 28C", "color": "#bbe4b5" },
+            { "value": 28, "label": "28C - 30C", "color": "#dcf1b2" },
+            { "value": 30, "label": "30C - 32C", "color": "#e8ffde" },
+            { "value": 32, "label": "32C - 34C", "color": "#f2fabc" },
+            { "value": 34, "label": "34C - 36C", "color": "#ffffbf" },
+            { "value": 36, "label": "36C - 38C", "color": "#ffec81" },
+            { "value": 38, "label": "38C - 40C", "color": "#fed380" },
+            { "value": 40, "label": "40C - 42C", "color": "#f5af28" },
+            { "value": 42, "label": "42C - 44C", "color": "#eac98e" },
+            { "value": 44, "label": "44C - 46C", "color": "#d5a45f" },
+            { "value": 46, "label": "46C - 48C", "color": "#bf7f2f" },
+            { "value": 48, "label": "48C - 50C", "color": "#f88d52" },
+            { "value": 50, "label": "50C - 52C", "color": "#f06405" },
+            { "value": 52, "label": "52C - 54C", "color": "#de3f2e" },
+            { "value": 54, "label": "54C - 56C", "color": "#cb181d" },
+            { "value": 56, "label": "56C - 58C", "color": "#a50026" },
+            { "value": 58, "label": "58C - 60C", "color": "#ad3a00" },
+            { "value": 60, "label": "60C - 62C", "color": "#932700" },
+            { "value": 62, "label": "62C - 64C", "color": "#7a1300" },
+            { "value": 64, "label": "64C - 66C", "color": "#67000d" },
+            { "value": 66, "label": "66C - 70C", "color": "#732600" },
+            { "value": 70, "label": "> 70C", "color": "#460000" }
+        ]
+      },
+      "tdd_tnd_21_m20_20": {
+        "title": "tdd_tnd_21_m20_20",
+        "type": "wms",
+        "server_layer_name": "mxd13a2_vim_dekad",
+        "additional_query_params": {
+          "styles": "tdd_tnd_21_m20_20"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "tdd_tnd_21_m20_20",
+        "legend": [
+            { "value": -100, "label": "&lt; -20C", "color": "#05284b" },
+            { "value": -20, "label": "-20C to -16C", "color": "#1d2e83" },
+            { "value": -16, "label": "-16C to -12C", "color": "#24479d" },
+            { "value": -12, "label": "-12C to -10C", "color": "#2166ac" },
+            { "value": -10, "label": "-10C to -8C", "color": "#1d8dbe" },
+            { "value": -8, "label": "-8C to -6C", "color": "#34a9c3" },
+            { "value": -6, "label": "-6C to -4C", "color": "#6cb4de" },
+            { "value": -4, "label": "-4C to -3C", "color": "#7ecae7" },
+            { "value": -3, "label": "-3C to -2C", "color": "#90e0ef" },
+            { "value": -2, "label": "-2C to -1C", "color": "#c3f6ff" },
+            { "value": -1, "label": "-1C to +1C", "color": "#fafafa" },
+            { "value": 1, "label": "+1C to +2C", "color": "#fddbc7" },
+            { "value": 2, "label": "+2C to +3C", "color": "#fcbba1" },
+            { "value": 3, "label": "+3C to +4C", "color": "#fc9272" },
+            { "value": 4, "label": "+4C to +6C", "color": "#fb6a4a" },
+            { "value": 6, "label": "+6C to +8C", "color": "#ef3b2c" },
+            { "value": 8, "label": "+8C to +10C", "color": "#d73027" },
+            { "value": 10, "label": "+10C to +12C", "color": "#cb181d" },
+            { "value": 12, "label": "+12C to +16C", "color": "#b2182b" },
+            { "value": 16, "label": "+16C to +20C", "color": "#a50026" },
+            { "value": 20, "label": "> +20C", "color": "#67000d" }
+        ]
+      },   
+      "tdd_tnd_21_m12_12": {
+        "title": "tdd_tnd_21_m12_12",
+        "type": "wms",
+        "server_layer_name": "mxd13a2_vim_dekad",
+        "additional_query_params": {
+          "styles": "tdd_tnd_21_m12_12"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "tdd_tnd_21_m12_12",
+        "legend": [
+            { "value": -100, "label": "< -12C", "color": "#05284b" },
+            { "value": -12, "label": "-12C to -10C", "color": "#1d2e83" },
+            { "value": -10, "label": "-10C to -8C", "color": "#24479d" },
+            { "value": -8, "label": "-8C to -7C", "color": "#2166ac" },
+            { "value": -7, "label": "-7C to -6C", "color": "#1d8dbe" },
+            { "value": -6, "label": "-6C to -5C", "color": "#34a9c3" },
+            { "value": -5, "label": "-5C to -4C", "color": "#6cb4de" },
+            { "value": -4, "label": "-4C to -3C", "color": "#7ecae7" },
+            { "value": -3, "label": "-3C to -2C", "color": "#90e0ef" },
+            { "value": -2, "label": "-2C to -1C", "color": "#c3f6ff" },
+            { "value": -1, "label": "-1C to +1C", "color": "#fafafa" },
+            { "value": 1, "label": "+1C to +2C", "color": "#fddbc7" },
+            { "value": 2, "label": "+2C to +3C", "color": "#fcbba1" },
+            { "value": 3, "label": "+3C to +4C", "color": "#fc9272" },
+            { "value": 4, "label": "+4C to +5C", "color": "#fb6a4a" },
+            { "value": 5, "label": "+5C to +6C", "color": "#ef3b2c" },
+            { "value": 6, "label": "+6C to +7C", "color": "#d73027" },
+            { "value": 7, "label": "+7C to +8C", "color": "#cb181d" },
+            { "value": 8, "label": "+8C to +10C", "color": "#b2182b" },
+            { "value": 10, "label": "+10C to +12C", "color": "#a50026" },
+            { "value": 12, "label": "> +12C", "color": "#67000d" }
+        ]
+      } ,
+      "taa_21_1_48": {
+        "title": "taa_21_1_48",
+        "type": "wms",
+        "server_layer_name": "myd11a2_taa_dekad",
+        "additional_query_params": {
+          "styles": "taa_21_1_48"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "taa_21_1_48",
+        "legend": [
+            { "value": 0, "label": "< 1C", "color": "#05284b" },
+            { "value": 1, "label": "1C to 2C", "color": "#0031ac" },
+            { "value": 2, "label": "2C to 3C", "color": "#0564c3" },
+            { "value": 3, "label": "3C to 4C", "color": "#1d8dbe" },
+            { "value": 4, "label": "4C to 5C", "color": "#378a95" },
+            { "value": 5, "label": "5C to 6C", "color": "#004231" },
+            { "value": 6, "label": "6C to 8C", "color": "#006b52" },
+            { "value": 8, "label": "8C to 10C", "color": "#64a77e" },
+            { "value": 10, "label": "10C to 12C", "color": "#86cb66" },
+            { "value": 12, "label": "12C to 14C", "color": "#a0c787" },
+            { "value": 14, "label": "14C to 16C", "color": "#ccea83" },
+            { "value": 16, "label": "16C to 18C", "color": "#b8d49b" },
+            { "value": 18, "label": "18C to 20C", "color": "#dae3a1" },
+            { "value": 20, "label": "20C to 24C", "color": "#ffe191" },
+            { "value": 24, "label": "24C to 28C", "color": "#ffec81" },
+            { "value": 28, "label": "28C to 32C", "color": "#fed380" },
+            { "value": 32, "label": "32C to 36C", "color": "#eac98e" },
+            { "value": 36, "label": "36C to 40C", "color": "#d5a45f" },
+            { "value": 40, "label": "40C to 44C", "color": "#bf7f2f" },
+            { "value": 44, "label": "44C to 48C", "color": "#aa5a00" },
+            { "value": 48, "label": "> +48C", "color": "#8b3005" }
+        ]
+      }                
+}
