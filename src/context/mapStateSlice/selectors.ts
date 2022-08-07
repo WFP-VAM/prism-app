@@ -21,5 +21,5 @@ export const layerDataSelector = (id: LayerKey, date?: number) => (
     ({ layer, date: dataDate }) =>
       layer.id === id && (!date || date === dataDate),
   );
-export const isLoading = (state: RootState): boolean =>
-  state.mapState.loading > 0;
+export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
+  state.mapState.loadingLayerIds;
