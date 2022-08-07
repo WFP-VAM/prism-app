@@ -1338,7 +1338,10 @@
     "date_interval": "days",
     "opacity": 1.0,
     "legend_text": "Flood water detected from Sentinel-1 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
-    "legend": [{ "value": "1 - flooded", "color": "#a50f15" }]
+    "legend": [{ "value": "1 - flooded", "color": "#a50f15" }],
+    "exposure": {
+      "id": "wp_pop_cicunadj"
+    }
   },
   "hydra_s2": {
     "title": "Potential flooding (Sentinel-2)",

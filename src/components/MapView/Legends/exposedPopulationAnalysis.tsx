@@ -28,8 +28,9 @@ import {
   AggregationOperations,
   LayerKey,
   ExposedPopulationDefinition,
+  GeometryType,
 } from '../../../config/types';
-import { TableKey } from '../../../config/utils';
+import { LayerDefinitions, TableKey } from '../../../config/utils';
 import { Extent } from '../Layers/raster-utils';
 import { useSafeTranslation } from '../../../i18n';
 
@@ -76,12 +77,19 @@ const ExposedPopulationAnalysis = ({
       throw new Error('Date must be given to run analysis');
     }
 
+    const layer = LayerDefinitions[id];
+
+    const hazardLayer =
+      layer.type === 'wms' && layer.geometry === GeometryType.Polygon
+        ? { wfsLayerId: id as LayerKey }
+        : { maskLayerId: id as LayerKey };
+
     const params: ExposedPopulationDispatchParams = {
       exposure,
       date: selectedDate,
       statistic: AggregationOperations.Sum,
       extent,
-      wfsLayerId: id as LayerKey,
+      ...hazardLayer,
     };
 
     dispatch(requestAndStoreExposedPopulation(params));
