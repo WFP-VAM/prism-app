@@ -1,16 +1,23 @@
 import React from 'react';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 import { Layer, Source } from 'react-mapbox-gl';
 import { WMSLayerProps } from '../../../../config/types';
 import { getWMSUrl } from '../raster-utils';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { DEFAULT_DATE_FORMAT } from '../../../../utils/name-utils';
+import { availableDatesSelector } from '../../../../context/serverStateSlice';
 
 function WMSLayers({
   layer: { id, baseUrl, serverLayerName, additionalQueryParams, opacity },
   before,
 }: LayersProps) {
   const selectedDate = useDefaultDate(serverLayerName, id);
+  const serverAvailableDates = useSelector(availableDatesSelector);
+
+  const correctedDate = serverAvailableDates[serverLayerName]?.find(
+    date => date.value === selectedDate,
+  )?.real;
 
   return (
     <>
@@ -22,7 +29,7 @@ function WMSLayers({
             `${getWMSUrl(baseUrl, serverLayerName, {
               ...additionalQueryParams,
               ...(selectedDate && {
-                time: moment(selectedDate).format(DEFAULT_DATE_FORMAT),
+                time: moment(correctedDate).format(DEFAULT_DATE_FORMAT),
               }),
             })}&bbox={bbox-epsg-3857}`,
           ],

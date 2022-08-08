@@ -384,6 +384,9 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
+
+  @optional
+  validity?: number;
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
@@ -536,10 +539,15 @@ export interface MenuItemMobileType {
   selectAccordion: (arg: string) => void;
 }
 
+export type DateItem = {
+  value: number;
+  real: number;
+};
+
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | PointDataLayerProps['id']]: number[];
+    | PointDataLayerProps['id']]: DateItem[];
 };
 
 /* eslint-disable camelcase */
@@ -614,4 +622,10 @@ export type PointData = {
 
 export type PointLayerData = {
   features: PointData[];
+};
+
+export type ValidityLayer = {
+  name: string;
+  dates: number[];
+  validity: number;
 };

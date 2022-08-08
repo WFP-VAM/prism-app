@@ -126,6 +126,7 @@
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
     "type": "wms",
+    "validity": 1,
     "server_layer_name": "rfh_dekad",
     "additional_query_params": {
       "styles": "rfh_350"

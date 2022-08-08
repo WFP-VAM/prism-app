@@ -7,6 +7,8 @@ import type {
   AvailableDates,
   PointDataLayerProps,
   RequestFeatureInfo,
+  ValidityLayer,
+  DateItem,
 } from '../config/types';
 import {
   ImpactLayerProps,
@@ -37,16 +39,22 @@ export const getPossibleDatesForLayer = (
   // eslint-disable-next-line consistent-return
 ): number[] => {
   // eslint-disable-next-line default-case
-  switch (layer.type) {
-    case 'wms':
-      return serverAvailableDates[layer.serverLayerName];
-    case 'impact':
-      return serverAvailableDates[
-        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
-      ];
-    case 'point_data':
-      return serverAvailableDates[layer.id];
-  }
+  const datesArray = () => {
+    switch (layer.type) {
+      case 'wms':
+        return serverAvailableDates[layer.serverLayerName];
+      case 'impact':
+        return serverAvailableDates[
+          (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
+        ];
+      case 'point_data':
+        return serverAvailableDates[layer.id];
+      default:
+        return [];
+    }
+  };
+
+  return datesArray().map(d => d.value);
 };
 
 export function formatUrl(
@@ -69,7 +77,7 @@ function formatCapabilitiesInfo(
   rawLayers: any,
   layerIdPath: string,
   datesPath: string,
-): AvailableDates {
+) {
   return rawLayers.reduce((acc: any, layer: any) => {
     const layerId = get(layer, layerIdPath);
     const rawDates = get(layer, datesPath, []);
@@ -289,6 +297,29 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   return possibleDates;
 }
 
+const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
+  const { dates, validity } = layer;
+
+  const datesWithValidity = dates.map((date: number) => {
+    const momentDate = moment(date).set({ hour: 12 });
+
+    const endDate = momentDate.clone().add(validity, 'days');
+    const startDate = momentDate.clone().subtract(validity, 'days');
+
+    const daysToAdd = [...Array(endDate.diff(startDate, 'days') + 1).keys()];
+
+    const days: number[] = daysToAdd.map(day =>
+      startDate.clone().add(day, 'days').valueOf(),
+    );
+
+    return days.map(day => ({ value: day, real: date }));
+  });
+
+  const flattenDates = [...new Set(datesWithValidity.flat())];
+
+  return flattenDates;
+};
+
 /**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
@@ -302,7 +333,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     (layer): layer is PointDataLayerProps => layer.type === 'point_data',
   );
 
-  const layerDates: AvailableDates[] = await Promise.all([
+  const layerDates = await Promise.all([
     ...wmsServerUrls.map(url => getWMSCapabilities(url)),
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
     ...pointDataLayers.map(async layer => ({
@@ -310,7 +341,35 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     })),
   ]);
 
-  return merge({}, ...layerDates);
+  const mergedLayers: { [key: string]: number[] } = merge({}, ...layerDates);
+
+  const wmsLayersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
+    .filter(
+      (layer): layer is WMSLayerProps =>
+        layer.type === 'wms' && layer.validity !== undefined,
+    )
+    .map(layer => ({
+      name: layer.serverLayerName,
+      dates: mergedLayers[layer.serverLayerName],
+      validity: layer.validity!,
+    }));
+
+  const mergedLayersWithUpdatedDates = Object.entries(mergedLayers).reduce(
+    (acc, [layerKey, dates]) => {
+      const layerWithValidity = wmsLayersWithValidity.find(
+        validityLayer => validityLayer.name === layerKey,
+      );
+
+      const updatedDates = layerWithValidity
+        ? updateLayerDatesWithValidity(layerWithValidity)
+        : dates.map((d: number) => ({ value: d, real: d }));
+
+      return { ...acc, [layerKey]: updatedDates };
+    },
+    {},
+  );
+
+  return mergedLayersWithUpdatedDates;
 }
 
 /**
