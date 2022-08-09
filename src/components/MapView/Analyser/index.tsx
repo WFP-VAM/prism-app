@@ -133,6 +133,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
     baselineLayerIdFromUrl,
   );
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const [categoriesCount, setCategoriesCount] = useState<number>(1);
   const [belowThreshold, setBelowThreshold] = useState(
     belowThresholdFromUrl || '',
   );
@@ -426,7 +427,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
       throw new Error('Hazard layer should be selected to run analysis');
     }
 
-    if (hazardDataType === GeometryType.Polygon) {
+    if (hazardDataType === GeometryType.Polygon || categoriesCount === 0) {
       if (!startDate) {
         throw new Error('Date Range must be given to run analysis');
       }
@@ -537,7 +538,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 />
               </div>
 
-              {hazardDataType === GeometryType.Polygon && (
+              {(hazardDataType === GeometryType.Polygon ||
+                categoriesCount === 0) && (
                 <>
                   <div className={classes.analyserOptions}>
                     <Typography variant="body2">Admin Level</Typography>
@@ -593,7 +595,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                 </>
               )}
 
-              {hazardDataType === RasterType.Raster && (
+              {hazardDataType === RasterType.Raster && categoriesCount > 0 && (
                 <>
                   <div className={classes.analyserOptions}>
                     <Typography variant="body2">{t('Statistic')}</Typography>
@@ -616,6 +618,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                       type="admin_level_data"
                       value={baselineLayerId || undefined}
                       setValue={setBaselineLayerId}
+                      setCategoriesCount={setCategoriesCount}
                       className={classes.selector}
                       placeholder="Choose baseline layer"
                     />
@@ -739,7 +742,8 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   !!thresholdError || // if there is a threshold error
                   isAnalysisLoading || // or analysis is currently loading
                   !hazardLayerId || // or hazard layer hasn't been selected
-                  (hazardDataType === GeometryType.Polygon
+                  (hazardDataType === GeometryType.Polygon ||
+                  categoriesCount === 0
                     ? !startDate || !endDate || !adminLevelLayerData
                     : !selectedDate || !baselineLayerId) // or date hasn't been selected // or baseline layer hasn't been selected
                 }

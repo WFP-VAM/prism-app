@@ -5,7 +5,7 @@ import {
   Select,
   Typography,
 } from '@material-ui/core';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import { menuList } from '../../NavBar/utils';
 import { LayerKey, LayerType } from '../../../config/types';
 import { LayerDefinitions } from '../../../config/utils';
@@ -17,6 +17,7 @@ function LayerDropdown({
   value,
   setValue,
   placeholder,
+  setCategoriesCount,
   ...rest
 }: LayerSelectorProps) {
   // this could be testable, needs to be constructed in a way that prevents it breaking whenever new layers are added. (don't put layer name in snapshot)
@@ -58,6 +59,12 @@ function LayerDropdown({
     // 4. filter categories which don't have any layers at the end of it all.
     .filter(category => category.layers.length > 0);
   const defaultValue = 'placeholder';
+
+  useEffect(() => {
+    if (setCategoriesCount) {
+      setCategoriesCount(categories.length);
+    }
+  }, [categories, setCategoriesCount]);
 
   return (
     <FormControl {...rest}>
@@ -101,6 +108,7 @@ interface LayerSelectorProps {
   type: LayerType['type'];
   value?: LayerKey;
   setValue: (val: LayerKey) => void;
+  setCategoriesCount?: (val: number) => void;
   className?: string;
   placeholder?: string;
 }
