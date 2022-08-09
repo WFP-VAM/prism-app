@@ -15,9 +15,6 @@ function Notifier({ classes }: NotifierProps) {
   const dispatch = useDispatch();
   const notifications = useSelector(notificationsSelector);
   const [topOffset, setTopOffset] = useState(65);
-  // const [notificationTimers, setNotificationTimers] = useState<
-  //   Record<string, NodeJS.Timeout>
-  // >({});
 
   const notificationTimers = useRef<Record<string, NodeJS.Timeout>>({});
 
