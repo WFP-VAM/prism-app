@@ -192,7 +192,7 @@ function generateTableFromApiData(
 }
 
 export type AnalysisDispatchParams = {
-  baselineLayer: AdminLevelDataLayerProps;
+  baselineLayer: AdminLevelDataLayerProps | BoundaryLayerProps;
   hazardLayer: WMSLayerProps;
   extent: Extent;
   threshold: ThresholdDefinition;
@@ -356,9 +356,17 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
   } = params;
-  const baselineData = layerDataSelector(baselineLayer.id)(
-    api.getState(),
-  ) as LayerData<AdminLevelDataLayerProps>;
+  const getBaselineData = () => {
+    if (!baselineLayer) {
+      return undefined;
+    }
+    return layerDataSelector(baselineLayer?.id)(api.getState()) as LayerData<
+      AdminLevelDataLayerProps
+    >;
+  };
+
+  const baselineData = getBaselineData();
+
   const adminBoundaries = getBoundaryLayerSingleton();
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
@@ -367,6 +375,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   if (!adminBoundariesData) {
     throw new Error('Boundary Layer not loaded!');
   }
+
   const apiRequest = createAPIRequestParams(
     hazardLayer,
     extent,
@@ -374,36 +383,44 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     baselineLayer,
   );
 
+  // console.log(apiRequest);
+
   const aggregateData = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest),
     hazardLayer,
     statistic,
     threshold,
   );
-  let loadedAndCheckedBaselineData: BaselineLayerData;
-  // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
-  // similar code can be found at impact.ts
-  if (!baselineData) {
-    const {
-      payload: { data },
-    } = (await api.dispatch(
-      loadLayerData({ layer: baselineLayer, extent } as LayerDataParams<
-        AdminLevelDataLayerProps
-      >),
-    )) as { payload: { data: unknown } };
 
-    // eslint-disable-next-line fp/no-mutation
-    loadedAndCheckedBaselineData = checkBaselineDataLayer(
-      baselineLayer.id,
-      data,
-    );
-  } else {
-    // eslint-disable-next-line fp/no-mutation
-    loadedAndCheckedBaselineData = checkBaselineDataLayer(
-      baselineLayer.id,
-      baselineData.data,
-    );
-  }
+  const getCheckedBaselineData = async (): Promise<
+    BaselineLayerData | undefined
+  > => {
+    // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
+    // similar code can be found at impact.ts
+    if (baselineLayer.type === 'boundary') {
+      return { features: adminBoundariesData.data, layerData: [] };
+    }
+    if (!baselineData && baselineLayer) {
+      const { payload } = (await api.dispatch(
+        loadLayerData({
+          layer: baselineLayer,
+          extent,
+        } as LayerDataParams<AdminLevelDataLayerProps>),
+      )) as { payload: { data?: unknown } };
+
+      return checkBaselineDataLayer(baselineLayer?.id, payload?.data);
+    }
+
+    if (baselineData && baselineLayer) {
+      return checkBaselineDataLayer(baselineLayer?.id, baselineData?.data);
+    }
+
+    return undefined;
+  };
+
+  const loadedAndCheckedBaselineData:
+    | BaselineLayerData
+    | undefined = await getCheckedBaselineData();
 
   const features = generateFeaturesFromApiData(
     aggregateData,
@@ -412,12 +429,14 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
   );
 
+  const legend = createLegendFromFeatureArray(features, statistic);
+
   const tableRows: TableRow[] = generateTableFromApiData(
     [statistic],
     aggregateData,
     adminBoundariesData,
     apiRequest.group_by,
-    loadedAndCheckedBaselineData.layerData,
+    loadedAndCheckedBaselineData?.layerData ?? null,
     [], // no extra columns
   );
 
@@ -428,9 +447,10 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       features,
     },
     hazardLayer,
-    baselineLayer,
+    baselineLayer as AdminLevelDataLayerProps,
     statistic,
     threshold,
+    legend,
     // we never use the raw api data besides for debugging. So lets not bother saving it in Redux for production
     process.env.NODE_ENV === 'production' ? undefined : aggregateData,
   );

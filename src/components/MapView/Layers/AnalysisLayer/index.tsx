@@ -17,6 +17,7 @@ import {
 } from '../../../../utils/analysis-utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
+import { LayerDefinitions } from '../../../../config/utils';
 
 function AnalysisLayer({ before }: { before?: string }) {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
@@ -46,12 +47,18 @@ function AnalysisLayer({ before }: { before?: string }) {
     };
   }
 
+  const baselineIsBoundary =
+    LayerDefinitions[(analysisData as BaselineLayerResult).baselineLayerId!]
+      ?.type === 'boundary';
+
   const defaultProperty = (() => {
     switch (true) {
       case analysisData instanceof ExposedPopulationResult:
         return analysisData.statistic as string;
       case analysisData instanceof PolygonAnalysisResult:
         return 'zonal:stat:percentage';
+      case analysisData instanceof BaselineLayerResult:
+        return baselineIsBoundary ? analysisData.statistic : 'data';
       default:
         return 'data';
     }
@@ -68,7 +75,10 @@ function AnalysisLayer({ before }: { before?: string }) {
       id="layer-analysis"
       before={boundary}
       data={analysisData.featureCollection}
-      fillPaint={fillPaintData(analysisData.legend, defaultProperty)}
+      fillPaint={fillPaintData(
+        analysisData.legend as LegendDefinition,
+        defaultProperty,
+      )}
       // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data
       fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;
@@ -108,17 +118,20 @@ function AnalysisLayer({ before }: { before?: string }) {
         }
 
         if (analysisData instanceof BaselineLayerResult) {
-          dispatch(
-            addPopupData({
-              [analysisData.getBaselineLayer().title]: {
-                data: getRoundedData(
-                  get(evt.features[0], 'properties.data'),
-                  t,
-                ),
-                coordinates,
-              },
-            }),
-          );
+          const baselineLayer = analysisData.getBaselineLayer();
+          if (baselineLayer?.title) {
+            dispatch(
+              addPopupData({
+                [baselineLayer.title]: {
+                  data: getRoundedData(
+                    get(evt.features[0], 'properties.data'),
+                    t,
+                  ),
+                  coordinates,
+                },
+              }),
+            );
+          }
         }
 
         if (

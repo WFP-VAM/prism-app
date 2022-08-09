@@ -6,9 +6,14 @@ import {
   Typography,
 } from '@material-ui/core';
 import React, { ReactElement } from 'react';
+import { startCase } from 'lodash';
 import { menuList } from '../../NavBar/utils';
 import { LayerKey, LayerType } from '../../../config/types';
-import { LayerDefinitions } from '../../../config/utils';
+import {
+  getBoundaryLayers,
+  getDisplayBoundaryLayers,
+  LayerDefinitions,
+} from '../../../config/utils';
 import { useSafeTranslation } from '../../../i18n';
 import { getLayerGeometryIcon } from './layer-utils';
 
@@ -22,6 +27,19 @@ function LayerDropdown({
   // this could be testable, needs to be constructed in a way that prevents it breaking whenever new layers are added. (don't put layer name in snapshot)
 
   const { t } = useSafeTranslation();
+
+  // Only take first boundary for now
+  const adminBoundaries = getDisplayBoundaryLayers().slice(0, 1);
+  const AdminBoundaryCategory = {
+    title: 'Admin Levels',
+    layers: adminBoundaries.map((aboundary, index) => ({
+      title: startCase(aboundary.id),
+      boundary: aboundary.id,
+      ...aboundary,
+      adminLevel: index + 1,
+    })),
+    tables: [],
+  };
 
   const categories = menuList // we could memo this but it isn't impacting performance, for now
     // 1. flatten to just the layer categories, don't need the big menus
@@ -55,7 +73,9 @@ function LayerDropdown({
           : layer.type === type,
       ),
     }))
-    // 4. filter categories which don't have any layers at the end of it all.
+    // 4. if type is admin_level_data, also add admin boundaries to run analysis
+    .concat(type === 'admin_level_data' ? AdminBoundaryCategory : [])
+    // 5. filter categories which don't have any layers at the end of it all.
     .filter(category => category.layers.length > 0);
   const defaultValue = 'placeholder';
 

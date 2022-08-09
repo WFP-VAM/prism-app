@@ -27,6 +27,7 @@ import {
   ThresholdDefinition,
   WMSLayerProps,
   WfsRequestParams,
+  BoundaryLayerProps,
 } from '../config/types';
 import type { ThunkApi } from '../context/store';
 import { layerDataSelector } from '../context/mapStateSlice/selectors';
@@ -78,7 +79,7 @@ const checkRasterLayerData = (layerData: LayerData<LayerType>): RasterLayer => {
     return layerData as RasterLayer;
   }
   throw new Error(
-    `Data for layer '${layer.id}' does not appear to be valid raster data.`,
+    `Data for layer '${layer?.id}' does not appear to be valid raster data.`,
   );
 };
 
@@ -140,11 +141,12 @@ function getBaselineDataForFeature(
 }
 
 function mergeFeaturesByProperty(
-  baselineFeatures: Feature[],
+  baselineFeatures: Feature[] | undefined,
   aggregateData: Array<object>,
   id: string,
 ): Feature[] {
-  const features = baselineFeatures.map(feature1 => {
+  console.log(aggregateData);
+  const features = baselineFeatures?.map(feature1 => {
     const aggregateProperties = aggregateData.filter(
       item => get(item, id) === get(feature1, ['properties', id]) && item,
     );
@@ -177,7 +179,7 @@ function mergeFeaturesByProperty(
 }
 
 export const checkBaselineDataLayer = (
-  layerId: string,
+  layerId: string | undefined,
   data: any,
 ): BaselineLayerData => {
   const isBaselineData = (maybeData: any): maybeData is BaselineLayerData =>
@@ -285,15 +287,20 @@ export function scaleAndFilterAggregateData(
 
 export function generateFeaturesFromApiData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
-  baselineData: AdminLevelDataLayerData,
+  baselineData: AdminLevelDataLayerData | undefined,
   groupBy: StatsApi['groupBy'],
   operation: AggregationOperations,
 ): GeoJsonBoundary[] {
+  console.log(baselineData);
   const mergedFeatures = mergeFeaturesByProperty(
-    baselineData.features.features,
+    baselineData
+      ? baselineData?.features.features
+      : (aggregateData as Feature[]),
     aggregateData,
     groupBy,
   );
+
+  console.log(mergedFeatures);
 
   return mergedFeatures.filter(feature => {
     const value = get(feature, ['properties', operation]);
@@ -519,7 +526,10 @@ export function createLegendFromFeatureArray(
   const delta = (maxNum - minNum) / colors.length;
 
   const legend: LegendDefinition = colors.map((color, index) => {
-    const breakpoint = Math.ceil(minNum + (index + 1) * delta);
+    const breakpoint =
+      delta > 1
+        ? Math.ceil(minNum + (index + 1) * delta)
+        : minNum + (index + 1) * delta;
 
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
@@ -574,10 +584,10 @@ export class BaselineLayerResult {
   statistic: AggregationOperations;
   threshold: ThresholdDefinition;
 
-  legend: LegendDefinition;
+  legend: LegendDefinition | undefined;
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
-  baselineLayerId: AdminLevelDataLayerProps['id'];
+  baselineLayerId: AdminLevelDataLayerProps['id'] | BoundaryLayerProps['id'];
   baselineLayerBoundary: AdminLevelDataLayerProps['boundary'];
 
   constructor(
@@ -587,19 +597,20 @@ export class BaselineLayerResult {
     baselineLayer: AdminLevelDataLayerProps,
     statistic: AggregationOperations,
     threshold: ThresholdDefinition,
+    legend?: LegendDefinition,
     rawApiData?: object[],
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
     this.statistic = statistic;
     this.threshold = threshold;
-    this.legend = baselineLayer.legend;
+    this.legend = baselineLayer?.legend || legend;
     this.legendText = hazardLayer.legendText;
     this.rawApiData = rawApiData;
 
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
-    this.baselineLayerBoundary = baselineLayer.boundary;
+    this.baselineLayerBoundary = baselineLayer?.boundary;
   }
 
   getHazardLayer(): WMSLayerProps {
@@ -610,14 +621,17 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
   }
 
-  getTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getBaselineLayer().title)} ${t('exposed to')} ${t(
-          this.getHazardLayer().title,
-        )}`
-      : `${this.getBaselineLayer().title} exposed to ${
-          this.getHazardLayer().title
-        }`;
+  getTitle(t?: i18nTranslator): string | undefined {
+    const baselineLayer = this.getBaselineLayer();
+    if (baselineLayer && baselineLayer instanceof AdminLevelDataLayerProps) {
+      return t
+        ? `${t(baselineLayer.title)} ${t('exposed to')} ${t(
+            this.getHazardLayer().title,
+          )}`
+        : `${baselineLayer.title} exposed to ${this.getHazardLayer().title}`;
+    }
+    // TODO - Title for non baseline
+    return undefined;
   }
 
   getStatTitle(t?: i18nTranslator): string {
@@ -650,11 +664,16 @@ export function getAnalysisTableColumns(
       label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
       format: value => getRoundedData(value as number),
     },
-    {
-      id: 'baselineValue',
-      label: baselineLayerTitle,
-      format: (value: number | string) => value.toLocaleString('en-US'),
-    },
+    // Remove data if no baseline layer is present
+    ...(baselineLayerTitle
+      ? [
+          {
+            id: 'baselineValue',
+            label: baselineLayerTitle,
+            format: (value: number | string) => value.toLocaleString('en-US'),
+          },
+        ]
+      : []),
   ];
 }
 
