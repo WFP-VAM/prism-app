@@ -196,7 +196,7 @@ def calculate_stats(
         reproj_pop_geotiff = geotiff.replace("raster_", "raster_reproj_")
         reproj_match(geotiff, mask_geotiff, reproj_pop_geotiff, resampling_mode=Resampling.sum)
         geotiff_r = rasterio.open(reproj_pop_geotiff)
-        mask_geotiff_r = rasterio.open(mask_geotiff, masked=True)
+        mask_geotiff_r = rasterio.open(mask_geotiff)
 
         logger.info(geotiff_r.profile)
         logger.info(mask_geotiff_r.profile)
