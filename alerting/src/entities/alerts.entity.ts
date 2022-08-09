@@ -15,6 +15,7 @@ type WCSConfig = {
 
 export type AlertConfig = {
   type: string;
+  title: string;
   serverLayerName: string;
   baseUrl: string;
   wcsConfig: WCSConfig;
