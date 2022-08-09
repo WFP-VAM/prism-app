@@ -62,6 +62,7 @@ def _calculate_stats(
     geojson_out,
     wfs_response,
     intersect_comparison,
+    mask_geotiff,
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -73,6 +74,7 @@ def _calculate_stats(
         geojson_out=geojson_out,
         wfs_response=wfs_response,
         intersect_comparison=intersect_comparison,
+        mask_geotiff=mask_geotiff,
     )
 
 
@@ -148,6 +150,7 @@ class Stats(Resource):
             geojson_out=geojson_out,
             wfs_response=wfs_response,
             intersect_comparison=intersect_comparison,
+            mask_geotiff=None,
         )
 
         return features
@@ -259,6 +262,8 @@ class StatsDemo(Resource):
             )
         )
 
+        geotiff_url = "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(92.172747098, 101.170015055)&subset=Lat(9.671252102, 28.54553886)"
+
         zones_url = urlunparse(
             ParseResult(
                 scheme="https",
@@ -271,6 +276,10 @@ class StatsDemo(Resource):
         )
 
         geotiff = cache_file(prefix="raster_test", url=geotiff_url, extension="tif")
+        logger.info(("pop_tif", geotiff))
+        mask_url = "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hfs1_sfw_mask_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-03"
+        mask_geotiff = cache_file(prefix="raster_test", url=mask_url, extension="tif")
+        logger.info(("mask_geotiff", mask_geotiff))
 
         zones = cache_file(prefix="zones_test", url=zones_url)
 
@@ -296,6 +305,7 @@ class StatsDemo(Resource):
             geojson_out=geojson_out,
             wfs_response=None,
             intersect_comparison=intersect_comparison,
+            mask_geotiff=mask_geotiff
         )
 
         # TODO - Properly encode before returning. Mongolian characters are returned as hex.

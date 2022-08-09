@@ -6,9 +6,12 @@ from json import dump, load
 from urllib.parse import urlencode
 
 import rasterio
+import numpy as np
 from app.caching import cache_file, get_json_file
 from app.timer import timed
+from app.raster_utils import reproj_match
 from rasterstats import zonal_stats
+from rasterio.warp import Resampling
 from shapely.geometry import mapping, shape
 from shapely.ops import cascaded_union
 from werkzeug.exceptions import InternalServerError
@@ -175,20 +178,51 @@ def calculate_stats(
     geojson_out=False,
     wfs_response=None,
     intersect_comparison=None,
+    mask_geotiff=None,
 ):
     """Calculate stats."""
 
     # Add mask option for flood data
-    # flood_mask = "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hfs1_sfw_mask_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-07-29"
-    # # get mask
-    # # update nodata to zeros, and all other values to ones?
-    # # resample - https://gis.stackexchange.com/questions/432161/how-to-find-dominant-pixel-count-of-one-raster-in-another-raster-with-different
-    # # raster math, multiply the two datasets
-    # mask = rasterio.open(flood_mask)
-    # print(mask)
+    # update nodata to zeros, and all other values to ones?
+    # downsample population data
+    # https://gis.stackexchange.com/questions/432161/how-to-find-dominant-pixel-count-of-one-raster-in-another-raster-with-different
+    # https://pygis.io/docs/e_raster_resample.html
+    # https://rasterio.readthedocs.io/en/latest/topics/reproject.html
+    # raster math, multiply the two datasets
 
     geotiff_r = rasterio.open(geotiff)
-    logger.error(geotiff_r.profile)
+
+    if mask_geotiff:
+        reproj_pop_geotiff = geotiff.replace("raster_", "raster_reproj_")
+        reproj_match(geotiff, mask_geotiff, reproj_pop_geotiff, resampling_mode=Resampling.sum)
+        geotiff_r = rasterio.open(reproj_pop_geotiff)
+        mask_geotiff_r = rasterio.open(mask_geotiff, masked=True)
+
+        logger.info(geotiff_r.profile)
+        logger.info(mask_geotiff_r.profile)
+
+        geotiff_array = geotiff_r.read(1)
+        mask_geotiff_array = mask_geotiff_r.read(1)
+
+        logger.info(mask_geotiff_array)
+
+        for array in [geotiff_array, mask_geotiff_array]:
+            logger.info({
+            'min': array.min(),
+            'mean': array.mean(),
+            'median': np.median(array),
+            'max': array.max()})
+
+        geotiff_array[mask_geotiff_array != 0] = 0
+        logger.info({
+            'min': geotiff_array.min(),
+            'mean': geotiff_array.mean(),
+            'median': np.median(geotiff_array),
+            'max': geotiff_array.max()})
+
+        # TODO - rewrite resampled and masked population data as a geotiff
+        # logger.info(geotiff_array)
+        # geotiff_array = geotiff_r.read(1) * mask_geotiff_r.read(1)
 
     if group_by:
         zones = _group_zones(zones, group_by)
