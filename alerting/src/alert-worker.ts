@@ -45,7 +45,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   url.searchParams.append('email', email);
 
   const urlWithParams = formatUrl(prismUrl, {
-    hazardLayerIds: title,
+    hazardLayerIds: id,
     date: maxDate.toISOString().slice(0, 10),
   });
 
@@ -60,10 +60,12 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   
         Alert: ${alertMessage}`;
 
-    const emailHtml = `${emailMessage.replace(
-      /(\r\n|\r|\n)/g,
-      '<br>',
-    )} <br><br>To cancel this alert, click <a href='${url.href}'>here</a>.`;
+    const emailHtml = `${emailMessage
+      .replace(/(\r\n|\r|\n)/g, '<br>')
+      .replace(
+        urlWithParams,
+        `<a href="${urlWithParams}">${title}</a>`,
+      )} <br><br>To cancel this alert, click <a href='${url.href}'>here</a>.`;
 
     console.log(
       `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
