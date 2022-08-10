@@ -9,7 +9,7 @@ import rasterio
 import numpy as np
 from app.caching import cache_file, get_json_file
 from app.timer import timed
-from app.raster_utils import reproj_match
+from app.raster_utils import gdal_calc, reproj_match
 from rasterstats import zonal_stats
 from rasterio.warp import Resampling
 from shapely.geometry import mapping, shape
@@ -190,39 +190,36 @@ def calculate_stats(
     # https://rasterio.readthedocs.io/en/latest/topics/reproject.html
     # raster math, multiply the two datasets
 
-    geotiff_r = rasterio.open(geotiff)
 
     if mask_geotiff:
         reproj_pop_geotiff = geotiff.replace("raster_", "raster_reproj_")
+        masked_pop_geotiff = geotiff.replace("raster_", "raster_masked_")
+
+        # TODO - smart caching. Needs to take into account both file names
         reproj_match(geotiff, mask_geotiff, reproj_pop_geotiff, resampling_mode=Resampling.sum)
-        geotiff_r = rasterio.open(reproj_pop_geotiff)
-        mask_geotiff_r = rasterio.open(mask_geotiff)
 
-        logger.info(geotiff_r.profile)
-        logger.info(mask_geotiff_r.profile)
+        gdal_calc(
+            input_file_path=reproj_pop_geotiff,
+            mask_file=mask_geotiff,
+            output_file_path=masked_pop_geotiff,
+            calc_expr='"A*(B==0)"'
+        )
 
-        geotiff_array = geotiff_r.read(1)
-        mask_geotiff_array = mask_geotiff_r.read(1)
+        masked_geotiff_r = rasterio.open(masked_pop_geotiff)
+        masked_geotiff_array = masked_geotiff_r.read(1)
+        logger.info(masked_geotiff_array)
 
-        logger.info(mask_geotiff_array)
+        for array in [masked_geotiff_array]:
+            logger.debug(
+                {
+                    'min': array.min(),
+                    'mean': array.mean(),
+                    'median': np.median(array),
+                    'max': array.max()
+                }
+            )
 
-        for array in [geotiff_array, mask_geotiff_array]:
-            logger.info({
-            'min': array.min(),
-            'mean': array.mean(),
-            'median': np.median(array),
-            'max': array.max()})
-
-        geotiff_array[mask_geotiff_array != 0] = 0
-        logger.info({
-            'min': geotiff_array.min(),
-            'mean': geotiff_array.mean(),
-            'median': np.median(geotiff_array),
-            'max': geotiff_array.max()})
-
-        # TODO - rewrite resampled and masked population data as a geotiff
-        # logger.info(geotiff_array)
-        # geotiff_array = geotiff_r.read(1) * mask_geotiff_r.read(1)
+        geotiff = masked_pop_geotiff
 
     if group_by:
         zones = _group_zones(zones, group_by)

@@ -1,9 +1,27 @@
 """Raster utilility function for reprojection."""
+import os
+
 import logging
 from rasterio.warp import reproject, Resampling, calculate_default_transform
 import rasterio
 
 logger = logging.getLogger(__name__)
+
+
+def gdal_calc(input_file_path, mask_file, output_file_path, calc_expr='"A*(B==0)"'):
+    """Utility function to run gdal_calc with two rasters."""
+    gdal_calc_path = os.path.join('gdal_calc.py')
+    nodata = '0'
+
+    # Generate string of process.
+    gdal_calc_str = '{0} -A {1} -B {2} --outfile={3} --calc={4} --NoDataValue={5}'
+    gdal_calc_process = gdal_calc_str.format(gdal_calc_path, input_file_path, mask_file,
+        output_file_path, calc_expr, nodata)
+
+    logger.info(gdal_calc_process)
+
+    # Call process.
+    os.system(gdal_calc_process)
 
 
 def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
@@ -59,3 +77,6 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
                     dst_crs=dst_crs,
                     # mode resampling method
                     resampling=resampling_mode)
+
+
+
