@@ -6,8 +6,6 @@ from typing import Dict, List
 
 import requests
 from dateutil.parser import parse as dtparser
-from flask import request
-from werkzeug.exceptions import BadRequest, InternalServerError, NotFound
 
 logger = logging.getLogger(__name__)
 
@@ -28,12 +26,12 @@ def get_kobo_params():
 
     form_name = request.args.get("formName")
     if form_name is None:
-        raise BadRequest("Missing query parameter: formName")
+        raise HTTPException("Missing query parameter: formName")
 
     datetime_field = request.args.get("datetimeField")
 
     if datetime_field is None:
-        raise BadRequest("Missing parameter datetimeField")
+        raise HTTPException(detail="Missing parameter datetimeField")
 
     geom_field = request.args.get("geomField")
     if geom_field is None:

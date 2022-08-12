@@ -8,10 +8,10 @@ from urllib.parse import urlencode
 import rasterio
 from app.caching import cache_file, get_json_file
 from app.timer import timed
+from fastapi import HTTPException
 from rasterstats import zonal_stats
 from shapely.geometry import mapping, shape
 from shapely.ops import cascaded_union
-from werkzeug.exceptions import InternalServerError
 
 logger = logging.getLogger(__name__)
 
@@ -225,7 +225,9 @@ def calculate_stats(
 
     except rasterio.errors.RasterioError as error:
         logger.error(error)
-        raise InternalServerError("An error occured calculating statistics.")
+        raise HTTPException(
+            status=500, detail="An error occured calculating statistics."
+        )
 
     if wfs_response:
         zones_features = [z.get("feature") for z in zones]

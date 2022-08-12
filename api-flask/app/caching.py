@@ -7,7 +7,7 @@ import os
 import rasterio
 import requests
 from app.timer import timed
-from werkzeug.exceptions import InternalServerError
+from fastapi import HTTPException
 
 logger = logging.getLogger(__name__)
 
@@ -43,8 +43,8 @@ def cache_file(url, prefix, extension="cache"):
         response.raise_for_status()
     except requests.HTTPError as e:
         logger.error(e)
-        raise InternalServerError(
-            "The file you requested is not available - {url}".format(url=url)
+        raise HTTPException(
+            status_code=500, detail=f"The file you requested is not available - {url}"
         )
 
     with open(cache_filepath, "wb") as f:

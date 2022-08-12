@@ -1,5 +1,5 @@
 """Sample Data for stats and alert."""
-from flask_restx import fields
+from pydantic import BaseModel, Field
 
 stats_data = {
     "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0"
@@ -81,16 +81,20 @@ alert_data = {
     "prism_url": "https://prism-mongolia.org",
 }
 
-stats_dic = {
-    "geotiff_url": fields.String(stats_data["geotiff_url"]),
-    "zones_url": fields.String(stats_data["zones_url"]),
-    "group_by": fields.String(stats_data["group_by"]),
-}
 
-alerts_dic = {
-    "email": fields.String(alert_data["email"]),
-    "prism_url": fields.String(alert_data["prism_url"]),
-    "alert_name": fields.String(alert_data["alert_name"]),
-    "alert_config": fields.Raw(alert_data["alert_config"]),
-    "zones": fields.Raw(alert_data["zones"]),
-}
+class StatsModel(BaseModel):
+    """Example of stats data."""
+
+    geotiff_url: str = Field(..., example=stats_data["geotiff_url"])
+    zones_url: str = Field(..., example=stats_data["zones_url"])
+    group_by: str = Field(..., example=stats_data["group_by"])
+
+
+class AlertsModel(BaseModel):
+    """Example of alert data."""
+
+    email: str = Field(..., example=alert_data["email"])
+    prism_url: str = Field(..., example=alert_data["prism_url"])
+    alert_name: str = Field(..., example=alert_data["alert_name"])
+    alert_config: dict = Field(..., example=alert_data["alert_config"])
+    zones: dict = Field(..., example=alert_data["zones"])
