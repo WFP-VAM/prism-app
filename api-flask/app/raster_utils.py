@@ -14,11 +14,11 @@ def gdal_calc(input_file_path, mask_file, output_file_path, calc_expr='"A*(B==0)
     nodata = '0'
 
     # Generate string of process.
-    gdal_calc_str = '{0} -A {1} -B {2} --outfile={3} --calc={4} --NoDataValue={5}'
+    gdal_calc_str = '{0} -A {1} -B {2} --outfile={3} --calc={4} --NoDataValue={5} > /dev/null'
     gdal_calc_process = gdal_calc_str.format(gdal_calc_path, input_file_path, mask_file,
         output_file_path, calc_expr, nodata)
 
-    logger.info(gdal_calc_process)
+    logger.debug(gdal_calc_process)
 
     # Call process.
     os.system(gdal_calc_process)
@@ -49,12 +49,8 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
                 *match.bounds,  # unpacks input outer boundaries (left, bottom, right, top)
             )
 
-        logger.info((match.width, match.height))
-        logger.info((dst_width, dst_height))
-
         dst_width = match.width
         dst_height = match.height
-
 
         # set properties for output
         dst_kwargs = src.meta.copy()
@@ -77,6 +73,3 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
                     dst_crs=dst_crs,
                     # mode resampling method
                     resampling=resampling_mode)
-
-
-

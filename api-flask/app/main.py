@@ -104,7 +104,7 @@ class Stats(Resource):
             logger.error("Received {}".format(data))
             raise BadRequest("One of zones or zones_url is required.")
 
-        geojson_out = strtobool(data.get("geojson_out", "False"))
+        geojson_out = strtobool(str(data.get("geojson_out", "False")))
         group_by = data.get("group_by")
 
         geotiff = cache_file(prefix="raster", url=geotiff_url, extension="tif")

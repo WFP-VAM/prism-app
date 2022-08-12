@@ -207,7 +207,6 @@ def calculate_stats(
 
         masked_geotiff_r = rasterio.open(masked_pop_geotiff)
         masked_geotiff_array = masked_geotiff_r.read(1)
-        logger.info(masked_geotiff_array)
 
         for array in [masked_geotiff_array]:
             logger.debug(
@@ -235,7 +234,6 @@ def calculate_stats(
 
         # Extract shapely objects to compute stats.
         stats_input = [s.get("geom") for s in zones]
-        prefix = None
 
     # Add function to calculate overlap percentage.
     add_stats = None
