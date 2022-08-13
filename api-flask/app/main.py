@@ -110,7 +110,9 @@ class Stats(Resource):
         geotiff = cache_file(prefix="raster", url=geotiff_url, extension="tif")
         mask_geotiff = None
         if mask_geotiff_url:
-            mask_geotiff = cache_file(prefix="raster", url=mask_geotiff_url, extension="tif")
+            mask_geotiff = cache_file(
+                prefix="raster", url=mask_geotiff_url, extension="tif"
+            )
 
         # TODO - Add validation for zones.
         if zones_geojson is not None:
@@ -303,7 +305,7 @@ class StatsDemo(Resource):
             geojson_out=geojson_out,
             wfs_response=None,
             intersect_comparison=intersect_comparison,
-            mask_geotiff=None
+            mask_geotiff=None,
         )
 
         # TODO - Properly encode before returning. Mongolian characters are returned as hex.

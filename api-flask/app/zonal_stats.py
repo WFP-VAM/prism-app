@@ -188,13 +188,15 @@ def calculate_stats(
         masked_pop_geotiff = geotiff.replace("raster_", "raster_masked_")
 
         # TODO - smart caching. Needs to take into account both file names
-        reproj_match(geotiff, mask_geotiff, reproj_pop_geotiff, resampling_mode=Resampling.sum)
+        reproj_match(
+            geotiff, mask_geotiff, reproj_pop_geotiff, resampling_mode=Resampling.sum
+        )
 
         gdal_calc(
             input_file_path=reproj_pop_geotiff,
             mask_file=mask_geotiff,
             output_file_path=masked_pop_geotiff,
-            calc_expr='"A*(B==0)"'
+            calc_expr='"A*(B==0)"',
         )
 
         masked_geotiff_r = rasterio.open(masked_pop_geotiff)
@@ -203,10 +205,10 @@ def calculate_stats(
         for array in [masked_geotiff_array]:
             logger.debug(
                 {
-                    'min': array.min(),
-                    'mean': array.mean(),
-                    'median': np.median(array),
-                    'max': array.max()
+                    "min": array.min(),
+                    "mean": array.mean(),
+                    "median": np.median(array),
+                    "max": array.max(),
                 }
             )
 
