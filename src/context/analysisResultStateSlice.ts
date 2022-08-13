@@ -261,6 +261,8 @@ const createAPIRequestParams = (
     group_by: groupBy,
     ...wfsParams,
     ...maskParams,
+    // TODO - remove the need for that (problem in the API)
+    geojson_out: !!maskParams,
   };
 
   return apiRequest;
@@ -299,7 +301,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
           extent,
         }),
       }
-    : {};
+    : undefined;
 
   const apiRequest = createAPIRequestParams(
     populationLayer,
@@ -309,22 +311,17 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     maskParams,
   );
 
-  const apiFeatures = (await fetchApiData(
-    ANALYSIS_API_URL,
-    apiRequest,
-  )) as Feature[];
+  const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
+    []) as Feature[];
 
   const { scale, offset } = populationLayer.wcsConfig ?? {
     scale: undefined,
     offset: undefined,
   };
 
-  const features =
-    !scale && !offset
-      ? apiFeatures
-      : apiFeatures.map(f =>
-          scaleFeatureStat(f, scale || 1, offset || 0, statistic),
-        );
+  const features = apiFeatures.map(f =>
+    scaleFeatureStat(f, scale || 1, offset || 0, statistic),
+  );
 
   const collection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -334,7 +331,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   const groupBy = apiRequest.group_by;
   const legend = createLegendFromFeatureArray(features, statistic);
   // TODO - use raster legend title
-  const legendText = wfsLayer ? wfsLayer.title : '';
+  const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
 
   return new ExposedPopulationResult(
     collection,
