@@ -182,15 +182,7 @@ def calculate_stats(
 ):
     """Calculate stats."""
 
-    # Add mask option for flood data
-    # update nodata to zeros, and all other values to ones?
-    # downsample population data
-    # https://gis.stackexchange.com/questions/432161/how-to-find-dominant-pixel-count-of-one-raster-in-another-raster-with-different
-    # https://pygis.io/docs/e_raster_resample.html
-    # https://rasterio.readthedocs.io/en/latest/topics/reproject.html
-    # raster math, multiply the two datasets
-
-
+    # Add mask option for flood exposure analysis
     if mask_geotiff:
         reproj_pop_geotiff = geotiff.replace("raster_", "raster_reproj_")
         masked_pop_geotiff = geotiff.replace("raster_", "raster_masked_")
