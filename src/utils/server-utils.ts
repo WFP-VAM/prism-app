@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, merge, union, snakeCase } from 'lodash';
-import formatUrl from 'packages/format-url';
+import formatUrl from 'format-url';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
