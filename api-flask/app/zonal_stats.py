@@ -5,13 +5,13 @@ from datetime import datetime
 from json import dump, load
 from urllib.parse import urlencode
 
-import rasterio
 import numpy as np
+import rasterio
 from app.caching import cache_file, get_json_file
-from app.timer import timed
 from app.raster_utils import gdal_calc, reproj_match
-from rasterstats import zonal_stats
+from app.timer import timed
 from rasterio.warp import Resampling
+from rasterstats import zonal_stats
 from shapely.geometry import mapping, shape
 from shapely.ops import cascaded_union
 from werkzeug.exceptions import InternalServerError

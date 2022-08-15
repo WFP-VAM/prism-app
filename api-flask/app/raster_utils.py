@@ -1,9 +1,9 @@
 """Raster utilility function for reprojection."""
+import logging
 import os
 
-import logging
-from rasterio.warp import reproject, Resampling, calculate_default_transform
 import rasterio
+from rasterio.warp import Resampling, calculate_default_transform, reproject
 
 logger = logging.getLogger(__name__)
 
