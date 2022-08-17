@@ -3,12 +3,13 @@ gunicorn==20.1.0
 greenlet==1.1.2
 fastapi==0.79.0
 rasterstats==0.17.0
-requests==2.28.1
+requests==2.27.1
 Shapely==1.8.2
 # Used by `make test` only:
 mock==4.0.3
 pytest==7.1.2
 pytest-cov==3.0.0
+schemathesis==3.16.5
 # Used by `make lint` only:
 black==22.6.0
 isort==5.10.1

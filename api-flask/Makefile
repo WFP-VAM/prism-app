@@ -11,8 +11,11 @@ api-lint:
 	docker-compose run --no-deps api bash -c "black ."
 	docker-compose run --no-deps api bash -c "isort ."
 
-api-test:
-	docker-compose run --no-deps api bash -c "pytest -s tests"
+test-services:
+	docker-compose -f docker-compose.yml -f docker-compose.develop.yml -f docker-compose.test.yml up -d
+
+api-test: test-services
+	docker-compose -f docker-compose.yml -f docker-compose.develop.yml -f docker-compose.test.yml run api bash -c "pytest -s tests"
 
 BACKEND_COVERAGE=pytest --cov=app --cov-config .coveragerc --cov-fail-under=30 --cov-report term-missing
 api-coverage:
