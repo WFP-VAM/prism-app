@@ -11,6 +11,9 @@ api-lint:
 	docker-compose run --no-deps api bash -c "black ."
 	docker-compose run --no-deps api bash -c "isort ."
 
+api-typecheck:
+	docker-compose run --no-deps api bash -c "mypy ."
+
 test-services:
 	docker-compose -f docker-compose.yml -f docker-compose.develop.yml -f docker-compose.test.yml up -d
 
