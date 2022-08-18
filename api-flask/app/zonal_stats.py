@@ -64,6 +64,10 @@ def _extract_features_properties(zones):
 
 def _group_zones(zones, group_by):
     """Group zones by a key id and merge polygons."""
+    output_file = "{zones}.{group_by}".format(zones=zones, group_by=group_by)
+    if is_file_valid(output_file):
+        return output_file
+
     with open(zones) as json_file:
         geojson_data = load(json_file)
 
@@ -92,8 +96,6 @@ def _group_zones(zones, group_by):
         )
 
     outjson = dict(type="FeatureCollection", features=new_features)
-
-    output_file = "{zones}.{group_by}".format(zones=zones, group_by=group_by)
 
     with open(output_file, "w") as outfile:
         dump(outjson, outfile)
