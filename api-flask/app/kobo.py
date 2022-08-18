@@ -163,7 +163,11 @@ def get_responses_from_kobo(
 
     Also, retrieve the form responses for parsing and filtering.
     """
-    resp = requests.get(form_url, auth=auth)
+    # do not send empty credentials, skip auth altogether if it's not available
+    if auth == ("", ""):
+        resp = requests.get(form_url)
+    else:
+        resp = requests.get(form_url, auth=auth)
 
     resp.raise_for_status()
     kobo_user_metadata = resp.json()

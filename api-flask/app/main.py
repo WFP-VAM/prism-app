@@ -162,8 +162,8 @@ def stats(stats_model: StatsModel) -> Response:
 def get_kobo_forms(
     formName: str,
     datetimeField: str,
-    geomField: str,
     koboUrl: str,
+    geomField: str | None = None,
     filters: str | None = None,
     beginDateTime=Query(default="2000-01-01"),
     endDateTime: str | None = None,

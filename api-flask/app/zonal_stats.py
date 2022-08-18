@@ -28,6 +28,7 @@ class GroupBy(str, Enum):
     ADM0_PCODE = "ADM0_PCODE"
     ADM1_PCODE = "ADM1_PCODE"
     ADM2_PCODE = "ADM2_PCODE"
+    TS_PCODE = "TS_PCODE"
 
 
 def get_wfs_response(wfs_params: dict[str, str]) -> dict:
