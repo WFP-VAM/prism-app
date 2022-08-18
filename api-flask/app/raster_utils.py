@@ -3,9 +3,8 @@ import logging
 import os
 
 import rasterio
-from rasterio.warp import Resampling, calculate_default_transform, reproject
-
 from app.timer import timed
+from rasterio.warp import Resampling, calculate_default_transform, reproject
 
 logger = logging.getLogger(__name__)
 
