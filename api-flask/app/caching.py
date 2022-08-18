@@ -3,19 +3,23 @@ import hashlib
 import json
 import logging
 import os
+from typing import Any, NewType
 
-import rasterio
+import rasterio  # type: ignore
 import requests
-from app.timer import timed
 from fastapi import HTTPException
+
+from app.timer import timed
 
 logger = logging.getLogger(__name__)
 
 CACHE_DIRECTORY = os.getenv("CACHE_DIRECTORY", "/cache/")
 
+FilePath = NewType("FilePath", str)
+
 
 @timed
-def cache_file(url, prefix, extension="cache"):
+def cache_file(url: str, prefix, extension: str = "cache") -> FilePath:
     """Locally cache files fetched from a url."""
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
@@ -55,7 +59,7 @@ def cache_file(url, prefix, extension="cache"):
 
 
 @timed
-def cache_geojson(geojson, prefix):
+def cache_geojson(geojson, prefix: str) -> FilePath:
     """Locally store geojson needed for a request."""
     json_string = json.dumps(geojson)
 
@@ -72,13 +76,13 @@ def cache_geojson(geojson, prefix):
     return cache_filepath
 
 
-def get_json_file(cached_filepath):
+def get_json_file(cached_filepath: FilePath) -> dict[str, Any]:
     """Return geojson object as python dictionary."""
     with open(cached_filepath, "rb") as f:
         return json.load(f)
 
 
-def _get_cached_filepath(prefix, data, extension="cache"):
+def _get_cached_filepath(prefix: str, data: str, extension: str = "cache") -> FilePath:
     """Return the filepath where a cached response would live for the given inputs."""
     filename = "{prefix}_{hash_string}.{extension}".format(
         prefix=prefix,
@@ -86,9 +90,9 @@ def _get_cached_filepath(prefix, data, extension="cache"):
         extension=extension,
     )
     logger.debug("Cached filepath: " + os.path.join(CACHE_DIRECTORY, filename))
-    return os.path.join(CACHE_DIRECTORY, filename)
+    return FilePath(os.path.join(CACHE_DIRECTORY, filename))
 
 
-def _hash_value(value):
+def _hash_value(value) -> str:
     """Hash value to help identify what cached file to use."""
     return hashlib.md5(value.encode("utf-8")).hexdigest()[:9]

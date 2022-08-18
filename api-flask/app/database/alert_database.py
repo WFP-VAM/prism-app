@@ -3,10 +3,12 @@ import logging
 from os import getenv
 from typing import List
 
-from app.database.alert_model import AlertModel
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql.expression import ColumnElement
+
+from app.database.alert_model import AlertModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -55,7 +57,7 @@ class AlertsDataBase:
         """
         return self.session.query(AlertModel).all()
 
-    def read(self, expr: bool) -> List[AlertModel]:
+    def read(self, expr: ColumnElement) -> List[AlertModel]:
         """
         Return all the rows that match expression.
 
@@ -82,7 +84,7 @@ class AlertsDataBase:
         """
         deactivation_successful = False
         try:
-            alert.active = False
+            alert.active = False  # type: ignore
             self.session.commit()
             deactivation_successful = True
         except Exception as e:

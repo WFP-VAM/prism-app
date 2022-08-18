@@ -1,11 +1,11 @@
 """Alert database model."""
 import datetime
-
 # from flask import json
 import json
 import logging
 
-from sqlalchemy import JSON, TIMESTAMP, Column, DateTime, Identity, Integer, String
+from sqlalchemy import (JSON, TIMESTAMP, Column, DateTime, Identity, Integer,
+                        String)
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.sql.sqltypes import Boolean
 
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 Base = declarative_base()
 
 
-class AlertModel(Base):
+class AlertModel(Base):  # type: ignore
     """Alert ORM that defines a table."""
 
     __tablename__ = "alert"

@@ -1,23 +1,24 @@
 """FastAPI API for geospatial utils."""
 
+import json
 import logging
 from distutils.util import strtobool
 from os import getenv
 from typing import Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
-import rasterio
+import rasterio  # type: ignore
+from fastapi import FastAPI, HTTPException, Path, Query, Response
+from fastapi.encoders import jsonable_encoder
+
 from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
-from app.database.alert_model import AlchemyEncoder
-
+from app.database.alert_model import AlchemyEncoder, AlertModel
 # from app.errors import handle_error, make_json_error
-# from app.kobo import get_form_responses, parse_datetime_params
+from app.kobo import get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
-from app.zonal_stats import calculate_stats, get_wfs_response
-from fastapi import FastAPI, HTTPException, Path, Response
-from fastapi.encoders import jsonable_encoder
+from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
 
 from .sample_requests import AlertsModel, StatsModel
 
@@ -46,7 +47,7 @@ alert_db = AlertsDataBase()
 
 
 @app.get("/")
-def healthcheck():
+def healthcheck() -> str:
     """Verify that the server is healthy."""
     return "All good!"
 
@@ -78,7 +79,7 @@ def _calculate_stats(
 
 @timed
 @app.post("/stats")
-def stats(stats_model: StatsModel):
+def stats(stats_model: StatsModel) -> Response:
     """Return zonal statistics."""
     # Accept data as json or form.
     logger.debug("New stats request:")
@@ -104,7 +105,17 @@ def stats(stats_model: StatsModel):
 
     geotiff = cache_file(prefix="raster", url=geotiff_url, extension="tif")
 
+    if zones_geojson is not None:
+        zones = cache_geojson(prefix="zones_geojson", geojson=zones_geojson)
+    else:
+        zones = cache_file(
+            prefix="zones",
+            url=zones_url,
+            extension="json",
+        )
+
     wfs_response = None
+    wfs_params = data.get("wfs_params", None)
     if wfs_params is not None:
         # Validate required keys.
         required_keys = ["layer_name", "url", "time"]
@@ -120,13 +131,24 @@ def stats(stats_model: StatsModel):
 
         wfs_response = get_wfs_response(wfs_params)
 
-    # intersect_comparison = None
-    if intersect_comparison is not None:
+    intersect_comparison_tuple = None
+    if intersect_comparison_string is not None:
         intersect_comparison_tuple = validate_intersect_parameter(
             intersect_comparison_string
         )
 
-        return features
+    features = _calculate_stats(
+        zones,
+        geotiff,
+        stats=["min", "max", "mean", "median", "sum", "std"],
+        prefix="stats_",
+        group_by=group_by,
+        geojson_out=geojson_out,
+        wfs_response=wfs_response,
+        intersect_comparison=intersect_comparison_tuple,
+    )
+
+    return features
 
     # TODO - Secure endpoint
     # @app.route('/alerts-all', methods=['GET'])
@@ -135,32 +157,49 @@ def stats(stats_model: StatsModel):
     #     results = alert_db.readall()
     #     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
 
-    # @app.get('/kobo/forms')
-    # def get_kobo_forms():
-    #     """Get all form responses."""
-    #     begin_datetime, end_datetime = parse_datetime_params()
-    #     form_responses = get_form_responses(begin_datetime, end_datetime)
-    #
-    #     return form_responses
 
-    def get(self):
-        """Get all form responses."""
-        begin_datetime, end_datetime = parse_datetime_params()
-        form_responses = get_form_responses(begin_datetime, end_datetime)
+@app.get("/kobo/forms")
+def get_kobo_forms(
+    formName: str,
+    datetimeField: str,
+    geomField: str,
+    koboUrl: str,
+    filters: str | None = None,
+    beginDateTime=Query(default="2000-01-01"),
+    endDateTime: str | None = None,
+):
+    """Get all form responses."""
+    begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)
+
+    if begin_datetime > end_datetime:
+        raise HTTPException(
+            status_code=400, detail="beginDateTime value must be lower than endDateTime"
+        )
+    form_responses = get_form_responses(
+        begin_datetime,
+        end_datetime,
+        formName,
+        datetimeField,
+        geomField,
+        filters,
+        koboUrl,
+    )
+
+    return form_responses
 
 
 @app.get("/alerts/{id}")
 def alert_by_id(
     email: str,
     deactivate: str | None = None,
-    id: str = Path("1", description="The ID of the alert"),
-):
+    id: int = Path(1, description="The ID of the alert (an integer)"),
+) -> Response:
     """Get alert with an ID."""
-    try:
-        id = int(id)
-    except ValueError as e:
-        logger.error(f"Failed to fetch alerts: {e}")
-        raise HTTPException(status_code=400, detail="Invalid id")
+    # try:
+    #     id = int(id)
+    # except ValueError as e:
+    #     logger.error(f"Failed to fetch alerts: {e}")
+    #     raise HTTPException(status_code=400, detail="Invalid id")
 
     alert = alert_db.readone(id)
     if alert is None:
@@ -172,36 +211,26 @@ def alert_by_id(
             status_code=403, detail="Access denied. Email addresses do not match."
         )
 
+    # TODO: this modifies data server-side, it should be a PUT or PATCH op, not a GET
     if deactivate:
         success = alert_db.deactivate(alert)
         if not success:
             raise HTTPException(status_code=500, detail="Failed to deactivate alert")
 
-        alert = alert_db.readone(id)
-        if alert is None:
-            raise NotFound(f"No alert was found with id {id}")
+        return Response(content="Alert successfully deactivated.", status_code=200)
 
-        # secure endpoint with simple email verification
-        if request.args.get("email", "").lower() != alert.email.lower():
-            raise BadRequest("Access denied. Email addresses do not match.")
-
-        if request.args.get("deactivate"):
-            status = alert_db.deactivate(alert)
-            if not status:
-                raise InternalServerError("Failed to deactivate alert")
-
-            return Response(response="Alert successfully deactivated.", status=200)
-
-        return Response(
-            json.dumps(alert, cls=AlchemyEncoder), mimetype="application/json"
-        )
+    return Response(
+        json.dumps(alert, cls=AlchemyEncoder), media_type="application/json"
+    )
 
 
 @app.post("/alerts")
 def post_alerts(alerts_model: AlertsModel):
     """Post new alerts."""
     try:
-        alert_db.write(alerts_model)
+        # convert the pydantic model to a SQLAlechmy one
+        sqla_alert_model = AlertModel(**alerts_model.dict())
+        alert_db.write(sqla_alert_model)
 
     except rasterio.errors.RasterioError as e:
         logger.error(e)
@@ -212,10 +241,10 @@ def post_alerts(alerts_model: AlertsModel):
 
 # TODO: take care of @timed
 # @timed
-@app.get("/demo")
+@app.get("/demo", responses={400: {"description": "Invalid intersect_comparison"}})
 def stats_demo(
     geojson_out: bool = False,
-    group_by: Optional[str] = None,
+    group_by: Optional[GroupBy] = None,
     intersect_comparison: Optional[str] = None,
 ):
     """Return examples of zonal statistics."""
@@ -280,7 +309,7 @@ def stats_demo(
     return features
 
 
-if __name__ == "__main__" and getenv("FLASK_ENV") == "development":
-    PORT = int(getenv("PORT", 80))
-    # Only for debugging while developing
-    app.run(host="0.0.0.0", debug=True, port=PORT)
+# if __name__ == "__main__" and getenv("FLASK_ENV") == "development":
+#     PORT = int(getenv("PORT", 80))
+#     # Only for debugging while developing
+#     app.run(host="0.0.0.0", debug=True, port=PORT)
