@@ -5,9 +5,12 @@ import os
 import rasterio
 from rasterio.warp import Resampling, calculate_default_transform, reproject
 
+from app.timer import timed
+
 logger = logging.getLogger(__name__)
 
 
+@timed
 def gdal_calc(input_file_path, mask_file, output_file_path, calc_expr='"A*(B==0)"'):
     """Utility function to run gdal_calc with two rasters."""
     gdal_calc_path = os.path.join("gdal_calc.py")
@@ -27,6 +30,7 @@ def gdal_calc(input_file_path, mask_file, output_file_path, calc_expr='"A*(B==0)
     os.system(gdal_calc_process)
 
 
+@timed
 def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
     """Reproject a file to match the shape and projection of existing raster.
 

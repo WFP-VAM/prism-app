@@ -4,10 +4,11 @@ from collections import defaultdict
 from datetime import datetime
 from json import dump, load
 from urllib.parse import urlencode
+from pathlib import Path
 
 import numpy as np
 import rasterio
-from app.caching import cache_file, get_json_file
+from app.caching import cache_file, get_json_file, is_file_valid, CACHE_DIRECTORY
 from app.raster_utils import gdal_calc, reproj_match
 from app.timer import timed
 from rasterio.warp import Resampling
@@ -184,20 +185,25 @@ def calculate_stats(
 
     # Add mask option for flood exposure analysis
     if mask_geotiff:
-        reproj_pop_geotiff = geotiff.replace("raster_", "raster_reproj_")
-        masked_pop_geotiff = geotiff.replace("raster_", "raster_masked_")
+        geotiff_hash = Path(geotiff).name.replace("raster_", "").replace(".tif", "")
+        mask_hash = Path(mask_geotiff).name.replace("raster_", "").replace(".tif", "")
+
+        reproj_pop_geotiff = f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_on_{mask_hash}.tif"
+        masked_pop_geotiff = f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}.tif"
 
         # TODO - smart caching. Needs to take into account both file names
-        reproj_match(
-            geotiff, mask_geotiff, reproj_pop_geotiff, resampling_mode=Resampling.sum
-        )
-
-        gdal_calc(
-            input_file_path=reproj_pop_geotiff,
-            mask_file=mask_geotiff,
-            output_file_path=masked_pop_geotiff,
-            calc_expr='"A*(B==0)"',
-        )
+        if not is_file_valid(reproj_pop_geotiff):
+            reproj_match(
+                geotiff, mask_geotiff, reproj_pop_geotiff, resampling_mode=Resampling.sum
+            )
+        
+        if not is_file_valid(masked_pop_geotiff):
+            gdal_calc(
+                input_file_path=reproj_pop_geotiff,
+                mask_file=mask_geotiff,
+                output_file_path=masked_pop_geotiff,
+                calc_expr='"A*(B==0)"',
+            )
 
         masked_geotiff_r = rasterio.open(masked_pop_geotiff)
         masked_geotiff_array = masked_geotiff_r.read(1)

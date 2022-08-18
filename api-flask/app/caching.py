@@ -92,3 +92,21 @@ def _get_cached_filepath(prefix, data, extension="cache"):
 def _hash_value(value):
     """Hash value to help identify what cached file to use."""
     return hashlib.md5(value.encode("utf-8")).hexdigest()[:9]
+
+
+def is_file_valid(filepath):
+    """Test if a file is falid"""
+    is_tif = filepath and ".tif" in filepath
+    # If the file exists, return path.
+    if os.path.isfile(filepath):
+        # if the file is a geotiff, confirm that we can open it.
+        if is_tif:
+            try:
+                rasterio.open(filepath)
+                return filepath
+            except rasterio.errors.RasterioError:
+                pass
+        else:
+            return True
+
+    return False
