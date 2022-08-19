@@ -8,13 +8,12 @@ from typing import Any
 from urllib.parse import urlencode
 
 import rasterio  # type: ignore
+from app.caching import FilePath, cache_file, get_json_file
+from app.timer import timed
 from fastapi import HTTPException
 from rasterstats import zonal_stats  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import cascaded_union  # type: ignore
-
-from app.caching import FilePath, cache_file, get_json_file
-from app.timer import timed
 
 logger = logging.getLogger(__name__)
 

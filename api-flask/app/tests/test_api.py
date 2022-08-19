@@ -1,10 +1,9 @@
 import pytest
 import schemathesis
-from fastapi.testclient import TestClient
-from hypothesis import settings
-
 from app.database.alert_database import AlertsDataBase
 from app.main import app
+from fastapi.testclient import TestClient
+from hypothesis import settings
 
 
 @pytest.fixture(scope="session", autouse=True)

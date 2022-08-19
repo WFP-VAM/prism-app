@@ -7,9 +7,8 @@ from typing import Any, NewType
 
 import rasterio  # type: ignore
 import requests
-from fastapi import HTTPException
-
 from app.timer import timed
+from fastapi import HTTPException
 
 logger = logging.getLogger(__name__)
 

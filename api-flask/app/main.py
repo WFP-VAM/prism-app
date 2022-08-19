@@ -8,18 +8,18 @@ from typing import Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
-from fastapi import FastAPI, HTTPException, Path, Query, Response
-from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
-
 from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
+
 # from app.errors import handle_error, make_json_error
 from app.kobo import get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
+from fastapi import FastAPI, HTTPException, Path, Query, Response
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from pydantic import EmailStr, HttpUrl
 
 from .sample_requests import AlertsModel, StatsModel
