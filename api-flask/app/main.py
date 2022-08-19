@@ -190,10 +190,13 @@ def get_kobo_forms(
     return form_responses
 
 
-@app.get("/alerts/{id}", responses={
-    403: {"description": "Access denied. Email addresses do not match."},
-    404: {"description": "No alert was found with the given id"}
-})
+@app.get(
+    "/alerts/{id}",
+    responses={
+        403: {"description": "Access denied. Email addresses do not match."},
+        404: {"description": "No alert was found with the given id"},
+    },
+)
 def alert_by_id(
     email: EmailStr,
     deactivate: bool | None = None,

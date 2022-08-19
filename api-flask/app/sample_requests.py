@@ -1,5 +1,6 @@
 """Sample Data for stats and alert."""
 import json
+
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, validator
 
 stats_data = {
@@ -92,25 +93,31 @@ class StatsModel(BaseModel):
 
 
 def must_not_contain_null_char(v: str) -> str:
-    if '\x00' in v:
+    if "\x00" in v:
         raise ValueError("Value must not contain null char \x00")
     return v
+
 
 def dict_must_not_contain_null_char(d: dict) -> dict:
     must_not_contain_null_char(json.dumps(d))
     return d
 
+
 class AlertsZonesModel(BaseModel):
     """Schema of the zones argument for alerts."""
+
     type: str = Field(..., example=alert_data["zones"]["type"])
     name: str = Field(..., example=alert_data["zones"]["name"])
     crs: dict = Field(..., example=alert_data["zones"]["crs"])
     features: dict = Field(..., example=alert_data["zones"]["features"])
 
-    _val_type = validator('type', allow_reuse=True)(must_not_contain_null_char)
-    _val_name = validator('name', allow_reuse=True)(must_not_contain_null_char)
+    _val_type = validator("type", allow_reuse=True)(must_not_contain_null_char)
+    _val_name = validator("name", allow_reuse=True)(must_not_contain_null_char)
     _val_crs = validator("crs", allow_reuse=True)(dict_must_not_contain_null_char)
-    _val_features = validator("features", allow_reuse=True)(dict_must_not_contain_null_char)
+    _val_features = validator("features", allow_reuse=True)(
+        dict_must_not_contain_null_char
+    )
+
 
 class AlertsModel(BaseModel):
     """Example of alert data for validation by pydantic."""
@@ -121,5 +128,9 @@ class AlertsModel(BaseModel):
     alert_config: dict = Field(..., example=alert_data["alert_config"])
     zones: AlertsZonesModel
 
-    _val_alert_name = validator('alert_name', allow_reuse=True)(must_not_contain_null_char)
-    _val_alert_config = validator("alert_config", allow_reuse=True)(dict_must_not_contain_null_char)
+    _val_alert_name = validator("alert_name", allow_reuse=True)(
+        must_not_contain_null_char
+    )
+    _val_alert_config = validator("alert_config", allow_reuse=True)(
+        dict_must_not_contain_null_char
+    )
