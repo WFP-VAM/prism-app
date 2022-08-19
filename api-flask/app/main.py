@@ -10,6 +10,7 @@ from urllib.parse import ParseResult, urlencode, urlunparse
 import rasterio  # type: ignore
 from fastapi import FastAPI, HTTPException, Path, Query, Response
 from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 
 from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
@@ -19,6 +20,7 @@ from app.kobo import get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
+from pydantic import EmailStr, HttpUrl
 
 from .sample_requests import AlertsModel, StatsModel
 
@@ -78,7 +80,7 @@ def _calculate_stats(
 
 
 @timed
-@app.post("/stats")
+@app.post("/stats", responses={500: {"description": "Internal server error"}})
 def stats(stats_model: StatsModel) -> Response:
     """Return zonal statistics."""
     # Accept data as json or form.
@@ -162,7 +164,7 @@ def stats(stats_model: StatsModel) -> Response:
 def get_kobo_forms(
     formName: str,
     datetimeField: str,
-    koboUrl: str,
+    koboUrl: HttpUrl,
     geomField: str | None = None,
     filters: str | None = None,
     beginDateTime=Query(default="2000-01-01"),
@@ -188,10 +190,13 @@ def get_kobo_forms(
     return form_responses
 
 
-@app.get("/alerts/{id}")
+@app.get("/alerts/{id}", responses={
+    403: {"description": "Access denied. Email addresses do not match."},
+    404: {"description": "No alert was found with the given id"}
+})
 def alert_by_id(
-    email: str,
-    deactivate: str | None = None,
+    email: EmailStr,
+    deactivate: bool | None = None,
     id: int = Path(1, description="The ID of the alert (an integer)"),
 ) -> Response:
     """Get alert with an ID."""
@@ -217,11 +222,9 @@ def alert_by_id(
         if not success:
             raise HTTPException(status_code=500, detail="Failed to deactivate alert")
 
-        return Response(content="Alert successfully deactivated.", status_code=200)
+        return JSONResponse(content="Alert successfully deactivated.", status_code=200)
 
-    return Response(
-        json.dumps(alert, cls=AlchemyEncoder), media_type="application/json"
-    )
+    return JSONResponse(json.dumps(alert, cls=AlchemyEncoder))
 
 
 @app.post("/alerts")
@@ -236,7 +239,7 @@ def post_alerts(alerts_model: AlertsModel):
         logger.error(e)
         raise e
 
-    return Response(content="Success", status_code=200)
+    return JSONResponse(content="Success", status_code=200)
 
 
 # TODO: take care of @timed

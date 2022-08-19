@@ -7,6 +7,8 @@ requests==2.27.1
 Shapely==1.8.2
 # Used by `make test` only:
 mock==4.0.3
+# to get email validation
+pydantic[email]==1.9.2
 pytest==7.1.2
 pytest-cov==3.0.0
 schemathesis==3.16.5

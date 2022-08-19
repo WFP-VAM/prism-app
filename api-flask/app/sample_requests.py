@@ -1,5 +1,6 @@
 """Sample Data for stats and alert."""
-from pydantic import BaseModel, Field
+import json
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, validator
 
 stats_data = {
     "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0"
@@ -85,16 +86,40 @@ alert_data = {
 class StatsModel(BaseModel):
     """Example of stats data."""
 
-    geotiff_url: str = Field(..., example=stats_data["geotiff_url"])
-    zones_url: str = Field(..., example=stats_data["zones_url"])
+    geotiff_url: HttpUrl = Field(..., example=stats_data["geotiff_url"])
+    zones_url: HttpUrl = Field(..., example=stats_data["zones_url"])
     group_by: str = Field(..., example=stats_data["group_by"])
 
 
-class AlertsModel(BaseModel):
-    """Example of alert data."""
+def must_not_contain_null_char(v: str) -> str:
+    if '\x00' in v:
+        raise ValueError("Value must not contain null char \x00")
+    return v
 
-    email: str = Field(..., example=alert_data["email"])
-    prism_url: str = Field(..., example=alert_data["prism_url"])
+def dict_must_not_contain_null_char(d: dict) -> dict:
+    must_not_contain_null_char(json.dumps(d))
+    return d
+
+class AlertsZonesModel(BaseModel):
+    """Schema of the zones argument for alerts."""
+    type: str = Field(..., example=alert_data["zones"]["type"])
+    name: str = Field(..., example=alert_data["zones"]["name"])
+    crs: dict = Field(..., example=alert_data["zones"]["crs"])
+    features: dict = Field(..., example=alert_data["zones"]["features"])
+
+    _val_type = validator('type', allow_reuse=True)(must_not_contain_null_char)
+    _val_name = validator('name', allow_reuse=True)(must_not_contain_null_char)
+    _val_crs = validator("crs", allow_reuse=True)(dict_must_not_contain_null_char)
+    _val_features = validator("features", allow_reuse=True)(dict_must_not_contain_null_char)
+
+class AlertsModel(BaseModel):
+    """Example of alert data for validation by pydantic."""
+
+    email: EmailStr = Field(..., example=alert_data["email"])
+    prism_url: HttpUrl = Field(..., example=alert_data["prism_url"])
     alert_name: str = Field(..., example=alert_data["alert_name"])
     alert_config: dict = Field(..., example=alert_data["alert_config"])
-    zones: dict = Field(..., example=alert_data["zones"])
+    zones: AlertsZonesModel
+
+    _val_alert_name = validator('alert_name', allow_reuse=True)(must_not_contain_null_char)
+    _val_alert_config = validator("alert_config", allow_reuse=True)(dict_must_not_contain_null_char)

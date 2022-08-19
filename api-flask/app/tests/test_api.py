@@ -1,6 +1,7 @@
 import pytest
 import schemathesis
 from fastapi.testclient import TestClient
+from hypothesis import settings
 
 from app.database.alert_database import AlertsDataBase
 from app.main import app
@@ -11,10 +12,11 @@ def migrate_test_db():
     alerts_db = AlertsDataBase()
     # TODO: find a better way to do this, instead of copying them from
     # the js migration files
-    q1 = """CREATE TABLE "alert" (
+    q1 = """CREATE TABLE IF NOT EXISTS "alert" (
           "id" SERIAL NOT NULL,
           "email" character varying NOT NULL,
           "prism_url" character varying NOT NULL,
+          "active" boolean NOT NULL DEFAULT true,
           "alert_name" character varying,
           "alert_config" jsonb NOT NULL,
           "min" integer,
@@ -25,9 +27,8 @@ def migrate_test_db():
           "last_triggered" TIMESTAMP,
           CONSTRAINT "PK_ad91cad659a3536465d564a4b2f" PRIMARY KEY ("id")
         )"""
-    q2 = 'ALTER TABLE "alert" ADD "active" boolean NOT NULL DEFAULT true'
     alerts_db.session.execute(q1)
-    alerts_db.session.execute(q2)
+    alerts_db.session.commit()
 
 
 schema = schemathesis.from_asgi("/openapi.json", app)
@@ -39,10 +40,32 @@ schemathesis.fixups.install(["fast_api"])
 client = TestClient(app)
 
 
-@schema.parametrize()
-def test_api(case):
+@schema.parametrize(endpoint="^/stats")
+@settings(max_examples=1)
+def test_stats_api(case):
+    """
+    Run checks on the /stats endpoint listed in the openapi docs.
+
+    These tests do not validate that the API returns valid results, but
+    merely that it behaves according to the openAPI schema, and does not
+    crash in random unexpected ways.
+    This is basically fuzzying :)
+    """
+
+    response = case.call_asgi(app)
+    case.validate_response(response)
+
+
+@schema.parametrize(endpoint="^/alerts")
+@settings(max_examples=10)
+def test_alerts_api(case):
     """
     Run checks on all API endpoints listed in the openapi docs.
+
+    These tests do not validate that the API returns valid results, but
+    merely that it behaves according to the openAPI schema, and does not
+    crash in random unexpected ways.
+    This is basically fuzzying :)
     """
 
     response = case.call_asgi(app)
@@ -92,11 +115,9 @@ def test_stats_endpoint2():
     assert response.status_code == 200
 
 
-# from unittest.mock import patch
-
-
-# @patch("app.kobo.get_kobo_params")
+@pytest.mark.skip(reason="credentials required on the first 2 lines of this test")
 def test_kobo_forms_endpoint(monkeypatch):
+    """This test requires credentials for the kobo API."""
     monkeypatch.setenv("KOBO_USERNAME", "")
     monkeypatch.setenv("KOBO_PW", "")
     response = client.get(
