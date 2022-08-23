@@ -33,9 +33,7 @@ app = FastAPI(
     "between rasters and polygons.",
 )
 
-# For more configuration options, check out the documentation
 # Caching durations are in seconds.
-# cache = Cache(app, config={"CACHE_TYPE": "simple"})
 
 alert_db = AlertsDataBase()
 
