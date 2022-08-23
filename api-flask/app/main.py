@@ -1,5 +1,6 @@
 """FastAPI API for geospatial utils."""
 
+import functools
 import json
 import logging
 from distutils.util import strtobool
@@ -53,7 +54,7 @@ def healthcheck() -> str:
 
 
 @timed
-# @cache.memoize(3600)
+@functools.lru_cache(maxsize=128)
 def _calculate_stats(
     zones,
     geotiff,
