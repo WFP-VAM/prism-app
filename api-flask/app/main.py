@@ -4,7 +4,6 @@ import functools
 import json
 import logging
 from distutils.util import strtobool
-from os import getenv
 from typing import Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
@@ -13,7 +12,6 @@ from app.caching import cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
 
-# from app.errors import handle_error, make_json_error
 from app.kobo import get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
@@ -34,17 +32,7 @@ app = FastAPI(
     "between rasters and polygons.",
 )
 
-# Caching durations are in seconds.
-
 alert_db = AlertsDataBase()
-
-# for code in [400, 401, 403, 404, 405, 500]:
-#     app.register_error_handler(code, make_json_error)
-# app.register_error_handler(Exception, handle_error)
-
-
-# alerts_model = api.model("Alerts", alerts_dic)
-# stats_model = api.model("Stats", stats_dic)
 
 
 @app.get("/")
@@ -151,13 +139,6 @@ def stats(stats_model: StatsModel) -> Response:
 
     return features
 
-    # TODO - Secure endpoint
-    # @app.route('/alerts-all', methods=['GET'])
-    # def alerts_all():
-    #     """Get all alerts in current table."""
-    #     results = alert_db.readall()
-    #     return Response(json.dumps(results, cls=AlchemyEncoder), mimetype='application/json')
-
 
 @app.get("/kobo/forms")
 def get_kobo_forms(
@@ -202,11 +183,6 @@ def alert_by_id(
     id: int = Path(1, description="The ID of the alert (an integer)"),
 ) -> Response:
     """Get alert with an ID."""
-    # try:
-    #     id = int(id)
-    # except ValueError as e:
-    #     logger.error(f"Failed to fetch alerts: {e}")
-    #     raise HTTPException(status_code=400, detail="Invalid id")
 
     alert = alert_db.readone(id)
     if alert is None:
@@ -244,8 +220,7 @@ def post_alerts(alerts_model: AlertsModel):
     return JSONResponse(content="Success", status_code=200)
 
 
-# TODO: take care of @timed
-# @timed
+@timed
 @app.get("/demo", responses={400: {"description": "Invalid intersect_comparison"}})
 def stats_demo(
     geojson_out: bool = False,
@@ -293,8 +268,6 @@ def stats_demo(
 
     zones = cache_file(prefix="zones_test", url=zones_url)
 
-    # intersect_comparison_string = request.args.get("intersect_comparison", None)
-
     intersect_comparison_tuple = None
     if intersect_comparison is not None:
         intersect_comparison_tuple = validate_intersect_parameter(intersect_comparison)
@@ -312,9 +285,3 @@ def stats_demo(
 
     # TODO - Properly encode before returning. Mongolian characters are returned as hex.
     return features
-
-
-# if __name__ == "__main__" and getenv("FLASK_ENV") == "development":
-#     PORT = int(getenv("PORT", 80))
-#     # Only for debugging while developing
-#     app.run(host="0.0.0.0", debug=True, port=PORT)
