@@ -1,12 +1,18 @@
 {
   "country": "Kyrgyzstan",
   "icons": {
-    "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
-    "hazards": "icon_climate.png",
+    "hazards": "icon_flood.png",
+    "floods_and_mudflows": "icon_flood.png",
     "risk": "icon_impact.png",
     "capacity": "icon_capacity.png",
-    "tables": "icon_table.png"
+    "tables": "icon_table.png",
+    "rainfall": "icon_rain.png",
+    "snow": "icon_snow.png",
+    "vegetation": "icon_veg.png",
+    "temperature": "icon_climate.png",
+    "tropical_storms": "icon_tropical_storm.png",
+    "vulnerability": "icon_vulnerable.png"
   },
   "alertFormActive": false,
   "map": {
@@ -14,6 +20,10 @@
     "longitude": 74.757,
     "zoom": 6.3
   },
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin1_boundaries"
+  ],
   "serversUrls": {
     "wms": [
       "https://odc.ovio.org/wms",
@@ -22,28 +32,170 @@
     ]
   },
   "categories": {
-    "hazards": {
-      "rainfall": [
-        "rainfall_dekad",
-        "rain_anomaly_dekad",
-        "rain_anomaly_monthly",
-        "rainfall_agg_month",
-        "streak_dry_days",
-        "days_heavy_rain",
-        "streak_heavy_rain"
+    "rainfall": {
+      "rainfall_amount": [
+        {
+          "group_title": "Rainfall Aggregate",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rainfall_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rainfall_agg_1month",
+              "label": "1-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_3month",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_6month",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_9month",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_1year",
+              "label": "1-year",
+              "main": false
+            }
+          ]
+        }
       ],
+      "rainfall_anomalies": [
+        {
+          "group_title": "Rainfall Anomaly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rain_anomaly_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rain_anomaly_1month",
+              "label": "1-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_3month",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_6month",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_9month",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_1year",
+              "label": "1-year",
+              "main": false
+            }
+          ]
+        },
+        {
+          "group_title": "SPI",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "spi_1m",
+              "label": "1-month",
+              "main": true
+            },
+            {
+              "id": "spi_3m",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "spi_6m",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "spi_9m",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "spi_1y",
+              "label": "1-year",
+              "main": false
+            }
+          ]
+        }
+      ],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
+      "heavy_rain": [
+        "days_heavy_rain",
+        "days_intense_rain",
+        "days_extreme_rain",
+        "streak_heavy_rain"
+      ]
+    },
+    "vegetation": {
       "vegetation_conditions": [
-        "pasture_anomaly",
-        "10day_NDVI_KDC",
         "ndvi_dekad",
         "ndvi_dekad_anomaly",
-        "ModisVHI"
-      ],
-      "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"],
-      "snow_conditions": ["snow_cover", "modis_snow_percentage"]
+        "pasture_anomaly",
+        "ModisVHI",
+        "10day_NDVI_KDC"
+      ]
     },
-    "risk": {
-      "recurrence_of_hazards": ["recurrence_mudflows", "fires_2020"]
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_anomaly",
+        "lst_amplitude"
+      ]
+    },
+    "snow": {
+      "snow_conditions": [
+        "snow_cover",
+        "modis_snow_percentage"
+      ]
+    },
+    "floods_and_mudflows": {
+      "": [
+        "flood_mudflows"
+      ]
+    },
+    "vulnerability": {
+      "": [
+        "poverty"
+      ]
+    },
+    "exposure": {
+      "population": [
+        "population"
+      ],
+      "crops": [
+        "wheat",
+        "potato",
+        "veg",
+        "fruit"
+      ],
+      "livestock": [
+        "livestock"
+      ]
     }
   }
 }

@@ -1,7 +1,7 @@
 # for comment on PR, follow instruction for: https://github.com/marketplace/actions/sticky-pull-request-comment
 name: PRISM CI
 on:
-  # Run on all pull requests and on pushes to main.
+  # Run on all pull requests and on pushes to master.
   pull_request:
   push:
     branches:
@@ -43,6 +43,8 @@ jobs:
       - name: yarn test
         run: yarn test
 
+      - name: json check
+        run: yarn prettier:json-check
   frontend_build_and_deploy:
     needs: frontend_tests
     name: frontend_build_and_deploy
@@ -51,7 +53,7 @@ jobs:
       surge_url: prism-${{ github.event.pull_request.number }}.surge.sh
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: test
         run: |
           echo "My current surge url is ${{ env.surge_url }}"
@@ -104,8 +106,33 @@ jobs:
           message: |
             Build succeeded and deployed at http://${{ env.surge_url }} 
             (hash ${{ github.event.pull_request.head.sha }} deployed at ${{ steps.date.outputs.date }})
+  api_lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10']
+      # run the matrix jobs one after the other, so they can benefit from caching
+      max-parallel: 1
 
-  build_api:
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          # Version of Poetry to use
+          version: 1.1.13
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      - name: Install dependencies
+        run: |
+          poetry install
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      - name: Check formatting with black and isort
+        run: |
+          poetry run black --check .
+          poetry run isort --check .
+
+  api_build:
     name: build api
     runs-on: ubuntu-latest
     steps:
@@ -118,7 +145,5 @@ jobs:
           sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - name: Build containers
         run: cd api-flask && docker-compose build api
-      - name: Run linters
-        run: cd api-flask && make api-lint
       - name: Run tests
         run: cd api-flask && make api-test

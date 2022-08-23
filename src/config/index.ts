@@ -16,6 +16,8 @@ import {
   indonesiaRawTables,
 } from './indonesia';
 
+import jordan from './jordan';
+
 import {
   kyrgyzstanConfig,
   kyrgyzstanRawLayers,
@@ -46,6 +48,8 @@ import {
   tajikistanRawTables,
 } from './tajikistan';
 
+import ukraine from './ukraine';
+
 import zimbabwe from './zimbabwe';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
@@ -68,11 +72,12 @@ const configMap = {
     rawTables: indonesiaRawTables,
     defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
+  jordan,
   kyrgyzstan: {
     appConfig: kyrgyzstanConfig,
     rawLayers: kyrgyzstanRawLayers,
     rawTables: kyrgyzstanRawTables,
-    defaultBoundariesFile: 'kgz_admin_boundaries.json',
+    defaultBoundariesFile: 'District_KRYG.json',
   },
   mongolia: {
     appConfig: mongoliaConfig,
@@ -97,6 +102,7 @@ const configMap = {
     rawTables: tajikistanRawTables,
     defaultBoundariesFile: 'tjk_admin_boundaries_v2.json',
   },
+  ukraine,
   zimbabwe,
 } as const;
 
@@ -106,7 +112,9 @@ const DEFAULT: Country = 'myanmar';
 
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
 const safeCountry =
-  COUNTRY && has(configMap, COUNTRY) ? (COUNTRY as Country) : DEFAULT;
+  COUNTRY && has(configMap, COUNTRY.toLocaleLowerCase())
+    ? (COUNTRY.toLocaleLowerCase() as Country)
+    : DEFAULT;
 
 const {
   appConfig,

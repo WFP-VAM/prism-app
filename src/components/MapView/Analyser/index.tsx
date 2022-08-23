@@ -73,6 +73,7 @@ import {
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 import {
+  refreshBoundaries,
   safeDispatchRemoveLayer,
   safeDispatchAddLayer,
 } from '../../../utils/map-utils';
@@ -346,6 +347,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
     dispatch(clearAnalysisResult());
 
     resetAnalysisParams();
+    refreshBoundaries(map, dispatch);
 
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[

@@ -12,7 +12,9 @@ import notificationStateReduce, {
 } from './notificationStateSlice';
 import analysisResultStateReduce from './analysisResultStateSlice';
 import mapSelectionLayerStateReduce from './mapSelectionLayerStateSlice';
+import mapBoundaryInfoStateReduce from './mapBoundaryInfoStateSlice';
 import datasetResultStateReduce from './datasetStateSlice';
+import mapTileLoadingStateReduce from './mapTileLoadingStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
@@ -22,7 +24,9 @@ const reducer = combineReducers({
   analysisResultState: analysisResultStateReduce,
   notificationState: notificationStateReduce,
   mapSelectionLayerStateSlice: mapSelectionLayerStateReduce,
+  mapBoundaryInfoState: mapBoundaryInfoStateReduce,
   datasetState: datasetResultStateReduce,
+  mapTileLoadingState: mapTileLoadingStateReduce,
 });
 
 export const store = configureStore({
