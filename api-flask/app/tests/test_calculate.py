@@ -14,7 +14,6 @@ def test_calculate_stats_json_output():
     geotiff = "/app/tests/raster_sample.tif"
     features = calculate_stats(zones, geotiff, geojson_out=False)
     assert len(features) == 26
-    assert True
 
 
 def test_calculate_stats_geojson_output():
@@ -25,7 +24,6 @@ def test_calculate_stats_geojson_output():
     features = calculate_stats(zones, geotiff, geojson_out=True)
     assert len(features) == 26
     assert features[0]["type"] == "Feature"
-    assert True
 
 
 def test_calculate_stats_with_group_by():
@@ -41,7 +39,6 @@ def test_calculate_stats_with_group_by():
         intersect_comparison=(operator.lt, 1),
     )
     assert len(features) == 4
-    assert True
 
 
 def test_calculate_stats_wfs_polygons():
@@ -67,8 +64,6 @@ def test_calculate_stats_wfs_polygons():
         wfs_response=wfs_response,
     )
     assert len(features) == 2
-
-    assert True
 
 
 @patch("app.kobo.get_responses_from_kobo")
@@ -135,5 +130,3 @@ def test_kobo_response_form(kobo_params, kobo_data):
     end = datetime(2020, 1, 1).replace(tzinfo=timezone.utc)
     forms = get_form_responses(begin, end, "", "", "", "", "")
     assert len(forms) == 1
-
-    assert True
