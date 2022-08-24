@@ -17,6 +17,7 @@ from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
 from fastapi import FastAPI, HTTPException, Path, Query, Response
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import EmailStr, HttpUrl
 
@@ -29,6 +30,19 @@ app = FastAPI(
     title="PRISM Geospatial API by WFP",
     description="A geospatial API enabling aggregation and intersection calculations "
     "between rasters and polygons.",
+)
+
+cors_origins = [
+    "http://localhost:3000",
+    "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 alert_db = AlertsDataBase()
