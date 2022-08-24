@@ -1,4 +1,6 @@
 version: '3'
+# Run a full battery of test on all endpoints using https://pypi.org/project/schemathesis/
+# This file sets up a db that allows testing alerts related endpoints.
 
 services:
   api:
@@ -13,7 +15,6 @@ services:
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
     #
-# run a full battery of test on all endpoints using https://pypi.org/project/schemathesis/
   testdb:
     image: kartoza/postgis:12.1
     environment:
