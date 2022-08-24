@@ -1,7 +1,6 @@
 """Alert database model."""
 import datetime
 
-# from flask import json
 import json
 import logging
 

@@ -2,9 +2,8 @@
 import logging
 from collections import defaultdict
 from datetime import datetime
-from enum import Enum
 from json import dump, load
-from typing import Any
+from typing import Any, NewType
 from urllib.parse import urlencode
 
 import rasterio  # type: ignore
@@ -21,13 +20,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_STATS = ["min", "max", "mean", "median"]
 
 
-class GroupBy(str, Enum):
-    """Possible values for group_by arguments"""
-
-    ADM0_PCODE = "ADM0_PCODE"
-    ADM1_PCODE = "ADM1_PCODE"
-    ADM2_PCODE = "ADM2_PCODE"
-    TS_PCODE = "TS_PCODE"
+GroupBy = NewType("GroupBy", str)
 
 
 def get_wfs_response(wfs_params: dict[str, str]) -> dict:

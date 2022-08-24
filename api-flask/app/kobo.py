@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T")
 
 KoboForm = TypedDict(
-    "KoboForm", {"name": str, "datetime": str, "geom_field": str, "filters": dict}
+    "KoboForm", {"name": str, "datetime": str, "geom_field": str | None, "filters": dict}
 )
 
 
@@ -23,7 +23,7 @@ def get_first(items_list: list[T]) -> T | None:
 
 
 def get_kobo_params(
-    form_name: str, datetime_field: str, geom_field: str, filter_params: str | None
+    form_name: str, datetime_field: str, geom_field: str | None, filter_params: str | None
 ) -> tuple[tuple[str, str], KoboForm]:
     """Collect and validate request parameters and environment variables."""
 
@@ -135,10 +135,8 @@ def parse_datetime_params(
     begin_datetime_str: str, end_datetime_str: str | None = None
 ) -> tuple[datetime, datetime]:
     """Transform into datetime objects used for filtering form responses."""
-    # begin_datetime_str = request.args.get("beginDateTime", "2000-01-01")
     begin_datetime = dtparser(begin_datetime_str).replace(tzinfo=timezone.utc)
 
-    # end_datetime_str = request.args.get("endDateTime")
     if end_datetime_str is not None:
         end_datetime = dtparser(end_datetime_str)
     else:
@@ -205,7 +203,7 @@ def get_form_responses(
     end_datetime: datetime,
     form_name: str,
     datetime_field: str,
-    geom_field: str,
+    geom_field: str | None,
     filters: str | None,
     form_url: str,
 ) -> list[dict]:

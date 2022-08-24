@@ -12,34 +12,7 @@ stats_data = {
     "group_by": "TS",
 }
 
-alert_data = {
-    "alert_name": "flood",
-    "alert_config": {
-        "id": "rain_anomaly_monthly",
-        "type": "wms",
-        "title": "Monthly rainfall anomaly",
-        "serverLayerName": "r1q_dekad",
-        "contentPath": "data/myanmar/contents.md#monthly-rainfall-anomaly",
-        "baseUrl": "https://odc.ovio.org/",
-        "dateInterval": "days",
-        "opacity": 0.7,
-        "legendText": "Monthly precipitation anomaly compared to the long term average."
-        " Derived from CHIRPS (UCSB Climate Hazards Group)."
-        " https://www.chc.ucsb.edu/data/chirps",
-        "legend": [
-            {"label": "-0", "color": "#ffffff", "alpha": 0},
-            {"label": "1%", "color": "#d79b0b"},
-            {"label": "60%", "color": "#e1b344"},
-            {"label": "80%", "color": "#ebcb7d"},
-            {"label": "90%", "color": "#f5e3b6"},
-            {"label": "110%", "color": "#f2f2f2"},
-            {"label": "120%", "color": "#b5e7fe"},
-            {"label": "140%", "color": "#7dd4fd"},
-            {"label": "180%", "color": "#45c1fc"},
-            {"label": "> 180%", "color": "#0fb0fb"},
-        ],
-    },
-    "zones": {
+alert_data_zones = {
         "type": "FeatureCollection",
         "name": "admin_boundaries",
         "crs": {
@@ -78,7 +51,36 @@ alert_data = {
                 },
             }
         ],
+    }
+
+alert_data = {
+    "alert_name": "flood",
+    "alert_config": {
+        "id": "rain_anomaly_monthly",
+        "type": "wms",
+        "title": "Monthly rainfall anomaly",
+        "serverLayerName": "r1q_dekad",
+        "contentPath": "data/myanmar/contents.md#monthly-rainfall-anomaly",
+        "baseUrl": "https://odc.ovio.org/",
+        "dateInterval": "days",
+        "opacity": 0.7,
+        "legendText": "Monthly precipitation anomaly compared to the long term average."
+        " Derived from CHIRPS (UCSB Climate Hazards Group)."
+        " https://www.chc.ucsb.edu/data/chirps",
+        "legend": [
+            {"label": "-0", "color": "#ffffff", "alpha": 0},
+            {"label": "1%", "color": "#d79b0b"},
+            {"label": "60%", "color": "#e1b344"},
+            {"label": "80%", "color": "#ebcb7d"},
+            {"label": "90%", "color": "#f5e3b6"},
+            {"label": "110%", "color": "#f2f2f2"},
+            {"label": "120%", "color": "#b5e7fe"},
+            {"label": "140%", "color": "#7dd4fd"},
+            {"label": "180%", "color": "#45c1fc"},
+            {"label": "> 180%", "color": "#0fb0fb"},
+        ],
     },
+    "zones": alert_data_zones,
     "email": "vik@gmail.com",
     "prism_url": "https://prism-mongolia.org",
 }
@@ -106,10 +108,10 @@ def dict_must_not_contain_null_char(d: dict) -> dict:
 class AlertsZonesModel(BaseModel):
     """Schema of the zones argument for alerts."""
 
-    type: str = Field(..., example=alert_data["zones"]["type"])
-    name: str = Field(..., example=alert_data["zones"]["name"])
-    crs: dict = Field(..., example=alert_data["zones"]["crs"])
-    features: dict = Field(..., example=alert_data["zones"]["features"])
+    type: str = Field(..., example=alert_data_zones["type"])
+    name: str = Field(..., example=alert_data_zones["name"])
+    crs: dict = Field(..., example=alert_data_zones["crs"])
+    features: dict = Field(..., example=alert_data_zones["features"])
 
     _val_type = validator("type", allow_reuse=True)(must_not_contain_null_char)
     _val_name = validator("name", allow_reuse=True)(must_not_contain_null_char)
