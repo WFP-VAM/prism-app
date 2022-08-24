@@ -3,8 +3,7 @@
 import functools
 import json
 import logging
-from distutils.util import strtobool
-from typing import Optional
+from typing import Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
@@ -81,29 +80,19 @@ def _calculate_stats(
 
 @timed
 @app.post("/stats", responses={500: {"description": "Internal server error"}})
-def stats(stats_model: StatsModel) -> Response:
+def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     """Return zonal statistics."""
     # Accept data as json or form.
     logger.debug("New stats request:")
     logger.debug(stats_model)
-    data = jsonable_encoder(stats_model)
-    geotiff_url = data.get("geotiff_url")
-    zones_url = data.get("zones_url")
-    zones_geojson = data.get("zones")
-    intersect_comparison_string = data.get("intersect_comparison")
+    geotiff_url = stats_model.geotiff_url
+    zones_url = stats_model.zones_url
+    zones_geojson = stats_model.zones
+    geojson_out = stats_model.geojson_out
+    intersect_comparison_string = stats_model.intersect_comparison
 
-    if geotiff_url is None:
-        logger.error("Received {}".format(data))
-        raise HTTPException(status_code=400, detail="geotiff_url is required")
-
-    if zones_geojson is None and zones_url is None:
-        logger.error("Received {}".format(data))
-        raise HTTPException(
-            status_code=400, detail="One of zones or zones_url is required."
-        )
-
-    geojson_out = strtobool(data.get("geojson_out", "False"))
-    group_by = data.get("group_by")
+    group_by = stats_model.group_by
+    wfs_params = stats_model.wfs_params
 
     geotiff = cache_file(prefix="raster", url=geotiff_url, extension="tif")
 
@@ -117,20 +106,7 @@ def stats(stats_model: StatsModel) -> Response:
         )
 
     wfs_response = None
-    wfs_params = data.get("wfs_params", None)
     if wfs_params is not None:
-        # Validate required keys.
-        required_keys = ["layer_name", "url", "time"]
-        missing = [f for f in required_keys if f not in wfs_params.keys()]
-
-        if len(missing) > 0:
-            logger.error("Received {}".format(data))
-            err_message = "{} required within wfs_params object"
-            joined_missing = ",".join(missing)
-            raise HTTPException(
-                status_code=400, detail=err_message.format(joined_missing)
-            )
-
         wfs_response = get_wfs_response(wfs_params)
 
     intersect_comparison_tuple = None

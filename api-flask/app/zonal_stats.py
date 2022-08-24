@@ -8,6 +8,7 @@ from urllib.parse import urlencode
 
 import rasterio  # type: ignore
 from app.caching import FilePath, cache_file, get_json_file
+from app.sample_requests import WfsParamsModel
 from app.timer import timed
 from fastapi import HTTPException
 from rasterstats import zonal_stats  # type: ignore
@@ -23,7 +24,7 @@ DEFAULT_STATS = ["min", "max", "mean", "median"]
 GroupBy = NewType("GroupBy", str)
 
 
-def get_wfs_response(wfs_params: dict[str, str]) -> dict:
+def get_wfs_response(wfs_params: WfsParamsModel) -> dict[str, str | None]:
     """
     Execute Web Feature Service (WFS) request to external OGC server.
 
@@ -32,28 +33,26 @@ def get_wfs_response(wfs_params: dict[str, str]) -> dict:
     https://docs.geoserver.org/stable/en/user/services/wfs/reference.html
     """
     cql_filter = []
-    if "time" in wfs_params.keys():
-        from_date = datetime.strptime(wfs_params.get("time", ""), "%Y-%m-%d")
+    if "time" is not None:
+        from_date = datetime.strptime(wfs_params.time, "%Y-%m-%d")
         cql_filter.append("timestamp DURING {}/P1D".format(from_date.isoformat()))
 
     params = {
         "service": "WFS",
         "version": "1.0.0",
         "request": "GetFeature",
-        "typeName": wfs_params.get("layer_name"),
+        "typeName": wfs_params.layer_name,
         "outputFormat": "application/json",
     }
 
     if len(cql_filter) > 0:
         params["cql_filter"] = " AND ".join(cql_filter)
 
-    wfs_url = "{url}?{params}".format(
-        url=wfs_params.get("url"), params=urlencode(params)
-    )
+    wfs_url = f"{wfs_params.url}?{urlencode(params)}"
 
     wfs_response_path = cache_file(url=wfs_url, prefix="wfs")
 
-    return dict(filter_property_key=wfs_params["key"], path=wfs_response_path)
+    return dict(filter_property_key=wfs_params.key, path=wfs_response_path)
 
 
 def _extract_features_properties(zones) -> list:
