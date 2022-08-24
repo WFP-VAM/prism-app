@@ -8,7 +8,7 @@ from urllib.parse import urlencode
 
 import rasterio  # type: ignore
 from app.caching import FilePath, cache_file, get_json_file
-from app.sample_requests import WfsParamsModel
+from app.models import WfsParamsModel
 from app.timer import timed
 from fastapi import HTTPException
 from rasterstats import zonal_stats  # type: ignore

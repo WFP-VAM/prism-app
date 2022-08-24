@@ -15,12 +15,11 @@ from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
 from fastapi import FastAPI, HTTPException, Path, Query, Response
-from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import EmailStr, HttpUrl
 
-from .sample_requests import AlertsModel, StatsModel
+from .models import AlertsModel, StatsModel
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
