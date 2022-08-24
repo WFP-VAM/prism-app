@@ -3,22 +3,21 @@ import hashlib
 import json
 import logging
 import os
-from typing import Any, NewType
 
 import rasterio  # type: ignore
 import requests
 from app.timer import timed
 from fastapi import HTTPException
 
+from .models import FilePath, GeoJSON
+
 logger = logging.getLogger(__name__)
 
 CACHE_DIRECTORY = os.getenv("CACHE_DIRECTORY", "/cache/")
 
-FilePath = NewType("FilePath", str)
-
 
 @timed
-def cache_file(url: str, prefix, extension: str = "cache") -> FilePath:
+def cache_file(url: str, prefix: str, extension: str = "cache") -> FilePath:
     """Locally cache files fetched from a url."""
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
@@ -58,7 +57,7 @@ def cache_file(url: str, prefix, extension: str = "cache") -> FilePath:
 
 
 @timed
-def cache_geojson(geojson, prefix: str) -> FilePath:
+def cache_geojson(geojson: GeoJSON, prefix: str) -> FilePath:
     """Locally store geojson needed for a request."""
     json_string = json.dumps(geojson)
 
@@ -75,7 +74,7 @@ def cache_geojson(geojson, prefix: str) -> FilePath:
     return cache_filepath
 
 
-def get_json_file(cached_filepath: FilePath) -> dict[str, Any]:
+def get_json_file(cached_filepath: FilePath) -> GeoJSON:
     """Return geojson object as python dictionary."""
     with open(cached_filepath, "rb") as f:
         return json.load(f)
@@ -92,6 +91,6 @@ def _get_cached_filepath(prefix: str, data: str, extension: str = "cache") -> Fi
     return FilePath(os.path.join(CACHE_DIRECTORY, filename))
 
 
-def _hash_value(value) -> str:
+def _hash_value(value: str) -> str:
     """Hash value to help identify what cached file to use."""
     return hashlib.md5(value.encode("utf-8")).hexdigest()[:9]

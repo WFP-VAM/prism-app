@@ -1,12 +1,26 @@
 import json
+from typing import NewType, TypedDict
 
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
 
 from .sample_requests import alert_data, alert_data_zones, stats_data
 
+FilePath = NewType("FilePath", str)
+
+GroupBy = NewType("GroupBy", str)
+
+# a GeoJSON object
+Geometry = TypedDict("Geometry", {"type": str})
+GeoJSONFeature = TypedDict(
+    "GeoJSONFeature", {"type": str, "geometry": Geometry, "properties": dict}
+)
+GeoJSON = TypedDict("GeoJSON", {"features": list[GeoJSONFeature]})
+
+WfsResponse = TypedDict("WfsResponse", {"filter_property_key": str, "path": FilePath})
+
 
 class WfsParamsModel(BaseModel):
-    key: str | None = Field(..., example="label")
+    key: str = Field(..., example="label")
     layer_name: str = Field(..., example="mmr_gdacs_buffers")
     time: str = Field(..., example="2022-05-11")
     url: HttpUrl = Field(..., example="https://geonode.wfp.org/geoserver/ows")
@@ -20,7 +34,7 @@ class StatsModel(BaseModel):
     group_by: str = Field(..., example=stats_data["group_by"])
     wfs_params: WfsParamsModel | None = None
     geojson_out: bool | None = False
-    zones: dict | None = None
+    zones: GeoJSON | None = None
     intersect_comparison: str | None = None
 
 

@@ -7,7 +7,7 @@ from typing import Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
-from app.caching import cache_file, cache_geojson
+from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_database import AlertsDataBase
 from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.kobo import get_form_responses, parse_datetime_params
@@ -55,11 +55,11 @@ def healthcheck() -> str:
 @timed
 @functools.lru_cache(maxsize=128)
 def _calculate_stats(
-    zones,
-    geotiff,
+    zones_filepath: FilePath,
+    geotiff: FilePath,
     stats,
-    prefix,
-    group_by,
+    prefix: str,
+    group_by: GroupBy,
     geojson_out,
     # passed as hashable frozenset for caching
     wfs_response: frozenset | None,
@@ -67,7 +67,7 @@ def _calculate_stats(
 ):
     """Calculate stats."""
     return calculate_stats(
-        zones,
+        zones_filepath,
         geotiff,
         stats=stats,
         prefix=prefix,
@@ -96,6 +96,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 
     geotiff = cache_file(prefix="raster", url=geotiff_url, extension="tif")
 
+    zones: FilePath
     if zones_geojson is not None:
         zones = cache_geojson(prefix="zones_geojson", geojson=zones_geojson)
     else:
@@ -257,14 +258,14 @@ def stats_demo(
 
     geotiff = cache_file(prefix="raster_test", url=geotiff_url, extension="tif")
 
-    zones = cache_file(prefix="zones_test", url=zones_url)
+    zones_filepath = cache_file(prefix="zones_test", url=zones_url)
 
     intersect_comparison_tuple = None
     if intersect_comparison is not None:
         intersect_comparison_tuple = validate_intersect_parameter(intersect_comparison)
 
     features = _calculate_stats(
-        zones,
+        zones_filepath,
         geotiff,
         stats=" ".join(["min", "max", "mean", "median", "sum", "std"]),
         prefix="stats_",
