@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T")
 
 KoboForm = TypedDict(
-    "KoboForm", {"name": str, "datetime": str, "geom_field": str | None, "filters": dict}
+    "KoboForm",
+    {"name": str, "datetime": str, "geom_field": str | None, "filters": dict},
 )
 
 
@@ -23,7 +24,10 @@ def get_first(items_list: list[T]) -> T | None:
 
 
 def get_kobo_params(
-    form_name: str, datetime_field: str, geom_field: str | None, filter_params: str | None
+    form_name: str,
+    datetime_field: str,
+    geom_field: str | None,
+    filter_params: str | None,
 ) -> tuple[tuple[str, str], KoboForm]:
     """Collect and validate request parameters and environment variables."""
 

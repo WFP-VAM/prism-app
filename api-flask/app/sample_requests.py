@@ -13,45 +13,45 @@ stats_data = {
 }
 
 alert_data_zones = {
-        "type": "FeatureCollection",
-        "name": "admin_boundaries",
-        "crs": {
-            "type": "name",
-            "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"},
-        },
-        "features": [
-            {
-                "type": "Feature",
-                "properties": {
-                    "OBJECTID": 277,
-                    "ST": "Ayeyarwady",
-                    "ST_PCODE": "MMR017",
-                    "DT": "Pyapon",
-                    "DT_PCODE": "MMR017D006",
-                    "TS": "Bogale",
-                    "TS_PCODE": "MMR017024",
-                    "SELF_ADMIN": None,
-                    "ST_RG": "Region",
-                    "TS_MMR4": "ဘိုကလေး",
-                    "AREA": 1,
-                    "DT_MMR4": "ဖျာပုံခရိုင်",
-                    "mmr_polbnd": "ဧရာဝတီတိုင်းဒေသကြီး",
-                },
-                "geometry": {
-                    "type": "MultiPolygon",
-                    "coordinates": [
+    "type": "FeatureCollection",
+    "name": "admin_boundaries",
+    "crs": {
+        "type": "name",
+        "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"},
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "OBJECTID": 277,
+                "ST": "Ayeyarwady",
+                "ST_PCODE": "MMR017",
+                "DT": "Pyapon",
+                "DT_PCODE": "MMR017D006",
+                "TS": "Bogale",
+                "TS_PCODE": "MMR017024",
+                "SELF_ADMIN": None,
+                "ST_RG": "Region",
+                "TS_MMR4": "ဘိုကလေး",
+                "AREA": 1,
+                "DT_MMR4": "ဖျာပုံခရိုင်",
+                "mmr_polbnd": "ဧရာဝတီတိုင်းဒေသကြီး",
+            },
+            "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [
+                    [
                         [
-                            [
-                                [95.3170445470002, 15.928591091000044],
-                                [95.31199007400005, 15.926271754000084],
-                                [95.3115704550001, 15.928167658000064],
-                            ]
+                            [95.3170445470002, 15.928591091000044],
+                            [95.31199007400005, 15.926271754000084],
+                            [95.3115704550001, 15.928167658000064],
                         ]
-                    ],
-                },
-            }
-        ],
-    }
+                    ]
+                ],
+            },
+        }
+    ],
+}
 
 alert_data = {
     "alert_name": "flood",
