@@ -72,7 +72,6 @@ def test_alerts_api(case):
     case.validate_response(response)
 
 
-@pytest.mark.skip(reason="Runs too slowly to check on every test run")
 def test_stats_endpoint1():
     """
     Call /stats with known-good parameters.
@@ -82,7 +81,7 @@ def test_stats_endpoint1():
         "/stats",
         headers={"Accept": "application/json"},
         json={
-            "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(92.172747098, 101.170015055)&subset=Lat(9.671252102, 28.54553886)",
+            "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(92.172747098,101.170015055)&subset=Lat(9.671252102,28.54553886)",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
             "group_by": "TS_PCODE",
             "wfs_params": {
@@ -97,7 +96,6 @@ def test_stats_endpoint1():
     assert response.status_code == 200
 
 
-@pytest.mark.skip(reason="Runs too slowly to check on every test run")
 def test_stats_endpoint2():
     """
     Call /stats with known-good parameters.
@@ -123,5 +121,4 @@ def test_kobo_forms_endpoint(monkeypatch):
     response = client.get(
         "/kobo/forms?beginDateTime=2022-08-18&endDateTime=2022-08-18&formName=1.%20%E1%9E%91%E1%9E%98%E1%9F%92%E1%9E%9A%E1%9E%84%E1%9F%8B%E1%9E%82%E1%9F%92%E1%9E%9A%E1%9F%84%E1%9F%87%E1%9E%91%E1%9E%B9%E1%9E%80%E1%9E%87%E1%9F%86%E1%9E%93%E1%9E%93%E1%9F%8B&datetimeField=Date_Dis&measureField=NumPeoAff&koboUrl=https://kobo.humanitarianresponse.info/api/v2/assets.json"
     )
-    print(response.content)
     assert response.status_code == 200

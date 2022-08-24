@@ -62,7 +62,8 @@ def _calculate_stats(
     prefix,
     group_by,
     geojson_out,
-    wfs_response,
+    # passed as hashable frozenset for caching
+    wfs_response: frozenset | None,
     intersect_comparison,
 ):
     """Calculate stats."""
@@ -73,7 +74,7 @@ def _calculate_stats(
         prefix=prefix,
         group_by=group_by,
         geojson_out=geojson_out,
-        wfs_response=wfs_response,
+        wfs_response=dict(wfs_response) if wfs_response is not None else None,
         intersect_comparison=intersect_comparison,
     )
 
@@ -118,11 +119,13 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     features = _calculate_stats(
         zones,
         geotiff,
-        stats=["min", "max", "mean", "median", "sum", "std"],
+        stats=" ".join(["min", "max", "mean", "median", "sum", "std"]),
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
-        wfs_response=wfs_response,
+        wfs_response=frozenset(wfs_response.items())
+        if wfs_response is not None
+        else None,
         intersect_comparison=intersect_comparison_tuple,
     )
 
@@ -264,7 +267,7 @@ def stats_demo(
     features = _calculate_stats(
         zones,
         geotiff,
-        stats=["min", "max", "mean", "median", "sum", "std"],
+        stats=" ".join(["min", "max", "mean", "median", "sum", "std"]),
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
