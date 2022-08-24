@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import {
   Button,
+  Box,
+  ClickAwayListener,
+  Grow,
+  Popper,
   Typography,
-  Popover,
   withStyles,
   WithStyles,
   createStyles,
@@ -16,62 +19,61 @@ import { useSafeTranslation } from '../../../i18n';
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const { t } = useSafeTranslation();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(open ? null : event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClickAway = () => {
     setAnchorEl(null);
   };
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'menu-item-popover' : undefined;
-
   return (
-    <>
-      <Button
-        className={classes.title}
-        onClick={handleClick}
-        aria-describedby={id}
-      >
-        <img className={classes.icon} src={`images/${icon}`} alt={title} />
-        <Typography variant="body2">{t(title)}</Typography>
-      </Button>
-
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        className={classes.popover}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        PaperProps={{
-          className: classes.paper,
-        }}
-      >
-        {layersCategories.map(({ title: categoryTitle, layers, tables }) => (
-          <MenuSwitch
-            key={categoryTitle}
-            title={t(categoryTitle)}
-            layers={layers}
-            tables={tables}
-          />
-        ))}
-      </Popover>
-    </>
+    <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
+      <div className={classes.root}>
+        <Button className={classes.title} onClick={handleClick}>
+          <img className={classes.icon} src={`images/${icon}`} alt={title} />
+          <Typography variant="body2">{t(title)}</Typography>
+        </Button>
+        <Popper
+          open={open}
+          anchorEl={anchorEl}
+          className={classes.popover}
+          transition
+        >
+          {({ TransitionProps }) => (
+            <Grow
+              {...TransitionProps}
+              timeout={350}
+              style={{ transformOrigin: '50% 0' }}
+            >
+              <Box className={classes.paper} boxShadow={3}>
+                {layersCategories.map(
+                  ({ title: categoryTitle, layers, tables }) => (
+                    <MenuSwitch
+                      key={categoryTitle}
+                      title={t(categoryTitle)}
+                      layers={layers}
+                      tables={tables}
+                    />
+                  ),
+                )}
+              </Box>
+            </Grow>
+          )}
+        </Popper>
+      </div>
+    </ClickAwayListener>
   );
 }
 
 const styles = (theme: Theme) =>
   createStyles({
+    root: {
+      position: 'relative',
+      display: 'inline-flex',
+    },
     title: {
       margin: '0px 14px',
       textTransform: 'uppercase',
@@ -98,6 +100,7 @@ const styles = (theme: Theme) =>
 
     popover: {
       marginTop: 8,
+      zIndex: 1300,
     },
 
     paper: {
