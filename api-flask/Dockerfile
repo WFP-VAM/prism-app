@@ -1,20 +1,17 @@
-FROM tiangolo/meinheld-gunicorn-flask:python3.9
+# only image with python 3.10 on it
+# other GDAL images use python 3.8
+# This provides GDAL 3.6dev
+FROM osgeo/gdal:ubuntu-small-latest
 
 COPY ./app /app
 
+WORKDIR /app/
+
+ENV PYTHONPATH=/
+
 COPY requirements.txt .
 
+RUN apt update
+RUN apt install -y python3-pip libpq-dev
 RUN pip install --upgrade pip
-RUN pip install numpy
-
-# Install GDAL (after numpy)
-RUN apt-get update
-RUN apt-get install software-properties-common -y
-RUN add-apt-repository ppa:ubuntugis/ppa -y
-RUN apt-get install gdal-bin -y
-RUN apt-get install libgdal-dev -y
-RUN pip install GDAL==3.2.2
-
-# Install requirements
 RUN pip install -r requirements.txt
-RUN pip install greenlet==0.4.17
