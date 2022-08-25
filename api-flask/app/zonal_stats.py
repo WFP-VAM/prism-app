@@ -37,7 +37,7 @@ def get_wfs_response(wfs_params: WfsParamsModel) -> WfsResponse:
     https://docs.geoserver.org/stable/en/user/services/wfs/reference.html
     """
     cql_filter = []
-    if "time" is not None:
+    if wfs_params.time is not None:
         from_date = datetime.strptime(wfs_params.time, "%Y-%m-%d")
         cql_filter.append("timestamp DURING {}/P1D".format(from_date.isoformat()))
 
