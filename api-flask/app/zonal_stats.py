@@ -71,10 +71,10 @@ def _extract_features_properties(zones_filename: FilePath) -> list:
 
 def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
     """Group zones by a key id and merge polygons."""
-    output_filename = "{zones}.{group_by}".format(
+    output_filename: FilePath = "{zones}.{group_by}".format(
         zones=zones_filepath, group_by=group_by
     )
-    if is_file_valid(output_file):
+    if is_file_valid(output_filename):
         return output_filename
 
     with open(zones_filepath) as json_file:
