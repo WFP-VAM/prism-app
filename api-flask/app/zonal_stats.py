@@ -20,7 +20,7 @@ from app.timer import timed
 from fastapi import HTTPException
 from rasterstats import zonal_stats  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
-from shapely.ops import cascaded_union  # type: ignore
+from shapely.ops import unary_union  # type: ignore
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +81,7 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
 
     new_features = []
     for group_id, polygons in grouped_polygons.items():
-        new_geometry = mapping(cascaded_union(polygons))
+        new_geometry = mapping(unary_union(polygons))
 
         new_features.append(
             dict(
