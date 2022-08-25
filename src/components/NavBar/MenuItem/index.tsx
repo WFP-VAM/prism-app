@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Button,
-  Box,
+  Paper,
   ClickAwayListener,
   Grow,
   Popper,
@@ -39,7 +39,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
         <Popper
           open={open}
           anchorEl={anchorEl}
-          className={classes.popover}
+          className={classes.popper}
           transition
         >
           {({ TransitionProps }) => (
@@ -48,7 +48,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
               timeout={350}
               style={{ transformOrigin: '50% 0' }}
             >
-              <Box className={classes.paper} boxShadow={3}>
+              <Paper className={classes.paper}>
                 {layersCategories.map(
                   ({ title: categoryTitle, layers, tables }) => (
                     <MenuSwitch
@@ -59,7 +59,7 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
                     />
                   ),
                 )}
-              </Box>
+              </Paper>
             </Grow>
           )}
         </Popper>
@@ -98,7 +98,7 @@ const styles = (theme: Theme) =>
       marginRight: 6,
     },
 
-    popover: {
+    popper: {
       marginTop: 8,
       zIndex: 1300,
     },
@@ -107,6 +107,8 @@ const styles = (theme: Theme) =>
       padding: '8px 16px',
       backgroundColor: `${theme.palette.primary.main}f9`,
       borderRadius: theme.shape.borderRadius,
+      overflowY: 'auto',
+      maxHeight: 'calc(100vh - 40px)',
     },
   });
 
