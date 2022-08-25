@@ -64,6 +64,7 @@ def _calculate_stats(
     # passed as hashable frozenset for caching
     wfs_response: frozenset | None,
     intersect_comparison,
+    mask_geotiff,
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -75,6 +76,7 @@ def _calculate_stats(
         geojson_out=geojson_out,
         wfs_response=dict(wfs_response) if wfs_response is not None else None,
         intersect_comparison=intersect_comparison,
+        mask_geotiff=mask_geotiff,
     )
 
 
@@ -90,15 +92,23 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     zones_geojson = stats_model.zones
     geojson_out = stats_model.geojson_out
     intersect_comparison_string = stats_model.intersect_comparison
+    mask_geotiff_url = stats_model.mask_url
 
     group_by = stats_model.group_by
     wfs_params = stats_model.wfs_params
 
     geotiff = cache_file(prefix="raster", url=geotiff_url, extension="tif")
+    mask_geotiff: FilePath
+    if mask_geotiff_url:
+        mask_geotiff = cache_file(
+            prefix="raster", url=mask_geotiff_url, extension="tif"
+        )
 
     zones: FilePath
     if zones_geojson is not None:
-        zones = cache_geojson(prefix="zones_geojson", geojson=zones_geojson)
+        zones = cache_geojson(
+            prefix="zones_geojson", geojson=zones_geojson, extension="json"
+        )
     else:
         zones = cache_file(
             prefix="zones",
@@ -127,6 +137,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         if wfs_response is not None
         else None,
         intersect_comparison=intersect_comparison_tuple,
+        mask_geotiff=mask_geotiff,
     )
 
     return features
@@ -273,6 +284,7 @@ def stats_demo(
         geojson_out=geojson_out,
         wfs_response=None,
         intersect_comparison=intersect_comparison_tuple,
+        mask_geotiff=None,
     )
 
     # TODO - Properly encode before returning. Mongolian characters are returned as hex.
