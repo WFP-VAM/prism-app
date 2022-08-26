@@ -55,7 +55,7 @@ const ExportMenuItem = withStyles((theme: Theme) => ({
 function Download({ classes }: DownloadProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openImage, setOpenImage] = useState(false);
-  const [openReport, setOpenReport] = useState(true);
+  const [openReport, setOpenReport] = useState(false);
   const selectedMap = useSelector(mapSelector);
   const previewRef = useRef<HTMLCanvasElement>(null);
 
@@ -126,7 +126,6 @@ function Download({ classes }: DownloadProps) {
       <Report
         open={openReport}
         setOpen={setOpenReport}
-        previewRef={previewRef}
         handleClose={handleClose}
       />
     </Grid>
