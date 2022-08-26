@@ -2,10 +2,6 @@ import React, { useRef, useState } from 'react';
 import {
   Button,
   createStyles,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Grid,
   Hidden,
   ListItemIcon,
@@ -17,11 +13,17 @@ import {
   withStyles,
 } from '@material-ui/core';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
-import { CloudDownload, ArrowDropDown, Image } from '@material-ui/icons';
-import { jsPDF } from 'jspdf';
+import {
+  CloudDownload,
+  ArrowDropDown,
+  Image,
+  Description,
+} from '@material-ui/icons';
 import { useSelector } from 'react-redux';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
+import DownloadImage from './image';
+import Report from './report';
 
 const ExportMenu = withStyles((theme: Theme) => ({
   paper: {
@@ -52,7 +54,8 @@ const ExportMenuItem = withStyles((theme: Theme) => ({
 
 function Download({ classes }: DownloadProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [open, setOpen] = useState(false);
+  const [openImage, setOpenImage] = useState(false);
+  const [openReport, setOpenReport] = useState(true);
   const selectedMap = useSelector(mapSelector);
   const previewRef = useRef<HTMLCanvasElement>(null);
 
@@ -78,35 +81,9 @@ function Download({ classes }: DownloadProps) {
           context.drawImage(activeLayers, 0, 0);
         }
       }
-      setOpen(true);
+      setOpenImage(true);
     }
     handleClose();
-  };
-
-  const download = (format: string) => {
-    const ext = format === 'pdf' ? 'png' : format;
-    const canvas = previewRef.current;
-    if (canvas) {
-      const file = canvas.toDataURL(`image/${ext}`);
-      if (format === 'pdf') {
-        // eslint-disable-next-line new-cap
-        const pdf = new jsPDF({
-          orientation: 'landscape',
-        });
-        const imgProps = pdf.getImageProperties(file);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save('map.pdf');
-      } else {
-        const link = document.createElement('a');
-        link.setAttribute('href', file);
-        link.setAttribute('download', `map.${ext}`);
-        link.click();
-      }
-      setOpen(false);
-      handleClose();
-    }
   };
 
   return (
@@ -127,6 +104,12 @@ function Download({ classes }: DownloadProps) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        <ExportMenuItem onClick={() => setOpenReport(true)}>
+          <ListItemIcon>
+            <Description fontSize="small" style={{ color: 'white' }} />
+          </ListItemIcon>
+          <ListItemText primary={t('REPORT')} />
+        </ExportMenuItem>
         <ExportMenuItem onClick={openModal}>
           <ListItemIcon>
             <Image fontSize="small" style={{ color: 'white' }} />
@@ -134,57 +117,26 @@ function Download({ classes }: DownloadProps) {
           <ListItemText primary={t('IMAGE')} />
         </ExportMenuItem>
       </ExportMenu>
-      <Dialog
-        maxWidth="xl"
-        open={open}
-        keepMounted
-        onClose={() => setOpen(false)}
-        aria-labelledby="dialog-preview"
-      >
-        <DialogTitle className={classes.title} id="dialog-preview">
-          {t('Map Preview')}
-        </DialogTitle>
-        <DialogContent>
-          <canvas ref={previewRef} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)} color="primary">
-            {t('Cancel')}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => download('png')}
-            color="primary"
-          >
-            {t('Download PNG')}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => download('jpeg')}
-            color="primary"
-          >
-            {t('Download JPEG')}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => download('pdf')}
-            color="primary"
-          >
-            {t('Download PDF')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DownloadImage
+        open={openImage}
+        setOpen={setOpenImage}
+        previewRef={previewRef}
+        handleClose={handleClose}
+      />
+      <Report
+        open={openReport}
+        setOpen={setOpenReport}
+        previewRef={previewRef}
+        handleClose={handleClose}
+      />
     </Grid>
   );
 }
 
-const styles = (theme: Theme) =>
+const styles = () =>
   createStyles({
     label: {
       marginLeft: '10px',
-    },
-    title: {
-      color: theme.palette.text.secondary,
     },
   });
 
