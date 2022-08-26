@@ -1,6 +1,7 @@
 """Raster utilility function for reprojection."""
 import logging
 import os
+import subprocess as subp
 
 import rasterio
 from app.timer import timed
@@ -16,9 +17,7 @@ def gdal_calc(input_file_path, mask_file, output_file_path, calc_expr='"A*(B==0)
     nodata = "0"
 
     # Generate string of process.
-    gdal_calc_str = (
-        "{0} -A {1} -B {2} --outfile={3} --calc={4} --NoDataValue={5} --extent=intersect > /dev/null"
-    )
+    gdal_calc_str = "{0} -A {1} -B {2} --outfile={3} --calc={4} --NoDataValue={5} --extent=intersect --overwrite"
     gdal_calc_process = gdal_calc_str.format(
         gdal_calc_path, input_file_path, mask_file, output_file_path, calc_expr, nodata
     )
@@ -26,7 +25,7 @@ def gdal_calc(input_file_path, mask_file, output_file_path, calc_expr='"A*(B==0)
     logger.debug(gdal_calc_process)
 
     # Call process.
-    os.system(gdal_calc_process)
+    subp.check_call(str(gdal_calc_process), shell=True)
 
 
 @timed

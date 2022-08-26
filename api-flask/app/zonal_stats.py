@@ -227,7 +227,7 @@ def calculate_stats(
                 input_file_path=reproj_pop_geotiff,
                 mask_file=mask_geotiff,
                 output_file_path=masked_pop_geotiff,
-                calc_expr='"A*(B==0)"',
+                calc_expr='"A*(B==1)"',
             )
 
         masked_geotiff_r = rasterio.open(masked_pop_geotiff)
