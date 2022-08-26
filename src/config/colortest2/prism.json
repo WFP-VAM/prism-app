@@ -125,10 +125,12 @@
           "dlc_13_0_40"
         ],
         "total_num_heavy_raindays": [
+          "xnhie_12_0_10",
           "xnhie_12_0_14"
         ],
         "longest_run_consecutive_heavy_rain_days": [
-          "xlhie_12_0_10"
+          "xlhie_12_0_10",
+          "xlhie_12_0_14"
         ]
       },
       "vegetation": {

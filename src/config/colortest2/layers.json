@@ -2140,6 +2140,58 @@
             { "value": 21, "label": "> 20 Days", "color": "#0000c8" }
         ]
       },
+      "xlhie_12_0_14": {
+        "title": "xlhie_12_0_14",
+        "type": "wms",
+        "server_layer_name": "xlh_dekad",
+        "additional_query_params": {
+          "styles": "xnhie_12_0_14"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "xlhie_12_0_14",
+        "legend": [
+            { "value": 0, "label": "None", "color": "#fafafa" },
+            { "value": 1, "label": "1 Day", "color": "#fffadf" },
+            { "value": 2, "label": "2 Days", "color": "#d3f9d0" },
+            { "value": 3, "label": "3 Days", "color": "#a9e4a3" },
+            { "value": 4, "label": "4 Days", "color": "#7cc594" },
+            { "value": 5, "label": "5 Days", "color": "#5eab91" },
+            { "value": 6, "label": "6 Days", "color": "#9fffe8" },
+            { "value": 7, "label": "7 Days", "color": "#90e0ef" },
+            { "value": 10, "label": "8-10 Days", "color": "#00b1de" },
+            { "value": 15, "label": "11-15 Days", "color": "#0083f3" },
+            { "value": 20, "label": "16-20 Days", "color": "#0052cd" },
+            { "value": 21, "label": "> 20 Days", "color": "#0000c8" }
+        ]
+      },      
+      "xnhie_12_0_10": {
+        "title": "xnhie_12_0_10",
+        "type": "wms",
+        "server_layer_name": "xnh_dekad",
+        "additional_query_params": {
+          "styles": "xlhie_12_0_10"
+        },
+        "base_url": "https://odc.ovio.org/",
+        "date_interval": "days",
+        "opacity": 0.7,
+        "legend_text": "xnhie_12_0_10",
+        "legend": [
+            { "value": 0, "label": "None", "color": "#fafafa" },
+            { "value": 1, "label": "1 Day", "color": "#fffadf" },
+            { "value": 2, "label": "2 Days", "color": "#d3f9d0" },
+            { "value": 3, "label": "3 Days", "color": "#a9e4a3" },
+            { "value": 4, "label": "4 Days", "color": "#7cc594" },
+            { "value": 5, "label": "5 Days", "color": "#5eab91" },
+            { "value": 6, "label": "6 Days", "color": "#9fffe8" },
+            { "value": 7, "label": "7 Days", "color": "#90e0ef" },
+            { "value": 10, "label": "8-10 Days", "color": "#00b1de" },
+            { "value": 15, "label": "11-15 Days", "color": "#0083f3" },
+            { "value": 20, "label": "16-20 Days", "color": "#0052cd" },
+            { "value": 21, "label": "> 20 Days", "color": "#0000c8" }
+        ]
+      },
       "xnhie_12_0_14": {
         "title": "xnhie_12_0_14",
         "type": "wms",
