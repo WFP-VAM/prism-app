@@ -6,7 +6,7 @@
       "rainfall_anomaly": "icon_rain.png",
       "vegetation": "icon_veg.png",
       "temperature": "icon_climate.png",
-      "dry_spells": "icon_rain.png",
+      "wet_dry_streaks": "icon_rain.png",
       "capacity": "icon_capacity.png",
       "tables": "icon_table.png"
     },
@@ -23,98 +23,139 @@
     "categories": {
       "rainfall_aggregation": {
         "10-day_rainfall": [
-          "rfh_12_0_1800_v2",
-          "rfh_16_0_2400_v2",
-          "rfh_20_0_3100_v2",
-          "rfh_24_0_4000_v2",
-          "precip_blended_dekad"
+          "dekad_rfh_16_0_300",
+          "dekad_rfh_16_0_400",
+          "dekad_rfh_16_0_600",
+          "dekad_rfh_16_0_800",
+          "dekad_rfh_16_0_1000",
+          "dekad_rfh_16_0_1600",
+          "dekad_rfh_16_0_2000",
+          "dekad_rfh_16_0_2400",
+          "dekad_rfh_16_0_4000"
         ],
         "1-month_rainfall": [
-          "1m_rfh_12_0_1800_v2",
-          "1m_rfh_16_0_2400_v2",
-          "1m_rfh_20_0_3100_v2",
-          "1m_rfh_24_0_4000_v2"
+          "1m_rfh_16_0_300",
+          "1m_rfh_16_0_400",
+          "1m_rfh_16_0_600",
+          "1m_rfh_16_0_800",
+          "1m_rfh_16_0_1000",
+          "1m_rfh_16_0_1600",
+          "1m_rfh_16_0_2000",
+          "1m_rfh_16_0_2400",
+          "1m_rfh_16_0_4000"
         ],
         "3-month_rainfall": [
-          "3m_rfh_12_0_1800_v2",
-          "3m_rfh_16_0_2400_v2",
-          "3m_rfh_20_0_3100_v2",
-          "3m_rfh_24_0_4000_v2"
+          "3m_rfh_16_0_300",
+          "3m_rfh_16_0_400",
+          "3m_rfh_16_0_600",
+          "3m_rfh_16_0_800",
+          "3m_rfh_16_0_1000",
+          "3m_rfh_16_0_1600",
+          "3m_rfh_16_0_2000",
+          "3m_rfh_16_0_2400",
+          "3m_rfh_16_0_4000"
         ],
         "6-month_rainfall": [
-          "6m_rfh_12_0_1800_v2",
-          "6m_rfh_16_0_2400_v2",
-          "6m_rfh_20_0_3100_v2",
-          "6m_rfh_24_0_4000_v2"
+          "6m_rfh_16_0_300",
+          "6m_rfh_16_0_400",
+          "6m_rfh_16_0_600",
+          "6m_rfh_16_0_800",
+          "6m_rfh_16_0_1000",
+          "6m_rfh_16_0_1600",
+          "6m_rfh_16_0_2000",
+          "6m_rfh_16_0_2400",
+          "6m_rfh_16_0_4000"
         ],
         "9-month_rainfall": [
-          "9m_rfh_12_0_1800_v2",
-          "9m_rfh_16_0_2400_v2",
-          "9m_rfh_20_0_3100_v2",
-          "9m_rfh_24_0_4000_v2"
+          "9m_rfh_16_0_300",
+          "9m_rfh_16_0_400",
+          "9m_rfh_16_0_600",
+          "9m_rfh_16_0_800",
+          "9m_rfh_16_0_1000",
+          "9m_rfh_16_0_1600",
+          "9m_rfh_16_0_2000",
+          "9m_rfh_16_0_2400",
+          "9m_rfh_16_0_4000"
         ],
         "1-year_rainfall": [
-          "1y_rfh_12_0_1800_v2",
-          "1y_rfh_16_0_2400_v2",
-          "1y_rfh_20_0_3100_v2",
-          "1y_rfh_24_0_4000_v2"
+          "1y_rfh_16_0_300",
+          "1y_rfh_16_0_400",
+          "1y_rfh_16_0_600",
+          "1y_rfh_16_0_800",
+          "1y_rfh_16_0_1000",
+          "1y_rfh_16_0_1600",
+          "1y_rfh_16_0_2000",
+          "1y_rfh_16_0_2400",
+          "1y_rfh_16_0_4000"
         ]
       },
       "rainfall_anomaly": {
         "10-day_rainfall_anomaly": [
-          "rfq_12_30_200",
-          "rfq_12_50_200"
+          "dekad_rfq_14_20_400",
+          "dekad_ryq_14_50_200"
         ],
         "1-month_rainfall_anomaly": [
-          "1m_rfq_12_30_200",
-          "1m_rfq_12_50_200"
+          "1m_rfq_14_20_400",
+          "1m_ryq_14_50_200"
         ],
         "3-month_rainfall_anomaly": [
-          "3m_rfq_12_30_200",
-          "3m_rfq_12_50_200"
+          "3m_rfq_14_20_400",
+          "3m_ryq_14_50_200"
         ],
         "6-month_rainfall_anomaly": [
-          "6m_rfq_12_30_200",
-          "6m_rfq_12_50_200"
+          "6m_rfq_14_20_400",
+          "6m_ryq_14_50_200"
         ],
         "9-month_rainfall_anomaly": [
-          "9m_rfq_12_30_200",
-          "9m_rfq_12_50_200"
+          "9m_rfq_14_20_400",
+          "9m_ryq_14_50_200"
         ],
         "1-year_rainfall_anomaly": [
-          "ryq_12_20_300_v2_orange",
-          "ryq_12_20_300_v2_brown",
-          "ryq_12_30_250_new"
+          "1y_rfq_14_20_400",
+          "1y_ryq_14_50_200"
         ]
       },
-      "dry_spells": {
-        "dry_spells": [
-          "dlx_13_4_30_v2",
-          "dlx_jh"
+      "wet_dry_streaks": {
+        "longest_dryspell": [
+          "dlx_13_0_26",
+          "dlx_13_0_40"
         ],
-        "number_of_dry_days": [
-          "dlc_13_0_30"      ]
+        "current_dryspell": [
+          "dlc_13_0_26",
+          "dlc_13_0_40"
+        ],
+        "total_num_heavy_raindays": [
+          "xnhie_12_0_14"
+        ],
+        "longest_run_consecutive_heavy_rain_days": [
+          "xlhie_12_0_10"
+        ]
       },
       "vegetation": {
         "ndvi_anomaly": [
-          "viq_12_50_150_new",
-          "viq_12_60_150_new"
+          "viq_13_50_150_5km",
+          "viq_13_50_150_1km",
+          "viq_13_50_150_250m"
         ],
         "ndvi": [
-          "vim_12_0_1"
+          "vim_14_01_09_250m",
+          "vim_14_01_09_1km",
+          "vim_14_01_09_5km"
         ]
       },
       "temperature": {
         "land_surface_temperature": [
-          "lst_day_22__24p60_gray_v2"
+          "tda_42_n24_70",
+          "tna_42_n24_70"
         ],
         "lst_anomaly":[
-          "lst_anomaly_day_13__12p12_v2",
-          "lst_anomaly_day_13__15p15"
+          "tdd_21_m20_20",
+          "tnd_21_m20_20",
+          "tdd_21_m12_12",
+          "tnd_21_m12_12"
         ],
         "lst_amplitude":[
-          "taa_12_0_34_v2",
-          "taa_13_0_38_v2"
+          "taa_21_1_48"
         ]
       }
     }
