@@ -98,7 +98,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     wfs_params = stats_model.wfs_params
 
     geotiff = cache_file(prefix="raster", url=geotiff_url, extension="tif")
-    mask_geotiff: FilePath
+    mask_geotiff: FilePath = None
     if mask_geotiff_url:
         mask_geotiff = cache_file(
             prefix="raster", url=mask_geotiff_url, extension="tif"
