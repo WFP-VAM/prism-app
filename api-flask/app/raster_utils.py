@@ -52,7 +52,7 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
                 match.width,  # input width
                 match.height,  # input height
                 *match.bounds,  # unpacks input outer boundaries (left, bottom, right, top)
-                # resolution=match.crs.linear_units,
+                resolution=match.res,
             )
 
         dst_width = match.width
