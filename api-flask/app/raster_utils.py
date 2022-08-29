@@ -52,6 +52,7 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
                 match.width,  # input width
                 match.height,  # input height
                 *match.bounds,  # unpacks input outer boundaries (left, bottom, right, top)
+                # resolution=match.crs.linear_units,
             )
 
         dst_width = match.width
@@ -68,9 +69,9 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
                 "nodata": 0,
             }
         )
-        print(
-            "Coregistered to shape:", dst_height, dst_width, "\n Affine", dst_transform
-        )
+        logger.info(("Coregistered to shape:", dst_height, dst_width))
+        logger.info(("Affine", dst_transform))
+
         # open output
         with rasterio.open(outfile, "w+", **dst_kwargs) as dst:
             # iterate through bands and write using reproject function
