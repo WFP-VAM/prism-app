@@ -367,7 +367,13 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 
       const updatedDates = layerWithValidity
         ? updateLayerDatesWithValidity(layerWithValidity)
-        : dates.map((d: number) => ({ displayDate: d, queryDate: d }));
+        : dates.map((d: number) => {
+            const dateWithTz = moment(d).set({ hour: 12 }).valueOf();
+            return {
+              displayDate: dateWithTz,
+              queryDate: dateWithTz,
+            };
+          });
 
       return { ...acc, [layerKey]: updatedDates };
     },
