@@ -346,6 +346,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     })),
   ]);
 
+  // Merge all layer types results into a single dictionary of date arrays.
   const mergedLayers: { [key: string]: number[] } = merge({}, ...layerDates);
 
   const wmsLayersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
