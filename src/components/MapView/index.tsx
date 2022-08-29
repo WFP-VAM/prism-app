@@ -58,7 +58,12 @@ import {
   layersSelector,
   mapSelector,
 } from '../../context/mapStateSlice/selectors';
-import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
+import {
+  addLayer,
+  setMap,
+  updateDateRange,
+  removeLayer,
+} from '../../context/mapStateSlice';
 import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
 import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';
 import {
@@ -199,7 +204,12 @@ function MapView({ classes }: MapViewProps) {
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
-  const { urlParams, updateHistory } = useUrlHistory();
+  const {
+    urlParams,
+    updateHistory,
+    removeKeyFromUrl,
+    removeLayerFromUrl,
+  } = useUrlHistory();
   // let users know if their current date doesn't exist in possible dates
   const urlDate = urlParams.get('date');
   const mapOnClick = useMapOnClick(setIsAlertFormOpen);
@@ -366,14 +376,32 @@ function MapView({ classes }: MapViewProps) {
     // let users know if the layers selected are not possible to view together.
     if (
       selectedLayerDates.length === 0 &&
-      selectedLayersWithDateSupport.length !== 0
+      selectedLayersWithDateSupport.length !== 0 &&
+      selectedDate
     ) {
+      const layerToRemove = selectedLayers[selectedLayers.length - 2];
+      const layerToKeep = selectedLayers[selectedLayers.length - 1];
+
       dispatch(
         addNotification({
-          message: 'No dates overlap with the selected layers.',
+          message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.id}.`,
           type: 'warning',
         }),
       );
+
+      // Remove layer from url.
+      const urlLayerKey = getUrlKey(layerToRemove);
+      removeLayerFromUrl(urlLayerKey, layerToRemove.id);
+      dispatch(removeLayer(layerToRemove));
+
+      const layerToKeepDates = getPossibleDatesForLayer(
+        layerToKeep as DateCompatibleLayer,
+        serverAvailableDates,
+      );
+
+      const closestDate = findClosestDate(selectedDate, layerToKeepDates);
+
+      updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
     }
 
     if (selectedDate && urlDate && moment(urlDate).valueOf() !== selectedDate) {
@@ -395,13 +423,13 @@ function MapView({ classes }: MapViewProps) {
 
           dispatch(
             addNotification({
-              message: `No data was found for the layer '${
+              message: `No data was found for layer '${
                 layer.title
               }' on ${momentSelectedDate.format(
                 DEFAULT_DATE_FORMAT,
               )}. The closest date ${closestDate.format(
                 DEFAULT_DATE_FORMAT,
-              )} has been loaded instead`,
+              )} has been loaded instead.`,
               type: 'warning',
             }),
           );
@@ -417,6 +445,9 @@ function MapView({ classes }: MapViewProps) {
     updateHistory,
     urlParams,
     urlDate,
+    removeKeyFromUrl,
+    removeLayerFromUrl,
+    selectedLayers,
   ]);
 
   // Listen for MapSourceData events to track WMS Layers that are currently loading its tile images.
