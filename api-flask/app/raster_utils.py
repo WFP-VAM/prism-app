@@ -17,7 +17,7 @@ def gdal_calc(input_file_path, mask_file, output_file_path, calc_expr='"A*(B==0)
     nodata = "0"
 
     # Generate string of process.
-    gdal_calc_str = "{0} -A {1} -B {2} --outfile={3} --calc={4} --NoDataValue={5} --extent=intersect --overwrite"
+    gdal_calc_str = "{0} -A {1} -B {2} --outfile={3} --calc={4} --NoDataValue={5} --extent=intersect --overwrite > /dev/null"
     gdal_calc_process = gdal_calc_str.format(
         gdal_calc_path, input_file_path, mask_file, output_file_path, calc_expr, nodata
     )
