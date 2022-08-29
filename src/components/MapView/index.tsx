@@ -384,7 +384,7 @@ function MapView({ classes }: MapViewProps) {
 
       dispatch(
         addNotification({
-          message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.id}`,
+          message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.id}.`,
           type: 'warning',
         }),
       );
@@ -423,13 +423,13 @@ function MapView({ classes }: MapViewProps) {
 
           dispatch(
             addNotification({
-              message: `No data was found for the layer '${
+              message: `No data was found for layer '${
                 layer.title
               }' on ${momentSelectedDate.format(
                 DEFAULT_DATE_FORMAT,
               )}. The closest date ${closestDate.format(
                 DEFAULT_DATE_FORMAT,
-              )} has been loaded instead`,
+              )} has been loaded instead.`,
               type: 'warning',
             }),
           );
