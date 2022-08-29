@@ -15,9 +15,9 @@ function WMSLayers({
   const selectedDate = useDefaultDate(serverLayerName, id);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
-  const correctedDate = serverAvailableDates[serverLayerName]?.find(
-    date => date.value === selectedDate,
-  )?.real;
+  const queryDate = serverAvailableDates[serverLayerName]?.find(
+    date => date.displayDate === selectedDate,
+  )?.queryDate;
 
   return (
     <>
@@ -29,7 +29,7 @@ function WMSLayers({
             `${getWMSUrl(baseUrl, serverLayerName, {
               ...additionalQueryParams,
               ...(selectedDate && {
-                time: moment(correctedDate).format(DEFAULT_DATE_FORMAT),
+                time: moment(queryDate).format(DEFAULT_DATE_FORMAT),
               }),
             })}&bbox={bbox-epsg-3857}`,
           ],

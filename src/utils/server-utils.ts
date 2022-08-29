@@ -54,7 +54,7 @@ export const getPossibleDatesForLayer = (
     }
   };
 
-  return datesArray().map(d => d.value);
+  return datesArray().map(d => d.displayDate);
 };
 
 export function formatUrl(
@@ -297,6 +297,11 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   return possibleDates;
 }
 
+/**
+ * Create new array including dates specified within the validity parameter.
+ *
+ * @return Array of integers which represents a given date.
+ */
 const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
   const { dates, validity } = layer;
 
@@ -312,7 +317,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
       startDate.clone().add(day, 'days').valueOf(),
     );
 
-    return days.map(day => ({ value: day, real: date }));
+    return days.map(day => ({ displayDate: day, queryDate: date }));
   });
 
   const flattenDates = [...new Set(datesWithValidity.flat())];
@@ -362,7 +367,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 
       const updatedDates = layerWithValidity
         ? updateLayerDatesWithValidity(layerWithValidity)
-        : dates.map((d: number) => ({ value: d, real: d }));
+        : dates.map((d: number) => ({ displayDate: d, queryDate: d }));
 
       return { ...acc, [layerKey]: updatedDates };
     },

@@ -540,8 +540,8 @@ export interface MenuItemMobileType {
 }
 
 export type DateItem = {
-  value: number;
-  real: number;
+  displayDate: number; // Date that will be rendered in the calendar.
+  queryDate: number; // Date that will be used in the WMS request.
 };
 
 export type AvailableDates = {
