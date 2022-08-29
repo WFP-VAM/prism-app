@@ -391,12 +391,7 @@ function MapView({ classes }: MapViewProps) {
 
       // Remove layer from url.
       const urlLayerKey = getUrlKey(layerToRemove);
-      const updatedUrl = removeLayerFromUrl(urlLayerKey, layerToRemove.id);
-      if (updatedUrl === '') {
-        removeKeyFromUrl(urlLayerKey);
-      } else {
-        updateHistory(urlLayerKey, updatedUrl);
-      }
+      removeLayerFromUrl(urlLayerKey, layerToRemove.id);
       dispatch(removeLayer(layerToRemove));
 
       const layerToKeepDates = getPossibleDatesForLayer(
