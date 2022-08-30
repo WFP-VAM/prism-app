@@ -320,9 +320,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
     return days.map(day => ({ displayDate: day, queryDate: date }));
   });
 
-  const flattenDates = [...new Set(datesWithValidity.flat())];
-
-  return flattenDates;
+  return [...new Set(datesWithValidity.flat())];
 };
 
 /**
