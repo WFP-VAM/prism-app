@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import omit from 'lodash/omit';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
@@ -40,18 +40,21 @@ function Notifier({ classes }: NotifierProps) {
     dispatch(removeNotification(notification.key));
   };
 
-  const autoClose = (notification: Notification) => () => {
-    clearTimeout(notificationTimers.current[notification.key]);
-    notificationTimers.current = omit(
-      notificationTimers.current,
-      notification.key,
-    );
-    dispatch(removeNotification(notification.key));
-  };
+  const autoClose = useCallback(
+    (notification: Notification) => () => {
+      clearTimeout(notificationTimers.current[notification.key]);
+      notificationTimers.current = omit(
+        notificationTimers.current,
+        notification.key,
+      );
+      dispatch(removeNotification(notification.key));
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     notifications.forEach(notification => {
-      if (!Object.keys(notificationTimers).includes(String(notification.key))) {
+      if (!(notification.key in notificationTimers.current)) {
         notificationTimers.current = {
           ...notificationTimers.current,
           [notification.key]: setTimeout(
@@ -61,8 +64,7 @@ function Notifier({ classes }: NotifierProps) {
         };
       }
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notifications]);
+  }, [autoClose, notifications]);
 
   return (
     <div className={classes.notificationsContainer} style={{ top: topOffset }}>
