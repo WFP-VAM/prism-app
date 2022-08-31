@@ -4,10 +4,20 @@ import { ANALYSIS_API_URL } from './constants';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
-import { getWCSCoverage, getWMSCapabilities } from './utils/server-utils';
+import {
+  formatUrl,
+  getWCSCoverage,
+  getWMSCapabilities,
+} from './utils/server-utils';
 
 async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
-  const { baseUrl, serverLayerName, type } = alert.alertConfig;
+  const {
+    baseUrl,
+    serverLayerName,
+    type,
+    title,
+    id: hazardLayerId,
+  } = alert.alertConfig;
   const {
     id,
     alertName,
@@ -40,6 +50,11 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   url.searchParams.append('deactivate', 'true');
   url.searchParams.append('email', email);
 
+  const urlWithParams = formatUrl(prismUrl, {
+    hazardLayerIds: hazardLayerId,
+    date: maxDate.toISOString().slice(0, 10),
+  });
+
   if (alertMessage) {
     const emailMessage = `
         Your alert${alertName ? ` ${alertName}` : ''} has been triggered.
@@ -47,14 +62,16 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
         Layer: ${serverLayerName}
         Date: ${maxDate}
 
-        Go to ${prismUrl} for more information.
+        Go to ${urlWithParams} for more information.
   
         Alert: ${alertMessage}`;
 
-    const emailHtml = `${emailMessage.replace(
-      /(\r\n|\r|\n)/g,
-      '<br>',
-    )} <br><br>To cancel this alert, click <a href='${url.href}'>here</a>.`;
+    const emailHtml = `${emailMessage
+      .replace(/(\r\n|\r|\n)/g, '<br>')
+      .replace(
+        urlWithParams,
+        `<a href="${urlWithParams}">${title}</a>`,
+      )} <br><br>To cancel this alert, click <a href='${url.href}'>here</a>.`;
 
     console.log(
       `Alert ${id} - '${alert.alertName}' was triggered on ${maxDate}.`,
