@@ -36,7 +36,6 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   const dispatch = useDispatch();
   const {
     updateHistory,
-    removeKeyFromUrl,
     appendLayerToUrl,
     removeLayerFromUrl,
   } = useUrlHistory();
@@ -95,14 +94,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
         refreshBoundaries(map, dispatch);
       }
     } else {
-      const updatedUrl = removeLayerFromUrl(urlLayerKey, selectedLayer.id);
-
-      if (updatedUrl === '') {
-        removeKeyFromUrl(urlLayerKey);
-      } else {
-        updateHistory(urlLayerKey, updatedUrl);
-      }
-
+      removeLayerFromUrl(urlLayerKey, selectedLayer.id);
       dispatch(removeLayer(selectedLayer));
 
       // For admin boundary layers with boundary property
