@@ -6,13 +6,6 @@ exports[`renders as expected 1`] = `
     class="MuiGrid-root MapView-container-1 MuiGrid-item"
   >
     <div
-      class="MapView-loading-3"
-    >
-      <mock-circularprogress
-        size="100"
-      />
-    </div>
-    <div
       style="height: 100%;"
     />
     <div
