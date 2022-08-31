@@ -16,7 +16,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
     serverLayerName,
     type,
     title,
-    id: alertConfigId,
+    id: hazardLayerId,
   } = alert.alertConfig;
   const {
     id,
@@ -51,7 +51,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   url.searchParams.append('email', email);
 
   const urlWithParams = formatUrl(prismUrl, {
-    hazardLayerIds: alertConfigId,
+    hazardLayerIds: hazardLayerId,
     date: maxDate.toISOString().slice(0, 10),
   });
 
