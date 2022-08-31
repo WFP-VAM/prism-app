@@ -1,11 +1,11 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/tajikistan/tjk_admin_boundaries_v2.json",
+    "path": "../data/tajikistan/tjk_admin2_wgs84_clean.json",
     "opacity": 0.8,
-    "admin_code": "admin2_pcode",
-    "admin_level_names": ["admin1Name_en", "admin2Name_en"],
-    "admin_level_local_names": ["admin1Name_ru", "admin2Name_ru"],
+    "admin_code": "text",
+    "admin_level_names": ["ProvinceE","DistrictE"],
+    "admin_level_local_names": ["ProvinceR ", "DistrictR"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -1627,5 +1627,173 @@
         "color": "#f9cb35"
       }
     ]
+  },
+  "Agricultural_areas": {
+    "title": "Area under cultivation (sq.km) ",
+    "type": "admin_level_data",
+    "path": "../data/tajikistan/exposures.json",
+    "data_field": "Crop_area",
+    "admin_level": 1,
+    "admin_code": "text",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 13,
+        "color": "#f0f9e8"
+      },
+      {
+        "value": 96,
+        "color": "#bae4bc"
+      },
+      {
+        "value": 174,
+        "color": "#7bccc4"
+      },
+      {
+        "value": 252,
+        "color": "#43a2ca"
+      },
+      {
+        "value": 433,
+        "color": "#0868ac"
+      }
+    ],
+    "legend_text": "The test cultivated area is calculated from ESRI landuse map (10m) resolution for the year 2021."
+  },
+  "Population_2020": {
+    "title": "Population at risk",
+    "type": "admin_level_data",
+    "path": "../data/tajikistan/exposures.json",
+    "data_field": "Pop_2020_H",
+    "admin_level": 1,
+    "admin_code": "text",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 14614,
+        "color": "#f2f0f7"
+      },
+      {
+        "value": 50288,
+        "color": "#bcbddc"
+      },
+      {
+        "value": 85320,
+        "color": "#7bccc4"
+      },
+      {
+        "value": 152370,
+        "color": "#9e9ac8"
+      },
+      {
+        "value": 225928,
+        "color": "#756bb1"
+      },
+      {
+        "value": 1459703,
+        "color": "#54278f"
+      }
+    ],
+    "legend_text": "The population is calculated from the HRSL layer in Hum-data.."
+  },
+  "FS_situation": {
+    "title": "% of moderately food insecure population",
+    "type": "admin_level_data",
+    "path": "../data/tajikistan/vulnerability_layers.json",
+    "data_field": "Moderately_Food_Insecure",
+    "feature_info_props": {
+      "Food_Secure": {
+        "type": "text",
+        "label": "Fully Food Secure"
+      },
+      "Marginally_Food_Secure": {
+        "type": "text",
+        "label": "Marginally Food Secure"
+      },
+      "Moderately_Food_Insecure": {
+        "type": "text",
+        "label": "Moderately Food Insecure"
+      },
+      "Severely_Food_Insecure": {
+        "type": "text",
+        "label": "Severely Food Insecure"  
+      }
+    },  
+    "admin_level": 2,
+    "admin_code": "text",
+    "opacity": 0.8,
+    "legend": 
+    [
+      {
+        "value": "12.8",
+        "color": "#31a354"
+      },
+      {
+        "value": "13.5",
+        "color": "#addd8e"
+      },
+      {
+        "value": "18.1",
+        "color": "#fec44f"
+      },
+      {
+        "value": "20.7",
+        "color": "#f03b20"
+      }
+      
+    ],
+        "legend_text": "CARI data for Food In-/Security"
+  },
+  "Flood_freq": {
+    "title": "Frequency of Floods",
+    "type": "admin_level_data",
+    "path": "../data/tajikistan/hazard_freq.json",
+    "data_field": "ICA_FL",
+    "feature_info_props": {
+      "ICA_LS": {
+        "type": "text",
+        "label": "Landslide Frequency"
+      },
+      "ICA_MF": {
+        "type": "text",
+        "label": "Mudflow Frequency"
+      },
+      "ICA_FL": {
+        "type": "text",
+        "label": "Flood Frequency"
+      },
+      "ICA_DR": {
+        "type": "text",
+        "label": "Drought Frequency"  
+      }
+    },  
+    "admin_level": 2,
+    "admin_code": "text",
+    "opacity": 0.5,
+    "exposure": {
+      "id": "FS_situation",
+      "key": "Moderately Food Insecure"
+    },
+    "legend": 
+    [
+      {
+        "value": 1,
+        "color": "#1a9641"
+      },
+      {
+        "value": 5,
+        "color": "#a6d96a"
+      },
+      {
+        "value": 8,
+        "color": "#fdae61"
+      },
+      {
+        "value": 11,
+        "color": "#d7191c"
+      }
+      
+    ],
+        "legend_text": "Disaster data from the Government of Tajikistan"
   }
 }

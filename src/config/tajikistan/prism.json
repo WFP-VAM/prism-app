@@ -159,10 +159,20 @@
         "lst_amplitude"
       ]
     },
-    "earthquakes": {
+    "hazards": {
       "earthquakes": [
         "usgs_shakemaps"
+      ],
+      "floods": [
+        "Flood_freq"
       ]
+    },
+    "exposure": {
+      "crops": ["Agricultural_areas"], 
+      "human_exposure": ["Population_2020"]
+    },
+    "vulnerability": {
+      "food_security_monitoring": ["FS_situation"]
     }
   }
 }
