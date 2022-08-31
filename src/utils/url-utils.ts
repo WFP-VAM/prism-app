@@ -59,15 +59,29 @@ export const useUrlHistory = () => {
     return updatedUrl.join(',');
   };
 
-  const removeLayerFromUrl = (
-    layerKey: UrlLayerKey,
-    layerId: string,
-  ): string => {
+  const removeLayerFromUrl = (layerKey: UrlLayerKey, layerId: string) => {
+    const removeKey = (): string => {
+      urlParams.delete(layerKey);
+
+      if (layerKey === UrlLayerKey.HAZARD) {
+        urlParams.delete('date');
+      }
+
+      return urlParams.toString();
+    };
+
     const urlLayers = urlParams.get(layerKey);
 
     const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
 
-    return selectedLayersUrl.filter(l => l !== layerId).join(',');
+    const filteredSelectedLayers = selectedLayersUrl
+      .filter(l => l !== layerId)
+      .join(',');
+
+    const urlToReplace =
+      filteredSelectedLayers === '' ? removeKey() : filteredSelectedLayers;
+
+    replace({ search: urlToReplace });
   };
 
   const updateAnalysisParams = (analysisParams: AnalysisParams) => {
