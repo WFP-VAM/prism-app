@@ -21,6 +21,7 @@ export type MapState = {
   // Note that layerData is mainly for storing vector map data.
   // Tile image loading for raster layer is tracked separately on mapTileLoadingStateSlice
   loadingLayerIds: LayerKey[];
+  isLoading: boolean;
 };
 
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -35,6 +36,7 @@ const initialState: MapState = {
   errors: [],
   layersData: [],
   loadingLayerIds: [],
+  isLoading: false,
 };
 
 function keepLayer(layer: LayerType, payload: LayerType) {
@@ -122,6 +124,7 @@ export const mapStateSlice = createSlice({
         ...rest,
         loadingLayerIds: loadingLayerIds.filter(id => id !== payload.layer.id),
         layersData: layersData.concat(payload),
+        isLoading: false,
       }),
     );
 
@@ -135,6 +138,7 @@ export const mapStateSlice = createSlice({
         errors: errors.concat(
           action.error.message ? action.error.message : action.error.toString(),
         ),
+        isLoading: false,
       }),
     );
 
@@ -143,6 +147,7 @@ export const mapStateSlice = createSlice({
       ({ loadingLayerIds, ...rest }, action) => ({
         ...rest,
         loadingLayerIds: loadingLayerIds.concat([action.meta.arg.layer.id]),
+        isLoading: true,
       }),
     );
   },

@@ -57,6 +57,7 @@ import {
   layerDataSelector,
   layersSelector,
   mapSelector,
+  isLoadingLayerSelector,
 } from '../../context/mapStateSlice/selectors';
 import { addLayer, setMap, updateDateRange } from '../../context/mapStateSlice';
 import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
@@ -176,6 +177,7 @@ function MapView({ classes }: MapViewProps) {
   const selectedMap = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const datesLoading = useSelector(areDatesLoading);
+  const layerLoading = useSelector(isLoadingLayerSelector);
   const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -497,11 +499,12 @@ function MapView({ classes }: MapViewProps) {
 
   return (
     <Grid item className={classes.container}>
-      {datesLoading && (
-        <div className={classes.loading}>
-          <CircularProgress size={100} />
-        </div>
-      )}
+      {datesLoading ||
+        (layerLoading && (
+          <div className={classes.loading}>
+            <CircularProgress size={100} />
+          </div>
+        ))}
       <MapboxMap
         // eslint-disable-next-line react/style-prop-object
         style={style.toString()}

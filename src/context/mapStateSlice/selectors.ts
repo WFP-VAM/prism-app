@@ -23,3 +23,6 @@ export const layerDataSelector = (id: LayerKey, date?: number) => (
   );
 export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
   state.mapState.loadingLayerIds;
+
+export const isLoadingLayerSelector = (state: RootState): boolean =>
+  state.mapState.isLoading;
