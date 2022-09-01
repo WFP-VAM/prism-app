@@ -294,6 +294,7 @@ def calculate_stats(
         ]
 
         # Return stats as geojson array of features.
+        # TODO - consider the geojson_out flag and format the return object appoprietly.
         return features
 
     if not geojson_out:
