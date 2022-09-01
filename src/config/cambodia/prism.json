@@ -37,9 +37,6 @@
       ],
       "early_warning": [
         "ews_remote"
-      ],
-      "flood_events": [
-        "hydra_s1"
       ]
     },
     "rainfall": {
