@@ -60,6 +60,7 @@ export const useUrlHistory = () => {
   };
 
   const removeLayerFromUrl = (layerKey: UrlLayerKey, layerId: string) => {
+    // Get all layer ids from the url.
     const urlLayers = urlParams.get(layerKey);
 
     const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
@@ -67,9 +68,11 @@ export const useUrlHistory = () => {
       .filter(l => l !== layerId)
       .join(',');
 
+    // If the list of layers is empty, remove the layerKey from the url.
     if (filteredSelectedLayers === '') {
       urlParams.delete(layerKey);
 
+      // For hazard layer, remove also the date.
       if (layerKey === UrlLayerKey.HAZARD) {
         urlParams.delete('date');
       }
