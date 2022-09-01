@@ -60,28 +60,27 @@ export const useUrlHistory = () => {
   };
 
   const removeLayerFromUrl = (layerKey: UrlLayerKey, layerId: string) => {
-    const removeKey = (): string => {
-      urlParams.delete(layerKey);
-
-      if (layerKey === UrlLayerKey.HAZARD) {
-        urlParams.delete('date');
-      }
-
-      return urlParams.toString();
-    };
-
+    // Get all layer ids from the url.
     const urlLayers = urlParams.get(layerKey);
 
     const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
-
     const filteredSelectedLayers = selectedLayersUrl
       .filter(l => l !== layerId)
       .join(',');
 
-    const urlToReplace =
-      filteredSelectedLayers === '' ? removeKey() : filteredSelectedLayers;
+    // If the list of layers is empty, remove the layerKey from the url.
+    if (filteredSelectedLayers === '') {
+      urlParams.delete(layerKey);
 
-    replace({ search: urlToReplace });
+      // For hazard layer, remove also the date.
+      if (layerKey === UrlLayerKey.HAZARD) {
+        urlParams.delete('date');
+      }
+    } else {
+      urlParams.set(layerKey, filteredSelectedLayers);
+    }
+
+    replace({ search: urlParams.toString() });
   };
 
   const updateAnalysisParams = (analysisParams: AnalysisParams) => {
