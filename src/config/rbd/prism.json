@@ -29,6 +29,11 @@
     "admin1_boundaries"
   ],
   "categories": {
+    "Cadre Harmonisé": {
+      "Cadre Harmonisé": [
+        "ch_data"
+      ]
+    },
     "rainfall": {
       "rainfall_amount": [
         {

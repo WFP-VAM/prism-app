@@ -1634,13 +1634,13 @@
     ]
   },
   "ch_2021_03": {
-    "title": "Projected phase classification: March to June 2021",
+    "title": "Phase classification",
     "type": "admin_level_data",
-    "path": "data/rbd/wca_CHIPC_mar2021_projected_jun2021.json",
+    "path": "data/rbd/ch/{YYYY-MM-DD}.json",
+    "date_url": "data/rbd/ch/dates.json",
     "data_field": "phase_class",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
-    "content_path": "data/rbd/contents.md#Cadre-Harmonisé:-Projected-March-to-June-2021",
     "opacity": 0.7,
     "feature_info_props": {
       "exercise_year": {
@@ -1736,7 +1736,7 @@
     ],
     "legend_text": "Overall current phase classification - November 2021"
   },
-  "ch_2021_11_phase_class_projected": {
+  "ch_data": {
     "title": "Projected phase classification: November 2021",
     "type": "admin_level_data",
     "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",
