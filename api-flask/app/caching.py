@@ -97,7 +97,7 @@ def _hash_value(value: str) -> str:
 
 
 def is_file_valid(filepath):
-    """Test if a file is falid"""
+    """Test if a file exists and is valid."""
     is_tif = filepath and ".tif" in filepath
     # If the file exists, return path.
     if os.path.isfile(filepath):
@@ -107,8 +107,7 @@ def is_file_valid(filepath):
                 rasterio.open(filepath)
                 return filepath
             except rasterio.errors.RasterioError:
-                pass
-        else:
-            return True
+                return False
+        return True
 
     return False

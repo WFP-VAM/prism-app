@@ -1,4 +1,4 @@
-"""Raster utilility function for reprojection."""
+"""Raster utilility functions for reprojection and calculation."""
 import logging
 import os
 import subprocess as subp
@@ -11,17 +11,28 @@ logger = logging.getLogger(__name__)
 
 
 @timed
-def gdal_calc(input_file_path, mask_file, output_file_path, calc_expr='"A*(B==0)"'):
-    """Utility function to run gdal_calc with two rasters."""
+def gdal_calc(
+    input_file_path,
+    mask_file_path,
+    output_file_path,
+    calc_expr='"A*(B==1)"',
+    nodata="0",
+):
+    """Utility function to run gdal_calc between two rasters."""
     gdal_calc_path = os.path.join("gdal_calc.py")
-    nodata = "0"
 
     # Generate string of process.
     gdal_calc_str = "{0} -A {1} -B {2} --outfile={3} --calc={4} --NoDataValue={5} --extent=intersect --overwrite > /dev/null"
     gdal_calc_process = gdal_calc_str.format(
-        gdal_calc_path, input_file_path, mask_file, output_file_path, calc_expr, nodata
+        gdal_calc_path,
+        input_file_path,
+        mask_file_path,
+        output_file_path,
+        calc_expr,
+        nodata,
     )
 
+    logger.debug("Calling gdal_calc.py...")
     logger.debug(gdal_calc_process)
 
     # Call process.
@@ -38,13 +49,9 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
     match : (string) path to raster with desired shape and projection
     outfile : (string) path to output file tif
     """
-    # open input
     with rasterio.open(infile) as src:
-
-        # open input to match
         with rasterio.open(match) as match:
             dst_crs = match.crs
-
             # calculate the output transform matrix
             dst_transform, dst_width, dst_height = calculate_default_transform(
                 src.crs,  # input CRS
@@ -52,11 +59,8 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
                 match.width,  # input width
                 match.height,  # input height
                 *match.bounds,  # unpacks input outer boundaries (left, bottom, right, top)
-                resolution=match.res,
+                resolution=match.res,  # ensure matching pixel size
             )
-
-        dst_width = match.width
-        dst_height = match.height
 
         # set properties for output
         dst_kwargs = src.meta.copy()
@@ -69,10 +73,10 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
                 "nodata": 0,
             }
         )
-        logger.info(("Coregistered to shape:", dst_height, dst_width))
-        logger.info(("Affine", dst_transform))
 
-        # open output
+        logger.debug(("Coregistered to shape:", dst_height, dst_width))
+        logger.debug(("Affine", dst_transform))
+
         with rasterio.open(outfile, "w+", **dst_kwargs) as dst:
             # iterate through bands and write using reproject function
             for i in range(1, src.count + 1):
@@ -83,6 +87,5 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
                     src_crs=src.crs,
                     dst_transform=dst_transform,
                     dst_crs=dst_crs,
-                    # mode resampling method
                     resampling=resampling_mode,
                 )

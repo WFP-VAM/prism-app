@@ -203,6 +203,7 @@ def calculate_stats(
 
     # Add mask option for flood exposure analysis
     if mask_geotiff:
+        # quick hack to create "readable" filenames for caching.
         geotiff_hash = Path(geotiff).name.replace("raster_", "").replace(".tif", "")
         mask_hash = Path(mask_geotiff).name.replace("raster_", "").replace(".tif", "")
 
@@ -213,7 +214,6 @@ def calculate_stats(
             f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}.tif"
         )
 
-        # TODO - smart caching. Needs to take into account both file names
         if not is_file_valid(reproj_pop_geotiff):
             reproj_match(
                 geotiff,
@@ -225,22 +225,9 @@ def calculate_stats(
         if not is_file_valid(masked_pop_geotiff):
             gdal_calc(
                 input_file_path=reproj_pop_geotiff,
-                mask_file=mask_geotiff,
+                mask_file_path=mask_geotiff,
                 output_file_path=masked_pop_geotiff,
                 calc_expr='"A*(B==1)"',
-            )
-
-        masked_geotiff_r = rasterio.open(masked_pop_geotiff)
-        masked_geotiff_array = masked_geotiff_r.read(1)
-
-        for array in [masked_geotiff_array]:
-            logger.debug(
-                {
-                    "min": array.min(),
-                    "mean": array.mean(),
-                    "median": np.median(array),
-                    "max": array.max(),
-                }
             )
 
         geotiff = masked_pop_geotiff
