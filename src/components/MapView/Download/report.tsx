@@ -10,81 +10,40 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { jsPDF } from 'jspdf';
-import { Page, Document, pdfjs } from 'react-pdf';
+// import { jsPDF } from 'jspdf';
+// import { Page, Document, pdfjs } from 'react-pdf';
 import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
+import {
+  PDFViewer,
+  //  BlobProvider,
+  PDFDownloadLink,
+} from '@react-pdf/renderer';
 import { useSafeTranslation } from '../../../i18n';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import StormReportDoc from './stormReportDoc';
 
 // eslint-disable-next-line fp/no-mutation
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+// pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 function Report({ classes, open, setOpen, handleClose }: ReportProps) {
   const { t } = useSafeTranslation();
-  const [preview, setPreview] = React.useState<any>();
+  const [mapImage, setMapImage] = React.useState<string>('');
   const selectedMap = useSelector(mapSelector);
 
-  function blobToBase64(blob: Blob): Promise<string> {
-    // eslint-disable-next-line no-unused-vars
-    return new Promise((resolve: (value: string) => void, _) => {
-      const reader = new FileReader();
-      // eslint-disable-next-line fp/no-mutation
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.readAsDataURL(blob);
-    });
-  }
-
-  function removeTextLayerOffset() {
-    const textLayers = document.querySelectorAll(
-      '.react-pdf__Page__textContent',
-    );
-    textLayers.forEach(layer => {
-      const { style } = layer as any;
-      // eslint-disable-next-line fp/no-mutation
-      style.top = '0';
-      // eslint-disable-next-line fp/no-mutation
-      style.left = '0';
-      // eslint-disable-next-line fp/no-mutation
-      style.transform = '';
-    });
-  }
-
-  function getMapImage(format: 'png' | 'jpeg' = 'png'): string | null {
-    if (selectedMap) {
-      const activeLayers = selectedMap.getCanvas();
-      const file = activeLayers.toDataURL(`image/${format}`);
-      return file;
-    }
-    return null;
-  }
-
-  async function generatePdf() {
-    // eslint-disable-next-line new-cap
-    const pdf = new jsPDF();
-
-    const file = getMapImage('png');
-
-    pdf.text('Hello world!', 10, 10);
-
-    if (file !== null) {
-      const imgProps = pdf.getImageProperties(file);
-      const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
-      const pdfHeight = imgProps.height * (pdfWidth / imgProps.width);
-      pdf.addImage(file, 'PNG', 10, 15, pdfWidth, pdfHeight);
-    }
-
-    const blobPDF = new Blob([pdf.output('blob')], { type: 'application/pdf' });
-    const result = await blobToBase64(blobPDF);
-    setPreview(result);
-  }
-
   React.useEffect(() => {
-    if (open) {
-      generatePdf();
-    }
+    const getMapImage = (format: 'png' | 'jpeg' = 'png'): string | null => {
+      if (selectedMap) {
+        const activeLayers = selectedMap.getCanvas();
+        const file = activeLayers.toDataURL(`image/${format}`);
+        return file;
+      }
+      return null;
+    };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (open) {
+      setMapImage(getMapImage('png') || '');
+    }
   }, [open, selectedMap]);
 
   return (
@@ -105,25 +64,43 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
           >
             <ArrowBack />
           </IconButton>
-
-          <span className={classes.titleText}>{t('Report Title')}</span>
+          <span className={classes.titleText}>{t('Storm impact report')}</span>
         </div>
       </DialogTitle>
-      <DialogContent>
-        <div>
-          <Document file={preview} renderMode="svg">
-            <Page pageNumber={1} onLoadSuccess={removeTextLayerOffset} />
-          </Document>
+      <DialogContent style={{ height: '90vh', width: 'calc(90vh / 1.42)' }}>
+        {/* <BlobProvider document={<StormReportDoc mapImage={mapImage} />}>
+          {({ blob, url, loading, error }) => {
+            // Do whatever you need with blob here
+            return (
+              <div>
+                <Document file={url}>
+                  <Page pageNumber={1} />
+                </Document>
+                <a href={url || ''} target="blank" style={{ color: 'black' }}>
+                  Download
+                </a>
+              </div>
+            );
+          }}
+        </BlobProvider> */}
+        <div style={{ width: '100%', height: '100%' }}>
+          <PDFViewer style={{ width: '100%', height: '100%' }}>
+            <StormReportDoc mapImage={mapImage} />
+          </PDFViewer>
         </div>
       </DialogContent>
       <DialogActions className={classes.actions}>
-        <Button
-          className={classes.actionButton}
-          variant="outlined"
-          onClick={() => generatePdf()}
-          color="primary"
-        >
-          {t('Generate PDF')}
+        <Button className={classes.actionButton} variant="outlined">
+          <PDFDownloadLink
+            document={<StormReportDoc mapImage={mapImage} />}
+            fileName="prism-report.pdf"
+          >
+            {
+              // eslint-disable-next-line no-unused-vars
+              ({ blob, url, loading, error }) =>
+                loading ? 'Loading document...' : 'Download'
+            }
+          </PDFDownloadLink>
         </Button>
       </DialogActions>
     </Dialog>
@@ -152,6 +129,7 @@ const styles = () =>
     },
     actionButton: {
       background: '#FFFFFF',
+      color: '#6F9FD2',
     },
   });
 

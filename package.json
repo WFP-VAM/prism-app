@@ -43,6 +43,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.11.3",
+    "@react-pdf/renderer": "^3.0.0",
     "@reduxjs/toolkit": "^1.4.0",
     "@sentry/browser": "^5.15.5",
     "@testing-library/dom": "^6.15.0",
