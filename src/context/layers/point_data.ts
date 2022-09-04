@@ -93,6 +93,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     data = (await (
       await fetch(fetchUrl, {
         mode: 'cors',
+        // TODO - add auth/password
+        headers: { Authorization: `Basic login:password` },
       })
     ).json()) as PointData[];
   } catch (ignored) {

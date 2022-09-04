@@ -7,14 +7,16 @@ from typing import Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
+from app.auth import validate_user
 from app.caching import FilePath, cache_file, cache_geojson
-from app.database.alert_database import AlertsDataBase
-from app.database.alert_model import AlchemyEncoder, AlertModel
-from app.kobo import get_form_responses, parse_datetime_params
+from app.database.alert_model import AlertModel
+from app.database.database import AlertsDataBase, AuthDataBase
+from app.database.user_info_model import UserInfo
+from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
-from fastapi import FastAPI, HTTPException, Path, Query, Response
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import EmailStr, HttpUrl
@@ -132,6 +134,14 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     return features
 
 
+@app.get("/kobo/dates")
+def get_kobo_form_dates(koboUrl: HttpUrl, formName: str, datetimeField: str,):
+    """Get all form response dates."""
+    form_dates = get_form_dates(koboUrl, formName, datetimeField)
+
+    return form_dates
+
+
 @app.get("/kobo/forms")
 def get_kobo_forms(
     formName: str,
@@ -141,6 +151,7 @@ def get_kobo_forms(
     filters: str | None = None,
     beginDateTime=Query(default="2000-01-01"),
     endDateTime: str | None = None,
+    user_info: UserInfo | None = Depends(validate_user),
 ):
     """Get all form responses."""
     begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)
@@ -149,6 +160,13 @@ def get_kobo_forms(
         raise HTTPException(
             status_code=400, detail="beginDateTime value must be lower than endDateTime"
         )
+
+    geom_bbox = None
+    try:
+        geom_bbox = user_info["access"]["bbox"]
+    except (IndexError, KeyError, TypeError):
+        pass
+
     form_responses = get_form_responses(
         begin_datetime,
         end_datetime,
@@ -157,6 +175,7 @@ def get_kobo_forms(
         geomField,
         filters,
         koboUrl,
+        geom_bbox,
     )
 
     return form_responses

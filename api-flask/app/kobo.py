@@ -1,4 +1,5 @@
 """Collect and parse kobo forms."""
+from email.policy import HTTP
 import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
@@ -7,6 +8,8 @@ from typing import Any, TypedDict, TypeVar
 import requests
 from dateutil.parser import parse as dtparser
 from fastapi import HTTPException
+from shapely.geometry import Point, box
+from pydantic import EmailStr, HttpUrl
 
 logger = logging.getLogger(__name__)
 
@@ -176,7 +179,8 @@ def get_responses_from_kobo(
 
     # Find form and get results.
     forms_iterator = (
-        d for d in kobo_user_metadata.get("results") if d.get("name") == form_name
+        d for d in kobo_user_metadata.get("results")
+        if (form_name is None or d.get("name") == form_name)
     )
     form_metadata = next(forms_iterator, None)
     if form_metadata is None:
@@ -202,6 +206,22 @@ def get_responses_from_kobo(
     return form_responses, form_labels
 
 
+def get_form_dates(form_url: HttpUrl, form_name: str, datetime_field: str):
+    """Get all form responses dates using Kobo api."""
+    auth, form_fields = get_kobo_params(form_name, datetime_field, None, None)
+
+    form_responses, form_labels = get_responses_from_kobo(
+        form_url, auth, form_fields.get("name")
+    )
+
+    forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
+    
+    dates_list = set([f.get("date").date().isoformat() for f in forms])
+    sorted_dates_list = sorted(dates_list)
+
+    return [{"date": d} for d in sorted_dates_list]
+
+
 def get_form_responses(
     begin_datetime: datetime,
     end_datetime: datetime,
@@ -210,6 +230,7 @@ def get_form_responses(
     geom_field: str | None,
     filters: str | None,
     form_url: str,
+    geom_bbox: str | None = None,
 ) -> list[dict]:
     """Get all form responses using Kobo api."""
     auth, form_fields = get_kobo_params(form_name, datetime_field, geom_field, filters)
@@ -220,13 +241,24 @@ def get_form_responses(
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
+    bbox = None
+    if geom_bbox is not None:
+        bbox = box(*[float(p) for p in geom_bbox.split(",")])
+
     filtered_forms = []
     for form in forms:
         date_value: datetime = form.get("date")  # type: ignore
 
-        conditions = [form.get(k) == v for k, v in form_fields.get("filters").items()]  # type: ignore
+        conditions = [
+            form.get(k) == v for k, v in form_fields.get("filters").items()
+        ]  # type: ignore
         conditions.append(begin_datetime <= date_value)
         conditions.append(date_value < end_datetime)
+
+        # Geospatial filter
+        if bbox is not None:
+            point = Point(form.get("lon"), form.get("lat"))
+            conditions.append(bbox.contains(point))
 
         if all(conditions) is False:
             continue

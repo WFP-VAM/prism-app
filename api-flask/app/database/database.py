@@ -4,6 +4,7 @@ from os import getenv
 from typing import List
 
 from app.database.alert_model import AlertModel
+from app.database.user_info_model import UserInfo
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -35,7 +36,7 @@ class AlertsDataBase:
         """Alerts Database initializer."""
         _eng = create_engine(DB_URI)
         self.session: Session = sessionmaker(_eng)()
-        logger.info("DB connection is initialized.")
+        logger.info("Alerts DB connection is initialized.")
 
     def write(self, alert: AlertModel):
         """Write an alert to the alerts table."""
@@ -113,6 +114,50 @@ class AlertsDataBase:
             self.session.close()
 
         return delete_successful
+
+
+class AuthDataBase:
+    """
+    Authentication Database.
+
+    This object provides the methods that will be required to connect to
+    database that stores the user info for access control.
+    """
+
+    def __init__(self):
+        """Authentication Database initializer."""
+        _eng = create_engine(DB_URI)
+        self.session: Session = sessionmaker(_eng)()
+        logger.info("Auth DB connection is initialized.")
+
+    # def write(self, alert: AlertModel):
+    #     """Write an alert to the alerts table."""
+    #     try:
+    #         self.session.add(alert)
+    #         self.session.commit()
+    #     except Exception as e:
+    #         self.session.rollback()
+    #         raise e
+    #     finally:
+    #         self.session.close()
+
+    def read(self, expr: ColumnElement) -> List[AlertModel]:
+        """
+        Return all the rows that match expression.
+
+        :param expr: An expression that builds a filter.
+        :return: A list of ORM object.
+        """
+        return self.session.query(AlertModel).filter(expr).all()
+
+    def get_by_username(self, username: str) -> UserInfo | None:
+        """
+        Return one alert matching the provided id.
+
+        :param username: The username of the wanted user entity
+        :return: A user entity or None if no entity was found
+        """
+        return self.session.query(UserInfo).filter_by(username=username).first()
 
 
 # Local test
