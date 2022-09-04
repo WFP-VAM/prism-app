@@ -1,14 +1,13 @@
 """Collect and parse kobo forms."""
 import logging
 from datetime import datetime, timedelta, timezone
-from email.policy import HTTP
 from os import getenv
 from typing import Any, TypedDict, TypeVar
 
 import requests
 from dateutil.parser import parse as dtparser
 from fastapi import HTTPException
-from pydantic import EmailStr, HttpUrl
+from pydantic import HttpUrl
 from shapely.geometry import Point, box
 
 logger = logging.getLogger(__name__)
@@ -179,9 +178,7 @@ def get_responses_from_kobo(
 
     # Find form and get results.
     forms_iterator = (
-        d
-        for d in kobo_user_metadata.get("results")
-        if (form_name is None or d.get("name") == form_name)
+        d for d in kobo_user_metadata.get("results") if d.get("name") == form_name
     )
     form_metadata = next(forms_iterator, None)
     if form_metadata is None:
