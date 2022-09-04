@@ -8,7 +8,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 security = HTTPBasic()
 depends = Depends(security)
 
-auth_db = None # AuthDataBase()
+auth_db = None  # AuthDataBase()
 
 if auth_db is None:
     depends = lambda x: True
