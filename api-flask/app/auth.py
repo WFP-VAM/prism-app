@@ -54,9 +54,6 @@ def validate_user(credentials: HTTPBasicCredentials = depends):
             == user_info.password
         )
 
-        print(credentials.password)
-        print(user_info.password)
-        print({"is_correct_password": is_correct_password})
     # Temporary implementation without hashed passwords:
     else:
         current_password_bytes = credentials.password.encode("utf8")
