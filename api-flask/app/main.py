@@ -11,7 +11,7 @@ from app.auth import validate_user
 from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlertModel
 from app.database.database import AlertsDataBase, AuthDataBase
-from app.database.user_info_model import UserInfo
+from app.database.user_info_model import UserInfoModel
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
@@ -155,7 +155,7 @@ def get_kobo_forms(
     filters: str | None = None,
     beginDateTime=Query(default="2000-01-01"),
     endDateTime: str | None = None,
-    user_info: UserInfo | None = Depends(validate_user),
+    user_info: UserInfoModel | None = Depends(validate_user),
 ):
     """Get all form responses."""
     begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)

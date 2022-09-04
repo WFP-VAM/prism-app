@@ -1,10 +1,13 @@
 """Alert database access functions."""
+import base64
+import hashlib
 import logging
+import os
 from os import getenv
 from typing import List
 
 from app.database.alert_model import AlertModel
-from app.database.user_info_model import UserInfo
+from app.database.user_info_model import UserInfoModel
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -130,18 +133,35 @@ class AuthDataBase:
         self.session: Session = sessionmaker(_eng)()
         logger.info("Auth DB connection is initialized.")
 
-    # def write(self, alert: AlertModel):
-    #     """Write an alert to the alerts table."""
-    #     try:
-    #         self.session.add(alert)
-    #         self.session.commit()
-    #     except Exception as e:
-    #         self.session.rollback()
-    #         raise e
-    #     finally:
-    #         self.session.close()
+    def create_user(self, user):
+        """Create user with hashed password."""
+        salt = os.urandom(32)
+        key = hashlib.pbkdf2_hmac(
+            "sha256",  # The hash digest algorithm for HMAC
+            user.password.encode("utf-8"),  # Convert the password to bytes
+            salt,  # Provide the salt
+            100000,  # It is recommended to use at least 100,000 iterations of SHA-256
+        )
+        # Bytes encoded to Base64 but still in byte format
+        encoded_salt = base64.b64encode(salt)
+        encoded_key = base64.b64encode(key)
+        db_user = UserInfoModel(
+            username=user.username,
+            password=encoded_key.decode("utf-8"),
+            salt=encoded_salt.decode("utf-8"),
+        )
+        try:
+            self.session.add(db_user)
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
+        finally:
+            self.session.close()
 
-    def read(self, expr: ColumnElement) -> List[AlertModel]:
+        return db_user
+
+    def read(self, expr: ColumnElement) -> List[UserInfoModel]:
         """
         Return all the rows that match expression.
 
@@ -150,14 +170,14 @@ class AuthDataBase:
         """
         return self.session.query(AlertModel).filter(expr).all()
 
-    def get_by_username(self, username: str) -> UserInfo | None:
+    def get_by_username(self, username: str) -> UserInfoModel | None:
         """
         Return one alert matching the provided id.
 
         :param username: The username of the wanted user entity
         :return: A user entity or None if no entity was found
         """
-        return self.session.query(UserInfo).filter_by(username=username).first()
+        return self.session.query(UserInfoModel).filter_by(username=username).first()
 
 
 # Local test

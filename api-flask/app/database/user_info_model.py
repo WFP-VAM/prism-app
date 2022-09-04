@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 Base = declarative_base()
 
 
-class UserInfo(Base):  # type: ignore
+class UserInfoModel(Base):  # type: ignore
     """Alert ORM that defines a table."""
 
     __tablename__ = "user_info"
