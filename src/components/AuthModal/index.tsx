@@ -35,7 +35,6 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   const dispatch = useDispatch();
 
   // Get the admin boundary layer, with lowest number of level names (provinces).
-
   const boundaryLayer = getBoundaryLayers().reduce((boundary, item) =>
     boundary.adminLevelNames.length > item.adminLevelNames.length
       ? item
