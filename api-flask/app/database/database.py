@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 DB_URI = getenv(
     "DATABASE_URL"
 ) or "postgresql://{user}:{password}@{host}:{port}/{database}".format(
-    host=getenv("POSTGRES_HOST", "alerting-db"),
-    port=getenv("POSTGRES_PORT", "5432"),
+    host=getenv("POSTGRES_HOST", "host.docker.internal"),
+    port=getenv("POSTGRES_PORT", "54321"),
     database=getenv("POSTGRES_DB", "postgres"),
     user=getenv("POSTGRES_USER", "postgres"),
     password=getenv("POSTGRES_PASSWORD"),

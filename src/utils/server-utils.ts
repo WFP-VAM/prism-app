@@ -252,7 +252,10 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     if (!fetchUrl) {
       return [];
     }
-    const response = await fetch(fetchUrl);
+    // TODO - pass correct user info
+    const response = await fetch(fetchUrl, {
+      headers: { Authorization: `Basic ${btoa('login:password')}` },
+    });
     if (response.status !== 200) {
       console.error(`Impossible to get point data dates for ${layer.id}`);
       return [];
