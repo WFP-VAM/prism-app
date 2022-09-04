@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { LayerType } from '../../config/types';
+import { LayerKey, LayerType } from '../../config/types';
 import { LayerDefinitions } from '../../config/utils';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 
@@ -14,10 +14,13 @@ export type MapState = {
   layers: LayerType[];
   dateRange: DateRange;
   mapboxMap: MapGetter;
-  loading: number;
   errors: string[];
   // TODO this shouldn't be any
   layersData: LayerData<any>[];
+  // Keep track of layer id which are currently loading its layerData.
+  // Note that layerData is mainly for storing vector map data.
+  // Tile image loading for raster layer is tracked separately on mapTileLoadingStateSlice
+  loadingLayerIds: LayerKey[];
 };
 
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -29,10 +32,9 @@ const initialState: MapState = {
   layers: [],
   dateRange: {} as DateRange,
   mapboxMap: (() => {}) as MapGetter,
-  // Keep track of loading state with reference counting
-  loading: 0,
   errors: [],
   layersData: [],
+  loadingLayerIds: [],
 };
 
 function keepLayer(layer: LayerType, payload: LayerType) {
@@ -121,30 +123,35 @@ export const mapStateSlice = createSlice({
     builder.addCase(
       loadLayerData.fulfilled,
       (
-        { layersData, loading, ...rest },
+        { layersData, loadingLayerIds, ...rest },
         { payload }: PayloadAction<LayerDataTypes>,
       ) => ({
         ...rest,
-        loading: loading - 1,
+        loadingLayerIds: loadingLayerIds.filter(id => id !== payload.layer.id),
         layersData: layersData.concat(payload),
       }),
     );
 
     builder.addCase(
       loadLayerData.rejected,
-      ({ loading, errors, ...rest }, action) => ({
+      ({ loadingLayerIds, errors, ...rest }, action) => ({
         ...rest,
-        loading: loading - 1,
+        loadingLayerIds: loadingLayerIds.filter(
+          id => id !== action.meta.arg.layer.id,
+        ),
         errors: errors.concat(
           action.error.message ? action.error.message : action.error.toString(),
         ),
       }),
     );
 
-    builder.addCase(loadLayerData.pending, ({ loading, ...rest }) => ({
-      ...rest,
-      loading: loading + 1,
-    }));
+    builder.addCase(
+      loadLayerData.pending,
+      ({ loadingLayerIds, ...rest }, action) => ({
+        ...rest,
+        loadingLayerIds: loadingLayerIds.concat([action.meta.arg.layer.id]),
+      }),
+    );
   },
 });
 

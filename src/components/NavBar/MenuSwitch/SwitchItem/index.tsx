@@ -13,10 +13,10 @@ import {
 import { LayerKey, LayerType } from '../../../../config/types';
 import {
   getDisplayBoundaryLayers,
-  getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../../config/utils';
 import {
+  refreshBoundaries,
   safeDispatchAddLayer,
   safeDispatchRemoveLayer,
 } from '../../../../utils/map-utils';
@@ -36,7 +36,6 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   const dispatch = useDispatch();
   const {
     updateHistory,
-    removeKeyFromUrl,
     appendLayerToUrl,
     removeLayerFromUrl,
   } = useUrlHistory();
@@ -88,22 +87,14 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
 
       updateHistory(urlLayerKey, updatedUrl);
 
-      const defaultBoundary = getBoundaryLayerSingleton();
       if (
         !('boundary' in selectedLayer) &&
         selectedLayer.type === 'admin_level_data'
       ) {
-        safeDispatchAddLayer(map, defaultBoundary, dispatch);
+        refreshBoundaries(map, dispatch);
       }
     } else {
-      const updatedUrl = removeLayerFromUrl(urlLayerKey, selectedLayer.id);
-
-      if (updatedUrl === '') {
-        removeKeyFromUrl(urlLayerKey);
-      } else {
-        updateHistory(urlLayerKey, updatedUrl);
-      }
-
+      removeLayerFromUrl(urlLayerKey, selectedLayer.id);
       dispatch(removeLayer(selectedLayer));
 
       // For admin boundary layers with boundary property

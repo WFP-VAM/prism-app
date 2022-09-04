@@ -57,10 +57,16 @@ function AnalysisLayer({ before }: { before?: string }) {
     }
   })();
 
+  const boundary =
+    'baselineLayerBoundary' in analysisData &&
+    analysisData.baselineLayerBoundary
+      ? `layer-${analysisData.baselineLayerBoundary}-line`
+      : before;
+
   return (
     <GeoJSONLayer
       id="layer-analysis"
-      before={before}
+      before={boundary}
       data={analysisData.featureCollection}
       fillPaint={fillPaintData(analysisData.legend, defaultProperty)}
       // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data

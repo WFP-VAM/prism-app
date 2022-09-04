@@ -22,7 +22,6 @@ import { removeLayerData } from '../../../../context/mapStateSlice';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
-import { getBoundaryLayerSingleton } from '../../../../config/utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useUrlHistory } from '../../../../utils/url-utils';
 
@@ -35,7 +34,7 @@ import {
 import { createEWSDatasetParams } from '../../../../utils/ews-utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
-function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
+function PointDataLayer({ layer, before }: LayersProps) {
   const selectedDate = useDefaultDate(layer.id);
   const jwtAccessToken = useSelector(jwtAccessTokenSelector);
 
@@ -145,12 +144,10 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
     }
   };
 
-  const boundaryId = getBoundaryLayerSingleton().id;
-
   if (layer.adminLevelDisplay) {
     return (
       <GeoJSONLayer
-        before={`layer-${boundaryId}-line`}
+        before={before}
         id={layerId}
         data={features}
         fillPaint={fillPaintData(layer, layer.dataField)}
@@ -160,7 +157,7 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
   }
   return (
     <GeoJSONLayer
-      before={`layer-${boundaryId}-line`}
+      before={before}
       id={layerId}
       data={features}
       circleLayout={circleLayout}
@@ -168,6 +165,11 @@ function PointDataLayer({ layer }: { layer: PointDataLayerProps }) {
       circleOnClick={onClickFunc}
     />
   );
+}
+
+export interface LayersProps {
+  layer: PointDataLayerProps;
+  before?: string;
 }
 
 export default PointDataLayer;
