@@ -1,9 +1,12 @@
+import base64
+from hashlib import sha256
 import pytest
 import schemathesis
-from app.database.alert_database import AlertsDataBase
-from app.main import app
 from fastapi.testclient import TestClient
 from hypothesis import settings
+
+from app.database.alert_database import AlertsDataBase
+from app.main import app
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -27,6 +30,38 @@ def migrate_test_db():
           CONSTRAINT "PK_ad91cad659a3536465d564a4b2f" PRIMARY KEY ("id")
         )"""
     alerts_db.session.execute(q1)
+    alerts_db.session.commit()
+    q2 = """CREATE TABLE IF NOT EXISTS users (
+        id bigserial NOT NULL,
+        username varchar(255) NOT NULL,
+        full_name varchar(255) NULL,
+        email varchar(255) NOT NULL,
+        hashed_password varchar(64) NOT NULL,
+        created_at timestamp NOT NULL DEFAULT now(),
+        updated_at timestamp NOT NULL DEFAULT now(),
+        CONSTRAINT users_pkey PRIMARY KEY (id),
+        CONSTRAINT users_username_key UNIQUE (username)
+    )"""
+    alerts_db.session.execute(q2)
+    password = 'secret1'
+    alerts_db.session.execute(f"""INSERT INTO users(username, full_name, email, hashed_password)
+        VALUES ('johndoe', 'John Doe', 'johndoe@example.com', '{sha256(password.encode('utf8')).hexdigest()}')
+        ON CONFLICT (username) DO UPDATE 
+            SET username = excluded.username
+    """)
+    alerts_db.session.commit()
+    q3 = """CREATE TABLE IF NOT EXISTS user_zone_access (
+        id bigserial NOT NULL,
+        user_id bigserial NOT NULL,
+        zones_url varchar(255) NOT NULL,
+        has_access bool NOT NULL,
+        CONSTRAINT user_zone_access_pkey PRIMARY KEY (id),
+        CONSTRAINT fk_user_zone_access_user_id_users FOREIGN KEY (user_id) REFERENCES users(id)
+    )"""
+    alerts_db.session.execute(q3)
+    alerts_db.session.execute("""INSERT INTO user_zone_access(user_id, zones_url, has_access)
+        VALUES (1, 'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json', '1')
+    """)
     alerts_db.session.commit()
 
 
@@ -109,6 +144,33 @@ def test_stats_endpoint2():
             "group_by": "TS",
             "geojson_out": False,
         },
+    )
+    assert response.status_code == 200
+
+
+def test_stats_auth():
+    """
+    Call /stats with HTTP Basic Auth.
+    """
+    # auth_str = base64.b64encode('johndoe:secret1'.encode('ascii'))
+    response = client.post(
+        "/stats",
+        headers={
+            "Accept": "application/json",
+            # "Authorization": f"Basic {auth_str}"
+        },
+        json={
+            "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(92.172747098,101.170015055)&subset=Lat(9.671252102,28.54553886)",
+            "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
+            "group_by": "TS_PCODE",
+            "wfs_params": {
+                "url": "https://geonode.wfp.org/geoserver/ows",
+                "layer_name": "mmr_gdacs_buffers",
+                "time": "2022-05-11",
+                "key": "label"
+            },
+            "geojson_out": False
+        }
     )
     assert response.status_code == 200
 
