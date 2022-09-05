@@ -33,4 +33,4 @@ class UserZoneAccessModel(Base, MysqlPrimaryKeyMixin):
             .limit(1)
         )
         result = connection.execute(query).fetchone()
-        return bool(result.has_access) if result else None
+        return result
