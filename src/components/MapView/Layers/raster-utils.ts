@@ -136,8 +136,8 @@ export function getWCSv2Url(
   // Subsets are used as spatial and temporal filters.
   // For mote info: https://docs.geoserver.geo-solutions.it/edu/en/wcs/get.html
   const spatialSubsets: string[] = [
-    `Long(${extent[0]}, ${extent[2]})`,
-    `Lat(${extent[1]}, ${extent[3]})`,
+    `Long(${extent[0]},${extent[2]})`,
+    `Lat(${extent[1]},${extent[3]})`,
   ];
 
   const subsets = date
