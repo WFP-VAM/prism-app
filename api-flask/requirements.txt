@@ -23,3 +23,5 @@ sqlalchemy2-stubs==0.0.2a25
 python-dateutil==2.8.2
 types-python-dateutil==2.8.19
 types-requests==2.28.8
+alembic==1.8.1
+databases==0.6.1

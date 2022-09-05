@@ -1,7 +1,8 @@
 import json
 from typing import NewType, TypedDict
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
+from pydantic import (BaseModel, EmailStr, Field, HttpUrl, root_validator,
+                      validator)
 
 from .sample_requests import alert_data, alert_data_zones, stats_data
 
@@ -89,3 +90,16 @@ class AlertsModel(BaseModel):
     _val_alert_config = validator("alert_config", allow_reuse=True)(
         dict_must_not_contain_null_char
     )
+
+
+class UserModel(BaseModel):
+    username: str
+    full_name: str
+    email: EmailStr
+    hashed_password: str
+
+
+class UserZoneAccessModel(BaseModel):
+    user_id: str
+    zones_url: str
+    has_access: bool

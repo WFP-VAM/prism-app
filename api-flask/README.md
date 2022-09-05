@@ -91,6 +91,12 @@ To run flask api together with database within same network, run:
 docker-compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
 ```
 
+To run Alembic migrations execute command inside api docker container:
+```
+docker exec -it [container_id] sh
+alembic upgrade head
+```
+
 ### Tests
 
 To run linting and tests, run:
