@@ -72,6 +72,10 @@ schema = schemathesis.from_asgi("/openapi.json", app)
 schemathesis.fixups.install(["fast_api"])
 
 client = TestClient(app)
+stats_headers = {
+    "Accept": "application/json",
+    "Authorization": f"Basic {base64.b64encode('johndoe:secret1'.encode('ascii')).decode('utf-8')}"
+}
 
 
 @pytest.mark.skip(reason="Slow: takes almost 10 minutes to complete")
@@ -112,13 +116,9 @@ def test_stats_endpoint1():
     Call /stats with known-good parameters.
     This endpoint can be slow (>1 min) so this test is deactivated by default.
     """
-    auth_str = base64.b64encode('johndoe:secret1'.encode('ascii'))
     response = client.post(
         "/stats",
-        headers={
-            "Accept": "application/json",
-            "Authorization": f"Basic {auth_str}"
-        },
+        headers=stats_headers,
         json={
             "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(92.172747098,101.170015055)&subset=Lat(9.671252102,28.54553886)",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
@@ -139,13 +139,9 @@ def test_stats_endpoint2():
     """
     Call /stats with known-good parameters.
     """
-    auth_str = base64.b64encode('johndoe:secret1'.encode('ascii'))
     response = client.post(
         "/stats",
-        headers={
-            "Accept": "application/json",
-            "Authorization": f"Basic {auth_str}"
-        },
+        headers=stats_headers,
         json={
             "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hfs1_sfw_mask_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-12",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
@@ -160,13 +156,9 @@ def test_stats_auth():
     """
     Call /stats with HTTP Basic Auth.
     """
-    auth_str = base64.b64encode('johndoe:secret1'.encode('ascii'))
     response = client.post(
         "/stats",
-        headers={
-            "Accept": "application/json",
-            "Authorization": f"Basic {auth_str}"
-        },
+        headers=stats_headers,
         json={
             "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(92.172747098,101.170015055)&subset=Lat(9.671252102,28.54553886)",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",

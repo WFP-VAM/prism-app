@@ -1,4 +1,3 @@
-from asyncio.log import logger
 from hashlib import sha256
 from os import getenv
 
