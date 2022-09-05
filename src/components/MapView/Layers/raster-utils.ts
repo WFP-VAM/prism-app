@@ -4,7 +4,7 @@ import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import * as GeoTIFF from 'geotiff';
 import { buffer } from 'd3-fetch';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import formatUrl from 'format-url';
+import { formatUrl } from '../../../utils/server-utils';
 import { WcsGetCoverageVersion, WMSLayerProps } from '../../../config/types';
 
 export type TransformMatrix = [number, number, number, number, number, number];
