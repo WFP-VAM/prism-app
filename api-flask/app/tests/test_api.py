@@ -152,12 +152,12 @@ def test_stats_auth():
     """
     Call /stats with HTTP Basic Auth.
     """
-    # auth_str = base64.b64encode('johndoe:secret1'.encode('ascii'))
+    auth_str = base64.b64encode('johndoe:secret1'.encode('ascii'))
     response = client.post(
         "/stats",
         headers={
             "Accept": "application/json",
-            # "Authorization": f"Basic {auth_str}"
+            "Authorization": f"Basic {auth_str}"
         },
         json={
             "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(92.172747098,101.170015055)&subset=Lat(9.671252102,28.54553886)",
