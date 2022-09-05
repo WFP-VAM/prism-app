@@ -1,9 +1,10 @@
+from asyncio.log import logger
 from hashlib import sha256
 from os import getenv
 
-from databases import Database
 from fastapi import HTTPException
 from starlette import status
+from sqlalchemy import create_engine
 
 from ..database import UserModel, UserZoneAccessModel
 
@@ -19,32 +20,33 @@ DB_URI = getenv(
 
 
 def check_auth(credentials, zones_url) -> None:
-    connection = Database(DB_URI)
     username = credentials.username
-    user = UserModel.get_user_by_username(connection, username)
-    is_correct_username = (username == user.username) if user else False
-    if not is_correct_username:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username",
-            headers={"WWW-Authenticate": "Basic"},
+    engine = create_engine(DB_URI)
+    with engine.connect() as connection:
+        user = UserModel.get_user_by_username(connection, username)
+        is_correct_username = (username == user.username) if user else False
+        if not is_correct_username:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username",
+                headers={"WWW-Authenticate": "Basic"},
+            )
+        is_correct_password = (
+            get_password_hash(credentials.password) == user.hashed_password
         )
-    is_correct_password = (
-        get_password_hash(credentials.password) == user.hashed_password
-    )
-    if not is_correct_password:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect password",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    has_access = UserZoneAccessModel.has_access(connection, user.id, zones_url)
-    if not has_access:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="This user doesn't have access to this zone",
-            headers={"WWW-Authenticate": "Basic"},
-        )
+        if not is_correct_password:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect password",
+                headers={"WWW-Authenticate": "Basic"},
+            )
+        has_access = UserZoneAccessModel.has_access(connection, user.id, zones_url)
+        if not has_access:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="This user doesn't have access to this zone",
+                headers={"WWW-Authenticate": "Basic"},
+            )
     return None
 
 

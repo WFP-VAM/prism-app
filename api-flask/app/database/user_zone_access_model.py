@@ -1,6 +1,6 @@
 from typing import Optional
 
-from databases import Database
+# from databases import Database
 from sqlalchemy import (BIGINT, VARCHAR, Boolean, Column, ForeignKeyConstraint,
                         select)
 from sqlalchemy.ext.declarative import declarative_base
@@ -21,8 +21,8 @@ class UserZoneAccessModel(Base, MysqlPrimaryKeyMixin):
     )
 
     @staticmethod
-    async def has_access(
-        connection: Database, user_id: int, zones_url: str
+    def has_access(
+        connection, user_id: int, zones_url: str
     ) -> Optional[dict]:
         query = (
             select([UserZoneAccessModel])
@@ -32,5 +32,5 @@ class UserZoneAccessModel(Base, MysqlPrimaryKeyMixin):
             )
             .limit(1)
         )
-        result = await connection.fetch_one(query)
+        result = connection.execute(query).fetchone()
         return bool(result.has_access) if result else None

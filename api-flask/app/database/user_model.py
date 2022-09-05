@@ -1,6 +1,7 @@
+from asyncio.log import logger
 from typing import Optional
 
-from databases import Database
+# from databases import Database
 from sqlalchemy import VARCHAR, Column, select
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -17,11 +18,12 @@ class UserModel(Base, MysqlPrimaryKeyMixin, MysqlTimestampsMixin):
     hashed_password = Column("hashed_password", VARCHAR(length=64), nullable=False)
 
     @staticmethod
-    async def get_user_by_username(
-        connection: Database, username: str
+    def get_user_by_username(
+        connection, username: str
     ) -> Optional[dict]:
         query = select([UserModel]).where(UserModel.username == username).limit(1)
-        return await connection.fetch_one(query)
+        logger.critical(connection.execute(query))
+        return connection.execute(query).fetchone()
 
 
 # {

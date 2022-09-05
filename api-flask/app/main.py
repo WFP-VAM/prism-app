@@ -21,7 +21,7 @@ from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
 
-from .models import AlertsModel, StatsModel, UserModel
+from .models import AlertsModel, StatsModel
 from .utils.http_basic_auth import check_auth
 
 logging.basicConfig(level=logging.DEBUG)
@@ -85,12 +85,11 @@ def _calculate_stats(
 @app.post("/stats", responses={500: {"description": "Internal server error"}})
 def stats(
     stats_model: StatsModel,
-    user_model: UserModel,
     credentials: HTTPBasicCredentials = Depends(HTTPBasic())
 ) -> list[dict[str, Any]]:
     """Return zonal statistics."""
     # Check credentials by zone_url
-    check_auth(credentials, user_model, stats_model["zones_url"])
+    check_auth(credentials, stats_model.zones_url)
     # Accept data as json or form.
     logger.debug("New stats request:")
     logger.debug(stats_model)
