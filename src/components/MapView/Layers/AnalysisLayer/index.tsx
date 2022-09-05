@@ -68,7 +68,10 @@ function AnalysisLayer({ before }: { before?: string }) {
       id="layer-analysis"
       before={boundary}
       data={analysisData.featureCollection}
-      fillPaint={fillPaintData(analysisData.legend, defaultProperty)}
+      fillPaint={fillPaintData(
+        analysisData.legend as LegendDefinition,
+        defaultProperty,
+      )}
       // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data
       fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;
@@ -108,17 +111,20 @@ function AnalysisLayer({ before }: { before?: string }) {
         }
 
         if (analysisData instanceof BaselineLayerResult) {
-          dispatch(
-            addPopupData({
-              [analysisData.getBaselineLayer().title]: {
-                data: getRoundedData(
-                  get(evt.features[0], 'properties.data'),
-                  t,
-                ),
-                coordinates,
-              },
-            }),
-          );
+          const baselineLayer = analysisData.getBaselineLayer();
+          if (baselineLayer) {
+            dispatch(
+              addPopupData({
+                [baselineLayer.title]: {
+                  data: getRoundedData(
+                    get(evt.features[0], 'properties.data'),
+                    t,
+                  ),
+                  coordinates,
+                },
+              }),
+            );
+          }
         }
 
         if (analysisData instanceof ExposedPopulationResult) {

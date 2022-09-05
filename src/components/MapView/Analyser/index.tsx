@@ -125,6 +125,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey | undefined>(
     hazardLayerIdFromUrl,
   );
+
   const [statistic, setStatistic] = useState(
     (selectedStatisticFromUrl as AggregationOperations) ||
       AggregationOperations.Mean,
@@ -273,6 +274,14 @@ function Analyser({ extent, classes }: AnalyserProps) {
         label={t(key)}
       />
     ));
+
+  // eslint-disable-next-line consistent-return
+  const getBaselineLayer: () => AdminLevelDataLayerProps | undefined = () => {
+    if (baselineLayerId) {
+      return LayerDefinitions[baselineLayerId] as AdminLevelDataLayerProps;
+    }
+  };
+
   const activateUniqueBoundary = (forceAdminLevel?: BoundaryLayerProps) => {
     if (forceAdminLevel) {
       // remove displayed boundaries
@@ -290,15 +299,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
       return;
     }
 
-    if (!baselineLayerId) {
-      throw new Error('Layer should be selected to run analysis');
-    }
+    const baselineLayer = getBaselineLayer();
 
-    const baselineLayer = LayerDefinitions[
-      baselineLayerId
-    ] as AdminLevelDataLayerProps;
-
-    if (baselineLayer.boundary) {
+    if (baselineLayer?.boundary) {
       const boundaryLayer = LayerDefinitions[
         baselineLayer.boundary
       ] as BoundaryLayerProps;
@@ -322,14 +325,9 @@ function Analyser({ extent, classes }: AnalyserProps) {
   };
 
   const deactivateUniqueBoundary = () => {
-    if (!baselineLayerId) {
-      throw new Error('Layer should be selected to run analysis');
-    }
-    const baselineLayer = LayerDefinitions[
-      baselineLayerId
-    ] as AdminLevelDataLayerProps;
+    const baselineLayer = getBaselineLayer();
 
-    if (baselineLayer.boundary) {
+    if (baselineLayer?.boundary) {
       const boundaryLayer = LayerDefinitions[
         baselineLayer.boundary
       ] as BoundaryLayerProps;
@@ -408,7 +406,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
 
   const runAnalyser = async () => {
     if (preSelectedBaselineLayer) {
-      setPreviousBaselineId(preSelectedBaselineLayer.id);
+      setPreviousBaselineId(preSelectedBaselineLayer?.id);
       removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
       // no need to safely dispatch remove we are sure
       dispatch(removeLayer(preSelectedBaselineLayer));
@@ -466,13 +464,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
         throw new Error('Date must be given to run analysis');
       }
 
-      if (!baselineLayerId) {
-        throw new Error('Baseline layer should be selected to run analysis');
-      }
-
-      const selectedBaselineLayer = LayerDefinitions[
-        baselineLayerId
-      ] as AdminLevelDataLayerProps;
+      const selectedBaselineLayer = getBaselineLayer();
 
       activateUniqueBoundary();
 
@@ -741,7 +733,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                   !hazardLayerId || // or hazard layer hasn't been selected
                   (hazardDataType === GeometryType.Polygon
                     ? !startDate || !endDate || !adminLevelLayerData
-                    : !selectedDate || !baselineLayerId) // or date hasn't been selected // or baseline layer hasn't been selected
+                    : !selectedDate) // or date hasn't been selected // or baseline layer hasn't been selected
                 }
               >
                 <Typography variant="body2">{t('Run Analysis')}</Typography>

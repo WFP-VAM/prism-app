@@ -192,7 +192,7 @@ function generateTableFromApiData(
 }
 
 export type AnalysisDispatchParams = {
-  baselineLayer: AdminLevelDataLayerProps;
+  baselineLayer?: AdminLevelDataLayerProps;
   hazardLayer: WMSLayerProps;
   extent: Extent;
   threshold: ThresholdDefinition;
@@ -223,20 +223,22 @@ const createAPIRequestParams = (
   geotiffLayer: WMSLayerProps,
   extent: Extent,
   date: ReturnType<Date['getTime']>,
-  params: WfsRequestParams | AdminLevelDataLayerProps,
+  params: WfsRequestParams | AdminLevelDataLayerProps | undefined,
 ): ApiData => {
   const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
 
   // If the analysis is related to a AdminLevelData layer, we get the index from params.
   // For Exposed population we use the latest-level boundary indicator.
   // WARNING - This change is meant for RBD only. Do we want to generalize this?
-  const { adminLevel } = params as any;
+  const adminLevel = (params as AdminLevelDataLayerProps)?.adminLevel;
+  // const { adminLevel = undefined } = params as any;
   const groupBy =
     adminLevel !== undefined
       ? adminLevelNames[adminLevel - 1]
       : adminCode || adminLevelNames[adminLevelNames.length - 1];
 
-  const wfsParams = (params as WfsRequestParams).layer_name
+  // eslint-disable-next-line camelcase
+  const wfsParams = (params as WfsRequestParams)?.layer_name
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
@@ -337,9 +339,17 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
   } = params;
-  const baselineData = layerDataSelector(baselineLayer.id)(
-    api.getState(),
-  ) as LayerData<AdminLevelDataLayerProps>;
+  const getBaselineData = () => {
+    if (!baselineLayer) {
+      return undefined;
+    }
+    return layerDataSelector(baselineLayer?.id)(api.getState()) as LayerData<
+      AdminLevelDataLayerProps
+    >;
+  };
+
+  const baselineData = getBaselineData();
+
   const adminBoundaries = getBoundaryLayerSingleton();
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
@@ -361,30 +371,33 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
   );
-  let loadedAndCheckedBaselineData: BaselineLayerData;
-  // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
-  // similar code can be found at impact.ts
-  if (!baselineData) {
-    const {
-      payload: { data },
-    } = (await api.dispatch(
-      loadLayerData({ layer: baselineLayer, extent } as LayerDataParams<
-        AdminLevelDataLayerProps
-      >),
-    )) as { payload: { data: unknown } };
 
-    // eslint-disable-next-line fp/no-mutation
-    loadedAndCheckedBaselineData = checkBaselineDataLayer(
-      baselineLayer.id,
-      data,
-    );
-  } else {
-    // eslint-disable-next-line fp/no-mutation
-    loadedAndCheckedBaselineData = checkBaselineDataLayer(
-      baselineLayer.id,
-      baselineData.data,
-    );
-  }
+  const getCheckedBaselineData = async (): Promise<
+    BaselineLayerData | undefined
+  > => {
+    // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
+    // similar code can be found at impact.ts
+    if (!baselineData && baselineLayer) {
+      const { payload } = (await api.dispatch(
+        loadLayerData({
+          layer: baselineLayer,
+          extent,
+        } as LayerDataParams<AdminLevelDataLayerProps>),
+      )) as { payload: { data?: unknown } };
+
+      return checkBaselineDataLayer(baselineLayer?.id, payload?.data);
+    }
+
+    if (baselineData && baselineLayer) {
+      return checkBaselineDataLayer(baselineLayer?.id, baselineData?.data);
+    }
+
+    return undefined;
+  };
+
+  const loadedAndCheckedBaselineData:
+    | BaselineLayerData
+    | undefined = await getCheckedBaselineData();
 
   const features = generateFeaturesFromApiData(
     aggregateData,
@@ -398,7 +411,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     aggregateData,
     adminBoundariesData,
     apiRequest.group_by,
-    loadedAndCheckedBaselineData.layerData,
+    loadedAndCheckedBaselineData?.layerData ?? null,
     [], // no extra columns
   );
 
