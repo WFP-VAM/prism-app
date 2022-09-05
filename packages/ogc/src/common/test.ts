@@ -2,6 +2,7 @@ import t from "flug";
 
 import {
   bboxToString,
+  checkExtent,
   findTagText,
   formatUrl,
   hasLayerId,
@@ -12,6 +13,7 @@ import {
   parseService,
   withTimeout
 } from ".";
+import scaleImage from "./scale-image";
 
 // performance API used for timing
 declare var performance: { now: () => number };
@@ -25,6 +27,17 @@ t("bboxToString", ({ eq }) => {
   eq(bboxToString([-180, -90, 180, 90] as const), "-180,-90,180,90"); 
   eq(bboxToString([-180.0001, -90.0001, 180.0001, 90.0001], 2), "-180.00,-90.00,180.00,90.00"); 
   eq(bboxToString([100, 45, 103.09704125797317, 46.08568380901372]), "100,45,103.09704125797317,46.08568380901372");
+});
+
+t("check-extent", ({ eq }) => {
+  eq(checkExtent([-180, -90, 180, 90]), undefined);
+  let msg;
+  try {
+    checkExtent([170, -90, 150, 90]);
+  } catch (error: any) {
+    msg = error.message;
+  }
+  eq(msg, "the extent 170,-90,150,90 seems malformed or else may contain \"wrapping\" which is not supported");
 });
 
 t("format-url: base url with no params should return itself", ({ eq }) => {
@@ -133,6 +146,15 @@ t("parse service from url", async ({ eq }) => {
     ),
     "wfs"
   );
+});
+
+t("scaleImage", async ({ eq }) => {
+  const bbox = [-180, -90, 180, 90] as const;
+  eq(scaleImage(bbox), { height: 2548, width: 5096 });
+  eq(scaleImage(bbox, { max_pixels: 100 }), { height: 50, width: 100 });
+  eq(scaleImage(bbox, { resolution: 512 }), { height: 2548, width: 5096 });
+  eq(scaleImage([-180, 0, -170, 1]), { "height": 26, "width": 256 });
+  eq(scaleImage([-180, 0, -170, 1], { resolution: 512 }), { "height":52, "width":512 });
 });
 
 t("withTimeout", async ({ eq }) => {

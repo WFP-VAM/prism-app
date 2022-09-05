@@ -1,4 +1,5 @@
 export { default as bboxToString } from "./bbox-to-string";
+export { default as checkExtent } from "./check-extent";
 export { default as findName } from "./find-name";
 export { default as findAndParseAbstract } from "./find-and-parse-abstract";
 export { default as findAndParseCapabilityUrl } from "./find-and-parse-capability-url";

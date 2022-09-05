@@ -182,11 +182,8 @@ test("createDescribeCoverageUrl", ({ eq }) => {
 });
 
 test("createGetCoverageUrl", ({ eq }) => {
-  const url = createGetCoverageUrl(xml_1_0_0, "ModisLST", {
-    bbox: [87.7, 41.6, 119.9, 52.1],
-    height: 222,
-    width: 677
-  });
+  const bbox = [87.7, 41.6, 119.9, 52.1] as const;
+  const url = createGetCoverageUrl(xml_1_0_0, "ModisLST", { bbox, height: 222, width: 677 });
   eq(
     url,
     "https://mongolia.sibelius-datacube.org:5000/wcs?bbox=87.7%2C41.6%2C119.9%2C52.1&coverage=ModisLST&crs=EPSG%3A4326&format=GeoTIFF&height=222&request=GetCoverage&service=WCS&version=1.0.0&width=677"

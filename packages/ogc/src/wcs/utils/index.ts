@@ -6,7 +6,7 @@ import {
 } from "xml-utils";
 
 import { findAndParseEnvelope } from "../../gml";
-import { bboxToString, findAndParseCapabilityUrl, findTagText, formatUrl } from "../../common";
+import { bboxToString, checkExtent, findAndParseCapabilityUrl, findTagText, formatUrl } from "../../common";
 
 import {
   findAndParseBoundingBox,
@@ -16,6 +16,7 @@ import {
 } from "../../ows";
 
 import type { BBOX } from "../../types";
+import scaleImage from "../../common/scale-image";
 
 export type Coverage = {
   id: string;
@@ -178,23 +179,38 @@ export function createGetCoverageUrl(
   {
     bbox,
     bbox_digits,
+    check_extent = true,
     crs = "EPSG:4326",
     format = "GeoTIFF",
     height,
+    max_pixels = 5096,
+    resolution = 256,
     time,
     width
   }: {
     bbox: BBOX;
     bbox_digits?: number;
+    check_extent?: boolean;
     crs?: string;
     format?: string;
     height: number;
+    max_pixels?: number;
+    resolution?: 256;
     time?: string;
     width: number;
   }
 ): string {
   const base = findGetCoverageUrl(xml);
   if (!base) throw new Error("failed to create DescribeCoverage Url");
+
+  if (check_extent) checkExtent(bbox);
+
+  if (
+    (typeof height !== "number" && typeof width !== "number") ||
+    (height > max_pixels || width > max_pixels)
+  ) {
+    ({ height, width } = scaleImage(bbox, { max_pixels, resolution }));
+  }
 
   return formatUrl(base, {
     bbox: bboxToString(bbox, bbox_digits),
