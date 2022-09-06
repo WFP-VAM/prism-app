@@ -90,6 +90,7 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
         </div>
       </DialogContent>
       <DialogActions className={classes.actions}>
+        <span className={classes.signature}>P R I S M automated report</span>
         <Button className={classes.actionButton} variant="outlined">
           <PDFDownloadLink
             document={<StormReportDoc mapImage={mapImage} />}
@@ -111,6 +112,7 @@ const styles = () =>
   createStyles({
     titleRoot: {
       background: '#2E6EAF',
+      padding: 0,
     },
     title: {
       display: 'flex',
@@ -120,16 +122,26 @@ const styles = () =>
     titleText: {
       flexGrow: 1,
       textAlign: 'center',
+      fontSize: 18,
     },
     titleIconButton: {
       color: '#FFFFFF',
     },
     actions: {
       background: '#2E6EAF',
+      display: 'flex',
+      justifyContent: 'space-between',
+      flexDirection: 'row',
     },
     actionButton: {
       background: '#FFFFFF',
       color: '#6F9FD2',
+      fontSize: 12,
+    },
+    signature: {
+      fontSize: 12,
+      fontWeight: 500,
+      paddingLeft: '1em',
     },
   });
 

@@ -201,32 +201,35 @@ const StormReportDoc = ({ mapImage }: StormReportDocProps) => {
         </View>
         <View style={[styles.section]}>
           <View style={{ backgroundColor: '#EBEBEB' }}>
-            <Text style={{ padding: 10 }}>{tableName}</Text>
+            <View>
+              <Text style={{ padding: 10 }}>{tableName}</Text>
+            </View>
+            <View style={[styles.tableHead, styles.tableRow]} wrap={false}>
+              {dummyTable.columns.map(value => {
+                return (
+                  <Text
+                    style={[
+                      styles.tableCell,
+                      { width: `${100 / dummyTable.columns.length + 1}%` },
+                    ]}
+                  >
+                    {value}
+                  </Text>
+                );
+              })}
+              <Text
+                style={[
+                  styles.tableCell,
+                  { width: `${100 / dummyTable.columns.length + 1}%` },
+                ]}
+              >
+                Total
+              </Text>
+            </View>
           </View>
-          <View style={[styles.tableHead, styles.tableRow]} wrap={false}>
-            {dummyTable.columns.map(value => {
-              return (
-                <Text
-                  style={[
-                    styles.tableCell,
-                    { width: `${100 / dummyTable.columns.length + 1}%` },
-                  ]}
-                >
-                  {value}
-                </Text>
-              );
-            })}
-            <Text
-              style={[
-                styles.tableCell,
-                { width: `${100 / dummyTable.columns.length + 1}%` },
-              ]}
-            >
-              Total
-            </Text>
-          </View>
+
           {dummyTable.rows.map((value, index) => {
-            const color = index % 2 ? '#F5F5F5' : '#EBEBEB';
+            const color = index % 2 ? '#EBEBEB' : '#F5F5F5';
             let total = 0;
             return (
               <View
@@ -269,7 +272,7 @@ const StormReportDoc = ({ mapImage }: StormReportDocProps) => {
               styles.tableFooter,
               {
                 backgroundColor:
-                  dummyTable.columns.length % 2 ? '#EBEBEB' : '#F5F5F5',
+                  dummyTable.columns.length % 2 ? '#F5F5F5' : '#EBEBEB',
               },
             ]}
           >
