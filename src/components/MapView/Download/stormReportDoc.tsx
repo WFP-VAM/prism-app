@@ -7,6 +7,7 @@ import {
   Text,
   Image,
 } from '@react-pdf/renderer';
+import { TableData } from '../../../context/analysisResultStateSlice';
 
 const styles = StyleSheet.create({
   page: {
@@ -85,62 +86,17 @@ const styles = StyleSheet.create({
   },
 });
 
-const dummyTable = {
-  columns: ['TS_PCODE', '60 km/h', 'Uncertainty Cones'],
-  rows: [
-    {
-      TS_PCODE: 'MMR016001',
-      '60 km/h': 177,
-      'Uncertainty Cones': 824199,
-    },
-    { TS_PCODE: 'MMR016006', 'Uncertainty Cones': 0, '60 km/h': 0 },
-    {
-      TS_PCODE: 'MMR016011',
-      '60 km/h': 384551,
-      'Uncertainty Cones': 384551,
-    },
-    {
-      TS_PCODE: 'MMR016009',
-      '60 km/h': 0,
-      'Uncertainty Cones': 182638,
-    },
-    {
-      TS_PCODE: 'MMR016002',
-      '60 km/h': 11808,
-      'Uncertainty Cones': 214136,
-    },
-    { TS_PCODE: 'MMR016007', 'Uncertainty Cones': 64279, '60 km/h': 0 },
-    { TS_PCODE: 'MMR015024', 'Uncertainty Cones': 0, '60 km/h': 0 },
-    {
-      TS_PCODE: 'MMR016003',
-      '60 km/h': 403130,
-      'Uncertainty Cones': 517026,
-    },
-    {
-      TS_PCODE: 'MMR016010',
-      '60 km/h': 0,
-      'Uncertainty Cones': 146776,
-    },
-    { TS_PCODE: 'MMR015005', 'Uncertainty Cones': 55569, '60 km/h': 0 },
-    { TS_PCODE: 'MMR015006', 'Uncertainty Cones': 3994, '60 km/h': 0 },
-    {
-      TS_PCODE: 'MMR016005',
-      '60 km/h': 198556,
-      'Uncertainty Cones': 198556,
-    },
-  ],
-};
-
-const StormReportDoc = ({ mapImage }: StormReportDocProps) => {
+const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
   const eventName = 'Storm';
-  const date = '16 April 2020, 6:00:00 UTC';
+  const date = new Date().toUTCString();
   const tableName = 'Number of people exposed by wind speed category';
+  const tableCellWidth = `${100 / (tableData.columns.length + 1)}%`;
 
   const totals: number[] = [];
 
-  dummyTable.columns.forEach(col => {
+  tableData.columns.forEach(col => {
     let total = 0;
-    dummyTable.rows.forEach(row => {
+    tableData.rows.forEach(row => {
       const val = row[col as keyof typeof row];
       // eslint-disable-next-line no-restricted-globals
       if (!isNaN(Number(val))) {
@@ -148,6 +104,7 @@ const StormReportDoc = ({ mapImage }: StormReportDocProps) => {
         total += Number(val);
       }
     });
+
     // eslint-disable-next-line fp/no-mutating-methods
     totals.push(total);
   });
@@ -199,119 +156,88 @@ const StormReportDoc = ({ mapImage }: StormReportDocProps) => {
             frontiers or boundaries.
           </Text>
         </View>
-        <View style={[styles.section]}>
-          <View style={{ backgroundColor: '#EBEBEB' }}>
-            <View>
-              <Text style={{ padding: 10 }}>{tableName}</Text>
-            </View>
-            <View style={[styles.tableHead, styles.tableRow]} wrap={false}>
-              {dummyTable.columns.map(value => {
-                return (
-                  <Text
-                    style={[
-                      styles.tableCell,
-                      { width: `${100 / dummyTable.columns.length + 1}%` },
-                    ]}
-                  >
-                    {value}
-                  </Text>
-                );
-              })}
-              <Text
-                style={[
-                  styles.tableCell,
-                  { width: `${100 / dummyTable.columns.length + 1}%` },
-                ]}
-              >
-                Total
-              </Text>
-            </View>
-          </View>
-
-          {dummyTable.rows.map((value, index) => {
-            const color = index % 2 ? '#EBEBEB' : '#F5F5F5';
-            let total = 0;
-            return (
-              <View
-                style={[styles.tableRow, { backgroundColor: color }]}
-                wrap={false}
-              >
-                {dummyTable.columns.map(col => {
-                  const val = value[col as keyof typeof value];
-                  // eslint-disable-next-line no-restricted-globals
-                  if (!isNaN(Number(val))) {
-                    // eslint-disable-next-line fp/no-mutation
-                    total += Number(val);
-                  }
+        {tableData.columns.length > 0 && tableData.rows.length > 0 && (
+          <View style={[styles.section]}>
+            <View style={{ backgroundColor: '#EBEBEB' }}>
+              <View>
+                <Text style={{ padding: 10 }}>{tableName}</Text>
+              </View>
+              <View style={[styles.tableHead, styles.tableRow]} wrap={false}>
+                {tableData.columns.map(value => {
                   return (
-                    <Text
-                      style={[
-                        styles.tableCell,
-                        { width: `${100 / dummyTable.columns.length + 1}%` },
-                      ]}
-                    >
-                      {val}
+                    <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                      {value}
                     </Text>
                   );
                 })}
-                <Text
-                  style={[
-                    styles.tableCell,
-                    { width: `${100 / dummyTable.columns.length + 1}%` },
-                  ]}
-                >
-                  {total}
+                <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                  Total
                 </Text>
               </View>
-            );
-          })}
-          <View
-            wrap={false}
-            style={[
-              styles.tableRow,
-              styles.tableFooter,
-              {
-                backgroundColor:
-                  dummyTable.columns.length % 2 ? '#F5F5F5' : '#EBEBEB',
-              },
-            ]}
-          >
-            {totals.map((val, index) => {
-              if (index === 0) {
-                return (
-                  <Text
-                    style={[
-                      styles.tableCell,
-                      { width: `${100 / dummyTable.columns.length + 1}%` },
-                    ]}
-                  >
-                    Total
-                  </Text>
-                );
-              }
+            </View>
+
+            {tableData.rows.map((value, index) => {
+              const color = index % 2 ? '#EBEBEB' : '#F5F5F5';
+              let total = 0;
               return (
-                <Text
-                  style={[
-                    styles.tableCell,
-                    { width: `${100 / dummyTable.columns.length + 1}%` },
-                  ]}
+                <View
+                  style={[styles.tableRow, { backgroundColor: color }]}
+                  wrap={false}
                 >
-                  {val}
-                </Text>
+                  {tableData.columns.map(col => {
+                    const val = value[col as keyof typeof value];
+                    // eslint-disable-next-line no-restricted-globals
+                    if (!isNaN(Number(val))) {
+                      // eslint-disable-next-line fp/no-mutation
+                      total += Number(val);
+                    }
+                    return (
+                      <Text
+                        style={[styles.tableCell, { width: tableCellWidth }]}
+                      >
+                        {val}
+                      </Text>
+                    );
+                  })}
+                  <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                    {total}
+                  </Text>
+                </View>
               );
             })}
-            <Text
+            <View
+              wrap={false}
               style={[
-                styles.tableCell,
-                { width: `${100 / dummyTable.columns.length + 1}%` },
+                styles.tableRow,
+                styles.tableFooter,
+                {
+                  backgroundColor:
+                    tableData.columns.length % 2 ? '#F5F5F5' : '#EBEBEB',
+                },
               ]}
             >
-              {totals.reduce((prev, cur) => {
-                return prev + cur;
-              }, 0)}
-            </Text>
+              {totals.map((val, index) => {
+                if (index === 0) {
+                  return (
+                    <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                      Total
+                    </Text>
+                  );
+                }
+                return (
+                  <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                    {val}
+                  </Text>
+                );
+              })}
+              <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                {totals.reduce((prev, cur) => {
+                  return prev + cur;
+                }, 0)}
+              </Text>
+            </View>
           </View>
-        </View>
+        )}
         <Text fixed style={styles.footer}>
           PRISM automated report
         </Text>
@@ -322,6 +248,7 @@ const StormReportDoc = ({ mapImage }: StormReportDocProps) => {
 
 interface StormReportDocProps {
   mapImage: string;
+  tableData: TableData;
 }
 
 export default StormReportDoc;

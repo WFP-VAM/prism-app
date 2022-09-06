@@ -22,6 +22,7 @@ import {
 import { useSafeTranslation } from '../../../i18n';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import StormReportDoc from './stormReportDoc';
+import { getCurrentData } from '../../../context/analysisResultStateSlice';
 
 // eslint-disable-next-line fp/no-mutation
 // pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -30,6 +31,7 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
   const { t } = useSafeTranslation();
   const [mapImage, setMapImage] = React.useState<string>('');
   const selectedMap = useSelector(mapSelector);
+  const analysisData = useSelector(getCurrentData);
 
   React.useEffect(() => {
     const getMapImage = (format: 'png' | 'jpeg' = 'png'): string | null => {
@@ -85,7 +87,7 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
         </BlobProvider> */}
         <div style={{ width: '100%', height: '100%' }}>
           <PDFViewer style={{ width: '100%', height: '100%' }}>
-            <StormReportDoc mapImage={mapImage} />
+            <StormReportDoc mapImage={mapImage} tableData={analysisData} />
           </PDFViewer>
         </div>
       </DialogContent>
@@ -93,7 +95,9 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
         <span className={classes.signature}>P R I S M automated report</span>
         <Button className={classes.actionButton} variant="outlined">
           <PDFDownloadLink
-            document={<StormReportDoc mapImage={mapImage} />}
+            document={
+              <StormReportDoc mapImage={mapImage} tableData={analysisData} />
+            }
             fileName="prism-report.pdf"
           >
             {
