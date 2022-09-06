@@ -117,7 +117,7 @@ exports[`renders as expected 1`] = `
     <mock-dialog
       keepmounted="true"
       maxwidth="false"
-      open="true"
+      open="false"
     >
       <mock-dialogtitle
         classname="Report-titleRoot-5"
