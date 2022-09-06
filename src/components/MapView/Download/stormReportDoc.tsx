@@ -47,39 +47,44 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   title: {
-    fontSize: '14px',
+    fontSize: 10.78,
     fontWeight: 500,
   },
   subText: {
-    fontSize: '12px',
+    fontSize: 9.24,
   },
   legendsContainer: {
-    height: 100,
     display: 'flex',
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
     backgroundColor: '#F9F9F9',
   },
   legend: {
-    height: '100%',
+    height: 100,
     display: 'flex',
     flexDirection: 'column',
+    marginRight: 40,
     padding: 10,
   },
   legendTittle: {
-    fontSize: 14,
+    fontSize: 10.78,
     paddingBottom: 10,
     fontWeight: 500,
   },
   legendContentsWrapper: {
     display: 'flex',
     flexDirection: 'column',
+    flexWrap: 'wrap',
+    height: '100%',
   },
   legendContent: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    fontSize: 14,
+    fontSize: 10.78,
     paddingTop: 5,
+    paddingRight: 5,
   },
   legendText: {
     paddingLeft: 10,
@@ -88,9 +93,19 @@ const styles = StyleSheet.create({
     width: 16,
     height: 2,
   },
+  borderedBox: {
+    width: 12,
+    height: 12,
+    border: 2,
+    borderRadius: 3,
+  },
+  box: {
+    width: 10,
+    height: 10,
+  },
   tableCell: {
     padding: 10,
-    fontSize: 12,
+    fontSize: 9.24,
   },
   tableRow: {
     display: 'flex',
@@ -109,7 +124,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     position: 'absolute',
-    fontSize: 12,
+    fontSize: 9.24,
     bottom: 10,
     left: 10,
     right: 0,
@@ -174,12 +189,84 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
               </View>
             </View>
           </View>
+          <View style={styles.legend}>
+            <View>
+              <Text style={styles.legendTittle}>
+                Tropical Storms - Wind buffers
+              </Text>
+              <View style={styles.legendContentsWrapper}>
+                <View style={styles.legendContent}>
+                  <View
+                    style={[
+                      styles.borderedBox,
+                      { backgroundColor: '#ffffff', borderColor: '#b8b1b1' },
+                    ]}
+                  />
+                  <Text style={[styles.legendText]}>Uncertainty Cones</Text>
+                </View>
+                <View style={styles.legendContent}>
+                  <View
+                    style={[
+                      styles.borderedBox,
+                      { backgroundColor: '#fffcf1', borderColor: '#f7e705' },
+                    ]}
+                  />
+                  <Text style={[styles.legendText]}>Wind Buffer 60 km/h</Text>
+                </View>
+                <View style={styles.legendContent}>
+                  <View
+                    style={[
+                      styles.borderedBox,
+                      { backgroundColor: '#ffeed8', borderColor: '#f99408' },
+                    ]}
+                  />
+                  <Text style={[styles.legendText]}>Wind Buffer 90 km/h</Text>
+                </View>
+                <View style={styles.legendContent}>
+                  <View
+                    style={[
+                      styles.borderedBox,
+                      { backgroundColor: '#fcd4ce', borderColor: '#f90c08' },
+                    ]}
+                  />
+                  <Text style={[styles.legendText]}>Wind Buffer 120 km/h</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View style={styles.legend}>
+            <View>
+              <Text style={styles.legendTittle}>Population Exposure</Text>
+              <View style={styles.legendContentsWrapper}>
+                <View style={styles.legendContent}>
+                  <View style={[styles.box, { backgroundColor: '#fef2ec' }]} />
+                  <Text style={[styles.legendText]}>Very low</Text>
+                </View>
+                <View style={styles.legendContent}>
+                  <View style={[styles.box, { backgroundColor: '#fdd6c8' }]} />
+                  <Text style={[styles.legendText]}>Low</Text>
+                </View>
+                <View style={styles.legendContent}>
+                  <View style={[styles.box, { backgroundColor: '#fdb4a4' }]} />
+                  <Text style={[styles.legendText]}>Medium</Text>
+                </View>
+                <View style={styles.legendContent}>
+                  <View style={[styles.box, { backgroundColor: '#ee9592' }]} />
+                  <Text style={[styles.legendText]}>Hight</Text>
+                </View>
+                <View style={styles.legendContent}>
+                  <View style={[styles.box, { backgroundColor: '#d28689' }]} />
+                  <Text style={[styles.legendText]}>Very hight</Text>
+                </View>
+              </View>
+            </View>
+          </View>
         </View>
         <View style={styles.section}>
-          <Text style={{ fontSize: 10 }}>
+          <Text style={{ fontSize: 7.7 }}>
             Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
           </Text>
-          <Text style={{ fontSize: 8, color: '#929292' }}>
+          <Text style={{ fontSize: 6.14, color: '#929292' }}>
             The designations employed and the presentation of material in the
             map(s) do not imply the expression of any opinion on the part of WFP
             concerning the legal or constitutional status of any country,
