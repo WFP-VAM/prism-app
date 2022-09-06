@@ -55,6 +55,13 @@ jest.mock('mapbox-gl/dist/mapbox-gl', () => ({
   NavigationControl: jest.fn(),
 }));
 
+// https://github.com/diegomura/react-pdf/issues/710
+jest.mock('@react-pdf/renderer', () => ({
+  PDFDownloadLink: jest.fn(() => null),
+  PDFViewer: jest.fn(() => null),
+  StyleSheet: { create: () => {} },
+}));
+
 function stubMuiComponent(componentName: string) {
   jest.doMock(
     `@material-ui/core/${componentName}/${componentName}`,
