@@ -3,15 +3,24 @@ import logging
 from collections import defaultdict
 from datetime import datetime
 from json import dump, load
+from typing import Any
 from urllib.parse import urlencode
 
-import rasterio
+import rasterio  # type: ignore
 from app.caching import cache_file, get_json_file
+from app.models import (
+    FilePath,
+    GeoJSON,
+    GeoJSONFeature,
+    GroupBy,
+    WfsParamsModel,
+    WfsResponse,
+)
 from app.timer import timed
-from rasterstats import zonal_stats
-from shapely.geometry import mapping, shape
-from shapely.ops import cascaded_union
-from werkzeug.exceptions import InternalServerError
+from fastapi import HTTPException
+from rasterstats import zonal_stats  # type: ignore
+from shapely.geometry import mapping, shape  # type: ignore
+from shapely.ops import unary_union  # type: ignore
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +28,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_STATS = ["min", "max", "mean", "median"]
 
 
-def get_wfs_response(wfs_params):
+def get_wfs_response(wfs_params: WfsParamsModel) -> WfsResponse:
     """
     Execute Web Feature Service (WFS) request to external OGC server.
 
@@ -28,39 +37,37 @@ def get_wfs_response(wfs_params):
     https://docs.geoserver.org/stable/en/user/services/wfs/reference.html
     """
     cql_filter = []
-    if "time" in wfs_params.keys():
-        from_date = datetime.strptime(wfs_params.get("time"), "%Y-%m-%d")
+    if wfs_params.time is not None:
+        from_date = datetime.strptime(wfs_params.time, "%Y-%m-%d")
         cql_filter.append("timestamp DURING {}/P1D".format(from_date.isoformat()))
 
     params = {
         "service": "WFS",
         "version": "1.0.0",
         "request": "GetFeature",
-        "typeName": wfs_params.get("layer_name"),
+        "typeName": wfs_params.layer_name,
         "outputFormat": "application/json",
     }
 
     if len(cql_filter) > 0:
         params["cql_filter"] = " AND ".join(cql_filter)
 
-    wfs_url = "{url}?{params}".format(
-        url=wfs_params.get("url"), params=urlencode(params)
-    )
+    wfs_url = f"{wfs_params.url}?{urlencode(params)}"
 
     wfs_response_path = cache_file(url=wfs_url, prefix="wfs")
 
-    return dict(filter_property_key=wfs_params["key"], path=wfs_response_path)
+    return WfsResponse(filter_property_key=wfs_params.key, path=wfs_response_path)
 
 
-def _extract_features_properties(zones):
-    with open(zones) as json_file:
+def _extract_features_properties(zones_filename: FilePath) -> list:
+    with open(zones_filename) as json_file:
         zones = load(json_file)
     return [f["properties"] for f in zones.get("features", [])]
 
 
-def _group_zones(zones, group_by):
+def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
     """Group zones by a key id and merge polygons."""
-    with open(zones) as json_file:
+    with open(zones_filepath) as json_file:
         geojson_data = load(json_file)
 
     features = geojson_data.get("features", [])
@@ -74,7 +81,7 @@ def _group_zones(zones, group_by):
 
     new_features = []
     for group_id, polygons in grouped_polygons.items():
-        new_geometry = mapping(cascaded_union(polygons))
+        new_geometry = mapping(unary_union(polygons))
 
         new_features.append(
             dict(
@@ -89,23 +96,25 @@ def _group_zones(zones, group_by):
 
     outjson = dict(type="FeatureCollection", features=new_features)
 
-    output_file = "{zones}.{group_by}".format(zones=zones, group_by=group_by)
+    output_filename = f"{zones_filepath}.{group_by}"
 
-    with open(output_file, "w") as outfile:
+    with open(output_filename, "w") as outfile:
         dump(outjson, outfile)
 
-    return output_file
+    return FilePath(output_filename)
 
 
-def _create_shapely_geoms(geojson_dict, filter_property_key):
+def _create_shapely_geoms(
+    geojson_dict: GeoJSON, filter_property_key: str
+) -> list[tuple[str, Any]]:
     """
     Read and parse geojson dictionary geometries into shapely objects.
 
-    returns a tuple with the property value that matches filter_property_key and shapely object.
+    returns a list of tuples with the property value that matches filter_property_key and shapely object.
     """
     shapely_dicts = []
-    for f in geojson_dict.get("features"):
-        if f.get("geometry").get("type") not in ["MultiPolygon", "Polygon"]:
+    for f in geojson_dict.get("features", []):
+        if f.get("geometry", {}).get("type", "") not in ["MultiPolygon", "Polygon"]:
             continue
 
         obj_key = f["properties"][filter_property_key]
@@ -115,7 +124,9 @@ def _create_shapely_geoms(geojson_dict, filter_property_key):
     return shapely_dicts
 
 
-def _get_intersected_polygons(zones_geojson, wfs_geojson, filter_property_key):
+def _get_intersected_polygons(
+    zones_geojson: GeoJSON, wfs_geojson: GeoJSON, filter_property_key: str
+) -> list[dict]:
     """
     Generate polygon intersection between each zone and polygons from wfs response.
 
@@ -128,7 +139,8 @@ def _get_intersected_polygons(zones_geojson, wfs_geojson, filter_property_key):
     wfs_shapes = _create_shapely_geoms(wfs_geojson, filter_property_key)
 
     intersected_zones = []
-    for zone in zones_geojson.get("features"):
+    zone: GeoJSONFeature
+    for zone in zones_geojson.get("features", []):
         # Shapely object from zone geojson geometry.
         geom = shape(zone.get("geometry"))
 
@@ -143,7 +155,7 @@ def _get_intersected_polygons(zones_geojson, wfs_geojson, filter_property_key):
         filtered_dict = []
 
         for k, geom in filtered:
-            properties = zone.get("properties").copy()
+            properties = zone.get("properties", {}).copy()
 
             # Include property value from wfs_response.
             properties[filter_property_key] = k
@@ -160,33 +172,36 @@ def _get_intersected_polygons(zones_geojson, wfs_geojson, filter_property_key):
         intersected_zones.append(filtered_dict)
 
     # Flatten.
-    intersected_zones = [item for sublist in intersected_zones for item in sublist]
+    flattened_intersected_zones = [
+        item for sublist in intersected_zones for item in sublist
+    ]
 
-    return intersected_zones
+    return flattened_intersected_zones
 
 
 @timed
 def calculate_stats(
-    zones,
-    geotiff,
-    group_by=None,
-    stats=None,
-    prefix="stats_",
-    geojson_out=False,
-    wfs_response=None,
-    intersect_comparison=None,
-):
+    zones_filepath: FilePath,  # list or FilePath??
+    geotiff: FilePath,
+    group_by: GroupBy | None = None,
+    stats: list[str] | str | None = None,
+    prefix: str | None = "stats_",
+    geojson_out: bool = False,
+    wfs_response: WfsResponse | None = None,
+    intersect_comparison: tuple | None = None,
+) -> list[dict[str, Any]]:
     """Calculate stats."""
     if group_by:
-        zones = _group_zones(zones, group_by)
+        zones_filepath = _group_zones(zones_filepath, group_by)
 
-    stats_input = zones
+    stats_input: FilePath | list = zones_filepath
+    zones: list[dict] = []
     if wfs_response:
-        zones_geojson = get_json_file(zones)
-        wfs_geojson = get_json_file(wfs_response.get("path"))
+        zones_geojson = get_json_file(zones_filepath)
+        wfs_geojson = get_json_file(wfs_response["path"])
 
         zones = _get_intersected_polygons(
-            zones_geojson, wfs_geojson, wfs_response.get("filter_property_key")
+            zones_geojson, wfs_geojson, wfs_response["filter_property_key"]
         )
 
         # Extract shapely objects to compute stats.
@@ -197,9 +212,9 @@ def calculate_stats(
     add_stats = None
     if intersect_comparison is not None:
 
-        def intersect_percentage(masked):
+        def intersect_percentage(masked) -> float:
             # Get total number of elements in the boundary.
-            intersect_operator, intersect_baseline = intersect_comparison
+            intersect_operator, intersect_baseline = intersect_comparison  # type: ignore
             total = masked.count()
             # Avoid dividing by 0
             if total == 0:
@@ -225,14 +240,16 @@ def calculate_stats(
 
     except rasterio.errors.RasterioError as error:
         logger.error(error)
-        raise InternalServerError("An error occured calculating statistics.")
+        raise HTTPException(
+            status_code=500, detail="An error occured calculating statistics."
+        )
 
-    if wfs_response:
+    if wfs_response is not None:
         zones_features = [z.get("feature") for z in zones]
 
         # Add statistics as feature property fields.
         features = [
-            {**z, "properties": {**z.get("properties"), **s}}
+            {**z, "properties": {**z.get("properties", {}), **s}}  # type: ignore
             for z, s in zip(zones_features, stats_results)
         ]
 
@@ -240,7 +257,7 @@ def calculate_stats(
         return features
 
     if not geojson_out:
-        feature_properties = _extract_features_properties(zones)
+        feature_properties = _extract_features_properties(zones_filepath)
         stats_results = [
             {**properties, **stat}
             for stat, properties in zip(stats_results, feature_properties)
