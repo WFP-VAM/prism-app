@@ -6,15 +6,39 @@ import {
   View,
   Text,
   Image,
+  Font,
 } from '@react-pdf/renderer';
 import { TableData } from '../../../context/analysisResultStateSlice';
+
+// https://github.com/diegomura/react-pdf/issues/1991
+Font.register({
+  family: 'Roboto',
+  fonts: [
+    {
+      src:
+        'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Me5WZLCzYlKw.ttf',
+      fontWeight: 400,
+    },
+    {
+      src:
+        'https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmEU9vAx05IsDqlA.ttf',
+      fontWeight: 500,
+    },
+    {
+      src:
+        'https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlvAx05IsDqlA.ttf',
+      fontWeight: 700,
+    },
+  ],
+});
 
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFF',
-    paddingBottom: 15,
+    paddingBottom: 25,
     paddingTop: '1vh',
+    fontFamily: 'Roboto',
   },
   section: {
     width: '96vw',
@@ -24,6 +48,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: '14px',
+    fontWeight: 500,
   },
   subText: {
     fontSize: '12px',
@@ -43,6 +68,7 @@ const styles = StyleSheet.create({
   legendTittle: {
     fontSize: 14,
     paddingBottom: 10,
+    fontWeight: 500,
   },
   legendContentsWrapper: {
     display: 'flex',
@@ -54,6 +80,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 14,
     paddingTop: 5,
+  },
+  legendText: {
+    paddingLeft: 10,
   },
   dash: {
     width: 16,
@@ -71,10 +100,12 @@ const styles = StyleSheet.create({
     borderBottom: 1,
     borderBottomColor: '#c1c1c1',
     backgroundColor: '#EBEBEB',
+    fontWeight: 500,
   },
   tableFooter: {
     borderTop: 1,
     borderTopColor: '#c1c1c1',
+    fontWeight: 700,
   },
   footer: {
     position: 'absolute',
@@ -113,11 +144,11 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={[styles.section]}>
-          <Text style={styles.title}>Event Name: {eventName}</Text>
-          <Text style={styles.title}>Publication Date: {date}</Text>
+          <Text style={styles.title}>Event name: {eventName}</Text>
+          <Text style={styles.title}>Publication date: {date}</Text>
           <Text style={styles.subText}>
             This is an automated report.
-            <Text> Information should be treated as preliminary.</Text>
+            <Text> Information should be treated as preliminary</Text>
           </Text>
         </View>
         <View>
@@ -131,15 +162,15 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
             <View style={styles.legendContentsWrapper}>
               <View style={styles.legendContent}>
                 <View style={[styles.dash, { backgroundColor: '#000000' }]} />
-                <Text> Province</Text>
+                <Text style={[styles.legendText]}>Province</Text>
               </View>
               <View style={styles.legendContent}>
                 <View style={[styles.dash, { backgroundColor: '#999797' }]} />
-                <Text> District</Text>
+                <Text style={[styles.legendText]}>District</Text>
               </View>
               <View style={styles.legendContent}>
                 <View style={[styles.dash, { backgroundColor: '#D8D6D6' }]} />
-                <Text> Township</Text>
+                <Text style={[styles.legendText]}>Township</Text>
               </View>
             </View>
           </View>
@@ -148,7 +179,7 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
           <Text style={{ fontSize: 10 }}>
             Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
           </Text>
-          <Text style={{ fontSize: 8 }}>
+          <Text style={{ fontSize: 8, color: '#929292' }}>
             The designations employed and the presentation of material in the
             map(s) do not imply the expression of any opinion on the part of WFP
             concerning the legal or constitutional status of any country,
@@ -160,7 +191,9 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
           <View style={[styles.section]}>
             <View style={{ backgroundColor: '#EBEBEB' }}>
               <View>
-                <Text style={{ padding: 10 }}>{tableName}</Text>
+                <Text style={{ padding: 10, fontWeight: 500 }}>
+                  {tableName}
+                </Text>
               </View>
               <View style={[styles.tableHead, styles.tableRow]} wrap={false}>
                 {tableData.columns.map(value => {
@@ -176,7 +209,7 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
               </View>
             </View>
 
-            {tableData.rows.map((value, index) => {
+            {tableData.rows.slice(1).map((value, index) => {
               const color = index % 2 ? '#EBEBEB' : '#F5F5F5';
               let total = 0;
               return (
@@ -239,7 +272,7 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
           </View>
         )}
         <Text fixed style={styles.footer}>
-          PRISM automated report
+          P R I S M automated report
         </Text>
       </Page>
     </Document>

@@ -86,7 +86,10 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
           }}
         </BlobProvider> */}
         <div style={{ width: '100%', height: '100%' }}>
-          <PDFViewer style={{ width: '100%', height: '100%' }}>
+          <PDFViewer
+            style={{ width: '100%', height: '100%' }}
+            showToolbar={false}
+          >
             <StormReportDoc mapImage={mapImage} tableData={analysisData} />
           </PDFViewer>
         </div>

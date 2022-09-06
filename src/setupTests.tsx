@@ -60,6 +60,7 @@ jest.mock('@react-pdf/renderer', () => ({
   PDFDownloadLink: jest.fn(() => null),
   PDFViewer: jest.fn(() => null),
   StyleSheet: { create: () => {} },
+  Font: { register: () => {} },
 }));
 
 function stubMuiComponent(componentName: string) {
