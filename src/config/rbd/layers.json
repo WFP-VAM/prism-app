@@ -2280,17 +2280,17 @@
       {
         "value": 1,
         "label": "1 - Low",
-        "color": "#fee0d2"
+        "color": "#FFB597"
       },
       {
         "value": 2,
         "label": "2 - Medium",
-        "color": "#fc9272"
+        "color": "#FF7E4B"
       },
       {
         "value": 3,
         "label": "3 - High",
-        "color": "#de2d26"
+        "color": "#D23C00"
       }
     ],
     "legend_text": "ICA food security recurrence - national"
@@ -2307,17 +2307,17 @@
       {
         "value": 1,
         "label": "1 - Low",
-        "color": "#fee0d2"
+        "color": "#FFB597"
       },
       {
         "value": 2,
         "label": "2 - Medium",
-        "color": "#fc9272"
+        "color": "#FF7E4B"
       },
       {
         "value": 3,
         "label": "3 - High",
-        "color": "#de2d26"
+        "color": "#D23C00"
       }
     ],
     "legend_text": "ICA food security recurrence - regional"
@@ -2334,17 +2334,17 @@
       {
         "value": 1,
         "label": "1 - Low",
-        "color": "#fee0d2"
+        "color": "#F0CA6A"
       },
       {
         "value": 2,
         "label": "2 - Medium",
-        "color": "#fc9272"
+        "color": "#E3A917"
       },
       {
         "value": 3,
         "label": "3 - High",
-        "color": "#de2d26"
+        "color": "#6F520B"
       }
     ],
     "legend_text": "ICA drought recurrence - national"
@@ -2361,17 +2361,17 @@
       {
         "value": 1,
         "label": "1 - Low",
-        "color": "#fee0d2"
+        "color": "#F0CA6A"
       },
       {
         "value": 2,
         "label": "2 - Medium",
-        "color": "#fc9272"
+        "color": "#E3A917"
       },
       {
         "value": 3,
         "label": "3 - High",
-        "color": "#de2d26"
+        "color": "#6F520B"
       }
     ],
     "legend_text": "ICA drought recurrence - regional"
@@ -2388,17 +2388,17 @@
       {
         "value": 1,
         "label": "1 - Low",
-        "color": "#fee0d2"
+        "color": "#66CCFF"
       },
       {
         "value": 2,
         "label": "2 - Medium",
-        "color": "#fc9272"
+        "color": "#0099FF"
       },
       {
         "value": 3,
         "label": "3 - High",
-        "color": "#de2d26"
+        "color": "#0033CC"
       }
     ],
     "legend_text": "ICA flood recurrence"
@@ -2415,17 +2415,17 @@
       {
         "value": 1,
         "label": "1 - Low",
-        "color": "#fee0d2"
+        "color": "#FFCCFF"
       },
       {
         "value": 2,
         "label": "2 - Medium",
-        "color": "#fc9272"
+        "color": "#FF99FF"
       },
       {
         "value": 3,
         "label": "3 - High",
-        "color": "#de2d26"
+        "color": "#CC3399"
       }
     ],
     "legend_text": "ICA landslide recurrence"
@@ -2442,17 +2442,17 @@
       {
         "value": 1,
         "label": "1 - Low",
-        "color": "#fee0d2"
+        "color": "#B4C8D4"
       },
       {
         "value": 2,
         "label": "2 - Medium",
-        "color": "#fc9272"
+        "color": "#89A9BD"
       },
       {
         "value": 3,
         "label": "3 - High",
-        "color": "#de2d26"
+        "color": "#416073"
       }
     ],
     "legend_text": "ICA combined hazard risk - national"
@@ -2469,17 +2469,17 @@
       {
         "value": 1,
         "label": "1 - Low",
-        "color": "#fee0d2"
+        "color": "#B4C8D4"
       },
       {
         "value": 2,
         "label": "2 - Medium",
-        "color": "#fc9272"
+        "color": "#89A9BD"
       },
       {
         "value": 3,
         "label": "3 - High",
-        "color": "#de2d26"
+        "color": "#416073"
       }
     ],
     "legend_text": "ICA combined hazard risk - regional"
@@ -2487,54 +2487,54 @@
   "ica_area_natl": {
     "title": "ICA focus areas - national",
     "type": "admin_level_data",
-    "path": "data/rbd/ica.json",
+    "path": "data/rbd/ica_focus_areas.json",
     "data_field": "ica_area_nat",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
     "legend": [
       {
-        "value": "1A",
+        "value": "1",
         "label": "1A",
         "color": "#7030A0"
       },
       {
-        "value": "1B",
+        "value": "2",
         "label": "1B",
         "color": "#9954CC"
       },
       {
-        "value": "2A",
+        "value": "3",
         "label": "2A",
         "color": "#E10000"
       },
       {
-        "value": "2B",
+        "value": "4",
         "label": "2B",
         "color": "#E16161"
       },
       {
-        "value": "3A",
+        "value": "5",
         "label": "3A",
         "color": "#FFA401"
       },
       {
-        "value": "3B",
+        "value": "6",
         "label": "3B",
         "color": "#FFC969"
       },
       {
-        "value": "4A",
+        "value": "7",
         "label": "4A",
         "color": "#FFFF00"
       },
       {
-        "value": "4B",
+        "value": "8",
         "label": "4B",
         "color": "#FFFF99"
       },
       {
-        "value": "5",
+        "value": "9",
         "label": "5",
         "color": "#CCFF99"
       }
@@ -2544,54 +2544,54 @@
   "ica_area_regional": {
     "title": "ICA focus areas - regional",
     "type": "admin_level_data",
-    "path": "data/rbd/ica.json",
+    "path": "data/rbd/ica_focus_areas.json",
     "data_field": "ica_area_reg",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
     "opacity": 0.7,
     "legend": [
       {
-        "value": "1A",
+        "value": "1",
         "label": "1A",
         "color": "#7030A0"
       },
       {
-        "value": "1B",
+        "value": "2",
         "label": "1B",
         "color": "#9954CC"
       },
       {
-        "value": "2A",
+        "value": "3",
         "label": "2A",
         "color": "#E10000"
       },
       {
-        "value": "2B",
+        "value": "4",
         "label": "2B",
         "color": "#E16161"
       },
       {
-        "value": "3A",
+        "value": "5",
         "label": "3A",
         "color": "#FFA401"
       },
       {
-        "value": "3B",
+        "value": "6",
         "label": "3B",
         "color": "#FFC969"
       },
       {
-        "value": "4A",
+        "value": "7",
         "label": "4A",
         "color": "#FFFF00"
       },
       {
-        "value": "4B",
+        "value": "8",
         "label": "4B",
         "color": "#FFFF99"
       },
       {
-        "value": "5",
+        "value": "9",
         "label": "5",
         "color": "#CCFF99"
       }
