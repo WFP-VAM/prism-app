@@ -6,13 +6,12 @@
     "food_security_and_livelihoods": "icon_livelihoods.png",
     "Cadre Harmonisé": "icon_cadreharmoise2.png",
     "capacity": "icon_capacity.png",
-    "tables": "icon_table.png",
+    "risk_analysis": "icon_table.png",
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
     "temperature": "icon_climate.png"
   },
   "alertFormActive": false,
-  "defaultLayer": "rain_anomaly_dekad",
   "serversUrls": {
     "wms": [
       "https://odc.ovio.org/wms"
@@ -151,6 +150,79 @@
         "lst_nighttime",
         "lst_anomaly",
         "lst_amplitude"
+      ]
+    },
+    "risk_analysis": {
+      "integrated_context_analysis": [
+        {
+          "group_title": "Food insecurity recurrence",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_fs_national",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_fs_regional",
+              "label": "Regional"
+            }
+          ]
+        },
+        {
+          "group_title": "Drought recurrence",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_drought_national",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_drought_regional",
+              "label": "Regional"
+            }
+          ]
+        },
+        "ica_flood",
+        "ica_landslide",
+        {
+          "group_title": "Combined hazard risk",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_combined_hazard_risk_natl",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_combined_hazard_risk_reg",
+              "label": "Regional"
+            }
+          ]
+        },
+        {
+          "group_title": "ICA area classification",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_area_natl",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_area_regional",
+              "label": "Regional"
+            }
+          ]
+        }
+      ],
+      "multidimensional_risk_analysis": [
+        "mdr_struct_vuln",
+        "mdr_stressors",
+        "mdr_coping_capacity",
+        "mdr_fsn_outcomes",
+        "mdr_index"
       ]
     }
   }
