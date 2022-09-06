@@ -137,6 +137,8 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
   const date = new Date().toUTCString();
   const tableName = 'Number of people exposed by wind speed category';
   const tableCellWidth = `${100 / (tableData.columns.length + 1)}%`;
+  const hasTableData =
+    tableData.columns.length > 0 && tableData.rows.length > 0;
 
   const totals: number[] = [];
 
@@ -189,78 +191,94 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
               </View>
             </View>
           </View>
-          <View style={styles.legend}>
-            <View>
-              <Text style={styles.legendTittle}>
-                Tropical Storms - Wind buffers
-              </Text>
-              <View style={styles.legendContentsWrapper}>
-                <View style={styles.legendContent}>
-                  <View
-                    style={[
-                      styles.borderedBox,
-                      { backgroundColor: '#ffffff', borderColor: '#b8b1b1' },
-                    ]}
-                  />
-                  <Text style={[styles.legendText]}>Uncertainty Cones</Text>
-                </View>
-                <View style={styles.legendContent}>
-                  <View
-                    style={[
-                      styles.borderedBox,
-                      { backgroundColor: '#fffcf1', borderColor: '#f7e705' },
-                    ]}
-                  />
-                  <Text style={[styles.legendText]}>Wind Buffer 60 km/h</Text>
-                </View>
-                <View style={styles.legendContent}>
-                  <View
-                    style={[
-                      styles.borderedBox,
-                      { backgroundColor: '#ffeed8', borderColor: '#f99408' },
-                    ]}
-                  />
-                  <Text style={[styles.legendText]}>Wind Buffer 90 km/h</Text>
-                </View>
-                <View style={styles.legendContent}>
-                  <View
-                    style={[
-                      styles.borderedBox,
-                      { backgroundColor: '#fcd4ce', borderColor: '#f90c08' },
-                    ]}
-                  />
-                  <Text style={[styles.legendText]}>Wind Buffer 120 km/h</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-          <View style={styles.legend}>
-            <View>
-              <Text style={styles.legendTittle}>Population Exposure</Text>
-              <View style={styles.legendContentsWrapper}>
-                <View style={styles.legendContent}>
-                  <View style={[styles.box, { backgroundColor: '#fef2ec' }]} />
-                  <Text style={[styles.legendText]}>Very low</Text>
-                </View>
-                <View style={styles.legendContent}>
-                  <View style={[styles.box, { backgroundColor: '#fdd6c8' }]} />
-                  <Text style={[styles.legendText]}>Low</Text>
-                </View>
-                <View style={styles.legendContent}>
-                  <View style={[styles.box, { backgroundColor: '#fdb4a4' }]} />
-                  <Text style={[styles.legendText]}>Medium</Text>
-                </View>
-                <View style={styles.legendContent}>
-                  <View style={[styles.box, { backgroundColor: '#ee9592' }]} />
-                  <Text style={[styles.legendText]}>Hight</Text>
-                </View>
-                <View style={styles.legendContent}>
-                  <View style={[styles.box, { backgroundColor: '#d28689' }]} />
-                  <Text style={[styles.legendText]}>Very hight</Text>
+          {hasTableData && (
+            <View style={styles.legend}>
+              <View>
+                <Text style={styles.legendTittle}>
+                  Tropical Storms - Wind buffers
+                </Text>
+                <View style={styles.legendContentsWrapper}>
+                  <View style={styles.legendContent}>
+                    <View
+                      style={[
+                        styles.borderedBox,
+                        { backgroundColor: '#ffffff', borderColor: '#b8b1b1' },
+                      ]}
+                    />
+                    <Text style={[styles.legendText]}>Uncertainty Cones</Text>
+                  </View>
+                  <View style={styles.legendContent}>
+                    <View
+                      style={[
+                        styles.borderedBox,
+                        { backgroundColor: '#fffcf1', borderColor: '#f7e705' },
+                      ]}
+                    />
+                    <Text style={[styles.legendText]}>Wind Buffer 60 km/h</Text>
+                  </View>
+                  <View style={styles.legendContent}>
+                    <View
+                      style={[
+                        styles.borderedBox,
+                        { backgroundColor: '#ffeed8', borderColor: '#f99408' },
+                      ]}
+                    />
+                    <Text style={[styles.legendText]}>Wind Buffer 90 km/h</Text>
+                  </View>
+                  <View style={styles.legendContent}>
+                    <View
+                      style={[
+                        styles.borderedBox,
+                        { backgroundColor: '#fcd4ce', borderColor: '#f90c08' },
+                      ]}
+                    />
+                    <Text style={[styles.legendText]}>
+                      Wind Buffer 120 km/h
+                    </Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
+          )}
+          {hasTableData && (
+            <View style={styles.legend}>
+              <View>
+                <Text style={styles.legendTittle}>Population Exposure</Text>
+                <View style={styles.legendContentsWrapper}>
+                  <View style={styles.legendContent}>
+                    <View
+                      style={[styles.box, { backgroundColor: '#fef2ec' }]}
+                    />
+                    <Text style={[styles.legendText]}>Very low</Text>
+                  </View>
+                  <View style={styles.legendContent}>
+                    <View
+                      style={[styles.box, { backgroundColor: '#fdd6c8' }]}
+                    />
+                    <Text style={[styles.legendText]}>Low</Text>
+                  </View>
+                  <View style={styles.legendContent}>
+                    <View
+                      style={[styles.box, { backgroundColor: '#fdb4a4' }]}
+                    />
+                    <Text style={[styles.legendText]}>Medium</Text>
+                  </View>
+                  <View style={styles.legendContent}>
+                    <View
+                      style={[styles.box, { backgroundColor: '#ee9592' }]}
+                    />
+                    <Text style={[styles.legendText]}>Hight</Text>
+                  </View>
+                  <View style={styles.legendContent}>
+                    <View
+                      style={[styles.box, { backgroundColor: '#d28689' }]}
+                    />
+                    <Text style={[styles.legendText]}>Very hight</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
         </View>
         <View style={styles.section}>
           <Text style={{ fontSize: 7.7 }}>
@@ -274,7 +292,7 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
             frontiers or boundaries.
           </Text>
         </View>
-        {tableData.columns.length > 0 && tableData.rows.length > 0 && (
+        {hasTableData && (
           <View style={[styles.section]}>
             <View style={{ backgroundColor: '#EBEBEB' }}>
               <View>
