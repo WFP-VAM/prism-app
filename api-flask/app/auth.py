@@ -19,8 +19,6 @@ if auth_db is None:
 def verify_hash(password: str, saved_salt: str) -> bytes:
     """Verify password hash."""
     # Salt is in utf-8 string I need to encode it in Base64 and then decode the Base64 to bytes
-    if saved_salt.lower() == "false":
-        return password.encode("utf-8")
     saved_salt = saved_salt.encode("utf-8")
     saved_salt = base64.b64decode(saved_salt)
     key = hashlib.pbkdf2_hmac(
@@ -39,29 +37,29 @@ def validate_user(credentials: HTTPBasicCredentials = depends):
         return {"access": None}
 
     user_info = auth_db.get_by_username(username=credentials.username)
-    print(user_info)
-    if not user_info:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found",
-            headers={"WWW-Authenticate": "Basic"},
-        )
 
-    is_correct_password = False
-    if user_info.salt != "":
+    user_password, user_salt = "", ""
+    if user_info is not None:
+        user_password = user_info.password
+        user_salt = user_info.salt
+
+    is_correct_password: bool = False
+    # Temporarily bypass hash passwords using salt=false
+    if user_salt != "" and user_salt.lower() != "false":
         is_correct_password = (
-            verify_hash(credentials.password, user_info.salt).decode("utf-8")
-            == user_info.password
+            verify_hash(credentials.password, user_salt or "false").decode("utf-8")
+            == user_password
         )
 
-    # Temporary implementation without hashed passwords:
+    # Temporary implementation without hashed passwords
     else:
         current_password_bytes = credentials.password.encode("utf8")
-        correct_password_bytes = user_info.password.encode("utf8")
+        correct_password_bytes = user_password.encode("utf8")
         is_correct_password = secrets.compare_digest(
             current_password_bytes, correct_password_bytes
         )
-    if not is_correct_password:
+
+    if not is_correct_password or user_info is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
