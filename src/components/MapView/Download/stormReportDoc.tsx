@@ -53,6 +53,10 @@ const styles = StyleSheet.create({
   subText: {
     fontSize: 9.24,
   },
+  mapImage: {
+    width: '100%',
+    maxHeight: 284,
+  },
   legendsContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -61,7 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F9F9',
   },
   legend: {
-    height: 100,
+    height: 110,
     display: 'flex',
     flexDirection: 'column',
     marginRight: 40,
@@ -103,13 +107,18 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
   },
+  tableName: {
+    padding: 6,
+    fontWeight: 500,
+  },
   tableCell: {
-    padding: 10,
+    padding: 8,
     fontSize: 9.24,
   },
   tableRow: {
     display: 'flex',
     flexDirection: 'row',
+    lineHeight: 1,
   },
   tableHead: {
     borderBottom: 1,
@@ -139,6 +148,25 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
   const tableCellWidth = `${100 / (tableData.columns.length + 1)}%`;
   const hasTableData =
     tableData.columns.length > 0 && tableData.rows.length > 0;
+  const tableRowsNum = 10;
+  const showTotal = true;
+  const sortByKey = '60 km/h';
+
+  const tableRows = tableData.rows.slice(1);
+  // eslint-disable-next-line fp/no-mutating-methods
+  const sortedTableRows = tableRows.sort((a, b) => {
+    if (a[sortByKey as keyof typeof a] > b[sortByKey as keyof typeof b]) {
+      return -1;
+    }
+    if (a[sortByKey as keyof typeof a] < b[sortByKey as keyof typeof b]) {
+      return 1;
+    }
+    return 0;
+  });
+  const trimmedTableRows = sortedTableRows.slice(
+    0,
+    tableRowsNum - (showTotal ? 1 : 0),
+  );
 
   const totals: number[] = [];
 
@@ -168,8 +196,8 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
             <Text> Information should be treated as preliminary</Text>
           </Text>
         </View>
-        <View>
-          <Image src={mapImage} style={styles.section} />
+        <View style={styles.section}>
+          <Image src={mapImage} style={styles.mapImage} />
         </View>
         <View style={[styles.legendsContainer, styles.section]}>
           <View style={styles.legend}>
@@ -296,9 +324,7 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
           <View style={[styles.section]}>
             <View style={{ backgroundColor: '#EBEBEB' }}>
               <View>
-                <Text style={{ padding: 10, fontWeight: 500 }}>
-                  {tableName}
-                </Text>
+                <Text style={styles.tableName}>{tableName}</Text>
               </View>
               <View style={[styles.tableHead, styles.tableRow]} wrap={false}>
                 {tableData.columns.map(value => {
@@ -314,7 +340,7 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
               </View>
             </View>
 
-            {tableData.rows.slice(1).map((value, index) => {
+            {trimmedTableRows.map((value, index) => {
               const color = index % 2 ? '#EBEBEB' : '#F5F5F5';
               let total = 0;
               return (
@@ -343,37 +369,41 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
                 </View>
               );
             })}
-            <View
-              wrap={false}
-              style={[
-                styles.tableRow,
-                styles.tableFooter,
-                {
-                  backgroundColor:
-                    tableData.columns.length % 2 ? '#F5F5F5' : '#EBEBEB',
-                },
-              ]}
-            >
-              {totals.map((val, index) => {
-                if (index === 0) {
+            {showTotal && (
+              <View
+                wrap={false}
+                style={[
+                  styles.tableRow,
+                  styles.tableFooter,
+                  {
+                    backgroundColor:
+                      trimmedTableRows.length % 2 ? '#EBEBEB' : '#F5F5F5',
+                  },
+                ]}
+              >
+                {totals.map((val, index) => {
+                  if (index === 0) {
+                    return (
+                      <Text
+                        style={[styles.tableCell, { width: tableCellWidth }]}
+                      >
+                        Total
+                      </Text>
+                    );
+                  }
                   return (
                     <Text style={[styles.tableCell, { width: tableCellWidth }]}>
-                      Total
+                      {val}
                     </Text>
                   );
-                }
-                return (
-                  <Text style={[styles.tableCell, { width: tableCellWidth }]}>
-                    {val}
-                  </Text>
-                );
-              })}
-              <Text style={[styles.tableCell, { width: tableCellWidth }]}>
-                {totals.reduce((prev, cur) => {
-                  return prev + cur;
-                }, 0)}
-              </Text>
-            </View>
+                })}
+                <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                  {totals.reduce((prev, cur) => {
+                    return prev + cur;
+                  }, 0)}
+                </Text>
+              </View>
+            )}
           </View>
         )}
         <Text fixed style={styles.footer}>
