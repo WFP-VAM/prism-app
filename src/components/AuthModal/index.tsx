@@ -121,7 +121,7 @@ const AuthModal = ({ classes }: AuthModalProps) => {
         <Box display="flex" justifyContent="flex-end">
           <div className={classes.buttonWrapper}>
             <Button variant="contained" color="primary" onClick={validateToken}>
-              {t('Accept')}
+              {t('Send')}
             </Button>
             <Button
               variant="contained"
