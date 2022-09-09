@@ -228,7 +228,7 @@ def get_form_responses(
     geom_field: str | None,
     filters: str | None,
     form_url: str,
-    geom_bbox: str | None = None,
+    province: str | None = None,
 ) -> list[dict]:
     """Get all form responses using Kobo api."""
     auth, form_fields = get_kobo_params(form_name, datetime_field, geom_field, filters)
@@ -238,10 +238,6 @@ def get_form_responses(
     )
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
-
-    bbox = None
-    if geom_bbox is not None:
-        bbox = box(*[float(p) for p in geom_bbox.split(",")])
 
     filtered_forms = []
     for form in forms:
@@ -253,10 +249,14 @@ def get_form_responses(
         conditions.append(begin_datetime <= date_value)
         conditions.append(date_value < end_datetime)
 
-        # Geospatial filter
-        if bbox is not None:
-            point = Point(form.get("lon"), form.get("lat"))
-            conditions.append(bbox.contains(point))
+        # Geospatial filter by admin area
+        if province is not None:
+            admin_condition = False
+            if "Province" in form and form["Province"] == province:
+                admin_condition = True
+            elif "Commune" in form and form["Commune"][0:2] == province:
+                admin_condition = True
+            conditions.append(admin_condition)
 
         if all(conditions) is False:
             continue

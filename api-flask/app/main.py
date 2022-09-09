@@ -165,10 +165,11 @@ def get_kobo_forms(
             status_code=400, detail="beginDateTime value must be lower than endDateTime"
         )
 
-    geom_bbox = None
+    province = None
     try:
-        geom_bbox = user_info["access"]["bbox"]
-    except (IndexError, KeyError, TypeError):
+        province = user_info.access.get("province", None)
+    except (IndexError, KeyError, TypeError) as e:
+        logger.debug(e)
         pass
 
     form_responses = get_form_responses(
@@ -179,7 +180,7 @@ def get_kobo_forms(
         geomField,
         filters,
         koboUrl,
-        geom_bbox,
+        province,
     )
 
     return form_responses
