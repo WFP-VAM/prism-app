@@ -11,7 +11,6 @@ services:
       - WORKERS_PER_CORE=1
       # Kobo credentials
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-random_string}
       - KOBO_PW
       # Alerts database
       - DATABASE_URL
