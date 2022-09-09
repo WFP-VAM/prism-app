@@ -11,6 +11,7 @@ import type {
   DateItem,
 } from '../config/types';
 import {
+  DatesPropagation,
   ImpactLayerProps,
   WMSLayerProps,
   FeatureInfoType,
@@ -305,11 +306,20 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
 const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
   const { dates, validity } = layer;
 
+  const { days: value, mode } = validity;
+
   const datesWithValidity = dates.map((date: number) => {
     const momentDate = moment(date).set({ hour: 12 });
 
-    const endDate = momentDate.clone().add(validity, 'days');
-    const startDate = momentDate.clone().subtract(validity, 'days');
+    const endDate =
+      mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD
+        ? momentDate.clone().add(value, 'days')
+        : momentDate.clone();
+
+    const startDate =
+      mode === DatesPropagation.BOTH || mode === DatesPropagation.BACKWARDS
+        ? momentDate.clone().subtract(value, 'days')
+        : momentDate.clone();
 
     const daysToAdd = [...Array(endDate.diff(startDate, 'days') + 1).keys()];
 

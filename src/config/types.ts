@@ -356,6 +356,17 @@ interface FeatureInfoProps {
   label: string;
 }
 
+export enum DatesPropagation {
+  FORWARD = 'forward',
+  BACKWARDS = 'backwards',
+  BOTH = 'mixed',
+}
+
+export type Validity = {
+  days: number; // Number of days to include in the calendar.
+  mode: DatesPropagation; // Propagation mode for dates.
+};
+
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
   baseUrl: string;
@@ -386,7 +397,7 @@ export class WMSLayerProps extends CommonLayerProps {
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
 
   @optional
-  validity?: number; // Include additional dates in the calendar based on the number provided.
+  validity?: Validity; // Include additional dates in the calendar based on the number provided.
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
@@ -627,5 +638,5 @@ export type PointLayerData = {
 export type ValidityLayer = {
   name: string;
   dates: number[];
-  validity: number;
+  validity: Validity;
 };
