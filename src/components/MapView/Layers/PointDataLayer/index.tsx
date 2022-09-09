@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
-  jwtAccessTokenSelector,
-  clearJwtAccessToken,
+  userAuthSelector,
+  clearUserAuthGlobal,
 } from '../../../../context/serverStateSlice';
 import {
   LayerData,
@@ -36,7 +36,7 @@ import { createEWSDatasetParams } from '../../../../utils/ews-utils';
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer, before }: LayersProps) {
   const selectedDate = useDefaultDate(layer.id);
-  const jwtAccessToken = useSelector(jwtAccessTokenSelector);
+  const userAuth = useSelector(userAuthSelector);
 
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<PointDataLayerProps>
@@ -57,20 +57,20 @@ function PointDataLayer({ layer, before }: LayersProps) {
   const { id: layerId } = layer;
 
   useEffect(() => {
-    if (layer.tokenRequired && !jwtAccessToken) {
+    if (layer.authRequired && !userAuth) {
       return;
     }
 
     if (!features) {
-      dispatch(loadLayerData({ layer, date: selectedDate, jwtAccessToken }));
+      dispatch(loadLayerData({ layer, date: selectedDate, userAuth }));
     }
-  }, [features, dispatch, jwtAccessToken, layer, selectedDate]);
+  }, [features, dispatch, userAuth, layer, selectedDate]);
 
   useEffect(() => {
     if (
       features &&
       !(features as FeatureCollection).features &&
-      layer.tokenRequired
+      layer.authRequired
     ) {
       dispatch(
         addNotification({
@@ -80,14 +80,14 @@ function PointDataLayer({ layer, before }: LayersProps) {
       );
 
       dispatch(removeLayerData(layer));
-      dispatch(clearJwtAccessToken());
+      dispatch(clearUserAuthGlobal());
       return;
     }
 
     if (
       features &&
       (features as FeatureCollection).features.length === 0 &&
-      layer.tokenRequired
+      layer.authRequired
     ) {
       dispatch(
         addNotification({
@@ -103,7 +103,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
     dispatch,
     layer,
     selectedDate,
-    jwtAccessToken,
+    userAuth,
     removeKeyFromUrl,
     removeLayerFromUrl,
     updateHistory,

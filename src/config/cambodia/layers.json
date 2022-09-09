@@ -1780,7 +1780,7 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
-    "token_required": true,
+    "auth_required": true,
     "data": "http://localhost:80/kobo/forms",
     "date_url": "http://localhost:80/kobo/dates",
     "data_field": "NumPeoAff",
@@ -1841,7 +1841,7 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
-    "token_required": true,
+    "auth_required": true,
     "data": "http://localhost:80/kobo/forms",
     "date_url": "http://localhost:80/kobo/forms",
     "data_field": "DisTyp",

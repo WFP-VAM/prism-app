@@ -12,44 +12,35 @@ import {
   Button,
   Box,
 } from '@material-ui/core';
-import { LayerType, BoundaryLayerProps } from '../../config/types';
-import { getBoundaryLayers } from '../../config/utils';
+import { LayerType, UserAuth } from '../../config/types';
 import { useSafeTranslation } from '../../i18n';
-import {
-  layersSelector,
-  layerDataSelector,
-} from '../../context/mapStateSlice/selectors';
+import { layersSelector } from '../../context/mapStateSlice/selectors';
 
 import {
-  jwtAccessTokenSelector,
-  setLayerAccessToken,
+  userAuthSelector,
+  setUserAuthGlobal,
 } from '../../context/serverStateSlice';
-import { LayerData } from '../../context/layers/layer-data';
 
 const AuthModal = ({ classes }: AuthModalProps) => {
   const [layerWithAuth, setLayers] = useState<LayerType>();
   const [open, setOpen] = useState(true);
-  const [jwtValue, setJwtValue] = useState<string>('');
+
+  const authInitState: UserAuth = {
+    username: '',
+    password: '',
+  };
+
+  const [auth, setAuth] = useState<UserAuth>(authInitState);
+
   const selectedLayers = useSelector(layersSelector);
-  const jwtAccessToken = useSelector(jwtAccessTokenSelector);
+  const userAuthGlobal = useSelector(userAuthSelector);
   const dispatch = useDispatch();
-
-  // Get the admin boundary layer, with lowest number of level names (provinces).
-  const boundaryLayer = getBoundaryLayers().reduce((boundary, item) =>
-    boundary.adminLevelNames.length > item.adminLevelNames.length
-      ? item
-      : boundary,
-  );
-
-  const boundaryData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
 
   const { t } = useSafeTranslation();
 
   useEffect(() => {
     const layersWithAuthRequired = selectedLayers.find(
-      layer => layer.type === 'point_data' && layer.tokenRequired,
+      layer => layer.type === 'point_data' && layer.authRequired,
     );
     setLayers(layersWithAuthRequired);
 
@@ -57,17 +48,18 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   }, [selectedLayers]);
 
   useEffect(() => {
-    if (!jwtAccessToken) {
+    if (!userAuthGlobal) {
       setOpen(true);
     }
-  }, [jwtAccessToken]);
+  }, [userAuthGlobal]);
 
-  if (!layerWithAuth || !boundaryData) {
+  if (!layerWithAuth) {
     return null;
   }
 
   const validateToken = () => {
-    dispatch(setLayerAccessToken(jwtValue));
+    dispatch(setUserAuthGlobal(auth));
+    setAuth(authInitState);
     setOpen(false);
   };
 
@@ -85,27 +77,42 @@ const AuthModal = ({ classes }: AuthModalProps) => {
         </DialogTitle>
 
         <Typography color="textSecondary" variant="h4">
-          {t('The following layer  requires an access token')}:{' '}
+          {t('The following layer  requires user credentials')}:{' '}
           {layerWithAuth.title}
         </Typography>
 
         <Box
-          width="70%"
+          width="100%"
           display="flex"
           justifyContent="space-between"
           marginTop="2em"
         >
-          <Box width="70%">
+          <Box width="45%">
             <Typography className={classes.label} variant="body2">
-              {t('access token')}
+              {t('Username')}
             </Typography>
             <TextField
-              id="accesstoken"
-              value={jwtValue}
+              id="username"
+              value={auth.username}
               className={classes.textField}
               onChange={e => {
                 const { value } = e.target;
-                setJwtValue(value);
+                setAuth(params => ({ ...params, username: value }));
+              }}
+            />
+          </Box>
+          <Box width="45%">
+            <Typography className={classes.label} variant="body2">
+              {t('Password')}
+            </Typography>
+            <TextField
+              id="password"
+              value={auth.password}
+              type="password"
+              className={classes.textField}
+              onChange={e => {
+                const { value } = e.target;
+                setAuth(params => ({ ...params, password: value }));
               }}
             />
           </Box>

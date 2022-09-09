@@ -42,7 +42,7 @@ export const queryParamsToString = (queryParams?: {
 
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async (
   {
-    jwtAccessToken,
+    userAuth,
     date,
     layer: {
       data: dataUrl,
@@ -53,7 +53,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       dataField,
       featureInfoProps,
       loader,
-      tokenRequired,
+      authRequired,
     },
   },
   { getState },
@@ -82,8 +82,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     dataUrl.includes('?') ? '&' : '?'
   }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
 
-  const fetchUrl = tokenRequired
-    ? `${requestUrl}&accessToken=${jwtAccessToken}`
+  const fetchUrl = authRequired
+    ? `${requestUrl}&username=${userAuth.username}&password=${userAuth.password}`
     : requestUrl;
 
   let data;
