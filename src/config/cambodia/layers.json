@@ -1713,6 +1713,7 @@
   "flood_report": {
     "title": "Flood report",
     "type": "point_data",
+    "auth_required": true,
     "data": "http://localhost:80/kobo/forms",
     "date_url": "http://localhost:80/kobo/dates",
     "admin_level_display": {
@@ -1843,7 +1844,7 @@
     },
     "auth_required": true,
     "data": "http://localhost:80/kobo/forms",
-    "date_url": "http://localhost:80/kobo/forms",
+    "date_url": "http://localhost:80/kobo/dates",
     "data_field": "DisTyp",
     "additional_query_params": {
       "form_name": "2. ទម្រង់ ឧបទ្ទវហេតុ",

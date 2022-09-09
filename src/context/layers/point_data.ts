@@ -82,19 +82,22 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     dataUrl.includes('?') ? '&' : '?'
   }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
 
-  const fetchUrl = authRequired
-    ? `${requestUrl}&username=${userAuth.username}&password=${userAuth.password}`
-    : requestUrl;
+  const headers = authRequired
+    ? {
+        Authorization: `Basic ${btoa(
+          `${userAuth.username}:${userAuth.password}`,
+        )}`,
+      }
+    : undefined;
 
   let data;
-  // TODO - Better error handling.
+  // TODO - Better error handling, esp. for unauthorized requests.
   try {
     // eslint-disable-next-line fp/no-mutation
     data = (await (
-      await fetch(fetchUrl, {
+      await fetch(requestUrl, {
         mode: 'cors',
-        // TODO - add auth/password
-        headers: { Authorization: `Basic ${btoa('login:password')}` },
+        headers,
       })
     ).json()) as PointData[];
   } catch (ignored) {
