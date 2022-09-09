@@ -9,9 +9,12 @@ export class AddAuth1662295137123 implements MigrationInterface {
           "id" SERIAL NOT NULL,
           "username" character varying NOT NULL,
           "password" character varying NOT NULL,
-          "salt" character varying NOT NULL,
-          "details" character varying,
+          "salt" character varying,
           "access" jsonb,
+          "deployment" character varying,
+          "organization" character varying,
+          "email" character varying,
+          "details" character varying,
           "created_at" TIMESTAMP NOT NULL DEFAULT now()
         )`,
     );
