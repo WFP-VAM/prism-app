@@ -1,11 +1,15 @@
 """Utility function to authenticate users."""
 import base64
 import hashlib
+import logging
 import secrets
 
 from app.database.database import AuthDataBase
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from sqlalchemy.exc import SQLAlchemyError
+
+logger = logging.getLogger(__name__)
 
 security = HTTPBasic()
 depends = Depends(security)
@@ -19,12 +23,12 @@ if auth_db is None:
 def verify_hash(password: str, saved_salt: str) -> bytes:
     """Verify password hash."""
     # Salt is in utf-8 string I need to encode it in Base64 and then decode the Base64 to bytes
-    saved_salt = saved_salt.encode("utf-8")
-    saved_salt = base64.b64decode(saved_salt)
+    saved_salt_bytes: bytes = saved_salt.encode("utf-8")
+    saved_salt_bytes = base64.b64decode(saved_salt_bytes)
     key = hashlib.pbkdf2_hmac(
         "sha256",  # The hash digest algorithm for HMAC
         password.encode("utf-8"),  # Convert the password to bytes
-        saved_salt,  # Provide the salt
+        saved_salt_bytes,  # Provide the salt
         100000,  # It is recommended to use at least 100,000 iterations of SHA-256
     )
     key = base64.b64encode(key)
@@ -36,7 +40,11 @@ def validate_user(credentials: HTTPBasicCredentials = depends):
     if auth_db is None:
         return {"access": None}
 
-    user_info = auth_db.get_by_username(username=credentials.username)
+    try:
+        user_info = auth_db.get_by_username(username=credentials.username)
+    except SQLAlchemyError as error:
+        logger.error(error)
+        raise HTTPException(status_code=500, detail="An internal error occured.")
 
     user_password, user_salt = "", ""
     if user_info is not None:
