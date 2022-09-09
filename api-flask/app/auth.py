@@ -22,7 +22,7 @@ if auth_db is None:
 
 def verify_hash(password: str, saved_salt: str) -> bytes:
     """Verify password hash."""
-    # Salt is in utf-8 string I need to encode it in Base64 and then decode the Base64 to bytes
+    # Salt is a utf-8 string so we encode it in Base64 and then decode the Base64 to bytes
     saved_salt_bytes: bytes = saved_salt.encode("utf-8")
     saved_salt_bytes = base64.b64decode(saved_salt_bytes)
     key = hashlib.pbkdf2_hmac(
