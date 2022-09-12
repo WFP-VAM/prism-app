@@ -148,22 +148,27 @@ class AuthDataBase:
             logger.error("Auth DB connection failed: %s", err.__cause__)
             self.active = False
 
-    def create_user(self, user):
+    def create_user(self, user: UserInfoModel):
         """Create user with hashed password."""
-        salt = os.urandom(32)
-        key = hashlib.pbkdf2_hmac(
-            "sha256",  # The hash digest algorithm for HMAC
-            user.password.encode("utf-8"),  # Convert the password to bytes
-            salt,  # Provide the salt
-            100000,  # It is recommended to use at least 100,000 iterations of SHA-256
-        )
-        # Bytes encoded to Base64 but still in byte format
-        encoded_salt = base64.b64encode(salt)
-        encoded_key = base64.b64encode(key)
+        if user.salt != "false":
+            salt = os.urandom(32)
+            key = hashlib.pbkdf2_hmac(
+                "sha256",  # The hash digest algorithm for HMAC
+                user.password.encode("utf-8"),  # Convert the password to bytes
+                salt,  # Provide the salt
+                100000,  # It is recommended to use at least 100,000 iterations of SHA-256
+            )
+            # Bytes encoded to Base64 but still in byte format
+            encoded_salt = base64.b64encode(salt)
+            encoded_key = base64.b64encode(key)
+        else:
+            encoded_salt = user.salt.encode("utf-8")
+            encoded_key = user.password.encode("utf-8")
         db_user = UserInfoModel(
             username=user.username,
             password=encoded_key.decode("utf-8"),
             salt=encoded_salt.decode("utf-8"),
+            access=user.access or {},
         )
         try:
             self.session.add(db_user)

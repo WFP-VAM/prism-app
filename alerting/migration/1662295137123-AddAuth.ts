@@ -7,7 +7,7 @@ export class AddAuth1662295137123 implements MigrationInterface {
     await queryRunner.query(
       `CREATE TABLE "user_info" (
           "id" SERIAL NOT NULL,
-          "username" character varying NOT NULL,
+          "username" character varying PRIMARY KEY,
           "password" character varying NOT NULL,
           "salt" character varying,
           "access" jsonb,
