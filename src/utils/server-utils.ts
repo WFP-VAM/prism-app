@@ -22,6 +22,29 @@ import { queryParamsToString } from '../context/layers/point_data';
 import { DEFAULT_DATE_FORMAT } from './name-utils';
 import { createEWSDatesArray } from './ews-utils';
 
+/**
+ * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
+ *
+ * @return unix timestamp
+ */
+export const getRequestDate = (
+  layerAvailableDates: DateItem[] | undefined,
+  selectedDate: number,
+): number => {
+  if (!layerAvailableDates) {
+    return selectedDate;
+  }
+
+  const dateItem = layerAvailableDates.find(
+    date => date.displayDate === selectedDate,
+  );
+  if (!dateItem) {
+    return selectedDate;
+  }
+
+  return dateItem.queryDate;
+};
+
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
 
@@ -357,20 +380,21 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
   // Merge all layer types results into a single dictionary of date arrays.
   const mergedLayers: { [key: string]: number[] } = merge({}, ...layerDates);
 
-  const wmsLayersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
-    .filter(
-      (layer): layer is WMSLayerProps =>
-        layer.type === 'wms' && layer.validity !== undefined,
-    )
-    .map(layer => ({
-      name: layer.serverLayerName,
-      dates: mergedLayers[layer.serverLayerName],
-      validity: layer.validity!,
-    }));
+  const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
+    .filter(layer => layer.validity !== undefined)
+    .map(layer => {
+      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
+
+      return {
+        name: layerId,
+        dates: mergedLayers[layerId],
+        validity: layer.validity!,
+      };
+    });
 
   const mergedLayersWithUpdatedDates = Object.entries(mergedLayers).reduce(
     (acc, [layerKey, dates]) => {
-      const layerWithValidity = wmsLayersWithValidity.find(
+      const layerWithValidity = layersWithValidity.find(
         validityLayer => validityLayer.name === layerKey,
       );
 

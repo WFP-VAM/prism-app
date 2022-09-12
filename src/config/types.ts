@@ -304,6 +304,9 @@ export class CommonLayerProps {
   */
   @optional
   group?: MenuGroup;
+
+  @optional
+  validity?: Validity; // Include additional dates in the calendar based on the number provided.
 }
 
 /*
@@ -395,9 +398,6 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
-
-  @optional
-  validity?: Validity; // Include additional dates in the calendar based on the number provided.
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {

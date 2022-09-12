@@ -15,6 +15,7 @@ import {
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getRoundedData } from '../../../../utils/data-utils';
+import { getRequestDate } from '../../../../utils/server-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { circleLayout, circlePaint, fillPaintData } from '../styles';
 import {
@@ -22,10 +23,13 @@ import {
   clearDataset,
 } from '../../../../context/datasetStateSlice';
 import { createEWSDatasetParams } from '../../../../utils/ews-utils';
+import { availableDatesSelector } from '../../../../context/serverStateSlice';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer, before }: LayersProps) {
   const selectedDate = useDefaultDate(layer.id);
+  const serverAvailableDates = useSelector(availableDatesSelector);
+  const layerAvailableDates = serverAvailableDates[layer.id];
 
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<PointDataLayerProps>
@@ -41,12 +45,17 @@ function PointDataLayer({ layer, before }: LayersProps) {
   const { id: layerId } = layer;
 
   useEffect(() => {
-    if (!features) {
-      dispatch(loadLayerData({ layer, date: selectedDate }));
-    }
-  }, [features, dispatch, layer, selectedDate]);
+    if (!features && selectedDate) {
+      const queryDate: number = getRequestDate(
+        layerAvailableDates,
+        selectedDate,
+      );
 
-  if (!features || map?.getSource(layerId)) {
+      dispatch(loadLayerData({ layer, date: queryDate }));
+    }
+  }, [features, dispatch, layer, selectedDate, layerAvailableDates]);
+
+  if (!features || map?.getSource(layerId) || !selectedDate) {
     return null;
   }
 
@@ -70,7 +79,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
       addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
     );
 
-    if (layer.loader === PointDataLoader.EWS && selectedDate) {
+    if (layer.loader === PointDataLoader.EWS) {
       dispatch(clearDataset());
 
       const ewsDatasetParams = createEWSDatasetParams(

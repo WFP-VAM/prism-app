@@ -6,6 +6,7 @@ import { WMSLayerProps } from '../../../../config/types';
 import { getWMSUrl } from '../raster-utils';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { DEFAULT_DATE_FORMAT } from '../../../../utils/name-utils';
+import { getRequestDate } from '../../../../utils/server-utils';
 import { availableDatesSelector } from '../../../../context/serverStateSlice';
 
 function WMSLayers({
@@ -15,9 +16,11 @@ function WMSLayers({
   const selectedDate = useDefaultDate(serverLayerName, id);
   const serverAvailableDates = useSelector(availableDatesSelector);
 
-  const queryDate = serverAvailableDates[serverLayerName]?.find(
-    date => date.displayDate === selectedDate,
-  )?.queryDate;
+  if (!selectedDate) {
+    return null;
+  }
+  const layerAvailableDates = serverAvailableDates[serverLayerName];
+  const queryDate: number = getRequestDate(layerAvailableDates, selectedDate);
 
   return (
     <>
