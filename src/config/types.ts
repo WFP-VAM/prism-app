@@ -358,8 +358,8 @@ interface FeatureInfoProps {
 
 export enum DatesPropagation {
   FORWARD = 'forward',
-  BACKWARDS = 'backwards',
-  BOTH = 'mixed',
+  BACKWARD = 'backward',
+  BOTH = 'both',
 }
 
 export type Validity = {

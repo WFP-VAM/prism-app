@@ -317,7 +317,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
         : momentDate.clone();
 
     const startDate =
-      mode === DatesPropagation.BOTH || mode === DatesPropagation.BACKWARDS
+      mode === DatesPropagation.BOTH || mode === DatesPropagation.BACKWARD
         ? momentDate.clone().subtract(value, 'days')
         : momentDate.clone();
 
