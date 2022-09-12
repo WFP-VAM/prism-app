@@ -77,7 +77,7 @@ const AuthModal = ({ classes }: AuthModalProps) => {
         </DialogTitle>
 
         <Typography color="textSecondary" variant="h4">
-          {t('The following layer  requires user credentials')}:{' '}
+          {t('The following layer requires authentication')}:{' '}
           {layerWithAuth.title}
         </Typography>
 

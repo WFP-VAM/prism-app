@@ -9,8 +9,10 @@ from typing import List
 from app.database.alert_model import AlertModel
 from app.database.user_info_model import UserInfoModel
 from sqlalchemy import create_engine
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql import text
 from sqlalchemy.sql.expression import ColumnElement
 
 logging.basicConfig(level=logging.INFO)
@@ -38,8 +40,15 @@ class AlertsDataBase:
     def __init__(self):
         """Alerts Database initializer."""
         _eng = create_engine(DB_URI)
-        self.session: Session = sessionmaker(_eng)()
-        logger.info("Alerts DB connection is initialized.")
+        try:
+            self.session: Session = sessionmaker(_eng)()
+            self.session.query(text("1")).from_statement(text("SELECT 1")).all()
+            logger.info("Alerts DB connection is initialized.")
+            self.active = True
+        except SQLAlchemyError as err:
+            logger.error("Alerts DB connection failed: %s", err.__cause__)
+            logger.error(err)
+            self.active = False
 
     def write(self, alert: AlertModel):
         """Write an alert to the alerts table."""
@@ -130,8 +139,14 @@ class AuthDataBase:
     def __init__(self):
         """Authentication Database initializer."""
         _eng = create_engine(DB_URI)
-        self.session: Session = sessionmaker(_eng)()
-        logger.info("Auth DB connection is initialized.")
+        try:
+            self.session: Session = sessionmaker(_eng)()
+            self.session.query(text("1")).from_statement(text("SELECT 1")).all()
+            self.active = True
+            logger.info("Auth DB connection is initialized.")
+        except SQLAlchemyError as err:
+            logger.error("Auth DB connection failed: %s", err.__cause__)
+            self.active = False
 
     def create_user(self, user):
         """Create user with hashed password."""

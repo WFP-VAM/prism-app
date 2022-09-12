@@ -10,7 +10,7 @@ import rasterio  # type: ignore
 from app.auth import validate_user
 from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlertModel
-from app.database.database import AlertsDataBase, AuthDataBase
+from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.timer import timed
@@ -141,9 +141,7 @@ def get_kobo_form_dates(
     datetimeField: str,
 ):
     """Get all form response dates."""
-    form_dates = get_form_dates(koboUrl, formName, datetimeField)
-
-    return form_dates
+    return get_form_dates(koboUrl, formName, datetimeField)
 
 
 @app.get("/kobo/forms")
@@ -155,7 +153,7 @@ def get_kobo_forms(
     filters: str | None = None,
     beginDateTime=Query(default="2000-01-01"),
     endDateTime: str | None = None,
-    user_info: UserInfoModel | None = Depends(validate_user),
+    user_info: UserInfoModel = Depends(validate_user),
 ):
     """Get all form responses."""
     begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)
@@ -165,12 +163,8 @@ def get_kobo_forms(
             status_code=400, detail="beginDateTime value must be lower than endDateTime"
         )
 
-    province = None
-    try:
-        province = user_info.access.get("province", None)
-    except (IndexError, KeyError, TypeError) as e:
-        logger.debug(e)
-        pass
+    # Extract province access information
+    province = user_info.access.get("province", None)
 
     form_responses = get_form_responses(
         begin_datetime,

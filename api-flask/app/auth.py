@@ -5,6 +5,7 @@ import logging
 import secrets
 
 from app.database.database import AuthDataBase
+from app.database.user_info_model import UserInfoModel
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.exc import SQLAlchemyError
@@ -16,7 +17,7 @@ depends = Depends(security)
 
 auth_db = AuthDataBase()
 
-if auth_db is None:
+if not auth_db.active:
     depends = lambda *_: True
 
 
@@ -35,16 +36,18 @@ def verify_hash(password: str, saved_salt: str) -> bytes:
     return key
 
 
-def validate_user(credentials: HTTPBasicCredentials = depends):
+def validate_user(credentials: HTTPBasicCredentials = depends) -> UserInfoModel:
     """Validate user info."""
-    if auth_db is None:
-        return {"access": None}
+    if not auth_db.active:
+        return UserInfoModel(access={})
 
     try:
         user_info = auth_db.get_by_username(username=credentials.username)
     except SQLAlchemyError as error:
         logger.error(error)
-        raise HTTPException(status_code=500, detail="An internal error occured.")
+        raise HTTPException(
+            status_code=500, detail="An internal error occured."
+        ) from error
 
     user_password, user_salt = "", ""
     if user_info is not None:

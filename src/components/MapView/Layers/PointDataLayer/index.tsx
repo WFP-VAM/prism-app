@@ -24,7 +24,6 @@ import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useUrlHistory } from '../../../../utils/url-utils';
-
 import { useSafeTranslation } from '../../../../i18n';
 import { circleLayout, circlePaint, fillPaintData } from '../styles';
 import {

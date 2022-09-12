@@ -14,10 +14,12 @@ logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
 
-KoboForm = TypedDict(
-    "KoboForm",
-    {"name": str, "datetime": str, "geom_field": str | None, "filters": dict},
-)
+
+class KoboForm(TypedDict):
+    name: str
+    datetime: str
+    geom_field: str | None
+    filters: dict
 
 
 def get_first(items_list: list[T]) -> T | None:
@@ -204,12 +206,14 @@ def get_responses_from_kobo(
     return form_responses, form_labels
 
 
-def get_form_dates(form_url: HttpUrl, form_name: str, datetime_field: str):
+def get_form_dates(
+    form_url: HttpUrl, form_name: str, datetime_field: str
+) -> list[dict[str, Any]]:
     """Get all form responses dates using Kobo api."""
     auth, form_fields = get_kobo_params(form_name, datetime_field, None, None)
 
     form_responses, form_labels = get_responses_from_kobo(
-        form_url, auth, form_fields.get("name")
+        form_url, auth, form_fields["name"]
     )
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
@@ -241,11 +245,9 @@ def get_form_responses(
 
     filtered_forms = []
     for form in forms:
-        date_value: datetime = form.get("date")  # type: ignore
+        date_value: datetime = form["date"]
 
-        conditions = [
-            form.get(k) == v for k, v in form_fields.get("filters").items()
-        ]  # type: ignore
+        conditions = [form.get(k) == v for k, v in form_fields["filters"].items()]
         conditions.append(begin_datetime <= date_value)
         conditions.append(date_value < end_datetime)
 
