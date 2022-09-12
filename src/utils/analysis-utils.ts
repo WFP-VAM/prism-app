@@ -54,6 +54,7 @@ import {
 } from '../i18n';
 import { getRoundedData } from './data-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
+import { ANALYSIS_API_URL } from '../contants';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -316,7 +317,7 @@ export async function loadFeaturesFromApi(
   } as LayerDataParams<WMSLayerProps>);
 
   const statsApi = layer.api as StatsApi;
-  const apiUrl = statsApi.url;
+  const apiUrl = statsApi.url || ANALYSIS_API_URL;
 
   const apiData = {
     geotiff_url: wcsUrl,

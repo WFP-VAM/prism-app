@@ -149,3 +149,9 @@ export function copyTextToClipboard(text: string): Promise<void> {
   document.body.removeChild(tmpElement);
   return Promise.resolve();
 }
+
+export function combineURLs(baseURL: string, relativeURL: string) {
+  return relativeURL
+    ? `${baseURL.replace(/\/+$/, '')}/${relativeURL.replace(/^\/+/, '')}`
+    : baseURL;
+}

@@ -51,8 +51,7 @@ import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
-
-const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
+import { ANALYSIS_API_URL } from '../contants';
 
 export type TableRowType = { [key: string]: string | number };
 export type TableData = {

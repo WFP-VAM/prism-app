@@ -17,24 +17,24 @@
       }
     }
   },
-    "admin1_boundaries": {
-      "type": "boundary",
-      "path": "data/mongolia/mng_adm1_nso_match_1212_mn.json",
-      "opacity": 0.8,
-      "admin_code": "NSO_CODE",
-      "admin_level_names": ["ADM1_EN"],
-      "admin_level_local_names": ["ADM1_MN"],
-      "styles:": {
-        "fill": {
-          "fill-opacity": 0
-        },
-        "line": {
-          "line-color": "gray",
-          "line-width": 2.5,
-          "line-opacity": 0.8
-        }
+  "admin1_boundaries": {
+    "type": "boundary",
+    "path": "data/mongolia/mng_adm1_nso_match_1212_mn.json",
+    "opacity": 0.8,
+    "admin_code": "NSO_CODE",
+    "admin_level_names": ["ADM1_EN"],
+    "admin_level_local_names": ["ADM1_MN"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 2.5,
+        "line-opacity": 0.8
       }
-    },
+    }
+  },
   "population_below_poverty": {
     "title": "Poverty headcount (aimag)",
     "type": "admin_level_data",
@@ -877,7 +877,6 @@
     "title": "Livestock exposed to very high dzud risk (soum)",
     "type": "impact",
     "api": {
-      "url": "https://prism-api.ovio.org/stats",
       "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
       "group_by": "ADM2_PCODE"
     },
@@ -907,7 +906,6 @@
     "title": "Livestock exposed to drought in thousands (soum)",
     "type": "impact",
     "api": {
-      "url": "https://prism-api.ovio.org/stats",
       "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
       "group_by": "ADM2_PCODE"
     },
