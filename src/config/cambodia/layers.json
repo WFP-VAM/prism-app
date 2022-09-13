@@ -427,7 +427,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "< 60%",
@@ -1530,7 +1530,7 @@
       "pixelResolution": 64
     },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "10-day daytime land surface temperature derived from MODIS AQUA",
     "additional_query_params": {
       "styles": "lst_day"
     },
@@ -1591,7 +1591,7 @@
     "additional_query_params": {
       "styles": "lst_day"
     },
-    "legend_text": "LEGEND",
+    "legend_text": "10-day daytime land surface temperature anomaly derived from MODIS AQUA",
     "legend": [
       {
         "label": "-300%",
