@@ -39,16 +39,20 @@ class AlertsDataBase:
 
     def __init__(self):
         """Alerts Database initializer."""
-        _eng = create_engine(DB_URI)
+        self.active = False
         try:
+            # temporary engine with short timeout
+            temp_eng = create_engine(DB_URI, connect_args={"connect_timeout": 3})
+            with Session(temp_eng) as session:
+                session.query(text("1")).from_statement(text("SELECT 1")).all()
+
+            # open main session
+            _eng = create_engine(DB_URI)
             self.session: Session = sessionmaker(_eng)()
-            self.session.query(text("1")).from_statement(text("SELECT 1")).all()
-            logger.info("Alerts DB connection is initialized.")
             self.active = True
+            logger.info("Alerts DB connection is initialized.")
         except SQLAlchemyError as err:
             logger.error("Alerts DB connection failed: %s", err.__cause__)
-            logger.error(err)
-            self.active = False
 
     def write(self, alert: AlertModel):
         """Write an alert to the alerts table."""
@@ -138,15 +142,20 @@ class AuthDataBase:
 
     def __init__(self):
         """Authentication Database initializer."""
-        _eng = create_engine(DB_URI)
+        self.active = False
         try:
+            # temporary engine with short timeout
+            temp_eng = create_engine(DB_URI, connect_args={"connect_timeout": 3})
+            with Session(temp_eng) as session:
+                session.query(text("1")).from_statement(text("SELECT 1")).all()
+
+            # open main session
+            _eng = create_engine(DB_URI)
             self.session: Session = sessionmaker(_eng)()
-            self.session.query(text("1")).from_statement(text("SELECT 1")).all()
             self.active = True
             logger.info("Auth DB connection is initialized.")
         except SQLAlchemyError as err:
             logger.error("Auth DB connection failed: %s", err.__cause__)
-            self.active = False
 
     def create_user(self, user: UserInfoModel):
         """Create user with hashed password."""
