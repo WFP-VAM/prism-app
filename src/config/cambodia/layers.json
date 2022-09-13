@@ -1720,6 +1720,10 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
+    "validity": {
+      "days": 2,
+      "mode": "both"
+    },
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/forms",
     "data_field": "NumPeoAff",
@@ -1783,10 +1787,6 @@
     "type": "point_data",
     "admin_level_display": {
       "adminCode": "Commune"
-    },
-    "validity": {
-      "days": 2,
-      "mode": "both"
     },
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/forms",
