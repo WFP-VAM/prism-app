@@ -1,6 +1,6 @@
 import pytest
 import schemathesis
-from app.database.alert_database import AlertsDataBase
+from app.database.database import AlertsDataBase
 from app.main import app
 from fastapi.testclient import TestClient
 from hypothesis import settings
