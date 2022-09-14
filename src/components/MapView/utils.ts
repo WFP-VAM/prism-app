@@ -72,8 +72,9 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
     featureCollection: { features },
   } = result;
 
-  const fields = (key &&
-    uniq(features.map(f => f.properties && f.properties[key]))) || [statistic];
+  const fields = key
+    ? uniq(features.map(f => f.properties && f.properties[key]))
+    : [statistic];
 
   const featureProperties = features
     .filter(

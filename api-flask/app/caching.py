@@ -96,16 +96,16 @@ def _hash_value(value: str) -> str:
     return hashlib.md5(value.encode("utf-8")).hexdigest()[:9]
 
 
-def is_file_valid(filepath):
-    """Test if a file exists and is valid."""
-    is_tif = filepath and ".tif" in filepath
+def is_file_valid(filepath) -> bool:
+    """Test if a file exists and is valid. For .tif, also try to read it."""
     # If the file exists, return path.
     if os.path.isfile(filepath):
         # if the file is a geotiff, confirm that we can open it.
+        is_tif = ".tif" in filepath
         if is_tif:
             try:
                 rasterio.open(filepath)
-                return filepath
+                return True
             except rasterio.errors.RasterioError:
                 return False
         return True

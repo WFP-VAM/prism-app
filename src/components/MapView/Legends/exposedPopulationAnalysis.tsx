@@ -81,8 +81,8 @@ const ExposedPopulationAnalysis = ({
 
     const hazardLayer =
       layer.type === 'wms' && layer.geometry === GeometryType.Polygon
-        ? { wfsLayerId: id as LayerKey }
-        : { maskLayerId: id as LayerKey };
+        ? { wfsLayerId: id }
+        : { maskLayerId: id };
 
     const params: ExposedPopulationDispatchParams = {
       exposure,

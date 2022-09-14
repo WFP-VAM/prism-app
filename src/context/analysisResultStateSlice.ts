@@ -261,7 +261,7 @@ const createAPIRequestParams = (
     group_by: groupBy,
     ...wfsParams,
     ...maskParams,
-    // TODO - remove the need for that (problem in the API)
+    // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
     geojson_out: !!maskParams,
   };
 

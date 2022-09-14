@@ -207,10 +207,10 @@ def calculate_stats(
         geotiff_hash = Path(geotiff).name.replace("raster_", "").replace(".tif", "")
         mask_hash = Path(mask_geotiff).name.replace("raster_", "").replace(".tif", "")
 
-        reproj_pop_geotiff = (
+        reproj_pop_geotiff: FilePath = (
             f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_on_{mask_hash}.tif"
         )
-        masked_pop_geotiff = (
+        masked_pop_geotiff: FilePath = (
             f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}.tif"
         )
 
@@ -294,7 +294,7 @@ def calculate_stats(
         ]
 
         # Return stats as geojson array of features.
-        # TODO - consider the geojson_out flag and format the return object appoprietly.
+        # TODO - consider the geojson_out flag and format the return object appropriately.
         return features
 
     if not geojson_out:

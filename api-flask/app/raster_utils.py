@@ -1,11 +1,13 @@
 """Raster utilility functions for reprojection and calculation."""
 import logging
 import os
-import subprocess as subp
+import subprocess
 
 import rasterio
 from app.timer import timed
 from rasterio.warp import Resampling, calculate_default_transform, reproject
+
+from .models import FilePath
 
 logger = logging.getLogger(__name__)
 
@@ -35,12 +37,16 @@ def gdal_calc(
     logger.debug("Calling gdal_calc.py...")
     logger.debug(gdal_calc_process)
 
-    # Call process.
-    subp.check_call(str(gdal_calc_process), shell=True)
+    subprocess.check_call(str(gdal_calc_process))
 
 
 @timed
-def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
+def reproj_match(
+    infile: FilePath,
+    matchfile: FilePath,
+    outfile: FilePath,
+    resampling_mode=Resampling.sum,
+):
     """Reproject a file to match the shape and projection of existing raster.
 
     Parameters
@@ -50,14 +56,14 @@ def reproj_match(infile, match, outfile, resampling_mode=Resampling.sum):
     outfile : (string) path to output file tif
     """
     with rasterio.open(infile) as src:
-        with rasterio.open(match) as match:
+        with rasterio.open(matchfile) as match:
             dst_crs = match.crs
             # calculate the output transform matrix
             dst_transform, dst_width, dst_height = calculate_default_transform(
                 src.crs,  # input CRS
                 dst_crs,  # output CRS
-                match.width,  # input width
-                match.height,  # input height
+                match.width,  # match width
+                match.height,  # match height
                 *match.bounds,  # unpacks input outer boundaries (left, bottom, right, top)
                 resolution=match.res,  # ensure matching pixel size
             )
