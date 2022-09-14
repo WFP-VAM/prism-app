@@ -247,6 +247,9 @@ def calculate_stats(
 
         # Extract shapely objects to compute stats.
         stats_input = [s.get("geom") for s in zones]
+        # TODO - remove this prefix to make homogeneize stats output
+        # Frontend from this PR (546) needs to be deployed first.
+        prefix = None
 
     # Add function to calculate overlap percentage.
     add_stats = None
