@@ -2,6 +2,7 @@
 import logging
 import os
 import subprocess
+import sys
 
 import rasterio
 from app.timer import timed
@@ -37,7 +38,7 @@ def gdal_calc(
     logger.debug("Calling gdal_calc.py...")
     logger.debug(gdal_calc_process)
 
-    subprocess.check_call(str(gdal_calc_process))
+    subprocess.check_call([sys.executable, gdal_calc_process])
 
 
 @timed
