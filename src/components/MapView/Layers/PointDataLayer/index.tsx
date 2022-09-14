@@ -1,9 +1,15 @@
 import React, { useEffect } from 'react';
+import moment from 'moment';
 import { GeoJSONLayer } from 'react-mapbox-gl';
+import { FeatureCollection } from 'geojson';
 import { get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
+import {
+  userAuthSelector,
+  clearUserAuthGlobal,
+} from '../../../../context/serverStateSlice';
 import {
   LayerData,
   loadLayerData,
@@ -12,9 +18,12 @@ import {
   layerDataSelector,
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
+import { removeLayerData } from '../../../../context/mapStateSlice';
+import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getRoundedData } from '../../../../utils/data-utils';
+import { useUrlHistory } from '../../../../utils/url-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { circleLayout, circlePaint, fillPaintData } from '../styles';
 import {
@@ -26,11 +35,17 @@ import { createEWSDatasetParams } from '../../../../utils/ews-utils';
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer, before }: LayersProps) {
   const selectedDate = useDefaultDate(layer.id);
+  const userAuth = useSelector(userAuthSelector);
 
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<PointDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
+  const {
+    updateHistory,
+    removeKeyFromUrl,
+    removeLayerFromUrl,
+  } = useUrlHistory();
 
   const map = useSelector(mapSelector);
 
@@ -41,10 +56,57 @@ function PointDataLayer({ layer, before }: LayersProps) {
   const { id: layerId } = layer;
 
   useEffect(() => {
-    if (!features) {
-      dispatch(loadLayerData({ layer, date: selectedDate }));
+    if (layer.authRequired && !userAuth) {
+      return;
     }
-  }, [features, dispatch, layer, selectedDate]);
+
+    if (!features) {
+      dispatch(loadLayerData({ layer, date: selectedDate, userAuth }));
+    }
+  }, [features, dispatch, userAuth, layer, selectedDate]);
+
+  useEffect(() => {
+    if (
+      features &&
+      !(features as FeatureCollection).features &&
+      layer.authRequired
+    ) {
+      dispatch(
+        addNotification({
+          message: 'Invalid credentials',
+          type: 'error',
+        }),
+      );
+
+      dispatch(removeLayerData(layer));
+      dispatch(clearUserAuthGlobal());
+      return;
+    }
+
+    if (
+      features &&
+      (features as FeatureCollection).features.length === 0 &&
+      layer.authRequired
+    ) {
+      dispatch(
+        addNotification({
+          message: `Data not found for provided date: ${moment(
+            selectedDate,
+          ).format('YYYY-MM-DD')}`,
+          type: 'warning',
+        }),
+      );
+    }
+  }, [
+    features,
+    dispatch,
+    layer,
+    selectedDate,
+    userAuth,
+    removeKeyFromUrl,
+    removeLayerFromUrl,
+    updateHistory,
+  ]);
 
   if (!features || map?.getSource(layerId)) {
     return null;

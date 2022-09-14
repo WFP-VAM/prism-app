@@ -42,6 +42,7 @@ export const queryParamsToString = (queryParams?: {
 
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async (
   {
+    userAuth,
     date,
     layer: {
       data: dataUrl,
@@ -52,6 +53,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       dataField,
       featureInfoProps,
       loader,
+      authRequired,
     },
   },
   { getState },
@@ -80,13 +82,22 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     dataUrl.includes('?') ? '&' : '?'
   }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
 
+  const headers = authRequired
+    ? {
+        Authorization: `Basic ${btoa(
+          `${userAuth.username}:${userAuth.password}`,
+        )}`,
+      }
+    : undefined;
+
   let data;
-  // TODO - Better error handling.
+  // TODO - Better error handling, esp. for unauthorized requests.
   try {
     // eslint-disable-next-line fp/no-mutation
     data = (await (
       await fetch(requestUrl, {
         mode: 'cors',
+        headers,
       })
     ).json()) as PointData[];
   } catch (ignored) {
@@ -102,7 +113,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
         moment(formattedDate).format(DEFAULT_DATE_FORMAT),
     );
   }
-  if (adminLevelDisplay) {
+
+  if (adminLevelDisplay && !Object.keys(data).includes('message')) {
     const { adminCode } = adminLevelDisplay;
 
     return getAdminLevelDataLayerData(
