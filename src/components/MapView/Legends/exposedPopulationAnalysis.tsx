@@ -26,7 +26,6 @@ import {
 import {
   LayerType,
   AggregationOperations,
-  LayerKey,
   ExposedPopulationDefinition,
   GeometryType,
 } from '../../../config/types';
