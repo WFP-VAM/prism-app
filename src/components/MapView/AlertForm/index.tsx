@@ -29,6 +29,7 @@ import {
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 import BoundaryDropdown from '../Layers/BoundaryDropdown';
+import { ALERT_API_URL } from '../../../contants';
 import { getSelectedBoundaries } from '../../../context/mapSelectionLayerStateSlice';
 import { addNotification } from '../../../context/notificationStateSlice';
 import { useSafeTranslation } from '../../../i18n';
@@ -41,10 +42,6 @@ const EMAIL_REGEX: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)
 // depending on if the downstream API has the capability.
 // For now it can be permanently enabled.
 const ALERT_FORM_ENABLED = true;
-
-// TODO: Dynamic switch between local/production URLs, and consolidate this into util class
-const ALERT_API_URL = 'https://prism-api.ovio.org/alerts';
-// const ALERT_API_URL = 'http://localhost:80/alerts';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
