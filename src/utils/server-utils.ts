@@ -1,6 +1,14 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { get, isEmpty, isString, merge, union, snakeCase } from 'lodash';
+import {
+  get,
+  isEmpty,
+  isString,
+  merge,
+  union,
+  snakeCase,
+  sortBy,
+} from 'lodash';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
@@ -322,6 +330,19 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
 }
 
 /**
+ * Creates DateItem object whose fields have the same value.
+ *
+ * @return DateItem
+ */
+const createDefaultDateItem = (date: number): DateItem => {
+  const dateWithTz = moment(date).set({ hour: 12 }).valueOf();
+  return {
+    displayDate: dateWithTz,
+    queryDate: dateWithTz,
+  };
+};
+
+/**
  * Create new array including dates specified within the validity parameter.
  *
  * @return Array of integers which represents a given date.
@@ -331,7 +352,13 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 
   const { days: value, mode } = validity;
 
-  const datesWithValidity = dates.map((date: number) => {
+  // Generate first DateItem[] from dates array.
+  const dateItems: DateItem[] = dates.map(d => createDefaultDateItem(d));
+
+  const dateItemsWithValidity: DateItem[] = dates.reduce((acc, date) => {
+    // Get current values in the dateItems array.
+    const displayDates = acc.map(item => item.displayDate);
+
     const momentDate = moment(date).set({ hour: 12 });
 
     const endDate =
@@ -345,15 +372,21 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
         : momentDate.clone();
 
     const daysToAdd = [...Array(endDate.diff(startDate, 'days') + 1).keys()];
-
     const days: number[] = daysToAdd.map(day =>
       startDate.clone().add(day, 'days').valueOf(),
     );
 
-    return days.map(day => ({ displayDate: day, queryDate: date }));
-  });
+    // Remove dates already within the dateItem array to avoid repeated values.
+    const filteredDates = days.filter(day => !displayDates.includes(day));
+    const filteredDateItems = filteredDates.map(dateToAdd => ({
+      displayDate: dateToAdd,
+      queryDate: date,
+    }));
 
-  return [...new Set(datesWithValidity.flat())];
+    return [...acc, ...filteredDateItems];
+  }, dateItems);
+
+  return sortBy(dateItemsWithValidity, 'displayDate');
 };
 
 /**
@@ -400,13 +433,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 
       const updatedDates = layerWithValidity
         ? updateLayerDatesWithValidity(layerWithValidity)
-        : dates.map((d: number) => {
-            const dateWithTz = moment(d).set({ hour: 12 }).valueOf();
-            return {
-              displayDate: dateWithTz,
-              queryDate: dateWithTz,
-            };
-          });
+        : dates.map((d: number) => createDefaultDateItem(d));
 
       return { ...acc, [layerKey]: updatedDates };
     },
