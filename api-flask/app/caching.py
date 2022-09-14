@@ -25,18 +25,8 @@ def cache_file(url: str, prefix: str, extension: str = "cache") -> FilePath:
         extension=extension,
     )
     # If the file exists, return path.
-    if os.path.isfile(cache_filepath):
-        logger.info("Returning cached file for {}.".format(url))
-
-        # if the file is a geotiff, confirm that we can open it.
-        if extension == "tif":
-            try:
-                rasterio.open(cache_filepath)
-                return cache_filepath
-            except rasterio.errors.RasterioError:
-                pass
-        else:
-            return cache_filepath
+    if is_file_valid(cache_filepath):
+        return cache_filepath
 
     # If the file does not exist, download and return path.
     response = requests.get(url, verify=False)
@@ -98,7 +88,6 @@ def _hash_value(value: str) -> str:
 
 def is_file_valid(filepath) -> bool:
     """Test if a file exists and is valid. For .tif, also try to read it."""
-    # If the file exists, return path.
     if os.path.isfile(filepath):
         # if the file is a geotiff, confirm that we can open it.
         is_tif = ".tif" in filepath
