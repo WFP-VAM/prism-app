@@ -20,6 +20,9 @@ test-services:
 api-test: test-services
 	docker-compose -f docker-compose.yml -f docker-compose.develop.yml -f docker-compose.test.yml run api bash -c "pytest -s tests"
 
+api-add-users:
+	docker-compose -f docker-compose.yml -f docker-compose.develop.yml run api bash -c "python scripts/add_users.py"
+
 BACKEND_COVERAGE=pytest --cov=app --cov-config .coveragerc --cov-fail-under=30 --cov-report term-missing
 api-coverage:
 	docker-compose run --no-deps api ${BACKEND_COVERAGE}

@@ -1730,11 +1730,12 @@
   "flood_report": {
     "title": "Flood report",
     "type": "point_data",
+    "auth_required": true,
+    "data": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/dates",
     "admin_level_display": {
       "adminCode": "Commune"
     },
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
     "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_name": "1. ទម្រង់គ្រោះទឹកជំនន់",
@@ -1797,8 +1798,9 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
+    "auth_required": true,
     "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/dates",
     "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_name": "3. ទម្រង់គ្រោះរាំងស្ងួត",
@@ -1857,8 +1859,9 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
+    "auth_required": true,
     "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/dates",
     "data_field": "DisTyp",
     "additional_query_params": {
       "form_name": "2. ទម្រង់ ឧបទ្ទវហេតុ",
