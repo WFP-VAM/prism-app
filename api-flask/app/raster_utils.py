@@ -2,7 +2,6 @@
 import logging
 import os
 import subprocess
-import sys
 
 import rasterio
 from app.timer import timed
@@ -22,7 +21,7 @@ def gdal_calc(
     nodata="0",
 ):
     """Utility function to run gdal_calc between two rasters."""
-    gdal_calc_path = os.path.join("gdal_calc.py")
+    gdal_calc_path = os.path.join("/usr/bin/", "gdal_calc.py")
 
     # Generate string of process.
     gdal_calc_str = "{0} -A {1} -B {2} --outfile={3} --calc={4} --NoDataValue={5} --extent=intersect --overwrite > /dev/null"
@@ -38,7 +37,8 @@ def gdal_calc(
     logger.debug("Calling gdal_calc.py...")
     logger.debug(gdal_calc_process)
 
-    subprocess.check_call([sys.executable, gdal_calc_process])
+    # TODO - secure call input or remove shell=True
+    subprocess.check_call(str(gdal_calc_process), shell=True)
 
 
 @timed
