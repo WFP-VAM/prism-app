@@ -33,6 +33,9 @@ test:
 	$(MAKE) api-test
 	$(MAKE) api-coverage
 
+bash:
+	docker-compose -f docker-compose.yml -f docker-compose.develop.yml run api bash
+
 # [Dummy dependency to force a make command to always run.]
 FORCE:
 
