@@ -23,7 +23,6 @@ import ColorIndicator from './ColorIndicator';
 import LoadingBar from './LoadingBar';
 import {
   LayerType,
-  GeometryType,
   ExposedPopulationDefinition,
   LegendDefinitionItem,
 } from '../../../config/types';
@@ -52,11 +51,7 @@ import { useSafeTranslation } from '../../../i18n';
 function GetExposureFromLayer(
   layer: LayerType,
 ): ExposedPopulationDefinition | undefined {
-  return layer.type === 'wms' &&
-    layer.exposure &&
-    layer.geometry === GeometryType.Polygon
-    ? layer.exposure
-    : undefined;
+  return (layer.type === 'wms' && layer.exposure) || undefined;
 }
 
 function LegendImpactResult({ result }: { result: BaselineLayerResult }) {

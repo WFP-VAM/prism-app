@@ -72,24 +72,40 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
     featureCollection: { features },
   } = result;
 
-  const fields = uniq(features.map(f => f.properties && f.properties[key]));
+  const fields = key
+    ? uniq(features.map(f => f.properties && f.properties[key]))
+    : [statistic];
 
-  const featureProperties = features.map(feature => {
-    return {
-      [groupBy]: feature.properties?.[groupBy],
-      [key]: feature.properties?.[key],
-      [statistic]: feature.properties?.[statistic],
-    };
-  });
+  const featureProperties = features
+    .filter(
+      feature => feature.properties?.[key] || feature.properties?.[statistic],
+    )
+    .map(feature => {
+      return {
+        [groupBy]: feature.properties?.[groupBy],
+        [key]: feature.properties?.[key],
+        [statistic]: feature.properties?.[statistic],
+      };
+    });
 
-  const rowData = mapValues(_groupBy(featureProperties, groupBy), k => {
-    return mapValues(_groupBy(k, key), v =>
-      parseInt(
-        v.map(x => x[statistic]).reduce((acc, value) => acc + value),
-        10,
-      ),
-    );
-  });
+  // TODO - Improve readability and reusability of this function
+  const rowData = key
+    ? mapValues(_groupBy(featureProperties, groupBy), k => {
+        return mapValues(_groupBy(k, key), v =>
+          parseInt(
+            v.map(x => x[statistic]).reduce((acc, value) => acc + value),
+            10,
+          ),
+        );
+      })
+    : mapValues(_groupBy(featureProperties, groupBy), k => {
+        return {
+          [statistic]: parseInt(
+            k.map(x => x[statistic]).reduce((acc, value) => acc + value),
+            10,
+          ),
+        };
+      });
 
   const groupedRowData = Object.keys(rowData).map(k => {
     return {

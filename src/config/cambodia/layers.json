@@ -427,7 +427,7 @@
     "base_url": "https://odc.ovio.org/",
     "date_interval": "days",
     "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
         "label": "< 60%",
@@ -1530,7 +1530,7 @@
       "pixelResolution": 64
     },
     "opacity": 0.7,
-    "legend_text": "LEGEND",
+    "legend_text": "10-day daytime land surface temperature derived from MODIS AQUA",
     "additional_query_params": {
       "styles": "lst_day"
     },
@@ -1591,7 +1591,7 @@
     "additional_query_params": {
       "styles": "lst_day"
     },
-    "legend_text": "LEGEND",
+    "legend_text": "10-day daytime land surface temperature anomaly derived from MODIS AQUA",
     "legend": [
       {
         "label": "-300%",
@@ -1627,6 +1627,20 @@
       }
     ]
   },
+  "wp_pop_cicunadj_khm_2020": {
+    "title": "population",
+    "type": "wms",
+    "wcsConfig": {
+      "disable_time_param": true,
+      "version": "2.0.0",
+      "scale": "0.1"
+    },
+    "server_layer_name": "wp_pop_cicunadj_khm_2020",
+    "base_url": "https://odc.ovio.org/",
+    "opacity": 0,
+    "legend_text": "",
+    "legend": []
+  },
   "hydra_s1": {
     "title": "Potential flooding (Sentinel-1)",
     "type": "wms",
@@ -1640,7 +1654,10 @@
         "value": "1 - flooded",
         "color": "#a50f15"
       }
-    ]
+    ],
+    "exposure": {
+      "id": "wp_pop_cicunadj_khm_2020"
+    }
   },
   "hydra_s2": {
     "title": "Potential flooding (Sentinel-2)",
@@ -1713,11 +1730,12 @@
   "flood_report": {
     "title": "Flood report",
     "type": "point_data",
+    "auth_required": true,
+    "data": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/dates",
     "admin_level_display": {
       "adminCode": "Commune"
     },
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
     "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_name": "1. ទម្រង់គ្រោះទឹកជំនន់",
@@ -1780,8 +1798,9 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
+    "auth_required": true,
     "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/dates",
     "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_name": "3. ទម្រង់គ្រោះរាំងស្ងួត",
@@ -1840,8 +1859,9 @@
     "admin_level_display": {
       "adminCode": "Commune"
     },
+    "auth_required": true,
     "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/dates",
     "data_field": "DisTyp",
     "additional_query_params": {
       "form_name": "2. ទម្រង់ ឧបទ្ទវហេតុ",

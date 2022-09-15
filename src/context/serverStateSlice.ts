@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { AvailableDates } from '../config/types';
+import { AvailableDates, UserAuth } from '../config/types';
 import { getLayersAvailableDates } from '../utils/server-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
@@ -7,6 +7,7 @@ type ServerState = {
   availableDates: AvailableDates;
   loading: boolean;
   error?: string;
+  userAuth?: UserAuth;
 };
 
 const initialState: ServerState = {
@@ -30,6 +31,14 @@ export const serverStateSlice = createSlice({
     ) => ({
       ...state,
       availableDates: payload,
+    }),
+    setUserAuthGlobal: (state, { payload }: PayloadAction<UserAuth>) => ({
+      ...state,
+      userAuth: payload,
+    }),
+    clearUserAuthGlobal: state => ({
+      ...state,
+      userAuth: undefined,
     }),
   },
   extraReducers: builder => {
@@ -68,7 +77,14 @@ export const isLoading = (state: RootState): ServerState['loading'] =>
 export const datesErrorSelector = (state: RootState): string | undefined =>
   state.serverState.error;
 
+export const userAuthSelector = (state: RootState): UserAuth | undefined =>
+  state.serverState.userAuth;
+
 // Setters
-export const { updateLayersCapabilities } = serverStateSlice.actions;
+export const {
+  updateLayersCapabilities,
+  setUserAuthGlobal,
+  clearUserAuthGlobal,
+} = serverStateSlice.actions;
 
 export default serverStateSlice.reducer;
