@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "prism-frontend"
+name = "prism-app"
 version = "1.1.1"
-description = "Frontend interface for WFP PRISM"
+description = "API Interface for WFP PRISM"
 authors = ["Ovio"]
 license = "Apache 2.0"
 
@@ -26,12 +26,8 @@ line-length = 88
 [tool.isort]
 profile = "black"
 multi_line_output = 3 # Vertical Hanging Indent
-src_paths = "prism-frontend/api-flask"
+src_paths = "prism-app/api-flask"
 
 [build-system]
 requires = ["poetry-core>=1.0.8"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-# CLI declaration
-tap-github = 'prism-frontend.tap:cli'
