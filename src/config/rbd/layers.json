@@ -1636,7 +1636,7 @@
   "ch_2021_03": {
     "title": "Phase classification",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/{YYYY-MM-DD}.json",
+    "path": "data/rbd/ch/{YYYY_MM_DD}.json",
     "date_url": "data/rbd/ch/dates.json",
     "data_field": "phase_class",
     "admin_level": 3,
