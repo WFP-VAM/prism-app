@@ -1,6 +1,6 @@
 import pytest
 import schemathesis
-from app.database.alert_database import AlertsDataBase
+from app.database.database import AlertsDataBase
 from app.main import app
 from fastapi.testclient import TestClient
 from hypothesis import settings
@@ -108,6 +108,24 @@ def test_stats_endpoint2():
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
             "group_by": "TS",
             "geojson_out": False,
+        },
+    )
+    assert response.status_code == 200
+
+
+def test_stats_endpoint_masked():
+    """
+    Call /stats with known-good parameters with a geotiff mask.
+    """
+    response = client.post(
+        "/stats",
+        headers={"Accept": "application/json"},
+        json={
+            "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(92.172747098,101.170015055)&subset=Lat(9.671252102,28.54553886)",
+            "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
+            "mask_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0&coverage=hfs1_sfw_mask_mmr&crs=EPSG%3A4326&bbox=92.2%2C9.7%2C101.2%2C28.5&width=1098&height=2304&format=GeoTIFF&time=2022-08-22",
+            "group_by": "TS_PCODE",
+            "geojson_out": True,
         },
     )
     assert response.status_code == 200

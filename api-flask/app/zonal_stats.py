@@ -3,11 +3,13 @@ import logging
 from collections import defaultdict
 from datetime import datetime
 from json import dump, load
+from pathlib import Path
 from typing import Any
 from urllib.parse import urlencode
 
+import numpy as np
 import rasterio  # type: ignore
-from app.caching import cache_file, get_json_file
+from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
 from app.models import (
     FilePath,
     GeoJSON,
@@ -16,8 +18,10 @@ from app.models import (
     WfsParamsModel,
     WfsResponse,
 )
+from app.raster_utils import gdal_calc, reproj_match
 from app.timer import timed
 from fastapi import HTTPException
+from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
@@ -67,6 +71,12 @@ def _extract_features_properties(zones_filename: FilePath) -> list:
 
 def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
     """Group zones by a key id and merge polygons."""
+    output_filename: FilePath = "{zones}.{group_by}".format(
+        zones=zones_filepath, group_by=group_by
+    )
+    if is_file_valid(output_filename):
+        return output_filename
+
     with open(zones_filepath) as json_file:
         geojson_data = load(json_file)
 
@@ -95,8 +105,6 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
         )
 
     outjson = dict(type="FeatureCollection", features=new_features)
-
-    output_filename = f"{zones_filepath}.{group_by}"
 
     with open(output_filename, "w") as outfile:
         dump(outjson, outfile)
@@ -189,8 +197,41 @@ def calculate_stats(
     geojson_out: bool = False,
     wfs_response: WfsResponse | None = None,
     intersect_comparison: tuple | None = None,
+    mask_geotiff: str | None = None,
 ) -> list[dict[str, Any]]:
     """Calculate stats."""
+
+    # Add mask option for flood exposure analysis
+    if mask_geotiff:
+        # quick hack to create "readable" filenames for caching.
+        geotiff_hash = Path(geotiff).name.replace("raster_", "").replace(".tif", "")
+        mask_hash = Path(mask_geotiff).name.replace("raster_", "").replace(".tif", "")
+
+        reproj_pop_geotiff: FilePath = (
+            f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_on_{mask_hash}.tif"
+        )
+        masked_pop_geotiff: FilePath = (
+            f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}.tif"
+        )
+
+        if not is_file_valid(reproj_pop_geotiff):
+            reproj_match(
+                geotiff,
+                mask_geotiff,
+                reproj_pop_geotiff,
+                resampling_mode=Resampling.sum,
+            )
+
+        if not is_file_valid(masked_pop_geotiff):
+            gdal_calc(
+                input_file_path=reproj_pop_geotiff,
+                mask_file_path=mask_geotiff,
+                output_file_path=masked_pop_geotiff,
+                calc_expr='"A*(B==1)"',
+            )
+
+        geotiff = masked_pop_geotiff
+
     if group_by:
         zones_filepath = _group_zones(zones_filepath, group_by)
 
@@ -206,6 +247,8 @@ def calculate_stats(
 
         # Extract shapely objects to compute stats.
         stats_input = [s.get("geom") for s in zones]
+        # TODO - remove this prefix to make homogeneize stats output
+        # Frontend from this PR (546) needs to be deployed first.
         prefix = None
 
     # Add function to calculate overlap percentage.
@@ -254,6 +297,7 @@ def calculate_stats(
         ]
 
         # Return stats as geojson array of features.
+        # TODO - consider the geojson_out flag and format the return object appropriately.
         return features
 
     if not geojson_out:
