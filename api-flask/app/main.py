@@ -7,14 +7,16 @@ from typing import Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
+from app.auth import validate_user
 from app.caching import FilePath, cache_file, cache_geojson
-from app.database.alert_database import AlertsDataBase
-from app.database.alert_model import AlchemyEncoder, AlertModel
-from app.kobo import get_form_responses, parse_datetime_params
+from app.database.alert_model import AlertModel
+from app.database.database import AlertsDataBase
+from app.database.user_info_model import UserInfoModel
+from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
-from fastapi import FastAPI, HTTPException, Path, Query, Response
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import EmailStr, HttpUrl
@@ -64,6 +66,7 @@ def _calculate_stats(
     # passed as hashable frozenset for caching
     wfs_response: frozenset | None,
     intersect_comparison,
+    mask_geotiff,
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -75,6 +78,7 @@ def _calculate_stats(
         geojson_out=geojson_out,
         wfs_response=dict(wfs_response) if wfs_response is not None else None,
         intersect_comparison=intersect_comparison,
+        mask_geotiff=mask_geotiff,
     )
 
 
@@ -90,15 +94,23 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     zones_geojson = stats_model.zones
     geojson_out = stats_model.geojson_out
     intersect_comparison_string = stats_model.intersect_comparison
+    mask_geotiff_url = stats_model.mask_url
 
     group_by = stats_model.group_by
     wfs_params = stats_model.wfs_params
 
     geotiff = cache_file(prefix="raster", url=geotiff_url, extension="tif")
+    mask_geotiff: FilePath = None
+    if mask_geotiff_url:
+        mask_geotiff = cache_file(
+            prefix="raster", url=mask_geotiff_url, extension="tif"
+        )
 
     zones: FilePath
     if zones_geojson is not None:
-        zones = cache_geojson(prefix="zones_geojson", geojson=zones_geojson)
+        zones = cache_geojson(
+            prefix="zones_geojson", geojson=zones_geojson, extension="json"
+        )
     else:
         zones = cache_file(
             prefix="zones",
@@ -127,9 +139,20 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         if wfs_response is not None
         else None,
         intersect_comparison=intersect_comparison_tuple,
+        mask_geotiff=mask_geotiff,
     )
 
     return features
+
+
+@app.get("/kobo/dates")
+def get_kobo_form_dates(
+    koboUrl: HttpUrl,
+    formName: str,
+    datetimeField: str,
+):
+    """Get all form response dates."""
+    return get_form_dates(koboUrl, formName, datetimeField)
 
 
 @app.get("/kobo/forms")
@@ -141,6 +164,7 @@ def get_kobo_forms(
     filters: str | None = None,
     beginDateTime=Query(default="2000-01-01"),
     endDateTime: str | None = None,
+    user_info: UserInfoModel = Depends(validate_user),
 ):
     """Get all form responses."""
     begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)
@@ -149,6 +173,10 @@ def get_kobo_forms(
         raise HTTPException(
             status_code=400, detail="beginDateTime value must be lower than endDateTime"
         )
+
+    # Extract province access information
+    province = user_info.access.get("province", None)
+
     form_responses = get_form_responses(
         begin_datetime,
         end_datetime,
@@ -157,6 +185,7 @@ def get_kobo_forms(
         geomField,
         filters,
         koboUrl,
+        province,
     )
 
     return form_responses
@@ -273,6 +302,7 @@ def stats_demo(
         geojson_out=geojson_out,
         wfs_response=None,
         intersect_comparison=intersect_comparison_tuple,
+        mask_geotiff=None,
     )
 
     # TODO - Properly encode before returning. Mongolian characters are returned as hex.

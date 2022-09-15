@@ -513,6 +513,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   loader?: PointDataLoader;
+
+  @optional
+  authRequired: boolean = false;
 }
 
 export type RequiredKeys<T> = {
@@ -639,4 +642,9 @@ export type ValidityLayer = {
   name: string;
   dates: number[];
   validity: Validity;
+};
+
+export type UserAuth = {
+  username: string;
+  password: string;
 };
