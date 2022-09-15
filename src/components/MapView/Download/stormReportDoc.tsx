@@ -6,31 +6,11 @@ import {
   View,
   Text,
   Image,
-  Font,
 } from '@react-pdf/renderer';
-import { TableData } from '../../../context/analysisResultStateSlice';
-
-// https://github.com/diegomura/react-pdf/issues/1991
-Font.register({
-  family: 'Roboto',
-  fonts: [
-    {
-      src:
-        'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Me5WZLCzYlKw.ttf',
-      fontWeight: 400,
-    },
-    {
-      src:
-        'https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmEU9vAx05IsDqlA.ttf',
-      fontWeight: 500,
-    },
-    {
-      src:
-        'https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlvAx05IsDqlA.ttf',
-      fontWeight: 700,
-    },
-  ],
-});
+import {
+  TableData,
+  TableRowType,
+} from '../../../context/analysisResultStateSlice';
 
 const styles = StyleSheet.create({
   page: {
@@ -150,15 +130,15 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
     tableData.columns.length > 0 && tableData.rows.length > 0;
   const tableRowsNum = 10;
   const showTotal = true;
-  const sortByKey = '60 km/h';
+  const sortByKey: keyof TableRowType = '60 km/h';
 
   const tableRows = tableData.rows.slice(1);
   // eslint-disable-next-line fp/no-mutating-methods
   const sortedTableRows = tableRows.sort((a, b) => {
-    if (a[sortByKey as keyof typeof a] > b[sortByKey as keyof typeof b]) {
+    if (a[sortByKey] > b[sortByKey]) {
       return -1;
     }
-    if (a[sortByKey as keyof typeof a] < b[sortByKey as keyof typeof b]) {
+    if (a[sortByKey] < b[sortByKey]) {
       return 1;
     }
     return 0;
@@ -168,22 +148,16 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
     tableRowsNum - (showTotal ? 1 : 0),
   );
 
-  const totals: number[] = [];
-
-  tableData.columns.forEach(col => {
-    let total = 0;
-    tableData.rows.forEach(row => {
-      const val = row[col as keyof typeof row];
-      // eslint-disable-next-line no-restricted-globals
-      if (!isNaN(Number(val))) {
-        // eslint-disable-next-line fp/no-mutation
-        total += Number(val);
+  const totals = tableData.columns.reduce((colPrev, colCurr) => {
+    const rowTotal = tableData.rows.reduce((rowPrev, rowCurr) => {
+      const val = Number(rowCurr[colCurr as keyof typeof rowCurr]);
+      if (!Number.isNaN(val)) {
+        return rowPrev + val;
       }
-    });
-
-    // eslint-disable-next-line fp/no-mutating-methods
-    totals.push(total);
-  });
+      return rowPrev;
+    }, 0);
+    return [...colPrev, rowTotal];
+  }, [] as number[]);
 
   return (
     <Document>

@@ -44,8 +44,8 @@ exports[`renders as expected 1`] = `
           <svg
             aria-hidden="true"
             class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+            color="white"
             focusable="false"
-            style="color: white;"
             viewBox="0 0 24 24"
           >
             <path
@@ -65,7 +65,7 @@ exports[`renders as expected 1`] = `
         >
           <mock-image
             fontsize="small"
-            style="color: white;"
+            htmlcolor="white"
           />
         </div>
         <mock-listitemtext

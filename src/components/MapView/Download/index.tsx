@@ -106,13 +106,13 @@ function Download({ classes }: DownloadProps) {
       >
         <ExportMenuItem onClick={() => setOpenReport(true)}>
           <ListItemIcon>
-            <Description fontSize="small" style={{ color: 'white' }} />
+            <Description fontSize="small" htmlColor="white" />
           </ListItemIcon>
           <ListItemText primary={t('REPORT')} />
         </ExportMenuItem>
         <ExportMenuItem onClick={openModal}>
           <ListItemIcon>
-            <Image fontSize="small" style={{ color: 'white' }} />
+            <Image fontSize="small" htmlColor="white" />
           </ListItemIcon>
           <ListItemText primary={t('IMAGE')} />
         </ExportMenuItem>

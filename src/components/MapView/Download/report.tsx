@@ -10,22 +10,13 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-// import { jsPDF } from 'jspdf';
-// import { Page, Document, pdfjs } from 'react-pdf';
 import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
-import {
-  PDFViewer,
-  //  BlobProvider,
-  PDFDownloadLink,
-} from '@react-pdf/renderer';
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { useSafeTranslation } from '../../../i18n';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import StormReportDoc from './stormReportDoc';
 import { getCurrentData } from '../../../context/analysisResultStateSlice';
-
-// eslint-disable-next-line fp/no-mutation
-// pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 function Report({ classes, open, setOpen, handleClose }: ReportProps) {
   const { t } = useSafeTranslation();
@@ -34,7 +25,11 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
   const analysisData = useSelector(getCurrentData);
 
   React.useEffect(() => {
-    const getMapImage = (format: 'png' | 'jpeg' = 'png'): string | null => {
+    if (!open) {
+      return;
+    }
+    type Format = 'png' | 'jpeg';
+    const getMapImage = (format: Format = 'png'): string | null => {
       if (selectedMap) {
         const activeLayers = selectedMap.getCanvas();
         const file = activeLayers.toDataURL(`image/${format}`);
@@ -42,10 +37,7 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
       }
       return null;
     };
-
-    if (open) {
-      setMapImage(getMapImage('png') || '');
-    }
+    setMapImage(getMapImage('png') ?? '');
   }, [open, selectedMap]);
 
   return (
@@ -70,21 +62,6 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
         </div>
       </DialogTitle>
       <DialogContent style={{ height: '90vh', width: 'calc(90vh / 1.42)' }}>
-        {/* <BlobProvider document={<StormReportDoc mapImage={mapImage} />}>
-          {({ blob, url, loading, error }) => {
-            // Do whatever you need with blob here
-            return (
-              <div>
-                <Document file={url}>
-                  <Page pageNumber={1} />
-                </Document>
-                <a href={url || ''} target="blank" style={{ color: 'black' }}>
-                  Download
-                </a>
-              </div>
-            );
-          }}
-        </BlobProvider> */}
         <div style={{ width: '100%', height: '100%' }}>
           <PDFViewer
             style={{ width: '100%', height: '100%' }}
@@ -95,7 +72,9 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
         </div>
       </DialogContent>
       <DialogActions className={classes.actions}>
-        <span className={classes.signature}>P R I S M automated report</span>
+        <span className={classes.signature}>
+          {t('P R I S M automated report')}
+        </span>
         <Button className={classes.actionButton} variant="outlined">
           <PDFDownloadLink
             document={

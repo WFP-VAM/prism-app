@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   createStyles,
   Dialog,
   DialogActions,
@@ -12,6 +13,7 @@ import {
 import { jsPDF } from 'jspdf';
 import React from 'react';
 import { useSafeTranslation } from '../../../i18n';
+import { downloadToFile } from '../utils';
 
 function DownloadImage({
   classes,
@@ -21,11 +23,18 @@ function DownloadImage({
   handleClose,
 }: DownloadImageProps) {
   const { t } = useSafeTranslation();
+  const [downloading, setDownloading] = React.useState<boolean>(false);
 
-  const download = (format: string) => {
-    const ext = format === 'pdf' ? 'png' : format;
-    const canvas = previewRef.current;
-    if (canvas) {
+  const download = async (format: 'pdf' | 'jpeg' | 'png') => {
+    const docGeneration = new Promise<void>((resolve, reject) => {
+      // png is generally preferred for images containing lines and text.
+      const ext = format === 'pdf' ? 'png' : format;
+      const canvas = previewRef.current;
+      if (!canvas) {
+        reject(new Error('canvas is undefined'));
+        // return statement to make compiler happy about canvas possibly being undefined
+        return;
+      }
       const file = canvas.toDataURL(`image/${ext}`);
       if (format === 'pdf') {
         // eslint-disable-next-line new-cap
@@ -38,14 +47,21 @@ function DownloadImage({
         pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight);
         pdf.save('map.pdf');
       } else {
-        const link = document.createElement('a');
-        link.setAttribute('href', file);
-        link.setAttribute('download', `map.${ext}`);
-        link.click();
+        downloadToFile({ content: file, isUrl: true }, 'map', `image/${ext}`);
       }
-      setOpen(false);
-      handleClose();
+      resolve();
+    });
+
+    setDownloading(true);
+    try {
+      await docGeneration;
+    } catch (error) {
+      console.error(error);
     }
+    setDownloading(false);
+
+    setOpen(false);
+    handleClose();
   };
 
   return (
@@ -85,7 +101,11 @@ function DownloadImage({
           onClick={() => download('pdf')}
           color="primary"
         >
-          {t('Download PDF')}
+          {downloading ? (
+            <CircularProgress color="secondary" />
+          ) : (
+            t('Download PDF')
+          )}
         </Button>
       </DialogActions>
     </Dialog>
