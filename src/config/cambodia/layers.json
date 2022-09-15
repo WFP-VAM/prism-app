@@ -1693,15 +1693,6 @@
       }
     ]
   },
-  "forecast": {
-    "title": "10-day precipitation forecast",
-    "type": "wms",
-    "server_layer_name": "wld_cli_tp_10d_ecmwf",
-    "opacity": 0.7,
-    "legend": [],
-    "legend_text": "",
-    "base_url": "https://geonode.wfp.org/geoserver"
-  },
   "ews_remote": {
     "title": "EWS 1294 river level data",
     "loader": "ews",
