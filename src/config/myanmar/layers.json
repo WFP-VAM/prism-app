@@ -115,24 +115,6 @@
     ],
     "legend_text": " "
   },
-  "total_pop_dated": {
-    "title": "Total population with date",
-    "type": "admin_level_data",
-    "date_url": "data/myanmar/pop/dates.json",
-    "path": "data/myanmar/pop/pop_{YYYY-MM-DD}.json",
-    "data_field": "total_pop",
-    "admin_level": 3,
-    "admin_code": "TS_PCODE",
-    "opacity": 0.7,
-    "legend": [
-      { "label": "< 50,000", "value": 0, "color": "#eff3ff" },
-      { "label": "50,000 - 100,000", "value": 100000, "color": "#bdd7e7" },
-      { "label": "100,000 - 150,000", "value": 150000, "color": "#6baed6" },
-      { "label": "150,000 - 200,000", "value": 200000, "color": "#3182bd" },
-      { "label": "> 200,000", "value": 200001, "color": "#08519c" }
-    ],
-    "legend_text": " "
-  },
   "improved_sanitation": {
     "title": "Improved sanitation",
     "type": "admin_level_data",
