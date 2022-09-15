@@ -216,27 +216,30 @@ export type ExposedPopulationDispatchParams = {
   statistic: AggregationOperations;
   extent: Extent;
   date: ReturnType<Date['getTime']>;
-  wfsLayerId: LayerKey;
+  wfsLayerId?: LayerKey;
+  maskLayerId?: LayerKey;
 };
 
 const createAPIRequestParams = (
   geotiffLayer: WMSLayerProps,
   extent: Extent,
   date: ReturnType<Date['getTime']>,
-  params: WfsRequestParams | AdminLevelDataLayerProps,
+  params?: WfsRequestParams | AdminLevelDataLayerProps,
+  maskParams?: any,
 ): ApiData => {
   const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
 
   // If the analysis is related to a AdminLevelData layer, we get the index from params.
   // For Exposed population we use the latest-level boundary indicator.
   // WARNING - This change is meant for RBD only. Do we want to generalize this?
-  const { adminLevel } = params as any;
+  const { adminLevel } = (params || {}) as any;
   const groupBy =
     adminLevel !== undefined
       ? adminLevelNames[adminLevel - 1]
       : adminCode || adminLevelNames[adminLevelNames.length - 1];
 
-  const wfsParams = (params as WfsRequestParams).layer_name
+  // eslint-disable-next-line camelcase
+  const wfsParams = (params as WfsRequestParams)?.layer_name
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
@@ -257,6 +260,9 @@ const createAPIRequestParams = (
     zones_url: getAdminBoundariesURL(),
     group_by: groupBy,
     ...wfsParams,
+    ...maskParams,
+    // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
+    geojson_out: !!maskParams,
   };
 
   return apiRequest;
@@ -267,43 +273,55 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   ExposedPopulationDispatchParams,
   CreateAsyncThunkTypes
 >('analysisResultState/requestAndStoreExposedPopulation', async params => {
-  const { exposure, date, extent, statistic, wfsLayerId } = params;
+  const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } = params;
 
   const { id, key } = exposure;
 
-  const wfsLayer = LayerDefinitions[wfsLayerId] as WMSLayerProps;
+  const wfsLayer =
+    wfsLayerId && (LayerDefinitions[wfsLayerId] as WMSLayerProps);
   const populationLayer = LayerDefinitions[id] as WMSLayerProps;
 
-  const wfsParams: WfsRequestParams = {
-    url: `${wfsLayer.baseUrl}/ows`,
-    layer_name: wfsLayer.serverLayerName,
-    time: moment(date).format(DEFAULT_DATE_FORMAT),
-    key,
-  };
+  const wfsParams: WfsRequestParams | undefined = wfsLayer
+    ? {
+        url: `${wfsLayer.baseUrl}/ows`,
+        layer_name: wfsLayer.serverLayerName,
+        time: moment(date).format(DEFAULT_DATE_FORMAT),
+        key,
+      }
+    : undefined;
+
+  const maskLayer =
+    maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
+
+  const maskParams = maskLayer
+    ? {
+        mask_url: getWCSLayerUrl({
+          layer: maskLayer,
+          date,
+          extent,
+        }),
+      }
+    : undefined;
 
   const apiRequest = createAPIRequestParams(
     populationLayer,
     extent,
     date,
     wfsParams,
+    maskParams,
   );
 
-  const apiFeatures = (await fetchApiData(
-    ANALYSIS_API_URL,
-    apiRequest,
-  )) as Feature[];
+  const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
+    []) as Feature[];
 
   const { scale, offset } = populationLayer.wcsConfig ?? {
     scale: undefined,
     offset: undefined,
   };
 
-  const features =
-    !scale && !offset
-      ? apiFeatures
-      : apiFeatures.map(f =>
-          scaleFeatureStat(f, scale || 1, offset || 0, statistic),
-        );
+  const features = apiFeatures.map(f =>
+    scaleFeatureStat(f, scale || 1, offset || 0, statistic),
+  );
 
   const collection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -312,7 +330,8 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
 
   const groupBy = apiRequest.group_by;
   const legend = createLegendFromFeatureArray(features, statistic);
-  const legendText = wfsLayer.title;
+  // TODO - use raster legend title
+  const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
 
   return new ExposedPopulationResult(
     collection,

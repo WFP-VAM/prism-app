@@ -91,7 +91,7 @@ const styles = () =>
       left: '50%',
       transform: 'translateX(-50%)',
       display: 'flex',
-      zIndex: 10,
+      zIndex: 9999,
       flexDirection: 'column',
       position: 'fixed',
       alignItems: 'center',
