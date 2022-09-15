@@ -60,6 +60,10 @@ function PointDataLayer({ layer, before }: LayersProps) {
   const { id: layerId } = layer;
 
   useEffect(() => {
+    if (layer.authRequired && !userAuth) {
+      return;
+    }
+
     if (!features && selectedDate) {
       const queryDate: number = getRequestDate(
         layerAvailableDates,
