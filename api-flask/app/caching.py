@@ -4,10 +4,12 @@ import json
 import logging
 import os
 
-import rasterio
+import rasterio  # type: ignore
 import requests
 from app.timer import timed
-from werkzeug.exceptions import InternalServerError
+from fastapi import HTTPException
+
+from .models import FilePath, GeoJSON
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +17,7 @@ CACHE_DIRECTORY = os.getenv("CACHE_DIRECTORY", "/cache/")
 
 
 @timed
-def cache_file(url, prefix, extension="cache"):
+def cache_file(url: str, prefix: str, extension: str = "cache") -> FilePath:
     """Locally cache files fetched from a url."""
     cache_filepath = _get_cached_filepath(
         prefix=prefix,
@@ -23,18 +25,8 @@ def cache_file(url, prefix, extension="cache"):
         extension=extension,
     )
     # If the file exists, return path.
-    if os.path.isfile(cache_filepath):
-        logger.info("Returning cached file for {}.".format(url))
-
-        # if the file is a geotiff, confirm that we can open it.
-        if extension == "tif":
-            try:
-                rasterio.open(cache_filepath)
-                return cache_filepath
-            except rasterio.errors.RasterioError:
-                pass
-        else:
-            return cache_filepath
+    if is_file_valid(cache_filepath):
+        return cache_filepath
 
     # If the file does not exist, download and return path.
     response = requests.get(url, verify=False)
@@ -43,8 +35,8 @@ def cache_file(url, prefix, extension="cache"):
         response.raise_for_status()
     except requests.HTTPError as e:
         logger.error(e)
-        raise InternalServerError(
-            "The file you requested is not available - {url}".format(url=url)
+        raise HTTPException(
+            status_code=500, detail=f"The file you requested is not available - {url}"
         )
 
     with open(cache_filepath, "wb") as f:
@@ -55,7 +47,7 @@ def cache_file(url, prefix, extension="cache"):
 
 
 @timed
-def cache_geojson(geojson, prefix):
+def cache_geojson(geojson: GeoJSON, prefix: str) -> FilePath:
     """Locally store geojson needed for a request."""
     json_string = json.dumps(geojson)
 
@@ -72,13 +64,13 @@ def cache_geojson(geojson, prefix):
     return cache_filepath
 
 
-def get_json_file(cached_filepath):
+def get_json_file(cached_filepath: FilePath) -> GeoJSON:
     """Return geojson object as python dictionary."""
     with open(cached_filepath, "rb") as f:
         return json.load(f)
 
 
-def _get_cached_filepath(prefix, data, extension="cache"):
+def _get_cached_filepath(prefix: str, data: str, extension: str = "cache") -> FilePath:
     """Return the filepath where a cached response would live for the given inputs."""
     filename = "{prefix}_{hash_string}.{extension}".format(
         prefix=prefix,
@@ -86,9 +78,25 @@ def _get_cached_filepath(prefix, data, extension="cache"):
         extension=extension,
     )
     logger.debug("Cached filepath: " + os.path.join(CACHE_DIRECTORY, filename))
-    return os.path.join(CACHE_DIRECTORY, filename)
+    return FilePath(os.path.join(CACHE_DIRECTORY, filename))
 
 
-def _hash_value(value):
+def _hash_value(value: str) -> str:
     """Hash value to help identify what cached file to use."""
     return hashlib.md5(value.encode("utf-8")).hexdigest()[:9]
+
+
+def is_file_valid(filepath) -> bool:
+    """Test if a file exists and is valid. For .tif, also try to read it."""
+    if os.path.isfile(filepath):
+        # if the file is a geotiff, confirm that we can open it.
+        is_tif = ".tif" in filepath
+        if is_tif:
+            try:
+                rasterio.open(filepath)
+                return True
+            except rasterio.errors.RasterioError:
+                return False
+        return True
+
+    return False

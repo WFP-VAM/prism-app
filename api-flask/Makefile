@@ -11,8 +11,17 @@ api-lint:
 	docker-compose run --no-deps api bash -c "black ."
 	docker-compose run --no-deps api bash -c "isort ."
 
-api-test:
-	docker-compose run --no-deps api bash -c "pytest -s tests"
+api-typecheck:
+	docker-compose run --no-deps api bash -c "mypy ."
+
+test-services:
+	docker-compose -f docker-compose.yml -f docker-compose.develop.yml -f docker-compose.test.yml up -d
+
+api-test: test-services
+	docker-compose -f docker-compose.yml -f docker-compose.develop.yml -f docker-compose.test.yml run api bash -c "pytest -s tests"
+
+api-add-users:
+	docker-compose -f docker-compose.yml -f docker-compose.develop.yml run api bash -c "python scripts/add_users.py"
 
 BACKEND_COVERAGE=pytest --cov=app --cov-config .coveragerc --cov-fail-under=30 --cov-report term-missing
 api-coverage:
@@ -23,6 +32,9 @@ test:
 	$(MAKE) api-lint
 	$(MAKE) api-test
 	$(MAKE) api-coverage
+
+bash:
+	docker-compose -f docker-compose.yml -f docker-compose.develop.yml run api bash
 
 # [Dummy dependency to force a make command to always run.]
 FORCE:

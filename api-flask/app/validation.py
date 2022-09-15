@@ -2,7 +2,7 @@
 import operator as op
 from typing import Any, Tuple
 
-from werkzeug.exceptions import BadRequest
+from fastapi import HTTPException
 
 
 def validate_intersect_parameter(intersect_comparison_string: str) -> Tuple[Any, float]:
@@ -35,7 +35,11 @@ def validate_intersect_parameter(intersect_comparison_string: str) -> Tuple[Any,
     try:
         baseline = float(intersect_comparison_string)
     except ValueError:
-        raise BadRequest(
-            f"Invalid intersect_comparison format {intersect_comparison_string}. Expecting a float."
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Invalid intersect_comparison format {intersect_comparison_string}. "
+                "Expecting a float."
+            ),
         )
     return (operator_item[1], baseline)

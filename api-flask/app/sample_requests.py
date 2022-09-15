@@ -1,5 +1,4 @@
 """Sample Data for stats and alert."""
-from flask_restx import fields
 
 stats_data = {
     "geotiff_url": "https://odc.ovio.org/?service=WCS&request=GetCoverage&version=1.0.0"
@@ -8,6 +7,47 @@ stats_data = {
     "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/"
     "mmr_admin_boundaries.json",
     "group_by": "TS",
+}
+
+alert_data_zones = {
+    "type": "FeatureCollection",
+    "name": "admin_boundaries",
+    "crs": {
+        "type": "name",
+        "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"},
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "OBJECTID": 277,
+                "ST": "Ayeyarwady",
+                "ST_PCODE": "MMR017",
+                "DT": "Pyapon",
+                "DT_PCODE": "MMR017D006",
+                "TS": "Bogale",
+                "TS_PCODE": "MMR017024",
+                "SELF_ADMIN": None,
+                "ST_RG": "Region",
+                "TS_MMR4": "ဘိုကလေး",
+                "AREA": 1,
+                "DT_MMR4": "ဖျာပုံခရိုင်",
+                "mmr_polbnd": "ဧရာဝတီတိုင်းဒေသကြီး",
+            },
+            "geometry": {
+                "type": "MultiPolygon",
+                "coordinates": [
+                    [
+                        [
+                            [95.3170445470002, 15.928591091000044],
+                            [95.31199007400005, 15.926271754000084],
+                            [95.3115704550001, 15.928167658000064],
+                        ]
+                    ]
+                ],
+            },
+        }
+    ],
 }
 
 alert_data = {
@@ -37,60 +77,7 @@ alert_data = {
             {"label": "> 180%", "color": "#0fb0fb"},
         ],
     },
-    "zones": {
-        "type": "FeatureCollection",
-        "name": "admin_boundaries",
-        "crs": {
-            "type": "name",
-            "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"},
-        },
-        "features": [
-            {
-                "type": "Feature",
-                "properties": {
-                    "OBJECTID": 277,
-                    "ST": "Ayeyarwady",
-                    "ST_PCODE": "MMR017",
-                    "DT": "Pyapon",
-                    "DT_PCODE": "MMR017D006",
-                    "TS": "Bogale",
-                    "TS_PCODE": "MMR017024",
-                    "SELF_ADMIN": None,
-                    "ST_RG": "Region",
-                    "TS_MMR4": "ဘိုကလေး",
-                    "AREA": 1,
-                    "DT_MMR4": "ဖျာပုံခရိုင်",
-                    "mmr_polbnd": "ဧရာဝတီတိုင်းဒေသကြီး",
-                },
-                "geometry": {
-                    "type": "MultiPolygon",
-                    "coordinates": [
-                        [
-                            [
-                                [95.3170445470002, 15.928591091000044],
-                                [95.31199007400005, 15.926271754000084],
-                                [95.3115704550001, 15.928167658000064],
-                            ]
-                        ]
-                    ],
-                },
-            }
-        ],
-    },
+    "zones": alert_data_zones,
     "email": "vik@gmail.com",
     "prism_url": "https://prism-mongolia.org",
-}
-
-stats_dic = {
-    "geotiff_url": fields.String(stats_data["geotiff_url"]),
-    "zones_url": fields.String(stats_data["zones_url"]),
-    "group_by": fields.String(stats_data["group_by"]),
-}
-
-alerts_dic = {
-    "email": fields.String(alert_data["email"]),
-    "prism_url": fields.String(alert_data["prism_url"]),
-    "alert_name": fields.String(alert_data["alert_name"]),
-    "alert_config": fields.Raw(alert_data["alert_config"]),
-    "zones": fields.Raw(alert_data["zones"]),
 }

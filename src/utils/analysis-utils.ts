@@ -362,7 +362,7 @@ export async function loadFeaturesClientSide(
   )(getState());
 
   if (!existingHazardLayer) {
-    await dispatch(
+    dispatch(
       loadLayerData({
         layer: hazardLayerDef,
         extent,
@@ -473,7 +473,10 @@ export function scaleFeatureStat(
     return feature;
   }
 
-  const scaledValue: number = get(properties, statistic) * scale + offset;
+  const value =
+    get(properties, statistic) || get(properties, `stats_${statistic}`);
+
+  const scaledValue: number = value && value * scale + offset;
 
   const scaledValueProperties = {
     ...properties,

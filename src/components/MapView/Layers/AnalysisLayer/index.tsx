@@ -121,7 +121,10 @@ function AnalysisLayer({ before }: { before?: string }) {
           );
         }
 
-        if (analysisData instanceof ExposedPopulationResult) {
+        if (
+          analysisData instanceof ExposedPopulationResult &&
+          analysisData.key
+        ) {
           dispatch(
             addPopupData({
               [analysisData.key]: {

@@ -69,6 +69,13 @@ export const mapStateSlice = createSlice({
         layers: newLayers,
       };
     },
+    removeLayerData: (
+      { layersData, ...rest },
+      { payload }: PayloadAction<LayerType>,
+    ) => ({
+      ...rest,
+      layersData: layersData.filter(({ layer }) => layer.id !== payload.id),
+    }),
 
     removeLayer: (
       { layers, ...rest },
@@ -156,6 +163,7 @@ export const {
   setMap,
   // TODO unused
   updateLayerOpacity,
+  removeLayerData,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;
