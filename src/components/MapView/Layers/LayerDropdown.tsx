@@ -10,7 +10,6 @@ import { startCase } from 'lodash';
 import { menuList } from '../../NavBar/utils';
 import { LayerKey, LayerType } from '../../../config/types';
 import {
-  getBoundaryLayers,
   getDisplayBoundaryLayers,
   LayerDefinitions,
 } from '../../../config/utils';

@@ -145,7 +145,6 @@ function mergeFeaturesByProperty(
   aggregateData: Array<object>,
   id: string,
 ): Feature[] {
-  console.log(aggregateData);
   const features = baselineFeatures?.map(feature1 => {
     const aggregateProperties = aggregateData.filter(
       item => get(item, id) === get(feature1, ['properties', id]) && item,
@@ -287,20 +286,15 @@ export function scaleAndFilterAggregateData(
 
 export function generateFeaturesFromApiData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
-  baselineData: AdminLevelDataLayerData | undefined,
+  baselineData: AdminLevelDataLayerData,
   groupBy: StatsApi['groupBy'],
   operation: AggregationOperations,
 ): GeoJsonBoundary[] {
-  console.log(baselineData);
   const mergedFeatures = mergeFeaturesByProperty(
-    baselineData
-      ? baselineData?.features.features
-      : (aggregateData as Feature[]),
+    baselineData.features.features,
     aggregateData,
     groupBy,
   );
-
-  console.log(mergedFeatures);
 
   return mergedFeatures.filter(feature => {
     const value = get(feature, ['properties', operation]);

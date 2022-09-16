@@ -356,16 +356,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
   } = params;
-  const getBaselineData = () => {
-    if (!baselineLayer) {
-      return undefined;
-    }
-    return layerDataSelector(baselineLayer?.id)(api.getState()) as LayerData<
-      AdminLevelDataLayerProps
-    >;
-  };
-
-  const baselineData = getBaselineData();
+  const baselineData = layerDataSelector(baselineLayer.id)(
+    api.getState(),
+  ) as LayerData<AdminLevelDataLayerProps>;
 
   const adminBoundaries = getBoundaryLayerSingleton();
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
@@ -392,9 +385,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     threshold,
   );
 
-  const getCheckedBaselineData = async (): Promise<
-    BaselineLayerData | undefined
-  > => {
+  const getCheckedBaselineData = async (): Promise<BaselineLayerData> => {
     // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
     // similar code can be found at impact.ts
     if (baselineLayer.type === 'boundary') {
@@ -415,12 +406,10 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       return checkBaselineDataLayer(baselineLayer?.id, baselineData?.data);
     }
 
-    return undefined;
+    return { features: adminBoundariesData.data, layerData: [] };
   };
 
-  const loadedAndCheckedBaselineData:
-    | BaselineLayerData
-    | undefined = await getCheckedBaselineData();
+  const loadedAndCheckedBaselineData: BaselineLayerData = await getCheckedBaselineData();
 
   const features = generateFeaturesFromApiData(
     aggregateData,
