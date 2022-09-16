@@ -7,22 +7,30 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Theme,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import { useLocation } from 'react-router-dom';
 import { useSafeTranslation } from '../../../i18n';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import StormReportDoc from './stormReportDoc';
 import { getCurrentData } from '../../../context/analysisResultStateSlice';
+import { ReportType } from '../utils';
 
-function Report({ classes, open, setOpen, handleClose }: ReportProps) {
+function Report({ classes, open, reportType, handleClose }: ReportProps) {
   const { t } = useSafeTranslation();
   const [mapImage, setMapImage] = React.useState<string>('');
   const selectedMap = useSelector(mapSelector);
   const analysisData = useSelector(getCurrentData);
+  const location = useLocation();
+  const dateQuery = location.search
+    ?.split('&')
+    .find(x => x.startsWith('date='));
+  const eventDate = dateQuery?.split('=')[1];
 
   React.useEffect(() => {
     if (!open) {
@@ -44,7 +52,7 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
     <Dialog
       open={open}
       keepMounted
-      onClose={() => setOpen(false)}
+      onClose={() => handleClose()}
       maxWidth={false}
     >
       <DialogTitle className={classes.titleRoot}>
@@ -52,13 +60,18 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
           <IconButton
             className={classes.titleIconButton}
             onClick={() => {
-              setOpen(false);
               handleClose();
             }}
           >
             <ArrowBack />
           </IconButton>
-          <span className={classes.titleText}>{t('Storm impact report')}</span>
+          <span className={classes.titleText}>
+            {t(
+              reportType === ReportType.Storm
+                ? 'Storm impact Report'
+                : 'Flood Report',
+            )}
+          </span>
         </div>
       </DialogTitle>
       <DialogContent style={{ height: '90vh', width: 'calc(90vh / 1.42)' }}>
@@ -67,7 +80,20 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
             style={{ width: '100%', height: '100%' }}
             showToolbar={false}
           >
-            <StormReportDoc mapImage={mapImage} tableData={analysisData} />
+            <StormReportDoc
+              reportType={reportType}
+              tableName="Population Exposure"
+              tableRowsNum={10}
+              tableShowTotal
+              eventName={
+                reportType === ReportType.Storm
+                  ? `Storm Report (${eventDate})`
+                  : `Flood Report (${eventDate})`
+              }
+              sortByKey={reportType === ReportType.Storm ? '60 mb/h' : 'sum'}
+              mapImage={mapImage}
+              tableData={analysisData}
+            />
           </PDFViewer>
         </div>
       </DialogContent>
@@ -78,7 +104,20 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
         <Button className={classes.actionButton} variant="outlined">
           <PDFDownloadLink
             document={
-              <StormReportDoc mapImage={mapImage} tableData={analysisData} />
+              <StormReportDoc
+                reportType={reportType}
+                tableName="Population Exposure"
+                tableRowsNum={10}
+                tableShowTotal
+                eventName={
+                  reportType === ReportType.Storm
+                    ? `Storm Report (${eventDate})`
+                    : `Flood Report (${eventDate})`
+                }
+                sortByKey={reportType === ReportType.Storm ? '60 mb/h' : 'sum'}
+                mapImage={mapImage}
+                tableData={analysisData}
+              />
             }
             fileName="prism-report.pdf"
           >
@@ -94,10 +133,10 @@ function Report({ classes, open, setOpen, handleClose }: ReportProps) {
   );
 }
 
-const styles = () =>
+const styles = (theme: Theme) =>
   createStyles({
     titleRoot: {
-      background: '#2E6EAF',
+      background: theme.dialog?.border,
       padding: 0,
     },
     title: {
@@ -114,14 +153,14 @@ const styles = () =>
       color: '#FFFFFF',
     },
     actions: {
-      background: '#2E6EAF',
+      background: theme.dialog?.border,
       display: 'flex',
       justifyContent: 'space-between',
       flexDirection: 'row',
     },
     actionButton: {
       background: '#FFFFFF',
-      color: '#6F9FD2',
+      color: theme.dialog?.actionButton,
       fontSize: 12,
     },
     signature: {
@@ -133,7 +172,7 @@ const styles = () =>
 
 export interface ReportProps extends WithStyles<typeof styles> {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  reportType: ReportType;
   handleClose: () => void;
 }
 

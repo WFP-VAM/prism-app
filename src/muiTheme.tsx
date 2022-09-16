@@ -8,7 +8,39 @@ const lightGray = '#CCCCCC';
 
 export const colors = { skyBlue, greyBlue, darkGreyBlue };
 
+declare module '@material-ui/core/styles/createMuiTheme' {
+  interface ThemeOptions {
+    dialog?: {
+      border?: React.CSSProperties['color'];
+      actionButton?: React.CSSProperties['color'];
+    };
+    surfaces?: {
+      dark?: React.CSSProperties['color'];
+      light?: React.CSSProperties['color'];
+    };
+  }
+
+  interface Theme {
+    dialog: {
+      border: React.CSSProperties['color'];
+      actionButton: React.CSSProperties['color'];
+    };
+    surfaces: {
+      dark: React.CSSProperties['color'];
+      light: React.CSSProperties['color'];
+    };
+  }
+}
+
 const theme: any = createMuiTheme({
+  dialog: {
+    border: '#2E6EAF',
+    actionButton: '#6F9FD2',
+  },
+  surfaces: {
+    dark: '#3d474a',
+    light: '#5A686C',
+  },
   palette: {
     primary: {
       main: greyBlue,

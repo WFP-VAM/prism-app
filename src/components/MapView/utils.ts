@@ -180,3 +180,8 @@ export function getFeatureInfoPropsData(
       };
     }, {});
 }
+
+export enum ReportType {
+  Storm,
+  Flood,
+}

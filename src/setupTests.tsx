@@ -70,6 +70,13 @@ function stubMuiComponent(componentName: string) {
   );
 }
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: () => ({
+    pathname: 'localhost:3000/',
+  }),
+}));
+
 stubMuiComponent('Typography');
 stubMuiComponent('Button');
 stubMuiComponent('TextField');

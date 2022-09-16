@@ -11,6 +11,7 @@ import {
   TableData,
   TableRowType,
 } from '../../../context/analysisResultStateSlice';
+import { ReportType } from '../utils';
 
 const styles = StyleSheet.create({
   page: {
@@ -121,16 +122,130 @@ const styles = StyleSheet.create({
   },
 });
 
-const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
-  const eventName = 'Storm';
+const AreasLegend = () => (
+  <View style={styles.legend}>
+    <View>
+      <Text style={styles.legendTittle}>Areas</Text>
+    </View>
+    <View style={styles.legendContentsWrapper}>
+      <View style={styles.legendContent}>
+        <View style={[styles.dash, { backgroundColor: '#000000' }]} />
+        <Text style={[styles.legendText]}>Province</Text>
+      </View>
+      <View style={styles.legendContent}>
+        <View style={[styles.dash, { backgroundColor: '#999797' }]} />
+        <Text style={[styles.legendText]}>District</Text>
+      </View>
+      <View style={styles.legendContent}>
+        <View style={[styles.dash, { backgroundColor: '#D8D6D6' }]} />
+        <Text style={[styles.legendText]}>Township</Text>
+      </View>
+    </View>
+  </View>
+);
+
+const StormWindBuffersLegend = () => (
+  <View style={styles.legend}>
+    <View>
+      <Text style={styles.legendTittle}>Tropical Storms - Wind buffers</Text>
+      <View style={styles.legendContentsWrapper}>
+        <View style={styles.legendContent}>
+          <View
+            style={[
+              styles.borderedBox,
+              { backgroundColor: '#ffffff', borderColor: '#b8b1b1' },
+            ]}
+          />
+          <Text style={[styles.legendText]}>Uncertainty Cones</Text>
+        </View>
+        <View style={styles.legendContent}>
+          <View
+            style={[
+              styles.borderedBox,
+              { backgroundColor: '#fffcf1', borderColor: '#f7e705' },
+            ]}
+          />
+          <Text style={[styles.legendText]}>Wind Buffer 60 km/h</Text>
+        </View>
+        <View style={styles.legendContent}>
+          <View
+            style={[
+              styles.borderedBox,
+              { backgroundColor: '#ffeed8', borderColor: '#f99408' },
+            ]}
+          />
+          <Text style={[styles.legendText]}>Wind Buffer 90 km/h</Text>
+        </View>
+        <View style={styles.legendContent}>
+          <View
+            style={[
+              styles.borderedBox,
+              { backgroundColor: '#fcd4ce', borderColor: '#f90c08' },
+            ]}
+          />
+          <Text style={[styles.legendText]}>Wind Buffer 120 km/h</Text>
+        </View>
+      </View>
+    </View>
+  </View>
+);
+
+const FloodsLegend = () => (
+  <View style={styles.legend}>
+    <View>
+      <Text style={styles.legendTittle}>Potential flooding</Text>
+      <View style={styles.legendContentsWrapper}>
+        <View style={styles.legendContent}>
+          <View style={[styles.box, { backgroundColor: '#a50f15' }]} />
+          <Text style={[styles.legendText]}>flooded</Text>
+        </View>
+      </View>
+    </View>
+  </View>
+);
+
+const PopulationExposureLegend = () => (
+  <View style={styles.legend}>
+    <View>
+      <Text style={styles.legendTittle}>Population Exposure</Text>
+      <View style={styles.legendContentsWrapper}>
+        <View style={styles.legendContent}>
+          <View style={[styles.box, { backgroundColor: '#fef2ec' }]} />
+          <Text style={[styles.legendText]}>Very low</Text>
+        </View>
+        <View style={styles.legendContent}>
+          <View style={[styles.box, { backgroundColor: '#fdd6c8' }]} />
+          <Text style={[styles.legendText]}>Low</Text>
+        </View>
+        <View style={styles.legendContent}>
+          <View style={[styles.box, { backgroundColor: '#fdb4a4' }]} />
+          <Text style={[styles.legendText]}>Medium</Text>
+        </View>
+        <View style={styles.legendContent}>
+          <View style={[styles.box, { backgroundColor: '#ee9592' }]} />
+          <Text style={[styles.legendText]}>Hight</Text>
+        </View>
+        <View style={styles.legendContent}>
+          <View style={[styles.box, { backgroundColor: '#d28689' }]} />
+          <Text style={[styles.legendText]}>Very hight</Text>
+        </View>
+      </View>
+    </View>
+  </View>
+);
+
+const StormReportDoc = ({
+  reportType,
+  mapImage,
+  tableData,
+  tableName,
+  tableRowsNum,
+  tableShowTotal,
+  eventName,
+  sortByKey,
+}: StormReportDocProps) => {
   const date = new Date().toUTCString();
-  const tableName = 'Number of people exposed by wind speed category';
   const tableCellWidth = `${100 / (tableData.columns.length + 1)}%`;
-  const hasTableData =
-    tableData.columns.length > 0 && tableData.rows.length > 0;
-  const tableRowsNum = 10;
-  const showTotal = true;
-  const sortByKey: keyof TableRowType = '60 km/h';
 
   const tableRows = tableData.rows.slice(1);
   // eslint-disable-next-line fp/no-mutating-methods
@@ -145,7 +260,7 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
   });
   const trimmedTableRows = sortedTableRows.slice(
     0,
-    tableRowsNum - (showTotal ? 1 : 0),
+    tableRowsNum - (tableShowTotal ? 1 : 0),
   );
 
   const totals = tableData.columns.reduce((colPrev, colCurr) => {
@@ -174,113 +289,13 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
           <Image src={mapImage} style={styles.mapImage} />
         </View>
         <View style={[styles.legendsContainer, styles.section]}>
-          <View style={styles.legend}>
-            <View>
-              <Text style={styles.legendTittle}>Areas</Text>
-            </View>
-            <View style={styles.legendContentsWrapper}>
-              <View style={styles.legendContent}>
-                <View style={[styles.dash, { backgroundColor: '#000000' }]} />
-                <Text style={[styles.legendText]}>Province</Text>
-              </View>
-              <View style={styles.legendContent}>
-                <View style={[styles.dash, { backgroundColor: '#999797' }]} />
-                <Text style={[styles.legendText]}>District</Text>
-              </View>
-              <View style={styles.legendContent}>
-                <View style={[styles.dash, { backgroundColor: '#D8D6D6' }]} />
-                <Text style={[styles.legendText]}>Township</Text>
-              </View>
-            </View>
-          </View>
-          {hasTableData && (
-            <View style={styles.legend}>
-              <View>
-                <Text style={styles.legendTittle}>
-                  Tropical Storms - Wind buffers
-                </Text>
-                <View style={styles.legendContentsWrapper}>
-                  <View style={styles.legendContent}>
-                    <View
-                      style={[
-                        styles.borderedBox,
-                        { backgroundColor: '#ffffff', borderColor: '#b8b1b1' },
-                      ]}
-                    />
-                    <Text style={[styles.legendText]}>Uncertainty Cones</Text>
-                  </View>
-                  <View style={styles.legendContent}>
-                    <View
-                      style={[
-                        styles.borderedBox,
-                        { backgroundColor: '#fffcf1', borderColor: '#f7e705' },
-                      ]}
-                    />
-                    <Text style={[styles.legendText]}>Wind Buffer 60 km/h</Text>
-                  </View>
-                  <View style={styles.legendContent}>
-                    <View
-                      style={[
-                        styles.borderedBox,
-                        { backgroundColor: '#ffeed8', borderColor: '#f99408' },
-                      ]}
-                    />
-                    <Text style={[styles.legendText]}>Wind Buffer 90 km/h</Text>
-                  </View>
-                  <View style={styles.legendContent}>
-                    <View
-                      style={[
-                        styles.borderedBox,
-                        { backgroundColor: '#fcd4ce', borderColor: '#f90c08' },
-                      ]}
-                    />
-                    <Text style={[styles.legendText]}>
-                      Wind Buffer 120 km/h
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
+          <AreasLegend />
+          {reportType === ReportType.Storm ? (
+            <StormWindBuffersLegend />
+          ) : (
+            <FloodsLegend />
           )}
-          {hasTableData && (
-            <View style={styles.legend}>
-              <View>
-                <Text style={styles.legendTittle}>Population Exposure</Text>
-                <View style={styles.legendContentsWrapper}>
-                  <View style={styles.legendContent}>
-                    <View
-                      style={[styles.box, { backgroundColor: '#fef2ec' }]}
-                    />
-                    <Text style={[styles.legendText]}>Very low</Text>
-                  </View>
-                  <View style={styles.legendContent}>
-                    <View
-                      style={[styles.box, { backgroundColor: '#fdd6c8' }]}
-                    />
-                    <Text style={[styles.legendText]}>Low</Text>
-                  </View>
-                  <View style={styles.legendContent}>
-                    <View
-                      style={[styles.box, { backgroundColor: '#fdb4a4' }]}
-                    />
-                    <Text style={[styles.legendText]}>Medium</Text>
-                  </View>
-                  <View style={styles.legendContent}>
-                    <View
-                      style={[styles.box, { backgroundColor: '#ee9592' }]}
-                    />
-                    <Text style={[styles.legendText]}>Hight</Text>
-                  </View>
-                  <View style={styles.legendContent}>
-                    <View
-                      style={[styles.box, { backgroundColor: '#d28689' }]}
-                    />
-                    <Text style={[styles.legendText]}>Very hight</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          )}
+          <PopulationExposureLegend />
         </View>
         <View style={styles.section}>
           <Text style={{ fontSize: 7.7 }}>
@@ -294,76 +309,39 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
             frontiers or boundaries.
           </Text>
         </View>
-        {hasTableData && (
-          <View style={[styles.section]}>
-            <View style={{ backgroundColor: '#EBEBEB' }}>
-              <View>
-                <Text style={styles.tableName}>{tableName}</Text>
-              </View>
-              <View style={[styles.tableHead, styles.tableRow]} wrap={false}>
-                {tableData.columns.map(value => {
-                  return (
-                    <Text style={[styles.tableCell, { width: tableCellWidth }]}>
-                      {value}
-                    </Text>
-                  );
-                })}
-                <Text style={[styles.tableCell, { width: tableCellWidth }]}>
-                  Total
-                </Text>
-              </View>
+        <View style={[styles.section]}>
+          <View style={{ backgroundColor: '#EBEBEB' }}>
+            <View>
+              <Text style={styles.tableName}>{tableName}</Text>
             </View>
-
-            {trimmedTableRows.map((value, index) => {
-              const color = index % 2 ? '#EBEBEB' : '#F5F5F5';
-              let total = 0;
-              return (
-                <View
-                  style={[styles.tableRow, { backgroundColor: color }]}
-                  wrap={false}
-                >
-                  {tableData.columns.map(col => {
-                    const val = value[col as keyof typeof value];
-                    // eslint-disable-next-line no-restricted-globals
-                    if (!isNaN(Number(val))) {
-                      // eslint-disable-next-line fp/no-mutation
-                      total += Number(val);
-                    }
-                    return (
-                      <Text
-                        style={[styles.tableCell, { width: tableCellWidth }]}
-                      >
-                        {val}
-                      </Text>
-                    );
-                  })}
+            <View style={[styles.tableHead, styles.tableRow]} wrap={false}>
+              {tableData.columns.map(value => {
+                return (
                   <Text style={[styles.tableCell, { width: tableCellWidth }]}>
-                    {total}
+                    {value}
                   </Text>
-                </View>
-              );
-            })}
-            {showTotal && (
+                );
+              })}
+              <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                Total
+              </Text>
+            </View>
+          </View>
+
+          {trimmedTableRows.map((value, index) => {
+            const color = index % 2 ? '#EBEBEB' : '#F5F5F5';
+            let total = 0;
+            return (
               <View
+                style={[styles.tableRow, { backgroundColor: color }]}
                 wrap={false}
-                style={[
-                  styles.tableRow,
-                  styles.tableFooter,
-                  {
-                    backgroundColor:
-                      trimmedTableRows.length % 2 ? '#EBEBEB' : '#F5F5F5',
-                  },
-                ]}
               >
-                {totals.map((val, index) => {
-                  if (index === 0) {
-                    return (
-                      <Text
-                        style={[styles.tableCell, { width: tableCellWidth }]}
-                      >
-                        Total
-                      </Text>
-                    );
+                {tableData.columns.map(col => {
+                  const val = value[col as keyof typeof value];
+                  // eslint-disable-next-line no-restricted-globals
+                  if (!isNaN(Number(val))) {
+                    // eslint-disable-next-line fp/no-mutation
+                    total += Number(val);
                   }
                   return (
                     <Text style={[styles.tableCell, { width: tableCellWidth }]}>
@@ -372,14 +350,45 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
                   );
                 })}
                 <Text style={[styles.tableCell, { width: tableCellWidth }]}>
-                  {totals.reduce((prev, cur) => {
-                    return prev + cur;
-                  }, 0)}
+                  {total}
                 </Text>
               </View>
-            )}
-          </View>
-        )}
+            );
+          })}
+          {tableShowTotal && (
+            <View
+              wrap={false}
+              style={[
+                styles.tableRow,
+                styles.tableFooter,
+                {
+                  backgroundColor:
+                    trimmedTableRows.length % 2 ? '#EBEBEB' : '#F5F5F5',
+                },
+              ]}
+            >
+              {totals.map((val, index) => {
+                if (index === 0) {
+                  return (
+                    <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                      Total
+                    </Text>
+                  );
+                }
+                return (
+                  <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                    {val}
+                  </Text>
+                );
+              })}
+              <Text style={[styles.tableCell, { width: tableCellWidth }]}>
+                {totals.reduce((prev, cur) => {
+                  return prev + cur;
+                }, 0)}
+              </Text>
+            </View>
+          )}
+        </View>
         <Text fixed style={styles.footer}>
           P R I S M automated report
         </Text>
@@ -389,8 +398,14 @@ const StormReportDoc = ({ mapImage, tableData }: StormReportDocProps) => {
 };
 
 interface StormReportDocProps {
+  reportType: ReportType;
   mapImage: string;
   tableData: TableData;
+  tableName: string;
+  tableRowsNum: number;
+  tableShowTotal: boolean;
+  eventName: string;
+  sortByKey: keyof TableRowType;
 }
 
 export default StormReportDoc;

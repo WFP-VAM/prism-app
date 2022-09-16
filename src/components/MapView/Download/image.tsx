@@ -18,7 +18,6 @@ import { downloadToFile } from '../utils';
 function DownloadImage({
   classes,
   open,
-  setOpen,
   previewRef,
   handleClose,
 }: DownloadImageProps) {
@@ -60,7 +59,6 @@ function DownloadImage({
     }
     setDownloading(false);
 
-    setOpen(false);
     handleClose();
   };
 
@@ -69,7 +67,7 @@ function DownloadImage({
       maxWidth="xl"
       open={open}
       keepMounted
-      onClose={() => setOpen(false)}
+      onClose={() => handleClose()}
       aria-labelledby="dialog-preview"
     >
       <DialogTitle className={classes.title} id="dialog-preview">
@@ -79,7 +77,7 @@ function DownloadImage({
         <canvas ref={previewRef} />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpen(false)} color="primary">
+        <Button onClick={() => handleClose()} color="primary">
           {t('Cancel')}
         </Button>
         <Button
@@ -121,7 +119,6 @@ const styles = (theme: Theme) =>
 
 export interface DownloadImageProps extends WithStyles<typeof styles> {
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   previewRef: React.RefObject<HTMLCanvasElement>;
   handleClose: () => void;
 }

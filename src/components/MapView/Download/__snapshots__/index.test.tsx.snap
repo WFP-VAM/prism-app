@@ -35,28 +35,38 @@ exports[`renders as expected 1`] = `
       open="false"
       transformorigin="[object Object]"
     >
-      <mock-menuitem
-        classes="[object Object]"
+      <mock-tooltip
+        placement="left"
+        title="Reports can only be generated for Tropical Storms or Floods, in hazards menu"
       >
-        <div
-          class="MuiListItemIcon-root"
+        <span
+          style="display: flex;"
         >
-          <svg
-            aria-hidden="true"
-            class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
-            color="white"
-            focusable="false"
-            viewBox="0 0 24 24"
+          <mock-menuitem
+            classes="[object Object]"
+            disabled="true"
           >
-            <path
-              d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"
+            <div
+              class="MuiListItemIcon-root"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+                color="white"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"
+                />
+              </svg>
+            </div>
+            <mock-listitemtext
+              primary="REPORT"
             />
-          </svg>
-        </div>
-        <mock-listitemtext
-          primary="REPORT"
-        />
-      </mock-menuitem>
+          </mock-menuitem>
+        </span>
+      </mock-tooltip>
       <mock-menuitem
         classes="[object Object]"
       >
@@ -151,7 +161,7 @@ exports[`renders as expected 1`] = `
           <span
             class="Report-titleText-7"
           >
-            Storm impact report
+            Flood Report
           </span>
         </div>
       </mock-dialogtitle>

@@ -8,6 +8,7 @@ import {
   ListItemText,
   MenuItem,
   Theme,
+  Tooltip,
   Typography,
   WithStyles,
   withStyles,
@@ -20,10 +21,15 @@ import {
   Description,
 } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import {
+  layersSelector,
+  mapSelector,
+} from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import DownloadImage from './image';
 import Report from './report';
+import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
+import { ReportType } from '../utils';
 
 const ExportMenu = withStyles((theme: Theme) => ({
   paper: {
@@ -57,7 +63,31 @@ function Download({ classes }: DownloadProps) {
   const [openImage, setOpenImage] = useState(false);
   const [openReport, setOpenReport] = useState(false);
   const selectedMap = useSelector(mapSelector);
+  const analysisResult = useSelector(analysisResultSelector);
+  const selectedLayers = useSelector(layersSelector);
   const previewRef = useRef<HTMLCanvasElement>(null);
+
+  const isShowingStormData = selectedLayers.some(
+    ({ id }) => id === 'adamts_buffers',
+  );
+
+  const isShowingFloodData = selectedLayers.some(
+    ({ id }) => id === 'hydra_s1' || id === 'hydra_s2' || id === 'hydra_l8',
+  );
+
+  const shouldShowReport = isShowingFloodData || isShowingStormData;
+
+  const hasAnalysisData = analysisResult !== undefined;
+
+  const tooltipText = (() => {
+    if (!shouldShowReport) {
+      return 'Reports can only be generated for Tropical Storms or Floods, in hazards menu';
+    }
+    if (!hasAnalysisData) {
+      return 'Run analysis first to generate report';
+    }
+    return '';
+  })();
 
   const { t } = useSafeTranslation();
 
@@ -66,6 +96,7 @@ function Download({ classes }: DownloadProps) {
   };
 
   const handleClose = () => {
+    setOpenImage(false);
     setAnchorEl(null);
   };
 
@@ -104,12 +135,21 @@ function Download({ classes }: DownloadProps) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <ExportMenuItem onClick={() => setOpenReport(true)}>
-          <ListItemIcon>
-            <Description fontSize="small" htmlColor="white" />
-          </ListItemIcon>
-          <ListItemText primary={t('REPORT')} />
-        </ExportMenuItem>
+        {/* https://v4.mui.com/components/tooltips/#disabled-elements */}
+        <Tooltip placement="left" title={tooltipText}>
+          <span style={{ display: 'flex' }}>
+            <ExportMenuItem
+              onClick={() => setOpenReport(true)}
+              disabled={!shouldShowReport || !hasAnalysisData}
+            >
+              <ListItemIcon>
+                <Description fontSize="small" htmlColor="white" />
+              </ListItemIcon>
+              <ListItemText primary={t('REPORT')} />
+            </ExportMenuItem>
+          </span>
+        </Tooltip>
+
         <ExportMenuItem onClick={openModal}>
           <ListItemIcon>
             <Image fontSize="small" htmlColor="white" />
@@ -119,14 +159,13 @@ function Download({ classes }: DownloadProps) {
       </ExportMenu>
       <DownloadImage
         open={openImage}
-        setOpen={setOpenImage}
         previewRef={previewRef}
         handleClose={handleClose}
       />
       <Report
         open={openReport}
-        setOpen={setOpenReport}
         handleClose={handleClose}
+        reportType={isShowingStormData ? ReportType.Storm : ReportType.Flood}
       />
     </Grid>
   );
