@@ -1726,8 +1726,6 @@
     "title": "Flood report",
     "type": "point_data",
     "auth_required": true,
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/dates",
     "admin_level_display": {
       "adminCode": "Commune"
     },
