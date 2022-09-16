@@ -41,7 +41,9 @@ function PointDataLayer({ layer, before }: LayersProps) {
   const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
 
-  const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+
+  const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<PointDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
@@ -64,14 +66,10 @@ function PointDataLayer({ layer, before }: LayersProps) {
       return;
     }
 
-    if (!features && selectedDate) {
-      const queryDate: number = getRequestDate(
-        layerAvailableDates,
-        selectedDate,
-      );
+    if (!features && queryDate) {
       dispatch(loadLayerData({ layer, date: queryDate, userAuth }));
     }
-  }, [features, dispatch, userAuth, layer, selectedDate, layerAvailableDates]);
+  }, [features, dispatch, userAuth, layer, queryDate, layerAvailableDates]);
 
   useEffect(() => {
     if (
@@ -116,7 +114,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
     updateHistory,
   ]);
 
-  if (!features || map?.getSource(layerId) || !selectedDate) {
+  if (!features || map?.getSource(layerId) || !queryDate) {
     return null;
   }
 

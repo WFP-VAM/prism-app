@@ -37,8 +37,12 @@ import { createEWSDatesArray } from './ews-utils';
  */
 export const getRequestDate = (
   layerAvailableDates: DateItem[] | undefined,
-  selectedDate: number,
-): number => {
+  selectedDate?: number,
+): number | undefined => {
+  if (!selectedDate) {
+    return undefined;
+  }
+
   if (!layerAvailableDates) {
     return selectedDate;
   }
@@ -352,41 +356,55 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 
   const { days: value, mode } = validity;
 
+  const momentDates = Array.prototype.sort
+    .call(dates)
+    .map(d => moment(d).set({ hour: 12 }));
+
   // Generate first DateItem[] from dates array.
-  const dateItems: DateItem[] = dates.map(d => createDefaultDateItem(d));
+  const dateItemsDefault: DateItem[] = momentDates.map(momentDate =>
+    createDefaultDateItem(momentDate.valueOf()),
+  );
 
-  const dateItemsWithValidity: DateItem[] = dates.reduce((acc, date) => {
-    // Get current values in the dateItems array.
-    const displayDates = acc.map(item => item.displayDate);
+  const dateItemsWithValidity = momentDates.reduce(
+    (acc: DateItem[], momentDate) => {
+      const endDate =
+        mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD
+          ? momentDate.clone().add(value, 'days')
+          : momentDate.clone();
 
-    const momentDate = moment(date).set({ hour: 12 });
+      const startDate =
+        mode === DatesPropagation.BOTH || mode === DatesPropagation.BACKWARD
+          ? momentDate.clone().subtract(value, 'days')
+          : momentDate.clone();
 
-    const endDate =
-      mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD
-        ? momentDate.clone().add(value, 'days')
-        : momentDate.clone();
+      const daysToAdd = [...Array(endDate.diff(startDate, 'days') + 1).keys()];
 
-    const startDate =
-      mode === DatesPropagation.BOTH || mode === DatesPropagation.BACKWARD
-        ? momentDate.clone().subtract(value, 'days')
-        : momentDate.clone();
+      const days: number[] = daysToAdd
+        .map(day => startDate.clone().add(day, 'days').valueOf())
+        .filter(d => d > momentDate.valueOf());
 
-    const daysToAdd = [...Array(endDate.diff(startDate, 'days') + 1).keys()];
-    const days: number[] = daysToAdd.map(day =>
-      startDate.clone().add(day, 'days').valueOf(),
-    );
+      const dateItemsToAdd: DateItem[] = days.map(dateToAdd => ({
+        displayDate: dateToAdd,
+        queryDate: momentDate.valueOf(),
+      }));
 
-    // Remove dates already within the dateItem array to avoid repeated values.
-    const filteredDates = days.filter(day => !displayDates.includes(day));
-    const filteredDateItems = filteredDates.map(dateToAdd => ({
-      displayDate: dateToAdd,
-      queryDate: date,
-    }));
+      const filteredDateItems = acc.filter(
+        dateItem => days.includes(dateItem.displayDate) === false,
+      );
 
-    return [...acc, ...filteredDateItems];
-  }, dateItems);
+      const mergedDateItems: DateItem[] = [
+        ...filteredDateItems,
+        ...dateItemsToAdd,
+      ];
 
-  return sortBy(dateItemsWithValidity, 'displayDate');
+      return mergedDateItems;
+    },
+    [],
+  );
+
+  const dateItems = [...dateItemsDefault, ...dateItemsWithValidity];
+
+  return sortBy(dateItems, 'displayDate');
 };
 
 /**

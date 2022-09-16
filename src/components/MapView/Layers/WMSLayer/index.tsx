@@ -20,7 +20,7 @@ function WMSLayers({
     return null;
   }
   const layerAvailableDates = serverAvailableDates[serverLayerName];
-  const queryDate: number = getRequestDate(layerAvailableDates, selectedDate);
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
   return (
     <>
