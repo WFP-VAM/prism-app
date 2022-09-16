@@ -125,7 +125,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
   const [hazardLayerId, setHazardLayerId] = useState<LayerKey | undefined>(
     hazardLayerIdFromUrl,
   );
-
   const [statistic, setStatistic] = useState(
     (selectedStatisticFromUrl as AggregationOperations) ||
       AggregationOperations.Mean,
@@ -274,7 +273,6 @@ function Analyser({ extent, classes }: AnalyserProps) {
         label={t(key)}
       />
     ));
-
   const activateUniqueBoundary = (forceAdminLevel?: BoundaryLayerProps) => {
     if (forceAdminLevel) {
       // remove displayed boundaries
