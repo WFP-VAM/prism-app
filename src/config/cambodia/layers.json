@@ -1735,8 +1735,6 @@
       "days": 2,
       "mode": "both"
     },
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/forms",
     "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_name": "1. ទម្រង់គ្រោះទឹកជំនន់",
