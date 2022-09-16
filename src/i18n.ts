@@ -9,6 +9,7 @@ import en from 'date-fns/locale/en-US';
 import fr from 'date-fns/locale/fr';
 import km from 'date-fns/locale/km';
 import pt from 'date-fns/locale/pt';
+import es from 'date-fns/locale/es';
 import { translation } from './config';
 import 'moment/locale/km';
 
@@ -19,6 +20,7 @@ registerLocale('en', en);
 registerLocale('fr', fr);
 registerLocale('km', km);
 registerLocale('pt', pt);
+registerLocale('es', es);
 export const moment = extendMoment(Moment as any);
 moment.locale('en');
 
