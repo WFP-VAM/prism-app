@@ -224,7 +224,7 @@ const createAPIRequestParams = (
   geotiffLayer: WMSLayerProps,
   extent: Extent,
   date: ReturnType<Date['getTime']>,
-  params?: WfsRequestParams | AdminLevelDataLayerProps,
+  params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
 ): ApiData => {
   const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
