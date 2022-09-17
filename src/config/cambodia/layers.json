@@ -1689,15 +1689,6 @@
       }
     ]
   },
-  "forecast": {
-    "title": "10-day precipitation forecast",
-    "type": "wms",
-    "server_layer_name": "wld_cli_tp_10d_ecmwf",
-    "opacity": 0.7,
-    "legend": [],
-    "legend_text": "",
-    "base_url": "https://geonode.wfp.org/geoserver"
-  },
   "ews_remote": {
     "title": "EWS 1294 river level data",
     "loader": "ews",
@@ -1731,11 +1722,11 @@
     "title": "Flood report",
     "type": "point_data",
     "auth_required": true,
-    "data": "https://prism-api.ovio.org/kobo/forms",
-    "date_url": "https://prism-api.ovio.org/kobo/dates",
     "admin_level_display": {
       "adminCode": "Commune"
     },
+    "data": "https://prism-api.ovio.org/kobo/forms",
+    "date_url": "https://prism-api.ovio.org/kobo/dates",
     "data_field": "NumPeoAff",
     "additional_query_params": {
       "form_name": "1. ទម្រង់គ្រោះទឹកជំនន់",
