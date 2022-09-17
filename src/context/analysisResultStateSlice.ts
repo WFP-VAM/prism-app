@@ -376,8 +376,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     baselineLayer,
   );
 
-  // console.log(apiRequest);
-
   const aggregateData = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest),
     hazardLayer,

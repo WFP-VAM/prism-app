@@ -57,11 +57,12 @@ function GetExposureFromLayer(
 function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
   const { t } = useSafeTranslation();
   const baselineLayer = result.getBaselineLayer();
+  const hazardLayer = result.getHazardLayer();
   return (
     <>
-      {t('Impact Analysis on')}
-      {': '}
-      {!!baselineLayer && t(baselineLayer.legendText)}
+      {baselineLayer.legendText
+        ? `${t('Impact Analysis on')}: ${t(baselineLayer.legendText)}`
+        : t(hazardLayer.legendText)}
       <br />
       {result.threshold.above
         ? `${t('Above Threshold')}: ${result.threshold.above}`
@@ -245,7 +246,10 @@ function LegendItem({
       return label;
     }
     if (typeof value === 'number') {
-      return value.toFixed(2); // ).toLocaleString('en-US');
+      const roundedValue = Math.round(value);
+      return roundedValue === 0
+        ? value.toFixed(2)
+        : roundedValue.toLocaleString('en-US');
     }
     return value;
   };

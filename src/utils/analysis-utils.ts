@@ -615,23 +615,23 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
   }
 
-  getTitle(t?: i18nTranslator): string | undefined {
-    const baselineLayer = this.getBaselineLayer();
-    if (baselineLayer && baselineLayer instanceof AdminLevelDataLayerProps) {
-      return t
-        ? `${t(baselineLayer.title)} ${t('exposed to')} ${t(
-            this.getHazardLayer().title,
-          )}`
-        : `${baselineLayer.title} exposed to ${this.getHazardLayer().title}`;
-    }
-    // TODO - Title for non baseline
-    return undefined;
-  }
-
   getStatTitle(t?: i18nTranslator): string {
     return t
       ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
       : `${this.getHazardLayer().title} (${this.statistic})`;
+  }
+
+  getTitle(t?: i18nTranslator): string | undefined {
+    const baselineLayer = this.getBaselineLayer();
+    if (!baselineLayer.title) {
+      return this.getStatTitle();
+    }
+    const baselineTitle = baselineLayer.title || 'Admin levels';
+    return t
+      ? `${t(baselineTitle)} ${t('exposed to')} ${t(
+          this.getHazardLayer().title,
+        )}`
+      : `${baselineTitle} exposed to ${this.getHazardLayer().title}`;
   }
 }
 
