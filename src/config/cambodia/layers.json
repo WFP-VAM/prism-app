@@ -126,10 +126,6 @@
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
     "type": "wms",
-    "validity": {
-      "days": 2,
-      "mode": "forward"
-    },
     "server_layer_name": "rfh_dekad",
     "additional_query_params": {
       "styles": "rfh_350"
@@ -1728,10 +1724,6 @@
     "auth_required": true,
     "admin_level_display": {
       "adminCode": "Commune"
-    },
-    "validity": {
-      "days": 2,
-      "mode": "both"
     },
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/dates",
