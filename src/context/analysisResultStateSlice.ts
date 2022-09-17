@@ -359,7 +359,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
   ) as LayerData<AdminLevelDataLayerProps>;
-
   const adminBoundaries = getBoundaryLayerSingleton();
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
@@ -416,6 +415,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
   );
 
+  // Create a legend based on statistic data to be used for admin level analsysis.
   const legend = createLegendFromFeatureArray(features, statistic);
 
   const tableRows: TableRow[] = generateTableFromApiData(
@@ -423,7 +423,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     aggregateData,
     adminBoundariesData,
     apiRequest.group_by,
-    loadedAndCheckedBaselineData?.layerData ?? null,
+    loadedAndCheckedBaselineData.layerData,
     [], // no extra columns
   );
 

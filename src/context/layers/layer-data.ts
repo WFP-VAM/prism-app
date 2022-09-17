@@ -100,7 +100,7 @@ export const loadLayerData: LoadLayerDataFuncType = createAsyncThunk<
   } catch (err) {
     console.error(err);
     throw new Error(
-      `Failed to load layer: ${layer?.id}. Check console for more details.`,
+      `Failed to load layer: ${layer.id}. Check console for more details.`,
     );
   }
 });

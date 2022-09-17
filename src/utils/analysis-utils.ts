@@ -79,7 +79,7 @@ const checkRasterLayerData = (layerData: LayerData<LayerType>): RasterLayer => {
     return layerData as RasterLayer;
   }
   throw new Error(
-    `Data for layer '${layer?.id}' does not appear to be valid raster data.`,
+    `Data for layer '${layer.id}' does not appear to be valid raster data.`,
   );
 };
 
@@ -141,11 +141,11 @@ function getBaselineDataForFeature(
 }
 
 function mergeFeaturesByProperty(
-  baselineFeatures: Feature[] | undefined,
+  baselineFeatures: Feature[],
   aggregateData: Array<object>,
   id: string,
 ): Feature[] {
-  const features = baselineFeatures?.map(feature1 => {
+  const features = baselineFeatures.map(feature1 => {
     const aggregateProperties = aggregateData.filter(
       item => get(item, id) === get(feature1, ['properties', id]) && item,
     );
@@ -178,7 +178,7 @@ function mergeFeaturesByProperty(
 }
 
 export const checkBaselineDataLayer = (
-  layerId: string | undefined,
+  layerId: string,
   data: any,
 ): BaselineLayerData => {
   const isBaselineData = (maybeData: any): maybeData is BaselineLayerData =>
@@ -598,13 +598,13 @@ export class BaselineLayerResult {
     this.tableData = tableData;
     this.statistic = statistic;
     this.threshold = threshold;
-    this.legend = baselineLayer?.legend || legend;
+    this.legend = baselineLayer.legend || legend;
     this.legendText = hazardLayer.legendText;
     this.rawApiData = rawApiData;
 
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
-    this.baselineLayerBoundary = baselineLayer?.boundary;
+    this.baselineLayerBoundary = baselineLayer.boundary;
   }
 
   getHazardLayer(): WMSLayerProps {
