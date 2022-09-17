@@ -434,6 +434,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       features,
     },
     hazardLayer,
+    // We use a hack to leverage boundary layers as baseline layers
+    // Besides a few missing fields, we have all the necessary info.
     baselineLayer as AdminLevelDataLayerProps,
     statistic,
     threshold,
