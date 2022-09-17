@@ -582,7 +582,7 @@ export class BaselineLayerResult {
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
   baselineLayerId: AdminLevelDataLayerProps['id'] | BoundaryLayerProps['id'];
-  baselineLayerBoundary: AdminLevelDataLayerProps['boundary'];
+  boundaryId: AdminLevelDataLayerProps['boundary'];
 
   constructor(
     tableData: TableRow[],
@@ -604,7 +604,7 @@ export class BaselineLayerResult {
 
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
-    this.baselineLayerBoundary = baselineLayer.boundary;
+    this.boundaryId = baselineLayer.boundary;
   }
 
   getHazardLayer(): WMSLayerProps {
@@ -704,6 +704,7 @@ export class PolygonAnalysisResult {
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
   adminLevel: AdminLevelType;
+  boundaryId: string;
 
   constructor(
     tableData: TableRow[],
@@ -712,6 +713,7 @@ export class PolygonAnalysisResult {
     hazardLayer: WMSLayerProps,
     adminLevel: AdminLevelType,
     statistic: 'area' | 'percentage',
+    boundaryId: string, // TODO - better typing,
     threshold?: ThresholdDefinition,
   ) {
     this.featureCollection = featureCollection;
@@ -720,6 +722,7 @@ export class PolygonAnalysisResult {
     this.statistic = statistic;
     this.threshold = threshold;
     this.adminLevel = adminLevel;
+    this.boundaryId = boundaryId;
 
     // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
     // this legend of red-like colors goes from very light to dark

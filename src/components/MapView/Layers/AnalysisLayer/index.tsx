@@ -18,6 +18,7 @@ import {
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { LayerDefinitions } from '../../../../config/utils';
+import { firstBoundaryOnView } from '../../../../utils/map-utils';
 
 function AnalysisLayer({ before }: { before?: string }) {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
@@ -65,9 +66,8 @@ function AnalysisLayer({ before }: { before?: string }) {
   })();
 
   const boundary =
-    'baselineLayerBoundary' in analysisData &&
-    analysisData.baselineLayerBoundary
-      ? `layer-${analysisData.baselineLayerBoundary}-line`
+    'boundaryId' in analysisData && analysisData.boundaryId
+      ? `layer-${analysisData.boundaryId}-line`
       : before;
 
   return (

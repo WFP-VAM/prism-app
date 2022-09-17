@@ -23,7 +23,7 @@ import {
   ZonalPolygonRow,
   PolygonalAggregationOperations,
 } from '../config/types';
-import { getAdminNameProperty } from '../utils/admin-utils';
+import { getAdminLevelLayer, getAdminNameProperty } from '../utils/admin-utils';
 import {
   BaselineLayerResult,
   Column,
@@ -531,6 +531,8 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     classProperties || [], // extra columns
   );
 
+  const boundaryId = getAdminLevelLayer(adminLevel).id;
+
   const analysisResult = new PolygonAnalysisResult(
     tableRows,
     tableColumns,
@@ -538,6 +540,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     hazardLayer,
     adminLevel,
     PolygonalAggregationOperations.Percentage,
+    boundaryId,
   );
 
   return analysisResult;
