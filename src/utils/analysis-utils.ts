@@ -623,6 +623,7 @@ export class BaselineLayerResult {
 
   getTitle(t?: i18nTranslator): string | undefined {
     const baselineLayer = this.getBaselineLayer();
+    // If there is no title, we are using admin boundaries and return StatTitle instead.
     if (!baselineLayer.title) {
       return this.getStatTitle();
     }
