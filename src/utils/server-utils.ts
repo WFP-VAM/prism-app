@@ -1,14 +1,25 @@
 import moment from 'moment';
 import { xml2js } from 'xml-js';
-import { get, isEmpty, isString, merge, union, snakeCase } from 'lodash';
+import {
+  get,
+  isEmpty,
+  isString,
+  merge,
+  union,
+  snakeCase,
+  sortBy,
+} from 'lodash';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
   AvailableDates,
   PointDataLayerProps,
   RequestFeatureInfo,
+  ValidityLayer,
+  DateItem,
 } from '../config/types';
 import {
+  DatesPropagation,
   ImpactLayerProps,
   WMSLayerProps,
   FeatureInfoType,
@@ -18,6 +29,33 @@ import {
 import { queryParamsToString } from '../context/layers/point_data';
 import { DEFAULT_DATE_FORMAT } from './name-utils';
 import { createEWSDatesArray } from './ews-utils';
+
+/**
+ * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
+ *
+ * @return unix timestamp
+ */
+export const getRequestDate = (
+  layerAvailableDates: DateItem[] | undefined,
+  selectedDate?: number,
+): number | undefined => {
+  if (!selectedDate) {
+    return undefined;
+  }
+
+  if (!layerAvailableDates) {
+    return selectedDate;
+  }
+
+  const dateItem = layerAvailableDates.find(
+    date => date.displayDate === selectedDate,
+  );
+  if (!dateItem) {
+    return selectedDate;
+  }
+
+  return dateItem.queryDate;
+};
 
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
@@ -37,16 +75,22 @@ export const getPossibleDatesForLayer = (
   // eslint-disable-next-line consistent-return
 ): number[] => {
   // eslint-disable-next-line default-case
-  switch (layer.type) {
-    case 'wms':
-      return serverAvailableDates[layer.serverLayerName];
-    case 'impact':
-      return serverAvailableDates[
-        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
-      ];
-    case 'point_data':
-      return serverAvailableDates[layer.id];
-  }
+  const datesArray = () => {
+    switch (layer.type) {
+      case 'wms':
+        return serverAvailableDates[layer.serverLayerName];
+      case 'impact':
+        return serverAvailableDates[
+          (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
+        ];
+      case 'point_data':
+        return serverAvailableDates[layer.id];
+      default:
+        return [];
+    }
+  };
+
+  return datesArray().map(d => d.displayDate);
 };
 
 export function formatUrl(
@@ -69,7 +113,7 @@ function formatCapabilitiesInfo(
   rawLayers: any,
   layerIdPath: string,
   datesPath: string,
-): AvailableDates {
+) {
   return rawLayers.reduce((acc: any, layer: any) => {
     const layerId = get(layer, layerIdPath);
     const rawDates = get(layer, datesPath, []);
@@ -290,6 +334,80 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
 }
 
 /**
+ * Creates DateItem object whose fields have the same value.
+ *
+ * @return DateItem
+ */
+const createDefaultDateItem = (date: number): DateItem => {
+  const dateWithTz = moment(date).set({ hour: 12 }).valueOf();
+  return {
+    displayDate: dateWithTz,
+    queryDate: dateWithTz,
+  };
+};
+
+/**
+ * Create new array including dates specified within the validity parameter.
+ *
+ * @return Array of integers which represents a given date.
+ */
+const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
+  const { dates, validity } = layer;
+
+  const { days: value, mode } = validity;
+
+  const momentDates = Array.prototype.sort
+    .call(dates)
+    .map(d => moment(d).set({ hour: 12 }));
+
+  // Generate first DateItem[] from dates array.
+  const dateItemsDefault: DateItem[] = momentDates.map(momentDate =>
+    createDefaultDateItem(momentDate.valueOf()),
+  );
+
+  const dateItemsWithValidity = momentDates.reduce(
+    (acc: DateItem[], momentDate) => {
+      const endDate =
+        mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD
+          ? momentDate.clone().add(value, 'days')
+          : momentDate.clone();
+
+      const startDate =
+        mode === DatesPropagation.BOTH || mode === DatesPropagation.BACKWARD
+          ? momentDate.clone().subtract(value, 'days')
+          : momentDate.clone();
+
+      const daysToAdd = [...Array(endDate.diff(startDate, 'days') + 1).keys()];
+
+      const days: number[] = daysToAdd
+        .map(day => startDate.clone().add(day, 'days').valueOf())
+        .filter(d => d > momentDate.valueOf());
+
+      const dateItemsToAdd: DateItem[] = days.map(dateToAdd => ({
+        displayDate: dateToAdd,
+        queryDate: momentDate.valueOf(),
+      }));
+
+      const filteredDateItems = acc.filter(
+        dateItem => days.includes(dateItem.displayDate) === false,
+      );
+
+      const mergedDateItems: DateItem[] = [
+        ...filteredDateItems,
+        ...dateItemsToAdd,
+      ];
+
+      return mergedDateItems;
+    },
+    [],
+  );
+
+  const dateItems = [...dateItemsDefault, ...dateItemsWithValidity];
+
+  return sortBy(dateItems, 'displayDate');
+};
+
+/**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
@@ -302,7 +420,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     (layer): layer is PointDataLayerProps => layer.type === 'point_data',
   );
 
-  const layerDates: AvailableDates[] = await Promise.all([
+  const layerDates = await Promise.all([
     ...wmsServerUrls.map(url => getWMSCapabilities(url)),
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
     ...pointDataLayers.map(async layer => ({
@@ -310,7 +428,37 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     })),
   ]);
 
-  return merge({}, ...layerDates);
+  // Merge all layer types results into a single dictionary of date arrays.
+  const mergedLayers: { [key: string]: number[] } = merge({}, ...layerDates);
+
+  const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
+    .filter(layer => layer.validity !== undefined)
+    .map(layer => {
+      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
+
+      return {
+        name: layerId,
+        dates: mergedLayers[layerId],
+        validity: layer.validity!,
+      };
+    });
+
+  const mergedLayersWithUpdatedDates = Object.entries(mergedLayers).reduce(
+    (acc, [layerKey, dates]) => {
+      const layerWithValidity = layersWithValidity.find(
+        validityLayer => validityLayer.name === layerKey,
+      );
+
+      const updatedDates = layerWithValidity
+        ? updateLayerDatesWithValidity(layerWithValidity)
+        : dates.map((d: number) => createDefaultDateItem(d));
+
+      return { ...acc, [layerKey]: updatedDates };
+    },
+    {},
+  );
+
+  return mergedLayersWithUpdatedDates;
 }
 
 /**
