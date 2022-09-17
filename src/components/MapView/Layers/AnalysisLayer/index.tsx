@@ -75,10 +75,7 @@ function AnalysisLayer({ before }: { before?: string }) {
       id="layer-analysis"
       before={boundary}
       data={analysisData.featureCollection}
-      fillPaint={fillPaintData(
-        analysisData.legend as LegendDefinition,
-        defaultProperty,
-      )}
+      fillPaint={fillPaintData(analysisData.legend, defaultProperty)}
       // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data
       fillOnClick={(evt: any) => {
         const coordinates = evt.lngLat;

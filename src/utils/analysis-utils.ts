@@ -578,7 +578,7 @@ export class BaselineLayerResult {
   statistic: AggregationOperations;
   threshold: ThresholdDefinition;
 
-  legend: LegendDefinition | undefined;
+  legend: LegendDefinition;
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
   baselineLayerId: AdminLevelDataLayerProps['id'] | BoundaryLayerProps['id'];
