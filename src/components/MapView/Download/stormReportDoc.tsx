@@ -223,11 +223,11 @@ const PopulationExposureLegend = () => (
         </View>
         <View style={styles.legendContent}>
           <View style={[styles.box, { backgroundColor: '#ee9592' }]} />
-          <Text style={[styles.legendText]}>Hight</Text>
+          <Text style={[styles.legendText]}>High</Text>
         </View>
         <View style={styles.legendContent}>
           <View style={[styles.box, { backgroundColor: '#d28689' }]} />
-          <Text style={[styles.legendText]}>Very hight</Text>
+          <Text style={[styles.legendText]}>Very high</Text>
         </View>
       </View>
     </View>
