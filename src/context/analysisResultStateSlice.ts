@@ -394,13 +394,13 @@ export const requestAndStoreAnalysis = createAsyncThunk<
           layer: baselineLayer,
           extent,
         } as LayerDataParams<AdminLevelDataLayerProps>),
-      )) as { payload: { data?: unknown } };
+      )) as { payload: { data?: BaselineLayerData } };
 
-      return checkBaselineDataLayer(baselineLayer?.id, payload?.data);
+      return checkBaselineDataLayer(baselineLayer.id, payload?.data);
     }
 
     if (baselineData && baselineLayer) {
-      return checkBaselineDataLayer(baselineLayer?.id, baselineData?.data);
+      return checkBaselineDataLayer(baselineLayer.id, baselineData.data);
     }
 
     return { features: adminBoundariesData.data, layerData: [] };
