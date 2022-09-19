@@ -40,42 +40,45 @@ function LayerDropdown({
     tables: [],
   };
 
-  const categories = menuList // we could memo this but it isn't impacting performance, for now
-    // 1. flatten to just the layer categories, don't need the big menus
-    .flatMap(menu => menu.layersCategories)
-    // 2. breakdown grouped layer back into flat list of layers if activate_all = false
-    .map(layerCategory => {
-      if (layerCategory.layers.some(f => f.group)) {
-        const layers = layerCategory.layers.map(layer => {
-          if (layer.group && !layer.group.activateAll) {
-            return layer.group.layers.map(layerKey => {
-              return LayerDefinitions[layerKey.id as LayerKey];
-            });
-          }
-          return layer;
-        });
-        return {
-          title: layerCategory.title,
-          layers: layers.flat(),
-          tables: layerCategory.tables,
-        };
-      }
-      return layerCategory;
-    })
-    // 3. get rid of layers within the categories which don't match the given type
-    .map(category => ({
-      ...category,
-      layers: category.layers.filter(layer =>
-        layer.type === 'wms'
-          ? layer.type === type &&
-            [undefined, 'polygon'].includes(layer.geometry)
-          : layer.type === type,
-      ),
-    }))
-    // 4. if type is admin_level_data, also add admin boundaries to run analysis
-    .concat(type === 'admin_level_data' ? AdminBoundaryCategory : [])
-    // 5. filter categories which don't have any layers at the end of it all.
-    .filter(category => category.layers.length > 0);
+  const categories = [
+    // If type is admin_level_data, add admin boundaries at the begining to run analysis
+    ...(type === 'admin_level_data' ? [AdminBoundaryCategory] : []),
+    ...menuList // we could memo this but it isn't impacting performance, for now
+      // 1. flatten to just the layer categories, don't need the big menus
+      .flatMap(menu => menu.layersCategories)
+      // 2. breakdown grouped layer back into flat list of layers if activate_all = false
+      .map(layerCategory => {
+        if (layerCategory.layers.some(f => f.group)) {
+          const layers = layerCategory.layers.map(layer => {
+            if (layer.group && !layer.group.activateAll) {
+              return layer.group.layers.map(layerKey => {
+                return LayerDefinitions[layerKey.id as LayerKey];
+              });
+            }
+            return layer;
+          });
+          return {
+            title: layerCategory.title,
+            layers: layers.flat(),
+            tables: layerCategory.tables,
+          };
+        }
+        return layerCategory;
+      })
+      // 3. get rid of layers within the categories which don't match the given type
+      .map(category => ({
+        ...category,
+        layers: category.layers.filter(layer =>
+          layer.type === 'wms'
+            ? layer.type === type &&
+              [undefined, 'polygon'].includes(layer.geometry)
+            : layer.type === type,
+        ),
+      }))
+      // 4. filter categories which don't have any layers at the end of it all.
+      .filter(category => category.layers.length > 0),
+  ];
+
   const defaultValue = 'placeholder';
 
   return (
