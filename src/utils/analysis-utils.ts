@@ -598,7 +598,7 @@ export class BaselineLayerResult {
     this.tableData = tableData;
     this.statistic = statistic;
     this.threshold = threshold;
-    this.legend = baselineLayer.legend || legend;
+    this.legend = baselineLayer.legend ?? legend;
     this.legendText = hazardLayer.legendText;
     this.rawApiData = rawApiData;
 
@@ -713,7 +713,7 @@ export class PolygonAnalysisResult {
     hazardLayer: WMSLayerProps,
     adminLevel: AdminLevelType,
     statistic: 'area' | 'percentage',
-    boundaryId: string, // TODO - better typing,
+    boundaryId: BoundaryLayerProps['id'],
     threshold?: ThresholdDefinition,
   ) {
     this.featureCollection = featureCollection;
