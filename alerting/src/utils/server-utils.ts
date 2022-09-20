@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, union } from 'lodash';
-import formatUrl from "../../../packages/format-url";
+import { formatUrl } from "../../../packages/common";
 import { Extent, WCSRequestUrl } from './raster-utils';
 import { AlertConfig } from '../entities/alerts.entity';
 
