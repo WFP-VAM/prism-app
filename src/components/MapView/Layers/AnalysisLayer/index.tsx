@@ -48,8 +48,8 @@ function AnalysisLayer({ before }: { before?: string }) {
   }
 
   const baselineIsBoundary =
-    LayerDefinitions[(analysisData as BaselineLayerResult).baselineLayerId!]
-      ?.type === 'boundary';
+    'baselineLayerId' in analysisData &&
+    LayerDefinitions[analysisData.baselineLayerId!]?.type === 'boundary';
 
   const defaultProperty = (() => {
     switch (true) {
