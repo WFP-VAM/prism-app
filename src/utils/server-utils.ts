@@ -90,7 +90,7 @@ export const getPossibleDatesForLayer = (
     }
   };
 
-  return datesArray().map(d => d.displayDate);
+  return datesArray()?.map(d => d.displayDate) ?? [];
 };
 
 export function formatUrl(
