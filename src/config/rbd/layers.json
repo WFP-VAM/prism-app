@@ -2601,7 +2601,7 @@
   "mdr_struct_vuln": {
     "title": "Structural vulnerability",
     "type": "admin_level_data",
-    "path": "data/rbd/multi-dim-risk.json",
+    "path": "data/rbd/multi_dim_risk.json",
     "data_field": "struct_vuln",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2633,7 +2633,7 @@
   "mdr_stressors": {
     "title": "Stressors",
     "type": "admin_level_data",
-    "path": "data/rbd/multi-dim-risk.json",
+    "path": "data/rbd/multi_dim_risk.json",
     "data_field": "stressors",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2665,7 +2665,7 @@
   "mdr_coping_capacity": {
     "title": "Coping capacity",
     "type": "admin_level_data",
-    "path": "data/rbd/multi-dim-risk.json",
+    "path": "data/rbd/multi_dim_risk.json",
     "data_field": "coping_cap",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2697,7 +2697,7 @@
   "mdr_fsn_outcomes": {
     "title": "Food security and nutrition outcomes",
     "type": "admin_level_data",
-    "path": "data/rbd/multi-dim-risk.json",
+    "path": "data/rbd/multi_dim_risk.json",
     "data_field": "fs_nut_outcomes",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2729,7 +2729,7 @@
   "mdr_index": {
     "title": "Multidimensional risk index",
     "type": "admin_level_data",
-    "path": "data/rbd/multi-dim-risk.json",
+    "path": "data/rbd/multi_dim_risk.json",
     "data_field": "multi_dim_risk_index",
     "admin_level": 2,
     "admin_code": "admin2Pcod",
@@ -2761,7 +2761,7 @@
   "ch_phase_2022_09": {
     "title": "Phase classification: September 2022",
     "type": "admin_level_data",
-    "path": "data/rbd/ch-demo-data.json",
+    "path": "data/rbd/ch_demo_data.json",
     "data_field": "max_phase_class",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
@@ -2798,7 +2798,7 @@
   "ch_num_ph_35_2022_09": {
     "title": "Population in phase 3 to 5: September 2022",
     "type": "admin_level_data",
-    "path": "data/rbd/ch-demo-data.json",
+    "path": "data/rbd/ch_demo_data.json",
     "data_field": "sum_phase35",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
