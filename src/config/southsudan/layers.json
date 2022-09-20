@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/south-sudan/ssd-ocha-boundaries-w-ipc.json",
+    "path": "data/southsudan/ssd-ocha-boundaries-w-ipc.json",
     "opacity": 0.8,
     "styles:": {
       "fill": {
@@ -14,14 +14,8 @@
       }
     },
     "admin_code": "ADM2_PCODE",
-    "admin_level_names": [
-      "ADM1_EN",
-      "ADM2_EN"
-    ],
-    "admin_level_local_names": [
-      "ADM1_EN",
-      "ADM2_EN"
-    ]
+    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
+    "admin_level_local_names": ["ADM1_EN", "ADM2_EN"]
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
