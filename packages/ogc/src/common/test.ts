@@ -6,7 +6,6 @@ import {
   findTagText,
   formatUrl,
   hasLayerId,
-  isNil,
   titlecase,
   toArray,
   parseName,
@@ -85,14 +84,6 @@ t("hasLayerId", ({ eq }) => {
   eq(hasLayerId(["ns1:name"], "name", { strict: true }), false);
   eq(hasLayerId(["ns1:name"], "ns1:name", { strict: true }), true);
   eq(hasLayerId(["ns1:name"], "ns2:name", { strict: true }), false);
-});
-
-t("isNil", ({ eq }) => {
-  eq(isNil(undefined), true);
-  eq(isNil(null), true);
-  eq(isNil(""), true);
-  eq(isNil(0), false);
-  eq(isNil("test"), false);
 });
 
 t("titlecase", ({ eq }) => {

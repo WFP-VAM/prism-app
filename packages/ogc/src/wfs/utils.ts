@@ -1,3 +1,5 @@
+import { isEmpty } from "lodash";
+
 import {
   findTagByName,
   findTagsByPath
@@ -7,7 +9,6 @@ import {
   findAndParseAbstract,
   findName,
   findTagText,
-  isNil,
   toArray,
   parseName,
   setTimeoutAsync,
@@ -152,7 +153,7 @@ export function getFeaturesUrl(
   url.searchParams.set("version", version);
   url.searchParams.set("request", "GetFeature");
 
-  if (isNil(typeNameOrNames) && isNil(featureId))
+  if (isEmpty(typeNameOrNames) && isEmpty(featureId))
     throw new Error("You must pass in a typeName(s) or featureId");
 
   if (typeNameOrNames) {
