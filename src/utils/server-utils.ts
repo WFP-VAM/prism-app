@@ -86,7 +86,6 @@ export const getPossibleDatesForLayer = (
           (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
         ];
       case 'point_data':
-        return serverAvailableDates[layer.id];
       case 'admin_level_data':
         return serverAvailableDates[layer.id];
       default:
