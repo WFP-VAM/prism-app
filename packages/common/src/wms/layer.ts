@@ -1,6 +1,5 @@
 import { Layer } from "../layer";
 
-// import { parseName } from "../base/utils";
 import { createGetMapUrl, findLayer, parseLayerDates } from "./utils";
 
 export default class WMSLayer extends Layer {
