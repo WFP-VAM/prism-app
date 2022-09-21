@@ -293,13 +293,13 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
 }
 
 async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
-  const url = layer.dateUrl;
-  if (!url) {
+  const { dateUrl } = layer;
+  if (!dateUrl) {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  const { dates }: { dates: string[] } = await fetch(url, {
-    mode: url.startsWith('http') ? 'cors' : 'same-origin',
+  const { dates }: { dates: string[] } = await fetch(dateUrl, {
+    mode: dateUrl.startsWith('http') ? 'cors' : 'same-origin',
   }).then(resp => resp.json());
   return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
 }
