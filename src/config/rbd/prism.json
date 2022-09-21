@@ -13,9 +13,7 @@
   },
   "alertFormActive": false,
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "latitude": 14.61,
@@ -29,9 +27,7 @@
   ],
   "categories": {
     "Cadre Harmonisé": {
-      "Cadre Harmonisé": [
-        "ch_2021_03"
-      ]
+      "Cadre Harmonisé": ["ch_2021"]
     },
     "rainfall": {
       "rainfall_amount": [
@@ -127,10 +123,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "heavy_rain": [
         "days_heavy_rain",
         "days_intense_rain",
@@ -139,10 +132,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [

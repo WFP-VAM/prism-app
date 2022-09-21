@@ -14,16 +14,8 @@
       }
     },
     "admin_code": "admin2Pcod",
-    "admin_level_names": [
-      "admin0Name",
-      "admin1Name",
-      "admin2Name"
-    ],
-    "admin_level_local_names": [
-      "admin0Name",
-      "admin1Name",
-      "admin2Name"
-    ]
+    "admin_level_names": ["admin0Name", "admin1Name", "admin2Name"],
+    "admin_level_local_names": ["admin0Name", "admin1Name", "admin2Name"]
   },
   "admin1_boundaries": {
     "type": "boundary",
@@ -40,14 +32,8 @@
       }
     },
     "admin_code": "admin1Pcod",
-    "admin_level_names": [
-      "admin0Name",
-      "admin1Name"
-    ],
-    "admin_level_local_names": [
-      "admin0Name",
-      "admin1Name"
-    ]
+    "admin_level_names": ["admin0Name", "admin1Name"],
+    "admin_level_local_names": ["admin0Name", "admin1Name"]
   },
   "admin0_boundaries": {
     "type": "boundary",
@@ -64,12 +50,8 @@
       }
     },
     "admin_code": "admin0Pcod",
-    "admin_level_names": [
-      "admin0Name"
-    ],
-    "admin_level_local_names": [
-      "admin0Name"
-    ]
+    "admin_level_names": ["admin0Name"],
+    "admin_level_local_names": ["admin0Name"]
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
@@ -1633,7 +1615,7 @@
       }
     ]
   },
-  "ch_2021_03": {
+  "ch_2021": {
     "title": "Phase classification",
     "type": "admin_level_data",
     "path": "data/rbd/ch/{YYYY_MM_DD}.json",

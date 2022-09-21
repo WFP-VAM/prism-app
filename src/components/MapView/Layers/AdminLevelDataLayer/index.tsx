@@ -72,9 +72,9 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       }
     }
     if (!features) {
-      dispatch(loadLayerData({ layer, date }));
+      dispatch(loadLayerData({ layer, selectedDate }));
     }
-  }, [dispatch, features, layer, date, boundaryId, map]);
+  }, [dispatch, features, layer, selectedDate, boundaryId, map]);
 
   if (!features) {
     return null;
