@@ -26,7 +26,7 @@ line-length = 88
 [tool.isort]
 profile = "black"
 multi_line_output = 3 # Vertical Hanging Indent
-src_paths = "prism-app/api-flask"
+src_paths = "prism-app/api"
 
 [build-system]
 requires = ["poetry-core>=1.0.8"]

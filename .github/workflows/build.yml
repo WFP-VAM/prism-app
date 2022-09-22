@@ -144,6 +144,6 @@ jobs:
           chmod +x ~/docker-compose
           sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - name: Build containers
-        run: cd api-flask && docker-compose build api
+        run: cd api && docker-compose build api
       - name: Run tests
-        run: cd api-flask && make api-test
+        run: cd api && make api-test
