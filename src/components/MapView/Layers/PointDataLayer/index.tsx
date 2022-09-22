@@ -9,6 +9,7 @@ import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   userAuthSelector,
   clearUserAuthGlobal,
+  availableDatesSelector,
 } from '../../../../context/serverStateSlice';
 import {
   LayerData,
@@ -23,6 +24,7 @@ import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getRoundedData } from '../../../../utils/data-utils';
+import { getRequestDate } from '../../../../utils/server-utils';
 import { useUrlHistory } from '../../../../utils/url-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { circleLayout, circlePaint, fillPaintData } from '../styles';
@@ -35,9 +37,13 @@ import { createEWSDatasetParams } from '../../../../utils/ews-utils';
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer, before }: LayersProps) {
   const selectedDate = useDefaultDate(layer.id);
+  const serverAvailableDates = useSelector(availableDatesSelector);
+  const layerAvailableDates = serverAvailableDates[layer.id];
   const userAuth = useSelector(userAuthSelector);
 
-  const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+
+  const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<PointDataLayerProps>
     | undefined;
   const dispatch = useDispatch();
@@ -60,10 +66,10 @@ function PointDataLayer({ layer, before }: LayersProps) {
       return;
     }
 
-    if (!features) {
-      dispatch(loadLayerData({ layer, date: selectedDate, userAuth }));
+    if (!features && queryDate) {
+      dispatch(loadLayerData({ layer, date: queryDate, userAuth }));
     }
-  }, [features, dispatch, userAuth, layer, selectedDate]);
+  }, [features, dispatch, userAuth, layer, queryDate, layerAvailableDates]);
 
   useEffect(() => {
     if (
@@ -108,7 +114,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
     updateHistory,
   ]);
 
-  if (!features || map?.getSource(layerId)) {
+  if (!features || map?.getSource(layerId) || !queryDate) {
     return null;
   }
 
@@ -132,7 +138,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
       addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
     );
 
-    if (layer.loader === PointDataLoader.EWS && selectedDate) {
+    if (layer.loader === PointDataLoader.EWS) {
       dispatch(clearDataset());
 
       const ewsDatasetParams = createEWSDatasetParams(

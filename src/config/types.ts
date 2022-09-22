@@ -304,6 +304,9 @@ export class CommonLayerProps {
   */
   @optional
   group?: MenuGroup;
+
+  @optional
+  validity?: Validity; // Include additional dates in the calendar based on the number provided.
 }
 
 /*
@@ -355,6 +358,17 @@ interface FeatureInfoProps {
   type: LabelType;
   label: string;
 }
+
+export enum DatesPropagation {
+  FORWARD = 'forward',
+  BACKWARD = 'backward',
+  BOTH = 'both',
+}
+
+export type Validity = {
+  days: number; // Number of days to include in the calendar.
+  mode: DatesPropagation; // Propagation mode for dates.
+};
 
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
@@ -539,10 +553,15 @@ export interface MenuItemMobileType {
   selectAccordion: (arg: string) => void;
 }
 
+export type DateItem = {
+  displayDate: number; // Date that will be rendered in the calendar.
+  queryDate: number; // Date that will be used in the WMS request.
+};
+
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | PointDataLayerProps['id']]: number[];
+    | PointDataLayerProps['id']]: DateItem[];
 };
 
 /* eslint-disable camelcase */
@@ -617,6 +636,12 @@ export type PointData = {
 
 export type PointLayerData = {
   features: PointData[];
+};
+
+export type ValidityLayer = {
+  name: string;
+  dates: number[];
+  validity: Validity;
 };
 
 export type UserAuth = {
