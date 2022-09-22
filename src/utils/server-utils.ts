@@ -337,14 +337,11 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
 }
 
 async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
-  const { dateUrl } = layer;
-  if (!dateUrl) {
+  const { dates } = layer;
+  if (!dates) {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  const { dates }: { dates: string[] } = await fetch(dateUrl, {
-    mode: dateUrl.startsWith('http') ? 'cors' : 'same-origin',
-  }).then(resp => resp.json());
   return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
 }
 
@@ -437,7 +434,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 
   const adminWithDateLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is AdminLevelDataLayerProps =>
-      layer.type === 'admin_level_data' && Boolean(layer.dateUrl),
+      layer.type === 'admin_level_data' && Boolean(layer.dates),
   );
 
   const layerDates = await Promise.all([

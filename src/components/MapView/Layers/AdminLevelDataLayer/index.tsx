@@ -37,7 +37,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
 
   // Find date for admin data but 'undefined' for layers without date dimension
   const date = useDefaultDate(layer.id);
-  const selectedDate = layer.dateUrl ? date : undefined;
+  const selectedDate = layer.dates ? date : undefined;
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;

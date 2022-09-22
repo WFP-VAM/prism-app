@@ -1619,7 +1619,7 @@
     "title": "Phase classification",
     "type": "admin_level_data",
     "path": "data/rbd/ch/{YYYY_MM_DD}.json",
-    "date_url": "data/rbd/ch/dates.json",
+    "dates": ["2021-03-01", "2021-11-01"],
     "data_field": "phase_class",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
@@ -1718,7 +1718,7 @@
     ],
     "legend_text": "Overall current phase classification - November 2021"
   },
-  "ch_data": {
+  "ch_2021_11_phase_class_projected": {
     "title": "Projected phase classification: November 2021",
     "type": "admin_level_data",
     "path": "data/rbd/wca_CHIPC_nov2021_current_and_projected_data.json",

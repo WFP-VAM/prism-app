@@ -190,7 +190,7 @@ function MapView({ classes }: MapViewProps) {
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
       if (layer.type === 'admin_level_data') {
-        return Boolean(layer.dateUrl);
+        return Boolean(layer.dates);
       }
       if (layer.type === 'wms') {
         // some WMS layer might not have date dimension (i.e. static data)
