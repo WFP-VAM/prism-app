@@ -27,7 +27,8 @@
   ],
   "categories": {
     "Cadre Harmonisé": {
-      "Cadre Harmonisé": ["ch_2021"]
+      "Cadre Harmonisé": ["ch_2021"],
+      "population": ["ch_num_ph_35_2022_09"]
     },
     "rainfall": {
       "rainfall_amount": [
