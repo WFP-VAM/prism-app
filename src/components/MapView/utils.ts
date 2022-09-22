@@ -16,6 +16,7 @@ import {
   WMSLayerProps,
   FeatureInfoType,
   FeatureInfoObject,
+  LegendDefinitionItem,
 } from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
@@ -185,3 +186,13 @@ export enum ReportType {
   Storm,
   Flood,
 }
+
+export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
+  if (typeof label === 'string') {
+    return label;
+  }
+  if (typeof value === 'number') {
+    return Math.round(value).toLocaleString('en-US');
+  }
+  return value;
+};

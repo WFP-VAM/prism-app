@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import {
   Box,
   Button,
@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Extent } from '../Layers/raster-utils';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
@@ -28,7 +28,6 @@ import {
 } from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
-  addTableData,
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
@@ -37,7 +36,7 @@ import {
   BaselineLayerResult,
   ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
-import { convertToTableData, downloadToFile } from '../utils';
+import { downloadToFile, getLegendItemLabel } from '../utils';
 
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
@@ -194,15 +193,6 @@ function LegendItem({
 }: LegendItemProps) {
   const map = useSelector(mapSelector);
   const analysisResult = useSelector(analysisResultSelector);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    // should this be here? Or somewhere more related to analysis?
-    if (analysisResult instanceof ExposedPopulationResult) {
-      const tableData = convertToTableData(analysisResult);
-      dispatch(addTableData(tableData));
-    }
-  }, [analysisResult, dispatch]);
 
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
@@ -237,16 +227,6 @@ function LegendItem({
       map.setPaintProperty(layerId, opacityType, newValue);
       setOpacityValue(newValue);
     }
-  };
-
-  const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
-    if (typeof label === 'string') {
-      return label;
-    }
-    if (typeof value === 'number') {
-      return Math.round(value).toLocaleString('en-US');
-    }
-    return value;
   };
 
   return (

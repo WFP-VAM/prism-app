@@ -97,6 +97,7 @@ function Download({ classes }: DownloadProps) {
 
   const handleClose = () => {
     setOpenImage(false);
+    setOpenReport(false);
     setAnchorEl(null);
   };
 

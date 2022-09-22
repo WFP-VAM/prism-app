@@ -18,16 +18,34 @@ declare module '@material-ui/core/styles/createMuiTheme' {
       dark?: React.CSSProperties['color'];
       light?: React.CSSProperties['color'];
     };
+    pdf?: {
+      secondaryTextColor?: React.CSSProperties['color'];
+      legendsBackgroundColor?: React.CSSProperties['color'];
+      table: {
+        borderColor?: React.CSSProperties['color'];
+        darkRowColor?: React.CSSProperties['color'];
+        lightRowColor?: React.CSSProperties['color'];
+      };
+    };
   }
 
   interface Theme {
-    dialog: {
-      border: React.CSSProperties['color'];
-      actionButton: React.CSSProperties['color'];
+    dialog?: {
+      border?: React.CSSProperties['color'];
+      actionButton?: React.CSSProperties['color'];
     };
-    surfaces: {
-      dark: React.CSSProperties['color'];
-      light: React.CSSProperties['color'];
+    surfaces?: {
+      dark?: React.CSSProperties['color'];
+      light?: React.CSSProperties['color'];
+    };
+    pdf?: {
+      secondaryTextColor?: React.CSSProperties['color'];
+      legendsBackgroundColor?: React.CSSProperties['color'];
+      table?: {
+        borderColor?: React.CSSProperties['color'];
+        darkRowColor?: React.CSSProperties['color'];
+        lightRowColor?: React.CSSProperties['color'];
+      };
     };
   }
 }
@@ -40,6 +58,15 @@ const theme: any = createMuiTheme({
   surfaces: {
     dark: '#3d474a',
     light: '#5A686C',
+  },
+  pdf: {
+    secondaryTextColor: '#929292',
+    legendsBackgroundColor: '#F9F9F9',
+    table: {
+      borderColor: '#C1C1C1',
+      darkRowColor: '#EBEBEB',
+      lightRowColor: '#F5F5F5',
+    },
   },
   palette: {
     primary: {

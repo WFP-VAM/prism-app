@@ -8,6 +8,7 @@ import {
   DialogTitle,
   IconButton,
   Theme,
+  useTheme,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
@@ -18,19 +19,42 @@ import { useLocation } from 'react-router-dom';
 import { useSafeTranslation } from '../../../i18n';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import StormReportDoc from './stormReportDoc';
-import { getCurrentData } from '../../../context/analysisResultStateSlice';
+import {
+  analysisResultSelector,
+  getCurrentData,
+} from '../../../context/analysisResultStateSlice';
 import { ReportType } from '../utils';
 
 function Report({ classes, open, reportType, handleClose }: ReportProps) {
+  const theme = useTheme();
   const { t } = useSafeTranslation();
   const [mapImage, setMapImage] = React.useState<string>('');
   const selectedMap = useSelector(mapSelector);
   const analysisData = useSelector(getCurrentData);
+  const analysisResult = useSelector(analysisResultSelector);
   const location = useLocation();
   const dateQuery = location.search
     ?.split('&')
     .find(x => x.startsWith('date='));
   const eventDate = dateQuery?.split('=')[1];
+
+  const document = (
+    <StormReportDoc
+      t={t}
+      exposureLegend={analysisResult?.legend || []}
+      theme={theme}
+      reportType={reportType}
+      tableName="Population Exposure"
+      tableShowTotal
+      eventName={
+        reportType === ReportType.Storm
+          ? `Storm Report (${eventDate})`
+          : `Flood Report (${eventDate})`
+      }
+      mapImage={mapImage}
+      tableData={analysisData}
+    />
+  );
 
   React.useEffect(() => {
     if (!open) {
@@ -80,20 +104,7 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
             style={{ width: '100%', height: '100%' }}
             showToolbar={false}
           >
-            <StormReportDoc
-              reportType={reportType}
-              tableName="Population Exposure"
-              tableRowsNum={10}
-              tableShowTotal
-              eventName={
-                reportType === ReportType.Storm
-                  ? `Storm Report (${eventDate})`
-                  : `Flood Report (${eventDate})`
-              }
-              sortByKey={reportType === ReportType.Storm ? '60 mb/h' : 'sum'}
-              mapImage={mapImage}
-              tableData={analysisData}
-            />
+            {document}
           </PDFViewer>
         </div>
       </DialogContent>
@@ -102,25 +113,7 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
           {t('P R I S M automated report')}
         </span>
         <Button className={classes.actionButton} variant="outlined">
-          <PDFDownloadLink
-            document={
-              <StormReportDoc
-                reportType={reportType}
-                tableName="Population Exposure"
-                tableRowsNum={10}
-                tableShowTotal
-                eventName={
-                  reportType === ReportType.Storm
-                    ? `Storm Report (${eventDate})`
-                    : `Flood Report (${eventDate})`
-                }
-                sortByKey={reportType === ReportType.Storm ? '60 mb/h' : 'sum'}
-                mapImage={mapImage}
-                tableData={analysisData}
-              />
-            }
-            fileName="prism-report.pdf"
-          >
+          <PDFDownloadLink document={document} fileName="prism-report.pdf">
             {
               // eslint-disable-next-line no-unused-vars
               ({ blob, url, loading, error }) =>
