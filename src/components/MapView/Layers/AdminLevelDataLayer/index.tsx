@@ -35,9 +35,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
 
   const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
-  // Find date for admin data but 'undefined' for layers without date dimension
-  const date = useDefaultDate(layer.id);
-  const selectedDate = layer.dates ? date : undefined;
+  const selectedDate = useDefaultDate(layer.id);
   const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
