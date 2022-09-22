@@ -413,7 +413,7 @@ const Table = ({
   );
 };
 
-const StormReportDoc = ({
+const ReportDoc = ({
   theme,
   reportType,
   mapImage,
@@ -425,7 +425,7 @@ const StormReportDoc = ({
   sortByKey,
   exposureLegend,
   t,
-}: StormReportDocProps) => {
+}: ReportDocProps) => {
   const styles = makeStyles(theme);
   const date = new Date().toUTCString();
   const tableCellWidth = `${100 / (tableData.columns.length + 1)}%`;
@@ -508,7 +508,7 @@ const StormReportDoc = ({
   );
 };
 
-interface StormReportDocProps {
+interface ReportDocProps {
   theme: Theme;
   reportType: ReportType;
   mapImage: string;
@@ -522,4 +522,4 @@ interface StormReportDocProps {
   t: TFunction;
 }
 
-export default StormReportDoc;
+export default ReportDoc;

@@ -18,7 +18,7 @@ import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { useLocation } from 'react-router-dom';
 import { useSafeTranslation } from '../../../i18n';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
-import StormReportDoc from './stormReportDoc';
+import ReportDoc from './reportDoc';
 import {
   analysisResultSelector,
   getCurrentData,
@@ -39,7 +39,7 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
   const eventDate = dateQuery?.split('=')[1];
 
   const document = (
-    <StormReportDoc
+    <ReportDoc
       t={t}
       exposureLegend={analysisResult?.legend || []}
       theme={theme}
