@@ -55,11 +55,13 @@ function GetExposureFromLayer(
 
 function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
   const { t } = useSafeTranslation();
+  const baselineLayer = result.getBaselineLayer();
+  const hazardLayer = result.getHazardLayer();
   return (
     <>
-      {t('Impact Analysis on')}
-      {': '}
-      {t(result.getBaselineLayer().legendText)}
+      {baselineLayer.legendText
+        ? `${t('Impact Analysis on')}: ${t(baselineLayer.legendText)}`
+        : t(hazardLayer.legendText)}
       <br />
       {result.threshold.above
         ? `${t('Above Threshold')}: ${result.threshold.above}`
@@ -88,7 +90,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
         content: JSON.stringify(features),
         isUrl: false,
       },
-      analysisResult ? analysisResult.getTitle() : 'prism_extract',
+      analysisResult?.getTitle() ?? 'prism_extract',
       'application/json',
     );
   };

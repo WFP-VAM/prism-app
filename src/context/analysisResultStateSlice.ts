@@ -23,7 +23,7 @@ import {
   ZonalPolygonRow,
   PolygonalAggregationOperations,
 } from '../config/types';
-import { getAdminNameProperty } from '../utils/admin-utils';
+import { getAdminLevelLayer, getAdminNameProperty } from '../utils/admin-utils';
 import {
   BaselineLayerResult,
   Column,
@@ -193,7 +193,7 @@ function generateTableFromApiData(
 }
 
 export type AnalysisDispatchParams = {
-  baselineLayer: AdminLevelDataLayerProps;
+  baselineLayer: AdminLevelDataLayerProps | BoundaryLayerProps;
   hazardLayer: WMSLayerProps;
   extent: Extent;
   threshold: ThresholdDefinition;
@@ -225,7 +225,7 @@ const createAPIRequestParams = (
   geotiffLayer: WMSLayerProps,
   extent: Extent,
   date: ReturnType<Date['getTime']>,
-  params?: WfsRequestParams | AdminLevelDataLayerProps,
+  params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
 ): ApiData => {
   const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
@@ -368,6 +368,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   if (!adminBoundariesData) {
     throw new Error('Boundary Layer not loaded!');
   }
+
   const apiRequest = createAPIRequestParams(
     hazardLayer,
     extent,
@@ -381,30 +382,32 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
   );
-  let loadedAndCheckedBaselineData: BaselineLayerData;
-  // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
-  // similar code can be found at impact.ts
-  if (!baselineData) {
-    const {
-      payload: { data },
-    } = (await api.dispatch(
-      loadLayerData({ layer: baselineLayer, extent } as LayerDataParams<
-        AdminLevelDataLayerProps
-      >),
-    )) as { payload: { data: unknown } };
 
-    // eslint-disable-next-line fp/no-mutation
-    loadedAndCheckedBaselineData = checkBaselineDataLayer(
-      baselineLayer.id,
-      data,
-    );
-  } else {
-    // eslint-disable-next-line fp/no-mutation
-    loadedAndCheckedBaselineData = checkBaselineDataLayer(
-      baselineLayer.id,
-      baselineData.data,
-    );
-  }
+  const getCheckedBaselineData = async (): Promise<BaselineLayerData> => {
+    // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
+    // similar code can be found at impact.ts
+    if (baselineLayer.type === 'boundary') {
+      return { features: adminBoundariesData.data, layerData: [] };
+    }
+    if (!baselineData && baselineLayer) {
+      const { payload } = (await api.dispatch(
+        loadLayerData({
+          layer: baselineLayer,
+          extent,
+        } as LayerDataParams<AdminLevelDataLayerProps>),
+      )) as { payload: { data?: BaselineLayerData } };
+
+      return checkBaselineDataLayer(baselineLayer.id, payload?.data);
+    }
+
+    if (baselineData && baselineLayer) {
+      return checkBaselineDataLayer(baselineLayer.id, baselineData.data);
+    }
+
+    return { features: adminBoundariesData.data, layerData: [] };
+  };
+
+  const loadedAndCheckedBaselineData: BaselineLayerData = await getCheckedBaselineData();
 
   const features = generateFeaturesFromApiData(
     aggregateData,
@@ -412,6 +415,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     apiRequest.group_by,
     statistic,
   );
+
+  // Create a legend based on statistic data to be used for admin level analsysis.
+  const legend = createLegendFromFeatureArray(features, statistic);
 
   const tableRows: TableRow[] = generateTableFromApiData(
     [statistic],
@@ -429,9 +435,12 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       features,
     },
     hazardLayer,
-    baselineLayer,
+    // We use a hack to leverage boundary layers as baseline layers
+    // Besides a few missing fields, we have all the necessary info.
+    baselineLayer as AdminLevelDataLayerProps,
     statistic,
     threshold,
+    legend,
     // we never use the raw api data besides for debugging. So lets not bother saving it in Redux for production
     process.env.NODE_ENV === 'production' ? undefined : aggregateData,
   );
@@ -523,6 +532,8 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     classProperties || [], // extra columns
   );
 
+  const boundaryId = getAdminLevelLayer(adminLevel).id;
+
   const analysisResult = new PolygonAnalysisResult(
     tableRows,
     tableColumns,
@@ -530,6 +541,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     hazardLayer,
     adminLevel,
     PolygonalAggregationOperations.Percentage,
+    boundaryId,
   );
 
   return analysisResult;

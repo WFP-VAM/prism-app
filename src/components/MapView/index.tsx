@@ -294,7 +294,7 @@ function MapView({ classes }: MapViewProps) {
       dispatch(addLayer(layer));
     });
 
-    const dateInt = moment(urlDate).valueOf();
+    const dateInt = moment(urlDate).set({ hour: 12 }).valueOf();
 
     if (!urlDate || dateInt === selectedDate) {
       return;
