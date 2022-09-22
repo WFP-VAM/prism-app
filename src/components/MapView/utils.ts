@@ -192,7 +192,10 @@ export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
     return label;
   }
   if (typeof value === 'number') {
-    return Math.round(value).toLocaleString('en-US');
+    const roundedValue = Math.round(value);
+    return roundedValue === 0
+      ? value.toFixed(2)
+      : roundedValue.toLocaleString('en-US');
   }
   return value;
 };
