@@ -14,16 +14,8 @@
       }
     },
     "admin_code": "admin2Pcod",
-    "admin_level_names": [
-      "admin0Name",
-      "admin1Name",
-      "admin2Name"
-    ],
-    "admin_level_local_names": [
-      "admin0Name",
-      "admin1Name",
-      "admin2Name"
-    ]
+    "admin_level_names": ["admin0Name", "admin1Name", "admin2Name"],
+    "admin_level_local_names": ["admin0Name", "admin1Name", "admin2Name"]
   },
   "admin1_boundaries": {
     "type": "boundary",
@@ -40,14 +32,8 @@
       }
     },
     "admin_code": "admin1Pcod",
-    "admin_level_names": [
-      "admin0Name",
-      "admin1Name"
-    ],
-    "admin_level_local_names": [
-      "admin0Name",
-      "admin1Name"
-    ]
+    "admin_level_names": ["admin0Name", "admin1Name"],
+    "admin_level_local_names": ["admin0Name", "admin1Name"]
   },
   "admin0_boundaries": {
     "type": "boundary",
@@ -64,12 +50,8 @@
       }
     },
     "admin_code": "admin0Pcod",
-    "admin_level_names": [
-      "admin0Name"
-    ],
-    "admin_level_local_names": [
-      "admin0Name"
-    ]
+    "admin_level_names": ["admin0Name"],
+    "admin_level_local_names": ["admin0Name"]
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
@@ -1633,14 +1615,14 @@
       }
     ]
   },
-  "ch_2021_03": {
-    "title": "Projected phase classification: March to June 2021",
+  "ch_2021": {
+    "title": "Phase classification",
     "type": "admin_level_data",
-    "path": "data/rbd/wca_CHIPC_mar2021_projected_jun2021.json",
+    "path": "data/rbd/ch/{YYYY_MM_DD}.json",
+    "dates": ["2021-03-01", "2021-11-01"],
     "data_field": "phase_class",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
-    "content_path": "data/rbd/contents.md#Cadre-Harmonisé:-Projected-March-to-June-2021",
     "opacity": 0.7,
     "feature_info_props": {
       "exercise_year": {

@@ -13,9 +13,7 @@
   },
   "alertFormActive": false,
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "latitude": 14.61,
@@ -28,6 +26,11 @@
     "admin1_boundaries"
   ],
   "categories": {
+    "Cadre Harmonisé": {
+      "Cadre Harmonisé 2021": ["ch_2021"],
+      "Cadre Harmonisé 2022": ["ch_phase_2022_09"],
+      "population": ["ch_num_ph_35_2022_09"]
+    },
     "rainfall": {
       "rainfall_amount": [
         {
@@ -122,10 +125,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "heavy_rain": [
         "days_heavy_rain",
         "days_intense_rain",
@@ -134,10 +134,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -146,10 +143,6 @@
         "lst_anomaly",
         "lst_amplitude"
       ]
-    },
-    "Cadre Harmonisé": {
-      "phase_classification": ["ch_phase_2022_09"],
-      "population": ["ch_num_ph_35_2022_09"]
     },
     "risk_analysis": {
       "integrated_context_analysis": [
