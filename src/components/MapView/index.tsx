@@ -188,9 +188,16 @@ function MapView({ classes }: MapViewProps) {
     undefined,
   );
   const selectedLayersWithDateSupport = selectedLayers
-    .filter((layer): layer is DateCompatibleLayer =>
-      dateSupportLayerTypes.includes(layer.type),
-    )
+    .filter((layer): layer is DateCompatibleLayer => {
+      if (layer.type === 'admin_level_data') {
+        return Boolean(layer.dates);
+      }
+      if (layer.type === 'wms') {
+        // some WMS layer might not have date dimension (i.e. static data)
+        return layer.serverLayerName in serverAvailableDates;
+      }
+      return dateSupportLayerTypes.includes(layer.type);
+    })
     .filter(layer => isMainLayer(layer.id, selectedLayers));
 
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
@@ -524,7 +531,8 @@ function MapView({ classes }: MapViewProps) {
       'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
   );
 
-  const firstBoundaryId = `layer-${firstBoundaryOnView(selectedMap)}-line`;
+  const boundaryId = firstBoundaryOnView(selectedMap);
+  const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
 
   return (
     <Grid item className={classes.container}>

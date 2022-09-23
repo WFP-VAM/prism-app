@@ -2,7 +2,7 @@
 
 echo "running truncate_precision.sh"
 
-# assumes you are running truncate_precision from within the prism-frontend project
+# assumes you are running truncate_precision from within the prism-app project
 # removes scripts from the filepath, moving up one directory to the root
 rootdir=$(pwd | sed 's/\/scripts//g')
 

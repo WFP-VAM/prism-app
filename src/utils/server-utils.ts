@@ -19,6 +19,7 @@ import type {
   DateItem,
 } from '../config/types';
 import {
+  AdminLevelDataLayerProps,
   DatesPropagation,
   ImpactLayerProps,
   WMSLayerProps,
@@ -66,6 +67,7 @@ const xml2jsOptions = {
   ignoreComment: true,
 };
 export type DateCompatibleLayer =
+  | AdminLevelDataLayerProps
   | WMSLayerProps
   | ImpactLayerProps
   | PointDataLayerProps;
@@ -84,6 +86,7 @@ export const getPossibleDatesForLayer = (
           (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
         ];
       case 'point_data':
+      case 'admin_level_data':
         return serverAvailableDates[layer.id];
       default:
         return [];
@@ -333,6 +336,15 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   return possibleDates;
 }
 
+async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
+  const { dates } = layer;
+  if (!dates) {
+    return [];
+  }
+  // raw data comes in as {"dates": ["YYYY-MM-DD"]}
+  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+}
+
 /**
  * Creates DateItem object whose fields have the same value.
  *
@@ -420,11 +432,19 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     (layer): layer is PointDataLayerProps => layer.type === 'point_data',
   );
 
+  const adminWithDateLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is AdminLevelDataLayerProps =>
+      layer.type === 'admin_level_data' && Boolean(layer.dates),
+  );
+
   const layerDates = await Promise.all([
     ...wmsServerUrls.map(url => getWMSCapabilities(url)),
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer),
+    })),
+    ...adminWithDateLayers.map(async layer => ({
+      [layer.id]: await getAdminLevelDataCoverage(layer),
     })),
   ]);
 
