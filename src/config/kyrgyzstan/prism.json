@@ -26,7 +26,7 @@
   ],
   "serversUrls": {
     "wms": [
-      "https://odc.ovio.org/wms",
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
       "https://geonode.wfp.org/geoserver/prism/wms/",
       "https://kyrgyzstan.sibelius-datacube.org:5000/wms"
     ]

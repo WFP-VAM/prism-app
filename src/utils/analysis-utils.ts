@@ -27,6 +27,7 @@ import {
   ThresholdDefinition,
   WMSLayerProps,
   WfsRequestParams,
+  BoundaryLayerProps,
 } from '../config/types';
 import type { ThunkApi } from '../context/store';
 import { layerDataSelector } from '../context/mapStateSlice/selectors';
@@ -362,7 +363,7 @@ export async function loadFeaturesClientSide(
   )(getState());
 
   if (!existingHazardLayer) {
-    await dispatch(
+    dispatch(
       loadLayerData({
         layer: hazardLayerDef,
         extent,
@@ -473,7 +474,10 @@ export function scaleFeatureStat(
     return feature;
   }
 
-  const scaledValue: number = get(properties, statistic) * scale + offset;
+  const value =
+    get(properties, statistic) || get(properties, `stats_${statistic}`);
+
+  const scaledValue: number = value && value * scale + offset;
 
   const scaledValueProperties = {
     ...properties,
@@ -516,7 +520,10 @@ export function createLegendFromFeatureArray(
   const delta = (maxNum - minNum) / colors.length;
 
   const legend: LegendDefinition = colors.map((color, index) => {
-    const breakpoint = Math.ceil(minNum + (index + 1) * delta);
+    const breakpoint =
+      delta > 1
+        ? Math.ceil(minNum + (index + 1) * delta)
+        : minNum + (index + 1) * delta;
 
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
@@ -574,8 +581,8 @@ export class BaselineLayerResult {
   legend: LegendDefinition;
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
-  baselineLayerId: AdminLevelDataLayerProps['id'];
-  baselineLayerBoundary: AdminLevelDataLayerProps['boundary'];
+  baselineLayerId: AdminLevelDataLayerProps['id'] | BoundaryLayerProps['id'];
+  boundaryId: AdminLevelDataLayerProps['boundary'];
 
   constructor(
     tableData: TableRow[],
@@ -584,19 +591,20 @@ export class BaselineLayerResult {
     baselineLayer: AdminLevelDataLayerProps,
     statistic: AggregationOperations,
     threshold: ThresholdDefinition,
+    legend?: LegendDefinition,
     rawApiData?: object[],
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
     this.statistic = statistic;
     this.threshold = threshold;
-    this.legend = baselineLayer.legend;
+    this.legend = baselineLayer.legend ?? legend;
     this.legendText = hazardLayer.legendText;
     this.rawApiData = rawApiData;
 
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
-    this.baselineLayerBoundary = baselineLayer.boundary;
+    this.boundaryId = baselineLayer.boundary;
   }
 
   getHazardLayer(): WMSLayerProps {
@@ -607,20 +615,24 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
   }
 
-  getTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getBaselineLayer().title)} ${t('exposed to')} ${t(
-          this.getHazardLayer().title,
-        )}`
-      : `${this.getBaselineLayer().title} exposed to ${
-          this.getHazardLayer().title
-        }`;
-  }
-
   getStatTitle(t?: i18nTranslator): string {
     return t
       ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
       : `${this.getHazardLayer().title} (${this.statistic})`;
+  }
+
+  getTitle(t?: i18nTranslator): string | undefined {
+    const baselineLayer = this.getBaselineLayer();
+    // If there is no title, we are using admin boundaries and return StatTitle instead.
+    if (!baselineLayer.title) {
+      return this.getStatTitle();
+    }
+    const baselineTitle = baselineLayer.title || 'Admin levels';
+    return t
+      ? `${t(baselineTitle)} ${t('exposed to')} ${t(
+          this.getHazardLayer().title,
+        )}`
+      : `${baselineTitle} exposed to ${this.getHazardLayer().title}`;
   }
 }
 
@@ -647,11 +659,16 @@ export function getAnalysisTableColumns(
       label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
       format: value => getRoundedData(value as number),
     },
-    {
-      id: 'baselineValue',
-      label: baselineLayerTitle,
-      format: (value: number | string) => value.toLocaleString('en-US'),
-    },
+    // Remove data if no baseline layer is present
+    ...(baselineLayerTitle
+      ? [
+          {
+            id: 'baselineValue',
+            label: baselineLayerTitle,
+            format: (value: number | string) => value.toLocaleString('en-US'),
+          },
+        ]
+      : []),
   ];
 }
 
@@ -687,6 +704,7 @@ export class PolygonAnalysisResult {
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
   adminLevel: AdminLevelType;
+  boundaryId: string;
 
   constructor(
     tableData: TableRow[],
@@ -695,6 +713,7 @@ export class PolygonAnalysisResult {
     hazardLayer: WMSLayerProps,
     adminLevel: AdminLevelType,
     statistic: 'area' | 'percentage',
+    boundaryId: BoundaryLayerProps['id'],
     threshold?: ThresholdDefinition,
   ) {
     this.featureCollection = featureCollection;
@@ -703,6 +722,7 @@ export class PolygonAnalysisResult {
     this.statistic = statistic;
     this.threshold = threshold;
     this.adminLevel = adminLevel;
+    this.boundaryId = boundaryId;
 
     // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
     // this legend of red-like colors goes from very light to dark

@@ -13,6 +13,7 @@ import MapView from '../MapView';
 import Login from '../Login';
 import muiTheme from '../../muiTheme';
 import Notifier from '../Notifier';
+import AuthModal from '../AuthModal';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {
@@ -32,6 +33,7 @@ const Wrapper = () => {
         <Route default>
           <MapView />
           <DataDrawer />
+          <AuthModal />
         </Route>
       </Switch>
     </div>
