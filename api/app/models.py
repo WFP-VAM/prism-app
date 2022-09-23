@@ -36,6 +36,7 @@ class StatsModel(BaseModel):
     geojson_out: bool | None = False
     zones: GeoJSON | None = None
     intersect_comparison: str | None = None
+    mask_url: str | None = None
 
 
 def must_not_contain_null_char(v: str) -> str:

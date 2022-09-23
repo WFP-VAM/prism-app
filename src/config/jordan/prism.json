@@ -11,7 +11,7 @@
     },
     "serversUrls": {
       "wms": [
-        "https://odc.ovio.org/wms"
+        "https://api.earthobservation.vam.wfp.org/ows/wms"
       ]
     },
     "map": {

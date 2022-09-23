@@ -101,6 +101,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
       - name: Comment PR
         uses: marocchino/sticky-pull-request-comment@v1
+        continue-on-error: true
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
@@ -144,6 +145,6 @@ jobs:
           chmod +x ~/docker-compose
           sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - name: Build containers
-        run: cd api-flask && docker-compose build api
+        run: cd api && docker-compose build api
       - name: Run tests
-        run: cd api-flask && make api-test
+        run: cd api && make api-test

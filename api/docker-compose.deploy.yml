@@ -36,16 +36,18 @@ services:
     networks:
       - traefik_default
       - default
+    ports:
+      - '80:80'
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.whoami.rule=Host(`prism-api.ovio.org`)'
       - 'traefik.http.routers.whoami.entrypoints=websecure'
       - 'traefik.http.routers.whoami.tls.certresolver=myresolver'
     environment:
-      - FLASK_ENV=development
-      - FLASK_DEBUG=1
+      - 'RUN=uvicorn app.main:app --host 0.0.0.0 --port 80'
       # make sure that the alert password is properly set
       - DATABASE_URL=${DATABASE_URL:?"Provide a URL for the alerts database."}
       - KOBO_PW=${KOBO_PW:?"Add a password to access KOBO data."}
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
+    command: uvicorn app.main:app --host 0.0.0.0 --port 80
     restart: unless-stopped
