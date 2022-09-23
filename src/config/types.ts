@@ -404,6 +404,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
   type: 'admin_level_data';
   path: string;
 
+  @optional
+  dates?: string[];
+
   @makeRequired
   title: string;
 

@@ -1,5 +1,6 @@
 import { FeatureCollection } from 'geojson';
 import { get, isNull, isString } from 'lodash';
+import moment from 'moment';
 import {
   BoundaryLayerProps,
   AdminLevelDataLayerProps,
@@ -119,15 +120,22 @@ export function getAdminLevelDataLayerData(
 }
 
 export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> = () => async (
-  { layer }: LayerDataParams<AdminLevelDataLayerProps>,
+  { layer, date }: LayerDataParams<AdminLevelDataLayerProps>,
   api: ThunkApi,
 ) => {
   const { path, adminCode, dataField, featureInfoProps, boundary } = layer;
 
+  // format brackets inside config URL with moment
+  // example: "&date={YYYY-MM-DD}" will turn into "&date=2021-04-27"
+  const datedPath = path.replace(/{.*?}/g, match => {
+    const format = match.slice(1, -1);
+    return moment(date).format(format);
+  });
+
   // TODO avoid any use, the json should be typed. See issue #307
   const data: { [key: string]: any }[] = (
     await (
-      await fetch(path, {
+      await fetch(datedPath, {
         mode: path.includes('http') ? 'cors' : 'same-origin',
       })
     ).json()
