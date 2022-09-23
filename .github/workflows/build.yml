@@ -88,7 +88,7 @@ jobs:
         run: echo "Country env is ${{ steps.country_regex.outputs.group1 }}"
 
       - name: build frontend
-        run: GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 }} yarn build
+        run: GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 }:myanmar} yarn build
       - name: deploy on surge
         uses: dswistowski/surge-sh-action@v1
         with:
@@ -101,6 +101,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
       - name: Comment PR
         uses: marocchino/sticky-pull-request-comment@v1
+        continue-on-error: true
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
