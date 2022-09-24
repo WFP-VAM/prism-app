@@ -1,4 +1,4 @@
-import { parseService, withTimeout } from "../common";
+import { parseService, setTimeoutAsync } from "../common";
 
 export async function getCapabilities(
   url: string,
@@ -33,7 +33,7 @@ export async function getCapabilities(
     return xml;
   };
 
-  return withTimeout(wait, run);
+  return setTimeoutAsync(wait, run);
 }
 
 export function getCapabilitiesUrl(

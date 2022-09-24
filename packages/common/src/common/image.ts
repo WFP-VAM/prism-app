@@ -1,7 +1,7 @@
-import checkExtent from "./check-extent";
+import { checkExtent } from "./bbox";
 import type { BBOX } from "../types";
 
-export default function scaleImage(extent: BBOX,
+export function scaleImage(extent: BBOX,
   {
     check_extent = true,
     resolution = 256,

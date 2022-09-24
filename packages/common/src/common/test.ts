@@ -10,9 +10,9 @@ import {
   toArray,
   parseName,
   parseService,
-  withTimeout
+  scaleImage,
+  setTimeoutAsync
 } from ".";
-import scaleImage from "./scale-image";
 
 // performance API used for timing
 declare var performance: { now: () => number };
@@ -148,11 +148,11 @@ t("scaleImage", async ({ eq }) => {
   eq(scaleImage([-180, 0, -170, 1], { resolution: 512 }), { "height":52, "width":512 });
 });
 
-t("withTimeout", async ({ eq }) => {
+t("setTimeoutAsync", async ({ eq }) => {
   const start = performance.now();
   const seconds = 2;
   let flag = false;
-  await withTimeout(seconds, () => (flag = true));
+  await setTimeoutAsync(seconds, () => (flag = true));
   const duration = performance.now() - start;
   eq(Math.round(duration / 1000), seconds);
   eq(flag, true);

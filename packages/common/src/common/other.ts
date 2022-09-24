@@ -1,4 +1,6 @@
-export default function formatUrl(
+import { parseName } from "./parse";
+
+export function formatUrl(
   baseUrl: string,
   params: { [key: string]: undefined | boolean | number | string } = {},
   { debug = false, sortParams = true }: { debug?: boolean, sortParams?: boolean } = { debug: false, sortParams: true }
@@ -17,3 +19,25 @@ export default function formatUrl(
   });
   return url.toString();
 }
+
+export function hasLayerId(
+  ids: string[],
+  target: string,
+  { strict = false }: { strict?: boolean } = {
+    strict: false
+  }
+): boolean {
+  return !!ids.find(id => {
+    const { full, short, namespace } = parseName(id);
+    if (strict) {
+      return full === target;
+    } else {
+      const parsedTarget = parseName(target);
+      return (
+        short === parsedTarget.short &&
+        (parsedTarget.namespace ? namespace === parsedTarget.namespace : true)
+      );
+    }
+  });
+}
+

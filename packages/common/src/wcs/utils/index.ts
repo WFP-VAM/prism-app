@@ -16,7 +16,7 @@ import {
 } from "../../ows";
 
 import type { BBOX } from "../../types";
-import scaleImage from "../../common/scale-image";
+import { scaleImage } from "../../common";
 
 export type Coverage = {
   id: string;
