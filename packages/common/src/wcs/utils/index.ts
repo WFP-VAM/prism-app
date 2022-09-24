@@ -6,7 +6,7 @@ import {
 } from "xml-utils";
 
 import { findAndParseEnvelope } from "../../gml";
-import { bboxToString, checkExtent, findAndParseCapabilityUrl, findTagText, formatUrl } from "../../common";
+import { bboxToString, checkExtent, findAndParseCapabilityUrl, findTagText, formatUrl } from "../../utils";
 
 import {
   findAndParseBoundingBox,
@@ -16,7 +16,7 @@ import {
 } from "../../ows";
 
 import type { BBOX } from "../../types";
-import { scaleImage } from "../../common";
+import { scaleImage } from "../../utils";
 
 export type Coverage = {
   id: string;

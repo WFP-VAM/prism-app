@@ -1,4 +1,4 @@
-import { parseService, setTimeoutAsync } from "../common";
+import { parseService, setTimeoutAsync } from "../utils";
 
 export async function getCapabilities(
   url: string,

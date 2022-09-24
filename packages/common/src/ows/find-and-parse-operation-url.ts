@@ -1,7 +1,7 @@
 import { findTagByName, getAttribute } from "xml-utils";
 
 import findOperation from "./find-operation";
-import { titlecase } from "../common";
+import { titlecase } from "../utils";
 
 export default function findAndParseOperationUrl(
   xml: string,

@@ -17,7 +17,7 @@ import {
   findTagText,
   formatUrl,
   parseName
-} from "../../common";
+} from "../../utils";
 
 type Legend = {
   width: number;

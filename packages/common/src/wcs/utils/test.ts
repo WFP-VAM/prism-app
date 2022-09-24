@@ -23,7 +23,7 @@ import {
   parseSupportedFormats
 } from ".";
 
-import { findAndParseCapabilityUrl } from "../../common";
+import { findAndParseCapabilityUrl } from "../../utils";
 
 const xml = findAndRead("./data/geonode-wfp-wcs-get-capabilities-2.0.1.xml", {
   encoding: "utf-8"

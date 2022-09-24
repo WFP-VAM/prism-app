@@ -1,6 +1,6 @@
 import { getCapabilities, getCapabilitiesUrl } from "./utils";
 
-import { hasLayerId } from "../common";
+import { hasLayerId } from "../utils";
 
 const NOT_IMPLEMENTED = "not implemented";
 const LAYER_DOES_NOT_EXIST = (layerId: string) => `layer "${layerId}" does not exist`;

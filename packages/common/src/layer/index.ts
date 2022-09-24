@@ -1,4 +1,4 @@
-import { parseName } from "../common";
+import { parseName } from "../utils";
 
 export class Layer {
   public capabilities: Promise<string>;

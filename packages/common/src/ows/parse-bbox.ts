@@ -1,4 +1,4 @@
-import { findTagText } from "../common";
+import { findTagText } from "../utils";
 
 export default function parseBoundingBox(
   xml: string

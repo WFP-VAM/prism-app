@@ -13,7 +13,7 @@ import {
   parseName,
   setTimeoutAsync,
   titlecase,
-} from "../common";
+} from "../utils";
 
 import { 
   findAndParseKeywords,

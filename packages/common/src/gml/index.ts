@@ -1,5 +1,5 @@
 import { findTagByName } from "xml-utils";
-import { findTagText } from "../common";
+import { findTagText } from "../utils";
 
 export function parseEnvelope(
   xml: string

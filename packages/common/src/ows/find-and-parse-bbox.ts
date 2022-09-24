@@ -1,4 +1,4 @@
-import { findTagText } from "../common";
+import { findTagText } from "../utils";
 import parseBoundingBox from "./parse-bbox";
 
 export default function findAndParseBoundingBox(
