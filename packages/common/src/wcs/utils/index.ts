@@ -67,9 +67,6 @@ export function findLayerId(
   const name = findCoverageName(xml);
   if (name) return name;
 
-  console.log("===========");
-  console.log(xml);
-  console.log("===========");
   throw new Error("unable to find coverage id");
 }
 
