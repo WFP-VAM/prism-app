@@ -33,6 +33,4 @@ export default class WMSLayer extends Layer {
       image: arrayBuffer
     };
   }
-
-  // getFeatureInfo({ x, i, j, y }) {}
 }
