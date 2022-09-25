@@ -46,10 +46,6 @@ type WMSLayer = {
   dates: string[];
 };
 
-// export function findLayerTags(xml: string): { inner: string; outer: string }[] {
-//   return findTagsByName(xml, "Layer");
-// }
-
 export function findLayers(xml: string): string[] {
   return findTagsByPath(xml, ["Layer", "Layer"]).map(tag => tag.outer);
 }
