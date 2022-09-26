@@ -44,7 +44,7 @@ const initialState: DatasetState = {
 
 type BoundaryProps = {
   code: number;
-  urlPath: string;
+  level: string;
   name: string;
 };
 
@@ -55,6 +55,7 @@ export type AdminBoundaryParams = {
   url: string;
   serverLayerName: string;
   id: string;
+  dataField: string;
 };
 
 export type AdminBoundaryRequestParams = AdminBoundaryParams & {
@@ -74,33 +75,6 @@ export enum TableDataFormat {
   DATE = 'date',
   TIME = 'time',
 }
-
-const getDatasetFromUrl = async (
-  year: number,
-  params: AdminBoundaryRequestParams,
-  startDate: number,
-  endDate: number,
-): Promise<DataItem[]> => {
-  const { serverLayerName, url, id, boundaryProps } = params;
-
-  const { code: adminCode, urlPath } = boundaryProps[id];
-
-  const serverUrl = `${url}/${urlPath}/${year}.json`;
-
-  const resp = await fetch(serverUrl);
-  const results = await resp.json();
-
-  const filteredRows = results.DataList.filter(
-    (item: any) => item[id] === adminCode,
-  )
-    .map((item: any) => ({
-      date: moment(item.time).valueOf(),
-      value: item[serverLayerName],
-    }))
-    .filter(({ date }: DataItem) => date >= startDate && date <= endDate);
-
-  return filteredRows;
-};
 
 const createTableData = (
   results: DataItem[],
@@ -183,24 +157,53 @@ export const loadEWSDataset = async (
   return new Promise<TableData>(resolve => resolve(tableDataWithEWSConfig));
 };
 
+const fetchHDC = async (
+  url: string,
+  dataField: string,
+  params: { [key: string]: any },
+): Promise<DataItem[]> => {
+  const requestParamsStr = Object.entries(params)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&');
+
+  const response = await fetch(`${url}?${requestParamsStr}`);
+  const responseJson = await response.json();
+
+  const dates: number[] = responseJson.date.map((date: string) =>
+    moment(date).valueOf(),
+  );
+  const values: number[] = responseJson.data[dataField];
+
+  const dataItems: DataItem[] = dates.map((date, index) => ({
+    date,
+    value: values[index],
+  }));
+
+  return dataItems;
+};
+
 export const loadAdminBoundaryDataset = async (
   params: AdminBoundaryRequestParams,
 ): Promise<TableData> => {
   const endDate = moment(params.selectedDate);
   const startDate = endDate.clone().subtract(1, 'year');
 
-  const years = [endDate.year(), startDate.year()];
+  const { url: hdcUrl, id, boundaryProps, serverLayerName, dataField } = params;
+  const { code: adminCode, level } = boundaryProps[id];
 
-  const promises = years.map(year =>
-    getDatasetFromUrl(year, params, startDate.valueOf(), endDate.valueOf()),
-  );
-  const resultsAll = await Promise.all(promises);
+  const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);
+  const startDateStr = startDate.format(DEFAULT_DATE_FORMAT);
 
-  const results: DataItem[] = resultsAll.reduce(
-    (acc, item) => [...acc, ...item],
-    [],
-  );
+  const hdcRequestParams = {
+    level,
+    admin_id: adminCode,
+    coverage: 'full',
+    vam: serverLayerName.includes('vim') ? 'vim' : 'rfh',
+    start: startDateStr,
+    end: endDateStr,
+  };
 
+  const results = await fetchHDC(hdcUrl, dataField, hdcRequestParams);
   const tableData = createTableData(results, TableDataFormat.DATE);
 
   return new Promise<TableData>(resolve => resolve(tableData));

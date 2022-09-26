@@ -56,6 +56,7 @@ function DataViewer({ classes }: DatasetProps) {
           boundaryProps: params.boundaryProps,
           url: params.url,
           serverLayerName: params.serverLayerName,
+          dataField: params.dataField,
           selectedDate,
         }
       : {
@@ -68,7 +69,7 @@ function DataViewer({ classes }: DatasetProps) {
     dispatch(loadDataset(requestParams));
   }, [params, dispatch, selectedDate]);
 
-  if (!dataset || !params) {
+  if (!params) {
     return null;
   }
 
@@ -111,16 +112,18 @@ function DataViewer({ classes }: DatasetProps) {
               <CircularProgress size={50} />
             </div>
           ) : (
-            <Chart
-              title={t(title)}
-              config={config}
-              data={dataset}
-              xAxisLabel={
-                isAdminBoundary(params)
-                  ? undefined
-                  : t('Timestamps reflect local time in Cambodia')
-              }
-            />
+            dataset && (
+              <Chart
+                title={t(title)}
+                config={config}
+                data={dataset}
+                xAxisLabel={
+                  isAdminBoundary(params)
+                    ? undefined
+                    : t('Timestamps reflect local time in Cambodia')
+                }
+              />
+            )
           )}
         </Paper>
       </Grid>

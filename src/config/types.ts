@@ -320,7 +320,7 @@ type LayerStyleProps = {
 };
 
 export type DatasetLevel = {
-  path: string; // Url substring that represents admin level.
+  level: string; // Administrative boundary level.
   id: string; // Geojson property field for admin boundary id.
   name: string; // Geojson property field for admin boundary name.
 };
@@ -334,6 +334,7 @@ type DatasetProps = {
   url: string;
   levels: DatasetLevel[];
   type: ChartType;
+  field: string; // Data field from json response.
 };
 
 export class BoundaryLayerProps extends CommonLayerProps {
