@@ -68,7 +68,7 @@ export type DatasetRequestParams =
 
 type DataItem = {
   date: number;
-  value: number;
+  values: { [key: string]: string };
 };
 
 export enum TableDataFormat {
@@ -76,38 +76,38 @@ export enum TableDataFormat {
   TIME = 'time',
 }
 
+export const PREFIXES = { col: 'd', date: 'date' };
+
 const createTableData = (
   results: DataItem[],
   format: TableDataFormat,
 ): TableData => {
-  const prefix = format === TableDataFormat.DATE ? 'd' : 't';
   const momentFormat =
     format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'HH:mm';
 
-  const sortedRows = orderBy(results, item => item.date).map((item, index) => ({
-    ...item,
-    day: `${prefix}${index + 1}`,
-  }));
+  const sortedRows = orderBy(results, item => item.date).map(row => {
+    const valuesObj = Object.values(row.values).reduce(
+      (acc, item, index) => ({
+        ...acc,
+        [`${PREFIXES.col}${index + 1}`]: item,
+      }),
+      {},
+    );
 
-  const datesRows = sortedRows.reduce(
-    (acc, obj) => ({
-      ...acc,
-      [obj.day]: moment(obj.date).format(momentFormat),
-    }),
-    {},
+    return {
+      date: moment(row.date).format(momentFormat),
+      ...valuesObj,
+    };
+  });
+
+  const columns = Object.keys(sortedRows[0]);
+  const initRow = Object.keys(results[0].values).reduce(
+    (acc, item, index) => ({ ...acc, [`${PREFIXES.col}${index + 1}`]: item }),
+    { date: PREFIXES.date },
   );
 
-  const valuesRows = sortedRows.reduce((acc, obj) => {
-    if (!obj.value) {
-      return acc;
-    }
-
-    return { ...acc, [obj.day]: obj.value.toString() };
-  }, {});
-
-  const columns = Object.keys(valuesRows);
   const data: TableData = {
-    rows: [datesRows, valuesRows],
+    rows: [initRow, ...sortedRows],
     columns,
   };
 
@@ -131,7 +131,10 @@ export const loadEWSDataset = async (
     .map(item => {
       const [measureDate, value] = item.value;
 
-      return { date: moment(measureDate).valueOf(), value };
+      return {
+        date: moment(measureDate).valueOf(),
+        values: { measure: value.toString() },
+      };
     })
     .filter(item => item.date <= filterDate); // Api returns items day after.
 
@@ -172,11 +175,15 @@ const fetchHDC = async (
   const dates: number[] = responseJson.date.map((date: string) =>
     moment(date).valueOf(),
   );
-  const values: number[] = responseJson.data[dataField];
 
   const dataItems: DataItem[] = dates.map((date, index) => ({
     date,
-    value: values[index],
+    values: {
+      [dataField]: responseJson.data[dataField][index].toString(),
+      [`${dataField}_avg`]: responseJson.data[`${dataField}_avg`][
+        index
+      ].toString(),
+    },
   }));
 
   return dataItems;

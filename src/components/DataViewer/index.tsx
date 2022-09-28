@@ -21,6 +21,7 @@ import {
   AdminBoundaryParams,
   EWSParams,
   DatasetRequestParams,
+  PREFIXES,
 } from '../../context/datasetStateSlice';
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
 import Chart from '../DataDrawer/Chart';
@@ -73,13 +74,13 @@ function DataViewer({ classes }: DatasetProps) {
     return null;
   }
 
-  const category = isAdminBoundary(params) ? params.id : params.externalId;
-
   const config: ChartConfig = {
     type: chartType,
     stacked: false,
     fill: false,
-    category,
+    category: PREFIXES.date,
+    data: PREFIXES.col,
+    transpose: true,
   };
 
   const adminBoundaryLevelButtons = isAdminBoundary(params)
