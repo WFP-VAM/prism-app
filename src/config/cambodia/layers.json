@@ -1693,7 +1693,7 @@
     "title": "EWS 1294 river level data",
     "loader": "ews",
     "type": "point_data",
-    "data": "http://sms.ews1294.info/api/v1",
+    "data": "https://sensors.ews1294.com/api/v1",
     "date_url": "",
     "feature_info_props": {
       "name": {
