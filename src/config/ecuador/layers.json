@@ -39,7 +39,7 @@
       "title": "SPI - 1-month",
       "type": "wms",
       "server_layer_name": "r1s_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "wcsConfig": {
         "scale": 0.001,
@@ -99,7 +99,7 @@
       "title": "SPI - 3-month",
       "type": "wms",
       "server_layer_name": "r3s_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "wcsConfig": {
         "scale": 0.001,
@@ -159,7 +159,7 @@
       "title": "SPI - 6-month",
       "type": "wms",
       "server_layer_name": "r6s_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "wcsConfig": {
         "scale": 0.001,
@@ -219,7 +219,7 @@
       "title": "SPI - 9-month",
       "type": "wms",
       "server_layer_name": "r9s_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "wcsConfig": {
         "scale": 0.001,
@@ -279,7 +279,7 @@
       "title": "SPI - 1-year",
       "type": "wms",
       "server_layer_name": "rys_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "wcsConfig": {
         "scale": 0.001,
@@ -342,7 +342,7 @@
       "additional_query_params": {
         "styles": "rfh_350"
       },
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -406,7 +406,7 @@
       "title": "10-day rainfall anomaly",
       "type": "wms",
       "server_layer_name": "rfq_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -453,7 +453,7 @@
       "title": "Monthly rainfall anomaly",
       "type": "wms",
       "server_layer_name": "r1q_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -500,7 +500,7 @@
       "title": "3-month rainfall anomaly",
       "type": "wms",
       "server_layer_name": "r3q_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -547,7 +547,7 @@
       "title": "6-month rainfall anomaly",
       "type": "wms",
       "server_layer_name": "r6q_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -594,7 +594,7 @@
       "title": "9-month rainfall anomaly",
       "type": "wms",
       "server_layer_name": "r9q_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -641,7 +641,7 @@
       "title": "1-year rainfall anomaly",
       "type": "wms",
       "server_layer_name": "ryq_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -688,7 +688,7 @@
       "title": "1-month rainfall aggregate (mm)",
       "type": "wms",
       "server_layer_name": "r1h_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "additional_query_params": {
         "styles": "rfh_1500"
       },
@@ -749,7 +749,7 @@
       "additional_query_params": {
         "styles": "rfh_800"
       },
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Total aggregate precipitation over a 3-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -807,7 +807,7 @@
       "additional_query_params": {
         "styles": "rfh_800"
       },
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Total aggregate precipitation over a 6-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -865,7 +865,7 @@
       "additional_query_params": {
         "styles": "rfh_800"
       },
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Total aggregate precipitation over a 9-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -923,7 +923,7 @@
       "additional_query_params": {
         "styles": "rfh_1500"
       },
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Total aggregate precipitation over a 1-year period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group)",
@@ -978,7 +978,7 @@
       "title": "Number of dry days",
       "type": "wms",
       "server_layer_name": "dlc_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Number of consecutive days with less than 2 mm precipitation in the last 30 days",
@@ -1029,7 +1029,7 @@
       "title": "Longest number of consecutive dry days",
       "type": "wms",
       "server_layer_name": "dlx_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days",
@@ -1080,7 +1080,7 @@
       "title": "Number of days with heavy rainfall in the last 30 days",
       "type": "wms",
       "server_layer_name": "xnh_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
@@ -1131,7 +1131,7 @@
       "title": "Number of days with intense rainfall in the last 30 days",
       "type": "wms",
       "server_layer_name": "xni_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
@@ -1182,7 +1182,7 @@
       "title": "Number of days with extreme rainfall in the last 30 days",
       "type": "wms",
       "server_layer_name": "xne_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
@@ -1233,7 +1233,7 @@
       "title": "Longest consecutive number of days with heavy rainfall in the last 30 days",
       "type": "wms",
       "server_layer_name": "xlh_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
@@ -1284,7 +1284,7 @@
       "title": "10-day NDVI (MODIS)",
       "type": "wms",
       "server_layer_name": "mxd13a2_vim_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "wcsConfig": {
         "scale": 0.0001,
@@ -1336,7 +1336,7 @@
       "title": "10-day NDVI anomaly (MODIS)",
       "type": "wms",
       "server_layer_name": "mxd13a2_viq_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "additional_query_params": {
         "styles": "viq"
@@ -1386,7 +1386,7 @@
       "title": "Land Surface Temperature - 10-day Amplitude (MODIS)",
       "type": "wms",
       "server_layer_name": "myd11a2_taa_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "wcsConfig": {
         "scale": 0.02,
         "offset": 0,
@@ -1434,7 +1434,7 @@
       "title": "Daytime Land Surface Temperature - 10-day (MODIS)",
       "type": "wms",
       "server_layer_name": "myd11a2_txa_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "wcsConfig": {
         "scale": 0.02,
@@ -1497,7 +1497,7 @@
       "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)",
       "type": "wms",
       "server_layer_name": "myd11a2_txd_dekad",
-      "base_url": "https://odc.ovio.org/",
+      "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
       "date_interval": "days",
       "opacity": 0.7,
       "additional_query_params": {

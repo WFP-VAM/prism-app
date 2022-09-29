@@ -87,7 +87,7 @@ exports[`renders as expected 1`] = `
             >
               <mock-typography
                 component="a"
-                href="https://github.com/oviohub/prism-frontend"
+                href="https://github.com/oviohub/prism-app"
                 target="_blank"
                 variant="body2"
               >
@@ -184,7 +184,7 @@ exports[`renders as expected 1`] = `
                     >
                       <mock-typography
                         component="a"
-                        href="https://github.com/oviohub/prism-frontend"
+                        href="https://github.com/oviohub/prism-app"
                         target="_blank"
                         variant="body2"
                       >

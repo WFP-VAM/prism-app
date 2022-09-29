@@ -14,16 +14,8 @@
       }
     },
     "admin_code": "admin2Pcod",
-    "admin_level_names": [
-      "admin0Name",
-      "admin1Name",
-      "admin2Name"
-    ],
-    "admin_level_local_names": [
-      "admin0Name",
-      "admin1Name",
-      "admin2Name"
-    ]
+    "admin_level_names": ["admin0Name", "admin1Name", "admin2Name"],
+    "admin_level_local_names": ["admin0Name", "admin1Name", "admin2Name"]
   },
   "admin1_boundaries": {
     "type": "boundary",
@@ -40,14 +32,8 @@
       }
     },
     "admin_code": "admin1Pcod",
-    "admin_level_names": [
-      "admin0Name",
-      "admin1Name"
-    ],
-    "admin_level_local_names": [
-      "admin0Name",
-      "admin1Name"
-    ]
+    "admin_level_names": ["admin0Name", "admin1Name"],
+    "admin_level_local_names": ["admin0Name", "admin1Name"]
   },
   "admin0_boundaries": {
     "type": "boundary",
@@ -64,12 +50,8 @@
       }
     },
     "admin_code": "admin0Pcod",
-    "admin_level_names": [
-      "admin0Name"
-    ],
-    "admin_level_local_names": [
-      "admin0Name"
-    ]
+    "admin_level_names": ["admin0Name"],
+    "admin_level_local_names": ["admin0Name"]
   },
   "rainfall_dekad": {
     "title": "10-day rainfall estimate (mm)",
@@ -78,7 +60,7 @@
     "additional_query_params": {
       "styles": "rfh_350"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -137,7 +119,7 @@
     "title": "10-day rainfall anomaly",
     "type": "wms",
     "server_layer_name": "rfq_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -184,7 +166,7 @@
     "title": "1-month rainfall anomaly",
     "type": "wms",
     "server_layer_name": "r1q_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -231,7 +213,7 @@
     "title": "3-month rainfall anomaly",
     "type": "wms",
     "server_layer_name": "r3q_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -278,7 +260,7 @@
     "title": "6-month rainfall anomaly",
     "type": "wms",
     "server_layer_name": "r6q_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -325,7 +307,7 @@
     "title": "9-month rainfall anomaly",
     "type": "wms",
     "server_layer_name": "r9q_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -372,7 +354,7 @@
     "title": "1-year rainfall anomaly",
     "type": "wms",
     "server_layer_name": "ryq_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -422,7 +404,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -480,7 +462,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 3-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -538,7 +520,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 6-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -596,7 +578,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 9-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -654,7 +636,7 @@
     "additional_query_params": {
       "styles": "rfh_1500"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 1-year period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -709,7 +691,7 @@
     "title": "SPI - 1-month",
     "type": "wms",
     "server_layer_name": "r1s_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.001,
@@ -769,7 +751,7 @@
     "title": "SPI - 3-month",
     "type": "wms",
     "server_layer_name": "r3s_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.001,
@@ -829,7 +811,7 @@
     "title": "SPI - 6-month",
     "type": "wms",
     "server_layer_name": "r6s_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.001,
@@ -889,7 +871,7 @@
     "title": "SPI - 9-month",
     "type": "wms",
     "server_layer_name": "r9s_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.001,
@@ -949,7 +931,7 @@
     "title": "SPI - 1-year",
     "type": "wms",
     "server_layer_name": "rys_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.001,
@@ -1009,7 +991,7 @@
     "title": "Number of dry days",
     "type": "wms",
     "server_layer_name": "dlc_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Number of consecutive days with less than 2 mm precipitation in the last 30 days",
@@ -1060,7 +1042,7 @@
     "title": "Longest number of consecutive dry days",
     "type": "wms",
     "server_layer_name": "dlx_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Longest number of consecutive days with less than 2 mm precipitation in the last 30 days",
@@ -1111,7 +1093,7 @@
     "title": "Number of days with heavy rainfall in the last 30 days",
     "type": "wms",
     "server_layer_name": "xnh_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
@@ -1162,7 +1144,7 @@
     "title": "Number of days with intense rainfall in the last 30 days",
     "type": "wms",
     "server_layer_name": "xni_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 90th percentile) within last 30 days of dekad",
@@ -1213,7 +1195,7 @@
     "title": "Number of days with extreme rainfall in the last 30 days",
     "type": "wms",
     "server_layer_name": "xne_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total number of heavy rain days (rainfall > 95th percentile) within last 30 days of dekad",
@@ -1264,7 +1246,7 @@
     "title": "Longest consecutive number of days with heavy rainfall in the last 30 days",
     "type": "wms",
     "server_layer_name": "xlh_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Longest consecutive number of heavy rain days (rainfall > 75th percentile) within last 30 days of dekad",
@@ -1315,7 +1297,7 @@
     "title": "10-day NDVI (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13a2_vim_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.0001,
@@ -1367,7 +1349,7 @@
     "title": "10-day NDVI anomaly (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13a2_viq_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "additional_query_params": {
       "styles": "viq"
@@ -1417,7 +1399,7 @@
     "title": "Land Surface Temperature - 10-day Amplitude (MODIS)",
     "type": "wms",
     "server_layer_name": "myd11a2_taa_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "wcsConfig": {
       "scale": 0.02,
       "offset": 0,
@@ -1465,7 +1447,7 @@
     "title": "Daytime Land Surface Temperature - 10-day (MODIS)",
     "type": "wms",
     "server_layer_name": "myd11a2_txa_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.02,
@@ -1528,7 +1510,7 @@
     "title": "Nighttime Land Surface Temperature - 10-day (MODIS)",
     "type": "wms",
     "server_layer_name": "myd11a2_txa_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.02,
@@ -1591,7 +1573,7 @@
     "title": "Daytime Land Surface Temperature - 10-day Anomaly (MODIS)",
     "type": "wms",
     "server_layer_name": "myd11a2_txd_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "additional_query_params": {
@@ -1633,14 +1615,14 @@
       }
     ]
   },
-  "ch_2021_03": {
-    "title": "Projected phase classification: March to June 2021",
+  "ch_2021": {
+    "title": "Phase classification",
     "type": "admin_level_data",
-    "path": "data/rbd/wca_CHIPC_mar2021_projected_jun2021.json",
+    "path": "data/rbd/ch/{YYYY_MM_DD}.json",
+    "dates": ["2021-03-01", "2021-11-01"],
     "data_field": "phase_class",
     "admin_level": 3,
     "admin_code": "adm1_pcod2",
-    "content_path": "data/rbd/contents.md#Cadre-Harmonisé:-Projected-March-to-June-2021",
     "opacity": 0.7,
     "feature_info_props": {
       "exercise_year": {
@@ -2267,5 +2249,579 @@
       }
     ],
     "legend_text": "Livelihood coping stategies"
+  },
+  "ica_fs_national": {
+    "title": "Food security recurrence - national",
+    "type": "admin_level_data",
+    "path": "data/rbd/ica.json",
+    "data_field": "fs_recurrence_nat",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 - Low",
+        "color": "#FFB597"
+      },
+      {
+        "value": 2,
+        "label": "2 - Medium",
+        "color": "#FF7E4B"
+      },
+      {
+        "value": 3,
+        "label": "3 - High",
+        "color": "#D23C00"
+      }
+    ],
+    "legend_text": "ICA food security recurrence - national"
+  },
+  "ica_fs_regional": {
+    "title": "Food security recurrence - regional",
+    "type": "admin_level_data",
+    "path": "data/rbd/ica.json",
+    "data_field": "fs_recurrence_reg",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 - Low",
+        "color": "#FFB597"
+      },
+      {
+        "value": 2,
+        "label": "2 - Medium",
+        "color": "#FF7E4B"
+      },
+      {
+        "value": 3,
+        "label": "3 - High",
+        "color": "#D23C00"
+      }
+    ],
+    "legend_text": "ICA food security recurrence - regional"
+  },
+  "ica_drought_national": {
+    "title": "Drought recurrence - national",
+    "type": "admin_level_data",
+    "path": "data/rbd/ica.json",
+    "data_field": "npgs_classnat",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 - Low",
+        "color": "#F0CA6A"
+      },
+      {
+        "value": 2,
+        "label": "2 - Medium",
+        "color": "#E3A917"
+      },
+      {
+        "value": 3,
+        "label": "3 - High",
+        "color": "#6F520B"
+      }
+    ],
+    "legend_text": "ICA drought recurrence - national"
+  },
+  "ica_drought_regional": {
+    "title": "Drought recurrence - regional",
+    "type": "admin_level_data",
+    "path": "data/rbd/ica.json",
+    "data_field": "npgs_classreg",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 - Low",
+        "color": "#F0CA6A"
+      },
+      {
+        "value": 2,
+        "label": "2 - Medium",
+        "color": "#E3A917"
+      },
+      {
+        "value": 3,
+        "label": "3 - High",
+        "color": "#6F520B"
+      }
+    ],
+    "legend_text": "ICA drought recurrence - regional"
+  },
+  "ica_flood": {
+    "title": "Flood recurrence",
+    "type": "admin_level_data",
+    "path": "data/rbd/ica.json",
+    "data_field": "floodclass",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 - Low",
+        "color": "#66CCFF"
+      },
+      {
+        "value": 2,
+        "label": "2 - Medium",
+        "color": "#0099FF"
+      },
+      {
+        "value": 3,
+        "label": "3 - High",
+        "color": "#0033CC"
+      }
+    ],
+    "legend_text": "ICA flood recurrence"
+  },
+  "ica_landslide": {
+    "title": "Landslide recurrence",
+    "type": "admin_level_data",
+    "path": "data/rbd/ica.json",
+    "data_field": "lsclass",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 - Low",
+        "color": "#FFCCFF"
+      },
+      {
+        "value": 2,
+        "label": "2 - Medium",
+        "color": "#FF99FF"
+      },
+      {
+        "value": 3,
+        "label": "3 - High",
+        "color": "#CC3399"
+      }
+    ],
+    "legend_text": "ICA landslide recurrence"
+  },
+  "ica_combined_hazard_risk_natl": {
+    "title": "Combined hazard risk - national",
+    "type": "admin_level_data",
+    "path": "data/rbd/ica.json",
+    "data_field": "combined_hazard_risk_nat",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 - Low",
+        "color": "#B4C8D4"
+      },
+      {
+        "value": 2,
+        "label": "2 - Medium",
+        "color": "#89A9BD"
+      },
+      {
+        "value": 3,
+        "label": "3 - High",
+        "color": "#416073"
+      }
+    ],
+    "legend_text": "ICA combined hazard risk - national"
+  },
+  "ica_combined_hazard_risk_reg": {
+    "title": "Combined hazard risk - regional",
+    "type": "admin_level_data",
+    "path": "data/rbd/ica.json",
+    "data_field": "combined_hazard_risk_reg",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 - Low",
+        "color": "#B4C8D4"
+      },
+      {
+        "value": 2,
+        "label": "2 - Medium",
+        "color": "#89A9BD"
+      },
+      {
+        "value": 3,
+        "label": "3 - High",
+        "color": "#416073"
+      }
+    ],
+    "legend_text": "ICA combined hazard risk - regional"
+  },
+  "ica_area_natl": {
+    "title": "ICA focus areas - national",
+    "type": "admin_level_data",
+    "path": "data/rbd/ica_focus_areas.json",
+    "data_field": "ica_area_nat",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": "1",
+        "label": "1A",
+        "color": "#7030A0"
+      },
+      {
+        "value": "2",
+        "label": "1B",
+        "color": "#9954CC"
+      },
+      {
+        "value": "3",
+        "label": "2A",
+        "color": "#E10000"
+      },
+      {
+        "value": "4",
+        "label": "2B",
+        "color": "#E16161"
+      },
+      {
+        "value": "5",
+        "label": "3A",
+        "color": "#FFA401"
+      },
+      {
+        "value": "6",
+        "label": "3B",
+        "color": "#FFC969"
+      },
+      {
+        "value": "7",
+        "label": "4A",
+        "color": "#FFFF00"
+      },
+      {
+        "value": "8",
+        "label": "4B",
+        "color": "#FFFF99"
+      },
+      {
+        "value": "9",
+        "label": "5",
+        "color": "#CCFF99"
+      }
+    ],
+    "legend_text": "ICA focus areas - national"
+  },
+  "ica_area_regional": {
+    "title": "ICA focus areas - regional",
+    "type": "admin_level_data",
+    "path": "data/rbd/ica_focus_areas.json",
+    "data_field": "ica_area_reg",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": "1",
+        "label": "1A",
+        "color": "#7030A0"
+      },
+      {
+        "value": "2",
+        "label": "1B",
+        "color": "#9954CC"
+      },
+      {
+        "value": "3",
+        "label": "2A",
+        "color": "#E10000"
+      },
+      {
+        "value": "4",
+        "label": "2B",
+        "color": "#E16161"
+      },
+      {
+        "value": "5",
+        "label": "3A",
+        "color": "#FFA401"
+      },
+      {
+        "value": "6",
+        "label": "3B",
+        "color": "#FFC969"
+      },
+      {
+        "value": "7",
+        "label": "4A",
+        "color": "#FFFF00"
+      },
+      {
+        "value": "8",
+        "label": "4B",
+        "color": "#FFFF99"
+      },
+      {
+        "value": "9",
+        "label": "5",
+        "color": "#CCFF99"
+      }
+    ],
+    "legend_text": "ICA focus areas - regional"
+  },
+  "mdr_struct_vuln": {
+    "title": "Structural vulnerability",
+    "type": "admin_level_data",
+    "path": "data/rbd/multi_dim_risk.json",
+    "data_field": "struct_vuln",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low",
+        "color": "#fef0d9"
+      },
+      {
+        "value": 19.4009,
+        "label": "Medium",
+        "color": "#fdcc8a"
+      },
+      {
+        "value": 34.7139,
+        "label": "High",
+        "color": "#fc8d59"
+      },
+      {
+        "value": 58.9669,
+        "label": "Very high",
+        "color": "#d7301f"
+      }
+    ],
+    "legend_text": "Structural vulnerability used to calculate multidimensional risk index"
+  },
+  "mdr_stressors": {
+    "title": "Stressors",
+    "type": "admin_level_data",
+    "path": "data/rbd/multi_dim_risk.json",
+    "data_field": "stressors",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low",
+        "color": "#fef0d9"
+      },
+      {
+        "value": 18.0968,
+        "label": "Medium",
+        "color": "#fdcc8a"
+      },
+      {
+        "value": 24.5143,
+        "label": "High",
+        "color": "#fc8d59"
+      },
+      {
+        "value": 32.9188,
+        "label": "Very high",
+        "color": "#d7301f"
+      }
+    ],
+    "legend_text": "Stressors used to calculate multidimensional risk index"
+  },
+  "mdr_coping_capacity": {
+    "title": "Coping capacity",
+    "type": "admin_level_data",
+    "path": "data/rbd/multi_dim_risk.json",
+    "data_field": "coping_cap",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low",
+        "color": "#fef0d9"
+      },
+      {
+        "value": 10.5772,
+        "label": "Medium",
+        "color": "#fdcc8a"
+      },
+      {
+        "value": 38.0143,
+        "label": "High",
+        "color": "#fc8d59"
+      },
+      {
+        "value": 61.9964,
+        "label": "Very high",
+        "color": "#d7301f"
+      }
+    ],
+    "legend_text": "Coping capacity used to calculate multidimensional risk index"
+  },
+  "mdr_fsn_outcomes": {
+    "title": "Food security and nutrition outcomes",
+    "type": "admin_level_data",
+    "path": "data/rbd/multi_dim_risk.json",
+    "data_field": "fs_nut_outcomes",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low",
+        "color": "#fef0d9"
+      },
+      {
+        "value": 29.1667,
+        "label": "Medium",
+        "color": "#fdcc8a"
+      },
+      {
+        "value": 58.3333,
+        "label": "High",
+        "color": "#fc8d59"
+      },
+      {
+        "value": 83.3333,
+        "label": "Very high",
+        "color": "#d7301f"
+      }
+    ],
+    "legend_text": "Food security and nutrition outcomes used to calculate multidimensional risk index"
+  },
+  "mdr_index": {
+    "title": "Multidimensional risk index",
+    "type": "admin_level_data",
+    "path": "data/rbd/multi_dim_risk.json",
+    "data_field": "multi_dim_risk_index",
+    "admin_level": 2,
+    "admin_code": "admin2Pcod",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low",
+        "color": "#fef0d9"
+      },
+      {
+        "value": 17.1044,
+        "label": "Medium",
+        "color": "#fdcc8a"
+      },
+      {
+        "value": 32.5424,
+        "label": "High",
+        "color": "#fc8d59"
+      },
+      {
+        "value": 51.5234,
+        "label": "Very high",
+        "color": "#d7301f"
+      }
+    ],
+    "legend_text": "Multidimensional risk index"
+  },
+  "ch_phase_2022_09": {
+    "title": "Phase classification: September 2022",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch_demo_data.json",
+    "data_field": "max_phase_class",
+    "admin_level": 2,
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Overall phase classification September 2022"
+  },
+  "ch_num_ph_35_2022_09": {
+    "title": "Population in phase 3 to 5: September 2022",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch_demo_data.json",
+    "data_field": "sum_phase35",
+    "admin_level": 2,
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 20,000",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 20000,
+        "label": "20,000 - 30,000",
+        "color": "#fc9272"
+      },
+      {
+        "value": 30000,
+        "label": "30,000 - 40,000",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40000,
+        "label": "40,000 - 50,000",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 75,000",
+        "color": "#cb181d"
+      },
+      {
+        "value": 75000,
+        "label": "> 75,000",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Number of people in areas with phase classification 3 to 5. September 2022"
   }
 }
