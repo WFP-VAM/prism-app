@@ -16,6 +16,8 @@ import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { useLocation } from 'react-router-dom';
+import { snakeCase } from 'lodash';
+import moment from 'moment';
 import { useSafeTranslation } from '../../../i18n';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ReportDoc from './reportDoc';
@@ -55,6 +57,13 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
       tableData={analysisData}
     />
   );
+
+  const getPDFName = () => {
+    const type = snakeCase(analysisResult?.legendText);
+    const date = new Date();
+    const dateString = moment(date).format('DD_MM_YYYY');
+    return `PRISM_report_${type}_${dateString}.pdf`;
+  };
 
   React.useEffect(() => {
     if (!open) {
@@ -113,7 +122,7 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
           {t('P R I S M automated report')}
         </span>
         <Button className={classes.actionButton} variant="outlined">
-          <PDFDownloadLink document={document} fileName="prism-report.pdf">
+          <PDFDownloadLink document={document} fileName={getPDFName()}>
             {
               // eslint-disable-next-line no-unused-vars
               ({ blob, url, loading, error }) =>
