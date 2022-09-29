@@ -341,6 +341,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     legendText,
     groupBy,
     key,
+    date,
   );
 });
 

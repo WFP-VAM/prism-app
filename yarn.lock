@@ -1775,7 +1775,7 @@
     hyphen "^1.6.4"
     ramda "^0.26.1"
 
-"@react-pdf/types@^2.0.8", "@react-pdf/types@^2.0.9":
+"@react-pdf/types@^2.0.8", "@react-pdf/types@^2.0.9", "@react-pdf/types@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@react-pdf/types/-/types-2.1.0.tgz#e377507ae28d043d8911667c8a2a56d77e36fb89"
   integrity sha512-PmmcPFlehRmLEE7p5bhapNya1NS3lV77dRNs9YEf1wNVbKsf10cF4yXDq813cNwm2YYIhCIgaU98O5GBBxMZaQ==

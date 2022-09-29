@@ -141,6 +141,7 @@
     ]
   },
   "devDependencies": {
+    "@react-pdf/types": "^2.1.0",
     "@turf/helpers": "^6.5.0",
     "@types/chart.js": "^2.9.21",
     "@types/colormap": "^2.3.1",

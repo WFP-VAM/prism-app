@@ -15,17 +15,17 @@ import {
 import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
-import { useLocation } from 'react-router-dom';
 import { snakeCase } from 'lodash';
 import moment from 'moment';
 import { useSafeTranslation } from '../../../i18n';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
-import ReportDoc from './reportDoc';
 import {
   analysisResultSelector,
   getCurrentData,
 } from '../../../context/analysisResultStateSlice';
 import { ReportType } from '../utils';
+import { ExposedPopulationResult } from '../../../utils/analysis-utils';
+import ReportDoc from './reportDoc';
 
 function Report({ classes, open, reportType, handleClose }: ReportProps) {
   const theme = useTheme();
@@ -33,17 +33,17 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
   const [mapImage, setMapImage] = React.useState<string>('');
   const selectedMap = useSelector(mapSelector);
   const analysisData = useSelector(getCurrentData);
-  const analysisResult = useSelector(analysisResultSelector);
-  const location = useLocation();
-  const dateQuery = location.search
-    ?.split('&')
-    .find(x => x.startsWith('date='));
-  const eventDate = dateQuery?.split('=')[1];
+  const analysisResult = useSelector(
+    analysisResultSelector,
+  ) as ExposedPopulationResult;
+  const eventDate = analysisResult?.date
+    ? moment(new Date(analysisResult?.date)).format('YYYY-MM-DD')
+    : '';
 
   const document = (
     <ReportDoc
       t={t}
-      exposureLegend={analysisResult?.legend || []}
+      exposureLegendDefinition={analysisResult?.legend || []}
       theme={theme}
       reportType={reportType}
       tableName="Population Exposure"

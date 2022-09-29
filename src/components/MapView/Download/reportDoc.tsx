@@ -9,6 +9,7 @@ import {
 } from '@react-pdf/renderer';
 import { Theme } from '@material-ui/core';
 import { chunk } from 'lodash';
+import { Style } from '@react-pdf/types';
 import {
   TableData,
   TableRowType,
@@ -37,11 +38,11 @@ const makeStyles = (theme: Theme) =>
       marginBottom: 10,
     },
     title: {
-      fontSize: 10.78,
+      fontSize: theme.pdf?.fontSizes.large,
       fontWeight: 500,
     },
     subText: {
-      fontSize: 9.24,
+      fontSize: theme.pdf?.fontSizes.medium,
     },
     mapImage: {
       width: '100%',
@@ -62,7 +63,7 @@ const makeStyles = (theme: Theme) =>
       padding: 10,
     },
     legendTittle: {
-      fontSize: 10.78,
+      fontSize: theme.pdf?.fontSizes.large,
       paddingBottom: 10,
       fontWeight: 500,
     },
@@ -76,7 +77,7 @@ const makeStyles = (theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-      fontSize: 10.78,
+      fontSize: theme.pdf?.fontSizes.large,
       paddingTop: 5,
       paddingRight: 5,
     },
@@ -103,7 +104,7 @@ const makeStyles = (theme: Theme) =>
     },
     tableCell: {
       padding: 8,
-      fontSize: 9.24,
+      fontSize: theme.pdf?.fontSizes.medium,
     },
     tableRow: {
       display: 'flex',
@@ -123,7 +124,7 @@ const makeStyles = (theme: Theme) =>
     },
     footer: {
       position: 'absolute',
-      fontSize: 9.24,
+      fontSize: theme.pdf?.fontSizes.medium,
       bottom: 10,
       left: 10,
       right: 0,
@@ -131,126 +132,28 @@ const makeStyles = (theme: Theme) =>
     },
   });
 
-interface LegendProps {
-  theme: Theme;
+interface PDFLegendDefinition {
+  value: string | number;
+  style: Style | Style[];
 }
 
-const AreasLegend = ({ theme }: LegendProps) => {
-  const styles = makeStyles(theme);
-  return (
-    <View style={styles.legend}>
-      <View>
-        <Text style={styles.legendTittle}>Areas</Text>
-      </View>
-      <View style={styles.legendContentsWrapper}>
-        <View style={styles.legendContent}>
-          <View style={[styles.dash, { backgroundColor: '#000000' }]} />
-          <Text style={[styles.legendText]}>Province</Text>
-        </View>
-        <View style={styles.legendContent}>
-          <View style={[styles.dash, { backgroundColor: '#999797' }]} />
-          <Text style={[styles.legendText]}>District</Text>
-        </View>
-        <View style={styles.legendContent}>
-          <View style={[styles.dash, { backgroundColor: '#D8D6D6' }]} />
-          <Text style={[styles.legendText]}>Township</Text>
-        </View>
-      </View>
-    </View>
-  );
-};
+interface LegendProps {
+  theme: Theme;
+  title: string;
+  definition: PDFLegendDefinition[];
+}
 
-const StormWindBuffersLegend = ({ theme }: LegendProps) => {
+const Legend = ({ theme, title, definition }: LegendProps) => {
   const styles = makeStyles(theme);
   return (
     <View style={styles.legend}>
       <View>
-        <Text style={styles.legendTittle}>Tropical Storms - Wind buffers</Text>
+        <Text style={styles.legendTittle}>{title}</Text>
         <View style={styles.legendContentsWrapper}>
-          <View style={styles.legendContent}>
-            <View
-              style={[
-                styles.borderedBox,
-                { backgroundColor: '#ffffff', borderColor: '#b8b1b1' },
-              ]}
-            />
-            <Text style={[styles.legendText]}>Uncertainty Cones</Text>
-          </View>
-          <View style={styles.legendContent}>
-            <View
-              style={[
-                styles.borderedBox,
-                { backgroundColor: '#fffcf1', borderColor: '#f7e705' },
-              ]}
-            />
-            <Text style={[styles.legendText]}>Wind Buffer 60 km/h</Text>
-          </View>
-          <View style={styles.legendContent}>
-            <View
-              style={[
-                styles.borderedBox,
-                { backgroundColor: '#ffeed8', borderColor: '#f99408' },
-              ]}
-            />
-            <Text style={[styles.legendText]}>Wind Buffer 90 km/h</Text>
-          </View>
-          <View style={styles.legendContent}>
-            <View
-              style={[
-                styles.borderedBox,
-                { backgroundColor: '#fcd4ce', borderColor: '#f90c08' },
-              ]}
-            />
-            <Text style={[styles.legendText]}>Wind Buffer 120 km/h</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-};
-
-const FloodsLegend = ({ theme }: LegendProps) => {
-  const styles = makeStyles(theme);
-  return (
-    <View style={styles.legend}>
-      <View>
-        <Text style={styles.legendTittle}>Potential flooding</Text>
-        <View style={styles.legendContentsWrapper}>
-          <View style={styles.legendContent}>
-            <View style={[styles.box, { backgroundColor: '#a50f15' }]} />
-            <Text style={[styles.legendText]}>flooded</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-};
-
-type PopulationExposureLegendProps = LegendProps & {
-  exposureLegend: LegendDefinition;
-};
-
-const PopulationExposureLegend = ({
-  theme,
-  exposureLegend,
-}: PopulationExposureLegendProps) => {
-  const styles = makeStyles(theme);
-  return (
-    <View style={styles.legend}>
-      <View>
-        <Text style={styles.legendTittle}>Population Exposure</Text>
-        <View style={styles.legendContentsWrapper}>
-          {exposureLegend.map(item => (
+          {definition.map(item => (
             <View style={styles.legendContent}>
-              <View
-                style={[
-                  styles.box,
-                  { backgroundColor: item.color, opacity: 0.5 },
-                ]}
-              />
-              <Text style={[styles.legendText]}>
-                {getLegendItemLabel(item)}
-              </Text>
+              <View style={item.style} />
+              <Text style={[styles.legendText]}>{item.value}</Text>
             </View>
           ))}
         </View>
@@ -309,16 +212,16 @@ const Table = ({
   const styles = makeStyles(theme);
 
   const totals = showTotal
-    ? columns.reduce((colPrev, colCurr) => {
+    ? columns.reduce<number[]>((colPrev, colCurr) => {
         const rowTotal = rows.reduce((rowPrev, rowCurr) => {
-          const val = Number(rowCurr[colCurr as keyof typeof rowCurr]);
+          const val = Number(rowCurr[colCurr]);
           if (!Number.isNaN(val)) {
             return rowPrev + val;
           }
           return rowPrev;
         }, 0);
         return [...colPrev, rowTotal];
-      }, [] as number[])
+      }, [])
     : [];
 
   const firstPageChunk = rows.slice(0, FIRST_PAGE_TABLE_ROWS);
@@ -356,14 +259,11 @@ const Table = ({
                   style={[styles.tableRow, { backgroundColor: color }]}
                   wrap={false}
                 >
-                  {columns.map(col => {
-                    const formattedColValue = getTableCellVal(rowData, col, t);
-                    return (
-                      <Text style={[styles.tableCell, { width: cellWidth }]}>
-                        {formattedColValue}
-                      </Text>
-                    );
-                  })}
+                  {columns.map(col => (
+                    <Text style={[styles.tableCell, { width: cellWidth }]}>
+                      {getTableCellVal(rowData, col, t)}
+                    </Text>
+                  ))}
                   <Text style={[styles.tableCell, { width: cellWidth }]}>
                     {Number(total).toLocaleString('en-US')}
                   </Text>
@@ -423,7 +323,7 @@ const ReportDoc = ({
   tableShowTotal,
   eventName,
   sortByKey,
-  exposureLegend,
+  exposureLegendDefinition,
   t,
 }: ReportDocProps) => {
   const styles = makeStyles(theme);
@@ -449,6 +349,66 @@ const ReportDoc = ({
       ? sortedTableRows.slice(0, tableRowsNum - (tableShowTotal ? 1 : 0))
       : sortedTableRows;
 
+  const areasLegendDefinition: PDFLegendDefinition[] = [
+    {
+      value: 'Province',
+      style: [styles.dash, { backgroundColor: '#000000' }],
+    },
+    {
+      value: 'District',
+      style: [styles.dash, { backgroundColor: '#999797' }],
+    },
+    {
+      value: 'Township',
+      style: [styles.dash, { backgroundColor: '#D8D6D6' }],
+    },
+  ];
+
+  const stormWindBuffersLegendDefinition: PDFLegendDefinition[] = [
+    {
+      value: 'Uncertainty Cones',
+      style: [
+        styles.borderedBox,
+        { backgroundColor: '#ffffff', borderColor: '#b8b1b1' },
+      ],
+    },
+    {
+      value: 'Wind Buffer 60 km/h',
+      style: [
+        styles.borderedBox,
+        { backgroundColor: '#fffcf1', borderColor: '#f7e705' },
+      ],
+    },
+    {
+      value: 'Wind Buffer 90 km/h',
+      style: [
+        styles.borderedBox,
+        { backgroundColor: '#ffeed8', borderColor: '#f99408' },
+      ],
+    },
+    {
+      value: 'Wind Buffer 120 km/h',
+      style: [
+        styles.borderedBox,
+        { backgroundColor: '#fcd4ce', borderColor: '#f90c08' },
+      ],
+    },
+  ];
+
+  const floodsLegendDefinition: PDFLegendDefinition[] = [
+    {
+      value: 'flooded',
+      style: [styles.box, { backgroundColor: '#a50f15' }],
+    },
+  ];
+
+  const populationExposureLegendDefinition: PDFLegendDefinition[] = exposureLegendDefinition.map(
+    item => ({
+      value: getLegendItemLabel(item),
+      style: [styles.box, { backgroundColor: item.color, opacity: 0.5 }],
+    }),
+  );
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -464,23 +424,39 @@ const ReportDoc = ({
           <Image src={mapImage} style={styles.mapImage} />
         </View>
         <View style={[styles.legendsContainer, styles.section]}>
-          <AreasLegend theme={theme} />
+          <Legend
+            theme={theme}
+            title="Areas"
+            definition={areasLegendDefinition}
+          />
           {reportType === ReportType.Storm ? (
-            <StormWindBuffersLegend theme={theme} />
+            <Legend
+              title="Tropical Storms - Wind buffers"
+              definition={stormWindBuffersLegendDefinition}
+              theme={theme}
+            />
           ) : (
-            <FloodsLegend theme={theme} />
+            <Legend
+              title="Potential flooding"
+              definition={floodsLegendDefinition}
+              theme={theme}
+            />
           )}
-          <PopulationExposureLegend
-            exposureLegend={exposureLegend}
+          <Legend
+            title="Population Exposure"
+            definition={populationExposureLegendDefinition}
             theme={theme}
           />
         </View>
         <View style={styles.section}>
-          <Text style={{ fontSize: 7.7 }}>
+          <Text style={{ fontSize: theme.pdf?.fontSizes.small }}>
             Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
           </Text>
           <Text
-            style={{ fontSize: 6.14, color: theme.pdf?.secondaryTextColor }}
+            style={{
+              fontSize: theme.pdf?.fontSizes.extraSmall,
+              color: theme.pdf?.secondaryTextColor,
+            }}
           >
             The designations employed and the presentation of material in the
             map(s) do not imply the expression of any opinion on the part of WFP
@@ -518,7 +494,7 @@ interface ReportDocProps {
   tableShowTotal: boolean;
   eventName: string;
   sortByKey?: keyof TableRowType;
-  exposureLegend: LegendDefinition;
+  exposureLegendDefinition: LegendDefinition;
   t: TFunction;
 }
 

@@ -542,6 +542,7 @@ export class ExposedPopulationResult {
   legend: LegendDefinition;
   legendText: string;
   statistic: AggregationOperations;
+  date: number;
 
   getTitle = (t?: i18nTranslator): string => {
     return t ? t('Population Exposure') : 'Population Exposure';
@@ -558,6 +559,7 @@ export class ExposedPopulationResult {
     legendText: string,
     groupBy: string,
     key: string,
+    date: number,
   ) {
     this.featureCollection = featureCollection;
     this.statistic = statistic;
@@ -565,6 +567,7 @@ export class ExposedPopulationResult {
     this.legendText = legendText;
     this.groupBy = groupBy;
     this.key = key;
+    this.date = date;
   }
 }
 

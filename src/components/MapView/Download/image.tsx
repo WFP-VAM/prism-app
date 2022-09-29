@@ -56,8 +56,9 @@ function DownloadImage({
       await docGeneration;
     } catch (error) {
       console.error(error);
+    } finally {
+      setDownloading(false);
     }
-    setDownloading(false);
 
     handleClose();
   };

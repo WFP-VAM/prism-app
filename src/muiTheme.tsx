@@ -26,6 +26,12 @@ declare module '@material-ui/core/styles/createMuiTheme' {
         darkRowColor?: React.CSSProperties['color'];
         lightRowColor?: React.CSSProperties['color'];
       };
+      fontSizes: {
+        large?: number;
+        medium?: number;
+        small?: number;
+        extraSmall?: number;
+      };
     };
   }
 
@@ -45,6 +51,12 @@ declare module '@material-ui/core/styles/createMuiTheme' {
         borderColor?: React.CSSProperties['color'];
         darkRowColor?: React.CSSProperties['color'];
         lightRowColor?: React.CSSProperties['color'];
+      };
+      fontSizes: {
+        large?: number;
+        medium?: number;
+        small?: number;
+        extraSmall?: number;
       };
     };
   }
@@ -66,6 +78,12 @@ const theme: any = createMuiTheme({
       borderColor: '#C1C1C1',
       darkRowColor: '#EBEBEB',
       lightRowColor: '#F5F5F5',
+    },
+    fontSizes: {
+      large: 10.78,
+      medium: 9.24,
+      small: 7.7,
+      extraSmall: 6.14,
     },
   },
   palette: {
