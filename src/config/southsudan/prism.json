@@ -12,7 +12,7 @@
   "alertFormActive": false,
   "serversUrls": {
     "wms": [
-      "https://odc.ovio.org/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
   "map": {
@@ -21,7 +21,8 @@
     "zoom": 5.4
   },
   "defaultDisplayBoundaries": [
-    "admin_boundaries"
+    "admin_boundaries",
+    "admin1_boundaries"
   ],
   "categories": {
     "rainfall": {
@@ -122,11 +123,49 @@
         "days_dry",
         "streak_dry_days"
       ],
-      "heavy_rain": [
-        "days_heavy_rain",
-        "days_intense_rain",
-        "days_extreme_rain",
-        "streak_heavy_rain"
+      "extreme_rain_events": [
+        {
+          "group_title": "Rainfall categories:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "days_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        },
+        {
+          "group_title": "Consecutive days of rainfall:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "streak_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        }
       ]
     },
     "vegetation": {
