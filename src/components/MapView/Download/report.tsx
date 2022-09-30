@@ -123,11 +123,7 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
         </span>
         <Button className={classes.actionButton} variant="outlined">
           <PDFDownloadLink document={document} fileName={getPDFName()}>
-            {
-              // eslint-disable-next-line no-unused-vars
-              ({ blob, url, loading, error }) =>
-                loading ? 'Loading document...' : 'Download'
-            }
+            {({ loading }) => (loading ? 'Loading document...' : 'Download')}
           </PDFDownloadLink>
         </Button>
       </DialogActions>
