@@ -13,13 +13,17 @@ export type EWSChartConfigObject = { [key: string]: EWSChartConfig };
 export type EWSChartItemsObject = { [key: string]: EWSChartItem };
 
 export const EWSTriggersConfig: EWSChartConfigObject = {
+  normal: {
+    label: 'normal',
+    color: '#1a9641',
+  },
   watchLevel: {
     label: 'watch level',
-    color: '#31a354',
+    color: '#f9d84e',
   },
   warning: {
     label: 'warning',
-    color: '#fdae6b',
+    color: '#fdae61',
   },
   severeWarning: {
     label: 'severe warning',
@@ -35,8 +39,9 @@ type statsEWS = {
 
 enum EWSLevelStatus {
   NORMAL = 0,
-  WARNING = 1,
-  SEVEREWARNING = 2,
+  WATCH = 1,
+  WARNING = 2,
+  SEVEREWARNING = 3,
 }
 
 /* eslint-disable camelcase */
@@ -116,8 +121,12 @@ const getLevelStatus = (
   currentLevel: number,
   levels: EWSTriggerLevels,
 ): EWSLevelStatus => {
-  if (currentLevel < levels.warning) {
+  if (currentLevel < levels.watch_level) {
     return EWSLevelStatus.NORMAL;
+  }
+
+  if (currentLevel >= levels.watch_level && currentLevel < levels.warning) {
+    return EWSLevelStatus.WATCH;
   }
 
   if (currentLevel >= levels.warning && currentLevel < levels.severe_warning) {
