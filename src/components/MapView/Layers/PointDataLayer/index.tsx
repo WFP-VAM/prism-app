@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
-  userAuthSelector,
   clearUserAuthGlobal,
+  userAuthSelector,
   availableDatesSelector,
 } from '../../../../context/serverStateSlice';
 import {

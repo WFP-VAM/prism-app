@@ -1,18 +1,37 @@
 import { GeoJSON } from 'geojson';
+import { TFunction as _TFunction } from 'i18next';
 import { isNumber } from 'lodash';
+import { TableRowType } from '../context/tableStateSlice';
 import { i18nTranslator } from '../i18n';
+
+export type TFunction = _TFunction;
 
 export function getRoundedData(
   data: number | string | null,
   t?: i18nTranslator,
   decimals: number = 3,
 ): string {
+  if (isNumber(data) && Number.isNaN(data)) {
+    return '-';
+  }
   if (isNumber(data)) {
     return parseFloat(data.toFixed(decimals)).toLocaleString();
   }
   // TODO - investigate why we received string 'null' values in data.
   const dataString = data && data !== 'null' ? data : 'No Data';
   return t ? t(dataString) : dataString;
+}
+
+export function getTableCellVal(
+  rowData: TableRowType | undefined,
+  column: string,
+  t: TFunction,
+) {
+  const colValue = rowData ? rowData[column] : column;
+  const formattedColValue = isNumber(colValue)
+    ? getRoundedData(colValue, t)
+    : t(colValue).toLocaleString();
+  return formattedColValue;
 }
 
 // get the first coordinate in a GeoJSON

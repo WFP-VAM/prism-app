@@ -765,7 +765,7 @@ const styles = (theme: Theme) =>
       marginLeft: '10px',
     },
     analyserMenu: {
-      backgroundColor: '#5A686C',
+      backgroundColor: theme.surfaces?.light,
       maxWidth: '100vw',
       color: 'white',
       overflowX: 'hidden',
@@ -792,7 +792,7 @@ const styles = (theme: Theme) =>
       padding: '2px 10px 2px 20px',
     },
     innerAnalysisButton: {
-      backgroundColor: '#3d474a',
+      backgroundColor: theme.surfaces?.dark,
       margin: '10px',
       '&.Mui-disabled': { opacity: 0.5 },
     },
