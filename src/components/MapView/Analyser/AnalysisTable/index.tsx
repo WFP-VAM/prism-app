@@ -9,6 +9,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  Theme,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
@@ -127,7 +128,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   );
 }
 
-const styles = () =>
+const styles = (theme: Theme) =>
   createStyles({
     tableContainer: {
       border: '2px solid',
@@ -135,10 +136,10 @@ const styles = () =>
       maxWidth: '100vw',
     },
     tableHead: {
-      backgroundColor: '#3d474a',
+      backgroundColor: theme.surfaces?.dark,
     },
     innerAnalysisButton: {
-      backgroundColor: '#3d474a',
+      backgroundColor: theme.surfaces?.dark,
     },
   });
 
