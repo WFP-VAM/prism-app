@@ -437,7 +437,7 @@ const ReportDoc = ({
             />
           ) : (
             <Legend
-              title="Potential flooding"
+              title="Potential Flooding"
               definition={floodsLegendDefinition}
               theme={theme}
             />

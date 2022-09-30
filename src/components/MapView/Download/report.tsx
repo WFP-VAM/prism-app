@@ -43,7 +43,7 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
   const document = (
     <ReportDoc
       t={t}
-      exposureLegendDefinition={analysisResult?.legend || []}
+      exposureLegendDefinition={analysisResult?.legend ?? []}
       theme={theme}
       reportType={reportType}
       tableName="Population Exposure"

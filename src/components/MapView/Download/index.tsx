@@ -71,8 +71,8 @@ function Download({ classes }: DownloadProps) {
     ({ id }) => id === 'adamts_buffers',
   );
 
-  const isShowingFloodData = selectedLayers.some(
-    ({ id }) => id === 'hydra_s1' || id === 'hydra_s2' || id === 'hydra_l8',
+  const isShowingFloodData = selectedLayers.some(({ id }) =>
+    id.includes('hydra_'),
   );
 
   const shouldShowReport = isShowingFloodData || isShowingStormData;
