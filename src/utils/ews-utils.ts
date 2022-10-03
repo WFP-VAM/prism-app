@@ -13,13 +13,17 @@ export type EWSChartConfigObject = { [key: string]: EWSChartConfig };
 export type EWSChartItemsObject = { [key: string]: EWSChartItem };
 
 export const EWSTriggersConfig: EWSChartConfigObject = {
+  normal: {
+    label: 'normal',
+    color: '#1a9641',
+  },
   watchLevel: {
     label: 'watch level',
-    color: '#31a354',
+    color: '#f9d84e',
   },
   warning: {
     label: 'warning',
-    color: '#fdae6b',
+    color: '#fdae61',
   },
   severeWarning: {
     label: 'severe warning',
@@ -35,8 +39,9 @@ type statsEWS = {
 
 enum EWSLevelStatus {
   NORMAL = 0,
-  WARNING = 1,
-  SEVEREWARNING = 2,
+  WATCH = 1,
+  WARNING = 2,
+  SEVEREWARNING = 3,
 }
 
 /* eslint-disable camelcase */
@@ -85,20 +90,11 @@ export const fetchEWSDataPointsByLocation = async (
   date: number,
   externalId?: string,
 ): Promise<EWSSensorData[]> => {
-  const momentDate = moment(date);
-
-  const now = moment();
-
-  const hoursDiff = now.diff(momentDate, 'hours');
-
+  const endDate = moment(date)
+    .clone()
+    .set({ hour: 23, minute: 59, second: 59 });
+  const startDate = endDate.clone().subtract(1, 'days');
   const format = 'YYYY-MM-DDTHH:mm:ss';
-
-  const startDate =
-    hoursDiff < 24
-      ? now.clone().subtract(1, 'days').utcOffset('+0700')
-      : momentDate.startOf('day');
-  const endDate =
-    hoursDiff < 24 ? now.utcOffset('+0700') : momentDate.clone().endOf('day');
 
   const url = `${baseUrl}/sensors/sensor_event?start=${startDate.format(
     format,
@@ -116,8 +112,12 @@ const getLevelStatus = (
   currentLevel: number,
   levels: EWSTriggerLevels,
 ): EWSLevelStatus => {
-  if (currentLevel < levels.warning) {
+  if (currentLevel < levels.watch_level) {
     return EWSLevelStatus.NORMAL;
+  }
+
+  if (currentLevel >= levels.watch_level && currentLevel < levels.warning) {
+    return EWSLevelStatus.WATCH;
   }
 
   if (currentLevel >= levels.warning && currentLevel < levels.severe_warning) {
