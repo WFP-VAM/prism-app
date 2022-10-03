@@ -50,7 +50,7 @@ export const getChartAdminBoundaryParams = (
 ): AdminBoundaryParams => {
   const { serverLayerName, chartData } = layer;
 
-  const { levels, url, field: dataField } = chartData!;
+  const { levels, url, fields: datasetFields } = chartData!;
 
   const boundaryProps = levels.reduce(
     (obj, item) => ({
@@ -68,7 +68,7 @@ export const getChartAdminBoundaryParams = (
     boundaryProps,
     serverLayerName,
     url,
-    dataField,
+    datasetFields,
     id: getLowestLevelBoundaryId(levels),
   };
 

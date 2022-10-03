@@ -57,7 +57,7 @@ function DataViewer({ classes }: DatasetProps) {
           boundaryProps: params.boundaryProps,
           url: params.url,
           serverLayerName: params.serverLayerName,
-          dataField: params.dataField,
+          datasetFields: params.datasetFields,
           selectedDate,
         }
       : {
@@ -77,10 +77,10 @@ function DataViewer({ classes }: DatasetProps) {
   const config: ChartConfig = {
     type: chartType,
     stacked: false,
-    fill: false,
     category: PREFIXES.date,
     data: PREFIXES.col,
     transpose: true,
+    displayLegend: isAdminBoundary(params),
   };
 
   const adminBoundaryLevelButtons = isAdminBoundary(params)

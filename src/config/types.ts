@@ -330,11 +330,17 @@ export enum ChartType {
   Line = 'line',
 }
 
+export type DatasetField = {
+  key: string;
+  label: string;
+  fallback?: number; // If key does not exist in json response use fallback (rainfall anomaly).
+};
+
 type DatasetProps = {
   url: string;
   levels: DatasetLevel[];
   type: ChartType;
-  field: string; // Data field from json response.
+  fields: DatasetField[]; // Dataset fields from json response.
 };
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -585,6 +591,7 @@ export interface ChartConfig {
   data?: string;
   transpose?: boolean;
   fill?: boolean;
+  displayLegend?: boolean;
 }
 
 export class TableType {

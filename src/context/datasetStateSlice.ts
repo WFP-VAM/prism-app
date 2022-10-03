@@ -3,7 +3,7 @@ import { orderBy } from 'lodash';
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
-import { ChartType } from '../config/types';
+import { ChartType, DatasetField } from '../config/types';
 import { DEFAULT_DATE_FORMAT } from '../utils/name-utils';
 
 import {
@@ -55,7 +55,7 @@ export type AdminBoundaryParams = {
   url: string;
   serverLayerName: string;
   id: string;
-  dataField: string;
+  datasetFields: DatasetField[];
 };
 
 export type AdminBoundaryRequestParams = AdminBoundaryParams & {
@@ -76,7 +76,7 @@ export enum TableDataFormat {
   TIME = 'time',
 }
 
-export const PREFIXES = { col: 'd', date: 'date' };
+export const PREFIXES = { col: 'd', date: 'Date' };
 
 const createTableData = (
   results: DataItem[],
@@ -95,7 +95,7 @@ const createTableData = (
     );
 
     return {
-      date: moment(row.date).format(momentFormat),
+      [PREFIXES.date]: moment(row.date).format(momentFormat),
       ...valuesObj,
     };
   });
@@ -103,7 +103,7 @@ const createTableData = (
   const columns = Object.keys(sortedRows[0]);
   const initRow = Object.keys(results[0].values).reduce(
     (acc, item, index) => ({ ...acc, [`${PREFIXES.col}${index + 1}`]: item }),
-    { date: PREFIXES.date },
+    { [PREFIXES.date]: PREFIXES.date },
   );
 
   const data: TableData = {
@@ -144,7 +144,7 @@ export const loadEWSDataset = async (
     (acc, [key, value]) => {
       const obj = {
         ...EWSTriggersConfig[key],
-        values: tableData.columns.map(() => value),
+        values: tableData.rows.map(() => value),
       };
 
       return { ...acc, [key]: obj };
@@ -162,7 +162,7 @@ export const loadEWSDataset = async (
 
 const fetchHDC = async (
   url: string,
-  dataField: string,
+  datasetFields: DatasetField[],
   params: { [key: string]: any },
 ): Promise<DataItem[]> => {
   const requestParamsStr = Object.entries(params)
@@ -176,15 +176,19 @@ const fetchHDC = async (
     moment(date).valueOf(),
   );
 
-  const dataItems: DataItem[] = dates.map((date, index) => ({
-    date,
-    values: {
-      [dataField]: responseJson.data[dataField][index].toString(),
-      [`${dataField}_avg`]: responseJson.data[`${dataField}_avg`][
-        index
-      ].toString(),
-    },
-  }));
+  const dataItems: DataItem[] = dates.map((date, index) => {
+    const values = datasetFields.reduce(
+      (acc, field) => ({
+        ...acc,
+        [field.label]: responseJson.data[field.key]
+          ? responseJson.data[field.key][index]
+          : field.fallback,
+      }),
+      {},
+    );
+
+    return { date, values };
+  });
 
   return dataItems;
 };
@@ -195,7 +199,13 @@ export const loadAdminBoundaryDataset = async (
   const endDate = moment(params.selectedDate);
   const startDate = endDate.clone().subtract(1, 'year');
 
-  const { url: hdcUrl, id, boundaryProps, serverLayerName, dataField } = params;
+  const {
+    url: hdcUrl,
+    id,
+    boundaryProps,
+    serverLayerName,
+    datasetFields,
+  } = params;
   const { code: adminCode, level } = boundaryProps[id];
 
   const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);
@@ -210,7 +220,7 @@ export const loadAdminBoundaryDataset = async (
     end: endDateStr,
   };
 
-  const results = await fetchHDC(hdcUrl, dataField, hdcRequestParams);
+  const results = await fetchHDC(hdcUrl, datasetFields, hdcRequestParams);
   const tableData = createTableData(results, TableDataFormat.DATE);
 
   return new Promise<TableData>(resolve => resolve(tableData));

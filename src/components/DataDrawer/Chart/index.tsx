@@ -18,7 +18,12 @@ function colorShuffle(colors: string[]) {
   );
 }
 
-function getChartConfig(stacked: boolean, title: string, xAxisLabel?: string) {
+function getChartConfig(
+  stacked: boolean,
+  title: string,
+  displayLegend: boolean,
+  xAxisLabel?: string,
+) {
   return {
     title: {
       fontColor: '#CCC',
@@ -59,7 +64,7 @@ function getChartConfig(stacked: boolean, title: string, xAxisLabel?: string) {
       ],
     },
     legend: {
-      display: false,
+      display: displayLegend,
       position: 'right',
     },
   } as ChartOptions;
@@ -135,6 +140,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         borderColor: colors[i],
         borderWidth: 2,
         data: tableRows.map(row => (row[index] as number) || null),
+        pointRadius: data.EWSConfig ? 0 : undefined, // Disable point rendering for EWS only.
       }));
 
   const EWSthresholds = data.EWSConfig
@@ -171,6 +177,7 @@ function Chart({ title, data, config, xAxisLabel }: ChartProps) {
               options={getChartConfig(
                 config.stacked || false,
                 title,
+                config.displayLegend || false,
                 xAxisLabel,
               )}
             />
@@ -184,6 +191,7 @@ function Chart({ title, data, config, xAxisLabel }: ChartProps) {
               options={getChartConfig(
                 config.stacked || false,
                 title,
+                config.displayLegend || false,
                 xAxisLabel,
               )}
             />
