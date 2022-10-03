@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
-import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFViewer, PDFDownloadLink, Document } from '@react-pdf/renderer';
 import { snakeCase } from 'lodash';
 import moment from 'moment';
 import { useSafeTranslation } from '../../../i18n';
@@ -30,7 +30,7 @@ import ReportDoc from './reportDoc';
 function Report({ classes, open, reportType, handleClose }: ReportProps) {
   const theme = useTheme();
   const { t } = useSafeTranslation();
-  const [mapImage, setMapImage] = React.useState<string>('');
+  const [mapImage, setMapImage] = React.useState<string | null>(null);
   const selectedMap = useSelector(mapSelector);
   const analysisData = useSelector(getCurrentData);
   const analysisResult = useSelector(
@@ -40,23 +40,26 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
     ? moment(new Date(analysisResult?.date)).format('YYYY-MM-DD')
     : '';
 
-  const document = (
-    <ReportDoc
-      t={t}
-      exposureLegendDefinition={analysisResult?.legend ?? []}
-      theme={theme}
-      reportType={reportType}
-      tableName="Population Exposure"
-      tableShowTotal
-      eventName={
-        reportType === ReportType.Storm
-          ? `Storm Report (${eventDate})`
-          : `Flood Report (${eventDate})`
-      }
-      mapImage={mapImage}
-      tableData={analysisData}
-    />
-  );
+  const document =
+    mapImage !== null ? (
+      <ReportDoc
+        t={t}
+        exposureLegendDefinition={analysisResult?.legend ?? []}
+        theme={theme}
+        reportType={reportType}
+        tableName="Population Exposure"
+        tableShowTotal
+        eventName={
+          reportType === ReportType.Storm
+            ? `Storm Report (${eventDate})`
+            : `Flood Report (${eventDate})`
+        }
+        mapImage={mapImage}
+        tableData={analysisData}
+      />
+    ) : (
+      <Document />
+    );
 
   const getPDFName = () => {
     const type = snakeCase(analysisResult?.legendText);
@@ -78,7 +81,7 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
       }
       return null;
     };
-    setMapImage(getMapImage('png') ?? '');
+    setMapImage(getMapImage('png'));
   }, [open, selectedMap]);
 
   return (
