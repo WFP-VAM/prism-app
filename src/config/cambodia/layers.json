@@ -1714,9 +1714,9 @@
     "legend_text": "This layer shows river water level in millimeters (mm). It is reported from People in Need (PIN) automated river water gauge.",
     "legend": [
       { "label": "0 - Normal", "value": 0, "color": "#1a9641" },
-      { "label": "1 - Watch", "value": 0, "color": "#f9d84e" },
-      { "label": "2 - Warning", "value": 1, "color": "#fdae61" },
-      { "label": "3 - Severe Warning", "value": 2, "color": "#d7191c" }
+      { "label": "1 - Watch", "value": 1, "color": "#f9d84e" },
+      { "label": "2 - Warning", "value": 2, "color": "#fdae61" },
+      { "label": "3 - Severe Warning", "value": 3, "color": "#d7191c" }
     ]
   },
   "flood_report": {
