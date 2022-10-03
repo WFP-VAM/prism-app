@@ -16,6 +16,7 @@ import {
   WMSLayerProps,
   FeatureInfoType,
   FeatureInfoObject,
+  LegendDefinitionItem,
 } from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
@@ -180,3 +181,21 @@ export function getFeatureInfoPropsData(
       };
     }, {});
 }
+
+export enum ReportType {
+  Storm,
+  Flood,
+}
+
+export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
+  if (typeof label === 'string') {
+    return label;
+  }
+  if (typeof value === 'number') {
+    const roundedValue = Math.round(value);
+    return roundedValue === 0
+      ? value.toFixed(2)
+      : roundedValue.toLocaleString('en-US');
+  }
+  return value;
+};

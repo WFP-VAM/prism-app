@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/browser';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Font } from '@react-pdf/renderer';
 import { appConfig } from '../../config';
 // Basic CSS Layout for the whole page
 import './app.css';
@@ -24,6 +25,28 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
     );
   }
 }
+
+// https://github.com/diegomura/react-pdf/issues/1991
+Font.register({
+  family: 'Roboto',
+  fonts: [
+    {
+      src:
+        'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Me5WZLCzYlKw.ttf',
+      fontWeight: 400,
+    },
+    {
+      src:
+        'https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmEU9vAx05IsDqlA.ttf',
+      fontWeight: 500,
+    },
+    {
+      src:
+        'https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlvAx05IsDqlA.ttf',
+      fontWeight: 700,
+    },
+  ],
+});
 
 const Wrapper = () => {
   return (
