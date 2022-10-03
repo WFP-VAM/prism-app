@@ -2,26 +2,34 @@ import React, { useRef, useState } from 'react';
 import {
   Button,
   createStyles,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Grid,
   Hidden,
   ListItemIcon,
   ListItemText,
   MenuItem,
   Theme,
+  Tooltip,
   Typography,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
-import { CloudDownload, ArrowDropDown, Image } from '@material-ui/icons';
-import { jsPDF } from 'jspdf';
+import {
+  CloudDownload,
+  ArrowDropDown,
+  Image,
+  Description,
+} from '@material-ui/icons';
 import { useSelector } from 'react-redux';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import {
+  layersSelector,
+  mapSelector,
+} from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
+import DownloadImage from './image';
+import Report from './report';
+import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
+import { ReportType } from '../utils';
 
 const ExportMenu = withStyles((theme: Theme) => ({
   paper: {
@@ -52,9 +60,34 @@ const ExportMenuItem = withStyles((theme: Theme) => ({
 
 function Download({ classes }: DownloadProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [open, setOpen] = useState(false);
+  const [openImage, setOpenImage] = useState(false);
+  const [openReport, setOpenReport] = useState(false);
   const selectedMap = useSelector(mapSelector);
+  const analysisResult = useSelector(analysisResultSelector);
+  const selectedLayers = useSelector(layersSelector);
   const previewRef = useRef<HTMLCanvasElement>(null);
+
+  const isShowingStormData = selectedLayers.some(
+    ({ id }) => id === 'adamts_buffers',
+  );
+
+  const isShowingFloodData = selectedLayers.some(({ id }) =>
+    id.includes('hydra_'),
+  );
+
+  const shouldShowReport = isShowingFloodData || isShowingStormData;
+
+  const hasAnalysisData = analysisResult !== undefined;
+
+  const tooltipText = (() => {
+    if (!shouldShowReport) {
+      return 'Reports can only be generated for Tropical Storms or Floods, in hazards menu';
+    }
+    if (!hasAnalysisData) {
+      return 'Run analysis first to generate report';
+    }
+    return '';
+  })();
 
   const { t } = useSafeTranslation();
 
@@ -63,6 +96,8 @@ function Download({ classes }: DownloadProps) {
   };
 
   const handleClose = () => {
+    setOpenImage(false);
+    setOpenReport(false);
     setAnchorEl(null);
   };
 
@@ -78,35 +113,9 @@ function Download({ classes }: DownloadProps) {
           context.drawImage(activeLayers, 0, 0);
         }
       }
-      setOpen(true);
+      setOpenImage(true);
     }
     handleClose();
-  };
-
-  const download = (format: string) => {
-    const ext = format === 'pdf' ? 'png' : format;
-    const canvas = previewRef.current;
-    if (canvas) {
-      const file = canvas.toDataURL(`image/${ext}`);
-      if (format === 'pdf') {
-        // eslint-disable-next-line new-cap
-        const pdf = new jsPDF({
-          orientation: 'landscape',
-        });
-        const imgProps = pdf.getImageProperties(file);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        pdf.addImage(file, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save('map.pdf');
-      } else {
-        const link = document.createElement('a');
-        link.setAttribute('href', file);
-        link.setAttribute('download', `map.${ext}`);
-        link.click();
-      }
-      setOpen(false);
-      handleClose();
-    }
   };
 
   return (
@@ -127,64 +136,46 @@ function Download({ classes }: DownloadProps) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
+        {/* https://v4.mui.com/components/tooltips/#disabled-elements */}
+        <Tooltip placement="left" title={tooltipText}>
+          <span style={{ display: 'flex' }}>
+            <ExportMenuItem
+              onClick={() => setOpenReport(true)}
+              disabled={!shouldShowReport || !hasAnalysisData}
+            >
+              <ListItemIcon>
+                <Description fontSize="small" htmlColor="white" />
+              </ListItemIcon>
+              <ListItemText primary={t('REPORT')} />
+            </ExportMenuItem>
+          </span>
+        </Tooltip>
+
         <ExportMenuItem onClick={openModal}>
           <ListItemIcon>
-            <Image fontSize="small" style={{ color: 'white' }} />
+            <Image fontSize="small" htmlColor="white" />
           </ListItemIcon>
           <ListItemText primary={t('IMAGE')} />
         </ExportMenuItem>
       </ExportMenu>
-      <Dialog
-        maxWidth="xl"
-        open={open}
-        keepMounted
-        onClose={() => setOpen(false)}
-        aria-labelledby="dialog-preview"
-      >
-        <DialogTitle className={classes.title} id="dialog-preview">
-          {t('Map Preview')}
-        </DialogTitle>
-        <DialogContent>
-          <canvas ref={previewRef} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)} color="primary">
-            {t('Cancel')}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => download('png')}
-            color="primary"
-          >
-            {t('Download PNG')}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => download('jpeg')}
-            color="primary"
-          >
-            {t('Download JPEG')}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => download('pdf')}
-            color="primary"
-          >
-            {t('Download PDF')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DownloadImage
+        open={openImage}
+        previewRef={previewRef}
+        handleClose={handleClose}
+      />
+      <Report
+        open={openReport}
+        handleClose={handleClose}
+        reportType={isShowingStormData ? ReportType.Storm : ReportType.Flood}
+      />
     </Grid>
   );
 }
 
-const styles = (theme: Theme) =>
+const styles = () =>
   createStyles({
     label: {
       marginLeft: '10px',
-    },
-    title: {
-      color: theme.palette.text.secondary,
     },
   });
 
