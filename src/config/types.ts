@@ -334,6 +334,7 @@ export type DatasetField = {
   key: string;
   label: string;
   fallback?: number; // If key does not exist in json response use fallback (rainfall anomaly).
+  color: string;
 };
 
 type DatasetProps = {
@@ -592,6 +593,7 @@ export interface ChartConfig {
   transpose?: boolean;
   fill?: boolean;
   displayLegend?: boolean;
+  colors?: string[]; // Array of hex codes.
 }
 
 export class TableType {

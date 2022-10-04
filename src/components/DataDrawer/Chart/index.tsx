@@ -110,14 +110,16 @@ function formatChartData(data: TableData, config: ChartConfig) {
   // rainbow-soft map requires nshades to be at least size 11
   const nshades = Math.max(11, !transpose ? tableRows.length : indices.length);
 
-  const colors = colorShuffle(
-    colormap({
-      colormap: 'rainbow-soft',
-      nshades,
-      format: 'hex',
-      alpha: 0.5,
-    }),
-  );
+  const colors =
+    config.colors ||
+    colorShuffle(
+      colormap({
+        colormap: 'rainbow-soft',
+        nshades,
+        format: 'hex',
+        alpha: 0.5,
+      }),
+    );
 
   const labels = !transpose
     ? indices.map(index => header[index])

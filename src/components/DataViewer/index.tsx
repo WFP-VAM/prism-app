@@ -74,6 +74,10 @@ function DataViewer({ classes }: DatasetProps) {
     return null;
   }
 
+  const colors = isAdminBoundary(params)
+    ? params.datasetFields?.map(row => row.color)
+    : undefined;
+
   const config: ChartConfig = {
     type: chartType,
     stacked: false,
@@ -81,6 +85,7 @@ function DataViewer({ classes }: DatasetProps) {
     data: PREFIXES.col,
     transpose: true,
     displayLegend: isAdminBoundary(params),
+    colors,
   };
 
   const adminBoundaryLevelButtons = isAdminBoundary(params)

@@ -45,8 +45,8 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfh", "label": "measure" },
-        { "key": "rfh_avg", "label": "average" }
+        { "key": "rfh", "label": "measure", "color": "#003049" },
+        { "key": "rfh_avg", "label": "average", "color": "#F77F00" }
       ],
       "levels": [
         {
@@ -129,8 +129,13 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", "label": "anomaly" },
-        { "key": "rfq_avg", "label": "average", "fallback": 100 }
+        { "key": "rfq", "label": "anomaly", "color": "#003049" },
+        {
+          "key": "rfq_avg",
+          "label": "average",
+          "fallback": 100,
+          "color": "#F77F00"
+        }
       ],
       "levels": [
         {
@@ -1115,8 +1120,8 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "vim", "label": "measure" },
-        { "key": "vim_avg", "label": "average" }
+        { "key": "vim", "label": "measure", "color": "#003049" },
+        { "key": "vim_avg", "label": "average", "color": "#F77F00" }
       ],
       "levels": [
         {
@@ -1240,8 +1245,8 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "viq", "label": "measure" },
-        { "key": "viq_avg", "label": "average" }
+        { "key": "viq", "label": "measure", "color": "#003049" },
+        { "key": "viq_avg", "label": "average", "color": "#F77F00" }
       ],
       "levels": [
         {
