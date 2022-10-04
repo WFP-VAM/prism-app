@@ -125,18 +125,14 @@ export const loadEWSDataset = async (
     externalId,
   );
 
-  const filterDate = moment(date).endOf('day').valueOf();
+  const results: DataItem[] = dataPoints.map(item => {
+    const [measureDate, value] = item.value;
 
-  const results: DataItem[] = dataPoints
-    .map(item => {
-      const [measureDate, value] = item.value;
-
-      return {
-        date: moment(measureDate).valueOf(),
-        values: { measure: value.toString() },
-      };
-    })
-    .filter(item => item.date <= filterDate); // Api returns items day after.
+    return {
+      date: moment(measureDate).valueOf(),
+      values: { measure: value.toString() },
+    };
+  });
 
   const tableData = createTableData(results, TableDataFormat.TIME);
 
