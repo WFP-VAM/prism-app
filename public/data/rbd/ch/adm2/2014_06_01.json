@@ -1,0 +1,4648 @@
+{
+    "DataList": [
+        {
+            "adm2_pcod2": "BJ0101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0106",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0208",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0209",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0304",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0305",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0306",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0307",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0308",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0402",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0403",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0404",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0405",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0406",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0407",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0408",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0504",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0505",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0506",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0601",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0602",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0603",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0604",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0605",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0606",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0701",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0703",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0702",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0704",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0800",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0901",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0902",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0903",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0904",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0905",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ0906",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1001",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1002",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1003",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1004",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1005",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1006",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1007",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1008",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1009",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1208",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BJ1209",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "BF4601",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4602",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4603",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4604",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4605",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4606",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4701",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4702",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF1300",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4801",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4802",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4803",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4901",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4902",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF4903",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5001",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5002",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5003",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5004",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5101",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5102",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5103",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5201",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5202",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5203",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5204",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5205",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5301",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5302",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5303",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5401",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5402",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5403",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5404",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5501",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5502",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5503",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5601",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5602",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5603",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5604",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5701",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5702",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5703",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "BF5704",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "CM0101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0208",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0209",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0210",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0304",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0402",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0403",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0404",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0405",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0406",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0504",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0601",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0602",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0603",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0604",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0701",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0702",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0703",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0704",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0705",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0706",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0707",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0801",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0802",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0803",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0804",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0805",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0806",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0807",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0808",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0901",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0902",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0903",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM0904",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM1001",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM1002",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM1003",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM1004",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM1005",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CM1006",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF5102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF5101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF7101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6106",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF5201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2106",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2107",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF6204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF1106",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4305",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF4304",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3106",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF3104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF2301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF5301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "CF5302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1902",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1903",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1901",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD2301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD2303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD2001",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD2002",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0402",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0403",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0404",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0601",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0602",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0603",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0704",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0703",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0701",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0702",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0802",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0803",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0801",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0804",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0902",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0903",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0904",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0905",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0901",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD0906",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1002",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1003",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1001",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1402",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1403",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD2102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD2101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1603",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1601",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1602",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD2201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD2202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1701",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1702",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1703",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TD1704",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0106",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0210",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0212",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0238",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0308",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0308",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0408",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0409",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0519",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0611",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0619",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0705",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0706",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0801",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0802",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0803",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0804",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0805",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0806",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0807",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0808",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0809",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0810",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0811",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0812",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0813",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0814",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0815",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0816",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0901",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0902",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0903",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0904",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0905",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH0906",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1001",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1002",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1106",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1107",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1208",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1209",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1210",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1211",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1212",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1213",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1214",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1215",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1305",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1306",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1307",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1308",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1309",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1311",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1404",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1413",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1505",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1514",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1606",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GH1609",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0304",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0402",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0403",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0404",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0405",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0504",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0505",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0601",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0602",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0603",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0604",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0605",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0701",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0702",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0703",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0801",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0802",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0803",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0804",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0805",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "GN0806",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "ML0901",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "ML0701",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0702",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0703",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0704",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0101",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0102",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0103",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0104",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0105",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0106",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0107",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0801",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0802",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0803",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0804",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0201",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0202",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0203",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0204",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0205",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0206",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0207",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0501",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0502",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0503",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0504",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0505",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0506",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0507",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0508",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0401",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0402",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0403",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0404",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0405",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0406",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0407",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0301",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0302",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0303",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0304",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0305",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0306",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0307",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0601",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0602",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0603",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0604",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "ML0605",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "MR0101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0304",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0305",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0504",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0601",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0602",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0701",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0702",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0703",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0707",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0704",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0705",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0706",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0801",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0802",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0803",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0804",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR0900",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1005",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1007",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1008",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1304",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1305",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "MR1306",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NE0101",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0102",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0103",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0104",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0105",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0106",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0201",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0202",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE020202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NE0203",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0204",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0205",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0206",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0301",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0302",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0303",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0304",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE030401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NE0305",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0306",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0307",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0308",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE03041",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NE0401",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0402",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0403",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0404",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0405",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0406",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0408",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0409",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0407",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NE0801",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NE0501",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0502",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0503",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0504",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0505",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0506",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0507",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0508",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0509",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0510",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0511",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0512",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0513",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NE0601",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0602",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0603",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0604",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0605",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0606",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0607",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0608",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0609",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0610",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0611",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0612",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE061207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NE0613",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE06121",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NE0701",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0702",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0703",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0704",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0705",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0706",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0707",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0708",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0709",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0710",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "NE0711",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0106",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0107",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0108",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0109",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0110",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0111",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0112",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0113",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0114",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0115",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0116",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0117",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0208",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0209",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0210",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0211",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0212",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0213",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0214",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0215",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0216",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0217",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0218",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0219",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0220",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0221",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0504",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0505",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0506",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0507",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0508",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0509",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0510",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0511",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0512",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0513",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0514",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0515",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0516",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0517",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0518",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0519",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0520",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0701",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0702",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0703",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG07",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0704",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0705",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0706",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0707",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0708",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0709",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0710",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0711",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0712",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0713",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0714",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0715",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0716",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0717",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0718",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0719",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0720",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0721",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0722",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0723",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0801",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0802",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0803",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0804",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0805",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0806",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0807",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0808",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0809",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0810",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0811",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0812",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0813",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0814",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0815",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0816",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0817",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0818",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0819",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0820",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0821",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0822",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0823",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0824",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0825",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0826",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0827",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0901",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0902",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0903",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0905",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0906",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0907",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0908",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0909",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0910",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0911",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0912",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0913",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0914",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0915",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0916",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0917",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0918",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG0919",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1208",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1209",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1210",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1211",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1212",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1213",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1214",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1215",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1216",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1217",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1218",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1402",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1403",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1404",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1405",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1406",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1407",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1408",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1409",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1410",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1411",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1412",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1413",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1414",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1415",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1416",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1417",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1504",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1505",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1506",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1601",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1602",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1603",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1604",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1605",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1606",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1607",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1608",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1609",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1610",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1611",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1801",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1802",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1803",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1804",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1805",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1806",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1807",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1808",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1809",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1810",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1811",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1812",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1813",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1814",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1815",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1816",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1817",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1818",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1819",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1820",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1821",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1822",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1823",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1824",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1825",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1826",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1827",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1901",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1902",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1903",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1904",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1905",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1906",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1907",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1908",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1909",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1910",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1911",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1912",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1913",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1914",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1915",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1916",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1917",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1918",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1919",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1920",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1921",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1922",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG1923",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2001",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2002",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2003",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2004",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2005",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2006",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2007",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2008",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2009",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2010",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2011",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2012",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2013",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2014",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2015",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2016",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2017",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2018",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2019",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2020",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2021",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2022",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2023",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2024",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2025",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2026",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2027",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2028",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2029",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2030",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2031",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2032",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2033",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2034",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2035",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2036",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2037",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2038",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2039",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2040",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2041",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2042",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2043",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2044",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2106",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2107",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2108",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2109",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2110",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2111",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2112",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2113",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2114",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2115",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2116",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2117",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2118",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2119",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2120",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2121",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2122",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2123",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2124",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2125",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2126",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2127",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2128",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2129",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2130",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2131",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2132",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2133",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2134",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2208",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2209",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2210",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2211",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2212",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2213",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2214",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2215",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2216",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2217",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2218",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2219",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2220",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2221",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2504",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2505",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2506",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2507",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2508",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2509",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2510",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2511",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2512",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2513",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2514",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2515",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2516",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2517",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2518",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2519",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2520",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2701",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2702",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2703",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2704",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2705",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2706",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2707",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2708",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2709",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2710",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2711",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2712",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2713",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2714",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2715",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2716",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2717",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2718",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2719",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2720",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2721",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2722",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2723",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2724",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG2725",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3208",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3209",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3210",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3211",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3212",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3213",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3214",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3215",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3216",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3217",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3402",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3403",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3404",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3406",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3407",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3405",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3408",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3409",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3410",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3411",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3412",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3413",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3414",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3415",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3416",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3417",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3418",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3419",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3420",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3421",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3422",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3423",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3504",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3505",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3506",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3507",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3508",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3509",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3510",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3511",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3512",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3513",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3514",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3515",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3516",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3601",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3602",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3603",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3604",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3605",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3606",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3607",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3608",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3609",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3610",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3611",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3612",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3613",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3614",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3615",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3616",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3617",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3701",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3702",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3703",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3704",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3705",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3706",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3707",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3708",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3709",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3710",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3711",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3712",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3713",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "NG3714",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SN0101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SN0102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SN0103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SN0104",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0201",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0202",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0203",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0301",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0302",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0303",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0401",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0402",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0403",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0405",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0501",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0502",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0503",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0601",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0602",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0603",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0701",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0702",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0703",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0801",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0802",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0803",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0901",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0902",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN0903",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1001",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1002",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1003",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1101",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1102",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1103",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1201",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1202",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1203",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1204",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1301",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1302",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1303",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1401",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1402",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SN1403",
+            "max_phase_class": 1
+        },
+        {
+            "adm2_pcod2": "SL0101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0303",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0304",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0402",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0501",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0502",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "SL0503",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0101",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0102",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0103",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0104",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0105",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0201",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0202",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0203",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0204",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0205",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0206",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0207",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0301",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0302",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0304",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0306",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0307",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0308",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0403",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0410",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0401",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0411",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0404",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0405",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0406",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0412",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0407",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0408",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0409",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0402",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0517",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0513",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0518",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0514",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0519",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0515",
+            "max_phase_class": ""
+        },
+        {
+            "adm2_pcod2": "TG0516",
+            "max_phase_class": ""
+        }
+    ]
+}
