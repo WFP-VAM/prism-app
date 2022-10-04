@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
-import { PDFViewer, PDFDownloadLink, Document } from '@react-pdf/renderer';
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import { snakeCase } from 'lodash';
 import moment from 'moment';
 import { useSafeTranslation } from '../../../i18n';
@@ -40,26 +40,23 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
     ? moment(new Date(analysisResult?.date)).format('YYYY-MM-DD')
     : '';
 
-  const document =
-    mapImage !== null ? (
-      <ReportDoc
-        t={t}
-        exposureLegendDefinition={analysisResult?.legend ?? []}
-        theme={theme}
-        reportType={reportType}
-        tableName="Population Exposure"
-        tableShowTotal
-        eventName={
-          reportType === ReportType.Storm
-            ? `Storm Report (${eventDate})`
-            : `Flood Report (${eventDate})`
-        }
-        mapImage={mapImage}
-        tableData={analysisData}
-      />
-    ) : (
-      <Document />
-    );
+  const document = (
+    <ReportDoc
+      t={t}
+      exposureLegendDefinition={analysisResult?.legend ?? []}
+      theme={theme}
+      reportType={reportType}
+      tableName="Population Exposure"
+      tableShowTotal
+      eventName={
+        reportType === ReportType.Storm
+          ? `Storm Report (${eventDate})`
+          : `Flood Report (${eventDate})`
+      }
+      mapImage={mapImage}
+      tableData={analysisData}
+    />
+  );
 
   const getPDFName = () => {
     const type = snakeCase(analysisResult?.legendText);
