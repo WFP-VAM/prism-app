@@ -1246,7 +1246,12 @@
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "viq", "label": "NDVI anomaly", "color": "#5e803f" },
-        { "key": "viq_avg", "label": "Normal", "color": "#eb3223" }
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "fallback": 100
+        }
       ],
       "levels": [
         {

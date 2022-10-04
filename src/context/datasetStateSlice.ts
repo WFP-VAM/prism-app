@@ -211,7 +211,10 @@ export const loadAdminBoundaryDataset = async (
     level,
     admin_id: adminCode,
     coverage: 'full',
-    vam: serverLayerName.includes('vim') ? 'vim' : 'rfh',
+    vam:
+      serverLayerName.includes('vim') || serverLayerName.includes('viq')
+        ? 'vim'
+        : 'rfh',
     start: startDateStr,
     end: endDateStr,
   };
