@@ -30,7 +30,7 @@ import ReportDoc from './reportDoc';
 function Report({ classes, open, reportType, handleClose }: ReportProps) {
   const theme = useTheme();
   const { t } = useSafeTranslation();
-  const [mapImage, setMapImage] = React.useState<string>('');
+  const [mapImage, setMapImage] = React.useState<string | null>(null);
   const selectedMap = useSelector(mapSelector);
   const analysisData = useSelector(getCurrentData);
   const analysisResult = useSelector(
@@ -78,7 +78,7 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
       }
       return null;
     };
-    setMapImage(getMapImage('png') ?? '');
+    setMapImage(getMapImage('png'));
   }, [open, selectedMap]);
 
   return (

@@ -326,6 +326,9 @@ const ReportDoc = ({
   exposureLegendDefinition,
   t,
 }: ReportDocProps) => {
+  if (mapImage === null) {
+    return <Document />;
+  }
   const styles = makeStyles(theme);
   const date = new Date().toUTCString();
   const tableCellWidth = `${100 / (tableData.columns.length + 1)}%`;
@@ -487,7 +490,7 @@ const ReportDoc = ({
 interface ReportDocProps {
   theme: Theme;
   reportType: ReportType;
-  mapImage: string;
+  mapImage: string | null;
   tableData: TableData;
   tableName: string;
   tableRowsNum?: number;
