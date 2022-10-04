@@ -870,16 +870,6 @@
     "opacity": 0.7,
     "legend_text": "Daytime land surface temperature",
     "legend": [
-      { "value": 0, "label": "0C - 2C", "color": "#1d2e83" },
-      { "value": 2, "label": "2C - 4C", "color": "#24479d" },
-      { "value": 4, "label": "4C - 6C", "color": "#2166ac" },
-      { "value": 6, "label": "6C - 8C", "color": "#0564c3" },
-      { "value": 8, "label": "8C - 10C", "color": "#1d8dbe" },
-      { "value": 10, "label": "10C - 12C", "color": "#34a9c3" },
-      { "value": 12, "label": "12C - 14C", "color": "#005867" },
-      { "value": 14, "label": "14C - 16C", "color": "#378a95" },
-      { "value": 16, "label": "16C - 18C", "color": "#6c9fa4" },
-      { "value": 18, "label": "18C - 20C", "color": "#7ab2b9" },
       { "value": 20, "label": "20C - 22C", "color": "#57bec1" },
       { "value": 22, "label": "22C - 24C", "color": "#85cfba" },
       { "value": 24, "label": "24C - 26C", "color": "#aee0c4" },
@@ -899,12 +889,7 @@
       { "value": 52, "label": "52C - 54C", "color": "#de3f2e" },
       { "value": 54, "label": "54C - 56C", "color": "#cb181d" },
       { "value": 56, "label": "56C - 58C", "color": "#a50026" },
-      { "value": 58, "label": "58C - 60C", "color": "#ad3a00" },
-      { "value": 60, "label": "60C - 62C", "color": "#932700" },
-      { "value": 62, "label": "62C - 64C", "color": "#7a1300" },
-      { "value": 64, "label": "64C - 66C", "color": "#67000d" },
-      { "value": 66, "label": "66C - 70C", "color": "#732600" },
-      { "value": 70, "label": "> 70C", "color": "#460000" }
+      { "value": 58, "label": "58C - 60C", "color": "#ad3a00" }
     ]
   },
   "lst_daytime_1": {
@@ -924,16 +909,6 @@
     "opacity": 0.7,
     "legend_text": "Daytime land surface temperature",
     "legend": [
-      { "value": 0, "label": "0C - 2C", "color": "#1d2e83" },
-      { "value": 2, "label": "2C - 4C", "color": "#24479d" },
-      { "value": 4, "label": "4C - 6C", "color": "#2166ac" },
-      { "value": 6, "label": "6C - 8C", "color": "#0564c3" },
-      { "value": 8, "label": "8C - 10C", "color": "#1d8dbe" },
-      { "value": 10, "label": "10C - 12C", "color": "#34a9c3" },
-      { "value": 12, "label": "12C - 14C", "color": "#005867" },
-      { "value": 14, "label": "14C - 16C", "color": "#378a95" },
-      { "value": 16, "label": "16C - 18C", "color": "#6c9fa4" },
-      { "value": 18, "label": "18C - 20C", "color": "#7ab2b9" },
       { "value": 20, "label": "20C - 22C", "color": "#57bec1" },
       { "value": 22, "label": "22C - 24C", "color": "#85cfba" },
       { "value": 24, "label": "24C - 26C", "color": "#aee0c4" },
@@ -953,16 +928,11 @@
       { "value": 52, "label": "52C - 54C", "color": "#de3f2e" },
       { "value": 54, "label": "54C - 56C", "color": "#cb181d" },
       { "value": 56, "label": "56C - 58C", "color": "#a50026" },
-      { "value": 58, "label": "58C - 60C", "color": "#ad3a00" },
-      { "value": 60, "label": "60C - 62C", "color": "#932700" },
-      { "value": 62, "label": "62C - 64C", "color": "#7a1300" },
-      { "value": 64, "label": "64C - 66C", "color": "#67000d" },
-      { "value": 66, "label": "66C - 70C", "color": "#732600" },
-      { "value": 70, "label": "> 70C", "color": "#460000" }
+      { "value": 58, "label": "58C - 60C", "color": "#ad3a00" }
     ]
   },
     "lst_daytime_blended": {
-      "title": "INAM blended mean maximum air temperature (10-day)",
+      "title": "INAM mean maximum air temperature (10-day)",
       "type": "wms",
       "server_layer_name": "myd11a2_blended_txb_dekad",
       "additional_query_params": {
@@ -1067,7 +1037,7 @@
      ]
     },
     "lst_day_anomaly_blended": {
-      "title": "INAM blended mean maximum air temperature anomaly (10-day)",
+      "title": "INAM mean maximum air temperature anomaly (10-day)",
       "type": "wms",
       "server_layer_name": "myd11a2_blended_txd_dekad",
       "additional_query_params": {

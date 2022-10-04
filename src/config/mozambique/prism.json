@@ -179,7 +179,7 @@
       ]
     },
     "temperature": {
-      "INAM_blended_air_temperature": [
+      "INAM_air_temperature": [
         "lst_daytime_blended",
         "lst_day_anomaly_blended"
       ],
