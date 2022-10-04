@@ -130,7 +130,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         backgroundColor: colors[i],
         borderColor: colors[i],
         borderWidth: 2,
-        pointRadius: data.EWSConfig ? 0 : undefined, // Disable point rendering for EWS only.
+        pointRadius: data.EWSConfig ? 0 : 2, // Disable point rendering for EWS only.
         data: indices.map(index => (row[index] as number) || null),
       }))
     : indices.map((index, i) => ({
@@ -140,7 +140,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         borderColor: colors[i],
         borderWidth: 2,
         data: tableRows.map(row => (row[index] as number) || null),
-        pointRadius: data.EWSConfig ? 0 : undefined, // Disable point rendering for EWS only.
+        pointRadius: data.EWSConfig ? 0 : 2, // Disable point rendering for EWS only.
       }));
 
   const EWSthresholds = data.EWSConfig
