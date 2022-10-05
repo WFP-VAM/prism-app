@@ -27,9 +27,28 @@
   ],
   "categories": {
     "Cadre Harmonisé": {
-      "Cadre Harmonisé 2021": ["ch_2021"],
-      "Cadre Harmonisé 2022": ["ch_phase_2022_09"],
-      "population": ["ch_num_ph_35_2022_09"]
+      "Test_Multiple_Dates": ["ch_phaseclass_adm2"],
+      "Test_Grouped_Layers": [
+        {
+          "group_title": "CH - grouped",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "ch_group_adm1",
+              "label": "adm1"
+            },
+            {
+              "id": "ch_group_adm2",
+              "label": "adm2",
+              "main": true
+            },
+            {
+              "id": "ch_admin2_access_issues",
+              "label": "access issues"
+            }
+          ]
+        }
+      ]
     },
     "rainfall": {
       "rainfall_amount": [

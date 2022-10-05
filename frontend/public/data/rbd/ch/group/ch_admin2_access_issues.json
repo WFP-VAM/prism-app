@@ -1,0 +1,356 @@
+{
+    "DataList": [
+        {
+          "adm2_pcod2": "BF1300",
+          "adm2_5_name": "Kadiogo-urbain",
+          "adm2_5_pcod2": "BF1300_urbain",
+          "date": "2022-06-01",
+          "phase_class": 2,
+          "phase35": 366841
+        },
+        {
+          "adm2_pcod2": "BF4901",
+          "adm2_5_name": "Bam-Idps",
+          "adm2_5_pcod2": "BF4901_IDP",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 32448
+        },
+        {
+          "adm2_pcod2": "BF4903",
+          "adm2_5_name": "Sanmatenga-Idps",
+          "adm2_5_pcod2": "BF4903_IDP",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 188065
+        },
+        {
+          "adm2_pcod2": "BF5202",
+          "adm2_5_name": "Gourma-Idps",
+          "adm2_5_pcod2": "BF5202_IDP",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 33501
+        },
+        {
+          "adm2_pcod2": "BF5203",
+          "adm2_5_name": "Komandjoari-Idps",
+          "adm2_5_pcod2": "BF5203_IDP",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 10716
+        },
+        {
+          "adm2_pcod2": "BF5301",
+          "adm2_5_name": "Houet-urbain",
+          "adm2_5_pcod2": "BF5301_urbain",
+          "date": "2022-06-01",
+          "phase_class": 2,
+          "phase35": 30247
+        },
+        {
+          "adm2_pcod2": "BF5601",
+          "adm2_5_name": "Oudalan_Idps",
+          "adm2_5_pcod2": "BF5601_IDP",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 24897
+        },
+        {
+          "adm2_pcod2": "BF5602",
+          "adm2_5_name": "Seno-Idps",
+          "adm2_5_pcod2": "BF5602_IDP",
+          "date": "2022-06-01",
+          "phase_class": 4,
+          "phase35": 59342
+        },
+        {
+          "adm2_pcod2": "NE0202",
+          "adm2_5_name": "Diffa_limitedaccess",
+          "adm2_5_pcod2": "NE0202_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 45131
+        },
+        {
+          "adm2_pcod2": "NE0202",
+          "adm2_5_name": "Diffa_accessible",
+          "adm2_5_pcod2": "NE0202_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 16954
+        },
+        {
+          "adm2_pcod2": "NE0405",
+          "adm2_5_name": "Guidan Roumdji_accessible",
+          "adm2_5_pcod2": "NE0405_a",
+          "date": "2022-06-01",
+          "phase_class": 2,
+          "phase35": 43875
+        },
+        {
+          "adm2_pcod2": "NE0405",
+          "adm2_5_name": "Guidan Roumdji_limitedaccess",
+          "adm2_5_pcod2": "NE0405_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 40236
+        },
+        {
+          "adm2_pcod2": "NE0406",
+          "adm2_5_name": "Madarounfa_accessible",
+          "adm2_5_pcod2": "NE0406_a",
+          "date": "2022-06-01",
+          "phase_class": 2,
+          "phase35": 38273
+        },
+        {
+          "adm2_pcod2": "NE0406",
+          "adm2_5_name": "Madarounfa_limitedaccess",
+          "adm2_5_pcod2": "NE0406_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 45246
+        },
+        {
+          "adm2_pcod2": "NE0609",
+          "adm2_5_name": "Ouallam_accessible",
+          "adm2_5_pcod2": "NE0609_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 149897
+        },
+        {
+          "adm2_pcod2": "NE0609",
+          "adm2_5_name": "Ouallam_limitedaccess",
+          "adm2_5_pcod2": "NE0609_al",
+          "date": "2022-06-01",
+          "phase_class": 4,
+          "phase35": 83335
+        },
+        {
+          "adm2_pcod2": "NE0612",
+          "adm2_5_name": "Tillaberi_accessible",
+          "adm2_5_pcod2": "NE0612_a",
+          "date": "2022-06-01",
+          "phase_class": 2,
+          "phase35": 46954
+        },
+        {
+          "adm2_pcod2": "NE0612",
+          "adm2_5_name": "Tillaberi_limitedaccess",
+          "adm2_5_pcod2": "NE0612_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 8050
+        },
+        {
+          "adm2_pcod2": "NG07",
+          "adm2_5_name": "Benue-Idps",
+          "adm2_5_pcod2": "NG07_IDP",
+          "date": "2022-06-01",
+          "phase_class": 4,
+          "phase35": 321725
+        },
+        {
+          "adm2_pcod2": "NG0801",
+          "adm2_5_name": "Abadam_limitedaccess",
+          "adm2_5_pcod2": "NG0801_al",
+          "date": "2022-06-01",
+          "phase_class": 4,
+          "phase35": 25637
+        },
+        {
+          "adm2_pcod2": "NG0802",
+          "adm2_5_name": "AskiraUba_accessible",
+          "adm2_5_pcod2": "NG0802_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 65485
+        },
+        {
+          "adm2_pcod2": "NG0802",
+          "adm2_5_name": "AskiraUba_limitedaccess",
+          "adm2_5_pcod2": "NG0802_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 33867
+        },
+        {
+          "adm2_pcod2": "NG0803",
+          "adm2_5_name": "Bama_limitedaccess",
+          "adm2_5_pcod2": "NG0803_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 37284
+        },
+        {
+          "adm2_pcod2": "NG0803",
+          "adm2_5_name": "Bama_accessible",
+          "adm2_5_pcod2": "NG0803_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 35350
+        },
+        {
+          "adm2_pcod2": "NG0807",
+          "adm2_5_name": "Damboa_limitedaccess",
+          "adm2_5_pcod2": "NG0807_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 10225
+        },
+        {
+          "adm2_pcod2": "NG0807",
+          "adm2_5_name": "Damboa_accessible",
+          "adm2_5_pcod2": "NG0807_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 83211
+        },
+        {
+          "adm2_pcod2": "NG0808",
+          "adm2_5_name": "Dikwa_accessible",
+          "adm2_5_pcod2": "NG0808_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 38457
+        },
+        {
+          "adm2_pcod2": "NG0808",
+          "adm2_5_name": "Dikwa_limitedaccess",
+          "adm2_5_pcod2": "NG0808_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 14001
+        },
+        {
+          "adm2_pcod2": "NG0809",
+          "adm2_5_name": "Gubio_limitedaccess",
+          "adm2_5_pcod2": "NG0809_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 17368
+        },
+        {
+          "adm2_pcod2": "NG0809",
+          "adm2_5_name": "Gubio_accessible",
+          "adm2_5_pcod2": "NG0809_a",
+          "date": "2022-06-01",
+          "phase_class": 4,
+          "phase35": 107269
+        },
+        {
+          "adm2_pcod2": "NG0810",
+          "adm2_5_name": "Guzamala_limitedaccess",
+          "adm2_5_pcod2": "NG0810_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 46653
+        },
+        {
+          "adm2_pcod2": "NG0811",
+          "adm2_5_name": "Gwoza_accessible",
+          "adm2_5_pcod2": "NG0811_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 100586
+        },
+        {
+          "adm2_pcod2": "NG0811",
+          "adm2_5_name": "Gwoza_limitedaccess",
+          "adm2_5_pcod2": "NG0811_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 27066
+        },
+        {
+          "adm2_pcod2": "NG0816",
+          "adm2_5_name": "Konduga_accesible",
+          "adm2_5_pcod2": "NG0816_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 86971
+        },
+        {
+          "adm2_pcod2": "NG0816",
+          "adm2_5_name": "Konduga_limitedaccess",
+          "adm2_5_pcod2": "NG0816_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 6439
+        },
+        {
+          "adm2_pcod2": "NG0817",
+          "adm2_5_name": "Kukawa_limitedaccess",
+          "adm2_5_pcod2": "NG0817_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 44625
+        },
+        {
+          "adm2_pcod2": "NG0819",
+          "adm2_5_name": "Mafa_accessible",
+          "adm2_5_pcod2": "NG0819_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 26880
+        },
+        {
+          "adm2_pcod2": "NG0819",
+          "adm2_5_name": "Mafa_limitedaccess",
+          "adm2_5_pcod2": "NG0819_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 9377
+        },
+        {
+          "adm2_pcod2": "NG0820",
+          "adm2_5_name": "Magumeri_limitedaccess",
+          "adm2_5_pcod2": "NG0820_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 54722
+        },
+        {
+          "adm2_pcod2": "NG0820",
+          "adm2_5_name": "Magumeri_accessible",
+          "adm2_5_pcod2": "NG0820_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 47280
+        },
+        {
+          "adm2_pcod2": "NG0822",
+          "adm2_5_name": "Marte_limitedaccess",
+          "adm2_5_pcod2": "NG0822_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 8509
+        },
+        {
+          "adm2_pcod2": "NG0826",
+          "adm2_5_name": "Nganzai_limitedaccess",
+          "adm2_5_pcod2": "NG0826_al",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 24576
+        },
+        {
+          "adm2_pcod2": "NG0826",
+          "adm2_5_name": "Nganzai_accessible",
+          "adm2_5_pcod2": "NG0826_a",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 45374
+        },
+        {
+          "adm2_pcod2": "TG0513",
+          "adm2_5_name": "Naki-Ouest",
+          "adm2_5_pcod2": "TG0513",
+          "date": "2022-06-01",
+          "phase_class": 3,
+          "phase35": 28085
+        }
+      ]
+}

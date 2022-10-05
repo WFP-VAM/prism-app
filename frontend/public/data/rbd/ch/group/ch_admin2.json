@@ -1,0 +1,4120 @@
+{
+    "DataList": [
+        {
+            "adm2_pcod2": "BJ0101",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 9545
+        },
+        {
+            "adm2_pcod2": "BJ0102",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3033
+        },
+        {
+            "adm2_pcod2": "BJ0103",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 9254
+        },
+        {
+            "adm2_pcod2": "BJ0104",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 10274
+        },
+        {
+            "adm2_pcod2": "BJ0105",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 26113
+        },
+        {
+            "adm2_pcod2": "BJ0106",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 5747
+        },
+        {
+            "adm2_pcod2": "BJ0201",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13827
+        },
+        {
+            "adm2_pcod2": "BJ0202",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "BJ0203",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 6104
+        },
+        {
+            "adm2_pcod2": "BJ0204",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "BJ0205",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 23520
+        },
+        {
+            "adm2_pcod2": "BJ0206",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 16074
+        },
+        {
+            "adm2_pcod2": "BJ0207",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4036
+        },
+        {
+            "adm2_pcod2": "BJ0208",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 14496
+        },
+        {
+            "adm2_pcod2": "BJ0209",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2053
+        },
+        {
+            "adm2_pcod2": "BJ0301",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 25408
+        },
+        {
+            "adm2_pcod2": "BJ0302",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 8227
+        },
+        {
+            "adm2_pcod2": "BJ0303",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4365
+        },
+        {
+            "adm2_pcod2": "BJ0304",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4182
+        },
+        {
+            "adm2_pcod2": "BJ0305",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 12238
+        },
+        {
+            "adm2_pcod2": "BJ0306",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13108
+        },
+        {
+            "adm2_pcod2": "BJ0307",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3718
+        },
+        {
+            "adm2_pcod2": "BJ0308",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 9657
+        },
+        {
+            "adm2_pcod2": "BJ0401",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3387
+        },
+        {
+            "adm2_pcod2": "BJ0402",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 10896
+        },
+        {
+            "adm2_pcod2": "BJ0403",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4398
+        },
+        {
+            "adm2_pcod2": "BJ0404",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13660
+        },
+        {
+            "adm2_pcod2": "BJ0405",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6593
+        },
+        {
+            "adm2_pcod2": "BJ0406",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 10192
+        },
+        {
+            "adm2_pcod2": "BJ0407",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 5915
+        },
+        {
+            "adm2_pcod2": "BJ0408",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 28793
+        },
+        {
+            "adm2_pcod2": "BJ0501",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1383
+        },
+        {
+            "adm2_pcod2": "BJ0502",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11574
+        },
+        {
+            "adm2_pcod2": "BJ0503",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 16056
+        },
+        {
+            "adm2_pcod2": "BJ0504",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 14660
+        },
+        {
+            "adm2_pcod2": "BJ0505",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 7461
+        },
+        {
+            "adm2_pcod2": "BJ0506",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4500
+        },
+        {
+            "adm2_pcod2": "BJ0601",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 33119
+        },
+        {
+            "adm2_pcod2": "BJ0602",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13836
+        },
+        {
+            "adm2_pcod2": "BJ0603",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 15958
+        },
+        {
+            "adm2_pcod2": "BJ0604",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 18253
+        },
+        {
+            "adm2_pcod2": "BJ0605",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 20117
+        },
+        {
+            "adm2_pcod2": "BJ0606",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 14864
+        },
+        {
+            "adm2_pcod2": "BJ0701",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 45324
+        },
+        {
+            "adm2_pcod2": "BJ0702",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 17279
+        },
+        {
+            "adm2_pcod2": "BJ0703",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 12815
+        },
+        {
+            "adm2_pcod2": "BJ0704",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 9586
+        },
+        {
+            "adm2_pcod2": "BJ0800",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 113904
+        },
+        {
+            "adm2_pcod2": "BJ0901",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 7288
+        },
+        {
+            "adm2_pcod2": "BJ0902",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 7454
+        },
+        {
+            "adm2_pcod2": "BJ0903",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 5161
+        },
+        {
+            "adm2_pcod2": "BJ0904",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1487
+        },
+        {
+            "adm2_pcod2": "BJ0905",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "BJ0906",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 5418
+        },
+        {
+            "adm2_pcod2": "BJ1001",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3850
+        },
+        {
+            "adm2_pcod2": "BJ1002",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "BJ1003",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1761
+        },
+        {
+            "adm2_pcod2": "BJ1004",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6896
+        },
+        {
+            "adm2_pcod2": "BJ1005",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3374
+        },
+        {
+            "adm2_pcod2": "BJ1006",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 1753
+        },
+        {
+            "adm2_pcod2": "BJ1007",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3811
+        },
+        {
+            "adm2_pcod2": "BJ1008",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "BJ1009",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 17603
+        },
+        {
+            "adm2_pcod2": "BJ1101",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6002
+        },
+        {
+            "adm2_pcod2": "BJ1102",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 7160
+        },
+        {
+            "adm2_pcod2": "BJ1103",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6091
+        },
+        {
+            "adm2_pcod2": "BJ1104",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4788
+        },
+        {
+            "adm2_pcod2": "BJ1105",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 7361
+        },
+        {
+            "adm2_pcod2": "BJ1201",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 7143
+        },
+        {
+            "adm2_pcod2": "BJ1202",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4681
+        },
+        {
+            "adm2_pcod2": "BJ1203",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 11083
+        },
+        {
+            "adm2_pcod2": "BJ1204",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2645
+        },
+        {
+            "adm2_pcod2": "BJ1205",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6377
+        },
+        {
+            "adm2_pcod2": "BJ1206",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3831
+        },
+        {
+            "adm2_pcod2": "BJ1207",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 8569
+        },
+        {
+            "adm2_pcod2": "BJ1208",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4263
+        },
+        {
+            "adm2_pcod2": "BJ1209",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4797
+        },
+        {
+            "adm2_pcod2": "BF1300",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 49484
+        },
+        {
+            "adm2_pcod2": "BF4601",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6352
+        },
+        {
+            "adm2_pcod2": "BF4602",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 22728
+        },
+        {
+            "adm2_pcod2": "BF4603",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 79765
+        },
+        {
+            "adm2_pcod2": "BF4604",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 20896
+        },
+        {
+            "adm2_pcod2": "BF4605",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 11913
+        },
+        {
+            "adm2_pcod2": "BF4606",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 88252
+        },
+        {
+            "adm2_pcod2": "BF4701",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 27028
+        },
+        {
+            "adm2_pcod2": "BF4702",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "BF4801",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 23084
+        },
+        {
+            "adm2_pcod2": "BF4802",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 19308
+        },
+        {
+            "adm2_pcod2": "BF4803",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 41005
+        },
+        {
+            "adm2_pcod2": "BF4901",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 57624
+        },
+        {
+            "adm2_pcod2": "BF4902",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 164212
+        },
+        {
+            "adm2_pcod2": "BF4903",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 132732
+        },
+        {
+            "adm2_pcod2": "BF5001",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 12419
+        },
+        {
+            "adm2_pcod2": "BF5002",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 37632
+        },
+        {
+            "adm2_pcod2": "BF5003",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 10796
+        },
+        {
+            "adm2_pcod2": "BF5004",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 12905
+        },
+        {
+            "adm2_pcod2": "BF5101",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 23991
+        },
+        {
+            "adm2_pcod2": "BF5102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 6267
+        },
+        {
+            "adm2_pcod2": "BF5103",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13326
+        },
+        {
+            "adm2_pcod2": "BF5201",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 151588
+        },
+        {
+            "adm2_pcod2": "BF5202",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 112072
+        },
+        {
+            "adm2_pcod2": "BF5203",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 27720
+        },
+        {
+            "adm2_pcod2": "BF5204",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 36444
+        },
+        {
+            "adm2_pcod2": "BF5205",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 219724
+        },
+        {
+            "adm2_pcod2": "BF5301",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 18113
+        },
+        {
+            "adm2_pcod2": "BF5302",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 8540
+        },
+        {
+            "adm2_pcod2": "BF5303",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 7031
+        },
+        {
+            "adm2_pcod2": "BF5401",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 107942
+        },
+        {
+            "adm2_pcod2": "BF5402",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 73335
+        },
+        {
+            "adm2_pcod2": "BF5403",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 352432
+        },
+        {
+            "adm2_pcod2": "BF5404",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 15376
+        },
+        {
+            "adm2_pcod2": "BF5501",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 25727
+        },
+        {
+            "adm2_pcod2": "BF5502",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 17417
+        },
+        {
+            "adm2_pcod2": "BF5503",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 16795
+        },
+        {
+            "adm2_pcod2": "BF5601",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 38814
+        },
+        {
+            "adm2_pcod2": "BF5602",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 224420
+        },
+        {
+            "adm2_pcod2": "BF5603",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 240779
+        },
+        {
+            "adm2_pcod2": "BF5604",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 97478
+        },
+        {
+            "adm2_pcod2": "BF5701",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 4159
+        },
+        {
+            "adm2_pcod2": "BF5702",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 25556
+        },
+        {
+            "adm2_pcod2": "BF5703",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 5280
+        },
+        {
+            "adm2_pcod2": "BF5704",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 18992
+        },
+        {
+            "adm2_pcod2": "CM0101",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3965
+        },
+        {
+            "adm2_pcod2": "CM0102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 10500
+        },
+        {
+            "adm2_pcod2": "CM0103",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 8904
+        },
+        {
+            "adm2_pcod2": "CM0104",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 10895
+        },
+        {
+            "adm2_pcod2": "CM0105",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 10088
+        },
+        {
+            "adm2_pcod2": "CM0201",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "CM0202",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4305
+        },
+        {
+            "adm2_pcod2": "CM0203",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2843
+        },
+        {
+            "adm2_pcod2": "CM0204",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "CM0205",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "CM0206",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "CM0207",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 28323
+        },
+        {
+            "adm2_pcod2": "CM0208",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "CM0209",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "CM0210",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "CM0301",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 5208
+        },
+        {
+            "adm2_pcod2": "CM0302",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 20704
+        },
+        {
+            "adm2_pcod2": "CM0303",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 13854
+        },
+        {
+            "adm2_pcod2": "CM0304",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 20754
+        },
+        {
+            "adm2_pcod2": "CM0401",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 94737
+        },
+        {
+            "adm2_pcod2": "CM0402",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 272987
+        },
+        {
+            "adm2_pcod2": "CM0403",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 70239
+        },
+        {
+            "adm2_pcod2": "CM0404",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 23876
+        },
+        {
+            "adm2_pcod2": "CM0405",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 138958
+        },
+        {
+            "adm2_pcod2": "CM0406",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 340743
+        },
+        {
+            "adm2_pcod2": "CM0501",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 57078
+        },
+        {
+            "adm2_pcod2": "CM0502",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 4422
+        },
+        {
+            "adm2_pcod2": "CM0503",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4886
+        },
+        {
+            "adm2_pcod2": "CM0504",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 58155
+        },
+        {
+            "adm2_pcod2": "CM0601",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 128596
+        },
+        {
+            "adm2_pcod2": "CM0602",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3496
+        },
+        {
+            "adm2_pcod2": "CM0603",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 39378
+        },
+        {
+            "adm2_pcod2": "CM0604",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 18878
+        },
+        {
+            "adm2_pcod2": "CM0701",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 22555
+        },
+        {
+            "adm2_pcod2": "CM0702",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 159912
+        },
+        {
+            "adm2_pcod2": "CM0703",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 93440
+        },
+        {
+            "adm2_pcod2": "CM0704",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 60954
+        },
+        {
+            "adm2_pcod2": "CM0705",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 165657
+        },
+        {
+            "adm2_pcod2": "CM0706",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 56360
+        },
+        {
+            "adm2_pcod2": "CM0707",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 53574
+        },
+        {
+            "adm2_pcod2": "CM0801",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4401
+        },
+        {
+            "adm2_pcod2": "CM0802",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 2179
+        },
+        {
+            "adm2_pcod2": "CM0803",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2429
+        },
+        {
+            "adm2_pcod2": "CM0804",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 979
+        },
+        {
+            "adm2_pcod2": "CM0805",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4301
+        },
+        {
+            "adm2_pcod2": "CM0806",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 9074
+        },
+        {
+            "adm2_pcod2": "CM0807",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1428
+        },
+        {
+            "adm2_pcod2": "CM0808",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6849
+        },
+        {
+            "adm2_pcod2": "CM0901",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "CM0902",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "CM0903",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "CM0904",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 7150
+        },
+        {
+            "adm2_pcod2": "CM1001",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 126356
+        },
+        {
+            "adm2_pcod2": "CM1002",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 36548
+        },
+        {
+            "adm2_pcod2": "CM1003",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 37659
+        },
+        {
+            "adm2_pcod2": "CM1004",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 43596
+        },
+        {
+            "adm2_pcod2": "CM1005",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 78681
+        },
+        {
+            "adm2_pcod2": "CM1006",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 42433
+        },
+        {
+            "adm2_pcod2": "GH0102",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1834
+        },
+        {
+            "adm2_pcod2": "GH0104",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 684
+        },
+        {
+            "adm2_pcod2": "GH0210",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13958
+        },
+        {
+            "adm2_pcod2": "GH0212",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 5471
+        },
+        {
+            "adm2_pcod2": "GH0238",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1632
+        },
+        {
+            "adm2_pcod2": "GH0301",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 564
+        },
+        {
+            "adm2_pcod2": "GH0308",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3252
+        },
+        {
+            "adm2_pcod2": "GH0408",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 10812
+        },
+        {
+            "adm2_pcod2": "GH0409",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 698
+        },
+        {
+            "adm2_pcod2": "GH0503",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2738
+        },
+        {
+            "adm2_pcod2": "GH0519",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11094
+        },
+        {
+            "adm2_pcod2": "GH0611",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH0619",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3993
+        },
+        {
+            "adm2_pcod2": "GH0705",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3056
+        },
+        {
+            "adm2_pcod2": "GH0706",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 761
+        },
+        {
+            "adm2_pcod2": "GH0801",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3079
+        },
+        {
+            "adm2_pcod2": "GH0802",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3427
+        },
+        {
+            "adm2_pcod2": "GH0804",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 6635
+        },
+        {
+            "adm2_pcod2": "GH0805",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2848
+        },
+        {
+            "adm2_pcod2": "GH0806",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1215
+        },
+        {
+            "adm2_pcod2": "GH0810",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3417
+        },
+        {
+            "adm2_pcod2": "GH0813",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 7481
+        },
+        {
+            "adm2_pcod2": "GH0815",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4633
+        },
+        {
+            "adm2_pcod2": "GH0901",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 21420
+        },
+        {
+            "adm2_pcod2": "GH0902",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13948
+        },
+        {
+            "adm2_pcod2": "GH0903",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 28201
+        },
+        {
+            "adm2_pcod2": "GH0904",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2750
+        },
+        {
+            "adm2_pcod2": "GH0905",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH1001",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4310
+        },
+        {
+            "adm2_pcod2": "GH1002",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH1102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 19986
+        },
+        {
+            "adm2_pcod2": "GH1103",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 8243
+        },
+        {
+            "adm2_pcod2": "GH1105",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH1106",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3380
+        },
+        {
+            "adm2_pcod2": "GH1107",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1269
+        },
+        {
+            "adm2_pcod2": "GH1201",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH1202",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2884
+        },
+        {
+            "adm2_pcod2": "GH1203",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1534
+        },
+        {
+            "adm2_pcod2": "GH1204",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 4659
+        },
+        {
+            "adm2_pcod2": "GH1206",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 16835
+        },
+        {
+            "adm2_pcod2": "GH1207",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 566
+        },
+        {
+            "adm2_pcod2": "GH1208",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 4389
+        },
+        {
+            "adm2_pcod2": "GH1209",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH1211",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13611
+        },
+        {
+            "adm2_pcod2": "GH1215",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1740
+        },
+        {
+            "adm2_pcod2": "GH1301",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH1302",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 2738
+        },
+        {
+            "adm2_pcod2": "GH1303",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 511
+        },
+        {
+            "adm2_pcod2": "GH1305",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3082
+        },
+        {
+            "adm2_pcod2": "GH1306",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH1307",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH1308",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 806
+        },
+        {
+            "adm2_pcod2": "GH1309",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH1311",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13574
+        },
+        {
+            "adm2_pcod2": "GH1404",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 651
+        },
+        {
+            "adm2_pcod2": "GH1413",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "GH1505",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 4723
+        },
+        {
+            "adm2_pcod2": "GH1514",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3594
+        },
+        {
+            "adm2_pcod2": "GH1606",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 5329
+        },
+        {
+            "adm2_pcod2": "GH1609",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1148
+        },
+        {
+            "adm2_pcod2": "GN0101",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 21460
+        },
+        {
+            "adm2_pcod2": "GN0102",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 124932
+        },
+        {
+            "adm2_pcod2": "GN0103",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 14665
+        },
+        {
+            "adm2_pcod2": "GN0104",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11479
+        },
+        {
+            "adm2_pcod2": "GN0105",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 8544
+        },
+        {
+            "adm2_pcod2": "GN0301",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13722
+        },
+        {
+            "adm2_pcod2": "GN0302",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 14879
+        },
+        {
+            "adm2_pcod2": "GN0303",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 28298
+        },
+        {
+            "adm2_pcod2": "GN0304",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 25036
+        },
+        {
+            "adm2_pcod2": "GN0401",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 130989
+        },
+        {
+            "adm2_pcod2": "GN0402",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13102
+        },
+        {
+            "adm2_pcod2": "GN0403",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 10167
+        },
+        {
+            "adm2_pcod2": "GN0404",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 16967
+        },
+        {
+            "adm2_pcod2": "GN0405",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 68440
+        },
+        {
+            "adm2_pcod2": "GN0501",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 33264
+        },
+        {
+            "adm2_pcod2": "GN0502",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 37492
+        },
+        {
+            "adm2_pcod2": "GN0503",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 24516
+        },
+        {
+            "adm2_pcod2": "GN0504",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 49880
+        },
+        {
+            "adm2_pcod2": "GN0505",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 28718
+        },
+        {
+            "adm2_pcod2": "GN0601",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 7558
+        },
+        {
+            "adm2_pcod2": "GN0602",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 60182
+        },
+        {
+            "adm2_pcod2": "GN0603",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 53472
+        },
+        {
+            "adm2_pcod2": "GN0604",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 98035
+        },
+        {
+            "adm2_pcod2": "GN0605",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 10984
+        },
+        {
+            "adm2_pcod2": "GN0701",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13495
+        },
+        {
+            "adm2_pcod2": "GN0702",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 44278
+        },
+        {
+            "adm2_pcod2": "GN0703",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 119318
+        },
+        {
+            "adm2_pcod2": "GN0801",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 32938
+        },
+        {
+            "adm2_pcod2": "GN0802",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 18335
+        },
+        {
+            "adm2_pcod2": "GN0803",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 17330
+        },
+        {
+            "adm2_pcod2": "GN0804",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 28124
+        },
+        {
+            "adm2_pcod2": "GN0805",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 30031
+        },
+        {
+            "adm2_pcod2": "GN0806",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 8659
+        },
+        {
+            "adm2_pcod2": "MR0101",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 2271
+        },
+        {
+            "adm2_pcod2": "MR0102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 6418
+        },
+        {
+            "adm2_pcod2": "MR0103",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 1455
+        },
+        {
+            "adm2_pcod2": "MR0104",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 695
+        },
+        {
+            "adm2_pcod2": "MR0201",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 29818
+        },
+        {
+            "adm2_pcod2": "MR0202",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 2659
+        },
+        {
+            "adm2_pcod2": "MR0203",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 12837
+        },
+        {
+            "adm2_pcod2": "MR0204",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 25655
+        },
+        {
+            "adm2_pcod2": "MR0205",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 35807
+        },
+        {
+            "adm2_pcod2": "MR0301",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 25028
+        },
+        {
+            "adm2_pcod2": "MR0302",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 13577
+        },
+        {
+            "adm2_pcod2": "MR0303",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 20909
+        },
+        {
+            "adm2_pcod2": "MR0304",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 16073
+        },
+        {
+            "adm2_pcod2": "MR0305",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 14957
+        },
+        {
+            "adm2_pcod2": "MR0401",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 12355
+        },
+        {
+            "adm2_pcod2": "MR0501",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 50676
+        },
+        {
+            "adm2_pcod2": "MR0502",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 26127
+        },
+        {
+            "adm2_pcod2": "MR0503",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 34376
+        },
+        {
+            "adm2_pcod2": "MR0504",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 15495
+        },
+        {
+            "adm2_pcod2": "MR0601",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 32158
+        },
+        {
+            "adm2_pcod2": "MR0602",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 76270
+        },
+        {
+            "adm2_pcod2": "MR0701",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 33267
+        },
+        {
+            "adm2_pcod2": "MR0702",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 32224
+        },
+        {
+            "adm2_pcod2": "MR0703",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 21722
+        },
+        {
+            "adm2_pcod2": "MR0704",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 28438
+        },
+        {
+            "adm2_pcod2": "MR0705",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 4275
+        },
+        {
+            "adm2_pcod2": "MR0706",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 21857
+        },
+        {
+            "adm2_pcod2": "MR0707",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 2783
+        },
+        {
+            "adm2_pcod2": "MR0801",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 18886
+        },
+        {
+            "adm2_pcod2": "MR0802",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 24687
+        },
+        {
+            "adm2_pcod2": "MR0803",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 11746
+        },
+        {
+            "adm2_pcod2": "MR0804",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 33756
+        },
+        {
+            "adm2_pcod2": "MR0900",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 3883
+        },
+        {
+            "adm2_pcod2": "MR1005",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 29417
+        },
+        {
+            "adm2_pcod2": "MR1007",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 29794
+        },
+        {
+            "adm2_pcod2": "MR1008",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 65927
+        },
+        {
+            "adm2_pcod2": "MR1101",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 9749
+        },
+        {
+            "adm2_pcod2": "MR1102",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 1246
+        },
+        {
+            "adm2_pcod2": "MR1103",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 8147
+        },
+        {
+            "adm2_pcod2": "MR1201",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 895
+        },
+        {
+            "adm2_pcod2": "MR1202",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 1084
+        },
+        {
+            "adm2_pcod2": "MR1203",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 10257
+        },
+        {
+            "adm2_pcod2": "MR1301",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 5132
+        },
+        {
+            "adm2_pcod2": "MR1302",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 1863
+        },
+        {
+            "adm2_pcod2": "MR1303",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3179
+        },
+        {
+            "adm2_pcod2": "MR1304",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 6324
+        },
+        {
+            "adm2_pcod2": "MR1305",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 7409
+        },
+        {
+            "adm2_pcod2": "MR1306",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 5358
+        },
+        {
+            "adm2_pcod2": "NE0101",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 5783
+        },
+        {
+            "adm2_pcod2": "NE0102",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 35827
+        },
+        {
+            "adm2_pcod2": "NE0103",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 6118
+        },
+        {
+            "adm2_pcod2": "NE0104",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 11612
+        },
+        {
+            "adm2_pcod2": "NE0105",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 9207
+        },
+        {
+            "adm2_pcod2": "NE0106",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 43142
+        },
+        {
+            "adm2_pcod2": "NE0201",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 40864
+        },
+        {
+            "adm2_pcod2": "NE0203",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 35701
+        },
+        {
+            "adm2_pcod2": "NE0204",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 43148
+        },
+        {
+            "adm2_pcod2": "NE0205",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 16258
+        },
+        {
+            "adm2_pcod2": "NE0206",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 32061
+        },
+        {
+            "adm2_pcod2": "NE0301",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 58550
+        },
+        {
+            "adm2_pcod2": "NE0302",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11116
+        },
+        {
+            "adm2_pcod2": "NE0303",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 145692
+        },
+        {
+            "adm2_pcod2": "NE0304",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 105200
+        },
+        {
+            "adm2_pcod2": "NE03041",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11621
+        },
+        {
+            "adm2_pcod2": "NE0305",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 23937
+        },
+        {
+            "adm2_pcod2": "NE0306",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 26532
+        },
+        {
+            "adm2_pcod2": "NE0307",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 58491
+        },
+        {
+            "adm2_pcod2": "NE0308",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 35206
+        },
+        {
+            "adm2_pcod2": "NE0401",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 22200
+        },
+        {
+            "adm2_pcod2": "NE0402",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 25947
+        },
+        {
+            "adm2_pcod2": "NE0403",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 237056
+        },
+        {
+            "adm2_pcod2": "NE0404",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 28976
+        },
+        {
+            "adm2_pcod2": "NE0407",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 24118
+        },
+        {
+            "adm2_pcod2": "NE0408",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 33523
+        },
+        {
+            "adm2_pcod2": "NE0409",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 100867
+        },
+        {
+            "adm2_pcod2": "NE0501",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 32908
+        },
+        {
+            "adm2_pcod2": "NE0502",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 22690
+        },
+        {
+            "adm2_pcod2": "NE0503",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 35710
+        },
+        {
+            "adm2_pcod2": "NE0504",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 196964
+        },
+        {
+            "adm2_pcod2": "NE0505",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 76837
+        },
+        {
+            "adm2_pcod2": "NE0506",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 86564
+        },
+        {
+            "adm2_pcod2": "NE0507",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 93394
+        },
+        {
+            "adm2_pcod2": "NE0508",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 39787
+        },
+        {
+            "adm2_pcod2": "NE0509",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 154013
+        },
+        {
+            "adm2_pcod2": "NE0510",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 5931
+        },
+        {
+            "adm2_pcod2": "NE0511",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 37257
+        },
+        {
+            "adm2_pcod2": "NE0512",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 14464
+        },
+        {
+            "adm2_pcod2": "NE0513",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 36257
+        },
+        {
+            "adm2_pcod2": "NE0601",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 111026
+        },
+        {
+            "adm2_pcod2": "NE0602",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 31464
+        },
+        {
+            "adm2_pcod2": "NE0603",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 35774
+        },
+        {
+            "adm2_pcod2": "NE0604",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 43740
+        },
+        {
+            "adm2_pcod2": "NE0605",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 44371
+        },
+        {
+            "adm2_pcod2": "NE0606",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 124689
+        },
+        {
+            "adm2_pcod2": "NE0607",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 94488
+        },
+        {
+            "adm2_pcod2": "NE0608",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 67569
+        },
+        {
+            "adm2_pcod2": "NE0610",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 71394
+        },
+        {
+            "adm2_pcod2": "NE0611",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 175723
+        },
+        {
+            "adm2_pcod2": "NE06121",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13152
+        },
+        {
+            "adm2_pcod2": "NE0613",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 114004
+        },
+        {
+            "adm2_pcod2": "NE0701",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 21503
+        },
+        {
+            "adm2_pcod2": "NE0702",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 103947
+        },
+        {
+            "adm2_pcod2": "NE0703",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 73631
+        },
+        {
+            "adm2_pcod2": "NE0704",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 102315
+        },
+        {
+            "adm2_pcod2": "NE0705",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 41530
+        },
+        {
+            "adm2_pcod2": "NE0706",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 128800
+        },
+        {
+            "adm2_pcod2": "NE0707",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 60341
+        },
+        {
+            "adm2_pcod2": "NE0708",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 25678
+        },
+        {
+            "adm2_pcod2": "NE0709",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 63782
+        },
+        {
+            "adm2_pcod2": "NE0710",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 4967
+        },
+        {
+            "adm2_pcod2": "NE0711",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 81593
+        },
+        {
+            "adm2_pcod2": "NE0801",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 168082
+        },
+        {
+            "adm2_pcod2": "NG0101",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 24393
+        },
+        {
+            "adm2_pcod2": "NG0102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 95962
+        },
+        {
+            "adm2_pcod2": "NG0103",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 35655
+        },
+        {
+            "adm2_pcod2": "NG0104",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 40244
+        },
+        {
+            "adm2_pcod2": "NG0105",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 45770
+        },
+        {
+            "adm2_pcod2": "NG0106",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 50991
+        },
+        {
+            "adm2_pcod2": "NG0107",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 44698
+        },
+        {
+            "adm2_pcod2": "NG0108",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 23974
+        },
+        {
+            "adm2_pcod2": "NG0109",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 41176
+        },
+        {
+            "adm2_pcod2": "NG0110",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 51353
+        },
+        {
+            "adm2_pcod2": "NG0111",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 72848
+        },
+        {
+            "adm2_pcod2": "NG0112",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 18749
+        },
+        {
+            "adm2_pcod2": "NG0113",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13359
+        },
+        {
+            "adm2_pcod2": "NG0114",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 20097
+        },
+        {
+            "adm2_pcod2": "NG0115",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 73189
+        },
+        {
+            "adm2_pcod2": "NG0116",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 45961
+        },
+        {
+            "adm2_pcod2": "NG0117",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 34340
+        },
+        {
+            "adm2_pcod2": "NG2507",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 67483
+        },
+        {
+            "adm2_pcod2": "SN0101",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 73833
+        },
+        {
+            "adm2_pcod2": "SN0102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 25486
+        },
+        {
+            "adm2_pcod2": "SN0103",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 60342
+        },
+        {
+            "adm2_pcod2": "SN0104",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 12645
+        },
+        {
+            "adm2_pcod2": "SN0201",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 27730
+        },
+        {
+            "adm2_pcod2": "SN0202",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 24836
+        },
+        {
+            "adm2_pcod2": "SN0203",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 61494
+        },
+        {
+            "adm2_pcod2": "SN0301",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13760
+        },
+        {
+            "adm2_pcod2": "SN0302",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 15113
+        },
+        {
+            "adm2_pcod2": "SN0303",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3882
+        },
+        {
+            "adm2_pcod2": "SN0401",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11172
+        },
+        {
+            "adm2_pcod2": "SN0402",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 14326
+        },
+        {
+            "adm2_pcod2": "SN0403",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 9020
+        },
+        {
+            "adm2_pcod2": "SN0405",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13060
+        },
+        {
+            "adm2_pcod2": "SN0501",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 4556
+        },
+        {
+            "adm2_pcod2": "SN0503",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6445
+        },
+        {
+            "adm2_pcod2": "SN0502",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 9413
+        },
+        {
+            "adm2_pcod2": "SN0601",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 7398
+        },
+        {
+            "adm2_pcod2": "SN0602",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 2976
+        },
+        {
+            "adm2_pcod2": "SN0603",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3414
+        },
+        {
+            "adm2_pcod2": "SN0701",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13006
+        },
+        {
+            "adm2_pcod2": "SN0702",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 9126
+        },
+        {
+            "adm2_pcod2": "SN0703",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 14719
+        },
+        {
+            "adm2_pcod2": "SN0801",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 19945
+        },
+        {
+            "adm2_pcod2": "SN0802",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 21725
+        },
+        {
+            "adm2_pcod2": "SN0803",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 4788
+        },
+        {
+            "adm2_pcod2": "SN0901",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 80341
+        },
+        {
+            "adm2_pcod2": "SN0902",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 91794
+        },
+        {
+            "adm2_pcod2": "SN0903",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 17998
+        },
+        {
+            "adm2_pcod2": "SN1001",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "SN1002",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 32837
+        },
+        {
+            "adm2_pcod2": "SN1003",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 11254
+        },
+        {
+            "adm2_pcod2": "SN1101",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 5906
+        },
+        {
+            "adm2_pcod2": "SN1102",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6333
+        },
+        {
+            "adm2_pcod2": "SN1103",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 4093
+        },
+        {
+            "adm2_pcod2": "SN1201",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 9551
+        },
+        {
+            "adm2_pcod2": "SN1202",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 34755
+        },
+        {
+            "adm2_pcod2": "SN1203",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 3533
+        },
+        {
+            "adm2_pcod2": "SN1204",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 20576
+        },
+        {
+            "adm2_pcod2": "SN1301",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 17054
+        },
+        {
+            "adm2_pcod2": "SN1302",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 51080
+        },
+        {
+            "adm2_pcod2": "SN1303",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "SN1401",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3357
+        },
+        {
+            "adm2_pcod2": "SN1402",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm2_pcod2": "SN1403",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6600
+        },
+        {
+            "adm2_pcod2": "SL0101",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 135712
+        },
+        {
+            "adm2_pcod2": "SL0102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 105983
+        },
+        {
+            "adm2_pcod2": "SL0103",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 82280
+        },
+        {
+            "adm2_pcod2": "SL0201",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 143027
+        },
+        {
+            "adm2_pcod2": "SL0203",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 38289
+        },
+        {
+            "adm2_pcod2": "SL0205",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 81480
+        },
+        {
+            "adm2_pcod2": "SL0206",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 57076
+        },
+        {
+            "adm2_pcod2": "SL0301",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 81750
+        },
+        {
+            "adm2_pcod2": "SL0302",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 69396
+        },
+        {
+            "adm2_pcod2": "SL0303",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 150857
+        },
+        {
+            "adm2_pcod2": "SL0304",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 65622
+        },
+        {
+            "adm2_pcod2": "SL0401",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 78576
+        },
+        {
+            "adm2_pcod2": "SL0402",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 223580
+        },
+        {
+            "adm2_pcod2": "SL0501",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 73341
+        },
+        {
+            "adm2_pcod2": "SL0502",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 115047
+        },
+        {
+            "adm2_pcod2": "SL0503",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 103703
+        },
+        {
+            "adm2_pcod2": "TD0101",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 74851
+        },
+        {
+            "adm2_pcod2": "TD0102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 45516
+        },
+        {
+            "adm2_pcod2": "TD0103",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 19157
+        },
+        {
+            "adm2_pcod2": "TD0201",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11863
+        },
+        {
+            "adm2_pcod2": "TD0202",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 4773
+        },
+        {
+            "adm2_pcod2": "TD0301",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 16541
+        },
+        {
+            "adm2_pcod2": "TD0302",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 31737
+        },
+        {
+            "adm2_pcod2": "TD0303",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 23447
+        },
+        {
+            "adm2_pcod2": "TD0401",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 32643
+        },
+        {
+            "adm2_pcod2": "TD0402",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 29053
+        },
+        {
+            "adm2_pcod2": "TD0403",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6535
+        },
+        {
+            "adm2_pcod2": "TD0404",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 31439
+        },
+        {
+            "adm2_pcod2": "TD0501",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 83190
+        },
+        {
+            "adm2_pcod2": "TD0502",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 57656
+        },
+        {
+            "adm2_pcod2": "TD0503",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11836
+        },
+        {
+            "adm2_pcod2": "TD0601",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 62823
+        },
+        {
+            "adm2_pcod2": "TD0602",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 35873
+        },
+        {
+            "adm2_pcod2": "TD0603",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 35195
+        },
+        {
+            "adm2_pcod2": "TD0701",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 28789
+        },
+        {
+            "adm2_pcod2": "TD0702",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 89826
+        },
+        {
+            "adm2_pcod2": "TD0703",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 15335
+        },
+        {
+            "adm2_pcod2": "TD0704",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 19564
+        },
+        {
+            "adm2_pcod2": "TD0801",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 73208
+        },
+        {
+            "adm2_pcod2": "TD0802",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 18456
+        },
+        {
+            "adm2_pcod2": "TD0803",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 15966
+        },
+        {
+            "adm2_pcod2": "TD0804",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 32641
+        },
+        {
+            "adm2_pcod2": "TD0901",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 10124
+        },
+        {
+            "adm2_pcod2": "TD0902",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 14389
+        },
+        {
+            "adm2_pcod2": "TD0903",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 8592
+        },
+        {
+            "adm2_pcod2": "TD0904",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6670
+        },
+        {
+            "adm2_pcod2": "TD0905",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 18756
+        },
+        {
+            "adm2_pcod2": "TD0906",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 48362
+        },
+        {
+            "adm2_pcod2": "TD1001",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 12120
+        },
+        {
+            "adm2_pcod2": "TD1002",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6854
+        },
+        {
+            "adm2_pcod2": "TD1003",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4881
+        },
+        {
+            "adm2_pcod2": "TD1101",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 29780
+        },
+        {
+            "adm2_pcod2": "TD1102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 32487
+        },
+        {
+            "adm2_pcod2": "TD1103",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 6472
+        },
+        {
+            "adm2_pcod2": "TD1104",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 14382
+        },
+        {
+            "adm2_pcod2": "TD1201",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 31682
+        },
+        {
+            "adm2_pcod2": "TD1202",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 11031
+        },
+        {
+            "adm2_pcod2": "TD1203",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2598
+        },
+        {
+            "adm2_pcod2": "TD1301",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 19357
+        },
+        {
+            "adm2_pcod2": "TD1302",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 5065
+        },
+        {
+            "adm2_pcod2": "TD1303",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 10991
+        },
+        {
+            "adm2_pcod2": "TD1401",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 139973
+        },
+        {
+            "adm2_pcod2": "TD1402",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 25290
+        },
+        {
+            "adm2_pcod2": "TD1403",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 108138
+        },
+        {
+            "adm2_pcod2": "TD1501",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 25868
+        },
+        {
+            "adm2_pcod2": "TD1502",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 27548
+        },
+        {
+            "adm2_pcod2": "TD1503",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 6119
+        },
+        {
+            "adm2_pcod2": "TD1601",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 48201
+        },
+        {
+            "adm2_pcod2": "TD1602",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 46287
+        },
+        {
+            "adm2_pcod2": "TD1603",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11533
+        },
+        {
+            "adm2_pcod2": "TD1701",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 66667
+        },
+        {
+            "adm2_pcod2": "TD1702",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 62251
+        },
+        {
+            "adm2_pcod2": "TD1703",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 52900
+        },
+        {
+            "adm2_pcod2": "TD1704",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 7337
+        },
+        {
+            "adm2_pcod2": "TD1901",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 69098
+        },
+        {
+            "adm2_pcod2": "TD1902",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 26360
+        },
+        {
+            "adm2_pcod2": "TD1903",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 23883
+        },
+        {
+            "adm2_pcod2": "TD2001",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 12527
+        },
+        {
+            "adm2_pcod2": "TD2002",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 7039
+        },
+        {
+            "adm2_pcod2": "TD2101",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 82041
+        },
+        {
+            "adm2_pcod2": "TD2102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 14146
+        },
+        {
+            "adm2_pcod2": "TD2201",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 4993
+        },
+        {
+            "adm2_pcod2": "TD2202",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 4201
+        },
+        {
+            "adm2_pcod2": "TD2301",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 14880
+        },
+        {
+            "adm2_pcod2": "TD2303",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 9078
+        },
+        {
+            "adm2_pcod2": "TG0101",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 12270
+        },
+        {
+            "adm2_pcod2": "TG0102",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1414
+        },
+        {
+            "adm2_pcod2": "TG0205",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13158
+        },
+        {
+            "adm2_pcod2": "TG0206",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 2374
+        },
+        {
+            "adm2_pcod2": "TG0207",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 32041
+        },
+        {
+            "adm2_pcod2": "TG0301",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2408
+        },
+        {
+            "adm2_pcod2": "TG0103",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 21767
+        },
+        {
+            "adm2_pcod2": "TG0302",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 1101
+        },
+        {
+            "adm2_pcod2": "TG0304",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 2299
+        },
+        {
+            "adm2_pcod2": "TG0306",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2653
+        },
+        {
+            "adm2_pcod2": "TG0307",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2081
+        },
+        {
+            "adm2_pcod2": "TG0308",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3553
+        },
+        {
+            "adm2_pcod2": "TG0403",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2185
+        },
+        {
+            "adm2_pcod2": "TG0401",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1348
+        },
+        {
+            "adm2_pcod2": "TG0404",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 499
+        },
+        {
+            "adm2_pcod2": "TG0405",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1536
+        },
+        {
+            "adm2_pcod2": "TG0406",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3127
+        },
+        {
+            "adm2_pcod2": "TG0412",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1802
+        },
+        {
+            "adm2_pcod2": "TG0201",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 5933
+        },
+        {
+            "adm2_pcod2": "TG0408",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 970
+        },
+        {
+            "adm2_pcod2": "TG0407",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 967
+        },
+        {
+            "adm2_pcod2": "TG0409",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 2504
+        },
+        {
+            "adm2_pcod2": "TG0402",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1293
+        },
+        {
+            "adm2_pcod2": "TG0104",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 9999
+        },
+        {
+            "adm2_pcod2": "TG0410",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 787
+        },
+        {
+            "adm2_pcod2": "TG0105",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 36643
+        },
+        {
+            "adm2_pcod2": "TG0411",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1581
+        },
+        {
+            "adm2_pcod2": "TG0513",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 16917
+        },
+        {
+            "adm2_pcod2": "TG0514",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 20051
+        },
+        {
+            "adm2_pcod2": "TG0515",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 38862
+        },
+        {
+            "adm2_pcod2": "TG0516",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 57848
+        },
+        {
+            "adm2_pcod2": "TG0203",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 8995
+        },
+        {
+            "adm2_pcod2": "TG0202",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 4571
+        },
+        {
+            "adm2_pcod2": "TG0517",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 21885
+        },
+        {
+            "adm2_pcod2": "TG0519",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 21897
+        },
+        {
+            "adm2_pcod2": "TG0204",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1637
+        },
+        {
+            "adm2_pcod2": "CF5102",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 5350
+        },
+        {
+            "adm2_pcod2": "CF5101",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 23766
+        },
+        {
+            "adm2_pcod2": "CF6102",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 46774
+        },
+        {
+            "adm2_pcod2": "CF6103",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 31785
+        },
+        {
+            "adm2_pcod2": "CF6104",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 18678
+        },
+        {
+            "adm2_pcod2": "CF6101",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 31101
+        },
+        {
+            "adm2_pcod2": "CF6106",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 16746
+        },
+        {
+            "adm2_pcod2": "CF6105",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 17168
+        },
+        {
+            "adm2_pcod2": "CF6301",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 31370
+        },
+        {
+            "adm2_pcod2": "CF6302",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 922
+        },
+        {
+            "adm2_pcod2": "CF6303",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 30973
+        },
+        {
+            "adm2_pcod2": "CF5201",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 54940
+        },
+        {
+            "adm2_pcod2": "CF4102",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 28248
+        },
+        {
+            "adm2_pcod2": "CF4103",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 11491
+        },
+        {
+            "adm2_pcod2": "CF4104",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 21169
+        },
+        {
+            "adm2_pcod2": "CF4101",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 28223
+        },
+        {
+            "adm2_pcod2": "CF1203",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 17827
+        },
+        {
+            "adm2_pcod2": "CF1204",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 15387
+        },
+        {
+            "adm2_pcod2": "CF1205",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 8272
+        },
+        {
+            "adm2_pcod2": "CF1201",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 65873
+        },
+        {
+            "adm2_pcod2": "CF1202",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 15292
+        },
+        {
+            "adm2_pcod2": "CF2104",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 9924
+        },
+        {
+            "adm2_pcod2": "CF2101",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 69485
+        },
+        {
+            "adm2_pcod2": "CF2103",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 52574
+        },
+        {
+            "adm2_pcod2": "CF2106",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 12237
+        },
+        {
+            "adm2_pcod2": "CF2107",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 29642
+        },
+        {
+            "adm2_pcod2": "CF2102",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 14045
+        },
+        {
+            "adm2_pcod2": "CF2105",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 6279
+        },
+        {
+            "adm2_pcod2": "CF6205",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 21397
+        },
+        {
+            "adm2_pcod2": "CF6201",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 55703
+        },
+        {
+            "adm2_pcod2": "CF6203",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 17468
+        },
+        {
+            "adm2_pcod2": "CF6202",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 33888
+        },
+        {
+            "adm2_pcod2": "CF6204",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 12265
+        },
+        {
+            "adm2_pcod2": "CF4201",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 80356
+        },
+        {
+            "adm2_pcod2": "CF4202",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 16012
+        },
+        {
+            "adm2_pcod2": "CF2204",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 13097
+        },
+        {
+            "adm2_pcod2": "CF2203",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 18525
+        },
+        {
+            "adm2_pcod2": "CF2202",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 11977
+        },
+        {
+            "adm2_pcod2": "CF2201",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 41014
+        },
+        {
+            "adm2_pcod2": "CF1101",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 140807
+        },
+        {
+            "adm2_pcod2": "CF1104",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 15761
+        },
+        {
+            "adm2_pcod2": "CF1103",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 4854
+        },
+        {
+            "adm2_pcod2": "CF1105",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 15860
+        },
+        {
+            "adm2_pcod2": "CF1102",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 17652
+        },
+        {
+            "adm2_pcod2": "CF1106",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 16288
+        },
+        {
+            "adm2_pcod2": "CF4302",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 5482
+        },
+        {
+            "adm2_pcod2": "CF4301",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 69138
+        },
+        {
+            "adm2_pcod2": "CF4303",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 27852
+        },
+        {
+            "adm2_pcod2": "CF4305",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 24986
+        },
+        {
+            "adm2_pcod2": "CF4304",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 43431
+        },
+        {
+            "adm2_pcod2": "CF3206",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 40337
+        },
+        {
+            "adm2_pcod2": "CF3201",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 68487
+        },
+        {
+            "adm2_pcod2": "CF3205",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 37534
+        },
+        {
+            "adm2_pcod2": "CF3207",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 23091
+        },
+        {
+            "adm2_pcod2": "CF3203",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 12576
+        },
+        {
+            "adm2_pcod2": "CF3202",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 23244
+        },
+        {
+            "adm2_pcod2": "CF3204",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 16868
+        },
+        {
+            "adm2_pcod2": "CF3102",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 56708
+        },
+        {
+            "adm2_pcod2": "CF3106",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 15628
+        },
+        {
+            "adm2_pcod2": "CF3101",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 40395
+        },
+        {
+            "adm2_pcod2": "CF3103",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 21215
+        },
+        {
+            "adm2_pcod2": "CF3105",
+            "date": "2022-06-01",
+            "phase_class": 4,
+            "phase35": 84113
+        },
+        {
+            "adm2_pcod2": "CF3104",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 110407
+        },
+        {
+            "adm2_pcod2": "CF2302",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 8237
+        },
+        {
+            "adm2_pcod2": "CF2303",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 4098
+        },
+        {
+            "adm2_pcod2": "CF2301",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 46681
+        },
+        {
+            "adm2_pcod2": "CF5301",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 24845
+        },
+        {
+            "adm2_pcod2": "CF5302",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 1815
+        },
+        {
+            "adm2_pcod2": "ML0701",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 53206
+        },
+        {
+            "adm2_pcod2": "ML0702",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 46919
+        },
+        {
+            "adm2_pcod2": "ML0703",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 85758
+        },
+        {
+            "adm2_pcod2": "ML0704",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 34970
+        },
+        {
+            "adm2_pcod2": "ML0101",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 10468
+        },
+        {
+            "adm2_pcod2": "ML0102",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 22138
+        },
+        {
+            "adm2_pcod2": "ML0103",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 22991
+        },
+        {
+            "adm2_pcod2": "ML0104",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 8828
+        },
+        {
+            "adm2_pcod2": "ML0105",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 19378
+        },
+        {
+            "adm2_pcod2": "ML0106",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 78633
+        },
+        {
+            "adm2_pcod2": "ML0107",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 7908
+        },
+        {
+            "adm2_pcod2": "ML0801",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 1691
+        },
+        {
+            "adm2_pcod2": "ML0802",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 2999
+        },
+        {
+            "adm2_pcod2": "ML0803",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 1906
+        },
+        {
+            "adm2_pcod2": "ML0804",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 1677
+        },
+        {
+            "adm2_pcod2": "ML0201",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 11410
+        },
+        {
+            "adm2_pcod2": "ML0202",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 7302
+        },
+        {
+            "adm2_pcod2": "ML0203",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 1499
+        },
+        {
+            "adm2_pcod2": "ML0204",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 28577
+        },
+        {
+            "adm2_pcod2": "ML0205",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 13889
+        },
+        {
+            "adm2_pcod2": "ML0206",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6291
+        },
+        {
+            "adm2_pcod2": "ML0207",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 25288
+        },
+        {
+            "adm2_pcod2": "ML0501",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 187248
+        },
+        {
+            "adm2_pcod2": "ML0502",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 126534
+        },
+        {
+            "adm2_pcod2": "ML0503",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 71587
+        },
+        {
+            "adm2_pcod2": "ML0504",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 184157
+        },
+        {
+            "adm2_pcod2": "ML0505",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 194938
+        },
+        {
+            "adm2_pcod2": "ML0506",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 27546
+        },
+        {
+            "adm2_pcod2": "ML0507",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 21898
+        },
+        {
+            "adm2_pcod2": "ML0508",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11345
+        },
+        {
+            "adm2_pcod2": "ML0401",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 9089
+        },
+        {
+            "adm2_pcod2": "ML0402",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 12709
+        },
+        {
+            "adm2_pcod2": "ML0403",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 10577
+        },
+        {
+            "adm2_pcod2": "ML0404",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 147124
+        },
+        {
+            "adm2_pcod2": "ML0405",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 14947
+        },
+        {
+            "adm2_pcod2": "ML0406",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 41584
+        },
+        {
+            "adm2_pcod2": "ML0407",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 13209
+        },
+        {
+            "adm2_pcod2": "ML0301",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 6848
+        },
+        {
+            "adm2_pcod2": "ML0302",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3635
+        },
+        {
+            "adm2_pcod2": "ML0303",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3009
+        },
+        {
+            "adm2_pcod2": "ML0304",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 34674
+        },
+        {
+            "adm2_pcod2": "ML0305",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 32929
+        },
+        {
+            "adm2_pcod2": "ML0306",
+            "date": "2022-06-01",
+            "phase_class": 1,
+            "phase35": 3177
+        },
+        {
+            "adm2_pcod2": "ML0307",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 15801
+        },
+        {
+            "adm2_pcod2": "ML0601",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 11464
+        },
+        {
+            "adm2_pcod2": "ML0602",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 38419
+        },
+        {
+            "adm2_pcod2": "ML0603",
+            "date": "2022-06-01",
+            "phase_class": 3,
+            "phase35": 49745
+        },
+        {
+            "adm2_pcod2": "ML0604",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 26200
+        },
+        {
+            "adm2_pcod2": "ML0605",
+            "date": "2022-06-01",
+            "phase_class": 2,
+            "phase35": 14275
+        }
+    ]
+}
