@@ -21,7 +21,7 @@ import {
   AdminBoundaryParams,
   EWSParams,
   DatasetRequestParams,
-  PREFIXES,
+  CHART_DATA_PREFIXES,
 } from '../../context/datasetStateSlice';
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
 import Chart from '../DataDrawer/Chart';
@@ -81,8 +81,8 @@ function DataViewer({ classes }: DatasetProps) {
   const config: ChartConfig = {
     type: chartType,
     stacked: false,
-    category: PREFIXES.date,
-    data: PREFIXES.col,
+    category: CHART_DATA_PREFIXES.date,
+    data: CHART_DATA_PREFIXES.col,
     transpose: true,
     displayLegend: isAdminBoundary(params),
     colors,

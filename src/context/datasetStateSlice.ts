@@ -76,7 +76,7 @@ export enum TableDataFormat {
   TIME = 'time',
 }
 
-export const PREFIXES = { col: 'd', date: 'Date' };
+export const CHART_DATA_PREFIXES = { col: 'd', date: 'Date' };
 
 const createTableData = (
   results: DataItem[],
@@ -89,21 +89,24 @@ const createTableData = (
     const valuesObj = Object.values(row.values).reduce(
       (acc, item, index) => ({
         ...acc,
-        [`${PREFIXES.col}${index + 1}`]: item,
+        [`${CHART_DATA_PREFIXES.col}${index + 1}`]: item,
       }),
       {},
     );
 
     return {
-      [PREFIXES.date]: moment(row.date).format(momentFormat),
+      [CHART_DATA_PREFIXES.date]: moment(row.date).format(momentFormat),
       ...valuesObj,
     };
   });
 
   const columns = Object.keys(sortedRows[0]);
   const initRow = Object.keys(results[0].values).reduce(
-    (acc, item, index) => ({ ...acc, [`${PREFIXES.col}${index + 1}`]: item }),
-    { [PREFIXES.date]: PREFIXES.date },
+    (acc, item, index) => ({
+      ...acc,
+      [`${CHART_DATA_PREFIXES.col}${index + 1}`]: item,
+    }),
+    { [CHART_DATA_PREFIXES.date]: CHART_DATA_PREFIXES.date },
   );
 
   const data: TableData = {
@@ -156,6 +159,17 @@ export const loadEWSDataset = async (
   return new Promise<TableData>(resolve => resolve(tableDataWithEWSConfig));
 };
 
+type HDCResponse = {
+  data: { [key: string]: number[] };
+  date: string[];
+  valids: number[];
+};
+
+/**
+ * Executes a request to the WFP Humanitarian Data Cube (HDC)
+ *
+ * @return Promise with parsed object from request as DataItem array.
+ */
 const fetchHDC = async (
   url: string,
   datasetFields: DatasetField[],
@@ -166,7 +180,7 @@ const fetchHDC = async (
     .join('&');
 
   const response = await fetch(`${url}?${requestParamsStr}`);
-  const responseJson = await response.json();
+  const responseJson: HDCResponse = await response.json();
 
   const dates: number[] = responseJson.date.map((date: string) =>
     moment(date).valueOf(),
