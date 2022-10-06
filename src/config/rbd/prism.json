@@ -39,12 +39,12 @@
               "main": true
             },
             {
-              "id": "ch_group_adm1",
-              "label": "adm1"
-            },
-            {
               "id": "ch_admin2_access_issues",
               "label": "access issues"
+            },
+            {
+              "id": "ch_group_adm1",
+              "label": "adm1"
             }
           ]
         }

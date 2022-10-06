@@ -2835,7 +2835,6 @@
     "title": "Phase classification: admin 1",
     "type": "admin_level_data",
     "path": "data/rbd/ch/group/ch_admin1.json",
-    "boundary": "admin1_boundaries",
     "admin_level": 1,
     "data_field": "phase_class",
     "admin_code": "adm1_pcod2",
