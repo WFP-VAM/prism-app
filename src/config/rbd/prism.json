@@ -34,13 +34,13 @@
           "activate_all": true,
           "layers": [
             {
-              "id": "ch_group_adm1",
-              "label": "adm1"
-            },
-            {
               "id": "ch_group_adm2",
               "label": "adm2",
               "main": true
+            },
+            {
+              "id": "ch_group_adm1",
+              "label": "adm1"
             },
             {
               "id": "ch_admin2_access_issues",
