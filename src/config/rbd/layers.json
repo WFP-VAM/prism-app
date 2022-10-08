@@ -2741,18 +2741,24 @@
     "legend_text": "Multidimensional risk index"
   },
   "ch_phaseclass_adm2": {
-    "title": "Phase classification",
+    "title": "Phase classification - admin 2",
     "type": "admin_level_data",
     "path": "data/rbd/ch/adm2/{YYYY_MM_DD}.json",
     "dates": [
-      "2014-01-01", "2014-06-01"
+      "2014-01-01", "2014-06-01", "2014-09-01"
     ],
-    "data_field": "max_phase_class",
+    "data_field": "phase_class",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
     "validity": {
-      "days": 90,
+      "days": 150,
       "mode": "forward"
+    },
+    "feature_info_props": {
+      "date": {
+        "type": "text",
+        "label": "Reference period"
+      }
     },
     "opacity": 0.7,
     "legend": [
@@ -2784,13 +2790,76 @@
     ],
     "legend_text": "Overall phase classification"
   },
-  "ch_num_ph_35_2022_09": {
-    "title": "Population in phase 3 to 5: September 2022",
+  "ch_phaseclass_adm1": {
+    "title": "Phase classification - admin 1",
     "type": "admin_level_data",
-    "path": "data/rbd/ch_demo_data.json",
-    "data_field": "sum_phase35",
+    "path": "data/rbd/ch/adm1/{YYYY_MM_DD}.json",
+    "dates": [
+      "2014-01-01", "2014-06-01", "2014-09-01"
+    ],
+    "data_field": "phase_class",
+    "admin_level": 1,
+    "admin_code": "adm1_pcod2",
+    "validity": {
+      "days": 150,
+      "mode": "forward"
+    },
+    "feature_info_props": {
+      "date": {
+        "type": "text",
+        "label": "Reference period"
+      }
+    },
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Overall phase classification"
+  },
+  "ch_pop3_5_adm2": {
+    "title": "Population in Phase 3 to 5 - admin 2",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/adm2/{YYYY_MM_DD}.json",
+    "dates": [
+      "2014-01-01", "2014-06-01", "2014-09-01"
+    ],
+    "data_field": "phase35",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
+    "validity": {
+      "days": 150,
+      "mode": "forward"
+    },
+    "feature_info_props": {
+      "date": {
+        "type": "text",
+        "label": "Reference period"
+      }
+    },
     "opacity": 0.7,
     "legend": [
       {
@@ -2829,7 +2898,67 @@
         "color": "#99000d"
       }
     ],
-    "legend_text": "Number of people in areas with phase classification 3 to 5. September 2022"
+    "legend_text": "Population in phase 3 to phase 5"
+  },
+  "ch_pop3_5_adm1": {
+    "title": "Population in Phase 3 to 5 - admin 1",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/adm1/{YYYY_MM_DD}.json",
+    "dates": [
+      "2014-01-01", "2014-06-01", "2014-09-01"
+    ],
+    "data_field": "phase35",
+    "admin_level": 1,
+    "admin_code": "adm1_pcod2",
+    "validity": {
+      "days": 150,
+      "mode": "forward"
+    },
+    "feature_info_props": {
+      "date": {
+        "type": "text",
+        "label": "Reference period"
+      }
+    },
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 20,000",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 20000,
+        "label": "20,000 - 30,000",
+        "color": "#fc9272"
+      },
+      {
+        "value": 30000,
+        "label": "30,000 - 40,000",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40000,
+        "label": "40,000 - 50,000",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 75,000",
+        "color": "#cb181d"
+      },
+      {
+        "value": 75000,
+        "label": "> 75,000",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Population in phase 3 to phase 5"
   },
   "ch_group_adm1": {
     "title": "Phase classification: admin 1",
