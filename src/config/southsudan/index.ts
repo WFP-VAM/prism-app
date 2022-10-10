@@ -7,5 +7,5 @@ export default {
   appConfig,
   rawLayers,
   rawTables,
-  defaultBoundariesFile: 'wca_admbnda_adm2_ocha.json',
+  defaultBoundariesFile: 'ssd_admbnda_adm2_imwg_nbs_20180817.json',
 };
