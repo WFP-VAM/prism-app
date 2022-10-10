@@ -13,6 +13,7 @@ import {
 } from '../../config/utils';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 import { layerDataSelector } from '../mapStateSlice/selectors';
+import { safeCountry } from '../../config';
 
 export type DataRecord = {
   adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
@@ -24,7 +25,7 @@ export type AdminLevelDataLayerData = {
   layerData: DataRecord[];
 };
 
-export function getAdminLevelDataLayerData(
+export async function getAdminLevelDataLayerData(
   data: { [key: string]: any }[],
   {
     boundary,
@@ -48,6 +49,13 @@ export function getAdminLevelDataLayerData(
   const adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
     getState(),
   ) as LayerData<BoundaryLayerProps> | undefined;
+  // TEMP - for Mozambique, add a 10s wait time to load admin boundaries which are very large
+  if (
+    safeCountry === 'rbd' &&
+    (!adminBoundariesLayer || !adminBoundariesLayer.data)
+  ) {
+    await new Promise(resolve => setTimeout(resolve, 20000));
+  }
   if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
     // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
     throw new Error('Boundary Layer not loaded!');
