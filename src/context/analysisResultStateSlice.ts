@@ -246,7 +246,7 @@ const createAPIRequestParams = (
 
   const { wcsConfig } = geotiffLayer;
   const dateValue =
-    !wcsConfig || wcsConfig.disableDateParam === false ? date : undefined;
+    !wcsConfig || !wcsConfig.disableDateParam ? date : undefined;
 
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
