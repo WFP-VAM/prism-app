@@ -51,7 +51,7 @@ export async function getAdminLevelDataLayerData(
   ) as LayerData<BoundaryLayerProps> | undefined;
   // TEMP - for Mozambique, add a 10s wait time to load admin boundaries which are very large
   if (
-    safeCountry === 'rbd' &&
+    safeCountry === 'mozambique' &&
     (!adminBoundariesLayer || !adminBoundariesLayer.data)
   ) {
     await new Promise(resolve => setTimeout(resolve, 20000));
