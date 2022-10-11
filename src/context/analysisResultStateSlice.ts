@@ -53,8 +53,7 @@ import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
 import { convertToTableData } from '../components/MapView/utils';
 
-const ANALYSIS_API_URL =
-  'http://ec2-3-23-91-214.us-east-2.compute.amazonaws.com/stats'; // TODO both needs to be stored somewhere
+const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
 export type TableRowType = { [key: string]: string | number };
 export type TableData = {
