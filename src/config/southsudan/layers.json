@@ -937,17 +937,17 @@
       { "value": 0, "label": "< 0.10", "color": "#fffae6" },
       { "value": 0.1, "label": "0.10 - 0.15", "color": "#fff0be" },
       { "value": 0.15, "label": "0.15 - 0.20", "color": "#dae3a1" },
-      { "value": 0.20, "label": "0.20 - 0.25", "color": "#ccea83" },
+      { "value": 0.2, "label": "0.20 - 0.25", "color": "#ccea83" },
       { "value": 0.25, "label": "0.25 - 0.30", "color": "#cbff1f" },
-      { "value": 0.30, "label": "0.30 - 0.35", "color": "#86cb66" },
+      { "value": 0.3, "label": "0.30 - 0.35", "color": "#86cb66" },
       { "value": 0.35, "label": "0.35 - 0.40", "color": "#2da155" },
-      { "value": 0.40, "label": "0.40 - 0.50", "color": "#009600" },
-      { "value": 0.50, "label": "0.50 - 0.60", "color": "#006400" },
-      { "value": 0.60, "label": "0.60 - 0.70", "color": "#64a77e" },
-      { "value": 0.70, "label": "0.70 - 0.80", "color": "#328968" },
-      { "value": 0.80, "label": "0.80 - 0.85", "color": "#006b52" },
+      { "value": 0.4, "label": "0.40 - 0.50", "color": "#009600" },
+      { "value": 0.5, "label": "0.50 - 0.60", "color": "#006400" },
+      { "value": 0.6, "label": "0.60 - 0.70", "color": "#64a77e" },
+      { "value": 0.7, "label": "0.70 - 0.80", "color": "#328968" },
+      { "value": 0.8, "label": "0.80 - 0.85", "color": "#006b52" },
       { "value": 0.85, "label": "0.85 - 0.90", "color": "#004e33" },
-      { "value": 0.90, "label": "> 0.90", "color": "#002a1e" }
+      { "value": 0.9, "label": "> 0.90", "color": "#002a1e" }
     ]
   },
   "ndvi_dekad_anomaly": {
@@ -1090,24 +1090,7 @@
       { "value": 28, "label": "28C - 30C", "color": "#dcf1b2" },
       { "value": 30, "label": "30C - 32C", "color": "#e8ffde" },
       { "value": 32, "label": "32C - 34C", "color": "#f2fabc" },
-      { "value": 34, "label": "34C - 36C", "color": "#ffffbf" },
-      { "value": 36, "label": "36C - 38C", "color": "#ffec81" },
-      { "value": 38, "label": "38C - 40C", "color": "#fed380" },
-      { "value": 40, "label": "40C - 42C", "color": "#f5af28" },
-      { "value": 42, "label": "42C - 44C", "color": "#eac98e" },
-      { "value": 44, "label": "44C - 46C", "color": "#d5a45f" },
-      { "value": 46, "label": "46C - 48C", "color": "#bf7f2f" },
-      { "value": 48, "label": "48C - 50C", "color": "#f88d52" },
-      { "value": 50, "label": "50C - 52C", "color": "#f06405" },
-      { "value": 52, "label": "52C - 54C", "color": "#de3f2e" },
-      { "value": 54, "label": "54C - 56C", "color": "#cb181d" },
-      { "value": 56, "label": "56C - 58C", "color": "#a50026" },
-      { "value": 58, "label": "58C - 60C", "color": "#ad3a00" },
-      { "value": 60, "label": "60C - 62C", "color": "#932700" },
-      { "value": 62, "label": "62C - 64C", "color": "#7a1300" },
-      { "value": 64, "label": "64C - 66C", "color": "#67000d" },
-      { "value": 66, "label": "66C - 70C", "color": "#732600" },
-      { "value": 70, "label": "> 70C", "color": "#460000" }
+      { "value": 34, "label": "34C - 36C", "color": "#ffffbf" }
     ]
   },
   "lst_anomaly": {
