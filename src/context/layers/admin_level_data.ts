@@ -48,7 +48,6 @@ export async function getAdminLevelDataLayerData(
   const adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
     getState(),
   ) as LayerData<BoundaryLayerProps> | undefined;
-  
   // TEMP - add a 15s wait time to load admin boundaries which are very large
   // WARNING - This is a hack and should be replaced by a better handling of admin boundaries.
   // TODO - make sure we only run this once.
