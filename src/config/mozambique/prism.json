@@ -28,10 +28,73 @@
   },
   "categories": {
     "rainfall": {
-      "rainfall_amount": [
-        "precip_blended_dekad",
+      "INAM_rainfall_data": [
         {
-          "group_title": "Rainfall Aggregate",
+          "group_title": "Rainfall aggregate",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "precip_blended_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "precip_blended_1m",
+              "label": "1-month"
+            },
+            {
+              "id": "precip_blended_3m",
+              "label": "3-month"
+            },
+            {
+              "id": "precip_blended_6m",
+              "label": "6-month"
+            },
+            {
+              "id": "precip_blended_9m",
+              "label": "9-month"
+            },
+            {
+              "id": "precip_blended_1y",
+              "label": "1-year"
+            }
+          ]
+        },
+        {
+          "group_title": "Rainfall anomaly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "precip_blended_dekad_anomaly",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "precip_blended_anomaly_1m",
+              "label": "1-month"
+            },
+            {
+              "id": "precip_blended_anomaly_3m",
+              "label": "3-month"
+            },
+            {
+              "id": "precip_blended_anomaly_6m",
+              "label": "6-month"
+            },
+            {
+              "id": "precip_blended_anomaly_9m",
+              "label": "9-month"
+            },
+            {
+              "id": "precip_blended_anomaly_1y",
+              "label": "1-year"
+            }
+          ]
+        }
+      ],
+      "global_rainfall_products": [
+        {
+          "group_title": "Rainfall aggregate",
           "activate_all": false,
           "layers": [
             {
@@ -60,12 +123,9 @@
               "label": "1-year"
             }
           ]
-        }
-      ],
-      "rainfall_anomalies": [
-        "precip_blended_dekad_anomaly",
+        },
         {
-          "group_title": "Rainfall Anomaly",
+          "group_title": "Rainfall anomaly",
           "activate_all": false,
           "layers": [
             {
@@ -127,11 +187,49 @@
         "days_dry",
         "streak_dry_days"
       ],
-      "heavy_rain": [
-        "days_heavy_rain",
-        "days_intense_rain",
-        "days_extreme_rain",
-        "streak_heavy_rain"
+      "extreme_rain_events": [
+        {
+          "group_title": "Rainfall categories:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "days_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        },
+        {
+          "group_title": "Consecutive days of rainfall:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "streak_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        }
       ]
     },
     "vegetation": {
@@ -141,7 +239,7 @@
       ]
     },
     "temperature": {
-      "blended_temperature_estimates": [
+      "INAM_air_temperature": [
         "lst_daytime_blended",
         "lst_day_anomaly_blended"
       ],

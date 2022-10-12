@@ -49,12 +49,12 @@ export async function getAdminLevelDataLayerData(
   const adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
     getState(),
   ) as LayerData<BoundaryLayerProps> | undefined;
-  // TEMP - for RBD, add a 10s wait time to load admin boundaries which are very large
-  if (
-    safeCountry === 'rbd' &&
-    (!adminBoundariesLayer || !adminBoundariesLayer.data)
-  ) {
-    await new Promise(resolve => setTimeout(resolve, 20000));
+  
+  // TEMP - add a 15s wait time to load admin boundaries which are very large
+  // WARNING - This is a hack and should be replaced by a better handling of admin boundaries.
+  // TODO - make sure we only run this once.
+  if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
+    await new Promise(resolve => setTimeout(resolve, 15000));
   }
   if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
     // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
