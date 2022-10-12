@@ -50,6 +50,7 @@ export async function getAdminLevelDataLayerData(
   ) as LayerData<BoundaryLayerProps> | undefined;
   // TEMP - add a 15s wait time to load admin boundaries which are very large
   // WARNING - This is a hack and should be replaced by a better handling of admin boundaries.
+  // TODO - make sure we only run this once.
   if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
     await new Promise(resolve => setTimeout(resolve, 15000));
   }
