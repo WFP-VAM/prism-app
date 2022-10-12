@@ -13,7 +13,6 @@ import {
 } from '../../config/utils';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 import { layerDataSelector } from '../mapStateSlice/selectors';
-import { safeCountry } from '../../config';
 
 export type DataRecord = {
   adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
