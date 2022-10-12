@@ -163,6 +163,7 @@ const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesF
 
 export {
   appConfig,
+  safeCountry,
   defaultBoundariesPath,
   rawLayers,
   rawTables,
