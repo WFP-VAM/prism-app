@@ -37,3 +37,5 @@ yarn-error.log*
 
 # ignore shared code packages build files
 packages/*/*.js
+
+packages/common/pnpm-lock.yaml
