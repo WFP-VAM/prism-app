@@ -70,9 +70,6 @@ export function getCapabilitiesUrl(
     });
     return urlObject.toString();
   } catch (error) {
-    if (debug) {
-      console.log(`getCapabilitiesUrl failed to parse "${url}"`);
-    }
-    throw error;
+    throw Error(`getCapabilitiesUrl failed to parse "${url}" because of the following error:\n` + error.message);
   }
 }

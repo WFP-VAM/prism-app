@@ -168,7 +168,7 @@ t('setTimeoutAsync', async ({ eq }) => {
   const start = performance.now();
   const seconds = 2;
   let flag = false;
-  await setTimeoutAsync(seconds, () => (flag = true));
+  await setTimeoutAsync(seconds, () => flag = true);
   const duration = performance.now() - start;
   eq(Math.round(duration / 1000), seconds);
   eq(flag, true);
