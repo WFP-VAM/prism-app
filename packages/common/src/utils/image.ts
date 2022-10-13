@@ -4,20 +4,20 @@ import type { BBOX } from '../types';
 export function scaleImage(
   extent: BBOX,
   {
-    check_extent = true,
+    checkExtent: doCheckExtent = true,
     resolution = 256,
-    max_pixels = 5096,
+    maxPixels = 5096,
   }: {
-    check_extent?: boolean;
+    checkExtent?: boolean;
     resolution?: number;
-    max_pixels?: number;
+    maxPixels?: number;
   } = {
-    check_extent: true,
+    checkExtent: true,
     resolution: 256,
-    max_pixels: 5096,
+    maxPixels: 5096,
   },
 ) {
-  if (check_extent) {
+  if (doCheckExtent) {
     checkExtent(extent);
   }
 
@@ -28,7 +28,7 @@ export function scaleImage(
   const xRange = maxX - minX;
   const yRange = maxY - minY;
 
-  const maxDim = Math.min(max_pixels, xRange * resolution, yRange * resolution);
+  const maxDim = Math.min(maxPixels, xRange * resolution, yRange * resolution);
   const scale = maxDim / Math.max(xRange, yRange);
 
   const width = Math.ceil(xRange * scale);

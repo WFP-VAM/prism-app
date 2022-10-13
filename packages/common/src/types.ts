@@ -1,5 +1,3 @@
-import type { xml2js } from 'xml-js';
-
 export type BBOX = Readonly<[number, number, number, number]>;
 
 export type LAYER = {

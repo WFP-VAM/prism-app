@@ -146,6 +146,7 @@ export function parseLayer(xml: string): WMSLayer | undefined {
           ] as const;
         }
       }
+      return undefined;
     })(),
     attribution: ((): { title: string } | undefined => {
       const tag = findTagByPath(xml, ['Attribution', 'Title']);

@@ -189,22 +189,22 @@ export function createGetCoverageUrl(
   {
     bbox,
     bboxDigits,
-    check_extent = true,
+    checkExtent: doCheckExtent = true,
     crs = 'EPSG:4326',
     format = 'GeoTIFF',
     height,
-    max_pixels = 5096,
+    maxPixels = 5096,
     resolution = 256,
     time,
     width,
   }: {
     bbox: BBOX;
     bboxDigits?: number;
-    check_extent?: boolean;
+    checkExtent?: boolean;
     crs?: string;
     format?: string;
     height: number;
-    max_pixels?: number;
+    maxPixels?: number;
     resolution?: 256;
     time?: string;
     width: number;
@@ -215,16 +215,16 @@ export function createGetCoverageUrl(
     throw new Error('failed to create DescribeCoverage Url');
   }
 
-  if (check_extent) {
+  if (doCheckExtent) {
     checkExtent(bbox);
   }
 
   if (
     (typeof height !== 'number' && typeof width !== 'number') ||
-    height > max_pixels ||
-    width > max_pixels
+    height > maxPixels ||
+    width > maxPixels
   ) {
-    ({ height, width } = scaleImage(bbox, { max_pixels, resolution }));
+    ({ height, width } = scaleImage(bbox, { maxPixels, resolution }));
   }
 
   return formatUrl(base, {

@@ -1,7 +1,6 @@
 import { Base } from '../base';
 
 import {
-  hasFeatureType,
   getFeatureTypesFromCapabilities,
   parseFullFeatureTypeNames,
 } from './utils';

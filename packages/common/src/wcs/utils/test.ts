@@ -10,7 +10,6 @@ import {
   findCoverageIdentifier,
   findLayerIds,
   findCoverageName,
-  findCoverageDisplayName,
   findCoverageDisplayNames,
   findCoverages,
   findDescribeCoverageUrl,

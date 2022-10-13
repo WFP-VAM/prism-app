@@ -155,7 +155,7 @@ t('parse service from url', async ({ eq }) => {
 t('scaleImage', async ({ eq }) => {
   const bbox = [-180, -90, 180, 90] as const;
   eq(scaleImage(bbox), { height: 2548, width: 5096 });
-  eq(scaleImage(bbox, { max_pixels: 100 }), { height: 50, width: 100 });
+  eq(scaleImage(bbox, { maxPixels: 100 }), { height: 50, width: 100 });
   eq(scaleImage(bbox, { resolution: 512 }), { height: 2548, width: 5096 });
   eq(scaleImage([-180, 0, -170, 1]), { height: 26, width: 256 });
   eq(scaleImage([-180, 0, -170, 1], { resolution: 512 }), {
