@@ -112,8 +112,6 @@ export function getFeaturesUrl(
     count,
     featureId,
     format = 'geojson',
-    method,
-    properties,
     sortBy,
     version = '2.0.0.',
   }: {
@@ -122,8 +120,6 @@ export function getFeaturesUrl(
     count?: number;
     featureId?: string;
     format?: 'geojson' | 'xml';
-    method: 'GET' | 'POST';
-    properties?: string;
     sortBy?: string;
     version?: string;
   } = {
@@ -132,8 +128,6 @@ export function getFeaturesUrl(
     count: undefined,
     featureId: undefined,
     format: 'geojson',
-    method: 'GET',
-    properties: undefined,
     sortBy: undefined,
     version: '2.0.0.',
   },
@@ -179,6 +173,10 @@ export function getFeaturesUrl(
 
   if (format === 'geojson') {
     url.searchParams.set('outputFormat', 'json');
+  }
+
+  if (typeof sortBy === 'string' && sortBy.length > 0) {
+    url.searchParams.set('sortBy', sortBy);
   }
 
   return url.toString();
@@ -236,6 +234,7 @@ export async function getFeatures(
     if (format === 'xml') {
       return response.text();
     }
+    return undefined;
   };
   return setTimeoutAsync(wait, run);
 }
