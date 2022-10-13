@@ -1,20 +1,30 @@
-import { parseName } from "./parse";
+import { parseName } from './parse';
 
 export function formatUrl(
   baseUrl: string,
   params: { [key: string]: undefined | boolean | number | string } = {},
-  { debug = false, sortParams = true }: { debug?: boolean, sortParams?: boolean } = { debug: false, sortParams: true }
+  {
+    debug = false,
+    sortParams = true,
+  }: { debug?: boolean; sortParams?: boolean } = {
+    debug: false,
+    sortParams: true,
+  },
 ): string {
   const url = new URL(baseUrl);
   const keys = Object.keys(params);
   if (sortParams) {
-    if (debug) console.log("[format-url] sorting keys");
+    if (debug) {
+      console.log('[format-url] sorting keys');
+    }
     keys.sort();
   }
-  keys.forEach((k) => {
+  keys.forEach(k => {
     const value = params[k];
     // don't want ?param=undefined in url
-    if (value === undefined) return;
+    if (value === undefined) {
+      return;
+    }
     url.searchParams.append(k, value.toString());
   });
   return url.toString();
@@ -24,20 +34,18 @@ export function hasLayerId(
   ids: string[],
   target: string,
   { strict = false }: { strict?: boolean } = {
-    strict: false
-  }
+    strict: false,
+  },
 ): boolean {
   return !!ids.find(id => {
     const { full, short, namespace } = parseName(id);
     if (strict) {
       return full === target;
-    } else {
-      const parsedTarget = parseName(target);
-      return (
-        short === parsedTarget.short &&
-        (parsedTarget.namespace ? namespace === parsedTarget.namespace : true)
-      );
     }
+    const parsedTarget = parseName(target);
+    return (
+      short === parsedTarget.short &&
+      (parsedTarget.namespace ? namespace === parsedTarget.namespace : true)
+    );
   });
 }
-

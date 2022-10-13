@@ -10,8 +10,6 @@
     "build": "npm run clean && npm run build:cpy && npm run build:tsc",
     "build:cpy": "cpy '.' '../dist/' --cwd=src",
     "build:tsc": "tsc --skipLibCheck ./dist/*.ts ./dist/*/*.ts ./dist/*/*/*.ts",
-    "f": "npm run format",
-    "format": "npx prettier --arrow-parens=avoid --print-width=80 --trailing-comma=none --write ./src/*/*.ts ./src/*/*/*.ts",
     "test:base": "npx ts-node --esm --skipProject ./src/base/test.ts",
     "test:gml": "npx ts-node --esm --skipProject ./src/gml/test.ts",
     "test:ows": "npx ts-node --esm --skipProject ./src/ows/test.ts",

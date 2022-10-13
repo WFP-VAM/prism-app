@@ -1,5 +1,5 @@
-export { WFS } from "./wfs";
-export { WMS } from "./wms";
-export { WCS } from "./wcs";
+export { WFS } from './wfs';
+export { WMS } from './wms';
+export { WCS } from './wcs';
 
-export { formatUrl } from "./utils";
+export { formatUrl } from './utils';

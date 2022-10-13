@@ -1,34 +1,43 @@
-import { findTagByPath, getAttribute } from "xml-utils";
-import { findTagText } from "./xml";
+import { findTagByPath, getAttribute } from 'xml-utils';
+import { findTagText } from './xml';
 
-export function findAndParseAbstract(xml: string, { trim = true }: { trim?: boolean } = { trim: true }) {
-  let abstract = findTagText(xml, "Abstract");
-  if (!abstract) return undefined;
-  if (trim) abstract = abstract.trim();
+export function findAndParseAbstract(
+  xml: string,
+  { trim = true }: { trim?: boolean } = { trim: true },
+) {
+  let abstract = findTagText(xml, 'Abstract');
+  if (!abstract) {
+    return undefined;
+  }
+  if (trim) {
+    abstract = abstract.trim();
+  }
   return abstract;
 }
 
 export function findAndParseCapabilityUrl(
   xml: string,
-  capability: string
+  capability: string,
 ): string | undefined {
   const onlineResource = findTagByPath(xml, [
-    "Capability",
-    "Request",
+    'Capability',
+    'Request',
     capability,
-    "OnlineResource"
+    'OnlineResource',
   ]);
-  if (onlineResource) return getAttribute(onlineResource.outer, "xlink:href");
+  if (onlineResource) {
+    return getAttribute(onlineResource.outer, 'xlink:href');
+  }
 }
 
 export function findName(xml: string): string | undefined {
-  return findTagText(xml, "Name");
+  return findTagText(xml, 'Name');
 }
 
 export function parseName(
-  name: string
+  name: string,
 ): { full: string; namespace: string | undefined; short: string } {
-  if (name.includes("__") || name.includes(":")) {
+  if (name.includes('__') || name.includes(':')) {
     const [namespace, _, short] = name.split(/(__|:)/);
     return { full: name, namespace, short };
   }
@@ -38,12 +47,12 @@ export function parseName(
 
 export async function parseService(
   url: string,
-  { raw = false } = { raw: false }
+  { raw = false } = { raw: false },
 ) {
   const { pathname, searchParams } = new URL(url);
 
-  if (searchParams.has("service") && searchParams.get("service") !== "") {
-    const service = searchParams.get("service")!; // we know it's not null because of searchParams.has('service')
+  if (searchParams.has('service') && searchParams.get('service') !== '') {
+    const service = searchParams.get('service')!; // we know it's not null because of searchParams.has('service')
     return raw ? service : service.toLowerCase();
   }
 

@@ -1,11 +1,11 @@
-import type { MakeOptional } from "../../types";
-import { Layer } from "../../layer";
+import type { MakeOptional } from '../../types';
+import { Layer } from '../../layer';
 import {
   createGetCoverageUrl,
   fetchCoverageDescriptionFromCapabilities,
   findAndParseExtent,
-  parseDates
-} from "../utils";
+  parseDates,
+} from '../utils';
 
 export default class WCSLayer extends Layer {
   _description: Promise<string>; // CoverageDescription from DescribeCoverage
@@ -15,8 +15,8 @@ export default class WCSLayer extends Layer {
 
     this._description = this.capabilities.then(caps =>
       fetchCoverageDescriptionFromCapabilities(caps, this.id, {
-        fetch: this._fetch
-      })
+        fetch: this._fetch,
+      }),
     );
   }
 
@@ -25,17 +25,17 @@ export default class WCSLayer extends Layer {
   }
 
   async getImageUrl(
-    options: MakeOptional<Parameters<typeof createGetCoverageUrl>[2], "bbox">
+    options: MakeOptional<Parameters<typeof createGetCoverageUrl>[2], 'bbox'>,
   ): Promise<string> {
     return createGetCoverageUrl(await this.capabilities, this.id, {
       ...options,
       // use coverage extent if no bbox provided
-      bbox: options.bbox || (await this.getExtent())
+      bbox: options.bbox || (await this.getExtent()),
     });
   }
 
   async getImage(
-    options: Parameters<typeof this.getImageUrl>[0]
+    options: Parameters<typeof this.getImageUrl>[0],
   ): Promise<ArrayBuffer> {
     const url = await this.getImageUrl(options);
     const response = await this._fetch(url);

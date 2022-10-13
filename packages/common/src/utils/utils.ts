@@ -1,6 +1,6 @@
 export function setTimeoutAsync(
   seconds: number,
-  callback: () => any
+  callback: () => any,
 ): Promise<any> {
   // how do I error out if promise rejected
   return new Promise((resolve, reject) => {
@@ -23,7 +23,11 @@ export function titlecase(text: string): string {
 // lodash: toArray({ k: v }) returns [v]
 // below: toArray({ k: v }) return [{ k: v }]
 export function toArray(it: any): any[] {
-  if (arguments.length === 0) return [];
-  if (Array.isArray(it)) return it;
+  if (arguments.length === 0) {
+    return [];
+  }
+  if (Array.isArray(it)) {
+    return it;
+  }
   return [it];
 }

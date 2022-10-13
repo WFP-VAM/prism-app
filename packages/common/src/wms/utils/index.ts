@@ -3,10 +3,10 @@ import {
   findTagsByName,
   findTagByPath,
   findTagsByPath,
-  getAttribute
-} from "xml-utils";
+  getAttribute,
+} from 'xml-utils';
 
-import type { WMS_OUTPUT_FORMAT } from "../types";
+import type { WMS_OUTPUT_FORMAT } from '../types';
 
 import {
   bboxToString,
@@ -16,8 +16,8 @@ import {
   findTagArray,
   findTagText,
   formatUrl,
-  parseName
-} from "../../utils";
+  parseName,
+} from '../../utils';
 
 type Legend = {
   width: number;
@@ -47,11 +47,11 @@ type WMSLayer = {
 };
 
 export function findLayers(xml: string): string[] {
-  return findTagsByPath(xml, ["Layer", "Layer"]).map(tag => tag.outer);
+  return findTagsByPath(xml, ['Layer', 'Layer']).map(tag => tag.outer);
 }
 
 export function findTitle(xml: string): string | undefined {
-  return findTagText(xml, "Title");
+  return findTagText(xml, 'Title');
 }
 
 export function findLayer(xml: string, layerName: string): string | undefined {
@@ -72,13 +72,15 @@ export function getLayerIds(xml: string): string[] {
 export function getLayerNames(
   xml: string,
   // sometimes layer titles will have an extra space in the front or end unsuitable for display
-  { clean = false }: { clean: boolean } = { clean: false }
+  { clean = false }: { clean: boolean } = { clean: false },
 ): string[] {
   const layerNames: string[] = [];
   findLayers(xml).forEach(layer => {
     let title = findTitle(layer);
     if (title) {
-      if (clean) title = title.trim();
+      if (clean) {
+        title = title.trim();
+      }
       layerNames.push(title);
     }
   });
@@ -86,19 +88,28 @@ export function getLayerNames(
 }
 
 export function parseLayerDates(xml: string): string[] {
-  if (!xml) throw new Error("can't parse nothing");
-  const dimensions = findTagsByName(xml, "Dimension");
+  if (!xml) {
+    throw new Error("can't parse nothing");
+  }
+  const dimensions = findTagsByName(xml, 'Dimension');
   const timeDimension = dimensions.find(dimension => {
-    return getAttribute(dimension.outer, "name") === "time";
+    return getAttribute(dimension.outer, 'name') === 'time';
   });
-  if (!timeDimension?.inner) return [];
+  if (!timeDimension?.inner) {
+    return [];
+  }
   // we have to trim because sometimes WMS adds spaces or new line
-  return timeDimension.inner.trim().split(",").map(datetime => datetime.trim());
+  return timeDimension.inner
+    .trim()
+    .split(',')
+    .map(datetime => datetime.trim());
 }
 
 export function getLayerDates(xml: string, layerName: string): string[] {
   const layer = findLayer(xml, layerName);
-  if (!layer) throw new Error("can't find layer");
+  if (!layer) {
+    throw new Error("can't find layer");
+  }
   return parseLayerDates(layer);
 }
 
@@ -106,41 +117,45 @@ export function getLayerDates(xml: string, layerName: string): string[] {
 // converting into into an object
 export function parseLayer(xml: string): WMSLayer | undefined {
   const name = findName(xml);
-  if (!name) return undefined;
+  if (!name) {
+    return undefined;
+  }
   const { short, namespace } = parseName(name);
   return {
     name: short,
     namespace,
     abstract: findAndParseAbstract(xml),
-    keywords: findTagArray(xml, "Keyword"),
+    keywords: findTagArray(xml, 'Keyword'),
     srs: ((): string[] => {
       // sometimes called CRS or SRS depending on the WMS version
-      return [...findTagArray(xml, "CRS"), ...findTagArray(xml, "SRS")];
+      return [...findTagArray(xml, 'CRS'), ...findTagArray(xml, 'SRS')];
     })(),
     bbox: (() => {
       const EX_GeographicBoundingBox = findTagByName(
         xml,
-        "EX_GeographicBoundingBox"
+        'EX_GeographicBoundingBox',
       );
       if (EX_GeographicBoundingBox) {
         const xml = EX_GeographicBoundingBox.inner;
         if (xml) {
           return [
-            Number(findTagText(xml, "westBoundLongitude")),
-            Number(findTagText(xml, "southBoundLatitude")),
-            Number(findTagText(xml, "eastBoundLongitude")),
-            Number(findTagText(xml, "northBoundLatitude"))
+            Number(findTagText(xml, 'westBoundLongitude')),
+            Number(findTagText(xml, 'southBoundLatitude')),
+            Number(findTagText(xml, 'eastBoundLongitude')),
+            Number(findTagText(xml, 'northBoundLatitude')),
           ] as const;
         }
       }
     })(),
     attribution: ((): { title: string } | undefined => {
-      const tag = findTagByPath(xml, ["Attribution", "Title"]);
-      if (!tag?.inner) return undefined;
+      const tag = findTagByPath(xml, ['Attribution', 'Title']);
+      if (!tag?.inner) {
+        return undefined;
+      }
       return { title: tag.inner };
     })(),
     dates: parseLayerDates(xml),
-    styles: [] // to-do
+    styles: [], // to-do
   };
 }
 
@@ -152,14 +167,14 @@ export function createGetMapUrl(
     bbox,
     bbox_digits,
     bbox_srs,
-    format = "image/png",
+    format = 'image/png',
     height,
     image_srs,
-    srs = "EPSG:4326",
+    srs = 'EPSG:4326',
     styles,
     time,
     transparent = true,
-    width
+    width,
   }: {
     bbox?: [number, number, number, number] | number[];
     bbox_digits?: number;
@@ -172,13 +187,15 @@ export function createGetMapUrl(
     time?: string;
     transparent?: boolean;
     width: number;
-  }
+  },
 ) {
-  const base = findAndParseCapabilityUrl(xml, "GetMap");
-  if (!base) throw new Error("failed to create GetMap Url");
+  const base = findAndParseCapabilityUrl(xml, 'GetMap');
+  if (!base) {
+    throw new Error('failed to create GetMap Url');
+  }
 
-  const version = "1.3.0";
-  
+  const version = '1.3.0';
+
   return formatUrl(base, {
     bbox: bbox ? bboxToString(bbox, bbox_digits) : undefined,
     bboxsr: bbox_srs ? bbox_srs.toString() : undefined,
@@ -186,14 +203,14 @@ export function createGetMapUrl(
     height,
     imagesr: image_srs ? image_srs.toString() : undefined,
     layers: layerIds.toString(),
-    request: "GetMap",
-    service: "WMS",
+    request: 'GetMap',
+    service: 'WMS',
     srs,
-    styles: styles?.join(","),
+    styles: styles?.join(','),
     time,
     transparent,
     version,
-    [version === "1.3.0" ? "crs" : "srs"]: srs,
-    width
+    [version === '1.3.0' ? 'crs' : 'srs']: srs,
+    width,
   });
 }

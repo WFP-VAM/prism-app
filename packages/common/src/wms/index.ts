@@ -1,1 +1,1 @@
-export { WMS } from "./WMS";
+export { WMS } from './WMS';

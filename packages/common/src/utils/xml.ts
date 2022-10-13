@@ -1,4 +1,4 @@
-import { findTagByName, findTagsByName } from "xml-utils";
+import { findTagByName, findTagsByName } from 'xml-utils';
 
 export function findTagArray(xml: string, tagName: string): string[] {
   const tags: string[] = [];
@@ -12,5 +12,7 @@ export function findTagArray(xml: string, tagName: string): string[] {
 
 export function findTagText(xml: string, tagName: string): string | undefined {
   const tag = findTagByName(xml, tagName);
-  if (tag?.inner) return tag.inner;
+  if (tag?.inner) {
+    return tag.inner;
+  }
 }

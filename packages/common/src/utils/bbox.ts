@@ -1,16 +1,25 @@
-import type { BBOX } from "../types";
+import type { BBOX } from '../types';
 
-export function bboxToString(bbox: Readonly<number[]> | number[] | Readonly<string[]> | string[] | (number | string)[], bbox_digits?: number): string {
-  return bbox.map(n => {
-    if (typeof n === "number") {
-      if (typeof bbox_digits === "number") {
-        return n.toFixed(bbox_digits);
-      } else {
+export function bboxToString(
+  bbox:
+    | Readonly<number[]>
+    | number[]
+    | Readonly<string[]>
+    | string[]
+    | (number | string)[],
+  bbox_digits?: number,
+): string {
+  return bbox
+    .map(n => {
+      if (typeof n === 'number') {
+        if (typeof bbox_digits === 'number') {
+          return n.toFixed(bbox_digits);
+        }
         return n.toString();
       }
-    }
-    return n;
-  }).toString();
+      return n;
+    })
+    .toString();
 }
 
 export function checkExtent(extent: BBOX): void {

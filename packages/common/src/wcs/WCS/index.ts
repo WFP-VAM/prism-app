@@ -1,7 +1,7 @@
-import { Base } from "../../base";
-import WCSLayer from "../WCSLayer";
+import { Base } from '../../base';
+import WCSLayer from '../WCSLayer';
 
-import { findLayerIds, findCoverageDisplayNames } from "../utils";
+import { findLayerIds, findCoverageDisplayNames } from '../utils';
 
 export default class WCS extends Base {
   async getLayerIds(): Promise<string[]> {
@@ -17,7 +17,7 @@ export default class WCS extends Base {
     return new WCSLayer({
       capabilities: this.capabilities,
       id: layerId,
-      fetch: this._fetch
+      fetch: this._fetch,
     });
   }
 }

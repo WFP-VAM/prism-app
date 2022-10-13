@@ -1,9 +1,10 @@
-import { getCapabilities, getCapabilitiesUrl } from "./utils";
+import { getCapabilities, getCapabilitiesUrl } from './utils';
 
-import { hasLayerId } from "../utils";
+import { hasLayerId } from '../utils';
 
-const NOT_IMPLEMENTED = "not implemented";
-const LAYER_DOES_NOT_EXIST = (layerId: string) => `layer "${layerId}" does not exist`;
+const NOT_IMPLEMENTED = 'not implemented';
+const LAYER_DOES_NOT_EXIST = (layerId: string) =>
+  `layer "${layerId}" does not exist`;
 
 export class Base {
   capabilities: Promise<string>;
@@ -18,26 +19,28 @@ export class Base {
     {
       debug = false,
       fetch: _fetch,
-      version = "2.0.0"
+      version = '2.0.0',
     }: {
       debug?: boolean;
       fetch?: any;
-      version?: "2.0.0";
-    } = { debug: false, fetch: undefined, version: "2.0.0" }
+      version?: '2.0.0';
+    } = { debug: false, fetch: undefined, version: '2.0.0' },
   ) {
     this._fetch = _fetch;
     this._version = version;
     this._get_capabilities_url = getCapabilitiesUrl(url, {
       debug,
       service: this._service,
-      version
+      version,
     });
 
     this._loading = true;
-    if (!this._get_capabilities_url) throw new Error("no get capabilities url");
+    if (!this._get_capabilities_url) {
+      throw new Error('no get capabilities url');
+    }
     this.capabilities = getCapabilities(this._get_capabilities_url, {
       fetch: this._fetch,
-      service: this._service
+      service: this._service,
     });
     this.capabilities.then(() => (this._loading = false));
   }
@@ -52,7 +55,7 @@ export class Base {
 
   async hasLayerId(
     layerId: string,
-    options?: Parameters<typeof hasLayerId>[2]
+    options?: Parameters<typeof hasLayerId>[2],
   ): Promise<boolean> {
     return hasLayerId(await this.getLayerIds(), layerId, options);
   }

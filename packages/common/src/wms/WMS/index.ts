@@ -1,8 +1,8 @@
-import { Base } from "../../base";
+import { Base } from '../../base';
 
-import { getLayerIds, getLayerNames } from "../utils";
+import { getLayerIds, getLayerNames } from '../utils';
 
-import WMSLayer from "../layer";
+import WMSLayer from '../layer';
 
 export class WMS extends Base {
   async getLayerIds(): Promise<string[]> {
@@ -18,7 +18,7 @@ export class WMS extends Base {
     return new WMSLayer({
       capabilities: this.capabilities,
       id: layerId,
-      fetch: this._fetch
+      fetch: this._fetch,
     });
   }
 }

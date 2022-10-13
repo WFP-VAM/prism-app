@@ -1,6 +1,6 @@
-import { getFeatures } from "./utils";
+import { getFeatures } from './utils';
 
-import { Layer } from "../layer";
+import { Layer } from '../layer';
 
 export default class FeatureLayer extends Layer {
   async getFeatures(
@@ -8,23 +8,23 @@ export default class FeatureLayer extends Layer {
       count = 10,
       debug = false,
       fetch: _fetch,
-      method = "POST",
+      method = 'POST',
       wait = 0,
       ...rest
     }: {
       count?: number;
       debug?: boolean;
       fetch?: any;
-      method?: "GET" | "POST";
+      method?: 'GET' | 'POST';
       wait?: number;
-    } = { count: 10, debug: false, fetch: undefined, method: "POST", wait: 0 }
+    } = { count: 10, debug: false, fetch: undefined, method: 'POST', wait: 0 },
   ): Promise<any> {
     // to-do: check if post available
     return getFeatures(await this.capabilities, this.id, {
       count,
       debug,
       fetch: _fetch || this._fetch,
-      ...rest
+      ...rest,
     });
   }
 }

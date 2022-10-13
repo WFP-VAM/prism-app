@@ -1,11 +1,12 @@
-import { checkExtent } from "./bbox";
-import type { BBOX } from "../types";
+import { checkExtent } from './bbox';
+import type { BBOX } from '../types';
 
-export function scaleImage(extent: BBOX,
+export function scaleImage(
+  extent: BBOX,
   {
     check_extent = true,
     resolution = 256,
-    max_pixels = 5096
+    max_pixels = 5096,
   }: {
     check_extent?: boolean;
     resolution?: number;
@@ -13,10 +14,12 @@ export function scaleImage(extent: BBOX,
   } = {
     check_extent: true,
     resolution: 256,
-    max_pixels: 5096
-  }
+    max_pixels: 5096,
+  },
 ) {
-  if (check_extent) checkExtent(extent);
+  if (check_extent) {
+    checkExtent(extent);
+  }
 
   const [minX, minY, maxX, maxY] = extent;
 

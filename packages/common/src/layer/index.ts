@@ -1,4 +1,4 @@
-import { parseName } from "../utils";
+import { parseName } from '../utils';
 
 export class Layer {
   public capabilities: Promise<string>;
@@ -11,7 +11,7 @@ export class Layer {
   constructor({
     capabilities,
     id,
-    fetch: _fetch
+    fetch: _fetch,
   }: {
     capabilities: Promise<string>;
     id: string;
@@ -28,22 +28,22 @@ export class Layer {
   }
 
   getLayerId(): string {
-    throw new Error("not implemented");
+    throw new Error('not implemented');
   }
 
   getLayerData(): any {
-    throw new Error("not implemented");
+    throw new Error('not implemented');
   }
 
   getLayerName(): string {
-    throw new Error("not implemented");
+    throw new Error('not implemented');
   }
 
   getLayerDescription(): string {
-    throw new Error("not implemented");
+    throw new Error('not implemented');
   }
 
   async getLayerDates(): Promise<string[]> {
-    throw new Error("not implemented");
+    throw new Error('not implemented');
   }
 }
