@@ -4,11 +4,12 @@ import hashlib
 import logging
 import secrets
 
-from app.database.database import AuthDataBase
-from app.database.user_info_model import UserInfoModel
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.exc import SQLAlchemyError
+
+from app.database.database import AuthDataBase
+from app.database.user_info_model import UserInfoModel
 
 logger = logging.getLogger(__name__)
 

@@ -4,8 +4,9 @@ import os
 import subprocess
 
 import rasterio
-from app.timer import timed
 from rasterio.warp import Resampling, calculate_default_transform, reproject
+
+from app.timer import timed
 
 from .models import FilePath
 

@@ -1,7 +1,8 @@
 import json
 from typing import NewType, TypedDict
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
+from pydantic import (BaseModel, EmailStr, Field, HttpUrl, root_validator,
+                      validator)
 
 from .sample_requests import alert_data, alert_data_zones, stats_data
 
