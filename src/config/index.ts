@@ -38,9 +38,11 @@ import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
 
 import rbd from './rbd';
 
-import srilanka from './srilanka';
-
 import sierraleone from './sierraleone';
+
+import southsudan from './southsudan';
+
+import srilanka from './srilanka';
 
 import {
   tajikistanConfig,
@@ -95,6 +97,7 @@ const configMap = {
   },
   rbd,
   sierraleone,
+  southsudan,
   srilanka,
   tajikistan: {
     appConfig: tajikistanConfig,
@@ -160,6 +163,7 @@ const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesF
 
 export {
   appConfig,
+  safeCountry,
   defaultBoundariesPath,
   rawLayers,
   rawTables,

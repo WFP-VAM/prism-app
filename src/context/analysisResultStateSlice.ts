@@ -51,6 +51,7 @@ import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
+import { convertToTableData } from '../components/MapView/utils';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
@@ -244,8 +245,7 @@ const createAPIRequestParams = (
     : undefined;
 
   const { wcsConfig } = geotiffLayer;
-  const dateValue =
-    !wcsConfig || wcsConfig.disableDateParam === false ? date : undefined;
+  const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
 
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
@@ -340,6 +340,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     legendText,
     groupBy,
     key,
+    date,
   );
 });
 
@@ -550,10 +551,6 @@ export const analysisResultSlice = createSlice({
   name: 'analysisResultState',
   initialState,
   reducers: {
-    addTableData: (state, { payload }: PayloadAction<TableData>) => ({
-      ...state,
-      tableData: payload,
-    }),
     setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
       ...state,
       isMapLayerActive: payload,
@@ -587,11 +584,17 @@ export const analysisResultSlice = createSlice({
       (
         { result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
-      ): AnalysisResultState => ({
-        ...rest,
-        result: payload as ExposedPopulationResult,
-        isExposureLoading: false,
-      }),
+      ): AnalysisResultState => {
+        const tableData = convertToTableData(
+          payload as ExposedPopulationResult,
+        );
+        return {
+          ...rest,
+          result: payload as ExposedPopulationResult,
+          isExposureLoading: false,
+          tableData,
+        };
+      },
     );
 
     builder.addCase(
@@ -702,7 +705,6 @@ export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
 
 // Setters
 export const {
-  addTableData,
   setIsMapLayerActive,
   setIsDataTableDrawerActive,
   setCurrentDataDefinition,
