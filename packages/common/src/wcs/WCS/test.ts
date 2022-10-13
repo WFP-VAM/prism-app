@@ -5,28 +5,7 @@ import test from 'flug';
 import { serve } from 'srvd';
 import WCS from '.';
 
-const { port, root } = serve({ max: 2 });
-
-const xml = findAndRead('./data/geonode-wfp-wcs-get-capabilities-2.0.1.xml', {
-  encoding: 'utf-8',
-});
-
-const xml_1_0_0 = findAndRead(
-  './data/mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml',
-  {
-    encoding: 'utf-8',
-  },
-);
-
-const xml_description_1_0_0 = findAndRead(
-  './data/geonode-wfp-wcs-describe-coverage-geonode__wld_cli_tp_7d_ecmwf-2.0.1.xml',
-  { encoding: 'utf-8' },
-);
-
-const xml_temporal_description_1_0_0 = findAndRead(
-  './data/mongolia-sibelius-datacube-wcs-coverage-description-10DayTrend-1.0.0.xml',
-  { encoding: 'utf-8' },
-);
+const { port } = serve({ max: 2 });
 
 test('WCS version 1.0.0', async ({ eq }) => {
   const wcs = new WCS(
@@ -90,7 +69,7 @@ test('WCS for data cube', async ({ eq }) => {
 
   // use WCS extent as bbox
   const url1 = await layer.getImageUrl({
-    bbox_digits: 1,
+    bboxDigits: 1,
     format: 'GeoTIFF',
     height: 500,
     width: 500,

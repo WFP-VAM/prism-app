@@ -1,5 +1,4 @@
 import {
-  findTagByName,
   findTagsByName,
   findTagsByPath,
   getAttribute,
@@ -189,7 +188,7 @@ export function createGetCoverageUrl(
   layerId: string,
   {
     bbox,
-    bbox_digits,
+    bboxDigits,
     check_extent = true,
     crs = 'EPSG:4326',
     format = 'GeoTIFF',
@@ -200,7 +199,7 @@ export function createGetCoverageUrl(
     width,
   }: {
     bbox: BBOX;
-    bbox_digits?: number;
+    bboxDigits?: number;
     check_extent?: boolean;
     crs?: string;
     format?: string;
@@ -229,7 +228,7 @@ export function createGetCoverageUrl(
   }
 
   return formatUrl(base, {
-    bbox: bboxToString(bbox, bbox_digits),
+    bbox: bboxToString(bbox, bboxDigits),
     coverage: layerId,
     crs,
     format,

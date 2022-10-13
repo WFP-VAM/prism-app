@@ -14,7 +14,7 @@ const xml = findAndRead('./data/geonode-wms-get-capabilities-1.3.0.xml', {
   encoding: 'utf-8',
 });
 
-const odc_xml = findAndRead(
+const odcXml = findAndRead(
   './data/mongolia-sibelius-datacube-wms-get-capabilities-1.3.0.xml',
   {
     encoding: 'utf-8',
@@ -100,7 +100,7 @@ test('parse layer', ({ eq }) => {
 });
 
 test('createGetMapUrl', async ({ eq }) => {
-  const url = createGetMapUrl(odc_xml, ['ModisIndices'], {
+  const url = createGetMapUrl(odcXml, ['ModisIndices'], {
     bbox: [
       11897270.578531113,
       6261721.357121639,

@@ -29,19 +29,19 @@ const xml = findAndRead('./data/geonode-wfp-wcs-get-capabilities-2.0.1.xml', {
   encoding: 'utf-8',
 });
 
-const xml_1_0_0 = findAndRead(
+const xml100 = findAndRead(
   './data/mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml',
   {
     encoding: 'utf-8',
   },
 );
 
-const xml_description_1_0_0 = findAndRead(
+const xmlDescription100 = findAndRead(
   './data/geonode-wfp-wcs-describe-coverage-geonode__wld_cli_tp_7d_ecmwf-2.0.1.xml',
   { encoding: 'utf-8' },
 );
 
-const xml_temporal_description_1_0_0 = findAndRead(
+const xmlTemporalDescription100 = findAndRead(
   './data/mongolia-sibelius-datacube-wcs-coverage-description-10DayTrend-1.0.0.xml',
   { encoding: 'utf-8' },
 );
@@ -53,7 +53,7 @@ test('wcs: find coverages', ({ eq }) => {
 });
 
 test('wcs: find coverages (1.0.0.)', ({ eq }) => {
-  eq(findCoverages(xml_1_0_0).length, 23);
+  eq(findCoverages(xml100).length, 23);
 });
 
 test('wcs: find coverage titles (or names)', ({ eq }) => {
@@ -82,7 +82,7 @@ test('wcs: find coverage name (1.0.0)', ({ eq }) => {
 });
 
 test('wcs: find coverage display names', ({ eq }) => {
-  const layerNames = findCoverageDisplayNames(xml_1_0_0).sort();
+  const layerNames = findCoverageDisplayNames(xml100).sort();
   eq(layerNames.length, 23);
   eq(layerNames.slice(0, 3), [
     'mdc 10 Day Indices',
@@ -92,7 +92,7 @@ test('wcs: find coverage display names', ({ eq }) => {
 });
 
 test('wcs: find coverages', ({ eq }) => {
-  eq(findCoverages(xml_1_0_0).length, 23);
+  eq(findCoverages(xml100).length, 23);
 });
 
 test('wcs: normalize coverage identifier', ({ eq }) => {
@@ -153,11 +153,11 @@ test('parse coverage', ({ eq }) => {
 test('parse describe coverage url', ({ eq }) => {
   eq(findDescribeCoverageUrl(xml), 'https://geonode.wfp.org/geoserver/wcs?');
   eq(
-    findAndParseCapabilityUrl(xml_1_0_0, 'GetCapabilities'),
+    findAndParseCapabilityUrl(xml100, 'GetCapabilities'),
     'https://mongolia.sibelius-datacube.org:5000/wcs?',
   );
   eq(
-    findDescribeCoverageUrl(xml_1_0_0),
+    findDescribeCoverageUrl(xml100),
     'https://mongolia.sibelius-datacube.org:5000/wcs?',
   );
 });
@@ -165,25 +165,25 @@ test('parse describe coverage url', ({ eq }) => {
 test('parse GetCoverage url', ({ eq }) => {
   eq(findGetCoverageUrl(xml), 'https://geonode.wfp.org/geoserver/wcs?');
   eq(
-    findAndParseCapabilityUrl(xml_1_0_0, 'GetCoverage'),
+    findAndParseCapabilityUrl(xml100, 'GetCoverage'),
     'https://mongolia.sibelius-datacube.org:5000/wcs?',
   );
   eq(
-    findGetCoverageUrl(xml_1_0_0),
+    findGetCoverageUrl(xml100),
     'https://mongolia.sibelius-datacube.org:5000/wcs?',
   );
 });
 
 test('createDescribeCoverageUrl', ({ eq }) => {
   eq(
-    createDescribeCoverageUrl(xml_1_0_0, '10DayTrend'),
+    createDescribeCoverageUrl(xml100, '10DayTrend'),
     'https://mongolia.sibelius-datacube.org:5000/wcs?coverage=10DayTrend&request=DescribeCoverage&service=WCS&version=1.0.0',
   );
 });
 
 test('createGetCoverageUrl', ({ eq }) => {
   const bbox = [87.7, 41.6, 119.9, 52.1] as const;
-  const url = createGetCoverageUrl(xml_1_0_0, 'ModisLST', {
+  const url = createGetCoverageUrl(xml100, 'ModisLST', {
     bbox,
     height: 222,
     width: 677,
@@ -195,16 +195,16 @@ test('createGetCoverageUrl', ({ eq }) => {
 });
 
 test('parseSupportedFormats', ({ eq }) => {
-  eq(parseSupportedFormats(xml_description_1_0_0), []);
-  eq(parseSupportedFormats(xml_temporal_description_1_0_0), [
+  eq(parseSupportedFormats(xmlDescription100), []);
+  eq(parseSupportedFormats(xmlTemporalDescription100), [
     'GeoTIFF',
     'netCDF',
   ]);
 });
 
 test('parseDates', ({ eq }) => {
-  eq(parseDates(xml_description_1_0_0), []);
-  const dates = parseDates(xml_temporal_description_1_0_0);
+  eq(parseDates(xmlDescription100), []);
+  const dates = parseDates(xmlTemporalDescription100);
   eq(dates.length, 29);
   eq(
     dates.every(d => typeof d === 'string'),
@@ -229,7 +229,7 @@ test('parse envelope', ({ eq }) => {
 });
 
 test('parse coverage (1.0.0)', ({ eq }) => {
-  const coverage = findCoverages(xml_1_0_0)[0];
+  const coverage = findCoverages(xml100)[0];
   eq(parseCoverage(coverage), {
     bbox: undefined,
     description:
@@ -249,7 +249,7 @@ test('parse coverage (1.0.0)', ({ eq }) => {
 
 test('fetchCoverageDescriptionFromCapabilities', async ({ eq }) => {
   const result = await fetchCoverageDescriptionFromCapabilities(
-    xml_1_0_0,
+    xml100,
     '10DayTrend',
     { fetch },
   );

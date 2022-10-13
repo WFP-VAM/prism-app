@@ -7,13 +7,13 @@ export function bboxToString(
     | Readonly<string[]>
     | string[]
     | (number | string)[],
-  bbox_digits?: number,
+  bboxDigits?: number,
 ): string {
   return bbox
     .map(n => {
       if (typeof n === 'number') {
-        if (typeof bbox_digits === 'number') {
-          return n.toFixed(bbox_digits);
+        if (typeof bboxDigits === 'number') {
+          return n.toFixed(bboxDigits);
         }
         return n.toString();
       }

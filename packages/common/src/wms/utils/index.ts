@@ -131,12 +131,12 @@ export function parseLayer(xml: string): WMSLayer | undefined {
       return [...findTagArray(xml, 'CRS'), ...findTagArray(xml, 'SRS')];
     })(),
     bbox: (() => {
-      const EX_GeographicBoundingBox = findTagByName(
+      const ExGeographicBoundingBox = findTagByName(
         xml,
         'EX_GeographicBoundingBox',
       );
-      if (EX_GeographicBoundingBox) {
-        const xml = EX_GeographicBoundingBox.inner;
+      if (ExGeographicBoundingBox) {
+        const xml = ExGeographicBoundingBox.inner;
         if (xml) {
           return [
             Number(findTagText(xml, 'westBoundLongitude')),
@@ -165,11 +165,11 @@ export function createGetMapUrl(
   layerIds: string[],
   {
     bbox,
-    bbox_digits,
+    bboxDigits,
     bbox_srs,
     format = 'image/png',
     height,
-    image_srs,
+    imageSrs,
     srs = 'EPSG:4326',
     styles,
     time,
@@ -177,11 +177,11 @@ export function createGetMapUrl(
     width,
   }: {
     bbox?: [number, number, number, number] | number[];
-    bbox_digits?: number;
+    bboxDigits?: number;
     bbox_srs?: number;
     format?: WMS_OUTPUT_FORMAT;
     height: number;
-    image_srs?: number;
+    imageSrs?: number;
     srs?: string;
     styles?: string[];
     time?: string;
@@ -197,11 +197,11 @@ export function createGetMapUrl(
   const version = '1.3.0';
 
   return formatUrl(base, {
-    bbox: bbox ? bboxToString(bbox, bbox_digits) : undefined,
+    bbox: bbox ? bboxToString(bbox, bboxDigits) : undefined,
     bboxsr: bbox_srs ? bbox_srs.toString() : undefined,
     format,
     height,
-    imagesr: image_srs ? image_srs.toString() : undefined,
+    imagesr: imageSrs ? imageSrs.toString() : undefined,
     layers: layerIds.toString(),
     request: 'GetMap',
     service: 'WMS',

@@ -10,7 +10,7 @@ export class Base {
   capabilities: Promise<string>;
   _fetch?: any;
   _loading: boolean;
-  _get_capabilities_url?: string;
+  _getCapabilitiesUrl?: string;
   _service?: string;
   _version?: string;
 
@@ -28,17 +28,17 @@ export class Base {
   ) {
     this._fetch = _fetch;
     this._version = version;
-    this._get_capabilities_url = getCapabilitiesUrl(url, {
+    this._getCapabilitiesUrl = getCapabilitiesUrl(url, {
       debug,
       service: this._service,
       version,
     });
 
     this._loading = true;
-    if (!this._get_capabilities_url) {
+    if (!this._getCapabilitiesUrl) {
       throw new Error('no get capabilities url');
     }
-    this.capabilities = getCapabilities(this._get_capabilities_url, {
+    this.capabilities = getCapabilities(this._getCapabilitiesUrl, {
       fetch: this._fetch,
       service: this._service,
     });
