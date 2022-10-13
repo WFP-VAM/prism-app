@@ -66,7 +66,7 @@ test('wcs: find coverage titles (or names)', ({ eq }) => {
 });
 
 test('wcs: find coverage name (1.0.0)', ({ eq }) => {
-  const xml = `<CoverageOfferingBrief>
+  const coverageOfferingBrief = `<CoverageOfferingBrief>
   <description>MODIS Median value of Land Surface Temperature (cloud masked) in a 10days period L3 Grid 1km</description>
   <name>ModisLST</name>
   <label>mdc MODIS LST</label>
@@ -77,7 +77,7 @@ test('wcs: find coverage name (1.0.0)', ({ eq }) => {
   <gml:timePosition>2022-07-11</gml:timePosition>
   </lonLatEnvelope>
   </CoverageOfferingBrief>`;
-  eq(findCoverageName(xml), 'ModisLST');
+  eq(findCoverageName(coverageOfferingBrief), 'ModisLST');
 });
 
 test('wcs: find coverage display names', ({ eq }) => {
@@ -104,14 +104,14 @@ test('wcs: normalize coverage identifier', ({ eq }) => {
 });
 
 test('wcs: find legacy coverage id', ({ eq }) => {
-  const xml = `<wcs:CoverageSummary><ows:Title>sdn_fl_0909_noaa_40ff</ows:Title><ows:Abstract>Generated from GeoTIFF</ows:Abstract><ows:Keywords><ows:Keyword>GeoTIFF</ows:Keyword><ows:Keyword>WCS</ows:Keyword><ows:Keyword>sdn_fl_0909_noaa_40ff</ows:Keyword></ows:Keywords><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.w3.org%2F2005%2FAtom&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fgcmd.gsfc.nasa.gov%2FAboutus%2Fxml%2Fdif%2F&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2F2.0.2&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=urn%3Aoasis%3Anames%3Atc%3Aebxml-regrep%3Axsd%3Arim%3A3.0&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2Fcsdgm&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/showmetadata/xsl/11319"/><ows:WGS84BoundingBox><ows:LowerCorner>21.841787543839928 8.682217421312949</ows:LowerCorner><ows:UpperCorner>38.84678241007194 23.144724457059354</ows:UpperCorner></ows:WGS84BoundingBox><wcs:Identifier>geonode:sdn_fl_0909_noaa_40ff</wcs:Identifier></wcs:CoverageSummary>`;
-  eq(findCoverageIdentifier(xml), 'geonode:sdn_fl_0909_noaa_40ff');
+  const coverageSummary = `<wcs:CoverageSummary><ows:Title>sdn_fl_0909_noaa_40ff</ows:Title><ows:Abstract>Generated from GeoTIFF</ows:Abstract><ows:Keywords><ows:Keyword>GeoTIFF</ows:Keyword><ows:Keyword>WCS</ows:Keyword><ows:Keyword>sdn_fl_0909_noaa_40ff</ows:Keyword></ows:Keywords><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.w3.org%2F2005%2FAtom&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fgcmd.gsfc.nasa.gov%2FAboutus%2Fxml%2Fdif%2F&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2F2.0.2&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=urn%3Aoasis%3Anames%3Atc%3Aebxml-regrep%3Axsd%3Arim%3A3.0&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2Fcsdgm&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=4f0ef40a-f3d7-11ea-b98c-005056822e38"/><ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/showmetadata/xsl/11319"/><ows:WGS84BoundingBox><ows:LowerCorner>21.841787543839928 8.682217421312949</ows:LowerCorner><ows:UpperCorner>38.84678241007194 23.144724457059354</ows:UpperCorner></ows:WGS84BoundingBox><wcs:Identifier>geonode:sdn_fl_0909_noaa_40ff</wcs:Identifier></wcs:CoverageSummary>`;
+  eq(findCoverageIdentifier(coverageSummary), 'geonode:sdn_fl_0909_noaa_40ff');
 });
 
 test('wcs: find layer id', ({ eq }) => {
-  const xml = `<wcs:CoverageId>geonode__sdn_fl_0909_noaa_40ff</wcs:CoverageId>`;
-  eq(findCoverageId(xml), 'geonode__sdn_fl_0909_noaa_40ff');
-  eq(findLayerId(xml, { normalize: true }), 'geonode:sdn_fl_0909_noaa_40ff');
+  const coverageId = `<wcs:CoverageId>geonode__sdn_fl_0909_noaa_40ff</wcs:CoverageId>`;
+  eq(findCoverageId(coverageId), 'geonode__sdn_fl_0909_noaa_40ff');
+  eq(findLayerId(coverageId, { normalize: true }), 'geonode:sdn_fl_0909_noaa_40ff');
 });
 
 test('wcs: find layer ids', ({ eq }) => {
@@ -213,13 +213,13 @@ test('parseDates', ({ eq }) => {
 });
 
 test('parse envelope', ({ eq }) => {
-  const xml = `<lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+  const lonLatEnvelope = `<lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
   <gml:pos dimension="2">74.1288466392506 36.3432058634784</gml:pos>
   <gml:pos dimension="2">132.918744933946 54.4717721170595</gml:pos>
   <gml:timePosition>2009-01-01</gml:timePosition>
   <gml:timePosition>2022-07-11</gml:timePosition>
   </lonLatEnvelope>`;
-  eq(findAndParseLonLatEnvelope(xml), [
+  eq(findAndParseLonLatEnvelope(lonLatEnvelope), [
     74.1288466392506,
     36.3432058634784,
     132.918744933946,

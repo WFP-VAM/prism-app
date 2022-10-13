@@ -89,7 +89,7 @@ export function hasFeatureType(
     strict: false,
   },
 ): boolean {
-  return !!featureTypes.find((featureType, i) => {
+  return !!featureTypes.find((featureType) => {
     if (strict) {
       return featureType.name.full === name;
     }

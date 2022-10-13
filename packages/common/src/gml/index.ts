@@ -18,7 +18,5 @@ export function findAndParseEnvelope(
   xml: string,
 ): Readonly<[number, number, number, number]> | undefined {
   const envelope = findTagByName(xml, 'gml:Envelope')?.outer;
-  if (envelope) {
-    return parseEnvelope(envelope);
-  }
+  return envelope ? parseEnvelope(envelope) : undefined;
 }

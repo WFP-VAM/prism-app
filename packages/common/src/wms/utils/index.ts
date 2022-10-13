@@ -136,13 +136,13 @@ export function parseLayer(xml: string): WMSLayer | undefined {
         'EX_GeographicBoundingBox',
       );
       if (ExGeographicBoundingBox) {
-        const xml = ExGeographicBoundingBox.inner;
-        if (xml) {
+        const { inner } = ExGeographicBoundingBox;
+        if (inner) {
           return [
-            Number(findTagText(xml, 'westBoundLongitude')),
-            Number(findTagText(xml, 'southBoundLatitude')),
-            Number(findTagText(xml, 'eastBoundLongitude')),
-            Number(findTagText(xml, 'northBoundLatitude')),
+            Number(findTagText(inner, 'westBoundLongitude')),
+            Number(findTagText(inner, 'southBoundLatitude')),
+            Number(findTagText(inner, 'eastBoundLongitude')),
+            Number(findTagText(inner, 'northBoundLatitude')),
           ] as const;
         }
       }
