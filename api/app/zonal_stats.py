@@ -15,10 +15,15 @@ from rasterstats import zonal_stats  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
 
-from app.caching import (CACHE_DIRECTORY, cache_file, get_json_file,
-                         is_file_valid)
-from app.models import (FilePath, GeoJSON, GeoJSONFeature, GroupBy,
-                        WfsParamsModel, WfsResponse)
+from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
+from app.models import (
+    FilePath,
+    GeoJSON,
+    GeoJSONFeature,
+    GroupBy,
+    WfsParamsModel,
+    WfsResponse,
+)
 from app.raster_utils import gdal_calc, reproj_match
 from app.timer import timed
 

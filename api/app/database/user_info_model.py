@@ -3,8 +3,7 @@ import datetime
 import json
 import logging
 
-from sqlalchemy import (JSON, TIMESTAMP, Column, DateTime, Identity, Integer,
-                        String)
+from sqlalchemy import JSON, TIMESTAMP, Column, DateTime, Identity, Integer, String
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.sql.sqltypes import Boolean
 
