@@ -7,11 +7,6 @@ from typing import Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
-from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from pydantic import EmailStr, HttpUrl
-
 from app.auth import validate_user
 from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlertModel
@@ -21,6 +16,10 @@ from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import EmailStr, HttpUrl
 
 from .models import AlertsModel, StatsModel
 
