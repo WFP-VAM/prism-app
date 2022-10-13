@@ -10,7 +10,7 @@ export default function findAndParseOperationUrl(
 ): string | undefined {
   const xmlOp = findOperation(xml, op);
   if (!xmlOp) {
-    return;
+    return undefined;
   }
   const xmlMethod = findTagByName(xmlOp, `ows:${titlecase(method)}`)?.outer;
   if (!xmlMethod) {

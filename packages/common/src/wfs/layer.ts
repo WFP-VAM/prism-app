@@ -24,6 +24,7 @@ export default class FeatureLayer extends Layer {
       count,
       debug,
       fetch: _fetch || this._fetch,
+      wait,
       ...rest,
     });
   }
