@@ -166,7 +166,7 @@ export function createGetMapUrl(
   {
     bbox,
     bboxDigits,
-    bbox_srs,
+    bboxSrs,
     format = 'image/png',
     height,
     imageSrs,
@@ -178,7 +178,7 @@ export function createGetMapUrl(
   }: {
     bbox?: [number, number, number, number] | number[];
     bboxDigits?: number;
-    bbox_srs?: number;
+    bboxSrs?: number;
     format?: WMS_OUTPUT_FORMAT;
     height: number;
     imageSrs?: number;
@@ -198,7 +198,7 @@ export function createGetMapUrl(
 
   return formatUrl(base, {
     bbox: bbox ? bboxToString(bbox, bboxDigits) : undefined,
-    bboxsr: bbox_srs ? bbox_srs.toString() : undefined,
+    bboxsr: bboxSrs ? bboxSrs.toString() : undefined,
     format,
     height,
     imagesr: imageSrs ? imageSrs.toString() : undefined,

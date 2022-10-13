@@ -1,6 +1,4 @@
 import fetch from 'cross-fetch';
-import { writeFileSync } from 'node:fs';
-import findAndRead from 'find-and-read';
 import test from 'flug';
 import { serve } from 'srvd';
 import WCS from '.';
