@@ -1,15 +1,12 @@
 import { isEmpty } from 'lodash';
 
-import { findTagByName, findTagsByPath } from 'xml-utils';
+import { findTagsByPath } from 'xml-utils';
 
 import {
   findAndParseAbstract,
-  findName,
   findTagText,
-  toArray,
   parseName,
   setTimeoutAsync,
-  titlecase,
 } from '../utils';
 
 import {
