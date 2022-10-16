@@ -320,7 +320,7 @@ type LayerStyleProps = {
 };
 
 export type DatasetLevel = {
-  path: string; // Url substring that represents admin level.
+  level: string; // Administrative boundary level.
   id: string; // Geojson property field for admin boundary id.
   name: string; // Geojson property field for admin boundary name.
 };
@@ -330,10 +330,18 @@ export enum ChartType {
   Line = 'line',
 }
 
+export type DatasetField = {
+  key: string;
+  label: string;
+  fallback?: number; // If key does not exist in json response use fallback (rainfall anomaly).
+  color: string;
+};
+
 type DatasetProps = {
   url: string;
   levels: DatasetLevel[];
   type: ChartType;
+  fields: DatasetField[]; // Dataset fields from json response.
 };
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -584,6 +592,8 @@ export interface ChartConfig {
   data?: string;
   transpose?: boolean;
   fill?: boolean;
+  displayLegend?: boolean;
+  colors?: string[]; // Array of hex codes.
 }
 
 export class TableType {

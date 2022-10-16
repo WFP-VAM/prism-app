@@ -288,7 +288,7 @@ const styles = (theme: Theme) =>
       marginTop: '5px',
     },
     alertFormMenu: {
-      backgroundColor: '#5A686C',
+      backgroundColor: theme.surfaces?.light,
       maxWidth: '100vw',
       minWidth: 'max-content',
       color: 'white',
@@ -311,7 +311,7 @@ const styles = (theme: Theme) =>
       marginTop: '10px',
     },
     innerCreateAlertButton: {
-      backgroundColor: '#3d474a',
+      backgroundColor: theme.surfaces?.dark,
       margin: '10px',
       '&:disabled': {
         opacity: '0.5',

@@ -21,6 +21,7 @@ import {
   AdminBoundaryParams,
   EWSParams,
   DatasetRequestParams,
+  CHART_DATA_PREFIXES,
 } from '../../context/datasetStateSlice';
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
 import Chart from '../DataDrawer/Chart';
@@ -56,6 +57,7 @@ function DataViewer({ classes }: DatasetProps) {
           boundaryProps: params.boundaryProps,
           url: params.url,
           serverLayerName: params.serverLayerName,
+          datasetFields: params.datasetFields,
           selectedDate,
         }
       : {
@@ -68,17 +70,22 @@ function DataViewer({ classes }: DatasetProps) {
     dispatch(loadDataset(requestParams));
   }, [params, dispatch, selectedDate]);
 
-  if (!dataset || !params) {
+  if (!params) {
     return null;
   }
 
-  const category = isAdminBoundary(params) ? params.id : params.externalId;
+  const colors = isAdminBoundary(params)
+    ? params.datasetFields?.map(row => row.color)
+    : undefined;
 
   const config: ChartConfig = {
     type: chartType,
     stacked: false,
-    fill: false,
-    category,
+    category: CHART_DATA_PREFIXES.date,
+    data: CHART_DATA_PREFIXES.col,
+    transpose: true,
+    displayLegend: isAdminBoundary(params),
+    colors,
   };
 
   const adminBoundaryLevelButtons = isAdminBoundary(params)
@@ -111,16 +118,18 @@ function DataViewer({ classes }: DatasetProps) {
               <CircularProgress size={50} />
             </div>
           ) : (
-            <Chart
-              title={t(title)}
-              config={config}
-              data={dataset}
-              xAxisLabel={
-                isAdminBoundary(params)
-                  ? undefined
-                  : t('Timestamps reflect local time in Cambodia')
-              }
-            />
+            dataset && (
+              <Chart
+                title={t(title)}
+                config={config}
+                data={dataset}
+                xAxisLabel={
+                  isAdminBoundary(params)
+                    ? undefined
+                    : t('Timestamps reflect local time in Cambodia')
+                }
+              />
+            )
           )}
         </Paper>
       </Grid>

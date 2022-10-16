@@ -516,6 +516,7 @@ export function createLegendFromFeatureArray(
   const minNum = Math.min(...stats);
 
   const colors = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15'];
+  const labels = ['Very low', 'Low', 'Medium', 'High', 'Very high'];
 
   const delta = (maxNum - minNum) / colors.length;
 
@@ -528,7 +529,11 @@ export function createLegendFromFeatureArray(
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
 
-    return { value, color };
+    return {
+      value,
+      color,
+      label: `${labels[index]} (${Math.round(value).toLocaleString('en-US')})`,
+    };
   });
 
   return legend;
@@ -541,6 +546,7 @@ export class ExposedPopulationResult {
   legend: LegendDefinition;
   legendText: string;
   statistic: AggregationOperations;
+  date: number;
 
   getTitle = (t?: i18nTranslator): string => {
     return t ? t('Population Exposure') : 'Population Exposure';
@@ -557,6 +563,7 @@ export class ExposedPopulationResult {
     legendText: string,
     groupBy: string,
     key: string,
+    date: number,
   ) {
     this.featureCollection = featureCollection;
     this.statistic = statistic;
@@ -564,6 +571,7 @@ export class ExposedPopulationResult {
     this.legendText = legendText;
     this.groupBy = groupBy;
     this.key = key;
+    this.date = date;
   }
 }
 
