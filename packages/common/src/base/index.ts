@@ -9,10 +9,10 @@ const LAYER_DOES_NOT_EXIST = (layerId: string) =>
 export class Base {
   capabilities: Promise<string>;
   fetch?: any;
-  _loading: boolean;
-  _getCapabilitiesUrl?: string;
-  _service?: string;
-  _version?: string;
+  loading: boolean;
+  getCapabilitiesUrl?: string;
+  service?: string;
+  version?: string;
 
   constructor(
     url: string,
@@ -27,22 +27,22 @@ export class Base {
     } = { debug: false, fetch: undefined, version: '2.0.0' },
   ) {
     this.fetch = customFetch;
-    this._version = version;
-    this._getCapabilitiesUrl = getCapabilitiesUrl(url, {
+    this.version = version;
+    this.getCapabilitiesUrl = getCapabilitiesUrl(url, {
       debug,
-      service: this._service,
+      service: this.service,
       version,
     });
 
-    this._loading = true;
-    if (!this._getCapabilitiesUrl) {
+    this.loading = true;
+    if (!this.getCapabilitiesUrl) {
       throw new Error('no get capabilities url');
     }
-    this.capabilities = getCapabilities(this._getCapabilitiesUrl, {
+    this.capabilities = getCapabilities(this.getCapabilitiesUrl, {
       fetch: this.fetch,
-      service: this._service,
+      service: this.service,
     });
-    this.capabilities.then(() => (this._loading = false));
+    this.capabilities.then(() => (this.loading = false));
   }
 
   async getLayerIds(): Promise<string[]> {
