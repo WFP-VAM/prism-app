@@ -3,7 +3,7 @@ import { parseService, setTimeoutAsync } from '../utils';
 export async function getCapabilities(
   url: string,
   {
-    fetch: _fetch,
+    fetch: customFetch,
     params = {},
     service,
     version = '1.1.1',
@@ -22,7 +22,7 @@ export async function getCapabilities(
       service,
       version,
     });
-    const response = await (_fetch || fetch)(capabilitiesUrl);
+    const response = await (customFetch || fetch)(capabilitiesUrl);
 
     if (response.status !== 200) {
       throw new Error('error getting capabilities');

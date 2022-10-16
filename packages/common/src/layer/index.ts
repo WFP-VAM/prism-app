@@ -6,12 +6,12 @@ export class Layer {
   public namespace: string | undefined;
   public name: string;
 
-  public _fetch: any;
+  public fetch: any;
 
   constructor({
     capabilities,
     id,
-    fetch: _fetch,
+    fetch: customFetch,
   }: {
     capabilities: Promise<string>;
     id: string;
@@ -20,7 +20,7 @@ export class Layer {
     this.capabilities = capabilities;
     this.id = id;
 
-    this._fetch = _fetch || fetch;
+    this.fetch = customFetch || fetch;
 
     const { namespace, short } = parseName(id);
     this.namespace = namespace;

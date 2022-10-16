@@ -17,7 +17,7 @@ export default class WCS extends Base {
     return new WCSLayer({
       capabilities: this.capabilities,
       id: layerId,
-      fetch: this._fetch,
+      fetch: this.fetch,
     });
   }
 }

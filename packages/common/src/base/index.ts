@@ -8,7 +8,7 @@ const LAYER_DOES_NOT_EXIST = (layerId: string) =>
 
 export class Base {
   capabilities: Promise<string>;
-  _fetch?: any;
+  fetch?: any;
   _loading: boolean;
   _getCapabilitiesUrl?: string;
   _service?: string;
@@ -18,7 +18,7 @@ export class Base {
     url: string,
     {
       debug = false,
-      fetch: _fetch,
+      fetch: customFetch,
       version = '2.0.0',
     }: {
       debug?: boolean;
@@ -26,7 +26,7 @@ export class Base {
       version?: '2.0.0';
     } = { debug: false, fetch: undefined, version: '2.0.0' },
   ) {
-    this._fetch = _fetch;
+    this.fetch = customFetch;
     this._version = version;
     this._getCapabilitiesUrl = getCapabilitiesUrl(url, {
       debug,
@@ -39,7 +39,7 @@ export class Base {
       throw new Error('no get capabilities url');
     }
     this.capabilities = getCapabilities(this._getCapabilitiesUrl, {
-      fetch: this._fetch,
+      fetch: this.fetch,
       service: this._service,
     });
     this.capabilities.then(() => (this._loading = false));

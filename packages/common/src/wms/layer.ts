@@ -28,7 +28,7 @@ export default class WMSLayer extends Layer {
     options: Parameters<typeof this.getImageUrl>[0],
   ): Promise<Parameters<typeof this.getImageUrl>[0] & { image: ArrayBuffer }> {
     const url = await this.getImageUrl(options);
-    const response = await this._fetch(url);
+    const response = await this.fetch(url);
     const arrayBuffer = await response.arrayBuffer();
     return {
       ...options,

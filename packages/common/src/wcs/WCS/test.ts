@@ -23,7 +23,7 @@ test('WCS on version 1.1.1', async ({ eq }) => {
     `http://localhost:${port}/data/geonode-wfp-wcs-get-capabilities-1.1.1.xml`,
     { fetch },
   );
-  eq(typeof wcs._fetch, 'function');
+  eq(typeof wcs.fetch, 'function');
   const layerIds = await wcs.getLayerIds();
   eq(layerIds.sort().slice(0, 3), [
     'geonode:_20apr08074540_s2as_r2c3_012701709010_01_p001',

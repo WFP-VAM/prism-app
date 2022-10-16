@@ -7,7 +7,7 @@ export default class FeatureLayer extends Layer {
     {
       count = 10,
       debug = false,
-      fetch: _fetch,
+      fetch: customFetch,
       method = 'POST',
       wait = 0,
       ...rest
@@ -23,7 +23,7 @@ export default class FeatureLayer extends Layer {
     return getFeatures(await this.capabilities, this.id, {
       count,
       debug,
-      fetch: _fetch || this._fetch,
+      fetch: customFetch || this.fetch,
       method,
       wait,
       ...rest,

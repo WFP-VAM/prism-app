@@ -188,7 +188,7 @@ export async function getFeatures(
   {
     count = 10,
     debug = false,
-    fetch: _fetch = fetch,
+    fetch: customFetch = fetch,
     format = 'geojson',
     method = 'POST',
     wait = 0,
@@ -219,7 +219,7 @@ export async function getFeatures(
     if (debug) {
       console.log(`[getFeatures] fetching ${url}`);
     }
-    const response = await _fetch(url, { method });
+    const response = await customFetch(url, { method });
     if (response.status !== 200) {
       throw new Error(`bad response status ${response.status}`);
     }

@@ -18,7 +18,7 @@ export class WMS extends Base {
     return new WMSLayer({
       capabilities: this.capabilities,
       id: layerId,
-      fetch: this._fetch,
+      fetch: this.fetch,
     });
   }
 }
