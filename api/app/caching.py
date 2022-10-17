@@ -19,8 +19,18 @@ CACHE_DIRECTORY = os.getenv("CACHE_DIRECTORY", "/cache/")
 MAX_TIME_DIFF = int(os.getenv("MAX_TIME_DIFF", 30))  # minutes
 
 
-def cache_kobo_form(form_id, form_responses, form_labels) -> None:
-    file_path = os.path.join(CACHE_DIRECTORY, f"form_{form_id}.json")
+def get_kobo_path(form_id: str):
+    """Creates kobo path and file name. Form id is encoded to avoid traversal directory attacks."""
+    return os.path.join(
+        CACHE_DIRECTORY, "{}.json".format(form_id.encode("utf-8").hex())
+    )
+
+
+def cache_kobo_form(
+    form_id: str, form_responses: dict[str, Any], form_labels: dict[str, Any]
+) -> None:
+    """Saves kobo form data and metadata in the cache directory"""
+    file_path = get_kobo_path(form_id)
     logger.info(f"Saving form {form_id} to file {file_path}")
 
     form_dict = {
@@ -34,7 +44,7 @@ def cache_kobo_form(form_id, form_responses, form_labels) -> None:
 
 def get_kobo_form_cached(form_id: str) -> dict[str, Any] | None:
     """Checks if the kobo form is cached."""
-    file_path = os.path.join(CACHE_DIRECTORY, f"form_{form_id}.json")
+    file_path = get_kobo_path(form_id)
 
     if os.path.isfile(file_path) is False:
         return None
