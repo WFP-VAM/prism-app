@@ -84,12 +84,11 @@ export function parseGetFeatureUrl(
 export function hasFeatureType(
   featureTypes: FeatureType[],
   name: string,
-  { debug = false, strict = false }: { debug?: boolean; strict?: boolean } = {
-    debug: false,
+  { strict = false }: { strict?: boolean } = {
     strict: false,
   },
 ): boolean {
-  return !!featureTypes.find((featureType) => {
+  return !!featureTypes.find(featureType => {
     if (strict) {
       return featureType.name.full === name;
     }

@@ -42,7 +42,9 @@ export class Base {
       fetch: this.fetch,
       service: this.service,
     });
-    this.capabilities.then(() => (this.loading = false));
+    this.capabilities.then(() => {
+      this.loading = false;
+    });
   }
 
   async getLayerIds(): Promise<string[]> {
