@@ -39,11 +39,11 @@ def get_kobo_params(
 
     # TODO: as the client has no control over these env vars, the check should
     # be done as the server starts instead
-    kobo_username = getenv("KOBO_USERNAME")
-    if kobo_username is None:
+    kobo_username = getenv("KOBO_USERNAME", "")
+    if kobo_username == "":
         raise Exception("Missing backend parameter: KOBO_USERNAME")
-    kobo_pw = getenv("KOBO_PW")
-    if kobo_pw is None:
+    kobo_pw = getenv("KOBO_PW", "")
+    if kobo_pw == "":
         raise Exception("Missing backend parameter: KOBO_PW")
 
     filters = {}
