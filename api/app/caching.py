@@ -59,7 +59,7 @@ def get_kobo_form_cached(form_id: str) -> dict[str, Any] | None:
         return None
 
     logger.info(f"Using cached form {form_id}")
-    # Get date from cache.
+    # Get data from cache.
     with open(file_path, "r") as file:
         form_data = json.load(file)
 
