@@ -21,9 +21,8 @@ MAX_TIME_DIFF = int(os.getenv("MAX_TIME_DIFF", 30))  # minutes
 
 def get_kobo_path(form_id: str) -> str:
     """Creates kobo path and file name. Form id is encoded to avoid traversal directory attacks."""
-    return os.path.join(
-        CACHE_DIRECTORY, "{}.json".format(form_id.encode("utf-8").hex())
-    )
+    file_name: str = "{}.json".format(form_id.encode("utf-8").hex())
+    return os.path.join(CACHE_DIRECTORY, file_name)
 
 
 def cache_kobo_form(
