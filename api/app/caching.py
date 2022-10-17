@@ -31,7 +31,7 @@ def cache_kobo_form(
 ) -> None:
     """Saves kobo form data and metadata in the cache directory"""
     file_path = get_kobo_path(form_id)
-    logger.info(f"Saving form {form_id} to file {file_path}")
+    logger.info(f"Caching form {form_id}")
 
     form_dict = {
         "labels": form_labels,
