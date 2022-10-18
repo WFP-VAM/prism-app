@@ -30,7 +30,7 @@ def cache_kobo_form(
 ) -> None:
     """Saves kobo form data and metadata in the cache directory"""
     file_path = get_kobo_path(form_id)
-    logger.info(f"Caching form {form_id}")
+    logger.debug(f"Caching form {form_id}")
 
     form_dict = {
         "labels": form_labels,
@@ -58,7 +58,7 @@ def get_kobo_form_cached(form_id: str) -> dict[str, Any] | None:
     if minutes_diff > MAX_TIME_DIFF:
         return None
 
-    logger.info(f"Using cached form {form_id}")
+    logger.debug(f"Using cached form {form_id}")
     # Get data from cache.
     with open(file_path, "r") as file:
         form_data = json.load(file)
