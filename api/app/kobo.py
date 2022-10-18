@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
 from typing import Any, TypedDict, TypeVar
-from urllib.parse import urljoin, quote_plus
+from urllib.parse import quote_plus, urljoin
 
 import requests
 from app.caching import cache_kobo_form, get_kobo_form_cached
