@@ -111,7 +111,10 @@ test('wcs: find legacy coverage id', ({ eq }) => {
 test('wcs: find layer id', ({ eq }) => {
   const coverageId = `<wcs:CoverageId>geonode__sdn_fl_0909_noaa_40ff</wcs:CoverageId>`;
   eq(findCoverageId(coverageId), 'geonode__sdn_fl_0909_noaa_40ff');
-  eq(findLayerId(coverageId, { normalize: true }), 'geonode:sdn_fl_0909_noaa_40ff');
+  eq(
+    findLayerId(coverageId, { normalize: true }),
+    'geonode:sdn_fl_0909_noaa_40ff',
+  );
 });
 
 test('wcs: find layer ids', ({ eq }) => {
@@ -195,10 +198,7 @@ test('createGetCoverageUrl', ({ eq }) => {
 
 test('parseSupportedFormats', ({ eq }) => {
   eq(parseSupportedFormats(xmlDescription100), []);
-  eq(parseSupportedFormats(xmlTemporalDescription100), [
-    'GeoTIFF',
-    'netCDF',
-  ]);
+  eq(parseSupportedFormats(xmlTemporalDescription100), ['GeoTIFF', 'netCDF']);
 });
 
 test('parseDates', ({ eq }) => {
