@@ -1,8 +1,4 @@
-import {
-  findTagsByName,
-  findTagsByPath,
-  getAttribute,
-} from 'xml-utils';
+import { findTagsByName, findTagsByPath, getAttribute } from 'xml-utils';
 
 import { findAndParseEnvelope } from '../../gml';
 import {
@@ -54,6 +50,10 @@ export function findCoverageId(xml: string): string | undefined {
   return findTagText(xml, 'wcs:CoverageId');
 }
 
+export function findCoverageName(xml: string): string | undefined {
+  return findTagText(xml, 'name');
+}
+
 export function findLayerId(
   xml: string,
   { normalize = true }: { normalize?: boolean } = { normalize: true },
@@ -89,10 +89,6 @@ export function findCoverageDescription(xml: string): string | undefined {
 
 export function findLayerDescription(xml: string): string | undefined {
   return findCoverageAbstract(xml) || findCoverageDescription(xml);
-}
-
-export function findCoverageName(xml: string): string | undefined {
-  return findTagText(xml, 'name');
 }
 
 export function findCoverageTitle(xml: string): string | undefined {

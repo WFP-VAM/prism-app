@@ -8,12 +8,12 @@ import {
 } from '../utils';
 
 export default class WCSLayer extends Layer {
-  _description: Promise<string>; // CoverageDescription from DescribeCoverage
+  description: Promise<string>; // CoverageDescription from DescribeCoverage
 
   constructor(options: ConstructorParameters<typeof Layer>[0]) {
     super(options);
 
-    this._description = this.capabilities.then(caps =>
+    this.description = this.capabilities.then(caps =>
       fetchCoverageDescriptionFromCapabilities(caps, this.id, {
         fetch: this.fetch,
       }),
@@ -21,7 +21,7 @@ export default class WCSLayer extends Layer {
   }
 
   async getExtent() {
-    return findAndParseExtent(await this._description)!;
+    return findAndParseExtent(await this.description)!;
   }
 
   async getImageUrl(
@@ -43,6 +43,6 @@ export default class WCSLayer extends Layer {
   }
 
   async getLayerDates(): Promise<string[]> {
-    return parseDates(await this._description);
+    return parseDates(await this.description);
   }
 }

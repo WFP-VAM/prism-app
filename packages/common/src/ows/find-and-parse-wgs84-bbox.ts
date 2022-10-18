@@ -8,4 +8,5 @@ export default function parseWGS84BoundingBox(
   if (bbox) {
     return parseBoundingBox(bbox);
   }
+  return undefined;
 }
