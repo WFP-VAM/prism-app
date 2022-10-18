@@ -29,7 +29,7 @@ export type Coverage = {
 
 export function findCoverages(xml: string): string[] {
   const tagNames = ['CoverageOfferingBrief', 'wcs:CoverageSummary'];
-  for (let i = 0; i < tagNames.length; i++) {
+  for (let i = 0; i < tagNames.length; i += 1) {
     const tagName = tagNames[i];
     if (xml.includes(tagName)) {
       return findTagsByName(xml, tagName).map(tag => tag.outer);
