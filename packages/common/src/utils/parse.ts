@@ -28,6 +28,7 @@ export function findAndParseCapabilityUrl(
   if (onlineResource) {
     return getAttribute(onlineResource.outer, 'xlink:href');
   }
+  return undefined;
 }
 
 export function findName(xml: string): string | undefined {
@@ -38,7 +39,7 @@ export function parseName(
   name: string,
 ): { full: string; namespace: string | undefined; short: string } {
   if (name.includes('__') || name.includes(':')) {
-    const [namespace, _, short] = name.split(/(__|:)/);
+    const [namespace, , short] = name.split(/(__|:)/);
     return { full: name, namespace, short };
   }
 
@@ -61,4 +62,6 @@ export async function parseService(
     const service = match[0];
     return raw ? service : service.toLowerCase();
   }
+
+  return undefined;
 }

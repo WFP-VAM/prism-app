@@ -136,10 +136,10 @@ export function findCoverageSubType(xml: string): string | undefined {
 
 export function findAndParseLonLatEnvelope(
   xml: string,
-): undefined | Readonly<[number, number, number, number]> {
+): Readonly<[number, number, number, number] | undefined> {
   const envelope = findTagText(xml, 'lonLatEnvelope');
   if (!envelope) {
-    return;
+    return undefined;
   }
 
   const [lowerCorner, upperCorner] = findTagsByName(envelope, 'gml:pos');
