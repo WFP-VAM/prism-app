@@ -10,4 +10,5 @@ export default function parseBoundingBox(
     const [east, north] = upperCorner.split(' ').map(str => Number(str));
     return [west, south, east, north];
   }
+  return undefined;
 }
