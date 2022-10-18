@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
 from typing import Any, TypedDict, TypeVar
-from urllib.parse import urljoin
+from urllib.parse import urljoin, quote_plus
 
 import requests
 from app.caching import cache_kobo_form, get_kobo_form_cached
@@ -171,11 +171,12 @@ def get_responses_from_kobo(
 
     Also, retrieve the form responses for parsing and filtering.
     """
-    kobo_data_cached = get_kobo_form_cached(form_id)
+    form_id_quote: str = quote_plus(form_id)
+    kobo_data_cached = get_kobo_form_cached(form_id_quote)
     if kobo_data_cached is not None:
         return kobo_data_cached["responses"], kobo_data_cached["labels"]
 
-    resp = requests.get(urljoin(form_url, f"{form_id}.json"), auth=auth)
+    resp = requests.get(urljoin(form_url, f"{form_id_quote}.json"), auth=auth)
     resp.raise_for_status()
     form_metadata = resp.json()
 
@@ -186,7 +187,7 @@ def get_responses_from_kobo(
     }
 
     # Get all form responses using metadata 'data' key
-    resp = requests.get(urljoin(form_url, f"{form_id}/data.json"), auth=auth)
+    resp = requests.get(urljoin(form_url, f"{form_id_quote}/data.json"), auth=auth)
     resp.raise_for_status()
 
     form_responses = resp.json().get("results")
