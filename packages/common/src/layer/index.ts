@@ -1,5 +1,10 @@
 import { parseName } from '../utils';
 
+// classes that extend this base Layer class
+// should implement the following functions
+// getLayerId, getLayerData, getLayerName,
+// getLayerDescription, and getLayerDates
+
 export class Layer {
   public capabilities: Promise<string>;
   public id: string; // e.g., namespace:feature_type
@@ -25,25 +30,5 @@ export class Layer {
     const { namespace, short } = parseName(id);
     this.namespace = namespace;
     this.name = short;
-  }
-
-  getLayerId(): string {
-    throw new Error('not implemented');
-  }
-
-  getLayerData(): any {
-    throw new Error('not implemented');
-  }
-
-  getLayerName(): string {
-    throw new Error('not implemented');
-  }
-
-  getLayerDescription(): string {
-    throw new Error('not implemented');
-  }
-
-  async getLayerDates(): Promise<string[]> {
-    throw new Error('not implemented');
   }
 }

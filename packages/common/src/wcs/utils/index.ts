@@ -133,7 +133,6 @@ export function findLayerIds(
 export function findCoverageSubType(xml: string): string | undefined {
   return findTagText(xml, 'wcs:CoverageSubtype');
 }
-
 export function findAndParseLonLatEnvelope(
   xml: string,
 ): Readonly<[number, number, number, number] | undefined> {
@@ -148,6 +147,8 @@ export function findAndParseLonLatEnvelope(
     const [east, north] = upperCorner.inner.split(' ').map(str => Number(str));
     return [west, south, east, north];
   }
+
+  return undefined;
 }
 
 // for CoverageDescription
@@ -188,11 +189,11 @@ export function createGetCoverageUrl(
     checkExtent: doCheckExtent = true,
     crs = 'EPSG:4326',
     format = 'GeoTIFF',
-    height,
+    height: givenHeight,
     maxPixels = 5096,
     resolution = 256,
     time,
-    width,
+    width: givenWidth,
   }: {
     bbox: BBOX;
     bboxDigits?: number;
@@ -215,13 +216,16 @@ export function createGetCoverageUrl(
     checkExtent(bbox);
   }
 
-  if (
-    (typeof height !== 'number' && typeof width !== 'number') ||
-    height > maxPixels ||
-    width > maxPixels
-  ) {
-    ({ height, width } = scaleImage(bbox, { maxPixels, resolution }));
-  }
+  const { height, width } = (() => {
+    if (
+      (typeof givenHeight !== 'number' && typeof givenWidth !== 'number') ||
+      givenHeight > maxPixels ||
+      givenWidth > maxPixels
+    ) {
+      return scaleImage(bbox, { maxPixels, resolution });
+    }
+    return { height: givenHeight, width: givenWidth };
+  })();
 
   return formatUrl(base, {
     bbox: bboxToString(bbox, bboxDigits),

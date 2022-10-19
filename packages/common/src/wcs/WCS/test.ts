@@ -11,11 +11,7 @@ test('WCS version 1.0.0', async ({ eq }) => {
     { fetch },
   );
   const layerIds = await wcs.getLayerIds();
-  eq(layerIds.sort().slice(0, 3), [
-    '10DayAnomaly',
-    '10DayIndices',
-    '10DayTrend',
-  ]);
+  eq(layerIds.includes('10DayAnomaly'), true);
 });
 
 test('WCS on version 1.1.1', async ({ eq }) => {
@@ -25,18 +21,13 @@ test('WCS on version 1.1.1', async ({ eq }) => {
   );
   eq(typeof wcs.fetch, 'function');
   const layerIds = await wcs.getLayerIds();
-  eq(layerIds.sort().slice(0, 3), [
-    'geonode:_20apr08074540_s2as_r2c3_012701709010_01_p001',
-    'geonode:bgd_14days_20july',
-    'geonode:eth_phy_elevation',
-  ]);
+  eq(
+    layerIds.includes('geonode:_20apr08074540_s2as_r2c3_012701709010_01_p001'),
+    true,
+  );
 
   const layerNames = await wcs.getLayerNames();
-  eq(layerNames.sort().slice(0, 3), [
-    'Climate Outlook across Eastern Africa',
-    'Ethiopia Elevation',
-    'Global Total Precipitation Forecast 1 Day',
-  ]);
+  eq(layerNames.includes('Climate Outlook across Eastern Africa'), true);
 
   const layer = await wcs.getLayer('geonode:wld_cli_tp_1d_ecmwf');
   const dates = await layer.getLayerDates();

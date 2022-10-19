@@ -54,7 +54,7 @@ test('WMS Data Cube', async ({ eq }) => {
       12523442.714243278,
       6887893.492833804,
     ],
-    bbox_srs: 3857,
+    bboxSrs: 3857,
     height: 256,
     srs: 'EPSG:3857',
     time: '2022-07-11',

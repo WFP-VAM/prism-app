@@ -59,14 +59,9 @@ export function findLayer(xml: string, layerName: string): string | undefined {
 }
 
 export function getLayerIds(xml: string): string[] {
-  const layerIds: string[] = [];
-  findLayers(xml).forEach(layer => {
-    const name = findName(layer);
-    if (name) {
-      layerIds.push(name);
-    }
-  });
-  return layerIds;
+  return findLayers(xml)
+    .map(layer => findName(layer) || '')
+    .filter(id => id !== '');
 }
 
 export function getLayerNames(
@@ -74,17 +69,10 @@ export function getLayerNames(
   // sometimes layer titles will have an extra space in the front or end unsuitable for display
   { clean = false }: { clean: boolean } = { clean: false },
 ): string[] {
-  const layerNames: string[] = [];
-  findLayers(xml).forEach(layer => {
-    let title = findTitle(layer);
-    if (title) {
-      if (clean) {
-        title = title.trim();
-      }
-      layerNames.push(title);
-    }
-  });
-  return layerNames;
+  const layers = findLayers(xml);
+  const titles = layers.map(layer => findTitle(layer) || '');
+  const filteredTitles = titles.filter(title => title !== '');
+  return clean ? filteredTitles.map(title => title.trim()) : filteredTitles;
 }
 
 export function parseLayerDates(xml: string): string[] {

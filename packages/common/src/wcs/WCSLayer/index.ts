@@ -7,6 +7,11 @@ import {
   parseDates,
 } from '../utils';
 
+type GetImageOptions = MakeOptional<
+  Parameters<typeof createGetCoverageUrl>[2],
+  'bbox'
+>;
+
 export default class WCSLayer extends Layer {
   description: Promise<string>; // CoverageDescription from DescribeCoverage
 
@@ -24,9 +29,7 @@ export default class WCSLayer extends Layer {
     return findAndParseExtent(await this.description)!;
   }
 
-  async getImageUrl(
-    options: MakeOptional<Parameters<typeof createGetCoverageUrl>[2], 'bbox'>,
-  ): Promise<string> {
+  async getImageUrl(options: GetImageOptions): Promise<string> {
     return createGetCoverageUrl(await this.capabilities, this.id, {
       ...options,
       // use coverage extent if no bbox provided
@@ -34,9 +37,7 @@ export default class WCSLayer extends Layer {
     });
   }
 
-  async getImage(
-    options: Parameters<typeof this.getImageUrl>[0],
-  ): Promise<ArrayBuffer> {
+  async getImage(options: GetImageOptions): Promise<ArrayBuffer> {
     const url = await this.getImageUrl(options);
     const response = await this.fetch(url);
     return response.arrayBuffer();

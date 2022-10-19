@@ -111,6 +111,7 @@ export function getFeaturesUrl(
     count,
     featureId,
     format = 'geojson',
+    method = 'POST',
     sortBy,
     version = '2.0.0.',
   }: {
@@ -119,6 +120,7 @@ export function getFeaturesUrl(
     count?: number;
     featureId?: string;
     format?: 'geojson' | 'xml';
+    method?: 'GET' | 'POST';
     sortBy?: string;
     version?: string;
   } = {
@@ -127,11 +129,12 @@ export function getFeaturesUrl(
     count: undefined,
     featureId: undefined,
     format: 'geojson',
+    method: 'POST',
     sortBy: undefined,
     version: '2.0.0.',
   },
 ) {
-  const base = parseGetFeatureUrl(capabilities, { method: 'POST' });
+  const base = parseGetFeatureUrl(capabilities, { method });
 
   if (!base) {
     throw new Error('unable to generate wfs url from capabilities');
@@ -186,7 +189,6 @@ export async function getFeatures(
   typeNameOrNames: string | string[],
   {
     count = 10,
-    debug = false,
     fetch: customFetch = fetch,
     format = 'geojson',
     method = 'POST',
@@ -194,14 +196,12 @@ export async function getFeatures(
     ...rest
   }: {
     count?: number;
-    debug?: boolean;
     fetch?: any;
     format?: 'geojson' | 'xml';
     method?: 'GET' | 'POST';
     wait?: number;
   } = {
     count: 10,
-    debug: false,
     fetch: undefined,
     format: 'geojson',
     method: 'POST',
@@ -215,9 +215,6 @@ export async function getFeatures(
       method,
       ...rest,
     });
-    if (debug) {
-      console.log(`[getFeatures] fetching ${url}`);
-    }
     const response = await customFetch(url, { method });
     if (response.status !== 200) {
       throw new Error(`bad response status ${response.status}`);

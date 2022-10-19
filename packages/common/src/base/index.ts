@@ -2,7 +2,6 @@ import { getCapabilities, getCapabilitiesUrl } from './utils';
 
 import { hasLayerId } from '../utils';
 
-const NOT_IMPLEMENTED = 'not implemented';
 const LAYER_DOES_NOT_EXIST = (layerId: string) =>
   `layer "${layerId}" does not exist`;
 
@@ -17,19 +16,16 @@ export class Base {
   constructor(
     url: string,
     {
-      debug = false,
       fetch: customFetch,
       version = '2.0.0',
     }: {
-      debug?: boolean;
       fetch?: any;
       version?: '2.0.0';
-    } = { debug: false, fetch: undefined, version: '2.0.0' },
+    } = { fetch: undefined, version: '2.0.0' },
   ) {
     this.fetch = customFetch;
     this.version = version;
     this.getCapabilitiesUrl = getCapabilitiesUrl(url, {
-      debug,
       service: this.service,
       version,
     });
@@ -48,11 +44,13 @@ export class Base {
   }
 
   async getLayerIds(): Promise<string[]> {
-    throw new Error(NOT_IMPLEMENTED);
+    throw new Error(`${this.constructor.name} does not implement getLayerIds`);
   }
 
   async getLayerNames(): Promise<string[]> {
-    throw new Error(NOT_IMPLEMENTED);
+    throw new Error(
+      `${this.constructor.name} does not implement getLayerNames`,
+    );
   }
 
   async hasLayerId(

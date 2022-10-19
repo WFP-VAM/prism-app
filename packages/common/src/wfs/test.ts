@@ -82,9 +82,7 @@ test('hasFeatureType', async ({ eq }) => {
     true,
   );
   eq(
-    hasFeatureType(featureTypes, 'wrong:col_second_level_admin_boundaries', {
-      debug: true,
-    }),
+    hasFeatureType(featureTypes, 'wrong:col_second_level_admin_boundaries'),
     false,
   );
   eq(hasFeatureType(featureTypes, 'col_second_level_admin_boundaries'), true);
@@ -119,7 +117,6 @@ test('getFeatures', async ({ eq }) => {
     'col_second_level_admin_boundaries',
     {
       count: 1,
-      debug: true,
       fetch,
       wait: 1,
     },
@@ -154,11 +151,11 @@ test('WFS', async ({ eq }) => {
   eq(await instance.hasLayerId('nonexistent'), false);
   eq(await instance.hasLayerId('nonexistent', { strict: false }), false);
 
-  let msg;
+  let msg = '';
   try {
     await instance.checkLayer('fake');
   } catch (error) {
-    msg = error.message;
+    msg = `${error}`;
   }
   eq(msg.includes('does not exist'), true);
 

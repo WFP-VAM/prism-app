@@ -40,11 +40,11 @@ t('check-extent', ({ eq }) => {
   try {
     checkExtent([170, -90, 150, 90]);
   } catch (error) {
-    msg = error.message;
+    msg = `${error}`;
   }
   eq(
     msg,
-    'the extent 170,-90,150,90 seems malformed or else may contain "wrapping" which is not supported',
+    'Error: the extent 170,-90,150,90 seems malformed or else may contain "wrapping" which is not supported',
   );
 });
 
