@@ -95,7 +95,8 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
 
         if not "coordinates" in new_geometry:
             logger.error(
-                "A group of polygons returned an empty geometry for file %s.",
+                "Grouping of polygons %s returned an empty geometry for file %s.",
+                group_id,
                 output_filename,
             )
             logger.error(new_geometry)
