@@ -37,6 +37,9 @@ jobs:
       - name: Install packages
         run: yarn install --frozen-lockfile
 
+      - name: Install subpackage dependencies
+        run: yarn setup:common
+
       - name: yarn lint
         run: yarn lint
 
