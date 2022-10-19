@@ -110,6 +110,7 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
                 "An error occured during geosson grouping to file %s.", output_filename
             )
             logger.error(error)
+            logger.error(new_geometry)
 
     outjson = dict(type="FeatureCollection", features=new_features)
 
