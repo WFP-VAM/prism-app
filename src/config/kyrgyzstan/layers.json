@@ -40,7 +40,7 @@
       },
       "line": {
         "line-color": "gray",
-        "line-width": 1.5,
+        "line-width": 2,
         "line-opacity": 0.8
       }
     }
