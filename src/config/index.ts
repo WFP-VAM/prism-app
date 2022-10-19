@@ -18,11 +18,7 @@ import {
 
 import jordan from './jordan';
 
-import {
-  kyrgyzstanConfig,
-  kyrgyzstanRawLayers,
-  kyrgyzstanRawTables,
-} from './kyrgyzstan';
+import kyrgyzstan from './kyrgyzstan';
 
 import {
   mongoliaConfig,
@@ -75,12 +71,7 @@ const configMap = {
     defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
   jordan,
-  kyrgyzstan: {
-    appConfig: kyrgyzstanConfig,
-    rawLayers: kyrgyzstanRawLayers,
-    rawTables: kyrgyzstanRawTables,
-    defaultBoundariesFile: 'District_KRYG.json',
-  },
+  kyrgyzstan,
   mongolia: {
     appConfig: mongoliaConfig,
     rawLayers: mongoliaRawLayers,

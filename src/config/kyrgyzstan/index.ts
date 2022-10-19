@@ -1,5 +1,13 @@
-import kyrgyzstanConfig from './prism.json';
-import kyrgyzstanRawLayers from './layers.json';
-import kyrgyzstanRawTables from './tables.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
 
-export { kyrgyzstanConfig, kyrgyzstanRawLayers, kyrgyzstanRawTables };
+const rawTables = {};
+const translation = {};
+
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  translation,
+  defaultBoundariesFile: 'District_KRYG.json',
+};
