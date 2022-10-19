@@ -93,16 +93,23 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
     for group_id, polygons in grouped_polygons.items():
         new_geometry = mapping(unary_union(polygons))
 
-        new_features.append(
-            dict(
-                type="Feature",
-                id=group_id,
-                properties=dict([(group_by, group_id)]),
-                geometry=dict(
-                    type=new_geometry["type"], coordinates=new_geometry["coordinates"]
-                ),
+        try:
+            new_features.append(
+                dict(
+                    type="Feature",
+                    id=group_id,
+                    properties=dict([(group_by, group_id)]),
+                    geometry=dict(
+                        type=new_geometry["type"],
+                        coordinates=new_geometry["coordinates"],
+                    ),
+                )
             )
-        )
+        except KeyError as error:
+            logger.error(
+                "An error occured during geosson grouping to file %s.", output_filename
+            )
+            logger.error(error)
 
     outjson = dict(type="FeatureCollection", features=new_features)
 
