@@ -3,7 +3,7 @@ import { orderBy } from 'lodash';
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
-import { ChartType } from '../config/types';
+import { ChartType, DatasetField } from '../config/types';
 import { DEFAULT_DATE_FORMAT } from '../utils/name-utils';
 
 import {
@@ -44,7 +44,7 @@ const initialState: DatasetState = {
 
 type BoundaryProps = {
   code: number;
-  urlPath: string;
+  level: string;
   name: string;
 };
 
@@ -55,6 +55,7 @@ export type AdminBoundaryParams = {
   url: string;
   serverLayerName: string;
   id: string;
+  datasetFields: DatasetField[];
 };
 
 export type AdminBoundaryRequestParams = AdminBoundaryParams & {
@@ -67,7 +68,7 @@ export type DatasetRequestParams =
 
 type DataItem = {
   date: number;
-  value: number;
+  values: { [key: string]: string };
 };
 
 export enum TableDataFormat {
@@ -75,65 +76,41 @@ export enum TableDataFormat {
   TIME = 'time',
 }
 
-const getDatasetFromUrl = async (
-  year: number,
-  params: AdminBoundaryRequestParams,
-  startDate: number,
-  endDate: number,
-): Promise<DataItem[]> => {
-  const { serverLayerName, url, id, boundaryProps } = params;
-
-  const { code: adminCode, urlPath } = boundaryProps[id];
-
-  const serverUrl = `${url}/${urlPath}/${year}.json`;
-
-  const resp = await fetch(serverUrl);
-  const results = await resp.json();
-
-  const filteredRows = results.DataList.filter(
-    (item: any) => item[id] === adminCode,
-  )
-    .map((item: any) => ({
-      date: moment(item.time).valueOf(),
-      value: item[serverLayerName],
-    }))
-    .filter(({ date }: DataItem) => date >= startDate && date <= endDate);
-
-  return filteredRows;
-};
+export const CHART_DATA_PREFIXES = { col: 'd', date: 'Date' };
 
 const createTableData = (
   results: DataItem[],
   format: TableDataFormat,
 ): TableData => {
-  const prefix = format === TableDataFormat.DATE ? 'd' : 't';
   const momentFormat =
     format === TableDataFormat.DATE ? DEFAULT_DATE_FORMAT : 'HH:mm';
 
-  const sortedRows = orderBy(results, item => item.date).map((item, index) => ({
-    ...item,
-    day: `${prefix}${index + 1}`,
-  }));
+  const sortedRows = orderBy(results, item => item.date).map(row => {
+    const valuesObj = Object.values(row.values).reduce(
+      (acc, item, index) => ({
+        ...acc,
+        [`${CHART_DATA_PREFIXES.col}${index + 1}`]: item,
+      }),
+      {},
+    );
 
-  const datesRows = sortedRows.reduce(
-    (acc, obj) => ({
+    return {
+      [CHART_DATA_PREFIXES.date]: moment(row.date).format(momentFormat),
+      ...valuesObj,
+    };
+  });
+
+  const columns = Object.keys(sortedRows[0]);
+  const initRow = Object.keys(results[0].values).reduce(
+    (acc, item, index) => ({
       ...acc,
-      [obj.day]: moment(obj.date).format(momentFormat),
+      [`${CHART_DATA_PREFIXES.col}${index + 1}`]: item,
     }),
-    {},
+    { [CHART_DATA_PREFIXES.date]: CHART_DATA_PREFIXES.date },
   );
 
-  const valuesRows = sortedRows.reduce((acc, obj) => {
-    if (!obj.value) {
-      return acc;
-    }
-
-    return { ...acc, [obj.day]: obj.value.toString() };
-  }, {});
-
-  const columns = Object.keys(valuesRows);
   const data: TableData = {
-    rows: [datesRows, valuesRows],
+    rows: [initRow, ...sortedRows],
     columns,
   };
 
@@ -151,15 +128,14 @@ export const loadEWSDataset = async (
     externalId,
   );
 
-  const filterDate = moment(date).endOf('day').valueOf();
+  const results: DataItem[] = dataPoints.map(item => {
+    const [measureDate, value] = item.value;
 
-  const results: DataItem[] = dataPoints
-    .map(item => {
-      const [measureDate, value] = item.value;
-
-      return { date: moment(measureDate).valueOf(), value };
-    })
-    .filter(item => item.date <= filterDate); // Api returns items day after.
+    return {
+      date: moment(measureDate).valueOf(),
+      values: { measure: value.toString() },
+    };
+  });
 
   const tableData = createTableData(results, TableDataFormat.TIME);
 
@@ -167,7 +143,7 @@ export const loadEWSDataset = async (
     (acc, [key, value]) => {
       const obj = {
         ...EWSTriggersConfig[key],
-        values: tableData.columns.map(() => value),
+        values: tableData.rows.map(() => value),
       };
 
       return { ...acc, [key]: obj };
@@ -183,24 +159,81 @@ export const loadEWSDataset = async (
   return new Promise<TableData>(resolve => resolve(tableDataWithEWSConfig));
 };
 
+type HDCResponse = {
+  data: { [key: string]: number[] };
+  date: string[];
+  valids: number[];
+};
+
+/**
+ * Executes a request to the WFP Humanitarian Data Cube (HDC)
+ *
+ * @return Promise with parsed object from request as DataItem array.
+ */
+const fetchHDC = async (
+  url: string,
+  datasetFields: DatasetField[],
+  params: { [key: string]: any },
+): Promise<DataItem[]> => {
+  const requestParamsStr = Object.entries(params)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&');
+
+  const response = await fetch(`${url}?${requestParamsStr}`);
+  const responseJson: HDCResponse = await response.json();
+
+  const dates: number[] = responseJson.date.map((date: string) =>
+    moment(date).valueOf(),
+  );
+
+  const dataItems: DataItem[] = dates.map((date, index) => {
+    const values = datasetFields.reduce(
+      (acc, field) => ({
+        ...acc,
+        [field.label]: responseJson.data[field.key]
+          ? responseJson.data[field.key][index]
+          : field.fallback,
+      }),
+      {},
+    );
+
+    return { date, values };
+  });
+
+  return dataItems;
+};
+
 export const loadAdminBoundaryDataset = async (
   params: AdminBoundaryRequestParams,
 ): Promise<TableData> => {
   const endDate = moment(params.selectedDate);
   const startDate = endDate.clone().subtract(1, 'year');
 
-  const years = [endDate.year(), startDate.year()];
+  const {
+    url: hdcUrl,
+    id,
+    boundaryProps,
+    serverLayerName,
+    datasetFields,
+  } = params;
+  const { code: adminCode, level } = boundaryProps[id];
 
-  const promises = years.map(year =>
-    getDatasetFromUrl(year, params, startDate.valueOf(), endDate.valueOf()),
-  );
-  const resultsAll = await Promise.all(promises);
+  const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);
+  const startDateStr = startDate.format(DEFAULT_DATE_FORMAT);
 
-  const results: DataItem[] = resultsAll.reduce(
-    (acc, item) => [...acc, ...item],
-    [],
-  );
+  const hdcRequestParams = {
+    level,
+    admin_id: adminCode,
+    coverage: 'full',
+    vam:
+      serverLayerName.includes('vim') || serverLayerName.includes('viq')
+        ? 'vim'
+        : 'rfh',
+    start: startDateStr,
+    end: endDateStr,
+  };
 
+  const results = await fetchHDC(hdcUrl, datasetFields, hdcRequestParams);
   const tableData = createTableData(results, TableDataFormat.DATE);
 
   return new Promise<TableData>(resolve => resolve(tableData));

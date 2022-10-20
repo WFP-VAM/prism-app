@@ -304,6 +304,9 @@ export class CommonLayerProps {
   */
   @optional
   group?: MenuGroup;
+
+  @optional
+  validity?: Validity; // Include additional dates in the calendar based on the number provided.
 }
 
 /*
@@ -317,7 +320,7 @@ type LayerStyleProps = {
 };
 
 export type DatasetLevel = {
-  path: string; // Url substring that represents admin level.
+  level: string; // Administrative boundary level.
   id: string; // Geojson property field for admin boundary id.
   name: string; // Geojson property field for admin boundary name.
 };
@@ -327,10 +330,18 @@ export enum ChartType {
   Line = 'line',
 }
 
+export type DatasetField = {
+  key: string;
+  label: string;
+  fallback?: number; // If key does not exist in json response use fallback (rainfall anomaly).
+  color: string;
+};
+
 type DatasetProps = {
   url: string;
   levels: DatasetLevel[];
   type: ChartType;
+  fields: DatasetField[]; // Dataset fields from json response.
 };
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -355,6 +366,17 @@ interface FeatureInfoProps {
   type: LabelType;
   label: string;
 }
+
+export enum DatesPropagation {
+  FORWARD = 'forward',
+  BACKWARD = 'backward',
+  BOTH = 'both',
+}
+
+export type Validity = {
+  days: number; // Number of days to include in the calendar.
+  mode: DatesPropagation; // Propagation mode for dates.
+};
 
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
@@ -389,6 +411,9 @@ export class WMSLayerProps extends CommonLayerProps {
 export class AdminLevelDataLayerProps extends CommonLayerProps {
   type: 'admin_level_data';
   path: string;
+
+  @optional
+  dates?: string[];
 
   @makeRequired
   title: string;
@@ -499,6 +524,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   loader?: PointDataLoader;
+
+  @optional
+  authRequired: boolean = false;
 }
 
 export type RequiredKeys<T> = {
@@ -536,10 +564,15 @@ export interface MenuItemMobileType {
   selectAccordion: (arg: string) => void;
 }
 
+export type DateItem = {
+  displayDate: number; // Date that will be rendered in the calendar.
+  queryDate: number; // Date that will be used in the WMS request.
+};
+
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | PointDataLayerProps['id']]: number[];
+    | PointDataLayerProps['id']]: DateItem[];
 };
 
 /* eslint-disable camelcase */
@@ -559,6 +592,8 @@ export interface ChartConfig {
   data?: string;
   transpose?: boolean;
   fill?: boolean;
+  displayLegend?: boolean;
+  colors?: string[]; // Array of hex codes.
 }
 
 export class TableType {
@@ -614,4 +649,15 @@ export type PointData = {
 
 export type PointLayerData = {
   features: PointData[];
+};
+
+export type ValidityLayer = {
+  name: string;
+  dates: number[];
+  validity: Validity;
+};
+
+export type UserAuth = {
+  username: string;
+  password: string;
 };

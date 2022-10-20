@@ -17,6 +17,7 @@ import {
 } from '../../../../context/mapStateSlice/selectors';
 import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
+import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayers, LayerDefinitions } from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
@@ -34,7 +35,8 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
 
   const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
-  const layerData = useSelector(layerDataSelector(layer.id)) as
+  const selectedDate = useDefaultDate(layer.id);
+  const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
   const { data } = layerData || {};
@@ -68,9 +70,9 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       }
     }
     if (!features) {
-      dispatch(loadLayerData({ layer }));
+      dispatch(loadLayerData({ layer, date: selectedDate }));
     }
-  }, [dispatch, features, layer, boundaryId, map]);
+  }, [dispatch, features, layer, selectedDate, boundaryId, map]);
 
   if (!features) {
     return null;

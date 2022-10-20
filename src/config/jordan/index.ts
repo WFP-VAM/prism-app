@@ -10,5 +10,5 @@ export default {
   rawLayers,
   rawTables,
   translation,
-  defaultBoundariesFile: 'geoBoundaries-JOR-ADM2.json',
+  defaultBoundariesFile: 'jor_admbnda_adm2_jdos.json',
 };

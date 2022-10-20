@@ -18,11 +18,7 @@ import {
 
 import jordan from './jordan';
 
-import {
-  kyrgyzstanConfig,
-  kyrgyzstanRawLayers,
-  kyrgyzstanRawTables,
-} from './kyrgyzstan';
+import kyrgyzstan from './kyrgyzstan';
 
 import {
   mongoliaConfig,
@@ -38,9 +34,11 @@ import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
 
 import rbd from './rbd';
 
-import srilanka from './srilanka';
-
 import sierraleone from './sierraleone';
+
+import southsudan from './southsudan';
+
+import srilanka from './srilanka';
 
 import {
   tajikistanConfig,
@@ -73,12 +71,7 @@ const configMap = {
     defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
   jordan,
-  kyrgyzstan: {
-    appConfig: kyrgyzstanConfig,
-    rawLayers: kyrgyzstanRawLayers,
-    rawTables: kyrgyzstanRawTables,
-    defaultBoundariesFile: 'District_KRYG.json',
-  },
+  kyrgyzstan,
   mongolia: {
     appConfig: mongoliaConfig,
     rawLayers: mongoliaRawLayers,
@@ -95,6 +88,7 @@ const configMap = {
   },
   rbd,
   sierraleone,
+  southsudan,
   srilanka,
   tajikistan: {
     appConfig: tajikistanConfig,
@@ -160,6 +154,7 @@ const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesF
 
 export {
   appConfig,
+  safeCountry,
   defaultBoundariesPath,
   rawLayers,
   rawTables,

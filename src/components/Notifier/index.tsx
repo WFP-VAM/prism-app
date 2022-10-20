@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import omit from 'lodash/omit';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import {
@@ -8,10 +9,14 @@ import {
   removeNotification,
 } from '../../context/notificationStateSlice';
 
+const AUTO_CLOSE_TIME = 10 * 1000;
+
 function Notifier({ classes }: NotifierProps) {
   const dispatch = useDispatch();
   const notifications = useSelector(notificationsSelector);
   const [topOffset, setTopOffset] = useState(65);
+
+  const notificationTimers = useRef<Record<string, NodeJS.Timeout>>({});
 
   // make sure the notifications don't overlap the nav bar.
   useEffect(() => {
@@ -34,6 +39,33 @@ function Notifier({ classes }: NotifierProps) {
   const handleClose = (notification: Notification) => () => {
     dispatch(removeNotification(notification.key));
   };
+
+  const autoClose = useCallback(
+    (notification: Notification) => () => {
+      clearTimeout(notificationTimers.current[notification.key]);
+      notificationTimers.current = omit(
+        notificationTimers.current,
+        notification.key,
+      );
+      dispatch(removeNotification(notification.key));
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    notifications.forEach(notification => {
+      if (!(notification.key in notificationTimers.current)) {
+        notificationTimers.current = {
+          ...notificationTimers.current,
+          [notification.key]: setTimeout(
+            autoClose(notification),
+            AUTO_CLOSE_TIME,
+          ),
+        };
+      }
+    });
+  }, [autoClose, notifications]);
+
   return (
     <div className={classes.notificationsContainer} style={{ top: topOffset }}>
       {notifications.map(notification => {
@@ -59,7 +91,7 @@ const styles = () =>
       left: '50%',
       transform: 'translateX(-50%)',
       display: 'flex',
-      zIndex: 10,
+      zIndex: 9999,
       flexDirection: 'column',
       position: 'fixed',
       alignItems: 'center',
