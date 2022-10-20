@@ -10,5 +10,5 @@ export default {
   rawLayers,
   rawTables,
   translation,
-  defaultBoundariesFile: 'ecu_admbnda_adm1.json',
+  defaultBoundariesFile: 'ecu_admbnda_adm2.json',
 };
