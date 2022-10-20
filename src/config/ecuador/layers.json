@@ -4,8 +4,8 @@
       "path": "data/ecuador/ecu_admbnda_adm2.json",
       "opacity": 0.8,
       "admin_code": "ADM2_PCODE",
-      "admin_level_names": ["ADM2_ES", "ADM1_ES"],
-      "admin_level_local_names": ["ADM2_ES", "ADM1_ES"],
+      "admin_level_names": ["ADM1_ES", "ADM2_ES"],
+      "admin_level_local_names": ["ADM1_ES", "ADM2_ES"],
       "styles:": {
         "fill": {
           "fill-opacity": 0

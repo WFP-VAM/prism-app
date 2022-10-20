@@ -1,6 +1,7 @@
 {
     "country": "Ecuador",
     "alertFormActive": false,
+    "enableNavigationDropdown": true,
     "icons": {
       "rainfall": "icon_rain.png",
       "vegetation": "icon_veg.png",
