@@ -241,7 +241,7 @@ def get_form_responses(
     )
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
-    
+
     filtered_forms = []
     for form in forms:
         date_value: datetime = form["date"]
@@ -265,7 +265,7 @@ def get_form_responses(
         filtered_forms.append(form)
 
     sorted_forms = sorted(filtered_forms, key=lambda x: x.get("date"))  # type: ignore
-    
+
     # Transform date into string.
     sorted_forms = [
         {**f, "date": f.get("date").date().isoformat()} for f in sorted_forms  # type: ignore
