@@ -17,8 +17,9 @@ import {
 } from '../../../../utils/analysis-utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
+import { LayerDefinitions } from '../../../../config/utils';
 
-function AnalysisLayer() {
+function AnalysisLayer({ before }: { before?: string }) {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
   // Currently it is quite difficult due to how JSON focused the typing is. We would have to refactor it to also accept layers generated on-the-spot
   const analysisData = useSelector(analysisResultSelector);
@@ -46,20 +47,32 @@ function AnalysisLayer() {
     };
   }
 
+  const baselineIsBoundary =
+    'baselineLayerId' in analysisData &&
+    LayerDefinitions[analysisData.baselineLayerId!]?.type === 'boundary';
+
   const defaultProperty = (() => {
     switch (true) {
       case analysisData instanceof ExposedPopulationResult:
         return analysisData.statistic as string;
       case analysisData instanceof PolygonAnalysisResult:
         return 'zonal:stat:percentage';
+      case analysisData instanceof BaselineLayerResult:
+        return baselineIsBoundary ? analysisData.statistic : 'data';
       default:
         return 'data';
     }
   })();
 
+  const boundary =
+    'boundaryId' in analysisData && analysisData.boundaryId
+      ? `layer-${analysisData.boundaryId}-line`
+      : before;
+
   return (
     <GeoJSONLayer
       id="layer-analysis"
+      before={boundary}
       data={analysisData.featureCollection}
       fillPaint={fillPaintData(analysisData.legend, defaultProperty)}
       // TODO - simplify and cleanup the fillOnClick logic between stat data and baseline data
@@ -101,20 +114,26 @@ function AnalysisLayer() {
         }
 
         if (analysisData instanceof BaselineLayerResult) {
-          dispatch(
-            addPopupData({
-              [analysisData.getBaselineLayer().title]: {
-                data: getRoundedData(
-                  get(evt.features[0], 'properties.data'),
-                  t,
-                ),
-                coordinates,
-              },
-            }),
-          );
+          const baselineLayer = analysisData.getBaselineLayer();
+          if (baselineLayer?.title) {
+            dispatch(
+              addPopupData({
+                [baselineLayer.title]: {
+                  data: getRoundedData(
+                    get(evt.features[0], 'properties.data'),
+                    t,
+                  ),
+                  coordinates,
+                },
+              }),
+            );
+          }
         }
 
-        if (analysisData instanceof ExposedPopulationResult) {
+        if (
+          analysisData instanceof ExposedPopulationResult &&
+          analysisData.key
+        ) {
           dispatch(
             addPopupData({
               [analysisData.key]: {

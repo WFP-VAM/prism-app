@@ -4,7 +4,7 @@ import { ZonalOptions } from '../config/types';
 // instantiate worker to handle zonal statistics requests
 const text = `
 importScripts("https://unpkg.com/comlink/dist/umd/comlink.js");
-importScripts("http://unpkg.com/zonal@0.7.3/zonal.min.js");
+importScripts("https://unpkg.com/zonal@0.7.3/zonal.min.js");
 
 Comlink.expose(zonal);
 `;

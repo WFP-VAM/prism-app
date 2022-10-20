@@ -61,6 +61,7 @@ exports[`renders as expected 1`] = `
             <mock-textfield
               classname="AlertForm-numberField-10"
               error="false"
+              helpertext=""
               id="filled-number"
               label="Below"
               type="number"

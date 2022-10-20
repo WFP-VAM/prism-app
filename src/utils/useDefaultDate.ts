@@ -1,9 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import moment from 'moment';
-import { AvailableDates, GroupDefinition } from '../config/types';
+import { AvailableDates, isMainLayer, LayerKey } from '../config/types';
 import { availableDatesSelector } from '../context/serverStateSlice';
-import { dateRangeSelector } from '../context/mapStateSlice/selectors';
+import {
+  dateRangeSelector,
+  layersSelector,
+} from '../context/mapStateSlice/selectors';
 import { USER_DATE_OFFSET } from '../components/MapView/DateSelector/utils';
 
 import { useUrlHistory } from './url-utils';
@@ -16,9 +19,12 @@ import { DEFAULT_DATE_FORMAT } from './name-utils';
  */
 export function useDefaultDate(
   availableDatesLookupKey: keyof AvailableDates,
-  layerGroup?: GroupDefinition,
+  layerId?: LayerKey,
 ): number | undefined {
   const dispatch = useDispatch();
+  const selectedLayers = useSelector(layersSelector);
+  // check layer without group or main layer in group
+  const mainLayer = isMainLayer(layerId as string, selectedLayers);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
 
   const { updateHistory } = useUrlHistory();
@@ -28,19 +34,15 @@ export function useDefaultDate(
   ];
 
   const defaultDate: number | undefined =
-    possibleDates?.[possibleDates?.length - 1] + USER_DATE_OFFSET;
+    possibleDates?.[possibleDates?.length - 1].displayDate + USER_DATE_OFFSET;
 
   // React doesn't allow updating other components within another component
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
   useEffect(() => {
-    if (
-      !selectedDate &&
-      defaultDate &&
-      (!layerGroup || layerGroup.main === true)
-    ) {
+    if (!selectedDate && defaultDate && mainLayer) {
       updateHistory('date', moment(defaultDate).format(DEFAULT_DATE_FORMAT));
     }
-  }, [defaultDate, dispatch, selectedDate, layerGroup, updateHistory]);
+  }, [defaultDate, dispatch, selectedDate, updateHistory, mainLayer]);
 
   return selectedDate || defaultDate;
 }

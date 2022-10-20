@@ -2,8 +2,13 @@ import { camelCase } from 'lodash';
 import GeoJSON from 'geojson';
 import moment from 'moment';
 import type { LazyLoader } from './layer-data';
-import { PointDataLayerProps } from '../../config/types';
+import {
+  PointDataLayerProps,
+  PointDataLoader,
+  PointData,
+} from '../../config/types';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
+import { fetchEWSData } from '../../utils/ews-utils';
 import { getAdminLevelDataLayerData } from './admin_level_data';
 
 declare module 'geojson' {
@@ -16,17 +21,6 @@ declare module 'geojson' {
     callback?: Function,
   ): PointData[];
 }
-
-export type PointData = {
-  lat: number;
-  lon: number;
-  date: number; // in unix time.
-  [key: string]: any;
-};
-
-export type PointLayerData = {
-  features: PointData[];
-};
 
 export const queryParamsToString = (queryParams?: {
   [key: string]: string | { [key: string]: string };
@@ -48,6 +42,7 @@ export const queryParamsToString = (queryParams?: {
 
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async (
   {
+    userAuth,
     date,
     layer: {
       data: dataUrl,
@@ -57,6 +52,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       boundary,
       dataField,
       featureInfoProps,
+      loader,
+      authRequired,
     },
   },
   { getState },
@@ -64,6 +61,15 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   // This function fetches point data from the API.
   // If this endpoint is not available or we run into an error,
   // we should get the data from the local public file in layer.fallbackData
+
+  if (date) {
+    switch (loader) {
+      case PointDataLoader.EWS:
+        return fetchEWSData(dataUrl, date);
+      default:
+        break;
+    }
+  }
 
   const formattedDate = date && moment(date).format(DEFAULT_DATE_FORMAT);
 
@@ -76,12 +82,22 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     dataUrl.includes('?') ? '&' : '?'
   }${dateQuery}&${queryParamsToString(additionalQueryParams)}`;
 
+  const headers = authRequired
+    ? {
+        Authorization: `Basic ${btoa(
+          `${userAuth.username}:${userAuth.password}`,
+        )}`,
+      }
+    : undefined;
+
   let data;
+  // TODO - Better error handling, esp. for unauthorized requests.
   try {
     // eslint-disable-next-line fp/no-mutation
     data = (await (
       await fetch(requestUrl, {
         mode: 'cors',
+        headers,
       })
     ).json()) as PointData[];
   } catch (ignored) {
@@ -97,7 +113,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
         moment(formattedDate).format(DEFAULT_DATE_FORMAT),
     );
   }
-  if (adminLevelDisplay) {
+
+  if (adminLevelDisplay && !Object.keys(data).includes('message')) {
     const { adminCode } = adminLevelDisplay;
 
     return getAdminLevelDataLayerData(

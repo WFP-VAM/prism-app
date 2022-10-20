@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import {
   Box,
   Button,
@@ -16,19 +16,18 @@ import {
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Extent } from '../Layers/raster-utils';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
+import LoadingBar from './LoadingBar';
 import {
   LayerType,
-  GeometryType,
   ExposedPopulationDefinition,
   LegendDefinitionItem,
 } from '../../../config/types';
 import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
-  addTableData,
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
@@ -37,7 +36,7 @@ import {
   BaselineLayerResult,
   ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
-import { convertToTableData, downloadToFile } from '../utils';
+import { downloadToFile, getLegendItemLabel } from '../utils';
 
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
@@ -51,20 +50,18 @@ import { useSafeTranslation } from '../../../i18n';
 function GetExposureFromLayer(
   layer: LayerType,
 ): ExposedPopulationDefinition | undefined {
-  return layer.type === 'wms' &&
-    layer.exposure &&
-    layer.geometry === GeometryType.Polygon
-    ? layer.exposure
-    : undefined;
+  return (layer.type === 'wms' && layer.exposure) || undefined;
 }
 
 function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
   const { t } = useSafeTranslation();
+  const baselineLayer = result.getBaselineLayer();
+  const hazardLayer = result.getHazardLayer();
   return (
     <>
-      {t('Impact Analysis on')}
-      {': '}
-      {t(result.getBaselineLayer().legendText)}
+      {baselineLayer.legendText
+        ? `${t('Impact Analysis on')}: ${t(baselineLayer.legendText)}`
+        : t(hazardLayer.legendText)}
       <br />
       {result.threshold.above
         ? `${t('Above Threshold')}: ${result.threshold.above}`
@@ -93,7 +90,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
         content: JSON.stringify(features),
         isUrl: false,
       },
-      analysisResult ? analysisResult.getTitle() : 'prism_extract',
+      analysisResult?.getTitle() ?? 'prism_extract',
       'application/json',
     );
   };
@@ -116,7 +113,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
       return (
         <LegendItem
           classes={classes}
-          key={layer.title}
+          key={layer.id}
           id={layer.id}
           title={layer.title ? t(layer.title) : undefined}
           legend={layer.legend}
@@ -198,14 +195,6 @@ function LegendItem({
 }: LegendItemProps) {
   const map = useSelector(mapSelector);
   const analysisResult = useSelector(analysisResultSelector);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    // should this be here? Or somewhere more related to analysis?
-    if (analysisResult instanceof ExposedPopulationResult) {
-      const tableData = convertToTableData(analysisResult);
-      dispatch(addTableData(tableData));
-    }
-  }, [analysisResult, dispatch]);
 
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
@@ -242,73 +231,62 @@ function LegendItem({
     }
   };
 
-  const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
-    if (typeof label === 'string') {
-      return label;
-    }
-    if (typeof value === 'number') {
-      return Math.round(value).toLocaleString('en-US');
-    }
-    return value;
-  };
-
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
-        <Grid container direction="column" spacing={1}>
-          <Grid item style={{ display: 'flex' }}>
-            <Typography style={{ flexGrow: 1 }} variant="h4">
-              {title}
-            </Typography>
-            <LayerContentPreview layerId={id} />
-          </Grid>
-          <Divider />
-          <Grid item className={classes.slider}>
-            <Box px={1}>
-              <Slider
-                value={opacity}
-                step={0.01}
-                min={0}
-                max={1}
-                aria-labelledby="opacity-slider"
-                onChange={handleChangeOpacity}
-              />
-            </Box>
-          </Grid>
-          {legend && (
-            <Grid item>
-              {legendUrl ? (
-                <img src={legendUrl} alt={title} />
-              ) : (
-                legend.map((item: LegendDefinitionItem) => (
-                  <ColorIndicator
-                    key={item.value}
-                    value={getLegendItemLabel(item)}
-                    color={item.color as string}
-                    opacity={opacity as number}
-                  />
-                ))
-              )}
-            </Grid>
-          )}
-
-          <Divider />
-
-          {children && (
-            <Grid item>
-              <Typography variant="h5">{children}</Typography>
-            </Grid>
-          )}
-
-          {exposure && (
-            <ExposedPopulationAnalysis
-              result={analysisResult as ExposedPopulationResult}
-              id={id!}
-              extent={extent!}
-              exposure={exposure}
-            />
-          )}
+        <Grid item style={{ display: 'flex' }}>
+          <Typography style={{ flexGrow: 1 }} variant="h4">
+            {title}
+          </Typography>
+          <LayerContentPreview layerId={id} />
         </Grid>
+        <Divider />
+        <Grid item className={classes.slider}>
+          <Box px={1}>
+            <Slider
+              value={opacity}
+              step={0.01}
+              min={0}
+              max={1}
+              aria-labelledby="opacity-slider"
+              onChange={handleChangeOpacity}
+            />
+          </Box>
+        </Grid>
+
+        {legend && (
+          <Grid item>
+            {legendUrl ? (
+              <img src={legendUrl} alt={title} />
+            ) : (
+              legend.map((item: LegendDefinitionItem) => (
+                <ColorIndicator
+                  key={item.value || item.label}
+                  value={getLegendItemLabel(item)}
+                  color={item.color as string}
+                  opacity={opacity as number}
+                />
+              ))
+            )}
+          </Grid>
+        )}
+
+        <LoadingBar layerId={id} />
+
+        {children && (
+          <Grid item>
+            <Typography variant="h5">{children}</Typography>
+          </Grid>
+        )}
+
+        {exposure && (
+          <ExposedPopulationAnalysis
+            result={analysisResult as ExposedPopulationResult}
+            id={id!}
+            extent={extent!}
+            exposure={exposure}
+          />
+        )}
       </Paper>
     </ListItem>
   );

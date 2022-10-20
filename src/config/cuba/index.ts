@@ -1,8 +1,9 @@
 import appConfig from './prism.json';
 import rawLayers from './layers.json';
+import cubaTranslation from './translation.json';
 
 const rawTables = {};
-const translation = {};
+const translation = { es: cubaTranslation };
 
 export default {
   appConfig,

@@ -16,6 +16,7 @@ import {
   WMSLayerProps,
   FeatureInfoType,
   FeatureInfoObject,
+  LegendDefinitionItem,
 } from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
@@ -72,24 +73,40 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
     featureCollection: { features },
   } = result;
 
-  const fields = uniq(features.map(f => f.properties && f.properties[key]));
+  const fields = key
+    ? uniq(features.map(f => f.properties && f.properties[key]))
+    : [statistic];
 
-  const featureProperties = features.map(feature => {
-    return {
-      [groupBy]: feature.properties?.[groupBy],
-      [key]: feature.properties?.[key],
-      [statistic]: feature.properties?.[statistic],
-    };
-  });
+  const featureProperties = features
+    .filter(
+      feature => feature.properties?.[key] || feature.properties?.[statistic],
+    )
+    .map(feature => {
+      return {
+        [groupBy]: feature.properties?.[groupBy],
+        [key]: feature.properties?.[key],
+        [statistic]: feature.properties?.[statistic],
+      };
+    });
 
-  const rowData = mapValues(_groupBy(featureProperties, groupBy), k => {
-    return mapValues(_groupBy(k, key), v =>
-      parseInt(
-        v.map(x => x[statistic]).reduce((acc, value) => acc + value),
-        10,
-      ),
-    );
-  });
+  // TODO - Improve readability and reusability of this function
+  const rowData = key
+    ? mapValues(_groupBy(featureProperties, groupBy), k => {
+        return mapValues(_groupBy(k, key), v =>
+          parseInt(
+            v.map(x => x[statistic]).reduce((acc, value) => acc + value),
+            10,
+          ),
+        );
+      })
+    : mapValues(_groupBy(featureProperties, groupBy), k => {
+        return {
+          [statistic]: parseInt(
+            k.map(x => x[statistic]).reduce((acc, value) => acc + value),
+            10,
+          ),
+        };
+      });
 
   const groupedRowData = Object.keys(rowData).map(k => {
     return {
@@ -107,8 +124,9 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
   const headlessRows = groupedRowDataWithAllLabels.map(row => {
     // TODO - Switch between MAX and SUM depending on the polygon source.
     // Then re-add "Total" to the list of columns
-    const total = fields.map(f => row[f]).reduce((a, b) => a + b);
-    return assign(row, { Total: total });
+    // const total = fields.map(f => row[f]).reduce((a, b) => a + b);
+    // return assign(row, { Total: total });
+    return row;
   });
 
   const columns = [groupBy, ...fields]; // 'Total'
@@ -163,3 +181,21 @@ export function getFeatureInfoPropsData(
       };
     }, {});
 }
+
+export enum ReportType {
+  Storm,
+  Flood,
+}
+
+export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
+  if (typeof label === 'string') {
+    return label;
+  }
+  if (typeof value === 'number') {
+    const roundedValue = Math.round(value);
+    return roundedValue === 0
+      ? value.toFixed(2)
+      : roundedValue.toLocaleString('en-US');
+  }
+  return value;
+};

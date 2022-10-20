@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { FillPaint, LinePaint } from 'mapbox-gl';
+import { map, every } from 'lodash';
 import { GeoJSON } from 'geojson';
 import { rawLayers } from '.';
 import type { TableKey } from './utils';
@@ -17,13 +18,49 @@ export type LayerType =
   | ImpactLayerProps
   | PointDataLayerProps;
 
-export type LayerKey = keyof typeof rawLayers;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I,
+) => void
+  ? I
+  : never;
+
+export type LayerKey = keyof UnionToIntersection<typeof rawLayers>;
+
+type MenuGroupItem = {
+  id: string;
+  label: string;
+  main?: boolean;
+};
+
+export type MenuGroup = {
+  groupTitle: string;
+  activateAll: boolean;
+  layers: MenuGroupItem[];
+};
+
 /**
- * Check if a string is an explicitly defined layer in layers.json
- * @param layerKey the string to check
+ * Check if a string/object is an explicitly defined layer in layers.json
+ * @param layerKey the string/object to check
  */
-export const isLayerKey = (layerKey: string): layerKey is LayerKey =>
-  layerKey in rawLayers;
+export const isLayerKey = (layerKey: string | MenuGroup) => {
+  if (typeof layerKey === 'string') {
+    return layerKey in rawLayers;
+  }
+  // check every layer in group
+  const layers = map(layerKey.layers, 'id');
+  return every(layers, layer => layer in rawLayers);
+};
+
+/**
+ * Check if a layer is without group, or is the main layer in the group
+ * @param layerId
+ * @param layers
+ */
+export const isMainLayer = (layerId: string, layers: LayerType[]) => {
+  return !layers
+    .filter(sl => sl.group)
+    .some(sl => sl.group?.layers?.find(l => l.id === layerId && !l.main));
+};
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at
@@ -128,12 +165,6 @@ export type LegendDefinitionItem = {
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
-
-export type GroupDefinition = {
-  name: string;
-  // Main layer of a group of layers. Secondary layers will not trigger notifications.
-  main: boolean;
-};
 
 export enum WcsGetCoverageVersion {
   oneZeroZero = '1.0.0',
@@ -242,9 +273,6 @@ export class CommonLayerProps {
   @optional // only optional for boundary layer
   legendText?: string;
 
-  @optional // only optional for boundary layer
-  group?: GroupDefinition;
-
   @optional // Perform population exposure analysis using this layer.
   exposure?: ExposedPopulationDefinition;
 
@@ -253,6 +281,32 @@ export class CommonLayerProps {
 
   @optional
   featureInfoProps?: { [key: string]: FeatureInfoProps };
+
+  /*
+  * only for layer that has grouped menu and always assigned to main layer of group (../components/Navbar/utils.ts)
+  * can be set in config/{country}/prism.json by changing the LayerKey (string) into object:
+    {
+      "group_title": "Rainfall Anomaly" // the title of group
+      "activate_all": true // if true then hide layer options and activate all layers at the same time
+      "layers" : [ // layer list of layers.json to be grouped
+        {
+          "id": "rain_anomaly_1month",
+          "label": "1-month",
+          "main": true
+        },
+        {
+          "id": "rain_anomaly_3month",
+          "label": "3-month"
+        },
+        ...
+      ]
+    },
+  */
+  @optional
+  group?: MenuGroup;
+
+  @optional
+  validity?: Validity; // Include additional dates in the calendar based on the number provided.
 }
 
 /*
@@ -263,6 +317,31 @@ export class CommonLayerProps {
 type LayerStyleProps = {
   fill: FillPaint;
   line: LinePaint;
+};
+
+export type DatasetLevel = {
+  level: string; // Administrative boundary level.
+  id: string; // Geojson property field for admin boundary id.
+  name: string; // Geojson property field for admin boundary name.
+};
+
+export enum ChartType {
+  Bar = 'bar',
+  Line = 'line',
+}
+
+export type DatasetField = {
+  key: string;
+  label: string;
+  fallback?: number; // If key does not exist in json response use fallback (rainfall anomaly).
+  color: string;
+};
+
+type DatasetProps = {
+  url: string;
+  levels: DatasetLevel[];
+  type: ChartType;
+  fields: DatasetField[]; // Dataset fields from json response.
 };
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -287,6 +366,17 @@ interface FeatureInfoProps {
   type: LabelType;
   label: string;
 }
+
+export enum DatesPropagation {
+  FORWARD = 'forward',
+  BACKWARD = 'backward',
+  BOTH = 'both',
+}
+
+export type Validity = {
+  days: number; // Number of days to include in the calendar.
+  mode: DatesPropagation; // Propagation mode for dates.
+};
 
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
@@ -313,11 +403,17 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional // If included, zonal statistics configuration, including which property to use for classes
   zonal?: ZonalConfig;
+
+  @optional
+  chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
   type: 'admin_level_data';
   path: string;
+
+  @optional
+  dates?: string[];
 
   @makeRequired
   title: string;
@@ -390,6 +486,11 @@ export class ImpactLayerProps extends CommonLayerProps {
   api?: StatsApi;
 }
 
+// Fetch and transform data to match PointDataLayer format.
+export enum PointDataLoader {
+  EWS = 'ews',
+}
+
 export class PointDataLayerProps extends CommonLayerProps {
   type: 'point_data';
   data: string;
@@ -420,6 +521,12 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   boundary?: LayerKey;
+
+  @optional
+  loader?: PointDataLoader;
+
+  @optional
+  authRequired: boolean = false;
 }
 
 export type RequiredKeys<T> = {
@@ -457,10 +564,15 @@ export interface MenuItemMobileType {
   selectAccordion: (arg: string) => void;
 }
 
+export type DateItem = {
+  displayDate: number; // Date that will be rendered in the calendar.
+  queryDate: number; // Date that will be used in the WMS request.
+};
+
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | PointDataLayerProps['id']]: number[];
+    | PointDataLayerProps['id']]: DateItem[];
 };
 
 /* eslint-disable camelcase */
@@ -480,6 +592,8 @@ export interface ChartConfig {
   data?: string;
   transpose?: boolean;
   fill?: boolean;
+  displayLegend?: boolean;
+  colors?: string[]; // Array of hex codes.
 }
 
 export class TableType {
@@ -524,4 +638,26 @@ export interface RequestFeatureInfo extends FeatureInfoType {
 
 type AdminLevelDisplayType = {
   adminCode: string;
+};
+
+export type PointData = {
+  lat: number;
+  lon: number;
+  date: number; // in unix time.
+  [key: string]: any;
+};
+
+export type PointLayerData = {
+  features: PointData[];
+};
+
+export type ValidityLayer = {
+  name: string;
+  dates: number[];
+  validity: Validity;
+};
+
+export type UserAuth = {
+  username: string;
+  password: string;
 };

@@ -55,12 +55,27 @@ jest.mock('mapbox-gl/dist/mapbox-gl', () => ({
   NavigationControl: jest.fn(),
 }));
 
+// https://github.com/diegomura/react-pdf/issues/710
+jest.mock('@react-pdf/renderer', () => ({
+  PDFDownloadLink: jest.fn(() => null),
+  PDFViewer: jest.fn(() => null),
+  StyleSheet: { create: () => {} },
+  Font: { register: () => {} },
+}));
+
 function stubMuiComponent(componentName: string) {
   jest.doMock(
     `@material-ui/core/${componentName}/${componentName}`,
     () => `mock-${componentName}`,
   );
 }
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: () => ({
+    pathname: 'localhost:3000/',
+  }),
+}));
 
 stubMuiComponent('Typography');
 stubMuiComponent('Button');

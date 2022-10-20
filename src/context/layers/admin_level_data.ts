@@ -1,5 +1,6 @@
 import { FeatureCollection } from 'geojson';
 import { get, isNull, isString } from 'lodash';
+import moment from 'moment';
 import {
   BoundaryLayerProps,
   AdminLevelDataLayerProps,
@@ -23,7 +24,7 @@ export type AdminLevelDataLayerData = {
   layerData: DataRecord[];
 };
 
-export function getAdminLevelDataLayerData(
+export async function getAdminLevelDataLayerData(
   data: { [key: string]: any }[],
   {
     boundary,
@@ -47,6 +48,12 @@ export function getAdminLevelDataLayerData(
   const adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
     getState(),
   ) as LayerData<BoundaryLayerProps> | undefined;
+  // TEMP - add a 15s wait time to load admin boundaries which are very large
+  // WARNING - This is a hack and should be replaced by a better handling of admin boundaries.
+  // TODO - make sure we only run this once.
+  if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
+    await new Promise(resolve => setTimeout(resolve, 15000));
+  }
   if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
     // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
     throw new Error('Boundary Layer not loaded!');
@@ -82,8 +89,14 @@ export function getAdminLevelDataLayerData(
           properties,
           adminBoundaryLayer.adminCode,
         ) as string;
+        if (!adminBoundaryCode) {
+          console.warn(
+            `There seem to be an issue with the admin boundary file ${adminBoundaryLayer.id}.
+             Some properties are missing the amdin code ${adminBoundaryLayer.adminCode}`,
+          );
+        }
         const matchProperties = layerData.find(({ adminKey }) =>
-          adminBoundaryCode.startsWith(adminKey),
+          adminBoundaryCode?.startsWith(adminKey),
         );
         if (matchProperties && !isNull(matchProperties.value)) {
           // Do we want support for non-numeric values (like string colors?)
@@ -113,15 +126,22 @@ export function getAdminLevelDataLayerData(
 }
 
 export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> = () => async (
-  { layer }: LayerDataParams<AdminLevelDataLayerProps>,
+  { layer, date }: LayerDataParams<AdminLevelDataLayerProps>,
   api: ThunkApi,
 ) => {
   const { path, adminCode, dataField, featureInfoProps, boundary } = layer;
 
+  // format brackets inside config URL with moment
+  // example: "&date={YYYY-MM-DD}" will turn into "&date=2021-04-27"
+  const datedPath = path.replace(/{.*?}/g, match => {
+    const format = match.slice(1, -1);
+    return moment(date).format(format);
+  });
+
   // TODO avoid any use, the json should be typed. See issue #307
   const data: { [key: string]: any }[] = (
     await (
-      await fetch(path, {
+      await fetch(datedPath, {
         mode: path.includes('http') ? 'cors' : 'same-origin',
       })
     ).json()

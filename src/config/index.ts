@@ -4,7 +4,11 @@ import { PublicClientApplication } from '@azure/msal-browser';
 
 import cambodia from './cambodia';
 
+import colombia from './colombia';
+
 import cuba from './cuba';
+
+import ecuador from './ecuador';
 
 import { globalConfig, globalRawLayers, globalRawTables } from './global';
 
@@ -14,11 +18,9 @@ import {
   indonesiaRawTables,
 } from './indonesia';
 
-import {
-  kyrgyzstanConfig,
-  kyrgyzstanRawLayers,
-  kyrgyzstanRawTables,
-} from './kyrgyzstan';
+import jordan from './jordan';
+
+import kyrgyzstan from './kyrgyzstan';
 
 import {
   mongoliaConfig,
@@ -34,17 +36,19 @@ import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
 
 import rbd from './rbd';
 
-import srilanka from './srilanka';
-
 import sierraleone from './sierraleone';
 
-import colombia from './colombia';
+import southsudan from './southsudan';
+
+import srilanka from './srilanka';
 
 import {
   tajikistanConfig,
   tajikistanRawLayers,
   tajikistanRawTables,
 } from './tajikistan';
+
+import ukraine from './ukraine';
 
 import zimbabwe from './zimbabwe';
 
@@ -55,6 +59,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
 const configMap = {
   cuba,
   cambodia,
+  ecuador,
   global: {
     appConfig: globalConfig,
     rawLayers: globalRawLayers,
@@ -67,12 +72,8 @@ const configMap = {
     rawTables: indonesiaRawTables,
     defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
-  kyrgyzstan: {
-    appConfig: kyrgyzstanConfig,
-    rawLayers: kyrgyzstanRawLayers,
-    rawTables: kyrgyzstanRawTables,
-    defaultBoundariesFile: 'kgz_admin_boundaries.json',
-  },
+  jordan,
+  kyrgyzstan,
   mongolia: {
     appConfig: mongoliaConfig,
     rawLayers: mongoliaRawLayers,
@@ -89,6 +90,7 @@ const configMap = {
   },
   rbd,
   sierraleone,
+  southsudan,
   srilanka,
   colombia,
   tajikistan: {
@@ -97,6 +99,7 @@ const configMap = {
     rawTables: tajikistanRawTables,
     defaultBoundariesFile: 'tjk_admin_boundaries_v2.json',
   },
+  ukraine,
   zimbabwe,
 } as const;
 
@@ -106,11 +109,21 @@ const DEFAULT: Country = 'myanmar';
 
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
 const safeCountry =
-  COUNTRY && has(configMap, COUNTRY) ? (COUNTRY as Country) : DEFAULT;
+  COUNTRY && has(configMap, COUNTRY.toLocaleLowerCase())
+    ? (COUNTRY.toLocaleLowerCase() as Country)
+    : DEFAULT;
 
-const { appConfig, defaultBoundariesFile, rawLayers, rawTables } = configMap[
-  safeCountry
-];
+const {
+  appConfig,
+  defaultBoundariesFile,
+  rawLayers,
+  rawTables,
+}: {
+  appConfig: Record<string, any>;
+  defaultBoundariesFile: string;
+  rawLayers: Record<string, any>;
+  rawTables: Record<string, any>;
+} = configMap[safeCountry];
 
 const translation = get(configMap[safeCountry], 'translation', {});
 
@@ -144,6 +157,7 @@ const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesF
 
 export {
   appConfig,
+  safeCountry,
   defaultBoundariesPath,
   rawLayers,
   rawTables,

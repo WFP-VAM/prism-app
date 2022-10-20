@@ -17,14 +17,14 @@ import {
 } from '../../../../context/mapStateSlice/selectors';
 import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
 import { addPopupData } from '../../../../context/tooltipStateSlice';
+import { useDefaultDate } from '../../../../utils/useDefaultDate';
 import { getFeatureInfoPropsData } from '../../utils';
-import {
-  getBoundaryLayers,
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../../../config/utils';
+import { getBoundaryLayers, LayerDefinitions } from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
-import { isLayerOnView } from '../../../../utils/map-utils';
+import {
+  firstBoundaryOnView,
+  isLayerOnView,
+} from '../../../../utils/map-utils';
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { fillPaintData } from '../styles';
@@ -32,9 +32,11 @@ import { fillPaintData } from '../styles';
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
-  const boundaryId = layer.boundary || getBoundaryLayerSingleton().id;
 
-  const layerData = useSelector(layerDataSelector(layer.id)) as
+  const boundaryId = layer.boundary || firstBoundaryOnView(map);
+
+  const selectedDate = useDefaultDate(layer.id);
+  const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
   const { data } = layerData || {};
@@ -68,9 +70,9 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       }
     }
     if (!features) {
-      dispatch(loadLayerData({ layer }));
+      dispatch(loadLayerData({ layer, date: selectedDate }));
     }
-  }, [dispatch, features, layer, boundaryId, map]);
+  }, [dispatch, features, layer, selectedDate, boundaryId, map]);
 
   if (!features) {
     return null;

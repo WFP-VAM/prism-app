@@ -93,9 +93,14 @@
   "Impact Analysis on": "ការវិភាគលើផលប៉ះពាល់",
   "exposed to": "លាតត្រដាង",
   "No Data": "គ្មាន​ទិន្នន័យ",
-  "1 - province / governorate": "1 - ខេត្ត / ក្រុង",
-  "2 - county": "2- ស្រុក",
-  "3 - city / township": "3 - ទីក្រុង/ក្រុង",
+  "1 - province": "1 - ខេត្ត / ក្រុង",
+  "2 - district": "2- ស្រុក",
+  "3 - commune": "3 - ឃុំ",
   "Commune": "ឃុំ",
-  "Number of people affected": "ចំនួនមនុស្ស"
+  "Number of people affected": "ចំនួនមនុស្ស",
+  "Timestamps reflect local time in Cambodia": "ត្រាពេលវេលាឆ្លុះបញ្ចាំងម៉ោងក្នុងស្រុកនៅកម្ពុជា",
+  "EWS 1294 river level data": "EWS 1294 ទិន្នន័យកម្រិតទន្លេ",
+  "Mean water level": "កម្រិតទឹកជាមធ្យម",
+  "Max water level": "កម្រិតទឹកអតិបរមា",
+  "Location name": "ឈ្មោះទីតាំង"
 }
