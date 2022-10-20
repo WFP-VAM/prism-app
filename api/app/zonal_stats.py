@@ -93,13 +93,23 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
     for group_id, polygons in grouped_polygons.items():
         new_geometry = mapping(unary_union(polygons))
 
+        if not "coordinates" in new_geometry:
+            logger.error(
+                "Grouping of polygons %s returned an empty geometry for file %s.",
+                group_id,
+                output_filename,
+            )
+            logger.error(new_geometry)
+            continue
+
         new_features.append(
             dict(
                 type="Feature",
                 id=group_id,
                 properties=dict([(group_by, group_id)]),
                 geometry=dict(
-                    type=new_geometry["type"], coordinates=new_geometry["coordinates"]
+                    type=new_geometry["type"],
+                    coordinates=new_geometry["coordinates"],
                 ),
             )
         )
