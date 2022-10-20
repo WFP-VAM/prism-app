@@ -97,18 +97,18 @@
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
-      {"value": "-0", "color": "#ffffff", "alpha": 0},
-      {"value": "50", "color": "#faf3d2"},
-      {"value": "100", "color": "#dae3a1"},
-      {"value": "200", "color": "#a0c787"},
-      {"value": "300", "color": "#68ab79"},
-      {"value": "400", "color": "#9beafa"},
-      {"value": "500", "color": "#00b1de"},
-      {"value": "600", "color": "#005ae6"},
-      {"value": "800", "color": "#0000c8"},
-      {"value": "1000", "color": "#a000fa"},
-      {"value": "1500", "color": "#fa78fa"},
-      {"value": "> 1500", "color": "#ffc4ee"}
+      { "value": "-0", "color": "#ffffff", "alpha": 0 },
+      { "value": "50", "color": "#faf3d2" },
+      { "value": "100", "color": "#dae3a1" },
+      { "value": "200", "color": "#a0c787" },
+      { "value": "300", "color": "#68ab79" },
+      { "value": "400", "color": "#9beafa" },
+      { "value": "500", "color": "#00b1de" },
+      { "value": "600", "color": "#005ae6" },
+      { "value": "800", "color": "#0000c8" },
+      { "value": "1000", "color": "#a000fa" },
+      { "value": "1500", "color": "#fa78fa" },
+      { "value": "> 1500", "color": "#ffc4ee" }
     ]
   },
   "streak_dry_days": {
@@ -407,7 +407,7 @@
     "title": "population",
     "type": "wms",
     "wcsConfig": {
-      "time_support": false,
+      "disableDateParam": true,
       "version": "2.0.0",
       "scale": "0.1"
     },
