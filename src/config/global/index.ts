@@ -1,5 +1,13 @@
-import globalConfig from './prism.json';
-import globalRawLayers from './layers.json';
-import globalRawTables from './tables.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
 
-export { globalConfig, globalRawLayers, globalRawTables };
+const rawTables = {};
+const translation = {};
+
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  translation,
+  defaultBoundariesFile: 'adm0_simplified.json',
+};
