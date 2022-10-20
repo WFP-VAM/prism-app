@@ -1,7 +1,7 @@
 {
     "admin_boundaries": {
       "type": "boundary",
-      "path": "../data/ecuador/ecu_admbnda_adm2.json",
+      "path": "data/ecuador/ecu_admbnda_adm2.json",
       "opacity": 0.8,
       "admin_code": "ADM2_CODE",
       "admin_level_names": ["ADM2_ES", "ADM1_ES"],
@@ -19,7 +19,7 @@
     },
     "admin1_boundaries": {
       "type": "boundary",
-      "path": "../data/ecuador/ecu_admbnda_adm1.json",
+      "path": "data/ecuador/ecu_admbnda_adm1.json",
       "opacity": 0.8,
       "admin_code": "ADM1_CODE",
       "admin_level_names": ["ADM1_ES"],
