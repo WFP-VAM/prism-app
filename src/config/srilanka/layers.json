@@ -339,7 +339,7 @@
       { "value": 1600, "label": "1600-1800 mm", "color": "#a002fa" },
       { "value": 1800, "label": "1800-2000 mm", "color": "#fa78fa" },
       { "value": 2000, "label": "> 2000 mm", "color": "#ffc4ee" }
-  ]
+    ]
   },
   "rainfall_agg_9month": {
     "title": "9-month rainfall aggregate (mm)",
@@ -931,17 +931,17 @@
       { "value": 0, "label": "< 0.10", "color": "#fffae6" },
       { "value": 0.1, "label": "0.10 - 0.15", "color": "#fff0be" },
       { "value": 0.15, "label": "0.15 - 0.20", "color": "#dae3a1" },
-      { "value": 0.20, "label": "0.20 - 0.25", "color": "#ccea83" },
+      { "value": 0.2, "label": "0.20 - 0.25", "color": "#ccea83" },
       { "value": 0.25, "label": "0.25 - 0.30", "color": "#cbff1f" },
-      { "value": 0.30, "label": "0.30 - 0.35", "color": "#86cb66" },
+      { "value": 0.3, "label": "0.30 - 0.35", "color": "#86cb66" },
       { "value": 0.35, "label": "0.35 - 0.40", "color": "#2da155" },
-      { "value": 0.40, "label": "0.40 - 0.50", "color": "#009600" },
-      { "value": 0.50, "label": "0.50 - 0.60", "color": "#006400" },
-      { "value": 0.60, "label": "0.60 - 0.70", "color": "#64a77e" },
-      { "value": 0.70, "label": "0.70 - 0.80", "color": "#328968" },
-      { "value": 0.80, "label": "0.80 - 0.85", "color": "#006b52" },
+      { "value": 0.4, "label": "0.40 - 0.50", "color": "#009600" },
+      { "value": 0.5, "label": "0.50 - 0.60", "color": "#006400" },
+      { "value": 0.6, "label": "0.60 - 0.70", "color": "#64a77e" },
+      { "value": 0.7, "label": "0.70 - 0.80", "color": "#328968" },
+      { "value": 0.8, "label": "0.80 - 0.85", "color": "#006b52" },
       { "value": 0.85, "label": "0.85 - 0.90", "color": "#004e33" },
-      { "value": 0.90, "label": "> 0.90", "color": "#002a1e" }
+      { "value": 0.9, "label": "> 0.90", "color": "#002a1e" }
     ]
   },
   "ndvi_dekad_anomaly": {
@@ -1087,7 +1087,7 @@
     "title": "population",
     "type": "wms",
     "wcsConfig": {
-      "time_support": false,
+      "disableDateParam": true,
       "version": "2.0.0",
       "scale": "0.1"
     },

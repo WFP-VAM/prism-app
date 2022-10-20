@@ -1210,7 +1210,7 @@
       { "value": 1400, "label": "1400-1600 mm", "color": "#fa78fa" },
       { "value": 1600, "label": "> 1600 mm", "color": "#ffc4ee" }
     ]
-  },  
+  },
   "precip_blended_9m": {
     "title": "Blended rainfall aggregate (9-month)",
     "type": "wms",
@@ -1270,7 +1270,7 @@
       { "value": 2000, "label": "2000-2400 mm", "color": "#fa78fa" },
       { "value": 2400, "label": "> 2400 mm", "color": "#ffc4ee" }
     ]
-  },           
+  },
   "precip_blended_dekad_anomaly": {
     "title": "Blended rainfall anomaly (10-day)",
     "type": "wms",
@@ -1382,7 +1382,7 @@
       { "value": 170, "label": "170-200%", "color": "#0000c8" },
       { "value": 200, "label": "> 200%", "color": "#a002fa" }
     ]
-  }, 
+  },
   "precip_blended_anomaly_9m": {
     "title": "Blended rainfall anomaly (9-month)",
     "type": "wms",
@@ -1410,7 +1410,7 @@
       { "value": 170, "label": "170-200%", "color": "#0000c8" },
       { "value": 200, "label": "> 200%", "color": "#a002fa" }
     ]
-  }, 
+  },
   "precip_blended_anomaly_1y": {
     "title": "Blended rainfall anomaly (1-year)",
     "type": "wms",
@@ -1438,7 +1438,7 @@
       { "value": 170, "label": "170-200%", "color": "#0000c8" },
       { "value": 200, "label": "> 200%", "color": "#a002fa" }
     ]
-  }, 
+  },
   "spi_1m": {
     "title": "SPI - 1-month",
     "type": "wms",
@@ -1767,7 +1767,7 @@
     "title": "population",
     "type": "wms",
     "wcsConfig": {
-      "time_support": false,
+      "disableDateParam": true,
       "version": "2.0.0",
       "scale": 0.1,
       "offset": 0
