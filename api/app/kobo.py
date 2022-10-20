@@ -3,17 +3,23 @@ import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
 from typing import Any, TypedDict, TypeVar
-
 import requests
 from dateutil.parser import parse as dtparser
 from fastapi import HTTPException
 from pydantic import HttpUrl
 from shapely.geometry import Point, box
+from app.utils import forward_http_error
 
 logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
 
+kobo_username = getenv("KOBO_USERNAME")
+if kobo_username is None:
+    raise Exception("Missing backend parameter: KOBO_USERNAME")
+kobo_pw = getenv("KOBO_PW")
+if kobo_pw is None:
+    raise Exception("Missing backend parameter: KOBO_PW")
 
 class KoboForm(TypedDict):
     name: str
@@ -34,15 +40,6 @@ def get_kobo_params(
     filter_params: str | None,
 ) -> tuple[tuple[str, str], KoboForm]:
     """Collect and validate request parameters and environment variables."""
-
-    # TODO: as the client has no control over these env vars, the check should
-    # be done as the server starts instead
-    kobo_username = getenv("KOBO_USERNAME")
-    if kobo_username is None:
-        raise Exception("Missing backend parameter: KOBO_USERNAME")
-    kobo_pw = getenv("KOBO_PW")
-    if kobo_pw is None:
-        raise Exception("Missing backend parameter: KOBO_PW")
 
     filters = {}
     if filter_params is not None:
@@ -175,7 +172,9 @@ def get_responses_from_kobo(
     else:
         resp = requests.get(form_url, auth=auth)
 
-    resp.raise_for_status()
+    excluded_codes = [403]
+    forward_http_error(resp=resp, excluded_codes=excluded_codes)
+
     kobo_user_metadata = resp.json()
 
     # Find form and get results.
@@ -188,7 +187,7 @@ def get_responses_from_kobo(
 
     # Additional request to get label mappings.
     resp = requests.get(form_metadata.get("url"), auth=auth)
-    resp.raise_for_status()
+    forward_http_error(resp=resp, excluded_codes=excluded_codes)
     form_metadata = resp.json()
 
     # Get form fields and field type used for parsing.
@@ -199,7 +198,7 @@ def get_responses_from_kobo(
 
     # Get all form responses using metadata 'data' key
     resp = requests.get(form_metadata.get("data"), auth=auth)
-    resp.raise_for_status()
+    forward_http_error(resp=resp, excluded_codes=excluded_codes)
 
     form_responses = resp.json().get("results")
 
@@ -242,7 +241,7 @@ def get_form_responses(
     )
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
-
+    
     filtered_forms = []
     for form in forms:
         date_value: datetime = form["date"]
@@ -266,7 +265,7 @@ def get_form_responses(
         filtered_forms.append(form)
 
     sorted_forms = sorted(filtered_forms, key=lambda x: x.get("date"))  # type: ignore
-
+    
     # Transform date into string.
     sorted_forms = [
         {**f, "date": f.get("date").date().isoformat()} for f in sorted_forms  # type: ignore
