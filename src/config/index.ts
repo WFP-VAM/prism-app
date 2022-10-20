@@ -8,7 +8,7 @@ import cuba from './cuba';
 
 import ecuador from './ecuador';
 
-import { globalConfig, globalRawLayers, globalRawTables } from './global';
+import global from './global';
 
 import {
   indonesiaConfig,
@@ -54,12 +54,7 @@ const configMap = {
   cuba,
   cambodia,
   ecuador,
-  global: {
-    appConfig: globalConfig,
-    rawLayers: globalRawLayers,
-    rawTables: globalRawTables,
-    defaultBoundariesFile: 'adm0_simplified.json',
-  },
+  global,
   indonesia: {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
