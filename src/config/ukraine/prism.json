@@ -28,7 +28,8 @@
     "temperature": {
       "land_surface_temperature": [
         "lst_daytime",
-        "lst_day_anomaly",
+        "lst_nighttime",
+        "lst_anomaly",
         "lst_amplitude"
       ]
     }
