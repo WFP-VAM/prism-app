@@ -1277,7 +1277,7 @@
   "ipm_total": {
     "title": "Poverty index",
     "type": "admin_level_data",
-    "path": "../data/colombia/ipm.json",
+    "path": "data/colombia/ipm.json",
     "data_field": "IPM_TOTAL",
     "admin_level": 2,
     "admin_code": "MPIO_CCNCT",
