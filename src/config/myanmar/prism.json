@@ -32,13 +32,6 @@
     ]
   },
   "categories": {
-    "flood": {
-      "flood_monitoring": [
-        "hydra_s1",
-        "hydra_s2",
-        "hydra_l8"
-      ]
-    },
     "tropical_storms": {
       "tropical_storms": [
         {
