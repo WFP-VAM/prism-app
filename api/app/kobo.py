@@ -5,12 +5,11 @@ from os import getenv
 from typing import Any, TypedDict, TypeVar
 
 import requests
+from app.utils import forward_http_error
 from dateutil.parser import parse as dtparser
 from fastapi import HTTPException
 from pydantic import HttpUrl
 from shapely.geometry import Point, box
-
-from app.utils import forward_http_error
 
 logger = logging.getLogger(__name__)
 

@@ -6,9 +6,8 @@ import os
 
 import rasterio  # type: ignore
 import requests
-from fastapi import HTTPException
-
 from app.timer import timed
+from fastapi import HTTPException
 
 from .models import FilePath, GeoJSON
 
