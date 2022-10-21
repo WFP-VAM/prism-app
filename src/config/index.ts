@@ -4,6 +4,8 @@ import { PublicClientApplication } from '@azure/msal-browser';
 
 import cambodia from './cambodia';
 
+import colortest from './colortest';
+
 import cuba from './cuba';
 
 import ecuador from './ecuador';
@@ -55,8 +57,9 @@ const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
 const configMap = {
-  cuba,
   cambodia,
+  colortest,
+  cuba,
   ecuador,
   global,
   indonesia: {

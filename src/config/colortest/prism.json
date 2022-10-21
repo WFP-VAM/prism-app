@@ -1,0 +1,164 @@
+{
+    "country": "Global",
+    "alertFormActive": false,
+    "icons": {
+      "rainfall_aggregation": "icon_rain.png",
+      "rainfall_anomaly": "icon_rain.png",
+      "vegetation": "icon_veg.png",
+      "temperature": "icon_climate.png",
+      "wet_dry_streaks": "icon_rain.png",
+      "capacity": "icon_capacity.png",
+      "tables": "icon_table.png"
+    },
+    "serversUrls": {
+      "wms": [
+        "https://odc.ovio.org/wms"
+      ]
+    },
+    "map": {
+      "latitude": 1.8,
+      "longitude": 29.9,
+      "zoom": 1.76
+    },
+    "categories": {
+      "rainfall_aggregation": {
+        "10-day_rainfall": [
+          "dekad_rfh_16_0_300",
+          "dekad_rfh_16_0_400",
+          "dekad_rfh_16_0_600",
+          "dekad_rfh_16_0_800",
+          "dekad_rfh_16_0_1000",
+          "dekad_rfh_16_0_1600",
+          "dekad_rfh_16_0_2000",
+          "dekad_rfh_16_0_2400",
+          "dekad_rfh_16_0_4000"
+        ],
+        "1-month_rainfall": [
+          "1m_rfh_16_0_300",
+          "1m_rfh_16_0_400",
+          "1m_rfh_16_0_600",
+          "1m_rfh_16_0_800",
+          "1m_rfh_16_0_1000",
+          "1m_rfh_16_0_1600",
+          "1m_rfh_16_0_2000",
+          "1m_rfh_16_0_2400",
+          "1m_rfh_16_0_4000"
+        ],
+        "3-month_rainfall": [
+          "3m_rfh_16_0_300",
+          "3m_rfh_16_0_400",
+          "3m_rfh_16_0_600",
+          "3m_rfh_16_0_800",
+          "3m_rfh_16_0_1000",
+          "3m_rfh_16_0_1600",
+          "3m_rfh_16_0_2000",
+          "3m_rfh_16_0_2400",
+          "3m_rfh_16_0_4000"
+        ],
+        "6-month_rainfall": [
+          "6m_rfh_16_0_300",
+          "6m_rfh_16_0_400",
+          "6m_rfh_16_0_600",
+          "6m_rfh_16_0_800",
+          "6m_rfh_16_0_1000",
+          "6m_rfh_16_0_1600",
+          "6m_rfh_16_0_2000",
+          "6m_rfh_16_0_2400",
+          "6m_rfh_16_0_4000"
+        ],
+        "9-month_rainfall": [
+          "9m_rfh_16_0_300",
+          "9m_rfh_16_0_400",
+          "9m_rfh_16_0_600",
+          "9m_rfh_16_0_800",
+          "9m_rfh_16_0_1000",
+          "9m_rfh_16_0_1600",
+          "9m_rfh_16_0_2000",
+          "9m_rfh_16_0_2400",
+          "9m_rfh_16_0_4000"
+        ],
+        "1-year_rainfall": [
+          "1y_rfh_16_0_300",
+          "1y_rfh_16_0_400",
+          "1y_rfh_16_0_600",
+          "1y_rfh_16_0_800",
+          "1y_rfh_16_0_1000",
+          "1y_rfh_16_0_1600",
+          "1y_rfh_16_0_2000",
+          "1y_rfh_16_0_2400",
+          "1y_rfh_16_0_4000"
+        ]
+      },
+      "rainfall_anomaly": {
+        "10-day_rainfall_anomaly": [
+          "dekad_rfq_14_20_400",
+          "dekad_ryq_14_50_200"
+        ],
+        "1-month_rainfall_anomaly": [
+          "1m_rfq_14_20_400",
+          "1m_ryq_14_50_200"
+        ],
+        "3-month_rainfall_anomaly": [
+          "3m_rfq_14_20_400",
+          "3m_ryq_14_50_200"
+        ],
+        "6-month_rainfall_anomaly": [
+          "6m_rfq_14_20_400",
+          "6m_ryq_14_50_200"
+        ],
+        "9-month_rainfall_anomaly": [
+          "9m_rfq_14_20_400",
+          "9m_ryq_14_50_200"
+        ],
+        "1-year_rainfall_anomaly": [
+          "1y_rfq_14_20_400",
+          "1y_ryq_14_50_200"
+        ]
+      },
+      "wet_dry_streaks": {
+        "longest_dryspell": [
+          "dlx_13_0_26",
+          "dlx_13_0_40"
+        ],
+        "current_dryspell": [
+          "dlc_13_0_26",
+          "dlc_13_0_40"
+        ],
+        "total_num_heavy_raindays": [
+          "xnhie_12_0_10",
+          "xnhie_12_0_14"
+        ],
+        "longest_run_consecutive_heavy_rain_days": [
+          "xlhie_12_0_10",
+          "xlhie_12_0_14"
+        ]
+      },
+      "vegetation": {
+        "ndvi_anomaly": [
+          "viq_13_50_150_5km",
+          "viq_13_50_150_1km",
+          "viq_13_50_150_250m"
+        ],
+        "ndvi": [
+          "vim_14_01_09_250m",
+          "vim_14_01_09_1km",
+          "vim_14_01_09_5km"
+        ]
+      },
+      "temperature": {
+        "land_surface_temperature": [
+          "tda_42_n24_70",
+          "tna_42_n24_70"
+        ],
+        "lst_anomaly":[
+          "tdd_21_m20_20",
+          "tnd_21_m20_20",
+          "tdd_21_m12_12",
+          "tnd_21_m12_12"
+        ],
+        "lst_amplitude":[
+          "taa_21_1_48"
+        ]
+      }
+    }
+  }
