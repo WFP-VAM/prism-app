@@ -10,8 +10,6 @@ import colortest2 from './colortest2';
 
 import cuba from './cuba';
 
-import { globalConfig, globalRawLayers, globalRawTables } from './global';
-
 import {
   indonesiaConfig,
   indonesiaRawLayers,
@@ -59,12 +57,6 @@ const configMap = {
   colortest1,
   colortest2,
   cuba,
-  global: {
-    appConfig: globalConfig,
-    rawLayers: globalRawLayers,
-    rawTables: globalRawTables,
-    defaultBoundariesFile: 'adm0_simplified.json',
-  },
   indonesia: {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
