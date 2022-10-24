@@ -32,7 +32,7 @@ import mozambique from './mozambique';
 
 import myanmar from './myanmar';
 
-import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
+import namibia from './namibia';
 
 import rbd from './rbd';
 
@@ -77,12 +77,7 @@ const configMap = {
   },
   mozambique,
   myanmar,
-  namibia: {
-    appConfig: namibiaConfig,
-    rawLayers: namibiaRawLayers,
-    rawTables: namibiaRawTables,
-    defaultBoundariesFile: 'nam_admin2.json',
-  },
+  namibia,
   rbd,
   sierraleone,
   southsudan,

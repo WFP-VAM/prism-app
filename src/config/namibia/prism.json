@@ -1,5 +1,7 @@
 {
   "country": "Namibia",
+  "enableNavigationDropdown": true,
+  "alertFormActive": false,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
@@ -7,13 +9,15 @@
     "risk": "icon_impact.png",
     "vulnerability": "icon_vulnerable.png"
   },
-  "alertFormActive": false,
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://geonode.wfp.org/geoserver/prism/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin1_boundaries"
+  ],
   "map": {
     "latitude": -23.02,
     "longitude": 17.05,
@@ -21,37 +25,191 @@
   },
   "categories": {
     "rainfall": {
-      "rainfall_amount": [
-        "precip_blended_dekad",
-        "rainfall_dekad",
-        "rainfall_agg_1month",
-        "rainfall_agg_3month",
-        "rainfall_agg_6month",
-        "rainfall_agg_9month",
-        "rainfall_agg_1year"
+      "Met_Dept_rainfall_data": [
+        {
+          "group_title": "Rainfall aggregate",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "precip_blended_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "precip_blended_1m",
+              "label": "1-month"
+            }
+          ]
+        },
+        {
+          "group_title": "Rainfall anomaly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "precip_blended_dekad_anomaly",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "precip_blended_anomaly_1m",
+              "label": "1-month"
+            }
+          ]
+        }
       ],
-      "rainfall_anomalies": [
-        "precip_blended_dekad_anomaly",
-        "rain_anomaly_dekad",
-        "rain_anomaly_1month",
-        "rain_anomaly_3month",
-        "rain_anomaly_6month",
-        "rain_anomaly_9month",
-        "rain_anomaly_1year"
+      "global_rainfall_products": [
+        {
+          "group_title": "Rainfall aggregate",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rainfall_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rainfall_agg_1month",
+              "label": "1-month"
+            },
+            {
+              "id": "rainfall_agg_3month",
+              "label": "3-month"
+            },
+            {
+              "id": "rainfall_agg_6month",
+              "label": "6-month"
+            },
+            {
+              "id": "rainfall_agg_9month",
+              "label": "9-month"
+            },
+            {
+              "id": "rainfall_agg_1year",
+              "label": "1-year"
+            }
+          ]
+        },
+        {
+          "group_title": "Rainfall anomaly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rain_anomaly_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rain_anomaly_1month",
+              "label": "1-month"
+            },
+            {
+              "id": "rain_anomaly_3month",
+              "label": "3-month"
+            },
+            {
+              "id": "rain_anomaly_6month",
+              "label": "6-month"
+            },
+            {
+              "id": "rain_anomaly_9month",
+              "label": "9-month"
+            },
+            {
+              "id": "rain_anomaly_1year",
+              "label": "1-year"
+            }
+          ]
+        },
+        {
+          "group_title": "SPI",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "spi_1m",
+              "label": "1-month",
+              "main": true
+            },
+            {
+              "id": "spi_3m",
+              "label": "3-month"
+            },
+            {
+              "id": "spi_6m",
+              "label": "6-month"
+            },
+            {
+              "id": "spi_9m",
+              "label": "9-month"
+            },
+            {
+              "id": "spi_1y",
+              "label": "1-year"
+            }
+          ]
+        }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days"],
-      "heavy_rain": [
-        "days_heavy_rain",
-        "days_intense_rain",
-        "days_extreme_rain",
-        "streak_heavy_rain"
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
+      "extreme_rain_events": [
+        {
+          "group_title": "Rainfall categories:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "days_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        },
+        {
+          "group_title": "Consecutive days of rainfall:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "streak_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        }
       ]
     },
     "vegetation": {
-      "vegetation_conditions": ["ndvi_dekad_5", "ndvi_dekad_anomaly_5"]
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
     },
     "temperature": {
-      "land_surface_temperature": ["lst_daytime_5", "lst_day_anomaly_5"]
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_nighttime",
+        "lst_day_anomaly",
+        "lst_amplitude"
+      ]
     },
     "vulnerability": {
       "poverty": ["poor_hhs"]
