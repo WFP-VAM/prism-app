@@ -42,11 +42,7 @@ import southsudan from './southsudan';
 
 import srilanka from './srilanka';
 
-import {
-  tajikistanConfig,
-  tajikistanRawLayers,
-  tajikistanRawTables,
-} from './tajikistan';
+import tajikistan from './tajikistan';
 
 import ukraine from './ukraine';
 
@@ -59,6 +55,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
 const configMap = {
   cuba,
   cambodia,
+  colombia,
   ecuador,
   global,
   indonesia: {
@@ -82,13 +79,7 @@ const configMap = {
   sierraleone,
   southsudan,
   srilanka,
-  colombia,
-  tajikistan: {
-    appConfig: tajikistanConfig,
-    rawLayers: tajikistanRawLayers,
-    rawTables: tajikistanRawTables,
-    defaultBoundariesFile: 'tjk_admin_boundaries_v2.json',
-  },
+  tajikistan,
   ukraine,
   zimbabwe,
 } as const;
