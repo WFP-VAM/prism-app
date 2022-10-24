@@ -26,6 +26,11 @@ class WfsParamsModel(BaseModel):
     url: HttpUrl = Field(..., example="https://geonode.wfp.org/geoserver/ows")
 
 
+class FilterProperty(BaseModel):
+    key: str = Field(..., example="Adm2_Name")
+    value: str = Field(..., example="Barranquilla")
+
+
 class StatsModel(BaseModel):
     """Schema for stats data to be passed to /stats endpoint."""
 
@@ -37,6 +42,7 @@ class StatsModel(BaseModel):
     zones: GeoJSON | None = None
     intersect_comparison: str | None = None
     mask_url: str | None = None
+    filter_by: FilterProperty | None = None
 
 
 def must_not_contain_null_char(v: str) -> str:

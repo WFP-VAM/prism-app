@@ -20,6 +20,9 @@ Calculate zonal statistics for a raster / zones combination. Which takes as inpu
   - `layer_name`, the name of the vector layer. Geometry must be POLYGON or MULTIPOLYGON.
   - `key`, Geojson property field to be extracted for each feature.
   - `?time`, Layer TIME dimension if enabled.
+- `?filter_by`, A dictionary of parameters that filters the features that match the geojson property key and value specified within the request.
+  - `key`, feature property key.
+  - `value`, feature property value.
 
 ### `/demo` (GET)
 

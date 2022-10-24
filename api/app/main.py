@@ -13,6 +13,7 @@ from app.database.alert_model import AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
+from app.models import FilterProperty
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
@@ -67,6 +68,7 @@ def _calculate_stats(
     wfs_response: frozenset | None,
     intersect_comparison,
     mask_geotiff,
+    filter_by: tuple[str, str] | None,
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -79,6 +81,7 @@ def _calculate_stats(
         wfs_response=dict(wfs_response) if wfs_response is not None else None,
         intersect_comparison=intersect_comparison,
         mask_geotiff=mask_geotiff,
+        filter_by=filter_by,
     )
 
 
@@ -95,6 +98,11 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     geojson_out = stats_model.geojson_out
     intersect_comparison_string = stats_model.intersect_comparison
     mask_geotiff_url = stats_model.mask_url
+
+    filter_by = None
+    # Tuple transformation fixes unhashable type error caused by timed decorator.
+    if stats_model.filter_by is not None:
+        filter_by = (filter_by.key, filter_by.value)
 
     group_by = stats_model.group_by
     wfs_params = stats_model.wfs_params
@@ -140,6 +148,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         else None,
         intersect_comparison=intersect_comparison_tuple,
         mask_geotiff=mask_geotiff,
+        filter_by=filter_by,
     )
 
     return features
