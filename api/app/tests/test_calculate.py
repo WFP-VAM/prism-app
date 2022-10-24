@@ -83,7 +83,7 @@ def test_calculate_stats_wfs_polygons():
 def test_kobo_response_form(kobo_params, kobo_data):
     """Test form response parsing."""
     form_fields = {
-        "name": "name",
+        "id": "id",
         "datetime": "date",
         "geom_field": "geom",
         "filters": {"status": "Approved"},
@@ -127,7 +127,7 @@ def test_kobo_response_form(kobo_params, kobo_data):
     assert forms[0]["status"] == "Approved"
 
     form_fields = {
-        "name": "name",
+        "id": "id",
         "datetime": "date",
         "geom": "geom",
         "filters": {"status": "Approved", "username": "jorge"},

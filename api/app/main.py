@@ -157,11 +157,11 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 @app.get("/kobo/dates")
 def get_kobo_form_dates(
     koboUrl: HttpUrl,
-    formName: str,
+    formId: str,
     datetimeField: str,
 ):
     """Get all form response dates."""
-    return get_form_dates(koboUrl, formName, datetimeField)
+    return get_form_dates(koboUrl, formId, datetimeField)
 
 
 @app.get("/kobo/forms")
