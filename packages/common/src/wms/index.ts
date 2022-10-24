@@ -1,0 +1,1 @@
+export { WMS } from './WMS';
