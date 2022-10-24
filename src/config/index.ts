@@ -4,6 +4,8 @@ import { PublicClientApplication } from '@azure/msal-browser';
 
 import cambodia from './cambodia';
 
+import colombia from './colombia';
+
 import cuba from './cuba';
 
 import ecuador from './ecuador';
@@ -85,6 +87,7 @@ const configMap = {
   sierraleone,
   southsudan,
   srilanka,
+  colombia,
   tajikistan: {
     appConfig: tajikistanConfig,
     rawLayers: tajikistanRawLayers,

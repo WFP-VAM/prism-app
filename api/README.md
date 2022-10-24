@@ -111,7 +111,11 @@ To deploy, run:
 make deploy
 ```
 
-There is a known issue happening from time to time: `address already in use`. To bypass it, run the following commands for the ports you need:
+There are a few known issues happening from time to time
+
+- `permission denied` when restarting or killing a docker image. To fix it, run `sudo aa-remove-unknown` and re-run your command.
+
+- `address already in use`. To bypass it, run the following commands for the ports you need:
 
 ```
 # Find process ids
