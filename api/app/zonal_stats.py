@@ -93,7 +93,12 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
 
     new_features = []
     for group_id, polygons in grouped_polygons.items():
-        new_geometry = mapping(unary_union(polygons))
+        try:
+            new_geometry = mapping(unary_union(polygons))
+        except ValueError as error:
+            logger.error(error)
+            logger.error(polygons)
+            new_geometry = {}
 
         if not "coordinates" in new_geometry:
             logger.error(
