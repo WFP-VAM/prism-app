@@ -172,14 +172,6 @@ export function findGetCoverageUrl(xml: string): string | undefined {
   return findCoverageOpUrl(xml, 'GetCoverage');
 }
 
-// export function formatGetCoverageUrl(
-//   xml: string,
-//   { cql_filter, format, namespace, sortBy }:
-//   { cql_filter?: string, format: CoverageFormat, namespace?: string, sortBy?: string }
-// ): string {
-//   return "";
-// }
-
 export function createGetCoverageUrl(
   xml: string,
   layerId: string,
