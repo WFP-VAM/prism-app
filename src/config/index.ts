@@ -4,6 +4,8 @@ import { PublicClientApplication } from '@azure/msal-browser';
 
 import cambodia from './cambodia';
 
+import colombia from './colombia';
+
 import cuba from './cuba';
 
 import ecuador from './ecuador';
@@ -30,7 +32,7 @@ import mozambique from './mozambique';
 
 import myanmar from './myanmar';
 
-import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
+import namibia from './namibia';
 
 import rbd from './rbd';
 
@@ -40,11 +42,7 @@ import southsudan from './southsudan';
 
 import srilanka from './srilanka';
 
-import {
-  tajikistanConfig,
-  tajikistanRawLayers,
-  tajikistanRawTables,
-} from './tajikistan';
+import tajikistan from './tajikistan';
 
 import ukraine from './ukraine';
 
@@ -57,6 +55,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
 const configMap = {
   cuba,
   cambodia,
+  colombia,
   ecuador,
   global,
   indonesia: {
@@ -75,22 +74,12 @@ const configMap = {
   },
   mozambique,
   myanmar,
-  namibia: {
-    appConfig: namibiaConfig,
-    rawLayers: namibiaRawLayers,
-    rawTables: namibiaRawTables,
-    defaultBoundariesFile: 'nam_admin2.json',
-  },
+  namibia,
   rbd,
   sierraleone,
   southsudan,
   srilanka,
-  tajikistan: {
-    appConfig: tajikistanConfig,
-    rawLayers: tajikistanRawLayers,
-    rawTables: tajikistanRawTables,
-    defaultBoundariesFile: 'tjk_admin_boundaries_v2.json',
-  },
+  tajikistan,
   ukraine,
   zimbabwe,
 } as const;
