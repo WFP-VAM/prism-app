@@ -10,6 +10,7 @@ coverage
 
 # Production
 build
+dist
 
 # Misc
 .DS_Store
@@ -33,3 +34,8 @@ yarn-error.log*
 .idea/
 .log/
 *.bak
+
+# ignore shared code packages build files
+packages/*/dist/
+
+packages/common/pnpm-lock.yaml

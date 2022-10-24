@@ -1,4 +1,4 @@
-import { formatUrl } from './server-utils';
+import { formatUrl } from '../../../packages/common';
 
 // GDAL style extent: xmin ymin xmax ymax
 export type Extent = [number, number, number, number];
