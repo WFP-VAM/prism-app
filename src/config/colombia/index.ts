@@ -9,5 +9,5 @@ export default {
   rawLayers,
   rawTables,
   translation,
-  defaultBoundariesFile: 'adm0_simplified.json',
+  defaultBoundariesFile: 'col_municipios.json',
 };

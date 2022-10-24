@@ -104,3 +104,22 @@ make test
 We are using [docs.traefik.io](https://docs.traefik.io/)
 To deploy the application, update the file `docker-compose.deploy.yml`.
 Specifically, update `info@ovio.org` with a domain admin email and `prism-api.ovio.org` with the hostname you will be using.
+
+To deploy, run:
+
+```
+make deploy
+```
+
+There are a few known issues happening from time to time
+
+- `permission denied` when restarting or killing a docker image. To fix it, run `sudo aa-remove-unknown` and re-run your command.
+
+- `address already in use`. To bypass it, run the following commands for the ports you need:
+
+```
+# Find process ids
+sudo lsof -i -P -n | grep PORT
+# Kill processes
+sudo kill PROCESS_ID
+```

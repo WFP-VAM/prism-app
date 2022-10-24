@@ -356,7 +356,7 @@
     "title": "population",
     "type": "wms",
     "wcsConfig": {
-      "time_support": false,
+      "disableDateParam": true,
       "version": "2.0.0",
       "scale": "0.1"
     },

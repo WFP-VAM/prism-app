@@ -1,5 +1,5 @@
 {
-  "country": "Sri Lanka",
+  "country": "Colombia",
   "alertFormActive": false,
   "icons": {
     "rainfall": "icon_rain.png",
@@ -11,20 +11,43 @@
   },
   "serversUrls": {
     "wms": [
+      "https://geonode.wfp.org/geoserver/prism/wms/",
       "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
   "map": {
-    "latitude": 7.928,
-    "longitude": 80.592,
-    "zoom": 6.84
+    "latitude": 4.5709,
+    "longitude": -74.2973,
+    "zoom": 4.7
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
-    "admin2_boundaries",
     "admin1_boundaries"
   ],
   "categories": {
+    "tropical_storms": {
+      "tropical_storms": [
+        {
+          "group_title": "Tropical Storms",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "adamts_buffers",
+              "label": "Wind buffers",
+              "main": true
+            },
+            {
+              "id": "adamts_nodes",
+              "label": "Nodes"
+            },
+            {
+              "id": "adamts_tracks",
+              "label": "Tracks"
+            }
+          ]
+        }
+      ]
+    },
     "rainfall": {
       "rainfall_amount": [
         {
@@ -177,15 +200,16 @@
     "temperature": {
       "land_surface_temperature": [
         "lst_daytime",
+        "lst_nighttime",
         "lst_anomaly",
         "lst_amplitude"
       ]
     },
     "vulnerability": {
-      "poverty": ["poverty_hc"]
-    },
-    "exposure": {
-      "population": ["pop_21", "num_hhs"]
+      "poverty": [
+        "avg_pop_flood",
+        "ipm_total"
+      ]
     }
   }
 }

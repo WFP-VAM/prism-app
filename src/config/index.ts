@@ -4,11 +4,13 @@ import { PublicClientApplication } from '@azure/msal-browser';
 
 import cambodia from './cambodia';
 
+import colombia from './colombia';
+
 import cuba from './cuba';
 
 import ecuador from './ecuador';
 
-import { globalConfig, globalRawLayers, globalRawTables } from './global';
+import global from './global';
 
 import {
   indonesiaConfig,
@@ -18,11 +20,7 @@ import {
 
 import jordan from './jordan';
 
-import {
-  kyrgyzstanConfig,
-  kyrgyzstanRawLayers,
-  kyrgyzstanRawTables,
-} from './kyrgyzstan';
+import kyrgyzstan from './kyrgyzstan';
 
 import {
   mongoliaConfig,
@@ -62,12 +60,7 @@ const configMap = {
   cuba,
   cambodia,
   ecuador,
-  global: {
-    appConfig: globalConfig,
-    rawLayers: globalRawLayers,
-    rawTables: globalRawTables,
-    defaultBoundariesFile: 'adm0_simplified.json',
-  },
+  global,
   indonesia: {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
@@ -75,12 +68,7 @@ const configMap = {
     defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
   jordan,
-  kyrgyzstan: {
-    appConfig: kyrgyzstanConfig,
-    rawLayers: kyrgyzstanRawLayers,
-    rawTables: kyrgyzstanRawTables,
-    defaultBoundariesFile: 'District_KRYG.json',
-  },
+  kyrgyzstan,
   mongolia: {
     appConfig: mongoliaConfig,
     rawLayers: mongoliaRawLayers,
@@ -99,6 +87,7 @@ const configMap = {
   sierraleone,
   southsudan,
   srilanka,
+  colombia,
   tajikistan: {
     appConfig: tajikistanConfig,
     rawLayers: tajikistanRawLayers,
