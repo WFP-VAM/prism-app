@@ -78,3 +78,9 @@ await layer.getImage({
 });
 ArrayBuffer[...]
 ```
+
+### WFS
+coming soon
+
+### WMS
+coming soon
