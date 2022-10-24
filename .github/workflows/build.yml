@@ -37,6 +37,9 @@ jobs:
       - name: Install packages
         run: yarn install --frozen-lockfile
 
+      - name: Install subpackage dependencies
+        run: yarn setup:common
+
       - name: yarn lint
         run: yarn lint
 
@@ -101,6 +104,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
       - name: Comment PR
         uses: marocchino/sticky-pull-request-comment@v1
+        continue-on-error: true
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |

@@ -1,0 +1,454 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<WCS_Capabilities version="1.0.0"
+xmlns="http://www.opengis.net/wcs"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:gml="http://www.opengis.net/gml"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.opengis.net/wcs http://schemas.opengis.net/wcs/1.0.0/wcsCapabilities.xsd">
+
+
+<Service>
+    
+    <description>
+        Mongolian Datacube
+    </description>
+    
+    <name>WCS</name>
+    <label>WMS server for Mongolian Datacube</label>
+    
+    <keywords>
+        
+        <keyword>landsat</keyword>
+        
+        <keyword>sentinel2</keyword>
+        
+        <keyword>mongolia</keyword>
+        
+        <keyword>time-series</keyword>
+        
+    </keywords>
+    
+
+    
+    <responsibleParty>
+        
+        
+        <organisationName>SIBELIUs</organisationName>
+        
+        
+        
+        <contactInfo>
+            
+            
+            <address>
+                
+                <deliveryPoint></deliveryPoint>
+                <city>Harwell</city>
+                <administrativeArea>Oxfordshire</administrativeArea>
+                <postalCode>OX11</postalCode>
+                <country>United Kingdom</country>
+                
+                
+            </address>
+            
+        </contactInfo>
+        
+    </responsibleParty>
+    
+
+    <fees>NONE</fees>
+    <accessConstraints>NONE</accessConstraints>
+</Service>
+
+
+    <Capability>
+    <Request>
+        <GetCapabilities>
+            <DCPType>
+                <HTTP>
+                    <Get>
+                        <OnlineResource xlink:type="simple"
+                                        xlink:href="https://mongolia.sibelius-datacube.org:5000/wcs?" />
+                    </Get>
+                </HTTP>
+            </DCPType>
+        </GetCapabilities>
+        <DescribeCoverage>
+            <DCPType>
+                <HTTP>
+                    <Get>
+                        <OnlineResource xlink:type="simple"
+                                        xlink:href="https://mongolia.sibelius-datacube.org:5000/wcs?" />
+                    </Get>
+                </HTTP>
+            </DCPType>
+        </DescribeCoverage>
+        <GetCoverage>
+            <DCPType>
+                <HTTP>
+                    <Get>
+                        <OnlineResource xlink:type="simple"
+                                        xlink:href="https://mongolia.sibelius-datacube.org:5000/wcs?" />
+                    </Get>
+                </HTTP>
+            </DCPType>
+        </GetCoverage>
+    </Request>
+
+    <Exception>
+        <Format>application/vnd.ogc.se_xml</Format>
+    </Exception>
+</Capability>
+
+
+<ContentMetadata>
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>A set of indices spanning at 10 day/2 week/half monthly period. Contains median averaged NDVI, NDSI, NDWI &amp; NDDI products. Produced from Landsat 8 and Sentinel-2 ARD ingested to the MDC.</description>
+            <name>10DayIndices</name>
+            <label>mdc 10 Day Indices</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">86.7469655846003 41.4606540712216</gml:pos>
+                <gml:pos dimension="2">121.185885426709 52.3476515518552</gml:pos>
+                <gml:timePosition>2013-08-11</gml:timePosition>
+                <gml:timePosition>2022-01-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>A set of indices spanning a monthly period. Contains median averaged NDVI, NDSI, NDWI &amp; NDDI products. Produced from Landsat 8 and Sentinel-2 ARD ingested to the MDC.</description>
+            <name>MonthIndices</name>
+            <label>mdc Month Indices</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">86.7469655846003 41.4606540712216</gml:pos>
+                <gml:pos dimension="2">121.185885426709 52.3476515518552</gml:pos>
+                <gml:timePosition>2013-07-21</gml:timePosition>
+                <gml:timePosition>2022-06-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS Median value of NDVI, NDWI, NDDI in a 10days period L3 at 250m resolution.</description>
+            <name>ModisIndices</name>
+            <label>mdc MODIS indices</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1288466392506 36.3432058634784</gml:pos>
+                <gml:pos dimension="2">132.918744933946 54.4717721170595</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS Median value of NDSI in a 10days period L3 Grid 500m</description>
+            <name>ModisNDSI</name>
+            <label>mdc MODIS NDSI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1240333502639 36.3427013056895</gml:pos>
+                <gml:pos dimension="2">132.920215119215 54.4737572254168</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Comparisons of pasture data, comparing the most recent period to the long term median. Takes most recent 10 Day period and also collects and creates a median averaged dataset from the historical timeseries. Converts both datasets from NDVI to pasture (kg/ha) values and divides the current dataset by the historical one to calculate the pasture anomaly.</description>
+            <name>10DayAnomaly</name>
+            <label>mdc Anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">86.7469655846003 41.4606540712216</gml:pos>
+                <gml:pos dimension="2">117.717378164332 52.3174921613588</gml:pos>
+                <gml:timePosition>2019-05-21</gml:timePosition>
+                <gml:timePosition>2020-10-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Comparisons of pasture data, comparing the most recent period to the long term median. Takes most recent month long period and also collects and creates a median averaged dataset from the historical timeseries. Converts both datasets from NDVI to pasture (kg/ha) values and divides the current dataset by the historical one to calculate the pasture anomaly.</description>
+            <name>MonthAnomaly</name>
+            <label>mdc Month Anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">86.7469655846003 41.4606540712216</gml:pos>
+                <gml:pos dimension="2">121.185885426709 52.3476515518552</gml:pos>
+                <gml:timePosition>2019-02-01</gml:timePosition>
+                <gml:timePosition>2022-06-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Comparisons of pasture data, comparing the most recent period to the long term median. Takes most recent 10 Day period and also collects and creates a median averaged dataset from the historical timeseries. Converts both datasets from NDVI to pasture (kg/ha) values and divides the current dataset by the historical one to calculate the pasture anomaly.</description>
+            <name>ModisAnomaly</name>
+            <label>mdc MODIS Anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1288466392506 36.3432058634784</gml:pos>
+                <gml:pos dimension="2">132.918744933946 54.4717721170595</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Average Pasture Anomaly from May to October. Using MODIS and VIIRS data</description>
+            <name>ModisSeasonalAnomaly</name>
+            <label>mdc MODIS Seasonal Anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1288466392506 36.3432058634784</gml:pos>
+                <gml:pos dimension="2">132.918744933946 54.4717721170595</gml:pos>
+                <gml:timePosition>2010-05-01</gml:timePosition>
+                <gml:timePosition>2020-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Comparisons of pasture data, comparing the most recent time period to the time period before that, in order to get an understanding of how pasture conditions are changing. Data used covers 10 Day periods.</description>
+            <name>10DayTrend</name>
+            <label>mdc Trend</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">86.7469655846003 41.4606540712216</gml:pos>
+                <gml:pos dimension="2">117.717378164332 52.3174921613588</gml:pos>
+                <gml:timePosition>2019-05-21</gml:timePosition>
+                <gml:timePosition>2020-10-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Comparisons of pasture data, comparing the most recent time period to the time period before that, in order to get an understanding of how pasture conditions are changing. Data used covers month long periods.</description>
+            <name>MonthTrend</name>
+            <label>mdc Month Trend</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">86.7469655846003 41.4606540712216</gml:pos>
+                <gml:pos dimension="2">121.185885426709 52.3476515518552</gml:pos>
+                <gml:timePosition>2019-02-01</gml:timePosition>
+                <gml:timePosition>2022-06-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Comparisons of pasture data, comparing the most recent time period to the time period before that, in order to get an understanding of how pasture conditions are changing. Data used covers 10 Day periods.</description>
+            <name>ModisTrend</name>
+            <label>mdc MODIS Trend</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1288466392506 36.3432058634784</gml:pos>
+                <gml:pos dimension="2">132.918744933946 54.4717721170595</gml:pos>
+                <gml:timePosition>2009-01-11</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Converts the NDVI data to pasture (kg/ha) values.</description>
+            <name>MonthPastureBiomass</name>
+            <label>mdc Month Pasture</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">86.7469655846003 41.4606540712216</gml:pos>
+                <gml:pos dimension="2">121.185885426709 52.3476515518552</gml:pos>
+                <gml:timePosition>2019-02-01</gml:timePosition>
+                <gml:timePosition>2022-06-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Pasture biomass. Converts the NDVI to pasture (kg/ha) values.</description>
+            <name>ModisPastureBiomass</name>
+            <label>mdc MODIS Pasture</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1288466392506 36.3432058634784</gml:pos>
+                <gml:pos dimension="2">132.918744933946 54.4717721170595</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS Median value of Land Surface Temperature (cloud masked) in a 10days period L3 Grid 1km</description>
+            <name>ModisLST</name>
+            <label>mdc MODIS LST</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1175373640643 36.3416920409728</gml:pos>
+                <gml:pos dimension="2">132.927031729918 54.472044480952</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>True colour composite image taking the last best pixel/geomedian from a 10day period.</description>
+            <name>ModisRGB</name>
+            <label>mdc MODIS RGB</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1240333502639 36.3427013056895</gml:pos>
+                <gml:pos dimension="2">132.920215119215 54.4737572254168</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>True colour composite image taking the last best pixel from the last month.</description>
+            <name>S2RGB</name>
+            <label>mdc S2 RGB</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">86.7469992382191 41.4607439686785</gml:pos>
+                <gml:pos dimension="2">121.185885426709 52.3475617661801</gml:pos>
+                <gml:timePosition>2019-02-01</gml:timePosition>
+                <gml:timePosition>2022-03-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Snow Mask for a 10day period. Binary mask with 1=snow, 0=no_snow, 255=nodata</description>
+            <name>ModisSnowCover</name>
+            <label>mdc MODIS Snow Cover</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1240333502639 36.3427013056895</gml:pos>
+                <gml:pos dimension="2">132.920215119215 54.4737572254168</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>The percentage a pixel is covered by snow in a month long period. High resolution product, using combined sentinel-2 and landsat 8 data, 20m resolution.</description>
+            <name>MonthSnowPercentage</name>
+            <label>mdc Month Snow Percentage</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">86.7469655846003 4.31819634653328</gml:pos>
+                <gml:pos dimension="2">121.185885426709 52.3476515518552</gml:pos>
+                <gml:timePosition>2019-02-01</gml:timePosition>
+                <gml:timePosition>2022-06-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Snow Percentage for a 10day period. Valid range values [0-100], where the value represent the percentage of times that a pixel had snow.</description>
+            <name>ModisSnowPercentage</name>
+            <label>mdc MODIS Snow Percentage</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1240333502639 36.3427013056895</gml:pos>
+                <gml:pos dimension="2">132.920215119215 54.4737572254168</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Vegetation Condition Index for a 10day period. The VCI compares the current NDVI to the long-term minimum and maximum values of NDVI. VCI values range [0,1]</description>
+            <name>ModisVCI</name>
+            <label>mdc MODIS VCI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1288466392506 36.3432058634784</gml:pos>
+                <gml:pos dimension="2">132.918744933946 54.4717721170595</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Temperature Condition Index for a 10day period. The TCI compares the current LST to the long-term minimum and maximum values of LST.</description>
+            <name>ModisTCI</name>
+            <label>mdc MODIS TCI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1175373640643 36.3416920409728</gml:pos>
+                <gml:pos dimension="2">132.927031729918 54.472044480952</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Vegetation Health Index for a 10day period. The VHI is a combination of VCI and TCI, and it is mainly used for monitoring drought.</description>
+            <name>ModisVHI</name>
+            <label>mdc MODIS VHI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">74.1288466392506 36.3432058634784</gml:pos>
+                <gml:pos dimension="2">132.918744933946 54.4717721170595</gml:pos>
+                <gml:timePosition>2009-01-01</gml:timePosition>
+                <gml:timePosition>2022-07-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Dzud risk map produced by the Agrometeorology department of IRIMHE, UB, Mongolia.</description>
+            <name>DzudRisk</name>
+            <label>mdc Dzud Risk</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">86.97524 40.60617</gml:pos>
+                <gml:pos dimension="2">121.3518 52.1756328</gml:pos>
+                <gml:timePosition>2015-11-24</gml:timePosition>
+                <gml:timePosition>2021-01-10</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+</ContentMetadata>
+
+
+</WCS_Capabilities>
