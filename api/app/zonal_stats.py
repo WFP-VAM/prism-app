@@ -264,7 +264,7 @@ def calculate_stats(
         ]
 
         if len(stats_input) == 0:
-            message = f"Property value {value} not found"
+            message = f"Property value '{value}' not found"
             logger.info(message)
             raise HTTPException(status_code=404, detail=message)
     else:
