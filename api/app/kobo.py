@@ -17,11 +17,11 @@ logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
 
-kobo_username = getenv("KOBO_USERNAME")
-if kobo_username is None:
+kobo_username = getenv("KOBO_USERNAME", "")
+if kobo_username == "":
     raise Exception("Missing backend parameter: KOBO_USERNAME")
-kobo_pw = getenv("KOBO_PW")
-if kobo_pw is None:
+kobo_pw = getenv("KOBO_PW", "")
+if kobo_pw == "":
     raise Exception("Missing backend parameter: KOBO_PW")
 
 
