@@ -174,6 +174,7 @@ def get_responses_from_kobo(
     else:
         resp = requests.get(form_url, auth=auth)
 
+    # show 403 unauthorized instead of 500, since it's the server that's unauthorized, not the user.
     excluded_codes = [403]
     forward_http_error(resp=resp, excluded_codes=excluded_codes)
 
