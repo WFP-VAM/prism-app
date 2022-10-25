@@ -31,24 +31,34 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root NavBar-menuContainer-4 MuiGrid-item MuiGrid-grid-xs-6"
           >
             <mock-menuitem
+              icon="icon_rain.png"
+              layerscategories="[object Object],[object Object],[object Object],[object Object]"
+              title="Rainfall"
+            />
+            <mock-menuitem
+              icon="icon_veg.png"
+              layerscategories="[object Object]"
+              title="Vegetation"
+            />
+            <mock-menuitem
               icon="icon_climate.png"
-              layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
-              title="Hazards"
+              layerscategories="[object Object],[object Object]"
+              title="Temperature"
+            />
+            <mock-menuitem
+              icon="icon_tropical_storm.png"
+              layerscategories="[object Object]"
+              title="Tropical Storms"
             />
             <mock-menuitem
               icon="icon_vulnerable.png"
-              layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
+              layerscategories="[object Object],[object Object]"
               title="Vulnerability"
             />
             <mock-menuitem
               icon="icon_basemap.png"
-              layerscategories="[object Object],[object Object]"
+              layerscategories="[object Object]"
               title="Exposure"
-            />
-            <mock-menuitem
-              icon="icon_impact.png"
-              layerscategories="[object Object],[object Object],[object Object]"
-              title="Risk"
             />
           </div>
           <div
@@ -109,6 +119,49 @@ exports[`renders as expected 1`] = `
                  
                 GitHub
               </mock-typography>
+            </div>
+            <div
+              class="MuiButtonGroup-root LanguageSelector-block-8"
+              role="group"
+            >
+              <mock-button
+                classname="MuiButtonGroup-grouped MuiButtonGroup-groupedHorizontal MuiButtonGroup-groupedText MuiButtonGroup-groupedTextHorizontal MuiButtonGroup-groupedText"
+                color="default"
+                disabled="false"
+                disableelevation="false"
+                disablefocusripple="false"
+                disableripple="false"
+                fullwidth="false"
+                size="medium"
+                type="submit"
+                variant="text"
+              >
+                <mock-typography
+                  style="font-weight: bold;"
+                  variant="body2"
+                >
+                  en
+                </mock-typography>
+              </mock-button>
+              <mock-button
+                classname="MuiButtonGroup-grouped MuiButtonGroup-groupedHorizontal MuiButtonGroup-groupedText MuiButtonGroup-groupedTextHorizontal MuiButtonGroup-groupedText"
+                color="default"
+                disabled="false"
+                disableelevation="false"
+                disablefocusripple="false"
+                disableripple="false"
+                fullwidth="false"
+                size="medium"
+                type="submit"
+                variant="text"
+              >
+                <mock-typography
+                  style="font-weight: normal;"
+                  variant="body2"
+                >
+                  pt
+                </mock-typography>
+              </mock-button>
             </div>
           </div>
         </mock-hidden>
@@ -213,27 +266,39 @@ exports[`renders as expected 1`] = `
                   >
                     <mock-menuitemmobile
                       expanded=""
+                      icon="icon_rain.png"
+                      layerscategories="[object Object],[object Object],[object Object],[object Object]"
+                      title="Rainfall"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_veg.png"
+                      layerscategories="[object Object]"
+                      title="Vegetation"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
                       icon="icon_climate.png"
-                      layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
-                      title="Hazards"
+                      layerscategories="[object Object],[object Object]"
+                      title="Temperature"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
+                      icon="icon_tropical_storm.png"
+                      layerscategories="[object Object]"
+                      title="Tropical Storms"
                     />
                     <mock-menuitemmobile
                       expanded=""
                       icon="icon_vulnerable.png"
-                      layerscategories="[object Object],[object Object],[object Object],[object Object],[object Object]"
+                      layerscategories="[object Object],[object Object]"
                       title="Vulnerability"
                     />
                     <mock-menuitemmobile
                       expanded=""
                       icon="icon_basemap.png"
-                      layerscategories="[object Object],[object Object]"
+                      layerscategories="[object Object]"
                       title="Exposure"
-                    />
-                    <mock-menuitemmobile
-                      expanded=""
-                      icon="icon_impact.png"
-                      layerscategories="[object Object],[object Object],[object Object]"
-                      title="Risk"
                     />
                   </div>
                 </div>

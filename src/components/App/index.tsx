@@ -1,11 +1,10 @@
 import React from 'react';
-import { get } from 'lodash';
 import * as Sentry from '@sentry/browser';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Font } from '@react-pdf/renderer';
-import { appConfig } from '../../config';
+import { authRequired } from '../../config';
 // Basic CSS Layout for the whole page
 import './app.css';
 import NavBar from '../NavBar';
@@ -65,8 +64,6 @@ const Wrapper = () => {
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
-
-  const authRequired: boolean = get(appConfig, 'WFPAuthRequired', false);
 
   return (
     <ThemeProvider theme={muiTheme}>
