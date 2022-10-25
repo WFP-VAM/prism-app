@@ -130,7 +130,7 @@ const msalRequest = {
 const msalInstance = new PublicClientApplication(msalConfig);
 
 const authRequired: boolean =
-  !!TESTING && get(appConfig, 'WFPAuthRequired', false);
+  !TESTING && get(appConfig, 'WFPAuthRequired', false);
 
 const enableNavigationDropdown: boolean = get(
   appConfig,
