@@ -3,8 +3,10 @@ import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
 from typing import Any, TypedDict, TypeVar
+from urllib.parse import quote_plus, urljoin
 
 import requests
+from app.caching import cache_kobo_form, get_kobo_form_cached
 from app.utils import forward_http_error
 from dateutil.parser import parse as dtparser
 from fastapi import HTTPException
@@ -24,7 +26,7 @@ if kobo_pw is None:
 
 
 class KoboForm(TypedDict):
-    name: str
+    id: str
     datetime: str
     geom_field: str | None
     filters: dict
@@ -36,7 +38,7 @@ def get_first(items_list: list[T]) -> T | None:
 
 
 def get_kobo_params(
-    form_name: str,
+    form_id: str,
     datetime_field: str,
     geom_field: str | None,
     filter_params: str | None,
@@ -48,7 +50,7 @@ def get_kobo_params(
         filters = dict([f.split("=") for f in filter_params.split(",")])
 
     form_fields = KoboForm(
-        name=form_name, datetime=datetime_field, geom_field=geom_field, filters=filters
+        id=form_id, datetime=datetime_field, geom_field=geom_field, filters=filters
     )
 
     auth = (kobo_username, kobo_pw)
@@ -161,18 +163,17 @@ def parse_datetime_params(
 
 
 def get_responses_from_kobo(
-    form_url: str, auth: tuple[str, str], form_name: str
+    form_url: str, auth: tuple[str, str], form_id: str
 ) -> tuple[Any, dict[str, str]]:
     """
     Request kobo api to collect all the information related to a form.
 
     Also, retrieve the form responses for parsing and filtering.
     """
-    # do not send empty credentials, skip auth altogether if it's not available
-    if auth == ("", ""):
-        resp = requests.get(form_url)
-    else:
-        resp = requests.get(form_url, auth=auth)
+    form_id_quote: str = quote_plus(form_id)
+    kobo_data_cached = get_kobo_form_cached(form_id_quote)
+    if kobo_data_cached is not None:
+        return kobo_data_cached["responses"], kobo_data_cached["labels"]
 
     # show 403 unauthorized instead of 500, since it's the server that's unauthorized, not the user.
     excluded_codes = [403]
@@ -189,7 +190,7 @@ def get_responses_from_kobo(
         raise HTTPException(status_code=404, detail="Form not found")
 
     # Additional request to get label mappings.
-    resp = requests.get(form_metadata.get("url"), auth=auth)
+    resp = requests.get(urljoin(form_url, f"{form_id_quote}.json"), auth=auth)
     forward_http_error(resp=resp, excluded_codes=excluded_codes)
     form_metadata = resp.json()
 
@@ -200,22 +201,25 @@ def get_responses_from_kobo(
     }
 
     # Get all form responses using metadata 'data' key
-    resp = requests.get(form_metadata.get("data"), auth=auth)
+    resp = requests.get(urljoin(form_url, f"{form_id_quote}/data.json"), auth=auth)
     forward_http_error(resp=resp, excluded_codes=excluded_codes)
 
     form_responses = resp.json().get("results")
+
+    # Save response to cache directory.
+    cache_kobo_form(form_id, form_responses, form_labels)
 
     return form_responses, form_labels
 
 
 def get_form_dates(
-    form_url: HttpUrl, form_name: str, datetime_field: str
+    form_url: HttpUrl, form_id: str, datetime_field: str
 ) -> list[dict[str, Any]]:
     """Get all form responses dates using Kobo api."""
-    auth, form_fields = get_kobo_params(form_name, datetime_field, None, None)
+    auth, form_fields = get_kobo_params(form_id, datetime_field, None, None)
 
     form_responses, form_labels = get_responses_from_kobo(
-        form_url, auth, form_fields["name"]
+        form_url, auth, form_fields["id"]
     )
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
@@ -229,7 +233,7 @@ def get_form_dates(
 def get_form_responses(
     begin_datetime: datetime,
     end_datetime: datetime,
-    form_name: str,
+    form_id: str,
     datetime_field: str,
     geom_field: str | None,
     filters: str | None,
@@ -237,10 +241,10 @@ def get_form_responses(
     province: str | None = None,
 ) -> list[dict]:
     """Get all form responses using Kobo api."""
-    auth, form_fields = get_kobo_params(form_name, datetime_field, geom_field, filters)
+    auth, form_fields = get_kobo_params(form_id, datetime_field, geom_field, filters)
 
     form_responses, form_labels = get_responses_from_kobo(
-        form_url, auth, form_fields["name"]
+        form_url, auth, form_fields["id"]
     )
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
