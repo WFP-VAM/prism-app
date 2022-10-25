@@ -115,8 +115,6 @@ const {
   REACT_APP_TESTING: TESTING,
 } = process.env;
 
-console.log(TESTING);
-
 const msalConfig = {
   auth: {
     clientId: CLIENT_ID!,
