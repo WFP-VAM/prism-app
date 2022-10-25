@@ -112,7 +112,10 @@ const {
   REACT_APP_OAUTH_CLIENT_ID: CLIENT_ID,
   REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
   REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
+  REACT_APP_TESTING: TESTING,
 } = process.env;
+
+console.log(TESTING);
 
 const msalConfig = {
   auth: {
@@ -128,7 +131,10 @@ const msalRequest = {
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
-const enableNavigationDropdown = get(
+const authRequired: boolean =
+  !!TESTING && get(appConfig, 'WFPAuthRequired', false);
+
+const enableNavigationDropdown: boolean = get(
   appConfig,
   'enableNavigationDropdown',
   false,
@@ -138,6 +144,7 @@ const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesF
 
 export {
   appConfig,
+  authRequired,
   safeCountry,
   defaultBoundariesPath,
   rawLayers,
