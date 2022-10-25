@@ -177,8 +177,6 @@ def get_responses_from_kobo(
 
     # show 403 unauthorized instead of 500, since it's the server that's unauthorized, not the user.
     excluded_codes = [403]
-
-    # Additional request to get label mappings.
     resp = requests.get(urljoin(form_url, f"{form_id_quote}.json"), auth=auth)
     forward_http_error(resp=resp, excluded_codes=excluded_codes)
     form_metadata = resp.json()
