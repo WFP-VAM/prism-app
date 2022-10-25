@@ -177,17 +177,6 @@ def get_responses_from_kobo(
 
     # show 403 unauthorized instead of 500, since it's the server that's unauthorized, not the user.
     excluded_codes = [403]
-    forward_http_error(resp=resp, excluded_codes=excluded_codes)
-
-    kobo_user_metadata = resp.json()
-
-    # Find form and get results.
-    forms_iterator = (
-        d for d in kobo_user_metadata.get("results") if d.get("name") == form_name
-    )
-    form_metadata = next(forms_iterator, None)
-    if form_metadata is None:
-        raise HTTPException(status_code=404, detail="Form not found")
 
     # Additional request to get label mappings.
     resp = requests.get(urljoin(form_url, f"{form_id_quote}.json"), auth=auth)
