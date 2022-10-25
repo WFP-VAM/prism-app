@@ -18,7 +18,7 @@
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
     "build": "cross-env EXTEND_ESLINT=true react-app-rewired build",
-    "test": "react-scripts test",
+    "test": "REACT_APP_TESTING=true react-scripts test",
     "prettier:json-fix": "prettier --write '*.json'",
     "prettier:json-check": "prettier --check '*.json'",
     "predeploy:prod": "yarn build",
