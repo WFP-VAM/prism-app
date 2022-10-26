@@ -4,6 +4,7 @@ export function findTagArray(xml: string, tagName: string): string[] {
   const tags: string[] = [];
   findTagsByName(xml, tagName).forEach(tag => {
     if (tag && tag.inner) {
+      // eslint-disable-next-line fp/no-mutating-methods
       tags.push(tag.inner);
     }
   });

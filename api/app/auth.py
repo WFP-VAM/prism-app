@@ -46,7 +46,7 @@ def validate_user(credentials: HTTPBasicCredentials = depends) -> UserInfoModel:
     except SQLAlchemyError as error:
         logger.error(error)
         raise HTTPException(
-            status_code=500, detail="An internal error occured."
+            status_code=500, detail="An internal error occurred."
         ) from error
 
     user_password, user_salt = "", ""

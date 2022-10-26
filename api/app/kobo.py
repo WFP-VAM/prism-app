@@ -7,6 +7,7 @@ from urllib.parse import quote_plus, urljoin
 
 import requests
 from app.caching import cache_kobo_form, get_kobo_form_cached
+from app.utils import forward_http_error
 from dateutil.parser import parse as dtparser
 from fastapi import HTTPException
 from pydantic import HttpUrl
@@ -15,6 +16,13 @@ from shapely.geometry import Point, box
 logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
+
+kobo_username = getenv("KOBO_USERNAME", "")
+if kobo_username == "":
+    raise Exception("Missing backend parameter: KOBO_USERNAME")
+kobo_pw = getenv("KOBO_PW", "")
+if kobo_pw == "":
+    raise Exception("Missing backend parameter: KOBO_PW")
 
 
 class KoboForm(TypedDict):
@@ -36,15 +44,6 @@ def get_kobo_params(
     filter_params: str | None,
 ) -> tuple[tuple[str, str], KoboForm]:
     """Collect and validate request parameters and environment variables."""
-
-    # TODO: as the client has no control over these env vars, the check should
-    # be done as the server starts instead
-    kobo_username = getenv("KOBO_USERNAME", "")
-    if kobo_username == "":
-        raise Exception("Missing backend parameter: KOBO_USERNAME")
-    kobo_pw = getenv("KOBO_PW", "")
-    if kobo_pw == "":
-        raise Exception("Missing backend parameter: KOBO_PW")
 
     filters = {}
     if filter_params is not None:
@@ -176,8 +175,10 @@ def get_responses_from_kobo(
     if kobo_data_cached is not None:
         return kobo_data_cached["responses"], kobo_data_cached["labels"]
 
+    # show 500 instead of 403 unauthorized, since it's the server that's unauthorized, not the user.
+    excluded_codes = [403]
     resp = requests.get(urljoin(form_url, f"{form_id_quote}.json"), auth=auth)
-    resp.raise_for_status()
+    forward_http_error(resp=resp, excluded_codes=excluded_codes)
     form_metadata = resp.json()
 
     # Get form fields and field type used for parsing.
@@ -188,7 +189,7 @@ def get_responses_from_kobo(
 
     # Get all form responses using metadata 'data' key
     resp = requests.get(urljoin(form_url, f"{form_id_quote}/data.json"), auth=auth)
-    resp.raise_for_status()
+    forward_http_error(resp=resp, excluded_codes=excluded_codes)
 
     form_responses = resp.json().get("results")
 
