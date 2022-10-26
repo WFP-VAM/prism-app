@@ -102,7 +102,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     filter_by = None
     # Tuple transformation fixes unhashable type error caused by timed decorator.
     if stats_model.filter_by is not None:
-        filter_by = (stats_model.filter_by.key, stats_model.filter_by.value)
+        filter_by = (stats_model.filter_by.key, str(stats_model.filter_by.value))
 
     group_by = stats_model.group_by
     wfs_params = stats_model.wfs_params

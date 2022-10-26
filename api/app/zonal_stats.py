@@ -260,7 +260,7 @@ def calculate_stats(
         stats_input: list[Geometry] = [
             f["geometry"]
             for f in zones_geojson["features"]
-            if key in f["properties"].keys() and f["properties"][key] == value
+            if key in f["properties"].keys() and str(f["properties"][key]) == value
         ]
 
         if len(stats_input) == 0:
@@ -338,7 +338,7 @@ def calculate_stats(
 
         if filter_by is not None:
             key, value = filter_by
-            feature_properties = [p for p in feature_properties if p[key] == value]
+            feature_properties = [p for p in feature_properties if str(p[key]) == value]
 
         stats_results = [
             {**properties, **stat}
