@@ -10,6 +10,7 @@ export function findAndParseAbstract(
     return undefined;
   }
   if (trim) {
+    // eslint-disable-next-line fp/no-mutation
     abstract = abstract.trim();
   }
   return abstract;

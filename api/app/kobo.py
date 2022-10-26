@@ -175,7 +175,7 @@ def get_responses_from_kobo(
     if kobo_data_cached is not None:
         return kobo_data_cached["responses"], kobo_data_cached["labels"]
 
-    # show 403 unauthorized instead of 500, since it's the server that's unauthorized, not the user.
+    # show 500 instead of 403 unauthorized, since it's the server that's unauthorized, not the user.
     excluded_codes = [403]
     resp = requests.get(urljoin(form_url, f"{form_id_quote}.json"), auth=auth)
     forward_http_error(resp=resp, excluded_codes=excluded_codes)
