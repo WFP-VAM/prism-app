@@ -8,6 +8,7 @@ from app.zonal_stats import calculate_stats
 from fastapi import HTTPException
 from pytest import raises
 
+
 def test_calculate_stats_json_output():
     """Test calculate_stats with geojson_out=False."""
 
@@ -37,7 +38,6 @@ def test_calculate_stats_filter_by():
     )
     assert len(features) == 1
     assert features[0]["type"] == "Feature"
-
 
     # Verify that numbers are also included.
 
