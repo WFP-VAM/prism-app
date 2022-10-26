@@ -4,7 +4,7 @@ import hashlib
 import logging
 import os
 from os import getenv
-from typing import List
+from typing import List, Optional
 
 from app.database.alert_model import AlertModel
 from app.database.user_info_model import UserInfoModel
@@ -199,7 +199,7 @@ class AuthDataBase:
         """
         return self.session.query(AlertModel).filter(expr).all()
 
-    def get_by_username(self, username: str) -> UserInfoModel | None:
+    def get_by_username(self, username: str) -> Optional[UserInfoModel]:
         """
         Return one alert matching the provided id.
 
