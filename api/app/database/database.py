@@ -182,9 +182,9 @@ class AuthDataBase:
         try:
             self.session.add(db_user)
             self.session.commit()
-        except Exception as e:
+        except SQLAlchemyError as error:
             self.session.rollback()
-            raise e
+            raise error
         finally:
             self.session.close()
 
@@ -206,6 +206,14 @@ class AuthDataBase:
         :param username: The username of the wanted user entity
         :return: A user entity or None if no entity was found
         """
+        try:
+            return (
+                self.session.query(UserInfoModel).filter_by(username=username).first()
+            )
+        except SQLAlchemyError as error:
+            self.session.rollback()
+            logger.error("An error occured in get_by_username.")
+            logger.error(error, exc_info=True)
         return self.session.query(UserInfoModel).filter_by(username=username).first()
 
 
