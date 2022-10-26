@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import parse from 'html-react-parser';
 import { marked } from 'marked';
-import DOMPurify from 'dompurify';
 import { Dialog, DialogContent, Typography } from '@material-ui/core';
 
 type ContentDialogProps = {
@@ -22,8 +21,6 @@ export const loadLayerContent = async (
 const ContentDialog = ({ content, setContent }: ContentDialogProps) => {
   const [open, setOpen] = useState(false);
 
-  marked.use({ sanitizer: DOMPurify.sanitize });
-
   useEffect(() => {
     if (!content) {
       setOpen(false);
@@ -31,6 +28,10 @@ const ContentDialog = ({ content, setContent }: ContentDialogProps) => {
     }
     setOpen(true);
   }, [content]);
+
+  if (!content) {
+    return null;
+  }
 
   return (
     <Dialog
@@ -41,9 +42,7 @@ const ContentDialog = ({ content, setContent }: ContentDialogProps) => {
       aria-labelledby="dialog-preview"
     >
       <DialogContent>
-        <Typography color="textSecondary">
-          {content && parse(marked(content))}
-        </Typography>
+        <Typography color="textSecondary">{parse(marked(content))}</Typography>
       </DialogContent>
     </Dialog>
   );
