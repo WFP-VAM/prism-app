@@ -40,6 +40,7 @@ test('parsing GetFeature urls', async ({ eq }) => {
 });
 
 test('getting full feature type names (aka layer ids)', async ({ eq }) => {
+  // eslint-disable-next-line fp/no-mutating-methods
   eq(parseFullFeatureTypeNames(capabilities).sort().slice(0, 3), [
     'geoenabler:wld_bnd_adm0_ge',
     'geonode:_01_provincias',
@@ -155,6 +156,7 @@ test('WFS', async ({ eq }) => {
   try {
     await instance.checkLayer('fake');
   } catch (error) {
+    // eslint-disable-next-line fp/no-mutation
     msg = `${error}`;
   }
   eq(msg.includes('does not exist'), true);

@@ -40,6 +40,7 @@ test('WCS for data cube', async ({ eq }) => {
   });
   const layer = await wcs.getLayer('10DayTrend');
   const dates = await layer.getLayerDates();
+  // eslint-disable-next-line no-console
   console.log('got layer dates');
   eq(dates.length, 29);
   eq(

@@ -22,6 +22,7 @@ const odcXml = findAndRead(
 );
 
 test('get layer ids', async ({ eq }) => {
+  // eslint-disable-next-line fp/no-mutating-methods
   const layerIds = getLayerIds(xml).sort();
   eq(layerIds.length, 659);
   eq(layerIds.slice(0, 3), [
@@ -40,6 +41,7 @@ test('get layer names', async ({ eq }) => {
     'Global administrative boundaries, level 0 (Country)',
     'Global administrative boundaries level 1',
   ]);
+  // eslint-disable-next-line fp/no-mutating-methods
   eq(layerNames.sort().slice(0, 3), [
     ' Colombia - Second Level Admin Boundaries',
     '2020 Global Bnd Line',
@@ -48,6 +50,7 @@ test('get layer names', async ({ eq }) => {
 });
 
 test('cleaning layer names', ({ eq }) => {
+  // eslint-disable-next-line fp/no-mutating-methods
   const layerNames = getLayerNames(xml, { clean: true }).sort();
   eq(layerNames.length, 659);
   eq(layerNames.slice(0, 3), [
