@@ -15,8 +15,10 @@ export function formatUrl(
   const keys = Object.keys(params);
   if (sortParams) {
     if (debug) {
+      // eslint-disable-next-line no-console
       console.log('[format-url] sorting keys');
     }
+    // eslint-disable-next-line fp/no-mutating-methods
     keys.sort();
   }
   keys.forEach(k => {
