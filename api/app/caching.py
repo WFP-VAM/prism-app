@@ -3,6 +3,8 @@ import hashlib
 import json
 import logging
 import os
+from datetime import datetime
+from typing import Any, Optional
 
 import rasterio  # type: ignore
 import requests
@@ -14,6 +16,54 @@ from .models import FilePath, GeoJSON
 logger = logging.getLogger(__name__)
 
 CACHE_DIRECTORY = os.getenv("CACHE_DIRECTORY", "/cache/")
+MAX_TIME_DIFF = int(os.getenv("MAX_TIME_DIFF", 30))  # minutes
+
+
+def get_kobo_path(form_id: str) -> str:
+    """Creates kobo path and file name. Form id is encoded to avoid traversal directory attacks."""
+    file_name: str = "{}.json".format(form_id.encode("utf-8").hex())
+    return os.path.join(CACHE_DIRECTORY, file_name)
+
+
+def cache_kobo_form(
+    form_id: str, form_responses: dict[str, Any], form_labels: dict[str, Any]
+) -> None:
+    """Saves kobo form data and metadata in the cache directory"""
+    file_path = get_kobo_path(form_id)
+    logger.debug(f"Caching form {form_id}")
+
+    form_dict = {
+        "labels": form_labels,
+        "responses": form_responses,
+    }
+
+    with open(file_path, "w") as file:
+        json.dump(form_dict, file)
+
+
+def get_kobo_form_cached(form_id: str) -> Optional[dict[str, Any]]:
+    """Checks if the kobo form is cached."""
+    file_path = get_kobo_path(form_id)
+
+    if os.path.isfile(file_path) is False:
+        return None
+
+    created_timestamp: float = os.path.getctime(file_path)
+    created_datetime: datetime = datetime.fromtimestamp(created_timestamp)
+
+    minutes_diff = (
+        (datetime.now() - created_datetime).total_seconds()
+    ) / 60  # minutes.
+
+    if minutes_diff > MAX_TIME_DIFF:
+        return None
+
+    logger.debug(f"Using cached form {form_id}")
+    # Get data from cache.
+    with open(file_path, "r") as file:
+        form_data = json.load(file)
+
+    return form_data
 
 
 @timed

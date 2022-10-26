@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><wcs:CoverageDescriptions xmlns:wcs="http://www.opengis.net/wcs/2.0" xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gmlcov="http://www.opengis.net/gmlcov/1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:swe="http://www.opengis.net/swe/2.0" xmlns:wcsgs="http://www.geoserver.org/wcsgs/2.0" xsi:schemaLocation=" http://www.opengis.net/wcs/2.0 http://schemas.opengis.net/wcs/2.0/wcsDescribeCoverage.xsd http://www.geoserver.org/wcsgs/2.0 https://geonode.wfp.org/geoserver/schemas/wcs/2.0/wcsgs.xsd">
+  <wcs:CoverageDescription gml:id="geonode__wld_cli_tp_7d_ecmwf">
+    <gml:description>Generated from GeoTIFF</gml:description>
+    <gml:name>Global Total Precipitation Forecast 7 Days</gml:name>
+    <gml:boundedBy>
+      <gml:Envelope srsName="http://www.opengis.net/def/crs/EPSG/0/4326" axisLabels="Lat Long" uomLabels="Deg Deg" srsDimension="2">
+        <gml:lowerCorner>-81.0625 -180.0625</gml:lowerCorner>
+        <gml:upperCorner>81.0625 179.9375</gml:upperCorner>
+      </gml:Envelope>
+    </gml:boundedBy>
+    <wcs:CoverageId>geonode__wld_cli_tp_7d_ecmwf</wcs:CoverageId>
+    <gml:coverageFunction>
+      <gml:GridFunction>
+        <gml:sequenceRule axisOrder="+2 +1">Linear</gml:sequenceRule>
+        <gml:startPoint>0 0</gml:startPoint>
+      </gml:GridFunction>
+    </gml:coverageFunction>
+    <gmlcov:metadata>
+      <gmlcov:Extension>
+        <ows:Keywords>
+          <ows:Keyword>climate</ows:Keyword>
+          <ows:Keyword>ecmwf</ows:Keyword>
+          <ows:Keyword>floods</ows:Keyword>
+          <ows:Keyword>training</ows:Keyword>
+          <ows:Keyword>forecast</ows:Keyword>
+          <ows:Keyword>weather</ows:Keyword>
+          <ows:Keyword>_2020_global_adm0</ows:Keyword>
+          <ows:Keyword>world</ows:Keyword>
+          <ows:Keyword>precipitation</ows:Keyword>
+        </ows:Keywords>
+        <ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.w3.org%2F2005%2FAtom&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=74f41034-e267-11e3-8475-00259028b818"/>
+        <ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fgcmd.gsfc.nasa.gov%2FAboutus%2Fxml%2Fdif%2F&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=74f41034-e267-11e3-8475-00259028b818"/>
+        <ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2F2.0.2&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=74f41034-e267-11e3-8475-00259028b818"/>
+        <ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=urn%3Aoasis%3Anames%3Atc%3Aebxml-regrep%3Axsd%3Arim%3A3.0&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=74f41034-e267-11e3-8475-00259028b818"/>
+        <ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.opengis.net%2Fcat%2Fcsw%2Fcsdgm&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=74f41034-e267-11e3-8475-00259028b818"/>
+        <ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/catalogue/csw?outputschema=http%3A%2F%2Fwww.isotc211.org%2F2005%2Fgmd&amp;service=CSW&amp;request=GetRecordById&amp;version=2.0.2&amp;elementsetname=full&amp;id=74f41034-e267-11e3-8475-00259028b818"/>
+        <ows:Metadata xlink:type="simple" xlink:href="https://geonode.wfp.org/showmetadata/xsl/69"/>
+      </gmlcov:Extension>
+    </gmlcov:metadata>
+    <gml:domainSet>
+      <gml:RectifiedGrid gml:id="grid00__geonode__wld_cli_tp_7d_ecmwf" dimension="2">
+        <gml:limits>
+          <gml:GridEnvelope>
+            <gml:low>0 0</gml:low>
+            <gml:high>2879 1296</gml:high>
+          </gml:GridEnvelope>
+        </gml:limits>
+        <gml:axisLabels>i j</gml:axisLabels>
+        <gml:origin>
+          <gml:Point gml:id="p00_geonode__wld_cli_tp_7d_ecmwf" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+            <gml:pos>81.0 -180.0</gml:pos>
+          </gml:Point>
+        </gml:origin>
+        <gml:offsetVector srsName="http://www.opengis.net/def/crs/EPSG/0/4326">0.0 0.125</gml:offsetVector>
+        <gml:offsetVector srsName="http://www.opengis.net/def/crs/EPSG/0/4326">-0.125 0.0</gml:offsetVector>
+      </gml:RectifiedGrid>
+    </gml:domainSet>
+    <gmlcov:rangeType>
+      <swe:DataRecord>
+        <swe:field name="PALETTE_INDEX">
+          <swe:Quantity>
+            <swe:description>PALETTE_INDEX</swe:description>
+            <swe:uom code="W.m-2.Sr-1"/>
+            <swe:constraint>
+              <swe:AllowedValues>
+                <swe:interval>0 255</swe:interval>
+              </swe:AllowedValues>
+            </swe:constraint>
+          </swe:Quantity>
+        </swe:field>
+      </swe:DataRecord>
+    </gmlcov:rangeType>
+    <wcs:ServiceParameters>
+      <wcs:CoverageSubtype>RectifiedGridCoverage</wcs:CoverageSubtype>
+      <wcs:nativeFormat>image/tiff</wcs:nativeFormat>
+    </wcs:ServiceParameters>
+  </wcs:CoverageDescription>
+</wcs:CoverageDescriptions>

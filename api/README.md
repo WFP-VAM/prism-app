@@ -20,6 +20,9 @@ Calculate zonal statistics for a raster / zones combination. Which takes as inpu
   - `layer_name`, the name of the vector layer. Geometry must be POLYGON or MULTIPOLYGON.
   - `key`, Geojson property field to be extracted for each feature.
   - `?time`, Layer TIME dimension if enabled.
+- `?filter_by`, A dictionary of parameters that filters the features that match the geojson property key and value specified within the request.
+  - `key`, feature property key.
+  - `value`, feature property value.
 
 ### `/demo` (GET)
 
@@ -111,7 +114,11 @@ To deploy, run:
 make deploy
 ```
 
-There is a known issue happening from time to time: `address already in use`. To bypass it, run the following commands for the ports you need:
+There are a few known issues happening from time to time
+
+- `permission denied` when restarting or killing a docker image. To fix it, run `sudo aa-remove-unknown` and re-run your command.
+
+- `address already in use`. To bypass it, run the following commands for the ports you need:
 
 ```
 # Find process ids

@@ -4,7 +4,7 @@ from collections import defaultdict
 from datetime import datetime
 from json import dump, load
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import urlencode
 
 import numpy as np
@@ -12,8 +12,10 @@ import rasterio  # type: ignore
 from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
 from app.models import (
     FilePath,
+    FilterProperty,
     GeoJSON,
     GeoJSONFeature,
+    Geometry,
     GroupBy,
     WfsParamsModel,
     WfsResponse,
@@ -91,7 +93,12 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
 
     new_features = []
     for group_id, polygons in grouped_polygons.items():
-        new_geometry = mapping(unary_union(polygons))
+        try:
+            new_geometry = mapping(unary_union(polygons))
+        except ValueError as error:
+            logger.error(error)
+            logger.error(polygons)
+            new_geometry = {}
 
         if not "coordinates" in new_geometry:
             logger.error(
@@ -201,13 +208,14 @@ def _get_intersected_polygons(
 def calculate_stats(
     zones_filepath: FilePath,  # list or FilePath??
     geotiff: FilePath,
-    group_by: GroupBy | None = None,
-    stats: list[str] | str | None = None,
-    prefix: str | None = "stats_",
+    group_by: Optional[GroupBy] = None,
+    stats: Optional[list[str] | str] = None,
+    prefix: Optional[str] = "stats_",
     geojson_out: bool = False,
-    wfs_response: WfsResponse | None = None,
-    intersect_comparison: tuple | None = None,
-    mask_geotiff: str | None = None,
+    wfs_response: Optional[WfsResponse] = None,
+    intersect_comparison: Optional[tuple] = None,
+    mask_geotiff: Optional[str] = None,
+    filter_by: Optional[tuple[str, str]] = None,
 ) -> list[dict[str, Any]]:
     """Calculate stats."""
 
@@ -245,10 +253,25 @@ def calculate_stats(
     if group_by:
         zones_filepath = _group_zones(zones_filepath, group_by)
 
-    stats_input: FilePath | list = zones_filepath
+    zones_geojson: GeoJSON = get_json_file(zones_filepath)
+
+    if filter_by is not None:
+        key, value = filter_by
+        stats_input: list[Geometry] = [
+            f["geometry"]
+            for f in zones_geojson["features"]
+            if key in f["properties"].keys() and str(f["properties"][key]) == value
+        ]
+
+        if len(stats_input) == 0:
+            message = f"Property '{key}' = '{value}' not found"
+            logger.info(message)
+            raise HTTPException(status_code=404, detail=message)
+    else:
+        stats_input: list[Geometry] = [f["geometry"] for f in zones_geojson["features"]]
+
     zones: list[dict] = []
     if wfs_response:
-        zones_geojson = get_json_file(zones_filepath)
         wfs_geojson = get_json_file(wfs_response["path"])
 
         zones = _get_intersected_polygons(
@@ -256,7 +279,7 @@ def calculate_stats(
         )
 
         # Extract shapely objects to compute stats.
-        stats_input = [s.get("geom") for s in zones]
+        stats_input: list[Geometry] = [s.get("geom") for s in zones]
         # TODO - remove this prefix to make homogeneize stats output
         # Frontend from this PR (546) needs to be deployed first.
         prefix = None
@@ -312,6 +335,11 @@ def calculate_stats(
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones_filepath)
+
+        if filter_by is not None:
+            key, value = filter_by
+            feature_properties = [p for p in feature_properties if str(p[key]) == value]
+
         stats_results = [
             {**properties, **stat}
             for stat, properties in zip(stats_results, feature_properties)

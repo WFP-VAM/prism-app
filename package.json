@@ -18,7 +18,7 @@
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
     "analyze": "yarn build && npx source-map-explorer 'build/static/js/*.js'",
     "build": "cross-env EXTEND_ESLINT=true react-app-rewired build",
-    "test": "react-scripts test",
+    "test": "REACT_APP_TESTING=true react-scripts test",
     "prettier:json-fix": "prettier --write '*.json'",
     "prettier:json-check": "prettier --check '*.json'",
     "predeploy:prod": "yarn build",
@@ -27,9 +27,10 @@
     "deploy:staging": "firebase deploy --only hosting:staging-target",
     "deploy:surge": "surge --project ./build",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src --ignore-path .gitignore",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src ./packages --ignore-path .gitignore",
     "postinstall": "yarn run setup:maplibre",
     "precommit": "lint-staged",
+    "setup:common": "cd packages/common && yarn install",
     "setup:maplibre": "node -e \"const fs = require('fs'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.css', './node_modules/mapbox-gl/dist/mapbox-gl.css'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.js', './node_modules/mapbox-gl/dist/mapbox-gl.js');\""
   },
   "dependencies": {
@@ -97,6 +98,7 @@
     "marked": "^4.0.10",
     "moment": "^2.29.4",
     "moment-range": "^4.0.2",
+    "prism-common": "file:./packages/common",
     "papaparse": "^5.2.0",
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
