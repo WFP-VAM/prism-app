@@ -2,7 +2,7 @@
 import logging
 from datetime import datetime, timedelta, timezone
 from os import getenv
-from typing import Any, TypedDict, TypeVar
+from typing import Any, Optional, TypedDict, TypeVar
 from urllib.parse import quote_plus, urljoin
 
 import requests
@@ -20,11 +20,11 @@ T = TypeVar("T")
 class KoboForm(TypedDict):
     id: str
     datetime: str
-    geom_field: str | None
+    geom_field: Optional[str]
     filters: dict
 
 
-def get_first(items_list: list[T]) -> T | None:
+def get_first(items_list: list[T]) -> Optional[T]:
     """Safely return the first element of a list."""
     return items_list[0] if items_list else None
 
@@ -32,8 +32,8 @@ def get_first(items_list: list[T]) -> T | None:
 def get_kobo_params(
     form_id: str,
     datetime_field: str,
-    geom_field: str | None,
-    filter_params: str | None,
+    geom_field: Optional[str],
+    filter_params: Optional[str],
 ) -> tuple[tuple[str, str], KoboForm]:
     """Collect and validate request parameters and environment variables."""
 
@@ -60,7 +60,7 @@ def get_kobo_params(
 
 
 def parse_form_field(
-    value: str, field_type: str | None
+    value: str, field_type: Optional[str]
 ) -> float | int | datetime | dict[str, float] | str:
     """Parse strings into type according to field_type provided."""
     if field_type == "decimal":
@@ -142,7 +142,7 @@ def parse_form_response(
 
 
 def parse_datetime_params(
-    begin_datetime_str: str, end_datetime_str: str | None = None
+    begin_datetime_str: str, end_datetime_str: Optional[str] = None
 ) -> tuple[datetime, datetime]:
     """Transform into datetime objects used for filtering form responses."""
     begin_datetime = dtparser(begin_datetime_str).replace(tzinfo=timezone.utc)
@@ -221,10 +221,10 @@ def get_form_responses(
     end_datetime: datetime,
     form_id: str,
     datetime_field: str,
-    geom_field: str | None,
-    filters: str | None,
+    geom_field: Optional[str],
+    filters: Optional[str],
     form_url: str,
-    province: str | None = None,
+    province: Optional[str] = None,
 ) -> list[dict]:
     """Get all form responses using Kobo api."""
     auth, form_fields = get_kobo_params(form_id, datetime_field, geom_field, filters)

@@ -4,7 +4,7 @@ from collections import defaultdict
 from datetime import datetime
 from json import dump, load
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import urlencode
 
 import numpy as np
@@ -208,14 +208,14 @@ def _get_intersected_polygons(
 def calculate_stats(
     zones_filepath: FilePath,  # list or FilePath??
     geotiff: FilePath,
-    group_by: GroupBy | None = None,
-    stats: list[str] | str | None = None,
-    prefix: str | None = "stats_",
+    group_by: Optional[GroupBy] = None,
+    stats: Optional[list[str] | str] = None,
+    prefix: Optional[str] = "stats_",
     geojson_out: bool = False,
-    wfs_response: WfsResponse | None = None,
-    intersect_comparison: tuple | None = None,
-    mask_geotiff: str | None = None,
-    filter_by: tuple[str, str] | None = None,
+    wfs_response: Optional[WfsResponse] = None,
+    intersect_comparison: Optional[tuple] = None,
+    mask_geotiff: Optional[str] = None,
+    filter_by: Optional[tuple[str, str]] = None,
 ) -> list[dict[str, Any]]:
     """Calculate stats."""
 

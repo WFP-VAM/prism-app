@@ -1,5 +1,5 @@
 import json
-from typing import NewType, TypedDict
+from typing import NewType, Optional, TypedDict
 
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
 
@@ -37,12 +37,12 @@ class StatsModel(BaseModel):
     geotiff_url: HttpUrl = Field(..., example=stats_data["geotiff_url"])
     zones_url: HttpUrl = Field(..., example=stats_data["zones_url"])
     group_by: str = Field(..., example=stats_data["group_by"])
-    wfs_params: WfsParamsModel | None = None
-    geojson_out: bool | None = False
-    zones: GeoJSON | None = None
-    intersect_comparison: str | None = None
-    mask_url: str | None = None
-    filter_by: FilterProperty | None = None
+    wfs_params: Optional[WfsParamsModel] = None
+    geojson_out: Optional[bool] = False
+    zones: Optional[GeoJSON] = None
+    intersect_comparison: Optional[str] = None
+    mask_url: Optional[str] = None
+    filter_by: Optional[FilterProperty] = None
 
 
 def must_not_contain_null_char(v: str) -> str:

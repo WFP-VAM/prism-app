@@ -65,10 +65,10 @@ def _calculate_stats(
     group_by: GroupBy,
     geojson_out,
     # passed as hashable frozenset for caching
-    wfs_response: frozenset | None,
+    wfs_response: Optional[frozenset],
     intersect_comparison,
     mask_geotiff,
-    filter_by: tuple[str, str] | None,
+    filter_by: Optional[tuple[str, str]],
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -169,10 +169,10 @@ def get_kobo_forms(
     formName: str,
     datetimeField: str,
     koboUrl: HttpUrl,
-    geomField: str | None = None,
-    filters: str | None = None,
+    geomField: Optional[str] = None,
+    filters: Optional[str] = None,
     beginDateTime=Query(default="2000-01-01"),
-    endDateTime: str | None = None,
+    endDateTime: Optional[str] = None,
     user_info: UserInfoModel = Depends(validate_user),
 ):
     """Get all form responses."""
@@ -209,7 +209,7 @@ def get_kobo_forms(
 )
 def alert_by_id(
     email: EmailStr,
-    deactivate: bool | None = None,
+    deactivate: Optional[bool] = None,
     id: int = Path(1, description="The ID of the alert (an integer)"),
 ) -> Response:
     """Get alert with an ID."""

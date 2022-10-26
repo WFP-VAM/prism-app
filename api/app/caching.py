@@ -4,7 +4,7 @@ import json
 import logging
 import os
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 import rasterio  # type: ignore
 import requests
@@ -41,7 +41,7 @@ def cache_kobo_form(
         json.dump(form_dict, file)
 
 
-def get_kobo_form_cached(form_id: str) -> dict[str, Any] | None:
+def get_kobo_form_cached(form_id: str) -> Optional[dict[str, Any]]:
     """Checks if the kobo form is cached."""
     file_path = get_kobo_path(form_id)
 
