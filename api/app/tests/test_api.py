@@ -137,6 +137,6 @@ def test_kobo_forms_endpoint(monkeypatch):
     monkeypatch.setenv("KOBO_USERNAME", "")
     monkeypatch.setenv("KOBO_PW", "")
     response = client.get(
-        "/kobo/forms?beginDateTime=2022-08-18&endDateTime=2022-08-18&formName=1.%20%E1%9E%91%E1%9E%98%E1%9F%92%E1%9E%9A%E1%9E%84%E1%9F%8B%E1%9E%82%E1%9F%92%E1%9E%9A%E1%9F%84%E1%9F%87%E1%9E%91%E1%9E%B9%E1%9E%80%E1%9E%87%E1%9F%86%E1%9E%93%E1%9E%93%E1%9F%8B&datetimeField=Date_Dis&measureField=NumPeoAff&koboUrl=https://kobo.humanitarianresponse.info/api/v2/assets.json"
+        "/kobo/forms?beginDateTime=2022-08-18&endDateTime=2022-08-18&formId=1.%20%E1%9E%91%E1%9E%98%E1%9F%92%E1%9E%9A%E1%9E%84%E1%9F%8B%E1%9E%82%E1%9F%92%E1%9E%9A%E1%9F%84%E1%9F%87%E1%9E%91%E1%9E%B9%E1%9E%80%E1%9E%87%E1%9F%86%E1%9E%93%E1%9E%93%E1%9F%8B&datetimeField=Date_Dis&measureField=NumPeoAff&koboUrl=https://kobo.humanitarianresponse.info/api/v2/assets.json"
     )
     assert response.status_code == 200

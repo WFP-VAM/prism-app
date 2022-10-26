@@ -157,7 +157,7 @@ def get_kobo_form_dates(
 
 @app.get("/kobo/forms")
 def get_kobo_forms(
-    formName: str,
+    formId: str,
     datetimeField: str,
     koboUrl: HttpUrl,
     geomField: str | None = None,
@@ -180,7 +180,7 @@ def get_kobo_forms(
     form_responses = get_form_responses(
         begin_datetime,
         end_datetime,
-        formName,
+        formId,
         datetimeField,
         geomField,
         filters,

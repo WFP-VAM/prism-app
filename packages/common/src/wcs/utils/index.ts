@@ -29,6 +29,7 @@ export type Coverage = {
 
 export function findCoverages(xml: string): string[] {
   const tagNames = ['CoverageOfferingBrief', 'wcs:CoverageSummary'];
+  // eslint-disable-next-line fp/no-mutation
   for (let i = 0; i < tagNames.length; i += 1) {
     const tagName = tagNames[i];
     if (xml.includes(tagName)) {
@@ -117,6 +118,7 @@ export function findCoverageDisplayNames(xml: string): string[] {
   findCoverages(xml).forEach(layer => {
     const displayName = findCoverageDisplayName(layer);
     if (displayName) {
+      // eslint-disable-next-line fp/no-mutating-methods
       displayNames.push(displayName);
     }
   });
@@ -281,6 +283,7 @@ export function parseDates(description: string): string[] {
   const dates: string[] = [];
   findTagsByPath(description, path).forEach(tag => {
     if (tag?.inner) {
+      // eslint-disable-next-line fp/no-mutating-methods
       dates.push(tag.inner);
     }
   });
@@ -291,6 +294,7 @@ export function parseSupportedFormats(xml: string): string[] {
   const formats: string[] = [];
   findTagsByPath(xml, ['supportedFormats', 'formats']).forEach(tag => {
     if (tag?.inner) {
+      // eslint-disable-next-line fp/no-mutating-methods
       formats.push(tag.inner);
     }
   });
