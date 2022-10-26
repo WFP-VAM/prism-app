@@ -1332,7 +1332,7 @@
     },
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/dates",
-    "data_field": "NumPeoAff",
+    "data_field": "flood_n",
     "additional_query_params": {
       "form_id": "aMLBShjyyhYeS5ERuRy8s3",
       "datetime_field": "Date_report",
