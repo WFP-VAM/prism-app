@@ -9,5 +9,5 @@ export default {
   rawLayers,
   rawTables,
   translation,
-  defaultBoundariesFile: 'zim_admin2_boundaries_v2.json',
+  defaultBoundariesFile: 'ukr_admbnda_adm2_sspe_20220114.json',
 };

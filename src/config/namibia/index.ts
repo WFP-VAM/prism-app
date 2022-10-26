@@ -1,5 +1,11 @@
-import namibiaConfig from './prism.json';
-import namibiaRawLayers from './layers.json';
-import namibiaRawTables from './tables.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
 
-export { namibiaConfig, namibiaRawLayers, namibiaRawTables };
+const rawTables = {};
+
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  defaultBoundariesFile: 'nam_admin2.json',
+};

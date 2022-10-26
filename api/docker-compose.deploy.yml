@@ -50,4 +50,4 @@ services:
       - KOBO_PW=${KOBO_PW:?"Add a password to access KOBO data."}
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
     command: uvicorn app.main:app --host 0.0.0.0 --port 80
-    restart: unless-stopped
+    restart: always

@@ -4,11 +4,13 @@ import { PublicClientApplication } from '@azure/msal-browser';
 
 import cambodia from './cambodia';
 
+import colombia from './colombia';
+
 import cuba from './cuba';
 
 import ecuador from './ecuador';
 
-import { globalConfig, globalRawLayers, globalRawTables } from './global';
+import global from './global';
 
 import {
   indonesiaConfig,
@@ -18,11 +20,7 @@ import {
 
 import jordan from './jordan';
 
-import {
-  kyrgyzstanConfig,
-  kyrgyzstanRawLayers,
-  kyrgyzstanRawTables,
-} from './kyrgyzstan';
+import kyrgyzstan from './kyrgyzstan';
 
 import {
   mongoliaConfig,
@@ -34,7 +32,7 @@ import mozambique from './mozambique';
 
 import myanmar from './myanmar';
 
-import { namibiaConfig, namibiaRawLayers, namibiaRawTables } from './namibia';
+import namibia from './namibia';
 
 import rbd from './rbd';
 
@@ -44,11 +42,7 @@ import southsudan from './southsudan';
 
 import srilanka from './srilanka';
 
-import {
-  tajikistanConfig,
-  tajikistanRawLayers,
-  tajikistanRawTables,
-} from './tajikistan';
+import tajikistan from './tajikistan';
 
 import ukraine from './ukraine';
 
@@ -61,13 +55,9 @@ const DEFAULT_BOUNDARIES_FOLDER =
 const configMap = {
   cuba,
   cambodia,
+  colombia,
   ecuador,
-  global: {
-    appConfig: globalConfig,
-    rawLayers: globalRawLayers,
-    rawTables: globalRawTables,
-    defaultBoundariesFile: 'adm0_simplified.json',
-  },
+  global,
   indonesia: {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
@@ -75,12 +65,7 @@ const configMap = {
     defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
   jordan,
-  kyrgyzstan: {
-    appConfig: kyrgyzstanConfig,
-    rawLayers: kyrgyzstanRawLayers,
-    rawTables: kyrgyzstanRawTables,
-    defaultBoundariesFile: 'District_KRYG.json',
-  },
+  kyrgyzstan,
   mongolia: {
     appConfig: mongoliaConfig,
     rawLayers: mongoliaRawLayers,
@@ -89,29 +74,19 @@ const configMap = {
   },
   mozambique,
   myanmar,
-  namibia: {
-    appConfig: namibiaConfig,
-    rawLayers: namibiaRawLayers,
-    rawTables: namibiaRawTables,
-    defaultBoundariesFile: 'nam_admin2.json',
-  },
+  namibia,
   rbd,
   sierraleone,
   southsudan,
   srilanka,
-  tajikistan: {
-    appConfig: tajikistanConfig,
-    rawLayers: tajikistanRawLayers,
-    rawTables: tajikistanRawTables,
-    defaultBoundariesFile: 'tjk_admin_boundaries_v2.json',
-  },
+  tajikistan,
   ukraine,
   zimbabwe,
 } as const;
 
 type Country = keyof typeof configMap;
 
-const DEFAULT: Country = 'myanmar';
+const DEFAULT: Country = 'mozambique';
 
 const { REACT_APP_COUNTRY: COUNTRY } = process.env;
 const safeCountry =
@@ -137,6 +112,7 @@ const {
   REACT_APP_OAUTH_CLIENT_ID: CLIENT_ID,
   REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
   REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
+  REACT_APP_TESTING: TESTING,
 } = process.env;
 
 const msalConfig = {
@@ -153,7 +129,10 @@ const msalRequest = {
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
-const enableNavigationDropdown = get(
+const authRequired: boolean =
+  !TESTING && get(appConfig, 'WFPAuthRequired', false);
+
+const enableNavigationDropdown: boolean = get(
   appConfig,
   'enableNavigationDropdown',
   false,
@@ -163,6 +142,7 @@ const defaultBoundariesPath = `${DEFAULT_BOUNDARIES_FOLDER}/${defaultBoundariesF
 
 export {
   appConfig,
+  authRequired,
   safeCountry,
   defaultBoundariesPath,
   rawLayers,

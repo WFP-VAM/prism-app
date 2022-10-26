@@ -1,5 +1,11 @@
-import tajikistanConfig from './prism.json';
-import tajikistanRawLayers from './layers.json';
-import tajikistanRawTables from './tables.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
 
-export { tajikistanConfig, tajikistanRawLayers, tajikistanRawTables };
+const rawTables = {};
+
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  defaultBoundariesFile: 'tjk_admin2_wgs84_clean.json',
+};

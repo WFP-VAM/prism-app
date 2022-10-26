@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, union } from 'lodash';
+import { formatUrl } from "../../../packages/common";
 import { Extent, WCSRequestUrl } from './raster-utils';
 import { AlertConfig } from '../entities/alerts.entity';
 
@@ -13,15 +14,6 @@ const xml2jsOptions = {
   trim: true,
   ignoreComment: true,
 };
-
-export function formatUrl(
-  baseUrl: string,
-  params: { [key: string]: any } = {},
-): string {
-  const url = new URL(baseUrl);
-  Object.keys(params).forEach((k) => url.searchParams.append(k, params[k]));
-  return url.toString();
-}
 
 type AvailableDates = {
   [key: string]: number[];
