@@ -40,6 +40,7 @@ t('check-extent', ({ eq }) => {
   try {
     checkExtent([170, -90, 150, 90]);
   } catch (error) {
+    // eslint-disable-next-line fp/no-mutation
     msg = `${error}`;
   }
   eq(
@@ -169,6 +170,7 @@ t('setTimeoutAsync', async ({ eq }) => {
   const seconds = 2;
   let flag = false;
   await setTimeoutAsync(seconds, () => {
+    // eslint-disable-next-line fp/no-mutation
     flag = true;
   });
   const duration = performance.now() - start;
