@@ -1,9 +1,17 @@
-# Lorem Ipsum
+# About PRISM
 
-## What is Lorem Ipsum?
+Platform for Real-Time Impact and Situation Monitoring (PRISM) is a web-based platform which supports the National Committee for Disaster Management (NCDM), other government agencies and partners to rapidly assess climate hazard risks and their impact, to inform disaster risk management and social protection programs. PRISM simplifies the integration of geospatial data on hazards, such as droughts and floods, along with information on socioeconomic vulnerability (IDPoor) to present decision makers with actionable information on vulnerable populations exposed to hazards.
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+## NCDM contact info
 
-## Why do we use it?
+NCDM's public webiste is accessible at: <a href="http://ncdm.gov.kh/" target="_blank">http://ncdm.gov.kh/</a>
+The general NCDM email address is: <a href="mailto:administration@ncdm.gov.kh" target="_blank">administration@ncdm.gov.kh</a>  
 
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+
+<img src="data/cambodia/ncdm_l3.png" width="200" height="200">
+
+
+## Acknowledgements
+PRISM is an open-source software system developed by the World Food Programme with donor support from the United States Agency for International Development’s Bureau for Humanitarian Assistance. 
+
+<img src="data/cambodia/WFP-0000014689.png" width="308" height="132">
