@@ -1332,11 +1332,11 @@
     },
     "data": "https://prism-api.ovio.org/kobo/forms",
     "date_url": "https://prism-api.ovio.org/kobo/dates",
-    "data_field": "NumPeoAff",
+    "data_field": "flood_n",
     "additional_query_params": {
       "form_id": "aMLBShjyyhYeS5ERuRy8s3",
-      "datetime_field": "Date_Dis",
-      "measure_field": "NumPeoAff",
+      "datetime_field": "Date_report",
+      "measure_field": "flood_n",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/"
     },
     "opacity": 0.9,
@@ -1349,7 +1349,7 @@
         "type": "text",
         "label": "Number of villages affected"
       },
-      "NumPeoAff": {
+      "flood_n": {
         "type": "text",
         "label": "Number of people affected"
       }
