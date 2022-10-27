@@ -1,8 +1,7 @@
 {
   "country": "Myanmar",
-  "WFPAuthRequired": false,
+  "WFPAuthRequired": true,
   "alertFormActive": false,
-  "aboutPath": "data/myanmar/about.md",
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
