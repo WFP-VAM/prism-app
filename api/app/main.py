@@ -13,6 +13,7 @@ from app.database.alert_model import AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
+from app.models import FilterProperty
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
@@ -64,9 +65,10 @@ def _calculate_stats(
     group_by: GroupBy,
     geojson_out,
     # passed as hashable frozenset for caching
-    wfs_response: frozenset | None,
+    wfs_response: Optional[frozenset],
     intersect_comparison,
     mask_geotiff,
+    filter_by: Optional[tuple[str, str]],
 ):
     """Calculate stats."""
     return calculate_stats(
@@ -79,6 +81,7 @@ def _calculate_stats(
         wfs_response=dict(wfs_response) if wfs_response is not None else None,
         intersect_comparison=intersect_comparison,
         mask_geotiff=mask_geotiff,
+        filter_by=filter_by,
     )
 
 
@@ -95,6 +98,11 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     geojson_out = stats_model.geojson_out
     intersect_comparison_string = stats_model.intersect_comparison
     mask_geotiff_url = stats_model.mask_url
+
+    filter_by = None
+    # Tuple transformation fixes unhashable type error caused by timed decorator.
+    if stats_model.filter_by is not None:
+        filter_by = (stats_model.filter_by.key, str(stats_model.filter_by.value))
 
     group_by = stats_model.group_by
     wfs_params = stats_model.wfs_params
@@ -140,6 +148,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         else None,
         intersect_comparison=intersect_comparison_tuple,
         mask_geotiff=mask_geotiff,
+        filter_by=filter_by,
     )
 
     return features
@@ -157,13 +166,13 @@ def get_kobo_form_dates(
 
 @app.get("/kobo/forms")
 def get_kobo_forms(
-    formName: str,
+    formId: str,
     datetimeField: str,
     koboUrl: HttpUrl,
-    geomField: str | None = None,
-    filters: str | None = None,
+    geomField: Optional[str] = None,
+    filters: Optional[str] = None,
     beginDateTime=Query(default="2000-01-01"),
-    endDateTime: str | None = None,
+    endDateTime: Optional[str] = None,
     user_info: UserInfoModel = Depends(validate_user),
 ):
     """Get all form responses."""
@@ -180,7 +189,7 @@ def get_kobo_forms(
     form_responses = get_form_responses(
         begin_datetime,
         end_datetime,
-        formName,
+        formId,
         datetimeField,
         geomField,
         filters,
@@ -200,7 +209,7 @@ def get_kobo_forms(
 )
 def alert_by_id(
     email: EmailStr,
-    deactivate: bool | None = None,
+    deactivate: Optional[bool] = None,
     id: int = Path(1, description="The ID of the alert (an integer)"),
 ) -> Response:
     """Get alert with an ID."""

@@ -44,6 +44,7 @@ export function getFeatureTypesFromCapabilities(
       if (inner) {
         const name = findTagText(inner, 'Name')!;
         if (name) {
+          // eslint-disable-next-line fp/no-mutating-methods
           featureTypes.push({
             name: parseName(name),
             abstract: findAndParseAbstract(inner),
@@ -66,6 +67,7 @@ export function parseFullFeatureTypeNames(
     featureType => featureType.name.full,
   );
   if (sort) {
+    // eslint-disable-next-line fp/no-mutating-methods
     names.sort();
   }
   return names;
