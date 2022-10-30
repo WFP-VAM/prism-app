@@ -6,6 +6,8 @@ import {
   getAttribute,
 } from 'xml-utils';
 
+import { uniq, union } from 'lodash';
+
 import type { WMS_OUTPUT_FORMAT } from '../types';
 
 import {
@@ -16,6 +18,7 @@ import {
   findTagArray,
   findTagText,
   formatUrl,
+  setNoon,
   parseName,
 } from '../../utils';
 
@@ -101,6 +104,32 @@ export function getLayerDates(xml: string, layerName: string): string[] {
   return parseLayerDates(layer);
 }
 
+export function parseLayerDays(xml: string): number[] {
+  const dateStrings = parseLayerDates(xml);
+
+  // round to noon to avoid errors due to daylight saving
+  const days = dateStrings.map(setNoon);
+
+  const uniqueDays = uniq(days);
+
+  return uniqueDays.map(date => new Date(date).getTime());
+}
+
+export function getAllLayerDays(xml: string): { [layerId: string]: number[] } {
+  const layers = findLayers(xml);
+  const allDays: { [key: string]: number[] } = {};
+  for (let i = 0; i < layers.length; i += 1) {
+    const layer = layers[i];
+    const layerId = findName(layer);
+    if (layerId) {
+      const oldLayerDays = allDays[layerId] || [];
+      const layerDays = parseLayerDays(layer);
+      allDays[layerId] = union(layerDays, oldLayerDays);
+    }
+  }
+  return allDays;
+}
+
 // parses an xml representation of a layer
 // converting into into an object
 export function parseLayer(xml: string): WMSLayer | undefined {
@@ -149,43 +178,54 @@ export function parseLayer(xml: string): WMSLayer | undefined {
 }
 
 // to-do: bgcolor, sld, sld_body
-export function createGetMapUrl(
-  xml: string,
-  layerIds: string[],
-  {
-    bbox,
-    bboxDigits,
-    bboxSrs,
-    format = 'image/png',
-    height,
-    imageSrs,
-    srs = 'EPSG:4326',
-    styles,
-    time,
-    transparent = true,
-    width,
-  }: {
-    bbox?: [number, number, number, number] | number[];
-    bboxDigits?: number;
-    bboxSrs?: number;
-    format?: WMS_OUTPUT_FORMAT;
-    height: number;
-    imageSrs?: number;
-    srs?: string;
-    styles?: string[];
-    time?: string;
-    transparent?: boolean;
-    width: number;
-  },
-) {
-  const base = findAndParseCapabilityUrl(xml, 'GetMap');
-  if (!base) {
+export function createGetMapUrl({
+  base,
+  bbox,
+  bboxDigits,
+  bboxSrs,
+  capabilities,
+  format = 'image/png',
+  height,
+  imageSrs,
+  layerIds,
+  srs = 'EPSG:4326',
+  styles,
+  time,
+  transparent = true,
+  version = '1.3.0',
+  width,
+}: {
+  base?: string | undefined;
+  bbox?: [number, number, number, number] | number[];
+  bboxDigits?: number;
+  bboxSrs?: number;
+  capabilities?: string;
+  format?: WMS_OUTPUT_FORMAT;
+  height: number;
+  imageSrs?: number;
+  layerIds: string[];
+  srs?: string;
+  styles?: string[];
+  time?: string;
+  transparent?: boolean;
+  version?: string;
+  width: number;
+}) {
+  const baseUrl = (() => {
+    if (base) {
+      return base;
+    }
+    if (capabilities) {
+      return findAndParseCapabilityUrl(capabilities, 'GetMap');
+    }
+    return undefined;
+  })();
+
+  if (!baseUrl) {
     throw new Error('failed to create GetMap Url');
   }
 
-  const version = '1.3.0';
-
-  return formatUrl(base, {
+  return formatUrl(baseUrl, {
     bbox: bbox ? bboxToString(bbox, bboxDigits) : undefined,
     bboxsr: bboxSrs ? bboxSrs.toString() : undefined,
     format,

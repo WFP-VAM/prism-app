@@ -2,16 +2,22 @@ import { Layer } from '../layer';
 
 import { createGetMapUrl, findLayer, parseLayerDates } from './utils';
 
-type GetImageOptions = Parameters<typeof createGetMapUrl>[2];
+type GetImageOptions = Omit<
+  Parameters<typeof createGetMapUrl>[0],
+  'capabilities' | 'layerIds'
+>;
 
 export default class WMSLayer extends Layer {
-  private layer: Promise<string>; // xml describing layer from GetCapabilities request
   private dates: Promise<string[]>;
 
   constructor(options: ConstructorParameters<typeof Layer>[0]) {
     super(options);
-    this.layer = this.capabilities.then(xml => findLayer(xml, this.id)!);
-    this.dates = this.layer.then(xml => parseLayerDates(xml));
+
+    if (!this.layer) {
+      this.layer = this.capabilities.then(xml => findLayer(xml, this.id)!);
+    }
+
+    this.dates = this.layer.then(parseLayerDates);
   }
 
   async getLayerDates(): Promise<string[]> {
@@ -20,7 +26,11 @@ export default class WMSLayer extends Layer {
 
   // to-do make bbox optional, defaulting to full image
   async getImageUrl(options: GetImageOptions): Promise<string> {
-    return createGetMapUrl(await this.capabilities, [this.id], options);
+    return createGetMapUrl({
+      ...options,
+      capabilities: await this.capabilities,
+      layerIds: [this.id],
+    });
   }
 
   async getImage(

@@ -8,6 +8,7 @@ import {
   hasLayerId,
   titlecase,
   toArray,
+  setNoon,
   parseName,
   parseService,
   scaleImage,
@@ -162,6 +163,10 @@ t('scaleImage', async ({ eq }) => {
     height: 52,
     width: 512,
   });
+});
+
+t('setNoon', ({ eq }) => {
+  eq(setNoon('2022-10-25T:08:32:12Z'), '2022-10-25T12:00:00Z');
 });
 
 t('setTimeoutAsync', async ({ eq }) => {

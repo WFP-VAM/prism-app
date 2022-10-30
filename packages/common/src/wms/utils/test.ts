@@ -7,7 +7,9 @@ import {
   getLayerIds,
   getLayerNames,
   getLayerDates,
+  getAllLayerDays,
   parseLayer,
+  parseLayerDates,
 } from '.';
 
 const xml = findAndRead('./data/geonode-wms-get-capabilities-1.3.0.xml', {
@@ -57,6 +59,13 @@ test('cleaning layer names', ({ eq }) => {
   ]);
 });
 
+test('parse layer dates', async ({ eq }) => {
+  const layer = findLayer(xml, 'prism:lka_gdacs_buffers')!;
+  const layerDates = parseLayerDates(layer);
+  eq(layerDates.length, 8);
+  eq(layerDates[0], '2012-10-31T12:00:00.000Z');
+});
+
 test('get layer dates', async ({ eq }) => {
   const layerDates = getLayerDates(xml, 'prism:lka_gdacs_buffers');
   eq(layerDates, [
@@ -72,6 +81,23 @@ test('get layer dates', async ({ eq }) => {
 
   // empty array for layers without dates
   eq(getLayerDates(xml, 'geonode:landslide'), []);
+});
+
+test('get all layer days', ({ eq }) => {
+  const days = getAllLayerDays(xml);
+  const layerId = 'prism:lka_gdacs_buffers';
+  eq(days[layerId], [
+    1351684800000,
+    1388923200000,
+    1480593600000,
+    1512475200000,
+    1542542400000,
+    1545048000000,
+    1606392000000,
+    1607083200000,
+  ]);
+
+  eq(days['geonode:landslide'], []);
 });
 
 test('parse layer', ({ eq }) => {
@@ -100,7 +126,7 @@ test('parse layer', ({ eq }) => {
 });
 
 test('createGetMapUrl', async ({ eq }) => {
-  const url = createGetMapUrl(odcXml, ['ModisIndices'], {
+  const url = createGetMapUrl({
     bbox: [
       11897270.578531113,
       6261721.357121639,
@@ -108,7 +134,9 @@ test('createGetMapUrl', async ({ eq }) => {
       6887893.492833804,
     ],
     bboxSrs: 3857,
+    capabilities: odcXml,
     height: 256,
+    layerIds: ['ModisIndices'],
     srs: 'EPSG:3857',
     time: '2022-07-11',
     width: 256,
