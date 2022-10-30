@@ -185,7 +185,7 @@ export function createGetMapUrl({
   bboxSrs,
   capabilities,
   format = 'image/png',
-  height,
+  height = 256,
   imageSrs,
   layerIds,
   srs = 'EPSG:4326',
@@ -193,7 +193,7 @@ export function createGetMapUrl({
   time,
   transparent = true,
   version = '1.3.0',
-  width,
+  width = 256,
 }: {
   base?: string | undefined;
   bbox?: [number, number, number, number] | number[];
@@ -201,7 +201,7 @@ export function createGetMapUrl({
   bboxSrs?: number;
   capabilities?: string;
   format?: WMS_OUTPUT_FORMAT;
-  height: number;
+  height?: number;
   imageSrs?: number;
   layerIds: string[];
   srs?: string;
@@ -209,7 +209,7 @@ export function createGetMapUrl({
   time?: string;
   transparent?: boolean;
   version?: string;
-  width: number;
+  width?: number;
 }) {
   const baseUrl = (() => {
     if (base) {
