@@ -91,27 +91,32 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     : undefined;
 
   let data;
+  let response: Response;
   // TODO - Better error handling, esp. for unauthorized requests.
   try {
     // eslint-disable-next-line fp/no-mutation
-    data = (await (
-      await fetch(requestUrl, {
-        mode: 'cors',
-        headers,
-      })
-    ).json()) as PointData[];
+    response = await fetch(requestUrl, {
+      mode: 'cors',
+      headers,
+    });
+    // eslint-disable-next-line fp/no-mutation
+    data = (await response.json()) as PointData[];
   } catch (ignored) {
     // fallback data isn't filtered, therefore we must filter it.
     // eslint-disable-next-line fp/no-mutation
-    data = ((await (
-      await fetch(fallbackData || '')
-    ).json()) as PointData[]).filter(
+    response = await fetch(fallbackData || '');
+    // eslint-disable-next-line fp/no-mutation
+    data = ((await response.json()) as PointData[]).filter(
       // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
       // using moment here helps compensate for these discrepancies
       obj =>
         moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
         moment(formattedDate).format(DEFAULT_DATE_FORMAT),
     );
+  }
+
+  if (response.status > 299) {
+    throw new Error((data as any)?.detail);
   }
 
   if (adminLevelDisplay && !Object.keys(data).includes('message')) {

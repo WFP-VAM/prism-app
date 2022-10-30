@@ -5,6 +5,8 @@ from unittest.mock import patch
 
 from app.kobo import get_form_responses
 from app.zonal_stats import calculate_stats
+from fastapi import HTTPException
+from pytest import raises
 
 
 def test_calculate_stats_json_output():
@@ -24,6 +26,32 @@ def test_calculate_stats_geojson_output():
     features = calculate_stats(zones, geotiff, geojson_out=True)
     assert len(features) == 26
     assert features[0]["type"] == "Feature"
+
+
+def test_calculate_stats_filter_by():
+    """Test calculate_stats with geojson_out=True. and filter option"""
+
+    zones = "/app/tests/small_admin_boundaries.json"
+    geotiff = "/app/tests/raster_sample.tif"
+    features = calculate_stats(
+        zones, geotiff, geojson_out=True, filter_by=("ADM2_EN", "Nomgon")
+    )
+    assert len(features) == 1
+    assert features[0]["type"] == "Feature"
+
+    # Verify that numbers are also included.
+
+    features = calculate_stats(
+        zones, geotiff, geojson_out=True, filter_by=("ADM2_PCODE", "6413")
+    )
+    assert len(features) == 1
+    assert features[0]["type"] == "Feature"
+
+    # Test not found
+    with raises(HTTPException):
+        features = calculate_stats(
+            zones, geotiff, geojson_out=True, filter_by=("ADM2_PCODE", "N/A")
+        )
 
 
 def test_calculate_stats_with_group_by():
