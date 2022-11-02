@@ -8,6 +8,7 @@ import { parseName } from '../utils';
 export class Layer {
   public capabilities: Promise<string>;
   public id: string; // e.g., namespace:feature_type
+  public layer: Promise<string> | undefined;
   public namespace: string | undefined;
   public name: string;
 
@@ -16,14 +17,20 @@ export class Layer {
   constructor({
     capabilities,
     id,
+    layer,
     fetch: customFetch,
   }: {
-    capabilities: Promise<string>;
+    capabilities: string | Promise<string>;
     id: string;
+    layer?: string;
     fetch?: any;
   }) {
-    this.capabilities = capabilities;
+    this.capabilities = Promise.resolve(capabilities);
     this.id = id;
+
+    if (layer) {
+      this.layer = Promise.resolve(layer);
+    }
 
     this.fetch = customFetch || fetch;
 
