@@ -19,10 +19,22 @@ test('WMS', async ({ eq }) => {
   eq(layerNames.length, 659);
   eq(layerNames[0], 'Ecuador_OSM_Julio 2019');
 
+  const days = await client.getLayerDays();
+  eq(Object.keys(days).length, layerNames.length);
+  eq(days['prism:col_gdacs_buffers'].length, 22);
+  eq(
+    new Date(days['prism:col_gdacs_buffers'][0]).toUTCString(),
+    'Sun, 07 Aug 2011 12:00:00 GMT',
+  );
+
   const layer = await client.getLayer('prism:col_gdacs_buffers');
-  const dates = await layer.getLayerDates();
-  eq(dates.length, 22);
-  eq(dates[0], '2011-08-07T15:00:00.000Z');
+
+  const layerDates = await layer.getLayerDates();
+  eq(layerDates.length, 22);
+  eq(layerDates[0], '2011-08-07T15:00:00.000Z');
+
+  const layers = await client.getLayers();
+  eq(layers.length, 659);
 });
 
 test('WMS Data Cube', async ({ eq }) => {

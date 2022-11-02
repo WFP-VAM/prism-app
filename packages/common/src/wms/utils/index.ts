@@ -6,6 +6,8 @@ import {
   getAttribute,
 } from 'xml-utils';
 
+import { uniq, union } from 'lodash';
+
 import type { WMS_OUTPUT_FORMAT } from '../types';
 
 import {
@@ -16,6 +18,7 @@ import {
   findTagArray,
   findTagText,
   formatUrl,
+  setNoon,
   parseName,
 } from '../../utils';
 
@@ -101,6 +104,32 @@ export function getLayerDates(xml: string, layerName: string): string[] {
   return parseLayerDates(layer);
 }
 
+export function parseLayerDays(xml: string): number[] {
+  const dateStrings = parseLayerDates(xml);
+
+  // round to noon to avoid errors due to daylight saving
+  const days = dateStrings.map(setNoon);
+
+  const uniqueDays = uniq(days);
+
+  return uniqueDays.map(date => new Date(date).getTime());
+}
+
+export function getAllLayerDays(xml: string): { [layerId: string]: number[] } {
+  const layers = findLayers(xml);
+  const allDays: { [key: string]: number[] } = {};
+  layers.forEach(layer => {
+    const layerId = findName(layer);
+    if (layerId) {
+      const oldLayerDays = allDays[layerId] || [];
+      const layerDays = parseLayerDays(layer);
+      allDays[layerId] = union(layerDays, oldLayerDays);
+    }
+    return allDays;
+  });
+  return allDays;
+}
+
 // parses an xml representation of a layer
 // converting into into an object
 export function parseLayer(xml: string): WMSLayer | undefined {
@@ -148,44 +177,170 @@ export function parseLayer(xml: string): WMSLayer | undefined {
   };
 }
 
-// to-do: bgcolor, sld, sld_body
-export function createGetMapUrl(
-  xml: string,
-  layerIds: string[],
-  {
-    bbox,
-    bboxDigits,
-    bboxSrs,
-    format = 'image/png',
+export function createGetLegendGraphicUrl({
+  base,
+  bgColor,
+  columnHeight,
+  countMatched,
+  dpi,
+  exceptions,
+  featureType,
+  fontAntiAliasing = true,
+  fontColor = '0x2D3436',
+  fontName = 'Roboto Light',
+  forceLabels = 'on',
+  forceTitles = 'on',
+  format = 'image/png',
+  fontSize = 13,
+  fontStyle,
+  groupLayout = 'vertical',
+  height,
+  hideEmptyRules = false,
+  labelMargin,
+  language,
+  layer,
+  layout = 'vertical',
+  rows,
+  rowWidth,
+  rule,
+  scale,
+  servicePath = 'wms',
+  sld,
+  sldBody,
+  style,
+  width,
+  wrap = false,
+  wrapLimit,
+}: {
+  base: string;
+  bgColor?: string;
+  columnHeight?: number;
+  countMatched?: boolean;
+  dpi?: number;
+  exceptions?: string;
+  featureType?: string;
+  fontAntiAliasing?: boolean;
+  fontColor?: string;
+  fontName?: string;
+  fontSize?: number;
+  fontStyle?: string;
+  forceLabels?: 'on' | 'off';
+  forceTitles?: 'on' | 'off';
+  format?: string;
+  groupLayout?: string;
+  height?: number;
+  hideEmptyRules?: boolean;
+  labelMargin?: number;
+  language?: string;
+  layer: string;
+  layout?: 'horizontal' | 'vertical';
+  rows?: number;
+  rowWidth?: number;
+  rule?: string;
+  scale?: string;
+  servicePath?: string;
+  sld?: string;
+  sldBody?: string;
+  style?: string;
+  width?: number;
+  wrap?: boolean;
+  wrapLimit?: number;
+}) {
+  const legendOptions = {
+    bgColor,
+    columnHeight,
+    countMatched,
+    dpi,
+    fontAntiAliasing,
+    fontColor,
+    fontName,
+    fontSize,
+    fontStyle,
+    forceLabels,
+    forceTitles,
+    groupLayout,
     height,
-    imageSrs,
-    srs = 'EPSG:4326',
-    styles,
-    time,
-    transparent = true,
+    hideEmptyRules,
+    labelMargin,
+    layout,
+    rows,
+    rowWidth,
     width,
-  }: {
-    bbox?: [number, number, number, number] | number[];
-    bboxDigits?: number;
-    bboxSrs?: number;
-    format?: WMS_OUTPUT_FORMAT;
-    height: number;
-    imageSrs?: number;
-    srs?: string;
-    styles?: string[];
-    time?: string;
-    transparent?: boolean;
-    width: number;
-  },
-) {
-  const base = findAndParseCapabilityUrl(xml, 'GetMap');
-  if (!base) {
+    wrap,
+    wrap_limit: wrapLimit,
+  };
+
+  const requestParams = {
+    service: 'WMS',
+    request: 'GetLegendGraphic',
+    exceptions,
+    featureType,
+    format,
+    language,
+    layer,
+    legend_options: Object.entries(legendOptions)
+      .filter(([key, value]) => value !== undefined)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(';'),
+    rule,
+    scale,
+    sld,
+    sld_body: sldBody,
+    style,
+  };
+
+  return formatUrl(`${base}/${servicePath}`, requestParams);
+}
+
+// to-do: bgcolor, sld, sld_body
+export function createGetMapUrl({
+  base,
+  bbox,
+  bboxDigits,
+  bboxSrs,
+  capabilities,
+  format = 'image/png',
+  height = 256,
+  imageSrs,
+  layerIds,
+  srs = 'EPSG:4326',
+  styles,
+  time,
+  transparent = true,
+  version = '1.3.0',
+  width = 256,
+}: {
+  base?: string | undefined;
+  bbox?: [number, number, number, number] | number[];
+  bboxDigits?: number;
+  bboxSrs?: number;
+  capabilities?: string;
+  format?: WMS_OUTPUT_FORMAT;
+  height?: number;
+  imageSrs?: number;
+  layerIds: string[];
+  srs?: string;
+  styles?: string[];
+  time?: string;
+  transparent?: boolean;
+  version?: string;
+  width?: number;
+}) {
+  const baseUrl = (() => {
+    if (base) {
+      return base;
+    }
+    if (capabilities) {
+      return findAndParseCapabilityUrl(capabilities, 'GetMap');
+    }
+    return undefined;
+  })();
+
+  if (!baseUrl) {
     throw new Error('failed to create GetMap Url');
   }
 
-  const version = '1.3.0';
-
-  return formatUrl(base, {
+  return formatUrl(baseUrl, {
     bbox: bbox ? bboxToString(bbox, bboxDigits) : undefined,
     bboxsr: bboxSrs ? bboxSrs.toString() : undefined,
     format,
