@@ -118,15 +118,15 @@ export function parseLayerDays(xml: string): number[] {
 export function getAllLayerDays(xml: string): { [layerId: string]: number[] } {
   const layers = findLayers(xml);
   const allDays: { [key: string]: number[] } = {};
-  for (let i = 0; i < layers.length; i += 1) {
-    const layer = layers[i];
+  layers.forEach(layer => {
     const layerId = findName(layer);
     if (layerId) {
       const oldLayerDays = allDays[layerId] || [];
       const layerDays = parseLayerDays(layer);
       allDays[layerId] = union(layerDays, oldLayerDays);
     }
-  }
+    return allDays;
+  });
   return allDays;
 }
 
@@ -175,6 +175,121 @@ export function parseLayer(xml: string): WMSLayer | undefined {
     dates: parseLayerDates(xml),
     styles: [], // to-do
   };
+}
+
+export function createGetLegendGraphicUrl({
+  base,
+  bgColor,
+  columnHeight,
+  countMatched,
+  dpi,
+  exceptions,
+  featureType,
+  fontAntiAliasing = true,
+  fontColor = '0x2D3436',
+  fontName = 'Roboto Light',
+  forceLabels = 'on',
+  forceTitles = 'on',
+  format = 'image/png',
+  fontSize = 13,
+  fontStyle,
+  groupLayout = 'vertical',
+  height,
+  hideEmptyRules = false,
+  labelMargin,
+  language,
+  layer,
+  layout = 'vertical',
+  rows,
+  rowWidth,
+  rule,
+  scale,
+  servicePath = 'wms',
+  sld,
+  sldBody,
+  style,
+  width,
+  wrap = false,
+  wrapLimit,
+}: {
+  base: string;
+  bgColor?: string;
+  columnHeight?: number;
+  countMatched?: boolean;
+  dpi?: number;
+  exceptions?: string;
+  featureType?: string;
+  fontAntiAliasing?: boolean;
+  fontColor?: string;
+  fontName?: string;
+  fontSize?: number;
+  fontStyle?: string;
+  forceLabels?: 'on' | 'off';
+  forceTitles?: 'on' | 'off';
+  format?: string;
+  groupLayout?: string;
+  height?: number;
+  hideEmptyRules?: boolean;
+  labelMargin?: number;
+  language?: string;
+  layer: string;
+  layout?: 'horizontal' | 'vertical';
+  rows?: number;
+  rowWidth?: number;
+  rule?: string;
+  scale?: string;
+  servicePath?: string;
+  sld?: string;
+  sldBody?: string;
+  style?: string;
+  width?: number;
+  wrap?: boolean;
+  wrapLimit?: number;
+}) {
+  const legendOptions = {
+    bgColor,
+    columnHeight,
+    countMatched,
+    dpi,
+    fontAntiAliasing,
+    fontColor,
+    fontName,
+    fontSize,
+    fontStyle,
+    forceLabels,
+    forceTitles,
+    groupLayout,
+    height,
+    hideEmptyRules,
+    labelMargin,
+    layout,
+    rows,
+    rowWidth,
+    width,
+    wrap,
+    wrap_limit: wrapLimit,
+  };
+
+  const requestParams = {
+    service: 'WMS',
+    request: 'GetLegendGraphic',
+    exceptions,
+    featureType,
+    format,
+    language,
+    layer,
+    legend_options: Object.entries(legendOptions)
+      .filter(([key, value]) => value !== undefined)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(';'),
+    rule,
+    scale,
+    sld,
+    sld_body: sldBody,
+    style,
+  };
+
+  return formatUrl(`${base}/${servicePath}`, requestParams);
 }
 
 // to-do: bgcolor, sld, sld_body

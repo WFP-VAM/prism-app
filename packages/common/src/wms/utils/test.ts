@@ -3,6 +3,7 @@ import test from 'flug';
 
 import {
   createGetMapUrl,
+  createGetLegendGraphicUrl,
   findLayer,
   getLayerIds,
   getLayerNames,
@@ -147,5 +148,16 @@ test('createGetMapUrl', async ({ eq }) => {
   eq(
     url,
     'https://mongolia.sibelius-datacube.org:5000/wms?bbox=11897270.578531113%2C6261721.357121639%2C12523442.714243278%2C6887893.492833804&bboxsr=3857&crs=EPSG%3A3857&format=image%2Fpng&height=256&layers=ModisIndices&request=GetMap&service=WMS&srs=EPSG%3A3857&time=2022-07-11&transparent=true&version=1.3.0&width=256',
+  );
+});
+
+test('createGetLegendGraphicUrl', ({ eq }) => {
+  const url = createGetLegendGraphicUrl({
+    base: 'https://mongolia.sibelius-datacube.org:5000',
+    layer: 'ModisIndices',
+  });
+  eq(
+    url,
+    'https://mongolia.sibelius-datacube.org:5000/wms?format=image%2Fpng&layer=ModisIndices&legend_options=fontAntiAliasing%3Atrue%3BfontColor%3A0x2D3436%3BfontName%3ARoboto+Light%3BfontSize%3A13%3BforceLabels%3Aon%3BforceTitles%3Aon%3BgroupLayout%3Avertical%3BhideEmptyRules%3Afalse%3Blayout%3Avertical%3Bwrap%3Afalse&request=GetLegendGraphic&service=WMS',
   );
 });
