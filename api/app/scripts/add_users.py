@@ -24,7 +24,7 @@ def generate_pasword(length) -> str:
     return "".join(secrets.choice(ALPHABET) for i in range(length))
 
 
-def add_users(user_list):
+def add_users():
     """Add users to database."""
     for province in PROVINCES:
         user = {
@@ -44,4 +44,4 @@ def add_users(user_list):
 
 
 if __name__ == "__main__":
-    add_users(users)
+    add_users()
