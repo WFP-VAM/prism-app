@@ -14,23 +14,19 @@ import {
   Drawer,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
 import LanguageSelector from './LanguageSelector';
+import About from './About';
 import { useSafeTranslation } from '../../i18n';
 
 function NavBar({ classes }: NavBarProps) {
   const { t } = useSafeTranslation();
 
   const rightSideLinks = [
-    {
-      title: t('about'),
-      icon: faInfoCircle,
-      href: 'https://innovation.wfp.org/project/prism',
-    },
     {
       title: 'GitHub',
       icon: faGithub,
@@ -101,6 +97,7 @@ function NavBar({ classes }: NavBarProps) {
               xs={3}
             >
               {buttons}
+              <About />
               <LanguageSelector />
             </Grid>
           </Hidden>
