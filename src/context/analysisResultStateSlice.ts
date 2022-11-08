@@ -275,7 +275,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
 >('analysisResultState/requestAndStoreExposedPopulation', async params => {
   const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } = params;
 
-  const { id, key } = exposure;
+  const { id, key, calc } = exposure;
 
   const wfsLayer =
     wfsLayerId && (LayerDefinitions[wfsLayerId] as WMSLayerProps);
@@ -300,6 +300,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
           date,
           extent,
         }),
+        mask_calc_expr: calc || 'A*(B==1)',
       }
     : undefined;
 

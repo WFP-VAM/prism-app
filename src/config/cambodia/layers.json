@@ -1260,7 +1260,8 @@
       }
     ],
     "exposure": {
-      "id": "wp_pop_cicunadj_khm_2020"
+      "id": "wp_pop_cicunadj_khm_2020",
+      "calc": "A*(B==1)"
     }
   },
   "hydra_s2": {

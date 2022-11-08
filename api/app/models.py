@@ -42,6 +42,7 @@ class StatsModel(BaseModel):
     zones: Optional[GeoJSON] = None
     intersect_comparison: Optional[str] = None
     mask_url: Optional[str] = None
+    mask_calc_expr: Optional[str] = None
     filter_by: Optional[FilterProperty] = None
 
 

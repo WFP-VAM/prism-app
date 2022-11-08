@@ -215,6 +215,7 @@ def calculate_stats(
     wfs_response: Optional[WfsResponse] = None,
     intersect_comparison: Optional[tuple] = None,
     mask_geotiff: Optional[str] = None,
+    mask_calc_expr: Optional[str] = "A*(B==1)",
     filter_by: Optional[tuple[str, str]] = None,
 ) -> list[dict[str, Any]]:
     """Calculate stats."""
@@ -228,9 +229,7 @@ def calculate_stats(
         reproj_pop_geotiff: FilePath = (
             f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_on_{mask_hash}.tif"
         )
-        masked_pop_geotiff: FilePath = (
-            f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}.tif"
-        )
+        masked_pop_geotiff: FilePath = f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{mask_calc_expr}.tif"
 
         if not is_file_valid(reproj_pop_geotiff):
             reproj_match(
@@ -245,7 +244,7 @@ def calculate_stats(
                 input_file_path=reproj_pop_geotiff,
                 mask_file_path=mask_geotiff,
                 output_file_path=masked_pop_geotiff,
-                calc_expr='"A*(B==1)"',
+                calc_expr=mask_calc_expr,
             )
 
         geotiff = masked_pop_geotiff
