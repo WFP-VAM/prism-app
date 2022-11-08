@@ -79,7 +79,9 @@ jobs:
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        run: |
+          yarn install --frozen-lockfile
+          yarn setup:common
 
       - name: Find country variable
         id: country_regex
