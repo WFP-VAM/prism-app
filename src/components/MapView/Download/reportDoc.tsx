@@ -327,7 +327,7 @@ const ReportDoc = ({
   t,
 }: ReportDocProps) => {
   if (mapImage === null) {
-    return <Document />;
+    return <></>;
   }
   const styles = makeStyles(theme);
   const date = new Date().toUTCString();
