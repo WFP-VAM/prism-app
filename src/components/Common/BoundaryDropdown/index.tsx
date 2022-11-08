@@ -18,8 +18,7 @@ import {
   loadBoundaryDropdownData,
   setMenuItemStyle,
   containsText,
-  getParentRelation,
-  BoundaryRelation,
+  createMatchesTree,
 } from './utils';
 import { BoundaryLayerProps } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
@@ -110,49 +109,14 @@ const BoundaryDropdown = ({
 
     const { levels, relations } = boundaryRelationData;
 
-    const relationsFilter = relations.filter(rel =>
+    const relationsFiltered = relations.filter(rel =>
       containsText(rel.name, search),
     );
 
-    const relationsReduced = relationsFilter
-      .reduce((acc, match) => {
-        if (!match.parent) {
-          return [...acc, match];
-        }
-
-        // Check if element has been already included.
-        if (
-          acc.find(rel => rel.name === match.name && rel.level === match.level)
-        ) {
-          return acc;
-        }
-
-        // Get all relations that have same parent and level.
-        const matchParent = relationsFilter.filter(
-          rel => rel.parent === match.parent && rel.level === match.level,
-        );
-
-        const getmatchedParents = getParentRelation(
-          relations,
-          match.parent,
-          match.level - 1,
-        );
-
-        const mergedRelations = [...getmatchedParents, ...matchParent];
-
-        return [...acc, ...mergedRelations];
-      }, [] as BoundaryRelation[])
-      .reduce((acc, item) => {
-        if (
-          acc.find(elem => elem.name === item.name && elem.level === item.level)
-        ) {
-          return acc;
-        }
-
-        return [...acc, item];
-      }, [] as BoundaryRelation[]);
-
-    const relationsToRender = search === '' ? relations : relationsReduced;
+    const relationsToRender =
+      relationsFiltered.length === relations.length
+        ? relations
+        : createMatchesTree(relations, relationsFiltered);
 
     return relationsToRender.map(item => (
       <MenuItem

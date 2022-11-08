@@ -188,3 +188,46 @@ export const setMenuItemStyle = (
 
 export const containsText = (text: string, searchText: string) =>
   text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+
+export const createMatchesTree = (
+  relations: BoundaryRelation[],
+  relationsFilter: BoundaryRelation[],
+): BoundaryRelation[] =>
+  relationsFilter
+    .reduce((acc, match) => {
+      if (!match.parent) {
+        return [...acc, match];
+      }
+
+      // Check if element has been already included.
+      if (
+        acc.find(rel => rel.name === match.name && rel.level === match.level)
+      ) {
+        return acc;
+      }
+
+      // Get all relations that have same parent and level.
+      const matchParent = relationsFilter.filter(
+        rel => rel.parent === match.parent && rel.level === match.level,
+      );
+
+      const getmatchedParents = getParentRelation(
+        relations,
+        match.parent,
+        match.level - 1,
+      );
+
+      const mergedRelations = [...getmatchedParents, ...matchParent];
+
+      return [...acc, ...mergedRelations];
+    }, [] as BoundaryRelation[])
+    // Discard repeated from parent matches.
+    .reduce((acc, item) => {
+      if (
+        acc.find(elem => elem.name === item.name && elem.level === item.level)
+      ) {
+        return acc;
+      }
+
+      return [...acc, item];
+    }, [] as BoundaryRelation[]);
