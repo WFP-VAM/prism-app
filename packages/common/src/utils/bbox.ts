@@ -6,20 +6,16 @@ export function bboxToString(
     | number[]
     | Readonly<string[]>
     | string[]
-    | (number | string)[],
+    | Array<number | string>,
   bboxDigits?: number,
 ): string {
-  return bbox
-    .map(n => {
-      if (typeof n === 'number') {
-        if (typeof bboxDigits === 'number') {
-          return n.toFixed(bboxDigits);
-        }
-        return n.toString();
-      }
-      return n;
-    })
-    .toString();
+  const [xmin, ymin, xmax, ymax] = bbox;
+  return [
+    typeof xmin === "number" && typeof bboxDigits === 'number' ? xmin.toFixed(bboxDigits) : xmin.toString(),
+    typeof ymin === "number" && typeof bboxDigits === 'number' ? ymin.toFixed(bboxDigits) : ymin.toString(),
+    typeof xmax === "number" && typeof bboxDigits === 'number' ? xmax.toFixed(bboxDigits) : xmax.toString(),
+    typeof ymax === "number" && typeof bboxDigits === 'number' ? ymax.toFixed(bboxDigits) : ymax.toString()
+  ].toString();
 }
 
 export function checkExtent(extent: BBOX): void {
