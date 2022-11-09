@@ -151,7 +151,7 @@ const BoundaryDropdown = ({
     <FormControl className={styles.formControl}>
       <InputLabel id="boundary-dropdown">{labelText}</InputLabel>
       <Select
-        // Disables auto focus on MenuItems and allows TextField to be in focus
+        // Disables auto focus on MenuItems and allows search bar to be in focus
         MenuProps={{ autoFocus: false }}
         labelId="boundary-dropdown"
         id="select-dropdown"
