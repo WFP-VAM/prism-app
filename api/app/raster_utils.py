@@ -17,7 +17,7 @@ def gdal_calc(
     input_file_path,
     mask_file_path,
     output_file_path,
-    calc_expr="A*(B==1)",
+    calc_expr=None,
     nodata="0",
 ):
     """Utility function to run gdal_calc between two rasters."""
