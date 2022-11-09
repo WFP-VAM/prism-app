@@ -1282,7 +1282,7 @@
     ],
     "exposure": {
       "id": "wp_pop_cicunadj",
-      "calc": "A*(B==1)"
+      "calc": "A*(B==5)"
     }
   },
   "flood_pixel_age": {
@@ -1396,7 +1396,7 @@
         "color": "#3f007d"
       }
     ]
-  },  
+  },
   "hydra_s1": {
     "title": "Potential flooding (Sentinel-1)",
     "type": "wms",

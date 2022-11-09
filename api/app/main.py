@@ -68,7 +68,7 @@ def _calculate_stats(
     wfs_response: Optional[frozenset],
     intersect_comparison,
     mask_geotiff,
-    mask_calc_expr,
+    mask_calc_expr: Optional[str] = None,
     filter_by: Optional[tuple[str, str]] = None,
 ):
     """Calculate stats."""

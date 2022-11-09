@@ -22,6 +22,7 @@ from app.models import (
 )
 from app.raster_utils import gdal_calc, reproj_match
 from app.timer import timed
+from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
@@ -231,9 +232,16 @@ def calculate_stats(
         )
 
         # Slugify the calc expression into a reasonable filename
-        slugified_calc = "".join(
-            [x if x.isalnum() else "_" for x in (mask_calc_expr or "default")]
-        )
+        slugified_calc = "default"
+        if mask_calc_expr is not None:
+            slugified_calc = mask_calc_expr
+            for symbol, operator in VALID_OPERATORS.items():
+                slugified_calc = slugified_calc.replace(symbol, operator.__name__)
+
+            slugified_calc = "".join(
+                [x if x.isalnum() else "" for x in (slugified_calc)]
+            )
+
         masked_pop_geotiff: FilePath = f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
 
         if not is_file_valid(reproj_pop_geotiff):
