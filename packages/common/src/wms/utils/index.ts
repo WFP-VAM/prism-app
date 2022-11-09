@@ -279,7 +279,7 @@ export function createGetLegendGraphicUrl({
     language,
     layer,
     legend_options: Object.entries(legendOptions)
-      .filter(([key, value]) => value !== undefined)
+      .filter(([, value]) => value !== undefined)
       .map(([key, value]) => `${key}:${value}`)
       .join(';'),
     rule,
