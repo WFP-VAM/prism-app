@@ -269,6 +269,7 @@ def calculate_stats(
 
     if filter_by is not None:
         key, value = filter_by
+        # TODO - return properties as well. They are needed in the frontend for grouping
         stats_input: list[Geometry] = [
             f["geometry"]
             for f in zones_geojson["features"]
