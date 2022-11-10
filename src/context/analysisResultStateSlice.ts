@@ -320,9 +320,9 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     offset: undefined,
   };
 
-  const features = apiFeatures.map(f =>
-    scaleFeatureStat(f, scale || 1, offset || 0, statistic),
-  );
+  const features = apiFeatures
+    .map(f => scaleFeatureStat(f, scale || 1, offset || 0, statistic))
+    .filter(f => get(f.properties, statistic) != null);
 
   const collection: FeatureCollection = {
     type: 'FeatureCollection',

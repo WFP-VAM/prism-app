@@ -280,7 +280,7 @@ def calculate_stats(
             logger.info(message)
             raise HTTPException(status_code=404, detail=message)
     else:
-        stats_input: list[Geometry] = [f["geometry"] for f in zones_geojson["features"]]
+        stats_input = zones_filepath
 
     zones: list[dict] = []
     if wfs_response:
