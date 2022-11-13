@@ -11,10 +11,18 @@ export function bboxToString(
 ): string {
   const [xmin, ymin, xmax, ymax] = bbox;
   return [
-    typeof xmin === "number" && typeof bboxDigits === 'number' ? xmin.toFixed(bboxDigits) : xmin.toString(),
-    typeof ymin === "number" && typeof bboxDigits === 'number' ? ymin.toFixed(bboxDigits) : ymin.toString(),
-    typeof xmax === "number" && typeof bboxDigits === 'number' ? xmax.toFixed(bboxDigits) : xmax.toString(),
-    typeof ymax === "number" && typeof bboxDigits === 'number' ? ymax.toFixed(bboxDigits) : ymax.toString()
+    typeof xmin === 'number' && typeof bboxDigits === 'number'
+      ? xmin.toFixed(bboxDigits)
+      : xmin.toString(),
+    typeof ymin === 'number' && typeof bboxDigits === 'number'
+      ? ymin.toFixed(bboxDigits)
+      : ymin.toString(),
+    typeof xmax === 'number' && typeof bboxDigits === 'number'
+      ? xmax.toFixed(bboxDigits)
+      : xmax.toString(),
+    typeof ymax === 'number' && typeof bboxDigits === 'number'
+      ? ymax.toFixed(bboxDigits)
+      : ymax.toString(),
   ].toString();
 }
 
