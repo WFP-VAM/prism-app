@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import moment from 'moment';
+import * as moment from 'moment';
 
 import { findTagsByPath } from 'xml-utils';
 
