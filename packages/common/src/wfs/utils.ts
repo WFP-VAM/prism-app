@@ -189,20 +189,17 @@ export async function getFeatures(
   capabilities: string,
   typeNameOrNames: string | string[],
   {
-    count = 10,
     fetch: customFetch = fetch,
     format = 'geojson',
     method = 'POST',
     wait = 0,
     ...rest
   }: {
-    count?: number;
     fetch?: any;
     format?: 'geojson' | 'xml';
     method?: 'GET' | 'POST';
     wait?: number;
-  } = {
-    count: 10,
+  } & Parameters<typeof getFeaturesUrl>[2] = {
     fetch: undefined,
     format: 'geojson',
     method: 'POST',
@@ -211,7 +208,6 @@ export async function getFeatures(
 ) {
   const run = async () => {
     const url = getFeaturesUrl(capabilities, typeNameOrNames, {
-      count,
       format,
       method,
       ...rest,

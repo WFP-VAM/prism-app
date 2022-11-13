@@ -118,16 +118,15 @@ test('getFeaturesUrl', async ({ eq }) => {
 });
 
 test('getFeatures', async ({ eq }) => {
-  const count = 1;
-  const geojson = await getFeatures(
-    capabilities,
-    'col_second_level_admin_boundaries',
-    {
-      count: 1,
-      fetch,
-      wait: 1,
-    },
-  );
+  const count = 5;
+  const geojson = await getFeatures(capabilities, 'acled_incidents_syria', {
+    count,
+    dateField: 'event_date',
+    dateRange: ['2020-09-01', '2022-09-30'],
+    fetch,
+    method: 'GET',
+    wait: 1,
+  });
   eq(geojson.features.length, count);
   eq(geojson.numberReturned, count);
   eq(typeof geojson.numberMatched, typeof geojson.totalFeatures); // no filtering
