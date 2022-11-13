@@ -172,12 +172,12 @@ export function getFeaturesUrl(
     cql_filter: (() => {
       if (dateRange && dateField) {
         const [startDate, endDate] = dateRange;
-        const startDateFormatted = `${moment(startDate).format(
-          DEFAULT_DATE_FORMAT,
-        )}T00:00:00`;
-        const endDateFormatted = `${moment(endDate).format(
-          DEFAULT_DATE_FORMAT,
-        )}T23:59:59`;
+        const startDateFormatted = `${moment
+          .utc(startDate)
+          .format(DEFAULT_DATE_FORMAT)}T00:00:00`;
+        const endDateFormatted = `${moment
+          .utc(endDate)
+          .format(DEFAULT_DATE_FORMAT)}T23:59:59`;
         return `${dateField} BETWEEN ${startDateFormatted} AND ${endDateFormatted}`;
       }
       return undefined;

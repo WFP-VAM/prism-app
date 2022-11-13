@@ -9,7 +9,7 @@ import {
   snakeCase,
   sortBy,
 } from 'lodash';
-import { formatUrl, WMS } from 'prism-common';
+import { formatUrl, WFS, WMS } from 'prism-common';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
@@ -29,7 +29,6 @@ import {
   PointDataLoader,
 } from '../config/types';
 import { queryParamsToString } from '../context/layers/point_data';
-import { DEFAULT_DATE_FORMAT } from './name-utils';
 import { createEWSDatesArray } from './ews-utils';
 
 /**
@@ -505,31 +504,15 @@ export async function fetchWMSLayerAsGeoJSON(options: {
       );
     }
 
-    const wfsServerURL = `${lyr.baseUrl}/wfs`;
+    const wfs = new WFS(lyr.baseUrl);
 
-    // to-do: add additionalQueryParams like srsName and bbox
-    const requestParams = {
-      service: 'WFS',
-      request: 'GetFeature',
-      outputFormat: 'application/json', // per https://docs.geoserver.org/latest/en/user/services/wfs/outputformats.html
-      typeNames: lyr.serverLayerName, // per https://docs.geoserver.org/latest/en/user/services/wfs/reference.html
-      cql_filter:
-        startDate && endDate
-          ? `timestamp BETWEEN ${moment(startDate).format(
-              DEFAULT_DATE_FORMAT,
-            )} AND ${moment(endDate).format(DEFAULT_DATE_FORMAT)}T23:59:59`
-          : undefined,
-    };
+    const wfsLayer = await wfs.getLayer(lyr.serverLayerName);
 
-    const url = formatUrl(wfsServerURL, requestParams);
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
-
-    const featureCollection: GeoJSON.FeatureCollection = await response.json();
+    const featureCollection: GeoJSON.FeatureCollection = await wfsLayer.getFeatures(
+      {
+        dateRange: startDate && endDate ? [startDate, endDate] : undefined,
+      },
+    );
 
     return featureCollection;
   } catch (error) {

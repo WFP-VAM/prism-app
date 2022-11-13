@@ -167,7 +167,7 @@ test('WFS', async ({ eq }) => {
   eq(msg.includes('does not exist'), true);
 
   const layerId = '_2020_global_adm3';
-  const layer = await instance.getLayer(layerId, { fetch });
+  const layer = await instance.getLayer(layerId);
   eq(layer.id, layerId);
   eq(typeof layer.capabilities, 'object');
 

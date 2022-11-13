@@ -20,15 +20,12 @@ export class WFS extends Base {
     );
   }
 
-  async getLayer(
-    layerId: string,
-    { fetch: customFetch }: { fetch?: any },
-  ): Promise<FeatureLayer> {
+  async getLayer(layerId: string): Promise<FeatureLayer> {
     this.checkLayer(layerId);
     return new FeatureLayer({
       capabilities: this.capabilities,
-      fetch: customFetch,
       id: layerId,
+      fetch: this.fetch,
     });
   }
 }
