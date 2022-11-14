@@ -205,6 +205,33 @@ def _get_intersected_polygons(
     return flattened_intersected_zones
 
 
+def get_filtered_features(zones_filepath: FilePath, key: str, value: str) -> FilePath:
+    """Creates a geojson file with features matching properties key and value"""
+    output_filename = FilePath(
+        "{zones}.{key}.{value}".format(zones=zones_filepath, key=key, value=value)
+    )
+
+    with open(zones_filepath) as json_file:
+        geojson_data = load(json_file)
+
+    filtered_features: list[GeoJSONFeature] = [
+        f
+        for f in geojson_data["features"]
+        if key in f["properties"].keys() and str(f["properties"][key]) == value
+    ]
+
+    if len(filtered_features) == 0:
+        message = f"Property '{key}' = '{value}' not found"
+        logger.info(message)
+        raise HTTPException(status_code=404, detail=message)
+
+    features_filtered = {**geojson_data, "features": filtered_features}
+    with open(output_filename, "w") as outfile:
+        dump(features_filtered, outfile)
+
+    return output_filename
+
+
 @timed
 def calculate_stats(
     zones_filepath: FilePath,  # list or FilePath??
@@ -267,21 +294,11 @@ def calculate_stats(
 
     zones_geojson: GeoJSON = get_json_file(zones_filepath)
 
-    if filter_by is not None:
-        key, value = filter_by
-        # TODO - return properties as well. They are needed in the frontend for grouping
-        stats_input: list[Geometry] = [
-            f["geometry"]
-            for f in zones_geojson["features"]
-            if key in f["properties"].keys() and str(f["properties"][key]) == value
-        ]
-
-        if len(stats_input) == 0:
-            message = f"Property '{key}' = '{value}' not found"
-            logger.info(message)
-            raise HTTPException(status_code=404, detail=message)
-    else:
-        stats_input = zones_filepath
+    stats_input = (
+        zones_filepath
+        if filter_by is None
+        else get_filtered_features(zones_filepath, filter_by[0], filter_by[1])
+    )
 
     zones: list[dict] = []
     if wfs_response:
