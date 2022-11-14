@@ -301,7 +301,7 @@ def calculate_stats(
     )
 
     zones: list[dict] = []
-    if wfs_response:
+    if wfs_response is not None:
         wfs_geojson = get_json_file(wfs_response["path"])
 
         zones = _get_intersected_polygons(
@@ -309,7 +309,6 @@ def calculate_stats(
         )
 
         # Extract shapely objects to compute stats.
-        # TODO - return properties as well. They are needed in the frontend for grouping
         stats_input: list[Geometry] = [s.get("geom") for s in zones]
         # TODO - remove this prefix to make homogeneize stats output
         # Frontend from this PR (546) needs to be deployed first.
@@ -344,12 +343,11 @@ def calculate_stats(
             geojson_out=geojson_out,
             add_stats=add_stats,
         )
-
     except rasterio.errors.RasterioError as error:
         logger.error(error)
         raise HTTPException(
             status_code=500, detail="An error occured calculating statistics."
-        )
+        ) from error
 
     if wfs_response is not None:
         zones_features = [z.get("feature") for z in zones]
