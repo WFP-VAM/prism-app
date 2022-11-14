@@ -309,6 +309,7 @@ def calculate_stats(
         )
 
         # Extract shapely objects to compute stats.
+        # TODO - return properties as well. They are needed in the frontend for grouping
         stats_input: list[Geometry] = [s.get("geom") for s in zones]
         # TODO - remove this prefix to make homogeneize stats output
         # Frontend from this PR (546) needs to be deployed first.
