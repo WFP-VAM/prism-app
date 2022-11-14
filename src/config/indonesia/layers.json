@@ -308,7 +308,7 @@
     "additional_query_params": {
       "styles": "rfh_350"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS rainfall global dekad",
@@ -335,7 +335,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 1 month dekadal rainfall aggregations (mm)",
@@ -361,7 +361,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 2 month dekadal rainfall aggregations (mm)",
@@ -387,7 +387,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
@@ -413,7 +413,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 6 month dekadal rainfall aggregations",
@@ -439,7 +439,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 9 month dekadal rainfall aggregations",
@@ -465,7 +465,7 @@
     "additional_query_params": {
       "styles": "rfh_1500"
     },
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 1 year dekadal rainfall aggregations",
@@ -648,7 +648,7 @@
     "type": "wms",
     "title": "Ground Surface Temperature - anomaly 10 days (MODIS)",
     "server_layer_name": "myd11c2_txd_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.5,
     "additional_query_params": {
@@ -698,7 +698,7 @@
     "title": "10-day NDVI (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13a2_vim_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.0001,
@@ -750,7 +750,7 @@
     "title": "10-day NDVI anomaly (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13a2_viq_dekad",
-    "base_url": "https://odc.ovio.org/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "additional_query_params": {
       "styles": "viq"

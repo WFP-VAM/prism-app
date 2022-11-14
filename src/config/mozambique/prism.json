@@ -17,9 +17,8 @@
   ],
   "serversUrls": {
     "wms": [
-      "https://odc.ovio.org/wms",
-      "https://geonode.wfp.org/geoserver/prism/wms",
-      "https://ows.digitalearth.africa/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
+      "https://geonode.wfp.org/geoserver/prism/wms"
     ]
   },
   "map": {
@@ -29,10 +28,73 @@
   },
   "categories": {
     "rainfall": {
-      "rainfall_amount": [
-        "precip_blended_dekad",
+      "INAM_rainfall_data": [
         {
-          "group_title": "Rainfall Aggregate",
+          "group_title": "Rainfall aggregate",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "precip_blended_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "precip_blended_1m",
+              "label": "1-month"
+            },
+            {
+              "id": "precip_blended_3m",
+              "label": "3-month"
+            },
+            {
+              "id": "precip_blended_6m",
+              "label": "6-month"
+            },
+            {
+              "id": "precip_blended_9m",
+              "label": "9-month"
+            },
+            {
+              "id": "precip_blended_1y",
+              "label": "1-year"
+            }
+          ]
+        },
+        {
+          "group_title": "Rainfall anomaly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "precip_blended_dekad_anomaly",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "precip_blended_anomaly_1m",
+              "label": "1-month"
+            },
+            {
+              "id": "precip_blended_anomaly_3m",
+              "label": "3-month"
+            },
+            {
+              "id": "precip_blended_anomaly_6m",
+              "label": "6-month"
+            },
+            {
+              "id": "precip_blended_anomaly_9m",
+              "label": "9-month"
+            },
+            {
+              "id": "precip_blended_anomaly_1y",
+              "label": "1-year"
+            }
+          ]
+        }
+      ],
+      "global_rainfall_products": [
+        {
+          "group_title": "Rainfall aggregate",
           "activate_all": false,
           "layers": [
             {
@@ -42,36 +104,28 @@
             },
             {
               "id": "rainfall_agg_1month",
-              "label": "1-month",
-              "main": false
+              "label": "1-month"
             },
             {
               "id": "rainfall_agg_3month",
-              "label": "3-month",
-              "main": false
+              "label": "3-month"
             },
             {
               "id": "rainfall_agg_6month",
-              "label": "6-month",
-              "main": false
+              "label": "6-month"
             },
             {
               "id": "rainfall_agg_9month",
-              "label": "9-month",
-              "main": false
+              "label": "9-month"
             },
             {
               "id": "rainfall_agg_1year",
-              "label": "1-year",
-              "main": false
+              "label": "1-year"
             }
           ]
-        }
-      ],
-      "rainfall_anomalies": [
-        "precip_blended_dekad_anomaly",
+        },
         {
-          "group_title": "Rainfall Anomaly",
+          "group_title": "Rainfall anomaly",
           "activate_all": false,
           "layers": [
             {
@@ -81,28 +135,23 @@
             },
             {
               "id": "rain_anomaly_1month",
-              "label": "1-month",
-              "main": false
+              "label": "1-month"
             },
             {
               "id": "rain_anomaly_3month",
-              "label": "3-month",
-              "main": false
+              "label": "3-month"
             },
             {
               "id": "rain_anomaly_6month",
-              "label": "6-month",
-              "main": false
+              "label": "6-month"
             },
             {
               "id": "rain_anomaly_9month",
-              "label": "9-month",
-              "main": false
+              "label": "9-month"
             },
             {
               "id": "rain_anomaly_1year",
-              "label": "1-year",
-              "main": false
+              "label": "1-year"
             }
           ]
         },
@@ -117,23 +166,19 @@
             },
             {
               "id": "spi_3m",
-              "label": "3-month",
-              "main": false
+              "label": "3-month"
             },
             {
               "id": "spi_6m",
-              "label": "6-month",
-              "main": false
+              "label": "6-month"
             },
             {
               "id": "spi_9m",
-              "label": "9-month",
-              "main": false
+              "label": "9-month"
             },
             {
               "id": "spi_1y",
-              "label": "1-year",
-              "main": false
+              "label": "1-year"
             }
           ]
         }
@@ -142,11 +187,49 @@
         "days_dry",
         "streak_dry_days"
       ],
-      "heavy_rain": [
-        "days_heavy_rain",
-        "days_intense_rain",
-        "days_extreme_rain",
-        "streak_heavy_rain"
+      "extreme_rain_events": [
+        {
+          "group_title": "Rainfall categories:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "days_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        },
+        {
+          "group_title": "Consecutive days of rainfall:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "streak_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        }
       ]
     },
     "vegetation": {
@@ -156,7 +239,7 @@
       ]
     },
     "temperature": {
-      "blended_temperature_estimates": [
+      "INAM_air_temperature": [
         "lst_daytime_blended",
         "lst_day_anomaly_blended"
       ],
@@ -179,13 +262,11 @@
             },
             {
               "id": "adamts_nodes",
-              "label": "Nodes",
-              "main": false
+              "label": "Nodes"
             },
             {
               "id": "adamts_tracks",
-              "label": "Tracks",
-              "main": false
+              "label": "Tracks"
             }
           ]
         }
@@ -207,33 +288,27 @@
             },
             {
               "id": "ipc_phase_projected",
-              "label": "Projected phase classification",
-              "main": false
+              "label": "Projected phase classification"
             },
             {
               "id": "ipc_phase_12_2020",
-              "label": "December 2020 phase classification",
-              "main": false
+              "label": "December 2020 phase classification"
             },
             {
               "id": "ipc_pop_ph3_current",
-              "label": "Current population in phase 3+",
-              "main": false
+              "label": "Current population in phase 3+"
             },
             {
               "id": "ipc_pop_ph3_projected",
-              "label": "Projected population in phase 3+",
-              "main": false
+              "label": "Projected population in phase 3+"
             },
             {
               "id": "ipc_perc_ph3_current",
-              "label": "Current percent of population in phase 3+",
-              "main": false
+              "label": "Current percent of population in phase 3+"
             },
             {
               "id": "ipc_perc_ph3_projected",
-              "label": "Projected percent of population in phase 3+",
-              "main": false
+              "label": "Projected percent of population in phase 3+"
             }
           ]
         }

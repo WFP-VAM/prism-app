@@ -3,11 +3,13 @@ import * as Papa from 'papaparse';
 import { TableType } from '../config/types';
 import { TableDefinitions } from '../config/utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
+import { EWSChartItemsObject } from '../utils/ews-utils';
 
 export type TableRowType = { [key: string]: string | number };
 export type TableData = {
   columns: string[];
   rows: TableRowType[];
+  EWSConfig?: EWSChartItemsObject;
 };
 
 type TableState = {
@@ -28,9 +30,7 @@ export const loadTable = createAsyncThunk<
   keyof typeof TableDefinitions,
   CreateAsyncThunkTypes
 >('tableState/loadTable', async (key: keyof typeof TableDefinitions) => {
-  const { table } = TableDefinitions[key];
-  const url = process.env.PUBLIC_URL + table;
-
+  const url = TableDefinitions[key].table;
   return new Promise<TableData>((resolve, reject) =>
     Papa.parse(url, {
       header: true,

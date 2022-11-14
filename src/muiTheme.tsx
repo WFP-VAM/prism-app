@@ -9,7 +9,84 @@ const lightGray = '#CCCCCC';
 
 export const colors = { skyBlue, greyBlue, darkGreyBlue };
 
+declare module '@material-ui/core/styles/createMuiTheme' {
+  interface ThemeOptions {
+    dialog?: {
+      border?: React.CSSProperties['color'];
+      actionButton?: React.CSSProperties['color'];
+    };
+    surfaces?: {
+      dark?: React.CSSProperties['color'];
+      light?: React.CSSProperties['color'];
+    };
+    pdf?: {
+      secondaryTextColor?: React.CSSProperties['color'];
+      legendsBackgroundColor?: React.CSSProperties['color'];
+      table: {
+        borderColor?: React.CSSProperties['color'];
+        darkRowColor?: React.CSSProperties['color'];
+        lightRowColor?: React.CSSProperties['color'];
+      };
+      fontSizes: {
+        large?: number;
+        medium?: number;
+        small?: number;
+        extraSmall?: number;
+      };
+    };
+  }
+
+  interface Theme {
+    dialog?: {
+      border?: React.CSSProperties['color'];
+      actionButton?: React.CSSProperties['color'];
+    };
+    surfaces?: {
+      dark?: React.CSSProperties['color'];
+      light?: React.CSSProperties['color'];
+    };
+    pdf?: {
+      secondaryTextColor?: React.CSSProperties['color'];
+      legendsBackgroundColor?: React.CSSProperties['color'];
+      table?: {
+        borderColor?: React.CSSProperties['color'];
+        darkRowColor?: React.CSSProperties['color'];
+        lightRowColor?: React.CSSProperties['color'];
+      };
+      fontSizes: {
+        large?: number;
+        medium?: number;
+        small?: number;
+        extraSmall?: number;
+      };
+    };
+  }
+}
+
 const theme: any = createMuiTheme({
+  dialog: {
+    border: '#2E6EAF',
+    actionButton: '#6F9FD2',
+  },
+  surfaces: {
+    dark: '#3d474a',
+    light: '#5A686C',
+  },
+  pdf: {
+    secondaryTextColor: '#929292',
+    legendsBackgroundColor: '#F9F9F9',
+    table: {
+      borderColor: '#C1C1C1',
+      darkRowColor: '#EBEBEB',
+      lightRowColor: '#F5F5F5',
+    },
+    fontSizes: {
+      large: 10.78,
+      medium: 9.24,
+      small: 7.7,
+      extraSmall: 6.14,
+    },
+  },
   palette: {
     primary: {
       main: greyBlue,

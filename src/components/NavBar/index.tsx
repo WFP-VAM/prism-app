@@ -14,13 +14,14 @@ import {
   Drawer,
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import wfpLogo from '../images/wfp_logo_small.png';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
 import LanguageSelector from './LanguageSelector';
+import About from './About';
 import { useSafeTranslation } from '../../i18n';
 
 function NavBar({ classes }: NavBarProps) {
@@ -28,14 +29,9 @@ function NavBar({ classes }: NavBarProps) {
 
   const rightSideLinks = [
     {
-      title: t('about'),
-      icon: faInfoCircle,
-      href: 'https://innovation.wfp.org/project/prism',
-    },
-    {
       title: 'GitHub',
       icon: faGithub,
-      href: 'https://github.com/oviohub/prism-frontend',
+      href: 'https://github.com/oviohub/prism-app',
     },
   ];
 
@@ -103,6 +99,7 @@ function NavBar({ classes }: NavBarProps) {
               xs={3}
             >
               {buttons}
+              <About />
               <LanguageSelector />
             </Grid>
           </Hidden>

@@ -9,6 +9,7 @@ type ChartProps = {
   title: string;
   data: TableData;
   config: ChartConfig;
+  xAxisLabel?: string;
 };
 
 function colorShuffle(colors: string[]) {
@@ -17,7 +18,12 @@ function colorShuffle(colors: string[]) {
   );
 }
 
-function getChartConfig(stacked: boolean, title: string) {
+function getChartConfig(
+  stacked: boolean,
+  title: string,
+  displayLegend: boolean,
+  xAxisLabel?: string,
+) {
   return {
     title: {
       fontColor: '#CCC',
@@ -35,6 +41,14 @@ function getChartConfig(stacked: boolean, title: string) {
           ticks: {
             fontColor: '#CCC',
           },
+          ...(xAxisLabel
+            ? {
+                scaleLabel: {
+                  labelString: xAxisLabel,
+                  display: true,
+                },
+              }
+            : {}),
         },
       ],
       yAxes: [
@@ -50,7 +64,7 @@ function getChartConfig(stacked: boolean, title: string) {
       ],
     },
     legend: {
-      display: false,
+      display: displayLegend,
       position: 'right',
     },
   } as ChartOptions;
@@ -96,14 +110,16 @@ function formatChartData(data: TableData, config: ChartConfig) {
   // rainbow-soft map requires nshades to be at least size 11
   const nshades = Math.max(11, !transpose ? tableRows.length : indices.length);
 
-  const colors = colorShuffle(
-    colormap({
-      colormap: 'rainbow-soft',
-      nshades,
-      format: 'hex',
-      alpha: 0.5,
-    }),
-  );
+  const colors =
+    config.colors ||
+    colorShuffle(
+      colormap({
+        colormap: 'rainbow-soft',
+        nshades,
+        format: 'hex',
+        alpha: 0.5,
+      }),
+    );
 
   const labels = !transpose
     ? indices.map(index => header[index])
@@ -116,6 +132,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         backgroundColor: colors[i],
         borderColor: colors[i],
         borderWidth: 2,
+        pointRadius: data.EWSConfig ? 0 : 1, // Disable point rendering for EWS only.
         data: indices.map(index => (row[index] as number) || null),
       }))
     : indices.map((index, i) => ({
@@ -125,15 +142,31 @@ function formatChartData(data: TableData, config: ChartConfig) {
         borderColor: colors[i],
         borderWidth: 2,
         data: tableRows.map(row => (row[index] as number) || null),
+        pointRadius: data.EWSConfig ? 0 : 1, // Disable point rendering for EWS only.
       }));
+
+  const EWSthresholds = data.EWSConfig
+    ? Object.values(data.EWSConfig).map(obj => ({
+        label: obj.label,
+        backgroundColor: obj.color,
+        borderColor: obj.color,
+        borderWidth: 2,
+        pointRadius: 0,
+        // Deep copy is needed: https://github.com/reactchartjs/react-chartjs-2/issues/524#issuecomment-722814079
+        data: [...obj.values],
+        fill: false,
+      }))
+    : [];
+
+  const datasetsWithTresholds = [...datasets, ...EWSthresholds];
 
   return {
     labels,
-    datasets,
+    datasets: datasetsWithTresholds,
   };
 }
 
-function Chart({ title, data, config }: ChartProps) {
+function Chart({ title, data, config, xAxisLabel }: ChartProps) {
   try {
     const chartData = formatChartData(data, config);
 
@@ -143,7 +176,12 @@ function Chart({ title, data, config }: ChartProps) {
           <div>
             <Bar
               data={chartData}
-              options={getChartConfig(config.stacked || false, title)}
+              options={getChartConfig(
+                config.stacked || false,
+                title,
+                config.displayLegend || false,
+                xAxisLabel,
+              )}
             />
           </div>
         );
@@ -152,7 +190,12 @@ function Chart({ title, data, config }: ChartProps) {
           <div>
             <Line
               data={chartData}
-              options={getChartConfig(config.stacked || false, title)}
+              options={getChartConfig(
+                config.stacked || false,
+                title,
+                config.displayLegend || false,
+                xAxisLabel,
+              )}
             />
           </div>
         );

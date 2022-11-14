@@ -18,11 +18,20 @@ import {
   clearDataset,
   loadDataset,
   updateAdminId,
+  AdminBoundaryParams,
+  EWSParams,
+  DatasetRequestParams,
+  CHART_DATA_PREFIXES,
 } from '../../context/datasetStateSlice';
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
 import Chart from '../DataDrawer/Chart';
 import { ChartConfig } from '../../config/types';
 import { useSafeTranslation } from '../../i18n';
+
+const isAdminBoundary = (
+  params: AdminBoundaryParams | EWSParams,
+): params is AdminBoundaryParams =>
+  (params as AdminBoundaryParams).id !== undefined;
 
 function DataViewer({ classes }: DatasetProps) {
   const dispatch = useDispatch();
@@ -30,51 +39,69 @@ function DataViewer({ classes }: DatasetProps) {
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const { t } = useSafeTranslation();
 
-  const { data: dataset, adminBoundaryParams: params, id } = useSelector(
-    datasetSelector,
-  );
+  const {
+    data: dataset,
+    datasetParams: params,
+    title,
+    chartType,
+  } = useSelector(datasetSelector);
 
   useEffect(() => {
-    if (params && selectedDate && id) {
-      dispatch(
-        loadDataset({
-          id,
-          boundaryProps: params.boundaryProps,
-          url: params.serverParams.url,
-          serverLayerName: params.serverParams.layerName,
-          selectedDate,
-        }),
-      );
+    if (!params || !selectedDate) {
+      return;
     }
-  }, [params, dispatch, selectedDate, id]);
 
-  if (!params || !dataset || !id) {
+    const requestParams: DatasetRequestParams = isAdminBoundary(params)
+      ? {
+          id: params.id,
+          boundaryProps: params.boundaryProps,
+          url: params.url,
+          serverLayerName: params.serverLayerName,
+          datasetFields: params.datasetFields,
+          selectedDate,
+        }
+      : {
+          date: selectedDate,
+          externalId: params.externalId,
+          triggerLevels: params.triggerLevels,
+          baseUrl: params.baseUrl,
+        };
+
+    dispatch(loadDataset(requestParams));
+  }, [params, dispatch, selectedDate]);
+
+  if (!params) {
     return null;
   }
 
-  const { boundaryProps, title, chartType } = params;
+  const colors = isAdminBoundary(params)
+    ? params.datasetFields?.map(row => row.color)
+    : undefined;
 
   const config: ChartConfig = {
     type: chartType,
     stacked: false,
-    fill: false,
-    category: id,
+    category: CHART_DATA_PREFIXES.date,
+    data: CHART_DATA_PREFIXES.col,
+    transpose: true,
+    displayLegend: isAdminBoundary(params),
+    colors,
   };
 
-  const adminBoundaryLevelButtons = Object.entries(boundaryProps).map(
-    ([adminId, level]) => (
-      <Button
-        id={adminId}
-        className={classes.adminButton}
-        onClick={() => dispatch(updateAdminId(adminId))}
-        size="small"
-        color="primary"
-        variant={id === adminId ? 'contained' : 'text'}
-      >
-        {level.name}
-      </Button>
-    ),
-  );
+  const adminBoundaryLevelButtons = isAdminBoundary(params)
+    ? Object.entries(params.boundaryProps).map(([adminId, level]) => (
+        <Button
+          id={adminId}
+          className={classes.adminButton}
+          onClick={() => dispatch(updateAdminId(adminId))}
+          size="small"
+          color="primary"
+          variant={params.id === adminId ? 'contained' : 'text'}
+        >
+          {level.name}
+        </Button>
+      ))
+    : null;
 
   return (
     <>
@@ -91,7 +118,18 @@ function DataViewer({ classes }: DatasetProps) {
               <CircularProgress size={50} />
             </div>
           ) : (
-            <Chart title={t(title)} config={config} data={dataset} />
+            dataset && (
+              <Chart
+                title={t(title)}
+                config={config}
+                data={dataset}
+                xAxisLabel={
+                  isAdminBoundary(params)
+                    ? undefined
+                    : t('Timestamps reflect local time in Cambodia')
+                }
+              />
+            )
           )}
         </Paper>
       </Grid>

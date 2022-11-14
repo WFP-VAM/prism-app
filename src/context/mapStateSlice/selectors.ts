@@ -26,5 +26,5 @@ export const layerFormSelector = (id: LayerKey | undefined) => (
   state: RootState,
 ): LayerForm | undefined => state.mapState.layerForms.find(e => e.id === id);
 
-export const isLoading = (state: RootState): boolean =>
-  state.mapState.loading > 0;
+export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
+  state.mapState.loadingLayerIds;

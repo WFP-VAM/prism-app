@@ -1,14 +1,20 @@
 {
   "country": "Myanmar",
-  "WFPAuthRequired": false,
+  "WFPAuthRequired": true,
   "alertFormActive": false,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
     "hazards": "icon_climate.png",
+    "flood": "icon_flood.png",
     "risk": "icon_impact.png",
     "capacity": "icon_capacity.png",
-    "tables": "icon_table.png"
+    "tropical_storms": "icon_tropical_storm.png",
+    "storms_and_floods": "icon_tropical_storm.png",
+    "tables": "icon_table.png",
+    "rainfall": "icon_rain.png",
+    "vegetation": "icon_veg.png",
+    "temperature": "icon_climate.png"
   },
   "map": {
     "latitude": 19.467,
@@ -22,12 +28,12 @@
   ],
   "serversUrls": {
     "wms": [
-      "https://odc.ovio.org/wms",
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
       "https://geonode.wfp.org/geoserver/prism/wms/"
     ]
   },
   "categories": {
-    "hazards": {
+    "storms_and_floods": {
       "tropical_storms": [
         {
           "group_title": "Tropical Storms",
@@ -51,25 +57,197 @@
           ]
         }
       ],
-      "floods": ["hydra_s1", "hydra_s2", "hydra_l8"],
-      "rainfall": [
-        "rainfall_dekad",
-        "rain_anomaly_dekad",
-        "rain_anomaly_monthly",
-        "rainfall_agg_month",
-        "streak_dry_days",
-        "days_heavy_rain",
-        "streak_heavy_rain"
+      "floods": [
+        "hydra_s1"
+      ]
+    },
+    "rainfall": {
+      "rainfall_amount": [
+        {
+          "group_title": "Rainfall aggregate",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rainfall_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rainfall_agg_1month",
+              "label": "1-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_3month",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_6month",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_9month",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "rainfall_agg_1year",
+              "label": "1-year",
+              "main": false
+            }
+          ]
+        }
       ],
-      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"],
-      "temperature": ["lst_daytime", "lst_anomaly", "lst_amplitude"]
+      "rainfall_anomalies": [
+        {
+          "group_title": "Rainfall anomaly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rain_anomaly_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rain_anomaly_1month",
+              "label": "1-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_3month",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_6month",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_9month",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_1year",
+              "label": "1-year",
+              "main": false
+            }
+          ]
+        },
+        {
+          "group_title": "SPI",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "spi_1m",
+              "label": "1-month",
+              "main": true
+            },
+            {
+              "id": "spi_3m",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "spi_6m",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "spi_9m",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "spi_1y",
+              "label": "1-year",
+              "main": false
+            }
+          ]
+        }
+      ],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
+      "extreme_rain_events": [
+        {
+          "group_title": "Rainfall categories:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "days_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        },
+        {
+          "group_title": "Consecutive days of rainfall:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "streak_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        }
+      ]
+    },
+    "vegetation": {
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
+    },
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_anomaly",
+        "lst_amplitude"
+      ]
     },
     "vulnerability": {
-      "vulnerability_index": ["multidimensional_disadvantage_index", "inform"],
+      "vulnerability_index": [
+        "multidimensional_disadvantage_index",
+        "inform"
+      ],
       "vulnerable_populations": [
         "age_dependency_ratio",
         "female_headed_hhs",
         "disability_prev_rate"
+      ],
+      "women_and_children": [
+        "0_6_months",
+        "6_23_months",
+        "24_59_months",
+        "preg_women",
+        "lact_mother_wfp",
+        "lact_mother"
       ],
       "living_conditions": [
         "improved_sanitation",
@@ -88,7 +266,9 @@
       ]
     },
     "exposure": {
-      "population": ["total_pop"],
+      "population": [
+        "total_pop"
+      ],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",
         "population_exposed_historical_storm_surge"

@@ -23,7 +23,7 @@ import {
   ZonalPolygonRow,
   PolygonalAggregationOperations,
 } from '../config/types';
-import { getAdminNameProperty } from '../utils/admin-utils';
+import { getAdminLevelLayer, getAdminNameProperty } from '../utils/admin-utils';
 import {
   BaselineLayerResult,
   Column,
@@ -51,6 +51,7 @@ import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
+import { convertToTableData } from '../components/MapView/utils';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
@@ -105,9 +106,9 @@ function getAdminBoundariesURL() {
   if (isLocalhost) {
     return defaultBoundariesPath;
   }
-  // the regex here removes the dot(s) at the beginning of a path, if there is at least one.
-  // e.g the path might be ' ./data/xxx '  instead of ' /data/xxx '
-  return window.location.origin + adminBoundariesPath.replace(/^\.+/, '');
+  return (
+    window.location.origin + window.location.pathname + adminBoundariesPath
+  );
 }
 
 function generateTableFromApiData(
@@ -192,7 +193,7 @@ function generateTableFromApiData(
 }
 
 export type AnalysisDispatchParams = {
-  baselineLayer: AdminLevelDataLayerProps;
+  baselineLayer: AdminLevelDataLayerProps | BoundaryLayerProps;
   hazardLayer: WMSLayerProps;
   extent: Extent;
   threshold: ThresholdDefinition;
@@ -216,33 +217,35 @@ export type ExposedPopulationDispatchParams = {
   statistic: AggregationOperations;
   extent: Extent;
   date: ReturnType<Date['getTime']>;
-  wfsLayerId: LayerKey;
+  wfsLayerId?: LayerKey;
+  maskLayerId?: LayerKey;
 };
 
 const createAPIRequestParams = (
   geotiffLayer: WMSLayerProps,
   extent: Extent,
   date: ReturnType<Date['getTime']>,
-  params: WfsRequestParams | AdminLevelDataLayerProps,
+  params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
+  maskParams?: any,
 ): ApiData => {
   const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
 
   // If the analysis is related to a AdminLevelData layer, we get the index from params.
   // For Exposed population we use the latest-level boundary indicator.
   // WARNING - This change is meant for RBD only. Do we want to generalize this?
-  const { adminLevel } = params as any;
+  const { adminLevel } = (params || {}) as any;
   const groupBy =
     adminLevel !== undefined
       ? adminLevelNames[adminLevel - 1]
       : adminCode || adminLevelNames[adminLevelNames.length - 1];
 
-  const wfsParams = (params as WfsRequestParams).layer_name
+  // eslint-disable-next-line camelcase
+  const wfsParams = (params as WfsRequestParams)?.layer_name
     ? { wfs_params: params as WfsRequestParams }
     : undefined;
 
   const { wcsConfig } = geotiffLayer;
-  const dateValue =
-    !wcsConfig || wcsConfig.disableDateParam === false ? date : undefined;
+  const dateValue = !wcsConfig?.disableDateParam ? date : undefined;
 
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
@@ -257,6 +260,9 @@ const createAPIRequestParams = (
     zones_url: getAdminBoundariesURL(),
     group_by: groupBy,
     ...wfsParams,
+    ...maskParams,
+    // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
+    geojson_out: !!maskParams,
   };
 
   return apiRequest;
@@ -267,43 +273,55 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   ExposedPopulationDispatchParams,
   CreateAsyncThunkTypes
 >('analysisResultState/requestAndStoreExposedPopulation', async params => {
-  const { exposure, date, extent, statistic, wfsLayerId } = params;
+  const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } = params;
 
   const { id, key } = exposure;
 
-  const wfsLayer = LayerDefinitions[wfsLayerId] as WMSLayerProps;
+  const wfsLayer =
+    wfsLayerId && (LayerDefinitions[wfsLayerId] as WMSLayerProps);
   const populationLayer = LayerDefinitions[id] as WMSLayerProps;
 
-  const wfsParams: WfsRequestParams = {
-    url: `${wfsLayer.baseUrl}/ows`,
-    layer_name: wfsLayer.serverLayerName,
-    time: moment(date).format(DEFAULT_DATE_FORMAT),
-    key,
-  };
+  const wfsParams: WfsRequestParams | undefined = wfsLayer
+    ? {
+        url: `${wfsLayer.baseUrl}/ows`,
+        layer_name: wfsLayer.serverLayerName,
+        time: moment(date).format(DEFAULT_DATE_FORMAT),
+        key,
+      }
+    : undefined;
+
+  const maskLayer =
+    maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
+
+  const maskParams = maskLayer
+    ? {
+        mask_url: getWCSLayerUrl({
+          layer: maskLayer,
+          date,
+          extent,
+        }),
+      }
+    : undefined;
 
   const apiRequest = createAPIRequestParams(
     populationLayer,
     extent,
     date,
     wfsParams,
+    maskParams,
   );
 
-  const apiFeatures = (await fetchApiData(
-    ANALYSIS_API_URL,
-    apiRequest,
-  )) as Feature[];
+  const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
+    []) as Feature[];
 
   const { scale, offset } = populationLayer.wcsConfig ?? {
     scale: undefined,
     offset: undefined,
   };
 
-  const features =
-    !scale && !offset
-      ? apiFeatures
-      : apiFeatures.map(f =>
-          scaleFeatureStat(f, scale || 1, offset || 0, statistic),
-        );
+  const features = apiFeatures.map(f =>
+    scaleFeatureStat(f, scale || 1, offset || 0, statistic),
+  );
 
   const collection: FeatureCollection = {
     type: 'FeatureCollection',
@@ -312,7 +330,8 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
 
   const groupBy = apiRequest.group_by;
   const legend = createLegendFromFeatureArray(features, statistic);
-  const legendText = wfsLayer.title;
+  // TODO - use raster legend title
+  const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
 
   return new ExposedPopulationResult(
     collection,
@@ -321,6 +340,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     legendText,
     groupBy,
     key,
+    date,
   );
 });
 
@@ -348,6 +368,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   if (!adminBoundariesData) {
     throw new Error('Boundary Layer not loaded!');
   }
+
   const apiRequest = createAPIRequestParams(
     hazardLayer,
     extent,
@@ -361,30 +382,32 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     statistic,
     threshold,
   );
-  let loadedAndCheckedBaselineData: BaselineLayerData;
-  // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
-  // similar code can be found at impact.ts
-  if (!baselineData) {
-    const {
-      payload: { data },
-    } = (await api.dispatch(
-      loadLayerData({ layer: baselineLayer, extent } as LayerDataParams<
-        AdminLevelDataLayerProps
-      >),
-    )) as { payload: { data: unknown } };
 
-    // eslint-disable-next-line fp/no-mutation
-    loadedAndCheckedBaselineData = checkBaselineDataLayer(
-      baselineLayer.id,
-      data,
-    );
-  } else {
-    // eslint-disable-next-line fp/no-mutation
-    loadedAndCheckedBaselineData = checkBaselineDataLayer(
-      baselineLayer.id,
-      baselineData.data,
-    );
-  }
+  const getCheckedBaselineData = async (): Promise<BaselineLayerData> => {
+    // if the baselineData doesn't exist, lets load it, otherwise check then load existing data.
+    // similar code can be found at impact.ts
+    if (baselineLayer.type === 'boundary') {
+      return { features: adminBoundariesData.data, layerData: [] };
+    }
+    if (!baselineData && baselineLayer) {
+      const { payload } = (await api.dispatch(
+        loadLayerData({
+          layer: baselineLayer,
+          extent,
+        } as LayerDataParams<AdminLevelDataLayerProps>),
+      )) as { payload: { data?: BaselineLayerData } };
+
+      return checkBaselineDataLayer(baselineLayer.id, payload?.data);
+    }
+
+    if (baselineData && baselineLayer) {
+      return checkBaselineDataLayer(baselineLayer.id, baselineData.data);
+    }
+
+    return { features: adminBoundariesData.data, layerData: [] };
+  };
+
+  const loadedAndCheckedBaselineData: BaselineLayerData = await getCheckedBaselineData();
 
   const features = generateFeaturesFromApiData(
     aggregateData,
@@ -392,6 +415,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     apiRequest.group_by,
     statistic,
   );
+
+  // Create a legend based on statistic data to be used for admin level analsysis.
+  const legend = createLegendFromFeatureArray(features, statistic);
 
   const tableRows: TableRow[] = generateTableFromApiData(
     [statistic],
@@ -409,9 +435,12 @@ export const requestAndStoreAnalysis = createAsyncThunk<
       features,
     },
     hazardLayer,
-    baselineLayer,
+    // We use a hack to leverage boundary layers as baseline layers
+    // Besides a few missing fields, we have all the necessary info.
+    baselineLayer as AdminLevelDataLayerProps,
     statistic,
     threshold,
+    legend,
     // we never use the raw api data besides for debugging. So lets not bother saving it in Redux for production
     process.env.NODE_ENV === 'production' ? undefined : aggregateData,
   );
@@ -503,6 +532,8 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     classProperties || [], // extra columns
   );
 
+  const boundaryId = getAdminLevelLayer(adminLevel).id;
+
   const analysisResult = new PolygonAnalysisResult(
     tableRows,
     tableColumns,
@@ -510,6 +541,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     hazardLayer,
     adminLevel,
     PolygonalAggregationOperations.Percentage,
+    boundaryId,
   );
 
   return analysisResult;
@@ -519,10 +551,6 @@ export const analysisResultSlice = createSlice({
   name: 'analysisResultState',
   initialState,
   reducers: {
-    addTableData: (state, { payload }: PayloadAction<TableData>) => ({
-      ...state,
-      tableData: payload,
-    }),
     setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
       ...state,
       isMapLayerActive: payload,
@@ -556,11 +584,17 @@ export const analysisResultSlice = createSlice({
       (
         { result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
-      ): AnalysisResultState => ({
-        ...rest,
-        result: payload as ExposedPopulationResult,
-        isExposureLoading: false,
-      }),
+      ): AnalysisResultState => {
+        const tableData = convertToTableData(
+          payload as ExposedPopulationResult,
+        );
+        return {
+          ...rest,
+          result: payload as ExposedPopulationResult,
+          isExposureLoading: false,
+          tableData,
+        };
+      },
     );
 
     builder.addCase(
@@ -671,7 +705,6 @@ export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
 
 // Setters
 export const {
-  addTableData,
   setIsMapLayerActive,
   setIsDataTableDrawerActive,
   setCurrentDataDefinition,

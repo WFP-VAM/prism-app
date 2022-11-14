@@ -1,37 +1,21 @@
-import React, { useRef, useState, useEffect, useLayoutEffect } from 'react';
-import { useSelector } from 'react-redux';
-import parse, { domToReact, HTMLReactParserOptions } from 'html-react-parser';
-import { Element } from 'domhandler/lib/node';
-import { marked } from 'marked';
-import DOMPurify from 'dompurify';
+import React, { useRef, useState, useLayoutEffect } from 'react';
 import {
   IconButton,
   createStyles,
-  Dialog,
-  DialogContent,
   Grid,
   Theme,
-  Typography,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
-import { isMainLayer, LayerType } from '../../../config/types';
+import { LayerType } from '../../../config/types';
 import { LayerDefinitions } from '../../../config/utils';
-import { layersSelector } from '../../../context/mapStateSlice/selectors';
+import ContentDialog, { loadLayerContent } from '../../NavBar/ContentDialog';
 
 const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
-  const [open, setOpen] = useState(false);
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState<string | undefined>(undefined);
   const contentRef = useRef<HTMLHeadingElement>(null);
   const layer = LayerDefinitions[layerId || 'admin_boundaries'];
-  const selectedLayers = useSelector(layersSelector);
-  // display if layer without group or main layer in group
-  const canDisplayContent = isMainLayer(layerId as string, selectedLayers);
-  const hasContent = layer.contentPath?.length;
-  const domId = layer.contentPath?.split('#')?.[1];
-
-  marked.use({ sanitizer: DOMPurify.sanitize });
 
   useLayoutEffect(() => {
     if (contentRef.current !== null) {
@@ -42,52 +26,19 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
     }
   });
 
-  useEffect(() => {
-    const path = `${process.env.PUBLIC_URL}/${layer.contentPath}`;
-
-    if (hasContent) {
-      fetch(path)
-        .then(response => response.text())
-        .then(text => setContent(text));
-    }
-  }, [hasContent, layer.contentPath]);
-
-  const transform: HTMLReactParserOptions = {
-    replace: domNode => {
-      if (domNode instanceof Element && domNode.attribs?.id === domId) {
-        return React.createElement(
-          domNode.name,
-          {
-            id: domNode.attribs.id,
-            ref: contentRef,
-          },
-          domToReact(domNode.children, transform),
-        );
-      }
-      return domNode;
-    },
-  };
+  if (!layer.contentPath) {
+    return null;
+  }
 
   return (
     <Grid item>
       <IconButton size="small" className={classes.icon}>
-        {canDisplayContent && hasContent && (
-          <InfoIcon fontSize="inherit" onClick={() => setOpen(true)} />
-        )}
+        <InfoIcon
+          fontSize="inherit"
+          onClick={() => loadLayerContent(layer.contentPath!, setContent)}
+        />
       </IconButton>
-      <Dialog
-        maxWidth="md"
-        open={open}
-        keepMounted
-        onClose={() => setOpen(false)}
-        aria-labelledby="dialog-preview"
-      >
-        <DialogContent>
-          <Typography color="textSecondary">
-            {parse(marked(content), transform)}
-          </Typography>
-        </DialogContent>
-      </Dialog>
+      <ContentDialog content={content} setContent={setContent} />
     </Grid>
   );
 };

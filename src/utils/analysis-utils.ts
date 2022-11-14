@@ -14,6 +14,7 @@ import {
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
+import moment from 'moment';
 import {
   AdminLevelType,
   AggregationOperations,
@@ -26,6 +27,7 @@ import {
   ThresholdDefinition,
   WMSLayerProps,
   WfsRequestParams,
+  BoundaryLayerProps,
 } from '../config/types';
 import type { ThunkApi } from '../context/store';
 import { layerDataSelector } from '../context/mapStateSlice/selectors';
@@ -46,8 +48,13 @@ import type {
 import { LayerDefinitions } from '../config/utils';
 import type { TableRow } from '../context/analysisResultStateSlice';
 import { isLocalhost } from '../serviceWorker';
-import { i18nTranslator } from '../i18n';
+import {
+  i18nTranslator,
+  isEnglishLanguageSelected,
+  useSafeTranslation,
+} from '../i18n';
 import { getRoundedData } from './data-utils';
+import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -356,7 +363,7 @@ export async function loadFeaturesClientSide(
   )(getState());
 
   if (!existingHazardLayer) {
-    await dispatch(
+    dispatch(
       loadLayerData({
         layer: hazardLayerDef,
         extent,
@@ -442,65 +449,8 @@ export async function loadFeaturesClientSide(
   }, [] as GeoJsonBoundary[]);
 }
 
-export function getAnalysisTableColumns(
-  analysisResult: BaselineLayerResult,
-): Column[] {
-  const { statistic } = analysisResult;
-  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
-
-  return [
-    {
-      id: 'localName',
-      label: 'Local Name',
-    },
-    {
-      id: 'name',
-      label: 'Name',
-    },
-    {
-      id: statistic,
-      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      format: value => getRoundedData(value as number),
-    },
-    {
-      id: 'baselineValue',
-      label: baselineLayerTitle,
-      format: (value: number | string) => value.toLocaleString('en-US'),
-    },
-  ];
-}
-
 export function quoteAndEscapeCell(value: number | string) {
   return `"${value.toString().replaceAll('"', '""')}"`;
-}
-
-export function downloadCSVFromTableData(
-  analysisResult: TabularAnalysisResult,
-) {
-  const { tableData, key: createdAt } = analysisResult;
-  const columns =
-    'tableColumns' in analysisResult
-      ? analysisResult.tableColumns
-      : getAnalysisTableColumns(analysisResult);
-  // Built with https://stackoverflow.com/a/14966131/5279269
-  const csvLines = [
-    columns.map(col => quoteAndEscapeCell(col.label)).join(','),
-    ...tableData.map(row =>
-      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
-    ),
-  ];
-  const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
-
-  const encodedUri = encodeURI(rawCsv);
-  const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
-  link.setAttribute(
-    'download',
-    `analysis_${new Date(createdAt).toDateString()}.csv`,
-  );
-  document.body.appendChild(link); // Required for FF
-
-  link.click();
 }
 
 export type AnalysisResult =
@@ -524,7 +474,10 @@ export function scaleFeatureStat(
     return feature;
   }
 
-  const scaledValue: number = get(properties, statistic) * scale + offset;
+  const value =
+    get(properties, statistic) || get(properties, `stats_${statistic}`);
+
+  const scaledValue: number = value && value * scale + offset;
 
   const scaledValueProperties = {
     ...properties,
@@ -563,16 +516,24 @@ export function createLegendFromFeatureArray(
   const minNum = Math.min(...stats);
 
   const colors = ['#fee5d9', '#fcae91', '#fb6a4a', '#de2d26', '#a50f15'];
+  const labels = ['Very low', 'Low', 'Medium', 'High', 'Very high'];
 
   const delta = (maxNum - minNum) / colors.length;
 
   const legend: LegendDefinition = colors.map((color, index) => {
-    const breakpoint = Math.ceil(minNum + (index + 1) * delta);
+    const breakpoint =
+      delta > 1
+        ? Math.ceil(minNum + (index + 1) * delta)
+        : minNum + (index + 1) * delta;
 
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
 
-    return { value, color };
+    return {
+      value,
+      color,
+      label: `${labels[index]} (${Math.round(value).toLocaleString('en-US')})`,
+    };
   });
 
   return legend;
@@ -585,6 +546,7 @@ export class ExposedPopulationResult {
   legend: LegendDefinition;
   legendText: string;
   statistic: AggregationOperations;
+  date: number;
 
   getTitle = (t?: i18nTranslator): string => {
     return t ? t('Population Exposure') : 'Population Exposure';
@@ -601,6 +563,7 @@ export class ExposedPopulationResult {
     legendText: string,
     groupBy: string,
     key: string,
+    date: number,
   ) {
     this.featureCollection = featureCollection;
     this.statistic = statistic;
@@ -608,6 +571,7 @@ export class ExposedPopulationResult {
     this.legendText = legendText;
     this.groupBy = groupBy;
     this.key = key;
+    this.date = date;
   }
 }
 
@@ -625,7 +589,8 @@ export class BaselineLayerResult {
   legend: LegendDefinition;
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
-  baselineLayerId: AdminLevelDataLayerProps['id'];
+  baselineLayerId: AdminLevelDataLayerProps['id'] | BoundaryLayerProps['id'];
+  boundaryId: AdminLevelDataLayerProps['boundary'];
 
   constructor(
     tableData: TableRow[],
@@ -634,18 +599,20 @@ export class BaselineLayerResult {
     baselineLayer: AdminLevelDataLayerProps,
     statistic: AggregationOperations,
     threshold: ThresholdDefinition,
+    legend?: LegendDefinition,
     rawApiData?: object[],
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
     this.statistic = statistic;
     this.threshold = threshold;
-    this.legend = baselineLayer.legend;
+    this.legend = baselineLayer.legend ?? legend;
     this.legendText = hazardLayer.legendText;
     this.rawApiData = rawApiData;
 
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
+    this.boundaryId = baselineLayer.boundary;
   }
 
   getHazardLayer(): WMSLayerProps {
@@ -656,21 +623,81 @@ export class BaselineLayerResult {
     return LayerDefinitions[this.baselineLayerId] as AdminLevelDataLayerProps;
   }
 
-  getTitle(t?: i18nTranslator): string {
-    return t
-      ? `${t(this.getBaselineLayer().title)} ${t('exposed to')} ${t(
-          this.getHazardLayer().title,
-        )}`
-      : `${this.getBaselineLayer().title} exposed to ${
-          this.getHazardLayer().title
-        }`;
-  }
-
   getStatTitle(t?: i18nTranslator): string {
     return t
       ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
       : `${this.getHazardLayer().title} (${this.statistic})`;
   }
+
+  getTitle(t?: i18nTranslator): string | undefined {
+    const baselineLayer = this.getBaselineLayer();
+    // If there is no title, we are using admin boundaries and return StatTitle instead.
+    if (!baselineLayer.title) {
+      return this.getStatTitle();
+    }
+    const baselineTitle = baselineLayer.title || 'Admin levels';
+    return t
+      ? `${t(baselineTitle)} ${t('exposed to')} ${t(
+          this.getHazardLayer().title,
+        )}`
+      : `${baselineTitle} exposed to ${this.getHazardLayer().title}`;
+  }
+}
+
+export function getAnalysisTableColumns(
+  analysisResult?: AnalysisResult,
+  withLocalName = false,
+): Column[] {
+  if (!analysisResult || analysisResult instanceof ExposedPopulationResult) {
+    return [];
+  }
+  if ('tableColumns' in analysisResult) {
+    return (analysisResult as PolygonAnalysisResult).tableColumns;
+  }
+  const { statistic } = analysisResult;
+  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
+
+  return [
+    {
+      id: withLocalName ? 'localName' : 'name',
+      label: 'Name',
+    },
+    {
+      id: statistic,
+      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
+      format: value => getRoundedData(value as number),
+    },
+    // Remove data if no baseline layer is present
+    ...(baselineLayerTitle
+      ? [
+          {
+            id: 'baselineValue',
+            label: baselineLayerTitle,
+            format: (value: number | string) => value.toLocaleString('en-US'),
+          },
+        ]
+      : []),
+  ];
+}
+
+export function useAnalysisTableColumns(
+  analysisResult?: AnalysisResult,
+): {
+  translatedColumns: Column[];
+  analysisTableColumns: Column[];
+} {
+  const { t, i18n } = useSafeTranslation();
+  const analysisTableColumns = getAnalysisTableColumns(
+    analysisResult,
+    !isEnglishLanguageSelected(i18n),
+  );
+  return {
+    analysisTableColumns,
+    translatedColumns: analysisTableColumns.map(col => ({
+      ...col,
+      label: t(col.label),
+    })),
+  };
 }
 
 export class PolygonAnalysisResult {
@@ -685,6 +712,7 @@ export class PolygonAnalysisResult {
   legendText: string;
   hazardLayerId: WMSLayerProps['id'];
   adminLevel: AdminLevelType;
+  boundaryId: string;
 
   constructor(
     tableData: TableRow[],
@@ -693,6 +721,7 @@ export class PolygonAnalysisResult {
     hazardLayer: WMSLayerProps,
     adminLevel: AdminLevelType,
     statistic: 'area' | 'percentage',
+    boundaryId: BoundaryLayerProps['id'],
     threshold?: ThresholdDefinition,
   ) {
     this.featureCollection = featureCollection;
@@ -701,6 +730,7 @@ export class PolygonAnalysisResult {
     this.statistic = statistic;
     this.threshold = threshold;
     this.adminLevel = adminLevel;
+    this.boundaryId = boundaryId;
 
     // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
     // this legend of red-like colors goes from very light to dark
@@ -728,6 +758,58 @@ export class PolygonAnalysisResult {
   getStatTitle(): string {
     return `${this.getHazardLayer().title} (${this.statistic})`;
   }
+}
+
+export function downloadCSVFromTableData(
+  analysisResult: TabularAnalysisResult,
+  columns: Column[],
+  selectedDate: number | null,
+) {
+  const {
+    hazardLayerId,
+    threshold,
+    statistic,
+    tableData,
+    key: createdAt,
+  } = analysisResult;
+  const aboveThreshold =
+    threshold && threshold.above !== undefined ? threshold.above : undefined;
+  const belowThreshold =
+    threshold && threshold.below !== undefined ? threshold.below : undefined;
+  const baselineLayerId =
+    analysisResult instanceof BaselineLayerResult
+      ? analysisResult.baselineLayerId
+      : undefined;
+  const adminLevel =
+    analysisResult instanceof PolygonAnalysisResult
+      ? analysisResult.adminLevel
+      : undefined;
+  // Built with https://stackoverflow.com/a/14966131/5279269
+  const csvLines = [
+    columns.map(col => quoteAndEscapeCell(col.label)).join(','),
+    ...tableData.map(row =>
+      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
+    ),
+  ];
+  const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
+
+  const encodedUri = encodeURI(rawCsv);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  const dateString = moment(selectedDate || createdAt).format(
+    DEFAULT_DATE_FORMAT_SNAKE_CASE,
+  );
+  link.setAttribute(
+    'download',
+    `analysis_${hazardLayerId}${baselineLayerId ? `_${baselineLayerId}` : ''}${
+      adminLevel ? `_${adminLevel}` : ''
+    }${aboveThreshold ? `_${aboveThreshold}` : ''}${
+      belowThreshold ? `_${belowThreshold}` : ''
+    }_${statistic}_${dateString}.csv`,
+  );
+  document.body.appendChild(link); // Required for FF
+
+  link.click();
 }
 
 // type of results that have the tableData property

@@ -18,12 +18,18 @@ export type LayerType =
   | ImpactLayerProps
   | PointDataLayerProps;
 
-export type LayerKey = keyof typeof rawLayers;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
+  k: infer I,
+) => void
+  ? I
+  : never;
+
+export type LayerKey = keyof UnionToIntersection<typeof rawLayers>;
 
 type MenuGroupItem = {
   id: string;
   label: string;
-  main: boolean;
+  main?: boolean;
 };
 
 export type MenuGroup = {
@@ -290,8 +296,7 @@ export class CommonLayerProps {
         },
         {
           "id": "rain_anomaly_3month",
-          "label": "3-month",
-          "main": false
+          "label": "3-month"
         },
         ...
       ]
@@ -299,6 +304,9 @@ export class CommonLayerProps {
   */
   @optional
   group?: MenuGroup;
+
+  @optional
+  validity?: Validity; // Include additional dates in the calendar based on the number provided.
 }
 
 /*
@@ -311,8 +319,8 @@ type LayerStyleProps = {
   line: LinePaint;
 };
 
-type DatasetLevel = {
-  path: string; // Url substring that represents admin level.
+export type DatasetLevel = {
+  level: string; // Administrative boundary level.
   id: string; // Geojson property field for admin boundary id.
   name: string; // Geojson property field for admin boundary name.
 };
@@ -322,10 +330,18 @@ export enum ChartType {
   Line = 'line',
 }
 
+export type DatasetField = {
+  key: string;
+  label: string;
+  fallback?: number; // If key does not exist in json response use fallback (rainfall anomaly).
+  color: string;
+};
+
 type DatasetProps = {
   url: string;
   levels: DatasetLevel[];
   type: ChartType;
+  fields: DatasetField[]; // Dataset fields from json response.
 };
 
 export class BoundaryLayerProps extends CommonLayerProps {
@@ -350,6 +366,17 @@ interface FeatureInfoProps {
   type: LabelType;
   label: string;
 }
+
+export enum DatesPropagation {
+  FORWARD = 'forward',
+  BACKWARD = 'backward',
+  BOTH = 'both',
+}
+
+export type Validity = {
+  days: number; // Number of days to include in the calendar.
+  mode: DatesPropagation; // Propagation mode for dates.
+};
 
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
@@ -387,6 +414,9 @@ export class WMSLayerProps extends CommonLayerProps {
 export class AdminLevelDataLayerProps extends CommonLayerProps {
   type: 'admin_level_data';
   path: string;
+
+  @optional
+  dates?: string[];
 
   @makeRequired
   title: string;
@@ -478,6 +508,11 @@ export class ImpactLayerProps extends CommonLayerProps {
   api?: StatsApi;
 }
 
+// Fetch and transform data to match PointDataLayer format.
+export enum PointDataLoader {
+  EWS = 'ews',
+}
+
 export class PointDataLayerProps extends CommonLayerProps {
   type: 'point_data';
   data: string;
@@ -508,6 +543,12 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   boundary?: LayerKey;
+
+  @optional
+  loader?: PointDataLoader;
+
+  @optional
+  authRequired: boolean = false;
 }
 
 export type RequiredKeys<T> = {
@@ -545,10 +586,15 @@ export interface MenuItemMobileType {
   selectAccordion: (arg: string) => void;
 }
 
+export type DateItem = {
+  displayDate: number; // Date that will be rendered in the calendar.
+  queryDate: number; // Date that will be used in the WMS request.
+};
+
 export type AvailableDates = {
   [key in
     | WMSLayerProps['serverLayerName']
-    | PointDataLayerProps['id']]: number[];
+    | PointDataLayerProps['id']]: DateItem[];
 };
 
 /* eslint-disable camelcase */
@@ -568,6 +614,8 @@ export interface ChartConfig {
   data?: string;
   transpose?: boolean;
   fill?: boolean;
+  displayLegend?: boolean;
+  colors?: string[]; // Array of hex codes.
 }
 
 export class TableType {
@@ -612,4 +660,26 @@ export interface RequestFeatureInfo extends FeatureInfoType {
 
 type AdminLevelDisplayType = {
   adminCode: string;
+};
+
+export type PointData = {
+  lat: number;
+  lon: number;
+  date: number; // in unix time.
+  [key: string]: any;
+};
+
+export type PointLayerData = {
+  features: PointData[];
+};
+
+export type ValidityLayer = {
+  name: string;
+  dates: number[];
+  validity: Validity;
+};
+
+export type UserAuth = {
+  username: string;
+  password: string;
 };

@@ -13,10 +13,10 @@ import {
 import { LayerKey, LayerType } from '../../../../config/types';
 import {
   getDisplayBoundaryLayers,
-  getBoundaryLayerSingleton,
   LayerDefinitions,
 } from '../../../../config/utils';
 import {
+  refreshBoundaries,
   safeDispatchAddLayer,
   safeDispatchRemoveLayer,
 } from '../../../../utils/map-utils';
@@ -24,7 +24,7 @@ import {
   layersSelector,
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
-import { useUrlHistory } from '../../../../utils/url-utils';
+import { useUrlHistory, getUrlKey } from '../../../../utils/url-utils';
 import { removeLayer } from '../../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../../i18n';
 import { clearDataset } from '../../../../context/datasetStateSlice';
@@ -34,7 +34,11 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
   const dispatch = useDispatch();
-  const { updateHistory, removeKeyFromUrl } = useUrlHistory();
+  const {
+    updateHistory,
+    appendLayerToUrl,
+    removeLayerFromUrl,
+  } = useUrlHistory();
 
   const { id: layerId, title: layerTitle, group } = layer;
 
@@ -64,33 +68,33 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   const validatedTitle = t(group?.groupTitle || layerTitle || '');
 
   const toggleLayerValue = (selectedLayerId: string, checked: boolean) => {
-    const ADMIN_LEVEL_DATA_LAYER_KEY = 'admin_level_data';
-
     // clear previous table dataset loaded first
     // to close the dataseries and thus close chart
     dispatch(clearDataset());
-
-    const urlLayerKey =
-      layer.type === ADMIN_LEVEL_DATA_LAYER_KEY
-        ? 'baselineLayerId'
-        : 'hazardLayerId';
 
     const selectedLayer = group
       ? LayerDefinitions[selectedLayerId as LayerKey]
       : layer;
 
-    if (checked) {
-      updateHistory(urlLayerKey, selectedLayer.id);
+    const urlLayerKey = getUrlKey(selectedLayer);
 
-      const defaultBoundary = getBoundaryLayerSingleton();
+    if (checked) {
+      const updatedUrl = appendLayerToUrl(
+        urlLayerKey,
+        selectedLayers,
+        selectedLayer,
+      );
+
+      updateHistory(urlLayerKey, updatedUrl);
+
       if (
         !('boundary' in selectedLayer) &&
-        selectedLayer.type === ADMIN_LEVEL_DATA_LAYER_KEY
+        selectedLayer.type === 'admin_level_data'
       ) {
-        safeDispatchAddLayer(map, defaultBoundary, dispatch);
+        refreshBoundaries(map, dispatch);
       }
     } else {
-      removeKeyFromUrl(urlLayerKey);
+      removeLayerFromUrl(urlLayerKey, selectedLayer.id);
       dispatch(removeLayer(selectedLayer));
 
       // For admin boundary layers with boundary property
