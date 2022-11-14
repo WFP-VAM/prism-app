@@ -187,6 +187,7 @@ function MapView({ classes }: MapViewProps) {
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     undefined,
   );
+
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
       if (layer.type === 'admin_level_data') {

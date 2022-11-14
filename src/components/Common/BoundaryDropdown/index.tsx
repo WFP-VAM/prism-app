@@ -9,20 +9,11 @@ import {
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import {
-  layerDataSelector,
   mapSelector,
+  relationSelector,
 } from '../../../context/mapStateSlice/selectors';
-import { getBoundaryLayerSingleton } from '../../../config/utils';
 import SearchBar from './searchBar';
-import {
-  loadBoundaryDropdownData,
-  setMenuItemStyle,
-  containsText,
-  createMatchesTree,
-} from './utils';
-import { BoundaryLayerProps } from '../../../config/types';
-import { LayerData } from '../../../context/layers/layer-data';
-import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
+import { setMenuItemStyle, containsText, createMatchesTree } from './utils';
 
 const useStyles = makeStyles((theme: Theme) => {
   const menuItem = {
@@ -77,28 +68,11 @@ const BoundaryDropdown = ({
   labelText,
   interaction,
 }: BoundaryDropdownProps) => {
-  const boundaryLayer = getBoundaryLayerSingleton();
   const [selected, setSelected] = useState();
   const [search, setSearch] = useState('');
-
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
+  const boundaryRelationData = useSelector(relationSelector);
 
   const map = useSelector(mapSelector);
-
-  const { i18n: i18nLocale } = useSafeTranslation();
-  const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
-    ? boundaryLayer.adminLevelNames
-    : boundaryLayer.adminLevelLocalNames;
-
-  const boundaryRelationData = useMemo(
-    () =>
-      boundaryLayerData &&
-      boundaryLayer &&
-      loadBoundaryDropdownData(boundaryLayerData.data, locationLevelNames),
-    [boundaryLayerData, boundaryLayer, locationLevelNames],
-  );
 
   const styles = useStyles();
 

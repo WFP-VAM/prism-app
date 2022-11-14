@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
@@ -15,11 +15,17 @@ import {
   layerDataSelector,
   layersSelector,
 } from '../../../../context/mapStateSlice/selectors';
+import { setRelationData } from '../../../../context/mapStateSlice';
+import { loadBoundaryRelations } from '../../../Common/BoundaryDropdown/utils';
 import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
 import { isPrimaryBoundaryLayer } from '../../../../config/utils';
 import { getFullLocationName } from '../../../../utils/name-utils';
 
 import { getChartAdminBoundaryParams } from '../../../../utils/admin-utils';
+import {
+  isEnglishLanguageSelected,
+  useSafeTranslation,
+} from '../../../../i18n';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -39,6 +45,24 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
     | LayerData<BoundaryLayerProps>
     | undefined;
   const { data } = boundaryLayer || {};
+
+  const { i18n: i18nLocale } = useSafeTranslation();
+  const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
+    ? layer.adminLevelNames
+    : layer.adminLevelLocalNames;
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    const boundaryRelationData = loadBoundaryRelations(
+      data,
+      locationLevelNames,
+    );
+
+    dispatch(setRelationData(boundaryRelationData));
+  }, [data, dispatch, locationLevelNames]);
 
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.

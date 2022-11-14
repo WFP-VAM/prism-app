@@ -5,7 +5,7 @@ import bboxPolygon from '@turf/bbox-polygon';
 import union from '@turf/union';
 import { BoundaryLayerData } from '../../../context/layers/boundary';
 
-type BoundaryRelationData = {
+export type BoundaryRelationData = {
   levels: number[];
   relations: BoundaryRelation[];
 };
@@ -107,7 +107,7 @@ export const getParentRelation = (
   ];
 };
 
-export const loadBoundaryDropdownData = (
+export const loadBoundaryRelations = (
   boundaryLayerData: BoundaryLayerData,
   adminLevelNames: string[],
 ): BoundaryRelationData => {
