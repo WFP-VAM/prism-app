@@ -1282,7 +1282,7 @@
     ],
     "exposure": {
       "id": "wp_pop_cicunadj",
-      "calc": "A*(B==5)"
+      "calc": "A*(B>=3)"
     }
   },
   "flood_pixel_age": {
