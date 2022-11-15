@@ -263,7 +263,7 @@ const createAPIRequestParams = (
     ...wfsParams,
     ...maskParams,
     // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
-    geojson_out: geojsonOut,
+    geojson_out: Boolean(geojsonOut),
   };
 
   return apiRequest;
