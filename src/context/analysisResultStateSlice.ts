@@ -311,7 +311,8 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     date,
     wfsParams,
     maskParams,
-    // Set geojsonOut to true. Remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
+    // Set geojsonOut to true.
+    // TODO - Remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
     true,
   );
 
