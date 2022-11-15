@@ -51,8 +51,10 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
     ? layer.adminLevelNames
     : layer.adminLevelLocalNames;
 
+  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+
   useEffect(() => {
-    if (!data) {
+    if (!data || !isPrimaryLayer) {
       return;
     }
 
@@ -67,8 +69,6 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
   }
-
-  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
 
   const onClickShowPopup = (evt: any) => {
     dispatch(hidePopup());
