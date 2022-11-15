@@ -360,6 +360,9 @@ def calculate_stats(
         raise HTTPException(
             status_code=500, detail="An error occured calculating statistics."
         ) from error
+    # This Exception is raised by rasterstats library when feature collection as 0 elements within the feature array.
+    except ValueError as error:
+        stats_results = []
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones_filepath)
