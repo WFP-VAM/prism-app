@@ -64,7 +64,7 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
     );
 
     dispatch(setRelationData(boundaryRelationData));
-  }, [data, dispatch, locationLevelNames]);
+  }, [data, dispatch, locationLevelNames, isPrimaryLayer]);
 
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
