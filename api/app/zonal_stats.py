@@ -232,6 +232,30 @@ def get_filtered_features(zones_filepath: FilePath, key: str, value: str) -> Fil
     return output_filename
 
 
+def get_intersected_wfs_polygons(
+    wfs_response: WfsResponse, zones_filepath: FilePath
+) -> FilePath:
+    """Returns the filepath of the intersected wfs featurecollection and boundaries (zones) file."""
+    zones_geojson: GeoJSON = get_json_file(zones_filepath)
+    wfs_geojson: GeoJSON = get_json_file(wfs_response["path"])
+
+    intersected_polygons = _get_intersected_polygons(
+        zones_geojson, wfs_geojson, wfs_response["filter_property_key"]
+    )
+
+    intersected_polygon_features = {
+        "type": "FeatureCollection",
+        "features": [f.get("feature") for f in intersected_polygons],
+    }
+
+    output_filename = FilePath("{zones}.intersection".format(zones=zones_filepath))
+
+    with open(output_filename, "w") as outfile:
+        dump(intersected_polygon_features, outfile)
+
+    return output_filename
+
+
 @timed
 def calculate_stats(
     zones_filepath: FilePath,  # list or FilePath??
@@ -292,25 +316,14 @@ def calculate_stats(
     if group_by:
         zones_filepath = _group_zones(zones_filepath, group_by)
 
-    zones_geojson: GeoJSON = get_json_file(zones_filepath)
-
     stats_input = (
         zones_filepath
         if filter_by is None
         else get_filtered_features(zones_filepath, filter_by[0], filter_by[1])
     )
 
-    zones: list[dict] = []
     if wfs_response is not None:
-        wfs_geojson = get_json_file(wfs_response["path"])
-
-        zones = _get_intersected_polygons(
-            zones_geojson, wfs_geojson, wfs_response["filter_property_key"]
-        )
-
-        # Extract shapely objects to compute stats.
-        # TODO - return properties as well. They are needed in the frontend for grouping
-        stats_input: list[Geometry] = [s.get("geom") for s in zones]
+        stats_input = get_intersected_wfs_polygons(wfs_response, zones_filepath)
         # TODO - remove this prefix to make homogeneize stats output
         # Frontend from this PR (546) needs to be deployed first.
         prefix = None
@@ -333,13 +346,11 @@ def calculate_stats(
             "intersect_percentage": intersect_percentage,
         }
 
-    if stats is None:
-        stats = DEFAULT_STATS
     try:
         stats_results = zonal_stats(
             stats_input,
             geotiff,
-            stats=stats,
+            stats=stats if stats is not None else DEFAULT_STATS,
             prefix=prefix,
             geojson_out=geojson_out,
             add_stats=add_stats,
@@ -349,19 +360,6 @@ def calculate_stats(
         raise HTTPException(
             status_code=500, detail="An error occured calculating statistics."
         ) from error
-
-    if wfs_response is not None:
-        zones_features = [z.get("feature") for z in zones]
-
-        # Add statistics as feature property fields.
-        features = [
-            {**z, "properties": {**z.get("properties", {}), **s}}  # type: ignore
-            for z, s in zip(zones_features, stats_results)
-        ]
-
-        # Return stats as geojson array of features.
-        # TODO - consider the geojson_out flag and format the return object appropriately.
-        return features
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones_filepath)

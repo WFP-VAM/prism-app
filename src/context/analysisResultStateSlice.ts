@@ -312,8 +312,12 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     maskParams,
   );
 
-  const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
-    []) as Feature[];
+  const apiRequestWithGeojsonOutput = { ...apiRequest, geojson_out: true };
+
+  const apiFeatures = ((await fetchApiData(
+    ANALYSIS_API_URL,
+    apiRequestWithGeojsonOutput,
+  )) || []) as Feature[];
 
   const { scale, offset } = populationLayer.wcsConfig ?? {
     scale: undefined,
