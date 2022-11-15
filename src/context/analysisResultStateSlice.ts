@@ -227,6 +227,7 @@ const createAPIRequestParams = (
   date: ReturnType<Date['getTime']>,
   params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
+  geojsonOut?: boolean,
 ): ApiData => {
   const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
 
@@ -262,7 +263,7 @@ const createAPIRequestParams = (
     ...wfsParams,
     ...maskParams,
     // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
-    geojson_out: !!maskParams,
+    geojson_out: geojsonOut,
   };
 
   return apiRequest;
@@ -310,14 +311,12 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     date,
     wfsParams,
     maskParams,
+    // Set geojsonOut to true. Remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
+    true,
   );
 
-  const apiRequestWithGeojsonOutput = { ...apiRequest, geojson_out: true };
-
-  const apiFeatures = ((await fetchApiData(
-    ANALYSIS_API_URL,
-    apiRequestWithGeojsonOutput,
-  )) || []) as Feature[];
+  const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
+    []) as Feature[];
 
   const { scale, offset } = populationLayer.wcsConfig ?? {
     scale: undefined,
