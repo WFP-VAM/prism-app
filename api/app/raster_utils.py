@@ -17,14 +17,17 @@ def gdal_calc(
     input_file_path,
     mask_file_path,
     output_file_path,
-    calc_expr='"A*(B==1)"',
+    calc_expr=None,
     nodata="0",
 ):
     """Utility function to run gdal_calc between two rasters."""
     gdal_calc_path = os.path.join("/usr/bin/", "gdal_calc.py")
 
+    # Add a proper default for the calculation expression
+    calc_expr = calc_expr or "A*(B==1)"
+
     # Generate string of process.
-    gdal_calc_str = "{0} -A {1} -B {2} --outfile={3} --calc={4} --NoDataValue={5} --extent=intersect --overwrite > /dev/null"
+    gdal_calc_str = '{0} -A {1} -B {2} --outfile={3} --calc="{4}" --NoDataValue={5} --extent=intersect --overwrite > /dev/null'
     gdal_calc_process = gdal_calc_str.format(
         gdal_calc_path,
         input_file_path,
