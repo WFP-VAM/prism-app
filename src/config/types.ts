@@ -246,6 +246,10 @@ export interface ExposedPopulationDefinition {
 
   // Geojson property key to extract from WFS Response when running exposed population analysis.
   key: string;
+
+  // GDAL calculation expression in numpy syntax. A is population and B is the selected mask.
+  // https://gdal.org/programs/gdal_calc.html
+  calc?: string;
 }
 
 interface FeatureInfoProps {

@@ -4,24 +4,25 @@ from typing import Any, Tuple
 
 from fastapi import HTTPException
 
+VALID_OPERATORS = {
+    "<=": op.le,
+    ">=": op.ge,
+    "<": op.lt,
+    ">": op.gt,
+    "!=": op.ne,
+    "==": op.eq,
+    "=": op.eq,
+}
+
 
 def validate_intersect_parameter(intersect_comparison_string: str) -> Tuple[Any, float]:
     """Validate intersect parameter and return a (comparator, baseline) tuple."""
-    valid_operators = {
-        "<=": op.le,
-        ">=": op.ge,
-        "!=": op.ne,
-        "<": op.lt,
-        "=": op.eq,
-        ">": op.gt,
-    }
-
     # extract an intersect comparison operator
     default_operator = ("=", op.eq)
     operator_item = next(
         (
             op
-            for op in valid_operators.items()
+            for op in VALID_OPERATORS.items()
             if op[0] in intersect_comparison_string[:2]
         ),
         default_operator,

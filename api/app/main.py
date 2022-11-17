@@ -68,6 +68,7 @@ def _calculate_stats(
     wfs_response: Optional[frozenset],
     intersect_comparison,
     mask_geotiff,
+    mask_calc_expr: Optional[str] = None,
     filter_by: Optional[tuple[str, str]] = None,
 ):
     """Calculate stats."""
@@ -81,6 +82,7 @@ def _calculate_stats(
         wfs_response=dict(wfs_response) if wfs_response is not None else None,
         intersect_comparison=intersect_comparison,
         mask_geotiff=mask_geotiff,
+        mask_calc_expr=mask_calc_expr,
         filter_by=filter_by,
     )
 
@@ -98,6 +100,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     geojson_out = stats_model.geojson_out
     intersect_comparison_string = stats_model.intersect_comparison
     mask_geotiff_url = stats_model.mask_url
+    mask_calc_expr = stats_model.mask_calc_expr
 
     filter_by = None
     # Tuple transformation fixes unhashable type error caused by timed decorator.
@@ -148,6 +151,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         else None,
         intersect_comparison=intersect_comparison_tuple,
         mask_geotiff=mask_geotiff,
+        mask_calc_expr=mask_calc_expr,
         filter_by=filter_by,
     )
 
