@@ -22,6 +22,7 @@ from app.models import (
 )
 from app.raster_utils import gdal_calc, reproj_match
 from app.timer import timed
+from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
@@ -204,6 +205,57 @@ def _get_intersected_polygons(
     return flattened_intersected_zones
 
 
+def get_filtered_features(zones_filepath: FilePath, key: str, value: str) -> FilePath:
+    """Creates a geojson file with features matching properties key and value"""
+    output_filename = FilePath(
+        "{zones}.{key}.{value}".format(zones=zones_filepath, key=key, value=value)
+    )
+
+    with open(zones_filepath) as json_file:
+        geojson_data = load(json_file)
+
+    filtered_features: list[GeoJSONFeature] = [
+        f
+        for f in geojson_data["features"]
+        if key in f["properties"].keys() and str(f["properties"][key]) == value
+    ]
+
+    if len(filtered_features) == 0:
+        message = f"Property '{key}' = '{value}' not found"
+        logger.info(message)
+        raise HTTPException(status_code=404, detail=message)
+
+    features_filtered = {**geojson_data, "features": filtered_features}
+    with open(output_filename, "w") as outfile:
+        dump(features_filtered, outfile)
+
+    return output_filename
+
+
+def get_intersected_wfs_polygons(
+    wfs_response: WfsResponse, zones_filepath: FilePath
+) -> FilePath:
+    """Returns the filepath of the intersected wfs featurecollection and boundaries (zones) file."""
+    zones_geojson: GeoJSON = get_json_file(zones_filepath)
+    wfs_geojson: GeoJSON = get_json_file(wfs_response["path"])
+
+    intersected_polygons = _get_intersected_polygons(
+        zones_geojson, wfs_geojson, wfs_response["filter_property_key"]
+    )
+
+    intersected_polygon_features = {
+        "type": "FeatureCollection",
+        "features": [f.get("feature") for f in intersected_polygons],
+    }
+
+    output_filename = FilePath("{zones}.intersection".format(zones=zones_filepath))
+
+    with open(output_filename, "w") as outfile:
+        dump(intersected_polygon_features, outfile)
+
+    return output_filename
+
+
 @timed
 def calculate_stats(
     zones_filepath: FilePath,  # list or FilePath??
@@ -215,6 +267,7 @@ def calculate_stats(
     wfs_response: Optional[WfsResponse] = None,
     intersect_comparison: Optional[tuple] = None,
     mask_geotiff: Optional[str] = None,
+    mask_calc_expr: Optional[str] = None,
     filter_by: Optional[tuple[str, str]] = None,
 ) -> list[dict[str, Any]]:
     """Calculate stats."""
@@ -228,9 +281,19 @@ def calculate_stats(
         reproj_pop_geotiff: FilePath = (
             f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_on_{mask_hash}.tif"
         )
-        masked_pop_geotiff: FilePath = (
-            f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}.tif"
-        )
+
+        # Slugify the calc expression into a reasonable filename
+        slugified_calc = "default"
+        if mask_calc_expr is not None:
+            slugified_calc = mask_calc_expr
+            for symbol, operator in VALID_OPERATORS.items():
+                slugified_calc = slugified_calc.replace(symbol, operator.__name__)
+
+            slugified_calc = "".join(
+                [x if x.isalnum() else "" for x in (slugified_calc)]
+            )
+
+        masked_pop_geotiff: FilePath = f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
 
         if not is_file_valid(reproj_pop_geotiff):
             reproj_match(
@@ -245,7 +308,7 @@ def calculate_stats(
                 input_file_path=reproj_pop_geotiff,
                 mask_file_path=mask_geotiff,
                 output_file_path=masked_pop_geotiff,
-                calc_expr='"A*(B==1)"',
+                calc_expr=mask_calc_expr,
             )
 
         geotiff = masked_pop_geotiff
@@ -253,33 +316,14 @@ def calculate_stats(
     if group_by:
         zones_filepath = _group_zones(zones_filepath, group_by)
 
-    zones_geojson: GeoJSON = get_json_file(zones_filepath)
+    stats_input = (
+        zones_filepath
+        if filter_by is None
+        else get_filtered_features(zones_filepath, filter_by[0], filter_by[1])
+    )
 
-    if filter_by is not None:
-        key, value = filter_by
-        stats_input: list[Geometry] = [
-            f["geometry"]
-            for f in zones_geojson["features"]
-            if key in f["properties"].keys() and str(f["properties"][key]) == value
-        ]
-
-        if len(stats_input) == 0:
-            message = f"Property '{key}' = '{value}' not found"
-            logger.info(message)
-            raise HTTPException(status_code=404, detail=message)
-    else:
-        stats_input: list[Geometry] = [f["geometry"] for f in zones_geojson["features"]]
-
-    zones: list[dict] = []
-    if wfs_response:
-        wfs_geojson = get_json_file(wfs_response["path"])
-
-        zones = _get_intersected_polygons(
-            zones_geojson, wfs_geojson, wfs_response["filter_property_key"]
-        )
-
-        # Extract shapely objects to compute stats.
-        stats_input: list[Geometry] = [s.get("geom") for s in zones]
+    if wfs_response is not None:
+        stats_input = get_intersected_wfs_polygons(wfs_response, zones_filepath)
         # TODO - remove this prefix to make homogeneize stats output
         # Frontend from this PR (546) needs to be deployed first.
         prefix = None
@@ -302,36 +346,23 @@ def calculate_stats(
             "intersect_percentage": intersect_percentage,
         }
 
-    if stats is None:
-        stats = DEFAULT_STATS
     try:
         stats_results = zonal_stats(
             stats_input,
             geotiff,
-            stats=stats,
+            stats=stats if stats is not None else DEFAULT_STATS,
             prefix=prefix,
             geojson_out=geojson_out,
             add_stats=add_stats,
         )
-
     except rasterio.errors.RasterioError as error:
         logger.error(error)
         raise HTTPException(
             status_code=500, detail="An error occured calculating statistics."
-        )
-
-    if wfs_response is not None:
-        zones_features = [z.get("feature") for z in zones]
-
-        # Add statistics as feature property fields.
-        features = [
-            {**z, "properties": {**z.get("properties", {}), **s}}  # type: ignore
-            for z, s in zip(zones_features, stats_results)
-        ]
-
-        # Return stats as geojson array of features.
-        # TODO - consider the geojson_out flag and format the return object appropriately.
-        return features
+        ) from error
+    # This Exception is raised by rasterstats library when feature collection as 0 elements within the feature array.
+    except ValueError as error:
+        stats_results = []
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones_filepath)
