@@ -1,7 +1,7 @@
 import { Base } from '../../base';
 import WCSLayer from '../WCSLayer';
 
-import { findLayerIds, findCoverageDisplayNames } from '../utils';
+import { findCoverageId, findCoverages, findLayerIds, findCoverageDisplayNames } from '../utils';
 
 export default class WCS extends Base {
   async getLayerIds(): Promise<string[]> {
@@ -19,5 +19,21 @@ export default class WCS extends Base {
       id: layerId,
       fetch: this.fetch,
     });
+  }
+
+  async getLayers(): Promise<WCSLayer[]> {
+    const capabilities = await this.capabilities;
+    const coverages = findCoverages(capabilities);
+    return Promise.all(
+      coverages.map(
+        layer =>
+          new WCSLayer({
+            capabilities: this.capabilities,
+            id: findCoverageId(layer)!,
+            layer,
+            fetch: this.fetch
+          }),
+      ),
+    );
   }
 }
