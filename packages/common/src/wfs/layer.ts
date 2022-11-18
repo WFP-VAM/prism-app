@@ -10,12 +10,12 @@ export default class FeatureLayer extends Layer {
       method = 'POST',
       wait = 0,
       ...rest
-    }: {
-      count?: number;
-      fetch?: any;
-      method?: 'GET' | 'POST';
-      wait?: number;
-    } = { count: 10, fetch: undefined, method: 'POST', wait: 0 },
+    }: Parameters<typeof getFeatures>[2] = {
+      count: 10,
+      fetch: undefined,
+      method: 'POST',
+      wait: 0,
+    },
   ): Promise<any> {
     // to-do: check if post available
     return getFeatures(await this.capabilities, this.id, {

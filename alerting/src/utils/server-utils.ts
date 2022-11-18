@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, union } from 'lodash';
-import { formatUrl } from "../../../packages/common";
+import { formatUrl } from "prism-common";
 import { Extent, WCSRequestUrl } from './raster-utils';
 import { AlertConfig } from '../entities/alerts.entity';
 
@@ -52,79 +52,6 @@ function formatCapabilitiesInfo(
       [layerId]: union(availableDates, oldLayerDates),
     };
   }, {});
-}
-
-type FlatLayer = {
-  Name: {
-    _text: string;
-    [key: string]: any;
-  };
-  Dimension: {
-    _text: string;
-    [key: string]: any;
-  };
-  [key: string]: any;
-};
-
-type FlatLayerContainer = { Layer: FlatLayer; [key: string]: any };
-type LayerContainer =
-  | { Layer: LayerContainer; [key: string]: any }
-  | FlatLayerContainer[]
-  | FlatLayer[];
-
-const isArrayOfFlatLayerContainers = (
-  maybeArray: LayerContainer,
-): maybeArray is FlatLayerContainer[] => {
-  return (maybeArray as FlatLayerContainer[])[0].Layer !== undefined;
-};
-
-function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
-  if (!Array.isArray(rawLayers) || rawLayers.length === 0) {
-    return [];
-  }
-  if (isArrayOfFlatLayerContainers(rawLayers)) {
-    return rawLayers.reduce((acc, { Layer }) => {
-      if ('Layer' in Layer) {
-        return acc.concat(
-          ...flattenLayers((Layer.Layer as unknown) as LayerContainer),
-        );
-      }
-      if (Array.isArray(Layer)) {
-        return acc.concat(...flattenLayers(Layer));
-      }
-      return acc.concat(Layer);
-    }, [] as FlatLayer[]);
-  }
-  return rawLayers as FlatLayer[];
-}
-
-/**
- * List capabilities for a WMS layer.
- * @param serverUri
- */
-export async function getWMSCapabilities(serverUri: string) {
-  const requestUri = formatUrl(serverUri, { request: 'GetCapabilities' });
-
-  try {
-    const response = await fetch(requestUri);
-    if (!response.ok) {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
-    const responseText = await response.text();
-    const responseJS = xml2js(responseText, xml2jsOptions);
-
-    const rawLayers = get(responseJS, 'WMS_Capabilities.Capability.Layer');
-
-    const flatLayers = flattenLayers(
-      Array.isArray(rawLayers) ? rawLayers : [rawLayers],
-    );
-
-    return formatCapabilitiesInfo(flatLayers, 'Name._text', 'Dimension._text');
-  } catch (error) {
-    // TODO we used to throw the error here so a notification appears. Removed because a failure of one shouldn't prevent the successful requests from saving.
-    console.error(error);
-    return {};
-  }
 }
 
 /**
