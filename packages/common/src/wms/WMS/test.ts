@@ -58,14 +58,43 @@ test('WMS (1.1.1)', async ({ eq }) => {
     'Sun, 07 Aug 2011 12:00:00 GMT',
   );
 
-  const layer = await client.getLayer('col_gdacs_buffers');
+  const layer = await client.getLayer('wld_gdacs_tc_events_nodes');
 
   const layerDates = await layer.getLayerDates();
-  eq(layerDates.length, 26);
-  eq(layerDates[0], '2011-08-07T15:00:00.000Z');
+  eq(layerDates.length, 1113);
+  eq(layerDates[0], '2008-05-03T12:00:00.000Z');
 
   const layers = await client.getLayers();
   eq(layers.length, 12);
+
+  const getImageOptions = {
+    bboxSrs: 3857,
+    exceptions: 'application/vnd.ogc.se_inimage',
+    format: 'image/png' as const,
+    height: 256,
+    imageSrs: 3857,
+    srs: 'EPSG:3857',
+    time: '2022-04-27',
+    transparent: true,
+    version: '1.1.1',
+    width: 256,
+    bbox: [
+      5009377.085697312,
+      -3130860.6785608195,
+      5635549.221409474,
+      -2504688.542848654,
+    ],
+  };
+
+  const imageUrl = await layer.getImageUrl(getImageOptions);
+
+  eq(
+    imageUrl,
+    'https://geonode.wfp.org/geoserver/prism/wms?SERVICE=WMS&amp%3B=&bbox=5009377.085697312%2C-3130860.6785608195%2C5635549.221409474%2C-2504688.542848654&bboxsr=3857&exceptions=application%2Fvnd.ogc.se_inimage&format=image%2Fpng&height=256&imagesr=3857&layers=wld_gdacs_tc_events_nodes&request=GetMap&service=WMS&srs=EPSG%3A3857&time=2022-04-27&transparent=true&version=1.1.1&width=256',
+  );
+
+  const { image } = await layer.getImage(getImageOptions);
+  eq(image.byteLength, 4442);
 });
 
 test('WMS Data Cube', async ({ eq }) => {
