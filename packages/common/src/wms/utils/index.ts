@@ -279,7 +279,7 @@ export function createGetLegendGraphicUrl({
     language,
     layer,
     legend_options: Object.entries(legendOptions)
-      .filter(([key, value]) => value !== undefined)
+      .filter(([, value]) => value !== undefined)
       .map(([key, value]) => `${key}:${value}`)
       .join(';'),
     rule,
@@ -299,6 +299,7 @@ export function createGetMapUrl({
   bboxDigits,
   bboxSrs,
   capabilities,
+  exceptions,
   format = 'image/png',
   height = 256,
   imageSrs,
@@ -315,6 +316,7 @@ export function createGetMapUrl({
   bboxDigits?: number;
   bboxSrs?: number;
   capabilities?: string;
+  exceptions?: string | undefined;
   format?: WMS_OUTPUT_FORMAT;
   height?: number;
   imageSrs?: number;
@@ -343,6 +345,7 @@ export function createGetMapUrl({
   return formatUrl(baseUrl, {
     bbox: bbox ? bboxToString(bbox, bboxDigits) : undefined,
     bboxsr: bboxSrs ? bboxSrs.toString() : undefined,
+    exceptions,
     format,
     height,
     imagesr: imageSrs ? imageSrs.toString() : undefined,

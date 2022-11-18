@@ -9,6 +9,7 @@ import {
   snakeCase,
   sortBy,
 } from 'lodash';
+import { formatUrl, WFS, WMS } from 'prism-common';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
@@ -28,7 +29,6 @@ import {
   PointDataLoader,
 } from '../config/types';
 import { queryParamsToString } from '../context/layers/point_data';
-import { DEFAULT_DATE_FORMAT } from './name-utils';
 import { createEWSDatesArray } from './ews-utils';
 
 /**
@@ -96,15 +96,6 @@ export const getPossibleDatesForLayer = (
   return datesArray()?.map(d => d.displayDate) ?? [];
 };
 
-export function formatUrl(
-  baseUrl: string,
-  params: { [key: string]: any } = {},
-): string {
-  const url = new URL(baseUrl);
-  Object.keys(params).forEach(k => url.searchParams.append(k, params[k]));
-  return url.toString();
-}
-
 /**
  * Format the raw data to { [layerId]: availableDates }
  * @param rawLayers Layers data return by the server 'GetCapabilities' request
@@ -141,101 +132,6 @@ function formatCapabilitiesInfo(
       [layerId]: union(availableDates, oldLayerDates),
     };
   }, {});
-}
-
-type FlatLayer = {
-  Name: {
-    _text: string;
-    [key: string]: any;
-  };
-  Dimension: {
-    _text: string;
-    [key: string]: any;
-  };
-  [key: string]: any;
-};
-
-type FlatLayerContainer = { Layer: FlatLayer; [key: string]: any };
-type LayerContainer =
-  | { Layer: LayerContainer; [key: string]: any }
-  | FlatLayerContainer[]
-  | FlatLayer[];
-
-const isArrayOfFlatLayerContainers = (
-  maybeArray: LayerContainer,
-): maybeArray is FlatLayerContainer[] => {
-  return (maybeArray as FlatLayerContainer[])[0].Layer !== undefined;
-};
-
-function flattenLayers(rawLayers: LayerContainer): FlatLayer[] {
-  if (!Array.isArray(rawLayers) || rawLayers.length === 0) {
-    return [];
-  }
-  if (isArrayOfFlatLayerContainers(rawLayers)) {
-    return rawLayers.reduce((acc, { Layer }) => {
-      if ('Layer' in Layer) {
-        return acc.concat(
-          ...flattenLayers((Layer.Layer as unknown) as LayerContainer),
-        );
-      }
-      if (Array.isArray(Layer)) {
-        return acc.concat(...flattenLayers(Layer));
-      }
-      return acc.concat(Layer);
-    }, [] as FlatLayer[]);
-  }
-  return rawLayers as FlatLayer[];
-}
-
-export function formatWMSLegendUrl(baseUrl: string, serverLayerName: string) {
-  const legendOptions = {
-    fontAntiAliasing: true,
-    fontSize: 13,
-    fontName: 'Roboto Light',
-    forceLabels: 'on',
-    fontColor: '0x2D3436',
-  };
-
-  const requestParams = {
-    service: 'WMS',
-    request: 'GetLegendGraphic',
-    format: 'image/png',
-    layer: serverLayerName,
-    legend_options: Object.entries(legendOptions)
-      .map(([key, value]) => `${key}:${value}`)
-      .join(';'),
-  };
-
-  return formatUrl(`${baseUrl}/ows`, requestParams);
-}
-
-/**
- * List capabilities for a WMS layer.
- * @param serverUri
- */
-async function getWMSCapabilities(serverUri: string) {
-  const requestUri = formatUrl(serverUri, { request: 'GetCapabilities' });
-
-  try {
-    const response = await fetch(requestUri);
-    if (!response.ok) {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
-    const responseText = await response.text();
-    const responseJS = xml2js(responseText, xml2jsOptions);
-
-    const rawLayers = get(responseJS, 'WMS_Capabilities.Capability.Layer');
-
-    const flatLayers = flattenLayers(
-      Array.isArray(rawLayers) ? rawLayers : [rawLayers],
-    );
-
-    return formatCapabilitiesInfo(flatLayers, 'Name._text', 'Dimension._text');
-  } catch (error) {
-    // TODO we used to throw the error here so a notification appears. Removed because a failure of one shouldn't prevent the successful requests from saving.
-    console.error(error);
-    return {};
-  }
 }
 
 /**
@@ -438,7 +334,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
   );
 
   const layerDates = await Promise.all([
-    ...wmsServerUrls.map(url => getWMSCapabilities(url)),
+    ...wmsServerUrls.map(url => new WMS(url).getLayerDays()),
     ...wcsServerUrls.map(url => getWCSCoverage(url)),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer),
@@ -608,31 +504,15 @@ export async function fetchWMSLayerAsGeoJSON(options: {
       );
     }
 
-    const wfsServerURL = `${lyr.baseUrl}/wfs`;
+    const wfs = new WFS(lyr.baseUrl);
 
-    // to-do: add additionalQueryParams like srsName and bbox
-    const requestParams = {
-      service: 'WFS',
-      request: 'GetFeature',
-      outputFormat: 'application/json', // per https://docs.geoserver.org/latest/en/user/services/wfs/outputformats.html
-      typeNames: lyr.serverLayerName, // per https://docs.geoserver.org/latest/en/user/services/wfs/reference.html
-      cql_filter:
-        startDate && endDate
-          ? `timestamp BETWEEN ${moment(startDate).format(
-              DEFAULT_DATE_FORMAT,
-            )} AND ${moment(endDate).format(DEFAULT_DATE_FORMAT)}T23:59:59`
-          : undefined,
-    };
+    const wfsLayer = await wfs.getLayer(lyr.serverLayerName);
 
-    const url = formatUrl(wfsServerURL, requestParams);
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
-
-    const featureCollection: GeoJSON.FeatureCollection = await response.json();
+    const featureCollection: GeoJSON.FeatureCollection = await wfsLayer.getFeatures(
+      {
+        dateRange: startDate && endDate ? [startDate, endDate] : undefined,
+      },
+    );
 
     return featureCollection;
   } catch (error) {

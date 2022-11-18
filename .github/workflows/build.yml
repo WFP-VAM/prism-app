@@ -30,15 +30,15 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/packages/common/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Install packages
-        run: yarn install --frozen-lockfile
-
-      - name: Install subpackage dependencies
-        run: yarn setup:common
+      - name: Install dependencies if needed.
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: |
+          yarn install --frozen-lockfile
+          yarn setup:common
 
       - name: yarn lint
         run: yarn lint
@@ -73,13 +73,15 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/packages/common/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        run: |
+          yarn install --frozen-lockfile
+          yarn setup:common
 
       - name: Find country variable
         id: country_regex

@@ -17,6 +17,7 @@ import {
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 import { useSelector } from 'react-redux';
+import { createGetLegendGraphicUrl } from 'prism-common';
 import { Extent } from '../Layers/raster-utils';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
@@ -26,7 +27,6 @@ import {
   ExposedPopulationDefinition,
   LegendDefinitionItem,
 } from '../../../config/types';
-import { formatWMSLegendUrl } from '../../../utils/server-utils';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
@@ -105,7 +105,10 @@ function Legends({ classes, layers, extent }: LegendsProps) {
       // If legend array is empty, we fetch from remote server the legend as GetLegendGraphic request.
       const legendUrl =
         layer.type === 'wms' && layer.legend.length === 0
-          ? formatWMSLegendUrl(layer.baseUrl, layer.serverLayerName)
+          ? createGetLegendGraphicUrl({
+              base: layer.baseUrl,
+              layer: layer.serverLayerName,
+            })
           : undefined;
 
       const exposure = GetExposureFromLayer(layer);
