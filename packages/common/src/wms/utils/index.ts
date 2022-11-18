@@ -322,7 +322,7 @@ export function createGetMapUrl({
   imageSrs?: number;
   layerIds: string[];
   srs?: string;
-  styles?: string[];
+  styles?: string | string[];
   time?: string;
   transparent?: boolean;
   version?: string;
@@ -353,7 +353,7 @@ export function createGetMapUrl({
     request: 'GetMap',
     service: 'WMS',
     srs,
-    styles: styles?.join(','),
+    styles: Array.isArray(styles) ? styles.join(',') : styles,
     time,
     transparent,
     version,
