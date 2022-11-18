@@ -12,6 +12,9 @@ test('WCS version 1.0.0', async ({ eq }) => {
   );
   const layerIds = await wcs.getLayerIds();
   eq(layerIds.includes('10DayAnomaly'), true);
+
+  const layers = await wcs.getLayers();
+  eq(layers.length, 10);
 });
 
 test('WCS on version 1.1.1', async ({ eq }) => {

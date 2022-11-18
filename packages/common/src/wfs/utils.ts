@@ -1,10 +1,13 @@
 import { isEmpty } from 'lodash';
+import * as moment from 'moment';
 
 import { findTagsByPath } from 'xml-utils';
 
 import {
+  DEFAULT_DATE_FORMAT,
   findAndParseAbstract,
   findTagText,
+  formatUrl,
   parseName,
   setTimeoutAsync,
 } from '../utils';
@@ -104,6 +107,7 @@ export function hasFeatureType(
   });
 }
 
+// to-do: validate cql properties based on capabilities.xml
 export function getFeaturesUrl(
   capabilities: string,
   typeNameOrNames: string | string[],
@@ -111,15 +115,19 @@ export function getFeaturesUrl(
     bbox,
     srs,
     count,
+    dateField = 'timestamp',
+    dateRange,
     featureId,
     format = 'geojson',
     method = 'POST',
     sortBy,
-    version = '2.0.0.',
+    version = '2.0.0',
   }: {
     bbox?: BBOX;
     srs?: string;
     count?: number;
+    dateField?: string;
+    dateRange?: [number, number] | [string, string];
     featureId?: string;
     format?: 'geojson' | 'xml';
     method?: 'GET' | 'POST';
@@ -129,11 +137,13 @@ export function getFeaturesUrl(
     bbox: undefined,
     srs: undefined,
     count: undefined,
+    dateField: 'timestamp',
+    dateRange: undefined,
     featureId: undefined,
     format: 'geojson',
     method: 'POST',
     sortBy: undefined,
-    version: '2.0.0.',
+    version: '2.0.0',
   },
 ) {
   const base = parseGetFeatureUrl(capabilities, { method });
@@ -142,68 +152,54 @@ export function getFeaturesUrl(
     throw new Error('unable to generate wfs url from capabilities');
   }
 
-  const url = new URL(base);
-
-  url.searchParams.set('service', 'WFS');
-  url.searchParams.set('version', version);
-  url.searchParams.set('request', 'GetFeature');
-
   if (isEmpty(typeNameOrNames) && isEmpty(featureId)) {
     throw new Error('You must pass in a typeName(s) or featureId');
   }
 
-  if (typeNameOrNames) {
-    if (version.startsWith('0') || version.startsWith('1')) {
-      url.searchParams.set('typeName', typeNameOrNames.toString());
-    } else {
-      url.searchParams.set('typeNames', typeNameOrNames.toString());
-    }
-  }
-
-  if (bbox) {
-    url.searchParams.set('bbox', bbox.toString());
-  }
-  if (srs) {
-    url.searchParams.set('srsName', srs);
-  }
-
-  if (count) {
-    if (version.startsWith('0') || version.startsWith('1')) {
-      url.searchParams.set('maxFeatures', count.toString());
-    } else {
-      url.searchParams.set('count', count.toString());
-    }
-  }
-
-  if (format === 'geojson') {
-    url.searchParams.set('outputFormat', 'json');
-  }
-
-  if (typeof sortBy === 'string' && sortBy.length > 0) {
-    url.searchParams.set('sortBy', sortBy);
-  }
-
-  return url.toString();
+  return formatUrl(base, {
+    service: 'WFS',
+    version,
+    request: 'GetFeature',
+    [/^(0|1)/.test(version)
+      ? 'typeName'
+      : 'typeNames']: typeNameOrNames?.toString(),
+    bbox: bbox?.toString(),
+    featureID: featureId,
+    srsName: srs,
+    [/^(0|1)/.test(version) ? 'maxFeatures' : 'count']: count,
+    outputFormat: format === 'geojson' ? 'json' : format,
+    sortBy,
+    cql_filter: (() => {
+      if (dateRange && dateField) {
+        const [startDate, endDate] = dateRange;
+        const startDateFormatted = `${moment
+          .utc(startDate)
+          .format(DEFAULT_DATE_FORMAT)}T00:00:00`;
+        const endDateFormatted = `${moment
+          .utc(endDate)
+          .format(DEFAULT_DATE_FORMAT)}T23:59:59`;
+        return `${dateField} BETWEEN ${startDateFormatted} AND ${endDateFormatted}`;
+      }
+      return undefined;
+    })(),
+  });
 }
 
 export async function getFeatures(
   capabilities: string,
   typeNameOrNames: string | string[],
   {
-    count = 10,
     fetch: customFetch = fetch,
     format = 'geojson',
     method = 'POST',
     wait = 0,
     ...rest
   }: {
-    count?: number;
     fetch?: any;
     format?: 'geojson' | 'xml';
     method?: 'GET' | 'POST';
     wait?: number;
-  } = {
-    count: 10,
+  } & Parameters<typeof getFeaturesUrl>[2] = {
     fetch: undefined,
     format: 'geojson',
     method: 'POST',
@@ -212,7 +208,6 @@ export async function getFeatures(
 ) {
   const run = async () => {
     const url = getFeaturesUrl(capabilities, typeNameOrNames, {
-      count,
       format,
       method,
       ...rest,
