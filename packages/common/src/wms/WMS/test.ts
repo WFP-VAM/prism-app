@@ -37,6 +37,37 @@ test('WMS', async ({ eq }) => {
   eq(layers.length, 659);
 });
 
+test('WMS (1.1.1)', async ({ eq }) => {
+  const client = new WMS(
+    `http://localhost:${port}/data/geonode-wfp-wms-get-capabilities-1.1.1.xml`,
+    { fetch },
+  );
+  const layerIds = await client.getLayerIds();
+  eq(layerIds.length, 12);
+  eq(layerIds[0], 'col_gdacs_buffers');
+
+  const layerNames = await client.getLayerNames();
+  eq(layerNames.length, 12);
+  eq(layerNames[0], 'col_gdacs_buffers');
+
+  const days = await client.getLayerDays();
+  eq(Object.keys(days).length, layerNames.length);
+  eq(days.col_gdacs_buffers.length, 26);
+  eq(
+    new Date(days.col_gdacs_buffers[0]).toUTCString(),
+    'Sun, 07 Aug 2011 12:00:00 GMT',
+  );
+
+  const layer = await client.getLayer('col_gdacs_buffers');
+
+  const layerDates = await layer.getLayerDates();
+  eq(layerDates.length, 26);
+  eq(layerDates[0], '2011-08-07T15:00:00.000Z');
+
+  const layers = await client.getLayers();
+  eq(layers.length, 12);
+});
+
 test('WMS Data Cube', async ({ eq }) => {
   const client = new WMS(
     `http://localhost:${port}/data/mongolia-sibelius-datacube-wms-get-capabilities-1.3.0.xml`,
