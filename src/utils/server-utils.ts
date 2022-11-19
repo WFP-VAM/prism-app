@@ -512,7 +512,7 @@ export async function fetchWMSLayerAsGeoJSON(options: {
 
     const featureCollection: GeoJSON.FeatureCollection = await wfsLayer.getFeatures(
       {
-        count: Infinity,
+        count: 100000,
         dateRange: startDate && endDate ? [startDate, endDate] : undefined,
         method: 'GET',
       },
