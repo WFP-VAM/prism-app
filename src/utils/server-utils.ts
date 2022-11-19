@@ -504,13 +504,17 @@ export async function fetchWMSLayerAsGeoJSON(options: {
       );
     }
 
-    const wfs = new WFS(lyr.baseUrl);
+    const wfsServerURL = `${lyr.baseUrl}/wfs`;
+
+    const wfs = new WFS(wfsServerURL);
 
     const wfsLayer = await wfs.getLayer(lyr.serverLayerName);
 
     const featureCollection: GeoJSON.FeatureCollection = await wfsLayer.getFeatures(
       {
+        count: Infinity,
         dateRange: startDate && endDate ? [startDate, endDate] : undefined,
+        method: 'GET',
       },
     );
 
