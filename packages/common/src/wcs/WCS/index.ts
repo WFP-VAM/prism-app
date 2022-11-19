@@ -1,7 +1,12 @@
 import { Base } from '../../base';
 import WCSLayer from '../WCSLayer';
 
-import { findCoverageId, findCoverages, findLayerIds, findCoverageDisplayNames } from '../utils';
+import {
+  findCoverageId,
+  findCoverages,
+  findLayerIds,
+  findCoverageDisplayNames,
+} from '../utils';
 
 export default class WCS extends Base {
   async getLayerIds(): Promise<string[]> {
@@ -31,7 +36,7 @@ export default class WCS extends Base {
             capabilities: this.capabilities,
             id: findCoverageId(layer)!,
             layer,
-            fetch: this.fetch
+            fetch: this.fetch,
           }),
       ),
     );

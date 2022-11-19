@@ -115,6 +115,12 @@ test('getFeaturesUrl', async ({ eq }) => {
     }),
     'https://geonode.wfp.org/geoserver/wfs?count=1&cql_filter=event_date+BETWEEN+2020-09-18T00%3A00%3A00+AND+2022-09-20T23%3A59%3A59&outputFormat=json&request=GetFeature&service=WFS&typeNames=acled_incidents_syria&version=2.0.0',
   );
+  eq(
+    getFeaturesUrl(capabilities, 'geonode:afg_trs_roads_wfp', {
+      count: Infinity,
+    }),
+    'https://geonode.wfp.org/geoserver/wfs?outputFormat=json&request=GetFeature&service=WFS&typeNames=geonode%3Aafg_trs_roads_wfp&version=2.0.0',
+  );
 });
 
 test('getFeatures', async ({ eq }) => {

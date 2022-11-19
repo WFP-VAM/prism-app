@@ -166,7 +166,13 @@ export function getFeaturesUrl(
     bbox: bbox?.toString(),
     featureID: featureId,
     srsName: srs,
-    [/^(0|1)/.test(version) ? 'maxFeatures' : 'count']: count,
+    [/^(0|1)/.test(version) ? 'maxFeatures' : 'count']: [
+      null,
+      undefined,
+      Infinity,
+    ].includes(count)
+      ? undefined
+      : count,
     outputFormat: format === 'geojson' ? 'json' : format,
     sortBy,
     cql_filter: (() => {
