@@ -30,7 +30,7 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/packages/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/packages/common/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
 
@@ -45,10 +45,11 @@ jobs:
         run: yarn lint
 
       - name: yarn test
-        run: yarn test
+        run: cd frontend && yarn test
 
       - name: json check
-        run: yarn prettier:json-check
+        run: cd frontend && yarn prettier:json-check
+
   frontend_build_and_deploy:
     needs: frontend_tests
     name: frontend_build_and_deploy
@@ -58,12 +59,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: test
-        run: |
-          echo "My current surge url is ${{ env.surge_url }}"
 
       - name: Get yarn cache directory path
-
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
@@ -74,13 +71,14 @@ jobs:
             **/node_modules
             **/.eslintcache
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/packages/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/packages/common/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
 
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
+          cd frontend
           yarn install --frozen-lockfile
           yarn setup:common
 
@@ -94,12 +92,14 @@ jobs:
         run: echo "Country env is ${{ steps.country_regex.outputs.group1 }}"
 
       - name: build frontend
-        run: GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 || 'myanmar'}} yarn build
-      - name: deploy on surge
+        run: |
+          cd frontend
+          GENERATE_SOURCEMAP=false REACT_APP_COUNTRY=${{ steps.country_regex.outputs.group1 || 'myanmar'}} yarn build
+      - name: Deploy on surge
         uses: dswistowski/surge-sh-action@v1
         with:
           domain: ${{ env.surge_url }}
-          project: "build/."
+          project: "frontend/build/."
           login: ${{ secrets.surge_login }}
           token: ${{ secrets.surge_token }}
       - name: Get current date
