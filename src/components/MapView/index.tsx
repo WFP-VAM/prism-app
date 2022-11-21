@@ -114,6 +114,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
 };
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
+  'admin_level_data',
   'impact',
   'point_data',
   'wms',
@@ -190,7 +191,7 @@ function MapView({ classes }: MapViewProps) {
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
       if (layer.type === 'admin_level_data') {
-        return Boolean(layer.dates);
+        return Boolean(layer.dates) || Boolean(layer.dateUrl);
       }
       if (layer.type === 'wms') {
         // some WMS layer might not have date dimension (i.e. static data)

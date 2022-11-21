@@ -29,7 +29,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   } = alert;
   const availableDates =
     type === 'wms'
-      ? await getWMSCapabilities(`${baseUrl}/wms`)
+      ? await getWMSCapabilities(`${baseUrl}`)
       : await getWCSCoverage(`${baseUrl}`);
   const layerAvailableDates = availableDates[serverLayerName];
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));
@@ -63,7 +63,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
         Date: ${maxDate}
 
         Go to ${urlWithParams} for more information.
-  
+
         Alert: ${alertMessage}`;
 
     const emailHtml = `${emailMessage

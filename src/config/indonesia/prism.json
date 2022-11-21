@@ -12,7 +12,7 @@
   "serversUrls": {
     "wcs": [],
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/wms",
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
       "https://prism-geoserver.wfpidn.link/geoserver/prism/wms"
     ]
   },

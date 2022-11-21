@@ -87,7 +87,7 @@
     "title": "Extreme rainfall-triggering flood (last 5 days)",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_flood",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "form_inputs": [
       {
         "id": "DIM_NUMDAYSOURCE",
@@ -143,7 +143,7 @@
     "title": "Extreme rainfall (next 5 days)",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_forecast_probability",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "form_inputs": [
       {
         "id": "DIM_NUMDAYSOURCE",
@@ -226,7 +226,7 @@
     "title": "Extreme rainfall-triggering floods (next 5 days)",
     "type": "wms",
     "server_layer_name": "rainfall_extreme_forecast_flood",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "form_inputs": [
       {
         "id": "DIM_NUMDAYSOURCE",
@@ -305,10 +305,7 @@
     "title": "10-day rainfall estimate (mm)",
     "type": "wms",
     "server_layer_name": "rfh_dekad",
-    "additional_query_params": {
-      "styles": "rfh_350"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS rainfall global dekad",
@@ -335,7 +332,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 1 month dekadal rainfall aggregations (mm)",
@@ -361,7 +358,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 2 month dekadal rainfall aggregations (mm)",
@@ -387,7 +384,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
@@ -413,7 +410,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 6 month dekadal rainfall aggregations",
@@ -439,7 +436,7 @@
     "additional_query_params": {
       "styles": "rfh_800"
     },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 9 month dekadal rainfall aggregations",
@@ -465,7 +462,7 @@
     "additional_query_params": {
       "styles": "rfh_1500"
     },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "CHIRPS 1 year dekadal rainfall aggregations",
@@ -527,7 +524,7 @@
     "title": "Standardized Precipitation Index (SPI)",
     "type": "wms",
     "server_layer_name": "spi_monthly",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "date_interval": "month",
     "opacity": 0.5,
     "legend_text": "SPI is a normalized index that indicates the probability of occurrence of observed rainfall compared with the long-term average | Source: CHIRPS",
@@ -578,7 +575,7 @@
     "title": "Agricultural drought (VHI)",
     "type": "wms",
     "server_layer_name": "vhi_monthly",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "date_interval": "month",
     "opacity": 0.5,
     "legend_text": "Vegetation Health Index for a 10-day period. The VHI is a combination of vegetation conditions and temperature conditions.",
@@ -609,7 +606,7 @@
     "title": "Consecutive dry days",
     "type": "wms",
     "server_layer_name": "days_since_last_rain_daily",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "date_interval": "day",
     "opacity": 0.5,
     "legend_text": "Number of days since the last rainfall above 1mm per day | Source: IMERG",
@@ -648,7 +645,7 @@
     "type": "wms",
     "title": "Ground Surface Temperature - anomaly 10 days (MODIS)",
     "server_layer_name": "myd11c2_txd_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
     "opacity": 0.5,
     "additional_query_params": {
@@ -698,7 +695,7 @@
     "title": "10-day NDVI (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13a2_vim_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.0001,
@@ -750,7 +747,7 @@
     "title": "10-day NDVI anomaly (MODIS)",
     "type": "wms",
     "server_layer_name": "mxd13a2_viq_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
     "additional_query_params": {
       "styles": "viq"
@@ -800,7 +797,7 @@
     "type": "wms",
     "title": "Population distribution",
     "server_layer_name": "population2018",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wmsn",
     "opacity": 0.5,
     "legend_text": "Population distribution 2020 | Source: Landscan",
     "legend": [
@@ -895,39 +892,39 @@
     "admin_code": "CODE",
     "opacity": 0.5,
     "legend": [
-    {
-        "value": "14.61",
-        "label": "≤ 14.60",
-        "color": "#edf8fb"
-    },
-    {
-        "value": "22.37",
-        "label": "14.61 - 22.37",
-        "color": "#b3cde3"
-    },
-    {
-        "value": "29.38",
-        "label": "22.38 - 29.37",
-        "color": "#8c96c6"
-    },
-    {
-        "value": "39.30",
-        "label": "29.38 - 39.30",
-        "color": "#8856a7"
-    },
-    {
-        "value": "91.88",
-        "label": "≥ 39.30",
-        "color": "#810f7c"
-    }
-],
+      {
+          "value": "14.61",
+          "label": "≤ 14.60",
+          "color": "#edf8fb"
+      },
+      {
+          "value": "22.37",
+          "label": "14.61 - 22.37",
+          "color": "#b3cde3"
+      },
+      {
+          "value": "29.38",
+          "label": "22.38 - 29.37",
+          "color": "#8c96c6"
+      },
+      {
+          "value": "39.30",
+          "label": "29.38 - 39.30",
+          "color": "#8856a7"
+      },
+      {
+          "value": "91.88",
+          "label": "≥ 39.30",
+          "color": "#810f7c"
+      }
+    ],
     "legend_text": "Source: SUSENAS 2020"
   },
   "paddy_areas": {
     "type": "wms",
     "title": "Paddy areas",
     "server_layer_name": "paddy_areas_raster",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "opacity": 0.5,
     "legend_text": "Paddy areas | Source: MoA",
     "legend": [
@@ -941,7 +938,7 @@
     "title": "HHs in lowest 10% income",
     "type": "wms",
     "server_layer_name": "Desil10%",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "opacity": 0.5,
     "legend_text": "Source: MOSA",
     "legend": [
@@ -987,7 +984,7 @@
     "title": "Female headed HHs >60 years",
     "type": "wms",
     "server_layer_name": "KRTW_60",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "opacity": 0.5,
     "legend_text": "Female Headed Hosehold >60 years old | Source: MOSA",
     "legend": [
@@ -1033,7 +1030,7 @@
     "title": "Disabled people",
     "type": "wms",
     "server_layer_name": "Disability",
-    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism",
+    "base_url": "https://prism-geoserver.wfpidn.link/geoserver/prism/wms",
     "opacity": 0.5,
     "legend_text": "Number of Disable People | Source: MOSA",
     "legend": [

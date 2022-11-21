@@ -134,7 +134,11 @@ function formatCapabilitiesInfo(
           })()
         : datesPath;
 
-    const rawDates = get(layer, innerDatesPath, []);
+    const rawDates = get(layer, innerDatesPath, null);
+    if (rawDates === null) {
+      // Support WMS Layer with no date dimension (i.e. static data)
+      return acc;
+    }
     const dates: (string | { _text: string })[] = isString(rawDates)
       ? rawDates.split(',')
       : rawDates;
@@ -351,7 +355,16 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
 }
 
 async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
-  const { dates } = layer;
+  const { dates, dateUrl } = layer;
+  if (dateUrl) {
+    const response = await fetch(dateUrl);
+    if (response.status !== 200) {
+      console.error(`Impossible to get admin level data dates for ${layer.id}`);
+      return [];
+    }
+    const data = await response.json();
+    return data.dates.map((v: string) => moment(v, 'YYYY-MM-DD').valueOf());
+  }
   if (!dates) {
     return [];
   }
@@ -448,7 +461,8 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 
   const adminWithDateLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is AdminLevelDataLayerProps =>
-      layer.type === 'admin_level_data' && Boolean(layer.dates),
+      layer.type === 'admin_level_data' &&
+      (Boolean(layer.dates) || Boolean(layer.dateUrl)),
   );
 
   const layerDates = await Promise.all([

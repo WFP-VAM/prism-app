@@ -91,7 +91,7 @@ export function getWMSUrl(
     layers: layerName,
   };
 
-  return formatUrl(`${baseUrl}/wms`, params);
+  return formatUrl(`${baseUrl}`, params);
 }
 export function getWCSv1Url(
   baseUrl: string,
