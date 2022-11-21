@@ -1,12 +1,12 @@
-import { findTagByName, getAttribute } from 'xml-utils';
+import { findTagByName, getAttribute } from "xml-utils";
 
-import findOperation from './find-operation';
-import { titlecase } from '../utils';
+import findOperation from "./find-operation";
+import { titlecase } from "../utils";
 
 export default function findAndParseOperationUrl(
   xml: string,
   op: string,
-  method: 'GET' | 'POST' | 'Get' | 'Post' = 'Get',
+  method: "GET" | "POST" | "Get" | "Post" = "Get"
 ): string | undefined {
   const xmlOp = findOperation(xml, op);
   if (!xmlOp) {
@@ -16,5 +16,5 @@ export default function findAndParseOperationUrl(
   if (!xmlMethod) {
     return undefined;
   }
-  return getAttribute(xmlMethod, 'xlink:href');
+  return getAttribute(xmlMethod, "xlink:href");
 }

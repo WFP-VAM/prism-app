@@ -1,7 +1,7 @@
-import { isEmpty } from 'lodash';
-import * as moment from 'moment';
+import { isEmpty } from "lodash";
+import * as moment from "moment";
 
-import { findTagsByPath } from 'xml-utils';
+import { findTagsByPath } from "xml-utils";
 
 import {
   DEFAULT_DATE_FORMAT,
@@ -10,15 +10,15 @@ import {
   formatUrl,
   parseName,
   setTimeoutAsync,
-} from '../utils';
+} from "../utils";
 
 import {
   findAndParseKeywords,
   findAndParseOperationUrl,
   findAndParseWGS84BoundingBox,
-} from '../ows';
+} from "../ows";
 
-import type { BBOX } from '../types';
+import type { BBOX } from "../types";
 
 type FeatureType = {
   name: ReturnType<typeof parseName>;
@@ -32,42 +32,42 @@ type FeatureType = {
 export function getBaseUrl(url: string): string {
   const { origin, pathname } = new URL(url);
   // remove trailing /
-  return origin + pathname.replace(/\/$/, '');
+  return origin + pathname.replace(/\/$/, "");
 }
 
 // to-do: MetadataURL
 // to-do: parse prefix from name?
 export function getFeatureTypesFromCapabilities(
-  capabilities: string,
+  capabilities: string
 ): FeatureType[] {
   const featureTypes: FeatureType[] = [];
-  findTagsByPath(capabilities, ['FeatureTypeList', 'FeatureType']).forEach(
-    featureType => {
+  findTagsByPath(capabilities, ["FeatureTypeList", "FeatureType"]).forEach(
+    (featureType) => {
       const { inner } = featureType;
       if (inner) {
-        const name = findTagText(inner, 'Name')!;
+        const name = findTagText(inner, "Name")!;
         if (name) {
           // eslint-disable-next-line fp/no-mutating-methods
           featureTypes.push({
             name: parseName(name),
             abstract: findAndParseAbstract(inner),
             keywords: findAndParseKeywords(inner),
-            srs: findTagText(inner, 'DefaultSRS')!,
+            srs: findTagText(inner, "DefaultSRS")!,
             bbox: findAndParseWGS84BoundingBox(inner)!,
           });
         }
       }
-    },
+    }
   );
   return featureTypes;
 }
 
 export function parseFullFeatureTypeNames(
   capabilities: string,
-  { sort = true }: { sort?: boolean } = { sort: true },
+  { sort = true }: { sort?: boolean } = { sort: true }
 ): string[] {
   const names = getFeatureTypesFromCapabilities(capabilities).map(
-    featureType => featureType.name.full,
+    (featureType) => featureType.name.full
   );
   if (sort) {
     // eslint-disable-next-line fp/no-mutating-methods
@@ -79,11 +79,11 @@ export function parseFullFeatureTypeNames(
 // to-do: find valid prefix for given short name? make async?
 export function parseGetFeatureUrl(
   capabilities: string,
-  { method = 'GET' }: { method: 'GET' | 'POST'; throw?: boolean } = {
-    method: 'GET',
-  },
+  { method = "GET" }: { method: "GET" | "POST"; throw?: boolean } = {
+    method: "GET",
+  }
 ): string | undefined {
-  return findAndParseOperationUrl(capabilities, 'GetFeature', method);
+  return findAndParseOperationUrl(capabilities, "GetFeature", method);
 }
 
 export function hasFeatureType(
@@ -91,9 +91,9 @@ export function hasFeatureType(
   name: string,
   { strict = false }: { strict?: boolean } = {
     strict: false,
-  },
+  }
 ): boolean {
-  return !!featureTypes.find(featureType => {
+  return !!featureTypes.find((featureType) => {
     if (strict) {
       return featureType.name.full === name;
     }
@@ -115,13 +115,13 @@ export function getFeaturesUrl(
     bbox,
     srs,
     count,
-    dateField = 'timestamp',
+    dateField = "timestamp",
     dateRange,
     featureId,
-    format = 'geojson',
-    method = 'POST',
+    format = "geojson",
+    method = "POST",
     sortBy,
-    version = '2.0.0',
+    version = "2.0.0",
   }: {
     bbox?: BBOX;
     srs?: string;
@@ -129,51 +129,51 @@ export function getFeaturesUrl(
     dateField?: string;
     dateRange?: [number, number] | [string, string];
     featureId?: string;
-    format?: 'geojson' | 'xml';
-    method?: 'GET' | 'POST';
+    format?: "geojson" | "xml";
+    method?: "GET" | "POST";
     sortBy?: string;
     version?: string;
   } = {
     bbox: undefined,
     srs: undefined,
     count: undefined,
-    dateField: 'timestamp',
+    dateField: "timestamp",
     dateRange: undefined,
     featureId: undefined,
-    format: 'geojson',
-    method: 'POST',
+    format: "geojson",
+    method: "POST",
     sortBy: undefined,
-    version: '2.0.0',
-  },
+    version: "2.0.0",
+  }
 ) {
   const base = parseGetFeatureUrl(capabilities, { method });
 
   if (!base) {
-    throw new Error('unable to generate wfs url from capabilities');
+    throw new Error("unable to generate wfs url from capabilities");
   }
 
   if (isEmpty(typeNameOrNames) && isEmpty(featureId)) {
-    throw new Error('You must pass in a typeName(s) or featureId');
+    throw new Error("You must pass in a typeName(s) or featureId");
   }
 
   return formatUrl(base, {
-    service: 'WFS',
+    service: "WFS",
     version,
-    request: 'GetFeature',
+    request: "GetFeature",
     [/^(0|1)/.test(version)
-      ? 'typeName'
-      : 'typeNames']: typeNameOrNames?.toString(),
+      ? "typeName"
+      : "typeNames"]: typeNameOrNames?.toString(),
     bbox: bbox?.toString(),
     featureID: featureId,
     srsName: srs,
-    [/^(0|1)/.test(version) ? 'maxFeatures' : 'count']: [
+    [/^(0|1)/.test(version) ? "maxFeatures" : "count"]: [
       null,
       undefined,
       Infinity,
     ].includes(count)
       ? undefined
       : count,
-    outputFormat: format === 'geojson' ? 'json' : format,
+    outputFormat: format === "geojson" ? "json" : format,
     sortBy,
     cql_filter: (() => {
       if (dateRange && dateField) {
@@ -196,21 +196,21 @@ export async function getFeatures(
   typeNameOrNames: string | string[],
   {
     fetch: customFetch = fetch,
-    format = 'geojson',
-    method = 'POST',
+    format = "geojson",
+    method = "POST",
     wait = 0,
     ...rest
   }: {
     fetch?: any;
-    format?: 'geojson' | 'xml';
-    method?: 'GET' | 'POST';
+    format?: "geojson" | "xml";
+    method?: "GET" | "POST";
     wait?: number;
   } & Parameters<typeof getFeaturesUrl>[2] = {
     fetch: undefined,
-    format: 'geojson',
-    method: 'POST',
+    format: "geojson",
+    method: "POST",
     wait: 0,
-  },
+  }
 ) {
   const run = async () => {
     const url = getFeaturesUrl(capabilities, typeNameOrNames, {
@@ -223,14 +223,14 @@ export async function getFeatures(
       throw new Error(`bad response status ${response.status}`);
     }
 
-    if (!['geojson', 'xml'].includes(format)) {
-      throw new Error('invalid response format');
+    if (!["geojson", "xml"].includes(format)) {
+      throw new Error("invalid response format");
     }
 
-    if (format === 'geojson') {
+    if (format === "geojson") {
       return response.json();
     }
-    if (format === 'xml') {
+    if (format === "xml") {
       return response.text();
     }
     return undefined;

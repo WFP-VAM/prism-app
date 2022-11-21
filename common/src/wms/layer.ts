@@ -1,10 +1,10 @@
-import { Layer } from '../layer';
+import { Layer } from "../layer";
 
-import { createGetMapUrl, findLayer, parseLayerDates } from './utils';
+import { createGetMapUrl, findLayer, parseLayerDates } from "./utils";
 
 type GetImageOptions = Omit<
   Parameters<typeof createGetMapUrl>[0],
-  'capabilities' | 'layerIds'
+  "capabilities" | "layerIds"
 >;
 
 export default class WMSLayer extends Layer {
@@ -14,7 +14,7 @@ export default class WMSLayer extends Layer {
     super(options);
 
     if (!this.layer) {
-      this.layer = this.capabilities.then(xml => findLayer(xml, this.id)!);
+      this.layer = this.capabilities.then((xml) => findLayer(xml, this.id)!);
     }
 
     this.dates = this.layer.then(parseLayerDates);
@@ -34,7 +34,7 @@ export default class WMSLayer extends Layer {
   }
 
   async getImage(
-    options: GetImageOptions,
+    options: GetImageOptions
   ): Promise<GetImageOptions & { image: ArrayBuffer }> {
     const url = await this.getImageUrl(options);
     const response = await this.fetch(url);

@@ -1,15 +1,15 @@
-import type { MakeOptional } from '../../types';
-import { Layer } from '../../layer';
+import type { MakeOptional } from "../../types";
+import { Layer } from "../../layer";
 import {
   createGetCoverageUrl,
   fetchCoverageDescriptionFromCapabilities,
   findAndParseExtent,
   parseDates,
-} from '../utils';
+} from "../utils";
 
 type GetImageOptions = MakeOptional<
   Parameters<typeof createGetCoverageUrl>[2],
-  'bbox'
+  "bbox"
 >;
 
 export default class WCSLayer extends Layer {
@@ -18,10 +18,10 @@ export default class WCSLayer extends Layer {
   constructor(options: ConstructorParameters<typeof Layer>[0]) {
     super(options);
 
-    this.description = this.capabilities.then(caps =>
+    this.description = this.capabilities.then((caps) =>
       fetchCoverageDescriptionFromCapabilities(caps, this.id, {
         fetch: this.fetch,
-      }),
+      })
     );
   }
 

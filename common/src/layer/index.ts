@@ -1,4 +1,4 @@
-import { parseName } from '../utils';
+import { parseName } from "../utils";
 
 // classes that extend this base Layer class
 // should implement the following functions

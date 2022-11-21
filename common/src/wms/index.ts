@@ -1,2 +1,2 @@
-export { WMS } from './WMS';
-export { createGetLegendGraphicUrl, createGetMapUrl } from './utils';
+export { WMS } from "./WMS";
+export { createGetLegendGraphicUrl, createGetMapUrl } from "./utils";

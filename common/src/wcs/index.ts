@@ -1,1 +1,1 @@
-export { default as WCS } from './WCS';
+export { default as WCS } from "./WCS";

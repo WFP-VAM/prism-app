@@ -1,14 +1,14 @@
-import { Base } from '../../base';
+import { Base } from "../../base";
 
 import {
   findLayers,
   getAllLayerDays,
   getLayerIds,
   getLayerNames,
-} from '../utils';
-import { findName } from '../../utils';
+} from "../utils";
+import { findName } from "../../utils";
 
-import WMSLayer from '../layer';
+import WMSLayer from "../layer";
 
 export class WMS extends Base {
   async getLayerIds(): Promise<string[]> {
@@ -33,14 +33,14 @@ export class WMS extends Base {
     const layers = findLayers(capabilities);
     return Promise.all(
       layers.map(
-        layer =>
+        (layer) =>
           new WMSLayer({
             capabilities,
             id: findName(layer)!,
             fetch: this.fetch,
             layer,
-          }),
-      ),
+          })
+      )
     );
   }
 

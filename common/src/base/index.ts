@@ -1,6 +1,6 @@
-import { getCapabilities, getCapabilitiesUrl } from './utils';
+import { getCapabilities, getCapabilitiesUrl } from "./utils";
 
-import { hasLayerId } from '../utils';
+import { hasLayerId } from "../utils";
 
 const LAYER_DOES_NOT_EXIST = (layerId: string) =>
   `layer "${layerId}" does not exist`;
@@ -17,11 +17,11 @@ export class Base {
     url: string,
     {
       fetch: customFetch,
-      version = '2.0.0',
+      version = "2.0.0",
     }: {
       fetch?: any;
-      version?: '2.0.0';
-    } = { fetch: undefined, version: '2.0.0' },
+      version?: "2.0.0";
+    } = { fetch: undefined, version: "2.0.0" }
   ) {
     this.fetch = customFetch;
     this.version = version;
@@ -32,7 +32,7 @@ export class Base {
 
     this.loading = true;
     if (!this.getCapabilitiesUrl) {
-      throw new Error('no get capabilities url');
+      throw new Error("no get capabilities url");
     }
     this.capabilities = getCapabilities(this.getCapabilitiesUrl, {
       fetch: this.fetch,
@@ -49,13 +49,13 @@ export class Base {
 
   async getLayerNames(): Promise<string[]> {
     throw new Error(
-      `${this.constructor.name} does not implement getLayerNames`,
+      `${this.constructor.name} does not implement getLayerNames`
     );
   }
 
   async hasLayerId(
     layerId: string,
-    options?: Parameters<typeof hasLayerId>[2],
+    options?: Parameters<typeof hasLayerId>[2]
   ): Promise<boolean> {
     return hasLayerId(await this.getLayerIds(), layerId, options);
   }

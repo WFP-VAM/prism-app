@@ -1,12 +1,12 @@
-import { Base } from '../../base';
-import WCSLayer from '../WCSLayer';
+import { Base } from "../../base";
+import WCSLayer from "../WCSLayer";
 
 import {
   findCoverageId,
   findCoverages,
   findLayerIds,
   findCoverageDisplayNames,
-} from '../utils';
+} from "../utils";
 
 export default class WCS extends Base {
   async getLayerIds(): Promise<string[]> {
@@ -31,14 +31,14 @@ export default class WCS extends Base {
     const coverages = findCoverages(capabilities);
     return Promise.all(
       coverages.map(
-        layer =>
+        (layer) =>
           new WCSLayer({
             capabilities: this.capabilities,
             id: findCoverageId(layer)!,
             layer,
             fetch: this.fetch,
-          }),
-      ),
+          })
+      )
     );
   }
 }

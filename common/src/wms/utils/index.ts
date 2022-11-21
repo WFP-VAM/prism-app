@@ -4,11 +4,11 @@ import {
   findTagByPath,
   findTagsByPath,
   getAttribute,
-} from 'xml-utils';
+} from "xml-utils";
 
-import { uniq, union } from 'lodash';
+import { uniq, union } from "lodash";
 
-import type { WMS_OUTPUT_FORMAT } from '../types';
+import type { WMS_OUTPUT_FORMAT } from "../types";
 
 import {
   bboxToString,
@@ -20,7 +20,7 @@ import {
   formatUrl,
   setNoon,
   parseName,
-} from '../../utils';
+} from "../../utils";
 
 type Legend = {
   width: number;
@@ -50,32 +50,32 @@ type WMSLayer = {
 };
 
 export function findLayers(xml: string): string[] {
-  return findTagsByPath(xml, ['Layer', 'Layer']).map(tag => tag.outer);
+  return findTagsByPath(xml, ["Layer", "Layer"]).map((tag) => tag.outer);
 }
 
 export function findTitle(xml: string): string | undefined {
-  return findTagText(xml, 'Title');
+  return findTagText(xml, "Title");
 }
 
 export function findLayer(xml: string, layerName: string): string | undefined {
-  return findLayers(xml).find(layer => findName(layer) === layerName);
+  return findLayers(xml).find((layer) => findName(layer) === layerName);
 }
 
 export function getLayerIds(xml: string): string[] {
   return findLayers(xml)
-    .map(layer => findName(layer) || '')
-    .filter(id => id !== '');
+    .map((layer) => findName(layer) || "")
+    .filter((id) => id !== "");
 }
 
 export function getLayerNames(
   xml: string,
   // sometimes layer titles will have an extra space in the front or end unsuitable for display
-  { clean = false }: { clean: boolean } = { clean: false },
+  { clean = false }: { clean: boolean } = { clean: false }
 ): string[] {
   const layers = findLayers(xml);
-  const titles = layers.map(layer => findTitle(layer) || '');
-  const filteredTitles = titles.filter(title => title !== '');
-  return clean ? filteredTitles.map(title => title.trim()) : filteredTitles;
+  const titles = layers.map((layer) => findTitle(layer) || "");
+  const filteredTitles = titles.filter((title) => title !== "");
+  return clean ? filteredTitles.map((title) => title.trim()) : filteredTitles;
 }
 
 export function parseLayerDates(xml: string): string[] {
@@ -83,32 +83,32 @@ export function parseLayerDates(xml: string): string[] {
     throw new Error("can't parse nothing");
   }
 
-  const dimensions = findTagsByName(xml, 'Dimension');
-  const timeDimension = dimensions.find(dimension => {
-    return getAttribute(dimension.outer, 'name') === 'time';
+  const dimensions = findTagsByName(xml, "Dimension");
+  const timeDimension = dimensions.find((dimension) => {
+    return getAttribute(dimension.outer, "name") === "time";
   });
 
   // we have to trim because sometimes WMS adds spaces or new line
   if (timeDimension?.inner?.trim()) {
     return timeDimension.inner
       .trim()
-      .split(',')
-      .map(datetime => datetime.trim());
+      .split(",")
+      .map((datetime) => datetime.trim());
   }
 
   // we weren't able to find any times using the <Dimension name="time">
   // so let's try <Extent name="time">
-  const extents = findTagsByName(xml, 'Extent');
-  const timeExtent = extents.find(extent => {
-    return getAttribute(extent.outer, 'name') === 'time';
+  const extents = findTagsByName(xml, "Extent");
+  const timeExtent = extents.find((extent) => {
+    return getAttribute(extent.outer, "name") === "time";
   });
 
   // we have to trim because sometimes WMS adds spaces or new line
   if (timeExtent?.inner?.trim()) {
     return timeExtent.inner
       .trim()
-      .split(',')
-      .map(datetime => datetime.trim());
+      .split(",")
+      .map((datetime) => datetime.trim());
   }
 
   return [];
@@ -130,13 +130,13 @@ export function parseLayerDays(xml: string): number[] {
 
   const uniqueDays = uniq(days);
 
-  return uniqueDays.map(date => new Date(date).getTime());
+  return uniqueDays.map((date) => new Date(date).getTime());
 }
 
 export function getAllLayerDays(xml: string): { [layerId: string]: number[] } {
   const layers = findLayers(xml);
   const allDays: { [key: string]: number[] } = {};
-  layers.forEach(layer => {
+  layers.forEach((layer) => {
     const layerId = findName(layer);
     if (layerId) {
       const oldLayerDays = allDays[layerId] || [];
@@ -160,31 +160,31 @@ export function parseLayer(xml: string): WMSLayer | undefined {
     name: short,
     namespace,
     abstract: findAndParseAbstract(xml),
-    keywords: findTagArray(xml, 'Keyword'),
+    keywords: findTagArray(xml, "Keyword"),
     srs: ((): string[] => {
       // sometimes called CRS or SRS depending on the WMS version
-      return [...findTagArray(xml, 'CRS'), ...findTagArray(xml, 'SRS')];
+      return [...findTagArray(xml, "CRS"), ...findTagArray(xml, "SRS")];
     })(),
     bbox: (() => {
       const ExGeographicBoundingBox = findTagByName(
         xml,
-        'EX_GeographicBoundingBox',
+        "EX_GeographicBoundingBox"
       );
       if (ExGeographicBoundingBox) {
         const { inner } = ExGeographicBoundingBox;
         if (inner) {
           return [
-            Number(findTagText(inner, 'westBoundLongitude')),
-            Number(findTagText(inner, 'southBoundLatitude')),
-            Number(findTagText(inner, 'eastBoundLongitude')),
-            Number(findTagText(inner, 'northBoundLatitude')),
+            Number(findTagText(inner, "westBoundLongitude")),
+            Number(findTagText(inner, "southBoundLatitude")),
+            Number(findTagText(inner, "eastBoundLongitude")),
+            Number(findTagText(inner, "northBoundLatitude")),
           ] as const;
         }
       }
       return undefined;
     })(),
     attribution: ((): { title: string } | undefined => {
-      const tag = findTagByPath(xml, ['Attribution', 'Title']);
+      const tag = findTagByPath(xml, ["Attribution", "Title"]);
       if (!tag?.inner) {
         return undefined;
       }
@@ -204,25 +204,25 @@ export function createGetLegendGraphicUrl({
   exceptions,
   featureType,
   fontAntiAliasing = true,
-  fontColor = '0x2D3436',
-  fontName = 'Roboto Light',
-  forceLabels = 'on',
-  forceTitles = 'on',
-  format = 'image/png',
+  fontColor = "0x2D3436",
+  fontName = "Roboto Light",
+  forceLabels = "on",
+  forceTitles = "on",
+  format = "image/png",
   fontSize = 13,
   fontStyle,
-  groupLayout = 'vertical',
+  groupLayout = "vertical",
   height,
   hideEmptyRules = false,
   labelMargin,
   language,
   layer,
-  layout = 'vertical',
+  layout = "vertical",
   rows,
   rowWidth,
   rule,
   scale,
-  servicePath = 'wms',
+  servicePath = "wms",
   sld,
   sldBody,
   style,
@@ -242,8 +242,8 @@ export function createGetLegendGraphicUrl({
   fontName?: string;
   fontSize?: number;
   fontStyle?: string;
-  forceLabels?: 'on' | 'off';
-  forceTitles?: 'on' | 'off';
+  forceLabels?: "on" | "off";
+  forceTitles?: "on" | "off";
   format?: string;
   groupLayout?: string;
   height?: number;
@@ -251,7 +251,7 @@ export function createGetLegendGraphicUrl({
   labelMargin?: number;
   language?: string;
   layer: string;
-  layout?: 'horizontal' | 'vertical';
+  layout?: "horizontal" | "vertical";
   rows?: number;
   rowWidth?: number;
   rule?: string;
@@ -289,8 +289,8 @@ export function createGetLegendGraphicUrl({
   };
 
   const requestParams = {
-    service: 'WMS',
-    request: 'GetLegendGraphic',
+    service: "WMS",
+    request: "GetLegendGraphic",
     exceptions,
     featureType,
     format,
@@ -299,7 +299,7 @@ export function createGetLegendGraphicUrl({
     legend_options: Object.entries(legendOptions)
       .filter(([, value]) => value !== undefined)
       .map(([key, value]) => `${key}:${value}`)
-      .join(';'),
+      .join(";"),
     rule,
     scale,
     sld,
@@ -318,15 +318,15 @@ export function createGetMapUrl({
   bboxSrs,
   capabilities,
   exceptions,
-  format = 'image/png',
+  format = "image/png",
   height = 256,
   imageSrs,
   layerIds,
-  srs = 'EPSG:4326',
+  srs = "EPSG:4326",
   styles,
   time,
   transparent = true,
-  version = '1.3.0',
+  version = "1.3.0",
   width = 256,
 }: {
   base?: string | undefined;
@@ -351,13 +351,13 @@ export function createGetMapUrl({
       return base;
     }
     if (capabilities) {
-      return findAndParseCapabilityUrl(capabilities, 'GetMap');
+      return findAndParseCapabilityUrl(capabilities, "GetMap");
     }
     return undefined;
   })();
 
   if (!baseUrl) {
-    throw new Error('failed to create GetMap Url');
+    throw new Error("failed to create GetMap Url");
   }
 
   return formatUrl(baseUrl, {
@@ -368,14 +368,14 @@ export function createGetMapUrl({
     height,
     imagesr: imageSrs ? imageSrs.toString() : undefined,
     layers: layerIds.toString(),
-    request: 'GetMap',
-    service: 'WMS',
+    request: "GetMap",
+    service: "WMS",
     srs,
-    styles: Array.isArray(styles) ? styles.join(',') : styles,
+    styles: Array.isArray(styles) ? styles.join(",") : styles,
     time,
     transparent,
     version,
-    [version === '1.3.0' ? 'crs' : 'srs']: srs,
+    [version === "1.3.0" ? "crs" : "srs"]: srs,
     width,
   });
 }

@@ -1,5 +1,5 @@
-import { checkExtent } from './bbox';
-import type { BBOX } from '../types';
+import { checkExtent } from "./bbox";
+import type { BBOX } from "../types";
 
 export function scaleImage(
   extent: BBOX,
@@ -15,7 +15,7 @@ export function scaleImage(
     checkExtent: true,
     resolution: 256,
     maxPixels: 5096,
-  },
+  }
 ) {
   if (doCheckExtent) {
     checkExtent(extent);
