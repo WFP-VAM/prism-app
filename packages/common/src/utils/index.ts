@@ -8,6 +8,6 @@ export {
   parseName,
   parseService,
 } from './parse';
-export { setNoon } from './time';
+export { DEFAULT_DATE_FORMAT, setNoon } from './time';
 export { setTimeoutAsync, titlecase, toArray } from './utils';
 export { findTagArray, findTagText } from './xml';

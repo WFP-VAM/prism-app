@@ -13,6 +13,13 @@ import {
   parseLayerDates,
 } from '.';
 
+const xml111 = findAndRead(
+  './data/geonode-wfp-wms-get-capabilities-1.1.1.xml',
+  {
+    encoding: 'utf-8',
+  },
+);
+
 const xml = findAndRead('./data/geonode-wms-get-capabilities-1.3.0.xml', {
   encoding: 'utf-8',
 });
@@ -68,6 +75,13 @@ test('parse layer dates', async ({ eq }) => {
   const layerDates = parseLayerDates(layer);
   eq(layerDates.length, 8);
   eq(layerDates[0], '2012-10-31T12:00:00.000Z');
+});
+
+test('parse layer days (1.1.1)', async ({ eq }) => {
+  const layer = findLayer(xml111, 'col_gdacs_buffers')!;
+  const layerDays = parseLayerDates(layer);
+  eq(layerDays.length, 26);
+  eq(layerDays[0], '2011-08-07T15:00:00.000Z');
 });
 
 test('get layer dates', async ({ eq }) => {

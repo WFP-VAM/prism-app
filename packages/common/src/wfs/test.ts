@@ -102,26 +102,37 @@ test('hasFeatureType', async ({ eq }) => {
 
 test('getFeaturesUrl', async ({ eq }) => {
   eq(
-    getFeaturesUrl(capabilities, 'col_second_level_admin_boundaries'),
-    'https://geonode.wfp.org/geoserver/wfs?service=WFS&version=2.0.0.&request=GetFeature&typeNames=col_second_level_admin_boundaries&outputFormat=json',
+    getFeaturesUrl(capabilities, ['col_second_level_admin_boundaries'], {
+      count: 2,
+    }),
+    'https://geonode.wfp.org/geoserver/wfs?count=2&outputFormat=json&request=GetFeature&service=WFS&typeNames=col_second_level_admin_boundaries&version=2.0.0',
   );
   eq(
-    getFeaturesUrl(capabilities, ['col_second_level_admin_boundaries']),
-    'https://geonode.wfp.org/geoserver/wfs?service=WFS&version=2.0.0.&request=GetFeature&typeNames=col_second_level_admin_boundaries&outputFormat=json',
+    getFeaturesUrl(capabilities, 'acled_incidents_syria', {
+      count: 1,
+      dateField: 'event_date',
+      dateRange: ['2020-09-18', '2022-09-20'],
+    }),
+    'https://geonode.wfp.org/geoserver/wfs?count=1&cql_filter=event_date+BETWEEN+2020-09-18T00%3A00%3A00+AND+2022-09-20T23%3A59%3A59&outputFormat=json&request=GetFeature&service=WFS&typeNames=acled_incidents_syria&version=2.0.0',
+  );
+  eq(
+    getFeaturesUrl(capabilities, 'geonode:afg_trs_roads_wfp', {
+      count: Infinity,
+    }),
+    'https://geonode.wfp.org/geoserver/wfs?outputFormat=json&request=GetFeature&service=WFS&typeNames=geonode%3Aafg_trs_roads_wfp&version=2.0.0',
   );
 });
 
 test('getFeatures', async ({ eq }) => {
-  const count = 1;
-  const geojson = await getFeatures(
-    capabilities,
-    'col_second_level_admin_boundaries',
-    {
-      count: 1,
-      fetch,
-      wait: 1,
-    },
-  );
+  const count = 5;
+  const geojson = await getFeatures(capabilities, 'acled_incidents_syria', {
+    count,
+    dateField: 'event_date',
+    dateRange: ['2020-09-01', '2022-09-30'],
+    fetch,
+    method: 'GET',
+    wait: 1,
+  });
   eq(geojson.features.length, count);
   eq(geojson.numberReturned, count);
   eq(typeof geojson.numberMatched, typeof geojson.totalFeatures); // no filtering
@@ -162,7 +173,7 @@ test('WFS', async ({ eq }) => {
   eq(msg.includes('does not exist'), true);
 
   const layerId = '_2020_global_adm3';
-  const layer = await instance.getLayer(layerId, { fetch });
+  const layer = await instance.getLayer(layerId);
   eq(layer.id, layerId);
   eq(typeof layer.capabilities, 'object');
 
