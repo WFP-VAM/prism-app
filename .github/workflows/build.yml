@@ -21,7 +21,7 @@ jobs:
       - name: Use Node.js 16.x
         uses: actions/setup-node@v2
         with:
-          node-version: '16.x'
+          node-version: "16.x"
 
       - uses: actions/cache@v2
         id: yarn-cache
@@ -37,6 +37,7 @@ jobs:
       - name: Install dependencies if needed.
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
+          cd frontend
           yarn install --frozen-lockfile
           yarn setup:common
 
@@ -98,7 +99,7 @@ jobs:
         uses: dswistowski/surge-sh-action@v1
         with:
           domain: ${{ env.surge_url }}
-          project: 'build/.'
+          project: "build/."
           login: ${{ secrets.surge_login }}
           token: ${{ secrets.surge_token }}
       - name: Get current date
@@ -116,7 +117,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.10']
+        python-version: ["3.10"]
       # run the matrix jobs one after the other, so they can benefit from caching
       max-parallel: 1
 
@@ -131,6 +132,7 @@ jobs:
           virtualenvs-in-project: true
       - name: Install dependencies
         run: |
+          cd api
           poetry install
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       - name: Check formatting with black and isort
