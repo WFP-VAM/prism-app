@@ -42,7 +42,7 @@ jobs:
           yarn setup:common
 
       - name: yarn lint
-        run: yarn lint
+        run: cd frontend && yarn lint
 
       - name: yarn test
         run: cd frontend && yarn test
