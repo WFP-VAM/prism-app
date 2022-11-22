@@ -82,18 +82,36 @@ export function parseLayerDates(xml: string): string[] {
   if (!xml) {
     throw new Error("can't parse nothing");
   }
+
   const dimensions = findTagsByName(xml, 'Dimension');
   const timeDimension = dimensions.find(dimension => {
     return getAttribute(dimension.outer, 'name') === 'time';
   });
-  if (!timeDimension?.inner) {
-    return [];
-  }
+
   // we have to trim because sometimes WMS adds spaces or new line
-  return timeDimension.inner
-    .trim()
-    .split(',')
-    .map(datetime => datetime.trim());
+  if (timeDimension?.inner?.trim()) {
+    return timeDimension.inner
+      .trim()
+      .split(',')
+      .map(datetime => datetime.trim());
+  }
+
+  // we weren't able to find any times using the <Dimension name="time">
+  // so let's try <Extent name="time">
+  const extents = findTagsByName(xml, 'Extent');
+  const timeExtent = extents.find(extent => {
+    return getAttribute(extent.outer, 'name') === 'time';
+  });
+
+  // we have to trim because sometimes WMS adds spaces or new line
+  if (timeExtent?.inner?.trim()) {
+    return timeExtent.inner
+      .trim()
+      .split(',')
+      .map(datetime => datetime.trim());
+  }
+
+  return [];
 }
 
 export function getLayerDates(xml: string, layerName: string): string[] {
@@ -322,7 +340,7 @@ export function createGetMapUrl({
   imageSrs?: number;
   layerIds: string[];
   srs?: string;
-  styles?: string[];
+  styles?: string | string[];
   time?: string;
   transparent?: boolean;
   version?: string;
@@ -353,7 +371,7 @@ export function createGetMapUrl({
     request: 'GetMap',
     service: 'WMS',
     srs,
-    styles: styles?.join(','),
+    styles: Array.isArray(styles) ? styles.join(',') : styles,
     time,
     transparent,
     version,
