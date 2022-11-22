@@ -1281,7 +1281,8 @@
       }
     ],
     "exposure": {
-      "id": "wp_pop_cicunadj"
+      "id": "wp_pop_cicunadj",
+      "calc": "A*(B>=3)"
     }
   },
   "flood_pixel_age": {
@@ -1411,7 +1412,8 @@
       }
     ],
     "exposure": {
-      "id": "wp_pop_cicunadj_khm_2020"
+      "id": "wp_pop_cicunadj_khm_2020",
+      "calc": "A*(B==1)"
     }
   },
   "hydra_s2": {
