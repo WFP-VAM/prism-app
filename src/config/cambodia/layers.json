@@ -1397,55 +1397,6 @@
       }
     ]
   },  
-  "hydra_s1": {
-    "title": "Potential flooding (Sentinel-1)",
-    "type": "wms",
-    "server_layer_name": "hfs1_sfw_mask_khm",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 1.0,
-    "legend_text": "Flood water detected from Sentinel-1 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
-    "legend": [
-      {
-        "value": "1 - flooded",
-        "color": "#a50f15"
-      }
-    ],
-    "exposure": {
-      "id": "wp_pop_cicunadj_khm_2020",
-      "calc": "A*(B==1)"
-    }
-  },
-  "hydra_s2": {
-    "title": "Potential flooding (Sentinel-2)",
-    "type": "wms",
-    "server_layer_name": "hfs2_sfw_mask_khm",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 1.0,
-    "legend_text": "Flood water detected from Sentinel-2 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
-    "legend": [
-      {
-        "value": "1 - flooded",
-        "color": "#a50f15"
-      }
-    ]
-  },
-  "hydra_l8": {
-    "title": "Potential flooding (Landsat)",
-    "type": "wms",
-    "server_layer_name": "hfl8_sfw_mask_khm",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 1.0,
-    "legend_text": "Flood water detected from Landsat-8 data and a permanent water mask from JRC. Source: SERVIR Mekong HYDRAFloods",
-    "legend": [
-      {
-        "value": "1 - flooded",
-        "color": "#a50f15"
-      }
-    ]
-  },
   "ews_remote": {
     "title": "EWS 1294 river level data",
     "loader": "ews",

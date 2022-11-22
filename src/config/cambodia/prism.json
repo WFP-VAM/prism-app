@@ -34,7 +34,6 @@
     "flood": {
       "flood_monitoring": [
         "flood_extent",
-        "flood_pixel_age",
         "flood_duration"
     ],
       "flood_risk": [
