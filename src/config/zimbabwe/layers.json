@@ -445,6 +445,31 @@
     "additional_query_params": {
       "styles": "rfq_14_20_400"
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r1q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "PROVNAMEFU"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "DIST_NAME_"
+        }
+      ],
+      "type": "line"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -471,6 +496,31 @@
     "type": "wms",
     "server_layer_name": "r3q_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r3q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "PROVNAMEFU"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "DIST_NAME_"
+        }
+      ],
+      "type": "line"
+    },
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -662,6 +712,26 @@
     "additional_query_params": {
       "styles": "rfh_16_0_400"
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "PROVNAMEFU"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "DIST_NAME_"
+        }
+      ],
+      "type": "bar"
+    },
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -690,6 +760,26 @@
     "server_layer_name": "r3h_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_800"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "PROVNAMEFU"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "DIST_NAME_"
+        }
+      ],
+      "type": "bar"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -807,9 +897,9 @@
   "precip_blended_dekad": {
     "title": "Blended rainfall aggregate (10-day)",
     "type": "wms",
-    "server_layer_name": "rfb_blended_dekad",
+    "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfh_16_0_300"
+      "styles": "rfb_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -837,9 +927,9 @@
   "precip_blended_1m": {
     "title": "Blended rainfall aggregate (1-month)",
     "type": "wms",
-    "server_layer_name": "r1b_blended_dekad",
+    "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfh_16_0_400"
+      "styles": "r1b_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -867,9 +957,9 @@
   "precip_blended_3m": {
     "title": "Blended rainfall aggregate (3-month)",
     "type": "wms",
-    "server_layer_name": "r3b_blended_dekad",
+    "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfh_16_0_800"
+      "styles": "r3b_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -897,9 +987,9 @@
   "precip_blended_6m": {
     "title": "Blended rainfall aggregate (6-month)",
     "type": "wms",
-    "server_layer_name": "r6b_blended_dekad",
+    "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfh_16_0_1600"
+      "styles": "r6b_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -927,9 +1017,9 @@
   "precip_blended_9m": {
     "title": "Blended rainfall aggregate (9-month)",
     "type": "wms",
-    "server_layer_name": "r9b_blended_dekad",
+    "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfh_16_0_2400"
+      "styles": "r9b_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -957,9 +1047,9 @@
   "precip_blended_1y": {
     "title": "Blended rainfall aggregate (1-year)",
     "type": "wms",
-    "server_layer_name": "ryb_blended_dekad",
+    "server_layer_name": "rfb_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfh_16_0_2400"
+      "styles": "ryb_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -987,9 +1077,9 @@
   "precip_blended_dekad_anomaly": {
     "title": "Blended rainfall anomaly (10-day)",
     "type": "wms",
-    "server_layer_name": "rfq_blended_dekad",
+    "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfq_14_20_400"
+      "styles": "rfq_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1015,9 +1105,9 @@
   "precip_blended_anomaly_1m": {
     "title": "Blended rainfall anomaly (1-month)",
     "type": "wms",
-    "server_layer_name": "r1q_blended_dekad",
+    "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfq_14_20_400"
+      "styles": "r1q_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1043,9 +1133,9 @@
   "precip_blended_anomaly_3m": {
     "title": "Blended rainfall anomaly (3-month)",
     "type": "wms",
-    "server_layer_name": "r3q_blended_dekad",
+    "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "rfq_14_20_400"
+      "styles": "r3q_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1071,9 +1161,9 @@
   "precip_blended_anomaly_6m": {
     "title": "Blended rainfall anomaly (6-month)",
     "type": "wms",
-    "server_layer_name": "r6q_blended_dekad",
+    "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "ryq_14_50_200"
+      "styles": "r6q_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1099,9 +1189,9 @@
   "precip_blended_anomaly_9m": {
     "title": "Blended rainfall anomaly (9-month)",
     "type": "wms",
-    "server_layer_name": "r9q_blended_dekad",
+    "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "ryq_14_50_200"
+      "styles": "r9q_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1127,9 +1217,9 @@
   "precip_blended_anomaly_1y": {
     "title": "Blended rainfall anomaly (1-year)",
     "type": "wms",
-    "server_layer_name": "ryq_blended_dekad",
+    "server_layer_name": "rfq_blended_zwe_dekad",
     "additional_query_params": {
-      "styles": "ryq_14_50_200"
+      "styles": "ryq_blended"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
