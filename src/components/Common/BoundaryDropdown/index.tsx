@@ -12,6 +12,8 @@ import {
   mapSelector,
   relationSelector,
 } from '../../../context/mapStateSlice/selectors';
+import { useSafeTranslation } from '../../../i18n';
+
 import SearchBar from './searchBar';
 import { setMenuItemStyle, containsText, createMatchesTree } from './utils';
 
@@ -70,18 +72,19 @@ const BoundaryDropdown = ({
 }: BoundaryDropdownProps) => {
   const [selected, setSelected] = useState();
   const [search, setSearch] = useState('');
-  const boundaryRelationData = useSelector(relationSelector);
+  const boundaryRelationDataDict = useSelector(relationSelector);
 
   const map = useSelector(mapSelector);
+  const { i18n: i18nLocale } = useSafeTranslation();
 
   const styles = useStyles();
 
   const displayedOptions = useMemo(() => {
-    if (!boundaryRelationData) {
+    if (Object.keys(boundaryRelationDataDict).length === 0) {
       return undefined;
     }
 
-    const { levels, relations } = boundaryRelationData;
+    const { levels, relations } = boundaryRelationDataDict[i18nLocale.language];
 
     const relationsFiltered = relations.filter(rel =>
       containsText(rel.name, search),
@@ -100,9 +103,9 @@ const BoundaryDropdown = ({
         {item.name}
       </MenuItem>
     ));
-  }, [search, boundaryRelationData, styles]);
+  }, [search, boundaryRelationDataDict, styles, i18nLocale.language]);
 
-  if (!boundaryRelationData || !map) {
+  if (!boundaryRelationDataDict || !map) {
     return null;
   }
 

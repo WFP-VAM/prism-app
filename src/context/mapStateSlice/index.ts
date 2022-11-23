@@ -3,7 +3,7 @@ import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerKey, LayerType } from '../../config/types';
 import { LayerDefinitions } from '../../config/utils';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
-import { BoundaryRelationData } from '../../components/Common/BoundaryDropdown/utils';
+import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
 
 interface DateRange {
   startDate?: number;
@@ -22,7 +22,7 @@ export type MapState = {
   // Note that layerData is mainly for storing vector map data.
   // Tile image loading for raster layer is tracked separately on mapTileLoadingStateSlice
   loadingLayerIds: LayerKey[];
-  relationData: BoundaryRelationData;
+  relationData: BoundaryRelationsDict;
 };
 
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -37,7 +37,7 @@ const initialState: MapState = {
   errors: [],
   layersData: [],
   loadingLayerIds: [],
-  relationData: { levels: [], relations: [] },
+  relationData: {},
 };
 
 function keepLayer(layer: LayerType, payload: LayerType) {
@@ -105,7 +105,7 @@ export const mapStateSlice = createSlice({
 
     setRelationData: (
       state,
-      { payload }: PayloadAction<BoundaryRelationData>,
+      { payload }: PayloadAction<BoundaryRelationsDict>,
     ) => ({
       ...state,
       relationData: payload,

@@ -4,6 +4,8 @@ import bbox from '@turf/bbox';
 import union from '@turf/union';
 import { BoundaryLayerData } from '../../../context/layers/boundary';
 
+export type BoundaryRelationsDict = { [key: string]: BoundaryRelationData };
+
 export type BoundaryRelationData = {
   levels: number[];
   relations: BoundaryRelation[];
