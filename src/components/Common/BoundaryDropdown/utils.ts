@@ -1,4 +1,5 @@
 import type { Feature, MultiPolygon, BBox } from '@turf/helpers';
+import { sortBy } from 'lodash';
 import bbox from '@turf/bbox';
 import union from '@turf/union';
 import { BoundaryLayerData } from '../../../context/layers/boundary';
@@ -168,7 +169,7 @@ const createRelationObj = (
     name: name.value,
     parent: parentNames[0],
     level,
-    children,
+    children: Array.prototype.sort.call(children),
     bbox: bboxUnion,
   };
 };
@@ -218,15 +219,18 @@ export const loadBoundaryRelations = (
 
   const adminLevelNumbers: number[] = adminLevelNames.map((_, index) => index);
 
-  const results = relations
-    .filter(rel => rel.level === adminLevelNumbers[0])
-    .reduce(
-      (acc, rel) => [
-        ...acc,
-        ...getFeatures(relations, rel.name, adminLevelNumbers[0]),
-      ],
-      [] as BoundaryRelation[],
-    );
+  const firstLevelRelations = relations.filter(
+    rel => rel.level === adminLevelNumbers[0],
+  );
+  const sortedFirstLevelRelations = sortBy(firstLevelRelations, 'name');
+
+  const results = sortedFirstLevelRelations.reduce(
+    (acc, rel) => [
+      ...acc,
+      ...getFeatures(relations, rel.name, adminLevelNumbers[0]),
+    ],
+    [] as BoundaryRelation[],
+  );
 
   return { levels: adminLevelNumbers, relations: results };
 };
