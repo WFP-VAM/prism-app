@@ -1,4 +1,3 @@
-import React, { PropsWithChildren, useState } from 'react';
 import {
   Box,
   Button,
@@ -15,32 +14,37 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
+import React, { PropsWithChildren, useState } from 'react';
 
-import { useSelector } from 'react-redux';
 import { createGetLegendGraphicUrl } from 'prism-common';
-import { Extent } from '../Layers/raster-utils';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
-import ColorIndicator from './ColorIndicator';
-import LoadingBar from './LoadingBar';
+import { useSelector } from 'react-redux';
 import {
-  LayerType,
   ExposedPopulationDefinition,
+  LayerType,
   LegendDefinitionItem,
 } from '../../../config/types';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
+import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import { Extent } from '../Layers/raster-utils';
+import ColorIndicator from './ColorIndicator';
+import LoadingBar from './LoadingBar';
 
 import {
   BaselineLayerResult,
+  downloadCSVFromTableData,
   ExposedPopulationResult,
+  PolygonAnalysisResult,
+  useAnalysisTableColumns,
 } from '../../../utils/analysis-utils';
 import { downloadToFile, getLegendItemLabel } from '../utils';
 
+import { useSafeTranslation } from '../../../i18n';
+import MultiOptionsButton from '../../Common/MultiOptionsButton';
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
-import { useSafeTranslation } from '../../../i18n';
 
 /**
  * Returns layer identifier used to perform exposure analysis.
@@ -78,21 +82,36 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
+  const { translatedColumns } = useAnalysisTableColumns(analysisResult);
   const features = analysisResult?.featureCollection.features;
   const hasData = features ? features.length > 0 : false;
 
   const { t } = useSafeTranslation();
 
-  const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
-    e.preventDefault();
-    downloadToFile(
-      {
-        content: JSON.stringify(features),
-        isUrl: false,
-      },
-      analysisResult?.getTitle() ?? 'prism_extract',
-      'application/json',
-    );
+  const handleAnalysisDownload = (format: 'csv' | 'geojson'): void => {
+    switch (format) {
+      case 'geojson':
+        downloadToFile(
+          {
+            content: JSON.stringify(features),
+            isUrl: false,
+          },
+          analysisResult?.getTitle() ?? 'prism_extract',
+          'application/json',
+        );
+        break;
+      case 'csv':
+        if (
+          analysisResult &&
+          (analysisResult instanceof BaselineLayerResult ||
+            analysisResult instanceof PolygonAnalysisResult)
+        ) {
+          downloadCSVFromTableData(analysisResult, translatedColumns, null);
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   const legendItems = [
@@ -145,15 +164,24 @@ function Legends({ classes, layers, extent }: LegendsProps) {
             )}
             <Divider />
             <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={e => handleAnalysisDownload(e)}
-                fullWidth
-              >
-                {t('Download')}
-              </Button>
+              <MultiOptionsButton
+                mainLabel="Download"
+                options={[
+                  {
+                    label: 'GEOJSON',
+                    onClick: () => handleAnalysisDownload('geojson'),
+                  },
+                  {
+                    label: 'CSV',
+                    onClick: () => handleAnalysisDownload('csv'),
+                    disabled: !(
+                      analysisResult &&
+                      (analysisResult instanceof BaselineLayerResult ||
+                        analysisResult instanceof PolygonAnalysisResult)
+                    ),
+                  },
+                ]}
+              />
             </Grid>
           </LegendItem>,
         ]
