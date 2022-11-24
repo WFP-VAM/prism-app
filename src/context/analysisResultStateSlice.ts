@@ -221,24 +221,35 @@ export type ExposedPopulationDispatchParams = {
   maskLayerId?: LayerKey;
 };
 
+const getGroupByStr = (
+  boundaryLayerProps: BoundaryLayerProps,
+  useAdminCode: boolean,
+  adminLevel?: number,
+): string => {
+  const { adminLevelNames, adminCode } = boundaryLayerProps;
+  if (adminLevel) {
+    return adminLevelNames[adminLevel - 1];
+  }
+
+  return useAdminCode ? adminCode : adminLevelNames[adminLevelNames.length - 1];
+};
+
 const createAPIRequestParams = (
   geotiffLayer: WMSLayerProps,
   extent: Extent,
   date: ReturnType<Date['getTime']>,
+  useAdminCode: boolean,
   params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
   geojsonOut?: boolean,
 ): ApiData => {
-  const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
+  const boundaryLayerProps = getBoundaryLayerSingleton();
 
   // If the analysis is related to a AdminLevelData layer, we get the index from params.
   // For Exposed population we use the latest-level boundary indicator.
   // WARNING - This change is meant for RBD only. Do we want to generalize this?
   const { adminLevel } = (params || {}) as any;
-  const groupBy =
-    adminLevel !== undefined
-      ? adminLevelNames[adminLevel - 1]
-      : adminCode || adminLevelNames[adminLevelNames.length - 1];
+  const groupBy = getGroupByStr(boundaryLayerProps, useAdminCode, adminLevel);
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -309,6 +320,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     populationLayer,
     extent,
     date,
+    false,
     wfsParams,
     maskParams,
     // Set geojsonOut to true.
@@ -378,6 +390,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     hazardLayer,
     extent,
     date,
+    true,
     baselineLayer,
   );
 
