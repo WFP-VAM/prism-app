@@ -2,7 +2,7 @@
 
 This project is the front-end interface for the World Food Programme's [PRISM project](https://innovation.wfp.org/project/prism). It displays data and impact projections on a configurable map interface.
 
-![](/assets/prism_frontend.png)
+![](/docs/assets/prism_frontend.png)
 
 ## Functionalities
 
@@ -14,7 +14,7 @@ The new PRISM frontend is built as a static website to minimize cross dependenci
 - Display point layers by applying symbology to numeric values associated with a geographic coordinate
 - Display CSV tables in a left side panel
 
-To chose which country to run PRISM for, you can set the environment variable `REACT_APP_COUNTRY`. The current default country is `myanmar`
+To chose which country to run PRISM for, you can set the environment variable `REACT_APP_COUNTRY`. The current default country is `mozambique`
 
 ## Configuration
 
