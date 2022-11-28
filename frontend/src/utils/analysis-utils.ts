@@ -716,6 +716,8 @@ export class PolygonAnalysisResult {
   hazardLayerId: WMSLayerProps['id'];
   adminLevel: AdminLevelType;
   boundaryId: string;
+  startDate?: ReturnType<Date['getTime']>;
+  endDate?: ReturnType<Date['getTime']>;
 
   constructor(
     tableData: TableRow[],
@@ -726,6 +728,8 @@ export class PolygonAnalysisResult {
     statistic: 'area' | 'percentage',
     boundaryId: BoundaryLayerProps['id'],
     threshold?: ThresholdDefinition,
+    startDate?: ReturnType<Date['getTime']>,
+    endDate?: ReturnType<Date['getTime']>,
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
@@ -734,7 +738,8 @@ export class PolygonAnalysisResult {
     this.threshold = threshold;
     this.adminLevel = adminLevel;
     this.boundaryId = boundaryId;
-
+    this.startDate = startDate;
+    this.endDate = endDate;
     // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
     // this legend of red-like colors goes from very light to dark
     this.legend = [

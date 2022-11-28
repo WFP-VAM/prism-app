@@ -548,6 +548,9 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     adminLevel,
     PolygonalAggregationOperations.Percentage,
     boundaryId,
+    undefined,
+    startDate,
+    endDate,
   );
 
   return analysisResult;

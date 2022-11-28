@@ -107,7 +107,11 @@ function Legends({ classes, layers, extent }: LegendsProps) {
       );
     }
     if (analysisResult && analysisResult instanceof PolygonAnalysisResult) {
-      downloadCSVFromTableData(analysisResult, translatedColumns, null);
+      downloadCSVFromTableData(
+        analysisResult,
+        translatedColumns,
+        analysisResult.endDate ?? null,
+      );
     }
   };
 
