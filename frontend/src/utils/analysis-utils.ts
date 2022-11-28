@@ -591,6 +591,7 @@ export class BaselineLayerResult {
   hazardLayerId: WMSLayerProps['id'];
   baselineLayerId: AdminLevelDataLayerProps['id'] | BoundaryLayerProps['id'];
   boundaryId: AdminLevelDataLayerProps['boundary'];
+  analysisDate?: ReturnType<Date['getTime']>;
 
   constructor(
     tableData: TableRow[],
@@ -601,6 +602,7 @@ export class BaselineLayerResult {
     threshold: ThresholdDefinition,
     legend?: LegendDefinition,
     rawApiData?: object[],
+    analysisDate?: ReturnType<Date['getTime']>,
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
@@ -613,6 +615,7 @@ export class BaselineLayerResult {
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
     this.boundaryId = baselineLayer.boundary;
+    this.analysisDate = analysisDate;
   }
 
   getHazardLayer(): WMSLayerProps {
