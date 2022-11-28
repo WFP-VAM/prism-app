@@ -11281,7 +11281,7 @@ pretty-format@^25.1.0:
     ansi-styles "^4.0.0"
     react-is "^16.12.0"
 
-"prism-common@file:../common":
+"prism-common@file:../packages/common":
   version "0.0.0"
   dependencies:
     moment "^2.29.4"

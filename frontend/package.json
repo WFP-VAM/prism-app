@@ -98,7 +98,7 @@
     "marked": "^4.0.10",
     "moment": "^2.29.4",
     "moment-range": "^4.0.2",
-    "prism-common": "file:../common",
+    "prism-common": "file:../packages/common",
     "papaparse": "^5.2.0",
     "prettier": "2.0.5",
     "prop-types": "^15.7.2",
