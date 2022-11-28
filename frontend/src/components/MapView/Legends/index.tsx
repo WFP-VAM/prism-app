@@ -88,29 +88,23 @@ function Legends({ classes, layers, extent }: LegendsProps) {
 
   const { t } = useSafeTranslation();
 
-  const handleAnalysisDownload = (format: 'csv' | 'geojson'): void => {
-    switch (format) {
-      case 'geojson':
-        downloadToFile(
-          {
-            content: JSON.stringify(features),
-            isUrl: false,
-          },
-          analysisResult?.getTitle() ?? 'prism_extract',
-          'application/json',
-        );
-        break;
-      case 'csv':
-        if (
-          analysisResult &&
-          (analysisResult instanceof BaselineLayerResult ||
-            analysisResult instanceof PolygonAnalysisResult)
-        ) {
-          downloadCSVFromTableData(analysisResult, translatedColumns, null);
-        }
-        break;
-      default:
-        break;
+  const handleAnalysisDownloadGeoJson = (): void => {
+    downloadToFile(
+      {
+        content: JSON.stringify(features),
+        isUrl: false,
+      },
+      analysisResult?.getTitle() ?? 'prism_extract',
+      'application/json',
+    );
+  };
+  const handleAnalysisDownloadCsv = (): void => {
+    if (
+      analysisResult &&
+      (analysisResult instanceof BaselineLayerResult ||
+        analysisResult instanceof PolygonAnalysisResult)
+    ) {
+      downloadCSVFromTableData(analysisResult, translatedColumns, null);
     }
   };
 
@@ -169,11 +163,11 @@ function Legends({ classes, layers, extent }: LegendsProps) {
                 options={[
                   {
                     label: 'GEOJSON',
-                    onClick: () => handleAnalysisDownload('geojson'),
+                    onClick: handleAnalysisDownloadGeoJson,
                   },
                   {
                     label: 'CSV',
-                    onClick: () => handleAnalysisDownload('csv'),
+                    onClick: handleAnalysisDownloadCsv,
                     disabled: !(
                       analysisResult &&
                       (analysisResult instanceof BaselineLayerResult ||
