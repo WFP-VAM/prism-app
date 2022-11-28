@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -16,8 +20,13 @@
     "jsx": "react",
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
-  "files": ["src/types/custom.d.ts"]
+  "include": [
+    "src"
+  ],
+  "files": [
+    "src/types/custom.d.ts"
+  ]
 }
