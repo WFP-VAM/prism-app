@@ -36,6 +36,4 @@ yarn-error.log*
 *.bak
 
 # ignore shared code packages build files
-packages/*/dist/
-
-packages/common/pnpm-lock.yaml
+common/dist/
