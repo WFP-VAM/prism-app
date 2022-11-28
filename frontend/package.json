@@ -27,7 +27,7 @@
     "deploy:staging": "firebase deploy --only hosting:staging-target",
     "deploy:surge": "surge --project ./build",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx -c .eslintrc ./src ../common/src",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx -c .eslintrc ./src ../packages/common/src",
     "postinstall": "yarn run setup:maplibre",
     "precommit": "lint-staged",
     "setup:common": "rimraf ./node_modules/prism-common && cd ../packages/common && yarn install && yarn build && cd ../../frontend && yarn install --check-files",
