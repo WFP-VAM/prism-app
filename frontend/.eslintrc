@@ -25,6 +25,7 @@
     ],
     // More verbose prettier suggestions
     "prettier/prettier": ["warn"],
+    "react/require-default-props": ["off"],
     "import/extensions": [
       "error",
       "ignorePackages",
