@@ -39,6 +39,7 @@ import {
   scaleAndFilterAggregateData,
   ExposedPopulationResult,
   scaleFeatureStat,
+  appendBoundaryProperties,
 } from '../utils/analysis-utils';
 import { getRoundedData } from '../utils/data-utils';
 import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
@@ -229,16 +230,8 @@ const createAPIRequestParams = (
   maskParams?: any,
   geojsonOut?: boolean,
 ): ApiData => {
-  const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
-
-  // If the analysis is related to a AdminLevelData layer, we get the index from params.
-  // For Exposed population we use the latest-level boundary indicator.
-  // WARNING - This change is meant for RBD only. Do we want to generalize this?
-  const { adminLevel } = (params || {}) as any;
-  const groupBy =
-    adminLevel !== undefined
-      ? adminLevelNames[adminLevel - 1]
-      : adminCode || adminLevelNames[adminLevelNames.length - 1];
+  // Use adminCode always as groupby item in the backend.
+  const { adminCode: groupBy } = getBoundaryLayerSingleton();
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -273,81 +266,104 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   AnalysisResult,
   ExposedPopulationDispatchParams,
   CreateAsyncThunkTypes
->('analysisResultState/requestAndStoreExposedPopulation', async params => {
-  const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } = params;
+>(
+  'analysisResultState/requestAndStoreExposedPopulation',
+  async (params, api) => {
+    const {
+      exposure,
+      date,
+      extent,
+      statistic,
+      wfsLayerId,
+      maskLayerId,
+    } = params;
 
-  const { id, key, calc } = exposure;
+    const {
+      adminCode: adminCodeId,
+      id: boundaryLayerId,
+    } = getBoundaryLayerSingleton();
 
-  const wfsLayer =
-    wfsLayerId && (LayerDefinitions[wfsLayerId] as WMSLayerProps);
-  const populationLayer = LayerDefinitions[id] as WMSLayerProps;
+    const boundaryData = layerDataSelector(boundaryLayerId)(api.getState()) as
+      | LayerData<BoundaryLayerProps>
+      | undefined;
+    const { id, key, calc } = exposure;
 
-  const wfsParams: WfsRequestParams | undefined = wfsLayer
-    ? {
-        url: `${wfsLayer.baseUrl}/ows`,
-        layer_name: wfsLayer.serverLayerName,
-        time: moment(date).format(DEFAULT_DATE_FORMAT),
-        key,
-      }
-    : undefined;
+    const wfsLayer =
+      wfsLayerId && (LayerDefinitions[wfsLayerId] as WMSLayerProps);
+    const populationLayer = LayerDefinitions[id] as WMSLayerProps;
 
-  const maskLayer =
-    maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
+    const wfsParams: WfsRequestParams | undefined = wfsLayer
+      ? {
+          url: `${wfsLayer.baseUrl}/ows`,
+          layer_name: wfsLayer.serverLayerName,
+          time: moment(date).format(DEFAULT_DATE_FORMAT),
+          key,
+        }
+      : undefined;
 
-  const maskParams = maskLayer
-    ? {
-        mask_url: getWCSLayerUrl({
-          layer: maskLayer,
-          date,
-          extent,
-        }),
-        mask_calc_expr: calc || 'A*(B==1)',
-      }
-    : undefined;
+    const maskLayer =
+      maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
 
-  const apiRequest = createAPIRequestParams(
-    populationLayer,
-    extent,
-    date,
-    wfsParams,
-    maskParams,
-    // Set geojsonOut to true.
-    // TODO - Remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
-    true,
-  );
+    const maskParams = maskLayer
+      ? {
+          mask_url: getWCSLayerUrl({
+            layer: maskLayer,
+            date,
+            extent,
+          }),
+          mask_calc_expr: calc || 'A*(B==1)',
+        }
+      : undefined;
 
-  const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
-    []) as Feature[];
+    const apiRequest = createAPIRequestParams(
+      populationLayer,
+      extent,
+      date,
+      wfsParams,
+      maskParams,
+      // Set geojsonOut to true.
+      // TODO - Remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
+      true,
+    );
 
-  const { scale, offset } = populationLayer.wcsConfig ?? {
-    scale: undefined,
-    offset: undefined,
-  };
+    const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
+      []) as Feature[];
 
-  const features = apiFeatures
-    .map(f => scaleFeatureStat(f, scale || 1, offset || 0, statistic))
-    .filter(f => get(f.properties, statistic) != null);
+    const { scale, offset } = populationLayer.wcsConfig ?? {
+      scale: undefined,
+      offset: undefined,
+    };
 
-  const collection: FeatureCollection = {
-    type: 'FeatureCollection',
-    features,
-  };
+    const features = apiFeatures
+      .map(f => scaleFeatureStat(f, scale || 1, offset || 0, statistic))
+      .filter(f => get(f.properties, statistic) != null);
 
-  const groupBy = apiRequest.group_by;
-  const legend = createLegendFromFeatureArray(features, statistic);
-  // TODO - use raster legend title
-  const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
+    const featuresWithBoundaryProps = appendBoundaryProperties(
+      adminCodeId,
+      features,
+      boundaryData!.data.features,
+    );
 
-  return new ExposedPopulationResult(
-    collection,
-    statistic,
-    legend,
-    legendText,
-    groupBy,
-    key,
-    date,
-  );
-});
+    const collection: FeatureCollection = {
+      type: 'FeatureCollection',
+      features: featuresWithBoundaryProps,
+    };
+
+    const legend = createLegendFromFeatureArray(features, statistic);
+    // TODO - use raster legend title
+    const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
+
+    return new ExposedPopulationResult(
+      collection,
+      statistic,
+      legend,
+      legendText,
+      apiRequest.group_by,
+      key,
+      date,
+    );
+  },
+);
 
 export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisResult,
