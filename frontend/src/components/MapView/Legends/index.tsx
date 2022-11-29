@@ -88,6 +88,11 @@ function Legends({ classes, layers, extent }: LegendsProps) {
 
   const { t } = useSafeTranslation();
 
+  const doesLayerAcceptCSVDownload =
+    analysisResult &&
+    (analysisResult instanceof BaselineLayerResult ||
+      analysisResult instanceof PolygonAnalysisResult);
+
   const handleAnalysisDownloadGeoJson = (): void => {
     downloadToFile(
       {
@@ -100,6 +105,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   };
   const handleAnalysisDownloadCsv = (): void => {
     if (
+      // Explicit condition for type narrowing
       analysisResult &&
       (analysisResult instanceof BaselineLayerResult ||
         analysisResult instanceof PolygonAnalysisResult)
@@ -174,15 +180,14 @@ function Legends({ classes, layers, extent }: LegendsProps) {
                     label: 'GEOJSON',
                     onClick: handleAnalysisDownloadGeoJson,
                   },
-                  {
-                    label: 'CSV',
-                    onClick: handleAnalysisDownloadCsv,
-                    disabled: !(
-                      analysisResult &&
-                      (analysisResult instanceof BaselineLayerResult ||
-                        analysisResult instanceof PolygonAnalysisResult)
-                    ),
-                  },
+                  ...(doesLayerAcceptCSVDownload
+                    ? [
+                        {
+                          label: 'CSV',
+                          onClick: handleAnalysisDownloadCsv,
+                        },
+                      ]
+                    : []),
                 ]}
               />
             </Grid>
