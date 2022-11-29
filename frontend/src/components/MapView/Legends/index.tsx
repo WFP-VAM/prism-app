@@ -83,8 +83,10 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
   const { translatedColumns } = useAnalysisTableColumns(analysisResult);
-  const features = analysisResult?.featureCollection.features;
-  const hasData = features ? features.length > 0 : false;
+  const featureCollection = analysisResult?.featureCollection;
+  const hasData = featureCollection?.features
+    ? featureCollection.features.length > 0
+    : false;
 
   const { t } = useSafeTranslation();
 
@@ -96,7 +98,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const handleAnalysisDownloadGeoJson = (): void => {
     downloadToFile(
       {
-        content: JSON.stringify(features),
+        content: JSON.stringify(featureCollection),
         isUrl: false,
       },
       analysisResult?.getTitle() ?? 'prism_extract',
