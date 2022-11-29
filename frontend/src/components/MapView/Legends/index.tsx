@@ -36,6 +36,7 @@ import {
   BaselineLayerResult,
   downloadCSVFromTableData,
   ExposedPopulationResult,
+  generateAnalysisFilename,
   PolygonAnalysisResult,
   useAnalysisTableColumns,
 } from '../../../utils/analysis-utils';
@@ -95,16 +96,42 @@ function Legends({ classes, layers, extent }: LegendsProps) {
     (analysisResult instanceof BaselineLayerResult ||
       analysisResult instanceof PolygonAnalysisResult);
 
+  const getAnalysisDate = () => {
+    if (analysisResult instanceof BaselineLayerResult) {
+      return analysisResult.analysisDate;
+    }
+    if (analysisResult instanceof PolygonAnalysisResult) {
+      return analysisResult.endDate;
+    }
+    return null;
+  };
+
   const handleAnalysisDownloadGeoJson = (): void => {
+    let filename: string | undefined;
+    if (
+      // Explicit condition for type narrowing
+      analysisResult &&
+      (analysisResult instanceof BaselineLayerResult ||
+        analysisResult instanceof PolygonAnalysisResult)
+    ) {
+      filename = generateAnalysisFilename(
+        analysisResult,
+        getAnalysisDate() ?? null,
+      );
+    } else {
+      filename = analysisResult?.getTitle();
+    }
+
     downloadToFile(
       {
         content: JSON.stringify(featureCollection),
         isUrl: false,
       },
-      analysisResult?.getTitle() ?? 'prism_extract',
+      filename ?? 'prism_extract',
       'application/json',
     );
   };
+
   const handleAnalysisDownloadCsv = (): void => {
     if (
       // Explicit condition for type narrowing
@@ -112,15 +139,10 @@ function Legends({ classes, layers, extent }: LegendsProps) {
       (analysisResult instanceof BaselineLayerResult ||
         analysisResult instanceof PolygonAnalysisResult)
     ) {
-      const analysisDate =
-        analysisResult instanceof BaselineLayerResult
-          ? analysisResult.analysisDate
-          : analysisResult.endDate;
-
       downloadCSVFromTableData(
         analysisResult,
         translatedColumns,
-        analysisDate ?? null,
+        getAnalysisDate() ?? null,
       );
     }
   };

@@ -768,18 +768,17 @@ export class PolygonAnalysisResult {
   }
 }
 
-export function downloadCSVFromTableData(
+export function generateAnalysisFilename(
   analysisResult: TabularAnalysisResult,
-  columns: Column[],
   selectedDate: number | null,
 ) {
   const {
     hazardLayerId,
     threshold,
     statistic,
-    tableData,
     key: createdAt,
   } = analysisResult;
+
   const aboveThreshold =
     threshold && threshold.above !== undefined ? threshold.above : undefined;
   const belowThreshold =
@@ -792,6 +791,25 @@ export function downloadCSVFromTableData(
     analysisResult instanceof PolygonAnalysisResult
       ? analysisResult.adminLevel
       : undefined;
+
+  const dateString = moment(selectedDate || createdAt).format(
+    DEFAULT_DATE_FORMAT_SNAKE_CASE,
+  );
+
+  return `analysis_${hazardLayerId}${
+    baselineLayerId ? `_${baselineLayerId}` : ''
+  }${adminLevel ? `_${adminLevel}` : ''}${
+    aboveThreshold ? `_${aboveThreshold}` : ''
+  }${belowThreshold ? `_${belowThreshold}` : ''}_${statistic}_${dateString}`;
+}
+
+export function downloadCSVFromTableData(
+  analysisResult: TabularAnalysisResult,
+  columns: Column[],
+  selectedDate: number | null,
+) {
+  const { tableData } = analysisResult;
+
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
     columns.map(col => quoteAndEscapeCell(col.label)).join(','),
@@ -804,16 +822,10 @@ export function downloadCSVFromTableData(
   const encodedUri = encodeURI(rawCsv);
   const link = document.createElement('a');
   link.setAttribute('href', encodedUri);
-  const dateString = moment(selectedDate || createdAt).format(
-    DEFAULT_DATE_FORMAT_SNAKE_CASE,
-  );
+
   link.setAttribute(
     'download',
-    `analysis_${hazardLayerId}${baselineLayerId ? `_${baselineLayerId}` : ''}${
-      adminLevel ? `_${adminLevel}` : ''
-    }${aboveThreshold ? `_${aboveThreshold}` : ''}${
-      belowThreshold ? `_${belowThreshold}` : ''
-    }_${statistic}_${dateString}.csv`,
+    `${generateAnalysisFilename(analysisResult, selectedDate)}.csv`,
   );
   document.body.appendChild(link); // Required for FF
 
