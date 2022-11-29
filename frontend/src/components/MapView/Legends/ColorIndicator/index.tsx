@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import { alpha } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -18,7 +18,7 @@ const useStyles = makeStyles(() =>
       }: {
         color: string;
         opacity: number;
-      }) => fade(color, opacity),
+      }) => alpha(color, opacity),
     },
   }),
 );

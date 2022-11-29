@@ -16,7 +16,7 @@ exports[`renders as expected 1`] = `
       style="height: 100%;"
     />
     <div
-      class="MuiGrid-root MapView-buttonContainer-2 MuiGrid-container MuiGrid-justify-xs-space-between"
+      class="MuiGrid-root MapView-buttonContainer-2 MuiGrid-container MuiGrid-justify-content-xs-space-between"
     >
       <div
         class="MuiGrid-root MuiGrid-item"

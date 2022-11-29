@@ -6,7 +6,7 @@ exports[`renders as expected 1`] = `
     class="DateSelector-container-1"
   >
     <div
-      class="MuiGrid-root DateSelector-datePickerContainer-2 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
+      class="MuiGrid-root DateSelector-datePickerContainer-2 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-center"
     >
       <div
         class="MuiGrid-root DateSelector-datePickerGrid-4 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
@@ -72,7 +72,7 @@ exports[`renders as expected 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="svg-inline--fa fa-caret-up fa-w-10 "
+                class="svg-inline--fa fa-caret-up "
                 color="white"
                 data-icon="caret-up"
                 data-prefix="fas"

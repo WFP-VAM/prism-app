@@ -62,7 +62,7 @@ exports[`renders as expected 1`] = `
             />
           </div>
           <div
-            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 MuiGrid-item MuiGrid-align-items-xs-center MuiGrid-justify-xs-flex-end MuiGrid-grid-xs-3"
+            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 MuiGrid-item MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-flex-end MuiGrid-grid-xs-3"
           >
             <div
               class="MuiGrid-root MuiGrid-item"
@@ -75,7 +75,7 @@ exports[`renders as expected 1`] = `
               >
                 <svg
                   aria-hidden="true"
-                  class="svg-inline--fa fa-github fa-w-16 "
+                  class="svg-inline--fa fa-github "
                   data-icon="github"
                   data-prefix="fab"
                   focusable="false"
@@ -103,7 +103,7 @@ exports[`renders as expected 1`] = `
               >
                 <svg
                   aria-hidden="true"
-                  class="svg-inline--fa fa-info-circle fa-w-16 "
+                  class="svg-inline--fa fa-info-circle "
                   data-icon="info-circle"
                   data-prefix="fas"
                   focusable="false"
@@ -176,7 +176,7 @@ exports[`renders as expected 1`] = `
             >
               <svg
                 aria-hidden="true"
-                class="svg-inline--fa fa-bars fa-w-14 "
+                class="svg-inline--fa fa-bars "
                 data-icon="bars"
                 data-prefix="fas"
                 focusable="false"
@@ -201,7 +201,7 @@ exports[`renders as expected 1`] = `
                   class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3"
                 >
                   <div
-                    class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-justify-xs-space-around"
+                    class="MuiGrid-root MuiGrid-container MuiGrid-item MuiGrid-justify-content-xs-space-around"
                   >
                     <div
                       class="MuiGrid-root MuiGrid-item"
@@ -214,7 +214,7 @@ exports[`renders as expected 1`] = `
                       >
                         <svg
                           aria-hidden="true"
-                          class="svg-inline--fa fa-github fa-w-16 "
+                          class="svg-inline--fa fa-github "
                           data-icon="github"
                           data-prefix="fab"
                           focusable="false"

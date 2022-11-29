@@ -200,7 +200,7 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
       <Grid
         container
         alignItems="center"
-        justify="center"
+        justifyContent="center"
         className={classes.datePickerContainer}
       >
         <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
