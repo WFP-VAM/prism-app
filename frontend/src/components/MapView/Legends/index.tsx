@@ -99,18 +99,20 @@ function Legends({ classes, layers, extent }: LegendsProps) {
     );
   };
   const handleAnalysisDownloadCsv = (): void => {
-    if (analysisResult && analysisResult instanceof BaselineLayerResult) {
+    if (
+      analysisResult &&
+      (analysisResult instanceof BaselineLayerResult ||
+        analysisResult instanceof PolygonAnalysisResult)
+    ) {
+      const analysisDate =
+        analysisResult instanceof BaselineLayerResult
+          ? analysisResult.analysisDate
+          : analysisResult.endDate;
+
       downloadCSVFromTableData(
         analysisResult,
         translatedColumns,
-        analysisResult.analysisDate ?? null,
-      );
-    }
-    if (analysisResult && analysisResult instanceof PolygonAnalysisResult) {
-      downloadCSVFromTableData(
-        analysisResult,
-        translatedColumns,
-        analysisResult.endDate ?? null,
+        analysisDate ?? null,
       );
     }
   };
