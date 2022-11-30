@@ -107,27 +107,27 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   };
 
   const handleAnalysisDownloadGeoJson = (): void => {
-    let filename: string | undefined;
-    if (
-      // Explicit condition for type narrowing
-      analysisResult &&
-      (analysisResult instanceof BaselineLayerResult ||
-        analysisResult instanceof PolygonAnalysisResult)
-    ) {
-      filename = generateAnalysisFilename(
-        analysisResult,
-        getAnalysisDate() ?? null,
-      );
-    } else {
-      filename = analysisResult?.getTitle();
-    }
+    const getFilename = () => {
+      if (
+        // Explicit condition for type narrowing
+        analysisResult &&
+        (analysisResult instanceof BaselineLayerResult ||
+          analysisResult instanceof PolygonAnalysisResult)
+      ) {
+        return generateAnalysisFilename(
+          analysisResult,
+          getAnalysisDate() ?? null,
+        );
+      }
+      return analysisResult?.getTitle();
+    };
 
     downloadToFile(
       {
         content: JSON.stringify(featureCollection),
         isUrl: false,
       },
-      filename ?? 'prism_extract',
+      getFilename() ?? 'prism_extract',
       'application/json',
     );
   };
