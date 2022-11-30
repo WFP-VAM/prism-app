@@ -710,7 +710,7 @@ function Analyser({ extent, classes }: AnalyserProps) {
                       )
                     }
                   >
-                    <Typography variant="body2">{t('Download')}</Typography>
+                    <Typography variant="body2">{t('Download CSV')}</Typography>
                   </Button>
                   <Button
                     className={classes.innerAnalysisButton}
