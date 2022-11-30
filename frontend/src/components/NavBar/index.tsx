@@ -91,7 +91,7 @@ function NavBar({ classes }: NavBarProps) {
             <Grid
               spacing={3}
               container
-              justifyContent="flex-end"
+              justify="flex-end"
               alignItems="center"
               item
               xs={3}
@@ -120,7 +120,7 @@ function NavBar({ classes }: NavBarProps) {
               >
                 <div className={classes.mobileDrawerContent}>
                   <Grid container spacing={3}>
-                    <Grid container justifyContent="space-around" item>
+                    <Grid container justify="space-around" item>
                       {buttons}
                     </Grid>
                     <Grid container direction="column" item>

@@ -474,9 +474,9 @@ function MapView({ classes }: MapViewProps) {
         }
       }
     };
-    map.current.on('sourcedataloading', listener);
-    map.current.on('sourcedata', listener);
-    map.current.on('idle', () => {
+    map.on('sourcedataloading', listener);
+    map.on('sourcedata', listener);
+    map.on('idle', () => {
       if (layerIds.size > 0) {
         layerIds.clear();
         dispatch(setLoadingLayerIds([...layerIds]));
@@ -495,8 +495,8 @@ function MapView({ classes }: MapViewProps) {
       const newZoom = map.getZoom();
       dispatch(setLocation({ bounds, zoom: newZoom }));
     };
-    map.current.on('dragend', onDragend);
-    map.current.on('zoomend', onZoomend);
+    map.on('dragend', onDragend);
+    map.on('zoomend', onZoomend);
     // Show initial value
     onZoomend();
   };
@@ -568,7 +568,7 @@ function MapView({ classes }: MapViewProps) {
       </MapboxMap>
       <Grid
         container
-        justifyContent="space-between"
+        justify="space-between"
         className={classes.buttonContainer}
       >
         <Grid item>
