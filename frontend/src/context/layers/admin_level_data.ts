@@ -1,5 +1,5 @@
 import { FeatureCollection } from 'geojson';
-import { get, isNull, isString } from 'lodash';
+import { get, isNull, isString, pick } from 'lodash';
 import moment from 'moment';
 import {
   BoundaryLayerProps,
@@ -76,7 +76,22 @@ export async function getAdminLevelDataLayerData(
         },
         {},
       );
-      return { adminKey, value, ...featureInfoPropsValues } as DataRecord;
+
+      const adminNames = pick(
+        adminBoundaries.features.find(
+          adminProperty =>
+            get(adminProperty.properties, adminBoundaryLayer.adminCode) ===
+            adminKey,
+        )?.properties,
+        adminBoundaryLayer.adminLevelNames,
+      );
+
+      return {
+        adminKey,
+        value,
+        ...featureInfoPropsValues,
+        ...adminNames,
+      } as DataRecord;
     })
     .filter((v): v is DataRecord => v !== undefined);
 
