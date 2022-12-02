@@ -1,13 +1,11 @@
+import { castArray } from "lodash";
 import { findTagByName, findTagsByPath } from "xml-utils";
 
 export function findTagArray(
   xml: string,
   tagNameOrPath: string | string[]
 ): string[] {
-  const tagPath = Array.isArray(tagNameOrPath)
-    ? tagNameOrPath
-    : [tagNameOrPath];
-  return findTagsByPath(xml, tagPath)
+  return findTagsByPath(xml, castArray(tagNameOrPath))
     .filter((tag) => tag.inner !== null)
     .map((tag) => tag.inner!);
 }
