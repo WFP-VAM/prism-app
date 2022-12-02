@@ -13,8 +13,28 @@ test("WCS version 1.0.0", async ({ eq }) => {
   const layerIds = await wcs.getLayerIds();
   eq(layerIds.includes("10DayAnomaly"), true);
 
+  const layerNames = await wcs.getLayerNames();
+  eq(layerNames[0], "mdc 10 Day Indices");
+  eq(
+    layerNames.every((layerName) => typeof layerName === "string"),
+    true
+  );
+
   const layers = await wcs.getLayers();
-  eq(layers.length, 10);
+  eq(layers.length, 23);
+
+  const days = await wcs.getLayerDays();
+  eq(Object.keys(days).length, layerNames.length);
+  eq(days["10DayTrend"].length, 2);
+
+  const layer = await wcs.getLayer("10DayTrend");
+  const layerDays = await layer.getLayerDayRanges();
+  eq(layerDays.length, 29);
+  eq(new Date(layerDays[0]).toUTCString(), "Tue, 21 May 2019 12:00:00 GMT");
+  eq(
+    new Date(layerDays[layerDays.length - 1]).toUTCString(),
+    "Thu, 01 Oct 2020 12:00:00 GMT"
+  );
 });
 
 test("WCS on version 1.1.1", async ({ eq }) => {

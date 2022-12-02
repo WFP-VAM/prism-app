@@ -5,6 +5,7 @@ import {
   fetchCoverageDescriptionFromCapabilities,
   findAndParseExtent,
   parseDates,
+  parseLayerDays,
 } from "../utils";
 
 type GetImageOptions = MakeOptional<
@@ -45,5 +46,9 @@ export default class WCSLayer extends Layer {
 
   async getLayerDates(): Promise<string[]> {
     return parseDates(await this.description);
+  }
+
+  async getLayerDayRanges(): Promise<number[]> {
+    return parseLayerDays(await this.description);
   }
 }

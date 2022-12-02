@@ -2,10 +2,11 @@ import { Base } from "../../base";
 import WCSLayer from "../WCSLayer";
 
 import {
-  findCoverageId,
   findCoverages,
+  findLayerId,
   findLayerIds,
   findCoverageDisplayNames,
+  getAllLayerDays,
 } from "../utils";
 
 export default class WCS extends Base {
@@ -34,11 +35,15 @@ export default class WCS extends Base {
         (layer) =>
           new WCSLayer({
             capabilities: this.capabilities,
-            id: findCoverageId(layer)!,
+            id: findLayerId(layer)!,
             layer,
             fetch: this.fetch,
           })
       )
     );
+  }
+
+  async getLayerDays(): Promise<{ [layerId: string]: number[] }> {
+    return getAllLayerDays(await this.capabilities);
   }
 }
