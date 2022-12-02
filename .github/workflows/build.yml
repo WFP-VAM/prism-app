@@ -26,7 +26,7 @@ jobs:
           path: |
             **/node_modules
             **/.eslintcache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/packages/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
 
@@ -62,7 +62,7 @@ jobs:
           path: |
             **/node_modules
             **/.eslintcache
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/packages/common/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/frontend/yarn.lock') }}-${{ hashFiles('**/common/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
 
