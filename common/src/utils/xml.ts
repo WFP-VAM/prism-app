@@ -1,14 +1,15 @@
-import { findTagByName, findTagsByName } from "xml-utils";
+import { findTagByName, findTagsByPath } from "xml-utils";
 
-export function findTagArray(xml: string, tagName: string): string[] {
-  const tags: string[] = [];
-  findTagsByName(xml, tagName).forEach((tag) => {
-    if (tag && tag.inner) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      tags.push(tag.inner);
-    }
-  });
-  return tags;
+export function findTagArray(
+  xml: string,
+  tagNameOrPath: string | string[]
+): string[] {
+  const tagPath = Array.isArray(tagNameOrPath)
+    ? tagNameOrPath
+    : [tagNameOrPath];
+  return findTagsByPath(xml, tagPath)
+    .filter((tag) => tag.inner !== null)
+    .map((tag) => tag.inner!);
 }
 
 export function findTagText(xml: string, tagName: string): string | undefined {
