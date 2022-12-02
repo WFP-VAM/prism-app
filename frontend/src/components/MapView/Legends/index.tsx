@@ -42,7 +42,7 @@ import { useSafeTranslation } from '../../../i18n';
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
 import AnalysisDownloadButton from './AnalysisDownloadButton';
-
+import AdminLevelDataDownloadButton from './AdminLevelDataDownloadButton';
 /**
  * Returns layer identifier used to perform exposure analysis.
  *
@@ -118,7 +118,14 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           extent={extent}
         >
           {t(layer.legendText)}
-          {/* If admin level data, display divider and button */}
+          {layer.type === 'admin_level_data' && (
+            <>
+              <Divider />
+              <Grid item>
+                <AdminLevelDataDownloadButton layer={layer} />
+              </Grid>
+            </>
+          )}
         </LegendItem>
       );
     }),

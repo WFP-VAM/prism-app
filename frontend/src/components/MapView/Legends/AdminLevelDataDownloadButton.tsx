@@ -1,0 +1,67 @@
+import moment from 'moment';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { AdminLevelDataLayerProps, LayerType } from '../../../config/types';
+import { LayerData } from '../../../context/layers/layer-data';
+import {
+  dateRangeSelector,
+  layerDataSelector,
+} from '../../../context/mapStateSlice/selectors';
+import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from '../../../utils/name-utils';
+import MultiOptionsButton from '../../Common/MultiOptionsButton';
+import { downloadToFile } from '../utils';
+
+interface IProps {
+  layer: LayerType;
+}
+
+function AdminLevelDataDownloadButton({ layer }: IProps) {
+  const { startDate: selectedDate } = useSelector(dateRangeSelector);
+  const adminLevelLayerData = useSelector(
+    layerDataSelector(layer.id, selectedDate),
+  ) as LayerData<AdminLevelDataLayerProps>;
+
+  const getFilename = (): string => {
+    const safeTitle = layer.title ?? layer.id;
+    if (selectedDate) {
+      const dateString = moment(selectedDate).format(
+        DEFAULT_DATE_FORMAT_SNAKE_CASE,
+      );
+      return `${safeTitle}_${dateString}`;
+    }
+    return safeTitle;
+  };
+
+  const handleDownloadGeoJson = (): void => {
+    downloadToFile(
+      {
+        content: JSON.stringify(adminLevelLayerData.data.features),
+        isUrl: false,
+      },
+      getFilename(),
+      'application/json',
+    );
+  };
+
+  const handleDownloadCsv = (): void => {
+    console.log('csv');
+  };
+
+  return (
+    <MultiOptionsButton
+      mainLabel="Download"
+      options={[
+        {
+          label: 'GEOJSON',
+          onClick: handleDownloadGeoJson,
+        },
+        {
+          label: 'CSV',
+          onClick: handleDownloadCsv,
+        },
+      ]}
+    />
+  );
+}
+
+export default AdminLevelDataDownloadButton;
