@@ -1,3 +1,4 @@
+import { uniq, union } from "lodash";
 import { findTagsByName, getAttribute } from "xml-utils";
 
 import { findAndParseEnvelope } from "../../gml";
@@ -9,6 +10,7 @@ import {
   findTagText,
   formatUrl,
   scaleImage,
+  setNoon,
 } from "../../utils";
 
 import {
@@ -115,15 +117,11 @@ export function findCoverage(
 }
 
 export function findCoverageDisplayNames(xml: string): string[] {
-  const displayNames: string[] = [];
-  findCoverages(xml).forEach((layer) => {
-    const displayName = findCoverageDisplayName(layer);
-    if (displayName) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      displayNames.push(displayName);
-    }
-  });
-  return displayNames;
+  const coverages = findCoverages(xml);
+  const displayNames = coverages.map((coverage) =>
+    findCoverageDisplayName(coverage)
+  );
+  return displayNames.filter((name) => name !== undefined).map((name) => name!);
 }
 
 export function findLayerIds(
@@ -320,13 +318,44 @@ export function parseCoverage(xml: string) {
 }
 
 export function parseDates(description: string): string[] {
-  return findTagArray(description, [
+  const timePositions = findTagArray(description, [
     "domainSet",
     "temporalDomain",
     "gml:timePosition",
   ]);
+
+  if (timePositions.length > 0) {
+    return timePositions;
+  }
+
+  return findTagArray(description, ["lonLatEnvelope", "gml:timePosition"]);
 }
 
 export function parseSupportedFormats(xml: string): string[] {
   return findTagArray(xml, ["supportedFormats", "formats"]);
+}
+
+export function parseLayerDays(xml: string): number[] {
+  const dateStrings = parseDates(xml);
+
+  // round to noon to avoid errors due to daylight saving
+  const days = dateStrings.map(setNoon);
+
+  const uniqueDays = uniq(days);
+
+  return uniqueDays.map((date) => new Date(date).getTime());
+}
+
+export function getAllLayerDays(xml: string): { [layerId: string]: number[] } {
+  const layers = findCoverages(xml);
+  const allDays: { [key: string]: number[] } = {};
+  layers.forEach((layer) => {
+    const layerId = findLayerId(layer);
+    if (layerId) {
+      const oldLayerDays = allDays[layerId] || [];
+      const layerDays = parseLayerDays(layer);
+      allDays[layerId] = union(layerDays, oldLayerDays);
+    }
+  });
+  return allDays;
 }
