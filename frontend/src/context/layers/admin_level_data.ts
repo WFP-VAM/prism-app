@@ -83,7 +83,11 @@ export async function getAdminLevelDataLayerData(
             get(adminProperty.properties, adminBoundaryLayer.adminCode) ===
             adminKey,
         )?.properties,
-        adminBoundaryLayer.adminLevelNames,
+        // lodash pick handles duplicate keys
+        [
+          ...adminBoundaryLayer.adminLevelNames,
+          ...adminBoundaryLayer.adminLevelLocalNames,
+        ],
       );
 
       return {
