@@ -591,6 +591,7 @@ export class BaselineLayerResult {
   hazardLayerId: WMSLayerProps['id'];
   baselineLayerId: AdminLevelDataLayerProps['id'] | BoundaryLayerProps['id'];
   boundaryId: AdminLevelDataLayerProps['boundary'];
+  analysisDate?: ReturnType<Date['getTime']>;
 
   constructor(
     tableData: TableRow[],
@@ -601,6 +602,7 @@ export class BaselineLayerResult {
     threshold: ThresholdDefinition,
     legend?: LegendDefinition,
     rawApiData?: object[],
+    analysisDate?: ReturnType<Date['getTime']>,
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
@@ -613,6 +615,7 @@ export class BaselineLayerResult {
     this.hazardLayerId = hazardLayer.id;
     this.baselineLayerId = baselineLayer.id;
     this.boundaryId = baselineLayer.boundary;
+    this.analysisDate = analysisDate;
   }
 
   getHazardLayer(): WMSLayerProps {
@@ -713,6 +716,8 @@ export class PolygonAnalysisResult {
   hazardLayerId: WMSLayerProps['id'];
   adminLevel: AdminLevelType;
   boundaryId: string;
+  startDate?: ReturnType<Date['getTime']>;
+  endDate?: ReturnType<Date['getTime']>;
 
   constructor(
     tableData: TableRow[],
@@ -723,6 +728,8 @@ export class PolygonAnalysisResult {
     statistic: 'area' | 'percentage',
     boundaryId: BoundaryLayerProps['id'],
     threshold?: ThresholdDefinition,
+    startDate?: ReturnType<Date['getTime']>,
+    endDate?: ReturnType<Date['getTime']>,
   ) {
     this.featureCollection = featureCollection;
     this.tableData = tableData;
@@ -731,7 +738,8 @@ export class PolygonAnalysisResult {
     this.threshold = threshold;
     this.adminLevel = adminLevel;
     this.boundaryId = boundaryId;
-
+    this.startDate = startDate;
+    this.endDate = endDate;
     // color breaks from https://colorbrewer2.org/#type=sequential&scheme=Reds&n=5
     // this legend of red-like colors goes from very light to dark
     this.legend = [
@@ -760,18 +768,17 @@ export class PolygonAnalysisResult {
   }
 }
 
-export function downloadCSVFromTableData(
+export function generateAnalysisFilename(
   analysisResult: TabularAnalysisResult,
-  columns: Column[],
   selectedDate: number | null,
 ) {
   const {
     hazardLayerId,
     threshold,
     statistic,
-    tableData,
     key: createdAt,
   } = analysisResult;
+
   const aboveThreshold =
     threshold && threshold.above !== undefined ? threshold.above : undefined;
   const belowThreshold =
@@ -784,6 +791,25 @@ export function downloadCSVFromTableData(
     analysisResult instanceof PolygonAnalysisResult
       ? analysisResult.adminLevel
       : undefined;
+
+  const dateString = moment(selectedDate || createdAt).format(
+    DEFAULT_DATE_FORMAT_SNAKE_CASE,
+  );
+
+  return `analysis_${hazardLayerId}${
+    baselineLayerId ? `_${baselineLayerId}` : ''
+  }${adminLevel ? `_${adminLevel}` : ''}${
+    aboveThreshold ? `_${aboveThreshold}` : ''
+  }${belowThreshold ? `_${belowThreshold}` : ''}_${statistic}_${dateString}`;
+}
+
+export function downloadCSVFromTableData(
+  analysisResult: TabularAnalysisResult,
+  columns: Column[],
+  selectedDate: number | null,
+) {
+  const { tableData } = analysisResult;
+
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
     columns.map(col => quoteAndEscapeCell(col.label)).join(','),
@@ -796,16 +822,10 @@ export function downloadCSVFromTableData(
   const encodedUri = encodeURI(rawCsv);
   const link = document.createElement('a');
   link.setAttribute('href', encodedUri);
-  const dateString = moment(selectedDate || createdAt).format(
-    DEFAULT_DATE_FORMAT_SNAKE_CASE,
-  );
+
   link.setAttribute(
     'download',
-    `analysis_${hazardLayerId}${baselineLayerId ? `_${baselineLayerId}` : ''}${
-      adminLevel ? `_${adminLevel}` : ''
-    }${aboveThreshold ? `_${aboveThreshold}` : ''}${
-      belowThreshold ? `_${belowThreshold}` : ''
-    }_${statistic}_${dateString}.csv`,
+    `${generateAnalysisFilename(analysisResult, selectedDate)}.csv`,
   );
   document.body.appendChild(link); // Required for FF
 
