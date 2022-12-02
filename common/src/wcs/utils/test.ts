@@ -178,7 +178,7 @@ test("createDescribeCoverageUrl", ({ eq }) => {
   );
 });
 
-test("createGetCoverageUrl", ({ eq }) => {
+test("wcs: createGetCoverageUrl", ({ eq }) => {
   const bbox = [87.7, 41.6, 119.9, 52.1] as const;
   const url = createGetCoverageUrl(xml100, "ModisLST", {
     bbox,

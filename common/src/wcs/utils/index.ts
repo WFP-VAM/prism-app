@@ -1,10 +1,11 @@
-import { findTagsByName, findTagsByPath, getAttribute } from "xml-utils";
+import { findTagsByName, getAttribute } from "xml-utils";
 
 import { findAndParseEnvelope } from "../../gml";
 import {
   bboxToString,
   checkExtent,
   findAndParseCapabilityUrl,
+  findTagArray,
   findTagText,
   formatUrl,
   scaleImage,
@@ -191,6 +192,7 @@ export function createGetCoverageUrl(
     maxPixels = 5096,
     resolution = 256,
     time,
+    version = "1.0.0",
     width: givenWidth,
   }: {
     bbox: BBOX;
@@ -202,6 +204,7 @@ export function createGetCoverageUrl(
     maxPixels?: number;
     resolution?: 256;
     time?: string;
+    version?: string;
     width: number;
   }
 ): string {
@@ -225,18 +228,52 @@ export function createGetCoverageUrl(
     return { height: givenHeight, width: givenWidth };
   })();
 
-  return formatUrl(base, {
-    bbox: bboxToString(bbox, bboxDigits),
-    coverage: layerId,
-    crs,
-    format,
-    height,
-    request: "GetCoverage",
-    service: "WCS",
-    time,
-    version: "1.0.0",
-    width,
-  });
+  if (version.startsWith("0") || version.startsWith("1")) {
+    return formatUrl(base, {
+      bbox: bboxToString(bbox, bboxDigits),
+      coverage: layerId,
+      crs,
+      format,
+      height,
+      request: "GetCoverage",
+      service: "WCS",
+      time,
+      version,
+      width,
+    });
+  }
+  if (version.startsWith("2")) {
+    // Subsets are used as spatial and temporal filters.
+    // For more info: https://docs.geoserver.geo-solutions.it/edu/en/wcs/get.html
+    const spatialSubsets = (() => {
+      if (bbox) {
+        const [xmin, ymin, xmax, ymax] = bbox;
+        return [`Long(${xmin},${xmax})`, `Lat(${ymin},${ymax})`];
+      }
+      return [];
+    })();
+
+    const temporalSubsets = time ? [`time("${time}")`] : [];
+
+    const subsets = [...spatialSubsets, ...temporalSubsets];
+
+    const formattedUrl = formatUrl(base, {
+      format,
+      coverageId: layerId,
+      height,
+      outputCRS: crs,
+      request: "GetCoverage",
+      service: "WCS",
+      width,
+    });
+
+    const formattedSubsets = subsets.map((s) => `subset=${s}`).join("&");
+
+    return `${formattedUrl}&${formattedSubsets}`;
+  }
+  throw new Error(
+    "[prism-common] createGetCoverageUrl was called with an unexpected version"
+  );
 }
 
 export function createDescribeCoverageUrl(
@@ -283,24 +320,13 @@ export function parseCoverage(xml: string) {
 }
 
 export function parseDates(description: string): string[] {
-  const path = ["domainSet", "temporalDomain", "gml:timePosition"];
-  const dates: string[] = [];
-  findTagsByPath(description, path).forEach((tag) => {
-    if (tag?.inner) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      dates.push(tag.inner);
-    }
-  });
-  return dates;
+  return findTagArray(description, [
+    "domainSet",
+    "temporalDomain",
+    "gml:timePosition",
+  ]);
 }
 
 export function parseSupportedFormats(xml: string): string[] {
-  const formats: string[] = [];
-  findTagsByPath(xml, ["supportedFormats", "formats"]).forEach((tag) => {
-    if (tag?.inner) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      formats.push(tag.inner);
-    }
-  });
-  return formats;
+  return findTagArray(xml, ["supportedFormats", "formats"]);
 }
