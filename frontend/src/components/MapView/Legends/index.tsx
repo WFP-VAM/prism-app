@@ -41,7 +41,7 @@ import { getLegendItemLabel } from '../utils';
 import { useSafeTranslation } from '../../../i18n';
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
-import AnalysisDownloadButton from './analysisDownloadButton';
+import AnalysisDownloadButton from './AnalysisDownloadButton';
 
 /**
  * Returns layer identifier used to perform exposure analysis.
