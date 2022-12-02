@@ -38,6 +38,7 @@
     "@types/eslint": "^8.4.6",
     "@types/eslint-scope": "^3.7.4",
     "@types/estree": "^1.0.0",
+    "@types/lodash": "^4.14.149",
     "@types/node": "^18.7.20",
     "@types/webpack": "^5.28.0",
     "cpy-cli": "^4.1.0",
