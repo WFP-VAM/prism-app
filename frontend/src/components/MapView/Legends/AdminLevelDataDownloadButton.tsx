@@ -53,7 +53,6 @@ function AdminLevelDataDownloadButton({ layer }: IProps) {
       adminLevelLayerData.data.layerData[0],
       (v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
     );
-    console.log(translatedColumnsNames);
     downloadToFile(
       {
         content: castObjectsArrayToCsv(
