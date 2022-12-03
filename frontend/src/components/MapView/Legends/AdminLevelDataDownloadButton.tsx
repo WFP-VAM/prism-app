@@ -7,6 +7,7 @@ import {
   dateRangeSelector,
   layerDataSelector,
 } from '../../../context/mapStateSlice/selectors';
+import { castObjectsArrayToCsv } from '../../../utils/csv-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from '../../../utils/name-utils';
 import MultiOptionsButton from '../../Common/MultiOptionsButton';
 import { downloadToFile } from '../utils';
@@ -44,7 +45,18 @@ function AdminLevelDataDownloadButton({ layer }: IProps) {
   };
 
   const handleDownloadCsv = (): void => {
-    console.log('csv');
+    downloadToFile(
+      {
+        content: castObjectsArrayToCsv(
+          adminLevelLayerData.data.layerData,
+          { value: adminLevelLayerData.layer.id },
+          ';',
+        ),
+        isUrl: false,
+      },
+      getFilename(),
+      'text/csv',
+    );
   };
 
   return (
