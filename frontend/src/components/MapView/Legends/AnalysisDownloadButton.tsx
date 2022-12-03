@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
+import { useSafeTranslation } from '../../../i18n';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
@@ -15,6 +16,8 @@ function AnalysisDownloadButton() {
   const analysisResult = useSelector(analysisResultSelector);
   const featureCollection = analysisResult?.featureCollection;
   const { translatedColumns } = useAnalysisTableColumns(analysisResult);
+
+  const { t } = useSafeTranslation();
 
   const doesLayerAcceptCSVDownload =
     analysisResult &&
@@ -74,7 +77,7 @@ function AnalysisDownloadButton() {
 
   return (
     <MultiOptionsButton
-      mainLabel="Download"
+      mainLabel={t('Download')}
       options={[
         {
           label: 'GEOJSON',

@@ -7,6 +7,7 @@ import {
   dateRangeSelector,
   layerDataSelector,
 } from '../../../context/mapStateSlice/selectors';
+import { useSafeTranslation } from '../../../i18n';
 import { castObjectsArrayToCsv } from '../../../utils/csv-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from '../../../utils/name-utils';
 import MultiOptionsButton from '../../Common/MultiOptionsButton';
@@ -21,6 +22,8 @@ function AdminLevelDataDownloadButton({ layer }: IProps) {
   const adminLevelLayerData = useSelector(
     layerDataSelector(layer.id, selectedDate),
   ) as LayerData<AdminLevelDataLayerProps>;
+
+  const { t } = useSafeTranslation();
 
   const getFilename = (): string => {
     const safeTitle = layer.title ?? layer.id;
@@ -61,7 +64,7 @@ function AdminLevelDataDownloadButton({ layer }: IProps) {
 
   return (
     <MultiOptionsButton
-      mainLabel="Download"
+      mainLabel={t('Download')}
       options={[
         {
           label: 'GEOJSON',
