@@ -1,3 +1,4 @@
+import { mapValues } from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -48,11 +49,16 @@ function AdminLevelDataDownloadButton({ layer }: IProps) {
   };
 
   const handleDownloadCsv = (): void => {
+    const translatedColumnsNames = mapValues(
+      adminLevelLayerData.data.layerData[0],
+      (v, k) => (k === 'value' ? t(adminLevelLayerData.layer.id) : t(k)),
+    );
+    console.log(translatedColumnsNames);
     downloadToFile(
       {
         content: castObjectsArrayToCsv(
           adminLevelLayerData.data.layerData,
-          { value: adminLevelLayerData.layer.id },
+          translatedColumnsNames,
           ';',
         ),
         isUrl: false,
