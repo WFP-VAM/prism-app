@@ -8,7 +8,7 @@
   "scripts": {
     "clean": "rimraf ./dist",
     "build": "npm run clean && npm run build:cpy && npm run build:tsc",
-    "build:cpy": "cpy '.' '../dist/' --cwd=src",
+    "build:cpy": "cpy . ../dist/ --cwd=src",
     "build:tsc": "tsc --skipLibCheck ./dist/*.ts ./dist/*/*.ts ./dist/*/*/*.ts",
     "test:base": "npx ts-node --esm --skipProject ./src/base/test.ts",
     "test:gml": "npx ts-node --esm --skipProject ./src/gml/test.ts",
