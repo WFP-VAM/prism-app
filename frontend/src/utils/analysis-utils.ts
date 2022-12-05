@@ -835,3 +835,27 @@ export function downloadCSVFromTableData(
 // type of results that have the tableData property
 // and are displayed in the left-hand "RUN ANALYSIS" panel
 export type TabularAnalysisResult = BaselineLayerResult | PolygonAnalysisResult;
+
+export const appendBoundaryProperties = (
+  adminCodeId: BoundaryLayerProps['adminCode'],
+  analysisFeatures: Feature[],
+  boundaryLayerFeatures: Feature[],
+): Feature[] => {
+  const featuresWithBoundaryProps = analysisFeatures.reduce((acc, feature) => {
+    const matchedFeature = boundaryLayerFeatures.find(
+      boundaryLayerFeature =>
+        boundaryLayerFeature.properties![adminCodeId] ===
+        feature.properties![adminCodeId],
+    );
+
+    if (!matchedFeature) {
+      return acc;
+    }
+
+    const newProps = { ...matchedFeature.properties!, ...feature.properties! };
+
+    return [...acc, { ...feature, properties: newProps }];
+  }, [] as Feature[]);
+
+  return featuresWithBoundaryProps;
+};
