@@ -27,6 +27,7 @@ import {
   MONTH_FIRST_DATE_FORMAT,
   MONTH_ONLY_DATE_FORMAT,
 } from '../../../utils/name-utils';
+import { DateCompatibleLayer } from '../../../utils/server-utils';
 
 interface InputProps {
   value?: string;
@@ -365,6 +366,7 @@ const styles = (theme: Theme) =>
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
   availableDates?: number[];
+  selectedLayers: DateCompatibleLayer[];
 }
 
 export default withStyles(styles)(DateSelector);
