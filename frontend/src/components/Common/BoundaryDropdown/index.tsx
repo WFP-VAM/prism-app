@@ -18,24 +18,19 @@ import SearchBar from './searchBar';
 import { setMenuItemStyle, containsText, createMatchesTree } from './utils';
 
 const useStyles = makeStyles((theme: Theme) => {
-  const menuItem = {
-    fontSize: '0.8em',
-    paddingLeft: '2em',
-  };
-
   return {
     header: {
-      ...menuItem,
-      fontWeight: 'bold',
       textTransform: 'uppercase',
-      paddingLeft: '1em',
+      letterSpacing: '3px',
+      fontSize: '0.7em',
     },
     subHeader: {
-      ...menuItem,
-      fontWeight: 'bold',
-      paddingLeft: '1.5em',
+      letterSpacing: '3px',
+      fontSize: '0.7em',
     },
-    menuItem,
+    menuItem: {
+      paddingLeft: '1.8em',
+    },
     select: {
       '& .MuiSelect-icon': {
         color: theme.palette.text.primary,
