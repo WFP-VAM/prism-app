@@ -16,4 +16,16 @@ describe('Test castObjectsArrayToCsv', () => {
 
     expect(output).toEqual(expectedResult);
   });
+  test('adds sep tag at the beginning of the csv for non comma separators', () => {
+    const objectsArray = [
+      { colA: 2, colB: 'val2' },
+      { colA: 1, colB: 'val1' },
+    ];
+
+    const expectedResult = 'sep=;\ncolA;colB\n2;val2\n1;val1';
+
+    const output = castObjectsArrayToCsv(objectsArray, {}, ';');
+
+    expect(output).toEqual(expectedResult);
+  });
 });

@@ -8,6 +8,7 @@ export function castObjectsArrayToCsv<T extends { [key: string]: any }>(
   const columns = objectKeys.map(key => columnsNames[key] ?? key);
 
   return [
+    ...(sep === ',' ? [] : [`sep=${sep}`]),
     columns.join(sep),
     ...objectsArray.map(obj => {
       return Object.values(obj).join(sep);
