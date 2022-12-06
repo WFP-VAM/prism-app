@@ -17,18 +17,42 @@ import { MONTH_FIRST_DATE_FORMAT } from '../../../../utils/name-utils';
 
 function TimelineItems({
   classes,
-  availableDates,
+  timelineDates,
   dateRange,
+  selectedLayerTitles,
   clickDate,
 }: TimelineItemsProps) {
   const click = (dateIndex: number) => {
     clickDate(dateIndex);
   };
+
+  // Hard coded styling for date items (first , second and third layers)
+  const dateItemClassNames: string[] = [
+    classes.intersectionDate,
+    classes.layerOneDate,
+    classes.layerTwoDate,
+    classes.layerThreeDate,
+  ];
+
+  const datesToDisplay = timelineDates.map(dates =>
+    dates.map(date =>
+      moment(date + USER_DATE_OFFSET).format(MONTH_FIRST_DATE_FORMAT),
+    ),
+  );
+
   return (
     <>
       {dateRange.map((date, index) => (
         <Tooltip
-          title={date.label}
+          title={
+            <div style={{ whiteSpace: 'pre-line' }}>
+              {selectedLayerTitles
+                .filter((_, titleIndex) =>
+                  datesToDisplay[titleIndex].includes(date.label),
+                )
+                .join('\n')}
+            </div>
+          }
           key={date.label}
           TransitionComponent={Fade}
           TransitionProps={{ timeout: 0 }}
@@ -49,18 +73,21 @@ function TimelineItems({
             ) : (
               <div className={classes.dayItem} />
             )}
-            {availableDates
-              .map(availableDate =>
-                moment(availableDate + USER_DATE_OFFSET).format(
-                  MONTH_FIRST_DATE_FORMAT,
+            {timelineDates.map(
+              (layerDates, layerIndex) =>
+                layerDates
+                  .map(layerDate =>
+                    moment(layerDate + USER_DATE_OFFSET).format(
+                      MONTH_FIRST_DATE_FORMAT,
+                    ),
+                  )
+                  .includes(date.label) && (
+                  <div
+                    className={dateItemClassNames[layerIndex]}
+                    role="presentation"
+                    onClick={() => click(index)}
+                  />
                 ),
-              )
-              .includes(date.label) && (
-              <div
-                className={classes.dateAvailable}
-                role="presentation"
-                onClick={() => click(index)}
-              />
             )}
           </Grid>
         </Tooltip>
@@ -110,7 +137,7 @@ const styles = () =>
       borderLeft: '1px solid white',
     },
 
-    dateAvailable: {
+    intersectionDate: {
       position: 'absolute',
       top: 0,
       backgroundColor: 'white',
@@ -118,11 +145,36 @@ const styles = () =>
       width: TIMELINE_ITEM_WIDTH,
       opacity: 0.6,
     },
+    layerOneDate: {
+      position: 'absolute',
+      top: 5,
+      backgroundColor: 'blue',
+      height: 5,
+      width: TIMELINE_ITEM_WIDTH,
+      opacity: 0.6,
+    },
+    layerTwoDate: {
+      position: 'absolute',
+      top: 10,
+      backgroundColor: 'green',
+      height: 5,
+      width: TIMELINE_ITEM_WIDTH,
+      opacity: 0.6,
+    },
+    layerThreeDate: {
+      position: 'absolute',
+      top: 15,
+      backgroundColor: 'red',
+      height: 5,
+      width: TIMELINE_ITEM_WIDTH,
+      opacity: 0.6,
+    },
   });
 
 export interface TimelineItemsProps extends WithStyles<typeof styles> {
-  availableDates: number[];
+  timelineDates: number[][];
   dateRange: DateRangeType[];
+  selectedLayerTitles: string[];
   clickDate: (arg: number) => void;
 }
 

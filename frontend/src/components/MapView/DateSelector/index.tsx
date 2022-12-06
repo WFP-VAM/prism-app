@@ -1,4 +1,11 @@
-import React, { forwardRef, Ref, useEffect, useRef, useState } from 'react';
+import React, {
+  forwardRef,
+  Ref,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button,
@@ -27,7 +34,11 @@ import {
   MONTH_FIRST_DATE_FORMAT,
   MONTH_ONLY_DATE_FORMAT,
 } from '../../../utils/name-utils';
-import { DateCompatibleLayer } from '../../../utils/server-utils';
+import {
+  DateCompatibleLayer,
+  getPossibleDatesForLayer,
+} from '../../../utils/server-utils';
+import { availableDatesSelector } from '../../../context/serverStateSlice';
 
 interface InputProps {
   value?: string;
@@ -52,8 +63,13 @@ const Input = forwardRef(
   },
 );
 
-function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
+function DateSelector({
+  availableDates = [],
+  selectedLayers = [],
+  classes,
+}: DateSelectorProps) {
   const { startDate: stateStartDate } = useSelector(dateRangeSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
   const { t, i18n } = useSafeTranslation();
   const [dateRange, setDateRange] = useState<DateRangeType[]>([
     {
@@ -76,6 +92,20 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
 
   const { updateHistory } = useUrlHistory();
+
+  const selectedLayerDates = useMemo(
+    () =>
+      selectedLayers.map(layer => {
+        return getPossibleDatesForLayer(layer, serverAvailableDates)
+          .filter(value => value) // null check
+          .flat();
+      }),
+    [selectedLayers, serverAvailableDates],
+  );
+  const selectedLayerTitles = useMemo(
+    () => selectedLayers.map(layer => layer.title),
+    [selectedLayers],
+  );
 
   // Move the slider automatically so that the pointer always visible
   useEffect(() => {
@@ -263,8 +293,9 @@ function DateSelector({ availableDates = [], classes }: DateSelectorProps) {
                 >
                   <TimelineItems
                     dateRange={dateRange}
-                    availableDates={availableDates}
+                    timelineDates={[availableDates, ...selectedLayerDates]}
                     clickDate={clickDate}
+                    selectedLayerTitles={selectedLayerTitles}
                   />
                 </Grid>
                 <Draggable
