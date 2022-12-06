@@ -2,7 +2,7 @@ import { mapValues } from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { AdminLevelDataLayerProps, LayerType } from '../../../config/types';
+import { AdminLevelDataLayerProps } from '../../../config/types';
 import { LayerData } from '../../../context/layers/layer-data';
 import {
   dateRangeSelector,
@@ -15,7 +15,7 @@ import MultiOptionsButton from '../../Common/MultiOptionsButton';
 import { downloadToFile } from '../utils';
 
 interface IProps {
-  layer: LayerType;
+  layer: AdminLevelDataLayerProps;
 }
 
 function AdminLevelDataDownloadButton({ layer }: IProps) {
@@ -28,7 +28,7 @@ function AdminLevelDataDownloadButton({ layer }: IProps) {
 
   const getFilename = (): string => {
     const safeTitle = layer.title ?? layer.id;
-    if (selectedDate) {
+    if (selectedDate && layer.dates) {
       const dateString = moment(selectedDate).format(
         DEFAULT_DATE_FORMAT_SNAKE_CASE,
       );
