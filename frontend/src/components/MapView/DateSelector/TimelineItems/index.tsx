@@ -156,7 +156,7 @@ const styles = () =>
     layerTwoDate: {
       position: 'absolute',
       top: 10,
-      backgroundColor: 'green',
+      backgroundColor: 'yellow',
       height: 5,
       width: TIMELINE_ITEM_WIDTH,
       opacity: 0.6,
