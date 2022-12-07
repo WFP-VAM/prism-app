@@ -47,13 +47,13 @@ function TimelineItems({
 
   const getTooltipTitle = (date: DateRangeType) => {
     const tooltipTitleArray: string[] = selectedLayerTitles
-      .filter((_, titleIndex) => {
-        return datesToDisplay[titleIndex].includes(date.label);
-      })
       .map(
         (selectedLayerTitle, titleIndex) =>
           `${selectedLayerTitle} (${DATE_ITEM_STYLING[titleIndex + 1].color})`,
-      );
+      )
+      .filter((_, titleIndex) => {
+        return datesToDisplay[titleIndex].includes(date.label);
+      });
     tooltipTitleArray.unshift(date.label);
     return tooltipTitleArray.join('\n');
   };
