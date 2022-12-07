@@ -3,7 +3,6 @@ import { Search } from '@material-ui/icons';
 import {
   TextField,
   InputAdornment,
-  ListSubheader,
   makeStyles,
   Theme,
 } from '@material-ui/core';
@@ -13,6 +12,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     '&>div': {
       color: theme.palette.primary.main,
     },
+  },
+  container: {
+    padding: '0.7em',
   },
 }));
 
@@ -24,11 +26,11 @@ const SearchBar = ({ setSearch }: SearchBarProps) => {
   const styles = useStyles();
 
   return (
-    <ListSubheader>
+    <div className={styles.container}>
       <TextField
         size="small"
-        className={styles.searchField}
         autoFocus
+        className={styles.searchField}
         fullWidth
         InputProps={{
           startAdornment: (
@@ -45,7 +47,7 @@ const SearchBar = ({ setSearch }: SearchBarProps) => {
           }
         }}
       />
-    </ListSubheader>
+    </div>
   );
 };
 

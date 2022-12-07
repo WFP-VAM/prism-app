@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   selectContainer: {
     width: '100%',
     marginLeft: '0.8em',
+    overflow: 'hidden',
   },
 }));
 
