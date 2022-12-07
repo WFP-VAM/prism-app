@@ -293,7 +293,8 @@ function DateSelector({
                 >
                   <TimelineItems
                     dateRange={dateRange}
-                    timelineDates={[availableDates, ...selectedLayerDates]}
+                    intersectionDates={availableDates}
+                    selectedLayerDates={selectedLayerDates}
                     clickDate={clickDate}
                     selectedLayerTitles={selectedLayerTitles}
                   />

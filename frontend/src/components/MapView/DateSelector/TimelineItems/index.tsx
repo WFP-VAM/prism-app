@@ -17,8 +17,9 @@ import { MONTH_FIRST_DATE_FORMAT } from '../../../../utils/name-utils';
 
 function TimelineItems({
   classes,
-  timelineDates,
+  intersectionDates,
   dateRange,
+  selectedLayerDates,
   selectedLayerTitles,
   clickDate,
 }: TimelineItemsProps) {
@@ -34,11 +35,18 @@ function TimelineItems({
     classes.layerThreeDate,
   ];
 
-  const datesToDisplay = timelineDates.map(dates =>
-    dates.map(date =>
-      moment(date + USER_DATE_OFFSET).format(MONTH_FIRST_DATE_FORMAT),
-    ),
-  );
+  const getTooltipTitle = (date: DateRangeType) => {
+    const datesToDisplay = selectedLayerDates.map(layerDates =>
+      layerDates.map(layerDate =>
+        moment(layerDate + USER_DATE_OFFSET).format(MONTH_FIRST_DATE_FORMAT),
+      ),
+    );
+    const tooltipTitleArray = selectedLayerTitles.filter((_, titleIndex) => {
+      return datesToDisplay[titleIndex].includes(date.label);
+    });
+    tooltipTitleArray.unshift(date.label);
+    return tooltipTitleArray.join('\n');
+  };
 
   return (
     <>
@@ -46,11 +54,7 @@ function TimelineItems({
         <Tooltip
           title={
             <div style={{ whiteSpace: 'pre-line' }}>
-              {selectedLayerTitles
-                .filter((_, titleIndex) =>
-                  datesToDisplay[titleIndex].includes(date.label),
-                )
-                .join('\n')}
+              {getTooltipTitle(date)}
             </div>
           }
           key={date.label}
@@ -73,7 +77,7 @@ function TimelineItems({
             ) : (
               <div className={classes.dayItem} />
             )}
-            {timelineDates.map(
+            {[intersectionDates, ...selectedLayerDates].map(
               (layerDates, layerIndex) =>
                 layerDates
                   .map(layerDate =>
@@ -172,7 +176,8 @@ const styles = () =>
   });
 
 export interface TimelineItemsProps extends WithStyles<typeof styles> {
-  timelineDates: number[][];
+  intersectionDates: number[];
+  selectedLayerDates: number[][];
   dateRange: DateRangeType[];
   selectedLayerTitles: string[];
   clickDate: (arg: number) => void;
