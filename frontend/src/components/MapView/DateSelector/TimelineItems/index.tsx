@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   createStyles,
   Fade,
@@ -27,23 +27,33 @@ function TimelineItems({
     clickDate(dateIndex);
   };
 
-  // Hard coded styling for date items (first , second and third layers)
-  const dateItemClassNames: string[] = [
-    classes.intersectionDate,
-    classes.layerOneDate,
-    classes.layerTwoDate,
-    classes.layerThreeDate,
+  // Hard coded styling for date items (first, second, and third layers)
+  const DATE_ITEM_STYLING: { class: string; color: string }[] = [
+    { class: classes.intersectionDate, color: 'White' },
+    { class: classes.layerOneDate, color: 'Blue' },
+    { class: classes.layerTwoDate, color: 'Yellow' },
+    { class: classes.layerThreeDate, color: 'Red' },
   ];
 
-  const getTooltipTitle = (date: DateRangeType) => {
-    const datesToDisplay = selectedLayerDates.map(layerDates =>
-      layerDates.map(layerDate =>
-        moment(layerDate + USER_DATE_OFFSET).format(MONTH_FIRST_DATE_FORMAT),
+  const datesToDisplay = useMemo(
+    () =>
+      selectedLayerDates.map(layerDates =>
+        layerDates.map(layerDate =>
+          moment(layerDate + USER_DATE_OFFSET).format(MONTH_FIRST_DATE_FORMAT),
+        ),
       ),
-    );
-    const tooltipTitleArray = selectedLayerTitles.filter((_, titleIndex) => {
-      return datesToDisplay[titleIndex].includes(date.label);
-    });
+    [selectedLayerDates],
+  );
+
+  const getTooltipTitle = (date: DateRangeType) => {
+    const tooltipTitleArray: string[] = selectedLayerTitles
+      .filter((_, titleIndex) => {
+        return datesToDisplay[titleIndex].includes(date.label);
+      })
+      .map(
+        (selectedLayerTitle, titleIndex) =>
+          `${selectedLayerTitle} (${DATE_ITEM_STYLING[titleIndex + 1].color})`,
+      );
     tooltipTitleArray.unshift(date.label);
     return tooltipTitleArray.join('\n');
   };
@@ -87,7 +97,7 @@ function TimelineItems({
                   )
                   .includes(date.label) && (
                   <div
-                    className={dateItemClassNames[layerIndex]}
+                    className={DATE_ITEM_STYLING[layerIndex].class}
                     role="presentation"
                     onClick={() => click(index)}
                   />
@@ -110,6 +120,13 @@ const DATE_ITEM_STYLES: CreateCSSProperties = {
   '&:hover': {
     borderLeft: '1px solid #5ccfff',
   },
+};
+
+const BASE_DATE_ITEM: CreateCSSProperties = {
+  position: 'absolute',
+  height: 5,
+  width: TIMELINE_ITEM_WIDTH,
+  opacity: 0.6,
 };
 
 const styles = () =>
@@ -142,36 +159,24 @@ const styles = () =>
     },
 
     intersectionDate: {
-      position: 'absolute',
+      ...BASE_DATE_ITEM,
       top: 0,
       backgroundColor: 'white',
-      height: 5,
-      width: TIMELINE_ITEM_WIDTH,
-      opacity: 0.6,
     },
     layerOneDate: {
-      position: 'absolute',
+      ...BASE_DATE_ITEM,
       top: 5,
       backgroundColor: 'blue',
-      height: 5,
-      width: TIMELINE_ITEM_WIDTH,
-      opacity: 0.6,
     },
     layerTwoDate: {
-      position: 'absolute',
+      ...BASE_DATE_ITEM,
       top: 10,
       backgroundColor: 'yellow',
-      height: 5,
-      width: TIMELINE_ITEM_WIDTH,
-      opacity: 0.6,
     },
     layerThreeDate: {
-      position: 'absolute',
+      ...BASE_DATE_ITEM,
       top: 15,
       backgroundColor: 'red',
-      height: 5,
-      width: TIMELINE_ITEM_WIDTH,
-      opacity: 0.6,
     },
   });
 
