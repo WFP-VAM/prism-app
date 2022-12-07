@@ -4,7 +4,9 @@ import { render } from '@testing-library/react';
 import TimelineItems from '.';
 
 const props = {
-  availableDates: [],
+  intersectionDates: [],
+  selectedLayerDates: [[]],
+  selectedLayerTitles: [],
   dateRange: [
     {
       value: 1640883600000,

@@ -31,6 +31,11 @@ exports[`renders as expected 1`] = `
             class="MuiGrid-root NavBar-menuContainer-4 MuiGrid-item MuiGrid-grid-xs-6"
           >
             <mock-menuitem
+              icon="icon_flood.png"
+              layerscategories="[object Object],[object Object],[object Object]"
+              title="Flood"
+            />
+            <mock-menuitem
               icon="icon_rain.png"
               layerscategories="[object Object],[object Object],[object Object],[object Object]"
               title="Rainfall"
@@ -42,17 +47,12 @@ exports[`renders as expected 1`] = `
             />
             <mock-menuitem
               icon="icon_climate.png"
-              layerscategories="[object Object],[object Object]"
+              layerscategories="[object Object]"
               title="Temperature"
             />
             <mock-menuitem
-              icon="icon_tropical_storm.png"
-              layerscategories="[object Object]"
-              title="Tropical Storms"
-            />
-            <mock-menuitem
               icon="icon_vulnerable.png"
-              layerscategories="[object Object],[object Object]"
+              layerscategories="[object Object]"
               title="Vulnerability"
             />
             <mock-menuitem
@@ -97,7 +97,7 @@ exports[`renders as expected 1`] = `
             >
               <mock-typography
                 component="a"
-                href="https://innovation.wfp.org/project/prism"
+                href=""
                 target="_blank"
                 variant="body2"
               >
@@ -158,7 +158,7 @@ exports[`renders as expected 1`] = `
                   style="font-weight: normal;"
                   variant="body2"
                 >
-                  pt
+                  kh
                 </mock-typography>
               </mock-button>
             </div>
@@ -237,6 +237,12 @@ exports[`renders as expected 1`] = `
                   >
                     <mock-menuitemmobile
                       expanded=""
+                      icon="icon_flood.png"
+                      layerscategories="[object Object],[object Object],[object Object]"
+                      title="Flood"
+                    />
+                    <mock-menuitemmobile
+                      expanded=""
                       icon="icon_rain.png"
                       layerscategories="[object Object],[object Object],[object Object],[object Object]"
                       title="Rainfall"
@@ -250,19 +256,13 @@ exports[`renders as expected 1`] = `
                     <mock-menuitemmobile
                       expanded=""
                       icon="icon_climate.png"
-                      layerscategories="[object Object],[object Object]"
+                      layerscategories="[object Object]"
                       title="Temperature"
                     />
                     <mock-menuitemmobile
                       expanded=""
-                      icon="icon_tropical_storm.png"
-                      layerscategories="[object Object]"
-                      title="Tropical Storms"
-                    />
-                    <mock-menuitemmobile
-                      expanded=""
                       icon="icon_vulnerable.png"
-                      layerscategories="[object Object],[object Object]"
+                      layerscategories="[object Object]"
                       title="Vulnerability"
                     />
                     <mock-menuitemmobile
