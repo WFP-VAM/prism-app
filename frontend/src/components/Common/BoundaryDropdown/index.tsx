@@ -25,11 +25,11 @@ const useStyles = makeStyles((theme: Theme) => {
       fontSize: '0.7em',
     },
     subHeader: {
-      letterSpacing: '3px',
-      fontSize: '0.7em',
+      paddingLeft: '2em',
     },
     menuItem: {
-      paddingLeft: '1.8em',
+      paddingLeft: '2.8em',
+      fontSize: '0.9em',
     },
     select: {
       '& .MuiSelect-icon': {
