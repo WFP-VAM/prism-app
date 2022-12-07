@@ -1,4 +1,3 @@
-import React, { PropsWithChildren, useState } from 'react';
 import {
   Box,
   Button,
@@ -15,33 +14,35 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
+import React, { PropsWithChildren, useState } from 'react';
 
-import { useSelector } from 'react-redux';
 import { createGetLegendGraphicUrl } from 'prism-common';
-import { Extent } from '../Layers/raster-utils';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
-import ColorIndicator from './ColorIndicator';
-import LoadingBar from './LoadingBar';
+import { useSelector } from 'react-redux';
 import {
-  LayerType,
   ExposedPopulationDefinition,
+  LayerType,
   LegendDefinitionItem,
 } from '../../../config/types';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
+import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import { Extent } from '../Layers/raster-utils';
+import ColorIndicator from './ColorIndicator';
+import LoadingBar from './LoadingBar';
 
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
 } from '../../../utils/analysis-utils';
-import { downloadToFile, getLegendItemLabel } from '../utils';
+import { getLegendItemLabel } from '../utils';
 
+import { useSafeTranslation } from '../../../i18n';
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
-import { useSafeTranslation } from '../../../i18n';
-
+import AnalysisDownloadButton from './AnalysisDownloadButton';
+import AdminLevelDataDownloadButton from './AdminLevelDataDownloadButton';
 /**
  * Returns layer identifier used to perform exposure analysis.
  *
@@ -78,22 +79,12 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
-  const features = analysisResult?.featureCollection.features;
-  const hasData = features ? features.length > 0 : false;
+  const featureCollection = analysisResult?.featureCollection;
+  const hasData = featureCollection?.features
+    ? featureCollection.features.length > 0
+    : false;
 
   const { t } = useSafeTranslation();
-
-  const handleAnalysisDownload = (e: React.ChangeEvent<{}>): void => {
-    e.preventDefault();
-    downloadToFile(
-      {
-        content: JSON.stringify(features),
-        isUrl: false,
-      },
-      analysisResult?.getTitle() ?? 'prism_extract',
-      'application/json',
-    );
-  };
 
   const legendItems = [
     ...layers.map(layer => {
@@ -127,6 +118,14 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           extent={extent}
         >
           {t(layer.legendText)}
+          {layer.type === 'admin_level_data' && (
+            <>
+              <Divider />
+              <Grid item>
+                <AdminLevelDataDownloadButton layer={layer} />
+              </Grid>
+            </>
+          )}
         </LegendItem>
       );
     }),
@@ -145,15 +144,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
             )}
             <Divider />
             <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={e => handleAnalysisDownload(e)}
-                fullWidth
-              >
-                {t('Download')}
-              </Button>
+              <AnalysisDownloadButton />
             </Grid>
           </LegendItem>,
         ]
