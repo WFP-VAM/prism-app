@@ -54,6 +54,7 @@ function TimelineItems({
       .filter((_, titleIndex) => {
         return datesToDisplay[titleIndex].includes(date.label);
       });
+    // eslint-disable-next-line fp/no-mutating-methods
     tooltipTitleArray.unshift(date.label);
     return tooltipTitleArray.join('\n');
   };
