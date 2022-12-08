@@ -87,11 +87,12 @@ export const mapStateSlice = createSlice({
       };
     },
     removeLayerData: (
-      { layersData, ...rest },
+      { layersData, layerForms, ...rest },
       { payload }: PayloadAction<LayerType>,
     ) => ({
       ...rest,
       layersData: layersData.filter(({ layer }) => layer.id !== payload.id),
+      layerForms: layerForms.filter(({ id }) => id !== payload.id),
     }),
 
     removeLayer: (

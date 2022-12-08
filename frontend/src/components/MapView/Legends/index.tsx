@@ -3,11 +3,14 @@ import {
   Button,
   createStyles,
   Divider,
+  FormControl,
   Grid,
   Hidden,
   List,
   ListItem,
+  MenuItem,
   Paper,
+  Select,
   Slider,
   Typography,
   WithStyles,
@@ -17,9 +20,10 @@ import { Visibility, VisibilityOff } from '@material-ui/icons';
 import React, { PropsWithChildren, useState } from 'react';
 
 import { createGetLegendGraphicUrl } from 'prism-common';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   ExposedPopulationDefinition,
+  LayerFormInput,
   LayerType,
   LegendDefinitionItem,
 } from '../../../config/types';
@@ -27,7 +31,8 @@ import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import { setFormInputValue } from '../../../context/mapStateSlice';
+import { mapSelector, layerFormSelector } from '../../../context/mapStateSlice/selectors';
 import { Extent } from '../Layers/raster-utils';
 import ColorIndicator from './ColorIndicator';
 import LoadingBar from './LoadingBar';
@@ -187,7 +192,9 @@ function LegendItem({
   exposure,
   extent,
 }: LegendItemProps) {
+  const dispatch = useDispatch();
   const map = useSelector(mapSelector);
+  const form = useSelector(layerFormSelector(id));
   const analysisResult = useSelector(analysisResultSelector);
 
   const [opacity, setOpacityValue] = useState<number | number[]>(
@@ -225,6 +232,17 @@ function LegendItem({
     }
   };
 
+  const handleChangeFormInput = (event: any, input: LayerFormInput) => {
+    const { value } = event.target;
+    dispatch(
+      setFormInputValue({
+        layerId: id!,
+        inputId: input.id,
+        value,
+      }),
+    );
+  };
+
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
@@ -247,6 +265,28 @@ function LegendItem({
             />
           </Box>
         </Grid>
+
+        {form &&
+          form.inputs.map(input => {
+            return (
+              <Grid key={input.id} item>
+                <Typography variant="h4">{input.label}</Typography>
+                <FormControl>
+                  <Select
+                    className={classes.select}
+                    value={input.value}
+                    onChange={e => handleChangeFormInput(e, input)}
+                  >
+                    {input.values.map(v => (
+                      <MenuItem key={v.value} value={v.value}>
+                        {v.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            );
+          })}
 
         {legend && (
           <Grid item>
@@ -304,6 +344,9 @@ const styles = () =>
     paper: {
       padding: 8,
       width: 180,
+    },
+    select: {
+      color: '#333',
     },
     slider: {
       padding: '0 5px',

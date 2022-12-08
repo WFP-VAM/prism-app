@@ -328,6 +328,8 @@ export function createGetMapUrl({
   transparent = true,
   version = "1.3.0",
   width = 256,
+  // Support custom dimension parameters
+  ...customParams
 }: {
   base?: string | undefined;
   bbox?: [number, number, number, number] | number[];
@@ -377,5 +379,6 @@ export function createGetMapUrl({
     version,
     [version === "1.3.0" ? "crs" : "srs"]: srs,
     width,
+    ...customParams,
   });
 }
