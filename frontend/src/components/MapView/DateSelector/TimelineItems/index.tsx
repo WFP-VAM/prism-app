@@ -45,29 +45,47 @@ function TimelineItems({
     [selectedLayerDates],
   );
 
-  const getTooltipTitle = (date: DateRangeType) => {
-    const tooltipTitleArray: string[] = selectedLayerTitles
-      .map(
-        (selectedLayerTitle, titleIndex) =>
-          `${selectedLayerTitle} (${DATE_ITEM_STYLING[titleIndex + 1].color})`,
-      )
-      .filter((_, titleIndex) => {
-        return datesToDisplay[titleIndex].includes(date.label);
+  const TooltipItem = ({
+    layerTitle,
+    color,
+  }: {
+    layerTitle: string;
+    color: string;
+  }) => {
+    return (
+      <div className={classes.tooltipItemContainer}>
+        <div>{layerTitle}</div>
+        <div
+          className={classes.tooltipItemColor}
+          style={{
+            backgroundColor: color,
+          }}
+        />
+      </div>
+    );
+  };
+
+  const getTooltipTitle = (date: DateRangeType): JSX.Element[] => {
+    const tooltipTitleArray: JSX.Element[] = selectedLayerTitles
+      .map((selectedLayerTitle, layerIndex) => (
+        <TooltipItem
+          layerTitle={selectedLayerTitle}
+          color={DATE_ITEM_STYLING[layerIndex + 1].color}
+        />
+      ))
+      .filter((_, layerIndex) => {
+        return datesToDisplay[layerIndex].includes(date.label);
       });
     // eslint-disable-next-line fp/no-mutating-methods
-    tooltipTitleArray.unshift(date.label);
-    return tooltipTitleArray.join('\n');
+    tooltipTitleArray.unshift(<div>{date.label}</div>);
+    return tooltipTitleArray;
   };
 
   return (
     <>
       {dateRange.map((date, index) => (
         <Tooltip
-          title={
-            <div style={{ whiteSpace: 'pre-line' }}>
-              {getTooltipTitle(date)}
-            </div>
-          }
+          title={<div>{getTooltipTitle(date)}</div>}
           key={date.label}
           TransitionComponent={Fade}
           TransitionProps={{ timeout: 0 }}
@@ -178,6 +196,17 @@ const styles = () =>
       ...BASE_DATE_ITEM,
       top: 15,
       backgroundColor: 'red',
+    },
+    tooltipItemContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    tooltipItemColor: {
+      display: 'flex',
+      width: 5,
+      height: 5,
+      marginLeft: 3,
     },
   });
 
