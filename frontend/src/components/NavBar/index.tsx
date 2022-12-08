@@ -16,7 +16,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import wfpLogo from '../images/wfp_logo_small.png';
 import MenuItem from './MenuItem';
 import MenuItemMobile from './MenuItemMobile';
 import { menuList } from './utils';
@@ -74,7 +73,11 @@ function NavBar({ classes }: NavBarProps) {
       <Toolbar variant="dense">
         <Grid container>
           <Grid item xs={3} className={classes.logoContainer}>
-            <img className={classes.orgLogo} src={wfpLogo} alt="logo wfp" />
+            <img
+              className={classes.orgLogo}
+              src="images/wfp_logo.png"
+              alt="logo wfp"
+            />
             <Typography
               variant="h6"
               className={classes.logo}

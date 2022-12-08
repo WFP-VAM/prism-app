@@ -62,7 +62,7 @@ const configMap = {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
     rawTables: indonesiaRawTables,
-    defaultBoundariesFile: 'idn_admin_boundaries.json',
+    defaultBoundariesFile: 'admin_idn.json',
   },
   jordan,
   kyrgyzstan,

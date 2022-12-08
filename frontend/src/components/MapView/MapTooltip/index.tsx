@@ -7,8 +7,8 @@ import {
   WithStyles,
   LinearProgress,
 } from '@material-ui/core';
+import TooltipComponents from './Components';
 import { tooltipSelector } from '../../../context/tooltipStateSlice';
-import TooltipComponents from './Components/index';
 import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
 
 function MapTooltip({ classes }: TooltipProps) {
