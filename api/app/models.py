@@ -42,6 +42,7 @@ class StatsModel(BaseModel):
     zones: Optional[GeoJSON] = None
     intersect_comparison: Optional[str] = None
     mask_url: Optional[str] = None
+    mask_calc_expr: Optional[str] = None
     filter_by: Optional[FilterProperty] = None
 
 
@@ -71,7 +72,7 @@ class AlertsZonesModel(BaseModel):
     type: str = Field(..., example=alert_data_zones["type"])
     name: str = Field(..., example=alert_data_zones["name"])
     crs: dict = Field(..., example=alert_data_zones["crs"])
-    features: dict = Field(..., example=alert_data_zones["features"])
+    features: dict | list[dict] = Field(..., example=alert_data_zones["features"])
 
     _val_type = validator("type", allow_reuse=True)(must_not_contain_null_char)
     _val_name = validator("name", allow_reuse=True)(must_not_contain_null_char)

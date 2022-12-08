@@ -4,10 +4,10 @@ import { ANALYSIS_API_URL } from './constants';
 import { Alert } from './entities/alerts.entity';
 import { calculateBoundsForAlert } from './utils/analysis-utils';
 import { sendEmail } from './utils/email';
+import { formatUrl, WMS } from 'prism-common';
+
 import {
-  formatUrl,
   getWCSCoverage,
-  getWMSCapabilities,
 } from './utils/server-utils';
 
 async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
@@ -29,7 +29,7 @@ async function processAlert(alert: Alert, alertRepository: Repository<Alert>) {
   } = alert;
   const availableDates =
     type === 'wms'
-      ? await getWMSCapabilities(`${baseUrl}`)
+      ? await new WMS(`${baseUrl}`).getLayerDays()
       : await getWCSCoverage(`${baseUrl}`);
   const layerAvailableDates = availableDates[serverLayerName];
   const maxDate = new Date(Math.max(...(layerAvailableDates || [])));

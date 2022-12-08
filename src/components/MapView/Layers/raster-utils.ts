@@ -4,7 +4,7 @@ import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import * as GeoTIFF from 'geotiff';
 import { buffer } from 'd3-fetch';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { formatUrl } from '../../../utils/server-utils';
+import { createGetMapUrl, formatUrl } from 'prism-common';
 import { WcsGetCoverageVersion, WMSLayerProps } from '../../../config/types';
 
 export type TransformMatrix = [number, number, number, number, number, number];
@@ -76,22 +76,16 @@ export function getWMSUrl(
   layerName: string,
   override: { [key: string]: string } = {},
 ) {
-  const params = {
-    version: '1.1.1',
-    request: 'GetMap',
-    format: 'image/png',
-    transparent: true,
+  return createGetMapUrl({
+    base: `${baseUrl}`,
+    bboxSrs: 3857,
     exceptions: 'application/vnd.ogc.se_inimage',
-    bboxsr: 3857,
-    imagesr: 3857,
-    width: 256,
-    height: 256,
+    imageSrs: 3857,
+    layerIds: [layerName],
     srs: 'EPSG:3857',
+    version: '1.1.1',
     ...override,
-    layers: layerName,
-  };
-
-  return formatUrl(`${baseUrl}`, params);
+  });
 }
 export function getWCSv1Url(
   baseUrl: string,
