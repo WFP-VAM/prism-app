@@ -9,11 +9,9 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
-import moment from 'moment';
 import { merge } from 'lodash';
 import { DateRangeType } from '../../../../config/types';
-import { TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from '../utils';
-import { MONTH_FIRST_DATE_FORMAT } from '../../../../utils/name-utils';
+import { TIMELINE_ITEM_WIDTH, formatDate } from '../utils';
 
 function TimelineItems({
   classes,
@@ -35,12 +33,18 @@ function TimelineItems({
     { class: classes.layerThreeDate, color: 'Red' },
   ];
 
-  const datesToDisplay = useMemo(
+  const formattedSelectedLayerDates = useMemo(
     () =>
       selectedLayerDates.map(layerDates =>
-        layerDates.map(layerDate =>
-          moment(layerDate + USER_DATE_OFFSET).format(MONTH_FIRST_DATE_FORMAT),
-        ),
+        layerDates.map(layerDate => formatDate(layerDate)),
+      ),
+    [selectedLayerDates],
+  );
+
+  const formattedIntersectionDates = useMemo(
+    () =>
+      selectedLayerDates.map(layerDates =>
+        layerDates.map(layerDate => formatDate(layerDate)),
       ),
     [selectedLayerDates],
   );
@@ -74,7 +78,9 @@ function TimelineItems({
         />
       ))
       .filter((_, layerIndex) => {
-        return datesToDisplay[layerIndex].includes(date.label);
+        return formattedSelectedLayerDates[layerIndex].includes(
+          formatDate(date.value),
+        );
       });
     // eslint-disable-next-line fp/no-mutating-methods
     tooltipTitleArray.unshift(<div>{date.label}</div>);
@@ -109,16 +115,8 @@ function TimelineItems({
             {[intersectionDates, ...selectedLayerDates].map(
               (layerDates, layerIndex) =>
                 layerDates
-                  .map(layerDate =>
-                    moment(layerDate + USER_DATE_OFFSET).format(
-                      MONTH_FIRST_DATE_FORMAT,
-                    ),
-                  )
-                  .includes(
-                    moment(date.value + USER_DATE_OFFSET).format(
-                      MONTH_FIRST_DATE_FORMAT,
-                    ),
-                  ) && (
+                  .map(layerDate => formatDate(layerDate))
+                  .includes(formatDate(date.value)) && (
                   <div
                     className={DATE_ITEM_STYLING[layerIndex].class}
                     role="presentation"
