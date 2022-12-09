@@ -96,9 +96,15 @@ import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { firstBoundaryOnView } from '../../utils/map-utils';
 import DataViewer from '../DataViewer';
 
+const {
+  map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom },
+} = appConfig;
+
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
   preserveDrawingBuffer: true,
+  minZoom,
+  maxZoom,
 });
 
 type LayerComponentsMap<U extends LayerType> = {
@@ -505,9 +511,6 @@ function MapView({ classes }: MapViewProps) {
     process.env.REACT_APP_SHOW_MAP_INFO || 'false',
   );
 
-  const {
-    map: { latitude, longitude, zoom },
-  } = appConfig;
   // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers.
   // Jump map to center here instead of map initial state to prevent map re-centering on layer changes
   const saveAndJumpMap = (map: Map) => {
@@ -515,11 +518,6 @@ function MapView({ classes }: MapViewProps) {
     // Find the first symbol on the map to make sure we add boundary layers below them.
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
-    map.jumpTo({ center: [longitude, latitude], zoom });
-    const { maxBounds, minZoom, maxZoom } = appConfig.map;
-    map.setMaxBounds(maxBounds);
-    map.setMinZoom(minZoom);
-    map.setMaxZoom(maxZoom);
     if (showBoundaryInfo) {
       watchBoundaryChange(map);
     }
@@ -549,6 +547,9 @@ function MapView({ classes }: MapViewProps) {
           height: '100%',
         }}
         onClick={mapOnClick}
+        center={[longitude, latitude]}
+        zoom={[zoom]}
+        maxBounds={maxBounds}
       >
         {selectedLayers.map(layer => {
           const component: ComponentType<{
