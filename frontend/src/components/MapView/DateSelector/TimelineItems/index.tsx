@@ -9,7 +9,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
-import { merge } from 'lodash';
+import { merge, compact } from 'lodash';
 import { DateRangeType } from '../../../../config/types';
 import { TIMELINE_ITEM_WIDTH, formatDate } from '../utils';
 
@@ -42,11 +42,8 @@ function TimelineItems({
   );
 
   const formattedIntersectionDates = useMemo(
-    () =>
-      selectedLayerDates.map(layerDates =>
-        layerDates.map(layerDate => formatDate(layerDate)),
-      ),
-    [selectedLayerDates],
+    () => intersectionDates.map(layerDate => formatDate(layerDate)),
+    [intersectionDates],
   );
 
   const TooltipItem = ({
@@ -70,20 +67,26 @@ function TimelineItems({
   };
 
   const getTooltipTitle = (date: DateRangeType): JSX.Element[] => {
-    const tooltipTitleArray: JSX.Element[] = selectedLayerTitles
-      .map((selectedLayerTitle, layerIndex) => (
-        <TooltipItem
-          layerTitle={selectedLayerTitle}
-          color={DATE_ITEM_STYLING[layerIndex + 1].color}
-        />
-      ))
-      .filter((_, layerIndex) => {
-        return formattedSelectedLayerDates[layerIndex].includes(
-          formatDate(date.value),
-        );
-      });
+    const tooltipTitleArray: JSX.Element[] = compact(
+      selectedLayerTitles.map((selectedLayerTitle, layerIndex) => {
+        if (
+          formattedSelectedLayerDates[layerIndex].includes(
+            formatDate(date.value),
+          )
+        ) {
+          return (
+            <TooltipItem
+              layerTitle={selectedLayerTitle}
+              color={DATE_ITEM_STYLING[layerIndex + 1].color}
+            />
+          );
+        }
+        return undefined;
+      }),
+    );
     // eslint-disable-next-line fp/no-mutating-methods
     tooltipTitleArray.unshift(<div>{date.label}</div>);
+
     return tooltipTitleArray;
   };
 
@@ -112,11 +115,9 @@ function TimelineItems({
             ) : (
               <div className={classes.dayItem} />
             )}
-            {[intersectionDates, ...selectedLayerDates].map(
+            {[formattedIntersectionDates, ...formattedSelectedLayerDates].map(
               (layerDates, layerIndex) =>
-                layerDates
-                  .map(layerDate => formatDate(layerDate))
-                  .includes(formatDate(date.value)) && (
+                layerDates.includes(formatDate(date.value)) && (
                   <div
                     className={DATE_ITEM_STYLING[layerIndex].class}
                     role="presentation"
