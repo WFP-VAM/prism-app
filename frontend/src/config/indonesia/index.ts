@@ -1,5 +1,14 @@
-import indonesiaConfig from './prism.json';
-import indonesiaRawLayers from './layers.json';
-import indonesiaRawTables from './tables.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
+import indonesiaTranslation from './translation.json';
 
-export { indonesiaConfig, indonesiaRawLayers, indonesiaRawTables };
+const rawTables = {};
+const translation = { id: indonesiaTranslation };
+
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  translation,
+  defaultBoundariesFile: 'admin_idn.json',
+};

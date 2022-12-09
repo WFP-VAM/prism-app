@@ -12,11 +12,7 @@ import ecuador from './ecuador';
 
 import global from './global';
 
-import {
-  indonesiaConfig,
-  indonesiaRawLayers,
-  indonesiaRawTables,
-} from './indonesia';
+import indonesia from './indonesia';
 
 import jordan from './jordan';
 
@@ -58,12 +54,7 @@ const configMap = {
   colombia,
   ecuador,
   global,
-  indonesia: {
-    appConfig: indonesiaConfig,
-    rawLayers: indonesiaRawLayers,
-    rawTables: indonesiaRawTables,
-    defaultBoundariesFile: 'admin_idn.json',
-  },
+  indonesia,
   jordan,
   kyrgyzstan,
   mongolia: {
