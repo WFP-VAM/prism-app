@@ -114,7 +114,11 @@ function TimelineItems({
                       MONTH_FIRST_DATE_FORMAT,
                     ),
                   )
-                  .includes(date.label) && (
+                  .includes(
+                    moment(date.value + USER_DATE_OFFSET).format(
+                      MONTH_FIRST_DATE_FORMAT,
+                    ),
+                  ) && (
                   <div
                     className={DATE_ITEM_STYLING[layerIndex].class}
                     role="presentation"
