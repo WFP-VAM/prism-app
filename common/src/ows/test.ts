@@ -1,13 +1,19 @@
+import findAndRead from "find-and-read";
 import test from "flug";
 
 import {
   parseBoundingBox,
+  findException,
   findOperation,
   findAndParseBoundingBox,
   findAndParseKeywords,
   findAndParseWGS84BoundingBox,
   findAndParseOperationUrl,
 } from "./index";
+
+const wcsException = findAndRead("geonode-wfp-wcs-exception.xml", {
+  encoding: "utf-8",
+});
 
 test("ows: findAndParseKeywords", ({ eq }) => {
   const xml = `<ows:Keywords>
@@ -52,7 +58,7 @@ test("ows: findAndParseBoundingBox", ({ eq }) => {
   ]);
 });
 
-test("find operation and its url", ({ eq }) => {
+test("ows: find operation and its url", ({ eq }) => {
   const xml = `
   <wcs:Capabilities xmlns:wcs="http://www.opengis.net/wcs/1.1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://www.opengis.net/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.1" xsi:schemaLocation="http://www.opengis.net/wcs/1.1.1 https://geonode.wfp.org/geoserver/schemas/wcs/1.1.1/wcsGetCapabilities.xsd" updateSequence="7468">
     <ows:ServiceIdentification>
@@ -90,5 +96,52 @@ test("find operation and its url", ({ eq }) => {
   eq(
     findAndParseOperationUrl(xml, "DescribeCoverage"),
     "https://geonode.wfp.org/geoserver/wcs?"
+  );
+});
+
+test("ows: findException", ({ eq }) => {
+  eq(
+    findException(`<?xml version="1.0" encoding="UTF-8"?><ServiceExceptionReport version="1.2.0" >   <ServiceException>
+  Unable to acquire a reader for this coverage with format: GeoTIFFTranslator error
+Unexpected error occurred during describe coverage xml encoding
+Unable to acquire a reader for this coverage with format: GeoTIFF
+</ServiceException></ServiceExceptionReport>`),
+    "Unable to acquire a reader for this coverage with format: GeoTIFFTranslator error\nUnexpected error occurred during describe coverage xml encoding\nUnable to acquire a reader for this coverage with format: GeoTIFF"
+  );
+
+  eq(
+    findException(`<?xml version="1.0" encoding="UTF-8"?><ServiceExceptionReport version="1.2.0" >   <ServiceException>
+  Could not understand version:1.0
+</ServiceException></ServiceExceptionReport>`),
+    "Could not understand version:1.0"
+  );
+
+  eq(
+    findException(`<?xml version="1.0" encoding="UTF-8"?><ows:ExceptionReport xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0.0" xsi:schemaLocation="http://www.opengis.net/ows/2.0 http://schemas.opengis.net/ows/2.0/owsExceptionReport.xsd">
+  <ows:Exception exceptionCode="MissingParameterValue" locator="request">
+  <ows:ExceptionText>Could not determine geoserver request from http request org.geoserver.monitor.MonitorServletRequest@4b7091d3</ows:ExceptionText>
+  </ows:Exception>
+  </ows:ExceptionReport>`),
+    "Could not determine geoserver request from http request org.geoserver.monitor.MonitorServletRequest@4b7091d3"
+  );
+
+  eq(
+    findException(`<?xml version="1.0" encoding="UTF-8"?><ows:ExceptionReport xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0.0" xsi:schemaLocation="http://www.opengis.net/ows/2.0 http://schemas.opengis.net/ows/2.0/owsExceptionReport.xsd">
+  <ows:Exception exceptionCode="MissingParameterValue">
+  <ows:ExceptionText>Missing version</ows:ExceptionText>
+  </ows:Exception>
+  </ows:ExceptionReport>
+  `),
+    "Missing version"
+  );
+
+  const exception = findException(wcsException);
+  eq(
+    exception?.startsWith("java.io.IOException: Failed to create reader from"),
+    true
+  );
+  eq(
+    exception?.endsWith("STYLE_FACTORY                    = StyleFactoryImpl"),
+    true
   );
 });
