@@ -1,9 +1,11 @@
+import findAndRead from "find-and-read";
 import t from "flug";
 
 import {
   bboxToString,
   checkExtent,
   findTagText,
+  findVersion,
   formatUrl,
   hasLayerId,
   titlecase,
@@ -181,4 +183,32 @@ t("setTimeoutAsync", async ({ eq }) => {
   const duration = performance.now() - start;
   eq(Math.round(duration / 1000), seconds);
   eq(flag, true);
+});
+
+t("findVersion", ({ eq }) => {
+  [
+    ["api-earthobservation-vam-wfp-wcs-1.0.0.xml", "1.0.0"],
+    ["api-earthobservation-vam-wfp-wcs-2.0.1.xml", "2.0.1"],
+    ["geonode-wfp-wcs-get-capabilities-2.0.1.xml", "2.0.1"],
+    ["geonode-wfp-wcs-get-capabilities-1.1.1.xml", "1.1.1"],
+    ["geonode-wcs-describe-coverage-1.0.0.xml", "1.0.0"],
+    [
+      "geonode-wfp-wcs-describe-coverage-geonode__wld_cli_tp_7d_ecmwf-2.0.1.xml",
+      "2.0.0",
+    ],
+    ["geonode-wfp-wcs-exception.xml", "1.2.0"],
+    ["geonode-wfp-wms-get-capabilities-1.1.1.xml", "1.1.1"],
+    ["geonode-wfp-wms-get-capabilities-1.3.0.xml", "1.3.0"],
+    ["geonode-wfp-wfs-get-capabilities-1.1.0.xml", "1.1.0"],
+    ["geonode-wfp-wfs-get-capabilities-2.0.0.xml", "2.0.0"],
+    ["mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml", "1.0.0"],
+    ["mongolia-sibelius-datacube-wms-get-capabilities-1.3.0.xml", "1.3.0"],
+    [
+      "mongolia-sibelius-datacube-wcs-coverage-description-10DayTrend-1.0.0.xml",
+      "1.0.0",
+    ],
+  ].forEach(([filename, version]) => {
+    const xml = findAndRead(filename, { encoding: "utf-8" });
+    eq(findVersion(xml), version);
+  });
 });

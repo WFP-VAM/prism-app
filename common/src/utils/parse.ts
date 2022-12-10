@@ -1,4 +1,4 @@
-import { findTagByPath, getAttribute } from "xml-utils";
+import { findTagByName, findTagByPath, getAttribute } from "xml-utils";
 import { findTagText } from "./xml";
 
 export function findAndParseAbstract(
@@ -34,6 +34,50 @@ export function findAndParseCapabilityUrl(
 
 export function findName(xml: string): string | undefined {
   return findTagText(xml, "Name");
+}
+
+export function findVersion(xml: string): string | undefined {
+  const tagNames = [
+    // wcs
+    "WCS_Capabilities",
+    "wcs:Capabilities",
+    "wcs:CoverageDescriptions",
+    "wcs:CoverageDescription",
+    "CoverageDescriptions",
+    "CoverageDescription",
+
+    // wms
+    "WMS_Capabilities",
+    "WMT_MS_Capabilities",
+
+    // wfs
+    "wfs:WFS_Capabilities",
+
+    // other
+    "ServiceExceptionReport",
+  ];
+  for (let i = 0; i < tagNames.length; i += 1) {
+    const tagName = tagNames[i];
+    const tag = findTagByName(xml, tagName);
+    if (tag) {
+      const version = getAttribute(tag.outer, "version");
+      if (version) {
+        return version;
+      }
+    }
+  }
+
+  // if haven't found version yet, try to grab it from the wcs:xmlns attribute
+  for (let i = 0; i < tagNames.length; i += 1) {
+    const tagName = tagNames[i];
+    const tag = findTagByName(xml, tagName);
+    if (tag) {
+      const link = getAttribute(tag.outer, "xmlns:wcs");
+      if (link.endsWith("2.0")) {
+        return "2.0.0";
+      }
+    }
+  }
 }
 
 export function parseName(

@@ -5,6 +5,7 @@ export {
   findAndParseAbstract,
   findAndParseCapabilityUrl,
   findName,
+  findVersion,
   parseName,
   parseService,
 } from "./parse";
