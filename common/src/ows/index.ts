@@ -1,3 +1,4 @@
+export { default as findException } from "./find-exception";
 export { default as findOperation } from "./find-operation";
 export { default as findOperations } from "./find-operations";
 export { default as findAndParseKeywords } from "./find-and-parse-keywords";
