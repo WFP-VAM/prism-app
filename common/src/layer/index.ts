@@ -7,7 +7,7 @@ import { parseName } from "../utils";
 
 export class Layer {
   public capabilities: Promise<string>;
-  public debug: boolean;
+  public debug: boolean | undefined;
   public id: string; // e.g., namespace:feature_type
   public layer: Promise<string> | undefined;
   public namespace: string | undefined;
