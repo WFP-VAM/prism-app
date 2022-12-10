@@ -1,5 +1,5 @@
 import { uniq, union } from "lodash";
-import { findTagsByName, getAttribute } from "xml-utils";
+import { findTagsByName } from "xml-utils";
 
 import { findAndParseEnvelope } from "../../gml";
 import {
@@ -8,19 +8,22 @@ import {
   findAndParseCapabilityUrl,
   findTagArray,
   findTagText,
+  findVersion,
   formatUrl,
   scaleImage,
   setNoon,
+  setTimeoutAsync,
 } from "../../utils";
 
 import {
+  findException,
   findAndParseBoundingBox,
   findAndParseKeywords,
   findAndParseOperationUrl,
   findAndParseWGS84BoundingBox,
 } from "../../ows";
 
-import type { BBOX } from "../../types";
+import type { BBOX, WCS_FORMAT } from "../../types";
 
 export type Coverage = {
   id: string;
@@ -109,10 +112,13 @@ export function findCoverageDisplayName(xml: string): string | undefined {
 
 export function findCoverage(
   xml: string,
-  layerName: string
+  layerIdOrName: string
 ): string | undefined {
+  const normalized = normalizeCoverageId(layerIdOrName);
   return findCoverages(xml).find(
-    (layer) => findCoverageTitle(layer) === layerName
+    (layer) =>
+      findLayerId(layer, { normalize: true }) === normalized ||
+      findCoverageDisplayName(layer) === layerIdOrName
   );
 }
 
@@ -160,7 +166,7 @@ export function findAndParseLonLatEnvelope(
 export function findAndParseExtent(
   xml: string
 ): Readonly<[number, number, number, number]> | undefined {
-  return findAndParseEnvelope(xml) || findAndParseLonLatEnvelope(xml);
+  return findAndParseLonLatEnvelope(xml) || findAndParseEnvelope(xml);
 }
 
 export function findCoverageOpUrl(xml: string, op: string): string | undefined {
@@ -197,7 +203,7 @@ export function createGetCoverageUrl(
     bboxDigits?: number;
     checkExtent?: boolean;
     crs?: string;
-    format?: string;
+    format?: WCS_FORMAT | string;
     height: number;
     maxPixels?: number;
     resolution?: 256;
@@ -282,26 +288,50 @@ export function createDescribeCoverageUrl(
   if (!base) {
     throw new Error("failed to create DescribeCoverage Url");
   }
-  const url = new URL(base);
-  const version = getAttribute(xml, "version");
-  url.searchParams.set("coverage", layerId);
-  url.searchParams.set("request", "DescribeCoverage");
-  url.searchParams.set("service", "WCS");
-  url.searchParams.set("version", version);
-  return url.toString();
+
+  const version = findVersion(xml)!;
+
+  const layerParamName = (() => {
+    if (version.startsWith("1.1")) {
+      return "identifiers";
+    }
+    if (version.startsWith("0") || version.startsWith("1")) {
+      return "coverage";
+    }
+    return "coverageId";
+  })();
+
+  return formatUrl(base, {
+    [layerParamName]: layerId,
+    request: "DescribeCoverage",
+    service: "WCS",
+    version,
+  });
 }
 
 export async function fetchCoverageDescriptionFromCapabilities(
   capabilities: string,
   layerId: string,
-  options: { fetch?: any } = {}
+  options: { debug?: boolean; fetch?: any; wait?: number } = {}
 ) {
-  const url = createDescribeCoverageUrl(capabilities, layerId);
-  const response = await (options.fetch || fetch)(url);
-  if (response.status !== 200) {
-    throw new Error("failed to fetch CoverageDescription");
-  }
-  return response.text();
+  const run = async () => {
+    const url = createDescribeCoverageUrl(capabilities, layerId);
+    const response = await (options.fetch || fetch)(url);
+    if (response.status !== 200) {
+      throw new Error(
+        `failed to fetch CoverageDescription. status was ${response.status}`
+      );
+    }
+    const text = await response.text();
+    const exception = findException(text);
+    if (exception) {
+      throw new Error(
+        `couldn't fetch coverage description because of the following error:\n${exception}`
+      );
+    }
+    return text;
+  };
+  return setTimeoutAsync(options.wait || 0, run);
 }
 
 export function parseCoverage(xml: string) {
@@ -315,6 +345,11 @@ export function parseCoverage(xml: string) {
       findAndParseWGS84BoundingBox(xml) || findAndParseLonLatEnvelope(xml),
     subType: findCoverageSubType(xml),
   };
+}
+
+export function findAndParseCoverage(xml: string, layerIdOrName: string) {
+  const coverage = findCoverage(xml, layerIdOrName);
+  return coverage ? parseCoverage(coverage) : undefined;
 }
 
 export function parseDates(description: string): string[] {
