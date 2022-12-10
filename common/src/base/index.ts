@@ -1,3 +1,5 @@
+import memoize from "memoizee";
+
 import { getCapabilities, getCapabilitiesUrl } from "./utils";
 
 import { hasLayerId } from "../utils";
@@ -11,7 +13,7 @@ export class Base {
   loading: boolean;
   getCapabilitiesUrl?: string;
   service?: string;
-  version?: string;
+  version?: string; // default version
 
   constructor(
     url: string,
@@ -23,7 +25,7 @@ export class Base {
       version?: "2.0.0";
     } = { fetch: undefined, version: "2.0.0" }
   ) {
-    this.fetch = customFetch;
+    this.fetch = memoize(customFetch || fetch);
     this.version = version;
     this.getCapabilitiesUrl = getCapabilitiesUrl(url, {
       service: this.service,
