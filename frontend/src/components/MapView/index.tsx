@@ -587,7 +587,10 @@ function MapView({ classes }: MapViewProps) {
         </Grid>
       </Grid>
       {selectedLayerDates.length > 0 && (
-        <DateSelector availableDates={selectedLayerDates} />
+        <DateSelector
+          availableDates={selectedLayerDates}
+          selectedLayers={selectedLayersWithDateSupport}
+        />
       )}
       {showBoundaryInfo && <BoundaryInfoBox />}
     </Grid>
