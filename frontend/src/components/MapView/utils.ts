@@ -127,19 +127,27 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
     return extras.length !== 0 ? assign(row, ...extras) : row;
   });
 
+  const columnMapping = {
+    [groupBy]: 'name',
+    sum: 'total',
+  };
+
   const headlessRows = groupedRowDataWithAllLabels.map(row => {
     // Replace the group by column name with generic value.
     const obj = Object.entries(row).reduce(
       (acc, [objKey, value]) => ({
         ...acc,
-        [objKey === groupBy ? 'Name' : objKey]: value,
+        [columnMapping[objKey] || objKey]: value,
       }),
       [],
     );
     return obj;
   });
 
-  const columns = ['Name', ...fields]; // 'Total'
+  const columns = [
+    columnMapping[groupBy],
+    ...fields.map(field => columnMapping[field] || field),
+  ];
   const headRow = zipObject(columns, columns);
   const rows = [headRow, ...headlessRows];
   return { columns, rows };
