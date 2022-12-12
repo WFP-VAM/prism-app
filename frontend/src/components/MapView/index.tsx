@@ -100,6 +100,9 @@ const {
   map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom },
 } = appConfig;
 
+const center = [longitude, latitude] as [number, number];
+const zoomList = [zoom] as [number];
+
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
   preserveDrawingBuffer: true,
@@ -547,8 +550,8 @@ function MapView({ classes }: MapViewProps) {
           height: '100%',
         }}
         onClick={mapOnClick}
-        center={[longitude, latitude]}
-        zoom={[zoom]}
+        center={center}
+        zoom={zoomList}
         maxBounds={maxBounds}
       >
         {selectedLayers.map(layer => {
