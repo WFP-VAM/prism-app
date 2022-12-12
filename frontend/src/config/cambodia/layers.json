@@ -54,12 +54,17 @@
     }
   },
   "idpoor": {
-    "title": "IDPoor - Levels 1 & 2",
+    "title": "IDPoor - dates",
     "type": "admin_level_data",
-    "path": "data/cambodia/idpoor1_2.json",
+    "path": "data/cambodia/idpoor/{YYYY_MM_DD}.json",
+    "dates": ["2022-01-01", "2022-07-01"],
     "data_field": "Total_Poor_12_HHs",
     "admin_level": 3,
     "admin_code": "Adm3_text",
+    "validity": {
+      "days": 150,
+      "mode": "forward"
+    },
     "opacity": 0.9,
     "legend": [
       {
@@ -207,6 +212,10 @@
     "server_layer_name": "rfh_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_300"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
