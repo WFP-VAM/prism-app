@@ -122,16 +122,16 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   if (adminLevelDisplay && !Object.keys(data).includes('message')) {
     const { adminCode } = adminLevelDisplay;
 
-    return getAdminLevelDataLayerData(
+    return getAdminLevelDataLayerData({
       data,
-      {
+      adminLevelDataLayerProps: {
         boundary,
         adminCode,
         dataField,
         featureInfoProps,
       },
       getState,
-    );
+    });
   }
   return { features: GeoJSON.parse(data, { Point: ['lat', 'lon'] }) };
 };

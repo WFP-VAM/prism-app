@@ -59,7 +59,7 @@ function checkLayersCategories(
       if (isLayerKey(layerOrTableKey) || isTableKey(layerOrTableKey)) {
         return true;
       }
-      console.error(`Key ${layerOrTableKey} isn't a valid layer or table key`);
+      console.log(`Key ${layerOrTableKey} isn't a valid layer or table key`);
       return false;
     });
 }

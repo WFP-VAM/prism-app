@@ -24,19 +24,26 @@ export type AdminLevelDataLayerData = {
   layerData: DataRecord[];
 };
 
-export async function getAdminLevelDataLayerData(
-  data: { [key: string]: any }[],
-  {
-    boundary,
-    adminCode,
-    dataField,
-    featureInfoProps,
-  }: Pick<
+export async function getAdminLevelDataLayerData({
+  data,
+  fallbackLayersData,
+  adminLevelDataLayerProps,
+  getState,
+}: {
+  data: { [key: string]: any }[];
+  fallbackLayersData?: { [key: string]: any }[][];
+  adminLevelDataLayerProps: Pick<
     AdminLevelDataLayerProps,
     'boundary' | 'adminCode' | 'dataField' | 'featureInfoProps'
-  >,
-  getState: () => RootState,
-) {
+  >;
+  getState: () => RootState;
+}) {
+  const {
+    adminCode,
+    boundary,
+    dataField,
+    featureInfoProps,
+  } = adminLevelDataLayerProps;
   // check unique boundary layer presence into this layer
   // use the boundary once available or
   // use the default boundary singleton instead
@@ -59,6 +66,7 @@ export async function getAdminLevelDataLayerData(
     throw new Error('Boundary Layer not loaded!');
   }
   const adminBoundaries = adminBoundariesLayer.data;
+  console.log({ data });
 
   const layerData = (data || [])
     .map(point => {
@@ -67,6 +75,9 @@ export async function getAdminLevelDataLayerData(
         return undefined;
       }
       const value = get(point, dataField);
+      if (!value) {
+        console.log({ point, dataField, value });
+      }
       const featureInfoPropsValues = Object.keys(featureInfoProps || {}).reduce(
         (obj, item) => {
           return {
@@ -148,27 +159,52 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
   { layer, date }: LayerDataParams<AdminLevelDataLayerProps>,
   api: ThunkApi,
 ) => {
-  const { path, adminCode, dataField, featureInfoProps, boundary } = layer;
+  const {
+    adminCode,
+    dataField,
+    featureInfoProps,
+    boundary,
+    backupAdminLevelDataLayers,
+  } = layer;
 
-  // format brackets inside config URL with moment
-  // example: "&date={YYYY-MM-DD}" will turn into "&date=2021-04-27"
-  const datedPath = path.replace(/{.*?}/g, match => {
-    const format = match.slice(1, -1);
-    return moment(date).format(format);
-  });
-
-  // TODO avoid any use, the json should be typed. See issue #307
-  const data: { [key: string]: any }[] = (
-    await (
-      await fetch(datedPath, {
-        mode: path.includes('http') ? 'cors' : 'same-origin',
-      })
-    ).json()
-  ).DataList;
-
-  return getAdminLevelDataLayerData(
-    data,
-    { boundary, adminCode, dataField, featureInfoProps },
-    api.getState,
+  const fallbackLayers = backupAdminLevelDataLayers?.map(
+    backupLayerKey =>
+      LayerDefinitions[backupLayerKey] as AdminLevelDataLayerProps,
   );
+
+  const [layerData, ...fallbackLayersData] = await Promise.all(
+    [layer, ...(fallbackLayers ?? [])].map(async adminLevelDataLayer => {
+      // format brackets inside config URL with moment
+      // example: "&date={YYYY-MM-DD}" will turn into "&date=2021-04-27"
+      const datedPath = adminLevelDataLayer.path.replace(/{.*?}/g, match => {
+        const format = match.slice(1, -1);
+        return moment(date).format(format);
+      });
+
+      // TODO avoid any use, the json should be typed. See issue #307
+      const data: { [key: string]: any }[] = (
+        await (
+          await fetch(datedPath, {
+            mode: adminLevelDataLayer.path.includes('http')
+              ? 'cors'
+              : 'same-origin',
+          })
+        ).json()
+      ).DataList;
+
+      return data;
+    }),
+  );
+
+  return getAdminLevelDataLayerData({
+    data: layerData,
+    fallbackLayersData,
+    adminLevelDataLayerProps: {
+      boundary,
+      adminCode,
+      dataField,
+      featureInfoProps,
+    },
+    getState: api.getState,
+  });
 };
