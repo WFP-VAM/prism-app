@@ -20,7 +20,7 @@
     "build": "cross-env EXTEND_ESLINT=true react-app-rewired build",
     "test": "set REACT_APP_TESTING=true && react-scripts test",
     "prettier:json-fix": "prettier --write */**.json",
-    "prettier:json-check": "prettier --check */**.json",
+    "prettier:json-check": "prettier --check */**.json --ignore-path public/manifest.json",
     "predeploy:prod": "yarn build",
     "predeploy:staging": "yarn build",
     "deploy:prod": "firebase deploy --only hosting:prod-target",
