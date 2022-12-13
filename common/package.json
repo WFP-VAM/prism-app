@@ -6,8 +6,8 @@
   "main": "dist/index.js",
   "types": "dist/index.ts",
   "scripts": {
-    "clean": "yarn add rimraf && rimraf ./dist",
-    "build": "yarn clean && ls && yarn build:cpy && yarn build:tsc",
+    "prebuild": "yarn add rimraf && rimraf ./dist",
+    "build": "tsc -p tsconfig.json",
     "build:cpy": "cp -a ./src/. ./dist/",
     "build:tsc": "tsc --skipLibCheck ./dist/**.ts",
     "test:base": "npx ts-node --esm --skipProject ./src/base/test.ts",
