@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "types": "dist/index.ts",
   "scripts": {
-    "clean": "rimraf ./dist",
+    "clean": "yarn add rimraf && rimraf ./dist",
     "build": "yarn clean && ls && yarn build:cpy && yarn build:tsc",
     "build:cpy": "cpy . ../dist/ --cwd=src",
     "build:tsc": "tsc --skipLibCheck ./dist/*.ts ./dist/*/*.ts ./dist/*/*/*.ts",
