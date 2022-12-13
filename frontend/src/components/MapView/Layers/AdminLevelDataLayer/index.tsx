@@ -28,15 +28,21 @@ import {
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { fillPaintData } from '../styles';
+import { availableDatesSelector } from '../../../../context/serverStateSlice';
+import { getRequestDate } from '../../../../utils/server-utils';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
 
   const boundaryId = layer.boundary || firstBoundaryOnView(map);
 
   const selectedDate = useDefaultDate(layer.id);
-  const layerData = useSelector(layerDataSelector(layer.id, selectedDate)) as
+  const layerAvailableDates = serverAvailableDates[layer.id];
+  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+
+  const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<AdminLevelDataLayerProps>
     | undefined;
   const { data } = layerData || {};
@@ -70,9 +76,9 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       }
     }
     if (!features) {
-      dispatch(loadLayerData({ layer, date: selectedDate }));
+      dispatch(loadLayerData({ layer, date: queryDate }));
     }
-  }, [dispatch, features, layer, selectedDate, boundaryId, map]);
+  }, [dispatch, features, layer, queryDate, boundaryId, map]);
 
   if (!features) {
     return null;
