@@ -27,7 +27,6 @@
   ],
   "categories": {
     "Cadre Harmonisé": {
-      "Test_Multiple_Dates": ["ch_phaseclass_adm2"],
       "Test_Grouped_Layers": [
         {
           "group_title": "CH - grouped",
