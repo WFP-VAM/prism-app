@@ -124,6 +124,7 @@ jobs:
       matrix:
         country: [mozambique, cambodia, rbd]
     env:
+      REACT_APP_SENTRY_URL: ${{ secrets.REACT_APP_SENTRY_URL }}
       surge_url: prism-master-${{ matrix.country }}.surge.sh
     steps:
       - name: Checkout
