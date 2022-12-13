@@ -8,7 +8,7 @@
   "scripts": {
     "clean": "yarn add rimraf && rimraf ./dist",
     "build": "yarn clean && ls && yarn build:cpy && yarn build:tsc",
-    "build:cpy": "cpy . ../dist/ --cwd=src",
+    "build:cpy": "cp -a ./src/. ./dist/",
     "build:tsc": "tsc --skipLibCheck ./dist/**.ts",
     "test:base": "npx ts-node --esm --skipProject ./src/base/test.ts",
     "test:gml": "npx ts-node --esm --skipProject ./src/gml/test.ts",
