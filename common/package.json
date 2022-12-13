@@ -38,7 +38,6 @@
     "@types/estree": "^1.0.0",
     "@types/node": "^18.7.20",
     "@types/webpack": "^5.28.0",
-    "cpy-cli": "^4.2.0",
     "cross-fetch": "^3.1.5",
     "find-and-read": "^1.2.0",
     "flug": "^2.3.1",
