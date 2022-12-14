@@ -32,7 +32,10 @@ import {
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
 import { setFormInputValue } from '../../../context/mapStateSlice';
-import { mapSelector, layerFormSelector } from '../../../context/mapStateSlice/selectors';
+import {
+  mapSelector,
+  layerFormSelector,
+} from '../../../context/mapStateSlice/selectors';
 import { Extent } from '../Layers/raster-utils';
 import ColorIndicator from './ColorIndicator';
 import LoadingBar from './LoadingBar';
