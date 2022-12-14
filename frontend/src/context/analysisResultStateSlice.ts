@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { convertArea } from '@turf/helpers';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
-import { get } from 'lodash';
+import { fromPairs, get } from 'lodash';
 import { calculate } from '../utils/zonal-utils';
 
 import type { CreateAsyncThunkTypes, RootState } from './store';
@@ -46,7 +46,7 @@ import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from '../utils/server-utils';
-import { layerDataSelector } from './mapStateSlice/selectors';
+import { layerDataSelector, layerFormSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
@@ -228,6 +228,7 @@ const createAPIRequestParams = (
   params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
   geojsonOut?: boolean,
+  layerFormParams?: { [key:string]: string },
 ): ApiData => {
   const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
 
@@ -257,6 +258,7 @@ const createAPIRequestParams = (
       // Skip date parameter if layer has disableDateParam set to true.
       date: dateValue,
       extent,
+      additionalParams: layerFormParams,
     }),
     zones_url: getAdminBoundariesURL(),
     group_by: groupBy,
@@ -370,6 +372,13 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     api.getState(),
   ) as LayerData<BoundaryLayerProps>;
 
+  const layerForm = layerFormSelector(hazardLayer.id)(
+    api.getState(),
+  );
+  const layerFormParams = layerForm
+    ? fromPairs(layerForm.inputs.map(input => [input.id, input.value]))
+    : {};
+
   if (!adminBoundariesData) {
     throw new Error('Boundary Layer not loaded!');
   }
@@ -379,6 +388,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     extent,
     date,
     baselineLayer,
+    undefined,
+    undefined,
+    layerFormParams,
   );
 
   const aggregateData = scaleAndFilterAggregateData(

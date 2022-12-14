@@ -95,6 +95,8 @@ export function getWCSv1Url(
   yRange: readonly [number, number],
   width: number,
   height?: number,
+  // Support Layer custom dimension parameters
+  additionalParams?: { [key:string]: string }
 ) {
   const params = {
     service: 'WCS',
@@ -111,6 +113,7 @@ export function getWCSv1Url(
     ...(date && {
       time: date,
     }),
+    ...additionalParams,
   };
   return formatUrl(baseUrl, params);
 }
@@ -119,12 +122,15 @@ export function getWCSv2Url(
   layer: WMSLayerProps,
   date: string | undefined,
   extent: Extent,
+  // Support Layer custom dimension parameters
+  additionalParams: { [key:string]:string }
 ) {
   const params = {
     service: 'WCS',
     request: 'GetCoverage',
     version: layer.wcsConfig?.version,
     coverageId: layer.serverLayerName,
+    ...additionalParams,
   };
 
   // Subsets are used as spatial and temporal filters.
@@ -149,6 +155,8 @@ export function WCSRequestUrl(
   layer: WMSLayerProps,
   date: string | undefined,
   extent: Extent,
+  // Support Layer custom dimension parameters
+  additionalParams: { [key:string]: string },
   maxPixels = 5096,
 ) {
   const { baseUrl, serverLayerName, wcsConfig } = layer;
@@ -161,7 +169,7 @@ export function WCSRequestUrl(
   }
 
   if (wcsConfig?.version === WcsGetCoverageVersion.twoZeroZero) {
-    return getWCSv2Url(layer, date, extent);
+    return getWCSv2Url(layer, date, extent, additionalParams);
   }
 
   const resolution = wcsConfig?.pixelResolution || 256;
@@ -185,6 +193,7 @@ export function WCSRequestUrl(
     [minY, maxY],
     width,
     height,
+    additionalParams,
   );
 }
 

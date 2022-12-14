@@ -20,6 +20,8 @@ export function getWCSLayerUrl({
   layer,
   extent,
   date,
+  // Support Layer custom dimension parameters
+  additionalParams,
 }: LayerDataParams<WMSLayerProps>) {
   if (!extent) {
     throw new Error(
@@ -31,6 +33,7 @@ export function getWCSLayerUrl({
     layer,
     date ? moment(date).format(DEFAULT_DATE_FORMAT) : undefined,
     extent,
+    additionalParams,
   );
 }
 
