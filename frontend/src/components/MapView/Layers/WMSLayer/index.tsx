@@ -23,10 +23,13 @@ function WMSLayers({
     : {};
 
   const layerAvailableDates = serverAvailableDates[serverLayerName];
-  const queryDate = getRequestDate(layerAvailableDates, selectedDate);
+  const hasDates = layerAvailableDates.length > 0;
+  const queryDate = hasDates
+    ? getRequestDate(layerAvailableDates, selectedDate)
+    : undefined;
 
   // Do not skip if WMS Layer has no dates (i.e. static layer)
-  if (!selectedDate && layerAvailableDates && layerAvailableDates.length > 0) {
+  if (!selectedDate && hasDates) {
     return null;
   }
 
