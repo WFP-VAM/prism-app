@@ -226,6 +226,7 @@ export function createGetLegendGraphicUrl({
   sld,
   sldBody,
   style,
+  version = "1.3.0",
   width,
   wrap = false,
   wrapLimit,
@@ -260,6 +261,7 @@ export function createGetLegendGraphicUrl({
   sld?: string;
   sldBody?: string;
   style?: string;
+  version?: string;
   width?: number;
   wrap?: boolean;
   wrapLimit?: number;
@@ -305,6 +307,7 @@ export function createGetLegendGraphicUrl({
     sld,
     sld_body: sldBody,
     style,
+    version,
   };
 
   return formatUrl(`${base}/${servicePath}`, requestParams);
