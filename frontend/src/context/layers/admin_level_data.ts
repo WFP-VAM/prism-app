@@ -1,5 +1,5 @@
 import { FeatureCollection } from 'geojson';
-import { get, isNull, isString, pick } from 'lodash';
+import { compact, get, isNull, isString, pick } from 'lodash';
 import moment from 'moment';
 import {
   BoundaryLayerProps,
@@ -66,49 +66,38 @@ export async function getAdminLevelDataLayerData({
     throw new Error('Boundary Layer not loaded!');
   }
   const adminBoundaries = adminBoundariesLayer.data;
-  console.log({ data });
 
-  const layerData = (data || [])
-    .map(point => {
-      const adminKey = point[adminCode] as string;
-      if (!adminKey) {
+  const layerData = compact(
+    adminBoundaries.features.map(feature => {
+      const adminKey = feature.properties![adminBoundaryLayer.adminCode];
+      const matchedData = data.find(
+        dataProperty => dataProperty[adminCode] === adminKey,
+      );
+      if (!matchedData) {
         return undefined;
       }
-      const value = get(point, dataField);
-      if (!value) {
-        console.log({ point, dataField, value });
-      }
+
       const featureInfoPropsValues = Object.keys(featureInfoProps || {}).reduce(
         (obj, item) => {
           return {
             ...obj,
-            [item]: point[item],
+            [item]: matchedData[item],
           };
         },
         {},
       );
 
-      const adminNames = pick(
-        adminBoundaries.features.find(
-          adminProperty =>
-            get(adminProperty.properties, adminBoundaryLayer.adminCode) ===
-            adminKey,
-        )?.properties,
-        // lodash pick handles duplicate keys
-        [
-          ...adminBoundaryLayer.adminLevelNames,
-          ...adminBoundaryLayer.adminLevelLocalNames,
-        ],
-      );
-
       return {
         adminKey,
-        value,
+        ...pick(feature.properties, [
+          ...adminBoundaryLayer.adminLevelNames,
+          ...adminBoundaryLayer.adminLevelLocalNames,
+        ]),
+        value: matchedData[dataField],
         ...featureInfoPropsValues,
-        ...adminNames,
       } as DataRecord;
-    })
-    .filter((v): v is DataRecord => v !== undefined);
+    }),
+  );
 
   const features = {
     ...adminBoundaries,
