@@ -53,7 +53,7 @@ export const getRequestDate = (
     date => date.displayDate === selectedDate,
   );
   if (!dateItem) {
-    return selectedDate;
+    return layerAvailableDates[layerAvailableDates.length - 1].queryDate;
   }
 
   return dateItem.queryDate;

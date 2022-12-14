@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { MONTH_FIRST_DATE_FORMAT } from '../../../utils/name-utils';
 
 export const TIMELINE_ITEM_WIDTH = 10;
 
@@ -142,4 +143,8 @@ export function findDateIndex(
     }
   }
   return -1;
+}
+
+export function formatDate(date: number): string {
+  return moment(date + USER_DATE_OFFSET).format(MONTH_FIRST_DATE_FORMAT);
 }
