@@ -34,19 +34,15 @@ import LoadingBar from './LoadingBar';
 
 import {
   BaselineLayerResult,
-  downloadCSVFromTableData,
   ExposedPopulationResult,
-  generateAnalysisFilename,
-  PolygonAnalysisResult,
-  useAnalysisTableColumns,
 } from '../../../utils/analysis-utils';
-import { downloadToFile, getLegendItemLabel } from '../utils';
+import { getLegendItemLabel } from '../utils';
 
 import { useSafeTranslation } from '../../../i18n';
-import MultiOptionsButton from '../../Common/MultiOptionsButton';
 import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
-
+import AnalysisDownloadButton from './AnalysisDownloadButton';
+import AdminLevelDataDownloadButton from './AdminLevelDataDownloadButton';
 /**
  * Returns layer identifier used to perform exposure analysis.
  *
@@ -83,69 +79,12 @@ function Legends({ classes, layers, extent }: LegendsProps) {
   const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
-  const { translatedColumns } = useAnalysisTableColumns(analysisResult);
   const featureCollection = analysisResult?.featureCollection;
   const hasData = featureCollection?.features
     ? featureCollection.features.length > 0
     : false;
 
   const { t } = useSafeTranslation();
-
-  const doesLayerAcceptCSVDownload =
-    analysisResult &&
-    (analysisResult instanceof BaselineLayerResult ||
-      analysisResult instanceof PolygonAnalysisResult);
-
-  const getAnalysisDate = () => {
-    if (analysisResult instanceof BaselineLayerResult) {
-      return analysisResult.analysisDate;
-    }
-    if (analysisResult instanceof PolygonAnalysisResult) {
-      return analysisResult.endDate;
-    }
-    return null;
-  };
-
-  const handleAnalysisDownloadGeoJson = (): void => {
-    const getFilename = () => {
-      if (
-        // Explicit condition for type narrowing
-        analysisResult &&
-        (analysisResult instanceof BaselineLayerResult ||
-          analysisResult instanceof PolygonAnalysisResult)
-      ) {
-        return generateAnalysisFilename(
-          analysisResult,
-          getAnalysisDate() ?? null,
-        );
-      }
-      return analysisResult?.getTitle();
-    };
-
-    downloadToFile(
-      {
-        content: JSON.stringify(featureCollection),
-        isUrl: false,
-      },
-      getFilename() ?? 'prism_extract',
-      'application/json',
-    );
-  };
-
-  const handleAnalysisDownloadCsv = (): void => {
-    if (
-      // Explicit condition for type narrowing
-      analysisResult &&
-      (analysisResult instanceof BaselineLayerResult ||
-        analysisResult instanceof PolygonAnalysisResult)
-    ) {
-      downloadCSVFromTableData(
-        analysisResult,
-        translatedColumns,
-        getAnalysisDate() ?? null,
-      );
-    }
-  };
 
   const legendItems = [
     ...layers.map(layer => {
@@ -179,6 +118,14 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           extent={extent}
         >
           {t(layer.legendText)}
+          {layer.type === 'admin_level_data' && (
+            <>
+              <Divider />
+              <Grid item>
+                <AdminLevelDataDownloadButton layer={layer} />
+              </Grid>
+            </>
+          )}
         </LegendItem>
       );
     }),
@@ -197,23 +144,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
             )}
             <Divider />
             <Grid item>
-              <MultiOptionsButton
-                mainLabel="Download"
-                options={[
-                  {
-                    label: 'GEOJSON',
-                    onClick: handleAnalysisDownloadGeoJson,
-                  },
-                  ...(doesLayerAcceptCSVDownload
-                    ? [
-                        {
-                          label: 'CSV',
-                          onClick: handleAnalysisDownloadCsv,
-                        },
-                      ]
-                    : []),
-                ]}
-              />
+              <AnalysisDownloadButton />
             </Grid>
           </LegendItem>,
         ]
