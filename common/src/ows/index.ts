@@ -5,4 +5,5 @@ export { default as findAndParseKeywords } from "./find-and-parse-keywords";
 export { default as findAndParseWGS84BoundingBox } from "./find-and-parse-wgs84-bbox";
 export { default as findAndParseBoundingBox } from "./find-and-parse-bbox";
 export { default as findAndParseOperationUrl } from "./find-and-parse-operation-url";
+export { getCapabilities, getCapabilitiesUrl } from "./capabilities";
 export { default as parseBoundingBox } from "./parse-bbox";
