@@ -46,7 +46,10 @@ import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from '../utils/server-utils';
-import { layerDataSelector, layerFormSelector } from './mapStateSlice/selectors';
+import {
+  layerDataSelector,
+  layerFormSelector,
+} from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
@@ -228,7 +231,7 @@ const createAPIRequestParams = (
   params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
   geojsonOut?: boolean,
-  layerFormParams?: { [key:string]: string },
+  layerFormParams?: { [key: string]: string },
 ): ApiData => {
   const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
 
@@ -372,9 +375,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     api.getState(),
   ) as LayerData<BoundaryLayerProps>;
 
-  const layerForm = layerFormSelector(hazardLayer.id)(
-    api.getState(),
-  );
+  const layerForm = layerFormSelector(hazardLayer.id)(api.getState());
   const layerFormParams = layerForm
     ? fromPairs(layerForm.inputs.map(input => [input.id, input.value]))
     : {};

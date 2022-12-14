@@ -96,7 +96,7 @@ export function getWCSv1Url(
   width: number,
   height?: number,
   // Support Layer custom dimension parameters
-  additionalParams?: { [key:string]: string }
+  additionalParams?: { [key: string]: string },
 ) {
   const params = {
     service: 'WCS',
@@ -123,7 +123,7 @@ export function getWCSv2Url(
   date: string | undefined,
   extent: Extent,
   // Support Layer custom dimension parameters
-  additionalParams: { [key:string]:string }
+  additionalParams: { [key: string]: string },
 ) {
   const params = {
     service: 'WCS',
@@ -156,7 +156,7 @@ export function WCSRequestUrl(
   date: string | undefined,
   extent: Extent,
   // Support Layer custom dimension parameters
-  additionalParams: { [key:string]: string },
+  additionalParams: { [key: string]: string },
   maxPixels = 5096,
 ) {
   const { baseUrl, serverLayerName, wcsConfig } = layer;
