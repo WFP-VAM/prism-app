@@ -22,11 +22,7 @@ import jordan from './jordan';
 
 import kyrgyzstan from './kyrgyzstan';
 
-import {
-  mongoliaConfig,
-  mongoliaRawLayers,
-  mongoliaRawTables,
-} from './mongolia';
+import mongolia from './mongolia';
 
 import mozambique from './mozambique';
 
@@ -66,12 +62,7 @@ const configMap = {
   },
   jordan,
   kyrgyzstan,
-  mongolia: {
-    appConfig: mongoliaConfig,
-    rawLayers: mongoliaRawLayers,
-    rawTables: mongoliaRawTables,
-    defaultBoundariesFile: 'mng_admin_boundaries.json',
-  },
+  mongolia,
   mozambique,
   myanmar,
   namibia,
