@@ -13,7 +13,9 @@
   },
   "alertFormActive": false,
   "serversUrls": {
-    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
+    "wms": [
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
+    ]
   },
   "map": {
     "latitude": 14.61,
@@ -26,11 +28,6 @@
     "admin1_boundaries"
   ],
   "categories": {
-    "Cadre Harmonisé": {
-      "Cadre Harmonisé 2021": ["ch_2021"],
-      "Cadre Harmonisé 2022": ["ch_phase_2022_09"],
-      "population": ["ch_num_ph_35_2022_09"]
-    },
     "rainfall": {
       "rainfall_amount": [
         {
@@ -125,16 +122,60 @@
           ]
         }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days"],
-      "heavy_rain": [
-        "days_heavy_rain",
-        "days_intense_rain",
-        "days_extreme_rain",
-        "streak_heavy_rain"
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
+      "extreme_rain_events": [
+        {
+          "group_title": "Rainfall categories:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "days_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "days_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        },
+        {
+          "group_title": "Consecutive days of rainfall:",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "streak_heavy_rain",
+              "label": "Heavy (>75th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_intense_rain",
+              "label": "Intense (>90th percentile)",
+              "main": true
+            },
+            {
+              "id": "streak_extreme_rain",
+              "label": "Extreme (>95th percentile)",
+              "main": true
+            }
+          ]
+        }
       ]
     },
     "vegetation": {
-      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -144,6 +185,63 @@
         "lst_amplitude"
       ]
     },
+    "Cadre Harmonisé": {
+      "Test_Phase_Class_Multiple_Dates": [
+        {
+          "group_title": "CH - phase classification - multiple dates",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "ch_phaseclass_adm2",
+              "label": "adm2",
+              "main": true
+            },
+            {
+              "id": "ch_phaseclass_adm1",
+              "label": "adm1"
+            }
+          ]
+        }
+      ],
+      "Test_Population_3_to_5_Multiple_Dates": [
+        {
+          "group_title": "CH - population in phase 3 to 5 - multiple dates",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "ch_pop3_5_adm2",
+              "label": "adm2",
+              "main": true
+            },
+            {
+              "id": "ch_pop3_5_adm1",
+              "label": "adm1"
+            }
+          ]
+        }
+      ],
+      "Test_Grouped_Layers": [
+        {
+          "group_title": "CH - grouped",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "ch_group_adm2",
+              "label": "adm2",
+              "main": true
+            },
+            {
+              "id": "ch_admin2_access_issues",
+              "label": "access issues"
+            },
+            {
+              "id": "ch_group_adm1",
+              "label": "adm1"
+            }
+          ]
+        }
+      ]
+    },    
     "risk_analysis": {
       "integrated_context_analysis": [
         {
