@@ -141,15 +141,16 @@ t("parsing feature type names", async ({ eq }) => {
 });
 
 t("parse service from url", async ({ eq }) => {
-  eq(await parseService("https://geonode.wfp.org/geoserver/wfs"), "wfs");
+  eq(parseService("https://geonode.wfp.org/geoserver/wfs"), "wfs");
   eq(
-    await parseService(
-      "https://example.org/geoserver/ows?request=GetCapabilities&service=WFS"
+    parseService(
+      "https://example.org/geoserver/ows?request=GetCapabilities&service=WFS",
+      { case: "lower" }
     ),
     "wfs"
   );
   eq(
-    await parseService(
+    parseService(
       "https://example.org/geoserver/ows?request=GetCapabilities&service=wfs"
     ),
     "wfs"

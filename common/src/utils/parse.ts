@@ -91,21 +91,29 @@ export function parseName(
   return { full: name, namespace: undefined, short: name };
 }
 
-export async function parseService(
+export function parseService(
   url: string,
-  { raw = false } = { raw: false }
+  options?: { case?: "lower" | "raw" | "upper" }
 ) {
   const { pathname, searchParams } = new URL(url);
 
   if (searchParams.has("service") && searchParams.get("service") !== "") {
     const service = searchParams.get("service")!; // we know it's not null because of searchParams.has('service')
-    return raw ? service : service.toLowerCase();
+    switch (options?.case) {
+      case "lower": return service.toLowerCase();
+      case "upper": return service.toUpperCase();
+      default: return service;
+    }
   }
 
   const match = /(wcs|wfs|wms|wmts|wps)\/?$/i.exec(pathname);
   if (match) {
     const service = match[0];
-    return raw ? service : service.toLowerCase();
+    switch (options?.case) {
+      case "lower": return service.toLowerCase();
+      case "upper": return service.toUpperCase();
+      default: return service;
+    }
   }
 
   return undefined;
