@@ -2,7 +2,8 @@ import os
 from uuid import uuid4
 
 import boto3
-from cachetools import cached, TTLCache
+from cachetools import TTLCache, cached
+from fastapi import HTTPException
 from odc.geo.xr import write_cog
 from odc.stac import configure_rio, stac_load
 from pystac_client import Client
@@ -34,7 +35,7 @@ def generate_geotiff_from_stac_api(
     items = list(query_answer.items())
 
     if not items:
-        raise ValueError("Collection not found in stac API")
+        raise HTTPException(status_code=500, detail="Collection not found in stac API")
 
     collections_dataset = stac_load(
         items,

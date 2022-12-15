@@ -13,7 +13,7 @@ from app.database.alert_model import AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
-from app.models import FilterProperty
+from app.models import FilterProperty, RasterGeotiffModel
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
@@ -22,6 +22,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import EmailStr, HttpUrl
 
+from .geotiff_from_stac_api import get_geotiff
 from .models import AlertsModel, StatsModel
 
 logging.basicConfig(level=logging.DEBUG)
@@ -320,3 +321,21 @@ def stats_demo(
 
     # TODO - Properly encode before returning. Mongolian characters are returned as hex.
     return features
+
+
+@app.post("/rasterGeotiff", responses={500: {"description": "Internal server error"}})
+def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
+    """Get the geotiff of a raster"""
+    collection = raster_geotiff.collection
+    bbox = (
+        raster_geotiff.latMin,
+        raster_geotiff.longMin,
+        raster_geotiff.latMax,
+        raster_geotiff.longMax,
+    )
+    date = raster_geotiff.date
+    presigned_download_url = get_geotiff(collection, bbox, date)
+
+    return JSONResponse(
+        content={"download_url": presigned_download_url}, status_code=200
+    )
