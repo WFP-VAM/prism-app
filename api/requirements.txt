@@ -2,6 +2,7 @@ uvicorn[standard]==0.18.2
 gunicorn==20.1.0
 greenlet==1.1.2
 fastapi==0.79.0
+cachetools==5.2.0
 pystac==1.6.1
 pystac-client==0.5.1
 odc-stac==0.3.3

@@ -2,6 +2,7 @@ import os
 from uuid import uuid4
 
 import boto3
+from cachetools import cached, TTLCache
 from odc.geo.xr import write_cog
 from odc.stac import configure_rio, stac_load
 from pystac_client import Client
@@ -54,6 +55,7 @@ def upload_to_s3(file_path: str) -> str:
     return s3_filename
 
 
+@cached(cache=TTLCache(maxsize=128, ttl=60 * 60 * 24 * 6))
 def generate_geotiff_and_upload_to_s3(
     collection: str, bbox: [float, float, float, float], date: str
 ) -> str:
