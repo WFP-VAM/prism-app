@@ -54,6 +54,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       featureInfoProps,
       loader,
       authRequired,
+      title,
     },
   },
   { getState },
@@ -129,6 +130,7 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
         adminCode,
         dataField,
         featureInfoProps,
+        title,
       },
       getState,
     });

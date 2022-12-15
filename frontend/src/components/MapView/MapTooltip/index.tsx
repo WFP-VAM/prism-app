@@ -29,6 +29,8 @@ function MapTooltip({ classes }: TooltipProps) {
         .map(([key, value]) => (
           <h4 key={key}>
             {t(key)}: {value.data}
+            {value.sourceAdminLevel &&
+              `Source admin level: ${value.sourceAdminLevel}`}
           </h4>
         ))}
 

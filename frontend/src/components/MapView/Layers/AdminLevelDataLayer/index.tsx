@@ -95,6 +95,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       data={features}
       fillPaint={fillPaintData(layer)}
       fillOnClick={async (evt: any) => {
+        console.log({ evt, layer });
         // by default add `data_field` to the tooltip
         dispatch(
           addPopupData({
