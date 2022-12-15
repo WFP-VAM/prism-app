@@ -36,7 +36,7 @@ export async function getAdminLevelDataLayerData({
   fallbackLayers?: AdminLevelDataLayerProps[] | undefined;
   adminLevelDataLayerProps: Pick<
     AdminLevelDataLayerProps,
-    'boundary' | 'adminCode' | 'dataField' | 'featureInfoProps' | 'title'
+    'boundary' | 'adminCode' | 'dataField' | 'featureInfoProps'
   >;
   getState: () => RootState;
 }) {
@@ -45,7 +45,6 @@ export async function getAdminLevelDataLayerData({
     boundary,
     dataField,
     featureInfoProps,
-    title,
   } = adminLevelDataLayerProps;
   // check unique boundary layer presence into this layer
   // use the boundary once available or
@@ -69,13 +68,20 @@ export async function getAdminLevelDataLayerData({
     throw new Error('Boundary Layer not loaded!');
   }
   const adminBoundaries = adminBoundariesLayer.data;
-
+  const adminBoundaryFeatureProps = adminBoundaries.features.map(feature =>
+    pick(feature.properties, [
+      adminBoundaryLayer.adminCode,
+      ...adminBoundaryLayer.adminLevelNames,
+      ...adminBoundaryLayer.adminLevelLocalNames,
+    ]),
+  );
   const layerData: DataRecord[] = compact(
-    adminBoundaries.features.map(feature => {
-      const adminKey = feature.properties![adminBoundaryLayer.adminCode];
+    adminBoundaryFeatureProps.map(adminBoundaryFeatureProp => {
+      const adminKey = adminBoundaryFeatureProp![adminBoundaryLayer.adminCode];
       const matchedData = data.find(
         dataProperty => dataProperty[adminCode] === adminKey,
       );
+
       let fallbackValue: number | string | undefined;
       let fallbackLayerId: string | undefined;
       if (!matchedData && fallbackLayersData && fallbackLayers) {
@@ -113,7 +119,7 @@ export async function getAdminLevelDataLayerData({
 
       return {
         adminKey,
-        ...pick(feature.properties, [
+        ...pick(adminBoundaryFeatureProp, [
           ...adminBoundaryLayer.adminLevelNames,
           ...adminBoundaryLayer.adminLevelLocalNames,
         ]),
@@ -139,14 +145,11 @@ export async function getAdminLevelDataLayerData({
              Some properties are missing the admin code ${adminBoundaryLayer.adminCode}`,
           );
         }
-        // console.log({ adminBoundaryLayer, adminBoundaryCode, layerData });
 
         const matchProperties = layerData.find(({ adminKey }) =>
           adminBoundaryCode?.startsWith(adminKey),
         );
-        if (adminBoundaryCode === 'CI3301') {
-          console.log({ matchProperties, fallbackLayersData });
-        }
+
         if (matchProperties && !isNull(matchProperties.value)) {
           // console.log({ matchProperties });
           // Do we want support for non-numeric values (like string colors?)
@@ -169,9 +172,6 @@ export async function getAdminLevelDataLayerData({
       })
       .filter(f => f !== undefined),
   } as FeatureCollection;
-
-  // if (title === 'Phase classification: admin 2')
-  //   console.log({ features, layerData });
   return {
     features,
     layerData,
@@ -188,7 +188,6 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
     featureInfoProps,
     boundary,
     backupAdminLevelDataLayers,
-    title,
   } = layer;
 
   const fallbackLayers = backupAdminLevelDataLayers?.map(
@@ -229,7 +228,6 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
       adminCode,
       dataField,
       featureInfoProps,
-      title,
     },
     getState: api.getState,
   });
