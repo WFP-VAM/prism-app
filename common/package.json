@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "types": "dist/index.ts",
   "scripts": {
-    "prebuild": "yarn add rimraf && rimraf ./dist",
+    "prebuild": "rimraf dist",
     "build": "tsc -p tsconfig.json",
     "test:base": "npx ts-node --esm --skipProject ./src/base/test.ts",
     "test:gml": "npx ts-node --esm --skipProject ./src/gml/test.ts",
