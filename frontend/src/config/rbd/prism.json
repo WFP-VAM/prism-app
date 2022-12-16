@@ -231,17 +231,18 @@
               "main": true
             },
             {
-              "id": "ch_admin2_access_issues",
-              "label": "access issues"
-            },
-            {
               "id": "ch_group_adm1",
               "label": "adm1"
             }
           ]
         }
+      ],
+      "Special_Populations": [
+        "ch_admin2_limited_access",
+        "ch_admin2_urban",
+        "ch_admin2_idps"
       ]
-    },    
+    },
     "risk_analysis": {
       "integrated_context_analysis": [
         {

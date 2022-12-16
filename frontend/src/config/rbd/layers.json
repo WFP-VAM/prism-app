@@ -2541,18 +2541,18 @@
     ],
     "legend_text": "Overall phase classification"
   } ,
-  "ch_admin2_access_issues": {
-    "title": "Phase classification: access issues admin 2",
+  "ch_admin2_limited_access": {
+    "title": "Limited access areas - phase classification",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/group/ch_admin2_access_issues.json",
+    "path": "data/rbd/ch/group/ch_admin2_limited_access.json",
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "adm2_5_name": {
-        "type": "text",
-        "label": "Inaccessible or IDP"
+      "phase35": {
+        "type": "number",
+        "label": "Population in phase 3 to 5"
       }
     },
     "legend": [
@@ -2582,6 +2582,92 @@
         "color": "#5e0803"
       }
     ],
-    "legend_text": "Overall phase classification"
-  } 
+    "legend_text": "Limited access areas - overall phase classification"
+  },
+  "ch_admin2_urban": {
+    "title": "Urban areas - phase classification",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/group/ch_admin2_urbain.json",
+    "admin_level": 2,
+    "data_field": "phase_class",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "feature_info_props": {
+      "phase35": {
+        "type": "number",
+        "label": "Population in phase 3 to 5"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Urban areas - overall phase classification"
+  },
+  "ch_admin2_idps": {
+    "title": "IDPs - phase classification",
+    "type": "admin_level_data",
+    "path": "data/rbd/ch/group/ch_admin2_idps.json",
+    "admin_level": 2,
+    "data_field": "phase_class",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.9,
+    "feature_info_props": {
+      "phase35": {
+        "type": "number",
+        "label": "Population in phase 3 to 5"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Internally displaced people (IDPs) overall phase classification"
+  }      
 }

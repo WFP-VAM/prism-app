@@ -1,0 +1,20 @@
+{
+  "DataList": [
+    {
+      "adm2_pcod2": "BF1300",
+      "adm2_5_name": "Kadiogo-urbain",
+      "adm2_5_pcod2": "BF1300_urbain",
+      "date": "2022-06-01",
+      "phase_class": 2,
+      "phase35": 366841
+    },
+    {
+      "adm2_pcod2": "BF5301",
+      "adm2_5_name": "Houet-urbain",
+      "adm2_5_pcod2": "BF5301_urbain",
+      "date": "2022-06-01",
+      "phase_class": 2,
+      "phase35": 30247
+    }
+  ]
+}
