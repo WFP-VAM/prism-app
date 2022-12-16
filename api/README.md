@@ -79,6 +79,18 @@ Returns all form responses using Kobo API
 ```
 curl -X GET 'http://localhost/kobo/forms?nameField=Test%20MMR&datetimeField=_submission_time&geomField=Location&measureField=The_number&beginDateTime=2021-09-15&endDateTime=2021-09-29'
 ```
+### `/rasterGeotiff` (POST)
+
+Generate a geotiff for any wfp raster using the stac API and saves it in S3. It returns the pre signed S3 geotiff URL.
+
+- `collection`, the name of the collection to get. For example `r3h_dekad`.
+- `date`, date of the data to get. For example : `2020-09-01`.
+- `latMin`, min latitude (to define the bounding box of the geotiff).
+- `longMin`, min longitude (to define the bounding box of the geotiff).
+- `latMax`, max latitude (to define the bounding box of the geotiff).
+- `longMax`, max longitude (to define the bounding box of the geotiff).
+
+
 
 ## Development
 
