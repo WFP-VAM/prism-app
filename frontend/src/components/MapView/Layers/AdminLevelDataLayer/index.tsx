@@ -103,7 +103,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
               coordinates: evt.lngLat,
               layerId:
                 evt.features[0].properties.fallbackLayerId ??
-                evt.features[0].layer.source.split('-').pop(),
+                evt.features[0].layer.source.split('-').slice(-1)[0],
             },
           }),
         );

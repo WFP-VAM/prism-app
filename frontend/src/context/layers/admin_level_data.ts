@@ -100,7 +100,9 @@ export async function getAdminLevelDataLayerData({
             return { layerId, layerValue };
           })
           .find(item => item.layerValue);
+        // eslint-disable-next-line fp/no-mutation
         fallbackLayerId = matchedFallbackData?.layerId;
+        // eslint-disable-next-line fp/no-mutation
         fallbackValue = matchedFallbackData?.layerValue;
       }
 
