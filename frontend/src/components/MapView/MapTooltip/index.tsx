@@ -13,7 +13,6 @@ import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
 function MapTooltip({ classes }: TooltipProps) {
   const popup = useSelector(tooltipSelector);
   const { t, i18n } = useSafeTranslation();
-  console.log({ translation: t('Source layer ID') });
   return popup.showing && popup.coordinates ? (
     <Popup
       anchor="bottom"
