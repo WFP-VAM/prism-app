@@ -1,11 +1,14 @@
-import { Feature, MultiPolygon, point } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import * as GeoTIFF from 'geotiff';
+import { Feature, MultiPolygon, point } from '@turf/helpers';
 import { buffer } from 'd3-fetch';
+import * as GeoTIFF from 'geotiff';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { createGetMapUrl, formatUrl } from 'prism-common';
+import { Dispatch } from 'redux';
 import { WcsGetCoverageVersion, WMSLayerProps } from '../../../config/types';
+import { addNotification } from '../../../context/notificationStateSlice';
+import { BACKEND_URL } from '../../../utils/constants';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =
@@ -365,4 +368,53 @@ export function getExtent(map?: MapBoxMap): Extent {
   const maxY = bounds?.getNorth();
 
   return [minX, minY, maxX, maxY].map(val => val || 0) as Extent;
+}
+
+export async function downloadGeotiff(
+  collection: string,
+  boundingBox: Extent | undefined,
+  date: string,
+  dispatch: Dispatch,
+) {
+  if (!boundingBox) {
+    dispatch(
+      addNotification({
+        message: `Missing bounding box: ${collection} Geotiff couldn't be downloaded`,
+        type: 'warning',
+      }),
+    );
+  } else {
+    const body = {
+      collection,
+      latMin: boundingBox[0],
+      longMin: boundingBox[1],
+      latMax: boundingBox[2],
+      longMax: boundingBox[3],
+      date,
+    };
+    const response = await fetch(`${BACKEND_URL}/rasterGeotiff`, {
+      method: 'POST',
+      cache: 'no-cache',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      // body data type must match "Content-Type" header
+      body: JSON.stringify(body),
+    });
+    if (response.status !== 200) {
+      dispatch(
+        addNotification({
+          message: `${collection} Geotiff couldn't be generated`,
+          type: 'warning',
+        }),
+      );
+    } else {
+      const responseJson = await response.json();
+
+      const link = document.createElement('a');
+      link.setAttribute('href', responseJson.download_url);
+      link.click();
+    }
+  }
 }

@@ -43,6 +43,7 @@ import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
 import AnalysisDownloadButton from './AnalysisDownloadButton';
 import AdminLevelDataDownloadButton from './AdminLevelDataDownloadButton';
+import WfpWmsDownloadButton from './WfpWmsDownloadButton';
 /**
  * Returns layer identifier used to perform exposure analysis.
  *
@@ -123,6 +124,14 @@ function Legends({ classes, layers, extent }: LegendsProps) {
               <Divider />
               <Grid item>
                 <AdminLevelDataDownloadButton layer={layer} />
+              </Grid>
+            </>
+          )}
+          {layer.type === 'wms' && layer.baseUrl.includes('wfp') && (
+            <>
+              <Divider />
+              <Grid item>
+                <WfpWmsDownloadButton layer={layer} extent={extent} />
               </Grid>
             </>
           )}
