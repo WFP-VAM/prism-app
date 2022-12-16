@@ -13,6 +13,7 @@ import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
 function MapTooltip({ classes }: TooltipProps) {
   const popup = useSelector(tooltipSelector);
   const { t, i18n } = useSafeTranslation();
+  console.log({ translation: t('Source layer ID') });
   return popup.showing && popup.coordinates ? (
     <Popup
       anchor="bottom"
@@ -27,10 +28,14 @@ function MapTooltip({ classes }: TooltipProps) {
       {Object.entries(popup.data)
         .filter(([, value]) => value.coordinates === popup.coordinates)
         .map(([key, value]) => (
-          <h4 key={key}>
-            {t(key)}: {value.data}
-            {value.layerId && `Source layer ID: ${value.layerId}`}
-          </h4>
+          <>
+            <h4 key={key}>
+              {t(key)}: {value.data}
+            </h4>
+            <h4>
+              {value.layerId && `${t('Source layer ID')}: ${value.layerId}`}
+            </h4>
+          </>
         ))}
 
       {popup.wmsGetFeatureInfoLoading ? <LinearProgress /> : null}
