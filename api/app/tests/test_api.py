@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 import schemathesis
 from app.database.database import AlertsDataBase
@@ -185,3 +187,27 @@ def test_kobo_forms_endpoint(monkeypatch):
         headers={"authorization": f"Basic {auth_token}"},
     )
     assert response.status_code == 200
+
+
+@patch("app.main.get_geotiff")
+def test_raster_geotiff_endpoint(get_geotiff_mock):
+    """
+    Call /rasterGeotiff with known-good parameters.
+    """
+    test_url = "test.url"
+    get_geotiff_mock.return_value = test_url
+    response = client.post(
+        "/rasterGeotiff",
+        headers={"Accept": "application/json"},
+        json={
+            "latMin": -20,
+            "longMin": -71,
+            "latMax": 21,
+            "longMax": 71.1,
+            "date": "2020-09-01",
+            "collection": "r3h_dekad",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {"download_url": test_url}
