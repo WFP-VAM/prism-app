@@ -1,7 +1,33 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/jordan/jor_admbnda_adm2_jdos.json",
+    "path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
+    "opacity": 0.8,
+    "admin_code": "admin3Pcod",
+    "admin_level_names": [
+      "admin1Name",
+      "admin2Name",
+      "admin3Name"
+    ],
+    "admin_level_local_names": [
+      "admin1Na_1",
+      "admin2Na_1",
+      "admin3Na_1"
+    ],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin2_boundaries": {
+    "type": "boundary",
+    "path": "data/jordan/jor_admbnda_adm2_jdos.json",
     "opacity": 0.8,
     "admin_code": "admin2Pcod",
     "admin_level_names": [
@@ -18,7 +44,7 @@
       },
       "line": {
         "line-color": "gray",
-        "line-width": 1,
+        "line-width": 1.5,
         "line-opacity": 0.8
       }
     }
@@ -28,15 +54,19 @@
     "path": "data/jordan/jor_admbnda_adm1_jdos.json",
     "opacity": 0.8,
     "admin_code": "admin1Pcod",
-    "admin_level_names": ["admin1Name"],
-    "admin_level_local_names": ["admin1Na_1"],
+    "admin_level_names": [
+      "admin1Name"
+    ],
+    "admin_level_local_names": [
+      "admin1Na_1"
+    ],
     "styles:": {
       "fill": {
         "fill-opacity": 0
       },
       "line": {
         "line-color": "gray",
-        "line-width": 3,
+        "line-width": 2,
         "line-opacity": 0.8
       }
     }
@@ -2649,5 +2679,856 @@
         "color": "#67000d"
       }
     ]
+  },
+  "male_unemployment": {
+    "title": "male_unemployment",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "male_unemployment",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 15%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 16,
+        "label": "16 - 20%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 21,
+        "label": "21 - 25%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 26,
+        "label": "> 25%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "female_unemployment": {
+    "title": "female_unemployment",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "female_unemployment",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 15%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 16,
+        "label": "16 - 20%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 21,
+        "label": "21 - 25%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 26,
+        "label": "> 25%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "rainfed": {
+    "title": "rainfed",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "rainfed",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1000",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 2500",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 2500,
+        "label": "2500 - 5000",
+        "color": "#6baed6"
+      },
+      {
+        "value": 5000,
+        "label": "5000 - 7500",
+        "color": "#3182bd"
+      },
+      {
+        "value": 7500,
+        "label": "> 7500",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "irrigated": {
+    "title": "irrigated",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "irrigated",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 100",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 100,
+        "label": "100 - 250",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 250,
+        "label": "250 - 500",
+        "color": "#74c476"
+      },
+      {
+        "value": 500,
+        "label": "500 - 1000",
+        "color": "#31a354"
+      },
+      {
+        "value": 1000,
+        "label": "> 1000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "forest": {
+    "title": "forest",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "forest",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 100",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 100,
+        "label": "100 - 500",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 500,
+        "label": "500 - 1000",
+        "color": "#74c476"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 2500",
+        "color": "#31a354"
+      },
+      {
+        "value": 2500,
+        "label": "> 2500",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "rangelands": {
+    "title": "rangelands",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "rangelands",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 2500",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 2500,
+        "label": "2500 - 5000",
+        "color": "#74c476"
+      },
+      {
+        "value": 5000,
+        "label": "5000 - 7500",
+        "color": "#31a354"
+      },
+      {
+        "value": 7500,
+        "label": "> 7500",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "livestock_per_ha": {
+    "title": "livestock_per_ha",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "livestock_per_ha",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 5",
+        "color": "#ffffd4"
+      },
+      {
+        "value": 10,
+        "label": "10 - 25",
+        "color": "#fed98e"
+      },
+      {
+        "value": 25,
+        "label": "25 - 50",
+        "color": "#fe9929"
+      },
+      {
+        "value": 50,
+        "label": "50 - 100",
+        "color": "#d95f0e"
+      },
+      {
+        "value": 100,
+        "label": "> 100",
+        "color": "#993404"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "groundwater_sens": {
+    "title": "groundwater_sens",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "groundwater_sens",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 1,
+        "label": "1 - 2",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 2,
+        "label": "2 - 2.5",
+        "color": "#6baed6"
+      },
+      {
+        "value": 2.5,
+        "label": "2.5 - 3",
+        "color": "#3182bd"
+      },
+      {
+        "value": 3,
+        "label": "> 3",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "groundwater_abstraction": {
+    "title": "groundwater_abstraction",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "groundwater_abstraction",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 1,
+        "label": "1 - 2",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 2,
+        "label": "2 - 2.5",
+        "color": "#6baed6"
+      },
+      {
+        "value": 2.5,
+        "label": "2.5 - 3",
+        "color": "#3182bd"
+      },
+      {
+        "value": 3,
+        "label": "> 3",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "network_age": {
+    "title": "network_age",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "network_age",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 10",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20",
+        "color": "#fcae91"
+      },
+      {
+        "value": 21,
+        "label": "20 - 30",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 31,
+        "label": "31 - 40",
+        "color": "#de2d26"
+      },
+      {
+        "value": 41,
+        "label": "> 40",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "non_revenue_losses": {
+    "title": "non_revenue_losses",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "non_revenue_losses",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 1,
+        "label": "1 - 5",
+        "color": "#fcae91"
+      },
+      {
+        "value": 5,
+        "label": "5 - 10",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20",
+        "color": "#de2d26"
+      },
+      {
+        "value": 21,
+        "label": "> 20",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "water_network_coverage": {
+    "title": "water_network_coverage",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "water_network_coverage",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 1,
+        "label": "1 - 2",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 2,
+        "label": "2 - 2.5",
+        "color": "#6baed6"
+      },
+      {
+        "value": 2.5,
+        "label": "2.5 - 3",
+        "color": "#3182bd"
+      },
+      {
+        "value": 3,
+        "label": "> 3",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "population": {
+    "title": "population",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_exposure_data.json",
+    "data_field": "population",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 10,000",
+        "color": "#f2f0f7"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 50,000",
+        "color": "#cbc9e2"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 100,000",
+        "color": "#9e9ac8"
+      },
+      {
+        "value": 100000,
+        "label": "100,000 - 500,000",
+        "color": "#756bb1"
+      },
+      {
+        "value": 500000,
+        "label": "> 500,000",
+        "color": "#54278f"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "syrian_refugees": {
+    "title": "syrian_refugees",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_exposure_data.json",
+    "data_field": "syrian_refugees",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1000",
+        "color": "#feedde"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 5000",
+        "color": "#fdbe85"
+      },
+      {
+        "value": 5000,
+        "label": "5000 - 10,000",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 50,000",
+        "color": "#e6550d"
+      },
+      {
+        "value": 50000,
+        "label": "> 50,000",
+        "color": "#a63603"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "percent_refugees": {
+    "title": "percent_refugees",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_exposure_data.json",
+    "data_field": "percent_refugees",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 5%",
+        "color": "#feedde"
+      },
+      {
+        "value": 5,
+        "label": "5 - 10%",
+        "color": "#fdbe85"
+      },
+      {
+        "value": 10,
+        "label": "10 - 15%",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 15,
+        "label": "15 - 20%",
+        "color": "#e6550d"
+      },
+      {
+        "value": 20,
+        "label": "> 20%",
+        "color": "#a63603"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "num_droughts": {
+    "title": "num_droughts",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_exposure_data.json",
+    "data_field": "num_droughts",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 3",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 3,
+        "label": "3 - 4",
+        "color": "#fcae91"
+      },
+      {
+        "value": 4,
+        "label": "4 - 5",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 5,
+        "label": "5 - 6",
+        "color": "#de2d26"
+      },
+      {
+        "value": 6,
+        "label": "> 6",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "num_heatwaves": {
+    "title": "num_heatwaves",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_exposure_data.json",
+    "data_field": "num_heatwaves",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 20",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 20,
+        "label": "20 - 30",
+        "color": "#fcae91"
+      },
+      {
+        "value": 30,
+        "label": "30 - 40",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40,
+        "label": "40 - 50",
+        "color": "#de2d26"
+      },
+      {
+        "value": 50,
+        "label": "> 50",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "poverty": {
+    "title": "poverty",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "poverty",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 21,
+        "label": "21 - 30%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 31,
+        "label": "31 - 40%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 41,
+        "label": "> 40%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "municipal_water": {
+    "title": "municipal_water",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "municipal_water",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 25",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 25,
+        "label": "25 - 40",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 40,
+        "label": "40 - 55",
+        "color": "#6baed6"
+      },
+      {
+        "value": 55,
+        "label": "55 - 70",
+        "color": "#3182bd"
+      },
+      {
+        "value": 85,
+        "label": "> 85",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "gw_per_irrigated": {
+    "title": "gw_per_irrigated",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "gw_per_irrigated",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 100",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 100,
+        "label": "100 - 250",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 250,
+        "label": "250 - 500",
+        "color": "#6baed6"
+      },
+      {
+        "value": 500,
+        "label": "500 - 1000",
+        "color": "#3182bd"
+      },
+      {
+        "value": 1000,
+        "label": "> 1000",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "storage_capacity": {
+    "title": "storage_capacity",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "storage_capacity",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 0.04",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 0.04,
+        "label": "0.04 - 0.08",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 0.08,
+        "label": "0.08 - 0.12",
+        "color": "#6baed6"
+      },
+      {
+        "value": 0.12,
+        "label": "0.12 - 0.16",
+        "color": "#3182bd"
+      },
+      {
+        "value": 0.16,
+        "label": "> 0.16",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "water_per_pop": {
+    "title": "water_per_pop",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "water_per_pop",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 25",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 25,
+        "label": "25 - 50",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 50,
+        "label": "50 - 75",
+        "color": "#6baed6"
+      },
+      {
+        "value": 75,
+        "label": "75 - 100",
+        "color": "#3182bd"
+      },
+      {
+        "value": 100,
+        "label": "> 100",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Legend"
+  },
+  "mobile_tanks_per_10k": {
+    "title": "mobile_tanks_per_10k",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "mobile_tanks_per_10k",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 5",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 5,
+        "label": "5 - 10",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 10,
+        "label": "10 - 15",
+        "color": "#6baed6"
+      },
+      {
+        "value": 15,
+        "label": "15 - 20",
+        "color": "#3182bd"
+      },
+      {
+        "value": 20,
+        "label": "> 20",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Legend"
   }
 }
