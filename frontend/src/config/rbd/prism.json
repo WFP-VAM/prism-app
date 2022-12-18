@@ -220,23 +220,9 @@
           ]
         }
       ],
-      "Test_Grouped_Layers": [
+      "Test_Backup_Admin_Layers": [
         "ch_group_adm2_2021_06_01",
-        {
-          "group_title": "CH - grouped",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "ch_group_adm2",
-              "label": "adm2",
-              "main": true
-            },
-            {
-              "id": "ch_group_adm1",
-              "label": "adm1"
-            }
-          ]
-        }
+        "ch_group_adm2"
       ],
       "Special_Populations": [
         "ch_admin2_limited_access",
