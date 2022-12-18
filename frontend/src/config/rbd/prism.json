@@ -221,6 +221,7 @@
         }
       ],
       "Test_Grouped_Layers": [
+        "ch_group_adm2_2021_06_01",
         {
           "group_title": "CH - grouped",
           "activate_all": true,
