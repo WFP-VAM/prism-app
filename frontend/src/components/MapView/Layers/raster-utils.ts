@@ -386,13 +386,13 @@ export async function downloadGeotiff(
   } else {
     const body = {
       collection,
-      latMin: boundingBox[0],
-      longMin: boundingBox[1],
-      latMax: boundingBox[2],
-      longMax: boundingBox[3],
+      lat_min: boundingBox[0],
+      long_min: boundingBox[1],
+      lat_max: boundingBox[2],
+      long_max: boundingBox[3],
       date,
     };
-    const response = await fetch(`${BACKEND_URL}/rasterGeotiff`, {
+    const response = await fetch(`${BACKEND_URL}/raster_geotiff`, {
       method: 'POST',
       cache: 'no-cache',
       headers: {

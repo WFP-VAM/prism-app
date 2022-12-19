@@ -192,18 +192,18 @@ def test_kobo_forms_endpoint(monkeypatch):
 @patch("app.main.get_geotiff")
 def test_raster_geotiff_endpoint(get_geotiff_mock):
     """
-    Call /rasterGeotiff with known-good parameters.
+    Call /raster_geotiff with known-good parameters.
     """
     test_url = "test.url"
     get_geotiff_mock.return_value = test_url
     response = client.post(
-        "/rasterGeotiff",
+        "/raster_geotiff",
         headers={"Accept": "application/json"},
         json={
-            "latMin": -20,
-            "longMin": -71,
-            "latMax": 21,
-            "longMax": 71.1,
+            "lat_min": -20,
+            "long_min": -71,
+            "lat_max": 21,
+            "long_max": 71.1,
             "date": "2020-09-01",
             "collection": "r3h_dekad",
         },

@@ -323,15 +323,15 @@ def stats_demo(
     return features
 
 
-@app.post("/rasterGeotiff", responses={500: {"description": "Internal server error"}})
+@app.post("/raster_geotiff", responses={500: {"description": "Internal server error"}})
 def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
     """Get the geotiff of a raster"""
     collection = raster_geotiff.collection
     bbox = (
-        raster_geotiff.latMin,
-        raster_geotiff.longMin,
-        raster_geotiff.latMax,
-        raster_geotiff.longMax,
+        raster_geotiff.lat_min,
+        raster_geotiff.long_min,
+        raster_geotiff.lat_max,
+        raster_geotiff.long_max,
     )
     date = raster_geotiff.date
     presigned_download_url = get_geotiff(collection, bbox, date)

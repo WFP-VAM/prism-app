@@ -47,14 +47,14 @@ class StatsModel(BaseModel):
 
 
 class RasterGeotiffModel(BaseModel):
-    """Schema for rasterGeotiff data to be passed to /rasterGeotiff endpoint."""
+    """Schema for raster_geotiff data to be passed to /raster_geotiff endpoint."""
 
     collection: str
     date: str
-    latMin: float
-    longMin: float
-    latMax: float
-    longMax: float
+    lat_min: float
+    long_min: float
+    lat_max: float
+    long_max: float
 
 
 def must_not_contain_null_char(v: str) -> str:
