@@ -1,6 +1,6 @@
-import { Button } from '@material-ui/core';
+import { Box, Button, CircularProgress } from '@material-ui/core';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { WMSLayerProps } from '../../../config/types';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
@@ -15,15 +15,18 @@ interface IProps {
 
 function WfpWmsDownloadButton({ layer, extent }: IProps) {
   const { t } = useSafeTranslation();
+  const [isLoading, setIsLoading] = useState(false);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const dispatch = useDispatch();
 
   const handleDownload = () => {
+    setIsLoading(true);
     downloadGeotiff(
       layer.serverLayerName,
       extent,
       moment(selectedDate).format(DEFAULT_DATE_FORMAT),
       dispatch,
+      () => setIsLoading(false),
     );
   };
 
@@ -32,10 +35,18 @@ function WfpWmsDownloadButton({ layer, extent }: IProps) {
       variant="contained"
       color="primary"
       size="small"
+      disabled={isLoading}
       onClick={() => handleDownload()}
       fullWidth
     >
-      {t('Download WFP GeoTiff')}
+      <Box display="flex" alignItems="center">
+        <Box>{t('Download WFP GeoTiff')}</Box>
+        {isLoading && (
+          <Box>
+            <CircularProgress />
+          </Box>
+        )}
+      </Box>
     </Button>
   );
 }

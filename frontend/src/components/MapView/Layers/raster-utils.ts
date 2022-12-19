@@ -375,6 +375,7 @@ export async function downloadGeotiff(
   boundingBox: Extent | undefined,
   date: string,
   dispatch: Dispatch,
+  callback: () => void,
 ) {
   if (!boundingBox) {
     dispatch(
@@ -416,5 +417,6 @@ export async function downloadGeotiff(
       link.setAttribute('href', responseJson.download_url);
       link.click();
     }
+    callback();
   }
 }
