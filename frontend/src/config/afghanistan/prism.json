@@ -191,9 +191,11 @@
         ]
       },
       "vulnerability": {
-        "ipc": [
+        "ipc_phase_classification": [
           "ipc_phase_03_2022",
-          "ipc_phase_06_2022",
+          "ipc_phase_06_2022"
+        ],
+        "ipc_population": [
           "ipc_pop_03_2022",
           "ipc_pop_06_2022",
           "ipc_perc_03_2022",

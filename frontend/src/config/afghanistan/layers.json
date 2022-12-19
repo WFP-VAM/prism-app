@@ -12,7 +12,7 @@
         },
         "line": {
           "line-color": "gray",
-          "line-width": 1.0,
+          "line-width": 1.5,
           "line-opacity": 0.8
         }
       }
