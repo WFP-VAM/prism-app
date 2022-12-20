@@ -186,6 +186,9 @@
       "food_security": [
         "ipc"
       ]
+    },
+    "flood": {
+      "flood_monitoring": ["flood_static"]
     }
   }
 }

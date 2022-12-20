@@ -16,7 +16,8 @@ export type LayerType =
   | WMSLayerProps
   | AdminLevelDataLayerProps
   | ImpactLayerProps
-  | PointDataLayerProps;
+  | PointDataLayerProps
+  | StaticRasterLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -410,6 +411,24 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
+}
+
+export class StaticRasterLayerProps extends CommonLayerProps {
+  type: 'static_raster';
+  baseUrl: string;
+
+  @makeRequired
+  title: string;
+
+  @makeRequired
+  legend: LegendDefinition;
+
+  @makeRequired
+  legendText: string;
+
+  minZoom: number;
+
+  maxZoom: number;
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {

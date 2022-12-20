@@ -71,7 +71,8 @@
     "server_layer_name": "rfq_dekad",
     "additional_query_params": {
       "styles": "rfq_14_20_400"
-    },    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -734,7 +735,7 @@
       { "value": 22, "label": "21-22 Days", "color": "#d79b0b" },
       { "value": 26, "label": "23-26 Days", "color": "#c98a4b" },
       { "value": 27, "label": "> 26 Days", "color": "#aa5a00" }
-      ]
+    ]
   },
   "days_heavy_rain": {
     "title": "Number of days with heavy rainfall in the last 30 days",
@@ -1139,5 +1140,21 @@
       }
     ],
     "legend_text": "Overall phase classification projected - April - July 2022"
+  },
+  "flood_static": {
+    "title": "Flood Static",
+    "type": "static_raster",
+    "base_url": "https://data.earthobservation.vam.wfp.org/4VP/map/ssd_flood/{z}/{x}/{y}.png",
+    "opacity": 1.0,
+    "legend_text": "South Soudan flood from static tiles",
+    "min_zoom": 0,
+    "max_zoom": 12,
+    "legend": [
+      {
+        "value": 1,
+        "label": "To update",
+        "color": "#0571b0"
+      }
+    ]
   }
 }
