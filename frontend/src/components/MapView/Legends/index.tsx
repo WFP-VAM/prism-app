@@ -127,14 +127,16 @@ function Legends({ classes, layers, extent }: LegendsProps) {
               </Grid>
             </>
           )}
-          {layer.type === 'wms' && layer.baseUrl.includes('wfp') && (
-            <>
-              <Divider />
-              <Grid item>
-                <StacRasterDownloadButton layer={layer} extent={extent} />
-              </Grid>
-            </>
-          )}
+          {layer.type === 'wms' &&
+            layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && (
+              // the backend works only for raster from wfp for now
+              <>
+                <Divider />
+                <Grid item>
+                  <StacRasterDownloadButton layer={layer} extent={extent} />
+                </Grid>
+              </>
+            )}
         </LegendItem>
       );
     }),
