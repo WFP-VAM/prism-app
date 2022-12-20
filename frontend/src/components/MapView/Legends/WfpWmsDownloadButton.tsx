@@ -40,7 +40,7 @@ function WfpWmsDownloadButton({ layer, extent }: IProps) {
       fullWidth
     >
       <Box display="flex" alignItems="center">
-        <Box>{t('Download WFP GeoTiff')}</Box>
+        <Box>{t('Download')}</Box>
         {isLoading && (
           <Box>
             <CircularProgress />
