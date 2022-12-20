@@ -1,0 +1,221 @@
+{
+  "country": "Regional Bureau Dakar",
+  "enableNavigationDropdown": true,
+  "icons": {
+    "food_security": "icon_foodsecurity.png",
+    "food_security_and_livelihoods": "icon_livelihoods.png",
+    "Cadre Harmonisé": "icon_cadreharmoise2.png",
+    "capacity": "icon_capacity.png",
+    "risk_analysis": "icon_table.png",
+    "rainfall": "icon_rain.png",
+    "vegetation": "icon_veg.png",
+    "temperature": "icon_climate.png"
+  },
+  "alertFormActive": false,
+  "serversUrls": {
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
+  },
+  "map": {
+    "latitude": 14.61,
+    "longitude": 5.46,
+    "zoom": 3.99
+  },
+  "defaultDisplayBoundaries": [
+    "admin_boundaries",
+    "admin0_boundaries",
+    "admin1_boundaries"
+  ],
+  "categories": {
+    "Cadre Harmonisé": {
+      "Cadre Harmonisé 2021": ["ch_2021"],
+      "Cadre Harmonisé 2022": ["ch_phase_2022_09"],
+      "population": ["ch_num_ph_35_2022_09"]
+    },
+    "rainfall": {
+      "rainfall_amount": [
+        {
+          "group_title": "Rainfall Aggregate",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rainfall_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rainfall_agg_1month",
+              "label": "1-month"
+            },
+            {
+              "id": "rainfall_agg_3month",
+              "label": "3-month"
+            },
+            {
+              "id": "rainfall_agg_6month",
+              "label": "6-month"
+            },
+            {
+              "id": "rainfall_agg_9month",
+              "label": "9-month"
+            },
+            {
+              "id": "rainfall_agg_1year",
+              "label": "1-year"
+            }
+          ]
+        }
+      ],
+      "rainfall_anomalies": [
+        {
+          "group_title": "Rainfall Anomaly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rain_anomaly_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rain_anomaly_1month",
+              "label": "1-month"
+            },
+            {
+              "id": "rain_anomaly_3month",
+              "label": "3-month"
+            },
+            {
+              "id": "rain_anomaly_6month",
+              "label": "6-month"
+            },
+            {
+              "id": "rain_anomaly_9month",
+              "label": "9-month"
+            },
+            {
+              "id": "rain_anomaly_1year",
+              "label": "1-year"
+            }
+          ]
+        },
+        {
+          "group_title": "SPI",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "spi_1m",
+              "label": "1-month",
+              "main": true
+            },
+            {
+              "id": "spi_3m",
+              "label": "3-month"
+            },
+            {
+              "id": "spi_6m",
+              "label": "6-month"
+            },
+            {
+              "id": "spi_9m",
+              "label": "9-month"
+            },
+            {
+              "id": "spi_1y",
+              "label": "1-year"
+            }
+          ]
+        }
+      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
+      "heavy_rain": [
+        "days_heavy_rain",
+        "days_intense_rain",
+        "days_extreme_rain",
+        "streak_heavy_rain"
+      ]
+    },
+    "vegetation": {
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+    },
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_nighttime",
+        "lst_anomaly",
+        "lst_amplitude"
+      ]
+    },
+    "risk_analysis": {
+      "integrated_context_analysis": [
+        {
+          "group_title": "Food insecurity recurrence",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_fs_national",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_fs_regional",
+              "label": "Regional"
+            }
+          ]
+        },
+        {
+          "group_title": "Drought recurrence",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_drought_national",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_drought_regional",
+              "label": "Regional"
+            }
+          ]
+        },
+        "ica_flood",
+        "ica_landslide",
+        {
+          "group_title": "Combined hazard risk",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_combined_hazard_risk_natl",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_combined_hazard_risk_reg",
+              "label": "Regional"
+            }
+          ]
+        },
+        {
+          "group_title": "ICA area classification",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "ica_area_natl",
+              "label": "National",
+              "main": true
+            },
+            {
+              "id": "ica_area_regional",
+              "label": "Regional"
+            }
+          ]
+        }
+      ],
+      "multidimensional_risk_analysis": [
+        "mdr_struct_vuln",
+        "mdr_stressors",
+        "mdr_coping_capacity",
+        "mdr_fsn_outcomes",
+        "mdr_index"
+      ]
+    }
+  }
+}
