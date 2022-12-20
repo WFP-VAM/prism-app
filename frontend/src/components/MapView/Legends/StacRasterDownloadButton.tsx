@@ -38,12 +38,13 @@ function StacRasterDownloadButton({ layer, extent }: IProps) {
       disabled={isLoading}
       onClick={() => handleDownload()}
       fullWidth
+      style={{ maxHeight: '30px' }}
     >
       <Box display="flex" alignItems="center">
         <Box>{t('Download')}</Box>
         {isLoading && (
-          <Box>
-            <CircularProgress />
+          <Box display="flex" alignItems="center">
+            <CircularProgress size="20px" />
           </Box>
         )}
       </Box>
