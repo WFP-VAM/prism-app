@@ -103,5 +103,5 @@
   "Normalized Difference Vegetation Index (NDVI) anomaly when compared to the long-term average": "Anomalie de l'indice de végétation par différence normalisée (NDVI) par rapport à la moyenne à long terme",
   "Daytime land surface temperature": "Température diurne au sol",
   "Daytime land surface temperature anomaly when compared to long-term average": "Anomalie de la température diurne au sol par rapport à la moyenne à long terme",
-  "Source layer ID": "ID de la couche source"
+  "Admin Level": "Niveau Administrateur"
 }

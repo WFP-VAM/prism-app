@@ -34,9 +34,11 @@ export async function getAdminLevelDataLayerData({
   data: { [key: string]: any }[];
   fallbackLayersData?: { [key: string]: any }[][];
   fallbackLayers?: AdminLevelDataLayerProps[] | undefined;
-  adminLevelDataLayerProps: Pick<
-    AdminLevelDataLayerProps,
-    'boundary' | 'adminCode' | 'dataField' | 'featureInfoProps'
+  adminLevelDataLayerProps: Partial<
+    Pick<
+      AdminLevelDataLayerProps,
+      'boundary' | 'adminCode' | 'dataField' | 'featureInfoProps' | 'adminLevel'
+    >
   >;
   getState: () => RootState;
 }) {
@@ -45,6 +47,7 @@ export async function getAdminLevelDataLayerData({
     boundary,
     dataField,
     featureInfoProps,
+    adminLevel,
   } = adminLevelDataLayerProps;
   // check unique boundary layer presence into this layer
   // use the boundary once available or
@@ -79,11 +82,12 @@ export async function getAdminLevelDataLayerData({
     adminBoundaryFeatureProps.map(adminBoundaryFeatureProp => {
       const adminKey = adminBoundaryFeatureProp![adminBoundaryLayer.adminCode];
       const matchedData = data.find(
-        dataProperty => dataProperty[adminCode] === adminKey,
+        dataProperty => dataProperty[adminCode!] === adminKey,
       );
 
       let fallbackValue: number | string | undefined;
       let fallbackLayerId: string | undefined;
+      let fallbackAdminLevel: number | undefined;
       if (!matchedData && fallbackLayersData && fallbackLayers) {
         const matchedFallbackData = fallbackLayersData
           .map((fallbackLayerData, layerIndex) => {
@@ -93,15 +97,22 @@ export async function getAdminLevelDataLayerData({
             const fallbackBoundaryData = fallbackLayerData.find(dataProperty =>
               adminKey.startsWith(dataProperty[fallbackLayerAdminCode]),
             );
-            const layerId = fallbackLayers[layerIndex].id;
+            const {
+              adminLevel: fallbackLayerAdminLevel,
+              id: layerId,
+            } = fallbackLayers[layerIndex];
             const layerValue = fallbackBoundaryData
               ? fallbackBoundaryData[fallbackValueKey]
               : undefined;
-            return { layerId, layerValue };
+            return {
+              fallbackAdminLevel: fallbackLayerAdminLevel,
+              layerId,
+              layerValue,
+            };
           })
           .find(item => item.layerValue);
         // eslint-disable-next-line fp/no-mutation
-        fallbackLayerId = matchedFallbackData?.layerId;
+        fallbackAdminLevel = matchedFallbackData?.fallbackAdminLevel;
         // eslint-disable-next-line fp/no-mutation
         fallbackValue = matchedFallbackData?.layerValue;
       }
@@ -125,8 +136,8 @@ export async function getAdminLevelDataLayerData({
           ...adminBoundaryLayer.adminLevelNames,
           ...adminBoundaryLayer.adminLevelLocalNames,
         ]),
-        value: matchedData ? matchedData[dataField] : fallbackValue,
-        fallbackLayerId,
+        value: matchedData ? matchedData[dataField!] : fallbackValue,
+        adminLevel: fallbackAdminLevel ?? adminLevel,
         ...featureInfoPropsValues,
       } as DataRecord;
     }),
@@ -166,7 +177,7 @@ export async function getAdminLevelDataLayerData({
               // TODO - standardize the field we use to store that data
               // Some functions use "dataField" while others use "data"
               data: value,
-              [dataField]: value,
+              [dataField!]: value,
             },
           };
         }
@@ -190,6 +201,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
     featureInfoProps,
     boundary,
     backupAdminLevelDataLayers,
+    adminLevel,
   } = layer;
 
   const fallbackLayers = backupAdminLevelDataLayers?.map(
@@ -230,6 +242,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
       adminCode,
       dataField,
       featureInfoProps,
+      adminLevel,
     },
     getState: api.getState,
   });

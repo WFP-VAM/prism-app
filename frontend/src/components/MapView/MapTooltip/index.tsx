@@ -32,7 +32,7 @@ function MapTooltip({ classes }: TooltipProps) {
               {t(key)}: {value.data}
             </h4>
             <h4>
-              {value.layerId && `${t('Source layer ID')}: ${value.layerId}`}
+              {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
             </h4>
           </>
         ))}
