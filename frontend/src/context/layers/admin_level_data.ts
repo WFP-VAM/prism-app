@@ -86,7 +86,6 @@ export async function getAdminLevelDataLayerData({
       );
 
       let fallbackValue: number | string | undefined;
-      let fallbackLayerId: string | undefined;
       let fallbackAdminLevel: number | undefined;
       if (!matchedData && fallbackLayersData && fallbackLayers) {
         const matchedFallbackData = fallbackLayersData
