@@ -1,45 +1,37 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   Button,
-  withStyles,
+  FormControlLabel,
+  FormGroup,
+  Grid,
   LinearProgress,
   Switch,
-  FormGroup,
-  FormControlLabel,
-  Grid,
   Typography,
+  withStyles,
 } from '@material-ui/core';
-import { ExposedPopulationResult } from '../../../utils/analysis-utils';
-import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import {
-  isDataTableDrawerActiveSelector,
-  ExposedPopulationDispatchParams,
-  requestAndStoreExposedPopulation,
-  isExposureAnalysisLoadingSelector,
-  clearAnalysisResult,
-  setIsDataTableDrawerActive,
-  setCurrentDataDefinition,
-  analysisResultSelector,
-} from '../../../context/analysisResultStateSlice';
-import {
-  LayerType,
   AggregationOperations,
   ExposedPopulationDefinition,
   GeometryType,
+  LayerType,
 } from '../../../config/types';
 import { LayerDefinitions, TableKey } from '../../../config/utils';
-import { Extent } from '../Layers/raster-utils';
+import {
+  analysisResultSelector,
+  clearAnalysisResult,
+  ExposedPopulationDispatchParams,
+  isDataTableDrawerActiveSelector,
+  isExposureAnalysisLoadingSelector,
+  requestAndStoreExposedPopulation,
+  setCurrentDataDefinition,
+  setIsDataTableDrawerActive,
+} from '../../../context/analysisResultStateSlice';
+import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
-
-const AnalysisButton = withStyles(() => ({
-  root: {
-    marginTop: '1em',
-    marginBottom: '1em',
-    fontSize: '0.7em',
-  },
-}))(Button);
+import { ExposedPopulationResult } from '../../../utils/analysis-utils';
+import { Extent } from '../Layers/raster-utils';
 
 const AnalysisFormControlLabel = withStyles(() => ({
   label: {
@@ -147,14 +139,15 @@ const ExposedPopulationAnalysis = ({
   if (!result || !(result instanceof ExposedPopulationResult)) {
     return (
       <>
-        <AnalysisButton
+        <Button
           variant="contained"
           color="primary"
           size="small"
           onClick={runExposureAnalysis}
+          fullWidth
         >
           {t('Exposure Analysis')}
-        </AnalysisButton>
+        </Button>
 
         {analysisExposureLoading && <LinearProgress />}
       </>
@@ -163,14 +156,15 @@ const ExposedPopulationAnalysis = ({
 
   return (
     <>
-      <AnalysisButton
+      <Button
         variant="contained"
         color="secondary"
         size="small"
         onClick={() => dispatch(clearAnalysisResult())}
+        fullWidth
       >
         {t('Clear Analysis')}
-      </AnalysisButton>
+      </Button>
 
       <ResultSwitches />
     </>
