@@ -43,7 +43,7 @@ import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
 import AnalysisDownloadButton from './AnalysisDownloadButton';
 import AdminLevelDataDownloadButton from './AdminLevelDataDownloadButton';
-import WfpWmsDownloadButton from './WfpWmsDownloadButton';
+import StacRasterDownloadButton from './StacRasterDownloadButton';
 /**
  * Returns layer identifier used to perform exposure analysis.
  *
@@ -131,7 +131,7 @@ function Legends({ classes, layers, extent }: LegendsProps) {
             <>
               <Divider />
               <Grid item>
-                <WfpWmsDownloadButton layer={layer} extent={extent} />
+                <StacRasterDownloadButton layer={layer} extent={extent} />
               </Grid>
             </>
           )}

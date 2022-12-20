@@ -13,7 +13,7 @@ interface IProps {
   extent?: Extent;
 }
 
-function WfpWmsDownloadButton({ layer, extent }: IProps) {
+function StacRasterDownloadButton({ layer, extent }: IProps) {
   const { t } = useSafeTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
@@ -51,4 +51,4 @@ function WfpWmsDownloadButton({ layer, extent }: IProps) {
   );
 }
 
-export default WfpWmsDownloadButton;
+export default StacRasterDownloadButton;
