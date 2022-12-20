@@ -38,7 +38,7 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: |
           cd frontend
-          yarn install --frozen-lockfile
+          yarn install --frozen-lockfile --network-timeout 100000
           yarn setup:common
 
       - name: yarn lint
