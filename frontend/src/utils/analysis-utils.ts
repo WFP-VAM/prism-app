@@ -55,7 +55,7 @@ import {
 } from '../i18n';
 import { getRoundedData } from './data-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
-import { ANALYSIS_API_URL } from '../contants';
+import { ANALYSIS_API_URL } from '../constants';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];

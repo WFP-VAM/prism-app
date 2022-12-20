@@ -29,7 +29,7 @@ import {
 } from '../../../utils/analysis-utils';
 import LayerDropdown from '../Layers/LayerDropdown';
 import BoundaryDropdown from '../Layers/BoundaryDropdown';
-import { ALERT_API_URL } from '../../../contants';
+import { ALERT_API_URL } from '../../../constants';
 import { getSelectedBoundaries } from '../../../context/mapSelectionLayerStateSlice';
 import { addNotification } from '../../../context/notificationStateSlice';
 import { useSafeTranslation } from '../../../i18n';

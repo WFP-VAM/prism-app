@@ -51,7 +51,7 @@ import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
-import { ANALYSIS_API_URL } from '../contants';
+import { ANALYSIS_API_URL } from '../constants';
 import { convertToTableData } from '../components/MapView/utils';
 
 export type TableRowType = { [key: string]: string | number };
