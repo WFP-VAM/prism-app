@@ -13,7 +13,6 @@ function StaticRasterLayer({
         tileJsonSource={{
           type: 'raster',
           tiles: [baseUrl],
-          // tileSize: 256,
         }}
       />
 
