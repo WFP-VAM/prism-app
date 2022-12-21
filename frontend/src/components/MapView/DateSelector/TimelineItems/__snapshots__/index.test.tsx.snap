@@ -5,7 +5,7 @@ exports[`renders as expected 1`] = `
   <mock-tooltip
     arrow="true"
     placement="top"
-    title="31 Dec 2021"
+    title="[object Object]"
     transitioncomponent="[object Object]"
     transitionprops="[object Object]"
   >
