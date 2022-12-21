@@ -160,7 +160,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
     const response = await fetchApiData(ALERT_API_URL, request);
     setAlertWaiting(false);
 
-    if (response.hasOwnProperty('message')) {
+    if (Object.keys(response).includes('message')) {
       // TODO response isn't typed correctly because fetchApiData is too strict.
       dispatch(
         addNotification({
