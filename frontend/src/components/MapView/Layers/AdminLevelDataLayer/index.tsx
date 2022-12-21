@@ -101,6 +101,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
             [layer.title]: {
               data: getRoundedData(get(evt.features[0], 'properties.data'), t),
               coordinates: evt.lngLat,
+              adminLevel: evt.features[0].properties.adminLevel,
             },
           }),
         );

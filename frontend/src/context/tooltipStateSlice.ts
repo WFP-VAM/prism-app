@@ -3,7 +3,11 @@ import { merge } from 'lodash';
 import type { RootState } from './store';
 
 export interface PopupData {
-  [key: string]: { data: number | string; coordinates: GeoJSON.Position };
+  [key: string]: {
+    data: number | string;
+    coordinates: GeoJSON.Position;
+    adminLevel?: number;
+  };
 }
 
 export interface MapTooltipState {
