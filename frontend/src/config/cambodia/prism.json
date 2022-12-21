@@ -1,6 +1,6 @@
 {
   "country": "Cambodia",
-  "alertFormActive": false,
+  "alertFormActive": true,
   "aboutPath": "data/cambodia/about.md",
   "enableNavigationDropdown": true,
   "icons": {
