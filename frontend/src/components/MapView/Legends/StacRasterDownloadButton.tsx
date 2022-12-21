@@ -1,4 +1,4 @@
-import { Box, Button, CircularProgress } from '@material-ui/core';
+import { Box, Button, CircularProgress, withStyles } from '@material-ui/core';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +7,14 @@ import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import { DEFAULT_DATE_FORMAT } from '../../../utils/name-utils';
 import { downloadGeotiff, Extent } from '../Layers/raster-utils';
+
+const StyledButton = withStyles(() => ({
+  root: {
+    marginTop: '0.4rem',
+    marginBottom: '0.1rem',
+    fontSize: '0.7rem',
+  },
+}))(Button);
 
 interface IProps {
   layer: WMSLayerProps;
@@ -31,7 +39,7 @@ function StacRasterDownloadButton({ layer, extent }: IProps) {
   };
 
   return (
-    <Button
+    <StyledButton
       variant="contained"
       color="primary"
       size="small"
@@ -48,7 +56,7 @@ function StacRasterDownloadButton({ layer, extent }: IProps) {
           </Box>
         )}
       </Box>
-    </Button>
+    </StyledButton>
   );
 }
 

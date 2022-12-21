@@ -1,37 +1,45 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import {
   Button,
-  FormControlLabel,
-  FormGroup,
-  Grid,
+  withStyles,
   LinearProgress,
   Switch,
+  FormGroup,
+  FormControlLabel,
+  Grid,
   Typography,
-  withStyles,
 } from '@material-ui/core';
+import { ExposedPopulationResult } from '../../../utils/analysis-utils';
+import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import {
+  isDataTableDrawerActiveSelector,
+  ExposedPopulationDispatchParams,
+  requestAndStoreExposedPopulation,
+  isExposureAnalysisLoadingSelector,
+  clearAnalysisResult,
+  setIsDataTableDrawerActive,
+  setCurrentDataDefinition,
+  analysisResultSelector,
+} from '../../../context/analysisResultStateSlice';
+import {
+  LayerType,
   AggregationOperations,
   ExposedPopulationDefinition,
   GeometryType,
-  LayerType,
 } from '../../../config/types';
 import { LayerDefinitions, TableKey } from '../../../config/utils';
-import {
-  analysisResultSelector,
-  clearAnalysisResult,
-  ExposedPopulationDispatchParams,
-  isDataTableDrawerActiveSelector,
-  isExposureAnalysisLoadingSelector,
-  requestAndStoreExposedPopulation,
-  setCurrentDataDefinition,
-  setIsDataTableDrawerActive,
-} from '../../../context/analysisResultStateSlice';
-import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../i18n';
-import { ExposedPopulationResult } from '../../../utils/analysis-utils';
 import { Extent } from '../Layers/raster-utils';
+import { useSafeTranslation } from '../../../i18n';
+
+const AnalysisButton = withStyles(() => ({
+  root: {
+    marginTop: '0.4rem',
+    marginBottom: '0.1rem',
+    fontSize: '0.7rem',
+  },
+}))(Button);
 
 const AnalysisFormControlLabel = withStyles(() => ({
   label: {
@@ -139,7 +147,7 @@ const ExposedPopulationAnalysis = ({
   if (!result || !(result instanceof ExposedPopulationResult)) {
     return (
       <>
-        <Button
+        <AnalysisButton
           variant="contained"
           color="primary"
           size="small"
@@ -147,7 +155,7 @@ const ExposedPopulationAnalysis = ({
           fullWidth
         >
           {t('Exposure Analysis')}
-        </Button>
+        </AnalysisButton>
 
         {analysisExposureLoading && <LinearProgress />}
       </>
@@ -156,7 +164,7 @@ const ExposedPopulationAnalysis = ({
 
   return (
     <>
-      <Button
+      <AnalysisButton
         variant="contained"
         color="secondary"
         size="small"
@@ -164,7 +172,7 @@ const ExposedPopulationAnalysis = ({
         fullWidth
       >
         {t('Clear Analysis')}
-      </Button>
+      </AnalysisButton>
 
       <ResultSwitches />
     </>
