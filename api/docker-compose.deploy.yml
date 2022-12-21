@@ -49,5 +49,7 @@ services:
       - DATABASE_URL=${DATABASE_URL:?"Provide a URL for the alerts database."}
       - KOBO_PW=${KOBO_PW:?"Add a password to access KOBO data."}
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:?"Provide the AWS access key for the stac api."}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:?"Provide the AWS secret key for the stac api."}
     command: uvicorn app.main:app --host 0.0.0.0 --port 80
     restart: always
