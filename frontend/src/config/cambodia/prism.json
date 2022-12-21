@@ -32,8 +32,7 @@
     "flood": {
       "flood_monitoring": ["flood_extent"],
       "flood_risk": ["flood_hazard"],
-      "early_warning": ["ews_remote"],
-      "flood_freqency": ["flood_static"]
+      "early_warning": ["ews_remote"]
     },
     "rainfall": {
       "rainfall_amount": [
