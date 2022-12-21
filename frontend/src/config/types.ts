@@ -458,6 +458,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   boundary?: LayerKey;
+
+  @optional
+  fallbackLayerKeys?: string[];
 }
 
 export class StatsApi {

@@ -27,9 +27,14 @@ function MapTooltip({ classes }: TooltipProps) {
       {Object.entries(popup.data)
         .filter(([, value]) => value.coordinates === popup.coordinates)
         .map(([key, value]) => (
-          <h4 key={key}>
-            {t(key)}: {value.data}
-          </h4>
+          <>
+            <h4 key={key}>
+              {t(key)}: {value.data}
+            </h4>
+            <h4>
+              {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
+            </h4>
+          </>
         ))}
 
       {popup.wmsGetFeatureInfoLoading ? <LinearProgress /> : null}

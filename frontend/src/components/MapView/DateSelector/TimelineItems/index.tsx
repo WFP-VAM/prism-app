@@ -85,7 +85,7 @@ function TimelineItems({
       }),
     );
     // eslint-disable-next-line fp/no-mutating-methods
-    tooltipTitleArray.unshift(<div>{date.label}</div>);
+    tooltipTitleArray.unshift(<div key={date.label}>{date.label}</div>);
 
     return tooltipTitleArray;
   };
@@ -119,6 +119,7 @@ function TimelineItems({
               (layerDates, layerIndex) =>
                 layerDates.includes(formatDate(date.value)) && (
                   <div
+                    key={date.value}
                     className={DATE_ITEM_STYLING[layerIndex].class}
                     role="presentation"
                     onClick={() => click(index)}
