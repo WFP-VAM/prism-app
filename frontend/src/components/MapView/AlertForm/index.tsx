@@ -164,7 +164,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
       // TODO response isn't typed correctly because fetchApiData is too strict.
       dispatch(
         addNotification({
-          message: (response as { message: string }).message,
+          message: ((response as unknown) as { message: string }).message,
           type: 'success',
         }),
       );
