@@ -31,6 +31,7 @@ import {
   ImpactLayer,
   PointDataLayer,
   WMSLayer,
+  StaticRasterLayer,
 } from './Layers';
 
 import {
@@ -120,6 +121,7 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   admin_level_data: AdminLevelDataLayer,
   impact: ImpactLayer,
   point_data: PointDataLayer,
+  static_raster: StaticRasterLayer,
 };
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
