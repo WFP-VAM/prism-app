@@ -88,20 +88,24 @@ export async function getAdminLevelDataLayerData({
       let fallbackValue: number | string | undefined;
       let fallbackAdminLevel: number | undefined;
       if (!matchedData && fallbackLayersData && fallbackLayers) {
+        // Layers can have multiple fallback layers
+        // Need to get the first instance where there exists fallback data for the district
         const matchedFallbackData = fallbackLayersData
           .map((fallbackLayerData, layerIndex) => {
             const fallbackLayerAdminCode =
               fallbackLayers[layerIndex].adminCode ?? '';
             const fallbackValueKey = fallbackLayers[layerIndex].dataField;
-            const fallbackBoundaryData = fallbackLayerData.find(dataProperty =>
+            // Find the fallback data for the district
+            // Fallback admin keys will be a prefix of its current admin key
+            const fallbackData = fallbackLayerData.find(dataProperty =>
               adminKey.startsWith(dataProperty[fallbackLayerAdminCode]),
             );
             const {
               adminLevel: fallbackLayerAdminLevel,
               id: layerId,
             } = fallbackLayers[layerIndex];
-            const layerValue = fallbackBoundaryData
-              ? fallbackBoundaryData[fallbackValueKey]
+            const layerValue = fallbackData
+              ? fallbackData[fallbackValueKey]
               : undefined;
             return {
               fallbackAdminLevel: fallbackLayerAdminLevel,
@@ -163,7 +167,6 @@ export async function getAdminLevelDataLayerData({
         );
 
         if (matchProperties && !isNull(matchProperties.value)) {
-          // console.log({ matchProperties });
           // Do we want support for non-numeric values (like string colors?)
           const value = isString(matchProperties.value)
             ? parseFloat(matchProperties.value)
@@ -199,11 +202,11 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
     dataField,
     featureInfoProps,
     boundary,
-    backupAdminLevelDataLayers,
+    fallbackLayerKeys,
     adminLevel,
   } = layer;
 
-  const fallbackLayers = backupAdminLevelDataLayers?.map(
+  const fallbackLayers = fallbackLayerKeys?.map(
     backupLayerKey =>
       LayerDefinitions[backupLayerKey] as AdminLevelDataLayerProps,
   );
