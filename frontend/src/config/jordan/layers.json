@@ -2681,7 +2681,7 @@
     ]
   },
   "male_unemployment": {
-    "title": "male_unemployment",
+    "title": "Male unemployment",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "male_unemployment",
@@ -2715,10 +2715,10 @@
         "color": "#a50f15"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Unemployment forecasted to 2021 (% Male)"
   },
   "female_unemployment": {
-    "title": "female_unemployment",
+    "title": "Female unemployment",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "female_unemployment",
@@ -2752,10 +2752,10 @@
         "color": "#a50f15"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Unemployment forecasted to 2021 (% Female)"
   },
   "rainfed": {
-    "title": "rainfed",
+    "title": "Rainfed area",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "rainfed",
@@ -2789,10 +2789,10 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Rainfed/Fallow area (ha)"
   },
   "irrigated": {
-    "title": "irrigated",
+    "title": "Irrigated area",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "irrigated",
@@ -2826,10 +2826,10 @@
         "color": "#006d2c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Irrigated area (ha)"
   },
   "forest": {
-    "title": "forest",
+    "title": "Forested area",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "forest",
@@ -2863,10 +2863,10 @@
         "color": "#006d2c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Forest and reserves area (ha)"
   },
   "rangelands": {
-    "title": "rangelands",
+    "title": "Rangeland areas",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "rangelands",
@@ -2900,10 +2900,10 @@
         "color": "#006d2c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Rangelands with feed resources (ha)"
   },
   "livestock_per_ha": {
-    "title": "livestock_per_ha",
+    "title": "Livestock per rangelands, agriculture and forested areas",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "livestock_per_ha",
@@ -2937,10 +2937,10 @@
         "color": "#993404"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Livestock per rangelands, agriculture and forested areas (head/ha)"
   },
   "groundwater_sens": {
-    "title": "groundwater_sens",
+    "title": "Groundwater sensitivity",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "groundwater_sens",
@@ -2974,10 +2974,10 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Groundwater sensitivity"
   },
   "groundwater_abstraction": {
-    "title": "groundwater_abstraction",
+    "title": "Groundwater abstraction/safe yield",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "groundwater_abstraction",
@@ -3011,10 +3011,10 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Groundwater abstraction/safe yield"
   },
   "network_age": {
-    "title": "network_age",
+    "title": "Network age",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "network_age",
@@ -3048,10 +3048,10 @@
         "color": "#a50f15"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Network age"
   },
   "non_revenue_losses": {
-    "title": "non_revenue_losses",
+    "title": "Non-revenue losses (MCM)",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "non_revenue_losses",
@@ -3085,10 +3085,10 @@
         "color": "#a50f15"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Non-revenue losses (MCM)"
   },
   "water_network_coverage": {
-    "title": "water_network_coverage",
+    "title": "Water network coverage",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "water_network_coverage",
@@ -3122,10 +3122,10 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Water network coverage (# of subscribers / Household)"
   },
   "population": {
-    "title": "population",
+    "title": "Population 2021",
     "type": "admin_level_data",
     "path": "data/jordan/jor_exposure_data.json",
     "data_field": "population",
@@ -3159,10 +3159,10 @@
         "color": "#54278f"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Population 2021"
   },
   "syrian_refugees": {
-    "title": "syrian_refugees",
+    "title": "Syrian refugees 2021",
     "type": "admin_level_data",
     "path": "data/jordan/jor_exposure_data.json",
     "data_field": "syrian_refugees",
@@ -3196,10 +3196,10 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Syrian refugees 2021"
   },
   "percent_refugees": {
-    "title": "percent_refugees",
+    "title": "Percent of refugees / population",
     "type": "admin_level_data",
     "path": "data/jordan/jor_exposure_data.json",
     "data_field": "percent_refugees",
@@ -3233,10 +3233,10 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Percent of refugees / population"
   },
   "num_droughts": {
-    "title": "num_droughts",
+    "title": "Number of droughts",
     "type": "admin_level_data",
     "path": "data/jordan/jor_exposure_data.json",
     "data_field": "num_droughts",
@@ -3270,10 +3270,10 @@
         "color": "#a50f15"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Drought events during 1980-2016"
   },
   "num_heatwaves": {
-    "title": "num_heatwaves",
+    "title": "Number of heatwaves",
     "type": "admin_level_data",
     "path": "data/jordan/jor_exposure_data.json",
     "data_field": "num_heatwaves",
@@ -3307,10 +3307,10 @@
         "color": "#a50f15"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Heat waves during 1980-2016"
   },
   "poverty": {
-    "title": "poverty",
+    "title": "Poverty level",
     "type": "admin_level_data",
     "path": "data/jordan/jor_adaptation_data.json",
     "data_field": "poverty",
@@ -3344,10 +3344,10 @@
         "color": "#a50f15"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Relative poverty level"
   },
   "municipal_water": {
-    "title": "municipal_water",
+    "title": "Municipal water",
     "type": "admin_level_data",
     "path": "data/jordan/jor_adaptation_data.json",
     "data_field": "municipal_water",
@@ -3381,10 +3381,10 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Municipal Water (lpcd)"
   },
   "gw_per_irrigated": {
-    "title": "gw_per_irrigated",
+    "title": "Groundwater per irrigated area",
     "type": "admin_level_data",
     "path": "data/jordan/jor_adaptation_data.json",
     "data_field": "gw_per_irrigated",
@@ -3418,10 +3418,10 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Groundwater per irrigated area (m3/du)"
   },
   "storage_capacity": {
-    "title": "storage_capacity",
+    "title": "Storage capacity",
     "type": "admin_level_data",
     "path": "data/jordan/jor_adaptation_data.json",
     "data_field": "storage_capacity",
@@ -3455,10 +3455,10 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Storage capacity per capita"
   },
   "water_per_pop": {
-    "title": "water_per_pop",
+    "title": "Water supply per population",
     "type": "admin_level_data",
     "path": "data/jordan/jor_adaptation_data.json",
     "data_field": "water_per_pop",
@@ -3492,10 +3492,10 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Water supply per population"
   },
   "mobile_tanks_per_10k": {
-    "title": "mobile_tanks_per_10k",
+    "title": "Number of mobile tanks per 10,000 people",
     "type": "admin_level_data",
     "path": "data/jordan/jor_adaptation_data.json",
     "data_field": "mobile_tanks_per_10k",
@@ -3529,6 +3529,6 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Legend"
+    "legend_text": "Number of mobile tanks per 10,000 people"
   }
 }
