@@ -218,6 +218,8 @@ function LegendItem({
         switch (layerType) {
           case 'wms':
             return [`layer-${id}`, 'raster-opacity'];
+          case 'static_raster':
+            return [`layer-${id}`, 'raster-opacity'];
           case 'impact':
           case 'admin_level_data':
             return [`layer-${id}-fill`, 'fill-opacity'];
