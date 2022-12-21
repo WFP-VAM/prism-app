@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/rbd/wca_admbnda_adm2_ocha.json",
+    "path": "data/rbd/wca_admbnda_adm2_ocha_rev.json",
     "opacity": 0.8,
     "styles:": {
       "fill": {
@@ -19,7 +19,7 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "data/rbd/wca_admbnda_adm1_ocha.json",
+    "path": "data/rbd/wca_admbnda_adm1_ocha_rev.json",
     "opacity": 0.8,
     "styles:": {
       "fill": {
