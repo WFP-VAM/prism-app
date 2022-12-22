@@ -2,9 +2,43 @@ import { createStyles, makeStyles, Tab, Tabs } from '@material-ui/core';
 import { LayersOutlined, BarChartOutlined } from '@material-ui/icons';
 import React, { useState } from 'react';
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  dir?: string;
+  index: any;
+  value: any;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && children}
+    </div>
+  );
+}
+
+function a11yProps(index: any) {
+  return {
+    id: `full-width-tab-${index}`,
+    'aria-controls': `full-width-tabpanel-${index}`,
+  };
+}
+
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
+      width: '100%',
+      height: '100%',
+    },
+    tabs: {
       backgroundColor: '#566064',
       width: '100%',
     },
@@ -24,7 +58,17 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-function LeftPanelTabs() {
+interface TabsProps {
+  layersChildren: React.ReactNode;
+  chartsChildren: React.ReactNode;
+  analysisChildren: React.ReactNode;
+}
+
+function LeftPanelTabs({
+  layersChildren,
+  chartsChildren,
+  analysisChildren,
+}: TabsProps) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
@@ -34,43 +78,57 @@ function LeftPanelTabs() {
 
   return (
     <div className={classes.root}>
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        aria-label="styled tabs example"
-        classes={{ indicator: classes.indicator }}
-      >
-        <Tab
-          classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-          disableRipple
-          label={
-            <div>
-              <LayersOutlined style={{ verticalAlign: 'middle' }} />
-              Layers
-            </div>
-          }
-        />
-        <Tab
-          classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-          disableRipple
-          label={
-            <div>
-              <LayersOutlined style={{ verticalAlign: 'middle' }} />
-              Charts
-            </div>
-          }
-        />
-        <Tab
-          classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-          disableRipple
-          label={
-            <div>
-              <BarChartOutlined style={{ verticalAlign: 'middle' }} />
-              Analysis
-            </div>
-          }
-        />
-      </Tabs>
+      <div className={classes.tabs}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="styled tabs example"
+          classes={{ indicator: classes.indicator }}
+        >
+          <Tab
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            disableRipple
+            label={
+              <div>
+                <LayersOutlined style={{ verticalAlign: 'middle' }} />
+                Layers
+              </div>
+            }
+            {...a11yProps(0)}
+          />
+          <Tab
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            disableRipple
+            label={
+              <div>
+                <LayersOutlined style={{ verticalAlign: 'middle' }} />
+                Charts
+              </div>
+            }
+            {...a11yProps(1)}
+          />
+          <Tab
+            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            disableRipple
+            label={
+              <div>
+                <BarChartOutlined style={{ verticalAlign: 'middle' }} />
+                Analysis
+              </div>
+            }
+            {...a11yProps(2)}
+          />
+        </Tabs>
+      </div>
+      <TabPanel value={value} index={0}>
+        {layersChildren}
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        {chartsChildren}
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        {analysisChildren}
+      </TabPanel>
     </div>
   );
 }

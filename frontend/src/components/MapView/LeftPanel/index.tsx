@@ -1,4 +1,9 @@
-import { createStyles, Drawer, makeStyles } from '@material-ui/core';
+import {
+  CircularProgress,
+  createStyles,
+  Drawer,
+  makeStyles,
+} from '@material-ui/core';
 import React from 'react';
 import LeftPanelTabs from './LeftPanelTabs';
 
@@ -20,7 +25,11 @@ function LeftPanel() {
       open
       classes={{ paper: classes.paper }}
     >
-      <LeftPanelTabs />
+      <LeftPanelTabs
+        layersChildren={<CircularProgress />}
+        chartsChildren={<CircularProgress />}
+        analysisChildren={<CircularProgress />}
+      />
     </Drawer>
   );
 }
