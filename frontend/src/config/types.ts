@@ -576,18 +576,10 @@ export interface LayersCategoryType {
   tables: TableType[];
 }
 
-export interface MenuItemType {
-  title: string;
-  icon: string;
-  layersCategories: LayersCategoryType[];
-}
-
 export interface MenuItemMobileType {
   title: string;
   icon: string;
   layersCategories: LayersCategoryType[];
-  expanded: string;
-  selectAccordion: (arg: string) => void;
 }
 
 export type DateItem = {

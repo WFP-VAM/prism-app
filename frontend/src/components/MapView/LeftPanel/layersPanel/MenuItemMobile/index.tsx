@@ -16,29 +16,15 @@ import MenuSwitch from '../MenuSwitch';
 import { useSafeTranslation } from '../../../../../i18n';
 
 function MenuItemMobile({
-  expanded,
-  selectAccordion,
   classes,
   title,
   icon,
   layersCategories,
 }: MenuItemMobileProps) {
   const { t } = useSafeTranslation();
-  const handleChange = (panel: string) => (
-    event: React.ChangeEvent<{}>,
-    newExpanded: boolean,
-  ) => {
-    selectAccordion(newExpanded ? panel : '');
-  };
 
   return (
-    <Accordion
-      key={title}
-      square
-      elevation={0}
-      expanded={expanded === title}
-      onChange={handleChange(title)}
-    >
+    <Accordion key={title} square elevation={0}>
       <AccordionSummary
         expandIcon={<FontAwesomeIcon icon={faCaretDown} />}
         IconButtonProps={{ color: 'inherit', size: 'small' }}
