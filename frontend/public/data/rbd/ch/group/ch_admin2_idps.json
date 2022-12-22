@@ -1,0 +1,52 @@
+{
+  "DataList": [
+    {
+      "adm2_pcod2": "BF4901",
+      "adm2_5_name": "Bam-Idps",
+      "adm2_5_pcod2": "BF4901_IDP",
+      "date": "2022-06-01",
+      "phase_class": 3,
+      "phase35": 32448
+    },
+    {
+      "adm2_pcod2": "BF4903",
+      "adm2_5_name": "Sanmatenga-Idps",
+      "adm2_5_pcod2": "BF4903_IDP",
+      "date": "2022-06-01",
+      "phase_class": 3,
+      "phase35": 188065
+    },
+    {
+      "adm2_pcod2": "BF5202",
+      "adm2_5_name": "Gourma-Idps",
+      "adm2_5_pcod2": "BF5202_IDP",
+      "date": "2022-06-01",
+      "phase_class": 3,
+      "phase35": 33501
+    },
+    {
+      "adm2_pcod2": "BF5203",
+      "adm2_5_name": "Komandjoari-Idps",
+      "adm2_5_pcod2": "BF5203_IDP",
+      "date": "2022-06-01",
+      "phase_class": 3,
+      "phase35": 10716
+    },
+    {
+      "adm2_pcod2": "BF5601",
+      "adm2_5_name": "Oudalan_Idps",
+      "adm2_5_pcod2": "BF5601_IDP",
+      "date": "2022-06-01",
+      "phase_class": 3,
+      "phase35": 24897
+    },
+    {
+      "adm2_pcod2": "BF5602",
+      "adm2_5_name": "Seno-Idps",
+      "adm2_5_pcod2": "BF5602_IDP",
+      "date": "2022-06-01",
+      "phase_class": 4,
+      "phase35": 59342
+    }
+  ]
+}

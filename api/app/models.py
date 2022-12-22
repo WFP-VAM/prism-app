@@ -46,6 +46,17 @@ class StatsModel(BaseModel):
     filter_by: Optional[FilterProperty] = None
 
 
+class RasterGeotiffModel(BaseModel):
+    """Schema for raster_geotiff data to be passed to /raster_geotiff endpoint."""
+
+    collection: str
+    date: str
+    lat_min: float
+    long_min: float
+    lat_max: float
+    long_max: float
+
+
 def must_not_contain_null_char(v: str) -> str:
     if "\x00" in v:
         raise ValueError("Value must not contain null char \x00")
