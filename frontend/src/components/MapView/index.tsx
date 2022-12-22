@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  Box,
   CircularProgress,
   createStyles,
   Grid,
@@ -95,6 +96,7 @@ import BoundaryInfoBox from './BoundaryInfoBox';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { firstBoundaryOnView } from '../../utils/map-utils';
 import DataViewer from '../DataViewer';
+import LeftPanel from './LeftPanel';
 
 const {
   map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom },
@@ -535,68 +537,75 @@ function MapView({ classes }: MapViewProps) {
   const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
 
   return (
-    <Grid item className={classes.container}>
-      {datesLoading && (
-        <div className={classes.loading}>
-          <CircularProgress size={100} />
-        </div>
-      )}
-      <MapboxMap
-        // eslint-disable-next-line react/style-prop-object
-        style={style.toString()}
-        onStyleLoad={saveAndJumpMap}
-        containerStyle={{
-          height: '100%',
-        }}
-        onClick={mapOnClick}
-        center={center}
-        zoom={zoomList}
-        maxBounds={maxBounds}
-      >
-        {selectedLayers.map(layer => {
-          const component: ComponentType<{
-            layer: any;
-            before?: string;
-          }> = componentTypes[layer.type];
-          return createElement(component, {
-            key: layer.id,
-            layer,
-            before: layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
-          });
-        })}
-        {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer before={firstBoundaryId} />
-        <SelectionLayer before={firstSymbolId} />
-        <MapTooltip />
-      </MapboxMap>
-      <Grid
-        container
-        justify="space-between"
-        className={classes.buttonContainer}
-      >
-        <Grid item>
-          <Analyser extent={adminBoundariesExtent} />
-          <GotoBoundaryDropdown />
-          {appConfig.alertFormActive ? (
-            <AlertForm isOpen={isAlertFormOpen} setOpen={setIsAlertFormOpen} />
-          ) : null}
-          <DataViewer />
-        </Grid>
-        <Grid item>
-          <Grid container spacing={1}>
-            <Download />
-            <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
+    <Box height="100%" width="100%">
+      <LeftPanel />
+      <Grid item className={classes.container}>
+        {datesLoading && (
+          <div className={classes.loading}>
+            <CircularProgress size={100} />
+          </div>
+        )}
+        <MapboxMap
+          // eslint-disable-next-line react/style-prop-object
+          style={style.toString()}
+          onStyleLoad={saveAndJumpMap}
+          containerStyle={{
+            height: '100%',
+          }}
+          onClick={mapOnClick}
+          center={center}
+          zoom={zoomList}
+          maxBounds={maxBounds}
+        >
+          {selectedLayers.map(layer => {
+            const component: ComponentType<{
+              layer: any;
+              before?: string;
+            }> = componentTypes[layer.type];
+            return createElement(component, {
+              key: layer.id,
+              layer,
+              before:
+                layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
+            });
+          })}
+          {/* These are custom layers which provide functionality and are not really controllable via JSON */}
+          <AnalysisLayer before={firstBoundaryId} />
+          <SelectionLayer before={firstSymbolId} />
+          <MapTooltip />
+        </MapboxMap>
+        <Grid
+          container
+          justify="space-between"
+          className={classes.buttonContainer}
+        >
+          <Grid item>
+            <Analyser extent={adminBoundariesExtent} />
+            <GotoBoundaryDropdown />
+            {appConfig.alertFormActive ? (
+              <AlertForm
+                isOpen={isAlertFormOpen}
+                setOpen={setIsAlertFormOpen}
+              />
+            ) : null}
+            <DataViewer />
+          </Grid>
+          <Grid item>
+            <Grid container spacing={1}>
+              <Download />
+              <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
+            </Grid>
           </Grid>
         </Grid>
+        {selectedLayerDates.length > 0 && (
+          <DateSelector
+            availableDates={selectedLayerDates}
+            selectedLayers={selectedLayersWithDateSupport}
+          />
+        )}
+        {showBoundaryInfo && <BoundaryInfoBox />}
       </Grid>
-      {selectedLayerDates.length > 0 && (
-        <DateSelector
-          availableDates={selectedLayerDates}
-          selectedLayers={selectedLayersWithDateSupport}
-        />
-      )}
-      {showBoundaryInfo && <BoundaryInfoBox />}
-    </Grid>
+    </Box>
   );
 }
 
@@ -605,6 +614,7 @@ const styles = () =>
     container: {
       height: '100%',
       position: 'relative',
+      marginLeft: '30%',
     },
     buttonContainer: {
       zIndex: 5,
