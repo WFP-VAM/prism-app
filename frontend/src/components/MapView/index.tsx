@@ -614,7 +614,7 @@ const styles = () =>
     container: {
       height: '100%',
       position: 'relative',
-      marginLeft: '20%',
+      marginLeft: '30%',
     },
     buttonContainer: {
       zIndex: 5,

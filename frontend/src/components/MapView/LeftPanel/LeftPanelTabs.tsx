@@ -1,13 +1,4 @@
-import {
-  createStyles,
-  Drawer,
-  makeStyles,
-  Tab,
-  Tabs,
-  withStyles,
-} from '@material-ui/core';
-// import LayersOutlinedIcon from '@mui/icons-material/LayersOutlined';
-// import StackedBarChartOutlinedIcon from '@mui/icons-material/StackedBarChartOutlined';
+import { createStyles, makeStyles, Tab, Tabs } from '@material-ui/core';
 import { LayersOutlined, BarChartOutlined } from '@material-ui/icons';
 import React, { useState } from 'react';
 
@@ -15,27 +6,20 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       backgroundColor: '#566064',
+      width: '100%',
     },
     indicator: {
-      width: '100%',
-      maxWidth: 40,
       backgroundColor: '#53888F',
-      borderRight: '500px solid #53888F', // hack to get rid of red indicator -- probably best to mirror styled components similar to example
+      height: '10%',
     },
-    tabs: {
-      display: 'flex',
-      maxWidth: '100%',
-    },
-    tab: {
-      minWidth: 50,
+    tabRoot: {
       textTransform: 'none',
-      color: '#fff',
-      width: '33%',
-      '&:focus': {
-        opacity: 1,
-        backgroundColor: '#3C3F40',
-        boxShadow: 'inset 0px -8px 0px #53888F',
-      },
+      minWidth: 50,
+      width: 'calc(100% / 3)',
+    },
+    tabSelected: {
+      opacity: 1,
+      backgroundColor: '#3C3F40',
     },
   }),
 );
@@ -51,29 +35,40 @@ function LeftPanelTabs() {
   return (
     <div className={classes.root}>
       <Tabs
-        className={classes.tabs}
         value={value}
         onChange={handleChange}
         aria-label="styled tabs example"
-        TabIndicatorProps={{ children: <span className={classes.indicator} /> }}
+        classes={{ indicator: classes.indicator }}
       >
         <Tab
-          className={classes.tab}
+          classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
           disableRipple
-          label="Layers"
-          icon={<LayersOutlined />}
+          label={
+            <div>
+              <LayersOutlined style={{ verticalAlign: 'middle' }} />
+              Layers
+            </div>
+          }
         />
         <Tab
-          className={classes.tab}
+          classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
           disableRipple
-          label="Charts"
-          icon={<BarChartOutlined />}
+          label={
+            <div>
+              <LayersOutlined style={{ verticalAlign: 'middle' }} />
+              Charts
+            </div>
+          }
         />
         <Tab
-          className={classes.tab}
+          classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
           disableRipple
-          label="Analysis"
-          icon={<BarChartOutlined />}
+          label={
+            <div>
+              <BarChartOutlined style={{ verticalAlign: 'middle' }} />
+              Analysis
+            </div>
+          }
         />
       </Tabs>
     </div>

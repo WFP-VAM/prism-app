@@ -6,7 +6,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     paper: {
       marginTop: '60px',
-      width: '20%',
+      width: '30%',
     },
   }),
 );
