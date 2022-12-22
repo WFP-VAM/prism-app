@@ -3,36 +3,101 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiGrid-root MapView-container-1 MuiGrid-item"
+    class="MuiBox-root MuiBox-root-4"
   >
-    <div
-      class="MapView-loading-3"
-    >
-      <mock-circularprogress
-        size="100"
-      />
-    </div>
-    <div
-      style="height: 100%;"
-    />
-    <div
-      class="MuiGrid-root MapView-buttonContainer-2 MuiGrid-container MuiGrid-justify-xs-space-between"
+    <mock-drawer
+      anchor="left"
+      classes="[object Object]"
+      open="true"
+      variant="persistent"
     >
       <div
-        class="MuiGrid-root MuiGrid-item"
-      >
-        <mock-analyser />
-      </div>
-      <div
-        class="MuiGrid-root MuiGrid-item"
+        class="makeStyles-root-6"
       >
         <div
-          class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
+          class="makeStyles-tabs-7"
         >
-          <mock-download />
-          <mock-legends
-            layers="[object Object],[object Object]"
-          />
+          <mock-tabs
+            aria-label="styled tabs example"
+            classes="[object Object]"
+            value="0"
+          >
+            <mock-tab
+              aria-controls="full-width-tabpanel-0"
+              classes="[object Object]"
+              disableripple="true"
+              id="full-width-tab-0"
+              label="[object Object]"
+            />
+            <mock-tab
+              aria-controls="full-width-tabpanel-1"
+              classes="[object Object]"
+              disableripple="true"
+              id="full-width-tab-1"
+              label="[object Object]"
+            />
+            <mock-tab
+              aria-controls="full-width-tabpanel-2"
+              classes="[object Object]"
+              disableripple="true"
+              id="full-width-tab-2"
+              label="[object Object]"
+            />
+          </mock-tabs>
+        </div>
+        <div
+          aria-labelledby="full-width-tab-0"
+          id="full-width-tabpanel-0"
+          role="tabpanel"
+        >
+          <mock-circularprogress />
+        </div>
+        <div
+          aria-labelledby="full-width-tab-1"
+          hidden=""
+          id="full-width-tabpanel-1"
+          role="tabpanel"
+        />
+        <div
+          aria-labelledby="full-width-tab-2"
+          hidden=""
+          id="full-width-tabpanel-2"
+          role="tabpanel"
+        />
+      </div>
+    </mock-drawer>
+    <div
+      class="MuiGrid-root MapView-container-1 MuiGrid-item"
+    >
+      <div
+        class="MapView-loading-3"
+      >
+        <mock-circularprogress
+          size="100"
+        />
+      </div>
+      <div
+        style="height: 100%;"
+      />
+      <div
+        class="MuiGrid-root MapView-buttonContainer-2 MuiGrid-container MuiGrid-justify-xs-space-between"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-item"
+        >
+          <mock-analyser />
+        </div>
+        <div
+          class="MuiGrid-root MuiGrid-item"
+        >
+          <div
+            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
+          >
+            <mock-download />
+            <mock-legends
+              layers="[object Object],[object Object]"
+            />
+          </div>
         </div>
       </div>
     </div>
