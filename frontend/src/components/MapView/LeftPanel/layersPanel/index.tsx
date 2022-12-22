@@ -1,13 +1,14 @@
 import { Box } from '@material-ui/core';
 import React from 'react';
-import MenuItemMobile from './MenuItemMobile';
+import MenuItem from './MenuItem';
 import { menuList } from './utils';
 
+const menu = menuList.map(({ title, ...category }) => (
+  <MenuItem key={title} title={title} {...category} />
+));
+
 function LayersPanel() {
-  const menuMobile = menuList.map(({ title, ...category }) => (
-    <MenuItemMobile key={title} title={title} {...category} />
-  ));
-  return <Box>{menuMobile}</Box>;
+  return <Box>{menu}</Box>;
 }
 
 export default LayersPanel;

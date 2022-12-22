@@ -12,12 +12,12 @@ import {
   LayerKey,
   LayersCategoryType,
   MenuGroup,
-  MenuItemMobileType,
+  MenuItemType,
 } from '../../../../config/types';
 
 type LayersCategoriesType = LayersCategoryType[];
 
-type MenuItemsType = MenuItemMobileType[];
+type MenuItemsType = MenuItemType[];
 
 type MenuGroupType = MenuGroup[];
 

@@ -576,7 +576,7 @@ export interface LayersCategoryType {
   tables: TableType[];
 }
 
-export interface MenuItemMobileType {
+export interface MenuItemType {
   title: string;
   icon: string;
   layersCategories: LayersCategoryType[];

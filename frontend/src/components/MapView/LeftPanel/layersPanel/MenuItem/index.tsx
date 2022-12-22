@@ -11,16 +11,11 @@ import {
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { MenuItemMobileType } from '../../../../../config/types';
+import { MenuItemType } from '../../../../../config/types';
 import MenuSwitch from '../MenuSwitch';
 import { useSafeTranslation } from '../../../../../i18n';
 
-function MenuItemMobile({
-  classes,
-  title,
-  icon,
-  layersCategories,
-}: MenuItemMobileProps) {
+function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const { t } = useSafeTranslation();
 
   return (
@@ -59,8 +54,8 @@ const styles = () =>
     },
   });
 
-export interface MenuItemMobileProps
-  extends MenuItemMobileType,
+export interface MenuItemProps
+  extends MenuItemType,
     WithStyles<typeof styles> {}
 
-export default withStyles(styles)(MenuItemMobile);
+export default withStyles(styles)(MenuItem);
