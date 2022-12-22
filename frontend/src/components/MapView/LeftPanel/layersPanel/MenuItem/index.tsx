@@ -3,31 +3,47 @@ import {
   createStyles,
   Grid,
   Typography,
-  withStyles,
-  WithStyles,
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  makeStyles,
 } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { MenuItemType } from '../../../../../config/types';
 import MenuSwitch from '../MenuSwitch';
 import { useSafeTranslation } from '../../../../../i18n';
 
-function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
+const useStyles = makeStyles(() =>
+  createStyles({
+    root: {
+      position: 'inherit',
+    },
+    rootSummary: {
+      backgroundColor: '#D8E9EC',
+    },
+    expandIcon: {
+      color: '#53888F',
+    },
+    title: {
+      color: '#53888F',
+      fontWeight: 'bold',
+    },
+  }),
+);
+
+function MenuItem({ title, layersCategories }: MenuItemType) {
   const { t } = useSafeTranslation();
+  const classes = useStyles();
 
   return (
-    <Accordion key={title} square elevation={0}>
+    <Accordion key={title} elevation={0} classes={{ root: classes.root }}>
       <AccordionSummary
-        expandIcon={<FontAwesomeIcon icon={faCaretDown} />}
-        IconButtonProps={{ color: 'inherit', size: 'small' }}
+        expandIcon={<ExpandMoreIcon />}
+        classes={{ root: classes.rootSummary, expandIcon: classes.expandIcon }}
         aria-controls={title}
         id={title}
       >
-        <img className={classes.icon} src={`images/${icon}`} alt={title} />
-        <Typography variant="body2">{t(title)}</Typography>
+        <Typography classes={{ root: classes.title }}>{t(title)}</Typography>
       </AccordionSummary>
       <AccordionDetails>
         <Grid container direction="column">
@@ -45,17 +61,4 @@ function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   );
 }
 
-const styles = () =>
-  createStyles({
-    icon: {
-      width: 18,
-      height: 18,
-      marginRight: 6,
-    },
-  });
-
-export interface MenuItemProps
-  extends MenuItemType,
-    WithStyles<typeof styles> {}
-
-export default withStyles(styles)(MenuItem);
+export default MenuItem;
