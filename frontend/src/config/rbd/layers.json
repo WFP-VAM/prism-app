@@ -3170,7 +3170,7 @@
     ],
     "legend_text": "Multidimensional risk index"
   },
-  "ch_admin_phase_all_dates": {
+  "ch_phase": {
     "title": "ch_admin_phase_all_dates",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
@@ -3184,7 +3184,7 @@
       "mode": "forward"
     },
     "fallbackLayerKeys": [
-      "ch_admin1_phase_all_dates"
+      "ch_phase_admin"
     ],
     "admin_level": 2,
     "data_field": "phase_class",
@@ -3223,9 +3223,9 @@
         "color": "#5e0803"
       }
     ],
-    "legend_text": "Update later"
+    "legend_text": "Phase classification"
   },
-  "ch_admin1_phase_all_dates": {
+  "ch_phase_admin": {
     "title": "ch_admin1_phase_all_dates",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
@@ -3273,18 +3273,21 @@
     ],
     "legend_text": "Update later"
   },
-  "ch_pop3_5_adm2": {
-    "title": "Population in Phase 3 to 5 - admin 2",
+  "ch_pop3_5": {
+    "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/adm2/{YYYY_MM_DD}.json",
+    "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2014-01-01",
-      "2014-06-01",
-      "2014-09-01"
+      "2022-01-01",
+      "2022-06-01",
+      "2022-09-01"
     ],
     "data_field": "phase35",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
+    "fallbackLayerKeys": [
+      "ch_pop3_5_admin1"
+    ],
     "validity": {
       "days": 150,
       "mode": "forward"
@@ -3333,16 +3336,16 @@
         "color": "#99000d"
       }
     ],
-    "legend_text": "Population in phase 3 to phase 5"
+    "legend_text": "Population in phase 3 to 5"
   },
-  "ch_pop3_5_adm1": {
-    "title": "Population in Phase 3 to 5 - admin 1",
+  "ch_pop3_5_admin1": {
+    "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/adm1/{YYYY_MM_DD}.json",
+    "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2014-01-01",
-      "2014-06-01",
-      "2014-09-01"
+      "2022-01-01",
+      "2022-06-01",
+      "2022-09-01"
     ],
     "data_field": "phase35",
     "admin_level": 1,
@@ -3395,12 +3398,12 @@
         "color": "#99000d"
       }
     ],
-    "legend_text": "Population in phase 3 to phase 5"
+    "legend_text": "Population in phase 3 to 5"
   },
   "ch_admin2_limited_access": {
     "title": "Limited access areas - phase classification",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/group/ch_admin2_limited_access.json",
+    "path": "data/rbd/ch/ch_admin2_limited_access.json",
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
@@ -3443,7 +3446,7 @@
   "ch_admin2_urban": {
     "title": "Urban areas - phase classification",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/group/ch_admin2_urbain.json",
+    "path": "data/rbd/ch/ch_admin2_urbain.json",
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
@@ -3486,7 +3489,7 @@
   "ch_admin2_idps": {
     "title": "IDPs - phase classification",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/group/ch_admin2_idps.json",
+    "path": "data/rbd/ch/ch_admin2_idps.json",
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",

@@ -187,7 +187,10 @@
     },
     "Cadre Harmonisé": {
       "Phase_Classification": [
-        "ch_admin_phase_all_dates"
+        "ch_phase"
+      ],
+      "Population":[
+        "ch_pop3_5"
       ],
       "Special_Populations": [
         "ch_admin2_limited_access",
