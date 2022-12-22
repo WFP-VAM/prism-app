@@ -1,5 +1,6 @@
 import { createStyles, Drawer, makeStyles } from '@material-ui/core';
 import React from 'react';
+import LeftPanelTabs from './LeftPanelTabs';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -19,7 +20,7 @@ function LeftPanel() {
       open
       classes={{ paper: classes.paper }}
     >
-      TEST
+      <LeftPanelTabs />
     </Drawer>
   );
 }
