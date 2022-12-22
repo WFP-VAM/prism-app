@@ -1,27 +1,24 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
-  Toolbar,
-  Typography,
+  Button,
+  createStyles,
+  Drawer,
   Grid,
   Hidden,
   Theme,
+  Toolbar,
+  Typography,
   withStyles,
   WithStyles,
-  createStyles,
-  Button,
-  Drawer,
 } from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import MenuItem from './MenuItem';
-import MenuItemMobile from './MenuItemMobile';
-import { menuList } from './utils';
-import LanguageSelector from './LanguageSelector';
-import About from './About';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useSafeTranslation } from '../../i18n';
+import About from './About';
+import LanguageSelector from './LanguageSelector';
 
 function NavBar({ classes }: NavBarProps) {
   const { t } = useSafeTranslation();
@@ -35,24 +32,6 @@ function NavBar({ classes }: NavBarProps) {
   ];
 
   const [openMobileMenu, setOpenMobileMenu] = useState(false);
-  const menu = menuList.map(({ title, ...category }) => (
-    <MenuItem key={title} title={title} {...category} />
-  ));
-
-  // menu for mobile, 1 active accordion at a time so I put the state in here
-  const [expanded, setExpanded] = useState('');
-  const selectAccordion = (title: string) => {
-    setExpanded(title);
-  };
-  const menuMobile = menuList.map(({ title, ...category }) => (
-    <MenuItemMobile
-      expanded={expanded}
-      selectAccordion={selectAccordion}
-      key={title}
-      title={title}
-      {...category}
-    />
-  ));
 
   const buttons = rightSideLinks.map(({ title, icon, href }) => (
     <Grid item key={title}>
@@ -84,10 +63,6 @@ function NavBar({ classes }: NavBarProps) {
           </Grid>
 
           <Hidden smDown>
-            <Grid className={classes.menuContainer} item xs={6}>
-              {menu}
-            </Grid>
-
             <Grid
               spacing={3}
               container
@@ -122,9 +97,6 @@ function NavBar({ classes }: NavBarProps) {
                   <Grid container spacing={3}>
                     <Grid container justify="space-around" item>
                       {buttons}
-                    </Grid>
-                    <Grid container direction="column" item>
-                      {menuMobile}
                     </Grid>
                   </Grid>
                 </div>

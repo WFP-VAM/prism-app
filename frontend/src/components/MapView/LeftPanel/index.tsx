@@ -5,6 +5,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import React from 'react';
+import LayersPanel from './layersPanel';
 import LeftPanelTabs from './LeftPanelTabs';
 
 const useStyles = makeStyles(() =>
@@ -26,7 +27,7 @@ function LeftPanel() {
       classes={{ paper: classes.paper }}
     >
       <LeftPanelTabs
-        layersPanel={<CircularProgress />}
+        layersPanel={<LayersPanel />}
         chartsPanel={<CircularProgress />}
         analysisPanel={<CircularProgress />}
       />

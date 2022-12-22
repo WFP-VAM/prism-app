@@ -11,9 +11,9 @@ import {
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { MenuItemMobileType } from '../../../config/types';
+import { MenuItemMobileType } from '../../../../../config/types';
 import MenuSwitch from '../MenuSwitch';
-import { useSafeTranslation } from '../../../i18n';
+import { useSafeTranslation } from '../../../../../i18n';
 
 function MenuItemMobile({
   expanded,

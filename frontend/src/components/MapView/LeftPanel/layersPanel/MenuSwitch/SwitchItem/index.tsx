@@ -10,24 +10,24 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { LayerKey, LayerType } from '../../../../config/types';
+import { LayerKey, LayerType } from '../../../../../../config/types';
 import {
   getDisplayBoundaryLayers,
   LayerDefinitions,
-} from '../../../../config/utils';
+} from '../../../../../../config/utils';
 import {
   refreshBoundaries,
   safeDispatchAddLayer,
   safeDispatchRemoveLayer,
-} from '../../../../utils/map-utils';
+} from '../../../../../../utils/map-utils';
 import {
   layersSelector,
   mapSelector,
-} from '../../../../context/mapStateSlice/selectors';
-import { useUrlHistory, getUrlKey } from '../../../../utils/url-utils';
-import { removeLayer } from '../../../../context/mapStateSlice';
-import { useSafeTranslation } from '../../../../i18n';
-import { clearDataset } from '../../../../context/datasetStateSlice';
+} from '../../../../../../context/mapStateSlice/selectors';
+import { useUrlHistory, getUrlKey } from '../../../../../../utils/url-utils';
+import { removeLayer } from '../../../../../../context/mapStateSlice';
+import { useSafeTranslation } from '../../../../../../i18n';
+import { clearDataset } from '../../../../../../context/datasetStateSlice';
 
 function SwitchItem({ classes, layer }: SwitchItemProps) {
   const { t } = useSafeTranslation();

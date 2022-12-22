@@ -12,9 +12,9 @@ import {
   Theme,
 } from '@material-ui/core';
 
-import { MenuItemType } from '../../../config/types';
+import { MenuItemType } from '../../../../../config/types';
 import MenuSwitch from '../MenuSwitch';
-import { useSafeTranslation } from '../../../i18n';
+import { useSafeTranslation } from '../../../../../i18n';
 
 function MenuItem({ classes, title, icon, layersCategories }: MenuItemProps) {
   const { t } = useSafeTranslation();

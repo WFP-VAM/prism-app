@@ -8,9 +8,9 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { LayersCategoryType, TableType } from '../../../config/types';
-import { loadTable } from '../../../context/tableStateSlice';
-import { useSafeTranslation } from '../../../i18n';
+import { LayersCategoryType, TableType } from '../../../../../config/types';
+import { loadTable } from '../../../../../context/tableStateSlice';
+import { useSafeTranslation } from '../../../../../i18n';
 import SwitchItem from './SwitchItem';
 
 function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {

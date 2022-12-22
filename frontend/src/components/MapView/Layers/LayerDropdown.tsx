@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import React, { ReactElement } from 'react';
 import { startCase } from 'lodash';
-import { menuList } from '../../NavBar/utils';
+import { menuList } from '../LeftPanel/layersPanel/utils';
 import { LayerKey, LayerType } from '../../../config/types';
 import {
   getDisplayBoundaryLayers,
