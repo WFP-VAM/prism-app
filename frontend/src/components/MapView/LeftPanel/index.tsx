@@ -26,9 +26,9 @@ function LeftPanel() {
       classes={{ paper: classes.paper }}
     >
       <LeftPanelTabs
-        layersChildren={<CircularProgress />}
-        chartsChildren={<CircularProgress />}
-        analysisChildren={<CircularProgress />}
+        layersPanel={<CircularProgress />}
+        chartsPanel={<CircularProgress />}
+        analysisPanel={<CircularProgress />}
       />
     </Drawer>
   );

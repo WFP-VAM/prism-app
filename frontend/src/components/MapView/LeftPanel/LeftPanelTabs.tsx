@@ -59,16 +59,12 @@ const useStyles = makeStyles(() =>
 );
 
 interface TabsProps {
-  layersChildren: React.ReactNode;
-  chartsChildren: React.ReactNode;
-  analysisChildren: React.ReactNode;
+  layersPanel: React.ReactNode;
+  chartsPanel: React.ReactNode;
+  analysisPanel: React.ReactNode;
 }
 
-function LeftPanelTabs({
-  layersChildren,
-  chartsChildren,
-  analysisChildren,
-}: TabsProps) {
+function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
@@ -121,13 +117,13 @@ function LeftPanelTabs({
         </Tabs>
       </div>
       <TabPanel value={value} index={0}>
-        {layersChildren}
+        {layersPanel}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {chartsChildren}
+        {chartsPanel}
       </TabPanel>
       <TabPanel value={value} index={2}>
-        {analysisChildren}
+        {analysisPanel}
       </TabPanel>
     </div>
   );
