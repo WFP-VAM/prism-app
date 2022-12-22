@@ -18,7 +18,7 @@ exports[`renders as expected 1`] = `
           class="makeStyles-tabs-7"
         >
           <mock-tabs
-            aria-label="styled tabs example"
+            aria-label="left panel tabs"
             classes="[object Object]"
             value="0"
           >

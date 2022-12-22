@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 
 interface TabPanelProps {
   children?: React.ReactNode;
-  dir?: string;
   index: any;
   value: any;
 }
@@ -78,7 +77,7 @@ function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
         <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="styled tabs example"
+          aria-label="left panel tabs"
           classes={{ indicator: classes.indicator }}
         >
           <Tab
