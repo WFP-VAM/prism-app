@@ -187,15 +187,16 @@
     },
     "Cadre Harmonisé": {
       "Phase_Classification": [
-        "ch_phase"
+        "ch_phase",
+        "ch_idps_phase",
+        "ch_inaccessible_phase",
+        "ch_urban_phase"
       ],
-      "Population":[
-        "ch_pop3_5"
-      ],
-      "Special_Populations": [
-        "ch_admin2_limited_access",
-        "ch_admin2_urban",
-        "ch_admin2_idps"
+      "Population": [
+        "ch_pop3_5",
+        "ch_idps_pop3_5",
+        "ch_inaccessible_pop3_5",
+        "ch_urban_pop3_5"
       ]
     },
     "risk_analysis": {
