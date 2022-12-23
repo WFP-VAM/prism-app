@@ -133,11 +133,15 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
 
   const menuTitle = group ? (
     <>
-      <Typography className={classes.title}>{validatedTitle}</Typography>
+      <Typography className={selected ? classes.title : classes.titleUnchecked}>
+        {validatedTitle}
+      </Typography>
       {!group.activateAll && (
         <Select
           className={classes.select}
-          classes={{ root: classes.selectItem }}
+          classes={{
+            root: selected ? classes.selectItem : classes.selectItemUnchecked,
+          }}
           value={activeLayer}
           onChange={e => handleSelect(e)}
         >
@@ -150,7 +154,9 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
       )}
     </>
   ) : (
-    <Typography className={classes.title}>{validatedTitle}</Typography>
+    <Typography className={selected ? classes.title : classes.titleUnchecked}>
+      {validatedTitle}
+    </Typography>
   );
 
   return (
@@ -180,6 +186,11 @@ const styles = () =>
       color: 'black',
       fontWeight: 400,
     },
+    titleUnchecked: {
+      lineHeight: 1.8,
+      color: '#828282',
+      fontWeight: 400,
+    },
     select: {
       '&::before': {
         border: 'none',
@@ -190,6 +201,14 @@ const styles = () =>
       fontSize: 13,
       fontWeight: 300,
       color: 'black',
+      padding: 0,
+      marginLeft: 5,
+    },
+    selectItemUnchecked: {
+      whiteSpace: 'normal',
+      fontSize: 13,
+      fontWeight: 300,
+      color: '#828282',
       padding: 0,
       marginLeft: 5,
     },
