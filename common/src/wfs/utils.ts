@@ -1,15 +1,17 @@
 import { isEmpty } from "lodash";
 import * as moment from "moment";
 
-import { findTagsByPath } from "xml-utils";
+import { findTagByName, findTagsByPath, getAttribute } from "xml-utils";
 
 import {
   DEFAULT_DATE_FORMAT,
   findAndParseAbstract,
+  findTagAttribute,
   findTagText,
   formatUrl,
   parseName,
   setTimeoutAsync,
+  titlecase,
 } from "../utils";
 
 import {
@@ -35,6 +37,22 @@ export function getBaseUrl(url: string): string {
   return origin + pathname.replace(/\/$/, "");
 }
 
+export function findAndParseLatLongBoundingBox(
+  xml: string
+): Readonly<[number, number, number, number]> | undefined {
+  const tag = findTagByName(xml, "LatLongBoundingBox");
+  if (!tag) {
+    return undefined;
+  }
+
+  return [
+    Number(getAttribute(tag, "minx")),
+    Number(getAttribute(tag, "miny")),
+    Number(getAttribute(tag, "maxx")),
+    Number(getAttribute(tag, "maxy")),
+  ];
+}
+
 // to-do: MetadataURL
 // to-do: parse prefix from name?
 export function getFeatureTypesFromCapabilities(
@@ -52,8 +70,12 @@ export function getFeatureTypesFromCapabilities(
             name: parseName(name),
             abstract: findAndParseAbstract(inner),
             keywords: findAndParseKeywords(inner),
-            srs: findTagText(inner, "DefaultSRS")!,
-            bbox: findAndParseWGS84BoundingBox(inner)!,
+            srs: (findTagText(inner, "DefaultSRS")?.replace(
+              "urn:x-ogc:def:crs:",
+              ""
+            ) || findTagText(inner, "SRS"))!,
+            bbox: (findAndParseWGS84BoundingBox(inner) ||
+              findAndParseLatLongBoundingBox(inner))!,
           });
         }
       }
@@ -83,7 +105,26 @@ export function parseGetFeatureUrl(
     method: "GET",
   }
 ): string | undefined {
-  return findAndParseOperationUrl(capabilities, "GetFeature", method);
+  const url =
+    findAndParseOperationUrl(capabilities, "GetFeature", method) ||
+    findTagAttribute(
+      capabilities,
+      [
+        "Capability",
+        "Request",
+        "GetFeature",
+        "DCPType",
+        "HTTP",
+        titlecase(method),
+      ],
+      "onlineResource"
+    );
+  if (!url) {
+    return undefined;
+  }
+
+  // remove params
+  return url.split("?")[0];
 }
 
 export function hasFeatureType(

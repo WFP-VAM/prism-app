@@ -1,10 +1,5 @@
 import { parseName } from "../utils";
 
-// classes that extend this base Layer class
-// should implement the following functions
-// getLayerId, getLayerData, getLayerName,
-// getLayerDescription, and getLayerDates
-
 export class Layer {
   public capabilities: Promise<string>;
   public debug: boolean | undefined;

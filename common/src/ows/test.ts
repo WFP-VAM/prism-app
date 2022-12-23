@@ -152,24 +152,43 @@ Unable to acquire a reader for this coverage with format: GeoTIFF
 test("getting capabilities url", async ({ eq }) => {
   eq(
     await getCapabilitiesUrl("https://geonode.wfp.org/geoserver/wfs"),
-    "https://geonode.wfp.org/geoserver/wfs?request=GetCapabilities&version=1.1.1"
+    "https://geonode.wfp.org/geoserver/wfs?request=GetCapabilities&service=WFS"
   );
   eq(
     await getCapabilitiesUrl(
       "https://geonode.wfp.org/geoserver/ows/?service=WFS"
     ),
-    "https://geonode.wfp.org/geoserver/ows/?service=WFS&request=GetCapabilities&version=1.1.1"
+    "https://geonode.wfp.org/geoserver/ows/?request=GetCapabilities&service=WFS"
   );
   eq(
     await getCapabilitiesUrl(
       "https://geonode.wfp.org/geoserver/ows/?service=WFS&extra=true"
     ),
-    "https://geonode.wfp.org/geoserver/ows/?service=WFS&extra=true&request=GetCapabilities&version=1.1.1"
+    "https://geonode.wfp.org/geoserver/ows/?extra=true&request=GetCapabilities&service=WFS"
   );
   eq(
     await getCapabilitiesUrl("https://geonode.wfp.org/geoserver/ows", {
       service: "WFS",
     }),
+    "https://geonode.wfp.org/geoserver/ows?request=GetCapabilities&service=WFS"
+  );
+  eq(
+    await getCapabilitiesUrl(
+      "https://geonode.wfp.org/geoserver/ows?service=WFS",
+      {
+        version: "1.1.0", // add version
+      }
+    ),
+    "https://geonode.wfp.org/geoserver/ows?request=GetCapabilities&service=WFS&version=1.1.0"
+  );
+  eq(
+    await getCapabilitiesUrl(
+      "https://geonode.wfp.org/geoserver/ows?version=2.0.0",
+      {
+        service: "WFS",
+        version: "1.1.1", // override
+      }
+    ),
     "https://geonode.wfp.org/geoserver/ows?request=GetCapabilities&service=WFS&version=1.1.1"
   );
 });

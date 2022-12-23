@@ -37,10 +37,18 @@ export class Base {
     }
 
     this.url = url;
-    this.version = version || new URL(url).searchParams.get("version") || undefined;
+    this.version =
+      version || new URL(url).searchParams.get("version") || undefined;
   }
 
-  async getCapabilities(options?: { debug?: boolean, version?: string }): Promise<string> {
+  async getCapabilities(options?: {
+    debug?: boolean;
+    version?: string;
+  }): Promise<string> {
+    if (!this.service) {
+      throw new Error("service not set");
+    }
+
     const key = options?.version || this.version || "default";
     if (!this.capabilities[key]) {
       this.capabilities[key] = getCapabilities(this.url!, {

@@ -4,6 +4,7 @@ import {
   createGetCoverageUrl,
   fetchCoverageDescriptionFromCapabilities,
   findAndParseExtent,
+  findAndParseCoverage,
   parseDates,
   parseLayerDays,
 } from "../utils";
@@ -13,21 +14,57 @@ type GetImageOptions = MakeOptional<
   "bbox"
 >;
 
+type WCSLayerOptions = ConstructorParameters<typeof Layer>[0] & {
+  wait?: number;
+};
+
 export default class WCSLayer extends Layer {
   description: Promise<string>; // CoverageDescription from DescribeCoverage
 
-  constructor(options: ConstructorParameters<typeof Layer>[0]) {
+  constructor(options: WCSLayerOptions) {
     super(options);
 
     this.description = this.capabilities.then((caps) =>
       fetchCoverageDescriptionFromCapabilities(caps, this.id, {
+        debug: options.debug,
         fetch: this.fetch,
+        wait: options.wait,
       })
     );
   }
 
-  async getExtent() {
-    return findAndParseExtent(await this.description)!;
+  // get extent as a [west, south, east, north]
+  async getExtent(): Promise<Readonly<[number, number, number, number]>> {
+    // sometimes DescribeCoverage will take a long time,
+    // so use GetCapabilities if it is resolves more quickly
+    return new Promise((resolve, reject) => {
+      let count = 0;
+      let resolved = false;
+      this.capabilities.then((caps) => {
+        if (!resolved) {
+          count += 1;
+          const bbox = findAndParseCoverage(caps, this.id)?.wgs84bbox;
+          if (bbox) {
+            resolved = true;
+            resolve(bbox);
+          } else if (count === 2) {
+            reject("unable to get extent");
+          }
+        }
+      });
+      this.description.then((description) => {
+        if (!resolved) {
+          count += 1;
+          const bbox = findAndParseExtent(description);
+          if (bbox) {
+            resolved = true;
+            resolve(bbox);
+          } else if (count === 2) {
+            reject("unable to get extent");
+          }
+        }
+      });
+    });
   }
 
   async getImageUrl(options: GetImageOptions): Promise<string> {

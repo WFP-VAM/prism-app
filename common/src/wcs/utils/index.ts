@@ -34,7 +34,11 @@ export type Coverage = {
 };
 
 export function findCoverages(xml: string): string[] {
-  const tagNames = ["CoverageOfferingBrief", "wcs:CoverageSummary"];
+  const tagNames = [
+    "wcs:CoverageOfferingBrief",
+    "CoverageOfferingBrief",
+    "wcs:CoverageSummary",
+  ];
   // eslint-disable-next-line fp/no-mutation
   for (let i = 0; i < tagNames.length; i += 1) {
     const tagName = tagNames[i];
@@ -58,7 +62,7 @@ export function findCoverageId(xml: string): string | undefined {
 }
 
 export function findCoverageName(xml: string): string | undefined {
-  return findTagText(xml, "name");
+  return findTagText(xml, "name") || findTagText(xml, "wcs:name");
 }
 
 export function findLayerId(
@@ -319,7 +323,7 @@ export async function fetchCoverageDescriptionFromCapabilities(
     const response = await (options.fetch || fetch)(url);
     if (response.status !== 200) {
       throw new Error(
-        `failed to fetch CoverageDescription. status was ${response.status}`
+        `failed to fetch CoverageDescription from "${url}". status was ${response.status}`
       );
     }
     const text = await response.text();

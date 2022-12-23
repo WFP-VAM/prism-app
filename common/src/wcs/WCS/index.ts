@@ -10,40 +10,60 @@ import {
 } from "../utils";
 
 export default class WCS extends Base {
+  service = "WCS";
+
   async getLayerIds(): Promise<string[]> {
-    return findLayerIds(await this.capabilities);
+    return findLayerIds(await this.getCapabilities());
   }
 
   async getLayerNames(): Promise<string[]> {
-    return findCoverageDisplayNames(await this.capabilities);
+    return findCoverageDisplayNames(await this.getCapabilities());
   }
 
   async getLayer(layerId: string): Promise<WCSLayer> {
     this.checkLayer(layerId);
     return new WCSLayer({
-      capabilities: this.capabilities,
+      capabilities: await this.getCapabilities(),
       id: layerId,
       fetch: this.fetch,
     });
   }
 
-  async getLayers(): Promise<WCSLayer[]> {
-    const capabilities = await this.capabilities;
+  async getLayers({
+    debug = false,
+    count = 10,
+    errorStrategy = "throw",
+  }: { count?: number; debug?: boolean; errorStrategy?: string } = {}): Promise<
+    WCSLayer[]
+  > {
+    const capabilities = await this.getCapabilities();
     const coverages = findCoverages(capabilities);
-    return Promise.all(
-      coverages.map(
-        (layer) =>
-          new WCSLayer({
-            capabilities: this.capabilities,
+    return (Promise.all(
+      coverages.slice(0, count).map((layer, layerIndex) => {
+        try {
+          return new WCSLayer({
+            capabilities,
+            debug,
             id: findLayerId(layer)!,
             layer,
             fetch: this.fetch,
-          })
-      )
-    );
+            wait: layerIndex * 200, // wait 200ms between intialization DescribeCoverage request
+          });
+        } catch (error) {
+          if (errorStrategy === "skip") {
+            return undefined;
+          }
+          throw error;
+        }
+      })
+    ).then((values) =>
+      values.filter((value) => value !== undefined)
+    ) as any) as Promise<WCSLayer[]>;
   }
 
   async getLayerDays(): Promise<{ [layerId: string]: number[] }> {
-    return getAllLayerDays(await this.capabilities);
+    // we have to use the version 1.x.x for capabilities
+    // because version 2.x.x doesn't include date information
+    return getAllLayerDays(await this.getCapabilities({ version: "1.0.0" }));
   }
 }
