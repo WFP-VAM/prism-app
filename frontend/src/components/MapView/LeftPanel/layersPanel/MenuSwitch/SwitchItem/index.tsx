@@ -154,11 +154,14 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   );
 
   return (
-    <Box key={layerId} display="flex" mb={1}>
+    <Box key={layerId} display="flex" m={2}>
       <Switch
         size="small"
-        color="default"
         className={classes.switch}
+        classes={{
+          switchBase: classes.switchBase,
+          track: classes.switchTrack,
+        }}
         checked={selected}
         onChange={e => toggleLayerValue(activeLayer, e.target.checked)}
         inputProps={{
@@ -174,6 +177,8 @@ const styles = () =>
   createStyles({
     title: {
       lineHeight: 1.8,
+      color: 'black',
+      fontWeight: 400,
     },
     select: {
       '&::before': {
@@ -184,11 +189,24 @@ const styles = () =>
       whiteSpace: 'normal',
       fontSize: 13,
       fontWeight: 300,
+      color: 'black',
       padding: 0,
       marginLeft: 5,
     },
     switch: {
       marginRight: 2,
+    },
+    switchTrack: {
+      backgroundColor: '#E0E0E0',
+    },
+    switchBase: {
+      color: '#E0E0E0',
+      '&.Mui-checked': {
+        color: '#53888F',
+      },
+      '&.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: '#B1D6DB',
+      },
     },
   });
 
