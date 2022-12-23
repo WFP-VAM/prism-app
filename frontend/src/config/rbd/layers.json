@@ -3171,10 +3171,22 @@
     "legend_text": "Multidimensional risk index"
   },
   "ch_phase": {
-    "title": "ch_admin_phase_all_dates",
+    "title": "Phase classification",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
     "dates": [
+      "2018-01-01",
+      "2018-06-01",
+      "2018-09-01",
+      "2019-01-01",
+      "2019-06-01",
+      "2019-09-01",
+      "2020-01-01",
+      "2020-06-01",
+      "2020-09-01",
+      "2021-01-01",
+      "2021-06-01",
+      "2021-09-01",
       "2022-01-01",
       "2022-06-01",
       "2022-09-01"
@@ -3184,7 +3196,7 @@
       "mode": "forward"
     },
     "fallbackLayerKeys": [
-      "ch_phase_admin"
+      "ch_phase_admin1"
     ],
     "admin_level": 2,
     "data_field": "phase_class",
@@ -3194,6 +3206,10 @@
       "phase35": {
         "type": "number",
         "label": "Population in phase 3 to 5"
+      },
+      "reference_date": {
+        "type": "text",
+        "label": "Reference period"
       }
     },
     "legend": [
@@ -3225,11 +3241,23 @@
     ],
     "legend_text": "Phase classification"
   },
-  "ch_phase_admin": {
+  "ch_phase_admin1": {
     "title": "ch_admin1_phase_all_dates",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
     "dates": [
+      "2018-01-01",
+      "2018-06-01",
+      "2018-09-01",
+      "2019-01-01",
+      "2019-06-01",
+      "2019-09-01",
+      "2020-01-01",
+      "2020-06-01",
+      "2020-09-01",
+      "2021-01-01",
+      "2021-06-01",
+      "2021-09-01",
       "2022-01-01",
       "2022-06-01",
       "2022-09-01"
@@ -3242,6 +3270,10 @@
       "phase35": {
         "type": "number",
         "label": "Population in phase 3 to 5"
+      },
+      "reference_date": {
+        "type": "text",
+        "label": "Reference period"
       }
     },
     "legend": [
@@ -3278,6 +3310,18 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
     "dates": [
+      "2018-01-01",
+      "2018-06-01",
+      "2018-09-01",
+      "2019-01-01",
+      "2019-06-01",
+      "2019-09-01",
+      "2020-01-01",
+      "2020-06-01",
+      "2020-09-01",
+      "2021-01-01",
+      "2021-06-01",
+      "2021-09-01",
       "2022-01-01",
       "2022-06-01",
       "2022-09-01"
@@ -3293,7 +3337,7 @@
       "mode": "forward"
     },
     "feature_info_props": {
-      "date": {
+      "reference_date": {
         "type": "text",
         "label": "Reference period"
       }
@@ -3343,6 +3387,18 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
     "dates": [
+      "2018-01-01",
+      "2018-06-01",
+      "2018-09-01",
+      "2019-01-01",
+      "2019-06-01",
+      "2019-09-01",
+      "2020-01-01",
+      "2020-06-01",
+      "2020-09-01",
+      "2021-01-01",
+      "2021-06-01",
+      "2021-09-01",
       "2022-01-01",
       "2022-06-01",
       "2022-09-01"
@@ -3355,7 +3411,7 @@
       "mode": "forward"
     },
     "feature_info_props": {
-      "date": {
+      "reference_date": {
         "type": "text",
         "label": "Reference period"
       }
@@ -3409,9 +3465,9 @@
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "phase35": {
-        "type": "number",
-        "label": "Population in phase 3 to 5"
+      "reference_date": {
+        "type": "text",
+        "label": "Reference period"
       }
     },
     "legend": [
@@ -3452,9 +3508,9 @@
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "phase35": {
-        "type": "number",
-        "label": "Population in phase 3 to 5"
+      "reference_date": {
+        "type": "text",
+        "label": "Reference period"
       }
     },
     "legend": [
@@ -3495,9 +3551,9 @@
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "phase35": {
-        "type": "number",
-        "label": "Population in phase 3 to 5"
+      "reference_date": {
+        "type": "text",
+        "label": "Reference period"
       }
     },
     "legend": [
