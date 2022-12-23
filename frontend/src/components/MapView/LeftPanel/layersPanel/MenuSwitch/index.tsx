@@ -21,6 +21,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       position: 'inherit',
+      maxWidth: '100%',
     },
     rootSummary: {
       backgroundColor: '#F5F7F8',

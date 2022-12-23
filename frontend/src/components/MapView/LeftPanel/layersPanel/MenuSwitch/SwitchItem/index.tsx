@@ -4,6 +4,7 @@ import {
   IconButton,
   MenuItem,
   Select,
+  Slider,
   Switch,
   Typography,
   WithStyles,
@@ -30,20 +31,27 @@ import {
   safeDispatchRemoveLayer,
 } from '../../../../../../utils/map-utils';
 import { getUrlKey, useUrlHistory } from '../../../../../../utils/url-utils';
+import { handleChangeOpacity } from '../../../../Legends/handleChangeOpacity';
 
 function SwitchItem({ classes, layer }: SwitchItemProps) {
+  const {
+    id: layerId,
+    title: layerTitle,
+    opacity: initialOpacity,
+    type: layerType,
+    group,
+  } = layer;
   const { t } = useSafeTranslation();
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
   const [isOpacitySelected, setIsOpacitySelected] = useState(false);
+  const [opacity, setOpacityValue] = useState<number>(initialOpacity || 0);
   const dispatch = useDispatch();
   const {
     updateHistory,
     appendLayerToUrl,
     removeLayerFromUrl,
   } = useUrlHistory();
-
-  const { id: layerId, title: layerTitle, group } = layer;
 
   const selected = selectedLayers.some(({ id: testId }) => {
     return (
@@ -161,36 +169,69 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
       {validatedTitle}
     </Typography>
   );
-
   return (
-    <Box key={layerId} display="flex" alignItems="center" m={2}>
-      <Switch
-        size="small"
-        className={classes.switch}
-        classes={{
-          switchBase: classes.switchBase,
-          track: classes.switchTrack,
-        }}
-        checked={selected}
-        onChange={e => toggleLayerValue(activeLayer, e.target.checked)}
-        inputProps={{
-          'aria-label': validatedTitle,
-        }}
-      />
-      {menuTitle}
-      <IconButton
-        disabled={!selected}
-        classes={{
-          root: isOpacitySelected
-            ? classes.opacityRootSelected
-            : classes.opacityRoot,
-        }}
-        onClick={() =>
-          setIsOpacitySelected(opacitySelected => !opacitySelected)
-        }
-      >
-        <OpacityIcon />
-      </IconButton>
+    <Box display="flex" flexDirection="column" maxWidth="100%">
+      <Box key={layerId} display="flex" alignItems="center" m={2}>
+        <Switch
+          size="small"
+          className={classes.switch}
+          classes={{
+            switchBase: classes.switchBase,
+            track: classes.switchTrack,
+          }}
+          checked={selected}
+          onChange={e => toggleLayerValue(activeLayer, e.target.checked)}
+          inputProps={{
+            'aria-label': validatedTitle,
+          }}
+        />
+        {menuTitle}
+        <IconButton
+          disabled={!selected}
+          classes={{
+            root: isOpacitySelected
+              ? classes.opacityRootSelected
+              : classes.opacityRoot,
+          }}
+          onClick={() =>
+            setIsOpacitySelected(opacitySelected => !opacitySelected)
+          }
+        >
+          <OpacityIcon />
+        </IconButton>
+      </Box>
+      {selected && isOpacitySelected && (
+        <Box display="flex" justifyContent="right" alignItems="center">
+          <Box pr={3}>
+            <Typography
+              classes={{ root: classes.opacityText }}
+            >{`Opacity ${Math.round(opacity * 100)}%`}</Typography>
+          </Box>
+          <Box width="25%" pr={3}>
+            <Slider
+              value={opacity}
+              step={0.01}
+              min={0}
+              max={1}
+              aria-labelledby="left-opacity-slider"
+              classes={{
+                root: classes.opacitySliderRoot,
+                thumb: classes.opacitySliderThumb,
+              }}
+              onChange={(e, newValue) =>
+                handleChangeOpacity(
+                  e,
+                  newValue as number,
+                  map,
+                  layerId,
+                  layerType,
+                  val => setOpacityValue(val),
+                )
+              }
+            />
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 }
@@ -254,6 +295,17 @@ const styles = () =>
       '&:hover': {
         color: '#4CA1AD',
       },
+    },
+    opacityText: {
+      color: '#4CA1AD',
+      marginBottom: '10px',
+    },
+    opacitySliderRoot: {
+      color: '#4CA1AD',
+      height: 8,
+    },
+    opacitySliderThumb: {
+      backgroundColor: '#4CA1AD',
     },
   });
 

@@ -44,6 +44,7 @@ import LayerContentPreview from './layerContentPreview';
 import AnalysisDownloadButton from './AnalysisDownloadButton';
 import AdminLevelDataDownloadButton from './AdminLevelDataDownloadButton';
 import StacRasterDownloadButton from './StacRasterDownloadButton';
+import { handleChangeOpacity } from './handleChangeOpacity';
 /**
  * Returns layer identifier used to perform exposure analysis.
  *
@@ -149,6 +150,9 @@ function Legends({ classes, layers, extent }: LegendsProps) {
             title={analysisResult?.getTitle(t)}
             classes={classes}
             opacity={0.5} // TODO: initial opacity value
+            // Control opacity only for analysis
+            // for the other layers it is controlled from the left panel
+            displayOpacitySlider={isAnalysisLayerActive && hasData}
           >
             {analysisResult instanceof BaselineLayerResult && (
               <LegendImpactResult result={analysisResult} />
@@ -197,46 +201,13 @@ function LegendItem({
   legendUrl,
   exposure,
   extent,
+  displayOpacitySlider,
 }: LegendItemProps) {
   const map = useSelector(mapSelector);
   const analysisResult = useSelector(analysisResultSelector);
-
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
-
-  const handleChangeOpacity = (
-    event: React.ChangeEvent<{}>,
-    newValue: number | number[],
-  ) => {
-    // TODO: temporary solution for opacity adjustment, we hope to edit react-mapbox in the future to support changing props
-    // because the whole map will be re-rendered if using state directly
-    if (map) {
-      const [layerId, opacityType] = ((
-        layerType?: LayerType['type'],
-      ): [string, string] => {
-        switch (layerType) {
-          case 'wms':
-            return [`layer-${id}`, 'raster-opacity'];
-          case 'static_raster':
-            return [`layer-${id}`, 'raster-opacity'];
-          case 'impact':
-          case 'admin_level_data':
-            return [`layer-${id}-fill`, 'fill-opacity'];
-          case 'point_data':
-            return [`layer-${id}-circle`, 'circle-opacity'];
-          // analysis layer type is undefined TODO we should try make analysis a layer to remove edge cases like this
-          case undefined:
-            return ['layer-analysis-fill', 'fill-opacity'];
-          default:
-            throw new Error('Unknown map layer type');
-        }
-      })(type);
-
-      map.setPaintProperty(layerId, opacityType, newValue);
-      setOpacityValue(newValue);
-    }
-  };
 
   return (
     <ListItem disableGutters dense>
@@ -248,18 +219,29 @@ function LegendItem({
           <LayerContentPreview layerId={id} />
         </Grid>
         <Divider />
-        <Grid item className={classes.slider}>
-          <Box px={1}>
-            <Slider
-              value={opacity}
-              step={0.01}
-              min={0}
-              max={1}
-              aria-labelledby="opacity-slider"
-              onChange={handleChangeOpacity}
-            />
-          </Box>
-        </Grid>
+        {displayOpacitySlider && (
+          <Grid item className={classes.slider}>
+            <Box px={1}>
+              <Slider
+                value={opacity}
+                step={0.01}
+                min={0}
+                max={1}
+                aria-labelledby="opacity-slider"
+                onChange={(e, newValue) =>
+                  handleChangeOpacity(
+                    e,
+                    newValue as number,
+                    map,
+                    id,
+                    type,
+                    val => setOpacityValue(val),
+                  )
+                }
+              />
+            </Box>
+          </Grid>
+        )}
 
         {legend && (
           <Grid item>
@@ -339,6 +321,7 @@ interface LegendItemProps
   opacity: LayerType['opacity'];
   exposure?: ExposedPopulationDefinition;
   extent?: Extent;
+  displayOpacitySlider?: boolean;
 }
 
 export default withStyles(styles)(Legends);
