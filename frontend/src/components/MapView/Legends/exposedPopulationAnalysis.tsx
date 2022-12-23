@@ -35,9 +35,9 @@ import { useSafeTranslation } from '../../../i18n';
 
 const AnalysisButton = withStyles(() => ({
   root: {
-    marginTop: '1em',
-    marginBottom: '1em',
-    fontSize: '0.7em',
+    marginTop: '0.4rem',
+    marginBottom: '0.1rem',
+    fontSize: '0.7rem',
   },
 }))(Button);
 
@@ -152,6 +152,7 @@ const ExposedPopulationAnalysis = ({
           color="primary"
           size="small"
           onClick={runExposureAnalysis}
+          fullWidth
         >
           {t('Exposure Analysis')}
         </AnalysisButton>
@@ -168,6 +169,7 @@ const ExposedPopulationAnalysis = ({
         color="secondary"
         size="small"
         onClick={() => dispatch(clearAnalysisResult())}
+        fullWidth
       >
         {t('Clear Analysis')}
       </AnalysisButton>
