@@ -20,7 +20,6 @@ import {
   AggregationOperations,
   AsyncReturnType,
   ImpactLayerProps,
-  LayerType,
   LegendDefinition,
   AdminLevelDataLayerProps,
   StatsApi,
@@ -41,6 +40,7 @@ import { BoundaryLayerData } from '../context/layers/boundary';
 import { AdminLevelDataLayerData } from '../context/layers/admin_level_data';
 import { getWCSLayerUrl, WMSLayerData } from '../context/layers/wms';
 import type {
+  LayerAcceptingDataType,
   LayerData,
   LayerDataParams,
   LoadLayerDataFuncType,
@@ -69,7 +69,9 @@ export type Column = {
 const hasKeys = (obj: any, keys: string[]): boolean =>
   !keys.find(key => !has(obj, key));
 
-const checkRasterLayerData = (layerData: LayerData<LayerType>): RasterLayer => {
+const checkRasterLayerData = (
+  layerData: LayerData<LayerAcceptingDataType>,
+): RasterLayer => {
   const isRasterLayerData = (maybeData: any): maybeData is WMSLayerData =>
     hasKeys(maybeData, ['rasters', 'image', 'transform']);
 

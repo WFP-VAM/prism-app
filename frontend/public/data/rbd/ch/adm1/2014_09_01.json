@@ -1,0 +1,82 @@
+{
+    "DataList": [
+        {
+            "adm1_pcod2": "MR07",
+            "date": "2014-09-01",
+            "phase_class": 2,
+            "phase35": 44544
+        },
+        {
+            "adm1_pcod2": "MR08",
+            "date": "2014-09-01",
+            "phase_class": 1,
+            "phase35": 9055
+        },
+        {
+            "adm1_pcod2": "MR02",
+            "date": "2014-09-01",
+            "phase_class": 2,
+            "phase35": 26695
+        },
+        {
+            "adm1_pcod2": "MR11",
+            "date": "2014-09-01",
+            "phase_class": 2,
+            "phase35": 12198
+        },
+        {
+            "adm1_pcod2": "MR01",
+            "date": "2014-09-01",
+            "phase_class": 2,
+            "phase35": 2485
+        },
+        {
+            "adm1_pcod2": "MR10",
+            "date": "2014-09-01",
+            "phase_class": 2,
+            "phase35": 40007
+        },
+        {
+            "adm1_pcod2": "MR09",
+            "date": "2014-09-01",
+            "phase_class": 2,
+            "phase35": 1024
+        },
+        {
+            "adm1_pcod2": "MR04",
+            "date": "2014-09-01",
+            "phase_class": 1,
+            "phase35": 0
+        },
+        {
+            "adm1_pcod2": "MR12",
+            "date": "2014-09-01",
+            "phase_class": 2,
+            "phase35": 2175
+        },
+        {
+            "adm1_pcod2": "MR06",
+            "date": "2014-09-01",
+            "phase_class": 2,
+            "phase35": 19305
+        },
+        {
+            "adm1_pcod2": "MR05",
+            "date": "2014-09-01",
+            "phase_class": 2,
+            "phase35": 51708
+        },
+        {
+            "adm1_pcod2": "MR03",
+            "date": "2014-09-01",
+            "phase_class": 2,
+            "phase35": 22273
+        },
+        {
+            "adm1_pcod2": "MR13",
+            "date": "2014-09-01",
+            "phase_class": 1,
+            "phase35": 16389
+        }
+    ]
+}

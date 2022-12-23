@@ -2,6 +2,8 @@ import { has, get } from 'lodash';
 
 import { PublicClientApplication } from '@azure/msal-browser';
 
+import afghanistan from './afghanistan';
+
 import cambodia from './cambodia';
 
 import colombia from './colombia';
@@ -49,6 +51,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
 const configMap = {
+  afghanistan,
   cuba,
   cambodia,
   colombia,
