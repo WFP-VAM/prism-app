@@ -21,12 +21,15 @@ const useStyles = makeStyles(() =>
     rootSummary: {
       backgroundColor: '#D8E9EC',
     },
+    rootDetails: {
+      padding: 0,
+    },
     expandIcon: {
       color: '#53888F',
     },
     title: {
       color: '#53888F',
-      fontWeight: 'bold',
+      fontWeight: 600,
     },
   }),
 );
@@ -45,7 +48,7 @@ function MenuItem({ title, layersCategories }: MenuItemType) {
       >
         <Typography classes={{ root: classes.title }}>{t(title)}</Typography>
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails classes={{ root: classes.rootDetails }}>
         <Grid container direction="column">
           {layersCategories.map(({ title: categoryTitle, layers, tables }) => (
             <MenuSwitch

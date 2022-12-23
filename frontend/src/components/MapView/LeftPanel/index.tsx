@@ -13,6 +13,7 @@ const useStyles = makeStyles(() =>
     paper: {
       marginTop: '60px',
       width: '30%',
+      backgroundColor: '#F5F7F8',
     },
   }),
 );
