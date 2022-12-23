@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import {
   Box,
   createStyles,
+  IconButton,
   MenuItem,
   Select,
   Switch,
@@ -10,29 +9,33 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
+import OpacityIcon from '@material-ui/icons/Opacity';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { LayerKey, LayerType } from '../../../../../../config/types';
 import {
   getDisplayBoundaryLayers,
   LayerDefinitions,
 } from '../../../../../../config/utils';
+import { clearDataset } from '../../../../../../context/datasetStateSlice';
+import { removeLayer } from '../../../../../../context/mapStateSlice';
+import {
+  layersSelector,
+  mapSelector,
+} from '../../../../../../context/mapStateSlice/selectors';
+import { useSafeTranslation } from '../../../../../../i18n';
 import {
   refreshBoundaries,
   safeDispatchAddLayer,
   safeDispatchRemoveLayer,
 } from '../../../../../../utils/map-utils';
-import {
-  layersSelector,
-  mapSelector,
-} from '../../../../../../context/mapStateSlice/selectors';
-import { useUrlHistory, getUrlKey } from '../../../../../../utils/url-utils';
-import { removeLayer } from '../../../../../../context/mapStateSlice';
-import { useSafeTranslation } from '../../../../../../i18n';
-import { clearDataset } from '../../../../../../context/datasetStateSlice';
+import { getUrlKey, useUrlHistory } from '../../../../../../utils/url-utils';
 
 function SwitchItem({ classes, layer }: SwitchItemProps) {
   const { t } = useSafeTranslation();
   const selectedLayers = useSelector(layersSelector);
   const map = useSelector(mapSelector);
+  const [isOpacitySelected, setIsOpacitySelected] = useState(false);
   const dispatch = useDispatch();
   const {
     updateHistory,
@@ -160,7 +163,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   );
 
   return (
-    <Box key={layerId} display="flex" m={2}>
+    <Box key={layerId} display="flex" alignItems="center" m={2}>
       <Switch
         size="small"
         className={classes.switch}
@@ -175,6 +178,19 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
         }}
       />
       {menuTitle}
+      <IconButton
+        disabled={!selected}
+        classes={{
+          root: isOpacitySelected
+            ? classes.opacityRootSelected
+            : classes.opacityRoot,
+        }}
+        onClick={() =>
+          setIsOpacitySelected(opacitySelected => !opacitySelected)
+        }
+      >
+        <OpacityIcon />
+      </IconButton>
     </Box>
   );
 }
@@ -225,6 +241,18 @@ const styles = () =>
       },
       '&.Mui-checked + .MuiSwitch-track': {
         backgroundColor: '#B1D6DB',
+      },
+    },
+    opacityRoot: {
+      color: '#828282',
+      marginLeft: 'auto',
+    },
+    opacityRootSelected: {
+      backgroundColor: '#4CA1AD',
+      color: '#F2F2F2',
+      marginLeft: 'auto',
+      '&:hover': {
+        color: '#4CA1AD',
       },
     },
   });
