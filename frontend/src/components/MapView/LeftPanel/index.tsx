@@ -11,7 +11,7 @@ import LeftPanelTabs from './LeftPanelTabs';
 const useStyles = makeStyles(() =>
   createStyles({
     paper: {
-      marginTop: '60px',
+      marginTop: '7vh',
       width: '30%',
       backgroundColor: '#F5F7F8',
     },

@@ -69,7 +69,7 @@ function NavBar({ classes }: NavBarProps) {
               justify="flex-end"
               alignItems="center"
               item
-              xs={3}
+              xs={9}
             >
               {buttons}
               <About />
@@ -113,6 +113,9 @@ const styles = (theme: Theme) =>
   createStyles({
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+      height: '7vh',
+      display: 'flex',
+      justifyContent: 'center',
     },
 
     logoContainer: {
