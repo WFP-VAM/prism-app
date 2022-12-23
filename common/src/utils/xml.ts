@@ -1,5 +1,10 @@
 import { castArray } from "lodash";
-import { findTagByName, findTagsByPath } from "xml-utils";
+import {
+  findTagByName,
+  findTagByPath,
+  findTagsByPath,
+  getAttribute,
+} from "xml-utils";
 
 export function findTagArray(
   xml: string,
@@ -13,4 +18,26 @@ export function findTagArray(
 export function findTagText(xml: string, tagName: string): string | undefined {
   const tag = findTagByName(xml, tagName);
   return tag?.inner || undefined;
+}
+
+export function findTagAttribute(
+  xml: string,
+  tagNameOrPath: string | string[],
+  attribute: string
+): string | undefined {
+  const tag = findTagByPath(xml, castArray(tagNameOrPath));
+  if (!tag) {
+    return undefined;
+  }
+
+  const value = getAttribute(tag, attribute);
+  if (value) {
+    return value;
+  }
+
+  return undefined;
+}
+
+export function hasTag(xml: string, tagNameOrPath: string | string[]): boolean {
+  return findTagsByPath(xml, castArray(tagNameOrPath)).length > 0;
 }

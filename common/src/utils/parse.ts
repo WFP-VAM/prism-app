@@ -78,6 +78,8 @@ export function findVersion(xml: string): string | undefined {
       }
     }
   }
+
+  return undefined;
 }
 
 export function parseName(
@@ -100,9 +102,12 @@ export function parseService(
   if (searchParams.has("service") && searchParams.get("service") !== "") {
     const service = searchParams.get("service")!; // we know it's not null because of searchParams.has('service')
     switch (options?.case) {
-      case "lower": return service.toLowerCase();
-      case "upper": return service.toUpperCase();
-      default: return service;
+      case "lower":
+        return service.toLowerCase();
+      case "upper":
+        return service.toUpperCase();
+      default:
+        return service;
     }
   }
 
@@ -110,9 +115,12 @@ export function parseService(
   if (match) {
     const service = match[0];
     switch (options?.case) {
-      case "lower": return service.toLowerCase();
-      case "upper": return service.toUpperCase();
-      default: return service;
+      case "lower":
+        return service.toLowerCase();
+      case "upper":
+        return service.toUpperCase();
+      default:
+        return service;
     }
   }
 
