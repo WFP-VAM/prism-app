@@ -3,17 +3,17 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-5"
+    class="MuiBox-root MuiBox-root-9"
   >
     <mock-switch
       checked="false"
-      classname="SwitchItem-switch-4"
-      color="default"
+      classes="[object Object]"
+      classname="SwitchItem-switch-6"
       inputprops="[object Object]"
       size="small"
     />
     <mock-typography
-      classname="SwitchItem-title-1"
+      classname="SwitchItem-titleUnchecked-2"
     />
   </div>
 </div>

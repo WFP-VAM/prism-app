@@ -50,7 +50,2161 @@ exports[`renders as expected 1`] = `
           id="full-width-tabpanel-0"
           role="tabpanel"
         >
-          <mock-circularprogress />
+          <div
+            class="MuiBox-root MuiBox-root-11"
+          >
+            <div
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-12 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+            >
+              <div
+                aria-controls="Rainfall"
+                aria-disabled="false"
+                aria-expanded="false"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-13"
+                id="Rainfall"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="MuiAccordionSummary-content"
+                >
+                  <mock-typography
+                    classes="[object Object]"
+                  >
+                    Rainfall
+                  </mock-typography>
+                </div>
+                <div
+                  aria-disabled="false"
+                  aria-hidden="true"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-15 MuiIconButton-edgeEnd"
+                >
+                  <span
+                    class="MuiIconButton-label"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root"
+                  />
+                </div>
+              </div>
+              <div
+                class="MuiCollapse-container MuiCollapse-hidden"
+                style="min-height: 0px;"
+              >
+                <div
+                  class="MuiCollapse-wrapper"
+                >
+                  <div
+                    class="MuiCollapse-wrapperInner"
+                  >
+                    <div
+                      aria-labelledby="Rainfall"
+                      id="Rainfall"
+                      role="region"
+                    >
+                      <div
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-14"
+                      >
+                        <div
+                          class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                        >
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="INAM Rainfall Data"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="INAM Rainfall Data"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  INAM Rainfall Data
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="INAM Rainfall Data"
+                                    id="INAM Rainfall Data"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-30"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Rainfall aggregate
+                                          </mock-typography>
+                                          <div
+                                            class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-24"
+                                          >
+                                            <div
+                                              aria-haspopup="listbox"
+                                              class="MuiSelect-root SwitchItem-selectItemUnchecked-26 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                              role="button"
+                                              tabindex="0"
+                                            >
+                                              10-day
+                                            </div>
+                                            <input
+                                              aria-hidden="true"
+                                              class="MuiSelect-nativeInput"
+                                              tabindex="-1"
+                                              value="precip_blended_dekad"
+                                            />
+                                            <svg
+                                              aria-hidden="true"
+                                              class="MuiSvgIcon-root MuiSelect-icon"
+                                              focusable="false"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                d="M7 10l5 5 5-5z"
+                                              />
+                                            </svg>
+                                            <mock-menu
+                                              anchorel="[object HTMLDivElement]"
+                                              id="menu-"
+                                              menulistprops="[object Object]"
+                                              open="false"
+                                              paperprops="[object Object]"
+                                            >
+                                              <mock-menuitem
+                                                aria-selected="true"
+                                                data-value="precip_blended_dekad"
+                                                role="option"
+                                                selected="true"
+                                              >
+                                                10-day
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="precip_blended_1m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                1-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="precip_blended_3m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                3-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="precip_blended_6m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                6-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="precip_blended_9m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                9-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="precip_blended_1y"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                1-year
+                                              </mock-menuitem>
+                                            </mock-menu>
+                                          </div>
+                                        </div>
+                                        <div
+                                          class="MuiBox-root MuiBox-root-31"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Rainfall anomaly
+                                          </mock-typography>
+                                          <div
+                                            class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-24"
+                                          >
+                                            <div
+                                              aria-haspopup="listbox"
+                                              class="MuiSelect-root SwitchItem-selectItemUnchecked-26 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                              role="button"
+                                              tabindex="0"
+                                            >
+                                              10-day
+                                            </div>
+                                            <input
+                                              aria-hidden="true"
+                                              class="MuiSelect-nativeInput"
+                                              tabindex="-1"
+                                              value="precip_blended_dekad_anomaly"
+                                            />
+                                            <svg
+                                              aria-hidden="true"
+                                              class="MuiSvgIcon-root MuiSelect-icon"
+                                              focusable="false"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                d="M7 10l5 5 5-5z"
+                                              />
+                                            </svg>
+                                            <mock-menu
+                                              anchorel="[object HTMLDivElement]"
+                                              id="menu-"
+                                              menulistprops="[object Object]"
+                                              open="false"
+                                              paperprops="[object Object]"
+                                            >
+                                              <mock-menuitem
+                                                aria-selected="true"
+                                                data-value="precip_blended_dekad_anomaly"
+                                                role="option"
+                                                selected="true"
+                                              >
+                                                10-day
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="precip_blended_anomaly_1m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                1-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="precip_blended_anomaly_3m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                3-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="precip_blended_anomaly_6m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                6-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="precip_blended_anomaly_9m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                9-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="precip_blended_anomaly_1y"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                1-year
+                                              </mock-menuitem>
+                                            </mock-menu>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="Global Rainfall Products"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="Global Rainfall Products"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  Global Rainfall Products
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="Global Rainfall Products"
+                                    id="Global Rainfall Products"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-32"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Rainfall aggregate
+                                          </mock-typography>
+                                          <div
+                                            class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-24"
+                                          >
+                                            <div
+                                              aria-haspopup="listbox"
+                                              class="MuiSelect-root SwitchItem-selectItemUnchecked-26 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                              role="button"
+                                              tabindex="0"
+                                            >
+                                              10-day
+                                            </div>
+                                            <input
+                                              aria-hidden="true"
+                                              class="MuiSelect-nativeInput"
+                                              tabindex="-1"
+                                              value="rainfall_dekad"
+                                            />
+                                            <svg
+                                              aria-hidden="true"
+                                              class="MuiSvgIcon-root MuiSelect-icon"
+                                              focusable="false"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                d="M7 10l5 5 5-5z"
+                                              />
+                                            </svg>
+                                            <mock-menu
+                                              anchorel="[object HTMLDivElement]"
+                                              id="menu-"
+                                              menulistprops="[object Object]"
+                                              open="false"
+                                              paperprops="[object Object]"
+                                            >
+                                              <mock-menuitem
+                                                aria-selected="true"
+                                                data-value="rainfall_dekad"
+                                                role="option"
+                                                selected="true"
+                                              >
+                                                10-day
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="rainfall_agg_1month"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                1-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="rainfall_agg_3month"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                3-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="rainfall_agg_6month"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                6-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="rainfall_agg_9month"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                9-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="rainfall_agg_1year"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                1-year
+                                              </mock-menuitem>
+                                            </mock-menu>
+                                          </div>
+                                        </div>
+                                        <div
+                                          class="MuiBox-root MuiBox-root-33"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Rainfall anomaly
+                                          </mock-typography>
+                                          <div
+                                            class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-24"
+                                          >
+                                            <div
+                                              aria-haspopup="listbox"
+                                              class="MuiSelect-root SwitchItem-selectItemUnchecked-26 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                              role="button"
+                                              tabindex="0"
+                                            >
+                                              10-day
+                                            </div>
+                                            <input
+                                              aria-hidden="true"
+                                              class="MuiSelect-nativeInput"
+                                              tabindex="-1"
+                                              value="rain_anomaly_dekad"
+                                            />
+                                            <svg
+                                              aria-hidden="true"
+                                              class="MuiSvgIcon-root MuiSelect-icon"
+                                              focusable="false"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                d="M7 10l5 5 5-5z"
+                                              />
+                                            </svg>
+                                            <mock-menu
+                                              anchorel="[object HTMLDivElement]"
+                                              id="menu-"
+                                              menulistprops="[object Object]"
+                                              open="false"
+                                              paperprops="[object Object]"
+                                            >
+                                              <mock-menuitem
+                                                aria-selected="true"
+                                                data-value="rain_anomaly_dekad"
+                                                role="option"
+                                                selected="true"
+                                              >
+                                                10-day
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="rain_anomaly_1month"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                1-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="rain_anomaly_3month"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                3-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="rain_anomaly_6month"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                6-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="rain_anomaly_9month"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                9-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="rain_anomaly_1year"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                1-year
+                                              </mock-menuitem>
+                                            </mock-menu>
+                                          </div>
+                                        </div>
+                                        <div
+                                          class="MuiBox-root MuiBox-root-34"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            SPI
+                                          </mock-typography>
+                                          <div
+                                            class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-24"
+                                          >
+                                            <div
+                                              aria-haspopup="listbox"
+                                              class="MuiSelect-root SwitchItem-selectItemUnchecked-26 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                              role="button"
+                                              tabindex="0"
+                                            >
+                                              1-month
+                                            </div>
+                                            <input
+                                              aria-hidden="true"
+                                              class="MuiSelect-nativeInput"
+                                              tabindex="-1"
+                                              value="spi_1m"
+                                            />
+                                            <svg
+                                              aria-hidden="true"
+                                              class="MuiSvgIcon-root MuiSelect-icon"
+                                              focusable="false"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                d="M7 10l5 5 5-5z"
+                                              />
+                                            </svg>
+                                            <mock-menu
+                                              anchorel="[object HTMLDivElement]"
+                                              id="menu-"
+                                              menulistprops="[object Object]"
+                                              open="false"
+                                              paperprops="[object Object]"
+                                            >
+                                              <mock-menuitem
+                                                aria-selected="true"
+                                                data-value="spi_1m"
+                                                role="option"
+                                                selected="true"
+                                              >
+                                                1-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="spi_3m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                3-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="spi_6m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                6-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="spi_9m"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                9-month
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="spi_1y"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                1-year
+                                              </mock-menuitem>
+                                            </mock-menu>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="Dry Periods"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="Dry Periods"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  Dry Periods
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="Dry Periods"
+                                    id="Dry Periods"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-35"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Days since last rain
+                                          </mock-typography>
+                                        </div>
+                                        <div
+                                          class="MuiBox-root MuiBox-root-36"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Longest dry spell
+                                          </mock-typography>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="Extreme Rain Events"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="Extreme Rain Events"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  Extreme Rain Events
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="Extreme Rain Events"
+                                    id="Extreme Rain Events"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-37"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Rainfall categories:
+                                          </mock-typography>
+                                          <div
+                                            class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-24"
+                                          >
+                                            <div
+                                              aria-haspopup="listbox"
+                                              class="MuiSelect-root SwitchItem-selectItemUnchecked-26 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                              role="button"
+                                              tabindex="0"
+                                            >
+                                              Heavy (&gt;75th percentile)
+                                            </div>
+                                            <input
+                                              aria-hidden="true"
+                                              class="MuiSelect-nativeInput"
+                                              tabindex="-1"
+                                              value="days_heavy_rain"
+                                            />
+                                            <svg
+                                              aria-hidden="true"
+                                              class="MuiSvgIcon-root MuiSelect-icon"
+                                              focusable="false"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                d="M7 10l5 5 5-5z"
+                                              />
+                                            </svg>
+                                            <mock-menu
+                                              anchorel="[object HTMLDivElement]"
+                                              id="menu-"
+                                              menulistprops="[object Object]"
+                                              open="false"
+                                              paperprops="[object Object]"
+                                            >
+                                              <mock-menuitem
+                                                aria-selected="true"
+                                                data-value="days_heavy_rain"
+                                                role="option"
+                                                selected="true"
+                                              >
+                                                Heavy (&gt;75th percentile)
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="days_intense_rain"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                Intense (&gt;90th percentile)
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="days_extreme_rain"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                Extreme (&gt;95th percentile)
+                                              </mock-menuitem>
+                                            </mock-menu>
+                                          </div>
+                                        </div>
+                                        <div
+                                          class="MuiBox-root MuiBox-root-38"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Consecutive days of rainfall:
+                                          </mock-typography>
+                                          <div
+                                            class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-24"
+                                          >
+                                            <div
+                                              aria-haspopup="listbox"
+                                              class="MuiSelect-root SwitchItem-selectItemUnchecked-26 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                              role="button"
+                                              tabindex="0"
+                                            >
+                                              Heavy (&gt;75th percentile)
+                                            </div>
+                                            <input
+                                              aria-hidden="true"
+                                              class="MuiSelect-nativeInput"
+                                              tabindex="-1"
+                                              value="streak_heavy_rain"
+                                            />
+                                            <svg
+                                              aria-hidden="true"
+                                              class="MuiSvgIcon-root MuiSelect-icon"
+                                              focusable="false"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                d="M7 10l5 5 5-5z"
+                                              />
+                                            </svg>
+                                            <mock-menu
+                                              anchorel="[object HTMLDivElement]"
+                                              id="menu-"
+                                              menulistprops="[object Object]"
+                                              open="false"
+                                              paperprops="[object Object]"
+                                            >
+                                              <mock-menuitem
+                                                aria-selected="true"
+                                                data-value="streak_heavy_rain"
+                                                role="option"
+                                                selected="true"
+                                              >
+                                                Heavy (&gt;75th percentile)
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="streak_intense_rain"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                Intense (&gt;90th percentile)
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="streak_extreme_rain"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                Extreme (&gt;95th percentile)
+                                              </mock-menuitem>
+                                            </mock-menu>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-12 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+            >
+              <div
+                aria-controls="Vegetation"
+                aria-disabled="false"
+                aria-expanded="false"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-13"
+                id="Vegetation"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="MuiAccordionSummary-content"
+                >
+                  <mock-typography
+                    classes="[object Object]"
+                  >
+                    Vegetation
+                  </mock-typography>
+                </div>
+                <div
+                  aria-disabled="false"
+                  aria-hidden="true"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-15 MuiIconButton-edgeEnd"
+                >
+                  <span
+                    class="MuiIconButton-label"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root"
+                  />
+                </div>
+              </div>
+              <div
+                class="MuiCollapse-container MuiCollapse-hidden"
+                style="min-height: 0px;"
+              >
+                <div
+                  class="MuiCollapse-wrapper"
+                >
+                  <div
+                    class="MuiCollapse-wrapperInner"
+                  >
+                    <div
+                      aria-labelledby="Vegetation"
+                      id="Vegetation"
+                      role="region"
+                    >
+                      <div
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-14"
+                      >
+                        <div
+                          class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                        >
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="Vegetation Conditions"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="Vegetation Conditions"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  Vegetation Conditions
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="Vegetation Conditions"
+                                    id="Vegetation Conditions"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-39"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            10-day NDVI (MODIS)
+                                          </mock-typography>
+                                        </div>
+                                        <div
+                                          class="MuiBox-root MuiBox-root-40"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            10-day NDVI anomaly (MODIS)
+                                          </mock-typography>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-12 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+            >
+              <div
+                aria-controls="Temperature"
+                aria-disabled="false"
+                aria-expanded="false"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-13"
+                id="Temperature"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="MuiAccordionSummary-content"
+                >
+                  <mock-typography
+                    classes="[object Object]"
+                  >
+                    Temperature
+                  </mock-typography>
+                </div>
+                <div
+                  aria-disabled="false"
+                  aria-hidden="true"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-15 MuiIconButton-edgeEnd"
+                >
+                  <span
+                    class="MuiIconButton-label"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root"
+                  />
+                </div>
+              </div>
+              <div
+                class="MuiCollapse-container MuiCollapse-hidden"
+                style="min-height: 0px;"
+              >
+                <div
+                  class="MuiCollapse-wrapper"
+                >
+                  <div
+                    class="MuiCollapse-wrapperInner"
+                  >
+                    <div
+                      aria-labelledby="Temperature"
+                      id="Temperature"
+                      role="region"
+                    >
+                      <div
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-14"
+                      >
+                        <div
+                          class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                        >
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="INAM Air Temperature"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="INAM Air Temperature"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  INAM Air Temperature
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="INAM Air Temperature"
+                                    id="INAM Air Temperature"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-41"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            INAM mean maximum air temperature (10-day)
+                                          </mock-typography>
+                                        </div>
+                                        <div
+                                          class="MuiBox-root MuiBox-root-42"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            INAM mean maximum air temperature anomaly (10-day)
+                                          </mock-typography>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="Land Surface Temperature"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="Land Surface Temperature"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  Land Surface Temperature
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="Land Surface Temperature"
+                                    id="Land Surface Temperature"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-43"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Daytime Land Surface Temperature - 10-day (MODIS)
+                                          </mock-typography>
+                                        </div>
+                                        <div
+                                          class="MuiBox-root MuiBox-root-44"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Daytime Land Surface Temperature - 10-day Anomaly (MODIS)
+                                          </mock-typography>
+                                        </div>
+                                        <div
+                                          class="MuiBox-root MuiBox-root-45"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Land Surface Temperature - 10-day Amplitude (MODIS)
+                                          </mock-typography>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-12 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+            >
+              <div
+                aria-controls="Tropical Storms"
+                aria-disabled="false"
+                aria-expanded="false"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-13"
+                id="Tropical Storms"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="MuiAccordionSummary-content"
+                >
+                  <mock-typography
+                    classes="[object Object]"
+                  >
+                    Tropical Storms
+                  </mock-typography>
+                </div>
+                <div
+                  aria-disabled="false"
+                  aria-hidden="true"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-15 MuiIconButton-edgeEnd"
+                >
+                  <span
+                    class="MuiIconButton-label"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root"
+                  />
+                </div>
+              </div>
+              <div
+                class="MuiCollapse-container MuiCollapse-hidden"
+                style="min-height: 0px;"
+              >
+                <div
+                  class="MuiCollapse-wrapper"
+                >
+                  <div
+                    class="MuiCollapse-wrapperInner"
+                  >
+                    <div
+                      aria-labelledby="Tropical Storms"
+                      id="Tropical Storms"
+                      role="region"
+                    >
+                      <div
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-14"
+                      >
+                        <div
+                          class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                        >
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="Tropical Storms"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="Tropical Storms"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  Tropical Storms
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="Tropical Storms"
+                                    id="Tropical Storms"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-46"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Tropical Storms
+                                          </mock-typography>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-12 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+            >
+              <div
+                aria-controls="Vulnerability"
+                aria-disabled="false"
+                aria-expanded="false"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-13"
+                id="Vulnerability"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="MuiAccordionSummary-content"
+                >
+                  <mock-typography
+                    classes="[object Object]"
+                  >
+                    Vulnerability
+                  </mock-typography>
+                </div>
+                <div
+                  aria-disabled="false"
+                  aria-hidden="true"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-15 MuiIconButton-edgeEnd"
+                >
+                  <span
+                    class="MuiIconButton-label"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root"
+                  />
+                </div>
+              </div>
+              <div
+                class="MuiCollapse-container MuiCollapse-hidden"
+                style="min-height: 0px;"
+              >
+                <div
+                  class="MuiCollapse-wrapper"
+                >
+                  <div
+                    class="MuiCollapse-wrapperInner"
+                  >
+                    <div
+                      aria-labelledby="Vulnerability"
+                      id="Vulnerability"
+                      role="region"
+                    >
+                      <div
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-14"
+                      >
+                        <div
+                          class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                        >
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="Poverty"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="Poverty"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  Poverty
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="Poverty"
+                                    id="Poverty"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-47"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Multidimensional Poverty Index
+                                          </mock-typography>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="Food Insecurity"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="Food Insecurity"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  Food Insecurity
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="Food Insecurity"
+                                    id="Food Insecurity"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-48"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            IPC
+                                          </mock-typography>
+                                          <div
+                                            class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-24"
+                                          >
+                                            <div
+                                              aria-haspopup="listbox"
+                                              class="MuiSelect-root SwitchItem-selectItemUnchecked-26 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                              role="button"
+                                              tabindex="0"
+                                            >
+                                              Current phase classification
+                                            </div>
+                                            <input
+                                              aria-hidden="true"
+                                              class="MuiSelect-nativeInput"
+                                              tabindex="-1"
+                                              value="ipc_phase_current"
+                                            />
+                                            <svg
+                                              aria-hidden="true"
+                                              class="MuiSvgIcon-root MuiSelect-icon"
+                                              focusable="false"
+                                              viewBox="0 0 24 24"
+                                            >
+                                              <path
+                                                d="M7 10l5 5 5-5z"
+                                              />
+                                            </svg>
+                                            <mock-menu
+                                              anchorel="[object HTMLDivElement]"
+                                              id="menu-"
+                                              menulistprops="[object Object]"
+                                              open="false"
+                                              paperprops="[object Object]"
+                                            >
+                                              <mock-menuitem
+                                                aria-selected="true"
+                                                data-value="ipc_phase_current"
+                                                role="option"
+                                                selected="true"
+                                              >
+                                                Current phase classification
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="ipc_phase_projected"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                Projected phase classification
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="ipc_phase_12_2020"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                December 2020 phase classification
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="ipc_pop_ph3_current"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                Current population in phase 3+
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="ipc_pop_ph3_projected"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                Projected population in phase 3+
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="ipc_perc_ph3_current"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                Current percent of population in phase 3+
+                                              </mock-menuitem>
+                                              <mock-menuitem
+                                                data-value="ipc_perc_ph3_projected"
+                                                role="option"
+                                                selected="false"
+                                              >
+                                                Projected percent of population in phase 3+
+                                              </mock-menuitem>
+                                            </mock-menu>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-12 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+            >
+              <div
+                aria-controls="Exposure"
+                aria-disabled="false"
+                aria-expanded="false"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-13"
+                id="Exposure"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="MuiAccordionSummary-content"
+                >
+                  <mock-typography
+                    classes="[object Object]"
+                  >
+                    Exposure
+                  </mock-typography>
+                </div>
+                <div
+                  aria-disabled="false"
+                  aria-hidden="true"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-15 MuiIconButton-edgeEnd"
+                >
+                  <span
+                    class="MuiIconButton-label"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="MuiSvgIcon-root"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="MuiTouchRipple-root"
+                  />
+                </div>
+              </div>
+              <div
+                class="MuiCollapse-container MuiCollapse-hidden"
+                style="min-height: 0px;"
+              >
+                <div
+                  class="MuiCollapse-wrapper"
+                >
+                  <div
+                    class="MuiCollapse-wrapperInner"
+                  >
+                    <div
+                      aria-labelledby="Exposure"
+                      id="Exposure"
+                      role="region"
+                    >
+                      <div
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-14"
+                      >
+                        <div
+                          class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                        >
+                          <div
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-17 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                          >
+                            <div
+                              aria-controls="Population"
+                              aria-disabled="false"
+                              aria-expanded="false"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-18"
+                              id="Population"
+                              role="button"
+                              tabindex="0"
+                            >
+                              <div
+                                class="MuiAccordionSummary-content"
+                              >
+                                <mock-typography
+                                  classes="[object Object]"
+                                >
+                                  Population
+                                </mock-typography>
+                              </div>
+                              <div
+                                aria-disabled="false"
+                                aria-hidden="true"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-20 MuiIconButton-edgeEnd"
+                              >
+                                <span
+                                  class="MuiIconButton-label"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    class="MuiSvgIcon-root"
+                                    focusable="false"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
+                                    />
+                                  </svg>
+                                </span>
+                                <span
+                                  class="MuiTouchRipple-root"
+                                />
+                              </div>
+                            </div>
+                            <div
+                              class="MuiCollapse-container MuiCollapse-hidden"
+                              style="min-height: 0px;"
+                            >
+                              <div
+                                class="MuiCollapse-wrapper"
+                              >
+                                <div
+                                  class="MuiCollapse-wrapperInner"
+                                >
+                                  <div
+                                    aria-labelledby="Population"
+                                    id="Population"
+                                    role="region"
+                                  >
+                                    <div
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-19"
+                                    >
+                                      <div
+                                        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+                                      >
+                                        <div
+                                          class="MuiBox-root MuiBox-root-49"
+                                        >
+                                          <mock-switch
+                                            checked="false"
+                                            classes="[object Object]"
+                                            classname="SwitchItem-switch-27"
+                                            inputprops="[object Object]"
+                                            size="small"
+                                          />
+                                          <mock-typography
+                                            classname="SwitchItem-titleUnchecked-23"
+                                          >
+                                            Total population
+                                          </mock-typography>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div
           aria-labelledby="full-width-tab-1"
