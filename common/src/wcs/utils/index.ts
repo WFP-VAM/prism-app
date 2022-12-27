@@ -187,36 +187,47 @@ export function findGetCoverageUrl(xml: string): string | undefined {
   return findCoverageOpUrl(xml, "GetCoverage");
 }
 
-export function createGetCoverageUrl(
-  xml: string,
-  layerId: string,
-  {
-    bbox,
-    bboxDigits,
-    checkExtent: doCheckExtent = true,
-    crs = "EPSG:4326",
-    format = "GeoTIFF",
-    height: givenHeight,
-    maxPixels = 5096,
-    resolution = 256,
-    time,
-    version = "1.0.0",
-    width: givenWidth,
-  }: {
-    bbox: BBOX;
-    bboxDigits?: number;
-    checkExtent?: boolean;
-    crs?: string;
-    format?: WCS_FORMAT | string;
-    height: number;
-    maxPixels?: number;
-    resolution?: 256;
-    time?: string;
-    version?: string;
-    width: number;
-  }
-): string {
-  const base = findGetCoverageUrl(xml);
+export function createGetCoverageUrl({
+  bbox,
+  bboxDigits,
+  capabilities,
+  checkExtent: doCheckExtent = true,
+  crs = "EPSG:4326",
+  format = "GeoTIFF",
+  height: givenHeight,
+  layerId,
+  maxPixels = 5096,
+  resolution = 256,
+  time,
+  url,
+  version = "1.0.0",
+  width: givenWidth,
+}: {
+  bbox: BBOX;
+  bboxDigits?: number;
+  capabilities?: string;
+  checkExtent?: boolean;
+  crs?: string;
+  format?: WCS_FORMAT | string;
+  height: number;
+  layerId: string;
+  maxPixels?: number;
+  resolution?: 256;
+  time?: string;
+  url?: string;
+  version?: string;
+  width: number;
+}): string {
+  const base = (() => {
+    if (url) {
+      return url;
+    }
+    if (capabilities) {
+      return findGetCoverageUrl(capabilities);
+    }
+    return undefined;
+  })();
+
   if (!base) {
     throw new Error("failed to create DescribeCoverage Url");
   }

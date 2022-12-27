@@ -10,7 +10,10 @@ import {
 } from "../utils";
 
 type GetImageOptions = MakeOptional<
-  Parameters<typeof createGetCoverageUrl>[2],
+  Omit<
+    Parameters<typeof createGetCoverageUrl>[0],
+    "capabilities" | "layerId" | "url"
+  >,
   "bbox"
 >;
 
@@ -48,7 +51,7 @@ export default class WCSLayer extends Layer {
             resolved = true;
             resolve(bbox);
           } else if (count === 2) {
-            reject("unable to get extent");
+            reject(Error("unable to get extent"));
           }
         }
       });
@@ -60,7 +63,7 @@ export default class WCSLayer extends Layer {
             resolved = true;
             resolve(bbox);
           } else if (count === 2) {
-            reject("unable to get extent");
+            reject(Error("unable to get extent"));
           }
         }
       });
@@ -68,7 +71,9 @@ export default class WCSLayer extends Layer {
   }
 
   async getImageUrl(options: GetImageOptions): Promise<string> {
-    return createGetCoverageUrl(await this.capabilities, this.id, {
+    return createGetCoverageUrl({
+      capabilities: await this.capabilities,
+      layerId: this.id,
       ...options,
       // use coverage extent if no bbox provided
       bbox: options.bbox || (await this.getExtent()),

@@ -168,35 +168,44 @@ test("WCS for data cube", async ({ eq }) => {
 });
 
 test("wcs: getLayerDays", async ({ eq }) => {
-  const urls1 = [
-    `http://localhost:${port}/data/geonode-wfp-wcs-get-capabilities-1.1.1.xml`,
-    `http://localhost:${port}/data/geonode-wfp-wcs-get-capabilities-2.0.1.xml`,
-  ];
-  for (let i = 0; i < urls1.length; i += 1) {
-    eq(await new WCS(urls1[i], { fetch }).getLayerDays(), {
-      "geonode:eyxao70woaa14nh_modificado": [],
-      "geonode:eth_phy_elevation": [],
-      "geonode:wld_cli_tp_1d_ecmwf": [],
-      "geonode:wld_cli_tp_10d_ecmwf": [],
-      "geonode:wld_cli_tp_3d_ecmwf": [],
-      "geonode:wld_cli_tp_7d_ecmwf": [],
-      "geonode:test_reclass": [],
-      "geonode:_20apr08074540_s2as_r2c3_012701709010_01_p001": [],
-      "geonode:bgd_14days_20july": [],
-      "geonode:flooding": [],
-      "geonode:imagen_24h_6_oct_2018_12m_modificado_1": [],
-      "geonode:imagen_24h_6_oct_2018_12m_modificado_2": [],
-      "geonode:imagen_24h_6_oct_2018_12m_modificado_3": [],
-      "geonode:imagen_24h_6_oct_2018_12m_modificado_4": [],
-      "geonode:sdn_fl_0909_noaa_40ff": [],
-    });
-  }
+  const expectedGeoNodeDays = {
+    "geonode:eyxao70woaa14nh_modificado": [],
+    "geonode:eth_phy_elevation": [],
+    "geonode:wld_cli_tp_1d_ecmwf": [],
+    "geonode:wld_cli_tp_10d_ecmwf": [],
+    "geonode:wld_cli_tp_3d_ecmwf": [],
+    "geonode:wld_cli_tp_7d_ecmwf": [],
+    "geonode:test_reclass": [],
+    "geonode:_20apr08074540_s2as_r2c3_012701709010_01_p001": [],
+    "geonode:bgd_14days_20july": [],
+    "geonode:flooding": [],
+    "geonode:imagen_24h_6_oct_2018_12m_modificado_1": [],
+    "geonode:imagen_24h_6_oct_2018_12m_modificado_2": [],
+    "geonode:imagen_24h_6_oct_2018_12m_modificado_3": [],
+    "geonode:imagen_24h_6_oct_2018_12m_modificado_4": [],
+    "geonode:sdn_fl_0909_noaa_40ff": [],
+  };
+  eq(
+    await new WCS(
+      `http://localhost:${port}/data/geonode-wfp-wcs-get-capabilities-1.1.1.xml`,
+      { fetch }
+    ).getLayerDays(),
+    expectedGeoNodeDays
+  );
+  eq(
+    await new WCS(
+      `http://localhost:${port}/data/geonode-wfp-wcs-get-capabilities-2.0.1.xml`,
+      { fetch }
+    ).getLayerDays(),
+    expectedGeoNodeDays
+  );
 
-  const urls2 = [
-    `http://localhost:${port}/data/mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml`,
-  ];
-  for (let i = 0; i < urls2.length; i += 1) {
-    eq(await new WCS(urls2[i], { fetch }).getLayerDays(), {
+  eq(
+    await new WCS(
+      `http://localhost:${port}/data/mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml`,
+      { fetch }
+    ).getLayerDays(),
+    {
       "10DayIndices": [1376222400000, 1642766400000],
       MonthIndices: [1374408000000, 1655812800000],
       ModisIndices: [1230811200000, 1657540800000],
@@ -220,8 +229,8 @@ test("wcs: getLayerDays", async ({ eq }) => {
       ModisTCI: [1230811200000, 1657540800000],
       ModisVHI: [1230811200000, 1657540800000],
       DzudRisk: [1448366400000, 1610280000000],
-    });
-  }
+    }
+  );
 
   const urls3 = [
     "https://api.earthobservation.vam.wfp.org/ows/wcs?service=WCS&request=GetCapabilities&version=1.0.0",

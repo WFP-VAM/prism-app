@@ -206,9 +206,11 @@ test("createDescribeCoverageUrl", ({ eq }) => {
 
 test("wcs: createGetCoverageUrl", ({ eq }) => {
   const bbox = [87.7, 41.6, 119.9, 52.1] as const;
-  const url = createGetCoverageUrl(xml100, "ModisLST", {
+  const url = createGetCoverageUrl({
     bbox,
+    capabilities: xml100,
     height: 222,
+    layerId: "ModisLST",
     width: 677,
   });
   eq(
