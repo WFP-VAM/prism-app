@@ -21,6 +21,7 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
+      style={{ width: 'auto', height: 'auto' }}
       {...other}
     >
       {value === index && children}
@@ -38,8 +39,8 @@ function a11yProps(index: any) {
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
-      width: '100%',
-      height: '100%',
+      width: 'auto',
+      height: 'auto',
     },
     tabs: {
       backgroundColor: '#566064',

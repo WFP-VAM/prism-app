@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import LayersPanel from './layersPanel';
+import AnalysisPanel from './AnalysisPanel';
 import LeftPanelTabs from './LeftPanelTabs';
 
 const useStyles = makeStyles(() =>
@@ -30,7 +31,7 @@ function LeftPanel() {
       <LeftPanelTabs
         layersPanel={<LayersPanel />}
         chartsPanel={<CircularProgress />}
-        analysisPanel={<CircularProgress />}
+        analysisPanel={<AnalysisPanel />}
       />
     </Drawer>
   );
