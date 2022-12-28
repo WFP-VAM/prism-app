@@ -540,7 +540,7 @@ function MapView({ classes }: MapViewProps) {
 
   return (
     <Box height="100%" width="100%">
-      <LeftPanel />
+      <LeftPanel extent={adminBoundariesExtent} />
       <Grid item className={classes.container}>
         {datesLoading && (
           <div className={classes.loading}>

@@ -6,7 +6,6 @@ import React, {
   ChangeEvent,
 } from 'react';
 import {
-  Box,
   Button,
   createStyles,
   FormControl,
@@ -19,7 +18,6 @@ import {
   RadioGroup,
   Switch,
   TextField,
-  Theme,
   Typography,
   withStyles,
   WithStyles,
@@ -270,7 +268,7 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
           />
         }
         label={
-          <Typography className={classes.analyserOptionsText}>
+          <Typography className={classes.analysisPanelParamText}>
             {t(key)}
           </Typography>
         }
@@ -410,7 +408,6 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
   };
 
   const runAnalyser = async () => {
-    console.log('running');
     if (preSelectedBaselineLayer) {
       setPreviousBaselineId(preSelectedBaselineLayer.id);
       removeKeyFromUrl(BASELINE_URL_LAYER_KEY);
@@ -423,7 +420,6 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
     }
 
     if (!extent) {
-      console.log('no extent');
       return;
     } // hasn't been calculated yet
 
@@ -508,14 +504,14 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
   };
 
   return (
-    <div className={classes.analyser}>
-      <div id="analysis-parameters" className={classes.analyserParams}>
-        <div className={classes.analyserOptions}>
+    <div className={classes.analysisPanel}>
+      <div id="analysis-parameters" className={classes.analysisPanelParams}>
+        <div className={classes.analysisPanelParamContainer}>
           <LayerDropdown
             type="wms"
             value={hazardLayerId}
             setValue={setHazardLayerId}
-            className={classes.analyserOptionsText}
+            className={classes.analysisPanelParamText}
             label={t('Hazard Layer')}
             placeholder="Choose hazard layer"
           />
@@ -523,7 +519,7 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
 
         {hazardDataType === GeometryType.Polygon && (
           <>
-            <div className={classes.analyserOptions}>
+            <div className={classes.analysisPanelParamContainer}>
               <Typography variant="body2">Admin Level</Typography>
               <SimpleDropdown
                 value={adminLevel}
@@ -535,7 +531,7 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
               />
             </div>
 
-            <div className={classes.analyserOptions}>
+            <div className={classes.analysisPanelParamContainer}>
               <Typography variant="body2">{t('Date Range')}</Typography>
               <div className={classes.dateRangePicker}>
                 <Typography variant="body2">{t('Start')}</Typography>
@@ -575,17 +571,17 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
 
         {hazardDataType === RasterType.Raster && (
           <>
-            <div className={classes.analyserOptions}>
+            <div className={classes.analysisPanelParamContainer}>
               <LayerDropdown
                 type="admin_level_data"
                 value={baselineLayerId || undefined}
                 setValue={setBaselineLayerId}
-                className={classes.analyserOptionsText}
+                className={classes.analysisPanelParamText}
                 label={t('Baseline Layer')}
                 placeholder="Choose baseline layer"
               />
             </div>
-            <div className={classes.analyserOptions}>
+            <div className={classes.analysisPanelParamContainer}>
               <Typography
                 className={classes.analysisParamTitle}
                 variant="body2"
@@ -602,7 +598,7 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
                 </RadioGroup>
               </FormControl>
             </div>
-            <div className={classes.analyserOptions}>
+            <div className={classes.analysisPanelParamContainer}>
               <Typography
                 className={classes.analysisParamTitle}
                 variant="body2"
@@ -652,7 +648,7 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
                 dropdownMode="select"
                 customInput={
                   <Input
-                    className={classes.analyserOptionsText}
+                    className={classes.analysisPanelParamText}
                     disableUnderline
                     endAdornment={
                       <InputAdornment position="end">
@@ -747,32 +743,25 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
   );
 }
 
-const styles = (theme: Theme) =>
+const styles = () =>
   createStyles({
-    analyser: {
+    analysisPanel: {
       display: 'relative',
       width: 'auto',
       height: 'auto',
       paddingTop: 30,
     },
-    analyserLabel: {
-      marginLeft: '10px',
-    },
-    analyserParams: {
+    analysisPanelParams: {
       padding: 10,
-    },
-    analyserButton: {
-      height: '36px',
-      'margin-left': '3px',
     },
     analysisParamTitle: {
       color: 'black',
     },
-    analyserOptionsText: {
+    analysisPanelParamText: {
       width: 140,
       color: 'black',
     },
-    analyserOptions: {
+    analysisPanelParamContainer: {
       marginBottom: 30,
       marginLeft: 10,
       width: 'auto',
@@ -785,12 +774,6 @@ const styles = (theme: Theme) =>
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
-    },
-    newAnalyserContainer: {
-      border: '2px solid red',
-      padding: '5px',
-      marginTop: '10px',
-      width: 'auto',
     },
     radioOptions: {
       color: 'black',
@@ -814,9 +797,6 @@ const styles = (theme: Theme) =>
       marginRight: '25%',
       width: '50%',
       '&.Mui-disabled': { opacity: 0.5 },
-    },
-    selector: {
-      margin: '5px',
     },
     numberField: {
       paddingRight: '10px',

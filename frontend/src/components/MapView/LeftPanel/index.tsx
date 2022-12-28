@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import LayersPanel from './layersPanel';
+import { Extent } from '../Layers/raster-utils';
 import AnalysisPanel from './AnalysisPanel';
 import LeftPanelTabs from './LeftPanelTabs';
 
@@ -19,7 +20,7 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-function LeftPanel() {
+function LeftPanel({ extent }: LeftPanelProps) {
   const classes = useStyles();
   return (
     <Drawer
@@ -31,10 +32,14 @@ function LeftPanel() {
       <LeftPanelTabs
         layersPanel={<LayersPanel />}
         chartsPanel={<CircularProgress />}
-        analysisPanel={<AnalysisPanel />}
+        analysisPanel={<AnalysisPanel extent={extent} />}
       />
     </Drawer>
   );
+}
+
+interface LeftPanelProps {
+  extent?: Extent;
 }
 
 export default LeftPanel;

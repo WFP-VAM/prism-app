@@ -1,11 +1,9 @@
 import {
   createStyles,
   FormControl,
-  InputLabel,
   ListSubheader,
   makeStyles,
   MenuItem,
-  Select,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -39,11 +37,6 @@ const useStyles = makeStyles(() =>
           borderColor: '#333333',
         },
       },
-      // '& .MuiInputBase-root :hover': {
-      //   // backgroundColor: 'red',
-      //   borderColor: 'black',
-
-      // },
     },
   }),
 );
