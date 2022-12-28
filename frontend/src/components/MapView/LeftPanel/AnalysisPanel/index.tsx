@@ -172,6 +172,21 @@ function AnalysisPanel({
     LayerKey | undefined
   >(preSelectedBaselineLayer?.id);
 
+  // const handleClose = ({
+  //   event,
+  //   reason,
+  // }: {
+  //   event?: {};
+  //   reason?: 'backdropClick' | 'escapeKeyDown';
+  // }) => {
+  //   if (reason && reason === 'backdropClick') return;
+  //   setIsTableViewOpen(false);
+  // };
+
+  const handleClose = () => {
+    setIsTableViewOpen(false);
+  };
+
   const { t } = useSafeTranslation();
 
   // check if there is any available date from the url, otherwise use last available date for the selected hazard layer
@@ -334,6 +349,7 @@ function AnalysisPanel({
 
     resetAnalysisParams();
     refreshBoundaries(map, dispatch);
+    handleClose();
 
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[
@@ -441,6 +457,7 @@ function AnalysisPanel({
 
       dispatch(requestAndStoreAnalysis(params));
     }
+    setIsTableViewOpen(true);
   };
 
   return (
