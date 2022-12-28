@@ -21,8 +21,16 @@ import {
   Typography,
   withStyles,
   WithStyles,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
 } from '@material-ui/core';
-import { BarChartOutlined, DateRangeRounded } from '@material-ui/icons';
+import {
+  BarChartOutlined,
+  DateRangeRounded,
+  CloseRounded,
+} from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { isNil, range } from 'lodash';
@@ -177,6 +185,21 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
   const [previousBaselineId, setPreviousBaselineId] = useState<
     LayerKey | undefined
   >(preSelectedBaselineLayer?.id);
+
+  // const handleClose = ({
+  //   event,
+  //   reason,
+  // }: {
+  //   event?: {};
+  //   reason?: 'backdropClick' | 'escapeKeyDown';
+  // }) => {
+  //   if (reason && reason === 'backdropClick') return;
+  //   setIsTableViewOpen(false);
+  // };
+
+  const handleClose = () => {
+    setIsTableViewOpen(false);
+  };
 
   const { t } = useSafeTranslation();
 
@@ -349,6 +372,7 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
 
     resetAnalysisParams();
     refreshBoundaries(map, dispatch);
+    handleClose();
 
     if (previousBaselineId) {
       const previousBaseline = LayerDefinitions[
@@ -501,6 +525,7 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
 
       dispatch(requestAndStoreAnalysis(params));
     }
+    setIsTableViewOpen(true);
   };
 
   return (
@@ -692,12 +717,54 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
                 label={t('Table View')}
               />
             </FormGroup>
-            {isTableViewOpen && (
-              <AnalysisTable
-                tableData={analysisResult.tableData}
-                columns={translatedColumns}
-              />
-            )}
+            <Dialog
+              open={isTableViewOpen}
+              onClose={handleClose}
+              disableBackdropClick
+              aria-labelledby="analysis-table-modal"
+              aria-describedby="analysis-table-modal"
+              disableAutoFocus
+              disableEnforceFocus
+              PaperProps={{
+                style: {
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100vh',
+                  width: '35vw',
+                  position: 'fixed',
+                  top: '3vh',
+                  left: '28vw',
+                  backgroundColor: '#F3F3F3',
+                  color: '#F3F3F3',
+                },
+              }}
+            >
+              <DialogTitle
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography className={classes.analysisTableTitle}>
+                  {selectedHazardLayer?.title}
+                </Typography>
+                <IconButton
+                  aria-label="close"
+                  onClick={handleClose}
+                  className={classes.analysisTableCloseButton}
+                >
+                  <CloseRounded />
+                </IconButton>
+              </DialogTitle>
+              <DialogContent>
+                <AnalysisTable
+                  tableData={analysisResult.tableData}
+                  columns={translatedColumns}
+                />
+              </DialogContent>
+            </Dialog>
             <Button
               className={classes.analysisButton}
               onClick={() =>
@@ -710,6 +777,13 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
             >
               <Typography variant="body2">{t('Download CSV')}</Typography>
             </Button>
+            <Button
+              className={classes.analysisButton}
+              disabled={!analysisResult}
+              onClick={() => setIsTableViewOpen(false)}
+            >
+              <Typography variant="body2">{t('Hide Table')}</Typography>
+            </Button>
             <Button className={classes.analysisButton} onClick={clearAnalysis}>
               <Typography variant="body2">{t('Clear Analysis')}</Typography>
             </Button>
@@ -721,6 +795,13 @@ function AnalysisPanel({ extent, classes }: AnalysisPanelProps) {
       {(!analysisResult ||
         analysisResult instanceof ExposedPopulationResult) && (
         <div className={classes.analysisButtonContainer}>
+          <Button
+            className={classes.analysisButton}
+            disabled={!analysisResult}
+            onClick={() => setIsTableViewOpen(true)}
+          >
+            <Typography variant="body2">{t('View Table')}</Typography>
+          </Button>
           <Button
             className={classes.analysisButton}
             onClick={runAnalyser}
@@ -817,6 +898,16 @@ const styles = () =>
       marginRight: '15px',
       minWidth: '125px',
       width: '100px',
+    },
+    analysisTableTitle: {
+      fontSize: '16px',
+      fontWeight: 400,
+      color: 'black',
+    },
+    analysisTableCloseButton: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
     },
   });
 

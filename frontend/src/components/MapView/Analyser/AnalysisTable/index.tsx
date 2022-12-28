@@ -10,6 +10,7 @@ import {
   TableRow,
   TableSortLabel,
   Theme,
+  Typography,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
@@ -62,7 +63,9 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                     }
                     onClick={() => handleChangeOrderBy(column.id)}
                   >
-                    {t(column.label)}
+                    <Typography className={classes.tableHeaderText}>
+                      {t(column.label)}
+                    </Typography>
                   </TableSortLabel>
                 </TableCell>
               ))}
@@ -71,7 +74,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
           <TableBody>
             {orderBy(tableData, sortColumn, isAscending ? 'asc' : 'desc')
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map(row => {
+              .map((row, index) => {
                 return (
                   <TableRow
                     hover
@@ -90,15 +93,20 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                         );
                       }
                     }}
-                    style={{ cursor: row.coordinates ? 'pointer' : 'none' }}
+                    style={{
+                      cursor: row.coordinates ? 'pointer' : 'none',
+                      backgroundColor: index % 2 === 0 ? 'white' : '#EBEBEB',
+                    }}
                   >
                     {columns.map(column => {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
+                          <Typography className={classes.tableBodyText}>
+                            {column.format && typeof value === 'number'
+                              ? column.format(value)
+                              : value}
+                          </Typography>
                         </TableCell>
                       );
                     })}
@@ -123,6 +131,11 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
             count !== -1 ? count : `${t('more than')} ${to}`
           }`;
         }}
+        style={{
+          display: 'flex',
+          color: 'black',
+          width: 'auto',
+        }}
       />
     </div>
   );
@@ -132,11 +145,19 @@ const styles = (theme: Theme) =>
   createStyles({
     tableContainer: {
       border: '2px solid',
-      width: '700px',
+      width: 'auto',
       maxWidth: '100vw',
     },
     tableHead: {
-      backgroundColor: theme.surfaces?.dark,
+      backgroundColor: '#EBEBEB',
+      boxShadow: 'inset 0px -1px 0px rgba(0, 0, 0, 0.25)',
+    },
+    tableHeaderText: {
+      color: 'black',
+      fontWeight: 500,
+    },
+    tableBodyText: {
+      color: 'black',
     },
     innerAnalysisButton: {
       backgroundColor: theme.surfaces?.dark,

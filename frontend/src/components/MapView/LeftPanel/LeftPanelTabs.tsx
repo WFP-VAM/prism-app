@@ -70,7 +70,7 @@ interface TabsProps {
 
 function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(2);
 
   const handleChange = (_: any, newValue: number) => {
     setValue(newValue);
