@@ -582,14 +582,6 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
-export interface MenuItemMobileType {
-  title: string;
-  icon: string;
-  layersCategories: LayersCategoryType[];
-  expanded: string;
-  selectAccordion: (arg: string) => void;
-}
-
 export type DateItem = {
   displayDate: number; // Date that will be rendered in the calendar.
   queryDate: number; // Date that will be used in the WMS request.

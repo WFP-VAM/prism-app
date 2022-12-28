@@ -1,5 +1,9 @@
-import { createStyles, makeStyles, Tab, Tabs } from '@material-ui/core';
-import { LayersOutlined, BarChartOutlined } from '@material-ui/icons';
+import { Box, createStyles, makeStyles, Tab, Tabs } from '@material-ui/core';
+import {
+  LayersOutlined,
+  BarChartOutlined,
+  ImageAspectRatioOutlined,
+} from '@material-ui/icons';
 import React, { useState } from 'react';
 
 interface TabPanelProps {
@@ -84,10 +88,10 @@ function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
             classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
             disableRipple
             label={
-              <div>
+              <Box display="flex">
                 <LayersOutlined style={{ verticalAlign: 'middle' }} />
-                Layers
-              </div>
+                <Box ml={1}>Layers</Box>
+              </Box>
             }
             {...a11yProps(0)}
           />
@@ -95,10 +99,10 @@ function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
             classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
             disableRipple
             label={
-              <div>
-                <LayersOutlined style={{ verticalAlign: 'middle' }} />
-                Charts
-              </div>
+              <Box display="flex">
+                <BarChartOutlined style={{ verticalAlign: 'middle' }} />
+                <Box ml={1}>Charts</Box>
+              </Box>
             }
             {...a11yProps(1)}
           />
@@ -106,10 +110,10 @@ function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
             classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
             disableRipple
             label={
-              <div>
-                <BarChartOutlined style={{ verticalAlign: 'middle' }} />
-                Analysis
-              </div>
+              <Box display="flex">
+                <ImageAspectRatioOutlined style={{ verticalAlign: 'middle' }} />
+                <Box ml={1}>Analysis</Box>
+              </Box>
             }
             {...a11yProps(2)}
           />

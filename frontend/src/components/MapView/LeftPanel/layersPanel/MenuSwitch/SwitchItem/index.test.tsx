@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 
 import SwitchItem from '.';
-import { store } from '../../../../context/store';
-import { LayerType } from '../../../../config/types';
+import { store } from '../../../../../../context/store';
+import { LayerType } from '../../../../../../config/types';
 
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({

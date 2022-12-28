@@ -2,13 +2,13 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 
-import MenuItemMobile from '.';
-import { store } from '../../../context/store';
-import { LayerKey, MenuItemMobileType } from '../../../config/types';
+import MenuItem from '.';
+import { store } from '../../../../../context/store';
+import { LayerKey, MenuItemType } from '../../../../../config/types';
 
 jest.mock('../MenuSwitch', () => 'mock-MenuSwitch');
 
-const props: MenuItemMobileType = {
+const props: MenuItemType = {
   title: 'title',
   icon: 'icon.png',
   layersCategories: [
@@ -36,7 +36,7 @@ const props: MenuItemMobileType = {
 test('renders as expected', () => {
   const { container } = render(
     <Provider store={store}>
-      <MenuItemMobile {...props} />
+      <MenuItem {...props} />
     </Provider>,
   );
   expect(container).toMatchSnapshot();
