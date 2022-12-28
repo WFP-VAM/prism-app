@@ -55,6 +55,7 @@ test("WFP GeoNode", async ({ eq }) => {
     height: 500,
     width: 500,
   });
+  eq(url, "https://geonode.wfp.org/geoserver/wcs?bbox=-180.1%2C-81.1%2C179.9%2C81.1&coverage=geonode%3Awld_cli_tp_7d_ecmwf&crs=EPSG%3A4326&format=png&height=500&request=GetCoverage&service=WCS&version=1.0.0&width=500");
 });
 
 test("WCS version 1.0.0", async ({ eq }) => {

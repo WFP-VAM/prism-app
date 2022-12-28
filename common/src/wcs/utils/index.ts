@@ -1,10 +1,12 @@
 import { uniq, union } from "lodash";
+import moment from "moment";
 import { findTagsByName } from "xml-utils";
 
 import { findAndParseEnvelope } from "../../gml";
 import {
   bboxToString,
   checkExtent,
+  DEFAULT_DATE_FORMAT,
   findAndParseCapabilityUrl,
   findTagArray,
   findTagText,
@@ -193,12 +195,13 @@ export function createGetCoverageUrl({
   capabilities,
   checkExtent: doCheckExtent = true,
   crs = "EPSG:4326",
+  date,
   format = "GeoTIFF",
   height: givenHeight,
   layerId,
   maxPixels = 5096,
+  needExtent = false,
   resolution = 256,
-  time,
   url,
   version = "1.0.0",
   width: givenWidth,
@@ -208,12 +211,13 @@ export function createGetCoverageUrl({
   capabilities?: string;
   checkExtent?: boolean;
   crs?: string;
+  date?: Date | string;
   format?: WCS_FORMAT | string;
   height: number;
   layerId: string;
   maxPixels?: number;
+  needExtent?: boolean;
   resolution?: 256;
-  time?: string;
   url?: string;
   version?: string;
   width: number;
@@ -232,6 +236,10 @@ export function createGetCoverageUrl({
     throw new Error("failed to create DescribeCoverage Url");
   }
 
+  if (needExtent && !bbox) {
+    throw new Error("no extent provided to createGetCoverageUrl");
+  }
+
   if (doCheckExtent) {
     checkExtent(bbox);
   }
@@ -246,6 +254,8 @@ export function createGetCoverageUrl({
     }
     return { height: givenHeight, width: givenWidth };
   })();
+
+  const time = date ? moment(date).format(DEFAULT_DATE_FORMAT) : undefined;
 
   if (version.startsWith("0") || version.startsWith("1")) {
     return formatUrl(base, {
