@@ -116,6 +116,7 @@ const styles = (theme: Theme) =>
       height: '7vh',
       display: 'flex',
       justifyContent: 'center',
+      // height: '7%',
     },
 
     logoContainer: {
