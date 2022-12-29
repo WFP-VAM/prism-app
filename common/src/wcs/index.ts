@@ -1,2 +1,2 @@
 export { default as WCS } from "./WCS";
-export { createGetCoverageUrl } from "./utils";
+export { createGetCoverageUrl, fetchCoverageLayerDays } from "./utils";

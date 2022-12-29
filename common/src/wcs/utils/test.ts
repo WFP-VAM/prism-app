@@ -6,6 +6,7 @@ import {
   createDescribeCoverageUrl,
   createGetCoverageUrl,
   fetchCoverageDescriptionFromCapabilities,
+  fetchCoverageLayerDays,
   findCoverage,
   findCoverageId,
   findCoverageIdentifier,
@@ -277,4 +278,13 @@ test("fetchCoverageDescriptionFromCapabilities", async ({ eq }) => {
   );
   eq(result.length > 5000, true);
   eq(result.includes("CoverageDescription"), true);
+});
+
+test("fetchCoverageLayerDays", async ({ eq }) => {
+  const url = "https://127.0.0.1:123456789";
+  const days = await fetchCoverageLayerDays(url, {
+    errorStrategy: "empty",
+    fetch,
+  });
+  eq(days, {});
 });

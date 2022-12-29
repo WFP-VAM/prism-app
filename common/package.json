@@ -11,7 +11,7 @@
     "test:base": "npx ts-node --esm --skipProject ./src/base/test.ts",
     "test:gml": "npx ts-node --esm --skipProject ./src/gml/test.ts",
     "test:ows": "npx ts-node --esm --skipProject ./src/ows/test.ts",
-    "test:tsc": "tsc --noEmit --skipLibCheck ./src/*.ts ./src/*/*.ts ./src/*/*/*.ts",
+    "test:tsc": "tsc --esModuleInterop --noEmit --skipLibCheck ./src/*.ts ./src/*/*.ts ./src/*/*/*.ts",
     "test:wcs": "npm run test:wcs:utils && npm run test:wcs:class",
     "test:wcs:class": "npx ts-node --esm --skipProject ./src/wcs/WCS/test.ts",
     "test:wcs:utils": "npx ts-node --esm --skipProject ./src/wcs/utils/test.ts",

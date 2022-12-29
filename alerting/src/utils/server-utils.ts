@@ -2,8 +2,8 @@ import fetch from 'node-fetch';
 import moment from 'moment';
 import { xml2js } from 'xml-js';
 import { get, isEmpty, isString, union } from 'lodash';
-import { formatUrl } from "prism-common";
-import { Extent, WCSRequestUrl } from './raster-utils';
+import { createGetCoverageUrl, formatUrl } from "prism-common";
+import { Extent } from './raster-utils';
 import { AlertConfig } from '../entities/alerts.entity';
 
 // eslint-disable-next-line fp/no-mutation
@@ -99,11 +99,12 @@ export function getWCSLayerUrl({ layer, extent, date }: WCSLayerUrlParams) {
     );
   }
 
-  return WCSRequestUrl(
-    layer.baseUrl,
-    layer.serverLayerName,
-    date ? moment(date).format('YYYY-MM-DD') : undefined,
-    extent,
-    get(layer, 'wcsConfig.pixelResolution'),
-  );
+  return createGetCoverageUrl({
+    bbox: extent,
+    bboxDigits: 1,
+    layerId: layer.serverLayerName,
+    resolution: get(layer, 'wcsConfig.pixelResolution'),
+    time: date ? moment(date).format('YYYY-MM-DD') : undefined,
+    url: layer.baseUrl
+  });
 }

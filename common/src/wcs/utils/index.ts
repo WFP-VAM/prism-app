@@ -23,6 +23,7 @@ import {
   findAndParseKeywords,
   findAndParseOperationUrl,
   findAndParseWGS84BoundingBox,
+  getCapabilities,
 } from "../../ows";
 
 import type { BBOX, WCS_FORMAT } from "../../types";
@@ -418,4 +419,25 @@ export function getAllLayerDays(xml: string): { [layerId: string]: number[] } {
     }
   });
   return allDays;
+}
+
+export async function fetchCoverageLayerDays(
+  url: string,
+  {
+    errorStrategy = "throw",
+    fetch,
+  }: { errorStrategy?: string; fetch?: any } = {}
+): Promise<{ [layerId: string]: number[] }> {
+  try {
+    const capabilities = await getCapabilities(url, {
+      fetch,
+      version: "1.0.0",
+    });
+    return getAllLayerDays(capabilities);
+  } catch (error) {
+    if (errorStrategy === "empty") {
+      return {};
+    }
+    throw error;
+  }
 }

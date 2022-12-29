@@ -61,9 +61,18 @@ export default class WCS extends Base {
     ) as any) as Promise<WCSLayer[]>;
   }
 
-  async getLayerDays(): Promise<{ [layerId: string]: number[] }> {
-    // we have to use the version 1.x.x for capabilities
-    // because version 2.x.x doesn't include date information
-    return getAllLayerDays(await this.getCapabilities({ version: "1.0.0" }));
+  async getLayerDays(options?: {
+    errorStrategy: string;
+  }): Promise<{ [layerId: string]: number[] }> {
+    try {
+      // we have to use the version 1.x.x for capabilities
+      // because version 2.x.x doesn't include date information
+      return getAllLayerDays(await this.getCapabilities({ version: "1.0.0" }));
+    } catch (error) {
+      if (options?.errorStrategy === "empty") {
+        return {};
+      }
+      throw error;
+    }
   }
 }
