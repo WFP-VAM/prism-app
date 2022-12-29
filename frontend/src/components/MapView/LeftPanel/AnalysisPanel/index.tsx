@@ -319,6 +319,16 @@ function AnalysisPanel({
   const clearAnalysis = () => {
     dispatch(clearAnalysisResult());
     setIsPanelExtended(false);
+    setHazardLayerId(hazardLayerIdFromUrl);
+    setStatistic(
+      (selectedStatisticFromUrl as AggregationOperations) ||
+        AggregationOperations.Mean,
+    );
+    setBaselineLayerId(baselineLayerIdFromUrl);
+    setSelectedDate(null);
+    setBelowThreshold(belowThresholdFromUrl || '');
+    setAboveThreshold(aboveThresholdFromUrl || '');
+    setThresholdError(null);
 
     resetAnalysisParams();
     refreshBoundaries(map, dispatch);
