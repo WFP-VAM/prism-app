@@ -2819,6 +2819,13 @@ pretty-format@^27.0.2:
     ansi-styles "^5.0.0"
     react-is "^17.0.1"
 
+"prism-common@file:../common":
+  version "0.0.0"
+  dependencies:
+    lodash "^4.17.21"
+    moment "^2.29.4"
+    xml-utils "^1.6.0-0"
+
 process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
@@ -3546,6 +3553,11 @@ xml-name-validator@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/xml-name-validator/-/xml-name-validator-3.0.0.tgz#6ae73e06de4d8c6e47f9fb181f78d648ad457c6a"
   integrity sha512-A5CUptxDsvxKJEU3yO6DuWBSJz/qizqzJKOMIfUJHETbBw/sFaDxgd6fxm1ewUaM0jZ444Fc5vC5ROYurg/4Pw==
+
+xml-utils@^1.6.0-0:
+  version "1.6.0-0"
+  resolved "https://registry.yarnpkg.com/xml-utils/-/xml-utils-1.6.0-0.tgz#00ecc1be916cf324cee7a7c9e84d6fb731bce604"
+  integrity sha512-40Irz3Y7B9FJNNZFbly27eWoDSb/lZtwwSh59ASYtgE+Ne99FGnNH7D1fiZpXR6fI1RH+v8WdUO5cW6EzZWoKw==
 
 xml2js@^0.4.23:
   version "0.4.23"
