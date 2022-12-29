@@ -16,6 +16,8 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PORT=54321
       - POSTGRES_PASSWORD=!ChangeMe!
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     command: uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
