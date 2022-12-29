@@ -8,12 +8,9 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
-  Button,
   CircularProgress,
   createStyles,
-  Dialog,
   Grid,
-  Modal,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
@@ -84,7 +81,6 @@ import {
 
 import { appConfig } from '../../config';
 import { LayerData, loadLayerData } from '../../context/layers/layer-data';
-import Analyser from './Analyser';
 import AnalysisLayer from './Layers/AnalysisLayer';
 import {
   DateCompatibleLayer,
@@ -203,15 +199,6 @@ function MapView({ classes }: MapViewProps) {
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     undefined,
   );
-  // const [open, setOpen] = useState<boolean>(false);
-
-  // const handleOpen = () => {
-  //   setOpen(true);
-  // };
-
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
 
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
@@ -554,41 +541,6 @@ function MapView({ classes }: MapViewProps) {
   return (
     <Box height="100%" width="100%">
       <LeftPanel extent={adminBoundariesExtent} />
-      {/* {open && (
-        <Grid
-          item
-          // className={classes.container}
-          style={{
-            marginLeft: '30%',
-            border: '3px solid blue',
-            backgroundColor: 'red',
-            // width: '30%',
-          }}
-        >
-          Dialog
-        </Grid>
-      )} */}
-      {/* <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="analysis-table-modal"
-        aria-describedby="analysis-table-modal"
-        PaperProps={{
-          style: {
-            height: '100vh',
-            width: '30vw',
-            position: 'fixed',
-            top: '3vh',
-            left: '28vw',
-          },
-        }}
-      >
-        <div
-          
-        >
-          Dialog
-        </div>
-      </Dialog> */}
       <Grid item className={classes.container}>
         {datesLoading && (
           <div className={classes.loading}>
@@ -630,7 +582,6 @@ function MapView({ classes }: MapViewProps) {
           className={classes.buttonContainer}
         >
           <Grid item>
-            <Analyser extent={adminBoundariesExtent} />
             <GotoBoundaryDropdown />
             {appConfig.alertFormActive ? (
               <AlertForm

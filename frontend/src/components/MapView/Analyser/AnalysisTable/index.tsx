@@ -49,7 +49,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
     setIsAscending(newIsAsc);
   };
   return (
-    <div>
+    <>
       <TableContainer className={classes.tableContainer}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -132,21 +132,21 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
           }`;
         }}
         style={{
-          display: 'flex',
+          flex: '0 0 100%',
           color: 'black',
           width: 'auto',
         }}
       />
-    </div>
+    </>
   );
 }
 
 const styles = (theme: Theme) =>
   createStyles({
     tableContainer: {
-      border: '2px solid',
-      width: 'auto',
-      maxWidth: '100vw',
+      flex: '0 0 100%',
+      maxWidth: '90%',
+      marginTop: 10,
     },
     tableHead: {
       backgroundColor: '#EBEBEB',

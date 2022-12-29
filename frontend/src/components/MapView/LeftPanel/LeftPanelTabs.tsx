@@ -66,9 +66,15 @@ interface TabsProps {
   layersPanel: React.ReactNode;
   chartsPanel: React.ReactNode;
   analysisPanel: React.ReactNode;
+  isPanelExtended: boolean;
 }
 
-function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
+function LeftPanelTabs({
+  layersPanel,
+  chartsPanel,
+  analysisPanel,
+  isPanelExtended,
+}: TabsProps) {
   const classes = useStyles();
   const [value, setValue] = useState(2);
 
@@ -77,7 +83,10 @@ function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
   };
 
   return (
-    <div className={classes.root}>
+    <div
+      className={classes.root}
+      style={{ width: isPanelExtended ? '50%' : 'auto' }}
+    >
       <div className={classes.tabs}>
         <Tabs
           value={value}

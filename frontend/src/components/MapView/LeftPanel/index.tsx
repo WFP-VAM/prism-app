@@ -3,26 +3,32 @@ import {
   createStyles,
   Drawer,
   makeStyles,
+  Theme,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import LayersPanel from './layersPanel';
 import { Extent } from '../Layers/raster-utils';
 import AnalysisPanel from './AnalysisPanel';
 import LeftPanelTabs from './LeftPanelTabs';
 
-const useStyles = makeStyles(() =>
+interface StyleProps {
+  isPanelExtended: boolean;
+}
+
+const useStyles = makeStyles<Theme, StyleProps>(() =>
   createStyles({
     paper: {
       marginTop: '7vh',
       height: '93%',
-      width: '30%',
+      width: ({ isPanelExtended }) => (isPanelExtended ? '60%' : '30%'),
       backgroundColor: '#F5F7F8',
     },
   }),
 );
 
 function LeftPanel({ extent }: LeftPanelProps) {
-  const classes = useStyles();
+  const [isPanelExtended, setIsPanelExtended] = useState(false);
+  const classes = useStyles({ isPanelExtended });
   return (
     <Drawer
       variant="persistent"
@@ -31,9 +37,16 @@ function LeftPanel({ extent }: LeftPanelProps) {
       classes={{ paper: classes.paper }}
     >
       <LeftPanelTabs
+        isPanelExtended={isPanelExtended}
         layersPanel={<LayersPanel />}
         chartsPanel={<CircularProgress />}
-        analysisPanel={<AnalysisPanel extent={extent} />}
+        analysisPanel={
+          <AnalysisPanel
+            extent={extent}
+            isPanelExtended={isPanelExtended}
+            setIsPanelExtended={setIsPanelExtended}
+          />
+        }
       />
     </Drawer>
   );
