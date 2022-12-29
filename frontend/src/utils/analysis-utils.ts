@@ -15,6 +15,7 @@ import {
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import moment from 'moment';
+import { createGetCoverageUrl } from 'prism-common';
 import {
   AdminLevelType,
   AggregationOperations,
@@ -38,7 +39,7 @@ import {
 } from '../components/MapView/Layers/raster-utils';
 import { BoundaryLayerData } from '../context/layers/boundary';
 import { AdminLevelDataLayerData } from '../context/layers/admin_level_data';
-import { getWCSLayerUrl, WMSLayerData } from '../context/layers/wms';
+import { WMSLayerData } from '../context/layers/wms';
 import type {
   LayerAcceptingDataType,
   LayerData,
@@ -196,7 +197,7 @@ export const checkBaselineDataLayer = (
 
 /* eslint-disable camelcase */
 export type ApiData = {
-  geotiff_url: ReturnType<typeof getWCSLayerUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
+  geotiff_url: ReturnType<typeof createGetCoverageUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
   zones_url: string;
   group_by: string;
   geojson_out?: boolean;
@@ -312,11 +313,14 @@ export async function loadFeaturesFromApi(
   extent?: Extent,
   date?: number,
 ): Promise<GeoJsonBoundary[]> {
-  const wcsUrl = getWCSLayerUrl({
-    layer: hazardLayerDef,
-    extent,
+  const wcsUrl = createGetCoverageUrl({
+    bbox: extent,
+    bboxDigits: 1,
     date,
-  } as LayerDataParams<WMSLayerProps>);
+    layerId: hazardLayerDef.serverLayerName,
+    url: hazardLayerDef.baseUrl,
+    version: hazardLayerDef.wcsConfig?.version,
+  });
 
   const statsApi = layer.api as StatsApi;
   const apiUrl = statsApi.url;

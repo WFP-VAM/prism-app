@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { get, merge, snakeCase, sortBy } from 'lodash';
-import { formatUrl, WCS, WFS, WMS } from 'prism-common';
+import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
@@ -81,21 +81,6 @@ export const getPossibleDatesForLayer = (
 
   return datesArray()?.map(d => d.displayDate) ?? [];
 };
-
-/**
- * List capabilities for a WCS layer.
- * @param serverUri
- */
-async function getWCSCoverage(serverUri: string) {
-  try {
-    return new WCS(serverUri).getLayerDays();
-  } catch (error) {
-    // TODO we used to throw the error here so a notification appears via middleware. Removed because a failure of one shouldn't prevent the successful requests from saving.
-    // we could do a dispatch for a notification, but getting a dispatch reference here would be complex, just for a notification
-    console.error(error);
-    return {};
-  }
-}
 
 type PointDataDates = Array<{
   date: string;
@@ -266,7 +251,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 
   const layerDates = await Promise.all([
     ...wmsServerUrls.map(url => new WMS(url).getLayerDays()),
-    ...wcsServerUrls.map(url => getWCSCoverage(url)),
+    ...wcsServerUrls.map(url => fetchCoverageLayerDays(url)),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer),
     })),
