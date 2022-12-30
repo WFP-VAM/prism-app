@@ -12,9 +12,10 @@ import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { LayersCategoryType, TableType } from '../../../../../config/types';
+import { LayerType, TableType } from '../../../../../config/types';
 import { loadTable } from '../../../../../context/tableStateSlice';
 import { useSafeTranslation } from '../../../../../i18n';
+import { Extent } from '../../../Layers/raster-utils';
 import SwitchItem from './SwitchItem';
 
 const useStyles = makeStyles(() =>
@@ -40,7 +41,17 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-function MenuSwitch({ title, layers, tables }: LayersCategoryType) {
+function MenuSwitch({
+  title,
+  layers,
+  tables,
+  extent,
+}: {
+  title: string;
+  layers: LayerType[];
+  tables: TableType[];
+  extent?: Extent;
+}) {
   const { t } = useSafeTranslation();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -74,7 +85,7 @@ function MenuSwitch({ title, layers, tables }: LayersCategoryType) {
             ) {
               return null;
             }
-            return <SwitchItem key={layer.id} layer={layer} />;
+            return <SwitchItem key={layer.id} layer={layer} extent={extent} />;
           })}
 
           {tables.map(table => (

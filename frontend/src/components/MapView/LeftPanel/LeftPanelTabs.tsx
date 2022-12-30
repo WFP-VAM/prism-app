@@ -76,7 +76,7 @@ function LeftPanelTabs({
   isPanelExtended,
 }: TabsProps) {
   const classes = useStyles();
-  const [value, setValue] = useState(2);
+  const [value, setValue] = useState(0);
 
   const handleChange = (_: any, newValue: number) => {
     setValue(newValue);

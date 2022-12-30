@@ -38,7 +38,7 @@ function LeftPanel({ extent }: LeftPanelProps) {
     >
       <LeftPanelTabs
         isPanelExtended={isPanelExtended}
-        layersPanel={<LayersPanel />}
+        layersPanel={<LayersPanel extent={extent} />}
         chartsPanel={<CircularProgress />}
         analysisPanel={
           <AnalysisPanel

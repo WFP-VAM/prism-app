@@ -9,9 +9,10 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { MenuItemType } from '../../../../../config/types';
+import { LayersCategoryType } from '../../../../../config/types';
 import MenuSwitch from '../MenuSwitch';
 import { useSafeTranslation } from '../../../../../i18n';
+import { Extent } from '../../../Layers/raster-utils';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -34,7 +35,16 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-function MenuItem({ title, layersCategories }: MenuItemType) {
+function MenuItem({
+  title,
+  layersCategories,
+  extent,
+}: {
+  title: string;
+  icon: string;
+  layersCategories: LayersCategoryType[];
+  extent?: Extent;
+}) {
   const { t } = useSafeTranslation();
   const classes = useStyles();
 
@@ -56,6 +66,7 @@ function MenuItem({ title, layersCategories }: MenuItemType) {
               title={categoryTitle}
               layers={layers}
               tables={tables}
+              extent={extent}
             />
           ))}
         </Grid>
