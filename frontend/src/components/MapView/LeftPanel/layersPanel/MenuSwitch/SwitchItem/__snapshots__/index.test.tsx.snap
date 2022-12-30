@@ -39,6 +39,36 @@ exports[`renders as expected 1`] = `
           </svg>
         </span>
       </button>
+      <button
+        class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+        disabled=""
+        tabindex="-1"
+        type="button"
+      >
+        <span
+          class="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+            />
+          </svg>
+        </span>
+      </button>
+      <mock-menu
+        id="download-menu"
+        keepmounted="true"
+        open="false"
+      >
+        <mock-menuitem>
+          Exposure Analysis
+        </mock-menuitem>
+      </mock-menu>
     </div>
   </div>
 </div>
