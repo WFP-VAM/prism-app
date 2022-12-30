@@ -256,6 +256,7 @@ const createAPIRequestParams = (
       bboxDigits: 1,
       date: dateValue,
       layerId: geotiffLayer.serverLayerName,
+      resolution: wcsConfig?.pixelResolution,
       url: geotiffLayer.baseUrl,
     }),
     zones_url: getAdminBoundariesURL(),
