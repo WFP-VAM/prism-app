@@ -1,10 +1,13 @@
 import fetch from 'node-fetch';
 import { get, isNil } from 'lodash';
 import bbox from '@turf/bbox';
+import { createGetCoverageUrl } from 'prism-common';
 import { Extent } from './raster-utils';
-import { getWCSLayerUrl } from './server-utils';
 import { ANALYSIS_API_URL } from '../constants';
 import { Alert } from '../entities/alerts.entity';
+
+// eslint-disable-next-line fp/no-mutation
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 /* eslint-disable camelcase */
 export type ApiData = {
@@ -93,11 +96,14 @@ export async function calculateBoundsForAlert(date: Date, alert: Alert) {
     return undefined;
   }
   const extent = bbox(alert.zones) as Extent;
+  const layer = alert.alertConfig;
   const apiRequest: ApiData = {
-    geotiff_url: getWCSLayerUrl({
-      layer: alert.alertConfig,
+    geotiff_url: createGetCoverageUrl({
+      bbox: extent,
       date,
-      extent,
+      layerId: layer.serverLayerName,
+      resolution: layer?.wcsConfig?.pixelResolution,
+      url: layer.baseUrl
     }),
     zones: alert.zones,
   };
