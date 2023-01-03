@@ -1,15 +1,6 @@
 import moment from 'moment';
-import { xml2js } from 'xml-js';
-import {
-  get,
-  isEmpty,
-  isString,
-  merge,
-  union,
-  snakeCase,
-  sortBy,
-} from 'lodash';
-import { formatUrl, WFS, WMS } from 'prism-common';
+import { get, merge, snakeCase, sortBy } from 'lodash';
+import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
@@ -61,11 +52,6 @@ export const getRequestDate = (
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
 
-const xml2jsOptions = {
-  compact: true,
-  trim: true,
-  ignoreComment: true,
-};
 export type DateCompatibleLayer =
   | AdminLevelDataLayerProps
   | WMSLayerProps
@@ -95,76 +81,6 @@ export const getPossibleDatesForLayer = (
 
   return datesArray()?.map(d => d.displayDate) ?? [];
 };
-
-/**
- * Format the raw data to { [layerId]: availableDates }
- * @param rawLayers Layers data return by the server 'GetCapabilities' request
- * @param layerIdPath path to layer's id
- * @param datesPath path to layer's available dates
- * @returns an object shape like { [layerId]: availableDates }
- */
-function formatCapabilitiesInfo(
-  rawLayers: any,
-  layerIdPath: string,
-  datesPath: string,
-) {
-  return rawLayers.reduce((acc: any, layer: any) => {
-    const layerId = get(layer, layerIdPath);
-    const rawDates = get(layer, datesPath, []);
-
-    const dates: (string | { _text: string })[] = isString(rawDates)
-      ? rawDates.split(',')
-      : rawDates;
-
-    const availableDates = dates
-      .filter(date => !isEmpty(date))
-      .map(date =>
-        // adding 12 hours to avoid  errors due to daylight saving
-        moment
-          .utc(get(date, '_text', date).split('T')[0])
-          .set({ hour: 12 })
-          .valueOf(),
-      );
-
-    const { [layerId]: oldLayerDates } = acc;
-    return {
-      ...acc,
-      [layerId]: union(availableDates, oldLayerDates),
-    };
-  }, {});
-}
-
-/**
- * List capabilities for a WCS layer.
- * @param serverUri
- */
-async function getWCSCoverage(serverUri: string) {
-  const requestUri = formatUrl(serverUri, {
-    request: 'DescribeCoverage',
-  });
-
-  try {
-    const response = await fetch(requestUri);
-    if (!response.ok) {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
-    const responseText = await response.text();
-    const responseJS = xml2js(responseText, xml2jsOptions);
-
-    const rawLayers = get(responseJS, 'CoverageDescription.CoverageOffering');
-
-    return formatCapabilitiesInfo(
-      rawLayers,
-      'name._text',
-      'domainSet.temporalDomain.gml:timePosition',
-    );
-  } catch (error) {
-    // TODO we used to throw the error here so a notification appears via middleware. Removed because a failure of one shouldn't prevent the successful requests from saving.
-    // we could do a dispatch for a notification, but getting a dispatch reference here would be complex, just for a notification
-    console.error(error);
-    return {};
-  }
-}
 
 type PointDataDates = Array<{
   date: string;
@@ -335,7 +251,7 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 
   const layerDates = await Promise.all([
     ...wmsServerUrls.map(url => new WMS(url).getLayerDays()),
-    ...wcsServerUrls.map(url => getWCSCoverage(url)),
+    ...wcsServerUrls.map(url => fetchCoverageLayerDays(url)),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer),
     })),

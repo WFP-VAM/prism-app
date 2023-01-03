@@ -1,0 +1,1596 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<WCS_Capabilities version="1.0.0"
+xmlns="http://www.opengis.net/wcs"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:gml="http://www.opengis.net/gml"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.opengis.net/wcs http://schemas.opengis.net/wcs/1.0.0/wcsCapabilities.xsd">
+
+
+<Service>
+    
+    <description>
+        This is the Open Web Service of the World Food Programme, Research, Assessment and Monitoring Division.
+    </description>
+    
+    <name>WCS</name>
+    <label>Open web-services for the WFP Humanitarian Data Cube</label>
+    
+    <keywords>
+        
+        <keyword>humanitarian</keyword>
+        
+        <keyword>earth-observation</keyword>
+        
+        <keyword>satellite</keyword>
+        
+        <keyword>time-series</keyword>
+        
+        <keyword>remote-sensing</keyword>
+        
+        <keyword>un</keyword>
+        
+    </keywords>
+    
+
+    
+    <responsibleParty>
+        
+        <individualName>WFP RAM Climate and Earth Observation Unit</individualName>
+        
+        
+        <organisationName>UN World Food Programme</organisationName>
+        
+        
+        <positionName>VAM OFFICER</positionName>
+        
+        
+        <contactInfo>
+            
+            <phone>
+                
+                <voice>+39-06-65131</voice>
+                
+                
+                <facsimile>+39-06-65131</facsimile>
+                
+            </phone>
+            
+            
+            <address>
+                
+                <deliveryPoint>Via Cesare Giulio Viola 68</deliveryPoint>
+                <city>Rome</city>
+                <administrativeArea>Rome</administrativeArea>
+                <postalCode>00148</postalCode>
+                <country>Italy</country>
+                
+                
+            </address>
+            
+        </contactInfo>
+        
+    </responsibleParty>
+    
+
+    <fees>NONE</fees>
+    <accessConstraints>NONE</accessConstraints>
+</Service>
+
+
+    <Capability>
+    <Request>
+        <GetCapabilities>
+            <DCPType>
+                <HTTP>
+                    <Get>
+                        <OnlineResource xlink:type="simple"
+                                        xlink:href="https://api.earthobservation.vam.wfp.org/ows/wcs?" />
+                    </Get>
+                </HTTP>
+            </DCPType>
+        </GetCapabilities>
+        <DescribeCoverage>
+            <DCPType>
+                <HTTP>
+                    <Get>
+                        <OnlineResource xlink:type="simple"
+                                        xlink:href="https://api.earthobservation.vam.wfp.org/ows/wcs?" />
+                    </Get>
+                </HTTP>
+            </DCPType>
+        </DescribeCoverage>
+        <GetCoverage>
+            <DCPType>
+                <HTTP>
+                    <Get>
+                        <OnlineResource xlink:type="simple"
+                                        xlink:href="https://api.earthobservation.vam.wfp.org/ows/wcs?" />
+                    </Get>
+                </HTTP>
+            </DCPType>
+        </GetCoverage>
+    </Request>
+
+    <Exception>
+        <Format>application/vnd.ogc.se_xml</Format>
+    </Exception>
+</Capability>
+
+
+<ContentMetadata>
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 Rainfall Estimates dekad</description>
+            <name>rfh_dekad</name>
+            <label>CHIRPS dekadal rainfall estimates</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 1 month Rainfall Aggregation dekad</description>
+            <name>r1h_dekad</name>
+            <label>CHIRPS 1 month dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-21</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 2 month Rainfall Aggregation dekad</description>
+            <name>r2h_dekad</name>
+            <label>CHIRPS 2 month dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-02-21</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 3 month Rainfall Aggregation dekad</description>
+            <name>r3h_dekad</name>
+            <label>CHIRPS 3 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-03-21</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 4 month Rainfall Aggregation dekad</description>
+            <name>r4h_dekad</name>
+            <label>CHIRPS 4 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-04-21</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 5 month Rainfall Aggregation dekad</description>
+            <name>r5h_dekad</name>
+            <label>CHIRPS 5 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-05-21</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 6 month Rainfall Aggregation dekad</description>
+            <name>r6h_dekad</name>
+            <label>CHIRPS 6 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-06-21</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 7 month Rainfall Aggregation dekad</description>
+            <name>r7h_dekad</name>
+            <label>CHIRPS 7 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-07-21</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 8 month Rainfall Aggregation dekad</description>
+            <name>r8h_dekad</name>
+            <label>CHIRPS 8 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-08-21</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 9 month Rainfall Aggregation dekad</description>
+            <name>r9h_dekad</name>
+            <label>CHIRPS 9 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-09-21</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 12 month Rainfall Aggregation dekad</description>
+            <name>ryh_dekad</name>
+            <label>CHIRPS 12 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-12-21</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 Rainfall Anomaly dekad</description>
+            <name>rfq_dekad</name>
+            <label>CHIRPS dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 1 month Rainfall Anomaly dekad</description>
+            <name>r1q_dekad</name>
+            <label>CHIRPS 1 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 2 month Rainfall Anomaly dekad</description>
+            <name>r2q_dekad</name>
+            <label>CHIRPS 2 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 3 month Rainfall Anomaly dekad</description>
+            <name>r3q_dekad</name>
+            <label>CHIRPS 3 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 4 month Rainfall Anomaly dekad</description>
+            <name>r4q_dekad</name>
+            <label>CHIRPS 4 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 5 month Rainfall Anomaly dekad</description>
+            <name>r5q_dekad</name>
+            <label>CHIRPS 5 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 6 month Rainfall Anomaly dekad</description>
+            <name>r6q_dekad</name>
+            <label>CHIRPS 6 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 7 month Rainfall Anomaly dekad</description>
+            <name>r7q_dekad</name>
+            <label>CHIRPS 7 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 8 month Rainfall Anomaly dekad</description>
+            <name>r8q_dekad</name>
+            <label>CHIRPS 8 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 9 month Rainfall Anomaly dekad</description>
+            <name>r9q_dekad</name>
+            <label>CHIRPS 9 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 12 month Rainfall Anomaly dekad</description>
+            <name>ryq_dekad</name>
+            <label>CHIRPS 12 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-01</gml:timePosition>
+                <gml:timePosition>2022-12-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 Rainfall 1 month SPI dekad</description>
+            <name>r1s_dekad</name>
+            <label>CHIRPS 1 month SPI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 Rainfall 2 months SPI dekad</description>
+            <name>r2s_dekad</name>
+            <label>CHIRPS 2 months SPI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-02-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 Rainfall 3 months SPI dekad</description>
+            <name>r3s_dekad</name>
+            <label>CHIRPS 3 months SPI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-03-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 Rainfall 6 months SPI dekad</description>
+            <name>r6s_dekad</name>
+            <label>CHIRPS 6 months SPI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-06-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 Rainfall 9 months SPI dekad</description>
+            <name>r9s_dekad</name>
+            <label>CHIRPS 9 months SPI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-09-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 Rainfall 12 months SPI dekad</description>
+            <name>rys_dekad</name>
+            <label>CHIRPS 12 months SPI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-12-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS V2 Rainfall 36 months SPI dekad</description>
+            <name>rhs_dekad</name>
+            <label>CHIRPS 36 months SPI</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1983-12-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS longest run of dryspell (&lt; 2 mm)</description>
+            <name>dlx_dekad</name>
+            <label>CHIRPS longest dryspell</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS current dryspell (&lt; 2 mm)</description>
+            <name>dlc_dekad</name>
+            <label>CHIRPS current dryspell</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS number of heavy raindays (&gt; 75th percentile)</description>
+            <name>xnh_dekad</name>
+            <label>CHIRPS total number of heavy raindays</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS number of intense raindays (&gt; 90th percentile)</description>
+            <name>xni_dekad</name>
+            <label>CHIRPS total number of intense raindays</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS number of extreme raindays (&gt; 95th percentile)</description>
+            <name>xne_dekad</name>
+            <label>CHIRPS total number of extreme raindays</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS longest run of heavy raindays (&gt; 75th percentile)</description>
+            <name>xlh_dekad</name>
+            <label>CHIRPS longest number of heavy raindays</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS longest run of intense raindays (&gt; 90th percentile)</description>
+            <name>xli_dekad</name>
+            <label>CHIRPS longest number of intense raindays</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRPS longest run of extreme raindays (&gt; 95th percentile)</description>
+            <name>xle_dekad</name>
+            <label>CHIRPS longest number of extreme raindays</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -50.0</gml:pos>
+                <gml:pos dimension="2">180.0 50.0</gml:pos>
+                <gml:timePosition>1981-01-21</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Estimates dekad</description>
+            <name>rfb_blended_dekad</name>
+            <label>CHIRP blended dekadal rainfall estimates</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-08-01</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 1 month Rainfall Aggregation dekad</description>
+            <name>r1b_blended_dekad</name>
+            <label>CHIRP blended 1 month dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-08-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 2 months Rainfall Aggregation dekad</description>
+            <name>r2b_blended_dekad</name>
+            <label>CHIRP blended 2 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-09-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 3 months Rainfall Aggregation dekad</description>
+            <name>r3b_blended_dekad</name>
+            <label>CHIRP blended 3 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-10-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 4 months Rainfall Aggregation dekad</description>
+            <name>r4b_blended_dekad</name>
+            <label>CHIRP blended 4 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-11-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 5 months Rainfall Aggregation dekad</description>
+            <name>r5b_blended_dekad</name>
+            <label>CHIRP blended 5 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-12-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 6 months Rainfall Aggregation dekad</description>
+            <name>r6b_blended_dekad</name>
+            <label>CHIRP blended 6 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2021-01-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 7 months Rainfall Aggregation dekad</description>
+            <name>r7b_blended_dekad</name>
+            <label>CHIRP blended 7 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2021-02-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 8 months Rainfall Aggregation dekad</description>
+            <name>r8b_blended_dekad</name>
+            <label>CHIRP blended 8 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2021-03-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 9 months Rainfall Aggregation dekad</description>
+            <name>r9b_blended_dekad</name>
+            <label>CHIRP blended 9 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2021-04-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 12 months Rainfall Aggregation dekad</description>
+            <name>ryb_blended_dekad</name>
+            <label>CHIRP blended 12 months dekadal rainfall aggregations</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -26.9</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2021-07-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Anomaly dekad</description>
+            <name>rfq_blended_dekad</name>
+            <label>CHIRP blended dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-08-01</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 1 month Rainfall Anomaly dekad</description>
+            <name>r1q_blended_dekad</name>
+            <label>CHIRP blended 1 month dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-08-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 2 months Rainfall Anomaly dekad</description>
+            <name>r2q_blended_dekad</name>
+            <label>CHIRP blended 2 months dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-09-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 3 months Rainfall Anomaly dekad</description>
+            <name>r3q_blended_dekad</name>
+            <label>CHIRP blended 3 months dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-10-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 4 months Rainfall Anomaly dekad</description>
+            <name>r4q_blended_dekad</name>
+            <label>CHIRP blended 4 months dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-11-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 5 months Rainfall Anomaly dekad</description>
+            <name>r5q_blended_dekad</name>
+            <label>CHIRP blended 5 months dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2020-12-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 6 months Rainfall Anomaly dekad</description>
+            <name>r6q_blended_dekad</name>
+            <label>CHIRP blended 6 months dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2021-01-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 7 months Rainfall Anomaly dekad</description>
+            <name>r7q_blended_dekad</name>
+            <label>CHIRP blended 7 months dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2021-02-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 8 months Rainfall Anomaly dekad</description>
+            <name>r8q_blended_dekad</name>
+            <label>CHIRP blended 8 months dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2021-03-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 9 months Rainfall Anomaly dekad</description>
+            <name>r9q_blended_dekad</name>
+            <label>CHIRP blended 9 months dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -29.0</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2021-04-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended 12 months Rainfall Anomaly dekad</description>
+            <name>ryq_blended_dekad</name>
+            <label>CHIRP blended 12 months dekadal rainfall anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 -26.9</gml:pos>
+                <gml:pos dimension="2">81.9 23.3</gml:pos>
+                <gml:timePosition>2021-07-21</gml:timePosition>
+                <gml:timePosition>2022-10-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Estimates dekad for Mozambique</description>
+            <name>rfb_blended_moz_dekad</name>
+            <label>CHIRP blended dekadal rainfall estimates for Mozambique</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">30.2 -26.9</gml:pos>
+                <gml:pos dimension="2">40.85 -10.45</gml:pos>
+                <gml:timePosition>2020-08-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Estimates dekad for Cuba</description>
+            <name>rfb_blended_cub_dekad</name>
+            <label>CHIRP blended dekadal rainfall estimates for Cuba</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 19.8</gml:pos>
+                <gml:pos dimension="2">-74.1 23.3</gml:pos>
+                <gml:timePosition>2021-01-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Estimates dekad for Zimbabwe</description>
+            <name>rfb_blended_zwe_dekad</name>
+            <label>CHIRP blended dekadal rainfall estimates for Zimbabwe</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">25.2 -22.45</gml:pos>
+                <gml:pos dimension="2">33.1 -15.6</gml:pos>
+                <gml:timePosition>2021-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Estimates dekad for Namibia</description>
+            <name>rfb_blended_nam_dekad</name>
+            <label>CHIRP blended dekadal rainfall estimates for Namibia</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">11.7 -29.0</gml:pos>
+                <gml:pos dimension="2">25.3 -16.9</gml:pos>
+                <gml:timePosition>2021-08-01</gml:timePosition>
+                <gml:timePosition>2022-04-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Estimates dekad for Sri Lanka</description>
+            <name>rfb_blended_lka_dekad</name>
+            <label>CHIRP blended dekadal rainfall estimates for Sri Lanka</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">79.65 5.9</gml:pos>
+                <gml:pos dimension="2">81.9 9.9</gml:pos>
+                <gml:timePosition>2021-01-01</gml:timePosition>
+                <gml:timePosition>2022-09-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Anomaly dekad for Mozambique</description>
+            <name>rfq_blended_moz_dekad</name>
+            <label>CHIRP blended dekadal rainfall anomalies for Mozambique</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">30.2 -26.9</gml:pos>
+                <gml:pos dimension="2">40.85 -10.45</gml:pos>
+                <gml:timePosition>2020-08-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Anomaly dekad for Cuba</description>
+            <name>rfq_blended_cub_dekad</name>
+            <label>CHIRP blended dekadal rainfall anomalies for Cuba</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-85.0 19.8</gml:pos>
+                <gml:pos dimension="2">-74.1 23.3</gml:pos>
+                <gml:timePosition>2021-01-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Anomaly dekad for Zimbabwe</description>
+            <name>rfq_blended_zwe_dekad</name>
+            <label>CHIRP blended dekadal rainfall anomalies for Zimbabwe</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">25.2 -22.45</gml:pos>
+                <gml:pos dimension="2">33.1 -15.6</gml:pos>
+                <gml:timePosition>2021-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Anomaly dekad for Namibia</description>
+            <name>rfq_blended_nam_dekad</name>
+            <label>CHIRP blended dekadal rainfall anomalies for Namibia</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">11.7 -29.0</gml:pos>
+                <gml:pos dimension="2">25.3 -16.9</gml:pos>
+                <gml:timePosition>2021-08-01</gml:timePosition>
+                <gml:timePosition>2022-04-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>CHIRP blended Rainfall Anomaly dekad for Sri Lanka</description>
+            <name>rfq_blended_lka_dekad</name>
+            <label>CHIRP blended dekadal rainfall anomalies for Sri Lanka</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">79.65 5.9</gml:pos>
+                <gml:pos dimension="2">81.9 9.9</gml:pos>
+                <gml:timePosition>2021-01-01</gml:timePosition>
+                <gml:timePosition>2022-09-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS TERRA/AQUA dekadal NDVI 5km from 8-day interleaved filtered and gapfilled data</description>
+            <name>mxd13c1_vim_dekad</name>
+            <label>MODIS TERRA/AQUA dekadal NDVI 5km 8-day interleaved filtered and gapfilled</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -90.0</gml:pos>
+                <gml:pos dimension="2">180.0 90.0</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS TERRA/AQUA dekadal NDVI 1km from 8-day interleaved filtered and gapfilled data</description>
+            <name>mxd13a2_vim_dekad</name>
+            <label>MODIS TERRA/AQUA dekadal NDVI 1km 8-day interleaved filtered and gapfilled</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-106.417777242573 -39.9999999983264</gml:pos>
+                <gml:pos dimension="2">170.268443588117 59.9999999974896</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS TERRA/AQUA dekadal NDVI 250m from 8-day interleaved filtered and gapfilled data</description>
+            <name>mxd13q1_vim_dekad</name>
+            <label>MODIS TERRA/AQUA dekadal NDVI 250m 8-day interleaved filtered and gapfilled</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-95.7759995183158 -29.9999999868738</gml:pos>
+                <gml:pos dimension="2">155.572382270898 59.9999999974896</gml:pos>
+                <gml:timePosition>2002-06-01</gml:timePosition>
+                <gml:timePosition>2022-08-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS TERRA/AQUA dekadal NDVI Anomalies 5km from 8-day interleaved filtered and gapfilled data</description>
+            <name>mxd13c1_viq_dekad</name>
+            <label>MODIS TERRA/AQUA 5km dekadal NDVI Anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -90.0</gml:pos>
+                <gml:pos dimension="2">180.0 90.0</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS TERRA/AQUA dekadal NDVI Anomalies 1km from 8-day interleaved filtered and gapfilled data</description>
+            <name>mxd13a2_viq_dekad</name>
+            <label>MODIS TERRA/AQUA 1km dekadal NDVI Anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-106.417777242573 -39.9999999983264</gml:pos>
+                <gml:pos dimension="2">170.268443588117 59.9999999974896</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS TERRA/AQUA dekadal NDVI Anomalies 250m from 8-day interleaved filtered and gapfilled data</description>
+            <name>mxd13q1_viq_dekad</name>
+            <label>MODIS TERRA/AQUA 250m dekadal NDVI Anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">13.0540728947262 30.0000000581</gml:pos>
+                <gml:pos dimension="2">155.572382270898 59.9999999974896</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-08-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS AQUA dekadal LST (Day + Night) 5km from 8-day filtered and gapfilled data</description>
+            <name>myd11c2_txa_dekad</name>
+            <label>MODIS AQUA dekadal LST (Day + Night) 5km 8-day filtered and gapfilled</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -90.0</gml:pos>
+                <gml:pos dimension="2">180.0 90.0</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS AQUA dekadal LST (Day + Night) 1km from 8-day filtered and gapfilled data</description>
+            <name>myd11a2_txa_dekad</name>
+            <label>MODIS AQUA dekadal LST (Day + Night) 1km 8-day filtered and gapfilled</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-106.417777242573 -39.9999999983264</gml:pos>
+                <gml:pos dimension="2">170.268443588117 59.9999999974896</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS AQUA dekadal LST Anomalies (Day + Night) 5km from 8-day filtered and gapfilled data</description>
+            <name>myd11c2_txd_dekad</name>
+            <label>MODIS AQUA dekadal LST Anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -90.0</gml:pos>
+                <gml:pos dimension="2">180.0 90.0</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS AQUA dekadal LST Anomalies (Day + Night) 1km from 8-day filtered and gapfilled data</description>
+            <name>myd11a2_txd_dekad</name>
+            <label>MODIS AQUA 1km dekadal LST Anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-106.417777242573 -39.9999999983264</gml:pos>
+                <gml:pos dimension="2">170.268443588117 59.9999999974896</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS AQUA dekadal LST Amplitude 5km from 8-day filtered and gapfilled data</description>
+            <name>myd11c2_taa_dekad</name>
+            <label>MODIS AQUA 5km dekadal LST Amplitude</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-180.0 -90.0</gml:pos>
+                <gml:pos dimension="2">180.0 90.0</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>MODIS AQUA dekadal LST Amplitude 1km from 8-day filtered and gapfilled data</description>
+            <name>myd11a2_taa_dekad</name>
+            <label>MODIS AQUA 1km dekadal LST Amplitude</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">-106.417777242573 -39.9999999983264</gml:pos>
+                <gml:pos dimension="2">170.268443588117 59.9999999974896</gml:pos>
+                <gml:timePosition>2002-07-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Air Temperature Mean Daily Max. LST Blended</description>
+            <name>myd11a2_blended_txb_dekad</name>
+            <label>Air Temperature Mean Daily Max. LST Blended</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">30.2146078721536 -26.8721375599</gml:pos>
+                <gml:pos dimension="2">40.8459800287027 -10.4659033292098</gml:pos>
+                <gml:timePosition>2020-08-01</gml:timePosition>
+                <gml:timePosition>2022-10-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Air Temperature Mean Daily Max. LST Blended Anomalies</description>
+            <name>myd11a2_blended_txd_dekad</name>
+            <label>Air Temperature Mean Daily Max. LST Blended Anomaly</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">30.2146078721536 -26.8721375599</gml:pos>
+                <gml:pos dimension="2">40.8459800287027 -10.4659033292098</gml:pos>
+                <gml:timePosition>2020-08-01</gml:timePosition>
+                <gml:timePosition>2022-10-11</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Air Temperature Mean Daily Max. LST Blended for Mozambique</description>
+            <name>myd11a2_blended_txb_moz_dekad</name>
+            <label>Air Temperature Mean Daily Max. LST Blended for Mozambique</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">29.0 -28.9969077847979</gml:pos>
+                <gml:pos dimension="2">41.9975763880503 -9.0</gml:pos>
+                <gml:timePosition>2020-08-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Air Temperature Mean Daily Max. LST Blended Anomalies for Mozambique</description>
+            <name>myd11a2_blended_txd_moz_dekad</name>
+            <label>Air Temperature Mean Daily Max. LST Blended Anomaly for Mozambique</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">29.0 -28.9969077847979</gml:pos>
+                <gml:pos dimension="2">41.9975763880503 -9.0</gml:pos>
+                <gml:timePosition>2020-08-01</gml:timePosition>
+                <gml:timePosition>2022-11-21</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Hydrafloods daily surface water from Sentinel-1 with permanent water mask</description>
+            <name>hfs1_sfw_mask_khm</name>
+            <label>Surface water masked from S1 for Cambodia</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">102.333292389515 10.4043774522007</gml:pos>
+                <gml:pos dimension="2">107.627783011059 14.7052415379797</gml:pos>
+                <gml:timePosition>2022-01-02</gml:timePosition>
+                <gml:timePosition>2022-10-20</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Hydrafloods daily surface water from Sentinel-2 with permanent water mask</description>
+            <name>hfs2_sfw_mask_khm</name>
+            <label>Surface water masked from S2 for Cambodia</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">102.333292389515 10.4043774522007</gml:pos>
+                <gml:pos dimension="2">107.627783011059 14.7052415379797</gml:pos>
+                <gml:timePosition>2022-03-06</gml:timePosition>
+                <gml:timePosition>2022-10-19</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Hydrafloods daily surface water from Landsat-8 with permanent water mask</description>
+            <name>hfl8_sfw_mask_khm</name>
+            <label>Surface water masked from L8 for Cambodia</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">102.333292389515 10.4043774522007</gml:pos>
+                <gml:pos dimension="2">107.627783011059 14.7052415379797</gml:pos>
+                <gml:timePosition>2022-05-10</gml:timePosition>
+                <gml:timePosition>2022-10-17</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Hydrafloods daily surface water from Sentinel-1 with permanent water mask</description>
+            <name>hfs1_sfw_mask_mmr</name>
+            <label>Surface water masked from S1 for Myanmar</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">92.1717295586119 9.78292293864683</gml:pos>
+                <gml:pos dimension="2">101.170423254222 28.6222114141446</gml:pos>
+                <gml:timePosition>2022-01-01</gml:timePosition>
+                <gml:timePosition>2022-10-20</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Hydrafloods daily surface water from Sentinel-2 with permanent water mask</description>
+            <name>hfs2_sfw_mask_mmr</name>
+            <label>Surface water masked from S2 for Myanmar</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">92.1717295586119 9.78292293864683</gml:pos>
+                <gml:pos dimension="2">101.170423254222 28.6222114141446</gml:pos>
+                <gml:timePosition>2022-06-01</gml:timePosition>
+                <gml:timePosition>2022-10-20</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Hydrafloods daily surface water from Landsat-8 with permanent water mask</description>
+            <name>hfl8_sfw_mask_mmr</name>
+            <label>Surface water masked from L8 for Myanmar</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">92.1717295586119 9.78292293864683</gml:pos>
+                <gml:pos dimension="2">101.170423254222 28.6222114141446</gml:pos>
+                <gml:timePosition>2022-06-01</gml:timePosition>
+                <gml:timePosition>2022-10-18</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>SERVIR Hydrafloods daily water classfication for Cambodia</description>
+            <name>hf_water_khm</name>
+            <label>HYDRAFLOODS surface water classification for Cambodia</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">102.333292389515 10.4043774522007</gml:pos>
+                <gml:pos dimension="2">107.627783011059 14.7052415379797</gml:pos>
+                <gml:timePosition>2022-06-01</gml:timePosition>
+                <gml:timePosition>2022-12-07</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>SERVIR Hydrafloods daily flood age for Cambodia</description>
+            <name>hf_age_khm</name>
+            <label>HYDRAFLOODS flood age for Cambodia</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">102.333292389515 10.4043774522007</gml:pos>
+                <gml:pos dimension="2">107.627783011059 14.7052415379797</gml:pos>
+                <gml:timePosition>2022-07-01</gml:timePosition>
+                <gml:timePosition>2022-12-07</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>SERVIR Hydrafloods flood duration for Cambodia</description>
+            <name>hf_duration_khm</name>
+            <label>HYDRAFLOODS flood duration for Cambodia</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">102.333292389515 10.4043774522007</gml:pos>
+                <gml:pos dimension="2">107.627783011059 14.7052415379797</gml:pos>
+                <gml:timePosition>2022-07-02</gml:timePosition>
+                <gml:timePosition>2022-12-07</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>SERVIR Hydrafloods daily water classfication for Myanmar</description>
+            <name>hf_water_mmr</name>
+            <label>HYDRAFLOODS surface water classification for Myanmar</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">92.1717295586119 9.78292293864683</gml:pos>
+                <gml:pos dimension="2">101.170423254222 28.6222114141446</gml:pos>
+                <gml:timePosition>2022-06-01</gml:timePosition>
+                <gml:timePosition>2022-12-07</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>SERVIR Hydrafloods daily flood age for Myanmar</description>
+            <name>hf_age_mmr</name>
+            <label>HYDRAFLOODS flood age for Myanmar</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">92.1717295586119 9.78292293864683</gml:pos>
+                <gml:pos dimension="2">101.170423254222 28.6222114141446</gml:pos>
+                <gml:timePosition>2022-07-01</gml:timePosition>
+                <gml:timePosition>2022-12-07</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>SERVIR Hydrafloods flood duration for Myanmar</description>
+            <name>hf_duration_mmr</name>
+            <label>HYDRAFLOODS flood duration for Myanmar</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">92.1717295586119 9.78292293864683</gml:pos>
+                <gml:pos dimension="2">101.170423254222 28.6222114141446</gml:pos>
+                <gml:timePosition>2022-07-01</gml:timePosition>
+                <gml:timePosition>2022-12-05</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+    
+        
+        <CoverageOfferingBrief>
+            <description>Worldpop Population Count Constrained individual countries UN adjusted</description>
+            <name>wp_pop_cicunadj</name>
+            <label>WorldPop Population Count</label>
+            <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
+                <gml:pos dimension="2">30.217916561 -26.868749691</gml:pos>
+                <gml:pos dimension="2">107.629582917 43.237916695</gml:pos>
+                <gml:timePosition>2020-01-01</gml:timePosition>
+                <gml:timePosition>2020-01-01</gml:timePosition>
+            </lonLatEnvelope>
+        </CoverageOfferingBrief>
+    
+    
+</ContentMetadata>
+
+
+</WCS_Capabilities>
