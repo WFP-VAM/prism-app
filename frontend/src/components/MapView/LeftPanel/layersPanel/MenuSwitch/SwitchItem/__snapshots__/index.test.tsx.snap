@@ -65,7 +65,9 @@ exports[`renders as expected 1`] = `
         keepmounted="true"
         open="false"
       >
-        <mock-menuitem>
+        <mock-menuitem
+          disabled="true"
+        >
           Exposure Analysis
         </mock-menuitem>
       </mock-menu>

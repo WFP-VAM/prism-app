@@ -12,7 +12,6 @@ jest.mock('./Layers/BoundaryLayer', () => 'mock-BoundaryLayer');
 
 jest.mock('./Legends', () => 'mock-Legends');
 jest.mock('./DateSelector', () => 'mock-DateSelector');
-jest.mock('./Analyser', () => 'mock-Analyser');
 jest.mock('./Download', () => 'mock-Download');
 
 jest.mock('react-router-dom', () => ({
