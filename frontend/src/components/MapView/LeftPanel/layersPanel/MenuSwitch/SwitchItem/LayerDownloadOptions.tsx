@@ -131,7 +131,9 @@ function LayerDownloadOptions({
         open={Boolean(downloadMenuAnchorEl)}
         onClose={handleDownloadMenuClose}
       >
-        <MenuItem onClick={handleDownloadMenuClose}>Exposure Analysis</MenuItem>
+        <MenuItem disabled onClick={handleDownloadMenuClose}>
+          Exposure Analysis
+        </MenuItem>
         {layer.type === 'admin_level_data' && (
           <>
             <MenuItem onClick={handleDownloadCsv}>Download as CSV</MenuItem>
