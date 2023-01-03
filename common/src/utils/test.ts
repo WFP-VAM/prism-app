@@ -1,9 +1,11 @@
-import t from "flug";
+import findAndRead from "find-and-read";
+import test from "flug";
 
 import {
   bboxToString,
   checkExtent,
   findTagText,
+  findVersion,
   formatUrl,
   hasLayerId,
   titlecase,
@@ -18,11 +20,11 @@ import {
 // performance API used for timing
 declare let performance: { now: () => number };
 
-t("findTagText", ({ eq }) => {
+test("findTagText", ({ eq }) => {
   eq(findTagText("<Tag>test</Tag>", "Tag"), "test");
 });
 
-t("bboxToString", ({ eq }) => {
+test("bboxToString", ({ eq }) => {
   eq(bboxToString([-180, -90, 180, 90]), "-180,-90,180,90");
   eq(bboxToString([-180, -90, 180, 90] as const), "-180,-90,180,90");
   eq(
@@ -35,7 +37,7 @@ t("bboxToString", ({ eq }) => {
   );
 });
 
-t("check-extent", ({ eq }) => {
+test("check-extent", ({ eq }) => {
   eq(checkExtent([-180, -90, 180, 90]), undefined);
   let msg;
   try {
@@ -50,23 +52,23 @@ t("check-extent", ({ eq }) => {
   );
 });
 
-t("format-url: base url with no params should return itself", ({ eq }) => {
+test("format-url: base url with no params should return itself", ({ eq }) => {
   const baseUrl = "https://example.org/";
   eq(formatUrl(baseUrl), baseUrl);
 });
 
-t("format-url: base url should add / for root", ({ eq }) => {
+test("format-url: base url should add / for root", ({ eq }) => {
   const baseUrl = "https://example.org";
   eq(formatUrl(baseUrl), `${baseUrl}/`);
 });
 
-t("format-url: skip undefined params", ({ eq }) => {
+test("format-url: skip undefined params", ({ eq }) => {
   const baseUrl = "https://example.org/path";
   const params = { a: undefined, b: 2 };
   eq(formatUrl(baseUrl, params), "https://example.org/path?b=2");
 });
 
-t("format-url: base url should add params", ({ eq }) => {
+test("format-url: base url should add params", ({ eq }) => {
   const baseUrl = "https://mongolia.sibelius-datacube.org:5000/wms";
   const params = {
     version: "1.3.0",
@@ -92,7 +94,7 @@ t("format-url: base url should add params", ({ eq }) => {
   );
 });
 
-t("hasLayerId", ({ eq }) => {
+test("hasLayerId", ({ eq }) => {
   eq(hasLayerId(["ns1:name"], "ns2:name"), false);
   eq(hasLayerId(["ns1:name"], "ns1:name"), true);
   eq(hasLayerId(["ns1:name"], "name"), true);
@@ -101,7 +103,7 @@ t("hasLayerId", ({ eq }) => {
   eq(hasLayerId(["ns1:name"], "ns2:name", { strict: true }), false);
 });
 
-t("titlecase", ({ eq }) => {
+test("titlecase", ({ eq }) => {
   eq(titlecase("A"), "A");
   eq(titlecase("Ab"), "Ab");
   eq(titlecase("Get"), "Get");
@@ -109,7 +111,7 @@ t("titlecase", ({ eq }) => {
   eq(titlecase("get"), "Get");
 });
 
-t("toArray", ({ eq }) => {
+test("toArray", ({ eq }) => {
   eq(toArray(null), [null]);
   eq(toArray(undefined), [undefined]);
   eq(toArray(2), [2]);
@@ -119,7 +121,7 @@ t("toArray", ({ eq }) => {
   eq(toArray(), []);
 });
 
-t("parsing feature type names", async ({ eq }) => {
+test("parsing feature type names", async ({ eq }) => {
   eq(parseName("geonode:col_second_level_admin_boundaries"), {
     full: "geonode:col_second_level_admin_boundaries",
     namespace: "geonode",
@@ -138,23 +140,24 @@ t("parsing feature type names", async ({ eq }) => {
   });
 });
 
-t("parse service from url", async ({ eq }) => {
-  eq(await parseService("https://geonode.wfp.org/geoserver/wfs"), "wfs");
+test("parse service from url", async ({ eq }) => {
+  eq(parseService("https://geonode.wfp.org/geoserver/wfs"), "wfs");
   eq(
-    await parseService(
-      "https://example.org/geoserver/ows?request=GetCapabilities&service=WFS"
+    parseService(
+      "https://example.org/geoserver/ows?request=GetCapabilities&service=WFS",
+      { case: "lower" }
     ),
     "wfs"
   );
   eq(
-    await parseService(
+    parseService(
       "https://example.org/geoserver/ows?request=GetCapabilities&service=wfs"
     ),
     "wfs"
   );
 });
 
-t("scaleImage", async ({ eq }) => {
+test("scaleImage", async ({ eq }) => {
   const bbox = [-180, -90, 180, 90] as const;
   eq(scaleImage(bbox), { height: 2548, width: 5096 });
   eq(scaleImage(bbox, { maxPixels: 100 }), { height: 50, width: 100 });
@@ -164,13 +167,20 @@ t("scaleImage", async ({ eq }) => {
     height: 52,
     width: 512,
   });
+  eq(
+    scaleImage([87.734402, 41.581833, 119.931528001, 52.148355], {
+      maxPixels: 5096,
+      resolution: 64,
+    }),
+    { height: 222, width: 677 }
+  );
 });
 
-t("setNoon", ({ eq }) => {
+test("setNoon", ({ eq }) => {
   eq(setNoon("2022-10-25T:08:32:12Z"), "2022-10-25T12:00:00Z");
 });
 
-t("setTimeoutAsync", async ({ eq }) => {
+test("setTimeoutAsync", async ({ eq }) => {
   const start = performance.now();
   const seconds = 2;
   let flag = false;
@@ -181,4 +191,32 @@ t("setTimeoutAsync", async ({ eq }) => {
   const duration = performance.now() - start;
   eq(Math.round(duration / 1000), seconds);
   eq(flag, true);
+});
+
+test("findVersion", ({ eq }) => {
+  [
+    ["api-earthobservation-vam-wfp-wcs-1.0.0.xml", "1.0.0"],
+    ["api-earthobservation-vam-wfp-wcs-2.0.1.xml", "2.0.1"],
+    ["geonode-wfp-wcs-get-capabilities-2.0.1.xml", "2.0.1"],
+    ["geonode-wfp-wcs-get-capabilities-1.1.1.xml", "1.1.1"],
+    ["geonode-wcs-describe-coverage-1.0.0.xml", "1.0.0"],
+    [
+      "geonode-wfp-wcs-describe-coverage-geonode__wld_cli_tp_7d_ecmwf-2.0.1.xml",
+      "2.0.0",
+    ],
+    ["geonode-wfp-wcs-exception.xml", "1.2.0"],
+    ["geonode-wfp-wms-get-capabilities-1.1.1.xml", "1.1.1"],
+    ["geonode-wfp-wms-get-capabilities-1.3.0.xml", "1.3.0"],
+    ["geonode-wfp-wfs-get-capabilities-1.1.0.xml", "1.1.0"],
+    ["geonode-wfp-wfs-get-capabilities-2.0.0.xml", "2.0.0"],
+    ["mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml", "1.0.0"],
+    ["mongolia-sibelius-datacube-wms-get-capabilities-1.3.0.xml", "1.3.0"],
+    [
+      "mongolia-sibelius-datacube-wcs-coverage-description-10DayTrend-1.0.0.xml",
+      "1.0.0",
+    ],
+  ].forEach(([filename, version]) => {
+    const xml = findAndRead(filename, { encoding: "utf-8" });
+    eq(findVersion(xml), version);
+  });
 });

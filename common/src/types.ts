@@ -10,3 +10,13 @@ export type LAYER = {
 
 export type MakeOptional<Type, Key extends keyof Type> = Omit<Type, Key> &
   Partial<Pick<Type, Key>>;
+
+export type WCS_FORMAT =
+  | "jpeg"
+  | "gif"
+  | "png"
+  | "tif"
+  | "bmp"
+  | "geotiff"
+  | "ArcGrid"
+  | "ArcGrid-GZIP";
