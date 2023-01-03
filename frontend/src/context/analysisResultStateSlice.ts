@@ -3,6 +3,7 @@ import { convertArea } from '@turf/helpers';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
+import { createGetCoverageUrl } from 'prism-common';
 import { calculate } from '../utils/zonal-utils';
 
 import type { CreateAsyncThunkTypes, RootState } from './store';
@@ -43,7 +44,6 @@ import {
 } from '../utils/analysis-utils';
 import { getRoundedData } from '../utils/data-utils';
 import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
-import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from '../utils/server-utils';
@@ -244,12 +244,13 @@ const createAPIRequestParams = (
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
   const apiRequest: ApiData = {
-    geotiff_url: getWCSLayerUrl({
-      layer: geotiffLayer,
-
-      // Skip date parameter if layer has disableDateParam set to true.
+    geotiff_url: createGetCoverageUrl({
+      bbox: extent,
+      bboxDigits: 1,
       date: dateValue,
-      extent,
+      layerId: geotiffLayer.serverLayerName,
+      resolution: wcsConfig?.pixelResolution,
+      url: geotiffLayer.baseUrl,
     }),
     zones_url: getAdminBoundariesURL(),
     group_by: groupBy,
@@ -303,13 +304,13 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
 
     const maskLayer =
       maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
-
     const maskParams = maskLayer
       ? {
-          mask_url: getWCSLayerUrl({
-            layer: maskLayer,
+          make_url: createGetCoverageUrl({
+            bbox: extent,
             date,
-            extent,
+            layerId: maskLayer.serverLayerName,
+            url: maskLayer.baseUrl,
           }),
           mask_calc_expr: calc || 'A*(B==1)',
         }
