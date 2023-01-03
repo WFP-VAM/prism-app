@@ -132,7 +132,6 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
           }`;
         }}
         style={{
-          flex: '0 0 100%',
           color: 'black',
           width: 'auto',
         }}
@@ -144,7 +143,6 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
 const styles = (theme: Theme) =>
   createStyles({
     tableContainer: {
-      flex: '0 0 100%',
       maxWidth: '90%',
       marginTop: 10,
     },

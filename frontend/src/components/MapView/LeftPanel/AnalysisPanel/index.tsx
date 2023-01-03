@@ -706,13 +706,13 @@ const styles = () =>
     root: {
       display: 'flex',
       flexDirection: 'row',
-      width: 'auto',
+      width: '100%',
+      height: '100%',
     },
     analysisPanel: {
       display: 'relative',
-      flex: '0 0 100%',
-      width: 'auto',
       paddingTop: 30,
+      flexGrow: 4,
     },
     analysisPanelParams: {
       padding: 10,
@@ -734,7 +734,7 @@ const styles = () =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      flex: '0 0 100%',
+      width: '50%',
     },
     datePickerContainer: {
       marginLeft: 10,

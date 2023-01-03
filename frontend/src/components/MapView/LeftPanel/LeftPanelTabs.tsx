@@ -28,7 +28,6 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
-      style={{ width: 'auto', height: 'auto' }}
       {...other}
     >
       {value === index && children}
@@ -50,12 +49,11 @@ interface StyleProps {
 const useStyles = makeStyles<Theme, StyleProps>(() =>
   createStyles({
     root: {
-      width: ({ isPanelExtended }) => (isPanelExtended ? '50%' : 'auto'),
       height: '100%',
     },
     tabs: {
       backgroundColor: '#566064',
-      width: '100%',
+      width: ({ isPanelExtended }) => (isPanelExtended ? '50%' : '100%'),
     },
     indicator: {
       backgroundColor: '#53888F',
