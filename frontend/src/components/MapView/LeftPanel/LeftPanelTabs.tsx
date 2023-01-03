@@ -76,6 +76,7 @@ interface TabsProps {
   chartsPanel: React.ReactNode;
   analysisPanel: React.ReactNode;
   isPanelExtended: boolean;
+  setIsPanelExtended: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function LeftPanelTabs({
@@ -83,11 +84,13 @@ function LeftPanelTabs({
   chartsPanel,
   analysisPanel,
   isPanelExtended,
+  setIsPanelExtended,
 }: TabsProps) {
   const classes = useStyles({ isPanelExtended });
   const [value, setValue] = useState(0);
 
   const handleChange = (_: any, newValue: number) => {
+    setIsPanelExtended(false);
     setValue(newValue);
   };
 

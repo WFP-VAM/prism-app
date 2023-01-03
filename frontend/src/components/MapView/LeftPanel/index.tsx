@@ -38,6 +38,7 @@ function LeftPanel({ extent }: LeftPanelProps) {
     >
       <LeftPanelTabs
         isPanelExtended={isPanelExtended}
+        setIsPanelExtended={setIsPanelExtended}
         layersPanel={<LayersPanel extent={extent} />}
         chartsPanel={<CircularProgress />}
         analysisPanel={
