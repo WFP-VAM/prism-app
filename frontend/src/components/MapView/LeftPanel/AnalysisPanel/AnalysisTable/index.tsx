@@ -16,10 +16,10 @@ import {
 } from '@material-ui/core';
 import { orderBy } from 'lodash';
 import { useDispatch } from 'react-redux';
-import { TableRow as AnalysisTableRow } from '../../../../context/analysisResultStateSlice';
-import { showPopup } from '../../../../context/tooltipStateSlice';
-import { Column } from '../../../../utils/analysis-utils';
-import { useSafeTranslation } from '../../../../i18n';
+import { TableRow as AnalysisTableRow } from '../../../../../context/analysisResultStateSlice';
+import { showPopup } from '../../../../../context/tooltipStateSlice';
+import { Column } from '../../../../../utils/analysis-utils';
+import { useSafeTranslation } from '../../../../../i18n';
 
 function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
   // only display local names if local language is selected, otherwise display english name

@@ -80,7 +80,7 @@ import { removeLayer } from '../../../../context/mapStateSlice';
 import { DEFAULT_DATE_FORMAT } from '../../../../utils/name-utils';
 import LayerDropdown from '../../Layers/LayerDropdown';
 import SimpleDropdown from '../../../Common/SimpleDropdown';
-import AnalysisTable from '../../Analyser/AnalysisTable';
+import AnalysisTable from './AnalysisTable';
 import { Extent } from '../../Layers/raster-utils';
 
 function AnalysisPanel({
