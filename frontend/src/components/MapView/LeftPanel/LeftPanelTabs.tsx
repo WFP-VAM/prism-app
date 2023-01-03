@@ -1,4 +1,11 @@
-import { Box, createStyles, makeStyles, Tab, Tabs } from '@material-ui/core';
+import {
+  Box,
+  createStyles,
+  makeStyles,
+  Tab,
+  Tabs,
+  Theme,
+} from '@material-ui/core';
 import {
   LayersOutlined,
   BarChartOutlined,
@@ -36,10 +43,14 @@ function a11yProps(index: any) {
   };
 }
 
-const useStyles = makeStyles(() =>
+interface StyleProps {
+  isPanelExtended: boolean;
+}
+
+const useStyles = makeStyles<Theme, StyleProps>(() =>
   createStyles({
     root: {
-      width: '100%',
+      width: ({ isPanelExtended }) => (isPanelExtended ? '50%' : 'auto'),
       height: '100%',
     },
     tabs: {
@@ -75,7 +86,7 @@ function LeftPanelTabs({
   analysisPanel,
   isPanelExtended,
 }: TabsProps) {
-  const classes = useStyles();
+  const classes = useStyles({ isPanelExtended });
   const [value, setValue] = useState(0);
 
   const handleChange = (_: any, newValue: number) => {
@@ -83,10 +94,7 @@ function LeftPanelTabs({
   };
 
   return (
-    <div
-      className={classes.root}
-      style={{ width: isPanelExtended ? '50%' : 'auto' }}
-    >
+    <div className={classes.root}>
       <div className={classes.tabs}>
         <Tabs
           value={value}
