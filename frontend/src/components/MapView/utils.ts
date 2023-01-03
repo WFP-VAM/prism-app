@@ -128,8 +128,8 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
   });
 
   const columnMapping = {
-    [groupBy]: 'name',
-    sum: 'total',
+    [groupBy]: 'Name',
+    sum: 'Total',
   };
 
   const headlessRows = groupedRowDataWithAllLabels.map(row => {
