@@ -39,8 +39,8 @@ function a11yProps(index: any) {
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
-      width: 'auto',
-      height: 'auto',
+      width: '100%',
+      height: '100%',
     },
     tabs: {
       backgroundColor: '#566064',
