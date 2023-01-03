@@ -842,6 +842,11 @@ export function downloadCSVFromTableData(
 // and are displayed in the left-hand "RUN ANALYSIS" panel
 export type TabularAnalysisResult = BaselineLayerResult | PolygonAnalysisResult;
 
+/*
+This function includes the feature properties of the boundary geojson layer within the analysis result one.
+For each analysis feature, the algorithm find the boundary feature that exactly matches the adminCode identifier.
+If there is a match, all the properties for both features are merged
+*/
 export const appendBoundaryProperties = (
   adminCodeId: BoundaryLayerProps['adminCode'],
   analysisFeatures: Feature[],
