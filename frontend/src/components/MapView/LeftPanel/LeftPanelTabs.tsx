@@ -98,10 +98,7 @@ function LeftPanelTabs({
   };
 
   return (
-    <div
-      className={classes.root}
-      style={{ width: isPanelExtended ? '50%' : 'auto' }}
-    >
+    <div className={classes.root}>
       <div className={classes.tabs}>
         <Tabs
           value={value}
