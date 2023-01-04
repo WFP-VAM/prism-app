@@ -21,22 +21,22 @@ import { getLayerGeometryIcon } from './layer-utils';
 const useStyles = makeStyles(() =>
   createStyles({
     selectRoot: {
-      color: 'black',
-      minWidth: '400px',
-      maxWidth: '450px',
-      width: 'auto',
-      '& label': {
-        color: '#333333',
-      },
+      width: '100%',
       '& .MuiInputBase-root': {
-        color: 'black',
         '&:hover fieldset': {
           borderColor: '#333333',
         },
-        '&.Mui-focused fieldset': {
-          borderColor: '#333333',
-        },
       },
+    },
+    input: {
+      color: '#333333',
+    },
+    focused: {
+      borderColor: '#333333',
+      color: '#333333',
+    },
+    label: {
+      color: '#333333',
     },
   }),
 );
@@ -119,6 +119,17 @@ function LayerDropdown({
         }}
         select
         label={label}
+        InputProps={{
+          classes: {
+            focused: classes.focused,
+            input: classes.input,
+          },
+        }}
+        InputLabelProps={{
+          classes: {
+            root: classes.label,
+          },
+        }}
       >
         {categories.reduce(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array

@@ -720,13 +720,14 @@ const styles = () =>
       color: 'black',
     },
     analysisPanelParamText: {
-      width: 140,
+      width: '100%',
       color: 'black',
     },
     analysisPanelParamContainer: {
+      display: 'flex',
       marginBottom: 30,
       marginLeft: 10,
-      width: 'auto',
+      width: '90%',
       color: 'black',
     },
     analysisTableContainer: {
