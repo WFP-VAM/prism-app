@@ -325,7 +325,6 @@ function AnalysisPanel({
         AggregationOperations.Mean,
     );
     setBaselineLayerId(baselineLayerIdFromUrl);
-    setSelectedDate(null);
     setBelowThreshold(belowThresholdFromUrl || '');
     setAboveThreshold(aboveThresholdFromUrl || '');
     setThresholdError(null);

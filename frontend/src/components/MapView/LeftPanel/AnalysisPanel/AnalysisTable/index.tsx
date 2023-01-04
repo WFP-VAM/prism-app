@@ -145,6 +145,7 @@ const styles = (theme: Theme) =>
     tableContainer: {
       maxWidth: '90%',
       marginTop: 10,
+      zIndex: theme.zIndex.modal + 1,
     },
     tableHead: {
       backgroundColor: '#EBEBEB',

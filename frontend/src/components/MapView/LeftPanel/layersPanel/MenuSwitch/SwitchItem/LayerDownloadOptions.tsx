@@ -132,20 +132,22 @@ function LayerDownloadOptions({
         onClose={handleDownloadMenuClose}
       >
         <MenuItem disabled onClick={handleDownloadMenuClose}>
-          Exposure Analysis
+          {t('Exposure Analysis')}
         </MenuItem>
         {layer.type === 'admin_level_data' && (
           <>
-            <MenuItem onClick={handleDownloadCsv}>Download as CSV</MenuItem>
+            <MenuItem onClick={handleDownloadCsv}>
+              {t('Download as CSV')}
+            </MenuItem>
             <MenuItem onClick={handleDownloadGeoJson}>
-              Download as GeoJSON
+              {t('Download as GeoJSON')}
             </MenuItem>
           </>
         )}
         {layer.type === 'wms' &&
           layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && (
             <MenuItem onClick={handleDownloadGeoTiff}>
-              Download as GeoTIFF
+              {t('Download as GeoTIFF')}
             </MenuItem>
           )}
       </Menu>

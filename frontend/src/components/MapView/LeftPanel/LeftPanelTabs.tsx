@@ -12,6 +12,7 @@ import {
   ImageAspectRatioOutlined,
 } from '@material-ui/icons';
 import React, { useState } from 'react';
+import { useSafeTranslation } from '../../../i18n';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -86,6 +87,7 @@ function LeftPanelTabs({
   isPanelExtended,
   setIsPanelExtended,
 }: TabsProps) {
+  const { t } = useSafeTranslation();
   const classes = useStyles({ isPanelExtended });
   const [value, setValue] = useState(0);
 
@@ -109,7 +111,7 @@ function LeftPanelTabs({
             label={
               <Box display="flex">
                 <LayersOutlined style={{ verticalAlign: 'middle' }} />
-                <Box ml={1}>Layers</Box>
+                <Box ml={1}>{t('Layers')}</Box>
               </Box>
             }
             {...a11yProps(0)}
@@ -120,7 +122,7 @@ function LeftPanelTabs({
             label={
               <Box display="flex">
                 <BarChartOutlined style={{ verticalAlign: 'middle' }} />
-                <Box ml={1}>Charts</Box>
+                <Box ml={1}>{t('Charts')}</Box>
               </Box>
             }
             {...a11yProps(1)}
@@ -131,7 +133,7 @@ function LeftPanelTabs({
             label={
               <Box display="flex">
                 <ImageAspectRatioOutlined style={{ verticalAlign: 'middle' }} />
-                <Box ml={1}>Analysis</Box>
+                <Box ml={1}>{t('Analysis')}</Box>
               </Box>
             }
             {...a11yProps(2)}
