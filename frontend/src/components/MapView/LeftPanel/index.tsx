@@ -1,15 +1,10 @@
-import {
-  CircularProgress,
-  createStyles,
-  Drawer,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
+import { createStyles, Drawer, makeStyles, Theme } from '@material-ui/core';
 import React, { useState } from 'react';
 import LayersPanel from './layersPanel';
 import { Extent } from '../Layers/raster-utils';
 import AnalysisPanel from './AnalysisPanel';
 import LeftPanelTabs from './LeftPanelTabs';
+import ChartsPanel from './ChartsPanel';
 
 interface StyleProps {
   isPanelExtended: boolean;
@@ -40,7 +35,7 @@ function LeftPanel({ extent }: LeftPanelProps) {
         isPanelExtended={isPanelExtended}
         setIsPanelExtended={setIsPanelExtended}
         layersPanel={<LayersPanel extent={extent} />}
-        chartsPanel={<CircularProgress />}
+        chartsPanel={<ChartsPanel />}
         analysisPanel={
           <AnalysisPanel
             extent={extent}
