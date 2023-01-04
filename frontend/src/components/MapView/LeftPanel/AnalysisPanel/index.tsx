@@ -256,7 +256,10 @@ function AnalysisPanel({
         value={value}
         control={
           <Radio
-            className={classes.radioOptions}
+            classes={{
+              root: classes.radioOptions,
+              checked: classes.radioOptionsChecked,
+            }}
             color="default"
             size="small"
           />
@@ -545,26 +548,28 @@ function AnalysisPanel({
                 >
                   {t('Threshold')}
                 </Typography>
-                <TextField
-                  id="outlined-number-low"
-                  error={!!thresholdError}
-                  helperText={t(thresholdError || '')}
-                  className={classes.numberField}
-                  label={t('Below')}
-                  type="number"
-                  value={belowThreshold}
-                  onChange={onThresholdOptionChange('below')}
-                  variant="outlined"
-                />
-                <TextField
-                  id="outlined-number-high"
-                  label={t('Above')}
-                  classes={{ root: classes.numberField }}
-                  value={aboveThreshold}
-                  onChange={onThresholdOptionChange('above')}
-                  type="number"
-                  variant="outlined"
-                />
+                <div style={{ display: 'flex' }}>
+                  <TextField
+                    id="outlined-number-low"
+                    error={!!thresholdError}
+                    helperText={t(thresholdError || '')}
+                    className={classes.numberField}
+                    label={t('Below')}
+                    type="number"
+                    value={belowThreshold}
+                    onChange={onThresholdOptionChange('below')}
+                    variant="outlined"
+                  />
+                  <TextField
+                    id="outlined-number-high"
+                    label={t('Above')}
+                    classes={{ root: classes.numberField }}
+                    value={aboveThreshold}
+                    onChange={onThresholdOptionChange('above')}
+                    type="number"
+                    variant="outlined"
+                  />
+                </div>
               </div>
               <div className={classes.datePickerContainer}>
                 <Typography
@@ -725,6 +730,7 @@ const styles = () =>
     },
     analysisPanelParamContainer: {
       display: 'flex',
+      flexDirection: 'column',
       marginBottom: 30,
       marginLeft: 10,
       width: '90%',
@@ -745,8 +751,12 @@ const styles = () =>
       alignItems: 'center',
     },
     radioOptions: {
-      color: 'black',
-      padding: '2px 10px 2px 20px',
+      color: '#333333',
+      opacity: 0.6,
+    },
+    radioOptionsChecked: {
+      color: '#4CA1AD',
+      opacity: 1,
     },
     analysisButtonContainer: {
       position: 'absolute',
