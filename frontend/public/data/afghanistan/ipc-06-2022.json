@@ -1,0 +1,242 @@
+{
+  "DataList": [
+    {
+      "admin1Name_en": "Badakhshan",
+      "admin1Pcode": "AF17",
+      "area_phase": 4,
+      "pop_p3+": 770665,
+      "perc_p3+": 55
+    },
+    {
+      "admin1Name_en": "Badghis",
+      "admin1Pcode": "AF31",
+      "area_phase": 4,
+      "pop_p3+": 365283,
+      "perc_p3+": 50
+    },
+    {
+      "admin1Name_en": "Baghlan",
+      "admin1Pcode": "AF09",
+      "area_phase": 3,
+      "pop_p3+": 323139,
+      "perc_p3+": 30
+    },
+    {
+      "admin1Name_en": "Balkh",
+      "admin1Pcode": "AF21",
+      "area_phase": 4,
+      "pop_p3+": 678006,
+      "perc_p3+": 50
+    },
+    {
+      "admin1Name_en": "Bamyan",
+      "admin1Pcode": "AF10",
+      "area_phase": 3,
+      "pop_p3+": 296438,
+      "perc_p3+": 45
+    },
+    {
+      "admin1Name_en": "Daykundi",
+      "admin1Pcode": "AF24",
+      "area_phase": 4,
+      "pop_p3+": 377627,
+      "perc_p3+": 55
+    },
+    {
+      "admin1Name_en": "Farah",
+      "admin1Pcode": "AF33",
+      "area_phase": 3,
+      "pop_p3+": 224531,
+      "perc_p3+": 30
+    },
+    {
+      "admin1Name_en": "Faryab",
+      "admin1Pcode": "AF29",
+      "area_phase": 4,
+      "pop_p3+": 647775,
+      "perc_p3+": 50
+    },
+    {
+      "admin1Name_en": "Ghazni",
+      "admin1Pcode": "AF11",
+      "area_phase": 3,
+      "pop_p3+": 633917,
+      "perc_p3+": 35
+    },
+    {
+      "admin1Name_en": "Ghor",
+      "admin1Pcode": "AF23",
+      "area_phase": 4,
+      "pop_p3+": 508110,
+      "perc_p3+": 50
+    },
+    {
+      "admin1Name_en": "Hilmand",
+      "admin1Pcode": "AF30",
+      "area_phase": 3,
+      "pop_p3+": 721233,
+      "perc_p3+": 40
+    },
+    {
+      "admin1Name_en": "Hirat",
+      "admin1Pcode": "AF32",
+      "area_phase": 3,
+      "pop_p3+": 933399,
+      "perc_p3+": 45
+    },
+    {
+      "admin1Name_en": "Jawzjan",
+      "admin1Pcode": "AF28",
+      "area_phase": 4,
+      "pop_p3+": 287038,
+      "perc_p3+": 45
+    },
+    {
+      "admin1Name_en": "Kabul",
+      "admin1Pcode": "AF01",
+      "area_phase": 3,
+      "pop_p3+": 503421,
+      "perc_p3+": 50
+    },
+    {
+      "admin1Name_en": "Kandahar",
+      "admin1Pcode": "AF27",
+      "area_phase": 3,
+      "pop_p3+": 521348,
+      "perc_p3+": 45
+    },
+    {
+      "admin1Name_en": "Kapisa",
+      "admin1Pcode": "AF02",
+      "area_phase": 3,
+      "pop_p3+": 259641,
+      "perc_p3+": 40
+    },
+    {
+      "admin1Name_en": "Khost",
+      "admin1Pcode": "AF14",
+      "area_phase": 3,
+      "pop_p3+": 296147,
+      "perc_p3+": 35
+    },
+    {
+      "admin1Name_en": "Kunar",
+      "admin1Pcode": "AF15",
+      "area_phase": 3,
+      "pop_p3+": 265539,
+      "perc_p3+": 40
+    },
+    {
+      "admin1Name_en": "Kunduz",
+      "admin1Pcode": "AF19",
+      "area_phase": 3,
+      "pop_p3+": 439758,
+      "perc_p3+": 35
+    },
+    {
+      "admin1Name_en": "Laghman",
+      "admin1Pcode": "AF07",
+      "area_phase": 3,
+      "pop_p3+": 327999,
+      "perc_p3+": 50
+    },
+    {
+      "admin1Name_en": "Logar",
+      "admin1Pcode": "AF05",
+      "area_phase": 3,
+      "pop_p3+": 230967,
+      "perc_p3+": 40
+    },
+    {
+      "admin1Name_en": "Nangarhar",
+      "admin1Pcode": "AF06",
+      "area_phase": 3,
+      "pop_p3+": 758496,
+      "perc_p3+": 40
+    },
+    {
+      "admin1Name_en": "Nimroz",
+      "admin1Pcode": "AF34",
+      "area_phase": 4,
+      "pop_p3+": 146400,
+      "perc_p3+": 60
+    },
+    {
+      "admin1Name_en": "Nuristan",
+      "admin1Pcode": "AF16",
+      "area_phase": 4,
+      "pop_p3+": 108880,
+      "perc_p3+": 50
+    },
+    {
+      "admin1Name_en": "Paktika",
+      "admin1Pcode": "AF12",
+      "area_phase": 3,
+      "pop_p3+": 515439,
+      "perc_p3+": 50
+    },
+    {
+      "admin1Name_en": "Paktya",
+      "admin1Pcode": "AF13",
+      "area_phase": 3,
+      "pop_p3+": 325389,
+      "perc_p3+": 40
+    },
+    {
+      "admin1Name_en": "Panjsher",
+      "admin1Pcode": "AF08",
+      "area_phase": 3,
+      "pop_p3+": 90353,
+      "perc_p3+": 40
+    },
+    {
+      "admin1Name_en": "Parwan",
+      "admin1Pcode": "AF03",
+      "area_phase": 3,
+      "pop_p3+": 343223,
+      "perc_p3+": 35
+    },
+    {
+      "admin1Name_en": "Samangan",
+      "admin1Pcode": "AF20",
+      "area_phase": 4,
+      "pop_p3+": 286127,
+      "perc_p3+": 50
+    },
+    {
+      "admin1Name_en": "Sar-e-Pul",
+      "admin1Pcode": "AF22",
+      "area_phase": 3,
+      "pop_p3+": 371477,
+      "perc_p3+": 45
+    },
+    {
+      "admin1Name_en": "Takhar",
+      "admin1Pcode": "AF18",
+      "area_phase": 3,
+      "pop_p3+": 536371,
+      "perc_p3+": 40
+    },
+    {
+      "admin1Name_en": "Uruzgan",
+      "admin1Pcode": "AF25",
+      "area_phase": 3,
+      "pop_p3+": 260858,
+      "perc_p3+": 45
+    },
+    {
+      "admin1Name_en": "Maidan Wardak",
+      "admin1Pcode": "AF04",
+      "area_phase": 3,
+      "pop_p3+": 394959,
+      "perc_p3+": 45
+    },
+    {
+      "admin1Name_en": "Zabul",
+      "admin1Pcode": "AF26",
+      "area_phase": 3,
+      "pop_p3+": 229914,
+      "perc_p3+": 45
+    }
+  ]
+}

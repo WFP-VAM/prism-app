@@ -24,7 +24,7 @@
       { "arraysInObjects": true, "objectsInObjects": true }
     ],
     // More verbose prettier suggestions
-    "prettier/prettier": ["warn"],
+    "prettier/prettier": ["warn", { "endOfLine": "auto" }],
     "import/extensions": [
       "error",
       "ignorePackages",

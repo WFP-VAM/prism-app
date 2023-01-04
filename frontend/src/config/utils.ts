@@ -12,6 +12,7 @@ import {
   StatsApi,
   TableType,
   WMSLayerProps,
+  StaticRasterLayerProps,
 } from './types';
 
 // Typescript does not handle our configuration methods very well
@@ -86,6 +87,11 @@ const getLayerByKey = (layerKey: LayerKey): LayerType => {
     case 'boundary':
       if (checkRequiredKeys(BoundaryLayerProps, definition, true)) {
         return definition as BoundaryLayerProps;
+      }
+      return throwInvalidLayer();
+    case 'static_raster':
+      if (checkRequiredKeys(StaticRasterLayerProps, definition, true)) {
+        return definition;
       }
       return throwInvalidLayer();
     default:

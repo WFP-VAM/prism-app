@@ -43,6 +43,7 @@ import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
 import LayerContentPreview from './layerContentPreview';
 import AnalysisDownloadButton from './AnalysisDownloadButton';
 import AdminLevelDataDownloadButton from './AdminLevelDataDownloadButton';
+import StacRasterDownloadButton from './StacRasterDownloadButton';
 /**
  * Returns layer identifier used to perform exposure analysis.
  *
@@ -126,6 +127,16 @@ function Legends({ classes, layers, extent }: LegendsProps) {
               </Grid>
             </>
           )}
+          {layer.type === 'wms' &&
+            layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && (
+              // the backend works only for raster from wfp for now
+              <>
+                <Divider />
+                <Grid item>
+                  <StacRasterDownloadButton layer={layer} extent={extent} />
+                </Grid>
+              </>
+            )}
         </LegendItem>
       );
     }),
@@ -206,6 +217,8 @@ function LegendItem({
       ): [string, string] => {
         switch (layerType) {
           case 'wms':
+            return [`layer-${id}`, 'raster-opacity'];
+          case 'static_raster':
             return [`layer-${id}`, 'raster-opacity'];
           case 'impact':
           case 'admin_level_data':

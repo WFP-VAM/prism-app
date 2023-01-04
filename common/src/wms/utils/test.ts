@@ -13,19 +13,16 @@ import {
   parseLayerDates,
 } from ".";
 
-const xml111 = findAndRead(
-  "./data/geonode-wfp-wms-get-capabilities-1.1.1.xml",
-  {
-    encoding: "utf-8",
-  }
-);
+const xml111 = findAndRead("geonode-wfp-wms-get-capabilities-1.1.1.xml", {
+  encoding: "utf-8",
+});
 
-const xml = findAndRead("./data/geonode-wms-get-capabilities-1.3.0.xml", {
+const xml = findAndRead("geonode-wfp-wms-get-capabilities-1.3.0.xml", {
   encoding: "utf-8",
 });
 
 const odcXml = findAndRead(
-  "./data/mongolia-sibelius-datacube-wms-get-capabilities-1.3.0.xml",
+  "mongolia-sibelius-datacube-wms-get-capabilities-1.3.0.xml",
   {
     encoding: "utf-8",
   }
@@ -79,6 +76,7 @@ test("parse layer dates", async ({ eq }) => {
 
 test("parse layer days (1.1.1)", async ({ eq }) => {
   const layer = findLayer(xml111, "col_gdacs_buffers")!;
+  eq(layer.length, 2503);
   const layerDays = parseLayerDates(layer);
   eq(layerDays.length, 26);
   eq(layerDays[0], "2011-08-07T15:00:00.000Z");

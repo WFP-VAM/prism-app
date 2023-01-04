@@ -2,6 +2,8 @@ import { has, get } from 'lodash';
 
 import { PublicClientApplication } from '@azure/msal-browser';
 
+import afghanistan from './afghanistan';
+
 import cambodia from './cambodia';
 
 import colombia from './colombia';
@@ -22,11 +24,7 @@ import jordan from './jordan';
 
 import kyrgyzstan from './kyrgyzstan';
 
-import {
-  mongoliaConfig,
-  mongoliaRawLayers,
-  mongoliaRawTables,
-} from './mongolia';
+import mongolia from './mongolia';
 
 import mozambique from './mozambique';
 
@@ -53,6 +51,7 @@ const DEFAULT_BOUNDARIES_FOLDER =
   'https://prism-admin-boundaries.s3.us-east-2.amazonaws.com';
 
 const configMap = {
+  afghanistan,
   cuba,
   cambodia,
   colombia,
@@ -66,12 +65,7 @@ const configMap = {
   },
   jordan,
   kyrgyzstan,
-  mongolia: {
-    appConfig: mongoliaConfig,
-    rawLayers: mongoliaRawLayers,
-    rawTables: mongoliaRawTables,
-    defaultBoundariesFile: 'mng_admin_boundaries.json',
-  },
+  mongolia,
   mozambique,
   myanmar,
   namibia,

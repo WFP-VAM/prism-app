@@ -1,12 +1,8 @@
 import { parseName } from "../utils";
 
-// classes that extend this base Layer class
-// should implement the following functions
-// getLayerId, getLayerData, getLayerName,
-// getLayerDescription, and getLayerDates
-
 export class Layer {
   public capabilities: Promise<string>;
+  public debug: boolean | undefined;
   public id: string; // e.g., namespace:feature_type
   public layer: Promise<string> | undefined;
   public namespace: string | undefined;
@@ -16,16 +12,19 @@ export class Layer {
 
   constructor({
     capabilities,
+    debug,
     id,
     layer,
     fetch: customFetch,
   }: {
     capabilities: string | Promise<string>;
+    debug?: boolean;
     id: string;
     layer?: string;
     fetch?: any;
   }) {
     this.capabilities = Promise.resolve(capabilities);
+    this.debug = debug;
     this.id = id;
 
     if (layer) {
