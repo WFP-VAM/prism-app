@@ -131,9 +131,23 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
             count !== -1 ? count : `${t('more than')} ${to}`
           }`;
         }}
+        SelectProps={{
+          classes: {
+            root: classes.rowsPerPage,
+          },
+        }}
+        nextIconButtonProps={{
+          classes: {
+            root: classes.nextButton,
+          },
+        }}
+        backIconButtonProps={{
+          classes: {
+            root: classes.backButton,
+          },
+        }}
         style={{
           color: 'black',
-          width: 'auto',
         }}
       />
     </>
@@ -160,6 +174,15 @@ const styles = (theme: Theme) =>
     },
     innerAnalysisButton: {
       backgroundColor: theme.surfaces?.dark,
+    },
+    rowsPerPage: {
+      maxWidth: '40%',
+    },
+    backButton: {
+      maxWidth: '10%',
+    },
+    nextButton: {
+      maxWidth: '10%',
     },
   });
 
