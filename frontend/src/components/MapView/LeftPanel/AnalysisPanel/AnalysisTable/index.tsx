@@ -49,7 +49,14 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
     setIsAscending(newIsAsc);
   };
   return (
-    <>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <TableContainer className={classes.tableContainer}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -150,7 +157,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
           color: 'black',
         }}
       />
-    </>
+    </div>
   );
 }
 
