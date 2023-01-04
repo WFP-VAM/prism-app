@@ -60,86 +60,7 @@ export const getParentRelation = (
   ];
 };
 
-type PropertyName = {
-  adminLevelNameProperty: string;
-  adminLevelNamePropertyChild: string;
-  adminLevelNamePropertyParent: string;
-};
-
-type AdminLevelObject = {
-  level: number;
-  names: AdminLevelName[];
-};
-
-type AdminLevelProperty = {
-  key: string;
-  value: string;
-};
-
-type AdminLevelName = {
-  name: AdminLevelProperty;
-  parent: AdminLevelProperty;
-  child: AdminLevelProperty;
-};
-
-const getAdminLevelValueSet = (
-  features: Feature<MultiPolygon>[],
-  propertyName: PropertyName,
-): AdminLevelName[] => {
-  const {
-    adminLevelNameProperty,
-    adminLevelNamePropertyParent,
-    adminLevelNamePropertyChild,
-  } = propertyName;
-
-  // Get all possible values for the given adminLevelNameProperty.
-  const values: AdminLevelName[] = features.map(feature => ({
-    name: {
-      key: adminLevelNameProperty,
-      value: feature.properties![adminLevelNameProperty],
-    },
-    parent: {
-      key: adminLevelNamePropertyParent,
-      value: feature.properties![adminLevelNamePropertyParent],
-    },
-    child: {
-      key: adminLevelNamePropertyChild,
-      value: feature.properties![adminLevelNamePropertyChild],
-    },
-  }));
-
-  const valueSet: AdminLevelName[] = values.reduce((set, item) => {
-    if (
-      set.find(
-        itemSet =>
-          item.name.value === itemSet.name.value &&
-          item.parent.value === itemSet.parent.value,
-      )
-    ) {
-      return set;
-    }
-
-    return [...set, item];
-  }, [] as AdminLevelName[]);
-
-  return valueSet;
-};
-
-const createRelationObj = (
-  features: Feature<MultiPolygon>[],
-  adminLevelName: AdminLevelName,
-  level: number,
-): BoundaryRelation => {
-  const { name, parent, child } = adminLevelName;
-
-  const matches = features
-    .filter(
-      feature =>
-        feature.properties![name.key] === name.value &&
-        feature.properties![parent.key] === parent.value,
-    )
-    .map(feature => feature as Feature<MultiPolygon>);
-
+const createBBox = (matches: Feature<MultiPolygon>[]): BBox => {
   // Create Bbox
   const unionGeom = matches.reduce((unionGeometry, match) => {
     const unionObj = union(unionGeometry, match);
@@ -151,29 +72,7 @@ const createRelationObj = (
 
   const bboxUnion: BBox = bbox(unionGeom);
 
-  // Get childrens.
-  const children: string[] = matches
-    .map(feature => feature.properties![child.key])
-    .reduce((childrenSet, featureName) => {
-      if (featureName === undefined || childrenSet.includes(featureName)) {
-        return childrenSet;
-      }
-
-      return [...childrenSet, featureName];
-    }, []);
-
-  const parentNames: string[] = [
-    ...new Set(matches.map(match => match.properties![parent.key])),
-  ];
-
-  // Parent names should be the same.
-  return {
-    name: name.value,
-    parent: parentNames[0],
-    level,
-    children: Array.prototype.sort.call(children),
-    bbox: bboxUnion,
-  };
+  return bboxUnion;
 };
 
 const buildRelationTree = (
@@ -183,34 +82,57 @@ const buildRelationTree = (
   const { features } = boundaryLayerData;
   const featuresMulti = features as Feature<MultiPolygon>[];
 
-  const propertyNames: PropertyName[] = adminLevelNames.map((_, index) => ({
-    adminLevelNameProperty: adminLevelNames[index],
-    adminLevelNamePropertyChild: adminLevelNames[index + 1],
-    adminLevelNamePropertyParent: adminLevelNames[index - 1],
-  }));
+  const relations = featuresMulti.reduce((relationSet, searchFeature) => {
+    const { properties } = searchFeature;
 
-  const adminLevelObjects: AdminLevelObject[] = propertyNames.map(
-    (propertyName, index) => ({
-      level: index,
-      names: getAdminLevelValueSet(featuresMulti, propertyName),
-    }),
-  );
+    const relationsFeature = adminLevelNames.reduce(
+      (relationLevelSet, adminLevelName, level) => {
+        const searchName = properties![adminLevelName];
 
-  const relationsAdminLevel = adminLevelObjects.map(adminLevelValue => {
-    const { level, names } = adminLevelValue;
-    const relations = names.map(adminLevelName =>
-      createRelationObj(featuresMulti, adminLevelName, level),
+        // If search name already exists within the featureSet, discard it.
+        const relationMatch = relationSet.find(
+          relation => relation.name === searchName && relation.level === level,
+        );
+        if (relationMatch) {
+          return relationLevelSet;
+        }
+
+        // Find within featureCollection all features matching the property field and value.
+        const matches: Feature<MultiPolygon>[] = featuresMulti.filter(
+          feature => feature.properties![adminLevelName] === searchName,
+        );
+
+        const bboxUnion = createBBox(matches);
+
+        const parent =
+          level === 0 ? undefined : properties![adminLevelNames[level - 1]];
+
+        const children =
+          level === adminLevelNames.length - 1
+            ? []
+            : matches.map(
+                feature => feature.properties![adminLevelNames[level + 1]],
+              );
+        const childrenSet = [...new Set(children)];
+        const childrenSetSorted = Array.prototype.sort.call(childrenSet);
+
+        const relation: BoundaryRelation = {
+          bbox: bboxUnion,
+          level,
+          name: searchName,
+          parent,
+          children: childrenSetSorted,
+        };
+
+        return [...relationLevelSet, relation];
+      },
+      [] as BoundaryRelation[],
     );
 
-    return relations;
-  });
+    return [...relationSet, ...relationsFeature];
+  }, [] as BoundaryRelation[]);
 
-  const relationsFlatten = relationsAdminLevel.reduce(
-    (arr, item) => [...arr, ...item],
-    [] as BoundaryRelation[],
-  );
-
-  return relationsFlatten;
+  return relations;
 };
 
 export const loadBoundaryRelations = (
@@ -234,7 +156,10 @@ export const loadBoundaryRelations = (
     [] as BoundaryRelation[],
   );
 
-  return { levels: adminLevelNumbers, relations: results };
+  return {
+    levels: adminLevelNames.map((_, idx) => idx),
+    relations: results,
+  };
 };
 
 export const setMenuItemStyle = (
