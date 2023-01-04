@@ -19,6 +19,7 @@ const boundaryLayer = getBoundaryLayerSingleton();
 const useStyles = makeStyles(() =>
   createStyles({
     selectRoot: {
+      marginTop: 30,
       color: 'black',
       minWidth: '300px',
       maxWidth: '350px',
@@ -41,7 +42,6 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'space-between',
     },
   }),
 );
@@ -49,6 +49,7 @@ const useStyles = makeStyles(() =>
 function ChartsPanel() {
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
+  const [admin2Title, setAdmin2Title] = useState('');
   const { i18n: i18nLocale } = useSafeTranslation();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -76,6 +77,28 @@ function ChartsPanel() {
           </MenuItem>
         ))}
       </TextField>
+      {admin1Title && (
+        <TextField
+          classes={{ root: classes.selectRoot }}
+          id="outlined-admin-2"
+          select
+          label="Select Admin 2"
+          value={admin2Title}
+          onChange={e => {
+            console.log(e);
+            setAdmin2Title(e.target.value);
+          }}
+          variant="outlined"
+        >
+          {categories
+            .filter(elem => elem.title === admin1Title)[0]
+            .children.map(option => (
+              <MenuItem key={option.value} value={option.label}>
+                {option.label}
+              </MenuItem>
+            ))}
+        </TextField>
+      )}
     </Box>
   );
 }
