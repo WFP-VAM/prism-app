@@ -4,9 +4,8 @@ import { Feature, MultiPolygon, point } from '@turf/helpers';
 import { buffer } from 'd3-fetch';
 import * as GeoTIFF from 'geotiff';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { createGetMapUrl, formatUrl } from 'prism-common';
+import { createGetCoverageUrl, createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import { WcsGetCoverageVersion, WMSLayerProps } from '../../../config/types';
 import { addNotification } from '../../../context/notificationStateSlice';
 import { BACKEND_URL } from '../../../utils/constants';
 
@@ -90,106 +89,6 @@ export function getWMSUrl(
     ...override,
   });
 }
-export function getWCSv1Url(
-  baseUrl: string,
-  layerName: string,
-  date: string | undefined,
-  xRange: readonly [number, number],
-  yRange: readonly [number, number],
-  width: number,
-  height?: number,
-) {
-  const params = {
-    service: 'WCS',
-    request: 'GetCoverage',
-    version: '1.0.0',
-    coverage: layerName,
-    crs: 'EPSG:4326',
-    bbox: [xRange[0], yRange[0], xRange[1], yRange[1]]
-      .map(v => v.toFixed(1))
-      .join(','),
-    width: width.toString(),
-    height: (height || width).toString(),
-    format: 'GeoTIFF',
-    ...(date && {
-      time: date,
-    }),
-  };
-  return formatUrl(baseUrl, params);
-}
-
-export function getWCSv2Url(
-  layer: WMSLayerProps,
-  date: string | undefined,
-  extent: Extent,
-) {
-  const params = {
-    service: 'WCS',
-    request: 'GetCoverage',
-    version: layer.wcsConfig?.version,
-    coverageId: layer.serverLayerName,
-  };
-
-  // Subsets are used as spatial and temporal filters.
-  // For mote info: https://docs.geoserver.geo-solutions.it/edu/en/wcs/get.html
-  const spatialSubsets: string[] = [
-    `Long(${extent[0]},${extent[2]})`,
-    `Lat(${extent[1]},${extent[3]})`,
-  ];
-
-  const subsets = date
-    ? [...spatialSubsets, `time("${date}")`]
-    : spatialSubsets;
-
-  const formattedUrl = formatUrl(layer.baseUrl, params);
-
-  const formattedSubsets = subsets.map(s => `subset=${s}`).join('&');
-
-  return `${formattedUrl}&${formattedSubsets}`;
-}
-
-export function WCSRequestUrl(
-  layer: WMSLayerProps,
-  date: string | undefined,
-  extent: Extent,
-  maxPixels = 5096,
-) {
-  const { baseUrl, serverLayerName, wcsConfig } = layer;
-  const [minX, minY, maxX, maxY] = extent;
-
-  if (minX > maxX || minY > maxY) {
-    throw new Error(
-      `Could not generate WCS request for ${baseUrl}/${serverLayerName}: the extent ${extent} seems malformed or else may contain "wrapping" which is not implemented in the function 'WCSRequestUrl'`,
-    );
-  }
-
-  if (wcsConfig?.version === WcsGetCoverageVersion.twoZeroZero) {
-    return getWCSv2Url(layer, date, extent);
-  }
-
-  const resolution = wcsConfig?.pixelResolution || 256;
-
-  // Get our image width & height at either the desired resolution or a down-sampled resolution if the resulting
-  // dimensions would exceed our `maxPixels` in height or width
-  const xRange = maxX - minX;
-  const yRange = maxY - minY;
-
-  const maxDim = Math.min(maxPixels, xRange * resolution, yRange * resolution);
-  const scale = maxDim / Math.max(xRange, yRange);
-
-  const width = Math.ceil(xRange * scale);
-  const height = Math.ceil(yRange * scale);
-
-  return getWCSv1Url(
-    baseUrl,
-    serverLayerName,
-    date,
-    [minX, maxX],
-    [minY, maxY],
-    width,
-    height,
-  );
-}
 
 /**
  * Generates an array of WCS URLs to request GeoTiff tiles based on the given extent and pixel resolution.
@@ -233,7 +132,15 @@ export function WCSTileUrls(
           yIdx * degPerTile + minY,
           (yIdx + 1) * degPerTile + minY,
         ] as const;
-        return getWCSv1Url(baseUrl, layerName, date, x, y, pixelsPerTile);
+        return createGetCoverageUrl({
+          bbox: [x[0], y[0], x[1], y[1]],
+          date,
+          height: pixelsPerTile,
+          layerId: layerName,
+          width: pixelsPerTile,
+          url: baseUrl,
+          version: '1.0.0',
+        });
       });
     })
     .flat();
