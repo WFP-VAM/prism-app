@@ -20,6 +20,7 @@ import {
 } from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
+import { getLowestAdminLevelName } from '../../utils/admin-utils';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
   const matchStr = 'layer-';
@@ -77,13 +78,15 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
     ? uniq(features.map(f => f.properties && f.properties[key]))
     : [statistic];
 
+  const lowestLevel = getLowestAdminLevelName();
+
   const featureProperties = features
     .filter(
       feature => feature.properties?.[key] || feature.properties?.[statistic],
     )
     .map(feature => {
       return {
-        [groupBy]: feature.properties?.[groupBy],
+        [groupBy]: feature.properties?.[lowestLevel],
         [key]: feature.properties?.[key],
         [statistic]: feature.properties?.[statistic],
       };
@@ -121,15 +124,27 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
     return extras.length !== 0 ? assign(row, ...extras) : row;
   });
 
+  const columnMapping = {
+    [groupBy]: 'Name',
+    sum: 'Total',
+  };
+
   const headlessRows = groupedRowDataWithAllLabels.map(row => {
-    // TODO - Switch between MAX and SUM depending on the polygon source.
-    // Then re-add "Total" to the list of columns
-    // const total = fields.map(f => row[f]).reduce((a, b) => a + b);
-    // return assign(row, { Total: total });
-    return row;
+    // Replace the group by column name with generic value.
+    const obj = Object.entries(row).reduce(
+      (acc, [objKey, value]) => ({
+        ...acc,
+        [columnMapping[objKey] || objKey]: value,
+      }),
+      [],
+    );
+    return obj;
   });
 
-  const columns = [groupBy, ...fields]; // 'Total'
+  const columns = [
+    columnMapping[groupBy],
+    ...fields.map(field => columnMapping[field] || field),
+  ];
   const headRow = zipObject(columns, columns);
   const rows = [headRow, ...headlessRows];
   return { columns, rows };
