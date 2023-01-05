@@ -27,6 +27,7 @@ import { LayerData } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../../i18n';
 import { getCategories } from '../../Layers/BoundaryDropdown';
+import ChartSection from './ChartSection';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -119,7 +120,7 @@ function ChartsPanel() {
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
   const [admin2Title, setAdmin2Title] = useState('');
-  const [selectedLayers, setSelectedLayers] = useState<string[]>([]);
+  const [selectedLayerTitles, setSelectedLayerTitles] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
@@ -160,7 +161,7 @@ function ChartsPanel() {
   const onChangeChartLayers = (
     event: React.ChangeEvent<{ value: unknown }>,
   ) => {
-    setSelectedLayers(event.target.value as string[]);
+    setSelectedLayerTitles(event.target.value as string[]);
   };
 
   return (
@@ -237,7 +238,7 @@ function ChartsPanel() {
             labelId="chart-layers-mutiple-checkbox-label"
             id="chart-layers-mutiple-checkbox"
             multiple
-            value={selectedLayers}
+            value={selectedLayerTitles}
             onChange={onChangeChartLayers}
             input={<Input />}
             renderValue={selected => (selected as string[]).join(', ')}
@@ -246,7 +247,7 @@ function ChartsPanel() {
             {chartLayers.map(layer => (
               <MenuItem key={layer.id} value={layer.title}>
                 <Checkbox
-                  checked={selectedLayers.indexOf(layer.title) > -1}
+                  checked={selectedLayerTitles.indexOf(layer.title) > -1}
                   color="primary"
                 />
                 <ListItemText
@@ -258,7 +259,19 @@ function ChartsPanel() {
           </Select>
         </FormControl>
       </Box>
-      <Box>Charts</Box>
+      <Box>
+        {adminProperties && selectedDate && selectedLayerTitles.length && (
+          <ChartSection
+            chartLayer={
+              chartLayers.filter(layer =>
+                selectedLayerTitles.includes(layer.title),
+              )[0]
+            }
+            adminProperties={adminProperties}
+            date={selectedDate}
+          />
+        )}
+      </Box>
     </Box>
   );
 }
