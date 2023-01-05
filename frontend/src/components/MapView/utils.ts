@@ -9,10 +9,7 @@ import {
   uniq,
 } from 'lodash';
 import { Map } from 'mapbox-gl';
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../config/utils';
+import { LayerDefinitions } from '../../config/utils';
 import { formatFeatureInfo } from '../../utils/server-utils';
 import { getExtent } from './Layers/raster-utils';
 import {
