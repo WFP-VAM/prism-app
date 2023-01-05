@@ -73,7 +73,3 @@ export function getDateFromList(
   );
   return foundDate || availableDates[availableDates.length - 1];
 }
-
-export const getLowestAdminLevelName = (
-  adminLevelNames: BoundaryLayerProps['adminLevelNames'],
-): string => adminLevelNames[adminLevelNames.length - 1];
