@@ -20,11 +20,13 @@ import Chart from '../../../../DataDrawer/Chart';
 function ChartSection({
   chartLayer,
   adminProperties,
+  adminLevel,
   date,
   classes,
 }: ChartSectionProps) {
   const { t } = useSafeTranslation();
   const [chartDataset, setChartDataset] = useState<undefined | TableData>();
+  const { levels } = chartLayer.chartData!;
 
   const params = useMemo(
     () =>
@@ -37,7 +39,7 @@ function ChartSection({
 
   useEffect(() => {
     const requestParams: DatasetRequestParams = {
-      id: params.id,
+      id: levels[adminLevel - 1].id,
       boundaryProps: params.boundaryProps,
       url: params.url,
       serverLayerName: params.serverLayerName,
@@ -52,11 +54,12 @@ function ChartSection({
 
     getData();
   }, [
+    adminLevel,
     adminProperties,
     date,
+    levels,
     params.boundaryProps,
     params.datasetFields,
-    params.id,
     params.serverLayerName,
     params.url,
   ]);
@@ -102,6 +105,7 @@ const styles = () =>
 export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
+  adminLevel: 1 | 2;
   date: number;
 }
 

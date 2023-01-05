@@ -102,6 +102,13 @@ const useStyles = makeStyles(() =>
     calendarPopper: {
       zIndex: 3,
     },
+    chartsPanelCharts: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignContent: 'center',
+      flexWrap: 'wrap',
+      flexGrow: 4,
+    },
   }),
 );
 
@@ -120,6 +127,7 @@ function ChartsPanel() {
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
   const [admin2Title, setAdmin2Title] = useState('');
+  const [adminLevel, setAdminLevel] = useState<1 | 2>(1);
   const [selectedLayerTitles, setSelectedLayerTitles] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
 
@@ -146,6 +154,7 @@ function ChartsPanel() {
     }
     setAdmin1Title(event.target.value);
     setAdmin2Title('');
+    setAdminLevel(1);
   };
 
   const onChangeAdmin2 = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,6 +165,7 @@ function ChartsPanel() {
       setAdminProperties(getProperties(admin2Id, data));
     }
     setAdmin2Title(event.target.value);
+    setAdminLevel(2);
   };
 
   const onChangeChartLayers = (
@@ -259,18 +269,26 @@ function ChartsPanel() {
           </Select>
         </FormControl>
       </Box>
-      <Box>
-        {adminProperties && selectedDate && selectedLayerTitles.length && (
-          <ChartSection
-            chartLayer={
-              chartLayers.filter(layer =>
-                selectedLayerTitles.includes(layer.title),
-              )[0]
-            }
-            adminProperties={adminProperties}
-            date={selectedDate}
-          />
-        )}
+      <Box className={classes.chartsPanelCharts}>
+        {adminProperties &&
+          selectedDate &&
+          selectedLayerTitles.length &&
+          chartLayers
+            .filter(layer => selectedLayerTitles.includes(layer.title))
+            .map(layer => (
+              <Box
+                style={{
+                  width: selectedLayerTitles.length === 1 ? '100%' : '45%',
+                }}
+              >
+                <ChartSection
+                  chartLayer={layer}
+                  adminProperties={adminProperties}
+                  adminLevel={adminLevel}
+                  date={selectedDate}
+                />
+              </Box>
+            ))}
       </Box>
     </Box>
   );
