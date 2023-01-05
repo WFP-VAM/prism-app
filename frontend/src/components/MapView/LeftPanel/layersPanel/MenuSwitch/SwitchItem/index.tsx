@@ -32,8 +32,10 @@ import {
 } from '../../../../../../utils/map-utils';
 import { getUrlKey, useUrlHistory } from '../../../../../../utils/url-utils';
 import { handleChangeOpacity } from '../../../../Legends/handleChangeOpacity';
+import { Extent } from '../../../../Layers/raster-utils';
+import LayerDownloadOptions from './LayerDownloadOptions';
 
-function SwitchItem({ classes, layer }: SwitchItemProps) {
+function SwitchItem({ classes, layer, extent }: SwitchItemProps) {
   const {
     id: layerId,
     title: layerTitle,
@@ -46,6 +48,7 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
   const map = useSelector(mapSelector);
   const [isOpacitySelected, setIsOpacitySelected] = useState(false);
   const [opacity, setOpacityValue] = useState<number>(initialOpacity || 0);
+
   const dispatch = useDispatch();
   const {
     updateHistory,
@@ -199,6 +202,11 @@ function SwitchItem({ classes, layer }: SwitchItemProps) {
         >
           <OpacityIcon />
         </IconButton>
+        <LayerDownloadOptions
+          layer={layer}
+          extent={extent}
+          selected={selected}
+        />
       </Box>
       {selected && isOpacitySelected && (
         <Box display="flex" justifyContent="right" alignItems="center">
@@ -311,6 +319,7 @@ const styles = () =>
 
 export interface SwitchItemProps extends WithStyles<typeof styles> {
   layer: LayerType;
+  extent?: Extent;
 }
 
 export default withStyles(styles)(SwitchItem);

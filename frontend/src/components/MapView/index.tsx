@@ -81,7 +81,6 @@ import {
 
 import { appConfig } from '../../config';
 import { LayerData, loadLayerData } from '../../context/layers/layer-data';
-import Analyser from './Analyser';
 import AnalysisLayer from './Layers/AnalysisLayer';
 import {
   DateCompatibleLayer,
@@ -200,6 +199,7 @@ function MapView({ classes }: MapViewProps) {
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     undefined,
   );
+
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
       if (layer.type === 'admin_level_data') {
@@ -540,7 +540,7 @@ function MapView({ classes }: MapViewProps) {
 
   return (
     <Box height="100%" width="100%">
-      <LeftPanel />
+      <LeftPanel extent={adminBoundariesExtent} />
       <Grid item className={classes.container}>
         {datesLoading && (
           <div className={classes.loading}>
@@ -582,7 +582,6 @@ function MapView({ classes }: MapViewProps) {
           className={classes.buttonContainer}
         >
           <Grid item>
-            <Analyser extent={adminBoundariesExtent} />
             <GotoBoundaryDropdown />
             {appConfig.alertFormActive ? (
               <AlertForm

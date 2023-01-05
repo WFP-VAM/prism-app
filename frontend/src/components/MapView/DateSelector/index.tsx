@@ -340,8 +340,7 @@ const styles = (theme: Theme) =>
     container: {
       position: 'absolute',
       bottom: '8%',
-      zIndex: theme.zIndex.modal,
-      width: '100vw',
+      width: '100%',
     },
 
     datePickerContainer: {

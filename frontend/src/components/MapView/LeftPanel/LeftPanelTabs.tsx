@@ -1,10 +1,18 @@
-import { Box, createStyles, makeStyles, Tab, Tabs } from '@material-ui/core';
+import {
+  Box,
+  createStyles,
+  makeStyles,
+  Tab,
+  Tabs,
+  Theme,
+} from '@material-ui/core';
 import {
   LayersOutlined,
   BarChartOutlined,
   ImageAspectRatioOutlined,
 } from '@material-ui/icons';
 import React, { useState } from 'react';
+import { useSafeTranslation } from '../../../i18n';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -35,15 +43,18 @@ function a11yProps(index: any) {
   };
 }
 
-const useStyles = makeStyles(() =>
+interface StyleProps {
+  isPanelExtended: boolean;
+}
+
+const useStyles = makeStyles<Theme, StyleProps>(() =>
   createStyles({
     root: {
-      width: '100%',
       height: '100%',
     },
     tabs: {
       backgroundColor: '#566064',
-      width: '100%',
+      width: ({ isPanelExtended }) => (isPanelExtended ? '50%' : '100%'),
     },
     indicator: {
       backgroundColor: '#53888F',
@@ -65,13 +76,23 @@ interface TabsProps {
   layersPanel: React.ReactNode;
   chartsPanel: React.ReactNode;
   analysisPanel: React.ReactNode;
+  isPanelExtended: boolean;
+  setIsPanelExtended: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
-  const classes = useStyles();
+function LeftPanelTabs({
+  layersPanel,
+  chartsPanel,
+  analysisPanel,
+  isPanelExtended,
+  setIsPanelExtended,
+}: TabsProps) {
+  const { t } = useSafeTranslation();
+  const classes = useStyles({ isPanelExtended });
   const [value, setValue] = useState(0);
 
   const handleChange = (_: any, newValue: number) => {
+    setIsPanelExtended(false);
     setValue(newValue);
   };
 
@@ -90,7 +111,7 @@ function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
             label={
               <Box display="flex">
                 <LayersOutlined style={{ verticalAlign: 'middle' }} />
-                <Box ml={1}>Layers</Box>
+                <Box ml={1}>{t('Layers')}</Box>
               </Box>
             }
             {...a11yProps(0)}
@@ -101,7 +122,7 @@ function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
             label={
               <Box display="flex">
                 <BarChartOutlined style={{ verticalAlign: 'middle' }} />
-                <Box ml={1}>Charts</Box>
+                <Box ml={1}>{t('Charts')}</Box>
               </Box>
             }
             {...a11yProps(1)}
@@ -112,7 +133,7 @@ function LeftPanelTabs({ layersPanel, chartsPanel, analysisPanel }: TabsProps) {
             label={
               <Box display="flex">
                 <ImageAspectRatioOutlined style={{ verticalAlign: 'middle' }} />
-                <Box ml={1}>Analysis</Box>
+                <Box ml={1}>{t('Analysis')}</Box>
               </Box>
             }
             {...a11yProps(2)}
