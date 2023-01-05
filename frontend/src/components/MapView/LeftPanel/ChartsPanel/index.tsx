@@ -1,21 +1,32 @@
 import {
   Box,
+  Checkbox,
   createStyles,
+  FormControl,
+  Input,
+  InputLabel,
+  ListItemText,
   makeStyles,
   MenuItem,
+  Select,
   TextField,
 } from '@material-ui/core';
 import { GeoJsonProperties } from 'geojson';
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { BoundaryLayerProps } from '../../../../config/types';
-import { getBoundaryLayerSingleton } from '../../../../config/utils';
+import {
+  getBoundaryLayerSingleton,
+  getLayersWithChart,
+} from '../../../../config/utils';
 import { LayerData } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../../i18n';
 import { getCategories } from '../../Layers/BoundaryDropdown';
 
 const boundaryLayer = getBoundaryLayerSingleton();
+
+const chartLayers = getLayersWithChart();
 
 function getProperties(
   id: string,
@@ -53,13 +64,39 @@ const useStyles = makeStyles(() =>
       flexDirection: 'column',
       alignItems: 'center',
     },
+    layerFormControl: {
+      marginTop: 30,
+      minWidth: '300px',
+      maxWidth: '350px',
+      '& .MuiFormLabel-root': {
+        color: 'black',
+      },
+      '& .MuiSelect-root': {
+        color: 'black',
+      },
+    },
+    multiSelectLabel: {
+      color: 'black',
+    },
   }),
 );
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 function ChartsPanel() {
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
   const [admin2Title, setAdmin2Title] = useState('');
+  const [selectedLayers, setSelectedLayers] = React.useState<string[]>([]);
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const { t, i18n: i18nLocale } = useSafeTranslation();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
@@ -93,6 +130,12 @@ function ChartsPanel() {
       setAdminProperties(getProperties(admin2Id, data));
     }
     setAdmin2Title(event.target.value);
+  };
+
+  const onChangeChartLayers = (
+    event: React.ChangeEvent<{ value: unknown }>,
+  ) => {
+    setSelectedLayers(event.target.value as string[]);
   };
 
   return (
@@ -131,6 +174,34 @@ function ChartsPanel() {
             ))}
         </TextField>
       )}
+      <FormControl className={classes.layerFormControl}>
+        <InputLabel id="chart-layers-mutiple-checkbox-label">
+          Select Charts
+        </InputLabel>
+        <Select
+          labelId="chart-layers-mutiple-checkbox-label"
+          id="chart-layers-mutiple-checkbox"
+          multiple
+          value={selectedLayers}
+          onChange={onChangeChartLayers}
+          input={<Input />}
+          renderValue={selected => (selected as string[]).join(', ')}
+          MenuProps={MenuProps}
+        >
+          {chartLayers.map(layer => (
+            <MenuItem key={layer.id} value={layer.title}>
+              <Checkbox
+                checked={selectedLayers.indexOf(layer.title) > -1}
+                color="primary"
+              />
+              <ListItemText
+                classes={{ primary: classes.multiSelectLabel }}
+                primary={layer.title}
+              />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </Box>
   );
 }

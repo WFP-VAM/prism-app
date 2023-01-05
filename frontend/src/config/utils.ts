@@ -202,6 +202,14 @@ export const isPrimaryBoundaryLayer = (layer: BoundaryLayerProps) =>
   (layer.type === 'boundary' && layer.isPrimary) ||
   layer.id === getBoundaryLayerSingleton().id;
 
+export function getLayersWithChart(): WMSLayerProps[] {
+  const chartsLayers = Object.values(LayerDefinitions).filter(
+    l => l.type === 'wms' && l.chartData,
+  ) as WMSLayerProps[];
+
+  return chartsLayers;
+}
+
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
 }
