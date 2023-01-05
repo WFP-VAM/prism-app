@@ -75,6 +75,7 @@ const useStyles = makeStyles(() =>
       flexDirection: 'column',
       alignItems: 'center',
       width: PanelSize.medium,
+      flexShrink: 0,
     },
     layerFormControl: {
       marginTop: 30,
