@@ -4,15 +4,19 @@ import {
   createStyles,
   FormControl,
   Input,
+  InputAdornment,
   InputLabel,
   ListItemText,
   makeStyles,
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from '@material-ui/core';
+import { DateRangeRounded } from '@material-ui/icons';
 import { GeoJsonProperties } from 'geojson';
 import React, { useMemo, useState } from 'react';
+import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
 import { BoundaryLayerProps } from '../../../../config/types';
 import {
@@ -75,8 +79,20 @@ const useStyles = makeStyles(() =>
         color: 'black',
       },
     },
-    multiSelectLabel: {
+    textLabel: {
       color: 'black',
+    },
+    datePickerContainer: {
+      marginTop: 45,
+      marginLeft: 10,
+      width: 'auto',
+      color: 'black',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    calendarPopper: {
+      zIndex: 3,
     },
   }),
 );
@@ -96,7 +112,9 @@ function ChartsPanel() {
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
   const [admin2Title, setAdmin2Title] = useState('');
-  const [selectedLayers, setSelectedLayers] = React.useState<string[]>([]);
+  const [selectedLayers, setSelectedLayers] = useState<string[]>([]);
+  const [selectedDate, setSelectedDate] = useState<number | null>(null);
+
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const { t, i18n: i18nLocale } = useSafeTranslation();
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
@@ -174,6 +192,35 @@ function ChartsPanel() {
             ))}
         </TextField>
       )}
+      <Box className={classes.datePickerContainer}>
+        <Typography className={classes.textLabel} variant="body2">
+          {`${t('Date')}: `}
+        </Typography>
+        <DatePicker
+          locale={t('date_locale')}
+          dateFormat="PP"
+          selected={selectedDate ? new Date(selectedDate) : null}
+          onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
+          maxDate={new Date()}
+          todayButton={t('Today')}
+          peekNextMonth
+          showMonthDropdown
+          showYearDropdown
+          dropdownMode="select"
+          customInput={
+            <Input
+              className={classes.textLabel}
+              disableUnderline
+              endAdornment={
+                <InputAdornment position="end">
+                  <DateRangeRounded />
+                </InputAdornment>
+              }
+            />
+          }
+          popperClassName={classes.calendarPopper}
+        />
+      </Box>
       <FormControl className={classes.layerFormControl}>
         <InputLabel id="chart-layers-mutiple-checkbox-label">
           Select Charts
@@ -195,7 +242,7 @@ function ChartsPanel() {
                 color="primary"
               />
               <ListItemText
-                classes={{ primary: classes.multiSelectLabel }}
+                classes={{ primary: classes.textLabel }}
                 primary={layer.title}
               />
             </MenuItem>
