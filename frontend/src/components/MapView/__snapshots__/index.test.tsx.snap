@@ -3428,6 +3428,7 @@ exports[`renders as expected 1`] = `
     </mock-drawer>
     <div
       class="MuiGrid-root MapView-container-1 MuiGrid-item"
+      style="margin-left: 30vw;"
     >
       <div
         class="MapView-loading-3"
