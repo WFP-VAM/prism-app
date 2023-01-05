@@ -3,6 +3,7 @@ import { TFunction as _TFunction } from 'i18next';
 import { isNumber } from 'lodash';
 import { TableRowType } from '../context/tableStateSlice';
 import { i18nTranslator } from '../i18n';
+import { BoundaryLayerProps } from '../config/types';
 
 export type TFunction = _TFunction;
 
@@ -72,3 +73,7 @@ export function getDateFromList(
   );
   return foundDate || availableDates[availableDates.length - 1];
 }
+
+export const getLowestAdminLevelName = (
+  adminLevelNames: BoundaryLayerProps['adminLevelNames'],
+): string => adminLevelNames[adminLevelNames.length - 1];

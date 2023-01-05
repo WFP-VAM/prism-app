@@ -23,6 +23,7 @@ import {
 } from '../../config/types';
 import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
+import { getLowestAdminLevelName } from '../../utils/data-utils';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
   const matchStr = 'layer-';
@@ -81,7 +82,7 @@ export const convertToTableData = (result: ExposedPopulationResult) => {
     : [statistic];
 
   const { adminLevelNames } = getBoundaryLayerSingleton();
-  const lowestLevel = adminLevelNames[adminLevelNames.length - 1];
+  const lowestLevel = getLowestAdminLevelName(adminLevelNames);
 
   const featureProperties = features
     .filter(
