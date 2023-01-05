@@ -14,6 +14,7 @@ import {
   withStyles,
   WithStyles,
   IconButton,
+  Theme,
 } from '@material-ui/core';
 import {
   BarChartOutlined,
@@ -680,13 +681,11 @@ function AnalysisPanel({
             <div
               style={{
                 display: 'flex',
-                flexDirection: 'row',
+                flexDirection: 'column',
                 alignItems: 'center',
+                width: '100%',
               }}
             >
-              <Typography className={classes.analysisTableTitle}>
-                {selectedHazardLayer?.title}
-              </Typography>
               <IconButton
                 aria-label="close"
                 onClick={() => setIsPanelExtended(!isPanelExtended)}
@@ -694,6 +693,9 @@ function AnalysisPanel({
               >
                 <CloseRounded />
               </IconButton>
+              <Typography className={classes.analysisTableTitle}>
+                {selectedHazardLayer?.title}
+              </Typography>
             </div>
             <AnalysisTable
               tableData={analysisResult.tableData}
@@ -705,7 +707,7 @@ function AnalysisPanel({
   );
 }
 
-const styles = () =>
+const styles = (theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
@@ -720,6 +722,7 @@ const styles = () =>
     },
     analysisPanelParams: {
       padding: 10,
+      position: 'fixed',
     },
     analysisParamTitle: {
       color: 'black',
@@ -814,9 +817,8 @@ const styles = () =>
       color: 'black',
     },
     analysisTableCloseButton: {
-      position: 'absolute',
-      top: 15,
-      right: 0,
+      zIndex: theme.zIndex.modal,
+      marginLeft: 'auto',
     },
   });
 

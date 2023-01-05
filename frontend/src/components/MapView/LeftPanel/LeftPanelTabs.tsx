@@ -51,8 +51,9 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
   createStyles({
     root: {
       height: '100%',
+      overflow: 'scroll',
     },
-    tabs: {
+    tabsContainer: {
       backgroundColor: '#566064',
       width: ({ isPanelExtended }) => (isPanelExtended ? '50%' : '100%'),
     },
@@ -98,7 +99,7 @@ function LeftPanelTabs({
 
   return (
     <div className={classes.root}>
-      <div className={classes.tabs}>
+      <div className={classes.tabsContainer}>
         <Tabs
           value={value}
           onChange={handleChange}
