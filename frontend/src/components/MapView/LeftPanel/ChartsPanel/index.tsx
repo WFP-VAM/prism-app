@@ -18,7 +18,7 @@ import { GeoJsonProperties } from 'geojson';
 import React, { useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
-import { BoundaryLayerProps } from '../../../../config/types';
+import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
 import {
   getBoundaryLayerSingleton,
   getLayersWithChart,
@@ -67,6 +67,7 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      width: PanelSize.medium,
     },
     layerFormControl: {
       marginTop: 30,

@@ -41,6 +41,7 @@ import {
   isMainLayer,
   LayerKey,
   LayerType,
+  PanelSize,
 } from '../../config/types';
 
 import { Extent } from './Layers/raster-utils';
@@ -199,6 +200,7 @@ function MapView({ classes }: MapViewProps) {
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     undefined,
   );
+  const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
 
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
@@ -540,8 +542,16 @@ function MapView({ classes }: MapViewProps) {
 
   return (
     <Box height="100%" width="100%">
-      <LeftPanel extent={adminBoundariesExtent} />
-      <Grid item className={classes.container}>
+      <LeftPanel
+        extent={adminBoundariesExtent}
+        panelSize={panelSize}
+        setPanelSize={setPanelSize}
+      />
+      <Grid
+        item
+        className={classes.container}
+        style={{ marginLeft: panelSize }}
+      >
         {datesLoading && (
           <div className={classes.loading}>
             <CircularProgress size={100} />
@@ -576,29 +586,34 @@ function MapView({ classes }: MapViewProps) {
           <SelectionLayer before={firstSymbolId} />
           <MapTooltip />
         </MapboxMap>
-        <Grid
-          container
-          justify="space-between"
-          className={classes.buttonContainer}
-        >
-          <Grid item>
-            <GotoBoundaryDropdown />
-            {appConfig.alertFormActive ? (
-              <AlertForm
-                isOpen={isAlertFormOpen}
-                setOpen={setIsAlertFormOpen}
-              />
-            ) : null}
-            <DataViewer />
-          </Grid>
-          <Grid item>
-            <Grid container spacing={1}>
-              <Download />
-              <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
+        {panelSize !== PanelSize.xlarge && (
+          <Grid
+            container
+            justify="space-between"
+            className={classes.buttonContainer}
+          >
+            <Grid item>
+              <GotoBoundaryDropdown />
+              {appConfig.alertFormActive ? (
+                <AlertForm
+                  isOpen={isAlertFormOpen}
+                  setOpen={setIsAlertFormOpen}
+                />
+              ) : null}
+              <DataViewer />
+            </Grid>
+            <Grid item>
+              <Grid container spacing={1}>
+                <Download />
+                <Legends
+                  layers={selectedLayers}
+                  extent={adminBoundariesExtent}
+                />
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        {selectedLayerDates.length > 0 && (
+        )}
+        {panelSize !== PanelSize.xlarge && selectedLayerDates.length > 0 && (
           <DateSelector
             availableDates={selectedLayerDates}
             selectedLayers={selectedLayersWithDateSupport}
@@ -615,7 +630,6 @@ const styles = () =>
     container: {
       height: '100%',
       position: 'relative',
-      marginLeft: '30%',
     },
     buttonContainer: {
       zIndex: 5,

@@ -12,6 +12,7 @@ import {
   ImageAspectRatioOutlined,
 } from '@material-ui/icons';
 import React, { useState } from 'react';
+import { PanelSize } from '../../../config/types';
 import { useSafeTranslation } from '../../../i18n';
 
 interface TabPanelProps {
@@ -44,7 +45,7 @@ function a11yProps(index: any) {
 }
 
 interface StyleProps {
-  isPanelExtended: boolean;
+  panelSize: PanelSize;
 }
 
 const useStyles = makeStyles<Theme, StyleProps>(() =>
@@ -54,7 +55,8 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
     },
     tabs: {
       backgroundColor: '#566064',
-      width: ({ isPanelExtended }) => (isPanelExtended ? '50%' : '100%'),
+      width: ({ panelSize }) =>
+        panelSize !== PanelSize.folded ? PanelSize.medium : PanelSize.folded,
     },
     indicator: {
       backgroundColor: '#53888F',
@@ -76,24 +78,30 @@ interface TabsProps {
   layersPanel: React.ReactNode;
   chartsPanel: React.ReactNode;
   analysisPanel: React.ReactNode;
-  isPanelExtended: boolean;
-  setIsPanelExtended: React.Dispatch<React.SetStateAction<boolean>>;
+  panelSize: PanelSize;
+  setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
 }
 
 function LeftPanelTabs({
   layersPanel,
   chartsPanel,
   analysisPanel,
-  isPanelExtended,
-  setIsPanelExtended,
+  panelSize,
+  setPanelSize,
 }: TabsProps) {
   const { t } = useSafeTranslation();
-  const classes = useStyles({ isPanelExtended });
+  const classes = useStyles({ panelSize });
   const [value, setValue] = useState(0);
 
   const handleChange = (_: any, newValue: number) => {
-    setIsPanelExtended(false);
     setValue(newValue);
+    switch (newValue) {
+      case 1:
+        setPanelSize(PanelSize.xlarge);
+        break;
+      default:
+        setPanelSize(PanelSize.medium);
+    }
   };
 
   return (

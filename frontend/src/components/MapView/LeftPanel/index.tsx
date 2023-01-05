@@ -1,13 +1,14 @@
 import { createStyles, Drawer, makeStyles, Theme } from '@material-ui/core';
-import React, { useState } from 'react';
-import LayersPanel from './layersPanel';
+import React from 'react';
+import { PanelSize } from '../../../config/types';
 import { Extent } from '../Layers/raster-utils';
 import AnalysisPanel from './AnalysisPanel';
-import LeftPanelTabs from './LeftPanelTabs';
 import ChartsPanel from './ChartsPanel';
+import LayersPanel from './layersPanel';
+import LeftPanelTabs from './LeftPanelTabs';
 
 interface StyleProps {
-  isPanelExtended: boolean;
+  panelSize: PanelSize;
 }
 
 const useStyles = makeStyles<Theme, StyleProps>(() =>
@@ -15,15 +16,14 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
     paper: {
       marginTop: '7vh',
       height: '93%',
-      width: ({ isPanelExtended }) => (isPanelExtended ? '60%' : '30%'),
+      width: ({ panelSize }) => panelSize,
       backgroundColor: '#F5F7F8',
     },
   }),
 );
 
-function LeftPanel({ extent }: LeftPanelProps) {
-  const [isPanelExtended, setIsPanelExtended] = useState(false);
-  const classes = useStyles({ isPanelExtended });
+function LeftPanel({ extent, panelSize, setPanelSize }: LeftPanelProps) {
+  const classes = useStyles({ panelSize });
   return (
     <Drawer
       variant="persistent"
@@ -32,15 +32,15 @@ function LeftPanel({ extent }: LeftPanelProps) {
       classes={{ paper: classes.paper }}
     >
       <LeftPanelTabs
-        isPanelExtended={isPanelExtended}
-        setIsPanelExtended={setIsPanelExtended}
+        panelSize={panelSize}
+        setPanelSize={setPanelSize}
         layersPanel={<LayersPanel extent={extent} />}
         chartsPanel={<ChartsPanel />}
         analysisPanel={
           <AnalysisPanel
             extent={extent}
-            isPanelExtended={isPanelExtended}
-            setIsPanelExtended={setIsPanelExtended}
+            panelSize={panelSize}
+            setPanelSize={setPanelSize}
           />
         }
       />
@@ -50,6 +50,8 @@ function LeftPanel({ extent }: LeftPanelProps) {
 
 interface LeftPanelProps {
   extent?: Extent;
+  panelSize: PanelSize;
+  setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
 }
 
 export default LeftPanel;
