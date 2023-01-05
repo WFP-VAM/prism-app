@@ -43,6 +43,12 @@ function getProperties(
 
 const useStyles = makeStyles(() =>
   createStyles({
+    root: {
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+      height: '100%',
+    },
     selectRoot: {
       marginTop: 30,
       color: 'black',
@@ -158,98 +164,101 @@ function ChartsPanel() {
   };
 
   return (
-    <Box className={classes.chartsPanelParams}>
-      <TextField
-        classes={{ root: classes.selectRoot }}
-        id="outlined-admin-1"
-        select
-        label={t('Select Admin 1')}
-        value={admin1Title}
-        onChange={onChangeAdmin1}
-        variant="outlined"
-      >
-        {categories.map(option => (
-          <MenuItem key={option.title} value={option.title}>
-            {option.title}
-          </MenuItem>
-        ))}
-      </TextField>
-      {admin1Title && (
+    <Box className={classes.root}>
+      <Box className={classes.chartsPanelParams}>
         <TextField
           classes={{ root: classes.selectRoot }}
-          id="outlined-admin-2"
+          id="outlined-admin-1"
           select
-          label={t('Select Admin 2')}
-          value={admin2Title}
-          onChange={onChangeAdmin2}
+          label={t('Select Admin 1')}
+          value={admin1Title}
+          onChange={onChangeAdmin1}
           variant="outlined"
         >
-          {categories
-            .filter(elem => elem.title === admin1Title)[0]
-            .children.map(option => (
-              <MenuItem key={option.value} value={option.label}>
-                {option.label}
-              </MenuItem>
-            ))}
-        </TextField>
-      )}
-      <Box className={classes.datePickerContainer}>
-        <Typography className={classes.textLabel} variant="body2">
-          {`${t('Date')}: `}
-        </Typography>
-        <DatePicker
-          locale={t('date_locale')}
-          dateFormat="PP"
-          selected={selectedDate ? new Date(selectedDate) : null}
-          onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
-          maxDate={new Date()}
-          todayButton={t('Today')}
-          peekNextMonth
-          showMonthDropdown
-          showYearDropdown
-          dropdownMode="select"
-          customInput={
-            <Input
-              className={classes.textLabel}
-              disableUnderline
-              endAdornment={
-                <InputAdornment position="end">
-                  <DateRangeRounded />
-                </InputAdornment>
-              }
-            />
-          }
-          popperClassName={classes.calendarPopper}
-        />
-      </Box>
-      <FormControl className={classes.layerFormControl}>
-        <InputLabel id="chart-layers-mutiple-checkbox-label">
-          Select Charts
-        </InputLabel>
-        <Select
-          labelId="chart-layers-mutiple-checkbox-label"
-          id="chart-layers-mutiple-checkbox"
-          multiple
-          value={selectedLayers}
-          onChange={onChangeChartLayers}
-          input={<Input />}
-          renderValue={selected => (selected as string[]).join(', ')}
-          MenuProps={MenuProps}
-        >
-          {chartLayers.map(layer => (
-            <MenuItem key={layer.id} value={layer.title}>
-              <Checkbox
-                checked={selectedLayers.indexOf(layer.title) > -1}
-                color="primary"
-              />
-              <ListItemText
-                classes={{ primary: classes.textLabel }}
-                primary={layer.title}
-              />
+          {categories.map(option => (
+            <MenuItem key={option.title} value={option.title}>
+              {option.title}
             </MenuItem>
           ))}
-        </Select>
-      </FormControl>
+        </TextField>
+        {admin1Title && (
+          <TextField
+            classes={{ root: classes.selectRoot }}
+            id="outlined-admin-2"
+            select
+            label={t('Select Admin 2')}
+            value={admin2Title}
+            onChange={onChangeAdmin2}
+            variant="outlined"
+          >
+            {categories
+              .filter(elem => elem.title === admin1Title)[0]
+              .children.map(option => (
+                <MenuItem key={option.value} value={option.label}>
+                  {option.label}
+                </MenuItem>
+              ))}
+          </TextField>
+        )}
+        <Box className={classes.datePickerContainer}>
+          <Typography className={classes.textLabel} variant="body2">
+            {`${t('Date')}: `}
+          </Typography>
+          <DatePicker
+            locale={t('date_locale')}
+            dateFormat="PP"
+            selected={selectedDate ? new Date(selectedDate) : null}
+            onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
+            maxDate={new Date()}
+            todayButton={t('Today')}
+            peekNextMonth
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            customInput={
+              <Input
+                className={classes.textLabel}
+                disableUnderline
+                endAdornment={
+                  <InputAdornment position="end">
+                    <DateRangeRounded />
+                  </InputAdornment>
+                }
+              />
+            }
+            popperClassName={classes.calendarPopper}
+          />
+        </Box>
+        <FormControl className={classes.layerFormControl}>
+          <InputLabel id="chart-layers-mutiple-checkbox-label">
+            Select Charts
+          </InputLabel>
+          <Select
+            labelId="chart-layers-mutiple-checkbox-label"
+            id="chart-layers-mutiple-checkbox"
+            multiple
+            value={selectedLayers}
+            onChange={onChangeChartLayers}
+            input={<Input />}
+            renderValue={selected => (selected as string[]).join(', ')}
+            MenuProps={MenuProps}
+          >
+            {chartLayers.map(layer => (
+              <MenuItem key={layer.id} value={layer.title}>
+                <Checkbox
+                  checked={selectedLayers.indexOf(layer.title) > -1}
+                  color="primary"
+                />
+                <ListItemText
+                  classes={{ primary: classes.textLabel }}
+                  primary={layer.title}
+                />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+      <Box>Charts</Box>
     </Box>
   );
 }
