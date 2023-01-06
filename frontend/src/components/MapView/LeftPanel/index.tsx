@@ -22,13 +22,18 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
   }),
 );
 
-function LeftPanel({ extent, panelSize, setPanelSize }: LeftPanelProps) {
+function LeftPanel({
+  extent,
+  panelSize,
+  setPanelSize,
+  isPanelHidden,
+}: LeftPanelProps) {
   const classes = useStyles({ panelSize });
   return (
     <Drawer
       variant="persistent"
       anchor="left"
-      open
+      open={!isPanelHidden}
       classes={{ paper: classes.paper }}
     >
       <LeftPanelTabs
@@ -52,6 +57,7 @@ interface LeftPanelProps {
   extent?: Extent;
   panelSize: PanelSize;
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
+  isPanelHidden: boolean;
 }
 
 export default LeftPanel;

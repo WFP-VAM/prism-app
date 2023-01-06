@@ -98,6 +98,7 @@ import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { firstBoundaryOnView } from '../../utils/map-utils';
 import DataViewer from '../DataViewer';
 import LeftPanel from './LeftPanel';
+import FoldButton from './FoldButton';
 
 const {
   map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom },
@@ -201,6 +202,7 @@ function MapView({ classes }: MapViewProps) {
     undefined,
   );
   const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
+  const [isPanelHidden, setIsPanelHidden] = useState<boolean>(true);
 
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
@@ -546,11 +548,12 @@ function MapView({ classes }: MapViewProps) {
         extent={adminBoundariesExtent}
         panelSize={panelSize}
         setPanelSize={setPanelSize}
+        isPanelHidden={isPanelHidden}
       />
       <Grid
         item
         className={classes.container}
-        style={{ marginLeft: panelSize }}
+        style={{ marginLeft: isPanelHidden ? PanelSize.folded : panelSize }}
       >
         {datesLoading && (
           <div className={classes.loading}>
@@ -593,14 +596,17 @@ function MapView({ classes }: MapViewProps) {
             className={classes.buttonContainer}
           >
             <Grid item>
-              <GotoBoundaryDropdown />
-              {appConfig.alertFormActive ? (
-                <AlertForm
-                  isOpen={isAlertFormOpen}
-                  setOpen={setIsAlertFormOpen}
-                />
-              ) : null}
-              <DataViewer />
+              <Grid container spacing={1}>
+                <FoldButton setIsPanelHidden={setIsPanelHidden} />
+                <GotoBoundaryDropdown />
+                {appConfig.alertFormActive ? (
+                  <AlertForm
+                    isOpen={isAlertFormOpen}
+                    setOpen={setIsAlertFormOpen}
+                  />
+                ) : null}
+                <DataViewer />
+              </Grid>
             </Grid>
             <Grid item>
               <Grid container spacing={1}>
