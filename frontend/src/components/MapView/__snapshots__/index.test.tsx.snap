@@ -8,7 +8,7 @@ exports[`renders as expected 1`] = `
     <mock-drawer
       anchor="left"
       classes="[object Object]"
-      open="true"
+      open="false"
       variant="persistent"
     >
       <div
@@ -28,6 +28,7 @@ exports[`renders as expected 1`] = `
               disableripple="true"
               id="full-width-tab-0"
               label="[object Object]"
+              value="0"
             />
             <mock-tab
               aria-controls="full-width-tabpanel-1"
@@ -35,6 +36,7 @@ exports[`renders as expected 1`] = `
               disableripple="true"
               id="full-width-tab-1"
               label="[object Object]"
+              value="1"
             />
             <mock-tab
               aria-controls="full-width-tabpanel-2"
@@ -42,6 +44,7 @@ exports[`renders as expected 1`] = `
               disableripple="true"
               id="full-width-tab-2"
               label="[object Object]"
+              value="2"
             />
           </mock-tabs>
         </div>
@@ -3428,7 +3431,7 @@ exports[`renders as expected 1`] = `
     </mock-drawer>
     <div
       class="MuiGrid-root MapView-container-1 MuiGrid-item"
-      style="margin-left: 30vw;"
+      style="margin-left: 0vw;"
     >
       <div
         class="MapView-loading-3"
@@ -3445,7 +3448,29 @@ exports[`renders as expected 1`] = `
       >
         <div
           class="MuiGrid-root MuiGrid-item"
-        />
+        >
+          <div
+            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
+          >
+            <mock-button
+              classes="[object Object]"
+              color="primary"
+              size="medium"
+              variant="contained"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+                />
+              </svg>
+            </mock-button>
+          </div>
+        </div>
         <div
           class="MuiGrid-root MuiGrid-item"
         >
