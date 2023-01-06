@@ -85,7 +85,13 @@ function ChartSection({
           <CircularProgress size={50} />
         </div>
       ) : (
-        <Chart title={t(title)} config={config} data={chartDataset} />
+        <Chart
+          title={t(title)}
+          config={config}
+          data={chartDataset}
+          notMaintainAspectRatio
+          legendAtBottom
+        />
       )}
     </>
   );

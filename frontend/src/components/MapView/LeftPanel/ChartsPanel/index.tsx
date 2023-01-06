@@ -292,6 +292,7 @@ function ChartsPanel() {
             .map(layer => (
               <Box
                 style={{
+                  minHeight: '20vh',
                   width: '45%',
                 }}
               >
@@ -311,6 +312,7 @@ function ChartsPanel() {
           adminProperties && selectedDate && selectedLayerTitles.length === 1 && (
             <Box
               style={{
+                minHeight: '50vh',
                 width: '100%',
               }}
             >
