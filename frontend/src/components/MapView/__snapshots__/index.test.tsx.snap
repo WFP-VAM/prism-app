@@ -49,6 +49,7 @@ exports[`renders as expected 1`] = `
           aria-labelledby="full-width-tab-0"
           id="full-width-tabpanel-0"
           role="tabpanel"
+          style="flex-grow: 1;"
         >
           <div
             class="MuiBox-root MuiBox-root-13"
@@ -3320,12 +3321,14 @@ exports[`renders as expected 1`] = `
           hidden=""
           id="full-width-tabpanel-1"
           role="tabpanel"
+          style="flex-grow: 1;"
         />
         <div
           aria-labelledby="full-width-tab-2"
           hidden=""
           id="full-width-tabpanel-2"
           role="tabpanel"
+          style="flex-grow: 1;"
         />
       </div>
     </mock-drawer>
