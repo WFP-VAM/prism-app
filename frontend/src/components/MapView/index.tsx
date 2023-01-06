@@ -605,8 +605,8 @@ function MapView({ classes }: MapViewProps) {
                     setOpen={setIsAlertFormOpen}
                   />
                 ) : null}
-                <DataViewer />
               </Grid>
+              <DataViewer />
             </Grid>
             <Grid item>
               <Grid container spacing={1}>
