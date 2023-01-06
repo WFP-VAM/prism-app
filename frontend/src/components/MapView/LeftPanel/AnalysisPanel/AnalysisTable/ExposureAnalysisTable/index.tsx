@@ -61,8 +61,10 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
                 );
                 return (
                   <TableCell key={column} className={classes.tableHead}>
-                    {' '}
-                    {formattedColValue}{' '}
+                    <Typography className={classes.tableHeaderText}>
+                      {' '}
+                      {formattedColValue}{' '}
+                    </Typography>
                   </TableCell>
                 );
               })}
@@ -135,7 +137,6 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
 const styles = (theme: Theme) =>
   createStyles({
     tableContainer: {
-      height: '60vh',
       maxWidth: '90%',
       marginTop: 5,
       zIndex: theme.zIndex.modal + 1,

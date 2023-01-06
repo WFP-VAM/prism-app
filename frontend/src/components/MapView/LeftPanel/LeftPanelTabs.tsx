@@ -34,6 +34,7 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
+      style={{ flexGrow: 1 }}
       {...other}
     >
       {value === index && children}
@@ -55,6 +56,8 @@ interface StyleProps {
 const useStyles = makeStyles<Theme, StyleProps>(() =>
   createStyles({
     root: {
+      display: 'flex',
+      flexDirection: 'column',
       height: '100%',
       overflow: 'scroll',
     },
