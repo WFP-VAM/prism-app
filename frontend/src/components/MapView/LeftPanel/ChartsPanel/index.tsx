@@ -110,6 +110,9 @@ const useStyles = makeStyles(() =>
       flexWrap: 'wrap',
       flexGrow: 4,
     },
+    removeAdmin2: {
+      fontWeight: 'bold',
+    },
   }),
 );
 
@@ -159,14 +162,21 @@ function ChartsPanel() {
   };
 
   const onChangeAdmin2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const admin2Id = categories
-      .filter(elem => elem.title === admin1Title)[0]
-      .children.filter(elem => elem.label === event.target.value)[0].value;
-    if (data) {
-      setAdminProperties(getProperties(admin2Id, data));
+    if (event.target.value) {
+      const admin2Id = categories
+        .filter(elem => elem.title === admin1Title)[0]
+        .children.filter(elem => elem.label === event.target.value)[0].value;
+      if (data) {
+        setAdminProperties(getProperties(admin2Id, data));
+      }
+      setAdmin2Title(event.target.value);
+      setAdminLevel(2);
+    } else {
+      // Unset Admin 2
+      // We don't have to reset the adminProperties because any children contains the admin 1 external key
+      setAdmin2Title('');
+      setAdminLevel(1);
     }
-    setAdmin2Title(event.target.value);
-    setAdminLevel(2);
   };
 
   const onChangeChartLayers = (
@@ -203,6 +213,9 @@ function ChartsPanel() {
             onChange={onChangeAdmin2}
             variant="outlined"
           >
+            <MenuItem key="empty">
+              <Box className={classes.removeAdmin2}> {t('Remove Admin 2')}</Box>
+            </MenuItem>
             {categories
               .filter(elem => elem.title === admin1Title)[0]
               .children.map(option => (
