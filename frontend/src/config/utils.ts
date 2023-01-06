@@ -202,7 +202,7 @@ export const isPrimaryBoundaryLayer = (layer: BoundaryLayerProps) =>
   (layer.type === 'boundary' && layer.isPrimary) ||
   layer.id === getBoundaryLayerSingleton().id;
 
-export function getLayersWithChart(): WMSLayerProps[] {
+export function getWMSLayersWithChart(): WMSLayerProps[] {
   const chartsLayers = Object.values(LayerDefinitions).filter(
     l => l.type === 'wms' && l.chartData,
   ) as WMSLayerProps[];

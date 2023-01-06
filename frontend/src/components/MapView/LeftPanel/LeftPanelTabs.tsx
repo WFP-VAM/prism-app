@@ -13,10 +13,10 @@ import {
 } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { PanelSize } from '../../../config/types';
-import { getLayersWithChart } from '../../../config/utils';
+import { getWMSLayersWithChart } from '../../../config/utils';
 import { useSafeTranslation } from '../../../i18n';
 
-const areChartLayersAvailable = getLayersWithChart().length > 0;
+const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 
 interface TabPanelProps {
   children?: React.ReactNode;

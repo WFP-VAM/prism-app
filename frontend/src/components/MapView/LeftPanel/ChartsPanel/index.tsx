@@ -21,7 +21,7 @@ import { useSelector } from 'react-redux';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
 import {
   getBoundaryLayerSingleton,
-  getLayersWithChart,
+  getWMSLayersWithChart,
 } from '../../../../config/utils';
 import { LayerData } from '../../../../context/layers/layer-data';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
@@ -31,7 +31,7 @@ import ChartSection from './ChartSection';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 
-const chartLayers = getLayersWithChart();
+const chartLayers = getWMSLayersWithChart();
 
 function getProperties(
   id: string,
