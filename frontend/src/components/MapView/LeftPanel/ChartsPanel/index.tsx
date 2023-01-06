@@ -273,13 +273,13 @@ function ChartsPanel() {
       <Box className={classes.chartsPanelCharts}>
         {adminProperties &&
           selectedDate &&
-          selectedLayerTitles.length &&
+          selectedLayerTitles.length > 1 &&
           chartLayers
             .filter(layer => selectedLayerTitles.includes(layer.title))
             .map(layer => (
               <Box
                 style={{
-                  width: selectedLayerTitles.length === 1 ? '100%' : '45%',
+                  width: '45%',
                 }}
               >
                 <ChartSection
@@ -290,6 +290,30 @@ function ChartsPanel() {
                 />
               </Box>
             ))}
+
+        {
+          // chart size is not responsive once it is mounted
+          // seems to be possible in the newer chart.js versions
+          // here we mount a new component if one chart
+          adminProperties && selectedDate && selectedLayerTitles.length === 1 && (
+            <Box
+              style={{
+                width: '100%',
+              }}
+            >
+              <ChartSection
+                chartLayer={
+                  chartLayers.filter(layer =>
+                    selectedLayerTitles.includes(layer.title),
+                  )[0]
+                }
+                adminProperties={adminProperties}
+                adminLevel={adminLevel}
+                date={selectedDate}
+              />
+            </Box>
+          )
+        }
       </Box>
     </Box>
   );
