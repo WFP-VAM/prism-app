@@ -13,7 +13,10 @@ import {
 } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { PanelSize } from '../../../config/types';
+import { getLayersWithChart } from '../../../config/utils';
 import { useSafeTranslation } from '../../../i18n';
+
+const areChartLayersAvailable = getLayersWithChart().length > 0;
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -65,7 +68,8 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
     tabRoot: {
       textTransform: 'none',
       minWidth: 50,
-      width: 'calc(100% / 3)',
+      width: `calc(100% / ${areChartLayersAvailable ? 3 : 2})`,
+      maxWidth: '50%',
     },
     tabSelected: {
       opacity: 1,
@@ -115,6 +119,7 @@ function LeftPanelTabs({
         >
           <Tab
             classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            value={0}
             disableRipple
             label={
               <Box display="flex">
@@ -124,19 +129,23 @@ function LeftPanelTabs({
             }
             {...a11yProps(0)}
           />
+          {areChartLayersAvailable && (
+            <Tab
+              classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+              value={1}
+              disableRipple
+              label={
+                <Box display="flex">
+                  <BarChartOutlined style={{ verticalAlign: 'middle' }} />
+                  <Box ml={1}>{t('Charts')}</Box>
+                </Box>
+              }
+              {...a11yProps(1)}
+            />
+          )}
           <Tab
             classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            disableRipple
-            label={
-              <Box display="flex">
-                <BarChartOutlined style={{ verticalAlign: 'middle' }} />
-                <Box ml={1}>{t('Charts')}</Box>
-              </Box>
-            }
-            {...a11yProps(1)}
-          />
-          <Tab
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+            value={2}
             disableRipple
             label={
               <Box display="flex">
@@ -151,9 +160,11 @@ function LeftPanelTabs({
       <TabPanel value={value} index={0}>
         {layersPanel}
       </TabPanel>
-      <TabPanel value={value} index={1}>
-        {chartsPanel}
-      </TabPanel>
+      {areChartLayersAvailable && (
+        <TabPanel value={value} index={1}>
+          {chartsPanel}
+        </TabPanel>
+      )}
       <TabPanel value={value} index={2}>
         {analysisPanel}
       </TabPanel>
