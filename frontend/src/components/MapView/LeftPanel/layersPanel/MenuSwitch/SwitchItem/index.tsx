@@ -13,7 +13,11 @@ import {
 import OpacityIcon from '@material-ui/icons/Opacity';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerKey, LayerType } from '../../../../../../config/types';
+import {
+  ExposedPopulationDefinition,
+  LayerKey,
+  LayerType,
+} from '../../../../../../config/types';
 import {
   getDisplayBoundaryLayers,
   LayerDefinitions,
@@ -34,6 +38,17 @@ import { getUrlKey, useUrlHistory } from '../../../../../../utils/url-utils';
 import { handleChangeOpacity } from '../../../../Legends/handleChangeOpacity';
 import { Extent } from '../../../../Layers/raster-utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
+
+/**
+ * Returns layer identifier used to perform exposure analysis.
+ *
+ * @return LayerKey or undefined if exposure not found or GeometryType is not Polygon.
+ */
+function getExposureFromLayer(
+  layer: LayerType,
+): ExposedPopulationDefinition | undefined {
+  return (layer.type === 'wms' && layer.exposure) || undefined;
+}
 
 function SwitchItem({ classes, layer, extent }: SwitchItemProps) {
   const {
@@ -77,6 +92,8 @@ function SwitchItem({ classes, layer, extent }: SwitchItemProps) {
   const [activeLayer, setActiveLayer] = useState(
     initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
   );
+
+  const exposure = getExposureFromLayer(layer);
 
   const validatedTitle = t(group?.groupTitle || layerTitle || '');
 
@@ -205,6 +222,7 @@ function SwitchItem({ classes, layer, extent }: SwitchItemProps) {
           layer={layer}
           extent={extent}
           selected={selected}
+          exposure={exposure}
         />
       </Box>
       {selected && isOpacitySelected && (

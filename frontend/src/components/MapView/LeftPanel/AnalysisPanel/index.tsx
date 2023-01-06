@@ -83,6 +83,8 @@ import LayerDropdown from '../../Layers/LayerDropdown';
 import SimpleDropdown from '../../../Common/SimpleDropdown';
 import AnalysisTable from './AnalysisTable';
 import { Extent } from '../../Layers/raster-utils';
+import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
+import ExposureAnalysisActions from './ExposureAnalysisActions';
 
 function AnalysisPanel({
   extent,
@@ -103,7 +105,6 @@ function AnalysisPanel({
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
-
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
 
   const {
@@ -447,169 +448,173 @@ function AnalysisPanel({
   return (
     <div className={classes.root}>
       <div className={classes.analysisPanel}>
-        <div id="analysis-parameters" className={classes.analysisPanelParams}>
-          <div className={classes.analysisPanelParamContainer}>
-            <LayerDropdown
-              type="wms"
-              value={hazardLayerId}
-              setValue={setHazardLayerId}
-              className={classes.analysisPanelParamText}
-              label={t('Hazard Layer')}
-              placeholder="Choose hazard layer"
-            />
-          </div>
+        {analysisResult instanceof ExposedPopulationResult ? (
+          <ExposureAnalysisTable maxResults={1000} />
+        ) : (
+          <div id="analysis-parameters" className={classes.analysisPanelParams}>
+            <div className={classes.analysisPanelParamContainer}>
+              <LayerDropdown
+                type="wms"
+                value={hazardLayerId}
+                setValue={setHazardLayerId}
+                className={classes.analysisPanelParamText}
+                label={t('Hazard Layer')}
+                placeholder="Choose hazard layer"
+              />
+            </div>
 
-          {hazardDataType === GeometryType.Polygon && (
-            <>
-              <div className={classes.analysisPanelParamContainer}>
-                <Typography variant="body2">Admin Level</Typography>
-                <SimpleDropdown
-                  value={adminLevel}
-                  options={range(getAdminLevelCount()).map(i => [
-                    (i + 1) as AdminLevelType,
-                    `Admin ${i + 1}`,
-                  ])}
-                  onChange={setAdminLevel}
-                />
-              </div>
+            {hazardDataType === GeometryType.Polygon && (
+              <>
+                <div className={classes.analysisPanelParamContainer}>
+                  <Typography variant="body2">Admin Level</Typography>
+                  <SimpleDropdown
+                    value={adminLevel}
+                    options={range(getAdminLevelCount()).map(i => [
+                      (i + 1) as AdminLevelType,
+                      `Admin ${i + 1}`,
+                    ])}
+                    onChange={setAdminLevel}
+                  />
+                </div>
 
-              <div className={classes.analysisPanelParamContainer}>
-                <Typography variant="body2">{t('Date Range')}</Typography>
-                <div className={classes.dateRangePicker}>
-                  <Typography variant="body2">{t('Start')}</Typography>
+                <div className={classes.analysisPanelParamContainer}>
+                  <Typography variant="body2">{t('Date Range')}</Typography>
+                  <div className={classes.dateRangePicker}>
+                    <Typography variant="body2">{t('Start')}</Typography>
+                    <DatePicker
+                      selected={startDate ? new Date(startDate) : null}
+                      onChange={date =>
+                        setStartDate(date?.getTime() || startDate)
+                      }
+                      maxDate={new Date()}
+                      todayButton="Today"
+                      peekNextMonth
+                      showMonthDropdown
+                      showYearDropdown
+                      dropdownMode="select"
+                      customInput={<Input />}
+                      popperClassName={classes.calendarPopper}
+                      includeDates={availableHazardDates}
+                    />
+                  </div>
+                  <div className={classes.dateRangePicker}>
+                    <Typography variant="body2">{t('End')}</Typography>
+                    <DatePicker
+                      selected={endDate ? new Date(endDate) : null}
+                      onChange={date => setEndDate(date?.getTime() || endDate)}
+                      maxDate={new Date()}
+                      todayButton="Today"
+                      peekNextMonth
+                      showMonthDropdown
+                      showYearDropdown
+                      dropdownMode="select"
+                      customInput={<Input />}
+                      popperClassName={classes.calendarPopper}
+                      includeDates={availableHazardDates}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {hazardDataType === RasterType.Raster && (
+              <>
+                <div className={classes.analysisPanelParamContainer}>
+                  <LayerDropdown
+                    type="admin_level_data"
+                    value={baselineLayerId || undefined}
+                    setValue={setBaselineLayerId}
+                    className={classes.analysisPanelParamText}
+                    label={t('Baseline Layer')}
+                    placeholder="Choose baseline layer"
+                  />
+                </div>
+                <div className={classes.analysisPanelParamContainer}>
+                  <Typography
+                    className={classes.analysisParamTitle}
+                    variant="body2"
+                  >
+                    {t('Statistic')}
+                  </Typography>
+                  <FormControl component="div">
+                    <RadioGroup
+                      name="statistics"
+                      value={statistic}
+                      onChange={onOptionChange(setStatistic)}
+                    >
+                      {statisticOptions}
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+                <div className={classes.analysisPanelParamContainer}>
+                  <Typography
+                    className={classes.analysisParamTitle}
+                    variant="body2"
+                  >
+                    {t('Threshold')}
+                  </Typography>
+                  <div style={{ display: 'flex' }}>
+                    <TextField
+                      id="outlined-number-low"
+                      error={!!thresholdError}
+                      helperText={t(thresholdError || '')}
+                      className={classes.numberField}
+                      label={t('Below')}
+                      type="number"
+                      value={belowThreshold}
+                      onChange={onThresholdOptionChange('below')}
+                      variant="outlined"
+                    />
+                    <TextField
+                      id="outlined-number-high"
+                      label={t('Above')}
+                      classes={{ root: classes.numberField }}
+                      value={aboveThreshold}
+                      onChange={onThresholdOptionChange('above')}
+                      type="number"
+                      variant="outlined"
+                    />
+                  </div>
+                </div>
+                <div className={classes.datePickerContainer}>
+                  <Typography
+                    className={classes.analysisParamTitle}
+                    variant="body2"
+                  >
+                    {`${t('Date')}: `}
+                  </Typography>
                   <DatePicker
-                    selected={startDate ? new Date(startDate) : null}
+                    locale={t('date_locale')}
+                    dateFormat="PP"
+                    selected={selectedDate ? new Date(selectedDate) : null}
                     onChange={date =>
-                      setStartDate(date?.getTime() || startDate)
+                      setSelectedDate(date?.getTime() || selectedDate)
                     }
                     maxDate={new Date()}
-                    todayButton="Today"
+                    todayButton={t('Today')}
                     peekNextMonth
                     showMonthDropdown
                     showYearDropdown
                     dropdownMode="select"
-                    customInput={<Input />}
+                    customInput={
+                      <Input
+                        className={classes.analysisPanelParamText}
+                        disableUnderline
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <DateRangeRounded />
+                          </InputAdornment>
+                        }
+                      />
+                    }
                     popperClassName={classes.calendarPopper}
                     includeDates={availableHazardDates}
                   />
                 </div>
-                <div className={classes.dateRangePicker}>
-                  <Typography variant="body2">{t('End')}</Typography>
-                  <DatePicker
-                    selected={endDate ? new Date(endDate) : null}
-                    onChange={date => setEndDate(date?.getTime() || endDate)}
-                    maxDate={new Date()}
-                    todayButton="Today"
-                    peekNextMonth
-                    showMonthDropdown
-                    showYearDropdown
-                    dropdownMode="select"
-                    customInput={<Input />}
-                    popperClassName={classes.calendarPopper}
-                    includeDates={availableHazardDates}
-                  />
-                </div>
-              </div>
-            </>
-          )}
-
-          {hazardDataType === RasterType.Raster && (
-            <>
-              <div className={classes.analysisPanelParamContainer}>
-                <LayerDropdown
-                  type="admin_level_data"
-                  value={baselineLayerId || undefined}
-                  setValue={setBaselineLayerId}
-                  className={classes.analysisPanelParamText}
-                  label={t('Baseline Layer')}
-                  placeholder="Choose baseline layer"
-                />
-              </div>
-              <div className={classes.analysisPanelParamContainer}>
-                <Typography
-                  className={classes.analysisParamTitle}
-                  variant="body2"
-                >
-                  {t('Statistic')}
-                </Typography>
-                <FormControl component="div">
-                  <RadioGroup
-                    name="statistics"
-                    value={statistic}
-                    onChange={onOptionChange(setStatistic)}
-                  >
-                    {statisticOptions}
-                  </RadioGroup>
-                </FormControl>
-              </div>
-              <div className={classes.analysisPanelParamContainer}>
-                <Typography
-                  className={classes.analysisParamTitle}
-                  variant="body2"
-                >
-                  {t('Threshold')}
-                </Typography>
-                <div style={{ display: 'flex' }}>
-                  <TextField
-                    id="outlined-number-low"
-                    error={!!thresholdError}
-                    helperText={t(thresholdError || '')}
-                    className={classes.numberField}
-                    label={t('Below')}
-                    type="number"
-                    value={belowThreshold}
-                    onChange={onThresholdOptionChange('below')}
-                    variant="outlined"
-                  />
-                  <TextField
-                    id="outlined-number-high"
-                    label={t('Above')}
-                    classes={{ root: classes.numberField }}
-                    value={aboveThreshold}
-                    onChange={onThresholdOptionChange('above')}
-                    type="number"
-                    variant="outlined"
-                  />
-                </div>
-              </div>
-              <div className={classes.datePickerContainer}>
-                <Typography
-                  className={classes.analysisParamTitle}
-                  variant="body2"
-                >
-                  {`${t('Date')}: `}
-                </Typography>
-                <DatePicker
-                  locale={t('date_locale')}
-                  dateFormat="PP"
-                  selected={selectedDate ? new Date(selectedDate) : null}
-                  onChange={date =>
-                    setSelectedDate(date?.getTime() || selectedDate)
-                  }
-                  maxDate={new Date()}
-                  todayButton={t('Today')}
-                  peekNextMonth
-                  showMonthDropdown
-                  showYearDropdown
-                  dropdownMode="select"
-                  customInput={
-                    <Input
-                      className={classes.analysisPanelParamText}
-                      disableUnderline
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <DateRangeRounded />
-                        </InputAdornment>
-                      }
-                    />
-                  }
-                  popperClassName={classes.calendarPopper}
-                  includeDates={availableHazardDates}
-                />
-              </div>
-            </>
-          )}
-        </div>
+              </>
+            )}
+          </div>
+        )}
 
         {!isAnalysisLoading &&
           analysisResult &&
@@ -650,8 +655,7 @@ function AnalysisPanel({
               </Button>
             </div>
           )}
-        {(!analysisResult ||
-          analysisResult instanceof ExposedPopulationResult) && (
+        {!analysisResult && (
           <div className={classes.analysisButtonContainer}>
             <Button
               className={classes.bottomButton}
@@ -700,6 +704,22 @@ function AnalysisPanel({
             <AnalysisTable
               tableData={analysisResult.tableData}
               columns={translatedColumns}
+            />
+          </div>
+        )}
+      {!isAnalysisLoading &&
+        analysisResult &&
+        analysisResult instanceof ExposedPopulationResult && (
+          <div
+            className={classes.analysisButtonContainer}
+            style={{
+              width: isPanelExtended ? '50%' : '100%',
+            }}
+          >
+            <ExposureAnalysisActions
+              analysisButton={classes.analysisButton}
+              bottomButton={classes.bottomButton}
+              clearAnalysis={clearAnalysis}
             />
           </div>
         )}

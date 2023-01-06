@@ -11,7 +11,12 @@ import {
   BarChartOutlined,
   ImageAspectRatioOutlined,
 } from '@material-ui/icons';
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setTabValue,
+  sidebarTabValueSelector,
+} from '../../../context/sidebarStateSlice';
 import { useSafeTranslation } from '../../../i18n';
 
 interface TabPanelProps {
@@ -89,19 +94,20 @@ function LeftPanelTabs({
   setIsPanelExtended,
 }: TabsProps) {
   const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
   const classes = useStyles({ isPanelExtended });
-  const [value, setValue] = useState(0);
+  const tabValue = useSelector(sidebarTabValueSelector);
 
   const handleChange = (_: any, newValue: number) => {
     setIsPanelExtended(false);
-    setValue(newValue);
+    dispatch(setTabValue(newValue));
   };
 
   return (
     <div className={classes.root}>
       <div className={classes.tabsContainer}>
         <Tabs
-          value={value}
+          value={tabValue}
           onChange={handleChange}
           aria-label="left panel tabs"
           classes={{ indicator: classes.indicator }}
@@ -141,13 +147,13 @@ function LeftPanelTabs({
           />
         </Tabs>
       </div>
-      <TabPanel value={value} index={0}>
+      <TabPanel value={tabValue} index={0}>
         {layersPanel}
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={tabValue} index={1}>
         {chartsPanel}
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      <TabPanel value={tabValue} index={2}>
         {analysisPanel}
       </TabPanel>
     </div>

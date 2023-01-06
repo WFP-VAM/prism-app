@@ -58,7 +58,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
       }}
     >
       <TableContainer className={classes.tableContainer}>
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader aria-label="analysis table">
           <TableHead>
             <TableRow>
               {columns.map(column => (
