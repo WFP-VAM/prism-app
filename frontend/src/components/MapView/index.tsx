@@ -202,7 +202,9 @@ function MapView({ classes }: MapViewProps) {
     undefined,
   );
   const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
-  const [isPanelHidden, setIsPanelHidden] = useState<boolean>(false);
+  const [isPanelHidden, setIsPanelHidden] = useState<boolean>(
+    appConfig.hidePanel,
+  );
 
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
