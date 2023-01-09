@@ -292,7 +292,7 @@ function ChartsPanel() {
             .map(layer => (
               <Box
                 style={{
-                  minHeight: '20vh',
+                  minHeight: '240px',
                   width: '45%',
                 }}
               >
