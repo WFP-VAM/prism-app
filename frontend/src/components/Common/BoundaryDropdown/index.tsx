@@ -75,7 +75,7 @@ const BoundaryDropdown = ({
   const styles = useStyles();
 
   const displayedOptions = useMemo(() => {
-    if (Object.keys(boundaryRelationDataDict).length === 0) {
+    if (!Object.keys(boundaryRelationDataDict).includes(i18nLocale.language)) {
       return undefined;
     }
 
