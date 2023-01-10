@@ -99,13 +99,7 @@ function LeftPanelTabs({
 
   const handleChange = (_: any, newValue: number) => {
     setValue(newValue);
-    switch (newValue) {
-      case 1:
-        setPanelSize(PanelSize.xlarge);
-        break;
-      default:
-        setPanelSize(PanelSize.medium);
-    }
+    setPanelSize(PanelSize.medium);
   };
 
   return (

@@ -40,7 +40,7 @@ function LeftPanel({
         panelSize={panelSize}
         setPanelSize={setPanelSize}
         layersPanel={<LayersPanel extent={extent} />}
-        chartsPanel={<ChartsPanel />}
+        chartsPanel={<ChartsPanel setPanelSize={setPanelSize} />}
         analysisPanel={
           <AnalysisPanel
             extent={extent}

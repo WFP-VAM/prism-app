@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import { DateRangeRounded } from '@material-ui/icons';
 import { GeoJsonProperties } from 'geojson';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
@@ -127,7 +127,7 @@ const MenuProps = {
   },
 };
 
-function ChartsPanel() {
+function ChartsPanel({ setPanelSize }: ChartsPanelProps) {
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
   const [admin2Title, setAdmin2Title] = useState('');
@@ -184,6 +184,14 @@ function ChartsPanel() {
   ) => {
     setSelectedLayerTitles(event.target.value as string[]);
   };
+
+  useEffect(() => {
+    if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
+      setPanelSize(PanelSize.xlarge);
+    } else {
+      setPanelSize(PanelSize.medium);
+    }
+  }, [setPanelSize, adminProperties, selectedDate, selectedLayerTitles.length]);
 
   return (
     <Box className={classes.root}>
@@ -332,6 +340,10 @@ function ChartsPanel() {
       </Box>
     </Box>
   );
+}
+
+interface ChartsPanelProps {
+  setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
 }
 
 export default ChartsPanel;
