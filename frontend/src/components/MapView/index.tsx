@@ -544,6 +544,9 @@ function MapView({ classes }: MapViewProps) {
   const boundaryId = firstBoundaryOnView(selectedMap);
   const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
 
+  const isShowingExtraFeatures =
+    panelSize !== PanelSize.xlarge || isPanelHidden;
+
   return (
     <Box height="100%" width="100%">
       <LeftPanel
@@ -591,25 +594,26 @@ function MapView({ classes }: MapViewProps) {
           <SelectionLayer before={firstSymbolId} />
           <MapTooltip />
         </MapboxMap>
-        {panelSize !== PanelSize.xlarge && (
-          <Grid
-            container
-            justify="space-between"
-            className={classes.buttonContainer}
-          >
-            <Grid item>
-              <Grid container spacing={1}>
-                <FoldButton setIsPanelHidden={setIsPanelHidden} />
-                <GotoBoundaryDropdown />
-                {appConfig.alertFormActive ? (
-                  <AlertForm
-                    isOpen={isAlertFormOpen}
-                    setOpen={setIsAlertFormOpen}
-                  />
-                ) : null}
-              </Grid>
-              <DataViewer />
+        <Grid
+          container
+          justify="space-between"
+          className={classes.buttonContainer}
+        >
+          <Grid item>
+            <Grid container spacing={1}>
+              <FoldButton setIsPanelHidden={setIsPanelHidden} />
+              {isShowingExtraFeatures && <GotoBoundaryDropdown />}
+              {appConfig.alertFormActive && isShowingExtraFeatures ? (
+                <AlertForm
+                  isOpen={isAlertFormOpen}
+                  setOpen={setIsAlertFormOpen}
+                />
+              ) : null}
             </Grid>
+
+            {isShowingExtraFeatures && <DataViewer />}
+          </Grid>
+          {isShowingExtraFeatures && (
             <Grid item>
               <Grid container spacing={1}>
                 <Download />
@@ -619,9 +623,9 @@ function MapView({ classes }: MapViewProps) {
                 />
               </Grid>
             </Grid>
-          </Grid>
-        )}
-        {panelSize !== PanelSize.xlarge && selectedLayerDates.length > 0 && (
+          )}
+        </Grid>
+        {isShowingExtraFeatures && selectedLayerDates.length > 0 && (
           <DateSelector
             availableDates={selectedLayerDates}
             selectedLayers={selectedLayersWithDateSupport}
