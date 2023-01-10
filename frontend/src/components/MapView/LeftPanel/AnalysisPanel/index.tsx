@@ -87,6 +87,7 @@ import AnalysisTable from './AnalysisTable';
 import { Extent } from '../../Layers/raster-utils';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
+import { setTabValue } from '../../../../context/sidebarStateSlice';
 
 function AnalysisPanel({
   extent,
@@ -327,8 +328,13 @@ function AnalysisPanel({
   };
 
   const clearAnalysis = () => {
+    const isClearingExposureAnalysis =
+      analysisResult instanceof ExposedPopulationResult;
     dispatch(clearAnalysisResult());
     setIsPanelExtended(false);
+    if (isClearingExposureAnalysis) {
+      dispatch(setTabValue(0));
+    }
     setHazardLayerId(hazardLayerIdFromUrl);
     setStatistic(
       (selectedStatisticFromUrl as AggregationOperations) ||
