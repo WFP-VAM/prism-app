@@ -679,3 +679,10 @@ export type UserAuth = {
   username: string;
   password: string;
 };
+
+export enum PanelSize {
+  folded = '0vw',
+  medium = '30vw',
+  large = '60vw',
+  xlarge = '80vw',
+}

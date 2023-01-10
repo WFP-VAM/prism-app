@@ -10,6 +10,8 @@ type ChartProps = {
   data: TableData;
   config: ChartConfig;
   xAxisLabel?: string;
+  notMaintainAspectRatio?: boolean;
+  legendAtBottom?: boolean;
 };
 
 function colorShuffle(colors: string[]) {
@@ -23,13 +25,16 @@ function getChartConfig(
   title: string,
   displayLegend: boolean,
   xAxisLabel?: string,
+  notMaintainAspectRatio?: boolean,
+  legendAtBottom?: boolean,
 ) {
   return {
+    maintainAspectRatio: !(notMaintainAspectRatio ?? false),
     title: {
       fontColor: '#CCC',
       display: true,
       text: title,
-      fontSize: 20,
+      fontSize: 14,
     },
     scales: {
       xAxes: [
@@ -65,7 +70,7 @@ function getChartConfig(
     },
     legend: {
       display: displayLegend,
-      position: 'right',
+      position: legendAtBottom ? 'bottom' : 'right',
     },
   } as ChartOptions;
 }
@@ -166,38 +171,45 @@ function formatChartData(data: TableData, config: ChartConfig) {
   };
 }
 
-function Chart({ title, data, config, xAxisLabel }: ChartProps) {
+function Chart({
+  title,
+  data,
+  config,
+  xAxisLabel,
+  notMaintainAspectRatio,
+  legendAtBottom,
+}: ChartProps) {
   try {
     const chartData = formatChartData(data, config);
 
     switch (config.type) {
       case 'bar':
         return (
-          <div>
-            <Bar
-              data={chartData}
-              options={getChartConfig(
-                config.stacked || false,
-                title,
-                config.displayLegend || false,
-                xAxisLabel,
-              )}
-            />
-          </div>
+          <Bar
+            data={chartData}
+            options={getChartConfig(
+              config.stacked || false,
+              title,
+              config.displayLegend || false,
+              xAxisLabel,
+              notMaintainAspectRatio,
+              legendAtBottom,
+            )}
+          />
         );
       case 'line':
         return (
-          <div>
-            <Line
-              data={chartData}
-              options={getChartConfig(
-                config.stacked || false,
-                title,
-                config.displayLegend || false,
-                xAxisLabel,
-              )}
-            />
-          </div>
+          <Line
+            data={chartData}
+            options={getChartConfig(
+              config.stacked || false,
+              title,
+              config.displayLegend || false,
+              xAxisLabel,
+              notMaintainAspectRatio,
+              legendAtBottom,
+            )}
+          />
         );
       default:
         throw new Error(
