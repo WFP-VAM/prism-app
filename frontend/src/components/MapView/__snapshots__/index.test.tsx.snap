@@ -3430,16 +3430,6 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MapView-loading-5"
-    >
-      <mock-circularprogress
-        size="100"
-      />
-    </div>
-    <div
-      style="height: 100%;"
-    />
-    <div
       class="MuiBox-root MuiBox-root-79 MapView-container-2"
     >
       <div
@@ -3489,6 +3479,16 @@ exports[`renders as expected 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="MapView-loading-5"
+    >
+      <mock-circularprogress
+        size="100"
+      />
+    </div>
+    <div
+      style="height: 100%;"
+    />
   </div>
 </div>
 `;

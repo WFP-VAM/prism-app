@@ -555,39 +555,6 @@ function MapView({ classes }: MapViewProps) {
         setPanelSize={setPanelSize}
         isPanelHidden={isPanelHidden}
       />
-      {datesLoading && (
-        <div className={classes.loading}>
-          <CircularProgress size={100} />
-        </div>
-      )}
-      <MapboxMap
-        // eslint-disable-next-line react/style-prop-object
-        style={style.toString()}
-        onStyleLoad={saveAndJumpMap}
-        containerStyle={{
-          height: '100%',
-        }}
-        onClick={mapOnClick}
-        center={center}
-        zoom={zoomList}
-        maxBounds={maxBounds}
-      >
-        {selectedLayers.map(layer => {
-          const component: ComponentType<{
-            layer: any;
-            before?: string;
-          }> = componentTypes[layer.type];
-          return createElement(component, {
-            key: layer.id,
-            layer,
-            before: layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
-          });
-        })}
-        {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer before={firstBoundaryId} />
-        <SelectionLayer before={firstSymbolId} />
-        <MapTooltip />
-      </MapboxMap>
       <Box className={classes.container}>
         <Box
           className={classes.optionContainer}
@@ -633,6 +600,39 @@ function MapView({ classes }: MapViewProps) {
           {showBoundaryInfo && <BoundaryInfoBox />}
         </Box>
       </Box>
+      {datesLoading && (
+        <div className={classes.loading}>
+          <CircularProgress size={100} />
+        </div>
+      )}
+      <MapboxMap
+        // eslint-disable-next-line react/style-prop-object
+        style={style.toString()}
+        onStyleLoad={saveAndJumpMap}
+        containerStyle={{
+          height: '100%',
+        }}
+        onClick={mapOnClick}
+        center={center}
+        zoom={zoomList}
+        maxBounds={maxBounds}
+      >
+        {selectedLayers.map(layer => {
+          const component: ComponentType<{
+            layer: any;
+            before?: string;
+          }> = componentTypes[layer.type];
+          return createElement(component, {
+            key: layer.id,
+            layer,
+            before: layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
+          });
+        })}
+        {/* These are custom layers which provide functionality and are not really controllable via JSON */}
+        <AnalysisLayer before={firstBoundaryId} />
+        <SelectionLayer before={firstSymbolId} />
+        <MapTooltip />
+      </MapboxMap>
     </Box>
   );
 }
