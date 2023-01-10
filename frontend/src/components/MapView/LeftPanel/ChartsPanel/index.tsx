@@ -93,12 +93,13 @@ const useStyles = makeStyles(() =>
     },
     datePickerContainer: {
       marginTop: 45,
-      marginLeft: 10,
       width: 'auto',
       color: 'black',
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',
+      borderBottom: ' 1px solid #858585',
+      minWidth: 300,
     },
     calendarPopper: {
       zIndex: 3,
@@ -133,7 +134,9 @@ function ChartsPanel({ setPanelSize }: ChartsPanelProps) {
   const [admin2Title, setAdmin2Title] = useState('');
   const [adminLevel, setAdminLevel] = useState<1 | 2>(1);
   const [selectedLayerTitles, setSelectedLayerTitles] = useState<string[]>([]);
-  const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const [selectedDate, setSelectedDate] = useState<number | null>(
+    new Date().getTime(),
+  );
 
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const { t, i18n: i18nLocale } = useSafeTranslation();
