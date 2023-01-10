@@ -41,14 +41,7 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <div className={classes.exposureAnalysisTable}>
       <TableContainer className={classes.tableContainer}>
         <Table stickyHeader aria-label="exposure analysis table">
           <TableHead>
@@ -70,7 +63,7 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
               })}
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody className={classes.tableBody}>
             {analysisData.rows
               .slice(
                 page * rowsPerPage + 1,
@@ -85,7 +78,7 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
                       t,
                     );
                     return (
-                      <TableCell key={column}>
+                      <TableCell key={column} className={classes.tableBody}>
                         <Typography className={classes.tableBodyText}>
                           {' '}
                           {formattedColValue}{' '}
@@ -136,10 +129,15 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
+    exposureAnalysisTable: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      maxHeight: '85%',
+    },
     tableContainer: {
       maxWidth: '90%',
-      marginTop: 5,
-      zIndex: theme.zIndex.modal + 1,
     },
     tableHead: {
       backgroundColor: '#EBEBEB',
@@ -148,6 +146,9 @@ const styles = (theme: Theme) =>
     tableHeaderText: {
       color: 'black',
       fontWeight: 500,
+    },
+    tableBody: {
+      padding: '8px',
     },
     tableBodyText: {
       color: 'black',
@@ -166,7 +167,8 @@ const styles = (theme: Theme) =>
       marginRight: 0,
     },
     caption: {
-      flex: '1 2 30%',
+      flex: '1 2 40%',
+      fontSize: '0.5rem',
       marginLeft: 0,
     },
     backButton: {
