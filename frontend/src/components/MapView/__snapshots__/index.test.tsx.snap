@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-4"
+    class="MuiBox-root MuiBox-root-6 MapView-root-1"
   >
     <mock-drawer
       anchor="left"
@@ -12,10 +12,10 @@ exports[`renders as expected 1`] = `
       variant="persistent"
     >
       <div
-        class="makeStyles-root-7"
+        class="makeStyles-root-9"
       >
         <div
-          class="makeStyles-tabs-8 makeStyles-tabs-12"
+          class="makeStyles-tabs-10 makeStyles-tabs-14"
         >
           <mock-tabs
             aria-label="left panel tabs"
@@ -54,16 +54,16 @@ exports[`renders as expected 1`] = `
           role="tabpanel"
         >
           <div
-            class="MuiBox-root MuiBox-root-13"
+            class="MuiBox-root MuiBox-root-15"
           >
             <div
-              class="MuiPaper-root MuiAccordion-root makeStyles-root-14 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-16 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
             >
               <div
                 aria-controls="Rainfall"
                 aria-disabled="false"
                 aria-expanded="false"
-                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-15"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-17"
                 id="Rainfall"
                 role="button"
                 tabindex="0"
@@ -80,7 +80,7 @@ exports[`renders as expected 1`] = `
                 <div
                   aria-disabled="false"
                   aria-hidden="true"
-                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-17 MuiIconButton-edgeEnd"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-19 MuiIconButton-edgeEnd"
                 >
                   <span
                     class="MuiIconButton-label"
@@ -117,19 +117,19 @@ exports[`renders as expected 1`] = `
                       role="region"
                     >
                       <div
-                        class="MuiAccordionDetails-root makeStyles-rootDetails-16"
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-18"
                       >
                         <div
                           class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                         >
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="INAM Rainfall Data"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="INAM Rainfall Data"
                               role="button"
                               tabindex="0"
@@ -146,7 +146,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -183,35 +183,35 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
                                         <div
-                                          class="MuiBox-root MuiBox-root-37"
+                                          class="MuiBox-root MuiBox-root-39"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-38"
+                                            class="MuiBox-root MuiBox-root-40"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Rainfall aggregate
                                             </mock-typography>
                                             <div
-                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-26"
+                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-28"
                                             >
                                               <div
                                                 aria-haspopup="listbox"
-                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-28 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-30 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                 role="button"
                                                 tabindex="0"
                                               >
@@ -286,7 +286,7 @@ exports[`renders as expected 1`] = `
                                               </mock-menu>
                                             </div>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -344,29 +344,29 @@ exports[`renders as expected 1`] = `
                                           </div>
                                         </div>
                                         <div
-                                          class="MuiBox-root MuiBox-root-39"
+                                          class="MuiBox-root MuiBox-root-41"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-40"
+                                            class="MuiBox-root MuiBox-root-42"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Rainfall anomaly
                                             </mock-typography>
                                             <div
-                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-26"
+                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-28"
                                             >
                                               <div
                                                 aria-haspopup="listbox"
-                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-28 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-30 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                 role="button"
                                                 tabindex="0"
                                               >
@@ -441,7 +441,7 @@ exports[`renders as expected 1`] = `
                                               </mock-menu>
                                             </div>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -506,13 +506,13 @@ exports[`renders as expected 1`] = `
                             </div>
                           </div>
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="Global Rainfall Products"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="Global Rainfall Products"
                               role="button"
                               tabindex="0"
@@ -529,7 +529,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -566,35 +566,35 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
                                         <div
-                                          class="MuiBox-root MuiBox-root-41"
+                                          class="MuiBox-root MuiBox-root-43"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-42"
+                                            class="MuiBox-root MuiBox-root-44"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Rainfall aggregate
                                             </mock-typography>
                                             <div
-                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-26"
+                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-28"
                                             >
                                               <div
                                                 aria-haspopup="listbox"
-                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-28 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-30 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                 role="button"
                                                 tabindex="0"
                                               >
@@ -669,7 +669,7 @@ exports[`renders as expected 1`] = `
                                               </mock-menu>
                                             </div>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -727,29 +727,29 @@ exports[`renders as expected 1`] = `
                                           </div>
                                         </div>
                                         <div
-                                          class="MuiBox-root MuiBox-root-43"
+                                          class="MuiBox-root MuiBox-root-45"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-44"
+                                            class="MuiBox-root MuiBox-root-46"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Rainfall anomaly
                                             </mock-typography>
                                             <div
-                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-26"
+                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-28"
                                             >
                                               <div
                                                 aria-haspopup="listbox"
-                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-28 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-30 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                 role="button"
                                                 tabindex="0"
                                               >
@@ -824,7 +824,7 @@ exports[`renders as expected 1`] = `
                                               </mock-menu>
                                             </div>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -882,29 +882,29 @@ exports[`renders as expected 1`] = `
                                           </div>
                                         </div>
                                         <div
-                                          class="MuiBox-root MuiBox-root-45"
+                                          class="MuiBox-root MuiBox-root-47"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-46"
+                                            class="MuiBox-root MuiBox-root-48"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               SPI
                                             </mock-typography>
                                             <div
-                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-26"
+                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-28"
                                             >
                                               <div
                                                 aria-haspopup="listbox"
-                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-28 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-30 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                 role="button"
                                                 tabindex="0"
                                               >
@@ -972,7 +972,7 @@ exports[`renders as expected 1`] = `
                                               </mock-menu>
                                             </div>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -1037,13 +1037,13 @@ exports[`renders as expected 1`] = `
                             </div>
                           </div>
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="Dry Periods"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="Dry Periods"
                               role="button"
                               tabindex="0"
@@ -1060,7 +1060,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -1097,31 +1097,31 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
                                         <div
-                                          class="MuiBox-root MuiBox-root-47"
+                                          class="MuiBox-root MuiBox-root-49"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-48"
+                                            class="MuiBox-root MuiBox-root-50"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Days since last rain
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -1179,25 +1179,25 @@ exports[`renders as expected 1`] = `
                                           </div>
                                         </div>
                                         <div
-                                          class="MuiBox-root MuiBox-root-49"
+                                          class="MuiBox-root MuiBox-root-51"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-50"
+                                            class="MuiBox-root MuiBox-root-52"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Longest dry spell
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -1262,13 +1262,13 @@ exports[`renders as expected 1`] = `
                             </div>
                           </div>
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="Extreme Rain Events"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="Extreme Rain Events"
                               role="button"
                               tabindex="0"
@@ -1285,7 +1285,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -1322,35 +1322,35 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
                                         <div
-                                          class="MuiBox-root MuiBox-root-51"
+                                          class="MuiBox-root MuiBox-root-53"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-52"
+                                            class="MuiBox-root MuiBox-root-54"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Rainfall categories:
                                             </mock-typography>
                                             <div
-                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-26"
+                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-28"
                                             >
                                               <div
                                                 aria-haspopup="listbox"
-                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-28 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-30 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                 role="button"
                                                 tabindex="0"
                                               >
@@ -1404,7 +1404,7 @@ exports[`renders as expected 1`] = `
                                               </mock-menu>
                                             </div>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -1462,29 +1462,29 @@ exports[`renders as expected 1`] = `
                                           </div>
                                         </div>
                                         <div
-                                          class="MuiBox-root MuiBox-root-53"
+                                          class="MuiBox-root MuiBox-root-55"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-54"
+                                            class="MuiBox-root MuiBox-root-56"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Consecutive days of rainfall:
                                             </mock-typography>
                                             <div
-                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-26"
+                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-28"
                                             >
                                               <div
                                                 aria-haspopup="listbox"
-                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-28 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-30 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                 role="button"
                                                 tabindex="0"
                                               >
@@ -1538,7 +1538,7 @@ exports[`renders as expected 1`] = `
                                               </mock-menu>
                                             </div>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -1610,13 +1610,13 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="MuiPaper-root MuiAccordion-root makeStyles-root-14 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-16 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
             >
               <div
                 aria-controls="Vegetation"
                 aria-disabled="false"
                 aria-expanded="false"
-                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-15"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-17"
                 id="Vegetation"
                 role="button"
                 tabindex="0"
@@ -1633,7 +1633,7 @@ exports[`renders as expected 1`] = `
                 <div
                   aria-disabled="false"
                   aria-hidden="true"
-                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-17 MuiIconButton-edgeEnd"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-19 MuiIconButton-edgeEnd"
                 >
                   <span
                     class="MuiIconButton-label"
@@ -1670,19 +1670,19 @@ exports[`renders as expected 1`] = `
                       role="region"
                     >
                       <div
-                        class="MuiAccordionDetails-root makeStyles-rootDetails-16"
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-18"
                       >
                         <div
                           class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                         >
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="Vegetation Conditions"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="Vegetation Conditions"
                               role="button"
                               tabindex="0"
@@ -1699,7 +1699,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -1736,31 +1736,31 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
                                         <div
-                                          class="MuiBox-root MuiBox-root-55"
+                                          class="MuiBox-root MuiBox-root-57"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-56"
+                                            class="MuiBox-root MuiBox-root-58"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               10-day NDVI (MODIS)
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -1818,25 +1818,25 @@ exports[`renders as expected 1`] = `
                                           </div>
                                         </div>
                                         <div
-                                          class="MuiBox-root MuiBox-root-57"
+                                          class="MuiBox-root MuiBox-root-59"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-58"
+                                            class="MuiBox-root MuiBox-root-60"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               10-day NDVI anomaly (MODIS)
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -1908,13 +1908,13 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="MuiPaper-root MuiAccordion-root makeStyles-root-14 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-16 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
             >
               <div
                 aria-controls="Temperature"
                 aria-disabled="false"
                 aria-expanded="false"
-                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-15"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-17"
                 id="Temperature"
                 role="button"
                 tabindex="0"
@@ -1931,7 +1931,7 @@ exports[`renders as expected 1`] = `
                 <div
                   aria-disabled="false"
                   aria-hidden="true"
-                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-17 MuiIconButton-edgeEnd"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-19 MuiIconButton-edgeEnd"
                 >
                   <span
                     class="MuiIconButton-label"
@@ -1968,19 +1968,19 @@ exports[`renders as expected 1`] = `
                       role="region"
                     >
                       <div
-                        class="MuiAccordionDetails-root makeStyles-rootDetails-16"
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-18"
                       >
                         <div
                           class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                         >
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="INAM Air Temperature"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="INAM Air Temperature"
                               role="button"
                               tabindex="0"
@@ -1997,7 +1997,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -2034,31 +2034,31 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
                                         <div
-                                          class="MuiBox-root MuiBox-root-59"
+                                          class="MuiBox-root MuiBox-root-61"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-60"
+                                            class="MuiBox-root MuiBox-root-62"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               INAM mean maximum air temperature (10-day)
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -2116,25 +2116,25 @@ exports[`renders as expected 1`] = `
                                           </div>
                                         </div>
                                         <div
-                                          class="MuiBox-root MuiBox-root-61"
+                                          class="MuiBox-root MuiBox-root-63"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-62"
+                                            class="MuiBox-root MuiBox-root-64"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               INAM mean maximum air temperature anomaly (10-day)
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -2199,13 +2199,13 @@ exports[`renders as expected 1`] = `
                             </div>
                           </div>
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="Land Surface Temperature"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="Land Surface Temperature"
                               role="button"
                               tabindex="0"
@@ -2222,7 +2222,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -2259,87 +2259,11 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
-                                        <div
-                                          class="MuiBox-root MuiBox-root-63"
-                                        >
-                                          <div
-                                            class="MuiBox-root MuiBox-root-64"
-                                          >
-                                            <mock-switch
-                                              checked="false"
-                                              classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
-                                              inputprops="[object Object]"
-                                              size="small"
-                                            />
-                                            <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
-                                            >
-                                              Daytime Land Surface Temperature - 10-day (MODIS)
-                                            </mock-typography>
-                                            <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
-                                              disabled=""
-                                              tabindex="-1"
-                                              type="button"
-                                            >
-                                              <span
-                                                class="MuiIconButton-label"
-                                              >
-                                                <svg
-                                                  aria-hidden="true"
-                                                  class="MuiSvgIcon-root"
-                                                  focusable="false"
-                                                  viewBox="0 0 24 24"
-                                                >
-                                                  <path
-                                                    d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
-                                                  />
-                                                </svg>
-                                              </span>
-                                            </button>
-                                            <button
-                                              class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
-                                              disabled=""
-                                              tabindex="-1"
-                                              type="button"
-                                            >
-                                              <span
-                                                class="MuiIconButton-label"
-                                              >
-                                                <svg
-                                                  aria-hidden="true"
-                                                  class="MuiSvgIcon-root"
-                                                  focusable="false"
-                                                  viewBox="0 0 24 24"
-                                                >
-                                                  <path
-                                                    d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
-                                                  />
-                                                </svg>
-                                              </span>
-                                            </button>
-                                            <mock-menu
-                                              id="download-menu"
-                                              keepmounted="true"
-                                              open="false"
-                                            >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
-                                              <mock-menuitem>
-                                                Download as GeoTIFF
-                                              </mock-menuitem>
-                                            </mock-menu>
-                                          </div>
-                                        </div>
                                         <div
                                           class="MuiBox-root MuiBox-root-65"
                                         >
@@ -2349,17 +2273,17 @@ exports[`renders as expected 1`] = `
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
-                                              Daytime Land Surface Temperature - 10-day Anomaly (MODIS)
+                                              Daytime Land Surface Temperature - 10-day (MODIS)
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -2425,17 +2349,93 @@ exports[`renders as expected 1`] = `
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
+                                            >
+                                              Daytime Land Surface Temperature - 10-day Anomaly (MODIS)
+                                            </mock-typography>
+                                            <button
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
+                                              disabled=""
+                                              tabindex="-1"
+                                              type="button"
+                                            >
+                                              <span
+                                                class="MuiIconButton-label"
+                                              >
+                                                <svg
+                                                  aria-hidden="true"
+                                                  class="MuiSvgIcon-root"
+                                                  focusable="false"
+                                                  viewBox="0 0 24 24"
+                                                >
+                                                  <path
+                                                    d="M17.66 8L12 2.35 6.34 8C4.78 9.56 4 11.64 4 13.64s.78 4.11 2.34 5.67 3.61 2.35 5.66 2.35 4.1-.79 5.66-2.35S20 15.64 20 13.64 19.22 9.56 17.66 8zM6 14c.01-2 .62-3.27 1.76-4.4L12 5.27l4.24 4.38C17.38 10.77 17.99 12 18 14H6z"
+                                                  />
+                                                </svg>
+                                              </span>
+                                            </button>
+                                            <button
+                                              class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
+                                              disabled=""
+                                              tabindex="-1"
+                                              type="button"
+                                            >
+                                              <span
+                                                class="MuiIconButton-label"
+                                              >
+                                                <svg
+                                                  aria-hidden="true"
+                                                  class="MuiSvgIcon-root"
+                                                  focusable="false"
+                                                  viewBox="0 0 24 24"
+                                                >
+                                                  <path
+                                                    d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+                                                  />
+                                                </svg>
+                                              </span>
+                                            </button>
+                                            <mock-menu
+                                              id="download-menu"
+                                              keepmounted="true"
+                                              open="false"
+                                            >
+                                              <mock-menuitem
+                                                disabled="true"
+                                              >
+                                                Exposure Analysis
+                                              </mock-menuitem>
+                                              <mock-menuitem>
+                                                Download as GeoTIFF
+                                              </mock-menuitem>
+                                            </mock-menu>
+                                          </div>
+                                        </div>
+                                        <div
+                                          class="MuiBox-root MuiBox-root-69"
+                                        >
+                                          <div
+                                            class="MuiBox-root MuiBox-root-70"
+                                          >
+                                            <mock-switch
+                                              checked="false"
+                                              classes="[object Object]"
+                                              classname="SwitchItem-switch-31"
+                                              inputprops="[object Object]"
+                                              size="small"
+                                            />
+                                            <mock-typography
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Land Surface Temperature - 10-day Amplitude (MODIS)
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -2507,13 +2507,13 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="MuiPaper-root MuiAccordion-root makeStyles-root-14 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-16 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
             >
               <div
                 aria-controls="Tropical Storms"
                 aria-disabled="false"
                 aria-expanded="false"
-                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-15"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-17"
                 id="Tropical Storms"
                 role="button"
                 tabindex="0"
@@ -2530,7 +2530,7 @@ exports[`renders as expected 1`] = `
                 <div
                   aria-disabled="false"
                   aria-hidden="true"
-                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-17 MuiIconButton-edgeEnd"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-19 MuiIconButton-edgeEnd"
                 >
                   <span
                     class="MuiIconButton-label"
@@ -2567,19 +2567,19 @@ exports[`renders as expected 1`] = `
                       role="region"
                     >
                       <div
-                        class="MuiAccordionDetails-root makeStyles-rootDetails-16"
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-18"
                       >
                         <div
                           class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                         >
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="Tropical Storms"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="Tropical Storms"
                               role="button"
                               tabindex="0"
@@ -2596,7 +2596,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -2633,31 +2633,31 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
                                         <div
-                                          class="MuiBox-root MuiBox-root-69"
+                                          class="MuiBox-root MuiBox-root-71"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-70"
+                                            class="MuiBox-root MuiBox-root-72"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Tropical Storms
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -2726,13 +2726,13 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="MuiPaper-root MuiAccordion-root makeStyles-root-14 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-16 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
             >
               <div
                 aria-controls="Vulnerability"
                 aria-disabled="false"
                 aria-expanded="false"
-                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-15"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-17"
                 id="Vulnerability"
                 role="button"
                 tabindex="0"
@@ -2749,7 +2749,7 @@ exports[`renders as expected 1`] = `
                 <div
                   aria-disabled="false"
                   aria-hidden="true"
-                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-17 MuiIconButton-edgeEnd"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-19 MuiIconButton-edgeEnd"
                 >
                   <span
                     class="MuiIconButton-label"
@@ -2786,19 +2786,19 @@ exports[`renders as expected 1`] = `
                       role="region"
                     >
                       <div
-                        class="MuiAccordionDetails-root makeStyles-rootDetails-16"
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-18"
                       >
                         <div
                           class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                         >
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="Poverty"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="Poverty"
                               role="button"
                               tabindex="0"
@@ -2815,7 +2815,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -2852,31 +2852,31 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
                                         <div
-                                          class="MuiBox-root MuiBox-root-71"
+                                          class="MuiBox-root MuiBox-root-73"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-72"
+                                            class="MuiBox-root MuiBox-root-74"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Multidimensional Poverty Index
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -2944,13 +2944,13 @@ exports[`renders as expected 1`] = `
                             </div>
                           </div>
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="Food Insecurity"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="Food Insecurity"
                               role="button"
                               tabindex="0"
@@ -2967,7 +2967,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -3004,35 +3004,35 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
                                         <div
-                                          class="MuiBox-root MuiBox-root-73"
+                                          class="MuiBox-root MuiBox-root-75"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-74"
+                                            class="MuiBox-root MuiBox-root-76"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               IPC
                                             </mock-typography>
                                             <div
-                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-26"
+                                              class="MuiInputBase-root MuiInput-root MuiInput-underline SwitchItem-select-28"
                                             >
                                               <div
                                                 aria-haspopup="listbox"
-                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-28 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
+                                                class="MuiSelect-root SwitchItem-selectItemUnchecked-30 MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input"
                                                 role="button"
                                                 tabindex="0"
                                               >
@@ -3114,7 +3114,7 @@ exports[`renders as expected 1`] = `
                                               </mock-menu>
                                             </div>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -3189,13 +3189,13 @@ exports[`renders as expected 1`] = `
               </div>
             </div>
             <div
-              class="MuiPaper-root MuiAccordion-root makeStyles-root-14 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+              class="MuiPaper-root MuiAccordion-root makeStyles-root-16 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
             >
               <div
                 aria-controls="Exposure"
                 aria-disabled="false"
                 aria-expanded="false"
-                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-15"
+                class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-17"
                 id="Exposure"
                 role="button"
                 tabindex="0"
@@ -3212,7 +3212,7 @@ exports[`renders as expected 1`] = `
                 <div
                   aria-disabled="false"
                   aria-hidden="true"
-                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-17 MuiIconButton-edgeEnd"
+                  class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-19 MuiIconButton-edgeEnd"
                 >
                   <span
                     class="MuiIconButton-label"
@@ -3249,19 +3249,19 @@ exports[`renders as expected 1`] = `
                       role="region"
                     >
                       <div
-                        class="MuiAccordionDetails-root makeStyles-rootDetails-16"
+                        class="MuiAccordionDetails-root makeStyles-rootDetails-18"
                       >
                         <div
                           class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                         >
                           <div
-                            class="MuiPaper-root MuiAccordion-root makeStyles-root-19 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+                            class="MuiPaper-root MuiAccordion-root makeStyles-root-21 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
                           >
                             <div
                               aria-controls="Population"
                               aria-disabled="false"
                               aria-expanded="false"
-                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-20"
+                              class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-rootSummary-22"
                               id="Population"
                               role="button"
                               tabindex="0"
@@ -3278,7 +3278,7 @@ exports[`renders as expected 1`] = `
                               <div
                                 aria-disabled="false"
                                 aria-hidden="true"
-                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-22 MuiIconButton-edgeEnd"
+                                class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-24 MuiIconButton-edgeEnd"
                               >
                                 <span
                                   class="MuiIconButton-label"
@@ -3315,31 +3315,31 @@ exports[`renders as expected 1`] = `
                                     role="region"
                                   >
                                     <div
-                                      class="MuiAccordionDetails-root makeStyles-rootDetails-21"
+                                      class="MuiAccordionDetails-root makeStyles-rootDetails-23"
                                     >
                                       <div
                                         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
                                       >
                                         <div
-                                          class="MuiBox-root MuiBox-root-75"
+                                          class="MuiBox-root MuiBox-root-77"
                                         >
                                           <div
-                                            class="MuiBox-root MuiBox-root-76"
+                                            class="MuiBox-root MuiBox-root-78"
                                           >
                                             <mock-switch
                                               checked="false"
                                               classes="[object Object]"
-                                              classname="SwitchItem-switch-29"
+                                              classname="SwitchItem-switch-31"
                                               inputprops="[object Object]"
                                               size="small"
                                             />
                                             <mock-typography
-                                              classname="SwitchItem-titleUnchecked-25"
+                                              classname="SwitchItem-titleUnchecked-27"
                                             >
                                               Total population
                                             </mock-typography>
                                             <button
-                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-32 Mui-disabled Mui-disabled"
+                                              class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-34 Mui-disabled Mui-disabled"
                                               disabled=""
                                               tabindex="-1"
                                               type="button"
@@ -3430,57 +3430,61 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiGrid-root MapView-container-1 MuiGrid-item"
-      style="margin-left: 30vw;"
+      class="MapView-loading-5"
+    >
+      <mock-circularprogress
+        size="100"
+      />
+    </div>
+    <div
+      style="height: 100%;"
+    />
+    <div
+      class="MuiBox-root MuiBox-root-79 MapView-container-2"
     >
       <div
-        class="MapView-loading-3"
-      >
-        <mock-circularprogress
-          size="100"
-        />
-      </div>
-      <div
-        style="height: 100%;"
-      />
-      <div
-        class="MuiGrid-root MapView-buttonContainer-2 MuiGrid-container MuiGrid-justify-xs-space-between"
+        class="MuiBox-root MuiBox-root-80 MapView-optionContainer-3"
+        style="margin-left: 30vw;"
       >
         <div
-          class="MuiGrid-root MuiGrid-item"
+          class="MuiGrid-root MapView-buttonContainer-4 MuiGrid-container MuiGrid-justify-xs-space-between"
         >
           <div
-            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
+            class="MuiGrid-root MuiGrid-item"
           >
-            <mock-button
-              classes="[object Object]"
-              color="primary"
-              size="medium"
-              variant="contained"
+            <div
+              class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
             >
-              <svg
-                aria-hidden="true"
-                class="MuiSvgIcon-root"
-                focusable="false"
-                viewBox="0 0 24 24"
+              <mock-button
+                classes="[object Object]"
+                color="primary"
+                size="medium"
+                variant="contained"
               >
-                <path
-                  d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
-                />
-              </svg>
-            </mock-button>
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+                  />
+                </svg>
+              </mock-button>
+            </div>
           </div>
-        </div>
-        <div
-          class="MuiGrid-root MuiGrid-item"
-        >
           <div
-            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
+            class="MuiGrid-root MuiGrid-item"
           >
-            <mock-download />
-            <mock-legends
-              layers="[object Object],[object Object]"
-            />
+            <div
+              class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
+            >
+              <mock-download />
+              <mock-legends
+                layers="[object Object],[object Object]"
+              />
+            </div>
           </div>
         </div>
       </div>
