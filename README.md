@@ -51,6 +51,7 @@ For each category, you can define sub categories as "subcategorie_name":
     ]
   },
   "alertFormActive": false,
+  "hidePanel": false,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",

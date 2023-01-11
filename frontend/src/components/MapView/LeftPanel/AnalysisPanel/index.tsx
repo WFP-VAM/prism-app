@@ -54,6 +54,7 @@ import {
   LayerKey,
   BoundaryLayerProps,
   GeometryType,
+  PanelSize,
 } from '../../../../config/types';
 import {
   getAdminLevelCount,
@@ -91,8 +92,8 @@ import { setTabValue } from '../../../../context/sidebarStateSlice';
 
 function AnalysisPanel({
   extent,
-  isPanelExtended,
-  setIsPanelExtended,
+  panelSize,
+  setPanelSize,
   classes,
 }: AnalysisPanelProps) {
   const dispatch = useDispatch();
@@ -331,7 +332,7 @@ function AnalysisPanel({
     const isClearingExposureAnalysis =
       analysisResult instanceof ExposedPopulationResult;
     dispatch(clearAnalysisResult());
-    setIsPanelExtended(false);
+    setPanelSize(PanelSize.medium);
     if (isClearingExposureAnalysis) {
       dispatch(setTabValue(0));
     }
@@ -642,16 +643,24 @@ function AnalysisPanel({
             <div
               className={classes.analysisButtonContainer}
               style={{
-                width: isPanelExtended ? '50%' : '100%',
+                width: PanelSize.medium,
               }}
             >
               <Button
                 className={classes.analysisButton}
                 disabled={!analysisResult}
-                onClick={() => setIsPanelExtended(!isPanelExtended)}
+                onClick={() =>
+                  setPanelSize(
+                    panelSize === PanelSize.large
+                      ? PanelSize.medium
+                      : PanelSize.large,
+                  )
+                }
               >
                 <Typography variant="body2">
-                  {isPanelExtended ? t('Hide Table') : t('View Table')}
+                  {panelSize === PanelSize.large
+                    ? t('Hide Table')
+                    : t('View Table')}
                 </Typography>
               </Button>
               <Button
@@ -699,7 +708,7 @@ function AnalysisPanel({
         analysisResult &&
         (analysisResult instanceof BaselineLayerResult ||
           analysisResult instanceof PolygonAnalysisResult) &&
-        isPanelExtended && (
+        panelSize === PanelSize.large && (
           <div className={classes.analysisTableContainer}>
             <div
               style={{
@@ -711,7 +720,7 @@ function AnalysisPanel({
             >
               <IconButton
                 aria-label="close"
-                onClick={() => setIsPanelExtended(!isPanelExtended)}
+                onClick={() => setPanelSize(PanelSize.medium)}
                 className={classes.analysisTableCloseButton}
               >
                 <CloseRounded />
@@ -732,7 +741,7 @@ function AnalysisPanel({
           <div
             className={classes.analysisButtonContainer}
             style={{
-              width: isPanelExtended ? '50%' : '100%',
+              width: panelSize === PanelSize.large ? '50%' : '100%',
             }}
           >
             <ExposureAnalysisActions
@@ -757,7 +766,7 @@ const styles = (theme: Theme) =>
     analysisPanel: {
       display: 'relative',
       paddingTop: 30,
-      flexGrow: 4,
+      width: PanelSize.medium,
     },
     analysisPanelParams: {
       padding: 10,
@@ -864,8 +873,8 @@ const styles = (theme: Theme) =>
 
 interface AnalysisPanelProps extends WithStyles<typeof styles> {
   extent?: Extent;
-  isPanelExtended: boolean;
-  setIsPanelExtended: React.Dispatch<React.SetStateAction<boolean>>;
+  panelSize: PanelSize;
+  setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
 }
 
 export default withStyles(styles)(AnalysisPanel);
