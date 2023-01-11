@@ -88,7 +88,7 @@ import AnalysisTable from './AnalysisTable';
 import { Extent } from '../../Layers/raster-utils';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
-import { setTabValue } from '../../../../context/sidebarStateSlice';
+import { setTabValue } from '../../../../context/leftPanelStateSlice';
 
 function AnalysisPanel({
   extent,

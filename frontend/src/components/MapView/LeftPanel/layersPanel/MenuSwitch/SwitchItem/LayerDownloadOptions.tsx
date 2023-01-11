@@ -39,7 +39,7 @@ import {
   requestAndStoreExposedPopulation,
   setCurrentDataDefinition,
 } from '../../../../../../context/analysisResultStateSlice';
-import { setTabValue } from '../../../../../../context/sidebarStateSlice';
+import { setTabValue } from '../../../../../../context/leftPanelStateSlice';
 import { TableKey } from '../../../../../../config/utils';
 
 function LayerDownloadOptions({

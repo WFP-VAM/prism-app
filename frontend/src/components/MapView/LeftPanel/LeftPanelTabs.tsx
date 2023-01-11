@@ -17,8 +17,8 @@ import { PanelSize } from '../../../config/types';
 import { getWMSLayersWithChart } from '../../../config/utils';
 import {
   setTabValue,
-  sidebarTabValueSelector,
-} from '../../../context/sidebarStateSlice';
+  leftPanelTabValueSelector,
+} from '../../../context/leftPanelStateSlice';
 import { useSafeTranslation } from '../../../i18n';
 
 const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
@@ -104,7 +104,7 @@ function LeftPanelTabs({
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const classes = useStyles({ panelSize });
-  const tabValue = useSelector(sidebarTabValueSelector);
+  const tabValue = useSelector(leftPanelTabValueSelector);
 
   const handleChange = (_: any, newValue: number) => {
     setPanelSize(PanelSize.medium);
