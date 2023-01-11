@@ -486,7 +486,12 @@ function AnalysisPanel({
               {hazardDataType === GeometryType.Polygon && (
                 <>
                   <div className={classes.analysisPanelParamContainer}>
-                    <Typography variant="body2">Admin Level</Typography>
+                    <Typography
+                      className={classes.analysisParamTitle}
+                      variant="body2"
+                    >
+                      Admin Level
+                    </Typography>
                     <SimpleDropdown
                       value={adminLevel}
                       options={range(getAdminLevelCount()).map(i => [
@@ -494,13 +499,24 @@ function AnalysisPanel({
                         `Admin ${i + 1}`,
                       ])}
                       onChange={setAdminLevel}
+                      textClass={classes.analysisParamTitle}
                     />
                   </div>
 
                   <div className={classes.analysisPanelParamContainer}>
-                    <Typography variant="body2">{t('Date Range')}</Typography>
+                    <Typography
+                      className={classes.analysisParamTitle}
+                      variant="body2"
+                    >
+                      {t('Date Range')}
+                    </Typography>
                     <div className={classes.dateRangePicker}>
-                      <Typography variant="body2">{t('Start')}</Typography>
+                      <Typography
+                        className={classes.analysisParamTitle}
+                        variant="body2"
+                      >
+                        {t('Start')}
+                      </Typography>
                       <DatePicker
                         selected={startDate ? new Date(startDate) : null}
                         onChange={date =>
@@ -512,13 +528,20 @@ function AnalysisPanel({
                         showMonthDropdown
                         showYearDropdown
                         dropdownMode="select"
-                        customInput={<Input />}
+                        customInput={
+                          <Input className={classes.analysisPanelParamText} />
+                        }
                         popperClassName={classes.calendarPopper}
                         includeDates={availableHazardDates}
                       />
                     </div>
                     <div className={classes.dateRangePicker}>
-                      <Typography variant="body2">{t('End')}</Typography>
+                      <Typography
+                        className={classes.analysisParamTitle}
+                        variant="body2"
+                      >
+                        {t('End')}
+                      </Typography>
                       <DatePicker
                         selected={endDate ? new Date(endDate) : null}
                         onChange={date =>
@@ -530,7 +553,9 @@ function AnalysisPanel({
                         showMonthDropdown
                         showYearDropdown
                         dropdownMode="select"
-                        customInput={<Input />}
+                        customInput={
+                          <Input className={classes.analysisPanelParamText} />
+                        }
                         popperClassName={classes.calendarPopper}
                         includeDates={availableHazardDates}
                       />
@@ -859,6 +884,7 @@ const styles = (theme: Theme) =>
     dateRangePicker: {
       display: 'inline-block',
       marginRight: '15px',
+      marginTop: '15px',
       minWidth: '125px',
       width: '100px',
     },
