@@ -9,13 +9,10 @@ test("Base.getCapabilities", async ({ eq }) => {
   const xml1 = await base.getCapabilities({ debug: true });
   const xml2 = await base.getCapabilities({ debug: true, version: "2.0.0" });
 
-  const ows = await new Base(
-    "https://geonode.wfp.org/geoserver/ows?version=2.0.0",
-    {
-      fetch,
-      service: "WFS",
-    }
-  );
+  const ows = await new Base("https://geonode.wfp.org/geoserver/ows?version=2.0.0", {
+    fetch,
+    service: "WFS",
+  });
   const xml3 = await ows.getCapabilities({ debug: true });
   const xml4 = await ows.getCapabilities({ debug: true, version: "2.0.0" });
 
@@ -41,6 +38,7 @@ test("Base.getCapabilities with bad versions", async ({ eq }) => {
   let msg1;
   try {
     await base.getCapabilities({ debug: true, version: "incorrect" });
+    // eslint-disable-next-line prettier/prettier
   } catch (error: any) {
     msg1 = error.message;
   }
@@ -49,6 +47,7 @@ test("Base.getCapabilities with bad versions", async ({ eq }) => {
   let msg2;
   try {
     await base.getCapabilities({ debug: true, version: "123" });
+    // eslint-disable-next-line prettier/prettier
   } catch (error: any) {
     msg2 = error.message;
   }
