@@ -1,6 +1,13 @@
-import { Button, makeStyles, Theme } from '@material-ui/core';
-import React from 'react';
+import {
+  Button,
+  makeStyles,
+  Theme,
+  Tooltip,
+  Typography,
+} from '@material-ui/core';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+import React from 'react';
+import { useSafeTranslation } from '../../../i18n';
 
 interface IProps {
   setIsPanelHidden: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,21 +26,24 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 function FoldButton({ setIsPanelHidden }: IProps) {
   const classes = useStyles();
+  const { t } = useSafeTranslation();
 
   const onClick = () => {
     setIsPanelHidden(value => !value);
   };
 
   return (
-    <Button
-      variant="contained"
-      color="primary"
-      classes={{ root: classes.foldButton }}
-      size="medium"
-      onClick={onClick}
-    >
-      <DragIndicatorIcon />
-    </Button>
+    <Tooltip title={<Typography>{t('Menu')}</Typography>} arrow>
+      <Button
+        variant="contained"
+        color="primary"
+        classes={{ root: classes.foldButton }}
+        size="medium"
+        onClick={onClick}
+      >
+        <DragIndicatorIcon />
+      </Button>
+    </Tooltip>
   );
 }
 
