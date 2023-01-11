@@ -11,7 +11,7 @@ import {
   BarChartOutlined,
   ImageAspectRatioOutlined,
 } from '@material-ui/icons';
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PanelSize } from '../../../config/types';
 import { getWMSLayersWithChart } from '../../../config/utils';

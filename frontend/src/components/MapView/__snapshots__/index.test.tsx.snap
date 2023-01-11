@@ -15,7 +15,7 @@ exports[`renders as expected 1`] = `
         class="makeStyles-root-9"
       >
         <div
-          class="makeStyles-tabs-10 makeStyles-tabs-14"
+          class="makeStyles-tabsContainer-10 makeStyles-tabsContainer-14"
         >
           <mock-tabs
             aria-label="left panel tabs"
