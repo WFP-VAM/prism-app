@@ -134,7 +134,7 @@ const styles = (theme: Theme) =>
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      maxHeight: '85%',
+      maxHeight: 'inherit',
     },
     tableContainer: {
       maxWidth: '90%',
@@ -160,10 +160,10 @@ const styles = (theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       color: 'black',
+      overflow: 'unset',
     },
     select: {
       flex: '1 1 10%',
-      maxWidth: '10%',
       marginRight: 0,
     },
     caption: {

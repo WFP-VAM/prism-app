@@ -462,7 +462,9 @@ function AnalysisPanel({
       <div className={classes.analysisPanel}>
         {isExposureAnalysisLoading && <CircularProgress size={100} />}
         {analysisResult instanceof ExposedPopulationResult && (
-          <ExposureAnalysisTable maxResults={1000} />
+          <div className={classes.exposureAnalysisTable}>
+            <ExposureAnalysisTable maxResults={1000} />
+          </div>
         )}
         {!isExposureAnalysisLoading &&
           !(analysisResult instanceof ExposedPopulationResult) && (
@@ -868,6 +870,10 @@ const styles = (theme: Theme) =>
     analysisTableCloseButton: {
       zIndex: theme.zIndex.modal,
       marginLeft: 'auto',
+    },
+    exposureAnalysisTable: {
+      // to remove after refactor: analysis panel should be a flex container and the bottom buttons should not be position absolute
+      maxHeight: 'calc(80vh - 143px)',
     },
   });
 

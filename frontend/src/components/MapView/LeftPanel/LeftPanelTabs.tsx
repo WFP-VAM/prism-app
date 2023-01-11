@@ -63,7 +63,6 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
-      overflow: 'scroll',
     },
     tabsContainer: {
       backgroundColor: '#566064',
