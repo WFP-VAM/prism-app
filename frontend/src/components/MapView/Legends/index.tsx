@@ -18,41 +18,23 @@ import React, { PropsWithChildren, useState } from 'react';
 
 import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSelector } from 'react-redux';
-import {
-  ExposedPopulationDefinition,
-  LayerType,
-  LegendDefinitionItem,
-} from '../../../config/types';
+import { LayerType, LegendDefinitionItem } from '../../../config/types';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
 } from '../../../context/analysisResultStateSlice';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
-import { Extent } from '../Layers/raster-utils';
 import ColorIndicator from './ColorIndicator';
 import LoadingBar from './LoadingBar';
 
-import {
-  BaselineLayerResult,
-  ExposedPopulationResult,
-} from '../../../utils/analysis-utils';
+import { BaselineLayerResult } from '../../../utils/analysis-utils';
 import { getLegendItemLabel } from '../utils';
 
 import { useSafeTranslation } from '../../../i18n';
-import ExposedPopulationAnalysis from './exposedPopulationAnalysis';
+
 import LayerContentPreview from './layerContentPreview';
 import AnalysisDownloadButton from './AnalysisDownloadButton';
 import { handleChangeOpacity } from './handleChangeOpacity';
-/**
- * Returns layer identifier used to perform exposure analysis.
- *
- * @return LayerKey or undefined if exposure not found or GeometryType is not Polygon.
- */
-function GetExposureFromLayer(
-  layer: LayerType,
-): ExposedPopulationDefinition | undefined {
-  return (layer.type === 'wms' && layer.exposure) || undefined;
-}
 
 function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
   const { t } = useSafeTranslation();
@@ -75,7 +57,7 @@ function LegendImpactResult({ result }: { result: BaselineLayerResult }) {
   );
 }
 
-function Legends({ classes, layers, extent }: LegendsProps) {
+function Legends({ classes, layers }: LegendsProps) {
   const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -102,8 +84,6 @@ function Legends({ classes, layers, extent }: LegendsProps) {
             })
           : undefined;
 
-      const exposure = GetExposureFromLayer(layer);
-
       return (
         <LegendItem
           classes={classes}
@@ -114,8 +94,6 @@ function Legends({ classes, layers, extent }: LegendsProps) {
           legendUrl={legendUrl}
           type={layer.type}
           opacity={layer.opacity}
-          exposure={exposure}
-          extent={extent}
         >
           {t(layer.legendText)}
         </LegendItem>
@@ -179,12 +157,9 @@ function LegendItem({
   opacity: initialOpacity,
   children,
   legendUrl,
-  exposure,
-  extent,
   displayOpacitySlider,
 }: LegendItemProps) {
   const map = useSelector(mapSelector);
-  const analysisResult = useSelector(analysisResultSelector);
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
@@ -247,15 +222,6 @@ function LegendItem({
             <Typography variant="h5">{children}</Typography>
           </Grid>
         )}
-
-        {exposure && (
-          <ExposedPopulationAnalysis
-            result={analysisResult as ExposedPopulationResult}
-            id={id!}
-            extent={extent!}
-            exposure={exposure}
-          />
-        )}
       </Paper>
     </ListItem>
   );
@@ -287,7 +253,6 @@ const styles = () =>
 
 export interface LegendsProps extends WithStyles<typeof styles> {
   layers: LayerType[];
-  extent?: Extent;
 }
 
 interface LegendItemProps
@@ -299,8 +264,6 @@ interface LegendItemProps
   legendUrl?: string;
   type?: LayerType['type'];
   opacity: LayerType['opacity'];
-  exposure?: ExposedPopulationDefinition;
-  extent?: Extent;
   displayOpacitySlider?: boolean;
 }
 

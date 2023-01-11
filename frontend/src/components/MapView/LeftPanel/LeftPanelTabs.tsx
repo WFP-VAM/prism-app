@@ -11,9 +11,14 @@ import {
   BarChartOutlined,
   ImageAspectRatioOutlined,
 } from '@material-ui/icons';
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { PanelSize } from '../../../config/types';
 import { getWMSLayersWithChart } from '../../../config/utils';
+import {
+  setTabValue,
+  leftPanelTabValueSelector,
+} from '../../../context/leftPanelStateSlice';
 import { useSafeTranslation } from '../../../i18n';
 
 const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
@@ -33,6 +38,7 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
+      style={{ flexGrow: 1 }}
       {...other}
     >
       {value === index && children}
@@ -54,9 +60,11 @@ interface StyleProps {
 const useStyles = makeStyles<Theme, StyleProps>(() =>
   createStyles({
     root: {
+      display: 'flex',
+      flexDirection: 'column',
       height: '100%',
     },
-    tabs: {
+    tabsContainer: {
       backgroundColor: '#566064',
       width: ({ panelSize }) =>
         panelSize !== PanelSize.folded ? PanelSize.medium : PanelSize.folded,
@@ -94,19 +102,20 @@ function LeftPanelTabs({
   setPanelSize,
 }: TabsProps) {
   const { t } = useSafeTranslation();
+  const dispatch = useDispatch();
   const classes = useStyles({ panelSize });
-  const [value, setValue] = useState(0);
+  const tabValue = useSelector(leftPanelTabValueSelector);
 
   const handleChange = (_: any, newValue: number) => {
-    setValue(newValue);
     setPanelSize(PanelSize.medium);
+    dispatch(setTabValue(newValue));
   };
 
   return (
     <div className={classes.root}>
-      <div className={classes.tabs}>
+      <div className={classes.tabsContainer}>
         <Tabs
-          value={value}
+          value={tabValue}
           onChange={handleChange}
           aria-label="left panel tabs"
           classes={{ indicator: classes.indicator }}
@@ -151,15 +160,15 @@ function LeftPanelTabs({
           />
         </Tabs>
       </div>
-      <TabPanel value={value} index={0}>
+      <TabPanel value={tabValue} index={0}>
         {layersPanel}
       </TabPanel>
       {areChartLayersAvailable && (
-        <TabPanel value={value} index={1}>
+        <TabPanel value={tabValue} index={1}>
           {chartsPanel}
         </TabPanel>
       )}
-      <TabPanel value={value} index={2}>
+      <TabPanel value={tabValue} index={2}>
         {analysisPanel}
       </TabPanel>
     </div>

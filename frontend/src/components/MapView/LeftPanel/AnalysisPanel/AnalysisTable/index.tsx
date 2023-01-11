@@ -49,9 +49,16 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
     setIsAscending(newIsAsc);
   };
   return (
-    <>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <TableContainer className={classes.tableContainer}>
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader aria-label="analysis table">
           <TableHead>
             <TableRow>
               {columns.map(column => (
@@ -131,10 +138,11 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
             count !== -1 ? count : `${t('more than')} ${to}`
           }`;
         }}
-        SelectProps={{
-          classes: {
-            root: classes.rowsPerPage,
-          },
+        classes={{
+          root: classes.tablePagination,
+          select: classes.select,
+          caption: classes.caption,
+          spacer: classes.spacer,
         }}
         nextIconButtonProps={{
           classes: {
@@ -146,11 +154,8 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
             root: classes.backButton,
           },
         }}
-        style={{
-          color: 'black',
-        }}
       />
-    </>
+    </div>
   );
 }
 
@@ -175,14 +180,31 @@ const styles = (theme: Theme) =>
     innerAnalysisButton: {
       backgroundColor: theme.surfaces?.dark,
     },
-    rowsPerPage: {
-      maxWidth: '40%',
+    tablePagination: {
+      display: 'flex',
+      justifyContent: 'center',
+      color: 'black',
+    },
+    select: {
+      flex: '1 1 10%',
+      maxWidth: '10%',
+      marginRight: 0,
+    },
+    caption: {
+      flex: '1 2 30%',
+      marginLeft: 0,
     },
     backButton: {
+      flex: '1 1 5%',
       maxWidth: '10%',
     },
     nextButton: {
+      flex: '1 1 5%',
       maxWidth: '10%',
+    },
+    spacer: {
+      flex: '1 1 5%',
+      maxWidth: '5%',
     },
   });
 

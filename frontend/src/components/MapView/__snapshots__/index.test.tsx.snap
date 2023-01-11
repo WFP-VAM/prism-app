@@ -15,7 +15,7 @@ exports[`renders as expected 1`] = `
         class="makeStyles-root-9"
       >
         <div
-          class="makeStyles-tabs-10 makeStyles-tabs-14"
+          class="makeStyles-tabsContainer-10 makeStyles-tabsContainer-14"
         >
           <mock-tabs
             aria-label="left panel tabs"
@@ -52,6 +52,7 @@ exports[`renders as expected 1`] = `
           aria-labelledby="full-width-tab-0"
           id="full-width-tabpanel-0"
           role="tabpanel"
+          style="flex-grow: 1;"
         >
           <div
             class="MuiBox-root MuiBox-root-15"
@@ -332,11 +333,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -487,11 +483,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -715,11 +706,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -870,11 +856,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -1018,11 +999,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -1167,11 +1143,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -1243,11 +1214,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -1450,11 +1416,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -1584,11 +1545,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -1806,11 +1762,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -1882,11 +1833,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -2104,11 +2050,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -2180,11 +2121,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -2329,11 +2265,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -2405,11 +2336,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -2481,11 +2407,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as GeoTIFF
                                               </mock-menuitem>
@@ -2703,9 +2624,7 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
+                                              <mock-menuitem>
                                                 Exposure Analysis
                                               </mock-menuitem>
                                             </mock-menu>
@@ -2922,11 +2841,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as CSV
                                               </mock-menuitem>
@@ -3160,11 +3074,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as CSV
                                               </mock-menuitem>
@@ -3385,11 +3294,6 @@ exports[`renders as expected 1`] = `
                                               keepmounted="true"
                                               open="false"
                                             >
-                                              <mock-menuitem
-                                                disabled="true"
-                                              >
-                                                Exposure Analysis
-                                              </mock-menuitem>
                                               <mock-menuitem>
                                                 Download as CSV
                                               </mock-menuitem>
@@ -3420,12 +3324,14 @@ exports[`renders as expected 1`] = `
           hidden=""
           id="full-width-tabpanel-1"
           role="tabpanel"
+          style="flex-grow: 1;"
         />
         <div
           aria-labelledby="full-width-tab-2"
           hidden=""
           id="full-width-tabpanel-2"
           role="tabpanel"
+          style="flex-grow: 1;"
         />
       </div>
     </mock-drawer>

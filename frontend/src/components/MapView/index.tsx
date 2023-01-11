@@ -583,10 +583,7 @@ function MapView({ classes }: MapViewProps) {
               <Grid item>
                 <Grid container spacing={1}>
                   <Download />
-                  <Legends
-                    layers={selectedLayers}
-                    extent={adminBoundariesExtent}
-                  />
+                  <Legends layers={selectedLayers} />
                 </Grid>
               </Grid>
             )}

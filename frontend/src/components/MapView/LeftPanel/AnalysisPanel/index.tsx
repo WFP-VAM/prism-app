@@ -14,6 +14,8 @@ import {
   withStyles,
   WithStyles,
   IconButton,
+  Theme,
+  CircularProgress,
 } from '@material-ui/core';
 import {
   BarChartOutlined,
@@ -40,6 +42,7 @@ import {
   requestAndStoreAnalysis,
   requestAndStorePolygonAnalysis,
   setIsMapLayerActive,
+  isExposureAnalysisLoadingSelector,
 } from '../../../../context/analysisResultStateSlice';
 import {
   AdminLevelType,
@@ -83,6 +86,9 @@ import LayerDropdown from '../../Layers/LayerDropdown';
 import SimpleDropdown from '../../../Common/SimpleDropdown';
 import AnalysisTable from './AnalysisTable';
 import { Extent } from '../../Layers/raster-utils';
+import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
+import ExposureAnalysisActions from './ExposureAnalysisActions';
+import { setTabValue } from '../../../../context/leftPanelStateSlice';
 
 function AnalysisPanel({
   extent,
@@ -103,8 +109,10 @@ function AnalysisPanel({
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
-
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
+  const isExposureAnalysisLoading = useSelector(
+    isExposureAnalysisLoadingSelector,
+  );
 
   const {
     analysisHazardLayerId: hazardLayerIdFromUrl,
@@ -321,8 +329,13 @@ function AnalysisPanel({
   };
 
   const clearAnalysis = () => {
+    const isClearingExposureAnalysis =
+      analysisResult instanceof ExposedPopulationResult;
     dispatch(clearAnalysisResult());
     setPanelSize(PanelSize.medium);
+    if (isClearingExposureAnalysis) {
+      dispatch(setTabValue(0));
+    }
     setHazardLayerId(hazardLayerIdFromUrl);
     setStatistic(
       (selectedStatisticFromUrl as AggregationOperations) ||
@@ -447,169 +460,183 @@ function AnalysisPanel({
   return (
     <div className={classes.root}>
       <div className={classes.analysisPanel}>
-        <div id="analysis-parameters" className={classes.analysisPanelParams}>
-          <div className={classes.analysisPanelParamContainer}>
-            <LayerDropdown
-              type="wms"
-              value={hazardLayerId}
-              setValue={setHazardLayerId}
-              className={classes.analysisPanelParamText}
-              label={t('Hazard Layer')}
-              placeholder="Choose hazard layer"
-            />
+        {isExposureAnalysisLoading && <CircularProgress size={100} />}
+        {analysisResult instanceof ExposedPopulationResult && (
+          <div className={classes.exposureAnalysisTable}>
+            <ExposureAnalysisTable maxResults={1000} />
           </div>
-
-          {hazardDataType === GeometryType.Polygon && (
-            <>
-              <div className={classes.analysisPanelParamContainer}>
-                <Typography variant="body2">Admin Level</Typography>
-                <SimpleDropdown
-                  value={adminLevel}
-                  options={range(getAdminLevelCount()).map(i => [
-                    (i + 1) as AdminLevelType,
-                    `Admin ${i + 1}`,
-                  ])}
-                  onChange={setAdminLevel}
-                />
-              </div>
-
-              <div className={classes.analysisPanelParamContainer}>
-                <Typography variant="body2">{t('Date Range')}</Typography>
-                <div className={classes.dateRangePicker}>
-                  <Typography variant="body2">{t('Start')}</Typography>
-                  <DatePicker
-                    selected={startDate ? new Date(startDate) : null}
-                    onChange={date =>
-                      setStartDate(date?.getTime() || startDate)
-                    }
-                    maxDate={new Date()}
-                    todayButton="Today"
-                    peekNextMonth
-                    showMonthDropdown
-                    showYearDropdown
-                    dropdownMode="select"
-                    customInput={<Input />}
-                    popperClassName={classes.calendarPopper}
-                    includeDates={availableHazardDates}
-                  />
-                </div>
-                <div className={classes.dateRangePicker}>
-                  <Typography variant="body2">{t('End')}</Typography>
-                  <DatePicker
-                    selected={endDate ? new Date(endDate) : null}
-                    onChange={date => setEndDate(date?.getTime() || endDate)}
-                    maxDate={new Date()}
-                    todayButton="Today"
-                    peekNextMonth
-                    showMonthDropdown
-                    showYearDropdown
-                    dropdownMode="select"
-                    customInput={<Input />}
-                    popperClassName={classes.calendarPopper}
-                    includeDates={availableHazardDates}
-                  />
-                </div>
-              </div>
-            </>
-          )}
-
-          {hazardDataType === RasterType.Raster && (
-            <>
+        )}
+        {!isExposureAnalysisLoading &&
+          !(analysisResult instanceof ExposedPopulationResult) && (
+            <div
+              id="analysis-parameters"
+              className={classes.analysisPanelParams}
+            >
               <div className={classes.analysisPanelParamContainer}>
                 <LayerDropdown
-                  type="admin_level_data"
-                  value={baselineLayerId || undefined}
-                  setValue={setBaselineLayerId}
+                  type="wms"
+                  value={hazardLayerId}
+                  setValue={setHazardLayerId}
                   className={classes.analysisPanelParamText}
-                  label={t('Baseline Layer')}
-                  placeholder="Choose baseline layer"
+                  label={t('Hazard Layer')}
+                  placeholder="Choose hazard layer"
                 />
               </div>
-              <div className={classes.analysisPanelParamContainer}>
-                <Typography
-                  className={classes.analysisParamTitle}
-                  variant="body2"
-                >
-                  {t('Statistic')}
-                </Typography>
-                <FormControl component="div">
-                  <RadioGroup
-                    name="statistics"
-                    value={statistic}
-                    onChange={onOptionChange(setStatistic)}
-                  >
-                    {statisticOptions}
-                  </RadioGroup>
-                </FormControl>
-              </div>
-              <div className={classes.analysisPanelParamContainer}>
-                <Typography
-                  className={classes.analysisParamTitle}
-                  variant="body2"
-                >
-                  {t('Threshold')}
-                </Typography>
-                <div style={{ display: 'flex' }}>
-                  <TextField
-                    id="outlined-number-low"
-                    error={!!thresholdError}
-                    helperText={t(thresholdError || '')}
-                    className={classes.numberField}
-                    label={t('Below')}
-                    type="number"
-                    value={belowThreshold}
-                    onChange={onThresholdOptionChange('below')}
-                    variant="outlined"
-                  />
-                  <TextField
-                    id="outlined-number-high"
-                    label={t('Above')}
-                    classes={{ root: classes.numberField }}
-                    value={aboveThreshold}
-                    onChange={onThresholdOptionChange('above')}
-                    type="number"
-                    variant="outlined"
-                  />
-                </div>
-              </div>
-              <div className={classes.datePickerContainer}>
-                <Typography
-                  className={classes.analysisParamTitle}
-                  variant="body2"
-                >
-                  {`${t('Date')}: `}
-                </Typography>
-                <DatePicker
-                  locale={t('date_locale')}
-                  dateFormat="PP"
-                  selected={selectedDate ? new Date(selectedDate) : null}
-                  onChange={date =>
-                    setSelectedDate(date?.getTime() || selectedDate)
-                  }
-                  maxDate={new Date()}
-                  todayButton={t('Today')}
-                  peekNextMonth
-                  showMonthDropdown
-                  showYearDropdown
-                  dropdownMode="select"
-                  customInput={
-                    <Input
-                      className={classes.analysisPanelParamText}
-                      disableUnderline
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <DateRangeRounded />
-                        </InputAdornment>
-                      }
+
+              {hazardDataType === GeometryType.Polygon && (
+                <>
+                  <div className={classes.analysisPanelParamContainer}>
+                    <Typography variant="body2">Admin Level</Typography>
+                    <SimpleDropdown
+                      value={adminLevel}
+                      options={range(getAdminLevelCount()).map(i => [
+                        (i + 1) as AdminLevelType,
+                        `Admin ${i + 1}`,
+                      ])}
+                      onChange={setAdminLevel}
                     />
-                  }
-                  popperClassName={classes.calendarPopper}
-                  includeDates={availableHazardDates}
-                />
-              </div>
-            </>
+                  </div>
+
+                  <div className={classes.analysisPanelParamContainer}>
+                    <Typography variant="body2">{t('Date Range')}</Typography>
+                    <div className={classes.dateRangePicker}>
+                      <Typography variant="body2">{t('Start')}</Typography>
+                      <DatePicker
+                        selected={startDate ? new Date(startDate) : null}
+                        onChange={date =>
+                          setStartDate(date?.getTime() || startDate)
+                        }
+                        maxDate={new Date()}
+                        todayButton="Today"
+                        peekNextMonth
+                        showMonthDropdown
+                        showYearDropdown
+                        dropdownMode="select"
+                        customInput={<Input />}
+                        popperClassName={classes.calendarPopper}
+                        includeDates={availableHazardDates}
+                      />
+                    </div>
+                    <div className={classes.dateRangePicker}>
+                      <Typography variant="body2">{t('End')}</Typography>
+                      <DatePicker
+                        selected={endDate ? new Date(endDate) : null}
+                        onChange={date =>
+                          setEndDate(date?.getTime() || endDate)
+                        }
+                        maxDate={new Date()}
+                        todayButton="Today"
+                        peekNextMonth
+                        showMonthDropdown
+                        showYearDropdown
+                        dropdownMode="select"
+                        customInput={<Input />}
+                        popperClassName={classes.calendarPopper}
+                        includeDates={availableHazardDates}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {hazardDataType === RasterType.Raster && (
+                <>
+                  <div className={classes.analysisPanelParamContainer}>
+                    <LayerDropdown
+                      type="admin_level_data"
+                      value={baselineLayerId || undefined}
+                      setValue={setBaselineLayerId}
+                      className={classes.analysisPanelParamText}
+                      label={t('Baseline Layer')}
+                      placeholder="Choose baseline layer"
+                    />
+                  </div>
+                  <div className={classes.analysisPanelParamContainer}>
+                    <Typography
+                      className={classes.analysisParamTitle}
+                      variant="body2"
+                    >
+                      {t('Statistic')}
+                    </Typography>
+                    <FormControl component="div">
+                      <RadioGroup
+                        name="statistics"
+                        value={statistic}
+                        onChange={onOptionChange(setStatistic)}
+                      >
+                        {statisticOptions}
+                      </RadioGroup>
+                    </FormControl>
+                  </div>
+                  <div className={classes.analysisPanelParamContainer}>
+                    <Typography
+                      className={classes.analysisParamTitle}
+                      variant="body2"
+                    >
+                      {t('Threshold')}
+                    </Typography>
+                    <div style={{ display: 'flex' }}>
+                      <TextField
+                        id="outlined-number-low"
+                        error={!!thresholdError}
+                        helperText={t(thresholdError || '')}
+                        className={classes.numberField}
+                        label={t('Below')}
+                        type="number"
+                        value={belowThreshold}
+                        onChange={onThresholdOptionChange('below')}
+                        variant="outlined"
+                      />
+                      <TextField
+                        id="outlined-number-high"
+                        label={t('Above')}
+                        classes={{ root: classes.numberField }}
+                        value={aboveThreshold}
+                        onChange={onThresholdOptionChange('above')}
+                        type="number"
+                        variant="outlined"
+                      />
+                    </div>
+                  </div>
+                  <div className={classes.datePickerContainer}>
+                    <Typography
+                      className={classes.analysisParamTitle}
+                      variant="body2"
+                    >
+                      {`${t('Date')}: `}
+                    </Typography>
+                    <DatePicker
+                      locale={t('date_locale')}
+                      dateFormat="PP"
+                      selected={selectedDate ? new Date(selectedDate) : null}
+                      onChange={date =>
+                        setSelectedDate(date?.getTime() || selectedDate)
+                      }
+                      maxDate={new Date()}
+                      todayButton={t('Today')}
+                      peekNextMonth
+                      showMonthDropdown
+                      showYearDropdown
+                      dropdownMode="select"
+                      customInput={
+                        <Input
+                          className={classes.analysisPanelParamText}
+                          disableUnderline
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <DateRangeRounded />
+                            </InputAdornment>
+                          }
+                        />
+                      }
+                      popperClassName={classes.calendarPopper}
+                      includeDates={availableHazardDates}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
           )}
-        </div>
 
         {!isAnalysisLoading &&
           analysisResult &&
@@ -658,8 +685,7 @@ function AnalysisPanel({
               </Button>
             </div>
           )}
-        {(!analysisResult ||
-          analysisResult instanceof ExposedPopulationResult) && (
+        {!analysisResult && (
           <div className={classes.analysisButtonContainer}>
             <Button
               className={classes.bottomButton}
@@ -689,13 +715,11 @@ function AnalysisPanel({
             <div
               style={{
                 display: 'flex',
-                flexDirection: 'row',
+                flexDirection: 'column',
                 alignItems: 'center',
+                width: '100%',
               }}
             >
-              <Typography className={classes.analysisTableTitle}>
-                {selectedHazardLayer?.title}
-              </Typography>
               <IconButton
                 aria-label="close"
                 onClick={() => setPanelSize(PanelSize.medium)}
@@ -703,6 +727,9 @@ function AnalysisPanel({
               >
                 <CloseRounded />
               </IconButton>
+              <Typography className={classes.analysisTableTitle}>
+                {selectedHazardLayer?.title}
+              </Typography>
             </div>
             <AnalysisTable
               tableData={analysisResult.tableData}
@@ -710,11 +737,27 @@ function AnalysisPanel({
             />
           </div>
         )}
+      {!isAnalysisLoading &&
+        analysisResult &&
+        analysisResult instanceof ExposedPopulationResult && (
+          <div
+            className={classes.analysisButtonContainer}
+            style={{
+              width: panelSize === PanelSize.large ? '50%' : '100%',
+            }}
+          >
+            <ExposureAnalysisActions
+              analysisButton={classes.analysisButton}
+              bottomButton={classes.bottomButton}
+              clearAnalysis={clearAnalysis}
+            />
+          </div>
+        )}
     </div>
   );
 }
 
-const styles = () =>
+const styles = (theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
@@ -729,6 +772,8 @@ const styles = () =>
     },
     analysisPanelParams: {
       padding: 10,
+      position: 'fixed',
+      width: '30%',
     },
     analysisParamTitle: {
       color: 'black',
@@ -823,9 +868,12 @@ const styles = () =>
       color: 'black',
     },
     analysisTableCloseButton: {
-      position: 'absolute',
-      top: 15,
-      right: 0,
+      zIndex: theme.zIndex.modal,
+      marginLeft: 'auto',
+    },
+    exposureAnalysisTable: {
+      // to remove after refactor: analysis panel should be a flex container and the bottom buttons should not be position absolute
+      maxHeight: 'calc(80vh - 143px)',
     },
   });
 
