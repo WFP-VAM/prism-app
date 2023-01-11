@@ -82,7 +82,15 @@ type Country = keyof typeof configMap;
 
 const DEFAULT: Country = 'mozambique';
 
-const { REACT_APP_COUNTRY: COUNTRY } = process.env;
+const {
+  REACT_APP_COUNTRY: COUNTRY,
+  REACT_APP_OAUTH_CLIENT_ID: CLIENT_ID,
+  REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
+  REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
+  REACT_APP_TESTING: TESTING,
+  REACT_APP_ACLED_API_ISO: ACLED_ISO, // ACLED iso code.
+} = process.env;
+
 const safeCountry =
   COUNTRY && has(configMap, COUNTRY.toLocaleLowerCase())
     ? (COUNTRY.toLocaleLowerCase() as Country)
@@ -101,13 +109,6 @@ const {
 } = configMap[safeCountry];
 
 const translation = get(configMap[safeCountry], 'translation', {});
-
-const {
-  REACT_APP_OAUTH_CLIENT_ID: CLIENT_ID,
-  REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
-  REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
-  REACT_APP_TESTING: TESTING,
-} = process.env;
 
 const msalConfig = {
   auth: {
@@ -145,4 +146,5 @@ export {
   msalRequest,
   enableNavigationDropdown,
   translation,
+  ACLED_ISO,
 };

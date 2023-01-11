@@ -10,6 +10,7 @@ import {
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { fetchEWSData } from '../../utils/ews-utils';
 import { getAdminLevelDataLayerData } from './admin_level_data';
+import { fetchACLEDIncidents } from '../../utils/acled-utils';
 
 declare module 'geojson' {
   export const version: string;
@@ -66,6 +67,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     switch (loader) {
       case PointDataLoader.EWS:
         return fetchEWSData(dataUrl, date);
+      case PointDataLoader.ACLED:
+        return fetchACLEDIncidents(dataUrl, date);
       default:
         break;
     }
