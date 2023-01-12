@@ -61,8 +61,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: 'white',
     display: 'inline-flex',
-    marginTop: '1em',
-    padding: theme.spacing(1, 2.66),
+    // temporary will be removed when the go to button will be revamped
+    marginTop: '-10px',
+    padding: theme.spacing(0.8, 2.66),
     borderRadius: '4px',
     alignItems: 'center',
     boxShadow: theme.shadows[2],

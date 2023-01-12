@@ -17,11 +17,11 @@ interface IProps {
 const useStyles = makeStyles((theme: Theme) => ({
   foldedStyle: {
     boxShadow: theme.shadows[2],
-    height: 44,
+    height: 41.8,
     minWidth: 30,
-    width: 44,
-    marginTop: 'calc(1em + 15px)',
-    marginLeft: '34px',
+    width: 41.8,
+    marginTop: '3px',
+    marginLeft: '20px',
     backgroundColor: '#3C3F40',
     zIndex: 5,
   },
