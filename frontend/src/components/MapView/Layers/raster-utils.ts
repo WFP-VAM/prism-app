@@ -314,7 +314,7 @@ export async function downloadGeotiff(
       if (response.status !== 200) {
         dispatch(
           addNotification({
-            message: `${collection} Geotiff couldn't be generated`,
+            message: `The raster layer ${collection} could not be generated. Please try your download again later.`,
             type: 'warning',
           }),
         );
@@ -328,7 +328,7 @@ export async function downloadGeotiff(
     } catch {
       dispatch(
         addNotification({
-          message: `${collection} Geotiff couldn't be generated`,
+          message: `The raster layer ${collection} could not be generated. Please try your download again later.`,
           type: 'warning',
         }),
       );
