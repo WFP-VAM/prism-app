@@ -661,7 +661,16 @@ export function getAnalysisTableColumns(
     return [];
   }
   if ('tableColumns' in analysisResult) {
-    return (analysisResult as PolygonAnalysisResult).tableColumns;
+    return [
+      {
+        id: withLocalName ? 'localName' : 'name',
+        label: 'Name',
+      } as Column,
+    ].concat(
+      (analysisResult as PolygonAnalysisResult).tableColumns.filter(
+        column => !['name', 'localName'].includes(column.id as string),
+      ),
+    );
   }
   const { statistic } = analysisResult;
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;
