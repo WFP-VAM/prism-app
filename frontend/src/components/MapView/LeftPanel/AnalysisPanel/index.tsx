@@ -490,7 +490,7 @@ function AnalysisPanel({
                       className={classes.analysisParamTitle}
                       variant="body2"
                     >
-                      Admin Level
+                      {t('Admin Level')}
                     </Typography>
                     <SimpleDropdown
                       value={adminLevel}
