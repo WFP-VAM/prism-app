@@ -756,10 +756,12 @@ function AnalysisPanel({
                 {selectedHazardLayer?.title}
               </Typography>
             </div>
-            <AnalysisTable
-              tableData={analysisResult.tableData}
-              columns={translatedColumns}
-            />
+            <div className={classes.analysisTable}>
+              <AnalysisTable
+                tableData={analysisResult.tableData}
+                columns={translatedColumns}
+              />
+            </div>
           </div>
         )}
       {!isAnalysisLoading &&
@@ -900,6 +902,14 @@ const styles = (theme: Theme) =>
     exposureAnalysisTable: {
       // to remove after refactor: analysis panel should be a flex container and the bottom buttons should not be position absolute
       maxHeight: 'calc(80vh - 143px)',
+    },
+    analysisTable: {
+      maxHeight: '75vh',
+      maxWidth: '96%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });
 
