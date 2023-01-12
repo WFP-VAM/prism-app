@@ -3342,6 +3342,28 @@ exports[`renders as expected 1`] = `
         class="MuiBox-root MuiBox-root-80 MapView-optionContainer-3"
         style="margin-left: 30vw;"
       >
+        <mock-tooltip
+          arrow="true"
+          title="[object Object]"
+        >
+          <mock-button
+            classes="[object Object]"
+            color="primary"
+            size="medium"
+            variant="contained"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+              />
+            </svg>
+          </mock-button>
+        </mock-tooltip>
         <div
           class="MuiGrid-root MapView-buttonContainer-4 MuiGrid-container MuiGrid-justify-xs-space-between"
         >
@@ -3350,25 +3372,7 @@ exports[`renders as expected 1`] = `
           >
             <div
               class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
-            >
-              <mock-button
-                classes="[object Object]"
-                color="primary"
-                size="medium"
-                variant="contained"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="MuiSvgIcon-root"
-                  focusable="false"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
-                  />
-                </svg>
-              </mock-button>
-            </div>
+            />
           </div>
           <div
             class="MuiGrid-root MuiGrid-item"

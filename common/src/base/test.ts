@@ -9,10 +9,13 @@ test("Base.getCapabilities", async ({ eq }) => {
   const xml1 = await base.getCapabilities({ debug: true });
   const xml2 = await base.getCapabilities({ debug: true, version: "2.0.0" });
 
-  const ows = await new Base("https://geonode.wfp.org/geoserver/ows?version=2.0.0", {
-    fetch,
-    service: "WFS",
-  });
+  const ows = await new Base(
+    "https://geonode.wfp.org/geoserver/ows?version=2.0.0",
+    {
+      fetch,
+      service: "WFS",
+    }
+  );
   const xml3 = await ows.getCapabilities({ debug: true });
   const xml4 = await ows.getCapabilities({ debug: true, version: "2.0.0" });
 

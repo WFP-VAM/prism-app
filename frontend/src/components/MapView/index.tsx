@@ -560,6 +560,10 @@ function MapView({ classes }: MapViewProps) {
           className={classes.optionContainer}
           style={{ marginLeft: isPanelHidden ? PanelSize.folded : panelSize }}
         >
+          <FoldButton
+            isPanelHidden={isPanelHidden}
+            setIsPanelHidden={setIsPanelHidden}
+          />
           <Grid
             container
             justify="space-between"
@@ -567,7 +571,6 @@ function MapView({ classes }: MapViewProps) {
           >
             <Grid item>
               <Grid container spacing={1}>
-                <FoldButton setIsPanelHidden={setIsPanelHidden} />
                 {isShowingExtraFeatures && <GotoBoundaryDropdown />}
                 {appConfig.alertFormActive && isShowingExtraFeatures ? (
                   <AlertForm
@@ -651,6 +654,7 @@ const styles = () =>
     optionContainer: {
       position: 'relative',
       height: '100%',
+      display: 'flex',
     },
     buttonContainer: {
       zIndex: 5,
@@ -661,8 +665,6 @@ const styles = () =>
       '& > * > *': {
         pointerEvents: 'auto',
       },
-      position: 'absolute',
-      top: 0,
       width: '100%',
       padding: '16px',
     },
