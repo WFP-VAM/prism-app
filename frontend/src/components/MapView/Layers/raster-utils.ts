@@ -300,30 +300,40 @@ export async function downloadGeotiff(
       long_max: boundingBox[3],
       date,
     };
-    const response = await fetch(`${BACKEND_URL}/raster_geotiff`, {
-      method: 'POST',
-      cache: 'no-cache',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      // body data type must match "Content-Type" header
-      body: JSON.stringify(body),
-    });
-    if (response.status !== 200) {
+    try {
+      const response = await fetch(`${BACKEND_URL}/raster_geotiff`, {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        // body data type must match "Content-Type" header
+        body: JSON.stringify(body),
+      });
+      if (response.status !== 200) {
+        dispatch(
+          addNotification({
+            message: `The raster layer ${collection} could not be generated. Please try your download again later.`,
+            type: 'warning',
+          }),
+        );
+      } else {
+        const responseJson = await response.json();
+
+        const link = document.createElement('a');
+        link.setAttribute('href', responseJson.download_url);
+        link.click();
+      }
+    } catch {
       dispatch(
         addNotification({
-          message: `${collection} Geotiff couldn't be generated`,
+          message: `The raster layer ${collection} could not be generated. Please try your download again later.`,
           type: 'warning',
         }),
       );
-    } else {
-      const responseJson = await response.json();
-
-      const link = document.createElement('a');
-      link.setAttribute('href', responseJson.download_url);
-      link.click();
+    } finally {
+      callback();
     }
-    callback();
   }
 }
