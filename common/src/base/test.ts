@@ -41,7 +41,8 @@ test("Base.getCapabilities with bad versions", async ({ eq }) => {
   let msg1;
   try {
     await base.getCapabilities({ debug: true, version: "incorrect" });
-  } catch (error) {
+    // eslint-disable-next-line prettier/prettier
+  } catch (error: any) {
     msg1 = error.message;
   }
   eq(msg1.includes("java.lang.ClassCastException"), true);
@@ -49,7 +50,8 @@ test("Base.getCapabilities with bad versions", async ({ eq }) => {
   let msg2;
   try {
     await base.getCapabilities({ debug: true, version: "123" });
-  } catch (error) {
+    // eslint-disable-next-line prettier/prettier
+  } catch (error: any) {
     msg2 = error.message;
   }
   eq(msg2.startsWith("fetch failed"), true);
