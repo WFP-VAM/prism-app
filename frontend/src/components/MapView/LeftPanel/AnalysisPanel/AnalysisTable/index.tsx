@@ -49,14 +49,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
     setIsAscending(newIsAsc);
   };
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <div className={classes.root}>
       <TableContainer className={classes.tableContainer}>
         <Table stickyHeader aria-label="analysis table">
           <TableHead>
@@ -161,8 +154,15 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
+    root: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      maxHeight: 'inherit',
+      maxWidth: 'inherit',
+    },
     tableContainer: {
-      maxWidth: '90%',
       marginTop: 10,
       zIndex: theme.zIndex.modal + 1,
     },
@@ -184,10 +184,10 @@ const styles = (theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       color: 'black',
+      flexShrink: 0,
     },
     select: {
       flex: '1 1 10%',
-      maxWidth: '10%',
       marginRight: 0,
     },
     caption: {
