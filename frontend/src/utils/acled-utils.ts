@@ -10,7 +10,7 @@ export const fetchACLEDDates = async (url: string): Promise<number[]> => {
 
   if (!acledIso) {
     throw new Error(
-      'ACLED processing is defined in layers.json. However, country iso code not found',
+      'ACLED processing is defined in layers.json. However, no country ISO code was set in the prism.json config. Please set the "acled_iso" parameter.',
     );
   }
 
