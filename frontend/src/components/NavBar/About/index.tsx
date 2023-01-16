@@ -4,10 +4,11 @@ import { Typography, Grid } from '@material-ui/core';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { appConfig } from '../../../config';
 import ContentDialog, { loadLayerContent } from '../ContentDialog';
+import { useSafeTranslation } from '../../../i18n';
 
 const About = () => {
   const [content, setContent] = useState<string | undefined>(undefined);
-
+  const { t } = useSafeTranslation();
   const { aboutPath } = appConfig;
 
   const href = aboutPath ? '' : 'https://innovation.wfp.org/project/prism';
@@ -27,7 +28,7 @@ const About = () => {
         href={href}
         onClick={handler}
       >
-        <FontAwesomeIcon icon={faInfoCircle} /> About
+        <FontAwesomeIcon icon={faInfoCircle} /> {t('About')}
       </Typography>
       <ContentDialog content={content} setContent={setContent} />
     </Grid>
