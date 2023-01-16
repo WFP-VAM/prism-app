@@ -88,7 +88,6 @@ const {
   REACT_APP_OAUTH_AUTHORITY: AUTHORITY,
   REACT_APP_OAUTH_REDIRECT_URI: REDIRECT_URI,
   REACT_APP_TESTING: TESTING,
-  REACT_APP_ACLED_API_ISO: ACLED_ISO, // ACLED iso code.
 } = process.env;
 
 const safeCountry =
@@ -146,5 +145,4 @@ export {
   msalRequest,
   enableNavigationDropdown,
   translation,
-  ACLED_ISO,
 };
