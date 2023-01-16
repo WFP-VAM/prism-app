@@ -82,7 +82,8 @@ exports[`renders as expected 1`] = `
                     fill="currentColor"
                   />
                 </svg>
-                 About
+                 
+                About
               </mock-typography>
             </div>
             <div
