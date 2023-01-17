@@ -66,17 +66,16 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
         ? layer.adminLevelNames
         : layer.adminLevelLocalNames;
 
-    const relations: BoundaryRelationData = loadBoundaryRelations(
-      data,
-      locationLevelNames,
+    loadBoundaryRelations(data, locationLevelNames).then(
+      (relations: BoundaryRelationData) => {
+        const dataDict = {
+          ...boundaryRelationDataDict,
+          [i18nLocale.language]: relations,
+        };
+
+        dispatch(setRelationData(dataDict));
+      },
     );
-
-    const dataDict = {
-      ...boundaryRelationDataDict,
-      [i18nLocale.language]: relations,
-    };
-
-    dispatch(setRelationData(dataDict));
   }, [
     data,
     dispatch,

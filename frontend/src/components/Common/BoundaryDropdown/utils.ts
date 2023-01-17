@@ -135,10 +135,10 @@ const buildRelationTree = (
   return relations;
 };
 
-export const loadBoundaryRelations = (
+export const loadBoundaryRelations = async (
   boundaryLayerData: BoundaryLayerData,
   adminLevelNames: string[],
-): BoundaryRelationData => {
+): Promise<BoundaryRelationData> => {
   const relations = buildRelationTree(boundaryLayerData, adminLevelNames);
 
   const adminLevelNumbers: number[] = adminLevelNames.map((_, index) => index);
