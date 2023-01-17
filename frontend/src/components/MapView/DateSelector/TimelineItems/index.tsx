@@ -80,7 +80,7 @@ function TimelineItems({
         ) {
           return (
             <TooltipItem
-              layerTitle={selectedLayerTitle}
+              layerTitle={t(selectedLayerTitle)}
               color={DATE_ITEM_STYLING[layerIndex + 1].color}
             />
           );
