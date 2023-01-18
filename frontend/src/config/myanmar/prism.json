@@ -270,7 +270,8 @@
         "total_pop"
       ],
       "conflict": [
-        "conflict"
+        "conflict_fatalities",
+        "conflict_type"
       ],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",

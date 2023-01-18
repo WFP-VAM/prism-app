@@ -2279,7 +2279,7 @@
       "id": "wp_pop_cicunadj"
     }
   },
-  "conflict": {
+  "conflict_fatalities": {
     "title": "Number of fatalities in an armed conflict incident",
     "loader": "acled",
     "additional_query_params": {
@@ -2291,7 +2291,7 @@
     "date_url": "http://localhost/acled",
     "data_field": "fatalities",
     "opacity": 1,
-    "legend_text": "Number of fatalities in an armed conflict incident. Provided through ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
+    "legend_text": "Number of fatalities in an armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
     "legend": [
       { "label": "0", "value": 0, "color": "#fee0d2" },
       { "label": "1 - 20", "value": 1, "color": "#fc9272" },
@@ -2319,5 +2319,46 @@
         "label": "Details"
       }
     }
-  }  
+  } ,
+  "conflict_type": {
+    "title": "Types of armed conflict incident",
+    "loader": "acled",
+    "additional_query_params": {
+      "iso": 104,
+      "limit": 0
+    },
+    "type": "point_data",
+    "data": "http://localhost/acled",
+    "date_url": "http://localhost/acled",
+    "data_field": "event_type",
+    "opacity": 1,
+    "legend_text": "Types of armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
+    "legend": [
+      { "label": "Explosions/Remote violence", "value": "Explosions/Remote violence", "color": "#ea5545" },
+      { "label": "Battles", "value": "Battles ", "color": "#ef9b20" },
+      { "label": "Strategic developments", "value": "Strategic developments", "color": "#ede15b" }
+    ],
+    "feature_info_props": {
+      "event_type": {
+        "type": "string",
+        "label": "Event type"
+      },
+      "sub_event_type": {
+        "type": "string",
+        "label": "Sub event type"
+      },
+      "source": {
+        "type": "string",
+        "label": "Source"
+      },
+      "event_date": {
+        "type": "string",
+        "label": "Date"
+      },
+      "notes": {
+        "type": "string",
+        "label": "Details"
+      }
+    }
+  }   
 }
