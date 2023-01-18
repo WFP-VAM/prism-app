@@ -2,7 +2,6 @@
   "country": "Mozambique",
   "alertFormActive": false,
   "enableNavigationDropdown": true,
-  "acled_iso": 508,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",

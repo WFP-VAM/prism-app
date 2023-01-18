@@ -2243,6 +2243,10 @@
   "acled_incidents": {
     "title": "ACLED incidents",
     "loader": "acled",
+    "additional_query_params": {
+      "iso": 508,
+      "limit": 0
+    },
     "type": "point_data",
     "data": "http://localhost/acled",
     "date_url": "http://localhost/acled",

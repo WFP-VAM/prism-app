@@ -1,20 +1,26 @@
 import { sortBy } from 'lodash';
 import GeoJSON from 'geojson';
 import moment from 'moment';
-import { PointLayerData } from '../config/types';
+import { PointLayerData, PointDataLayerProps } from '../config/types';
 import { DEFAULT_DATE_FORMAT } from './name-utils';
-import { appConfig } from '../config';
+import { queryParamsToString } from './url-utils';
 
-export const fetchACLEDDates = async (url: string): Promise<number[]> => {
-  const acledIso = appConfig.acled_iso;
-
-  if (!acledIso) {
+export const fetchACLEDDates = async (
+  url: string,
+  additionalQueryParams?: PointDataLayerProps['additionalQueryParams'],
+): Promise<number[]> => {
+  if (
+    additionalQueryParams &&
+    !Object.keys(additionalQueryParams).includes('iso')
+  ) {
     throw new Error(
-      'ACLED processing is defined in layers.json. However, no country ISO code was set in the prism.json config. Please set the "acled_iso" parameter.',
+      'ACLED processing is defined in layers.json. However, no country ISO code was set in the additional_query_params field. Please set the "iso" parameter.',
     );
   }
 
-  const datesUrl = `${url}?iso=${acledIso}&limit=0&fields=event_date`;
+  const queryParams = { ...additionalQueryParams, fields: 'event_date' };
+
+  const datesUrl = `${url}?${queryParamsToString(queryParams)}`;
 
   const resp = await fetch(datesUrl);
   const respJson = await resp.json();
@@ -33,11 +39,13 @@ export const fetchACLEDDates = async (url: string): Promise<number[]> => {
 export const fetchACLEDIncidents = async (
   url: string,
   date: number,
+  additionalQueryParams?: PointDataLayerProps['additionalQueryParams'],
 ): Promise<PointLayerData> => {
-  const acledIso = appConfig.acled_iso;
   const dateStr = moment(date).format(DEFAULT_DATE_FORMAT);
 
-  const incidentsUrl = `${url}?&iso=${acledIso}&limit=0&event_date=${dateStr}`;
+  const queryParams = { ...additionalQueryParams, event_date: dateStr };
+
+  const incidentsUrl = `${url}?${queryParamsToString(queryParams, true)}`;
 
   const resp = await fetch(incidentsUrl);
   const respJson = await resp.json();

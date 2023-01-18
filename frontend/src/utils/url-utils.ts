@@ -1,3 +1,4 @@
+import { camelCase } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { AnalysisParams } from './types';
 import { LayerType } from '../config/types';
@@ -149,3 +150,24 @@ export function copyTextToClipboard(text: string): Promise<void> {
   document.body.removeChild(tmpElement);
   return Promise.resolve();
 }
+
+export const queryParamsToString = (
+  queryParams?: {
+    [key: string]: string | { [key: string]: string };
+  },
+  preserveKey?: boolean,
+): string =>
+  queryParams
+    ? Object.entries(queryParams)
+        .map(([key, value]) => {
+          if (key === 'filters') {
+            const filterValues = Object.entries(value)
+              .map(([filterKey, filterValue]) => `${filterKey}=${filterValue}`)
+              .join(',');
+
+            return `filters=${filterValues}`;
+          }
+          return `${preserveKey ? key : camelCase(key)}=${value}`;
+        })
+        .join('&')
+    : '';
