@@ -2239,42 +2239,5 @@
       }
     ],
     "legend_text": "Projected 2022 population data. Source: INE"
-  },
-  "acled_incidents": {
-    "title": "ACLED incidents",
-    "loader": "acled",
-    "additional_query_params": {
-      "iso": 508,
-      "limit": 0
-    },
-    "type": "point_data",
-    "data": "http://localhost/acled",
-    "date_url": "http://localhost/acled",
-    "data_field": "fatalities",
-    "opacity": 1,
-    "legend_text": "Number of fatalities",
-    "legend": [
-      { "label": "0 Low", "value": 0, "color": "#31a354" },
-      { "label": "0 - 20  Mid", "value": 10, "color": "#fdae6b" },
-      { "label": "> 20 - High", "value": 20, "color": "#e34a33" }
-    ],
-    "feature_info_props": {
-      "event_type": {
-        "type": "string",
-        "label": "Event type"
-      },
-      "sub_event_type": {
-        "type": "string",
-        "label": "Sub event type"
-      },
-      "source": {
-        "type": "string",
-        "label": "Source"
-      },
-      "fatalities": {
-        "type": "string",
-        "label": "Fatalities"
-      }
-    }
   }
 }
