@@ -67,12 +67,13 @@ function Download({ classes }: DownloadProps) {
   const selectedLayers = useSelector(layersSelector);
   const previewRef = useRef<HTMLCanvasElement>(null);
 
+  // TODO: Add layers for storm and flood data as configuration options in layers.json
   const isShowingStormData = selectedLayers.some(
     ({ id }) => id === 'adamts_buffers',
   );
 
-  const isShowingFloodData = selectedLayers.some(({ id }) =>
-    id.includes('hydra_'),
+  const isShowingFloodData = selectedLayers.some(
+    ({ id }) => id.includes('hydra_') || id === 'flood_extent',
   );
 
   const shouldShowReport = isShowingFloodData || isShowingStormData;
