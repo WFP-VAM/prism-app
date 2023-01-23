@@ -517,6 +517,7 @@ export class ImpactLayerProps extends CommonLayerProps {
 // Fetch and transform data to match PointDataLayer format.
 export enum PointDataLoader {
   EWS = 'ews',
+  ACLED = 'acled',
 }
 
 export class PointDataLayerProps extends CommonLayerProps {

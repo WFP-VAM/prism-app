@@ -19,8 +19,9 @@ import {
   LabelType,
   PointDataLoader,
 } from '../config/types';
-import { queryParamsToString } from '../context/layers/point_data';
+import { queryParamsToString } from './url-utils';
 import { createEWSDatesArray } from './ews-utils';
+import { fetchACLEDDates } from './acled-utils';
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
@@ -122,6 +123,8 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   switch (loader) {
     case PointDataLoader.EWS:
       return createEWSDatesArray();
+    case PointDataLoader.ACLED:
+      return fetchACLEDDates(url, additionalQueryParams);
     default:
       break;
   }
