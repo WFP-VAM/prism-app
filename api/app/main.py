@@ -13,14 +13,15 @@ from app.database.alert_model import AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
-from app.models import FilterProperty, RasterGeotiffModel
+from app.models import AcledRequest, FilterProperty, RasterGeotiffModel
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
-from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import EmailStr, HttpUrl
+from pydantic import EmailStr, HttpUrl, ValidationError
+from requests import get
 
 from .geotiff_from_stac_api import get_geotiff
 from .models import AlertsModel, StatsModel
@@ -157,6 +158,22 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     )
 
     return features
+
+
+@app.get("/acled")
+def get_acled_incidents(request: Request):
+    acled_url = "https://api.acleddata.com/acled/read"
+
+    try:
+        params = AcledRequest(**request.query_params)
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+    # Make a new request to acled api including the credentials.
+    response = get(acled_url, params=params.dict())
+    response.raise_for_status()
+
+    return Response(content=response.content, media_type="application/json")
 
 
 @app.get("/kobo/dates")

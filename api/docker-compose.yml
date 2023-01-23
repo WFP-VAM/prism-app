@@ -11,6 +11,8 @@ services:
       - WORKERS_PER_CORE=1
       # Kobo credentials
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
+      - ACLED_API_KEY=${ACLED_API_KEY:-changeme}
+      - ACLED_API_EMAIL=${ACLED_API_EMAIL:-changeme}
       - KOBO_PW
       # Alerts database
       - DATABASE_URL
