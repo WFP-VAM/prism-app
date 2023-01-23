@@ -49,9 +49,9 @@ const styles = () =>
         background: 'black',
         color: 'white',
         padding: '10px 10px 10px',
-        maxWidth: '20em',
+        maxWidth: '30em',
         maxHeight: '12em',
-        overflow: 'scroll',
+        overflow: 'auto',
       },
       '& div.mapboxgl-popup-tip': {
         'border-top-color': 'black',
