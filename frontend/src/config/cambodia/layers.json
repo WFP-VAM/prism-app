@@ -1429,6 +1429,16 @@
     "data": "https://sensors.ews1294.com/api/v1",
     "date_url": "",
     "feature_info_props": {
+      "status": {
+        "type": "mapping",
+        "label": "Sensor status",
+        "mapping": {
+          "0": "Normal",
+          "1": "Watch",
+          "2": "Warning",
+          "3": "Severe Warning"
+        }
+      },
       "name": {
         "type": "string",
         "label": "Location name"

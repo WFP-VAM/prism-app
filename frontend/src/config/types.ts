@@ -365,11 +365,13 @@ export enum LabelType {
   Date = 'date',
   Text = 'text',
   Number = 'number',
+  Mapping = 'mapping',
 }
 
 interface FeatureInfoProps {
   type: LabelType;
   label: string;
+  mapping?: { [key: string]: string };
 }
 
 export enum DatesPropagation {

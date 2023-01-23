@@ -58,7 +58,6 @@ function PointDataLayer({ layer, before }: LayersProps) {
   const { data } = layerData || {};
   const { features } = data || {};
   const { t } = useSafeTranslation();
-
   const { id: layerId } = layer;
 
   useEffect(() => {
@@ -120,20 +119,24 @@ function PointDataLayer({ layer, before }: LayersProps) {
 
   const onClickFunc = async (evt: any) => {
     const feature = evt.features[0];
+    const { dataField, featureInfoProps, title } = layer;
 
-    // by default add `dataField` to the tooltip
-    dispatch(
-      addPopupData({
-        [layer.title]: {
-          data: getRoundedData(
-            get(feature, `properties.${layer.dataField}`),
-            t,
-          ),
-          coordinates: evt.lngLat,
-        },
-      }),
-    );
-    // then add feature_info_props as extra fields to the tooltip
+    // by default add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
+    if (
+      featureInfoProps &&
+      !Object.keys(featureInfoProps).includes(dataField)
+    ) {
+      dispatch(
+        addPopupData({
+          [title]: {
+            data: getRoundedData(get(feature, `properties.${dataField}`), t),
+            coordinates: evt.lngLat,
+          },
+        }),
+      );
+    }
+
+    // Add feature_info_props as extra fields to the tooltip
     dispatch(
       addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
     );

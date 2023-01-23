@@ -190,6 +190,7 @@ export function getFeatureInfoPropsData(
           data: formatFeatureInfo(
             properties[item],
             featureInfoProps[item].type,
+            featureInfoProps[item].mapping,
           ),
           coordinates,
         },
