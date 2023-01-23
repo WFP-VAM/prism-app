@@ -1606,6 +1606,22 @@
     },
     "opacity": 0.9,
     "feature_info_props": {
+      "DisTyp": {
+        "type": "mapping",
+        "label": "Disaster type",
+        "mapping": {
+          "3": "Storm",
+          "4": "Fire",
+          "5": "Lightning",
+          "6": "Epidemic",
+          "7": "Riverbank collapse",
+          "8": "Insect",
+          "9": "Traffic accident",
+          "10": "Drowning",
+          "11": "Building collapse",
+          "12": "Exploded weapon"
+        }
+      },
       "date": {
         "type": "text",
         "label": "Event date"
