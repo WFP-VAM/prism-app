@@ -66,6 +66,12 @@
       "mode": "forward"
     },
     "opacity": 0.9,
+    "feature_info_props": {
+      "Total_Poor_12_HHs": {
+        "type": "number",
+        "label": "Number of ID Poor (1 & 2) households"
+      }
+    },
     "legend": [
       {
         "value": 0,
@@ -102,6 +108,12 @@
     "data_field": "Total_Poor_1_HHs",
     "admin_level": 3,
     "admin_code": "Adm3_text",
+    "feature_info_props": {
+      "Total_Poor_1_HHs": {
+        "type": "number",
+        "label": "Number of ID Poor 1 households"
+      }
+    },
     "opacity": 0.9,
     "legend": [
       {
@@ -139,6 +151,12 @@
     "data_field": "Total_Poor_2_HHs",
     "admin_level": 3,
     "admin_code": "Adm3_text",
+    "feature_info_props": {
+      "Total_Poor_2_HHs": {
+        "type": "number",
+        "label": "Number of ID Poor 2 households"
+      }
+    },
     "opacity": 0.9,
     "legend": [
       {
