@@ -44,7 +44,7 @@ function MenuSwitch({ classes, title, layers, tables }: MenuSwitchProps) {
           key={table.title}
           onClick={() => showTableClicked(table)}
         >
-          <Typography variant="body1">{table.title}</Typography>
+          <Typography variant="body1">{t(table.title)}</Typography>
         </Button>
       ))}
     </Grid>
