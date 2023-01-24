@@ -304,18 +304,18 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 export function formatFeatureInfo(
   value: string,
   type: LabelType,
-  mapping?: { [key: string]: string },
+  values?: { [key: string]: string },
 ): string {
   if (type === LabelType.Date) {
     return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
   }
 
-  if (type === LabelType.Mapping) {
-    if (!mapping) {
-      throw new Error('mapping not defined.');
+  if (type === LabelType.ValuesLabels) {
+    if (!values) {
+      throw new Error('values_labels parameters not defined.');
     }
 
-    return mapping[value];
+    return values[value];
   }
 
   return value;
