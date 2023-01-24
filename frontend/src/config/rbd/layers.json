@@ -3385,7 +3385,7 @@
   "ch_pop3_5_admin1": {
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
+    "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
     "dates": [
       "2018-01-01",
       "2018-06-01",
