@@ -64,6 +64,16 @@ curl --location --request POST 'localhost:80/alerts' \
 The following endpoints are related to data retrieval from KoboToolbox. Make sure
 you have set the environment variables KOBO_USERNAME, KOBO_PW
 
+### `/acled` (GET)
+
+Returns armed conflict incidents using ACLED api. Make sure to have the defined ACLED credentials using environment variables `ACLED_API_KEY` and `ACLED_API_EMAIL`
+
+- `iso`, Country ISO code defined in Acled file. Verify documentation.
+- `limit`, Maximum number of results. 0 corresponds to all incidents.
+- `?fields`, Comma separated string which specifies the fields to be returned per incident.
+- `?event_date`, Return incidents only matching the given value with format YYYY-MM-DD
+
+
 ### `/kobo/forms` (GET)
 
 Returns all form responses using Kobo API

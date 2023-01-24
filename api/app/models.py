@@ -1,4 +1,6 @@
 import json
+from datetime import date
+from os import getenv
 from typing import NewType, Optional, TypedDict
 
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
@@ -17,6 +19,23 @@ GeoJSONFeature = TypedDict(
 GeoJSON = TypedDict("GeoJSON", {"features": list[GeoJSONFeature]})
 
 WfsResponse = TypedDict("WfsResponse", {"filter_property_key": str, "path": FilePath})
+
+
+class AcledRequest(BaseModel):
+    iso: int
+    limit: int
+    fields: Optional[str]
+    email: str
+    key: str
+    event_date: Optional[date]
+
+    @root_validator(pre=True)
+    def append_credentials(cls, values):
+        api_key = getenv("ACLED_API_KEY", None)
+        api_email = getenv("ACLED_API_EMAIL", None)
+
+        new_values = {**values, "email": api_email, "key": api_key}
+        return new_values
 
 
 class WfsParamsModel(BaseModel):
