@@ -15,6 +15,11 @@ import mn from 'date-fns/locale/mn';
 
 import { translation } from './config';
 import 'moment/locale/km';
+import 'moment/locale/fr';
+import 'moment/locale/pt';
+import 'moment/locale/es';
+import 'moment/locale/ru';
+import 'moment/locale/mn';
 
 const TRANSLATION_DEBUG = false;
 // Register other date locales to be used by our DatePicker
