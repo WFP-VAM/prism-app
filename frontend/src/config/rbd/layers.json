@@ -3203,6 +3203,26 @@
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
+      "phase1": {
+        "type": "number",
+        "label": "Population in phase 1"
+      },
+      "phase2": {
+        "type": "number",
+        "label": "Population in phase 2"
+      },
+      "phase3": {
+        "type": "number",
+        "label": "Population in phase 3"
+      },
+      "phase4": {
+        "type": "number",
+        "label": "Population in phase 4"
+      },
+      "phase5": {
+        "type": "number",
+        "label": "Population in phase 5"
+      },
       "phase35": {
         "type": "number",
         "label": "Population in phase 3 to 5"
@@ -3267,6 +3287,26 @@
     "admin_code": "adm1_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
+      "phase1": {
+        "type": "number",
+        "label": "Population in phase 1"
+      },
+      "phase2": {
+        "type": "number",
+        "label": "Population in phase 2"
+      },
+      "phase3": {
+        "type": "number",
+        "label": "Population in phase 3"
+      },
+      "phase4": {
+        "type": "number",
+        "label": "Population in phase 4"
+      },
+      "phase5": {
+        "type": "number",
+        "label": "Population in phase 5"
+      },
       "phase35": {
         "type": "number",
         "label": "Population in phase 3 to 5"
@@ -3337,6 +3377,30 @@
       "mode": "forward"
     },
     "feature_info_props": {
+      "phase1": {
+        "type": "number",
+        "label": "Population in phase 1"
+      },
+      "phase2": {
+        "type": "number",
+        "label": "Population in phase 2"
+      },
+      "phase3": {
+        "type": "number",
+        "label": "Population in phase 3"
+      },
+      "phase4": {
+        "type": "number",
+        "label": "Population in phase 4"
+      },
+      "phase5": {
+        "type": "number",
+        "label": "Population in phase 5"
+      },
+      "phase35": {
+        "type": "number",
+        "label": "Population in phase 3 to 5"
+      },
       "reference_date": {
         "type": "text",
         "label": "Reference period"
@@ -3411,6 +3475,30 @@
       "mode": "forward"
     },
     "feature_info_props": {
+      "phase1": {
+        "type": "number",
+        "label": "Population in phase 1"
+      },
+      "phase2": {
+        "type": "number",
+        "label": "Population in phase 2"
+      },
+      "phase3": {
+        "type": "number",
+        "label": "Population in phase 3"
+      },
+      "phase4": {
+        "type": "number",
+        "label": "Population in phase 4"
+      },
+      "phase5": {
+        "type": "number",
+        "label": "Population in phase 5"
+      },
+      "phase35": {
+        "type": "number",
+        "label": "Population in phase 3 to 5"
+      },
       "reference_date": {
         "type": "text",
         "label": "Reference period"
