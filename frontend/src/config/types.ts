@@ -461,6 +461,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   fallbackLayerKeys?: string[];
+
+  @optional
+  body?: { [key: string]: string }; // JSON body request params
 }
 
 export class StatsApi {
