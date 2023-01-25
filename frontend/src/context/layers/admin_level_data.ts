@@ -204,7 +204,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
     boundary,
     fallbackLayerKeys,
     adminLevel,
-    body,
+    requestBody,
   } = layer;
 
   const fallbackLayers = fallbackLayerKeys?.map(
@@ -221,11 +221,11 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         return moment(date).format(format);
       });
 
-      const options = body
+      const options = requestBody
         ? {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body),
+            body: JSON.stringify(requestBody),
           }
         : {};
 
