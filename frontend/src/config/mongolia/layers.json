@@ -756,7 +756,7 @@
     "legend_text": "Average amount of cash dedicated for soum emergency hay and fodder reserves, in million MNT (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
   },
   "mvam_hay_prices": {
-    "title": "Hay prices (soum)",
+    "title": "Average market hay prices (soum)",
     "type": "admin_level_data",
     "path": "data/mongolia/nso/mVAM_Hay_Price.json",
     "data_field": "DTVAL_CO",
