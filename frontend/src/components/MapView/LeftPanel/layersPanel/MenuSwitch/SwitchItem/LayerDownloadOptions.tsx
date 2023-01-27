@@ -4,12 +4,14 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Tooltip,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { mapValues } from 'lodash';
+import BarChartIcon from '@material-ui/icons/BarChart';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import {
   AdminLevelDataLayerProps,
   AggregationOperations,
@@ -175,14 +177,31 @@ function LayerDownloadOptions({
     dispatch(setTabValue(2));
   };
 
+  const shouldShowDownloadButton =
+    layer.type === 'admin_level_data' ||
+    (layer.type === 'wms' &&
+      layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows'));
+
   return (
     <>
-      <IconButton
-        disabled={!selected || isGeotiffLoading}
-        onClick={handleDownloadMenuOpen}
-      >
-        <MoreVertIcon />
-      </IconButton>
+      {exposure && (
+        <Tooltip title={t('Exposure Analysis') ?? ''}>
+          <IconButton onClick={handleExposureAnalysis}>
+            <BarChartIcon />
+          </IconButton>
+        </Tooltip>
+      )}
+
+      {shouldShowDownloadButton && (
+        <Tooltip title="Download">
+          <IconButton
+            disabled={!selected || isGeotiffLoading}
+            onClick={handleDownloadMenuOpen}
+          >
+            <GetAppIcon />
+          </IconButton>
+        </Tooltip>
+      )}
       {isGeotiffLoading ||
         (isAnalysisExposureLoading && (
           <Box display="flex" alignItems="center">
@@ -196,11 +215,6 @@ function LayerDownloadOptions({
         open={Boolean(downloadMenuAnchorEl)}
         onClose={handleDownloadMenuClose}
       >
-        {exposure && (
-          <MenuItem onClick={handleExposureAnalysis}>
-            {t('Exposure Analysis')}
-          </MenuItem>
-        )}
         {layer.type === 'admin_level_data' && (
           <>
             <MenuItem onClick={handleDownloadCsv}>

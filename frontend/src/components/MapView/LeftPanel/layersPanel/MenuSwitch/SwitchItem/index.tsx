@@ -6,6 +6,7 @@ import {
   Select,
   Slider,
   Switch,
+  Tooltip,
   Typography,
   WithStyles,
   withStyles,
@@ -205,19 +206,21 @@ function SwitchItem({ classes, layer, extent }: SwitchItemProps) {
           }}
         />
         {menuTitle}
-        <IconButton
-          disabled={!selected}
-          classes={{
-            root: isOpacitySelected
-              ? classes.opacityRootSelected
-              : classes.opacityRoot,
-          }}
-          onClick={() =>
-            setIsOpacitySelected(opacitySelected => !opacitySelected)
-          }
-        >
-          <OpacityIcon />
-        </IconButton>
+        <Tooltip title="Opacity">
+          <IconButton
+            disabled={!selected}
+            classes={{
+              root: isOpacitySelected
+                ? classes.opacityRootSelected
+                : classes.opacityRoot,
+            }}
+            onClick={() =>
+              setIsOpacitySelected(opacitySelected => !opacitySelected)
+            }
+          >
+            <OpacityIcon />
+          </IconButton>
+        </Tooltip>
         <LayerDownloadOptions
           layer={layer}
           extent={extent}
