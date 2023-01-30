@@ -2287,8 +2287,8 @@
       "limit": 0
     },
     "type": "point_data",
-    "data": "http://localhost/acled",
-    "date_url": "http://localhost/acled",
+    "data": "https://prism-api.ovio.org/acled",
+    "date_url": "https://prism-api.ovio.org/acled",
     "data_field": "fatalities",
     "opacity": 1,
     "legend_text": "Number of fatalities in an armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
@@ -2328,8 +2328,8 @@
       "limit": 0
     },
     "type": "point_data",
-    "data": "http://localhost/acled",
-    "date_url": "http://localhost/acled",
+    "data": "https://prism-api.ovio.org/acled",
+    "date_url": "https://prism-api.ovio.org/acled",
     "data_field": "event_type",
     "data_field_type": "text",
     "opacity": 1,

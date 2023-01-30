@@ -3,6 +3,7 @@ import {
   CommonLayerProps,
   DataFieldType,
   PointDataLayerProps,
+  LegendDefinitionItem,
 } from '../../../config/types';
 import { legendToStops } from './layer-utils';
 
@@ -19,9 +20,14 @@ export const circlePaint = ({
       ? [
           'match',
           ['get', dataField],
-          ...legend
-            .map(legendItem => [legendItem.label, legendItem.color])
-            .reduce((acc, item) => [...acc, ...item]),
+          ...legend.reduce(
+            (acc: string[], legendItem: LegendDefinitionItem) => [
+              ...acc,
+              legendItem.label as string,
+              legendItem.color as string,
+            ],
+            [],
+          ),
           '#CCC',
         ]
       : {
