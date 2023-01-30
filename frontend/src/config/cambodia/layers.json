@@ -1459,15 +1459,15 @@
       },
       "name": {
         "type": "string",
-        "label": "Location name"
+        "dataTitle": "Location name"
       },
       "mean": {
         "type": "number",
-        "label": "Mean water level"
+        "dataTitle": "Mean water level"
       },
       "max": {
         "type": "number",
-        "label": "Max water level"
+        "dataTitle": "Max water level"
       }
     },
     "data_field": "status",
@@ -1500,15 +1500,15 @@
     "feature_info_props": {
       "date": {
         "type": "text",
-        "label": "Event date"
+        "dataTitle": "Event date"
       },
       "NumVillAff": {
         "type": "text",
-        "label": "Number of villages affected"
+        "dataTitle": "Number of villages affected"
       },
       "flood_n": {
         "type": "text",
-        "label": "Number of people affected"
+        "dataTitle": "Number of people affected"
       }
     },
     "legend_text": "Number of people affected",
@@ -1565,11 +1565,11 @@
     "feature_info_props": {
       "date": {
         "type": "text",
-        "label": "Event date"
+        "dataTitle": "Event date"
       },
       "NumPeoAff": {
         "type": "text",
-        "label": "Number of people affected"
+        "dataTitle": "Number of people affected"
       }
     },
     "legend_text": "Number of people affected",
@@ -1642,11 +1642,11 @@
       },
       "date": {
         "type": "text",
-        "label": "Event date"
+        "dataTitle": "Event date"
       },
       "NumPeoAff": {
         "type": "text",
-        "label": "Number of people affected"
+        "dataTitle": "Number of people affected"
       }
     },
     "legend_text": "Type of disaster",
