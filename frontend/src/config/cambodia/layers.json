@@ -69,7 +69,7 @@
     "feature_info_props": {
       "Total_Poor_12_HHs": {
         "type": "number",
-        "label": "Number of ID Poor (1 & 2) households"
+        "dataTitle": "Number of ID Poor (1 & 2) households"
       }
     },
     "legend": [
@@ -111,7 +111,7 @@
     "feature_info_props": {
       "Total_Poor_1_HHs": {
         "type": "number",
-        "label": "Number of ID Poor 1 households"
+        "dataTitle": "Number of ID Poor 1 households"
       }
     },
     "opacity": 0.9,
@@ -154,7 +154,7 @@
     "feature_info_props": {
       "Total_Poor_2_HHs": {
         "type": "number",
-        "label": "Number of ID Poor 2 households"
+        "dataTitle": "Number of ID Poor 2 households"
       }
     },
     "opacity": 0.9,
