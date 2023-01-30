@@ -1200,11 +1200,11 @@
     "feature_info_props": {
       "event_name": {
         "type": "text",
-        "label": "Event name"
+        "dataTitle": "Event name"
       },
       "timestamp": {
         "type": "date",
-        "label": "Publication date"
+        "dataTitle": "Publication date"
       }
     },
     "geometry": "polygon"

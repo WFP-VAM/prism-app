@@ -4,7 +4,7 @@
     "path": "data/tajikistan/tjk_admin2_wgs84_clean.json",
     "opacity": 0.8,
     "admin_code": "text",
-    "admin_level_names": ["ProvinceE","DistrictE"],
+    "admin_level_names": ["ProvinceE", "DistrictE"],
     "admin_level_local_names": ["ProvinceR ", "DistrictR"],
     "styles:": {
       "fill": {
@@ -23,7 +23,7 @@
     "server_layer_name": "r1q_dekad",
     "additional_query_params": {
       "styles": "rfq_14_20_400"
-    }, 
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -717,7 +717,7 @@
       { "value": 22, "label": "21-22 Days", "color": "#d79b0b" },
       { "value": 26, "label": "23-26 Days", "color": "#c98a4b" },
       { "value": 27, "label": "> 26 Days", "color": "#aa5a00" }
-      ]
+    ]
   },
   "days_heavy_rain": {
     "title": "Number of days with heavy rainfall in the last 30 days",
@@ -1132,7 +1132,7 @@
     "feature_info_props": {
       "mmi": {
         "type": "text",
-        "label": "Modified mercalli intensity"
+        "dataTitle": "Modified mercalli intensity"
       }
     }
   },
@@ -1212,26 +1212,25 @@
     "feature_info_props": {
       "Food_Secure": {
         "type": "text",
-        "label": "Fully Food Secure"
+        "dataTitle": "Fully Food Secure"
       },
       "Marginally_Food_Secure": {
         "type": "text",
-        "label": "Marginally Food Secure"
+        "dataTitle": "Marginally Food Secure"
       },
       "Moderately_Food_Insecure": {
         "type": "text",
-        "label": "Moderately Food Insecure"
+        "dataTitle": "Moderately Food Insecure"
       },
       "Severely_Food_Insecure": {
         "type": "text",
-        "label": "Severely Food Insecure"  
+        "dataTitle": "Severely Food Insecure"
       }
-    },  
+    },
     "admin_level": 2,
     "admin_code": "text",
     "opacity": 0.8,
-    "legend": 
-    [
+    "legend": [
       {
         "value": "12.8",
         "color": "#31a354"
@@ -1248,9 +1247,8 @@
         "value": "20.7",
         "color": "#f03b20"
       }
-      
     ],
-        "legend_text": "CARI data for Food In-/Security"
+    "legend_text": "CARI data for Food In-/Security"
   },
   "Flood_freq": {
     "title": "Frequency of Floods",
@@ -1260,21 +1258,21 @@
     "feature_info_props": {
       "ICA_LS": {
         "type": "text",
-        "label": "Landslide Frequency"
+        "dataTitle": "Landslide Frequency"
       },
       "ICA_MF": {
         "type": "text",
-        "label": "Mudflow Frequency"
+        "dataTitle": "Mudflow Frequency"
       },
       "ICA_FL": {
         "type": "text",
-        "label": "Flood Frequency"
+        "dataTitle": "Flood Frequency"
       },
       "ICA_DR": {
         "type": "text",
-        "label": "Drought Frequency"  
+        "dataTitle": "Drought Frequency"
       }
-    },  
+    },
     "admin_level": 2,
     "admin_code": "text",
     "opacity": 0.5,
@@ -1282,8 +1280,7 @@
       "id": "FS_situation",
       "key": "Moderately Food Insecure"
     },
-    "legend": 
-    [
+    "legend": [
       {
         "value": 1,
         "color": "#1a9641"
@@ -1300,8 +1297,7 @@
         "value": 11,
         "color": "#d7191c"
       }
-      
     ],
-        "legend_text": "Disaster data from the Government of Tajikistan"
+    "legend_text": "Disaster data from the Government of Tajikistan"
   }
 }
