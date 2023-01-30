@@ -128,6 +128,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
   'point_data',
   'wms',
+  'static_raster',
 ];
 const boundaryLayer = getBoundaryLayerSingleton();
 

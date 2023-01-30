@@ -30,7 +30,11 @@
   ],
   "categories": {
     "flood": {
-      "flood_monitoring": ["flood_extent"],
+      "flood_monitoring": [
+        "flood_extent",
+        "flood_static",
+        "flood_static_with_dates"
+      ],
       "flood_risk": ["flood_hazard"],
       "early_warning": ["ews_remote"]
     },

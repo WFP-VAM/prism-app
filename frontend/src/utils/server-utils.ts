@@ -18,6 +18,7 @@ import {
   FeatureInfoType,
   LabelType,
   PointDataLoader,
+  StaticRasterLayerProps,
 } from '../config/types';
 import { queryParamsToString } from './url-utils';
 import { createEWSDatesArray } from './ews-utils';
@@ -57,7 +58,8 @@ export type DateCompatibleLayer =
   | AdminLevelDataLayerProps
   | WMSLayerProps
   | ImpactLayerProps
-  | PointDataLayerProps;
+  | PointDataLayerProps
+  | StaticRasterLayerProps;
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
@@ -74,6 +76,8 @@ export const getPossibleDatesForLayer = (
         ];
       case 'point_data':
       case 'admin_level_data':
+        return serverAvailableDates[layer.id];
+      case 'static_raster':
         return serverAvailableDates[layer.id];
       default:
         return [];
@@ -152,6 +156,15 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
 }
 
 async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
+  const { dates } = layer;
+  if (!dates) {
+    return [];
+  }
+  // raw data comes in as {"dates": ["YYYY-MM-DD"]}
+  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+}
+
+async function getStaticRasterDataCoverage(layer: StaticRasterLayerProps) {
   const { dates } = layer;
   if (!dates) {
     return [];
@@ -252,6 +265,11 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
       layer.type === 'admin_level_data' && Boolean(layer.dates),
   );
 
+  const staticRasterWithDateLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is StaticRasterLayerProps =>
+      layer.type === 'static_raster' && Boolean(layer.dates),
+  );
+
   const layerDates = await Promise.all([
     ...wmsServerUrls.map(url => new WMS(url).getLayerDays()),
     ...wcsServerUrls.map(url => fetchCoverageLayerDays(url)),
@@ -260,6 +278,9 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     })),
     ...adminWithDateLayers.map(async layer => ({
       [layer.id]: await getAdminLevelDataCoverage(layer),
+    })),
+    ...staticRasterWithDateLayers.map(async layer => ({
+      [layer.id]: await getStaticRasterDataCoverage(layer),
     })),
   ]);
 
