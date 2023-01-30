@@ -253,11 +253,6 @@ export interface ExposedPopulationDefinition {
   calc?: string;
 }
 
-interface FeatureInfoProps {
-  type: DataType;
-  dataTitle: string;
-}
-
 export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
 
 export class CommonLayerProps {
@@ -370,7 +365,7 @@ export enum DataType {
 
 interface FeatureInfoProps {
   type: DataType;
-  label: string;
+  dataTitle: string;
   labelMap?: { [key: string]: string };
 }
 
