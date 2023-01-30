@@ -9,6 +9,7 @@ import {
   ListItemText,
   makeStyles,
   MenuItem,
+  MenuProps,
   Select,
   TextField,
   Typography,
@@ -105,9 +106,9 @@ const useStyles = makeStyles(() =>
       zIndex: 3,
     },
     chartsPanelCharts: {
+      overflow: 'scroll',
       display: 'flex',
       justifyContent: 'center',
-      alignContent: 'center',
       flexWrap: 'wrap',
       flexGrow: 4,
     },
@@ -304,7 +305,7 @@ function ChartsPanel({ setPanelSize }: ChartsPanelProps) {
             .map(layer => (
               <Box
                 style={{
-                  minHeight: '240px',
+                  height: '240px',
                   width: '45%',
                 }}
               >

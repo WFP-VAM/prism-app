@@ -38,7 +38,7 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
-      style={{ flexGrow: 1 }}
+      style={{ flexGrow: 1, height: 'calc(93vh - 48px)' }}
       {...other}
     >
       {value === index && children}
