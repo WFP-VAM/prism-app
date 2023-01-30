@@ -61,6 +61,11 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
   createStyles({
     root: {
       display: 'flex',
+      flexDirection: 'row',
+      height: '100%',
+    },
+    tabsWrapper: {
+      display: 'flex',
       flexDirection: 'column',
       height: '100%',
     },
@@ -91,6 +96,7 @@ interface TabsProps {
   chartsPanel: React.ReactNode;
   analysisPanel: React.ReactNode;
   panelSize: PanelSize;
+  resultsPage: JSX.Element | null;
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
 }
 
@@ -99,6 +105,7 @@ function LeftPanelTabs({
   chartsPanel,
   analysisPanel,
   panelSize,
+  resultsPage,
   setPanelSize,
 }: TabsProps) {
   const { t } = useSafeTranslation();
@@ -113,64 +120,72 @@ function LeftPanelTabs({
 
   return (
     <div className={classes.root}>
-      <div className={classes.tabsContainer}>
-        <Tabs
-          value={tabValue}
-          onChange={handleChange}
-          aria-label="left panel tabs"
-          classes={{ indicator: classes.indicator }}
-        >
-          <Tab
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            value={0}
-            disableRipple
-            label={
-              <Box display="flex">
-                <LayersOutlined style={{ verticalAlign: 'middle' }} />
-                <Box ml={1}>{t('Layers')}</Box>
-              </Box>
-            }
-            {...a11yProps(0)}
-          />
-          {areChartLayersAvailable && (
+      <div className={classes.tabsWrapper}>
+        <div className={classes.tabsContainer}>
+          <Tabs
+            value={tabValue}
+            onChange={handleChange}
+            aria-label="left panel tabs"
+            classes={{ indicator: classes.indicator }}
+          >
             <Tab
               classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-              value={1}
+              value={0}
               disableRipple
               label={
                 <Box display="flex">
-                  <BarChartOutlined style={{ verticalAlign: 'middle' }} />
-                  <Box ml={1}>{t('Charts')}</Box>
+                  <LayersOutlined style={{ verticalAlign: 'middle' }} />
+                  <Box ml={1}>{t('Layers')}</Box>
                 </Box>
               }
-              {...a11yProps(1)}
+              {...a11yProps(0)}
             />
-          )}
-          <Tab
-            classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
-            value={2}
-            disableRipple
-            label={
-              <Box display="flex">
-                <ImageAspectRatioOutlined style={{ verticalAlign: 'middle' }} />
-                <Box ml={1}>{t('Analysis')}</Box>
-              </Box>
-            }
-            {...a11yProps(2)}
-          />
-        </Tabs>
-      </div>
-      <TabPanel value={tabValue} index={0}>
-        {layersPanel}
-      </TabPanel>
-      {areChartLayersAvailable && (
-        <TabPanel value={tabValue} index={1}>
-          {chartsPanel}
+            {areChartLayersAvailable && (
+              <Tab
+                classes={{
+                  root: classes.tabRoot,
+                  selected: classes.tabSelected,
+                }}
+                value={1}
+                disableRipple
+                label={
+                  <Box display="flex">
+                    <BarChartOutlined style={{ verticalAlign: 'middle' }} />
+                    <Box ml={1}>{t('Charts')}</Box>
+                  </Box>
+                }
+                {...a11yProps(1)}
+              />
+            )}
+            <Tab
+              classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
+              value={2}
+              disableRipple
+              label={
+                <Box display="flex">
+                  <ImageAspectRatioOutlined
+                    style={{ verticalAlign: 'middle' }}
+                  />
+                  <Box ml={1}>{t('Analysis')}</Box>
+                </Box>
+              }
+              {...a11yProps(2)}
+            />
+          </Tabs>
+        </div>
+        <TabPanel value={tabValue} index={0}>
+          {layersPanel}
         </TabPanel>
-      )}
-      <TabPanel value={tabValue} index={2}>
-        {analysisPanel}
-      </TabPanel>
+        {areChartLayersAvailable && (
+          <TabPanel value={tabValue} index={1}>
+            {chartsPanel}
+          </TabPanel>
+        )}
+        <TabPanel value={tabValue} index={2}>
+          {analysisPanel}
+        </TabPanel>
+      </div>
+      {resultsPage}
     </div>
   );
 }

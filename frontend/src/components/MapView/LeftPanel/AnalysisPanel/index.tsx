@@ -94,6 +94,7 @@ function AnalysisPanel({
   extent,
   panelSize,
   setPanelSize,
+  setResultsPage,
   classes,
 }: AnalysisPanelProps) {
   const dispatch = useDispatch();
@@ -457,6 +458,51 @@ function AnalysisPanel({
     }
   };
 
+  function onToggleShowTable() {
+    if (panelSize === PanelSize.large) {
+      setPanelSize(PanelSize.medium);
+      setResultsPage(null);
+    } else {
+      setPanelSize(PanelSize.large);
+      if (
+        !isAnalysisLoading &&
+        analysisResult &&
+        (analysisResult instanceof BaselineLayerResult ||
+          analysisResult instanceof PolygonAnalysisResult)
+      ) {
+        setResultsPage(
+          <div className={classes.analysisTableContainer}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
+              <IconButton
+                aria-label="close"
+                onClick={() => setPanelSize(PanelSize.medium)}
+                className={classes.analysisTableCloseButton}
+              >
+                <CloseRounded />
+              </IconButton>
+              <Typography className={classes.analysisTableTitle}>
+                {selectedHazardLayer?.title}
+              </Typography>
+            </div>
+            <div className={classes.analysisTable}>
+              <AnalysisTable
+                tableData={analysisResult.tableData}
+                columns={translatedColumns}
+              />
+            </div>
+          </div>,
+        );
+      }
+    }
+  }
+
   return (
     <div className={classes.root}>
       <div className={classes.analysisPanel}>
@@ -676,13 +722,7 @@ function AnalysisPanel({
               <Button
                 className={classes.analysisButton}
                 disabled={!analysisResult}
-                onClick={() =>
-                  setPanelSize(
-                    panelSize === PanelSize.large
-                      ? PanelSize.medium
-                      : PanelSize.large,
-                  )
-                }
+                onClick={onToggleShowTable}
               >
                 <Typography variant="body2">
                   {panelSize === PanelSize.large
@@ -731,39 +771,6 @@ function AnalysisPanel({
           </div>
         )}
       </div>
-      {!isAnalysisLoading &&
-        analysisResult &&
-        (analysisResult instanceof BaselineLayerResult ||
-          analysisResult instanceof PolygonAnalysisResult) &&
-        panelSize === PanelSize.large && (
-          <div className={classes.analysisTableContainer}>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                width: '100%',
-              }}
-            >
-              <IconButton
-                aria-label="close"
-                onClick={() => setPanelSize(PanelSize.medium)}
-                className={classes.analysisTableCloseButton}
-              >
-                <CloseRounded />
-              </IconButton>
-              <Typography className={classes.analysisTableTitle}>
-                {selectedHazardLayer?.title}
-              </Typography>
-            </div>
-            <div className={classes.analysisTable}>
-              <AnalysisTable
-                tableData={analysisResult.tableData}
-                columns={translatedColumns}
-              />
-            </div>
-          </div>
-        )}
       {!isAnalysisLoading &&
         analysisResult &&
         analysisResult instanceof ExposedPopulationResult && (
@@ -917,6 +924,7 @@ interface AnalysisPanelProps extends WithStyles<typeof styles> {
   extent?: Extent;
   panelSize: PanelSize;
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
+  setResultsPage: React.Dispatch<React.SetStateAction<JSX.Element | null>>;
 }
 
 export default withStyles(styles)(AnalysisPanel);

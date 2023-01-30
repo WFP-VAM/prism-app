@@ -111,6 +111,7 @@ const useStyles = makeStyles(() =>
       justifyContent: 'center',
       flexWrap: 'wrap',
       flexGrow: 4,
+      paddingTop: '1em',
     },
     removeAdmin2: {
       fontWeight: 'bold',
@@ -130,7 +131,7 @@ const menuProps: Partial<MenuProps> = {
   },
 };
 
-function ChartsPanel({ setPanelSize }: ChartsPanelProps) {
+function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
   const [admin2Title, setAdmin2Title] = useState('');
@@ -197,6 +198,68 @@ function ChartsPanel({ setPanelSize }: ChartsPanelProps) {
       setPanelSize(PanelSize.medium);
     }
   }, [setPanelSize, adminProperties, selectedDate, selectedLayerTitles.length]);
+
+  React.useEffect(() => {
+    if (adminProperties && selectedDate) {
+      setResultsPage(
+        <Box className={classes.chartsPanelCharts}>
+          {selectedLayerTitles.length > 1 &&
+            chartLayers
+              .filter(layer => selectedLayerTitles.includes(layer.title))
+              .map(layer => (
+                <Box
+                  style={{
+                    height: '240px',
+                    width: '45%',
+                  }}
+                >
+                  <ChartSection
+                    chartLayer={layer}
+                    adminProperties={adminProperties}
+                    adminLevel={adminLevel}
+                    date={selectedDate}
+                  />
+                </Box>
+              ))}
+
+          {
+            // chart size is not responsive once it is mounted
+            // seems to be possible in the newer chart.js versions
+            // here we mount a new component if one chart
+            adminProperties && selectedDate && selectedLayerTitles.length === 1 && (
+              <Box
+                style={{
+                  minHeight: '50vh',
+                  width: '100%',
+                }}
+              >
+                <ChartSection
+                  chartLayer={
+                    chartLayers.filter(layer =>
+                      selectedLayerTitles.includes(layer.title),
+                    )[0]
+                  }
+                  adminProperties={adminProperties}
+                  adminLevel={adminLevel}
+                  date={selectedDate}
+                />
+              </Box>
+            )
+          }
+        </Box>,
+      );
+    }
+
+    return () => setResultsPage(null);
+  }, [
+    adminLevel,
+    adminProperties,
+    classes.chartsPanelCharts,
+    selectedDate,
+    selectedLayerTitles,
+    selectedLayerTitles.length,
+    setResultsPage,
+  ]);
 
   return (
     <Box className={classes.root}>
@@ -296,59 +359,13 @@ function ChartsPanel({ setPanelSize }: ChartsPanelProps) {
           </Select>
         </FormControl>
       </Box>
-      <Box className={classes.chartsPanelCharts}>
-        {adminProperties &&
-          selectedDate &&
-          selectedLayerTitles.length > 1 &&
-          chartLayers
-            .filter(layer => selectedLayerTitles.includes(layer.title))
-            .map(layer => (
-              <Box
-                style={{
-                  height: '240px',
-                  width: '45%',
-                }}
-              >
-                <ChartSection
-                  chartLayer={layer}
-                  adminProperties={adminProperties}
-                  adminLevel={adminLevel}
-                  date={selectedDate}
-                />
-              </Box>
-            ))}
-
-        {
-          // chart size is not responsive once it is mounted
-          // seems to be possible in the newer chart.js versions
-          // here we mount a new component if one chart
-          adminProperties && selectedDate && selectedLayerTitles.length === 1 && (
-            <Box
-              style={{
-                minHeight: '50vh',
-                width: '100%',
-              }}
-            >
-              <ChartSection
-                chartLayer={
-                  chartLayers.filter(layer =>
-                    selectedLayerTitles.includes(layer.title),
-                  )[0]
-                }
-                adminProperties={adminProperties}
-                adminLevel={adminLevel}
-                date={selectedDate}
-              />
-            </Box>
-          )
-        }
-      </Box>
     </Box>
   );
 }
 
 interface ChartsPanelProps {
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
+  setResultsPage: React.Dispatch<React.SetStateAction<JSX.Element | null>>;
 }
 
 export default ChartsPanel;
