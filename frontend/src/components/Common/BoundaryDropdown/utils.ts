@@ -1,7 +1,6 @@
 import type { Feature, MultiPolygon, BBox } from '@turf/helpers';
 import { sortBy } from 'lodash';
 import bbox from '@turf/bbox';
-import union from '@turf/union';
 import { BoundaryLayerData } from '../../../context/layers/boundary';
 
 export type BoundaryRelationsDict = { [key: string]: BoundaryRelationData };
@@ -60,21 +59,6 @@ export const getParentRelation = (
   ];
 };
 
-const createBBox = (matches: Feature<MultiPolygon>[]): BBox => {
-  // Create Bbox
-  const unionGeom = matches.reduce((unionGeometry, match) => {
-    const unionObj = union(unionGeometry, match);
-    if (!unionObj) {
-      return unionGeometry;
-    }
-    return unionObj as Feature<MultiPolygon>;
-  }, matches[0]);
-
-  const bboxUnion: BBox = bbox(unionGeom);
-
-  return bboxUnion;
-};
-
 const buildRelationTree = (
   boundaryLayerData: BoundaryLayerData,
   adminLevelNames: string[],
@@ -102,7 +86,10 @@ const buildRelationTree = (
           feature => feature.properties![adminLevelName] === searchName,
         );
 
-        const bboxUnion = createBBox(matches);
+        const bboxUnion: BBox = bbox({
+          type: 'FeatureCollection',
+          features: matches,
+        });
 
         const parent =
           level === 0 ? undefined : properties![adminLevelNames[level - 1]];
@@ -135,10 +122,10 @@ const buildRelationTree = (
   return relations;
 };
 
-export const loadBoundaryRelations = async (
+export const loadBoundaryRelations = (
   boundaryLayerData: BoundaryLayerData,
   adminLevelNames: string[],
-): Promise<BoundaryRelationData> => {
+): BoundaryRelationData => {
   const relations = buildRelationTree(boundaryLayerData, adminLevelNames);
 
   const adminLevelNumbers: number[] = adminLevelNames.map((_, index) => index);

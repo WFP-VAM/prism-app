@@ -14,7 +14,6 @@ import {
 import {
   layerDataSelector,
   layersSelector,
-  relationSelector,
 } from '../../../../context/mapStateSlice/selectors';
 import { setRelationData } from '../../../../context/mapStateSlice';
 import {
@@ -26,7 +25,7 @@ import { isPrimaryBoundaryLayer } from '../../../../config/utils';
 import { getFullLocationName } from '../../../../utils/name-utils';
 
 import { getChartAdminBoundaryParams } from '../../../../utils/admin-utils';
-import { useSafeTranslation } from '../../../../i18n';
+import { languages } from '../../../../i18n';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -48,42 +47,26 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
   const { data } = boundaryLayer || {};
 
   const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
-  const { i18n: i18nLocale } = useSafeTranslation();
-
-  const boundaryRelationDataDict = useSelector(relationSelector);
 
   useEffect(() => {
-    if (
-      !data ||
-      !isPrimaryLayer ||
-      Object.keys(boundaryRelationDataDict).includes(i18nLocale.language)
-    ) {
+    if (!data || !isPrimaryLayer) {
       return;
     }
 
-    const locationLevelNames =
-      i18nLocale.language === 'en'
-        ? layer.adminLevelNames
-        : layer.adminLevelLocalNames;
+    const dataDict = languages.reduce((relationsDict, lang) => {
+      const locationLevelNames =
+        lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
 
-    loadBoundaryRelations(data, locationLevelNames).then(
-      (relations: BoundaryRelationData) => {
-        const dataDict = {
-          ...boundaryRelationDataDict,
-          [i18nLocale.language]: relations,
-        };
+      const relations: BoundaryRelationData = loadBoundaryRelations(
+        data,
+        locationLevelNames,
+      );
 
-        dispatch(setRelationData(dataDict));
-      },
-    );
-  }, [
-    data,
-    dispatch,
-    layer,
-    isPrimaryLayer,
-    i18nLocale.language,
-    boundaryRelationDataDict,
-  ]);
+      return { ...relationsDict, [lang]: relations };
+    }, {});
+
+    dispatch(setRelationData(dataDict));
+  }, [data, dispatch, layer, isPrimaryLayer]);
 
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
