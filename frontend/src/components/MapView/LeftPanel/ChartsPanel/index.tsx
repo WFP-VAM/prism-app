@@ -25,6 +25,7 @@ import {
   getWMSLayersWithChart,
 } from '../../../../config/utils';
 import { LayerData } from '../../../../context/layers/layer-data';
+import { leftPanelTabValueSelector } from '../../../../context/leftPanelStateSlice';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../../i18n';
 import { getCategories } from '../../Layers/BoundaryDropdown';
@@ -33,6 +34,8 @@ import ChartSection from './ChartSection';
 const boundaryLayer = getBoundaryLayerSingleton();
 
 const chartLayers = getWMSLayersWithChart();
+
+const tabIndex = 1;
 
 function getProperties(
   id: string,
@@ -146,6 +149,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
+  const tabValue = useSelector(leftPanelTabValueSelector);
   const { data } = boundaryLayerData || {};
   const categories = useMemo(
     () => (data ? getCategories(data, boundaryLayer, '', i18nLocale) : []),
@@ -200,7 +204,13 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   }, [setPanelSize, adminProperties, selectedDate, selectedLayerTitles.length]);
 
   React.useEffect(() => {
-    if (adminProperties && selectedDate) {
+    if (
+      adminProperties &&
+      selectedDate &&
+      tabIndex === tabValue &&
+      selectedLayerTitles.length >= 1
+    ) {
+      setPanelSize(PanelSize.xlarge);
       setResultsPage(
         <Box className={classes.chartsPanelCharts}>
           {selectedLayerTitles.length > 1 &&
@@ -258,8 +268,14 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     selectedDate,
     selectedLayerTitles,
     selectedLayerTitles.length,
+    setPanelSize,
     setResultsPage,
+    tabValue,
   ]);
+
+  if (tabIndex !== tabValue) {
+    return null;
+  }
 
   return (
     <Box className={classes.root}>

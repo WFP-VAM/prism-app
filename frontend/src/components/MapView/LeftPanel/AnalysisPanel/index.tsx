@@ -88,7 +88,12 @@ import AnalysisTable from './AnalysisTable';
 import { Extent } from '../../Layers/raster-utils';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
-import { setTabValue } from '../../../../context/leftPanelStateSlice';
+import {
+  leftPanelTabValueSelector,
+  setTabValue,
+} from '../../../../context/leftPanelStateSlice';
+
+const tabIndex = 2;
 
 function AnalysisPanel({
   extent,
@@ -114,6 +119,8 @@ function AnalysisPanel({
   const isExposureAnalysisLoading = useSelector(
     isExposureAnalysisLoadingSelector,
   );
+  const tabValue = useSelector(leftPanelTabValueSelector);
+  const [showTable, setShowTable] = React.useState(false);
 
   const {
     analysisHazardLayerId: hazardLayerIdFromUrl,
@@ -229,6 +236,56 @@ function AnalysisPanel({
     lastAvailableHazardStartDate,
     lastAvailableHazardEndDate,
   ]);
+
+  useEffect(() => {
+    if (tabValue !== tabIndex) {
+      return;
+    }
+
+    if (showTable) {
+      setPanelSize(PanelSize.large);
+      if (
+        !isAnalysisLoading &&
+        analysisResult &&
+        (analysisResult instanceof BaselineLayerResult ||
+          analysisResult instanceof PolygonAnalysisResult)
+      ) {
+        setResultsPage(
+          <div className={classes.analysisTableContainer}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: '100%',
+              }}
+            >
+              <IconButton
+                aria-label="close"
+                onClick={() => setShowTable(false)}
+                className={classes.analysisTableCloseButton}
+              >
+                <CloseRounded />
+              </IconButton>
+              <Typography className={classes.analysisTableTitle}>
+                {selectedHazardLayer?.title}
+              </Typography>
+            </div>
+            <div className={classes.analysisTable}>
+              <AnalysisTable
+                tableData={analysisResult.tableData}
+                columns={translatedColumns}
+              />
+            </div>
+          </div>,
+        );
+      }
+    } else {
+      setPanelSize(PanelSize.medium);
+      setResultsPage(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showTable, tabValue]);
 
   const onOptionChange = <T extends string>(
     setterFunc: Dispatch<SetStateAction<T>>,
@@ -458,49 +515,8 @@ function AnalysisPanel({
     }
   };
 
-  function onToggleShowTable() {
-    if (panelSize === PanelSize.large) {
-      setPanelSize(PanelSize.medium);
-      setResultsPage(null);
-    } else {
-      setPanelSize(PanelSize.large);
-      if (
-        !isAnalysisLoading &&
-        analysisResult &&
-        (analysisResult instanceof BaselineLayerResult ||
-          analysisResult instanceof PolygonAnalysisResult)
-      ) {
-        setResultsPage(
-          <div className={classes.analysisTableContainer}>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                width: '100%',
-              }}
-            >
-              <IconButton
-                aria-label="close"
-                onClick={() => setPanelSize(PanelSize.medium)}
-                className={classes.analysisTableCloseButton}
-              >
-                <CloseRounded />
-              </IconButton>
-              <Typography className={classes.analysisTableTitle}>
-                {selectedHazardLayer?.title}
-              </Typography>
-            </div>
-            <div className={classes.analysisTable}>
-              <AnalysisTable
-                tableData={analysisResult.tableData}
-                columns={translatedColumns}
-              />
-            </div>
-          </div>,
-        );
-      }
-    }
+  if (tabIndex !== tabValue) {
+    return null;
   }
 
   return (
@@ -722,7 +738,7 @@ function AnalysisPanel({
               <Button
                 className={classes.analysisButton}
                 disabled={!analysisResult}
-                onClick={onToggleShowTable}
+                onClick={() => setShowTable(!showTable)}
               >
                 <Typography variant="body2">
                   {panelSize === PanelSize.large

@@ -35,21 +35,30 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-function MenuItem({
-  title,
-  layersCategories,
-  extent,
-}: {
+interface MenuItemProps {
   title: string;
   icon: string;
   layersCategories: LayersCategoryType[];
   extent?: Extent;
-}) {
+  shouldRender: boolean;
+}
+
+function MenuItem({
+  title,
+  layersCategories,
+  extent,
+  shouldRender,
+}: MenuItemProps) {
   const { t } = useSafeTranslation();
   const classes = useStyles();
 
   return (
-    <Accordion key={title} elevation={0} classes={{ root: classes.root }}>
+    <Accordion
+      key={title}
+      elevation={0}
+      classes={{ root: classes.root }}
+      style={{ display: shouldRender ? undefined : 'none' }}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         classes={{ root: classes.rootSummary, expandIcon: classes.expandIcon }}

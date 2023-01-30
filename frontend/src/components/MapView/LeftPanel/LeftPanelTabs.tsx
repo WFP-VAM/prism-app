@@ -25,8 +25,8 @@ const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 
 interface TabPanelProps {
   children?: React.ReactNode;
-  index: any;
-  value: any;
+  index: number;
+  value: number;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -35,13 +35,16 @@ function TabPanel(props: TabPanelProps) {
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
-      style={{ flexGrow: 1, height: 'calc(93vh - 48px)' }}
+      style={{
+        flexGrow: 1,
+        height: 'calc(93vh - 48px)',
+        order: index === value ? -1 : undefined,
+      }}
       {...other}
     >
-      {value === index && children}
+      {children}
     </div>
   );
 }
@@ -71,6 +74,7 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
     },
     tabsContainer: {
       backgroundColor: '#566064',
+      order: -2,
       width: ({ panelSize }) =>
         panelSize !== PanelSize.folded ? PanelSize.medium : PanelSize.folded,
     },
