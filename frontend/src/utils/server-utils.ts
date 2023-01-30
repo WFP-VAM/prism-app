@@ -16,7 +16,7 @@ import {
   ImpactLayerProps,
   WMSLayerProps,
   FeatureInfoType,
-  LabelType,
+  DataType,
   PointDataLoader,
 } from '../config/types';
 import { queryParamsToString } from './url-utils';
@@ -297,25 +297,25 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 }
 
 /**
- * Format value from featureInfo response based on LabelType provided
+ * Format value from featureInfo response based on DataType provided
  *
  * @return a formatted string
  */
 export function formatFeatureInfo(
   value: string,
-  type: LabelType,
-  values?: { [key: string]: string },
+  type: DataType,
+  labelMap?: { [key: string]: string },
 ): string {
-  if (type === LabelType.Date) {
+  if (type === DataType.Date) {
     return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
   }
 
-  if (type === LabelType.ValuesLabels) {
-    if (!values) {
-      throw new Error('values_labels parameters not defined.');
+  if (type === DataType.LabelMapping) {
+    if (!labelMap) {
+      throw new Error('labelMap not defined.');
     }
 
-    return values[value];
+    return labelMap[value];
   }
 
   return value;
@@ -359,7 +359,7 @@ async function runFeatureInfoRequest(
       .reduce(
         (obj, key) => ({
           ...obj,
-          [featureInfoProps[key].label]: formatFeatureInfo(
+          [featureInfoProps[key].dataTitle]: formatFeatureInfo(
             properties[key],
             featureInfoProps[key].type,
           ),

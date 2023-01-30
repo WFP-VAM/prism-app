@@ -186,11 +186,11 @@ export function getFeatureInfoPropsData(
     .reduce((obj, item) => {
       return {
         ...obj,
-        [featureInfoProps[item].label]: {
+        [featureInfoProps[item].dataTitle]: {
           data: formatFeatureInfo(
             properties[item],
             featureInfoProps[item].type,
-            featureInfoProps[item].values,
+            featureInfoProps[item].labelMap,
           ),
           coordinates,
         },

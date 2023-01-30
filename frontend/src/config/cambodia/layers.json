@@ -1448,9 +1448,9 @@
     "date_url": "",
     "feature_info_props": {
       "status": {
-        "type": "values_labels",
-        "label": "Sensor status",
-        "values": {
+        "type": "labelMapping",
+        "dataTitle": "Sensor status",
+        "labelMap": {
           "0": "Normal",
           "1": "Watch",
           "2": "Warning",
@@ -1625,9 +1625,9 @@
     "opacity": 0.9,
     "feature_info_props": {
       "DisTyp": {
-        "type": "values_labels",
-        "label": "Disaster type",
-        "values": {
+        "type": "labelMapping",
+        "dataTitle": "Disaster type",
+        "labelMap": {
           "3": "Storm",
           "4": "Fire",
           "5": "Lightning",

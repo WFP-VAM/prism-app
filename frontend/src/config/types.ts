@@ -254,8 +254,8 @@ export interface ExposedPopulationDefinition {
 }
 
 interface FeatureInfoProps {
-  type: LabelType;
-  label: string;
+  type: DataType;
+  dataTitle: string;
 }
 
 export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
@@ -361,17 +361,17 @@ export class BoundaryLayerProps extends CommonLayerProps {
   isPrimary?: boolean | undefined;
 }
 
-export enum LabelType {
+export enum DataType {
   Date = 'date',
   Text = 'text',
   Number = 'number',
-  ValuesLabels = 'values_labels',
+  LabelMapping = 'labelMapping',
 }
 
 interface FeatureInfoProps {
-  type: LabelType;
+  type: DataType;
   label: string;
-  values?: { [key: string]: string };
+  labelMap?: { [key: string]: string };
 }
 
 export enum DatesPropagation {
