@@ -119,7 +119,8 @@ const useStyles = makeStyles(() =>
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
-const MenuProps = {
+const menuProps: Partial<MenuProps> = {
+  getContentAnchorEl: null,
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
@@ -277,7 +278,7 @@ function ChartsPanel({ setPanelSize }: ChartsPanelProps) {
             onChange={onChangeChartLayers}
             input={<Input />}
             renderValue={selected => (selected as string[]).join(', ')}
-            MenuProps={MenuProps}
+            MenuProps={menuProps}
           >
             {chartLayers.map(layer => (
               <MenuItem key={layer.id} value={layer.title}>
