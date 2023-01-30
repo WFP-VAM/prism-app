@@ -1810,11 +1810,11 @@
     "feature_info_props": {
       "event_name": {
         "type": "text",
-        "label": "Event name"
+        "dataTitle": "Event name"
       },
       "timestamp": {
         "type": "date",
-        "label": "Publication date"
+        "dataTitle": "Publication date"
       }
     },
     "exposure": {
@@ -2154,19 +2154,19 @@
     "feature_info_props": {
       "mpi_headcount": {
         "type": "number",
-        "label": "Percent of the population in multidimensional poverty"
+        "dataTitle": "Percent of the population in multidimensional poverty"
       },
       "mpi_intensity": {
         "type": "number",
-        "label": "Intensity of deprivation among the poor"
+        "dataTitle": "Intensity of deprivation among the poor"
       },
       "vuln_poverty": {
         "type": "number",
-        "label": "Vulnerable to poverty"
+        "dataTitle": "Vulnerable to poverty"
       },
       "severe_poverty": {
         "type": "number",
-        "label": "In severe poverty"
+        "dataTitle": "In severe poverty"
       }
     },
     "legend": [
@@ -2204,11 +2204,11 @@
     "feature_info_props": {
       "Tot_Urb_20": {
         "type": "text",
-        "label": "Total urban population"
+        "dataTitle": "Total urban population"
       },
       "2022_Rur_T": {
         "type": "number",
-        "label": "Total rural population"
+        "dataTitle": "Total rural population"
       }
     },
     "legend": [
