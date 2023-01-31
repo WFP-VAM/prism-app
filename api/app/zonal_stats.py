@@ -9,25 +9,19 @@ from urllib.parse import urlencode
 
 import numpy as np
 import rasterio  # type: ignore
-from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
-from app.models import (
-    FilePath,
-    FilterProperty,
-    GeoJSON,
-    GeoJSONFeature,
-    Geometry,
-    GroupBy,
-    WfsParamsModel,
-    WfsResponse,
-)
-from app.raster_utils import gdal_calc, reproj_match
-from app.timer import timed
-from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
+
+from app.caching import (CACHE_DIRECTORY, cache_file, get_json_file,
+                         is_file_valid)
+from app.models import (FilePath, FilterProperty, GeoJSON, GeoJSONFeature,
+                        Geometry, GroupBy, WfsParamsModel, WfsResponse)
+from app.raster_utils import gdal_calc, reproj_match
+from app.timer import timed
+from app.validation import VALID_OPERATORS
 
 logger = logging.getLogger(__name__)
 
@@ -346,6 +340,8 @@ def calculate_stats(
             "intersect_percentage": intersect_percentage,
         }
 
+    print(stats_input)
+
     try:
         stats_results = zonal_stats(
             stats_input,
@@ -355,6 +351,8 @@ def calculate_stats(
             geojson_out=geojson_out,
             add_stats=add_stats,
         )
+        if geojson_out:
+            print(stats_results)
     except rasterio.errors.RasterioError as error:
         logger.error(error)
         raise HTTPException(

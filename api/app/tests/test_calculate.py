@@ -3,10 +3,11 @@ import operator
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from app.kobo import get_form_responses
-from app.zonal_stats import calculate_stats
 from fastapi import HTTPException
 from pytest import raises
+
+from app.kobo import get_form_responses
+from app.zonal_stats import calculate_stats
 
 
 def test_calculate_stats_json_output():
@@ -24,6 +25,9 @@ def test_calculate_stats_geojson_output():
     zones = "/app/tests/small_admin_boundaries.json"
     geotiff = "/app/tests/raster_sample.tif"
     features = calculate_stats(zones, geotiff, geojson_out=True)
+    print(features[0])
+    print(features[0]["geometry"])
+    print((features[0]["_data"].__dict__))
     assert len(features) == 26
     assert features[0]["type"] == "Feature"
 

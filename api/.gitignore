@@ -11,3 +11,6 @@ cache/
 
 # Test files
 **.json.*
+**/.hypothesis/**
+app/__pycache__/**
+
