@@ -355,7 +355,6 @@ def calculate_stats(
             geojson_out=geojson_out,
             add_stats=add_stats,
         )
-
     except rasterio.errors.RasterioError as error:
         logger.error(error)
         raise HTTPException(
