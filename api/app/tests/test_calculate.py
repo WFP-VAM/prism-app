@@ -3,11 +3,10 @@ import operator
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-from fastapi import HTTPException
-from pytest import raises
-
 from app.kobo import get_form_responses
 from app.zonal_stats import calculate_stats
+from fastapi import HTTPException
+from pytest import raises
 
 
 def test_calculate_stats_json_output():
