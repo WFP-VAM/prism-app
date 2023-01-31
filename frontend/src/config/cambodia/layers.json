@@ -1443,7 +1443,7 @@
   "flood_static_with_dates": {
     "title": "Flood frequency from static raster source (with dates)",
     "type": "static_raster",
-    "base_url": "http://prism-raster-tiles.s3-website-us-east-1.amazonaws.com/khm-flood-events",
+    "base_url": "http://prism-raster-tiles.s3-website-us-east-1.amazonaws.com/khm-flood-events/{YYYY_MM_DD}/{z}/{x}/{y}.png",
     "dates": ["2023-01-10", "2023-01-13", "2023-01-17"],
     "opacity": 1.0,
     "legend_text": "Flood frequency from static tiles",
