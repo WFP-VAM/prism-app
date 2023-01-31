@@ -146,7 +146,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
       id={layerId}
       data={features}
       circleLayout={circleLayout}
-      circlePaint={circlePaint(layer, layer.dataField)}
+      circlePaint={circlePaint(layer)}
       circleOnClick={onClickFunc}
     />
   );
