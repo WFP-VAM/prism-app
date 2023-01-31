@@ -9,19 +9,25 @@ from urllib.parse import urlencode
 
 import numpy as np
 import rasterio  # type: ignore
+from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
+from app.models import (
+    FilePath,
+    FilterProperty,
+    GeoJSON,
+    GeoJSONFeature,
+    Geometry,
+    GroupBy,
+    WfsParamsModel,
+    WfsResponse,
+)
+from app.raster_utils import gdal_calc, reproj_match
+from app.timer import timed
+from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
-
-from app.caching import (CACHE_DIRECTORY, cache_file, get_json_file,
-                         is_file_valid)
-from app.models import (FilePath, FilterProperty, GeoJSON, GeoJSONFeature,
-                        Geometry, GroupBy, WfsParamsModel, WfsResponse)
-from app.raster_utils import gdal_calc, reproj_match
-from app.timer import timed
-from app.validation import VALID_OPERATORS
 
 logger = logging.getLogger(__name__)
 

@@ -3,8 +3,7 @@ from datetime import date
 from os import getenv
 from typing import NewType, Optional, TypedDict
 
-from pydantic import (BaseModel, EmailStr, Field, HttpUrl, root_validator,
-                      validator)
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
 
 from .sample_requests import alert_data, alert_data_zones, stats_data
 

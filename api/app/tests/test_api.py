@@ -2,12 +2,11 @@ from unittest.mock import patch
 
 import pytest
 import schemathesis
-from fastapi.testclient import TestClient
-from hypothesis import settings
-
 from app.database.database import AlertsDataBase
 from app.main import app
 from app.scripts.add_users import add_users
+from fastapi.testclient import TestClient
+from hypothesis import settings
 
 
 @pytest.fixture(scope="session", autouse=True)
