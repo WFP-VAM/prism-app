@@ -1,6 +1,5 @@
 # Python files
 *.pyc
-app/.flake8
 app/.coverage
 
 #Cached folder
