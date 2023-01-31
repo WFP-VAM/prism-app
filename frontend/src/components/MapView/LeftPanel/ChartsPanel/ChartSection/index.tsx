@@ -5,6 +5,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { GeoJsonProperties } from 'geojson';
+import { omit } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ChartConfig, WMSLayerProps } from '../../../../../config/types';
 import {
@@ -22,6 +23,7 @@ function ChartSection({
   adminProperties,
   adminLevel,
   date,
+  dataForCsv,
   classes,
 }: ChartSectionProps) {
   const { t } = useSafeTranslation();
@@ -49,10 +51,38 @@ function ChartSection({
 
     const getData = async () => {
       const results = await loadAdminBoundaryDataset(requestParams);
+      const keyMap = Object.fromEntries(
+        Object.entries(results.rows[0]).map(([key, value]) => {
+          const newKey = requestParams.datasetFields.find(
+            x => x.label === value,
+          )?.key;
+          return [key, newKey];
+        }),
+      );
+      const csvData = results.rows.slice(1).map(row => {
+        return Object.fromEntries(
+          Object.entries(row).map(([key, value]) => {
+            const newKey = keyMap[key] ? keyMap[key] : key;
+            return [newKey, value];
+          }),
+        );
+      });
+      // eslint-disable-next-line no-param-reassign
+      dataForCsv.current = {
+        ...dataForCsv.current,
+        [chartLayer.title]: csvData,
+      };
       setChartDataset(results);
     };
 
     getData();
+
+    return () => {
+      // eslint-disable-next-line no-param-reassign
+      dataForCsv.current = omit(dataForCsv.current, chartLayer.title);
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     adminLevel,
     adminProperties,
@@ -113,6 +143,7 @@ export interface ChartSectionProps extends WithStyles<typeof styles> {
   adminProperties: GeoJsonProperties;
   adminLevel: 1 | 2;
   date: number;
+  dataForCsv: React.MutableRefObject<any>;
 }
 
 export default withStyles(styles)(ChartSection);

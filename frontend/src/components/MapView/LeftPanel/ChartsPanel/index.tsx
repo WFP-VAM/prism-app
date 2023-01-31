@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Checkbox,
   createStyles,
   FormControl,
@@ -16,6 +17,7 @@ import {
 } from '@material-ui/core';
 import { DateRangeRounded } from '@material-ui/icons';
 import { GeoJsonProperties } from 'geojson';
+import { groupBy } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
@@ -28,7 +30,9 @@ import { LayerData } from '../../../../context/layers/layer-data';
 import { leftPanelTabValueSelector } from '../../../../context/leftPanelStateSlice';
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../../i18n';
+import { castObjectsArrayToCsv } from '../../../../utils/csv-utils';
 import { getCategories } from '../../Layers/BoundaryDropdown';
+import { downloadToFile } from '../../utils';
 import ChartSection from './ChartSection';
 
 const boundaryLayer = getBoundaryLayerSingleton();
@@ -119,12 +123,25 @@ const useStyles = makeStyles(() =>
     removeAdmin2: {
       fontWeight: 'bold',
     },
+    downloadButton: {
+      backgroundColor: '#62B2BD',
+      '&:hover': {
+        backgroundColor: '#62B2BD',
+      },
+      marginTop: '2em',
+      marginLeft: '25%',
+      marginRight: '25%',
+      width: '50%',
+      '&.Mui-disabled': { opacity: 0.5 },
+    },
   }),
 );
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const menuProps: Partial<MenuProps> = {
+  // `getContentAnchorEl: null` fixes floating multiselect menu.
+  // This is a bug and it is probably resolved in mui v5.
   getContentAnchorEl: null,
   PaperProps: {
     style: {
@@ -143,6 +160,8 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   const [selectedDate, setSelectedDate] = useState<number | null>(
     new Date().getTime(),
   );
+
+  const dataForCsv = React.useRef<{ [key: string]: any[] }>({});
 
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const { t, i18n: i18nLocale } = useSafeTranslation();
@@ -195,6 +214,39 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     setSelectedLayerTitles(event.target.value as string[]);
   };
 
+  function downloadCsv() {
+    const dateColumn = 'Date';
+    const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
+      ([, value]) => {
+        const first = value[0];
+        const keys = Object.keys(first);
+        const filtered = keys.filter(x => x !== dateColumn);
+        return Object.fromEntries(filtered.map(x => [x, x]));
+      },
+    );
+    const columnsNames = columnsNamesPerChart.reduce(
+      (prev, curr) => ({ ...prev, ...curr }),
+      { [dateColumn]: dateColumn },
+    );
+
+    const merged = Object.entries(dataForCsv.current)
+      .map(([, value]) => value)
+      .flat();
+    const grouped = groupBy(merged, dateColumn);
+    const objectsArray = Object.entries(grouped).map(([, value]) => {
+      return value.reduce((prev, curr) => ({ ...prev, ...curr }), {});
+    });
+    downloadToFile(
+      {
+        content: castObjectsArrayToCsv(objectsArray, columnsNames, ';'),
+        isUrl: false,
+      },
+      // TODO: decide better name
+      admin1Title,
+      'text/csv',
+    );
+  }
+
   useEffect(() => {
     if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
       setPanelSize(PanelSize.xlarge);
@@ -203,7 +255,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     }
   }, [setPanelSize, adminProperties, selectedDate, selectedLayerTitles.length]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       adminProperties &&
       selectedDate &&
@@ -218,6 +270,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
               .filter(layer => selectedLayerTitles.includes(layer.title))
               .map(layer => (
                 <Box
+                  key={layer.title}
                   style={{
                     height: '240px',
                     width: '45%',
@@ -228,6 +281,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
                     adminProperties={adminProperties}
                     adminLevel={adminLevel}
                     date={selectedDate}
+                    dataForCsv={dataForCsv}
                   />
                 </Box>
               ))}
@@ -252,6 +306,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
                   adminProperties={adminProperties}
                   adminLevel={adminLevel}
                   date={selectedDate}
+                  dataForCsv={dataForCsv}
                 />
               </Box>
             )
@@ -278,103 +333,115 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   }
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.chartsPanelParams}>
+    <Box className={classes.chartsPanelParams}>
+      <TextField
+        classes={{ root: classes.selectRoot }}
+        id="outlined-admin-1"
+        select
+        label={t('Select Admin 1')}
+        value={admin1Title}
+        onChange={onChangeAdmin1}
+        variant="outlined"
+      >
+        {categories.map(option => (
+          <MenuItem key={option.title} value={option.title}>
+            {option.title}
+          </MenuItem>
+        ))}
+      </TextField>
+      {admin1Title && (
         <TextField
           classes={{ root: classes.selectRoot }}
-          id="outlined-admin-1"
+          id="outlined-admin-2"
           select
-          label={t('Select Admin 1')}
-          value={admin1Title}
-          onChange={onChangeAdmin1}
+          label={t('Select Admin 2')}
+          value={admin2Title}
+          onChange={onChangeAdmin2}
           variant="outlined"
         >
-          {categories.map(option => (
-            <MenuItem key={option.title} value={option.title}>
-              {option.title}
-            </MenuItem>
-          ))}
-        </TextField>
-        {admin1Title && (
-          <TextField
-            classes={{ root: classes.selectRoot }}
-            id="outlined-admin-2"
-            select
-            label={t('Select Admin 2')}
-            value={admin2Title}
-            onChange={onChangeAdmin2}
-            variant="outlined"
-          >
-            <MenuItem key="empty">
-              <Box className={classes.removeAdmin2}> {t('Remove Admin 2')}</Box>
-            </MenuItem>
-            {categories
-              .filter(elem => elem.title === admin1Title)[0]
-              .children.map(option => (
-                <MenuItem key={option.value} value={option.label}>
-                  {option.label}
-                </MenuItem>
-              ))}
-          </TextField>
-        )}
-        <Box className={classes.datePickerContainer}>
-          <Typography className={classes.textLabel} variant="body2">
-            {`${t('Date')}: `}
-          </Typography>
-          <DatePicker
-            locale={t('date_locale')}
-            dateFormat="PP"
-            selected={selectedDate ? new Date(selectedDate) : null}
-            onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
-            maxDate={new Date()}
-            todayButton={t('Today')}
-            peekNextMonth
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-            customInput={
-              <Input
-                className={classes.textLabel}
-                disableUnderline
-                endAdornment={
-                  <InputAdornment position="end">
-                    <DateRangeRounded />
-                  </InputAdornment>
-                }
-              />
-            }
-            popperClassName={classes.calendarPopper}
-          />
-        </Box>
-        <FormControl className={classes.layerFormControl}>
-          <InputLabel id="chart-layers-mutiple-checkbox-label">
-            Select Charts
-          </InputLabel>
-          <Select
-            labelId="chart-layers-mutiple-checkbox-label"
-            id="chart-layers-mutiple-checkbox"
-            multiple
-            value={selectedLayerTitles}
-            onChange={onChangeChartLayers}
-            input={<Input />}
-            renderValue={selected => (selected as string[]).join(', ')}
-            MenuProps={menuProps}
-          >
-            {chartLayers.map(layer => (
-              <MenuItem key={layer.id} value={layer.title}>
-                <Checkbox
-                  checked={selectedLayerTitles.indexOf(layer.title) > -1}
-                  color="primary"
-                />
-                <ListItemText
-                  classes={{ primary: classes.textLabel }}
-                  primary={layer.title}
-                />
+          <MenuItem key="empty">
+            <Box className={classes.removeAdmin2}> {t('Remove Admin 2')}</Box>
+          </MenuItem>
+          {categories
+            .filter(elem => elem.title === admin1Title)[0]
+            .children.map(option => (
+              <MenuItem key={option.value} value={option.label}>
+                {option.label}
               </MenuItem>
             ))}
-          </Select>
-        </FormControl>
+        </TextField>
+      )}
+      <Box className={classes.datePickerContainer}>
+        <Typography className={classes.textLabel} variant="body2">
+          {`${t('Date')}: `}
+        </Typography>
+        <DatePicker
+          locale={t('date_locale')}
+          dateFormat="PP"
+          selected={selectedDate ? new Date(selectedDate) : null}
+          onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
+          maxDate={new Date()}
+          todayButton={t('Today')}
+          peekNextMonth
+          showMonthDropdown
+          showYearDropdown
+          dropdownMode="select"
+          customInput={
+            <Input
+              className={classes.textLabel}
+              disableUnderline
+              endAdornment={
+                <InputAdornment position="end">
+                  <DateRangeRounded />
+                </InputAdornment>
+              }
+            />
+          }
+          popperClassName={classes.calendarPopper}
+        />
       </Box>
+      <FormControl className={classes.layerFormControl}>
+        <InputLabel id="chart-layers-mutiple-checkbox-label">
+          Select Charts
+        </InputLabel>
+        <Select
+          labelId="chart-layers-mutiple-checkbox-label"
+          id="chart-layers-mutiple-checkbox"
+          multiple
+          value={selectedLayerTitles}
+          onChange={onChangeChartLayers}
+          input={<Input />}
+          renderValue={selected => (selected as string[]).join(', ')}
+          MenuProps={menuProps}
+        >
+          {chartLayers.map(layer => (
+            <MenuItem key={layer.id} value={layer.title}>
+              <Checkbox
+                checked={selectedLayerTitles.indexOf(layer.title) > -1}
+                color="primary"
+              />
+              <ListItemText
+                classes={{ primary: classes.textLabel }}
+                primary={layer.title}
+              />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <Button
+        className={classes.downloadButton}
+        onClick={downloadCsv}
+        disabled={
+          !(
+            adminProperties &&
+            selectedDate &&
+            tabIndex === tabValue &&
+            selectedLayerTitles.length >= 1
+          )
+        }
+      >
+        <Typography variant="body2">{t('Download CSV')}</Typography>
+      </Button>
     </Box>
   );
 }

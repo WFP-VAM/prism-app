@@ -186,7 +186,7 @@ function LayerDownloadOptions({
     <>
       {exposure && (
         <Tooltip title={t('Exposure Analysis') ?? ''}>
-          <IconButton onClick={handleExposureAnalysis}>
+          <IconButton disabled={!selected} onClick={handleExposureAnalysis}>
             <BarChartIcon />
           </IconButton>
         </Tooltip>
