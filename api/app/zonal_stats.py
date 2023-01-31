@@ -346,8 +346,6 @@ def calculate_stats(
             "intersect_percentage": intersect_percentage,
         }
 
-    print(stats_input)
-
     try:
         stats_results = zonal_stats(
             stats_input,
@@ -357,8 +355,7 @@ def calculate_stats(
             geojson_out=geojson_out,
             add_stats=add_stats,
         )
-        if geojson_out:
-            print(stats_results)
+
     except rasterio.errors.RasterioError as error:
         logger.error(error)
         raise HTTPException(
