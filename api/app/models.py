@@ -3,8 +3,7 @@ from datetime import date
 from os import getenv
 from typing import NewType, Optional, TypedDict
 
-from pydantic import (BaseModel, EmailStr, Field, HttpUrl, root_validator,
-                      validator)
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, root_validator, validator
 
 from .sample_requests import alert_data, alert_data_zones, stats_data
 
@@ -108,9 +107,7 @@ class AlertsZonesModel(BaseModel):
     _val_type = validator("type", allow_reuse=True)(must_not_contain_null_char)
     _val_name = validator("name", allow_reuse=True)(must_not_contain_null_char)
     _val_crs = validator("crs", allow_reuse=True)(dict_must_not_contain_null_char)
-    _val_features = validator("features", allow_reuse=True)(
-        dict_must_not_contain_null_char
-    )
+    _val_features = validator("features", allow_reuse=True)(dict_must_not_contain_null_char)
 
 
 class AlertsModel(BaseModel):
@@ -122,9 +119,5 @@ class AlertsModel(BaseModel):
     alert_config: dict = Field(..., example=alert_data["alert_config"])
     zones: AlertsZonesModel
 
-    _val_alert_name = validator("alert_name", allow_reuse=True)(
-        must_not_contain_null_char
-    )
-    _val_alert_config = validator("alert_config", allow_reuse=True)(
-        dict_must_not_contain_null_char
-    )
+    _val_alert_name = validator("alert_name", allow_reuse=True)(must_not_contain_null_char)
+    _val_alert_config = validator("alert_config", allow_reuse=True)(dict_must_not_contain_null_char)

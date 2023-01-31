@@ -52,9 +52,7 @@ def get_kobo_form_cached(form_id: str) -> Optional[dict[str, Any]]:
     created_timestamp: float = os.path.getctime(file_path)
     created_datetime: datetime = datetime.fromtimestamp(created_timestamp)
 
-    minutes_diff = (
-        (datetime.now() - created_datetime).total_seconds()
-    ) / 60  # minutes.
+    minutes_diff = ((datetime.now() - created_datetime).total_seconds()) / 60  # minutes.
 
     if minutes_diff > MAX_TIME_DIFF:
         return None

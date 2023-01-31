@@ -34,17 +34,13 @@ def test_calculate_stats_filter_by():
 
     zones = "/app/tests/small_admin_boundaries.json"
     geotiff = "/app/tests/raster_sample.tif"
-    features = calculate_stats(
-        zones, geotiff, geojson_out=True, filter_by=("ADM2_EN", "Nomgon")
-    )
+    features = calculate_stats(zones, geotiff, geojson_out=True, filter_by=("ADM2_EN", "Nomgon"))
     assert len(features) == 1
     assert features[0]["type"] == "Feature"
 
     # Verify that numbers are also included.
 
-    features = calculate_stats(
-        zones, geotiff, geojson_out=True, filter_by=("ADM2_PCODE", "6413")
-    )
+    features = calculate_stats(zones, geotiff, geojson_out=True, filter_by=("ADM2_PCODE", "6413"))
     assert len(features) == 1
     assert features[0]["type"] == "Feature"
 
@@ -80,9 +76,7 @@ def test_calculate_stats_wfs_polygons():
         "path": "/app/tests/wfs_response.json",
     }
 
-    features = calculate_stats(
-        zones, geotiff, geojson_out=False, wfs_response=wfs_response
-    )
+    features = calculate_stats(zones, geotiff, geojson_out=False, wfs_response=wfs_response)
     assert len(features) == 5
 
     features = calculate_stats(

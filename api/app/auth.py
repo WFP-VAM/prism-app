@@ -46,9 +46,7 @@ def validate_user(credentials: HTTPBasicCredentials = depends) -> UserInfoModel:
         user_info = auth_db.get_by_username(username=credentials.username)
     except SQLAlchemyError as error:
         logger.error(error)
-        raise HTTPException(
-            status_code=500, detail="An internal error occurred."
-        ) from error
+        raise HTTPException(status_code=500, detail="An internal error occurred.") from error
 
     user_password, user_salt = "", ""
     if user_info is not None:
@@ -59,17 +57,14 @@ def validate_user(credentials: HTTPBasicCredentials = depends) -> UserInfoModel:
     # Temporarily bypass hash passwords using salt=false
     if user_salt != "" and user_salt.lower() != "false":
         is_correct_password = (
-            verify_hash(credentials.password, user_salt or "false").decode("utf-8")
-            == user_password
+            verify_hash(credentials.password, user_salt or "false").decode("utf-8") == user_password
         )
 
     # Temporary implementation without hashed passwords
     else:
         current_password_bytes = credentials.password.encode("utf8")
         correct_password_bytes = user_password.encode("utf8")
-        is_correct_password = secrets.compare_digest(
-            current_password_bytes, correct_password_bytes
-        )
+        is_correct_password = secrets.compare_digest(current_password_bytes, correct_password_bytes)
 
     if not is_correct_password or user_info is None:
         raise HTTPException(

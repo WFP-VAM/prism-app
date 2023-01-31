@@ -15,10 +15,17 @@ from rasterstats import zonal_stats  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
 from shapely.ops import unary_union  # type: ignore
 
-from app.caching import (CACHE_DIRECTORY, cache_file, get_json_file,
-                         is_file_valid)
-from app.models import (FilePath, FilterProperty, GeoJSON, GeoJSONFeature,
-                        Geometry, GroupBy, WfsParamsModel, WfsResponse)
+from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
+from app.models import (
+    FilePath,
+    FilterProperty,
+    GeoJSON,
+    GeoJSONFeature,
+    Geometry,
+    GroupBy,
+    WfsParamsModel,
+    WfsResponse,
+)
 from app.raster_utils import gdal_calc, reproj_match
 from app.timer import timed
 from app.validation import VALID_OPERATORS
@@ -68,9 +75,7 @@ def _extract_features_properties(zones_filename: FilePath) -> list:
 
 def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
     """Group zones by a key id and merge polygons."""
-    output_filename: FilePath = "{zones}.{group_by}".format(
-        zones=zones_filepath, group_by=group_by
-    )
+    output_filename: FilePath = "{zones}.{group_by}".format(zones=zones_filepath, group_by=group_by)
     if is_file_valid(output_filename):
         return output_filename
 
@@ -124,9 +129,7 @@ def _group_zones(zones_filepath: FilePath, group_by: GroupBy) -> FilePath:
     return FilePath(output_filename)
 
 
-def _create_shapely_geoms(
-    geojson_dict: GeoJSON, filter_property_key: str
-) -> list[tuple[str, Any]]:
+def _create_shapely_geoms(geojson_dict: GeoJSON, filter_property_key: str) -> list[tuple[str, Any]]:
     """
     Read and parse geojson dictionary geometries into shapely objects.
 
@@ -165,9 +168,7 @@ def _get_intersected_polygons(
         geom = shape(zone.get("geometry"))
 
         # Get geometry intersection between zone and wfs response polygons.
-        filtered = [
-            (k, geom.intersection(s)) for k, s in wfs_shapes if geom.intersects(s)
-        ]
+        filtered = [(k, geom.intersection(s)) for k, s in wfs_shapes if geom.intersects(s)]
 
         if len(filtered) == 0:
             continue
@@ -192,9 +193,7 @@ def _get_intersected_polygons(
         intersected_zones.append(filtered_dict)
 
     # Flatten.
-    flattened_intersected_zones = [
-        item for sublist in intersected_zones for item in sublist
-    ]
+    flattened_intersected_zones = [item for sublist in intersected_zones for item in sublist]
 
     return flattened_intersected_zones
 
@@ -226,9 +225,7 @@ def get_filtered_features(zones_filepath: FilePath, key: str, value: str) -> Fil
     return output_filename
 
 
-def get_intersected_wfs_polygons(
-    wfs_response: WfsResponse, zones_filepath: FilePath
-) -> FilePath:
+def get_intersected_wfs_polygons(wfs_response: WfsResponse, zones_filepath: FilePath) -> FilePath:
     """Returns the filepath of the intersected wfs featurecollection and boundaries (zones) file."""
     zones_geojson: GeoJSON = get_json_file(zones_filepath)
     wfs_geojson: GeoJSON = get_json_file(wfs_response["path"])
@@ -283,9 +280,7 @@ def calculate_stats(
             for symbol, operator in VALID_OPERATORS.items():
                 slugified_calc = slugified_calc.replace(symbol, operator.__name__)
 
-            slugified_calc = "".join(
-                [x if x.isalnum() else "" for x in (slugified_calc)]
-            )
+            slugified_calc = "".join([x if x.isalnum() else "" for x in (slugified_calc)])
 
         masked_pop_geotiff: FilePath = f"{CACHE_DIRECTORY}raster_reproj_{geotiff_hash}_masked_by_{mask_hash}_{slugified_calc}.tif"
 
@@ -366,7 +361,6 @@ def calculate_stats(
             feature_properties = [p for p in feature_properties if str(p[key]) == value]
 
         stats_results = [
-            {**properties, **stat}
-            for stat, properties in zip(stats_results, feature_properties)
+            {**properties, **stat} for stat, properties in zip(stats_results, feature_properties)
         ]
     return stats_results

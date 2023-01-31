@@ -184,8 +184,7 @@ def get_responses_from_kobo(
 
     # Get form fields and field type used for parsing.
     form_labels = {
-        f.get("$autoname"): f.get("type")
-        for f in form_metadata.get("content").get("survey")
+        f.get("$autoname"): f.get("type") for f in form_metadata.get("content").get("survey")
     }
 
     # Get all form responses using metadata 'data' key
@@ -200,15 +199,11 @@ def get_responses_from_kobo(
     return form_responses, form_labels
 
 
-def get_form_dates(
-    form_url: HttpUrl, form_id: str, datetime_field: str
-) -> list[dict[str, Any]]:
+def get_form_dates(form_url: HttpUrl, form_id: str, datetime_field: str) -> list[dict[str, Any]]:
     """Get all form responses dates using Kobo api."""
     auth, form_fields = get_kobo_params(form_id, datetime_field, None, None)
 
-    form_responses, form_labels = get_responses_from_kobo(
-        form_url, auth, form_fields["id"]
-    )
+    form_responses, form_labels = get_responses_from_kobo(form_url, auth, form_fields["id"])
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
@@ -231,9 +226,7 @@ def get_form_responses(
     """Get all form responses using Kobo api."""
     auth, form_fields = get_kobo_params(form_id, datetime_field, geom_field, filters)
 
-    form_responses, form_labels = get_responses_from_kobo(
-        form_url, auth, form_fields["id"]
-    )
+    form_responses, form_labels = get_responses_from_kobo(form_url, auth, form_fields["id"])
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
