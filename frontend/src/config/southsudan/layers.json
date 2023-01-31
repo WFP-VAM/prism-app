@@ -2694,7 +2694,7 @@
   "flood_events": {
     "title": "Flood events over time",
     "type": "static_raster",
-    "base_url": "http://prism-raster-tiles.s3-website-us-east-1.amazonaws.com/ssd-flood-events/test",
+    "base_url": "http://prism-raster-tiles.s3-website-us-east-1.amazonaws.com/ssd-flood-events/test/{YYYY_MM_DD}/{z}/{x}/{y}.png",
     "dates": [
       "2022-12-01",
       "2022-12-11"
