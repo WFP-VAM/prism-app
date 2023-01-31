@@ -115,11 +115,15 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     geotiff = cache_file(prefix="raster", url=geotiff_url, extension="tif")
     mask_geotiff: FilePath = None
     if mask_geotiff_url:
-        mask_geotiff = cache_file(prefix="raster", url=mask_geotiff_url, extension="tif")
+        mask_geotiff = cache_file(
+            prefix="raster", url=mask_geotiff_url, extension="tif"
+        )
 
     zones: FilePath
     if zones_geojson is not None:
-        zones = cache_geojson(prefix="zones_geojson", geojson=zones_geojson, extension="json")
+        zones = cache_geojson(
+            prefix="zones_geojson", geojson=zones_geojson, extension="json"
+        )
     else:
         zones = cache_file(
             prefix="zones",
@@ -133,7 +137,9 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 
     intersect_comparison_tuple = None
     if intersect_comparison_string is not None:
-        intersect_comparison_tuple = validate_intersect_parameter(intersect_comparison_string)
+        intersect_comparison_tuple = validate_intersect_parameter(
+            intersect_comparison_string
+        )
 
     features = _calculate_stats(
         zones,
@@ -142,7 +148,9 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
-        wfs_response=frozenset(wfs_response.items()) if wfs_response is not None else None,
+        wfs_response=frozenset(wfs_response.items())
+        if wfs_response is not None
+        else None,
         intersect_comparison=intersect_comparison_tuple,
         mask_geotiff=mask_geotiff,
         mask_calc_expr=mask_calc_expr,
@@ -234,7 +242,9 @@ def alert_by_id(
 
     # secure endpoint with simple email verification
     if email.lower() != alert.email.lower():
-        raise HTTPException(status_code=403, detail="Access denied. Email addresses do not match.")
+        raise HTTPException(
+            status_code=403, detail="Access denied. Email addresses do not match."
+        )
 
     # TODO: this modifies data server-side, it should be a PUT or PATCH op, not a GET
     if deactivate:
@@ -343,4 +353,6 @@ def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
     date = raster_geotiff.date
     presigned_download_url = get_geotiff(collection, bbox, date)
 
-    return JSONResponse(content={"download_url": presigned_download_url}, status_code=200)
+    return JSONResponse(
+        content={"download_url": presigned_download_url}, status_code=200
+    )

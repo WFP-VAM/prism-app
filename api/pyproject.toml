@@ -21,7 +21,7 @@ module = [
 ignore_missing_imports = true
 
 [tool.black]
-line-length = 100
+line-length = 88
 
 [tool.isort]
 profile = "black"

@@ -20,12 +20,18 @@ def validate_intersect_parameter(intersect_comparison_string: str) -> Tuple[Any,
     # extract an intersect comparison operator
     default_operator = ("=", op.eq)
     operator_item = next(
-        (op for op in VALID_OPERATORS.items() if op[0] in intersect_comparison_string[:2]),
+        (
+            op
+            for op in VALID_OPERATORS.items()
+            if op[0] in intersect_comparison_string[:2]
+        ),
         default_operator,
     )
 
     # remove the operator from our string
-    intersect_comparison_string = intersect_comparison_string.replace(operator_item[0], "")
+    intersect_comparison_string = intersect_comparison_string.replace(
+        operator_item[0], ""
+    )
 
     try:
         baseline = float(intersect_comparison_string)

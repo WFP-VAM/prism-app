@@ -18,7 +18,9 @@ from sqlalchemy.sql.expression import ColumnElement
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-DB_URI = getenv("DATABASE_URL") or "postgresql://{user}:{password}@{host}:{port}/{database}".format(
+DB_URI = getenv(
+    "DATABASE_URL"
+) or "postgresql://{user}:{password}@{host}:{port}/{database}".format(
     host=getenv("POSTGRES_HOST", "host.docker.internal"),
     port=getenv("POSTGRES_PORT", "54321"),
     database=getenv("POSTGRES_DB", "postgres"),
@@ -205,7 +207,9 @@ class AuthDataBase:
         :return: A user entity or None if no entity was found
         """
         try:
-            return self.session.query(UserInfoModel).filter_by(username=username).first()
+            return (
+                self.session.query(UserInfoModel).filter_by(username=username).first()
+            )
         except SQLAlchemyError as error:
             self.session.rollback()
             logger.error("An error occured in get_by_username.")
