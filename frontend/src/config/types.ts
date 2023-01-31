@@ -428,6 +428,11 @@ export class StaticRasterLayerProps extends CommonLayerProps {
   maxZoom: number;
 }
 
+export enum DataFieldType {
+  NUMBER = 'number',
+  TEXT = 'text',
+}
+
 export class AdminLevelDataLayerProps extends CommonLayerProps {
   type: 'admin_level_data';
   path: string;
@@ -551,6 +556,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   authRequired: boolean = false;
+
+  @optional
+  dataFieldType?: DataFieldType = DataFieldType.NUMBER;
 }
 
 export type RequiredKeys<T> = {
