@@ -8,7 +8,7 @@ odc-geo==0.3.2
 odc-stac==0.3.3
 pystac-client==0.5.1
 pystac==1.6.1
-rasterstats==0.16.0
+rasterstats==0.17.0
 requests==2.27.1
 Shapely==1.8.2
 uvicorn[standard]==0.18.2
