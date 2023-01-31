@@ -7,6 +7,13 @@ from typing import Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
+from fastapi import (Depends, FastAPI, HTTPException, Path, Query, Request,
+                     Response)
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from pydantic import EmailStr, HttpUrl, ValidationError
+from requests import get
+
 from app.auth import validate_user
 from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlertModel
@@ -17,11 +24,6 @@ from app.models import AcledRequest, FilterProperty, RasterGeotiffModel
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
-from fastapi import Depends, FastAPI, HTTPException, Path, Query, Request, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from pydantic import EmailStr, HttpUrl, ValidationError
-from requests import get
 
 from .geotiff_from_stac_api import get_geotiff
 from .models import AlertsModel, StatsModel
