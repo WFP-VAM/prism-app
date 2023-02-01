@@ -253,11 +253,6 @@ export interface ExposedPopulationDefinition {
   calc?: string;
 }
 
-interface FeatureInfoProps {
-  type: LabelType;
-  label: string;
-}
-
 export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
 
 export class CommonLayerProps {
@@ -361,15 +356,17 @@ export class BoundaryLayerProps extends CommonLayerProps {
   isPrimary?: boolean | undefined;
 }
 
-export enum LabelType {
+export enum DataType {
   Date = 'date',
   Text = 'text',
   Number = 'number',
+  LabelMapping = 'labelMapping',
 }
 
 interface FeatureInfoProps {
-  type: LabelType;
-  label: string;
+  type: DataType;
+  dataTitle: string;
+  labelMap?: { [key: string]: string };
 }
 
 export enum DatesPropagation {
@@ -429,6 +426,11 @@ export class StaticRasterLayerProps extends CommonLayerProps {
   minZoom: number;
 
   maxZoom: number;
+}
+
+export enum DataFieldType {
+  NUMBER = 'number',
+  TEXT = 'text',
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
@@ -554,6 +556,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   authRequired: boolean = false;
+
+  @optional
+  dataFieldType?: DataFieldType = DataFieldType.NUMBER;
 }
 
 export type RequiredKeys<T> = {
