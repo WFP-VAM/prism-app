@@ -18,6 +18,10 @@ export type BoundaryRelation = {
   bbox: BBox;
 };
 
+/*
+ * Recursive function that finds the relation matching name and level.
+ * If there are children relations, the function is applied for each.
+ */
 const getFeatures = (
   relations: BoundaryRelation[],
   name: string,
@@ -29,6 +33,7 @@ const getFeatures = (
     return [];
   }
 
+  // Apply function to the children of the relation.
   const relChildren: BoundaryRelation[] = relation.children
     .map(childName => getFeatures(relations, childName, relation.level + 1))
     .reduce((acc, child) => [...acc, ...child], []);
@@ -36,6 +41,10 @@ const getFeatures = (
   return [relation, ...relChildren];
 };
 
+/*
+ * Recursive function that returns the parent of a given relation.
+ * If the parent relation has another parent. The function is applied also.
+ */
 export const getParentRelation = (
   relations: BoundaryRelation[],
   parentName: string,
@@ -59,6 +68,12 @@ export const getParentRelation = (
   ];
 };
 
+/*
+ * Function that creates the array of relations from the lowest level administrative boundary layer.
+ * For each feature, the function checks the administrative level from the adminLevelNames array.
+ * Then, it searches for other features that match the same level and name.
+ * Finally, taking all the matches, the bounding box is built, and the array of children relations is set.
+ */
 const buildRelationTree = (
   boundaryLayerData: BoundaryLayerData,
   adminLevelNames: string[],
@@ -122,6 +137,12 @@ const buildRelationTree = (
   return relations;
 };
 
+/*
+ * Main function that creates the relations array using the buildRelationTree function.
+ * Then, to render the dropdown menu, the function takes the first level relations and the
+ * getFeatures function is called for each to make sure the children relations are included recursively
+ * right after.
+ */
 export const loadBoundaryRelations = (
   boundaryLayerData: BoundaryLayerData,
   adminLevelNames: string[],
@@ -167,6 +188,11 @@ export const setMenuItemStyle = (
 export const containsText = (text: string, searchText: string) =>
   text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
 
+/*
+ * This function returns the higher level relations from a given relation match.
+ * For each matching relation, the function finds recursively the parents in order
+ * to be displayed before.
+ */
 export const createMatchesTree = (
   relations: BoundaryRelation[],
   relationsFilter: BoundaryRelation[],
