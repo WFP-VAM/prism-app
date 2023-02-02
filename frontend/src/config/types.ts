@@ -426,6 +426,9 @@ export class StaticRasterLayerProps extends CommonLayerProps {
   minZoom: number;
 
   maxZoom: number;
+
+  @optional
+  dates?: string[];
 }
 
 export enum DataFieldType {
