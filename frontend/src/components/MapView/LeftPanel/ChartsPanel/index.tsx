@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import { DateRangeRounded } from '@material-ui/icons';
 import { GeoJsonProperties } from 'geojson';
-import { groupBy } from 'lodash';
+import { groupBy, mapKeys, snakeCase } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
@@ -218,12 +218,17 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
 
   function downloadCsv() {
     const dateColumn = 'Date';
+    const getKeyName = (key: string, chartName: string) =>
+      key.endsWith('_avg')
+        ? `${snakeCase(chartName)}_avg`
+        : snakeCase(chartName);
     const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
-      ([, value]) => {
+      ([key, value]) => {
         const first = value[0];
         const keys = Object.keys(first);
         const filtered = keys.filter(x => x !== dateColumn);
-        return Object.fromEntries(filtered.map(x => [x, x]));
+        const mapped = filtered.map(x => getKeyName(x, key));
+        return Object.fromEntries(mapped.map(x => [x, x]));
       },
     );
     const columnsNames = columnsNamesPerChart.reduce(
@@ -232,19 +237,27 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     );
 
     const merged = Object.entries(dataForCsv.current)
-      .map(([, value]) => value)
+      .map(([key, value]) => {
+        return value.map(x => {
+          return mapKeys(x, (v, k) =>
+            k === dateColumn ? dateColumn : getKeyName(k, key),
+          );
+        });
+      })
       .flat();
+    if (merged.length < 1) {
+      return;
+    }
     const grouped = groupBy(merged, dateColumn);
     const objectsArray = Object.entries(grouped).map(([, value]) => {
       return value.reduce((prev, curr) => ({ ...prev, ...curr }), {});
     });
     downloadToFile(
       {
-        content: castObjectsArrayToCsv(objectsArray, columnsNames, ';'),
+        content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
         isUrl: false,
       },
-      // TODO: decide better name
-      admin1Title,
+      `${admin1Title}_${selectedLayerTitles.map(snakeCase).join('_')}`,
       'text/csv',
     );
   }
