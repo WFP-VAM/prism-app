@@ -24,7 +24,6 @@ import inside from '@turf/boolean-point-in-polygon';
 import type { Feature, MultiPolygon } from '@turf/helpers';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
-import Download from './Download';
 // layers
 import {
   AdminLevelDataLayer,
@@ -586,7 +585,6 @@ function MapView({ classes }: MapViewProps) {
             {isShowingExtraFeatures && (
               <Grid item>
                 <Grid container spacing={1}>
-                  <Download />
                   <Legends layers={selectedLayers} />
                 </Grid>
               </Grid>

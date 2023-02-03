@@ -198,11 +198,6 @@ export function getFeatureInfoPropsData(
     }, {});
 }
 
-export enum ReportType {
-  Storm,
-  Flood,
-}
-
 export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
   if (typeof label === 'string') {
     return label;

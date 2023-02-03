@@ -9,18 +9,15 @@ import {
 } from '@material-ui/core';
 import { snakeCase } from 'lodash';
 import { useSelector } from 'react-redux';
-import {
-  downloadToFile,
-  exportDataTableToCSV,
-  ReportType,
-} from '../../../utils';
+import { downloadToFile, exportDataTableToCSV } from '../../../utils';
 import { useSafeTranslation } from '../../../../../i18n';
 import {
   getCurrentData,
   getCurrentDefinition,
 } from '../../../../../context/analysisResultStateSlice';
-import Report from '../../../Download/report';
 import { layersSelector } from '../../../../../context/mapStateSlice/selectors';
+import { ReportType } from '../../../../Common/ReportDialog/types';
+import ReportDialog from '../../../../Common/ReportDialog';
 
 function ExposureAnalysisActions({
   analysisButton,
@@ -70,7 +67,7 @@ function ExposureAnalysisActions({
       <Button className={bottomButton} onClick={() => setOpenReport(true)}>
         <Typography variant="body2">{t('Create Report')}</Typography>
       </Button>
-      <Report
+      <ReportDialog
         open={openReport}
         handleClose={() => setOpenReport(false)}
         reportType={isShowingStormData ? ReportType.Storm : ReportType.Flood}

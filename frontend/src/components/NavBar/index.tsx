@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import { useSafeTranslation } from '../../i18n';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
+import PrintImage from './PrintImage';
 
 function NavBar({ classes }: NavBarProps) {
   const { t } = useSafeTranslation();
@@ -71,6 +72,7 @@ function NavBar({ classes }: NavBarProps) {
               item
               xs={9}
             >
+              <PrintImage />
               {buttons}
               <About />
               <LanguageSelector />
@@ -93,13 +95,16 @@ function NavBar({ classes }: NavBarProps) {
                 open={openMobileMenu}
                 onClose={() => setOpenMobileMenu(false)}
               >
-                <div className={classes.mobileDrawerContent}>
-                  <Grid container spacing={3}>
-                    <Grid container justify="space-around" item>
-                      {buttons}
-                    </Grid>
-                  </Grid>
-                </div>
+                <Grid
+                  container
+                  spacing={3}
+                  className={classes.mobileDrawerContent}
+                >
+                  <PrintImage />
+                  {buttons}
+                  <About />
+                  <LanguageSelector />
+                </Grid>
               </Drawer>
             </Grid>
           </Hidden>
@@ -141,6 +146,9 @@ const styles = (theme: Theme) =>
       width: '80vw',
       height: '100vh',
       overflowX: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      paddingLeft: '1em',
     },
 
     menuBars: {

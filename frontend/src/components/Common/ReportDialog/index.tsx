@@ -23,9 +23,9 @@ import {
   analysisResultSelector,
   getCurrentData,
 } from '../../../context/analysisResultStateSlice';
-import { ReportType } from '../utils';
 import { ExposedPopulationResult } from '../../../utils/analysis-utils';
 import ReportDoc from './reportDoc';
+import { ReportType } from './types';
 
 function Report({ classes, open, reportType, handleClose }: ReportProps) {
   const theme = useTheme();
