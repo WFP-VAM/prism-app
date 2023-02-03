@@ -2,10 +2,8 @@ import React, { useEffect } from 'react';
 import moment from 'moment';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FeatureCollection } from 'geojson';
-import { get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
-import { addPopupData } from '../../../../context/tooltipStateSlice';
 import {
   clearUserAuthGlobal,
   userAuthSelector,
@@ -22,8 +20,6 @@ import {
 import { removeLayerData } from '../../../../context/mapStateSlice';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
-import { getFeatureInfoPropsData } from '../../utils';
-import { getRoundedData } from '../../../../utils/data-utils';
 import { getRequestDate } from '../../../../utils/server-utils';
 import { useUrlHistory } from '../../../../utils/url-utils';
 import { useSafeTranslation } from '../../../../i18n';
@@ -33,6 +29,7 @@ import {
   clearDataset,
 } from '../../../../context/datasetStateSlice';
 import { createEWSDatasetParams } from '../../../../utils/ews-utils';
+import { addPopupParams } from '../layer-utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer, before }: LayersProps) {
@@ -58,7 +55,6 @@ function PointDataLayer({ layer, before }: LayersProps) {
   const { data } = layerData || {};
   const { features } = data || {};
   const { t } = useSafeTranslation();
-
   const { id: layerId } = layer;
 
   useEffect(() => {
@@ -119,25 +115,9 @@ function PointDataLayer({ layer, before }: LayersProps) {
   }
 
   const onClickFunc = async (evt: any) => {
+    addPopupParams(layer, dispatch, evt, t, false);
+
     const feature = evt.features[0];
-
-    // by default add `dataField` to the tooltip
-    dispatch(
-      addPopupData({
-        [layer.title]: {
-          data: getRoundedData(
-            get(feature, `properties.${layer.dataField}`),
-            t,
-          ),
-          coordinates: evt.lngLat,
-        },
-      }),
-    );
-    // then add feature_info_props as extra fields to the tooltip
-    dispatch(
-      addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
-    );
-
     if (layer.loader === PointDataLoader.EWS) {
       dispatch(clearDataset());
 
@@ -166,7 +146,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
       id={layerId}
       data={features}
       circleLayout={circleLayout}
-      circlePaint={circlePaint(layer, layer.dataField)}
+      circlePaint={circlePaint(layer)}
       circleOnClick={onClickFunc}
     />
   );
