@@ -237,6 +237,13 @@ function AnalysisPanel({
     lastAvailableHazardEndDate,
   ]);
 
+  // if someone else runs a analysis do not expand, when the analysis tab is revisited
+  useEffect(() => {
+    if (!analysisResult) {
+      setShowTable(false);
+    }
+  }, [analysisResult]);
+
   useEffect(() => {
     if (tabValue !== tabIndex) {
       return;
