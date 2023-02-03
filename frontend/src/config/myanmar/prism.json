@@ -269,6 +269,10 @@
       "population": [
         "total_pop"
       ],
+      "conflict": [
+        "conflict_fatalities",
+        "conflict_type"
+      ],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",
         "population_exposed_historical_storm_surge"

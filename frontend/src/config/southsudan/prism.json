@@ -7,7 +7,8 @@
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
     "temperature": "icon_climate.png",
-    "vulnerability": "icon_vulnerable.png"
+    "vulnerability": "icon_vulnerable.png",
+    "flood": "icon_flood.png"
   },
   "alertFormActive": false,
   "serversUrls": {
@@ -25,6 +26,11 @@
     "admin1_boundaries"
   ],
   "categories": {
+    "flood": {
+      "flood_events": [
+        "flood_events"
+      ]
+    },
     "rainfall": {
       "rainfall_amount": [
         {

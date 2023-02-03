@@ -86,8 +86,8 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
 
   return (
     <div>
-      <h2>{title}</h2>
-      <p>{legendText}</p>
+      <h2>{t(title)}</h2>
+      <p>{t(legendText)}</p>
 
       {table && (
         <p>
@@ -105,7 +105,9 @@ const DataTable = ({ classes, maxResults }: DataTableProps) => {
         </p>
       )}
 
-      {!loading && chart && <Chart title={title} config={chart} data={data} />}
+      {!loading && chart && (
+        <Chart title={t(title)} config={chart} data={data} />
+      )}
 
       {loading ? (
         <Box

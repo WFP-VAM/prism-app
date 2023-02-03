@@ -1134,15 +1134,15 @@
     "feature_info_props": {
       "exercise_year": {
         "type": "string",
-        "label": "Exercise year"
+        "dataTitle": "Exercise year"
       },
       "exercise_label": {
         "type": "string",
-        "label": "Exercise period"
+        "dataTitle": "Exercise period"
       },
       "phase_class": {
         "type": "number",
-        "label": "Phase classification"
+        "dataTitle": "Phase classification"
       }
     },
     "legend": [
@@ -1185,15 +1185,15 @@
     "feature_info_props": {
       "exercise_year": {
         "type": "string",
-        "label": "Exercise year"
+        "dataTitle": "Exercise year"
       },
       "exercise_label": {
         "type": "string",
-        "label": "Exercise period"
+        "dataTitle": "Exercise period"
       },
       "phase_class": {
         "type": "number",
-        "label": "Phase classification"
+        "dataTitle": "Phase classification"
       }
     },
     "legend": [
@@ -1236,15 +1236,15 @@
     "feature_info_props": {
       "exercise_year": {
         "type": "string",
-        "label": "Exercise year"
+        "dataTitle": "Exercise year"
       },
       "exercise_label": {
         "type": "string",
-        "label": "Exercise period"
+        "dataTitle": "Exercise period"
       },
       "phase_class": {
         "type": "number",
-        "label": "Phase classification"
+        "dataTitle": "Phase classification"
       }
     },
     "legend": [
@@ -2251,9 +2251,7 @@
     "title": "Phase classification - admin 2",
     "type": "admin_level_data",
     "path": "data/rbd/ch/adm2/{YYYY_MM_DD}.json",
-    "dates": [
-      "2014-01-01", "2014-06-01", "2014-09-01"
-    ],
+    "dates": ["2014-01-01", "2014-06-01", "2014-09-01"],
     "data_field": "phase_class",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
@@ -2264,7 +2262,7 @@
     "feature_info_props": {
       "date": {
         "type": "text",
-        "label": "Reference period"
+        "dataTitle": "Reference period"
       }
     },
     "opacity": 0.7,
@@ -2301,9 +2299,7 @@
     "title": "Phase classification - admin 1",
     "type": "admin_level_data",
     "path": "data/rbd/ch/adm1/{YYYY_MM_DD}.json",
-    "dates": [
-      "2014-01-01", "2014-06-01", "2014-09-01"
-    ],
+    "dates": ["2014-01-01", "2014-06-01", "2014-09-01"],
     "data_field": "phase_class",
     "admin_level": 1,
     "admin_code": "adm1_pcod2",
@@ -2314,7 +2310,7 @@
     "feature_info_props": {
       "date": {
         "type": "text",
-        "label": "Reference period"
+        "dataTitle": "Reference period"
       }
     },
     "opacity": 0.7,
@@ -2351,9 +2347,7 @@
     "title": "Population in Phase 3 to 5 - admin 2",
     "type": "admin_level_data",
     "path": "data/rbd/ch/adm2/{YYYY_MM_DD}.json",
-    "dates": [
-      "2014-01-01", "2014-06-01", "2014-09-01"
-    ],
+    "dates": ["2014-01-01", "2014-06-01", "2014-09-01"],
     "data_field": "phase35",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
@@ -2364,7 +2358,7 @@
     "feature_info_props": {
       "date": {
         "type": "text",
-        "label": "Reference period"
+        "dataTitle": "Reference period"
       }
     },
     "opacity": 0.7,
@@ -2411,9 +2405,7 @@
     "title": "Population in Phase 3 to 5 - admin 1",
     "type": "admin_level_data",
     "path": "data/rbd/ch/adm1/{YYYY_MM_DD}.json",
-    "dates": [
-      "2014-01-01", "2014-06-01", "2014-09-01"
-    ],
+    "dates": ["2014-01-01", "2014-06-01", "2014-09-01"],
     "data_field": "phase35",
     "admin_level": 1,
     "admin_code": "adm1_pcod2",
@@ -2424,7 +2416,7 @@
     "feature_info_props": {
       "date": {
         "type": "text",
-        "label": "Reference period"
+        "dataTitle": "Reference period"
       }
     },
     "opacity": 0.7,
@@ -2503,7 +2495,7 @@
       }
     ],
     "legend_text": "Overall phase classification"
-  }, 
+  },
   "ch_group_adm2": {
     "title": "Phase classification: admin 2 2022-06-01",
     "type": "admin_level_data",
@@ -2541,7 +2533,7 @@
       }
     ],
     "legend_text": "Overall phase classification"
-  } ,
+  },
   "ch_admin2_limited_access": {
     "title": "Limited access areas - phase classification",
     "type": "admin_level_data",
@@ -2553,7 +2545,7 @@
     "feature_info_props": {
       "phase35": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       }
     },
     "legend": [
@@ -2596,7 +2588,7 @@
     "feature_info_props": {
       "phase35": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       }
     },
     "legend": [
@@ -2639,7 +2631,7 @@
     "feature_info_props": {
       "phase35": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       }
     },
     "legend": [
@@ -2708,7 +2700,7 @@
       }
     ],
     "legend_text": "Overall phase classification"
-  } ,  
+  },
   "ch_group_adm1_2021_06_01": {
     "title": "Phase classification: admin 1",
     "type": "admin_level_data",
@@ -2745,5 +2737,5 @@
       }
     ],
     "legend_text": "Overall phase classification"
-  }         
+  }
 }
