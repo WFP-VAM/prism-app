@@ -119,6 +119,8 @@ const useStyles = makeStyles(() =>
       flexWrap: 'wrap',
       flexGrow: 4,
       paddingTop: '1em',
+      marginTop: 'auto',
+      marginBottom: 'auto',
     },
     removeAdmin2: {
       fontWeight: 'bold',
