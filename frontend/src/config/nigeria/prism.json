@@ -182,10 +182,12 @@
     },
     "Cadre Harmonisé": {
       "Phase_Classification": [
-        "ch_phase"
+        "ch_phase",
+        "ch_inaccessible_phase"
       ],
       "Population": [
-        "ch_pop3_5"
+        "ch_pop3_5",
+        "ch_inaccessible_pop3_5"
       ]
     }
   }
