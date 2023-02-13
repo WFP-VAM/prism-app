@@ -13,7 +13,8 @@
     "temperature": "icon_climate.png",
     "risk": "icon_impact.png",
     "tropical_storms": "icon_tropical_storm.png",
-    "vulnerability": "icon_vulnerable.png"
+    "vulnerability": "icon_vulnerable.png",
+    "Cadre Harmonisé": "icon_cadreharmoise2.png"
   },
   "map": {
     "latitude": 9.065,
@@ -179,20 +180,12 @@
         "lst_amplitude"
       ]
     },
-    "vulnerability": {
-      "food insecurity": [
-        "cereal_insecurity_2021",
-        "5_year_avg_cereal_insecurity",
-        "10_year_avg_cereal_insecurity",
-        "poor_fc",
-        "borderline_fc",
-        "vac_food_insec",
-        "ipc_phase_10_2020"
-      ]
-    },
-    "exposure": {
-      "demographics": [
-        "pop_2020"
+    "Cadre Harmonisé": {
+      "Phase_Classification": [
+        "ch_phase"
+      ],
+      "Population": [
+        "ch_pop3_5"
       ]
     }
   }

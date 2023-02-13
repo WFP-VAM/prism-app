@@ -1,17 +1,11 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/nigeria/nga_admbnda_adm2_osgof_20190417.json",
+    "path": "data/nigeria/nga_admbnda_adm2_wca_ocha_derived.json",
     "opacity": 0.8,
-    "admin_code": "ADM2_PCODE",
-    "admin_level_names": [
-      "ADM1_EN",
-      "ADM2_EN"
-    ],
-    "admin_level_local_names": [
-      "ADM1_EN",
-      "ADM2_EN"
-    ],
+    "admin_code": "admin2Pcod",
+    "admin_level_names": ["admin1Name", "admin2Name"],
+    "admin_level_local_names": ["admin1Name", "admin2Name"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -25,15 +19,11 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "data/nigeria/nga_admbnda_adm1_osgof_20190417.json",
+    "path": "data/nigeria/nga_admbnda_adm1_wca_ocha_derived.json",
     "opacity": 0.8,
-    "admin_code": "ADM1_PCODE",
-    "admin_level_names": [
-      "ADM1_EN"
-    ],
-    "admin_level_local_names": [
-      "ADM1_EN"
-    ],
+    "admin_code": "admin1Pcod",
+    "admin_level_names": ["admin1Name"],
+    "admin_level_local_names": ["admin1Name"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -3697,6 +3687,7 @@
     "title": "Phase classification",
     "type": "admin_level_data",
     "path": "data/nigeria/ch/admin2_{YYYY_MM_DD}.json",
+    "fallbackLayerKeys": ["ch_phase_admin1"],
     "dates": [
       "2018-01-01",
       "2018-06-01",
@@ -3713,13 +3704,6 @@
       "2022-01-01",
       "2022-06-01",
       "2022-09-01"
-    ],
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
-    "fallbackLayerKeys": [
-      "ch_phase_admin1"
     ],
     "admin_level": 2,
     "data_field": "phase_class",
@@ -3787,7 +3771,7 @@
   "ch_phase_admin1": {
     "title": "ch_admin1_phase_all_dates",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
+    "path": "data/nigeria/ch/admin1_{YYYY_MM_DD}.json",
     "dates": [
       "2018-01-01",
       "2018-06-01",
@@ -3871,7 +3855,8 @@
   "ch_pop3_5": {
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
+    "path": "data/nigeria/ch/admin2_{YYYY_MM_DD}.json",
+    "fallbackLayerKeys": ["ch_pop3_5_admin1"],
     "dates": [
       "2018-01-01",
       "2018-06-01",
@@ -3892,13 +3877,6 @@
     "data_field": "phase35",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
-    "fallbackLayerKeys": [
-      "ch_pop3_5_admin1"
-    ],
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
     "feature_info_props": {
       "phase1": {
         "type": "number",
@@ -3972,7 +3950,7 @@
   "ch_pop3_5_admin1": {
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
+    "path": "data/nigeria/ch/admin1_{YYYY_MM_DD}.json",
     "dates": [
       "2018-01-01",
       "2018-06-01",
@@ -3993,10 +3971,6 @@
     "data_field": "phase35",
     "admin_level": 1,
     "admin_code": "adm1_pcod2",
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
     "feature_info_props": {
       "phase1": {
         "type": "number",
