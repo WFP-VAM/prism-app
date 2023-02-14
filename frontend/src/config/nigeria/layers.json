@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/nigeria/nga_admbnda_adm2_wca_ocha_derived.json",
+    "path": "data/nigeria/nga_admin2_w_dataviz.json",
     "opacity": 0.8,
     "admin_code": "admin2Pcod",
     "admin_level_names": ["admin1Name", "admin2Name"],
@@ -344,6 +344,26 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "bar"
+    },
     "opacity": 0.7,
     "legend_text": "Estimate of precipitation over a 10-day period derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
@@ -438,6 +458,31 @@
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "line"
+    },
     "opacity": 0.7,
     "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
@@ -523,6 +568,31 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r1q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "line"
+    },
     "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
@@ -604,6 +674,31 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r3q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "line"
+    },
     "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
@@ -795,6 +890,26 @@
     },
     "date_interval": "days",
     "opacity": 0.7,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "bar"
+    },
     "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
     "legend": [
       {
@@ -889,6 +1004,26 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "bar"
+    },
     "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
     "legend": [
       {
@@ -2940,6 +3075,26 @@
       "offset": 0,
       "pixelResolution": 64
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "vim", "label": "NDVI", "color": "#4eac5b" },
+        { "key": "vim_avg", "label": "Average", "color": "#99ff99" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "line"
+    },
     "legend_text": "Normalized Difference Vegetation Index (NDVI) derived from MODIS TERRA/AQUA",
     "legend": [
       {
@@ -3022,6 +3177,31 @@
     "date_interval": "days",
     "additional_query_params": {
       "styles": "viq_13_50_150"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "viq", "label": "NDVI anomaly", "color": "#5e803f" },
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "fallback": 100
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "line"
     },
     "opacity": 0.7,
     "legend_text": "NDVI anomaly compared to long term average",
