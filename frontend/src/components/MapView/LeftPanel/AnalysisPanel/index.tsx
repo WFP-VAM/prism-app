@@ -237,7 +237,7 @@ function AnalysisPanel({
     lastAvailableHazardEndDate,
   ]);
 
-  // if someone else runs a analysis do not expand, when the analysis tab is revisited
+  // Only epxand if analysis results are available.
   useEffect(() => {
     if (!analysisResult) {
       setShowTable(false);
