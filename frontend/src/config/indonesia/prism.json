@@ -67,6 +67,42 @@
               "main": false
             }
           ]
+        },
+        {
+          "group_title": "Rainfall anomaly",
+          "activate_all": false,
+          "layers": [
+            {
+              "id": "rain_anomaly_dekad",
+              "label": "10-day",
+              "main": true
+            },
+            {
+              "id": "rain_anomaly_1month",
+              "label": "1-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_3month",
+              "label": "3-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_6month",
+              "label": "6-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_9month",
+              "label": "9-month",
+              "main": false
+            },
+            {
+              "id": "rain_anomaly_1year",
+              "label": "1-year",
+              "main": false
+            }
+          ]
         }
       ],
       "climate_indicators": ["rainfall_anomaly", "spi"],
