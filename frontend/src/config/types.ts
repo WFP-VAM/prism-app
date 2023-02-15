@@ -16,7 +16,8 @@ export type LayerType =
   | WMSLayerProps
   | AdminLevelDataLayerProps
   | ImpactLayerProps
-  | PointDataLayerProps;
+  | PointDataLayerProps
+  | StaticRasterLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -252,11 +253,6 @@ export interface ExposedPopulationDefinition {
   calc?: string;
 }
 
-interface FeatureInfoProps {
-  type: LabelType;
-  label: string;
-}
-
 export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
 
 export class CommonLayerProps {
@@ -360,15 +356,17 @@ export class BoundaryLayerProps extends CommonLayerProps {
   isPrimary?: boolean | undefined;
 }
 
-export enum LabelType {
+export enum DataType {
   Date = 'date',
   Text = 'text',
   Number = 'number',
+  LabelMapping = 'labelMapping',
 }
 
 interface FeatureInfoProps {
-  type: LabelType;
-  label: string;
+  type: DataType;
+  dataTitle: string;
+  labelMap?: { [key: string]: string };
 }
 
 export enum DatesPropagation {
@@ -415,6 +413,32 @@ export class WMSLayerProps extends CommonLayerProps {
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
 }
 
+export class StaticRasterLayerProps extends CommonLayerProps {
+  type: 'static_raster';
+  baseUrl: string;
+
+  @makeRequired
+  title: string;
+
+  @makeRequired
+  legend: LegendDefinition;
+
+  @makeRequired
+  legendText: string;
+
+  minZoom: number;
+
+  maxZoom: number;
+
+  @optional
+  dates?: string[];
+}
+
+export enum DataFieldType {
+  NUMBER = 'number',
+  TEXT = 'text',
+}
+
 export class AdminLevelDataLayerProps extends CommonLayerProps {
   type: 'admin_level_data';
   path: string;
@@ -445,6 +469,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   boundary?: LayerKey;
+
+  @optional
+  fallbackLayerKeys?: string[];
 }
 
 export class LayerForm {
@@ -515,6 +542,7 @@ export class ImpactLayerProps extends CommonLayerProps {
 // Fetch and transform data to match PointDataLayer format.
 export enum PointDataLoader {
   EWS = 'ews',
+  ACLED = 'acled',
 }
 
 export class PointDataLayerProps extends CommonLayerProps {
@@ -553,6 +581,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   authRequired: boolean = false;
+
+  @optional
+  dataFieldType?: DataFieldType = DataFieldType.NUMBER;
 }
 
 export type RequiredKeys<T> = {

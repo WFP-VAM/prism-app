@@ -1,0 +1,196 @@
+{
+    "DataList": [
+        {
+          "adm1_pcod2": "MR07",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "MR08",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "MR02",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "MR11",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "MR03",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 3099
+        },
+        {
+          "adm1_pcod2": "MR05",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 6631
+        },
+        {
+          "adm1_pcod2": "MR06",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 21023
+        },
+        {
+          "adm1_pcod2": "MR13",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "MR01",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "MR09",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "MR12",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "MR04",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "MR10",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "NE08",
+          "date": "2014-01-01",
+          "phase_class": null,
+          "phase35": null
+        },
+        {
+          "adm1_pcod2": "TD01",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 28528
+        },
+        {
+          "adm1_pcod2": "TD03",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "TD08",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 16647
+        },
+        {
+          "adm1_pcod2": "TD05",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "TD19",
+          "date": "2014-01-01",
+          "phase_class": 3,
+          "phase35": 61063
+        },
+        {
+          "adm1_pcod2": "TD09",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 37597
+        },
+        {
+          "adm1_pcod2": "TD10",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 7557
+        },
+        {
+          "adm1_pcod2": "TD07",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 10381
+        },
+        {
+          "adm1_pcod2": "TD04",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 28578
+        },
+        {
+          "adm1_pcod2": "TD21",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "TD16",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "TD11",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "TD14",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 17343
+        },
+        {
+          "adm1_pcod2": "TD06",
+          "date": "2014-01-01",
+          "phase_class": 3,
+          "phase35": 80527
+        },
+        {
+          "adm1_pcod2": "TD12",
+          "date": "2014-01-01",
+          "phase_class": 1,
+          "phase35": 0
+        },
+        {
+          "adm1_pcod2": "TD15",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 7284
+        },
+        {
+          "adm1_pcod2": "TD17",
+          "date": "2014-01-01",
+          "phase_class": 3,
+          "phase35": 146270
+        },
+        {
+          "adm1_pcod2": "TD13",
+          "date": "2014-01-01",
+          "phase_class": 2,
+          "phase35": 7096
+        }
+       ]
+    }

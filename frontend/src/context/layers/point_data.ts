@@ -1,4 +1,3 @@
-import { camelCase } from 'lodash';
 import GeoJSON from 'geojson';
 import moment from 'moment';
 import type { LazyLoader } from './layer-data';
@@ -10,6 +9,8 @@ import {
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { fetchEWSData } from '../../utils/ews-utils';
 import { getAdminLevelDataLayerData } from './admin_level_data';
+import { fetchACLEDIncidents } from '../../utils/acled-utils';
+import { queryParamsToString } from '../../utils/url-utils';
 
 declare module 'geojson' {
   export const version: string;
@@ -21,24 +22,6 @@ declare module 'geojson' {
     callback?: Function,
   ): PointData[];
 }
-
-export const queryParamsToString = (queryParams?: {
-  [key: string]: string | { [key: string]: string };
-}): string =>
-  queryParams
-    ? Object.entries(queryParams)
-        .map(([key, value]) => {
-          if (key === 'filters') {
-            const filterValues = Object.entries(value)
-              .map(([filterKey, filterValue]) => `${filterKey}=${filterValue}`)
-              .join(',');
-
-            return `filters=${filterValues}`;
-          }
-          return `${camelCase(key)}=${value}`;
-        })
-        .join('&')
-    : '';
 
 export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async (
   {
@@ -66,6 +49,8 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
     switch (loader) {
       case PointDataLoader.EWS:
         return fetchEWSData(dataUrl, date);
+      case PointDataLoader.ACLED:
+        return fetchACLEDIncidents(dataUrl, date, additionalQueryParams);
       default:
         break;
     }
@@ -122,16 +107,16 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   if (adminLevelDisplay && !Object.keys(data).includes('message')) {
     const { adminCode } = adminLevelDisplay;
 
-    return getAdminLevelDataLayerData(
+    return getAdminLevelDataLayerData({
       data,
-      {
+      adminLevelDataLayerProps: {
         boundary,
         adminCode,
         dataField,
         featureInfoProps,
       },
       getState,
-    );
+    });
   }
   return { features: GeoJSON.parse(data, { Point: ['lat', 'lon'] }) };
 };

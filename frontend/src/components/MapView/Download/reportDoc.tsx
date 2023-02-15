@@ -167,9 +167,16 @@ interface TableHeadProps {
   name: string;
   cellWidth: string;
   columns: string[];
+  showTotalsColumn: boolean;
 }
 
-const TableHead = ({ theme, name, cellWidth, columns }: TableHeadProps) => {
+const TableHead = ({
+  theme,
+  name,
+  cellWidth,
+  columns,
+  showTotalsColumn,
+}: TableHeadProps) => {
   const styles = makeStyles(theme);
   return (
     <View style={{ backgroundColor: theme.pdf?.table?.darkRowColor }}>
@@ -184,7 +191,9 @@ const TableHead = ({ theme, name, cellWidth, columns }: TableHeadProps) => {
             </Text>
           );
         })}
-        <Text style={[styles.tableCell, { width: cellWidth }]}>Total</Text>
+        {showTotalsColumn && (
+          <Text style={[styles.tableCell, { width: cellWidth }]}>Total</Text>
+        )}
       </View>
     </View>
   );
@@ -197,6 +206,7 @@ interface TableProps {
   columns: string[];
   cellWidth: string;
   showTotal: boolean;
+  showRowTotal: boolean;
   t: TFunction;
 }
 
@@ -207,6 +217,7 @@ const Table = ({
   columns,
   cellWidth,
   showTotal,
+  showRowTotal,
   t,
 }: TableProps) => {
   const styles = makeStyles(theme);
@@ -241,6 +252,7 @@ const Table = ({
               name={name}
               cellWidth={cellWidth}
               columns={columns}
+              showTotalsColumn={showRowTotal}
             />
             {chunkRow.map((rowData, index) => {
               const color =
@@ -264,9 +276,11 @@ const Table = ({
                       {getTableCellVal(rowData, col, t)}
                     </Text>
                   ))}
-                  <Text style={[styles.tableCell, { width: cellWidth }]}>
-                    {Number(total).toLocaleString('en-US')}
-                  </Text>
+                  {showRowTotal && (
+                    <Text style={[styles.tableCell, { width: cellWidth }]}>
+                      {Number(total).toLocaleString('en-US')}
+                    </Text>
+                  )}
                 </View>
               );
             })}
@@ -302,11 +316,13 @@ const Table = ({
               </Text>
             );
           })}
-          <Text style={[styles.tableCell, { width: cellWidth }]}>
-            {totals.reduce((prev, cur) => {
-              return prev + cur;
-            }, 0)}
-          </Text>
+          {showRowTotal && (
+            <Text style={[styles.tableCell, { width: cellWidth }]}>
+              {totals.reduce((prev, cur) => {
+                return prev + cur;
+              }, 0)}
+            </Text>
+          )}
         </View>
       )}
     </>
@@ -331,7 +347,10 @@ const ReportDoc = ({
   }
   const styles = makeStyles(theme);
   const date = new Date().toUTCString();
-  const tableCellWidth = `${100 / (tableData.columns.length + 1)}%`;
+  const showRowTotal = tableData.columns.length > 2;
+  const tableCellWidth = `${
+    100 / (tableData.columns.length + (showRowTotal ? 1 : 0))
+  }%`;
 
   const tableRows = tableData.rows.slice(1);
   const sortedTableRows =
@@ -476,6 +495,7 @@ const ReportDoc = ({
             columns={tableData.columns}
             cellWidth={tableCellWidth}
             showTotal={tableShowTotal}
+            showRowTotal={showRowTotal}
             t={t}
           />
         </View>

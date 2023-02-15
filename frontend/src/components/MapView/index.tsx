@@ -31,6 +31,7 @@ import {
   ImpactLayer,
   PointDataLayer,
   WMSLayer,
+  StaticRasterLayer,
 } from './Layers';
 
 import {
@@ -120,13 +121,14 @@ const componentTypes: LayerComponentsMap<LayerType> = {
   admin_level_data: AdminLevelDataLayer,
   impact: ImpactLayer,
   point_data: PointDataLayer,
+  static_raster: StaticRasterLayer,
 };
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
-  'admin_level_data',
   'impact',
   'point_data',
   'wms',
+  'static_raster',
 ];
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -199,12 +201,12 @@ function MapView({ classes }: MapViewProps) {
   );
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
-      if (layer.type === 'admin_level_data') {
-        return Boolean(layer.dates) || Boolean(layer.dateUrl);
+      if (layer.type === 'admin_level_data' || layer.type === 'static_raster') {
+        return Boolean(layer.dates);
       }
       if (layer.type === 'wms') {
         // some WMS layer might not have date dimension (i.e. static data)
-        return serverAvailableDates[layer.serverLayerName].length > 0;
+        return layer.serverLayerName in serverAvailableDates;
       }
       return dateSupportLayerTypes.includes(layer.type);
     })

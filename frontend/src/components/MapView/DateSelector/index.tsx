@@ -128,6 +128,9 @@ function DateSelector({
     }
   }, [dateRange.length, pointerPosition, timeLineWidth, timelinePosition.x]);
 
+  const dateStrToUpperCase = (dateStr: string): string =>
+    `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
+
   // Create timeline range and set pointer position
   useEffect(() => {
     const locale = t('date_locale') ? t('date_locale') : 'en';
@@ -142,8 +145,8 @@ function DateSelector({
       date.locale(locale);
       return {
         value: date.valueOf(),
-        label: date.format(MONTH_FIRST_DATE_FORMAT),
-        month: date.format(MONTH_ONLY_DATE_FORMAT),
+        label: dateStrToUpperCase(date.format(MONTH_FIRST_DATE_FORMAT)),
+        month: dateStrToUpperCase(date.format(MONTH_ONLY_DATE_FORMAT)),
         isFirstDay: date.date() === date.startOf('month').date(),
       };
     });

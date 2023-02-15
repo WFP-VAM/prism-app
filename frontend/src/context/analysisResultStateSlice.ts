@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { convertArea } from '@turf/helpers';
 import { Position, FeatureCollection, Feature } from 'geojson';
 import moment from 'moment';
-import { fromPairs, get } from 'lodash';
+import { get } from 'lodash';
+import { createGetCoverageUrl } from 'prism-common';
 import { calculate } from '../utils/zonal-utils';
 
 import type { CreateAsyncThunkTypes, RootState } from './store';
@@ -39,17 +40,14 @@ import {
   scaleAndFilterAggregateData,
   ExposedPopulationResult,
   scaleFeatureStat,
+  appendBoundaryProperties,
 } from '../utils/analysis-utils';
 import { getRoundedData } from '../utils/data-utils';
 import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
-import { getWCSLayerUrl } from './layers/wms';
 import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from '../utils/server-utils';
-import {
-  layerDataSelector,
-  layerFormSelector,
-} from './mapStateSlice/selectors';
+import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
@@ -231,18 +229,9 @@ const createAPIRequestParams = (
   params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
   geojsonOut?: boolean,
-  layerFormParams?: { [key: string]: string },
 ): ApiData => {
-  const { adminLevelNames, adminCode } = getBoundaryLayerSingleton();
-
-  // If the analysis is related to a AdminLevelData layer, we get the index from params.
-  // For Exposed population we use the latest-level boundary indicator.
-  // WARNING - This change is meant for RBD only. Do we want to generalize this?
-  const { adminLevel } = (params || {}) as any;
-  const groupBy =
-    adminLevel !== undefined
-      ? adminLevelNames[adminLevel - 1]
-      : adminCode || adminLevelNames[adminLevelNames.length - 1];
+  // Use adminCode always as groupby item in the backend.
+  const { adminCode: groupBy } = getBoundaryLayerSingleton();
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -255,13 +244,13 @@ const createAPIRequestParams = (
   // we force group_by to be defined with &
   // eslint-disable-next-line camelcase
   const apiRequest: ApiData = {
-    geotiff_url: getWCSLayerUrl({
-      layer: geotiffLayer,
-
-      // Skip date parameter if layer has disableDateParam set to true.
+    geotiff_url: createGetCoverageUrl({
+      bbox: extent,
+      bboxDigits: 1,
       date: dateValue,
-      extent,
-      additionalParams: layerFormParams,
+      layerId: geotiffLayer.serverLayerName,
+      resolution: wcsConfig?.pixelResolution,
+      url: geotiffLayer.baseUrl,
     }),
     zones_url: getAdminBoundariesURL(),
     group_by: groupBy,
@@ -278,81 +267,104 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   AnalysisResult,
   ExposedPopulationDispatchParams,
   CreateAsyncThunkTypes
->('analysisResultState/requestAndStoreExposedPopulation', async params => {
-  const { exposure, date, extent, statistic, wfsLayerId, maskLayerId } = params;
+>(
+  'analysisResultState/requestAndStoreExposedPopulation',
+  async (params, api) => {
+    const {
+      exposure,
+      date,
+      extent,
+      statistic,
+      wfsLayerId,
+      maskLayerId,
+    } = params;
 
-  const { id, key, calc } = exposure;
+    const {
+      adminCode: adminCodeId,
+      id: boundaryLayerId,
+    } = getBoundaryLayerSingleton();
 
-  const wfsLayer =
-    wfsLayerId && (LayerDefinitions[wfsLayerId] as WMSLayerProps);
-  const populationLayer = LayerDefinitions[id] as WMSLayerProps;
+    const boundaryData = layerDataSelector(boundaryLayerId)(api.getState()) as
+      | LayerData<BoundaryLayerProps>
+      | undefined;
+    const { id, key, calc } = exposure;
 
-  const wfsParams: WfsRequestParams | undefined = wfsLayer
-    ? {
-        url: `${wfsLayer.baseUrl}/ows`,
-        layer_name: wfsLayer.serverLayerName,
-        time: moment(date).format(DEFAULT_DATE_FORMAT),
-        key,
-      }
-    : undefined;
+    const wfsLayer =
+      wfsLayerId && (LayerDefinitions[wfsLayerId] as WMSLayerProps);
+    const populationLayer = LayerDefinitions[id] as WMSLayerProps;
 
-  const maskLayer =
-    maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
+    const wfsParams: WfsRequestParams | undefined = wfsLayer
+      ? {
+          url: `${wfsLayer.baseUrl}/ows`,
+          layer_name: wfsLayer.serverLayerName,
+          time: moment(date).format(DEFAULT_DATE_FORMAT),
+          key,
+        }
+      : undefined;
 
-  const maskParams = maskLayer
-    ? {
-        mask_url: getWCSLayerUrl({
-          layer: maskLayer,
-          date,
-          extent,
-        }),
-        mask_calc_expr: calc || 'A*(B==1)',
-      }
-    : undefined;
+    const maskLayer =
+      maskLayerId && (LayerDefinitions[maskLayerId] as WMSLayerProps);
+    const maskParams = maskLayer
+      ? {
+          make_url: createGetCoverageUrl({
+            bbox: extent,
+            date,
+            layerId: maskLayer.serverLayerName,
+            url: maskLayer.baseUrl,
+          }),
+          mask_calc_expr: calc || 'A*(B==1)',
+        }
+      : undefined;
 
-  const apiRequest = createAPIRequestParams(
-    populationLayer,
-    extent,
-    date,
-    wfsParams,
-    maskParams,
-    // Set geojsonOut to true.
-    // TODO - Remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
-    true,
-  );
+    const apiRequest = createAPIRequestParams(
+      populationLayer,
+      extent,
+      date,
+      wfsParams,
+      maskParams,
+      // Set geojsonOut to true.
+      // TODO - Remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
+      true,
+    );
 
-  const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
-    []) as Feature[];
+    const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
+      []) as Feature[];
 
-  const { scale, offset } = populationLayer.wcsConfig ?? {
-    scale: undefined,
-    offset: undefined,
-  };
+    const { scale, offset } = populationLayer.wcsConfig ?? {
+      scale: undefined,
+      offset: undefined,
+    };
 
-  const features = apiFeatures
-    .map(f => scaleFeatureStat(f, scale || 1, offset || 0, statistic))
-    .filter(f => get(f.properties, statistic) != null);
+    const features = apiFeatures
+      .map(f => scaleFeatureStat(f, scale || 1, offset || 0, statistic))
+      .filter(f => get(f.properties, statistic) != null);
 
-  const collection: FeatureCollection = {
-    type: 'FeatureCollection',
-    features,
-  };
+    const featuresWithBoundaryProps = appendBoundaryProperties(
+      adminCodeId,
+      features,
+      boundaryData!.data.features,
+    );
 
-  const groupBy = apiRequest.group_by;
-  const legend = createLegendFromFeatureArray(features, statistic);
-  // TODO - use raster legend title
-  const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
+    const collection: FeatureCollection = {
+      type: 'FeatureCollection',
+      features: featuresWithBoundaryProps,
+    };
 
-  return new ExposedPopulationResult(
-    collection,
-    statistic,
-    legend,
-    legendText,
-    groupBy,
-    key,
-    date,
-  );
-});
+    const legend = createLegendFromFeatureArray(features, statistic);
+    // TODO - use raster legend title
+    const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
+
+    return new ExposedPopulationResult(
+      collection,
+      statistic,
+      legend,
+      legendText,
+      apiRequest.group_by,
+      key,
+      date,
+    );
+  },
+);
 
 export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisResult,
@@ -375,11 +387,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     api.getState(),
   ) as LayerData<BoundaryLayerProps>;
 
-  const layerForm = layerFormSelector(hazardLayer.id)(api.getState());
-  const layerFormParams = layerForm
-    ? fromPairs(layerForm.inputs.map(input => [input.id, input.value]))
-    : {};
-
   if (!adminBoundariesData) {
     throw new Error('Boundary Layer not loaded!');
   }
@@ -389,9 +396,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     extent,
     date,
     baselineLayer,
-    undefined,
-    undefined,
-    layerFormParams,
   );
 
   const aggregateData = scaleAndFilterAggregateData(

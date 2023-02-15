@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import {
   AdminLevelDataLayerProps,
@@ -16,20 +15,18 @@ import {
   mapSelector,
 } from '../../../../context/mapStateSlice/selectors';
 import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
-import { addPopupData } from '../../../../context/tooltipStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
-import { getFeatureInfoPropsData } from '../../utils';
 import { getBoundaryLayers, LayerDefinitions } from '../../../../config/utils';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import {
   firstBoundaryOnView,
   isLayerOnView,
 } from '../../../../utils/map-utils';
-import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { fillPaintData } from '../styles';
 import { availableDatesSelector } from '../../../../context/serverStateSlice';
 import { getRequestDate } from '../../../../utils/server-utils';
+import { addPopupParams } from '../layer-utils';
 
 function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const dispatch = useDispatch();
@@ -95,21 +92,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       data={features}
       fillPaint={fillPaintData(layer)}
       fillOnClick={async (evt: any) => {
-        // by default add `data_field` to the tooltip
-        dispatch(
-          addPopupData({
-            [layer.title]: {
-              data: getRoundedData(get(evt.features[0], 'properties.data'), t),
-              coordinates: evt.lngLat,
-            },
-          }),
-        );
-        // then add feature_info_props as extra fields to the tooltip
-        dispatch(
-          addPopupData(
-            getFeatureInfoPropsData(layer.featureInfoProps || {}, evt),
-          ),
-        );
+        addPopupParams(layer, dispatch, evt, t, true);
       }}
     />
   );

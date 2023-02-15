@@ -12,6 +12,8 @@ import { CreateCSSProperties } from '@material-ui/styles';
 import { merge, compact } from 'lodash';
 import { DateRangeType } from '../../../../config/types';
 import { TIMELINE_ITEM_WIDTH, formatDate } from '../utils';
+import { moment, useSafeTranslation } from '../../../../i18n';
+import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
 
 function TimelineItems({
   classes,
@@ -24,6 +26,8 @@ function TimelineItems({
   const click = (dateIndex: number) => {
     clickDate(dateIndex);
   };
+
+  const { t } = useSafeTranslation();
 
   // Hard coded styling for date items (first, second, and third layers)
   const DATE_ITEM_STYLING: { class: string; color: string }[] = [
@@ -76,7 +80,7 @@ function TimelineItems({
         ) {
           return (
             <TooltipItem
-              layerTitle={selectedLayerTitle}
+              layerTitle={t(selectedLayerTitle)}
               color={DATE_ITEM_STYLING[layerIndex + 1].color}
             />
           );
@@ -85,10 +89,12 @@ function TimelineItems({
       }),
     );
     // eslint-disable-next-line fp/no-mutating-methods
-    tooltipTitleArray.unshift(<div>{date.label}</div>);
+    tooltipTitleArray.unshift(<div key={date.label}>{date.label}</div>);
 
     return tooltipTitleArray;
   };
+
+  const locale = t('date_locale') ? t('date_locale') : 'en';
 
   return (
     <>
@@ -110,7 +116,9 @@ function TimelineItems({
           >
             {date.isFirstDay ? (
               <Typography variant="body2" className={classes.dateItemLabel}>
-                {date.month}
+                {moment(date.value)
+                  .locale(locale)
+                  .format(MONTH_YEAR_DATE_FORMAT)}
               </Typography>
             ) : (
               <div className={classes.dayItem} />
@@ -119,6 +127,7 @@ function TimelineItems({
               (layerDates, layerIndex) =>
                 layerDates.includes(formatDate(date.value)) && (
                   <div
+                    key={date.value}
                     className={DATE_ITEM_STYLING[layerIndex].class}
                     role="presentation"
                     onClick={() => click(index)}
@@ -172,7 +181,7 @@ const styles = () =>
       top: 22,
       textAlign: 'left',
       paddingLeft: 5,
-      minWidth: 80,
+      minWidth: 400,
     },
 
     dayItem: {

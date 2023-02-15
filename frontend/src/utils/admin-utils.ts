@@ -31,6 +31,11 @@ export function getAdminNameProperty(adminLevel: AdminLevelType = 1): string {
   return adminLevelNames[adminLevel - 1];
 }
 
+export function getLowestAdminLevelName(): string {
+  const { adminLevelNames } = getBoundaryLayerSingleton();
+  return adminLevelNames[adminLevelNames.length - 1];
+}
+
 // get the total number of admin levels available
 // if this returns 3 than means we have Admin 1, Admin 2 and Admin 3 available
 export function getAdminLevelCount(): number {

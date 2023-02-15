@@ -1,16 +1,6 @@
 import moment from 'moment';
-import { xml2js } from 'xml-js';
-import {
-  findIndex,
-  get,
-  isEmpty,
-  isString,
-  merge,
-  union,
-  snakeCase,
-  sortBy,
-} from 'lodash';
-import { formatUrl, WFS, WMS } from 'prism-common';
+import { get, merge, snakeCase, sortBy } from 'lodash';
+import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
@@ -26,11 +16,13 @@ import {
   ImpactLayerProps,
   WMSLayerProps,
   FeatureInfoType,
-  LabelType,
+  DataType,
   PointDataLoader,
+  StaticRasterLayerProps,
 } from '../config/types';
-import { queryParamsToString } from '../context/layers/point_data';
+import { queryParamsToString } from './url-utils';
 import { createEWSDatesArray } from './ews-utils';
+import { fetchACLEDDates } from './acled-utils';
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
@@ -62,16 +54,12 @@ export const getRequestDate = (
 // Note: PRISM's date picker is designed to work with dates in the UTC timezone
 // Therefore, ambiguous dates (dates passed as string e.g 2020-08-01) shouldn't be calculated from the user's timezone and instead be converted directly to UTC. Possibly with moment.utc(string)
 
-const xml2jsOptions = {
-  compact: true,
-  trim: true,
-  ignoreComment: true,
-};
 export type DateCompatibleLayer =
   | AdminLevelDataLayerProps
   | WMSLayerProps
   | ImpactLayerProps
-  | PointDataLayerProps;
+  | PointDataLayerProps
+  | StaticRasterLayerProps;
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
@@ -89,6 +77,8 @@ export const getPossibleDatesForLayer = (
       case 'point_data':
       case 'admin_level_data':
         return serverAvailableDates[layer.id];
+      case 'static_raster':
+        return serverAvailableDates[layer.id];
       default:
         return [];
     }
@@ -96,93 +86,6 @@ export const getPossibleDatesForLayer = (
 
   return datesArray()?.map(d => d.displayDate) ?? [];
 };
-
-/**
- * Format the raw data to { [layerId]: availableDates }
- * @param rawLayers Layers data return by the server 'GetCapabilities' request
- * @param layerIdPath path to layer's id
- * @param datesPath path to layer's available dates
- * @returns an object shape like { [layerId]: availableDates }
- */
-function formatCapabilitiesInfo(
-  rawLayers: any,
-  layerIdPath: string,
-  datesPath: string,
-) {
-  return rawLayers.reduce((acc: any, layer: any) => {
-    const layerId = get(layer, layerIdPath);
-
-    // Support for Layer with Custom Dimensions
-    // see: https://docs.geoserver.org/latest/en/user/data/webadmin/layers.html#vector-custom-dimensions
-    const innerDatesPath =
-      'Dimension' in layer && datesPath === 'Dimension._text'
-        ? (() => {
-            // case for multi dimension layer
-            const idx = findIndex(get(layer, 'Dimension'), dim => {
-              return get(dim, '_attributes.name') === 'time';
-            });
-            return idx >= 0 ? `Dimension.${idx}._text` : datesPath;
-          })()
-        : datesPath;
-
-    const rawDates = get(layer, innerDatesPath, null);
-    if (rawDates === null) {
-      // Support WMS Layer with no date dimension (i.e. static data)
-      return acc;
-    }
-    const dates: (string | { _text: string })[] = isString(rawDates)
-      ? rawDates.split(',')
-      : rawDates;
-
-    const availableDates = dates
-      .filter(date => !isEmpty(date))
-      .map(date =>
-        // adding 12 hours to avoid  errors due to daylight saving
-        moment
-          .utc(get(date, '_text', date).split('T')[0])
-          .set({ hour: 12 })
-          .valueOf(),
-      );
-
-    const { [layerId]: oldLayerDates } = acc;
-    return {
-      ...acc,
-      [layerId]: union(availableDates, oldLayerDates),
-    };
-  }, {});
-}
-
-/**
- * List capabilities for a WCS layer.
- * @param serverUri
- */
-async function getWCSCoverage(serverUri: string) {
-  const requestUri = formatUrl(serverUri, {
-    request: 'DescribeCoverage',
-  });
-
-  try {
-    const response = await fetch(requestUri);
-    if (!response.ok) {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
-    const responseText = await response.text();
-    const responseJS = xml2js(responseText, xml2jsOptions);
-
-    const rawLayers = get(responseJS, 'CoverageDescription.CoverageOffering');
-
-    return formatCapabilitiesInfo(
-      rawLayers,
-      'name._text',
-      'domainSet.temporalDomain.gml:timePosition',
-    );
-  } catch (error) {
-    // TODO we used to throw the error here so a notification appears via middleware. Removed because a failure of one shouldn't prevent the successful requests from saving.
-    // we could do a dispatch for a notification, but getting a dispatch reference here would be complex, just for a notification
-    console.error(error);
-    return {};
-  }
-}
 
 type PointDataDates = Array<{
   date: string;
@@ -224,6 +127,8 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   switch (loader) {
     case PointDataLoader.EWS:
       return createEWSDatesArray();
+    case PointDataLoader.ACLED:
+      return fetchACLEDDates(url, additionalQueryParams);
     default:
       break;
   }
@@ -251,16 +156,16 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
 }
 
 async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
-  const { dates, dateUrl } = layer;
-  if (dateUrl) {
-    const response = await fetch(dateUrl);
-    if (response.status !== 200) {
-      console.error(`Impossible to get admin level data dates for ${layer.id}`);
-      return [];
-    }
-    const data = await response.json();
-    return data.dates.map((v: string) => moment(v, 'YYYY-MM-DD').valueOf());
+  const { dates } = layer;
+  if (!dates) {
+    return [];
   }
+  // raw data comes in as {"dates": ["YYYY-MM-DD"]}
+  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+}
+
+async function getStaticRasterDataCoverage(layer: StaticRasterLayerProps) {
+  const { dates } = layer;
   if (!dates) {
     return [];
   }
@@ -357,18 +262,25 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 
   const adminWithDateLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is AdminLevelDataLayerProps =>
-      layer.type === 'admin_level_data' &&
-      (Boolean(layer.dates) || Boolean(layer.dateUrl)),
+      layer.type === 'admin_level_data' && Boolean(layer.dates),
+  );
+
+  const staticRasterWithDateLayers = Object.values(LayerDefinitions).filter(
+    (layer): layer is StaticRasterLayerProps =>
+      layer.type === 'static_raster' && Boolean(layer.dates),
   );
 
   const layerDates = await Promise.all([
     ...wmsServerUrls.map(url => new WMS(url).getLayerDays()),
-    ...wcsServerUrls.map(url => getWCSCoverage(url)),
+    ...wcsServerUrls.map(url => fetchCoverageLayerDays(url)),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer),
     })),
     ...adminWithDateLayers.map(async layer => ({
       [layer.id]: await getAdminLevelDataCoverage(layer),
+    })),
+    ...staticRasterWithDateLayers.map(async layer => ({
+      [layer.id]: await getStaticRasterDataCoverage(layer),
     })),
   ]);
 
@@ -406,13 +318,25 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 }
 
 /**
- * Format value from featureInfo response based on LabelType provided
+ * Format value from featureInfo response based on DataType provided
  *
  * @return a formatted string
  */
-export function formatFeatureInfo(value: string, type: LabelType): string {
-  if (type === LabelType.Date) {
+export function formatFeatureInfo(
+  value: string,
+  type: DataType,
+  labelMap?: { [key: string]: string },
+): string {
+  if (type === DataType.Date) {
     return `${moment(value).utc().format('MMMM Do YYYY, h:mm:ss')} UTC`;
+  }
+
+  if (type === DataType.LabelMapping) {
+    if (!labelMap) {
+      throw new Error('labelMap not defined.');
+    }
+
+    return labelMap[value];
   }
 
   return value;
@@ -456,7 +380,7 @@ async function runFeatureInfoRequest(
       .reduce(
         (obj, key) => ({
           ...obj,
-          [featureInfoProps[key].label]: formatFeatureInfo(
+          [featureInfoProps[key].dataTitle]: formatFeatureInfo(
             properties[key],
             featureInfoProps[key].type,
           ),

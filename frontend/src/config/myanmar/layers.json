@@ -4,12 +4,8 @@
     "path": "data/myanmar/mmr_admin1_boundaries.json",
     "opacity": 0.8,
     "admin_code": "ST_PCODE",
-    "admin_level_names": [
-      "ST"
-    ],
-    "admin_level_local_names": [
-      "mmr_polbnd"
-    ],
+    "admin_level_names": ["ST"],
+    "admin_level_local_names": ["mmr_polbnd"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -26,14 +22,8 @@
     "path": "data/myanmar/mmr_admin2_boundaries.json",
     "opacity": 0.8,
     "admin_code": "DT_PCODE",
-    "admin_level_names": [
-      "ST",
-      "DT"
-    ],
-    "admin_level_local_names": [
-      "mmr_polbnd",
-      "DT_MMR4"
-    ],
+    "admin_level_names": ["ST", "DT"],
+    "admin_level_local_names": ["mmr_polbnd", "DT_MMR4"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -50,16 +40,8 @@
     "path": "data/myanmar/admin_boundaries.json",
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
-    "admin_level_names": [
-      "ST",
-      "DT",
-      "TS"
-    ],
-    "admin_level_local_names": [
-      "mmr_polbnd",
-      "DT_MMR4",
-      "TS_MMR4"
-    ],
+    "admin_level_names": ["ST", "DT", "TS"],
+    "admin_level_local_names": ["mmr_polbnd", "DT_MMR4", "TS_MMR4"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -304,7 +286,7 @@
     "feature_info_props": {
       "drought_se": {
         "type": "string",
-        "label": "Drought Sensitivity"
+        "dataTitle": "Drought Sensitivity"
       }
     },
     "admin_level": 3,
@@ -810,7 +792,7 @@
       { "value": 1600, "label": "1600-1800 mm", "color": "#a002fa" },
       { "value": 1800, "label": "1800-2000 mm", "color": "#fa78fa" },
       { "value": 2000, "label": "> 2000 mm", "color": "#ffc4ee" }
-  ]
+    ]
   },
   "rainfall_agg_9month": {
     "title": "9-month rainfall aggregate (mm)",
@@ -1402,17 +1384,17 @@
       { "value": 0, "label": "< 0.10", "color": "#fffae6" },
       { "value": 0.1, "label": "0.10 - 0.15", "color": "#fff0be" },
       { "value": 0.15, "label": "0.15 - 0.20", "color": "#dae3a1" },
-      { "value": 0.20, "label": "0.20 - 0.25", "color": "#ccea83" },
+      { "value": 0.2, "label": "0.20 - 0.25", "color": "#ccea83" },
       { "value": 0.25, "label": "0.25 - 0.30", "color": "#cbff1f" },
-      { "value": 0.30, "label": "0.30 - 0.35", "color": "#86cb66" },
+      { "value": 0.3, "label": "0.30 - 0.35", "color": "#86cb66" },
       { "value": 0.35, "label": "0.35 - 0.40", "color": "#2da155" },
-      { "value": 0.40, "label": "0.40 - 0.50", "color": "#009600" },
-      { "value": 0.50, "label": "0.50 - 0.60", "color": "#006400" },
-      { "value": 0.60, "label": "0.60 - 0.70", "color": "#64a77e" },
-      { "value": 0.70, "label": "0.70 - 0.80", "color": "#328968" },
-      { "value": 0.80, "label": "0.80 - 0.85", "color": "#006b52" },
+      { "value": 0.4, "label": "0.40 - 0.50", "color": "#009600" },
+      { "value": 0.5, "label": "0.50 - 0.60", "color": "#006400" },
+      { "value": 0.6, "label": "0.60 - 0.70", "color": "#64a77e" },
+      { "value": 0.7, "label": "0.70 - 0.80", "color": "#328968" },
+      { "value": 0.8, "label": "0.80 - 0.85", "color": "#006b52" },
       { "value": 0.85, "label": "0.85 - 0.90", "color": "#004e33" },
-      { "value": 0.90, "label": "> 0.90", "color": "#002a1e" }
+      { "value": 0.9, "label": "> 0.90", "color": "#002a1e" }
     ]
   },
   "ndvi_dekad_anomaly": {
@@ -2191,15 +2173,15 @@
     "feature_info_props": {
       "event_name": {
         "type": "text",
-        "label": "Event name"
+        "dataTitle": "Event name"
       },
       "timestamp": {
         "type": "date",
-        "label": "Publication date"
+        "dataTitle": "Publication date"
       },
       "wind_speed": {
         "type": "text",
-        "label": "Estimated wind speed"
+        "dataTitle": "Estimated wind speed"
       }
     },
     "geometry": "point"
@@ -2216,11 +2198,11 @@
     "feature_info_props": {
       "event_name": {
         "type": "text",
-        "label": "Event name"
+        "dataTitle": "Event name"
       },
       "timestamp": {
         "type": "date",
-        "label": "Publication date"
+        "dataTitle": "Publication date"
       },
       "wcsConfig": {
         "scale": 0.1,
@@ -2297,13 +2279,113 @@
       "id": "wp_pop_cicunadj"
     }
   },
-  "forecast": {
-    "title": "10-day precipitation forecast",
-    "type": "wms",
-    "server_layer_name": "wld_cli_tp_10d_ecmwf",
-    "opacity": 0.7,
-    "legend": [],
-    "legend_text": "",
-    "base_url": "https://geonode.wfp.org/geoserver"
+  "conflict_fatalities": {
+    "title": "Number of fatalities in an armed conflict incident",
+    "loader": "acled",
+    "additional_query_params": {
+      "iso": 104,
+      "limit": 0
+    },
+    "type": "point_data",
+    "data": "https://prism-api.ovio.org/acled",
+    "date_url": "https://prism-api.ovio.org/acled",
+    "data_field": "fatalities",
+    "opacity": 1,
+    "legend_text": "Number of fatalities in an armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
+    "legend": [
+      { "label": "0", "value": 0, "color": "#fee0d2" },
+      { "label": "1 - 20", "value": 1, "color": "#fc9272" },
+      { "label": "> 20", "value": 21, "color": "#de2d26" }
+    ],
+    "feature_info_props": {
+      "event_type": {
+        "type": "string",
+        "dataTitle": "Event type"
+      },
+      "sub_event_type": {
+        "type": "string",
+        "dataTitle": "Sub event type"
+      },
+      "source": {
+        "type": "string",
+        "dataTitle": "Source"
+      },
+      "event_date": {
+        "type": "string",
+        "dataTitle": "Date"
+      },
+      "notes": {
+        "type": "string",
+        "dataTitle": "Details"
+      }
+    }
+  },
+  "conflict_type": {
+    "title": "Types of armed conflict incident",
+    "loader": "acled",
+    "additional_query_params": {
+      "iso": 104,
+      "limit": 0
+    },
+    "type": "point_data",
+    "data": "https://prism-api.ovio.org/acled",
+    "date_url": "https://prism-api.ovio.org/acled",
+    "data_field": "event_type",
+    "data_field_type": "text",
+    "opacity": 1,
+    "legend_text": "Types of armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
+    "legend": [
+      { "label": "Battles", 
+        "value": "Battles ", 
+        "color": "#ea5545" 
+      },
+      {
+        "label": "Explosions/Remote violence",
+        "value": "Explosions/Remote violence",
+        "color": "#ef9b20"
+      },
+      {
+        "label": "Violence against civilians",
+        "value": "Violence against civilians",
+        "color": "#ede15b"
+      },
+      {
+        "label": "Protests",
+        "value": "Protests",
+        "color": "#87bc45"
+      },
+      {
+        "label": "Riots",
+        "value": "Riots",
+        "color": "#27aeef"
+      },
+      {
+        "label": "Strategic developments",
+        "value": "Strategic developments",
+        "color": "#666666"
+      }
+    ],
+    "feature_info_props": {
+      "event_type": {
+        "type": "string",
+        "dataTitle": "Event type"
+      },
+      "sub_event_type": {
+        "type": "string",
+        "dataTitle": "Sub event type"
+      },
+      "source": {
+        "type": "string",
+        "dataTitle": "Source"
+      },
+      "event_date": {
+        "type": "string",
+        "dataTitle": "Date"
+      },
+      "notes": {
+        "type": "string",
+        "dataTitle": "Details"
+      }
+    }
   }
 }

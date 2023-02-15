@@ -49,7 +49,6 @@
       ]
     },
     "risk": {
-      "dzud_risk": ["DzudRiskMap"],
       "impact_analysis": [
         "herd_pasture_impact",
         "livestock_vhi",
