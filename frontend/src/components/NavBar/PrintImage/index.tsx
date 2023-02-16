@@ -7,7 +7,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import Print from '@material-ui/icons/Print';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import DownloadImage from './image';
@@ -44,7 +44,7 @@ function PrintImage() {
     <>
       <div style={{ paddingTop: '4px' }}>
         <Button onClick={openModal} style={{ backgroundColor: 'transparent' }}>
-          <GetAppIcon fontSize="small" style={{ paddingRight: '0.1em' }} />
+          <Print fontSize="small" style={{ paddingRight: '0.2em' }} />
           <Typography variant="body2">{t('PRINT')}</Typography>
         </Button>
       </div>
