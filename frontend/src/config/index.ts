@@ -28,6 +28,8 @@ import myanmar from './myanmar';
 
 import namibia from './namibia';
 
+import nigeria from './nigeria';
+
 import rbd from './rbd';
 
 import sierraleone from './sierraleone';
@@ -60,6 +62,7 @@ const configMap = {
   mozambique,
   myanmar,
   namibia,
+  nigeria,
   rbd,
   sierraleone,
   southsudan,
