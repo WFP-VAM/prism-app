@@ -1,7 +1,7 @@
 {
     "DataList": [
         {
-            "CODE": 1101,
+            "CODE": "1101",
             "A2NAME": "Simeulue",
             "POU": 14.19,
             "Stunting": 47.3,
@@ -19,7 +19,7 @@
             "Population": 94259
         },
         {
-            "CODE": 1102,
+            "CODE": "1102",
             "A2NAME": "Aceh Singkil",
             "POU": 6.41,
             "Stunting": 26.9,
@@ -37,7 +37,7 @@
             "Population": 128719
         },
         {
-            "CODE": 1103,
+            "CODE": "1103",
             "A2NAME": "Aceh Selatan",
             "POU": 11.82,
             "Stunting": 35.9,
@@ -55,7 +55,7 @@
             "Population": 236077
         },
         {
-            "CODE": 1104,
+            "CODE": "1104",
             "A2NAME": "Aceh Tenggara",
             "POU": 7.6,
             "Stunting": 45.3,
@@ -73,7 +73,7 @@
             "Population": 227923
         },
         {
-            "CODE": 1105,
+            "CODE": "1105",
             "A2NAME": "Aceh Timur",
             "POU": 7.33,
             "Stunting": 42.8,
@@ -91,7 +91,7 @@
             "Population": 428761
         },
         {
-            "CODE": 1106,
+            "CODE": "1106",
             "A2NAME": "Aceh Tengah",
             "POU": 6.76,
             "Stunting": 39.8,
@@ -109,7 +109,7 @@
             "Population": 219004
         },
         {
-            "CODE": 1107,
+            "CODE": "1107",
             "A2NAME": "Aceh Barat",
             "POU": 8.06,
             "Stunting": 32.6,
@@ -127,7 +127,7 @@
             "Population": 198163
         },
         {
-            "CODE": 1108,
+            "CODE": "1108",
             "A2NAME": "Aceh Besar",
             "POU": 6.74,
             "Stunting": 38.7,
@@ -145,7 +145,7 @@
             "Population": 412554
         },
         {
-            "CODE": 1109,
+            "CODE": "1109",
             "A2NAME": "Pidie",
             "POU": 9.18,
             "Stunting": 36.2,
@@ -163,7 +163,7 @@
             "Population": 435600
         },
         {
-            "CODE": 1110,
+            "CODE": "1110",
             "A2NAME": "Bireuen",
             "POU": 8.92,
             "Stunting": 41,
@@ -181,7 +181,7 @@
             "Population": 443943
         },
         {
-            "CODE": 1111,
+            "CODE": "1111",
             "A2NAME": "Aceh Utara",
             "POU": 12.12,
             "Stunting": 32.5,
@@ -199,7 +199,7 @@
             "Population": 596900
         },
         {
-            "CODE": 1112,
+            "CODE": "1112",
             "A2NAME": "Aceh Barat Daya",
             "POU": 10.97,
             "Stunting": 35.4,
@@ -217,7 +217,7 @@
             "Population": 152181
         },
         {
-            "CODE": 1113,
+            "CODE": "1113",
             "A2NAME": "Gayo Lues",
             "POU": 7.81,
             "Stunting": 44.4,
@@ -235,7 +235,7 @@
             "Population": 95642
         },
         {
-            "CODE": 1114,
+            "CODE": "1114",
             "A2NAME": "Aceh Tamiang",
             "POU": 13.02,
             "Stunting": 33.4,
@@ -253,7 +253,7 @@
             "Population": 300690
         },
         {
-            "CODE": 1115,
+            "CODE": "1115",
             "A2NAME": "Nagan Raya",
             "POU": 11.3,
             "Stunting": 40.6,
@@ -271,7 +271,7 @@
             "Population": 172357
         },
         {
-            "CODE": 1116,
+            "CODE": "1116",
             "A2NAME": "Aceh Jaya",
             "POU": 8.69,
             "Stunting": 34,
@@ -289,7 +289,7 @@
             "Population": 94645
         },
         {
-            "CODE": 1117,
+            "CODE": "1117",
             "A2NAME": "Bener Meriah",
             "POU": 7.48,
             "Stunting": 45.9,
@@ -307,7 +307,7 @@
             "Population": 162691
         },
         {
-            "CODE": 1118,
+            "CODE": "1118",
             "A2NAME": "Pidie Jaya",
             "POU": 5.12,
             "Stunting": 36.8,
@@ -325,7 +325,7 @@
             "Population": 159829
         },
         {
-            "CODE": 1171,
+            "CODE": "1171",
             "A2NAME": "Banda Aceh",
             "POU": 3.54,
             "Stunting": 26.6,
@@ -343,7 +343,7 @@
             "Population": 247256
         },
         {
-            "CODE": 1172,
+            "CODE": "1172",
             "A2NAME": "Sabang",
             "POU": 5.31,
             "Stunting": 23.5,
@@ -361,7 +361,7 @@
             "Population": 42559
         },
         {
-            "CODE": 1173,
+            "CODE": "1173",
             "A2NAME": "Langsa",
             "POU": 6.53,
             "Stunting": 27.5,
@@ -379,7 +379,7 @@
             "Population": 185662
         },
         {
-            "CODE": 1174,
+            "CODE": "1174",
             "A2NAME": "Lhokseumawe",
             "POU": 6.54,
             "Stunting": 35.4,
@@ -397,7 +397,7 @@
             "Population": 190903
         },
         {
-            "CODE": 1175,
+            "CODE": "1175",
             "A2NAME": "Subulussalam",
             "POU": 8.1,
             "Stunting": 49.6,
@@ -415,7 +415,7 @@
             "Population": 93710
         },
         {
-            "CODE": 1201,
+            "CODE": "1201",
             "A2NAME": "Nias",
             "POU": 5.86,
             "Stunting": 61.3,
@@ -433,7 +433,7 @@
             "Population": 145197
         },
         {
-            "CODE": 1202,
+            "CODE": "1202",
             "A2NAME": "Mandailing Natal",
             "POU": 5.31,
             "Stunting": 48.3,
@@ -451,7 +451,7 @@
             "Population": 481502
         },
         {
-            "CODE": 1203,
+            "CODE": "1203",
             "A2NAME": "Tapanuli Selatan",
             "POU": 5.43,
             "Stunting": 28.8,
@@ -469,7 +469,7 @@
             "Population": 299782
         },
         {
-            "CODE": 1204,
+            "CODE": "1204",
             "A2NAME": "Tapanuli Tengah",
             "POU": 6.25,
             "Stunting": 43.7,
@@ -487,7 +487,7 @@
             "Population": 358801
         },
         {
-            "CODE": 1205,
+            "CODE": "1205",
             "A2NAME": "Tapanuli Utara",
             "POU": 4.4,
             "Stunting": 38.3,
@@ -505,7 +505,7 @@
             "Population": 320631
         },
         {
-            "CODE": 1206,
+            "CODE": "1206",
             "A2NAME": "Toba Samosir",
             "POU": 3.83,
             "Stunting": 29.7,
@@ -523,7 +523,7 @@
             "Population": 213362
         },
         {
-            "CODE": 1207,
+            "CODE": "1207",
             "A2NAME": "Labuhan Batu",
             "POU": 4.19,
             "Stunting": 36.4,
@@ -541,7 +541,7 @@
             "Population": 506834
         },
         {
-            "CODE": 1208,
+            "CODE": "1208",
             "A2NAME": "Asahan",
             "POU": 5.22,
             "Stunting": 24.9,
@@ -559,7 +559,7 @@
             "Population": 790513
         },
         {
-            "CODE": 1209,
+            "CODE": "1209",
             "A2NAME": "Simalungun",
             "POU": 7.07,
             "Stunting": 28.4,
@@ -577,7 +577,7 @@
             "Population": 1024588
         },
         {
-            "CODE": 1210,
+            "CODE": "1210",
             "A2NAME": "Dairi",
             "POU": 4.68,
             "Stunting": 40.2,
@@ -595,7 +595,7 @@
             "Population": 318798
         },
         {
-            "CODE": 1211,
+            "CODE": "1211",
             "A2NAME": "Karo",
             "POU": 3.68,
             "Stunting": 29.6,
@@ -613,7 +613,7 @@
             "Population": 411068
         },
         {
-            "CODE": 1212,
+            "CODE": "1212",
             "A2NAME": "Deli Serdang",
             "POU": 7,
             "Stunting": 25.7,
@@ -631,7 +631,7 @@
             "Population": 1964454
         },
         {
-            "CODE": 1213,
+            "CODE": "1213",
             "A2NAME": "Langkat",
             "POU": 7.84,
             "Stunting": 31.6,
@@ -649,7 +649,7 @@
             "Population": 1052739
         },
         {
-            "CODE": 1214,
+            "CODE": "1214",
             "A2NAME": "Nias Selatan",
             "POU": 8.68,
             "Stunting": 45.1,
@@ -667,7 +667,7 @@
             "Population": 367730
         },
         {
-            "CODE": 1215,
+            "CODE": "1215",
             "A2NAME": "Humbang Hasundutan",
             "POU": 4.32,
             "Stunting": 41.3,
@@ -685,7 +685,7 @@
             "Population": 204023
         },
         {
-            "CODE": 1216,
+            "CODE": "1216",
             "A2NAME": "Pakpak Bharat",
             "POU": 4.19,
             "Stunting": 45.6,
@@ -703,7 +703,7 @@
             "Population": 55183
         },
         {
-            "CODE": 1217,
+            "CODE": "1217",
             "A2NAME": "Samosir",
             "POU": 5.2,
             "Stunting": 24.4,
@@ -721,7 +721,7 @@
             "Population": 141043
         },
         {
-            "CODE": 1218,
+            "CODE": "1218",
             "A2NAME": "Serdang Bedagai",
             "POU": 6.54,
             "Stunting": 36,
@@ -739,7 +739,7 @@
             "Population": 668434
         },
         {
-            "CODE": 1219,
+            "CODE": "1219",
             "A2NAME": "Batu Bara",
             "POU": 6.15,
             "Stunting": 23.7,
@@ -757,7 +757,7 @@
             "Population": 277912
         },
         {
-            "CODE": 1220,
+            "CODE": "1220",
             "A2NAME": "Padang Lawas Utara",
             "POU": 4.07,
             "Stunting": 47.5,
@@ -775,7 +775,7 @@
             "Population": 267931
         },
         {
-            "CODE": 1221,
+            "CODE": "1221",
             "A2NAME": "Padang Lawas",
             "POU": 3.73,
             "Stunting": 42.9,
@@ -793,7 +793,7 @@
             "Population": 264713
         },
         {
-            "CODE": 1222,
+            "CODE": "1222",
             "A2NAME": "Labuhan Batu Selatan",
             "POU": 3.79,
             "Stunting": 34.9,
@@ -811,7 +811,7 @@
             "Population": 324545
         },
         {
-            "CODE": 1223,
+            "CODE": "1223",
             "A2NAME": "Labuhan Batu Utara",
             "POU": 5.29,
             "Stunting": 31.2,
@@ -829,7 +829,7 @@
             "Population": 395476
         },
         {
-            "CODE": 1224,
+            "CODE": "1224",
             "A2NAME": "Nias Utara",
             "POU": 7.28,
             "Stunting": 45.5,
@@ -847,7 +847,7 @@
             "Population": 151998
         },
         {
-            "CODE": 1225,
+            "CODE": "1225",
             "A2NAME": "Nias Barat",
             "POU": 6.47,
             "Stunting": 45.9,
@@ -865,7 +865,7 @@
             "Population": 96608
         },
         {
-            "CODE": 1271,
+            "CODE": "1271",
             "A2NAME": "Sibolga",
             "POU": 6.24,
             "Stunting": 23.4,
@@ -883,7 +883,7 @@
             "Population": 94970
         },
         {
-            "CODE": 1272,
+            "CODE": "1272",
             "A2NAME": "Tanjung Balai",
             "POU": 6.71,
             "Stunting": 35.9,
@@ -901,7 +901,7 @@
             "Population": 179035
         },
         {
-            "CODE": 1273,
+            "CODE": "1273",
             "A2NAME": "Pematang Siantar",
             "POU": 6.75,
             "Stunting": 20.5,
@@ -919,7 +919,7 @@
             "Population": 273523
         },
         {
-            "CODE": 1274,
+            "CODE": "1274",
             "A2NAME": "Tebing Tinggi",
             "POU": 8.94,
             "Stunting": 25.9,
@@ -937,7 +937,7 @@
             "Population": 176429
         },
         {
-            "CODE": 1275,
+            "CODE": "1275",
             "A2NAME": "Medan",
             "POU": 4.19,
             "Stunting": 27,
@@ -955,7 +955,7 @@
             "Population": 2526318
         },
         {
-            "CODE": 1276,
+            "CODE": "1276",
             "A2NAME": "Binjai",
             "POU": 8.36,
             "Stunting": 28.3,
@@ -973,7 +973,7 @@
             "Population": 297448
         },
         {
-            "CODE": 1277,
+            "CODE": "1277",
             "A2NAME": "Padangsidimpuan",
             "POU": 6.58,
             "Stunting": 39.8,
@@ -991,7 +991,7 @@
             "Population": 228125
         },
         {
-            "CODE": 1278,
+            "CODE": "1278",
             "A2NAME": "Gunungsitoli",
             "POU": 4.21,
             "Stunting": 40.4,
@@ -1009,7 +1009,7 @@
             "Population": 136873
         },
         {
-            "CODE": 1301,
+            "CODE": "1301",
             "A2NAME": "Kepulauan Mentawai",
             "POU": 6.51,
             "Stunting": 32.4,
@@ -1027,7 +1027,7 @@
             "Population": 90879
         },
         {
-            "CODE": 1302,
+            "CODE": "1302",
             "A2NAME": "Pesisir Selatan",
             "POU": 4.69,
             "Stunting": 26.5,
@@ -1045,7 +1045,7 @@
             "Population": 515641
         },
         {
-            "CODE": 1303,
+            "CODE": "1303",
             "A2NAME": "Solok",
             "POU": 5.94,
             "Stunting": 41.5,
@@ -1063,7 +1063,7 @@
             "Population": 392463
         },
         {
-            "CODE": 1304,
+            "CODE": "1304",
             "A2NAME": "Sijunjung",
             "POU": 6.01,
             "Stunting": 35,
@@ -1081,7 +1081,7 @@
             "Population": 240071
         },
         {
-            "CODE": 1305,
+            "CODE": "1305",
             "A2NAME": "Tanah Datar",
             "POU": 6.59,
             "Stunting": 26.3,
@@ -1099,7 +1099,7 @@
             "Population": 374555
         },
         {
-            "CODE": 1306,
+            "CODE": "1306",
             "A2NAME": "Padang Pariaman",
             "POU": 5.2,
             "Stunting": 26.1,
@@ -1117,7 +1117,7 @@
             "Population": 325753
         },
         {
-            "CODE": 1307,
+            "CODE": "1307",
             "A2NAME": "Agam",
             "POU": 5.95,
             "Stunting": 30,
@@ -1135,7 +1135,7 @@
             "Population": 524271
         },
         {
-            "CODE": 1308,
+            "CODE": "1308",
             "A2NAME": "Lima Puluh Kota",
             "POU": 7.08,
             "Stunting": 40.1,
@@ -1153,7 +1153,7 @@
             "Population": 388616
         },
         {
-            "CODE": 1309,
+            "CODE": "1309",
             "A2NAME": "Pasaman",
             "POU": 7.64,
             "Stunting": 40.6,
@@ -1171,7 +1171,7 @@
             "Population": 301408
         },
         {
-            "CODE": 1310,
+            "CODE": "1310",
             "A2NAME": "Solok Selatan",
             "POU": 5.83,
             "Stunting": 27.7,
@@ -1189,7 +1189,7 @@
             "Population": 181661
         },
         {
-            "CODE": 1311,
+            "CODE": "1311",
             "A2NAME": "Dharmasraya",
             "POU": 4.81,
             "Stunting": 30.3,
@@ -1207,7 +1207,7 @@
             "Population": 226365
         },
         {
-            "CODE": 1312,
+            "CODE": "1312",
             "A2NAME": "Pasaman Barat",
             "POU": 6.1,
             "Stunting": 35.1,
@@ -1225,7 +1225,7 @@
             "Population": 436347
         },
         {
-            "CODE": 1371,
+            "CODE": "1371",
             "A2NAME": "Padang",
             "POU": 3.78,
             "Stunting": 22.4,
@@ -1243,7 +1243,7 @@
             "Population": 898068
         },
         {
-            "CODE": 1372,
+            "CODE": "1372",
             "A2NAME": "Solok",
             "POU": 4.61,
             "Stunting": 23.6,
@@ -1261,7 +1261,7 @@
             "Population": 76272
         },
         {
-            "CODE": 1373,
+            "CODE": "1373",
             "A2NAME": "Sawah Lunto",
             "POU": 5.71,
             "Stunting": 20.6,
@@ -1279,7 +1279,7 @@
             "Population": 66962
         },
         {
-            "CODE": 1374,
+            "CODE": "1374",
             "A2NAME": "Padang Panjang",
             "POU": 4.72,
             "Stunting": 27.2,
@@ -1297,7 +1297,7 @@
             "Population": 59998
         },
         {
-            "CODE": 1375,
+            "CODE": "1375",
             "A2NAME": "Bukittinggi",
             "POU": 4.86,
             "Stunting": 17.2,
@@ -1315,7 +1315,7 @@
             "Population": 128944
         },
         {
-            "CODE": 1376,
+            "CODE": "1376",
             "A2NAME": "Payakumbuh",
             "POU": 4.47,
             "Stunting": 19.2,
@@ -1333,7 +1333,7 @@
             "Population": 138303
         },
         {
-            "CODE": 1377,
+            "CODE": "1377",
             "A2NAME": "Pariaman",
             "POU": 3.97,
             "Stunting": 17.8,
@@ -1351,7 +1351,7 @@
             "Population": 95519
         },
         {
-            "CODE": 1401,
+            "CODE": "1401",
             "A2NAME": "Kuantan Singingi",
             "POU": 11.44,
             "Stunting": 24.6,
@@ -1369,7 +1369,7 @@
             "Population": 338340
         },
         {
-            "CODE": 1402,
+            "CODE": "1402",
             "A2NAME": "Indragiri Hulu",
             "POU": 10.52,
             "Stunting": 32.2,
@@ -1387,7 +1387,7 @@
             "Population": 439392
         },
         {
-            "CODE": 1403,
+            "CODE": "1403",
             "A2NAME": "Indragiri Hilir",
             "POU": 15.27,
             "Stunting": 32.2,
@@ -1405,7 +1405,7 @@
             "Population": 659433
         },
         {
-            "CODE": 1404,
+            "CODE": "1404",
             "A2NAME": "Pelalawan",
             "POU": 7.32,
             "Stunting": 25.5,
@@ -1423,7 +1423,7 @@
             "Population": 381940
         },
         {
-            "CODE": 1405,
+            "CODE": "1405",
             "A2NAME": "Siak",
             "POU": 9.01,
             "Stunting": 21,
@@ -1441,7 +1441,7 @@
             "Population": 454412
         },
         {
-            "CODE": 1406,
+            "CODE": "1406",
             "A2NAME": "Kampar",
             "POU": 10.16,
             "Stunting": 32,
@@ -1459,7 +1459,7 @@
             "Population": 805295
         },
         {
-            "CODE": 1407,
+            "CODE": "1407",
             "A2NAME": "Rokan Hulu",
             "POU": 8.66,
             "Stunting": 27.2,
@@ -1477,7 +1477,7 @@
             "Population": 560358
         },
         {
-            "CODE": 1408,
+            "CODE": "1408",
             "A2NAME": "Bengkalis",
             "POU": 9.44,
             "Stunting": 32.3,
@@ -1495,7 +1495,7 @@
             "Population": 617450
         },
         {
-            "CODE": 1409,
+            "CODE": "1409",
             "A2NAME": "Rokan Hilir",
             "POU": 10.01,
             "Stunting": 38.1,
@@ -1513,7 +1513,7 @@
             "Population": 530764
         },
         {
-            "CODE": 1410,
+            "CODE": "1410",
             "A2NAME": "Kepulauan Meranti",
             "POU": 11.69,
             "Stunting": 29.9,
@@ -1531,7 +1531,7 @@
             "Population": 209177
         },
         {
-            "CODE": 1471,
+            "CODE": "1471",
             "A2NAME": "Pekanbaru",
             "POU": 7.07,
             "Stunting": 16,
@@ -1549,7 +1549,7 @@
             "Population": 780657
         },
         {
-            "CODE": 1473,
+            "CODE": "1473",
             "A2NAME": "Dumai",
             "POU": 8.31,
             "Stunting": 17.3,
@@ -1567,7 +1567,7 @@
             "Population": 323090
         },
         {
-            "CODE": 1501,
+            "CODE": "1501",
             "A2NAME": "Kerinci",
             "POU": 12.77,
             "Stunting": 42.4,
@@ -1585,7 +1585,7 @@
             "Population": 249232
         },
         {
-            "CODE": 1502,
+            "CODE": "1502",
             "A2NAME": "Merangin",
             "POU": 10.18,
             "Stunting": 35,
@@ -1603,7 +1603,7 @@
             "Population": 360498
         },
         {
-            "CODE": 1503,
+            "CODE": "1503",
             "A2NAME": "Sarolangun",
             "POU": 10.9,
             "Stunting": 18.8,
@@ -1621,7 +1621,7 @@
             "Population": 279252
         },
         {
-            "CODE": 1504,
+            "CODE": "1504",
             "A2NAME": "Batang Hari",
             "POU": 10.45,
             "Stunting": 32.8,
@@ -1639,7 +1639,7 @@
             "Population": 306619
         },
         {
-            "CODE": 1505,
+            "CODE": "1505",
             "A2NAME": "Muaro Jambi",
             "POU": 10.2,
             "Stunting": 20.7,
@@ -1657,7 +1657,7 @@
             "Population": 398417
         },
         {
-            "CODE": 1506,
+            "CODE": "1506",
             "A2NAME": "Tanjung Jabung Timur",
             "POU": 10.08,
             "Stunting": 40.9,
@@ -1675,7 +1675,7 @@
             "Population": 232124
         },
         {
-            "CODE": 1507,
+            "CODE": "1507",
             "A2NAME": "Tanjung Jabung Barat",
             "POU": 14.35,
             "Stunting": 44,
@@ -1693,7 +1693,7 @@
             "Population": 323174
         },
         {
-            "CODE": 1508,
+            "CODE": "1508",
             "A2NAME": "Tebo",
             "POU": 10.09,
             "Stunting": 33,
@@ -1711,7 +1711,7 @@
             "Population": 340280
         },
         {
-            "CODE": 1509,
+            "CODE": "1509",
             "A2NAME": "Bungo",
             "POU": 10.26,
             "Stunting": 20.7,
@@ -1729,7 +1729,7 @@
             "Population": 358376
         },
         {
-            "CODE": 1571,
+            "CODE": "1571",
             "A2NAME": "Jambi",
             "POU": 6.57,
             "Stunting": 26.2,
@@ -1747,7 +1747,7 @@
             "Population": 621061
         },
         {
-            "CODE": 1572,
+            "CODE": "1572",
             "A2NAME": "Sungai Penuh",
             "POU": 6.35,
             "Stunting": 35.8,
@@ -1765,7 +1765,7 @@
             "Population": 97190
         },
         {
-            "CODE": 1601,
+            "CODE": "1601",
             "A2NAME": "Ogan Komering Ulu",
             "POU": 9.46,
             "Stunting": 33.2,
@@ -1783,7 +1783,7 @@
             "Population": 372429
         },
         {
-            "CODE": 1602,
+            "CODE": "1602",
             "A2NAME": "Ogan Komering Ilir",
             "POU": 9.73,
             "Stunting": 30.6,
@@ -1801,7 +1801,7 @@
             "Population": 736761
         },
         {
-            "CODE": 1603,
+            "CODE": "1603",
             "A2NAME": "Muara Enim",
             "POU": 11.12,
             "Stunting": 34.4,
@@ -1819,7 +1819,7 @@
             "Population": 574921
         },
         {
-            "CODE": 1604,
+            "CODE": "1604",
             "A2NAME": "Lahat",
             "POU": 12.73,
             "Stunting": 48.1,
@@ -1837,7 +1837,7 @@
             "Population": 415851
         },
         {
-            "CODE": 1605,
+            "CODE": "1605",
             "A2NAME": "Musi Rawas",
             "POU": 10.98,
             "Stunting": 34.6,
@@ -1855,7 +1855,7 @@
             "Population": 410108
         },
         {
-            "CODE": 1606,
+            "CODE": "1606",
             "A2NAME": "Musi Banyuasin",
             "POU": 8.22,
             "Stunting": 31.1,
@@ -1873,7 +1873,7 @@
             "Population": 615480
         },
         {
-            "CODE": 1607,
+            "CODE": "1607",
             "A2NAME": "Banyu Asin",
             "POU": 12.4,
             "Stunting": 29.3,
@@ -1891,7 +1891,7 @@
             "Population": 787430
         },
         {
-            "CODE": 1608,
+            "CODE": "1608",
             "A2NAME": "Ogan Komering Ulu Selatan",
             "POU": 14.09,
             "Stunting": 26.4,
@@ -1909,7 +1909,7 @@
             "Population": 417541
         },
         {
-            "CODE": 1609,
+            "CODE": "1609",
             "A2NAME": "Ogan Komering Ulu Timur",
             "POU": 10.68,
             "Stunting": 27.2,
@@ -1927,7 +1927,7 @@
             "Population": 652076
         },
         {
-            "CODE": 1610,
+            "CODE": "1610",
             "A2NAME": "Ogan Ilir",
             "POU": 11.12,
             "Stunting": 43.9,
@@ -1945,7 +1945,7 @@
             "Population": 425353
         },
         {
-            "CODE": 1611,
+            "CODE": "1611",
             "A2NAME": "Empat Lawang",
             "POU": 13.49,
             "Stunting": 36,
@@ -1963,7 +1963,7 @@
             "Population": 300149
         },
         {
-            "CODE": 1612,
+            "CODE": "1612",
             "A2NAME": "Penukal Abab Lematang Ilir",
             "POU": 12.06,
             "Stunting": 39.5,
@@ -1981,7 +1981,7 @@
             "Population": 199356
         },
         {
-            "CODE": 1613,
+            "CODE": "1613",
             "A2NAME": "Musi Rawas Utara",
             "POU": 8.69,
             "Stunting": 33.2,
@@ -1999,7 +1999,7 @@
             "Population": 194663
         },
         {
-            "CODE": 1671,
+            "CODE": "1671",
             "A2NAME": "Palembang",
             "POU": 9.84,
             "Stunting": 25.9,
@@ -2017,7 +2017,7 @@
             "Population": 1681704
         },
         {
-            "CODE": 1672,
+            "CODE": "1672",
             "A2NAME": "Prabumulih",
             "POU": 14.71,
             "Stunting": 26.2,
@@ -2035,7 +2035,7 @@
             "Population": 197828
         },
         {
-            "CODE": 1673,
+            "CODE": "1673",
             "A2NAME": "Pagar Alam",
             "POU": 15.63,
             "Stunting": 31.9,
@@ -2053,7 +2053,7 @@
             "Population": 147537
         },
         {
-            "CODE": 1674,
+            "CODE": "1674",
             "A2NAME": "Lubuklinggau",
             "POU": 10.18,
             "Stunting": 32,
@@ -2071,7 +2071,7 @@
             "Population": 231518
         },
         {
-            "CODE": 1701,
+            "CODE": "1701",
             "A2NAME": "Bengkulu Selatan",
             "POU": 9.27,
             "Stunting": 33.7,
@@ -2089,7 +2089,7 @@
             "Population": 170433
         },
         {
-            "CODE": 1702,
+            "CODE": "1702",
             "A2NAME": "Rejang Lebong",
             "POU": 12.83,
             "Stunting": 26,
@@ -2107,7 +2107,7 @@
             "Population": 281884
         },
         {
-            "CODE": 1703,
+            "CODE": "1703",
             "A2NAME": "Bengkulu Utara",
             "POU": 7.38,
             "Stunting": 26.8,
@@ -2125,7 +2125,7 @@
             "Population": 292954
         },
         {
-            "CODE": 1704,
+            "CODE": "1704",
             "A2NAME": "Kaur",
             "POU": 8.2,
             "Stunting": 34.3,
@@ -2143,7 +2143,7 @@
             "Population": 131476
         },
         {
-            "CODE": 1705,
+            "CODE": "1705",
             "A2NAME": "Seluma",
             "POU": 9.5,
             "Stunting": 35.9,
@@ -2161,7 +2161,7 @@
             "Population": 214185
         },
         {
-            "CODE": 1706,
+            "CODE": "1706",
             "A2NAME": "Mukomuko",
             "POU": 5.04,
             "Stunting": 33.1,
@@ -2179,7 +2179,7 @@
             "Population": 190296
         },
         {
-            "CODE": 1707,
+            "CODE": "1707",
             "A2NAME": "Lebong",
             "POU": 10.41,
             "Stunting": 26.1,
@@ -2197,7 +2197,7 @@
             "Population": 108790
         },
         {
-            "CODE": 1708,
+            "CODE": "1708",
             "A2NAME": "Kepahiang",
             "POU": 11.18,
             "Stunting": 36.7,
@@ -2215,7 +2215,7 @@
             "Population": 152786
         },
         {
-            "CODE": 1709,
+            "CODE": "1709",
             "A2NAME": "Bengkulu Tengah",
             "POU": 5.38,
             "Stunting": 23.3,
@@ -2233,7 +2233,7 @@
             "Population": 112396
         },
         {
-            "CODE": 1771,
+            "CODE": "1771",
             "A2NAME": "Bengkulu",
             "POU": 8.25,
             "Stunting": 18,
@@ -2251,7 +2251,7 @@
             "Population": 374394
         },
         {
-            "CODE": 1801,
+            "CODE": "1801",
             "A2NAME": "Lampung Barat",
             "POU": 9.28,
             "Stunting": 33,
@@ -2269,7 +2269,7 @@
             "Population": 307338
         },
         {
-            "CODE": 1802,
+            "CODE": "1802",
             "A2NAME": "Tanggamus",
             "POU": 10.98,
             "Stunting": 29.9,
@@ -2287,7 +2287,7 @@
             "Population": 612537
         },
         {
-            "CODE": 1803,
+            "CODE": "1803",
             "A2NAME": "Lampung Selatan",
             "POU": 12.76,
             "Stunting": 29.1,
@@ -2305,7 +2305,7 @@
             "Population": 1059945
         },
         {
-            "CODE": 1804,
+            "CODE": "1804",
             "A2NAME": "Lampung Timur",
             "POU": 13.31,
             "Stunting": 24.7,
@@ -2323,7 +2323,7 @@
             "Population": 1102321
         },
         {
-            "CODE": 1805,
+            "CODE": "1805",
             "A2NAME": "Lampung Tengah",
             "POU": 13.81,
             "Stunting": 25.3,
@@ -2341,7 +2341,7 @@
             "Population": 1391128
         },
         {
-            "CODE": 1806,
+            "CODE": "1806",
             "A2NAME": "Lampung Utara",
             "POU": 14.36,
             "Stunting": 26.6,
@@ -2359,7 +2359,7 @@
             "Population": 642748
         },
         {
-            "CODE": 1807,
+            "CODE": "1807",
             "A2NAME": "Way Kanan",
             "POU": 10.78,
             "Stunting": 36.1,
@@ -2377,7 +2377,7 @@
             "Population": 479723
         },
         {
-            "CODE": 1808,
+            "CODE": "1808",
             "A2NAME": "Tulangbawang",
             "POU": 9.71,
             "Stunting": 32.5,
@@ -2395,7 +2395,7 @@
             "Population": 427853
         },
         {
-            "CODE": 1809,
+            "CODE": "1809",
             "A2NAME": "Pesawaran",
             "POU": 12.48,
             "Stunting": 27.5,
@@ -2413,7 +2413,7 @@
             "Population": 475436
         },
         {
-            "CODE": 1810,
+            "CODE": "1810",
             "A2NAME": "Pringsewu",
             "POU": 15,
             "Stunting": 20.2,
@@ -2431,7 +2431,7 @@
             "Population": 410864
         },
         {
-            "CODE": 1811,
+            "CODE": "1811",
             "A2NAME": "Mesuji",
             "POU": 9.34,
             "Stunting": 28.2,
@@ -2449,7 +2449,7 @@
             "Population": 231532
         },
         {
-            "CODE": 1812,
+            "CODE": "1812",
             "A2NAME": "Tulang Bawang Barat",
             "POU": 13.78,
             "Stunting": 27.2,
@@ -2467,7 +2467,7 @@
             "Population": 290020
         },
         {
-            "CODE": 1813,
+            "CODE": "1813",
             "A2NAME": "Pesisir Barat",
             "POU": 8.73,
             "Stunting": 24.4,
@@ -2485,7 +2485,7 @@
             "Population": 164669
         },
         {
-            "CODE": 1871,
+            "CODE": "1871",
             "A2NAME": "Bandar Lampung",
             "POU": 9.56,
             "Stunting": 25.1,
@@ -2503,7 +2503,7 @@
             "Population": 1092010
         },
         {
-            "CODE": 1872,
+            "CODE": "1872",
             "A2NAME": "Metro",
             "POU": 13.34,
             "Stunting": 14.8,
@@ -2521,7 +2521,7 @@
             "Population": 172934
         },
         {
-            "CODE": 1901,
+            "CODE": "1901",
             "A2NAME": "Bangka",
             "POU": 9.96,
             "Stunting": 23.9,
@@ -2539,7 +2539,7 @@
             "Population": 322949
         },
         {
-            "CODE": 1902,
+            "CODE": "1902",
             "A2NAME": "Belitung",
             "POU": 10.05,
             "Stunting": 19.9,
@@ -2557,7 +2557,7 @@
             "Population": 180486
         },
         {
-            "CODE": 1903,
+            "CODE": "1903",
             "A2NAME": "Bangka Barat",
             "POU": 10.47,
             "Stunting": 33.3,
@@ -2575,7 +2575,7 @@
             "Population": 206006
         },
         {
-            "CODE": 1904,
+            "CODE": "1904",
             "A2NAME": "Bangka Tengah",
             "POU": 10.34,
             "Stunting": 26.1,
@@ -2593,7 +2593,7 @@
             "Population": 197452
         },
         {
-            "CODE": 1905,
+            "CODE": "1905",
             "A2NAME": "Bangka Selatan",
             "POU": 9.84,
             "Stunting": 26.9,
@@ -2611,7 +2611,7 @@
             "Population": 199355
         },
         {
-            "CODE": 1906,
+            "CODE": "1906",
             "A2NAME": "Belitung Timur",
             "POU": 11.88,
             "Stunting": 14.7,
@@ -2629,7 +2629,7 @@
             "Population": 126939
         },
         {
-            "CODE": 1971,
+            "CODE": "1971",
             "A2NAME": "Pangkal Pinang",
             "POU": 9.11,
             "Stunting": 13.3,
@@ -2647,7 +2647,7 @@
             "Population": 222298
         },
         {
-            "CODE": 2101,
+            "CODE": "2101",
             "A2NAME": "Karimun",
             "POU": 6.25,
             "Stunting": 31.6,
@@ -2665,7 +2665,7 @@
             "Population": 260583
         },
         {
-            "CODE": 2102,
+            "CODE": "2102",
             "A2NAME": "Bintan",
             "POU": 7.16,
             "Stunting": 21.5,
@@ -2683,7 +2683,7 @@
             "Population": 166856
         },
         {
-            "CODE": 2103,
+            "CODE": "2103",
             "A2NAME": "Natuna",
             "POU": 6.75,
             "Stunting": 22.2,
@@ -2701,7 +2701,7 @@
             "Population": 77903
         },
         {
-            "CODE": 2104,
+            "CODE": "2104",
             "A2NAME": "Lingga",
             "POU": 10.15,
             "Stunting": 22,
@@ -2719,7 +2719,7 @@
             "Population": 86419
         },
         {
-            "CODE": 2105,
+            "CODE": "2105",
             "A2NAME": "Kepulauan Anambas",
             "POU": 6.09,
             "Stunting": 26.1,
@@ -2737,7 +2737,7 @@
             "Population": 44675
         },
         {
-            "CODE": 2171,
+            "CODE": "2171",
             "A2NAME": "Batam",
             "POU": 3.29,
             "Stunting": 22.9,
@@ -2755,7 +2755,7 @@
             "Population": 1179667
         },
         {
-            "CODE": 2172,
+            "CODE": "2172",
             "A2NAME": "Tanjung Pinang",
             "POU": 4.82,
             "Stunting": 23.3,
@@ -2773,7 +2773,7 @@
             "Population": 227069
         },
         {
-            "CODE": 3101,
+            "CODE": "3101",
             "A2NAME": "Kepulauan Seribu",
             "POU": 0.87,
             "Stunting": 27.1,
@@ -2791,7 +2791,7 @@
             "Population": 29418
         },
         {
-            "CODE": 3171,
+            "CODE": "3171",
             "A2NAME": "Jakarta Selatan",
             "POU": 1.41,
             "Stunting": 16.2,
@@ -2809,7 +2809,7 @@
             "Population": 2375063
         },
         {
-            "CODE": 3172,
+            "CODE": "3172",
             "A2NAME": "Jakarta Timur",
             "POU": 1.65,
             "Stunting": 18.4,
@@ -2827,7 +2827,7 @@
             "Population": 3259788
         },
         {
-            "CODE": 3173,
+            "CODE": "3173",
             "A2NAME": "Jakarta Pusat",
             "POU": 1.36,
             "Stunting": 23.5,
@@ -2845,7 +2845,7 @@
             "Population": 1136029
         },
         {
-            "CODE": 3174,
+            "CODE": "3174",
             "A2NAME": "Jakarta Barat",
             "POU": 1.36,
             "Stunting": 14.8,
@@ -2863,7 +2863,7 @@
             "Population": 2585144
         },
         {
-            "CODE": 3175,
+            "CODE": "3175",
             "A2NAME": "Jakarta Utara",
             "POU": 1.46,
             "Stunting": 19,
@@ -2881,7 +2881,7 @@
             "Population": 1863567
         },
         {
-            "CODE": 3201,
+            "CODE": "3201",
             "A2NAME": "Bogor",
             "POU": 2.93,
             "Stunting": 32.9,
@@ -2899,7 +2899,7 @@
             "Population": 5288949
         },
         {
-            "CODE": 3202,
+            "CODE": "3202",
             "A2NAME": "Sukabumi",
             "POU": 4.33,
             "Stunting": 41.4,
@@ -2917,7 +2917,7 @@
             "Population": 2697559
         },
         {
-            "CODE": 3203,
+            "CODE": "3203",
             "A2NAME": "Cianjur",
             "POU": 5.85,
             "Stunting": 33.5,
@@ -2935,7 +2935,7 @@
             "Population": 2415639
         },
         {
-            "CODE": 3204,
+            "CODE": "3204",
             "A2NAME": "Bandung",
             "POU": 4.57,
             "Stunting": 35.2,
@@ -2953,7 +2953,7 @@
             "Population": 3631069
         },
         {
-            "CODE": 3205,
+            "CODE": "3205",
             "A2NAME": "Garut",
             "POU": 3.9,
             "Stunting": 34.6,
@@ -2971,7 +2971,7 @@
             "Population": 2603924
         },
         {
-            "CODE": 3206,
+            "CODE": "3206",
             "A2NAME": "Tasikmalaya",
             "POU": 7.11,
             "Stunting": 33.8,
@@ -2989,7 +2989,7 @@
             "Population": 1858617
         },
         {
-            "CODE": 3207,
+            "CODE": "3207",
             "A2NAME": "Ciamis",
             "POU": 4.69,
             "Stunting": 33.4,
@@ -3007,7 +3007,7 @@
             "Population": 1262628
         },
         {
-            "CODE": 3208,
+            "CODE": "3208",
             "A2NAME": "Kuningan",
             "POU": 5.13,
             "Stunting": 28.7,
@@ -3025,7 +3025,7 @@
             "Population": 1197934
         },
         {
-            "CODE": 3209,
+            "CODE": "3209",
             "A2NAME": "Cirebon",
             "POU": 6,
             "Stunting": 33.7,
@@ -3043,7 +3043,7 @@
             "Population": 2356015
         },
         {
-            "CODE": 3210,
+            "CODE": "3210",
             "A2NAME": "Majalengka",
             "POU": 5.69,
             "Stunting": 36.6,
@@ -3061,7 +3061,7 @@
             "Population": 1323886
         },
         {
-            "CODE": 3211,
+            "CODE": "3211",
             "A2NAME": "Sumedang",
             "POU": 6.65,
             "Stunting": 32.2,
@@ -3079,7 +3079,7 @@
             "Population": 1165155
         },
         {
-            "CODE": 3212,
+            "CODE": "3212",
             "A2NAME": "Indramayu",
             "POU": 4.71,
             "Stunting": 34,
@@ -3097,7 +3097,7 @@
             "Population": 1879690
         },
         {
-            "CODE": 3213,
+            "CODE": "3213",
             "A2NAME": "Subang",
             "POU": 3.8,
             "Stunting": 28.6,
@@ -3115,7 +3115,7 @@
             "Population": 1596456
         },
         {
-            "CODE": 3214,
+            "CODE": "3214",
             "A2NAME": "Purwakarta",
             "POU": 4.24,
             "Stunting": 41,
@@ -3133,7 +3133,7 @@
             "Population": 990245
         },
         {
-            "CODE": 3215,
+            "CODE": "3215",
             "A2NAME": "Karawang",
             "POU": 2.62,
             "Stunting": 33.1,
@@ -3151,7 +3151,7 @@
             "Population": 2393372
         },
         {
-            "CODE": 3216,
+            "CODE": "3216",
             "A2NAME": "Bekasi",
             "POU": 2.07,
             "Stunting": 26.4,
@@ -3169,7 +3169,7 @@
             "Population": 2977254
         },
         {
-            "CODE": 3217,
+            "CODE": "3217",
             "A2NAME": "Bandung Barat",
             "POU": 6.23,
             "Stunting": 36.7,
@@ -3187,7 +3187,7 @@
             "Population": 1751846
         },
         {
-            "CODE": 3218,
+            "CODE": "3218",
             "A2NAME": "Pangandaran",
             "POU": 3.62,
             "Stunting": 32.7,
@@ -3205,7 +3205,7 @@
             "Population": 432118
         },
         {
-            "CODE": 3271,
+            "CODE": "3271",
             "A2NAME": "Bogor",
             "POU": 2.55,
             "Stunting": 27.8,
@@ -3223,7 +3223,7 @@
             "Population": 1075457
         },
         {
-            "CODE": 3272,
+            "CODE": "3272",
             "A2NAME": "Sukabumi",
             "POU": 3.81,
             "Stunting": 29,
@@ -3241,7 +3241,7 @@
             "Population": 353455
         },
         {
-            "CODE": 3273,
+            "CODE": "3273",
             "A2NAME": "Bandung",
             "POU": 2.53,
             "Stunting": 21.7,
@@ -3259,7 +3259,7 @@
             "Population": 2526476
         },
         {
-            "CODE": 3274,
+            "CODE": "3274",
             "A2NAME": "Cirebon",
             "POU": 5.09,
             "Stunting": 31.2,
@@ -3277,7 +3277,7 @@
             "Population": 343497
         },
         {
-            "CODE": 3275,
+            "CODE": "3275",
             "A2NAME": "Bekasi",
             "POU": 1.33,
             "Stunting": 16.7,
@@ -3295,7 +3295,7 @@
             "Population": 2469978
         },
         {
-            "CODE": 3276,
+            "CODE": "3276",
             "A2NAME": "Depok",
             "POU": 1.36,
             "Stunting": 23.2,
@@ -3313,7 +3313,7 @@
             "Population": 1889171
         },
         {
-            "CODE": 3277,
+            "CODE": "3277",
             "A2NAME": "Cimahi",
             "POU": 2.73,
             "Stunting": 21.1,
@@ -3331,7 +3331,7 @@
             "Population": 560512
         },
         {
-            "CODE": 3278,
+            "CODE": "3278",
             "A2NAME": "Tasikmalaya",
             "POU": 4.59,
             "Stunting": 25.7,
@@ -3349,7 +3349,7 @@
             "Population": 731067
         },
         {
-            "CODE": 3279,
+            "CODE": "3279",
             "A2NAME": "Banjar",
             "POU": 4.14,
             "Stunting": 27.9,
@@ -3367,7 +3367,7 @@
             "Population": 205579
         },
         {
-            "CODE": 3301,
+            "CODE": "3301",
             "A2NAME": "Cilacap",
             "POU": 13.13,
             "Stunting": 32.1,
@@ -3385,7 +3385,7 @@
             "Population": 1978172
         },
         {
-            "CODE": 3302,
+            "CODE": "3302",
             "A2NAME": "Banyumas",
             "POU": 9.25,
             "Stunting": 32,
@@ -3403,7 +3403,7 @@
             "Population": 1819521
         },
         {
-            "CODE": 3303,
+            "CODE": "3303",
             "A2NAME": "Purbalingga",
             "POU": 9.87,
             "Stunting": 28.9,
@@ -3421,7 +3421,7 @@
             "Population": 1021701
         },
         {
-            "CODE": 3304,
+            "CODE": "3304",
             "A2NAME": "Banjarnegara",
             "POU": 12.7,
             "Stunting": 24.1,
@@ -3439,7 +3439,7 @@
             "Population": 1040299
         },
         {
-            "CODE": 3305,
+            "CODE": "3305",
             "A2NAME": "Kebumen",
             "POU": 13.49,
             "Stunting": 33.9,
@@ -3457,7 +3457,7 @@
             "Population": 1405641
         },
         {
-            "CODE": 3306,
+            "CODE": "3306",
             "A2NAME": "Purworejo",
             "POU": 15.81,
             "Stunting": 23.3,
@@ -3475,7 +3475,7 @@
             "Population": 799467
         },
         {
-            "CODE": 3307,
+            "CODE": "3307",
             "A2NAME": "Wonosobo",
             "POU": 12.32,
             "Stunting": 31.5,
@@ -3493,7 +3493,7 @@
             "Population": 907897
         },
         {
-            "CODE": 3308,
+            "CODE": "3308",
             "A2NAME": "Magelang",
             "POU": 14.18,
             "Stunting": 33.9,
@@ -3511,7 +3511,7 @@
             "Population": 1310934
         },
         {
-            "CODE": 3309,
+            "CODE": "3309",
             "A2NAME": "Boyolali",
             "POU": 12.41,
             "Stunting": 28.5,
@@ -3529,7 +3529,7 @@
             "Population": 962037
         },
         {
-            "CODE": 3310,
+            "CODE": "3310",
             "A2NAME": "Klaten",
             "POU": 13.56,
             "Stunting": 29.6,
@@ -3547,7 +3547,7 @@
             "Population": 1276350
         },
         {
-            "CODE": 3311,
+            "CODE": "3311",
             "A2NAME": "Sukoharjo",
             "POU": 11.45,
             "Stunting": 31.3,
@@ -3565,7 +3565,7 @@
             "Population": 898329
         },
         {
-            "CODE": 3312,
+            "CODE": "3312",
             "A2NAME": "Wonogiri",
             "POU": 12.81,
             "Stunting": 27.9,
@@ -3583,7 +3583,7 @@
             "Population": 1068865
         },
         {
-            "CODE": 3313,
+            "CODE": "3313",
             "A2NAME": "Karanganyar",
             "POU": 9.38,
             "Stunting": 28,
@@ -3601,7 +3601,7 @@
             "Population": 935566
         },
         {
-            "CODE": 3314,
+            "CODE": "3314",
             "A2NAME": "Sragen",
             "POU": 11.47,
             "Stunting": 33.2,
@@ -3619,7 +3619,7 @@
             "Population": 1005669
         },
         {
-            "CODE": 3315,
+            "CODE": "3315",
             "A2NAME": "Grobogan",
             "POU": 16.03,
             "Stunting": 39.2,
@@ -3637,7 +3637,7 @@
             "Population": 1488811
         },
         {
-            "CODE": 3316,
+            "CODE": "3316",
             "A2NAME": "Blora",
             "POU": 17.15,
             "Stunting": 32.9,
@@ -3655,7 +3655,7 @@
             "Population": 910765
         },
         {
-            "CODE": 3317,
+            "CODE": "3317",
             "A2NAME": "Rembang",
             "POU": 11.9,
             "Stunting": 25.7,
@@ -3673,7 +3673,7 @@
             "Population": 646360
         },
         {
-            "CODE": 3318,
+            "CODE": "3318",
             "A2NAME": "Pati",
             "POU": 10.45,
             "Stunting": 37.9,
@@ -3691,7 +3691,7 @@
             "Population": 1348506
         },
         {
-            "CODE": 3319,
+            "CODE": "3319",
             "A2NAME": "Kudus",
             "POU": 10.77,
             "Stunting": 29.4,
@@ -3709,7 +3709,7 @@
             "Population": 866548
         },
         {
-            "CODE": 3320,
+            "CODE": "3320",
             "A2NAME": "Jepara",
             "POU": 13.53,
             "Stunting": 33.6,
@@ -3727,7 +3727,7 @@
             "Population": 1212692
         },
         {
-            "CODE": 3321,
+            "CODE": "3321",
             "A2NAME": "Demak",
             "POU": 7.98,
             "Stunting": 26.1,
@@ -3745,7 +3745,7 @@
             "Population": 1205146
         },
         {
-            "CODE": 3322,
+            "CODE": "3322",
             "A2NAME": "Semarang",
             "POU": 7.97,
             "Stunting": 24.9,
@@ -3763,7 +3763,7 @@
             "Population": 1052448
         },
         {
-            "CODE": 3323,
+            "CODE": "3323",
             "A2NAME": "Temanggung",
             "POU": 16.85,
             "Stunting": 30.3,
@@ -3781,7 +3781,7 @@
             "Population": 800364
         },
         {
-            "CODE": 3324,
+            "CODE": "3324",
             "A2NAME": "Kendal",
             "POU": 10.99,
             "Stunting": 25.5,
@@ -3799,7 +3799,7 @@
             "Population": 1036182
         },
         {
-            "CODE": 3325,
+            "CODE": "3325",
             "A2NAME": "Batang",
             "POU": 9.65,
             "Stunting": 25.3,
@@ -3817,7 +3817,7 @@
             "Population": 808779
         },
         {
-            "CODE": 3326,
+            "CODE": "3326",
             "A2NAME": "Pekalongan",
             "POU": 7.69,
             "Stunting": 35.1,
@@ -3835,7 +3835,7 @@
             "Population": 978963
         },
         {
-            "CODE": 3327,
+            "CODE": "3327",
             "A2NAME": "Pemalang",
             "POU": 9.46,
             "Stunting": 33.7,
@@ -3853,7 +3853,7 @@
             "Population": 1524541
         },
         {
-            "CODE": 3328,
+            "CODE": "3328",
             "A2NAME": "Tegal",
             "POU": 10.78,
             "Stunting": 30.6,
@@ -3871,7 +3871,7 @@
             "Population": 1652901
         },
         {
-            "CODE": 3329,
+            "CODE": "3329",
             "A2NAME": "Brebes",
             "POU": 10.5,
             "Stunting": 38.5,
@@ -3889,7 +3889,7 @@
             "Population": 1994915
         },
         {
-            "CODE": 3371,
+            "CODE": "3371",
             "A2NAME": "Magelang",
             "POU": 10.17,
             "Stunting": 27.5,
@@ -3907,7 +3907,7 @@
             "Population": 127185
         },
         {
-            "CODE": 3372,
+            "CODE": "3372",
             "A2NAME": "Surakarta",
             "POU": 8.2,
             "Stunting": 39.5,
@@ -3925,7 +3925,7 @@
             "Population": 531931
         },
         {
-            "CODE": 3373,
+            "CODE": "3373",
             "A2NAME": "Salatiga",
             "POU": 5.62,
             "Stunting": 34.2,
@@ -3943,7 +3943,7 @@
             "Population": 196211
         },
         {
-            "CODE": 3374,
+            "CODE": "3374",
             "A2NAME": "Semarang",
             "POU": 5.08,
             "Stunting": 29.7,
@@ -3961,7 +3961,7 @@
             "Population": 1687610
         },
         {
-            "CODE": 3375,
+            "CODE": "3375",
             "A2NAME": "Pekalongan",
             "POU": 7.52,
             "Stunting": 29.7,
@@ -3979,7 +3979,7 @@
             "Population": 315997
         },
         {
-            "CODE": 3376,
+            "CODE": "3376",
             "A2NAME": "Tegal",
             "POU": 6.72,
             "Stunting": 20.7,
@@ -3997,7 +3997,7 @@
             "Population": 287959
         },
         {
-            "CODE": 3401,
+            "CODE": "3401",
             "A2NAME": "Kulon Progo",
             "POU": 12.88,
             "Stunting": 22.7,
@@ -4015,7 +4015,7 @@
             "Population": 442724
         },
         {
-            "CODE": 3402,
+            "CODE": "3402",
             "A2NAME": "Bantul",
             "POU": 10.12,
             "Stunting": 22.9,
@@ -4033,7 +4033,7 @@
             "Population": 956386
         },
         {
-            "CODE": 3403,
+            "CODE": "3403",
             "A2NAME": "Gunung Kidul",
             "POU": 12.06,
             "Stunting": 32.5,
@@ -4051,7 +4051,7 @@
             "Population": 774583
         },
         {
-            "CODE": 3404,
+            "CODE": "3404",
             "A2NAME": "Sleman",
             "POU": 5.01,
             "Stunting": 14.7,
@@ -4069,7 +4069,7 @@
             "Population": 1088066
         },
         {
-            "CODE": 3471,
+            "CODE": "3471",
             "A2NAME": "Yogyakarta",
             "POU": 5.9,
             "Stunting": 16.9,
@@ -4087,7 +4087,7 @@
             "Population": 415452
         },
         {
-            "CODE": 3501,
+            "CODE": "3501",
             "A2NAME": "Pacitan",
             "POU": 9.04,
             "Stunting": 26.3,
@@ -4105,7 +4105,7 @@
             "Population": 597860
         },
         {
-            "CODE": 3502,
+            "CODE": "3502",
             "A2NAME": "Ponorogo",
             "POU": 9.22,
             "Stunting": 30.5,
@@ -4123,7 +4123,7 @@
             "Population": 969061
         },
         {
-            "CODE": 3503,
+            "CODE": "3503",
             "A2NAME": "Trenggalek",
             "POU": 11.99,
             "Stunting": 39.9,
@@ -4141,7 +4141,7 @@
             "Population": 746754
         },
         {
-            "CODE": 3504,
+            "CODE": "3504",
             "A2NAME": "Tulungagung",
             "POU": 7.94,
             "Stunting": 26.2,
@@ -4159,7 +4159,7 @@
             "Population": 1126558
         },
         {
-            "CODE": 3505,
+            "CODE": "3505",
             "A2NAME": "Blitar",
             "POU": 10.38,
             "Stunting": 27.4,
@@ -4177,7 +4177,7 @@
             "Population": 1228454
         },
         {
-            "CODE": 3506,
+            "CODE": "3506",
             "A2NAME": "Kediri",
             "POU": 8.51,
             "Stunting": 29.4,
@@ -4195,7 +4195,7 @@
             "Population": 1672344
         },
         {
-            "CODE": 3507,
+            "CODE": "3507",
             "A2NAME": "Malang",
             "POU": 8.56,
             "Stunting": 31.7,
@@ -4213,7 +4213,7 @@
             "Population": 2628354
         },
         {
-            "CODE": 3508,
+            "CODE": "3508",
             "A2NAME": "Lumajang",
             "POU": 8.64,
             "Stunting": 34,
@@ -4231,7 +4231,7 @@
             "Population": 1092438
         },
         {
-            "CODE": 3509,
+            "CODE": "3509",
             "A2NAME": "Jember",
             "POU": 10.47,
             "Stunting": 38.3,
@@ -4249,7 +4249,7 @@
             "Population": 2582335
         },
         {
-            "CODE": 3510,
+            "CODE": "3510",
             "A2NAME": "Banyuwangi",
             "POU": 8.11,
             "Stunting": 32,
@@ -4267,7 +4267,7 @@
             "Population": 1750027
         },
         {
-            "CODE": 3511,
+            "CODE": "3511",
             "A2NAME": "Bondowoso",
             "POU": 13.9,
             "Stunting": 38,
@@ -4285,7 +4285,7 @@
             "Population": 801789
         },
         {
-            "CODE": 3512,
+            "CODE": "3512",
             "A2NAME": "Situbondo",
             "POU": 13.49,
             "Stunting": 30.7,
@@ -4303,7 +4303,7 @@
             "Population": 666399
         },
         {
-            "CODE": 3513,
+            "CODE": "3513",
             "A2NAME": "Probolinggo",
             "POU": 9.9,
             "Stunting": 39.9,
@@ -4321,7 +4321,7 @@
             "Population": 1157208
         },
         {
-            "CODE": 3514,
+            "CODE": "3514",
             "A2NAME": "Pasuruan",
             "POU": 7.17,
             "Stunting": 39.7,
@@ -4339,7 +4339,7 @@
             "Population": 1599193
         },
         {
-            "CODE": 3515,
+            "CODE": "3515",
             "A2NAME": "Sidoarjo",
             "POU": 4,
             "Stunting": 27,
@@ -4357,7 +4357,7 @@
             "Population": 1951702
         },
         {
-            "CODE": 3516,
+            "CODE": "3516",
             "A2NAME": "Mojokerto",
             "POU": 5.69,
             "Stunting": 29.9,
@@ -4375,7 +4375,7 @@
             "Population": 1114753
         },
         {
-            "CODE": 3517,
+            "CODE": "3517",
             "A2NAME": "Jombang",
             "POU": 7.6,
             "Stunting": 29.8,
@@ -4393,7 +4393,7 @@
             "Population": 1351131
         },
         {
-            "CODE": 3518,
+            "CODE": "3518",
             "A2NAME": "Nganjuk",
             "POU": 9.98,
             "Stunting": 29.6,
@@ -4411,7 +4411,7 @@
             "Population": 1133769
         },
         {
-            "CODE": 3519,
+            "CODE": "3519",
             "A2NAME": "Madiun",
             "POU": 7.74,
             "Stunting": 32.4,
@@ -4429,7 +4429,7 @@
             "Population": 754256
         },
         {
-            "CODE": 3520,
+            "CODE": "3520",
             "A2NAME": "Magetan",
             "POU": 8.77,
             "Stunting": 30.3,
@@ -4447,7 +4447,7 @@
             "Population": 689679
         },
         {
-            "CODE": 3521,
+            "CODE": "3521",
             "A2NAME": "Ngawi",
             "POU": 11.11,
             "Stunting": 40.5,
@@ -4465,7 +4465,7 @@
             "Population": 896920
         },
         {
-            "CODE": 3522,
+            "CODE": "3522",
             "A2NAME": "Bojonegoro",
             "POU": 7.4,
             "Stunting": 34.9,
@@ -4483,7 +4483,7 @@
             "Population": 1343046
         },
         {
-            "CODE": 3523,
+            "CODE": "3523",
             "A2NAME": "Tuban",
             "POU": 7.4,
             "Stunting": 30.8,
@@ -4501,7 +4501,7 @@
             "Population": 1223489
         },
         {
-            "CODE": 3524,
+            "CODE": "3524",
             "A2NAME": "Lamongan",
             "POU": 4.61,
             "Stunting": 35.5,
@@ -4519,7 +4519,7 @@
             "Population": 1380110
         },
         {
-            "CODE": 3525,
+            "CODE": "3525",
             "A2NAME": "Gresik",
             "POU": 2.87,
             "Stunting": 27.2,
@@ -4537,7 +4537,7 @@
             "Population": 1283940
         },
         {
-            "CODE": 3526,
+            "CODE": "3526",
             "A2NAME": "Bangkalan",
             "POU": 6.48,
             "Stunting": 41.9,
@@ -4555,7 +4555,7 @@
             "Population": 1083029
         },
         {
-            "CODE": 3527,
+            "CODE": "3527",
             "A2NAME": "Sampang",
             "POU": 4.98,
             "Stunting": 47.9,
@@ -4573,7 +4573,7 @@
             "Population": 911401
         },
         {
-            "CODE": 3528,
+            "CODE": "3528",
             "A2NAME": "Pamekasan",
             "POU": 9.36,
             "Stunting": 44.1,
@@ -4591,7 +4591,7 @@
             "Population": 843150
         },
         {
-            "CODE": 3529,
+            "CODE": "3529",
             "A2NAME": "Sumenep",
             "POU": 5.64,
             "Stunting": 34.3,
@@ -4609,7 +4609,7 @@
             "Population": 1134847
         },
         {
-            "CODE": 3571,
+            "CODE": "3571",
             "A2NAME": "Kediri",
             "POU": 6.83,
             "Stunting": 34.6,
@@ -4627,7 +4627,7 @@
             "Population": 292363
         },
         {
-            "CODE": 3572,
+            "CODE": "3572",
             "A2NAME": "Blitar",
             "POU": 5.16,
             "Stunting": 25.6,
@@ -4645,7 +4645,7 @@
             "Population": 158123
         },
         {
-            "CODE": 3573,
+            "CODE": "3573",
             "A2NAME": "Malang",
             "POU": 5.02,
             "Stunting": 23.4,
@@ -4663,7 +4663,7 @@
             "Population": 866356
         },
         {
-            "CODE": 3574,
+            "CODE": "3574",
             "A2NAME": "Probolinggo",
             "POU": 4.53,
             "Stunting": 30,
@@ -4681,7 +4681,7 @@
             "Population": 242246
         },
         {
-            "CODE": 3575,
+            "CODE": "3575",
             "A2NAME": "Pasuruan",
             "POU": 6.31,
             "Stunting": 34.9,
@@ -4699,7 +4699,7 @@
             "Population": 210341
         },
         {
-            "CODE": 3576,
+            "CODE": "3576",
             "A2NAME": "Mojokerto",
             "POU": 5.34,
             "Stunting": 20.9,
@@ -4717,7 +4717,7 @@
             "Population": 139961
         },
         {
-            "CODE": 3577,
+            "CODE": "3577",
             "A2NAME": "Madiun",
             "POU": 5.07,
             "Stunting": 29.1,
@@ -4735,7 +4735,7 @@
             "Population": 201243
         },
         {
-            "CODE": 3578,
+            "CODE": "3578",
             "A2NAME": "Surabaya",
             "POU": 2.72,
             "Stunting": 28.6,
@@ -4753,7 +4753,7 @@
             "Population": 2972600
         },
         {
-            "CODE": 3579,
+            "CODE": "3579",
             "A2NAME": "Batu",
             "POU": 4.21,
             "Stunting": 28.3,
@@ -4771,7 +4771,7 @@
             "Population": 215248
         },
         {
-            "CODE": 3601,
+            "CODE": "3601",
             "A2NAME": "Pandeglang",
             "POU": 4.29,
             "Stunting": 39.5,
@@ -4789,7 +4789,7 @@
             "Population": 1340232
         },
         {
-            "CODE": 3602,
+            "CODE": "3602",
             "A2NAME": "Lebak",
             "POU": 3.87,
             "Stunting": 40.2,
@@ -4807,7 +4807,7 @@
             "Population": 1428969
         },
         {
-            "CODE": 3603,
+            "CODE": "3603",
             "A2NAME": "Tangerang",
             "POU": 3.37,
             "Stunting": 23.2,
@@ -4825,7 +4825,7 @@
             "Population": 3165916
         },
         {
-            "CODE": 3604,
+            "CODE": "3604",
             "A2NAME": "Serang",
             "POU": 2.58,
             "Stunting": 32,
@@ -4843,7 +4843,7 @@
             "Population": 1660096
         },
         {
-            "CODE": 3671,
+            "CODE": "3671",
             "A2NAME": "Tangerang",
             "POU": 2.32,
             "Stunting": 19.1,
@@ -4861,7 +4861,7 @@
             "Population": 1856890
         },
         {
-            "CODE": 3672,
+            "CODE": "3672",
             "A2NAME": "Cilegon",
             "POU": 2.37,
             "Stunting": 23.3,
@@ -4879,7 +4879,7 @@
             "Population": 445961
         },
         {
-            "CODE": 3673,
+            "CODE": "3673",
             "A2NAME": "Serang",
             "POU": 2.43,
             "Stunting": 24.6,
@@ -4897,7 +4897,7 @@
             "Population": 687881
         },
         {
-            "CODE": 3674,
+            "CODE": "3674",
             "A2NAME": "Tangerang Selatan",
             "POU": 1.58,
             "Stunting": 19.8,
@@ -4915,7 +4915,7 @@
             "Population": 1352035
         },
         {
-            "CODE": 5101,
+            "CODE": "5101",
             "A2NAME": "Jembrana",
             "POU": 4.29,
             "Stunting": 29.1,
@@ -4933,7 +4933,7 @@
             "Population": 325456
         },
         {
-            "CODE": 5102,
+            "CODE": "5102",
             "A2NAME": "Tabanan",
             "POU": 2.21,
             "Stunting": 16.1,
@@ -4951,7 +4951,7 @@
             "Population": 462651
         },
         {
-            "CODE": 5103,
+            "CODE": "5103",
             "A2NAME": "Badung",
             "POU": 1.24,
             "Stunting": 25.2,
@@ -4969,7 +4969,7 @@
             "Population": 512485
         },
         {
-            "CODE": 5104,
+            "CODE": "5104",
             "A2NAME": "Gianyar",
             "POU": 1.57,
             "Stunting": 12.1,
@@ -4987,7 +4987,7 @@
             "Population": 501317
         },
         {
-            "CODE": 5105,
+            "CODE": "5105",
             "A2NAME": "Klungkung",
             "POU": 3.76,
             "Stunting": 21.4,
@@ -5005,7 +5005,7 @@
             "Population": 216538
         },
         {
-            "CODE": 5106,
+            "CODE": "5106",
             "A2NAME": "Bangli",
             "POU": 2.99,
             "Stunting": 43.1,
@@ -5023,7 +5023,7 @@
             "Population": 254738
         },
         {
-            "CODE": 5107,
+            "CODE": "5107",
             "A2NAME": "Karang Asem",
             "POU": 5.78,
             "Stunting": 26.2,
@@ -5041,7 +5041,7 @@
             "Population": 521954
         },
         {
-            "CODE": 5108,
+            "CODE": "5108",
             "A2NAME": "Buleleng",
             "POU": 4.63,
             "Stunting": 20.5,
@@ -5059,7 +5059,7 @@
             "Population": 826613
         },
         {
-            "CODE": 5171,
+            "CODE": "5171",
             "A2NAME": "Denpasar",
             "POU": 1.53,
             "Stunting": 18.8,
@@ -5077,7 +5077,7 @@
             "Population": 652239
         },
         {
-            "CODE": 5201,
+            "CODE": "5201",
             "A2NAME": "Lombok Barat",
             "POU": 4.17,
             "Stunting": 33.6,
@@ -5095,7 +5095,7 @@
             "Population": 725019
         },
         {
-            "CODE": 5202,
+            "CODE": "5202",
             "A2NAME": "Lombok Tengah",
             "POU": 6.2,
             "Stunting": 31.1,
@@ -5113,7 +5113,7 @@
             "Population": 1042362
         },
         {
-            "CODE": 5203,
+            "CODE": "5203",
             "A2NAME": "Lombok Timur",
             "POU": 8.58,
             "Stunting": 43.5,
@@ -5131,7 +5131,7 @@
             "Population": 1297114
         },
         {
-            "CODE": 5204,
+            "CODE": "5204",
             "A2NAME": "Sumbawa",
             "POU": 4.22,
             "Stunting": 31.5,
@@ -5149,7 +5149,7 @@
             "Population": 519180
         },
         {
-            "CODE": 5205,
+            "CODE": "5205",
             "A2NAME": "Dompu",
             "POU": 4.12,
             "Stunting": 33.8,
@@ -5167,7 +5167,7 @@
             "Population": 241836
         },
         {
-            "CODE": 5206,
+            "CODE": "5206",
             "A2NAME": "Bima",
             "POU": 7.56,
             "Stunting": 32,
@@ -5185,7 +5185,7 @@
             "Population": 532762
         },
         {
-            "CODE": 5207,
+            "CODE": "5207",
             "A2NAME": "Sumbawa Barat",
             "POU": 2.54,
             "Stunting": 18.3,
@@ -5203,7 +5203,7 @@
             "Population": 143633
         },
         {
-            "CODE": 5208,
+            "CODE": "5208",
             "A2NAME": "Lombok Utara",
             "POU": 4.95,
             "Stunting": 29.3,
@@ -5221,7 +5221,7 @@
             "Population": 252949
         },
         {
-            "CODE": 5271,
+            "CODE": "5271",
             "A2NAME": "Mataram",
             "POU": 4.44,
             "Stunting": 24.5,
@@ -5239,7 +5239,7 @@
             "Population": 441561
         },
         {
-            "CODE": 5272,
+            "CODE": "5272",
             "A2NAME": "Bima",
             "POU": 5.16,
             "Stunting": 28.8,
@@ -5257,7 +5257,7 @@
             "Population": 143791
         },
         {
-            "CODE": 5301,
+            "CODE": "5301",
             "A2NAME": "Sumba Barat",
             "POU": 12.93,
             "Stunting": 47.8,
@@ -5275,7 +5275,7 @@
             "Population": 149906
         },
         {
-            "CODE": 5302,
+            "CODE": "5302",
             "A2NAME": "Sumba Timur",
             "POU": 11.57,
             "Stunting": 39.3,
@@ -5293,7 +5293,7 @@
             "Population": 250109
         },
         {
-            "CODE": 5303,
+            "CODE": "5303",
             "A2NAME": "Kupang",
             "POU": 18.09,
             "Stunting": 41.4,
@@ -5311,7 +5311,7 @@
             "Population": 382517
         },
         {
-            "CODE": 5304,
+            "CODE": "5304",
             "A2NAME": "Timor Tengah Selatan",
             "POU": 12.56,
             "Stunting": 56,
@@ -5329,7 +5329,7 @@
             "Population": 470591
         },
         {
-            "CODE": 5305,
+            "CODE": "5305",
             "A2NAME": "Timor Tengah Utara",
             "POU": 12.91,
             "Stunting": 56.8,
@@ -5347,7 +5347,7 @@
             "Population": 267252
         },
         {
-            "CODE": 5306,
+            "CODE": "5306",
             "A2NAME": "Belu",
             "POU": 17.27,
             "Stunting": 46.8,
@@ -5365,7 +5365,7 @@
             "Population": 227648
         },
         {
-            "CODE": 5307,
+            "CODE": "5307",
             "A2NAME": "Alor",
             "POU": 15.07,
             "Stunting": 45.5,
@@ -5383,7 +5383,7 @@
             "Population": 219592
         },
         {
-            "CODE": 5308,
+            "CODE": "5308",
             "A2NAME": "Lembata",
             "POU": 19.58,
             "Stunting": 43.1,
@@ -5401,7 +5401,7 @@
             "Population": 140954
         },
         {
-            "CODE": 5309,
+            "CODE": "5309",
             "A2NAME": "Flores Timur",
             "POU": 17.5,
             "Stunting": 46.5,
@@ -5419,7 +5419,7 @@
             "Population": 285839
         },
         {
-            "CODE": 5310,
+            "CODE": "5310",
             "A2NAME": "Sikka",
             "POU": 14.82,
             "Stunting": 33,
@@ -5437,7 +5437,7 @@
             "Population": 327201
         },
         {
-            "CODE": 5311,
+            "CODE": "5311",
             "A2NAME": "Ende",
             "POU": 11.43,
             "Stunting": 32.8,
@@ -5455,7 +5455,7 @@
             "Population": 277108
         },
         {
-            "CODE": 5312,
+            "CODE": "5312",
             "A2NAME": "Ngada",
             "POU": 9.51,
             "Stunting": 34.7,
@@ -5473,7 +5473,7 @@
             "Population": 169067
         },
         {
-            "CODE": 5313,
+            "CODE": "5313",
             "A2NAME": "Manggarai",
             "POU": 11.68,
             "Stunting": 43.3,
@@ -5491,7 +5491,7 @@
             "Population": 325329
         },
         {
-            "CODE": 5314,
+            "CODE": "5314",
             "A2NAME": "Rote Ndao",
             "POU": 17.49,
             "Stunting": 44,
@@ -5509,7 +5509,7 @@
             "Population": 118200
         },
         {
-            "CODE": 5315,
+            "CODE": "5315",
             "A2NAME": "Manggarai Barat",
             "POU": 8.84,
             "Stunting": 44.3,
@@ -5527,7 +5527,7 @@
             "Population": 237660
         },
         {
-            "CODE": 5316,
+            "CODE": "5316",
             "A2NAME": "Sumba Tengah",
             "POU": 11.37,
             "Stunting": 45.4,
@@ -5545,7 +5545,7 @@
             "Population": 88478
         },
         {
-            "CODE": 5317,
+            "CODE": "5317",
             "A2NAME": "Sumba Barat Daya",
             "POU": 12.56,
             "Stunting": 40,
@@ -5563,7 +5563,7 @@
             "Population": 316999
         },
         {
-            "CODE": 5318,
+            "CODE": "5318",
             "A2NAME": "Nagekeo",
             "POU": 9.36,
             "Stunting": 36,
@@ -5581,7 +5581,7 @@
             "Population": 165514
         },
         {
-            "CODE": 5319,
+            "CODE": "5319",
             "A2NAME": "Manggarai Timur",
             "POU": 13.19,
             "Stunting": 48.4,
@@ -5599,7 +5599,7 @@
             "Population": 276115
         },
         {
-            "CODE": 5320,
+            "CODE": "5320",
             "A2NAME": "Sabu Raijua",
             "POU": 15.15,
             "Stunting": 46.5,
@@ -5617,7 +5617,7 @@
             "Population": 93995
         },
         {
-            "CODE": 5321,
+            "CODE": "5321",
             "A2NAME": "Malaka",
             "POU": 13.88,
             "Stunting": 43,
@@ -5635,7 +5635,7 @@
             "Population": 196926
         },
         {
-            "CODE": 5371,
+            "CODE": "5371",
             "A2NAME": "Kupang",
             "POU": 11.11,
             "Stunting": 23.3,
@@ -5653,7 +5653,7 @@
             "Population": 441688
         },
         {
-            "CODE": 6101,
+            "CODE": "6101",
             "A2NAME": "Sambas",
             "POU": 20.48,
             "Stunting": 39,
@@ -5671,7 +5671,7 @@
             "Population": 640086
         },
         {
-            "CODE": 6102,
+            "CODE": "6102",
             "A2NAME": "Bengkayang",
             "POU": 20.3,
             "Stunting": 31.9,
@@ -5689,7 +5689,7 @@
             "Population": 289733
         },
         {
-            "CODE": 6103,
+            "CODE": "6103",
             "A2NAME": "Landak",
             "POU": 23.13,
             "Stunting": 42,
@@ -5707,7 +5707,7 @@
             "Population": 404124
         },
         {
-            "CODE": 6104,
+            "CODE": "6104",
             "A2NAME": "Mempawah",
             "POU": 18.05,
             "Stunting": 33.4,
@@ -5725,7 +5725,7 @@
             "Population": 307918
         },
         {
-            "CODE": 6105,
+            "CODE": "6105",
             "A2NAME": "Sanggau",
             "POU": 24.14,
             "Stunting": 31.9,
@@ -5743,7 +5743,7 @@
             "Population": 490123
         },
         {
-            "CODE": 6106,
+            "CODE": "6106",
             "A2NAME": "Ketapang",
             "POU": 16.69,
             "Stunting": 42.7,
@@ -5761,7 +5761,7 @@
             "Population": 575955
         },
         {
-            "CODE": 6107,
+            "CODE": "6107",
             "A2NAME": "Sintang",
             "POU": 20.97,
             "Stunting": 33.2,
@@ -5779,7 +5779,7 @@
             "Population": 423487
         },
         {
-            "CODE": 6108,
+            "CODE": "6108",
             "A2NAME": "Kapuas Hulu",
             "POU": 24.77,
             "Stunting": 40.6,
@@ -5797,7 +5797,7 @@
             "Population": 259228
         },
         {
-            "CODE": 6109,
+            "CODE": "6109",
             "A2NAME": "Sekadau",
             "POU": 24.84,
             "Stunting": 28.7,
@@ -5815,7 +5815,7 @@
             "Population": 215670
         },
         {
-            "CODE": 6110,
+            "CODE": "6110",
             "A2NAME": "Melawi",
             "POU": 25.32,
             "Stunting": 40.8,
@@ -5833,7 +5833,7 @@
             "Population": 209086
         },
         {
-            "CODE": 6111,
+            "CODE": "6111",
             "A2NAME": "Kayong Utara",
             "POU": 15.06,
             "Stunting": 33.4,
@@ -5851,7 +5851,7 @@
             "Population": 128009
         },
         {
-            "CODE": 6112,
+            "CODE": "6112",
             "A2NAME": "Kubu Raya",
             "POU": 18.96,
             "Stunting": 24.8,
@@ -5869,7 +5869,7 @@
             "Population": 610212
         },
         {
-            "CODE": 6171,
+            "CODE": "6171",
             "A2NAME": "Pontianak",
             "POU": 7.69,
             "Stunting": 22.3,
@@ -5887,7 +5887,7 @@
             "Population": 672440
         },
         {
-            "CODE": 6172,
+            "CODE": "6172",
             "A2NAME": "Singkawang",
             "POU": 9.65,
             "Stunting": 26.6,
@@ -5905,7 +5905,7 @@
             "Population": 239260
         },
         {
-            "CODE": 6201,
+            "CODE": "6201",
             "A2NAME": "Kotawaringin Barat",
             "POU": 6.26,
             "Stunting": 22.1,
@@ -5923,7 +5923,7 @@
             "Population": 266779
         },
         {
-            "CODE": 6202,
+            "CODE": "6202",
             "A2NAME": "Kotawaringin Timur",
             "POU": 8.95,
             "Stunting": 48.8,
@@ -5941,7 +5941,7 @@
             "Population": 416198
         },
         {
-            "CODE": 6203,
+            "CODE": "6203",
             "A2NAME": "Kapuas",
             "POU": 15.63,
             "Stunting": 41.5,
@@ -5959,7 +5959,7 @@
             "Population": 411164
         },
         {
-            "CODE": 6204,
+            "CODE": "6204",
             "A2NAME": "Barito Selatan",
             "POU": 10.8,
             "Stunting": 40.2,
@@ -5977,7 +5977,7 @@
             "Population": 132129
         },
         {
-            "CODE": 6205,
+            "CODE": "6205",
             "A2NAME": "Barito Utara",
             "POU": 8.26,
             "Stunting": 34.6,
@@ -5995,7 +5995,7 @@
             "Population": 157096
         },
         {
-            "CODE": 6206,
+            "CODE": "6206",
             "A2NAME": "Sukamara",
             "POU": 5.69,
             "Stunting": 24.9,
@@ -6013,7 +6013,7 @@
             "Population": 62143
         },
         {
-            "CODE": 6207,
+            "CODE": "6207",
             "A2NAME": "Lamandau",
             "POU": 5.61,
             "Stunting": 28.3,
@@ -6031,7 +6031,7 @@
             "Population": 100240
         },
         {
-            "CODE": 6208,
+            "CODE": "6208",
             "A2NAME": "Seruyan",
             "POU": 7.73,
             "Stunting": 21.8,
@@ -6049,7 +6049,7 @@
             "Population": 149107
         },
         {
-            "CODE": 6209,
+            "CODE": "6209",
             "A2NAME": "Katingan",
             "POU": 7.5,
             "Stunting": 33.3,
@@ -6067,7 +6067,7 @@
             "Population": 166972
         },
         {
-            "CODE": 6210,
+            "CODE": "6210",
             "A2NAME": "Pulang Pisau",
             "POU": 9.98,
             "Stunting": 32.1,
@@ -6085,7 +6085,7 @@
             "Population": 135639
         },
         {
-            "CODE": 6211,
+            "CODE": "6211",
             "A2NAME": "Gunung Mas",
             "POU": 5.01,
             "Stunting": 38.2,
@@ -6103,7 +6103,7 @@
             "Population": 130426
         },
         {
-            "CODE": 6212,
+            "CODE": "6212",
             "A2NAME": "Barito Timur",
             "POU": 9.27,
             "Stunting": 42.1,
@@ -6121,7 +6121,7 @@
             "Population": 114649
         },
         {
-            "CODE": 6213,
+            "CODE": "6213",
             "A2NAME": "Murung Raya",
             "POU": 6.07,
             "Stunting": 30.8,
@@ -6139,7 +6139,7 @@
             "Population": 111283
         },
         {
-            "CODE": 6271,
+            "CODE": "6271",
             "A2NAME": "Palangka Raya",
             "POU": 6.71,
             "Stunting": 22.9,
@@ -6157,7 +6157,7 @@
             "Population": 286704
         },
         {
-            "CODE": 6301,
+            "CODE": "6301",
             "A2NAME": "Tanah Laut",
             "POU": 2.33,
             "Stunting": 33.2,
@@ -6175,7 +6175,7 @@
             "Population": 348214
         },
         {
-            "CODE": 6302,
+            "CODE": "6302",
             "A2NAME": "Kota Baru",
             "POU": 1.89,
             "Stunting": 28.6,
@@ -6193,7 +6193,7 @@
             "Population": 326811
         },
         {
-            "CODE": 6303,
+            "CODE": "6303",
             "A2NAME": "Banjar",
             "POU": 3.47,
             "Stunting": 33.4,
@@ -6211,7 +6211,7 @@
             "Population": 549602
         },
         {
-            "CODE": 6304,
+            "CODE": "6304",
             "A2NAME": "Barito Kuala",
             "POU": 4.15,
             "Stunting": 34.1,
@@ -6229,7 +6229,7 @@
             "Population": 316738
         },
         {
-            "CODE": 6305,
+            "CODE": "6305",
             "A2NAME": "Tapin",
             "POU": 2.78,
             "Stunting": 36,
@@ -6247,7 +6247,7 @@
             "Population": 190889
         },
         {
-            "CODE": 6306,
+            "CODE": "6306",
             "A2NAME": "Hulu Sungai Selatan",
             "POU": 4.18,
             "Stunting": 35.1,
@@ -6265,7 +6265,7 @@
             "Population": 233185
         },
         {
-            "CODE": 6307,
+            "CODE": "6307",
             "A2NAME": "Hulu Sungai Tengah",
             "POU": 4.9,
             "Stunting": 32.4,
@@ -6283,7 +6283,7 @@
             "Population": 262806
         },
         {
-            "CODE": 6308,
+            "CODE": "6308",
             "A2NAME": "Hulu Sungai Utara",
             "POU": 3.17,
             "Stunting": 37.7,
@@ -6301,7 +6301,7 @@
             "Population": 231583
         },
         {
-            "CODE": 6309,
+            "CODE": "6309",
             "A2NAME": "Tabalong",
             "POU": 2.59,
             "Stunting": 39.6,
@@ -6319,7 +6319,7 @@
             "Population": 250168
         },
         {
-            "CODE": 6310,
+            "CODE": "6310",
             "A2NAME": "Tanah Bumbu",
             "POU": 1.36,
             "Stunting": 28.6,
@@ -6337,7 +6337,7 @@
             "Population": 328872
         },
         {
-            "CODE": 6311,
+            "CODE": "6311",
             "A2NAME": "Balangan",
             "POU": 4.08,
             "Stunting": 36.2,
@@ -6355,7 +6355,7 @@
             "Population": 132210
         },
         {
-            "CODE": 6371,
+            "CODE": "6371",
             "A2NAME": "Banjarmasin",
             "POU": 1.56,
             "Stunting": 28.8,
@@ -6373,7 +6373,7 @@
             "Population": 672121
         },
         {
-            "CODE": 6372,
+            "CODE": "6372",
             "A2NAME": "Banjar Baru",
             "POU": 1.39,
             "Stunting": 39.7,
@@ -6391,7 +6391,7 @@
             "Population": 250770
         },
         {
-            "CODE": 6401,
+            "CODE": "6401",
             "A2NAME": "Paser",
             "POU": 15.8,
             "Stunting": 27.5,
@@ -6409,7 +6409,7 @@
             "Population": 280502
         },
         {
-            "CODE": 6402,
+            "CODE": "6402",
             "A2NAME": "Kutai Barat",
             "POU": 14.77,
             "Stunting": 30,
@@ -6427,7 +6427,7 @@
             "Population": 169741
         },
         {
-            "CODE": 6403,
+            "CODE": "6403",
             "A2NAME": "Kutai Kartanegara",
             "POU": 14.38,
             "Stunting": 35.7,
@@ -6445,7 +6445,7 @@
             "Population": 746727
         },
         {
-            "CODE": 6404,
+            "CODE": "6404",
             "A2NAME": "Kutai Timur",
             "POU": 9.37,
             "Stunting": 30.4,
@@ -6463,7 +6463,7 @@
             "Population": 425430
         },
         {
-            "CODE": 6405,
+            "CODE": "6405",
             "A2NAME": "Berau",
             "POU": 7.18,
             "Stunting": 31.7,
@@ -6481,7 +6481,7 @@
             "Population": 254865
         },
         {
-            "CODE": 6409,
+            "CODE": "6409",
             "A2NAME": "Penajam Paser Utara",
             "POU": 15.77,
             "Stunting": 31.6,
@@ -6499,7 +6499,7 @@
             "Population": 185022
         },
         {
-            "CODE": 6411,
+            "CODE": "6411",
             "A2NAME": "Mahakam Hulu",
             "POU": 10.04,
             "Stunting": 32.8,
@@ -6517,7 +6517,7 @@
             "Population": 35171
         },
         {
-            "CODE": 6471,
+            "CODE": "6471",
             "A2NAME": "Balikpapan",
             "POU": 5.86,
             "Stunting": 23.8,
@@ -6535,7 +6535,7 @@
             "Population": 704110
         },
         {
-            "CODE": 6472,
+            "CODE": "6472",
             "A2NAME": "Samarinda",
             "POU": 8.42,
             "Stunting": 26.3,
@@ -6553,7 +6553,7 @@
             "Population": 826197
         },
         {
-            "CODE": 6474,
+            "CODE": "6474",
             "A2NAME": "Bontang",
             "POU": 6.34,
             "Stunting": 26.6,
@@ -6571,7 +6571,7 @@
             "Population": 185201
         },
         {
-            "CODE": 6501,
+            "CODE": "6501",
             "A2NAME": "Malinau",
             "POU": 10.97,
             "Stunting": 24.6,
@@ -6589,7 +6589,7 @@
             "Population": 81803
         },
         {
-            "CODE": 6502,
+            "CODE": "6502",
             "A2NAME": "Bulungan",
             "POU": 13.69,
             "Stunting": 31.2,
@@ -6607,7 +6607,7 @@
             "Population": 151952
         },
         {
-            "CODE": 6503,
+            "CODE": "6503",
             "A2NAME": "Tana Tidung",
             "POU": 11.35,
             "Stunting": 37.6,
@@ -6625,7 +6625,7 @@
             "Population": 26212
         },
         {
-            "CODE": 6504,
+            "CODE": "6504",
             "A2NAME": "Nunukan",
             "POU": 14.85,
             "Stunting": 30.5,
@@ -6643,7 +6643,7 @@
             "Population": 194866
         },
         {
-            "CODE": 6571,
+            "CODE": "6571",
             "A2NAME": "Tarakan",
             "POU": 7.16,
             "Stunting": 22,
@@ -6661,7 +6661,7 @@
             "Population": 240024
         },
         {
-            "CODE": 7101,
+            "CODE": "7101",
             "A2NAME": "Bolaang Mongondow",
             "POU": 3.4,
             "Stunting": 28.9,
@@ -6679,7 +6679,7 @@
             "Population": 253727
         },
         {
-            "CODE": 7102,
+            "CODE": "7102",
             "A2NAME": "Minahasa",
             "POU": 3.18,
             "Stunting": 20.1,
@@ -6697,7 +6697,7 @@
             "Population": 343041
         },
         {
-            "CODE": 7103,
+            "CODE": "7103",
             "A2NAME": "Kepulauan Sangihe",
             "POU": 3.85,
             "Stunting": 23,
@@ -6715,7 +6715,7 @@
             "Population": 136253
         },
         {
-            "CODE": 7104,
+            "CODE": "7104",
             "A2NAME": "Kepulauan Talaud",
             "POU": 4.5,
             "Stunting": 23.6,
@@ -6733,7 +6733,7 @@
             "Population": 98287
         },
         {
-            "CODE": 7105,
+            "CODE": "7105",
             "A2NAME": "Minahasa Selatan",
             "POU": 5.71,
             "Stunting": 26.1,
@@ -6751,7 +6751,7 @@
             "Population": 239840
         },
         {
-            "CODE": 7106,
+            "CODE": "7106",
             "A2NAME": "Minahasa Utara",
             "POU": 2.94,
             "Stunting": 35.4,
@@ -6769,7 +6769,7 @@
             "Population": 223103
         },
         {
-            "CODE": 7107,
+            "CODE": "7107",
             "A2NAME": "Bolaang Mongondow Utara",
             "POU": 5.38,
             "Stunting": 22.2,
@@ -6787,7 +6787,7 @@
             "Population": 85395
         },
         {
-            "CODE": 7108,
+            "CODE": "7108",
             "A2NAME": "Siau Tagulandang Biaro",
             "POU": 3.75,
             "Stunting": 19.5,
@@ -6805,7 +6805,7 @@
             "Population": 71917
         },
         {
-            "CODE": 7109,
+            "CODE": "7109",
             "A2NAME": "Minahasa Tenggara",
             "POU": 4.2,
             "Stunting": 28,
@@ -6823,7 +6823,7 @@
             "Population": 118469
         },
         {
-            "CODE": 7110,
+            "CODE": "7110",
             "A2NAME": "Bolaang Mongondow Selatan",
             "POU": 4.99,
             "Stunting": 33.3,
@@ -6841,7 +6841,7 @@
             "Population": 72025
         },
         {
-            "CODE": 7111,
+            "CODE": "7111",
             "A2NAME": "Bolaang Mongondow Timur",
             "POU": 2.98,
             "Stunting": 26.3,
@@ -6859,7 +6859,7 @@
             "Population": 88654
         },
         {
-            "CODE": 7171,
+            "CODE": "7171",
             "A2NAME": "Manado",
             "POU": 1.39,
             "Stunting": 19.8,
@@ -6877,7 +6877,7 @@
             "Population": 475757
         },
         {
-            "CODE": 7172,
+            "CODE": "7172",
             "A2NAME": "Bitung",
             "POU": 1.89,
             "Stunting": 30,
@@ -6895,7 +6895,7 @@
             "Population": 226614
         },
         {
-            "CODE": 7173,
+            "CODE": "7173",
             "A2NAME": "Tomohon",
             "POU": 1.73,
             "Stunting": 19.2,
@@ -6913,7 +6913,7 @@
             "Population": 100890
         },
         {
-            "CODE": 7174,
+            "CODE": "7174",
             "A2NAME": "Kotamobagu",
             "POU": 2.72,
             "Stunting": 29,
@@ -6931,7 +6931,7 @@
             "Population": 122799
         },
         {
-            "CODE": 7201,
+            "CODE": "7201",
             "A2NAME": "Banggai Kepulauan",
             "POU": 10.57,
             "Stunting": 40.5,
@@ -6949,7 +6949,7 @@
             "Population": 123905
         },
         {
-            "CODE": 7202,
+            "CODE": "7202",
             "A2NAME": "Banggai",
             "POU": 6.37,
             "Stunting": 31.9,
@@ -6967,7 +6967,7 @@
             "Population": 369758
         },
         {
-            "CODE": 7203,
+            "CODE": "7203",
             "A2NAME": "Morowali",
             "POU": 2.77,
             "Stunting": 34.8,
@@ -6985,7 +6985,7 @@
             "Population": 164503
         },
         {
-            "CODE": 7204,
+            "CODE": "7204",
             "A2NAME": "Poso",
             "POU": 5.55,
             "Stunting": 26.2,
@@ -7003,7 +7003,7 @@
             "Population": 248839
         },
         {
-            "CODE": 7205,
+            "CODE": "7205",
             "A2NAME": "Donggala",
             "POU": 9.36,
             "Stunting": 36,
@@ -7021,7 +7021,7 @@
             "Population": 306484
         },
         {
-            "CODE": 7206,
+            "CODE": "7206",
             "A2NAME": "Toli-Toli",
             "POU": 7.52,
             "Stunting": 31.7,
@@ -7039,7 +7039,7 @@
             "Population": 223957
         },
         {
-            "CODE": 7207,
+            "CODE": "7207",
             "A2NAME": "Buol",
             "POU": 6.85,
             "Stunting": 34.2,
@@ -7057,7 +7057,7 @@
             "Population": 151080
         },
         {
-            "CODE": 7208,
+            "CODE": "7208",
             "A2NAME": "Parigi Moutong",
             "POU": 7.86,
             "Stunting": 33.7,
@@ -7075,7 +7075,7 @@
             "Population": 452796
         },
         {
-            "CODE": 7209,
+            "CODE": "7209",
             "A2NAME": "Tojo Una-Una",
             "POU": 5.95,
             "Stunting": 26.2,
@@ -7093,7 +7093,7 @@
             "Population": 166337
         },
         {
-            "CODE": 7210,
+            "CODE": "7210",
             "A2NAME": "Sigi",
             "POU": 7.1,
             "Stunting": 43,
@@ -7111,7 +7111,7 @@
             "Population": 258591
         },
         {
-            "CODE": 7211,
+            "CODE": "7211",
             "A2NAME": "Banggai Laut",
             "POU": 7.33,
             "Stunting": 34.2,
@@ -7129,7 +7129,7 @@
             "Population": 72902
         },
         {
-            "CODE": 7212,
+            "CODE": "7212",
             "A2NAME": "Morowali Utara",
             "POU": 6.14,
             "Stunting": 28.5,
@@ -7147,7 +7147,7 @@
             "Population": 126912
         },
         {
-            "CODE": 7271,
+            "CODE": "7271",
             "A2NAME": "Palu",
             "POU": 5.76,
             "Stunting": 24.1,
@@ -7165,7 +7165,7 @@
             "Population": 373654
         },
         {
-            "CODE": 7301,
+            "CODE": "7301",
             "A2NAME": "Kepulauan Selayar",
             "POU": 6.38,
             "Stunting": 46,
@@ -7183,7 +7183,7 @@
             "Population": 140156
         },
         {
-            "CODE": 7302,
+            "CODE": "7302",
             "A2NAME": "Bulukumba",
             "POU": 7.79,
             "Stunting": 36.2,
@@ -7201,7 +7201,7 @@
             "Population": 445975
         },
         {
-            "CODE": 7303,
+            "CODE": "7303",
             "A2NAME": "Bantaeng",
             "POU": 8.12,
             "Stunting": 21,
@@ -7219,7 +7219,7 @@
             "Population": 201799
         },
         {
-            "CODE": 7304,
+            "CODE": "7304",
             "A2NAME": "Jeneponto",
             "POU": 9.13,
             "Stunting": 41.3,
@@ -7237,7 +7237,7 @@
             "Population": 415361
         },
         {
-            "CODE": 7305,
+            "CODE": "7305",
             "A2NAME": "Takalar",
             "POU": 6.15,
             "Stunting": 40.6,
@@ -7255,7 +7255,7 @@
             "Population": 297757
         },
         {
-            "CODE": 7306,
+            "CODE": "7306",
             "A2NAME": "Gowa",
             "POU": 6.05,
             "Stunting": 44.5,
@@ -7273,7 +7273,7 @@
             "Population": 769004
         },
         {
-            "CODE": 7307,
+            "CODE": "7307",
             "A2NAME": "Sinjai",
             "POU": 7.93,
             "Stunting": 42.2,
@@ -7291,7 +7291,7 @@
             "Population": 265026
         },
         {
-            "CODE": 7308,
+            "CODE": "7308",
             "A2NAME": "Maros",
             "POU": 4.55,
             "Stunting": 34.9,
@@ -7309,7 +7309,7 @@
             "Population": 388611
         },
         {
-            "CODE": 7309,
+            "CODE": "7309",
             "A2NAME": "Pangkajene Dan Kepulauan",
             "POU": 4.45,
             "Stunting": 50.5,
@@ -7327,7 +7327,7 @@
             "Population": 352091
         },
         {
-            "CODE": 7310,
+            "CODE": "7310",
             "A2NAME": "Barru",
             "POU": 7.91,
             "Stunting": 34.1,
@@ -7345,7 +7345,7 @@
             "Population": 189208
         },
         {
-            "CODE": 7311,
+            "CODE": "7311",
             "A2NAME": "Bone",
             "POU": 11.11,
             "Stunting": 37.3,
@@ -7363,7 +7363,7 @@
             "Population": 812866
         },
         {
-            "CODE": 7312,
+            "CODE": "7312",
             "A2NAME": "Soppeng",
             "POU": 9.83,
             "Stunting": 35.5,
@@ -7381,7 +7381,7 @@
             "Population": 237720
         },
         {
-            "CODE": 7313,
+            "CODE": "7313",
             "A2NAME": "Wajo",
             "POU": 7.67,
             "Stunting": 32.2,
@@ -7399,7 +7399,7 @@
             "Population": 385836
         },
         {
-            "CODE": 7314,
+            "CODE": "7314",
             "A2NAME": "Sidenreng Rappang",
             "POU": 5.93,
             "Stunting": 31.7,
@@ -7417,7 +7417,7 @@
             "Population": 320651
         },
         {
-            "CODE": 7315,
+            "CODE": "7315",
             "A2NAME": "Pinrang",
             "POU": 6.5,
             "Stunting": 43.6,
@@ -7435,7 +7435,7 @@
             "Population": 407886
         },
         {
-            "CODE": 7316,
+            "CODE": "7316",
             "A2NAME": "Enrekang",
             "POU": 8.15,
             "Stunting": 42.7,
@@ -7453,7 +7453,7 @@
             "Population": 227285
         },
         {
-            "CODE": 7317,
+            "CODE": "7317",
             "A2NAME": "Luwu",
             "POU": 5.45,
             "Stunting": 30.3,
@@ -7471,7 +7471,7 @@
             "Population": 372302
         },
         {
-            "CODE": 7318,
+            "CODE": "7318",
             "A2NAME": "Tana Toraja",
             "POU": 6.65,
             "Stunting": 47,
@@ -7489,7 +7489,7 @@
             "Population": 270904
         },
         {
-            "CODE": 7322,
+            "CODE": "7322",
             "A2NAME": "Luwu Utara",
             "POU": 6.25,
             "Stunting": 34.7,
@@ -7507,7 +7507,7 @@
             "Population": 266466
         },
         {
-            "CODE": 7325,
+            "CODE": "7325",
             "A2NAME": "Luwu Timur",
             "POU": 5.33,
             "Stunting": 25.3,
@@ -7525,7 +7525,7 @@
             "Population": 304624
         },
         {
-            "CODE": 7326,
+            "CODE": "7326",
             "A2NAME": "Toraja Utara",
             "POU": 6.27,
             "Stunting": 40.7,
@@ -7543,7 +7543,7 @@
             "Population": 255242
         },
         {
-            "CODE": 7371,
+            "CODE": "7371",
             "A2NAME": "Makassar",
             "POU": 2.59,
             "Stunting": 25.3,
@@ -7561,7 +7561,7 @@
             "Population": 1266363
         },
         {
-            "CODE": 7372,
+            "CODE": "7372",
             "A2NAME": "Parepare",
             "POU": 4.42,
             "Stunting": 23.3,
@@ -7579,7 +7579,7 @@
             "Population": 153459
         },
         {
-            "CODE": 7373,
+            "CODE": "7373",
             "A2NAME": "Palopo",
             "POU": 2.57,
             "Stunting": 36,
@@ -7597,7 +7597,7 @@
             "Population": 182928
         },
         {
-            "CODE": 7401,
+            "CODE": "7401",
             "A2NAME": "Buton",
             "POU": 8.57,
             "Stunting": 34.9,
@@ -7615,7 +7615,7 @@
             "Population": 119427
         },
         {
-            "CODE": 7402,
+            "CODE": "7402",
             "A2NAME": "Muna",
             "POU": 8.78,
             "Stunting": 26.8,
@@ -7633,7 +7633,7 @@
             "Population": 225122
         },
         {
-            "CODE": 7403,
+            "CODE": "7403",
             "A2NAME": "Konawe",
             "POU": 5.47,
             "Stunting": 29.4,
@@ -7651,7 +7651,7 @@
             "Population": 230965
         },
         {
-            "CODE": 7404,
+            "CODE": "7404",
             "A2NAME": "Kolaka",
             "POU": 5.26,
             "Stunting": 28.7,
@@ -7669,7 +7669,7 @@
             "Population": 238416
         },
         {
-            "CODE": 7405,
+            "CODE": "7405",
             "A2NAME": "Konawe Selatan",
             "POU": 7.69,
             "Stunting": 28,
@@ -7687,7 +7687,7 @@
             "Population": 294967
         },
         {
-            "CODE": 7406,
+            "CODE": "7406",
             "A2NAME": "Bombana",
             "POU": 8.07,
             "Stunting": 33.9,
@@ -7705,7 +7705,7 @@
             "Population": 154403
         },
         {
-            "CODE": 7407,
+            "CODE": "7407",
             "A2NAME": "Wakatobi",
             "POU": 8.34,
             "Stunting": 29.1,
@@ -7723,7 +7723,7 @@
             "Population": 114667
         },
         {
-            "CODE": 7408,
+            "CODE": "7408",
             "A2NAME": "Kolaka Utara",
             "POU": 7.22,
             "Stunting": 30.6,
@@ -7741,7 +7741,7 @@
             "Population": 135516
         },
         {
-            "CODE": 7409,
+            "CODE": "7409",
             "A2NAME": "Buton Utara",
             "POU": 7.27,
             "Stunting": 37.1,
@@ -7759,7 +7759,7 @@
             "Population": 69457
         },
         {
-            "CODE": 7410,
+            "CODE": "7410",
             "A2NAME": "Konawe Utara",
             "POU": 6.77,
             "Stunting": 37.7,
@@ -7777,7 +7777,7 @@
             "Population": 71312
         },
         {
-            "CODE": 7411,
+            "CODE": "7411",
             "A2NAME": "Kolaka Timur",
             "POU": 7.15,
             "Stunting": 17.6,
@@ -7795,7 +7795,7 @@
             "Population": 124840
         },
         {
-            "CODE": 7412,
+            "CODE": "7412",
             "A2NAME": "Konawe Kepulauan",
             "POU": 6.54,
             "Stunting": 38.9,
@@ -7813,7 +7813,7 @@
             "Population": 39877
         },
         {
-            "CODE": 7413,
+            "CODE": "7413",
             "A2NAME": "Muna Barat",
             "POU": 13.21,
             "Stunting": 31.3,
@@ -7831,7 +7831,7 @@
             "Population": 0
         },
         {
-            "CODE": 7414,
+            "CODE": "7414",
             "A2NAME": "Buton Tengah",
             "POU": 11.38,
             "Stunting": 19.2,
@@ -7849,7 +7849,7 @@
             "Population": 0
         },
         {
-            "CODE": 7415,
+            "CODE": "7415",
             "A2NAME": "Buton Selatan",
             "POU": 7.98,
             "Stunting": 34.8,
@@ -7867,7 +7867,7 @@
             "Population": 0
         },
         {
-            "CODE": 7471,
+            "CODE": "7471",
             "A2NAME": "Kendari",
             "POU": 3.8,
             "Stunting": 22.7,
@@ -7885,7 +7885,7 @@
             "Population": 343608
         },
         {
-            "CODE": 7472,
+            "CODE": "7472",
             "A2NAME": "Baubau",
             "POU": 7.84,
             "Stunting": 37.2,
@@ -7903,7 +7903,7 @@
             "Population": 158819
         },
         {
-            "CODE": 7501,
+            "CODE": "7501",
             "A2NAME": "Boalemo",
             "POU": 14.17,
             "Stunting": 44.8,
@@ -7921,7 +7921,7 @@
             "Population": 148405
         },
         {
-            "CODE": 7502,
+            "CODE": "7502",
             "A2NAME": "Gorontalo",
             "POU": 13.48,
             "Stunting": 34.6,
@@ -7939,7 +7939,7 @@
             "Population": 405145
         },
         {
-            "CODE": 7503,
+            "CODE": "7503",
             "A2NAME": "Pohuwato",
             "POU": 10.62,
             "Stunting": 23.6,
@@ -7957,7 +7957,7 @@
             "Population": 151594
         },
         {
-            "CODE": 7504,
+            "CODE": "7504",
             "A2NAME": "Bone Bolango",
             "POU": 8.11,
             "Stunting": 29.1,
@@ -7975,7 +7975,7 @@
             "Population": 167015
         },
         {
-            "CODE": 7505,
+            "CODE": "7505",
             "A2NAME": "Gorontalo Utara",
             "POU": 16.53,
             "Stunting": 33.3,
@@ -7993,7 +7993,7 @@
             "Population": 125736
         },
         {
-            "CODE": 7571,
+            "CODE": "7571",
             "A2NAME": "Gorontalo",
             "POU": 7.28,
             "Stunting": 27.4,
@@ -8011,7 +8011,7 @@
             "Population": 201587
         },
         {
-            "CODE": 7601,
+            "CODE": "7601",
             "A2NAME": "Majene",
             "POU": 9.69,
             "Stunting": 45.9,
@@ -8029,7 +8029,7 @@
             "Population": 179943
         },
         {
-            "CODE": 7602,
+            "CODE": "7602",
             "A2NAME": "Polewali Mandar",
             "POU": 11.5,
             "Stunting": 38.2,
@@ -8047,7 +8047,7 @@
             "Population": 486276
         },
         {
-            "CODE": 7603,
+            "CODE": "7603",
             "A2NAME": "Mamasa",
             "POU": 14.48,
             "Stunting": 43.2,
@@ -8065,7 +8065,7 @@
             "Population": 164027
         },
         {
-            "CODE": 7604,
+            "CODE": "7604",
             "A2NAME": "Mamuju",
             "POU": 10.26,
             "Stunting": 46.5,
@@ -8083,7 +8083,7 @@
             "Population": 276818
         },
         {
-            "CODE": 7605,
+            "CODE": "7605",
             "A2NAME": "Mamuju Utara",
             "POU": 5.65,
             "Stunting": 34.8,
@@ -8101,7 +8101,7 @@
             "Population": 192025
         },
         {
-            "CODE": 7606,
+            "CODE": "7606",
             "A2NAME": "Mamuju Tengah",
             "POU": 8.36,
             "Stunting": 41.6,
@@ -8119,7 +8119,7 @@
             "Population": 138231
         },
         {
-            "CODE": 8101,
+            "CODE": "8101",
             "A2NAME": "Maluku Tenggara Barat",
             "POU": 40.41,
             "Stunting": 28.8,
@@ -8137,7 +8137,7 @@
             "Population": 128091
         },
         {
-            "CODE": 8102,
+            "CODE": "8102",
             "A2NAME": "Maluku Tenggara",
             "POU": 35.53,
             "Stunting": 31.1,
@@ -8155,7 +8155,7 @@
             "Population": 128171
         },
         {
-            "CODE": 8103,
+            "CODE": "8103",
             "A2NAME": "Maluku Tengah",
             "POU": 37.85,
             "Stunting": 42.8,
@@ -8173,7 +8173,7 @@
             "Population": 429507
         },
         {
-            "CODE": 8104,
+            "CODE": "8104",
             "A2NAME": "Buru",
             "POU": 31.49,
             "Stunting": 27,
@@ -8191,7 +8191,7 @@
             "Population": 137062
         },
         {
-            "CODE": 8105,
+            "CODE": "8105",
             "A2NAME": "Kepulauan Aru",
             "POU": 36.7,
             "Stunting": 36,
@@ -8209,7 +8209,7 @@
             "Population": 106379
         },
         {
-            "CODE": 8106,
+            "CODE": "8106",
             "A2NAME": "Seram Bagian Barat",
             "POU": 47.55,
             "Stunting": 33.6,
@@ -8227,7 +8227,7 @@
             "Population": 212326
         },
         {
-            "CODE": 8107,
+            "CODE": "8107",
             "A2NAME": "Seram Bagian Timur",
             "POU": 41.74,
             "Stunting": 40.6,
@@ -8245,7 +8245,7 @@
             "Population": 136920
         },
         {
-            "CODE": 8108,
+            "CODE": "8108",
             "A2NAME": "Maluku Barat Daya",
             "POU": 44.77,
             "Stunting": 31.1,
@@ -8263,7 +8263,7 @@
             "Population": 81959
         },
         {
-            "CODE": 8109,
+            "CODE": "8109",
             "A2NAME": "Buru Selatan",
             "POU": 48.61,
             "Stunting": 26.8,
@@ -8281,7 +8281,7 @@
             "Population": 77013
         },
         {
-            "CODE": 8171,
+            "CODE": "8171",
             "A2NAME": "Ambon",
             "POU": 19.92,
             "Stunting": 31.3,
@@ -8299,7 +8299,7 @@
             "Population": 351615
         },
         {
-            "CODE": 8172,
+            "CODE": "8172",
             "A2NAME": "Tual",
             "POU": 25.87,
             "Stunting": 31,
@@ -8317,7 +8317,7 @@
             "Population": 89144
         },
         {
-            "CODE": 8201,
+            "CODE": "8201",
             "A2NAME": "Halmahera Barat",
             "POU": 36.71,
             "Stunting": 35.3,
@@ -8335,7 +8335,7 @@
             "Population": 136009
         },
         {
-            "CODE": 8202,
+            "CODE": "8202",
             "A2NAME": "Halmahera Tengah",
             "POU": 27.97,
             "Stunting": 41.4,
@@ -8353,7 +8353,7 @@
             "Population": 71567
         },
         {
-            "CODE": 8203,
+            "CODE": "8203",
             "A2NAME": "Kepulauan Sula",
             "POU": 38.54,
             "Stunting": 38.6,
@@ -8371,7 +8371,7 @@
             "Population": 106163
         },
         {
-            "CODE": 8204,
+            "CODE": "8204",
             "A2NAME": "Halmahera Selatan",
             "POU": 27.9,
             "Stunting": 34.5,
@@ -8389,7 +8389,7 @@
             "Population": 253282
         },
         {
-            "CODE": 8205,
+            "CODE": "8205",
             "A2NAME": "Halmahera Utara",
             "POU": 35.93,
             "Stunting": 25.1,
@@ -8407,7 +8407,7 @@
             "Population": 200872
         },
         {
-            "CODE": 8206,
+            "CODE": "8206",
             "A2NAME": "Halmahera Timur",
             "POU": 34.82,
             "Stunting": 38.4,
@@ -8425,7 +8425,7 @@
             "Population": 96065
         },
         {
-            "CODE": 8207,
+            "CODE": "8207",
             "A2NAME": "Pulau Morotai",
             "POU": 33.91,
             "Stunting": 36.8,
@@ -8443,7 +8443,7 @@
             "Population": 77106
         },
         {
-            "CODE": 8208,
+            "CODE": "8208",
             "A2NAME": "Pulau Taliabu",
             "POU": 41.94,
             "Stunting": 37,
@@ -8461,7 +8461,7 @@
             "Population": 60102
         },
         {
-            "CODE": 8271,
+            "CODE": "8271",
             "A2NAME": "Ternate",
             "POU": 18.07,
             "Stunting": 19.6,
@@ -8479,7 +8479,7 @@
             "Population": 190956
         },
         {
-            "CODE": 8272,
+            "CODE": "8272",
             "A2NAME": "Tidore Kepulauan",
             "POU": 30.14,
             "Stunting": 28.2,
@@ -8497,7 +8497,7 @@
             "Population": 115406
         },
         {
-            "CODE": 9101,
+            "CODE": "9101",
             "A2NAME": "Fakfak",
             "POU": 24.55,
             "Stunting": 18,
@@ -8515,7 +8515,7 @@
             "Population": 89225
         },
         {
-            "CODE": 9102,
+            "CODE": "9102",
             "A2NAME": "Kaimana",
             "POU": 27.95,
             "Stunting": 16.7,
@@ -8533,7 +8533,7 @@
             "Population": 64762
         },
         {
-            "CODE": 9103,
+            "CODE": "9103",
             "A2NAME": "Teluk Wondama",
             "POU": 18.87,
             "Stunting": 25.3,
@@ -8551,7 +8551,7 @@
             "Population": 46342
         },
         {
-            "CODE": 9104,
+            "CODE": "9104",
             "A2NAME": "Teluk Bintuni",
             "POU": 14.46,
             "Stunting": 28.5,
@@ -8569,7 +8569,7 @@
             "Population": 79871
         },
         {
-            "CODE": 9105,
+            "CODE": "9105",
             "A2NAME": "Manokwari",
             "POU": 22.25,
             "Stunting": 32.1,
@@ -8587,7 +8587,7 @@
             "Population": 191255
         },
         {
-            "CODE": 9106,
+            "CODE": "9106",
             "A2NAME": "Sorong Selatan",
             "POU": 20.51,
             "Stunting": 39.6,
@@ -8605,7 +8605,7 @@
             "Population": 52000
         },
         {
-            "CODE": 9107,
+            "CODE": "9107",
             "A2NAME": "Sorong",
             "POU": 21.68,
             "Stunting": 32.3,
@@ -8623,7 +8623,7 @@
             "Population": 123542
         },
         {
-            "CODE": 9108,
+            "CODE": "9108",
             "A2NAME": "Raja Ampat",
             "POU": 18.66,
             "Stunting": 27.6,
@@ -8641,7 +8641,7 @@
             "Population": 66289
         },
         {
-            "CODE": 9109,
+            "CODE": "9109",
             "A2NAME": "Tambrauw",
             "POU": 37.17,
             "Stunting": 41.5,
@@ -8659,7 +8659,7 @@
             "Population": 29751
         },
         {
-            "CODE": 9110,
+            "CODE": "9110",
             "A2NAME": "Maybrat",
             "POU": 20.12,
             "Stunting": 42,
@@ -8677,7 +8677,7 @@
             "Population": 44409
         },
         {
-            "CODE": 9111,
+            "CODE": "9111",
             "A2NAME": "Manokwari Selatan",
             "POU": 20.59,
             "Stunting": 40.3,
@@ -8695,7 +8695,7 @@
             "Population": 37118
         },
         {
-            "CODE": 9112,
+            "CODE": "9112",
             "A2NAME": "Pegunungan Arfak",
             "POU": 48.52,
             "Stunting": 35,
@@ -8713,7 +8713,7 @@
             "Population": 38933
         },
         {
-            "CODE": 9171,
+            "CODE": "9171",
             "A2NAME": "Sorong",
             "POU": 16.04,
             "Stunting": 20.6,
@@ -8731,7 +8731,7 @@
             "Population": 282616
         },
         {
-            "CODE": 9401,
+            "CODE": "9401",
             "A2NAME": "Merauke",
             "POU": 33.77,
             "Stunting": 22.8,
@@ -8749,7 +8749,7 @@
             "Population": 232327
         },
         {
-            "CODE": 9402,
+            "CODE": "9402",
             "A2NAME": "Jayawijaya",
             "POU": 40.89,
             "Stunting": 31.6,
@@ -8767,7 +8767,7 @@
             "Population": 274537
         },
         {
-            "CODE": 9403,
+            "CODE": "9403",
             "A2NAME": "Jayapura",
             "POU": 33.18,
             "Stunting": 24.6,
@@ -8785,7 +8785,7 @@
             "Population": 173245
         },
         {
-            "CODE": 9404,
+            "CODE": "9404",
             "A2NAME": "Nabire",
             "POU": 35.11,
             "Stunting": 27.4,
@@ -8803,7 +8803,7 @@
             "Population": 173189
         },
         {
-            "CODE": 9408,
+            "CODE": "9408",
             "A2NAME": "Kepulauan Yapen",
             "POU": 37.28,
             "Stunting": 46.2,
@@ -8821,7 +8821,7 @@
             "Population": 113322
         },
         {
-            "CODE": 9409,
+            "CODE": "9409",
             "A2NAME": "Biak Numfor",
             "POU": 41.78,
             "Stunting": 43.7,
@@ -8839,7 +8839,7 @@
             "Population": 146552
         },
         {
-            "CODE": 9410,
+            "CODE": "9410",
             "A2NAME": "Paniai",
             "POU": 31.02,
             "Stunting": 42.4,
@@ -8857,7 +8857,7 @@
             "Population": 115709
         },
         {
-            "CODE": 9411,
+            "CODE": "9411",
             "A2NAME": "Puncak Jaya",
             "POU": 21.13,
             "Stunting": 35.4,
@@ -8875,7 +8875,7 @@
             "Population": 201347
         },
         {
-            "CODE": 9412,
+            "CODE": "9412",
             "A2NAME": "Mimika",
             "POU": 20.56,
             "Stunting": 28,
@@ -8893,7 +8893,7 @@
             "Population": 312136
         },
         {
-            "CODE": 9413,
+            "CODE": "9413",
             "A2NAME": "Boven Digoel",
             "POU": 32.21,
             "Stunting": 39.7,
@@ -8911,7 +8911,7 @@
             "Population": 64802
         },
         {
-            "CODE": 9414,
+            "CODE": "9414",
             "A2NAME": "Mappi",
             "POU": 40.85,
             "Stunting": 33.1,
@@ -8929,7 +8929,7 @@
             "Population": 108127
         },
         {
-            "CODE": 9415,
+            "CODE": "9415",
             "A2NAME": "Asmat",
             "POU": 54.26,
             "Stunting": 32.6,
@@ -8947,7 +8947,7 @@
             "Population": 107027
         },
         {
-            "CODE": 9416,
+            "CODE": "9416",
             "A2NAME": "Yahukimo",
             "POU": 61.84,
             "Stunting": 34.2,
@@ -8965,7 +8965,7 @@
             "Population": 349682
         },
         {
-            "CODE": 9417,
+            "CODE": "9417",
             "A2NAME": "Pegunungan Bintang",
             "POU": 37.35,
             "Stunting": 38,
@@ -8983,7 +8983,7 @@
             "Population": 111857
         },
         {
-            "CODE": 9418,
+            "CODE": "9418",
             "A2NAME": "Tolikara",
             "POU": 65.62,
             "Stunting": 21.3,
@@ -9001,7 +9001,7 @@
             "Population": 252330
         },
         {
-            "CODE": 9419,
+            "CODE": "9419",
             "A2NAME": "Sarmi",
             "POU": 40.32,
             "Stunting": 19,
@@ -9019,7 +9019,7 @@
             "Population": 41580
         },
         {
-            "CODE": 9420,
+            "CODE": "9420",
             "A2NAME": "Keerom",
             "POU": 50.9,
             "Stunting": 38.2,
@@ -9037,7 +9037,7 @@
             "Population": 64309
         },
         {
-            "CODE": 9426,
+            "CODE": "9426",
             "A2NAME": "Waropen",
             "POU": 12.27,
             "Stunting": 52.6,
@@ -9055,7 +9055,7 @@
             "Population": 36582
         },
         {
-            "CODE": 9427,
+            "CODE": "9427",
             "A2NAME": "Supiori",
             "POU": 51.76,
             "Stunting": 35,
@@ -9073,7 +9073,7 @@
             "Population": 24719
         },
         {
-            "CODE": 9428,
+            "CODE": "9428",
             "A2NAME": "Mamberamo Raya",
             "POU": 60.09,
             "Stunting": 19.4,
@@ -9091,7 +9091,7 @@
             "Population": 37567
         },
         {
-            "CODE": 9429,
+            "CODE": "9429",
             "A2NAME": "Nduga",
             "POU": 26.34,
             "Stunting": 49.8,
@@ -9109,7 +9109,7 @@
             "Population": 110291
         },
         {
-            "CODE": 9430,
+            "CODE": "9430",
             "A2NAME": "Lanny Jaya",
             "POU": 35.3,
             "Stunting": 47.1,
@@ -9127,7 +9127,7 @@
             "Population": 202407
         },
         {
-            "CODE": 9431,
+            "CODE": "9431",
             "A2NAME": "Mamberamo Tengah",
             "POU": 46.75,
             "Stunting": 34.8,
@@ -9145,7 +9145,7 @@
             "Population": 48446
         },
         {
-            "CODE": 9432,
+            "CODE": "9432",
             "A2NAME": "Yalimo",
             "POU": 43.73,
             "Stunting": 0,
@@ -9163,7 +9163,7 @@
             "Population": 103807
         },
         {
-            "CODE": 9433,
+            "CODE": "9433",
             "A2NAME": "Puncak",
             "POU": 35.33,
             "Stunting": 26.5,
@@ -9181,7 +9181,7 @@
             "Population": 176251
         },
         {
-            "CODE": 9434,
+            "CODE": "9434",
             "A2NAME": "Dogiyai",
             "POU": 65.78,
             "Stunting": 57.5,
@@ -9199,7 +9199,7 @@
             "Population": 115394
         },
         {
-            "CODE": 9435,
+            "CODE": "9435",
             "A2NAME": "Intan Jaya",
             "POU": 34.5,
             "Stunting": 49.6,
@@ -9217,7 +9217,7 @@
             "Population": 136071
         },
         {
-            "CODE": 9436,
+            "CODE": "9436",
             "A2NAME": "Deiyai",
             "POU": 56.13,
             "Stunting": 23.5,
@@ -9235,7 +9235,7 @@
             "Population": 91138
         },
         {
-            "CODE": 9471,
+            "CODE": "9471",
             "A2NAME": "Jayapura",
             "POU": 23.11,
             "Stunting": 22.8,
