@@ -201,7 +201,10 @@ function MapView({ classes }: MapViewProps) {
   );
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
-      if (layer.type === 'admin_level_data' || layer.type === 'static_raster') {
+      if (layer.type === 'admin_level_data') {
+        return Boolean(layer.dates) || Boolean(layer.dateUrl);
+      }
+      if (layer.type === 'static_raster') {
         return Boolean(layer.dates);
       }
       if (layer.type === 'wms') {

@@ -156,12 +156,25 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
 }
 
 async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
-  const { dates } = layer;
-  if (!dates) {
-    return [];
+  const { dates, dateUrl } = layer;
+  const loadDates = async (fetchUrl: string) => {
+    const response = await fetch(fetchUrl);
+    if (response.status !== 200) {
+      console.error(`Impossible to get admin level data dates for ${layer.id}`);
+      return [];
+    }
+    return (await response.json()).dates.map((v: string) =>
+      moment(v, 'YYYY-MM-DD').valueOf(),
+    );
+  };
+  if (dates) {
+    // raw data comes in as {"dates": ["YYYY-MM-DD"]}
+    return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
   }
-  // raw data comes in as {"dates": ["YYYY-MM-DD"]}
-  return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
+  if (dateUrl) {
+    return loadDates(dateUrl);
+  }
+  return [];
 }
 
 async function getStaticRasterDataCoverage(layer: StaticRasterLayerProps) {
@@ -262,7 +275,8 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
 
   const adminWithDateLayers = Object.values(LayerDefinitions).filter(
     (layer): layer is AdminLevelDataLayerProps =>
-      layer.type === 'admin_level_data' && Boolean(layer.dates),
+      layer.type === 'admin_level_data' &&
+      (Boolean(layer.dates) || Boolean(layer.dateUrl)),
   );
 
   const staticRasterWithDateLayers = Object.values(LayerDefinitions).filter(
