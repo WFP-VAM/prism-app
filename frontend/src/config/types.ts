@@ -282,6 +282,9 @@ export class CommonLayerProps {
   @optional
   featureInfoProps?: { [key: string]: FeatureInfoProps };
 
+  @optional
+  popupUrl?: string;
+
   /*
   * only for layer that has grouped menu and always assigned to main layer of group (../components/Navbar/utils.ts)
   * can be set in config/{country}/prism.json by changing the LayerKey (string) into object:

@@ -2,7 +2,11 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
-import { showPopup, hidePopup } from '../../../../context/tooltipStateSlice';
+import {
+  showPopup,
+  hidePopup,
+  fetchPopupData,
+} from '../../../../context/tooltipStateSlice';
 import { BoundaryLayerProps, WMSLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import {
@@ -20,6 +24,7 @@ import { isPrimaryBoundaryLayer } from '../../../../config/utils';
 import { getFullLocationName } from '../../../../utils/name-utils';
 
 import { getChartAdminBoundaryParams } from '../../../../utils/admin-utils';
+import { useSafeTranslation } from '../../../../i18n';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -34,6 +39,7 @@ interface ComponentProps {
 function BoundaryLayer({ layer, before }: ComponentProps) {
   const dispatch = useDispatch();
   const selectedLayers = useSelector(layersSelector);
+  const { i18n } = useSafeTranslation();
 
   const boundaryLayer = useSelector(layerDataSelector(layer.id)) as
     | LayerData<BoundaryLayerProps>
@@ -60,6 +66,18 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
     );
 
     dispatch(showPopup({ coordinates, locationName, locationLocalName }));
+
+    // get the second layer popup_url because the first layers would always be the boundary layer
+    const { popupUrl } = selectedLayers[1];
+    if (popupUrl) {
+      const url = new URL(popupUrl);
+      const locationCode = evt.features[0].properties[layer.adminCode];
+      url.searchParams.set('lon', coordinates.lng.toString());
+      url.searchParams.set('lat', coordinates.lat.toString());
+      url.searchParams.set('language', i18n.resolvedLanguage);
+      url.searchParams.set('areacode', locationCode);
+      dispatch(fetchPopupData(url.toString()));
+    }
   };
 
   const onClickFunc = (evt: any) => {

@@ -25,18 +25,19 @@ function MapTooltip({ classes }: TooltipProps) {
           ? popup.locationName
           : popup.locationLocalName}
       </h4>
-      {Object.entries(popup.data)
-        .filter(([, value]) => value.coordinates === popup.coordinates)
-        .map(([key, value]) => (
-          <>
-            <h4 key={key}>
-              {t(key)}: {value.data}
-            </h4>
-            <h4>
-              {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
-            </h4>
-          </>
-        ))}
+      {!popup.remoteData &&
+        Object.entries(popup.data)
+          .filter(([, value]) => value.coordinates === popup.coordinates)
+          .map(([key, value]) => (
+            <>
+              <h4 key={key}>
+                {t(key)}: {value.data}
+              </h4>
+              <h4>
+                {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
+              </h4>
+            </>
+          ))}
       {popup.remoteData && popup.remoteData.components.map(TooltipComponents)}
       {popup.remoteDataLoading ? <LinearProgress /> : null}
       {popup.wmsGetFeatureInfoLoading ? <LinearProgress /> : null}
@@ -48,15 +49,7 @@ const styles = () =>
   createStyles({
     popup: {
       '& div.mapboxgl-popup-content': {
-        background: 'black',
-        color: 'white',
         padding: '10px 10px 10px',
-        maxWidth: '30em',
-        maxHeight: '12em',
-        overflow: 'auto',
-      },
-      '& div.mapboxgl-popup-tip': {
-        'border-top-color': 'black',
       },
     },
   });
