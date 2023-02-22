@@ -26,14 +26,6 @@
   ],
   "categories": {
     "hazards": {
-      "extreme_rainfall_monitoring": [
-        "rainfall_extreme_probability",
-        "rainfall_extreme_flood"
-      ],
-      "extreme_rainfall_forecast": [
-        "rainfall_extreme_forecast_probability",
-        "rainfall_extreme_forecast_flood"
-      ],
       "rainfall": [
         {
           "group_title": "Rainfall Aggregate",
