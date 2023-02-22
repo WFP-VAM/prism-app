@@ -79,7 +79,7 @@ export function getWMSUrl(
   override: { [key: string]: string } = {},
 ) {
   return createGetMapUrl({
-    base: `${baseUrl}/wms`,
+    base: `${baseUrl}`,
     bboxSrs: 3857,
     exceptions: 'application/vnd.ogc.se_inimage',
     imageSrs: 3857,
