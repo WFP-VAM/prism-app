@@ -75,7 +75,7 @@ function NavBar({ classes }: NavBarProps) {
           <Grid item xs={3} className={classes.logoContainer}>
             <img
               className={classes.orgLogo}
-              src="images/wfp_logo.png"
+              src="images/wfp_logo_white.png"
               alt="logo wfp"
             />
             <Typography
