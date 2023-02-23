@@ -914,11 +914,11 @@
   "ndvi_dekad_anomaly": {
     "title": "10-day NDVI anomaly (MODIS)",
     "type": "wms",
-    "server_layer_name": "mxd13a2_viq_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/wms",
     "date_interval": "days",
+    "server_layer_name": "mxd13a2_viq_dekad",
     "additional_query_params": {
-      "styles": "viq"
+      "styles": "viq_13_50_150"
     },
     "opacity": 0.7,
     "legend_text": "NDVI Anomaly compared to LTA",
