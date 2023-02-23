@@ -107,6 +107,7 @@ const zoomList = [zoom] as [number];
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
   preserveDrawingBuffer: true,
+  pitchWithRotate: false,
   minZoom,
   maxZoom,
 });
