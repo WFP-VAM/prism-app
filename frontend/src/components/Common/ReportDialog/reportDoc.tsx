@@ -14,9 +14,10 @@ import {
   TableData,
   TableRowType,
 } from '../../../context/analysisResultStateSlice';
-import { getLegendItemLabel, ReportType } from '../utils';
+import { getLegendItemLabel } from '../../MapView/utils';
 import { LegendDefinition } from '../../../config/types';
 import { getTableCellVal, TFunction } from '../../../utils/data-utils';
+import { ReportType } from './types';
 
 // This numbers depends on table header and row height
 const MAX_TABLE_ROWS_PER_PAGE = 29;

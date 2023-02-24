@@ -4,6 +4,7 @@ exports[`renders as expected 1`] = `
 <div>
   <div
     class="MuiPaper-root MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
+    style="display: none;"
   >
     <div
       aria-controls="title"

@@ -29,6 +29,10 @@ function LeftPanel({
   isPanelHidden,
 }: LeftPanelProps) {
   const classes = useStyles({ panelSize });
+  const [resultsPage, setResultsPage] = React.useState<JSX.Element | null>(
+    null,
+  );
+
   return (
     <Drawer
       variant="persistent"
@@ -39,13 +43,20 @@ function LeftPanel({
       <LeftPanelTabs
         panelSize={panelSize}
         setPanelSize={setPanelSize}
+        resultsPage={resultsPage}
         layersPanel={<LayersPanel extent={extent} />}
-        chartsPanel={<ChartsPanel setPanelSize={setPanelSize} />}
+        chartsPanel={
+          <ChartsPanel
+            setPanelSize={setPanelSize}
+            setResultsPage={setResultsPage}
+          />
+        }
         analysisPanel={
           <AnalysisPanel
             extent={extent}
             panelSize={panelSize}
             setPanelSize={setPanelSize}
+            setResultsPage={setResultsPage}
           />
         }
       />

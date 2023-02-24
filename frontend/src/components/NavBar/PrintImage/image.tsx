@@ -13,7 +13,7 @@ import {
 import { jsPDF } from 'jspdf';
 import React from 'react';
 import { useSafeTranslation } from '../../../i18n';
-import { downloadToFile } from '../utils';
+import { downloadToFile } from '../../MapView/utils';
 
 function DownloadImage({
   classes,

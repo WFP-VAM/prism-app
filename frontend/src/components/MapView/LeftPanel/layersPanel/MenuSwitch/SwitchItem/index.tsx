@@ -6,6 +6,7 @@ import {
   Select,
   Slider,
   Switch,
+  Tooltip,
   Typography,
   WithStyles,
   withStyles,
@@ -38,6 +39,7 @@ import { getUrlKey, useUrlHistory } from '../../../../../../utils/url-utils';
 import { handleChangeOpacity } from '../../../../Legends/handleChangeOpacity';
 import { Extent } from '../../../../Layers/raster-utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
+import ExposureAnalysisOption from './ExposureAnalysisOption';
 
 /**
  * Returns layer identifier used to perform exposure analysis.
@@ -205,24 +207,33 @@ function SwitchItem({ classes, layer, extent }: SwitchItemProps) {
           }}
         />
         {menuTitle}
-        <IconButton
-          disabled={!selected}
-          classes={{
-            root: isOpacitySelected
-              ? classes.opacityRootSelected
-              : classes.opacityRoot,
-          }}
-          onClick={() =>
-            setIsOpacitySelected(opacitySelected => !opacitySelected)
-          }
-        >
-          <OpacityIcon />
-        </IconButton>
+        <Tooltip title="Opacity">
+          <IconButton
+            disabled={!selected}
+            classes={{
+              root: isOpacitySelected
+                ? classes.opacityRootSelected
+                : classes.opacityRoot,
+            }}
+            onClick={() =>
+              setIsOpacitySelected(opacitySelected => !opacitySelected)
+            }
+          >
+            <OpacityIcon />
+          </IconButton>
+        </Tooltip>
+        {exposure && (
+          <ExposureAnalysisOption
+            layer={layer}
+            extent={extent}
+            selected={selected}
+            exposure={exposure}
+          />
+        )}
         <LayerDownloadOptions
           layer={layer}
           extent={extent}
           selected={selected}
-          exposure={exposure}
         />
       </Box>
       {selected && isOpacitySelected && (

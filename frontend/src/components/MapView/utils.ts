@@ -198,11 +198,6 @@ export function getFeatureInfoPropsData(
     }, {});
 }
 
-export enum ReportType {
-  Storm,
-  Flood,
-}
-
 export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
   if (typeof label === 'string') {
     return label;
@@ -214,4 +209,8 @@ export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
       : roundedValue.toLocaleString('en-US');
   }
   return value;
+};
+
+export const generateUniqueTableKey = (activityName: string) => {
+  return `${activityName}_${Date.now()}`;
 };
