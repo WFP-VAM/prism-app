@@ -20,6 +20,7 @@ import { setTabValue } from '../../../../../../context/leftPanelStateSlice';
 import { dateRangeSelector } from '../../../../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../../../../i18n';
 import { Extent } from '../../../../Layers/raster-utils';
+import { generateUniqueTableKey } from '../../../../utils';
 
 function ExposureAnalysisOption({
   layer,
@@ -31,13 +32,6 @@ function ExposureAnalysisOption({
   const { t } = useSafeTranslation();
   const analysisResult = useSelector(analysisResultSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-
-  // Since the exposure analysis doesn't have predefined table in configurations
-  // and need to have a `TableKey` will use this util function to handle such case
-  // used timestamp to avoid any potential rare name collision
-  const generateUniqueTableKey = (activityName: string) => {
-    return `${activityName}_${Date.now()}`;
-  };
 
   const handleExposureAnalysis = () => {
     if (analysisResult) {

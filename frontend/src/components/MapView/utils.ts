@@ -210,3 +210,7 @@ export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
   }
   return value;
 };
+
+export const generateUniqueTableKey = (activityName: string) => {
+  return `${activityName}_${Date.now()}`;
+};
