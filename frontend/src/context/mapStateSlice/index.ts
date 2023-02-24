@@ -22,7 +22,7 @@ export type MapState = {
   // Note that layerData is mainly for storing vector map data.
   // Tile image loading for raster layer is tracked separately on mapTileLoadingStateSlice
   loadingLayerIds: LayerKey[];
-  relationData: BoundaryRelationsDict;
+  boundaryRelationData: BoundaryRelationsDict;
 };
 
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -37,7 +37,7 @@ const initialState: MapState = {
   errors: [],
   layersData: [],
   loadingLayerIds: [],
-  relationData: {},
+  boundaryRelationData: {},
 };
 
 function keepLayer(layer: LayerType, payload: LayerType) {
