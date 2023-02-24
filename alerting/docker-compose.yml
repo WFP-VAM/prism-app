@@ -4,7 +4,7 @@ services:
     image: kartoza/postgis:12.1
     restart: always
     ports:
-      - 54321:5432
+      - 127.0.0.1:54321:5432
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
