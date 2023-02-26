@@ -18,27 +18,16 @@ import {
 import { last, sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import i18n from 'i18next';
-
-import { Feature } from 'geojson';
-import { multiPolygon, MultiPolygon, Polygon } from '@turf/helpers';
-import bbox from '@turf/bbox';
-import bboxPolygon from '@turf/bbox-polygon';
-import union from '@turf/union';
 import { useDispatch, useSelector } from 'react-redux';
-import { Search, CenterFocusWeak } from '@material-ui/icons';
+import { Search } from '@material-ui/icons';
 import { BoundaryLayerProps } from '../../../config/types';
-import { appConfig, enableNavigationDropdown } from '../../../config';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
   setSelectedBoundaries as setSelectedBoundariesRedux,
 } from '../../../context/mapSelectionLayerStateSlice';
 import { getBoundaryLayerSingleton } from '../../../config/utils';
-import { Extent } from './raster-utils';
-import {
-  layerDataSelector,
-  mapSelector,
-} from '../../../context/mapStateSlice/selectors';
+import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
 import { LayerData } from '../../../context/layers/layer-data';
 import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
 
@@ -383,88 +372,5 @@ export const ButtonStyleBoundaryDropdown = withStyles(() => ({
     '& .MuiInputLabel-shrink': { display: 'none' },
   },
 }))(SimpleBoundaryDropdown);
-
-export const GotoBoundaryDropdown = () => {
-  const map = useSelector(mapSelector);
-
-  const [boundaries, setBoundaries] = useState<string[]>([]);
-
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayerData || {};
-
-  const {
-    map: { latitude, longitude, zoom },
-  } = appConfig;
-
-  const { t } = useSafeTranslation();
-
-  const styles = useStyles();
-
-  useEffect(() => {
-    if (!data || !map) {
-      return;
-    }
-
-    if (boundaries.length === 0) {
-      map.flyTo({ center: { lng: longitude, lat: latitude }, zoom });
-
-      return;
-    }
-
-    const geometries = data.features
-      .filter(f =>
-        boundaries.includes(
-          f.properties && f.properties[boundaryLayer.adminCode],
-        ),
-      )
-      .filter(f => f.geometry.type === 'MultiPolygon')
-      .map(f => f.geometry as MultiPolygon);
-
-    const bboxes = geometries.map(geom => {
-      const turfObj = multiPolygon(geom.coordinates);
-      return bbox(turfObj);
-    });
-
-    const bboxPolygons = bboxes.map(box => bboxPolygon(box));
-    const unionBbox = bboxPolygons.reduce((unionPolygon, polygon) => {
-      const unionObj = union(unionPolygon, polygon);
-      if (!unionObj) {
-        return unionPolygon;
-      }
-      return unionObj as Feature<Polygon>;
-    }, bboxPolygons[0]);
-
-    map.fitBounds(bbox(unionBbox) as Extent, {
-      padding: 30,
-    });
-    //  eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boundaries]);
-
-  if (!data || !map || !enableNavigationDropdown) {
-    return null;
-  }
-
-  return (
-    <div className={styles.dropdownMenu}>
-      <CenterFocusWeak fontSize="small" className={styles.icon} />
-      <ButtonStyleBoundaryDropdown
-        selectedBoundaries={boundaries}
-        selectAll={false}
-        onlyNewCategory
-        labelMessage={t('Go To')}
-        className={styles.formControl}
-        setSelectedBoundaries={(newSelectedBoundaries, appendMany) => {
-          setBoundaries(
-            appendMany === true
-              ? newSelectedBoundaries
-              : newSelectedBoundaries.slice(-1),
-          );
-        }}
-      />
-    </div>
-  );
-};
 
 export default BoundaryDropdown;
