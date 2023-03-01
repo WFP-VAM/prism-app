@@ -666,11 +666,13 @@
   "mvam_hay_reserves": {
     "title": "Hay reserves in metric tonnes (soum)",
     "type": "admin_level_data",
-    "path": "data/mongolia/nso/mVAM_Hay_Reserves.json",
+    "path": "https://map.nema.gov.mn/api/item",
+    "period":"2021",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.7,
+    "tblid":"DT_NSO_1001_027V1",
     "legend": [
       {
         "value": "0",
@@ -702,11 +704,13 @@
   "mvam_fodder_reserves": {
     "title": "Fodder reserves in metric tonnes (soum)",
     "type": "admin_level_data",
-    "path": "data/mongolia/nso/mVAM_Fodder_Reserves.json",
+    "path": "https://map.nema.gov.mn/api/item",
+    "period":"2021",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.7,
+    "tblid":"DT_NSO_1001_027V1",
     "legend": [
       {
         "value": "0",
@@ -739,11 +743,13 @@
   "mvam_cash_reserves": {
     "title": "Cash reserves in million MNT (soum)",
     "type": "admin_level_data",
-    "path": "data/mongolia/nso/mVAM_Cash_Reserves.json",
+    "path": "https://map.nema.gov.mn/api/item",
+    "period":"2021",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.7,
+    "tblid":"DT_NSO_1001_027V1",
     "legend": [
       {
         "value": "0",
@@ -776,10 +782,12 @@
   "mvam_hay_prices": {
     "title": "Average market hay prices (soum)",
     "type": "admin_level_data",
-    "path": "data/mongolia/nso/mVAM_Hay_Price.json",
+    "path": "https://map.nema.gov.mn/api/item",
+    "period":"2021",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE",
+    "tblid":"DT_NSO_1001_027V1",
     "opacity": 0.7,
     "legend": [
       {
