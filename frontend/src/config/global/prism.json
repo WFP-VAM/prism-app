@@ -15,9 +15,9 @@
     ]
   },
   "map": {
-    "latitude": 1.8,
-    "longitude": 29.9,
-    "zoom": 1.76
+    "latitude": 11.4,
+    "longitude": -30,
+    "zoom": 1.2
   },
   "categories": {
     "rainfall": {
