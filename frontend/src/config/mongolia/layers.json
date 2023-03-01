@@ -339,11 +339,13 @@
   "population_total": {
     "title": "Total population (soum)",
     "type": "admin_level_data",
-    "path": "data/mongolia/nso/2022-02-06/NSO_Population_Admin2_Total.json",
+    "path": "https://map.nema.gov.mn/api/item",
+    "period":"2021",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.7,
+    "tbl_id":"DT_NSO_0300_067V2",
     "legend": [
       {
         "value": "2500",

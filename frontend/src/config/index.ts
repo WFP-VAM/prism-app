@@ -80,7 +80,7 @@ const configMap = {
 
 type Country = keyof typeof configMap;
 
-const DEFAULT: Country = 'mozambique';
+const DEFAULT: Country = 'mongolia';
 
 const {
   REACT_APP_COUNTRY: COUNTRY,

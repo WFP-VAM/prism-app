@@ -220,13 +220,20 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         return moment(date).format(format);
       });
 
+      const raw = JSON.stringify({
+        tbl_id: 'DT_NSO_0300_067V2',
+        Period: '2018',
+        CODE1: '1',
+      });
       // TODO avoid any use, the json should be typed. See issue #307
       const data: { [key: string]: any }[] = (
         await (
           await fetch(datedPath, {
+            method: 'POST',
             mode: adminLevelDataLayer.path.includes('http')
               ? 'cors'
               : 'same-origin',
+            body: raw,
           })
         ).json()
       ).DataList;
