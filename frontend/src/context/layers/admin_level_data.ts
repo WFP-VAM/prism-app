@@ -223,7 +223,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
       const raw = JSON.stringify({
         tbl_id: adminLevelDataLayer.tblid,
         Period: adminLevelDataLayer.period,
-        CODE1: '1',
+        CODE1: adminLevelDataLayer.code1,
       });
       // TODO avoid any use, the json should be typed. See issue #307
       const data: { [key: string]: any }[] = (

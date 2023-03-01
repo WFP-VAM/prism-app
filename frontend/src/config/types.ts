@@ -465,6 +465,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
   tblid?: string;
 
   @optional
+  code1?: string;
+
+  @optional
   period?: string;
 
   @optional
