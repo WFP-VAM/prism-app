@@ -345,7 +345,7 @@
     "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tbl_id":"DT_NSO_0300_067V2",
+    "tblid":"DT_NSO_0300_067V2",
     "legend": [
       {
         "value": "2500",
