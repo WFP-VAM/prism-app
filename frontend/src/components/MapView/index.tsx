@@ -91,7 +91,7 @@ import { addNotification } from '../../context/notificationStateSlice';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
-import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
+import GoToBoundaryDropdown from '../Common/BoundaryDropdown/goto';
 import BoundaryInfoBox from './BoundaryInfoBox';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { firstBoundaryOnView } from '../../utils/map-utils';
@@ -571,7 +571,7 @@ function MapView({ classes }: MapViewProps) {
           >
             <Grid item>
               <Grid container spacing={1}>
-                {isShowingExtraFeatures && <GotoBoundaryDropdown />}
+                {isShowingExtraFeatures && <GoToBoundaryDropdown />}
                 {appConfig.alertFormActive && isShowingExtraFeatures ? (
                   <AlertForm
                     isOpen={isAlertFormOpen}
