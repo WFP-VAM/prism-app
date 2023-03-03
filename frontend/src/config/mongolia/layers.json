@@ -123,11 +123,13 @@
   "hay_harvest": {
     "title": "Hay harvest (soum)",
     "type": "admin_level_data",
-    "path": "data/mongolia/nso/NSO_Hay_Harvest_Admin2.json",
+    "path": "https://map.nema.gov.mn/api/item",
+    "period":"2021",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.7,
+    "tblid":"DT_NSO_1001_038V3",
     "legend": [
       {
         "value": "500",
@@ -783,11 +785,11 @@
     "title": "Average market hay prices (soum)",
     "type": "admin_level_data",
     "path": "https://map.nema.gov.mn/api/item",
-    "period":"2021",
+    "period":"202301",
     "data_field": "DTVAL_CO",
     "admin_level": 1,
-    "admin_code": "CODE",
-    "tblid":"DT_NSO_1001_027V1",
+    "admin_code": "CODE1",
+    "tblid":"DT_NSO_1002_001V5",
     "opacity": 0.7,
     "legend": [
       {
