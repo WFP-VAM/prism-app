@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/cambodia/khm_bnd_admin3_gov_ed2022.json",
+    "path": "data/cambodia/khm_bnd_admin3_gov_ed2022_w_dataviz.json",
     "opacity": 0.8,
     "admin_code": "Adm3_text",
     "admin_level_names": ["Adm1_Name", "Adm2_Name", "Adm3_Name"],
@@ -235,6 +235,26 @@
       "days": 10,
       "mode": "forward"
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "Adm1_Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "Adm2_Name"
+        }
+      ],
+      "type": "bar"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -265,6 +285,31 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "Adm1_Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "Adm2_Name"
+        }
+      ],
+      "type": "line"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -292,6 +337,31 @@
     "server_layer_name": "r1q_dekad",
     "additional_query_params": {
       "styles": "rfq_14_20_400"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r1q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "Adm1_Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "Adm2_Name"
+        }
+      ],
+      "type": "line"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -321,6 +391,31 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "additional_query_params": {
       "styles": "rfq_14_20_400"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r3q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "Adm1_Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "Adm2_Name"
+        }
+      ],
+      "type": "line"
     },
     "date_interval": "days",
     "opacity": 0.7,
@@ -434,6 +529,26 @@
     "additional_query_params": {
       "styles": "rfh_16_0_400"
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "Adm1_Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "Adm2_Name"
+        }
+      ],
+      "type": "bar"
+    },
     "date_interval": "days",
     "opacity": 0.7,
     "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
@@ -462,6 +577,26 @@
     "server_layer_name": "r3h_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_1000"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "Adm1_Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "Adm2_Name"
+        }
+      ],
+      "type": "bar"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1094,6 +1229,26 @@
     "additional_query_params": {
       "styles": "vim_14_01_09"
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "vim", "label": "NDVI", "color": "#4eac5b" },
+        { "key": "vim_avg", "label": "Average", "color": "#99ff99" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "Adm1_Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "Adm2_Name"
+        }
+      ],
+      "type": "line"
+    },
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.0001,
@@ -1127,6 +1282,31 @@
     "date_interval": "days",
     "additional_query_params": {
       "styles": "viq_13_50_150"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "viq", "label": "NDVI anomaly", "color": "#5e803f" },
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "fallback": 100
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "Adm1_Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "Adm2_Name"
+        }
+      ],
+      "type": "line"
     },
     "opacity": 0.7,
     "legend_text": "NDVI Anomaly compared to LTA",
