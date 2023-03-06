@@ -19,8 +19,8 @@
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "latitude": 12.058,
-    "longitude": 105.281,
+    "latitude": 12.3,
+    "longitude": 103.9,
     "zoom": 6.49
   },
   "defaultDisplayBoundaries": [
