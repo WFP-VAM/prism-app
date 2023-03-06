@@ -54,17 +54,12 @@
     }
   },
   "idpoor": {
-    "title": "IDPoor - dates",
+    "title": "IDPoor - 1 & 2",
     "type": "admin_level_data",
-    "path": "data/cambodia/idpoor/{YYYY_MM_DD}.json",
-    "dates": ["2022-01-01", "2022-07-01"],
+    "path": "data/cambodia/idpoor1_2.json",
     "data_field": "Total_Poor_12_HHs",
     "admin_level": 3,
     "admin_code": "Adm3_text",
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
     "opacity": 0.9,
     "feature_info_props": {
       "Total_Poor_12_HHs": {
@@ -1684,28 +1679,18 @@
       },
       {
         "value": 1,
-        "label": "< 10",
-        "color": "#ffffb2"
+        "label": "< 5",
+        "color": "#9e9ac8"
+      },
+      {
+        "value": 5,
+        "label": "5 - 10",
+        "color": "#756bb1"
       },
       {
         "value": 11,
-        "label": "11 - 25",
-        "color": "#fecc5c"
-      },
-      {
-        "value": 26,
-        "label": "26 - 50",
-        "color": "#fd8d3c"
-      },
-      {
-        "value": 51,
-        "label": "51 - 100",
-        "color": "#f03b20"
-      },
-      {
-        "value": 101,
-        "label": "> 100",
-        "color": "#bd0026"
+        "label": "> 10",
+        "color": "#54278f"
       }
     ]
   },
