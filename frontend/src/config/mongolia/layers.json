@@ -123,8 +123,8 @@
   "hay_harvest": {
     "title": "Hay harvest (soum)",
     "type": "admin_level_data",
-    "path": "https://map.nema.gov.mn/api/item",
-    "period":"2021",
+    "path": "https://map.nema.gov.mn/nsodata/DT_NSO_1001_038V3",
+    "requestBody": "title: 'tumee test new server'",    
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",

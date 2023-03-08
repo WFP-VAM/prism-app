@@ -91,7 +91,7 @@ import { addNotification } from '../../context/notificationStateSlice';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 import AlertForm from './AlertForm';
 import SelectionLayer from './Layers/SelectionLayer';
-import { GotoBoundaryDropdown } from './Layers/BoundaryDropdown';
+import GoToBoundaryDropdown from '../Common/BoundaryDropdown/goto';
 import BoundaryInfoBox from './BoundaryInfoBox';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { firstBoundaryOnView } from '../../utils/map-utils';
@@ -128,6 +128,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
   'point_data',
   'wms',
+  'static_raster',
 ];
 const boundaryLayer = getBoundaryLayerSingleton();
 
@@ -198,9 +199,10 @@ function MapView({ classes }: MapViewProps) {
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     undefined,
   );
+
   const selectedLayersWithDateSupport = selectedLayers
     .filter((layer): layer is DateCompatibleLayer => {
-      if (layer.type === 'admin_level_data') {
+      if (layer.type === 'admin_level_data' || layer.type === 'static_raster') {
         return Boolean(layer.dates);
       }
       if (layer.type === 'wms') {
@@ -578,7 +580,7 @@ function MapView({ classes }: MapViewProps) {
       >
         <Grid item>
           <Analyser extent={adminBoundariesExtent} />
-          <GotoBoundaryDropdown />
+          <GoToBoundaryDropdown />
           {appConfig.alertFormActive ? (
             <AlertForm isOpen={isAlertFormOpen} setOpen={setIsAlertFormOpen} />
           ) : null}

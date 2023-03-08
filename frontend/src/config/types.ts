@@ -426,6 +426,9 @@ export class StaticRasterLayerProps extends CommonLayerProps {
   minZoom: number;
 
   maxZoom: number;
+
+  @optional
+  dates?: string[];
 }
 
 export enum DataFieldType {
@@ -472,6 +475,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   fallbackLayerKeys?: string[];
+
+  @optional
+  requestBody?: { [key: string]: string }; // JSON body request params
 }
 
 export class StatsApi {

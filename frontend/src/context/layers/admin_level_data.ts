@@ -204,6 +204,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
     boundary,
     fallbackLayerKeys,
     adminLevel,
+    requestBody,
   } = layer;
 
   const fallbackLayers = fallbackLayerKeys?.map(
@@ -219,12 +220,13 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         const format = match.slice(1, -1);
         return moment(date).format(format);
       });
-
-      const raw = JSON.stringify({
-        tbl_id: adminLevelDataLayer.tblid,
-        Period: adminLevelDataLayer.period,
-        CODE1: adminLevelDataLayer.code1,
-      });
+      const options = requestBody
+        ? {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestBody),
+          }
+        : {};
       // TODO avoid any use, the json should be typed. See issue #307
       const data: { [key: string]: any }[] = (
         await (
@@ -233,7 +235,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
             mode: adminLevelDataLayer.path.includes('http')
               ? 'cors'
               : 'same-origin',
-            body: raw,
+            ...options,
           })
         ).json()
       ).DataList;
