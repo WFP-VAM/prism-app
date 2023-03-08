@@ -220,6 +220,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         const format = match.slice(1, -1);
         return moment(date).format(format);
       });
+
       const options = requestBody
         ? {
             method: 'POST',
@@ -227,6 +228,7 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
             body: JSON.stringify(requestBody),
           }
         : {};
+
       // TODO avoid any use, the json should be typed. See issue #307
       const data: { [key: string]: any }[] = (
         await (

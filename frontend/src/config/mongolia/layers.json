@@ -55,7 +55,8 @@
     "admin_level": 1,
     "admin_code": "CODE1",
     "opacity": 0.7,
-    "tblid":"DT_NSO_1900_035V1",
+    "table_id":"DT_NSO_1900_035V1",
+    "requestBody":"tbl_id:DT_NSO_1900_035V1,Period:2018",
     "legend": [
       {
         "value": "25",
@@ -90,7 +91,8 @@
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tblid":"DT_NSO_3300_014V1",
+    "table_id":"DT_NSO_3300_014V1",
+    "requestBody":"tbl_id:DT_NSO_3300_014V1,Period:2018",
     "legend": [
       {
         "value": "2000",
@@ -123,13 +125,14 @@
   "hay_harvest": {
     "title": "Hay harvest (soum)",
     "type": "admin_level_data",
-    "path": "https://map.nema.gov.mn/nsodata/DT_NSO_1001_038V3",
-    "requestBody": "title: 'tumee test new server'",    
+    "path": "https://map.nema.gov.mn//api/item",
+    "period":"2021",
     "data_field": "DTVAL_CO",
     "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tblid":"DT_NSO_1001_038V3",
+    "table_id":"DT_NSO_1001_038V3",
+    "requestBody":"tbl_id:DT_NSO_1001_038V3,Period:2021",
     "legend": [
       {
         "value": "500",
@@ -169,7 +172,8 @@
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tblid":"DT_NSO_0300_014V1",
+    "table_id":"DT_NSO_0300_014V1",
+    "requestBody":"tbl_id:DT_NSO_0300_014V1,Period:2019",
     "legend": [
       {
         "value": "1000",
@@ -208,7 +212,8 @@
     "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tblid":"DT_NSO_1001_027V1",
+    "table_id":"DT_NSO_1001_027V1",
+    "requestBody":{"tbl_id":"DT_NSO_1001_027V1","Period":"2021"},
     "legend": [
       {
         "label": "<= 300",
@@ -252,7 +257,8 @@
     "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tblid":"DT_NSO_1001_021V1",
+    "table_id":"DT_NSO_1001_021V1",
+    "requestBody":{"tbl_id":"DT_NSO_1001_021V1","Period":"2021"},
     "legend": [
       {
         "value": "100",
@@ -286,7 +292,8 @@
     "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tblid":"DT_NSO_0300_067V2",
+    "table_id":"DT_NSO_0300_067V2",
+    "requestBody":{"tbl_id":"DT_NSO_0300_067V2","Period":"2021"},
     "code1":"2",
     "legend": [
       {
@@ -323,7 +330,8 @@
     "admin_level": 1,
     "admin_code": "CODE1",
     "opacity": 0.7,
-    "tblid":"DT_NSO_1001_044V1",
+    "table_id":"DT_NSO_1001_044V1",
+    "requestBody":{"tbl_id":"DT_NSO_1001_044V1","Period":"2021"},
     "code1":"182",
     "legend": [
       {
@@ -363,7 +371,8 @@
     "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tblid":"DT_NSO_0300_067V2",
+    "table_id":"DT_NSO_0300_067V2",
+    "requestBody":{"tbl_id":"DT_NSO_0300_067V2","Period":"2021"},
     "legend": [
       {
         "value": "2500",
@@ -674,7 +683,8 @@
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tblid":"DT_NSO_1001_027V1",
+    "table_id":"DT_NSO_1001_027V1",
+    "requestBody":{"tbl_id":"DT_NSO_1001_027V1","Period":"2021"},
     "legend": [
       {
         "value": "0",
@@ -712,7 +722,8 @@
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tblid":"DT_NSO_1001_027V1",
+    "table_id":"DT_NSO_1001_027V1",
+    "requestBody":{"tbl_id":"DT_NSO_1001_027V1","Period":"2021"},
     "legend": [
       {
         "value": "0",
@@ -751,7 +762,8 @@
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "tblid":"DT_NSO_1001_027V1",
+    "table_id":"DT_NSO_1001_027V1",
+    "requestBody":{"tbl_id":"DT_NSO_1001_027V1","Period":"2021"},
     "legend": [
       {
         "value": "0",
@@ -789,7 +801,8 @@
     "data_field": "DTVAL_CO",
     "admin_level": 1,
     "admin_code": "CODE1",
-    "tblid":"DT_NSO_1002_001V5",
+    "table_id":"DT_NSO_1002_001V5",
+    "requestBody":{"tbl_id":"DT_NSO_1002_001V5","Period":"202301"},
     "opacity": 0.7,
     "legend": [
       {
