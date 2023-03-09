@@ -124,7 +124,12 @@ const BoundaryDropdown = ({
       <InputLabel id="boundary-dropdown">{labelText}</InputLabel>
       <Select
         // Disables auto focus on MenuItems and allows search bar to be in focus
-        MenuProps={{ autoFocus: false }}
+        MenuProps={{
+          autoFocus: false,
+          style: {
+            maxHeight: '50vh',
+          },
+        }}
         labelId="boundary-dropdown"
         id="select-dropdown"
         value={selected}
