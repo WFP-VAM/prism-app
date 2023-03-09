@@ -6,7 +6,7 @@ import { BoundaryLayerProps } from '../../../../config/types';
 import { LayerData } from '../../../../context/layers/layer-data';
 import { hidePopup, showPopup } from '../../../../context/tooltipStateSlice';
 
-import { setRelationData } from '../../../../context/mapStateSlice';
+import { setBoundaryRelationData } from '../../../../context/mapStateSlice';
 import {
   loadBoundaryRelations,
   BoundaryRelationData,
@@ -55,7 +55,7 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
       return { ...relationsDict, [lang]: relations };
     }, {});
 
-    dispatch(setRelationData(dataDict));
+    dispatch(setBoundaryRelationData(dataDict));
   }, [data, dispatch, layer, isPrimaryLayer]);
 
   if (!data) {
