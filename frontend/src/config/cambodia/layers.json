@@ -1452,6 +1452,9 @@
     "type": "wms",
     "server_layer_name": "hf_water_khm",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "additional_query_params": {
+      "styles": "hf_water_class_single"
+    },
     "date_interval": "days",
     "opacity": 1.0,
     "legend_text": "Near real time water mapping is implemented using satellite imagery from Sentinel-1 (SAR), Sentinel-2 (optical), and Landsat8 (optical). Daily water layers are created by compositing the most recent water layers detected from these three satellite sensors. Source: SERVIR Mekong HYDRAFloods. Contains modified Copernicus Sentinel data [2022]",
@@ -1468,17 +1471,7 @@
       },
       {
         "value": 3,
-        "label": "SAR Flood",
-        "color": "#ffffbf"
-      },
-      {
-        "value": 4,
-        "label": "Optical Flood",
-        "color": "#fdae61"
-      },
-      {
-        "value": 5,
-        "label": "SAR + Optical Flood",
+        "label": "Flooded",
         "color": "#d7191c"
       }
     ],
