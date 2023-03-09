@@ -3,7 +3,6 @@ import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerKey, LayerType } from '../../config/types';
 import { LayerDefinitions } from '../../config/utils';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
-import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
 
 interface DateRange {
   startDate?: number;
@@ -22,7 +21,6 @@ export type MapState = {
   // Note that layerData is mainly for storing vector map data.
   // Tile image loading for raster layer is tracked separately on mapTileLoadingStateSlice
   loadingLayerIds: LayerKey[];
-  boundaryRelationData: BoundaryRelationsDict;
 };
 
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -37,7 +35,6 @@ const initialState: MapState = {
   errors: [],
   layersData: [],
   loadingLayerIds: [],
-  boundaryRelationData: {},
 };
 
 function keepLayer(layer: LayerType, payload: LayerType) {
@@ -101,14 +98,6 @@ export const mapStateSlice = createSlice({
     setMap: (state, { payload }: PayloadAction<MapGetter>) => ({
       ...state,
       mapboxMap: payload,
-    }),
-
-    setRelationData: (
-      state,
-      { payload }: PayloadAction<BoundaryRelationsDict>,
-    ) => ({
-      ...state,
-      relationData: payload,
     }),
 
     dismissError: (
@@ -175,7 +164,6 @@ export const {
   // TODO unused
   updateLayerOpacity,
   removeLayerData,
-  setRelationData,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;

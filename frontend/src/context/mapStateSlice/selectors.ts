@@ -6,7 +6,6 @@ import type { RootState } from '../store';
 import type { LayerDataTypes } from '../layers/layer-data';
 import type { MapState } from '.';
 import type { LayerKey } from '../../config/types';
-import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
 
 export const layersSelector = (state: RootState): MapState['layers'] =>
   state.mapState.layers;
@@ -24,6 +23,3 @@ export const layerDataSelector = (id: LayerKey, date?: number) => (
   );
 export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
   state.mapState.loadingLayerIds;
-
-export const relationSelector = (state: RootState): BoundaryRelationsDict =>
-  state.mapState.boundaryRelationData;
