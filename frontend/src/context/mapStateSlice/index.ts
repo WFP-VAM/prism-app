@@ -108,7 +108,7 @@ export const mapStateSlice = createSlice({
       { payload }: PayloadAction<BoundaryRelationsDict>,
     ) => ({
       ...state,
-      relationData: payload,
+      boundaryRelationData: payload,
     }),
 
     dismissError: (
