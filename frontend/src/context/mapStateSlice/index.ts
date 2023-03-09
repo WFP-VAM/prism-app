@@ -103,7 +103,7 @@ export const mapStateSlice = createSlice({
       mapboxMap: payload,
     }),
 
-    setRelationData: (
+    setBoundaryRelationData: (
       state,
       { payload }: PayloadAction<BoundaryRelationsDict>,
     ) => ({
@@ -175,7 +175,7 @@ export const {
   // TODO unused
   updateLayerOpacity,
   removeLayerData,
-  setRelationData,
+  setBoundaryRelationData,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;
