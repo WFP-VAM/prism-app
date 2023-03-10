@@ -12,11 +12,10 @@
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png"
   },
-  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries", "admin2_boundaries"],
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://geonode.wfp.org/geoserver/prism/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
   "map": {
@@ -244,22 +243,17 @@
     "tropical_storms": {
       "tropical_storms": [
         {
-          "group_title": "Tropical Storms",
+          "group_title": "Tropical Storm Freddy (March 2023)",
           "activate_all": true,
           "layers": [
             {
-              "id": "adamts_buffers",
-              "label": "Wind buffers",
+              "id": "freddy_impact",
+              "label": "Impact",
               "main": true
             },
             {
-              "id": "adamts_nodes",
-              "label": "Nodes"
-            },
-            {
-              "id": "adamts_tracks",
-              "label": "Tracks"
-            }
+              "id": "freddy",
+              "label": "Wind buffers and path"            }
           ]
         }
       ]
@@ -305,7 +299,7 @@
       ]
     },
     "exposure": {
-      "population": ["census"]
+      "population": ["census", "wp_pop_cicunadj"]
     }
   }
 }
