@@ -54,7 +54,7 @@
     "admin_level": 1,
     "admin_code": "CODE1",
     "opacity": 0.7,
-    "requestBody":"tbl_id:DT_NSO_1900_035V1,Period:2018",
+    "requestBody":{"tbl_id":"DT_NSO_1900_035V1","Period":"2018"},
     "legend": [
       {
         "value": "25",
@@ -88,7 +88,7 @@
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "requestBody":"tbl_id:DT_NSO_3300_014V1,Period:2018",
+    "requestBody":{"tbl_id":"DT_NSO_3300_014V1","Period":"2018"},
     "legend": [
       {
         "value": "2000",
@@ -126,7 +126,7 @@
     "admin_level": 2,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "requestBody":"tbl_id:DT_NSO_1001_038V3,Period:2021",
+    "requestBody":{"tbl_id":"DT_NSO_1001_038V3","Period":"2021"},
     "legend": [
       {
         "value": "500",
@@ -165,7 +165,7 @@
     "admin_level": 1,
     "admin_code": "CODE",
     "opacity": 0.7,
-    "requestBody":"tbl_id:DT_NSO_0300_014V1,Period:2019",
+    "requestBody":{"tbl_id":"DT_NSO_0300_014V1","Period":"2019"},
     "legend": [
       {
         "value": "1000",
