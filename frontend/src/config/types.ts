@@ -465,15 +465,6 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
   boundary?: LayerKey;
 
   @optional
-  tableId?: string;
-
-  @optional
-  code1?: string;
-
-  @optional
-  period?: string;
-
-  @optional
   fallbackLayerKeys?: string[];
 
   @optional
