@@ -40,11 +40,14 @@ const initialState: MapState = {
   boundaryRelationData: {},
 };
 
+const TYPES_ALLOWED_TO_OVERLAP = ['boundary', 'point_data'];
+
 function keepLayer(layer: LayerType, payload: LayerType) {
   // Simple function to control which layers can overlap.
   return (
     payload.id !== layer.id &&
-    (payload.type !== layer.type || payload.type === 'boundary')
+    (payload.type !== layer.type ||
+      TYPES_ALLOWED_TO_OVERLAP.includes(payload.type))
   );
 }
 
