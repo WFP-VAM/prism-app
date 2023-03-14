@@ -3174,62 +3174,50 @@
     "title": "Phase classification",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
-    "dates": [
-      "2018-01-01",
-      "2018-06-01",
-      "2018-09-01",
-      "2019-01-01",
-      "2019-06-01",
-      "2019-09-01",
-      "2020-01-01",
-      "2020-06-01",
-      "2020-09-01",
-      "2021-01-01",
-      "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
-      "2022-06-01",
-      "2022-09-01"
-    ],
+    "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-02-01", "2023-06-01", "2023-10-01"],
     "validity": {
-      "days": 150,
+      "days": 122,
       "mode": "forward"
     },
     "fallbackLayerKeys": [
       "ch_phase_admin1"
     ],
     "admin_level": 2,
-    "data_field": "phase_class",
+    "data_field": "calc_ph_admin2",
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "phase1": {
+      "calc_pop_ph1_admin2": {
         "type": "number",
         "label": "Population in phase 1"
       },
-      "phase2": {
+      "calc_pop_ph2_admin2": {
         "type": "number",
         "label": "Population in phase 2"
       },
-      "phase3": {
+      "calc_pop_ph3_admin2": {
         "type": "number",
         "label": "Population in phase 3"
       },
-      "phase4": {
+      "calc_pop_ph4_admin2": {
         "type": "number",
         "label": "Population in phase 4"
       },
-      "phase5": {
+      "calc_pop_ph5_admin2": {
         "type": "number",
         "label": "Population in phase 5"
       },
-      "phase35": {
+      "calc_pop_ph3_5_admin2": {
         "type": "number",
         "label": "Population in phase 3 to 5"
       },
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "legend": [
@@ -3265,55 +3253,47 @@
     "title": "ch_admin1_phase_all_dates",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2018-01-01",
-      "2018-06-01",
-      "2018-09-01",
-      "2019-01-01",
-      "2019-06-01",
-      "2019-09-01",
-      "2020-01-01",
-      "2020-06-01",
-      "2020-09-01",
-      "2021-01-01",
-      "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
-      "2022-06-01",
-      "2022-09-01"
-    ],
+    "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-02-01", "2023-06-01", "2023-10-01"],
+    "validity": {
+      "days": 122,
+      "mode": "forward"
+    },
     "admin_level": 1,
-    "data_field": "phase_class",
+    "data_field": "calc_ph_admin1",
     "admin_code": "adm1_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "phase1": {
+      "calc_pop_ph1_admin1": {
         "type": "number",
         "label": "Population in phase 1"
       },
-      "phase2": {
+      "calc_pop_ph2_admin1": {
         "type": "number",
         "label": "Population in phase 2"
       },
-      "phase3": {
+      "calc_pop_ph3_admin1": {
         "type": "number",
         "label": "Population in phase 3"
       },
-      "phase4": {
+      "calc_pop_ph4_admin1": {
         "type": "number",
         "label": "Population in phase 4"
       },
-      "phase5": {
+      "calc_pop_ph5_admin1": {
         "type": "number",
         "label": "Population in phase 5"
       },
-      "phase35": {
+      "calc_pop_ph3_5_admin1": {
         "type": "number",
         "label": "Population in phase 3 to 5"
       },
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "legend": [
@@ -3349,24 +3329,8 @@
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
-    "dates": [
-      "2018-01-01",
-      "2018-06-01",
-      "2018-09-01",
-      "2019-01-01",
-      "2019-06-01",
-      "2019-09-01",
-      "2020-01-01",
-      "2020-06-01",
-      "2020-09-01",
-      "2021-01-01",
-      "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
-      "2022-06-01",
-      "2022-09-01"
-    ],
-    "data_field": "phase35",
+    "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-02-01", "2023-06-01", "2023-10-01"],
+    "data_field": "calc_pop_ph3_5_admin2",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": [
@@ -3397,13 +3361,17 @@
         "type": "number",
         "label": "Population in phase 5"
       },
-      "phase35": {
+      "calc_pop_ph3_5_admin2": {
         "type": "number",
         "label": "Population in phase 3 to 5"
       },
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "opacity": 0.7,
@@ -3450,24 +3418,8 @@
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2018-01-01",
-      "2018-06-01",
-      "2018-09-01",
-      "2019-01-01",
-      "2019-06-01",
-      "2019-09-01",
-      "2020-01-01",
-      "2020-06-01",
-      "2020-09-01",
-      "2021-01-01",
-      "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
-      "2022-06-01",
-      "2022-09-01"
-    ],
-    "data_field": "phase35",
+    "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-02-01", "2023-06-01", "2023-10-01"],
+    "data_field": "calc_pop_ph3_5_admin1",
     "admin_level": 1,
     "admin_code": "adm1_pcod2",
     "validity": {
@@ -3495,13 +3447,17 @@
         "type": "number",
         "label": "Population in phase 5"
       },
-      "phase35": {
+      "calc_pop_ph3_5_admin1": {
         "type": "number",
         "label": "Population in phase 3 to 5"
       },
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "opacity": 0.7,
@@ -3549,13 +3505,13 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2019-01-01",
-      "2021-01-01",
+      "2019-10-01",
+      "2021-02-01",
       "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
+      "2021-10-01",
+      "2022-02-01",
       "2022-06-01",
-      "2022-09-01",
+      "2022-10-01",
       "2023-06-01"
     ],
     "admin_level": 2,
@@ -3566,9 +3522,13 @@
     ],
     "opacity": 0.9,
     "feature_info_props": {
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "legend": [
@@ -3605,23 +3565,27 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin1_{YYYY_MM_DD}.json",
     "dates": [
-      "2019-01-01",
-      "2021-01-01",
+      "2019-10-01",
+      "2021-02-01",
       "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
+      "2021-10-01",
+      "2022-02-01",
       "2022-06-01",
-      "2022-09-01",
+      "2022-10-01",
       "2023-06-01"
     ],
     "admin_level": 1,
-    "data_field": "phase_class",
+    "data_field": "calc_ph_admin1",
     "admin_code": "adm1_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "legend": [
@@ -3658,26 +3622,30 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2019-01-01",
-      "2021-01-01",
+      "2019-10-01",
+      "2021-02-01",
       "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
+      "2021-10-01",
+      "2022-02-01",
       "2022-06-01",
-      "2022-09-01",
+      "2022-10-01",
       "2023-06-01"
     ],
     "admin_level": 2,
-    "data_field": "phase35",
+    "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": [
       "ch_idps_phase_admin1"
     ],
     "opacity": 0.9,
     "feature_info_props": {
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "legend": [
@@ -3724,23 +3692,27 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin1_{YYYY_MM_DD}.json",
     "dates": [
-      "2019-01-01",
-      "2021-01-01",
+      "2019-10-01",
+      "2021-02-01",
       "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
+      "2021-10-01",
+      "2022-02-01",
       "2022-06-01",
-      "2022-09-01",
+      "2022-10-01",
       "2023-06-01"
     ],
     "admin_level": 1,
-    "data_field": "phase35",
+    "data_field": "calc_pop_ph3_5_admin1",
     "admin_code": "adm1_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "legend": [
@@ -3785,17 +3757,17 @@
   "ch_inaccessible_phase": {
     "title": "Limited access areas - phase classification",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/inaccessible_admin2_{YYYY_MM_DD}.json",
+    "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2020-01-01",
+      "2020-02-01",
       "2020-06-01",
-      "2020-09-01",
-      "2021-01-01",
+      "2020-10-01",
+      "2021-02-01",
       "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
+      "2021-10-01",
+      "2022-02-01",
       "2022-06-01",
-      "2022-09-01",
+      "2022-10-01",
       "2023-06-01"
     ],
     "admin_level": 2,
@@ -3803,9 +3775,13 @@
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "legend": [
@@ -3840,27 +3816,31 @@
   "ch_inaccessible_pop3_5": {
     "title": "Limited access areas - population in phase 3 to 5",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/inaccessible_admin2_{YYYY_MM_DD}.json",
+    "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2020-01-01",
+      "2020-02-01",
       "2020-06-01",
-      "2020-09-01",
-      "2021-01-01",
+      "2020-10-01",
+      "2021-02-01",
       "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
+      "2021-10-01",
+      "2022-02-01",
       "2022-06-01",
-      "2022-09-01",
+      "2022-10-01",
       "2023-06-01"
     ],
     "admin_level": 2,
-    "data_field": "phase35",
+    "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "legend": [
@@ -3905,9 +3885,9 @@
   "ch_urban_phase": {
     "title": "Urban areas - phase classification",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/urban_admin2_{YYYY_MM_DD}.json",
+    "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2022-01-01",
+      "2022-02-01",
       "2022-06-01"
     ],
     "admin_level": 2,
@@ -3915,9 +3895,13 @@
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "legend": [
@@ -3952,19 +3936,23 @@
   "ch_urban_pop3_5": {
     "title": "Urban areas - population in phase 3 to 5",
     "type": "admin_level_data",
-    "path": "data/rbd/ch/urban_admin2_{YYYY_MM_DD}.json",
+    "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2022-01-01",
+      "2022-02-01",
       "2022-06-01"
     ],
     "admin_level": 2,
-    "data_field": "phase35",
+    "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
     "opacity": 0.9,
     "feature_info_props": {
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "label": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "label": "Reference period end"
       }
     },
     "legend": [
