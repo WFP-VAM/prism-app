@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerKey, LayerType } from '../../config/types';
-import { LayerDefinitions } from '../../config/utils';
+import { LayerDefinitions, TYPES_ALLOWED_TO_OVERLAP } from '../../config/utils';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
 
@@ -39,8 +39,6 @@ const initialState: MapState = {
   loadingLayerIds: [],
   boundaryRelationData: {},
 };
-
-const TYPES_ALLOWED_TO_OVERLAP = ['boundary', 'point_data'];
 
 function keepLayer(layer: LayerType, payload: LayerType) {
   // Simple function to control which layers can overlap.
