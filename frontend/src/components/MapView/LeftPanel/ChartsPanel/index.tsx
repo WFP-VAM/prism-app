@@ -222,6 +222,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
       key.endsWith('_avg')
         ? `${snakeCase(chartName)}_avg`
         : snakeCase(chartName);
+
     const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
       ([key, value]) => {
         const first = value[0];
@@ -231,6 +232,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
         return Object.fromEntries(mapped.map(x => [x, x]));
       },
     );
+
     const columnsNames = columnsNamesPerChart.reduce(
       (prev, curr) => ({ ...prev, ...curr }),
       { [dateColumn]: dateColumn },
@@ -252,6 +254,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     const objectsArray = Object.entries(grouped).map(([, value]) => {
       return value.reduce((prev, curr) => ({ ...prev, ...curr }), {});
     });
+
     downloadToFile(
       {
         content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
@@ -448,7 +451,6 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
         onClick={downloadCsv}
         disabled={
           !(
-            adminProperties &&
             selectedDate &&
             tabIndex === tabValue &&
             selectedLayerTitles.length >= 1

@@ -147,16 +147,16 @@ function LayerDownloadOptions({
         onClose={handleDownloadMenuClose}
       >
         {layer.type === 'admin_level_data' && [
-          <MenuItem onClick={handleDownloadCsv}>
+          <MenuItem key="download-as-csv" onClick={handleDownloadCsv}>
             {t('Download as CSV')}
           </MenuItem>,
-          <MenuItem onClick={handleDownloadGeoJson}>
+          <MenuItem key="download-as-geojson" onClick={handleDownloadGeoJson}>
             {t('Download as GeoJSON')}
           </MenuItem>,
         ]}
         {layer.type === 'wms' &&
           layer.baseUrl.includes('api.earthobservation.vam.wfp.org/ows') && (
-            <MenuItem onClick={handleDownloadGeoTiff}>
+            <MenuItem key="download-as-geotiff" onClick={handleDownloadGeoTiff}>
               {t('Download as GeoTIFF')}
             </MenuItem>
           )}

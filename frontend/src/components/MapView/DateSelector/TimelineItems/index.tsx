@@ -80,6 +80,7 @@ function TimelineItems({
         ) {
           return (
             <TooltipItem
+              key={selectedLayerTitle}
               layerTitle={t(selectedLayerTitle)}
               color={DATE_ITEM_STYLING[layerIndex + 1].color}
             />
@@ -101,7 +102,7 @@ function TimelineItems({
       {dateRange.map((date, index) => (
         <Tooltip
           title={<div>{getTooltipTitle(date)}</div>}
-          key={date.label}
+          key={`Root-${date.label}-${date.value}`}
           TransitionComponent={Fade}
           TransitionProps={{ timeout: 0 }}
           placement="top"
@@ -124,15 +125,18 @@ function TimelineItems({
               <div className={classes.dayItem} />
             )}
             {[formattedIntersectionDates, ...formattedSelectedLayerDates].map(
-              (layerDates, layerIndex) =>
-                layerDates.includes(formatDate(date.value)) && (
-                  <div
-                    key={date.value}
-                    className={DATE_ITEM_STYLING[layerIndex].class}
-                    role="presentation"
-                    onClick={() => click(index)}
-                  />
-                ),
+              (layerDates, layerIndex) => {
+                return (
+                  layerDates.includes(formatDate(date.value)) && (
+                    <div
+                      key={`Nested-${layerDates[layerIndex]}`}
+                      className={DATE_ITEM_STYLING[layerIndex].class}
+                      role="presentation"
+                      onClick={() => click(index)}
+                    />
+                  )
+                );
+              },
             )}
           </Grid>
         </Tooltip>
