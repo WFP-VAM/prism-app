@@ -222,6 +222,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
       key.endsWith('_avg')
         ? `${snakeCase(chartName)}_avg`
         : snakeCase(chartName);
+
     const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
       ([key, value]) => {
         const first = value[0];
@@ -231,6 +232,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
         return Object.fromEntries(mapped.map(x => [x, x]));
       },
     );
+
     const columnsNames = columnsNamesPerChart.reduce(
       (prev, curr) => ({ ...prev, ...curr }),
       { [dateColumn]: dateColumn },
@@ -248,10 +250,25 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     if (merged.length < 1) {
       return;
     }
+
     const grouped = groupBy(merged, dateColumn);
+    // The blueprint of objects array data
+    const initialObjectsArrayBlueprintData = Object.keys(columnsNames).reduce(
+      (acc: { [key: string]: string }, key) => {
+        // eslint-disable-next-line fp/no-mutation
+        acc[key] = '';
+        return acc;
+      },
+      {},
+    );
+
     const objectsArray = Object.entries(grouped).map(([, value]) => {
-      return value.reduce((prev, curr) => ({ ...prev, ...curr }), {});
+      return value.reduce(
+        (prev, curr) => ({ ...prev, ...curr }),
+        initialObjectsArrayBlueprintData,
+      );
     });
+
     downloadToFile(
       {
         content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
