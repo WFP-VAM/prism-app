@@ -6,6 +6,7 @@
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
+    "field_reports": "icon_basemap.png",
     "hazards": "icon_climate.png",
     "flood": "icon_flood.png",
     "risk": "icon_impact.png",
@@ -201,7 +202,7 @@
     "vulnerability": {
       "poverty": ["idpoor", "idpoor_1", "idpoor_2"]
     },
-    "exposure": {
+    "field_reports": {
       "field_reports": ["flood_report", "drought_report", "kh_incident_report"]
     }
   }
