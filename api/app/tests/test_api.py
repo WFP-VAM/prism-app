@@ -105,12 +105,13 @@ def test_stats_endpoint1():
             "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(95.71,96.68)&subset=Lat(19.42,20.33)",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
             "group_by": "TS_PCODE",
-            "wfs_params": {
-                "url": "https://geonode.wfp.org/geoserver/ows",
-                "layer_name": "mmr_gdacs_buffers",
-                "time": "2022-10-24",
-                "key": "label",
-            },
+            # TODO - re-add once geonode is back online.
+            # "wfs_params": {
+            #     "url": "https://geonode.wfp.org/geoserver/ows",
+            #     "layer_name": "mmr_gdacs_buffers",
+            #     "time": "2022-10-24",
+            #     "key": "label",
+            # },
             "geojson_out": True,
         },
     )
@@ -124,12 +125,13 @@ def test_stats_endpoint1():
             "geotiff_url": "https://api.earthobservation.vam.wfp.org/ows/?service=WCS&request=GetCoverage&version=2.0.0&coverageId=wp_pop_cicunadj&subset=Long(95.71,96.68)&subset=Lat(19.42,20.33)",
             "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mmr_admin_boundaries.json",
             "group_by": "TS_PCODE",
-            "wfs_params": {
-                "url": "https://geonode.wfp.org/geoserver/ows",
-                "layer_name": "mmr_gdacs_buffers",
-                "time": "2022-10-11",
-                "key": "label",
-            },
+            # TODO - re-add once geonode is back online.
+            # "wfs_params": {
+            #     "url": "https://geonode.wfp.org/geoserver/ows",
+            #     "layer_name": "mmr_gdacs_buffers",
+            #     "time": "2022-10-11",
+            #     "key": "label",
+            # },
             "geojson_out": True,
         },
     )
