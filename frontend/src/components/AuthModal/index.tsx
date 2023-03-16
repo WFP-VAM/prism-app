@@ -8,35 +8,45 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  Box,
+  Button,
   createStyles,
   Dialog,
   DialogTitle,
+  TextField,
   Theme,
+  Typography,
   WithStyles,
   withStyles,
-  Typography,
-  TextField,
-  Button,
-  Box,
 } from '@material-ui/core';
 import { useSafeTranslation } from '../../i18n';
 import { layersSelector } from '../../context/mapStateSlice/selectors';
 
-import { setUserAuthGlobal } from '../../context/serverStateSlice';
+import {
+  setUserAuthGlobal,
+  userAuthSelector,
+} from '../../context/serverStateSlice';
 import { UserAuth } from '../../config/types';
 import { getUrlKey, useUrlHistory } from '../../utils/url-utils';
 import { removeLayer } from '../../context/mapStateSlice';
 
 const AuthModal = ({ classes }: AuthModalProps) => {
-  const [open, setOpen] = useState(false);
-  const [auth, setAuth] = useState<UserAuth>({
+  const initialAuthState: UserAuth = {
     username: '',
     password: '',
-  });
+  };
+  const [open, setOpen] = useState(false);
+  const [auth, setAuth] = useState<UserAuth>(initialAuthState);
+
+  const userAuth = useSelector(userAuthSelector);
 
   const selectedLayers = useSelector(layersSelector);
   const { removeLayerFromUrl } = useUrlHistory();
   const dispatch = useDispatch();
+
+  const isUserAuthenticated = useMemo(() => {
+    return userAuth !== undefined;
+  }, [userAuth]);
 
   const { t } = useSafeTranslation();
 
@@ -90,76 +100,105 @@ const AuthModal = ({ classes }: AuthModalProps) => {
       removeLayerFromUrl(urlLayerKey, layer.id);
       dispatch(removeLayer(layer));
     });
+    setAuth(initialAuthState);
     setOpen(false);
-  }, [dispatch, layersWithAuthRequired, removeLayerFromUrl]);
+  }, [dispatch, initialAuthState, layersWithAuthRequired, removeLayerFromUrl]);
 
-  return (
-    <Dialog
-      maxWidth="xl"
-      open={open}
-      keepMounted
-      onClose={() => setOpen(false)}
-      aria-labelledby="dialog-preview"
-    >
-      <div className={classes.modal}>
-        <DialogTitle className={classes.title} id="dialog-preview">
-          {t('Authentication required')}
-        </DialogTitle>
+  // function that handles the close modal
+  const closeModal = useCallback(() => {
+    setOpen(false);
+  }, []);
 
-        <Typography color="textSecondary" variant="h4">
-          {t('The following layer requires authentication')}:{' '}
-          {layerWithAuthTitle}
-        </Typography>
-        <form noValidate onSubmit={validateToken}>
-          <Box
-            width="100%"
-            display="flex"
-            justifyContent="space-between"
-            marginTop="2em"
-          >
-            <Box width="45%">
-              <Typography className={classes.label} variant="body2">
-                {t('Username')}
-              </Typography>
-              <TextField
-                id="username"
-                value={auth.username}
-                className={classes.textField}
-                onChange={handleInputTextChanged('username')}
-              />
+  // renders the Auth modal only if a user isn't already authenticated
+  return useMemo(() => {
+    if (isUserAuthenticated) {
+      return null;
+    }
+    return (
+      <Dialog
+        maxWidth="xl"
+        open={open}
+        onBackdropClick={onCancelClick}
+        keepMounted
+        onClose={closeModal}
+        aria-labelledby="dialog-preview"
+      >
+        <div className={classes.modal}>
+          <DialogTitle className={classes.title} id="dialog-preview">
+            {t('Authentication required')}
+          </DialogTitle>
+
+          <Typography color="textSecondary" variant="h4">
+            {t('The following layer requires authentication')}:{' '}
+            {layerWithAuthTitle}
+          </Typography>
+          <form noValidate onSubmit={validateToken}>
+            <Box
+              width="100%"
+              display="flex"
+              justifyContent="space-between"
+              marginTop="2em"
+            >
+              <Box width="45%">
+                <Typography className={classes.label} variant="body2">
+                  {t('Username')}
+                </Typography>
+                <TextField
+                  id="username"
+                  value={auth.username}
+                  className={classes.textField}
+                  onChange={handleInputTextChanged('username')}
+                />
+              </Box>
+              <Box width="45%">
+                <Typography className={classes.label} variant="body2">
+                  {t('Password')}
+                </Typography>
+                <TextField
+                  id="password"
+                  value={auth.password}
+                  type="password"
+                  className={classes.textField}
+                  onChange={handleInputTextChanged('password')}
+                />
+              </Box>
             </Box>
-            <Box width="45%">
-              <Typography className={classes.label} variant="body2">
-                {t('Password')}
-              </Typography>
-              <TextField
-                id="password"
-                value={auth.password}
-                type="password"
-                className={classes.textField}
-                onChange={handleInputTextChanged('password')}
-              />
+            <Box display="flex" justifyContent="flex-end">
+              <div className={classes.buttonWrapper}>
+                <Button type="submit" variant="contained" color="primary">
+                  {t('Send')}
+                </Button>
+                <Button
+                  type="reset"
+                  variant="contained"
+                  color="secondary"
+                  onClick={onCancelClick}
+                >
+                  {t('Cancel')}
+                </Button>
+              </div>
             </Box>
-          </Box>
-          <Box display="flex" justifyContent="flex-end">
-            <div className={classes.buttonWrapper}>
-              <Button type="submit" variant="contained" color="primary">
-                {t('Send')}
-              </Button>
-              <Button
-                type="reset"
-                variant="contained"
-                color="secondary"
-                onClick={onCancelClick}
-              >
-                {t('Cancel')}
-              </Button>
-            </div>
-          </Box>
-        </form>
-      </div>
-    </Dialog>
-  );
+          </form>
+        </div>
+      </Dialog>
+    );
+  }, [
+    auth.password,
+    auth.username,
+    classes.buttonWrapper,
+    classes.label,
+    classes.modal,
+    classes.textField,
+    classes.title,
+    closeModal,
+    handleInputTextChanged,
+    isUserAuthenticated,
+    layerWithAuthTitle,
+    onCancelClick,
+    open,
+    t,
+    validateToken,
+  ]);
 };
 
 const styles = (theme: Theme) => {

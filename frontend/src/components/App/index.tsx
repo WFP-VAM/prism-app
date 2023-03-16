@@ -4,7 +4,6 @@ import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Font } from '@react-pdf/renderer';
-import { useSelector } from 'react-redux';
 import { authRequired } from '../../config';
 // Basic CSS Layout for the whole page
 import './app.css';
@@ -15,7 +14,6 @@ import Login from '../Login';
 import muiTheme from '../../muiTheme';
 import Notifier from '../Notifier';
 import AuthModal from '../AuthModal';
-import { userAuthSelector } from '../../context/serverStateSlice';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {
@@ -50,20 +48,6 @@ Font.register({
 });
 
 const Wrapper = memo(() => {
-  const userAuth = useSelector(userAuthSelector);
-
-  const isUserAuthenticated = useMemo(() => {
-    return userAuth !== undefined;
-  }, [userAuth]);
-
-  // renders the Auth modal only if a user isn't already authenticated
-  const renderedAuthModal = useMemo(() => {
-    if (isUserAuthenticated) {
-      return null;
-    }
-    return <AuthModal />;
-  }, [isUserAuthenticated]);
-
   return (
     <div id="app">
       <NavBar />
@@ -71,7 +55,7 @@ const Wrapper = memo(() => {
         <Route default>
           <MapView />
           <DataDrawer />
-          {renderedAuthModal}
+          <AuthModal />
         </Route>
       </Switch>
     </div>
