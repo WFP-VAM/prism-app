@@ -140,11 +140,6 @@ const theme: any = createMuiTheme({
         paddingLeft: 25,
       },
     },
-    MuiMenu: {
-      paper: {
-        height: '50vh',
-      },
-    },
     MuiAccordion: {
       root: {
         '&$expanded': {

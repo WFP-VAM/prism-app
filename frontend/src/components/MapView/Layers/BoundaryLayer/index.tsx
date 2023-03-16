@@ -15,7 +15,7 @@ import {
   layerDataSelector,
   layersSelector,
 } from '../../../../context/mapStateSlice/selectors';
-import { setRelationData } from '../../../../context/mapStateSlice';
+import { setBoundaryRelationData } from '../../../../context/mapStateSlice';
 import {
   loadBoundaryRelations,
   BoundaryRelationData,
@@ -65,7 +65,7 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
       return { ...relationsDict, [lang]: relations };
     }, {});
 
-    dispatch(setRelationData(dataDict));
+    dispatch(setBoundaryRelationData(dataDict));
   }, [data, dispatch, layer, isPrimaryLayer]);
 
   if (!data) {
