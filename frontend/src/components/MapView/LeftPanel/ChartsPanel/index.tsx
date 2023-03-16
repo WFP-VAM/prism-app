@@ -153,6 +153,75 @@ const menuProps: Partial<MenuProps> = {
   },
 };
 
+// We export the downloadCsv function to be tested independently
+export const downloadCsv = (
+  dataForCsv: { [key: string]: any[] },
+  filename: string,
+) => {
+  return () => {
+    const dateColumn = 'Date';
+    const getKeyName = (key: string, chartName: string) =>
+      key.endsWith('_avg')
+        ? `${snakeCase(chartName)}_avg`
+        : snakeCase(chartName);
+
+    const columnsNamesPerChart = Object.entries(dataForCsv).map(
+      ([key, value]) => {
+        const first = value[0];
+        const keys = Object.keys(first);
+        const filtered = keys.filter(x => x !== dateColumn);
+        const mapped = filtered.map(x => getKeyName(x, key));
+        return Object.fromEntries(mapped.map(x => [x, x]));
+      },
+    );
+
+    const columnsNames = columnsNamesPerChart.reduce(
+      (prev, curr) => ({ ...prev, ...curr }),
+      { [dateColumn]: dateColumn },
+    );
+
+    const merged = Object.entries(dataForCsv)
+      .map(([key, value]) => {
+        return value.map(x => {
+          return mapKeys(x, (v, k) =>
+            k === dateColumn ? dateColumn : getKeyName(k, key),
+          );
+        });
+      })
+      .flat();
+    if (merged.length < 1) {
+      return;
+    }
+
+    const grouped = groupBy(merged, dateColumn);
+    // The blueprint of objects array data
+    const initialObjectsArrayBlueprintData = Object.keys(columnsNames).reduce(
+      (acc: { [key: string]: string }, key) => {
+        // eslint-disable-next-line fp/no-mutation
+        acc[key] = '';
+        return acc;
+      },
+      {},
+    );
+
+    const objectsArray = Object.entries(grouped).map(([, value]) => {
+      return value.reduce(
+        (prev, curr) => ({ ...prev, ...curr }),
+        initialObjectsArrayBlueprintData,
+      );
+    });
+
+    downloadToFile(
+      {
+        content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
+        isUrl: false,
+      },
+      filename,
+      'text/csv',
+    );
+  };
+};
+
 function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
@@ -215,52 +284,6 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   ) => {
     setSelectedLayerTitles(event.target.value as string[]);
   };
-
-  function downloadCsv() {
-    const dateColumn = 'Date';
-    const getKeyName = (key: string, chartName: string) =>
-      key.endsWith('_avg')
-        ? `${snakeCase(chartName)}_avg`
-        : snakeCase(chartName);
-    const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
-      ([key, value]) => {
-        const first = value[0];
-        const keys = Object.keys(first);
-        const filtered = keys.filter(x => x !== dateColumn);
-        const mapped = filtered.map(x => getKeyName(x, key));
-        return Object.fromEntries(mapped.map(x => [x, x]));
-      },
-    );
-    const columnsNames = columnsNamesPerChart.reduce(
-      (prev, curr) => ({ ...prev, ...curr }),
-      { [dateColumn]: dateColumn },
-    );
-
-    const merged = Object.entries(dataForCsv.current)
-      .map(([key, value]) => {
-        return value.map(x => {
-          return mapKeys(x, (v, k) =>
-            k === dateColumn ? dateColumn : getKeyName(k, key),
-          );
-        });
-      })
-      .flat();
-    if (merged.length < 1) {
-      return;
-    }
-    const grouped = groupBy(merged, dateColumn);
-    const objectsArray = Object.entries(grouped).map(([, value]) => {
-      return value.reduce((prev, curr) => ({ ...prev, ...curr }), {});
-    });
-    downloadToFile(
-      {
-        content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
-        isUrl: false,
-      },
-      `${admin1Title}_${selectedLayerTitles.map(snakeCase).join('_')}`,
-      'text/csv',
-    );
-  }
 
   useEffect(() => {
     if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
@@ -445,7 +468,10 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
       </FormControl>
       <Button
         className={classes.downloadButton}
-        onClick={downloadCsv}
+        onClick={downloadCsv(
+          dataForCsv.current,
+          `${admin1Title}_${selectedLayerTitles.map(snakeCase).join('_')}`,
+        )}
         disabled={
           !(
             adminProperties &&
