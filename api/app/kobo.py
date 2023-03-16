@@ -200,10 +200,13 @@ def get_responses_from_kobo(
 
 
 def get_form_dates(
-    form_url: HttpUrl, form_id: str, datetime_field: str
+    form_url: HttpUrl,
+    form_id: str,
+    datetime_field: str,
+    filters: Optional[str],
 ) -> list[dict[str, Any]]:
     """Get all form responses dates using Kobo api."""
-    auth, form_fields = get_kobo_params(form_id, datetime_field, None, None)
+    auth, form_fields = get_kobo_params(form_id, datetime_field, None, filters)
 
     form_responses, form_labels = get_responses_from_kobo(
         form_url, auth, form_fields["id"]
