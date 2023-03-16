@@ -214,7 +214,15 @@ def get_form_dates(
 
     forms = [parse_form_response(f, form_fields, form_labels) for f in form_responses]
 
-    dates_list = set([f.get("date").date().isoformat() for f in forms])
+    # TODO - implement filtering utils between "get_form_dates" and "get_form_responses".
+    filtered_forms = []
+    for form in forms:
+        conditions = [form.get(k) == v for k, v in form_fields["filters"].items()]
+        if all(conditions) is False:
+            continue
+        filtered_forms.append(form)
+
+    dates_list = set([f.get("date").date().isoformat() for f in filtered_forms])
     sorted_dates_list = sorted(dates_list)
 
     return [{"date": d} for d in sorted_dates_list]
