@@ -189,12 +189,12 @@
     "data_field": "flood_hazard_index",
     "admin_level": 3,
     "admin_code": "commune",
-    "opacity": 0.9,
+    "opacity": 0.8,
     "legend": [
       {
         "value": 0,
         "label": "0 - 3",
-        "color": "#ffffff"
+        "color": "rgba(255,255,255,0.1)"
       },
       {
         "value": 3,
