@@ -40,6 +40,8 @@ function PointDataLayer({ layer, before }: LayersProps) {
 
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
+  console.log({ layer: layer.id, selectedDate, queryDate });
+
   const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<PointDataLayerProps>
     | undefined;
@@ -110,7 +112,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
     updateHistory,
   ]);
 
-  if (!features || map?.getSource(layerId) || !queryDate) {
+  if (!features || !queryDate) {
     return null;
   }
 
