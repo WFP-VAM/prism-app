@@ -246,6 +246,26 @@
       ],
       "type": "bar"
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "Adm1_Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "Adm2_Name"
+        }
+      ],
+      "type": "bar"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
