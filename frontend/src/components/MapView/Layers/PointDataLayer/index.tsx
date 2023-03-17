@@ -40,8 +40,6 @@ function PointDataLayer({ layer, before }: LayersProps) {
 
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
-  console.log({ layer: layer.id, selectedDate, queryDate });
-
   const layerData = useSelector(layerDataSelector(layer.id, queryDate)) as
     | LayerData<PointDataLayerProps>
     | undefined;
