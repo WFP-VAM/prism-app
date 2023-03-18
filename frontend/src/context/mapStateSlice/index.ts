@@ -49,6 +49,23 @@ function keepLayer(layer: LayerType, payload: LayerType) {
   );
 }
 
+// Order layers to keep boundaries and point_data on top. point_data first.
+function layerOrdering(a: LayerType, b: LayerType) {
+  if (a.type === 'point_data') {
+    return -1;
+  }
+  if (b.type === 'point_data') {
+    return 1;
+  }
+  if (a.type === 'boundary') {
+    return -1;
+  }
+  if (b.type === 'boundary') {
+    return 1;
+  }
+  return 0;
+}
+
 export const mapStateSlice = createSlice({
   name: 'mapState',
   initialState,
@@ -62,11 +79,8 @@ export const mapStateSlice = createSlice({
 
       const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
 
-      // Keep boundary layers at the top of our stack
-      const newLayers =
-        payload.type === 'boundary'
-          ? [...layersToAdd, ...filteredLayers]
-          : [...filteredLayers, ...layersToAdd];
+      // Keep boundary and point_data layers at the top of our stack
+      const newLayers = [...layersToAdd, ...filteredLayers].sort(layerOrdering);
 
       return {
         ...rest,
