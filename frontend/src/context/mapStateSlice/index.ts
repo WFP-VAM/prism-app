@@ -79,7 +79,11 @@ export const mapStateSlice = createSlice({
 
       const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
 
-      const newLayers = [...filteredLayers, ...layersToAdd];
+      // Keep boundary layers at the top of our stack
+      const newLayers =
+        payload.type === 'boundary'
+          ? [...layersToAdd, ...filteredLayers]
+          : [...filteredLayers, ...layersToAdd];
 
       return {
         ...rest,
