@@ -13,10 +13,7 @@ import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import {
-  layerDataSelector,
-  mapSelector,
-} from '../../../../context/mapStateSlice/selectors';
+import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { removeLayerData } from '../../../../context/mapStateSlice';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
@@ -49,8 +46,6 @@ function PointDataLayer({ layer, before }: LayersProps) {
     removeKeyFromUrl,
     removeLayerFromUrl,
   } = useUrlHistory();
-
-  const map = useSelector(mapSelector);
 
   const { data } = layerData || {};
   const { features } = data || {};
