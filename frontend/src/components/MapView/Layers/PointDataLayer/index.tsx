@@ -50,7 +50,6 @@ function PointDataLayer({ layer, before }: LayersProps) {
   const { data } = layerData || {};
   const { features } = data || {};
   const { t } = useSafeTranslation();
-  const { id: layerId } = layer;
 
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
@@ -128,7 +127,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
     return (
       <GeoJSONLayer
         before={before}
-        id={layerId}
+        id={`layer-${layer.id}`}
         data={features}
         fillPaint={fillPaintData(layer, layer.dataField)}
         fillOnClick={onClickFunc}
@@ -138,7 +137,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
   return (
     <GeoJSONLayer
       // before={before}
-      id={layerId}
+      id={`layer-${layer.id}`}
       data={features}
       circleLayout={circleLayout}
       circlePaint={circlePaint(layer)}

@@ -405,6 +405,7 @@ function MapView({ classes }: MapViewProps) {
       selectedLayersWithDateSupport.length !== 0 &&
       selectedDate
     ) {
+      // WARNING - This logic doesn't apply anymore if we order layers differently...
       const layerToRemove = selectedLayers[selectedLayers.length - 2];
       const layerToKeep = selectedLayers[selectedLayers.length - 1];
 
