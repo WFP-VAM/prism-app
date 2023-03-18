@@ -79,7 +79,7 @@ export const mapStateSlice = createSlice({
 
       const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
 
-      const newLayers = [...layersToAdd, ...filteredLayers];
+      const newLayers = [...filteredLayers, ...layersToAdd];
 
       return {
         ...rest,
