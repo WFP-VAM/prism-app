@@ -50,7 +50,7 @@ function keepLayer(layer: LayerType, payload: LayerType) {
 }
 
 // Order layers to keep boundaries and point_data on top. point_data first.
-function layerOrdering(a: LayerType, b: LayerType) {
+export function layerOrdering(a: LayerType, b: LayerType) {
   if (a.type === 'point_data') {
     return -1;
   }
@@ -79,9 +79,7 @@ export const mapStateSlice = createSlice({
 
       const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
 
-      // Keep boundary and point_data layers at the top of our stack
-      // eslint-disable-next-line fp/no-mutating-methods
-      const newLayers = [...layersToAdd, ...filteredLayers].sort(layerOrdering);
+      const newLayers = [...layersToAdd, ...filteredLayers];
 
       return {
         ...rest,
