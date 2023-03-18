@@ -24,6 +24,11 @@ export const handleChangeOpacity = (
         case 'admin_level_data':
           return [`layer-${id}-fill`, 'fill-opacity'];
         case 'point_data':
+          // This is a hacky way to support opacity change for Kobo data.
+          // TODO - Handle Kobo data as admin_level_data instead of point_data.
+          if (id?.includes('_report')) {
+            return [`layer-${id}-fill`, 'fill-opacity'];
+          }
           return [`layer-${id}-circle`, 'circle-opacity'];
         // analysis layer type is undefined TODO we should try make analysis a layer to remove edge cases like this
         case undefined:
