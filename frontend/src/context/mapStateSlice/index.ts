@@ -41,18 +41,18 @@ const initialState: MapState = {
   boundaryRelationData: {},
 };
 
-// Order layers to keep boundaries and point_data on top. point_data first.
+// Order layers to keep boundaries and point_data on top. boundaries first.
 export function layerOrdering(a: LayerType, b: LayerType) {
-  if (a.type === 'point_data') {
-    return -1;
-  }
-  if (b.type === 'point_data') {
-    return 1;
-  }
   if (a.type === 'boundary') {
     return -1;
   }
   if (b.type === 'boundary') {
+    return 1;
+  }
+  if (a.type === 'point_data') {
+    return -1;
+  }
+  if (b.type === 'point_data') {
     return 1;
   }
   return 0;
