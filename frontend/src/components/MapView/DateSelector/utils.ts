@@ -151,5 +151,5 @@ export function findDateIndex(
 }
 
 export function formatDate(date: number): string {
-  return moment(date + USER_DATE_OFFSET).format(MONTH_FIRST_DATE_FORMAT);
+  return moment(date).format(MONTH_FIRST_DATE_FORMAT);
 }
