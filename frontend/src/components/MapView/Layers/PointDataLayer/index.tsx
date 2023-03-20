@@ -13,10 +13,7 @@ import {
   LayerData,
   loadLayerData,
 } from '../../../../context/layers/layer-data';
-import {
-  layerDataSelector,
-  mapSelector,
-} from '../../../../context/mapStateSlice/selectors';
+import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { removeLayerData } from '../../../../context/mapStateSlice';
 import { addNotification } from '../../../../context/notificationStateSlice';
 import { useDefaultDate } from '../../../../utils/useDefaultDate';
@@ -50,12 +47,9 @@ function PointDataLayer({ layer, before }: LayersProps) {
     removeLayerFromUrl,
   } = useUrlHistory();
 
-  const map = useSelector(mapSelector);
-
   const { data } = layerData || {};
   const { features } = data || {};
   const { t } = useSafeTranslation();
-  const { id: layerId } = layer;
 
   useEffect(() => {
     if (layer.authRequired && !userAuth) {
@@ -110,7 +104,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
     updateHistory,
   ]);
 
-  if (!features || map?.getSource(layerId) || !queryDate) {
+  if (!features || !queryDate) {
     return null;
   }
 
@@ -133,7 +127,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
     return (
       <GeoJSONLayer
         before={before}
-        id={layerId}
+        id={`layer-${layer.id}`}
         data={features}
         fillPaint={fillPaintData(layer, layer.dataField)}
         fillOnClick={onClickFunc}
@@ -142,8 +136,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
   }
   return (
     <GeoJSONLayer
-      before={before}
-      id={layerId}
+      id={`layer-${layer.id}`}
       data={features}
       circleLayout={circleLayout}
       circlePaint={circlePaint(layer)}
