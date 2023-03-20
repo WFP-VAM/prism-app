@@ -261,6 +261,13 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     [data, i18nLocale],
   );
 
+  const generateCSVFilename = () => {
+    return [appConfig.country, admin1Title, admin2Title, ...selectedLayerTitles]
+      .filter(x => !!x)
+      .map(snakeCase)
+      .join('_');
+  };
+
   const onChangeAdmin1 = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.value) {
       setAdmin1Title('');
@@ -507,10 +514,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
       </FormControl>
       <Button
         className={classes.downloadButton}
-        onClick={downloadCsv(
-          dataForCsv,
-          `${admin1Title}_${selectedLayerTitles.map(snakeCase).join('_')}`,
-        )}
+        onClick={downloadCsv(dataForCsv, generateCSVFilename())}
         disabled={
           !(
             adminProperties &&
