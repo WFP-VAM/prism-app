@@ -189,6 +189,7 @@ const fetchHDC = async (
   };
   try {
     const response = await fetch(`${url}?${requestParamsStr}`);
+    // eslint-disable-next-line fp/no-mutation
     responseJson = await response.json();
   } catch {
     console.warn('Impossible to get HDC data.');
