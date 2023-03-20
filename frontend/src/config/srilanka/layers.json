@@ -1,7 +1,7 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/srilanka/lka_admin3_w_dataviz.json",
+    "path": "data/srilanka/lka_bnd_adm3.json",
     "opacity": 0.8,
     "admin_code": "dsd_c_1",
     "admin_level_names": ["province_n", "district_n", "dsd_n_1"],
