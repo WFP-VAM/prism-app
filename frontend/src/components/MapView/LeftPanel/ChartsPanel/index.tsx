@@ -27,6 +27,7 @@ import React, {
 } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
+import { appConfig } from '../../../../config';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
 import {
   getBoundaryLayerSingleton,
@@ -48,9 +49,12 @@ const chartLayers = getWMSLayersWithChart();
 const tabIndex = 1;
 
 function getProperties(
-  id: string,
   layerData: LayerData<BoundaryLayerProps>['data'],
+  id?: string,
 ) {
+  if (id === undefined) {
+    return layerData.features[0].properties;
+  }
   return layerData.features.filter(
     elem => elem.properties && elem.properties[boundaryLayer.adminCode] === id,
   )[0].properties;
@@ -229,38 +233,56 @@ export const downloadCsv = (
 };
 
 function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
+  const { countryAdmin0Id } = appConfig;
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+  const { data } = boundaryLayerData || {};
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
   const [admin2Title, setAdmin2Title] = useState('');
-  const [adminLevel, setAdminLevel] = useState<1 | 2>(1);
+
+  const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
+    countryAdmin0Id ? 0 : 1,
+  );
+  const adminPropertiesInitialization =
+    data && countryAdmin0Id ? getProperties(data) : undefined;
+
   const [selectedLayerTitles, setSelectedLayerTitles] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<number | null>(
     new Date().getTime(),
   );
-
+  const [adminProperties, setAdminProperties] = useState<
+    GeoJsonProperties | undefined
+  >(adminPropertiesInitialization);
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
 
-  const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const { t, i18n: i18nLocale } = useSafeTranslation();
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
+
   const tabValue = useSelector(leftPanelTabValueSelector);
-  const { data } = boundaryLayerData || {};
+
   const categories = useMemo(
     () => (data ? getCategories(data, boundaryLayer, '', i18nLocale) : []),
     [data, i18nLocale],
   );
 
   const onChangeAdmin1 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.value) {
+      setAdmin1Title('');
+      if (countryAdmin0Id) {
+        setAdminLevel(0);
+      }
+      return;
+    }
+
     // The external chart key for admin 1 is stored in all its children regions
     // here we get the first child properties
-    const admin2Id = categories.filter(
+    const admin1Id = categories.filter(
       elem => elem.title === event.target.value,
     )[0].children[0].value;
 
     if (data) {
-      setAdminProperties(getProperties(admin2Id, data));
+      setAdminProperties(getProperties(data, admin1Id));
     }
     setAdmin1Title(event.target.value);
     setAdmin2Title('');
@@ -273,7 +295,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
         .filter(elem => elem.title === admin1Title)[0]
         .children.filter(elem => elem.label === event.target.value)[0].value;
       if (data) {
-        setAdminProperties(getProperties(admin2Id, data));
+        setAdminProperties(getProperties(data, admin2Id));
       }
       setAdmin2Title(event.target.value);
       setAdminLevel(2);
@@ -292,16 +314,26 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   };
 
   useEffect(() => {
-    if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
+    if (
+      (adminProperties || countryAdmin0Id) &&
+      selectedDate &&
+      selectedLayerTitles.length >= 1
+    ) {
       setPanelSize(PanelSize.xlarge);
     } else {
       setPanelSize(PanelSize.medium);
     }
-  }, [setPanelSize, adminProperties, selectedDate, selectedLayerTitles.length]);
+  }, [
+    setPanelSize,
+    adminProperties,
+    selectedDate,
+    selectedLayerTitles.length,
+    countryAdmin0Id,
+  ]);
 
   useEffect(() => {
     if (
-      adminProperties &&
+      (adminProperties || countryAdmin0Id) &&
       selectedDate &&
       tabIndex === tabValue &&
       selectedLayerTitles.length >= 1
@@ -322,7 +354,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
                 >
                   <ChartSection
                     chartLayer={layer}
-                    adminProperties={adminProperties}
+                    adminProperties={adminProperties || {}}
                     adminLevel={adminLevel}
                     date={selectedDate}
                     dataForCsv={dataForCsv}
@@ -334,26 +366,28 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
             // chart size is not responsive once it is mounted
             // seems to be possible in the newer chart.js versions
             // here we mount a new component if one chart
-            adminProperties && selectedDate && selectedLayerTitles.length === 1 && (
-              <Box
-                style={{
-                  minHeight: '50vh',
-                  width: '100%',
-                }}
-              >
-                <ChartSection
-                  chartLayer={
-                    chartLayers.filter(layer =>
-                      selectedLayerTitles.includes(layer.title),
-                    )[0]
-                  }
-                  adminProperties={adminProperties}
-                  adminLevel={adminLevel}
-                  date={selectedDate}
-                  dataForCsv={dataForCsv}
-                />
-              </Box>
-            )
+            (adminProperties || countryAdmin0Id) &&
+              selectedDate &&
+              selectedLayerTitles.length === 1 && (
+                <Box
+                  style={{
+                    minHeight: '50vh',
+                    width: '100%',
+                  }}
+                >
+                  <ChartSection
+                    chartLayer={
+                      chartLayers.filter(layer =>
+                        selectedLayerTitles.includes(layer.title),
+                      )[0]
+                    }
+                    adminProperties={adminProperties || {}}
+                    adminLevel={adminLevel}
+                    date={selectedDate}
+                    dataForCsv={dataForCsv}
+                  />
+                </Box>
+              )
           }
         </Box>,
       );
@@ -364,6 +398,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     adminLevel,
     adminProperties,
     classes.chartsPanelCharts,
+    countryAdmin0Id,
     selectedDate,
     selectedLayerTitles,
     selectedLayerTitles.length,
@@ -387,6 +422,9 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
         onChange={onChangeAdmin1}
         variant="outlined"
       >
+        <MenuItem key="empty-1">
+          <Box className={classes.removeAdmin2}> {t('Remove Admin 1')}</Box>
+        </MenuItem>
         {categories.map(option => (
           <MenuItem key={option.title} value={option.title}>
             {option.title}
@@ -403,7 +441,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
           onChange={onChangeAdmin2}
           variant="outlined"
         >
-          <MenuItem key="empty">
+          <MenuItem key="empty=2">
             <Box className={classes.removeAdmin2}> {t('Remove Admin 2')}</Box>
           </MenuItem>
           {categories

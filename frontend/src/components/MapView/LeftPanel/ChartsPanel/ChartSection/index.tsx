@@ -7,6 +7,7 @@ import {
 import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
+import { appConfig } from '../../../../../config';
 import { ChartConfig, WMSLayerProps } from '../../../../../config/types';
 import {
   CHART_DATA_PREFIXES,
@@ -30,6 +31,8 @@ function ChartSection({
   const [chartDataset, setChartDataset] = useState<undefined | TableData>();
   const { levels } = chartLayer.chartData!;
 
+  const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
+
   const params = useMemo(
     () =>
       getChartAdminBoundaryParams(
@@ -39,9 +42,10 @@ function ChartSection({
     [chartLayer, adminProperties],
   );
 
+  const adminId = levelsDict[adminLevel.toString()];
   useEffect(() => {
     const requestParams: DatasetRequestParams = {
-      id: levels[adminLevel - 1].id,
+      id: adminId,
       boundaryProps: params.boundaryProps,
       url: params.url,
       serverLayerName: params.serverLayerName,
@@ -51,6 +55,9 @@ function ChartSection({
 
     const getData = async () => {
       const results = await loadAdminBoundaryDataset(requestParams);
+      if (!results) {
+        return;
+      }
       const keyMap = Object.fromEntries(
         Object.entries(results.rows[0]).map(([key, value]) => {
           const newKey = requestParams.datasetFields.find(
@@ -141,7 +148,7 @@ const styles = () =>
 export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
-  adminLevel: 1 | 2;
+  adminLevel: 0 | 1 | 2;
   date: number;
   dataForCsv: React.MutableRefObject<any>;
 }

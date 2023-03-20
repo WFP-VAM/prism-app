@@ -234,6 +234,11 @@
       ],
       "levels": [
         {
+          "level": "0",
+          "id": "dataviz_adm0_id",
+          "name": "Adm0_Name"
+        },
+        {
           "level": "1",
           "id": "dataviz_adm1_id",
           "name": "Adm1_Name"
@@ -253,6 +258,11 @@
         { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
       ],
       "levels": [
+        {
+          "level": "0",
+          "id": "dataviz_adm0_id",
+          "name": "Adm0_Name"
+        },
         {
           "level": "1",
           "id": "dataviz_adm1_id",
@@ -309,6 +319,11 @@
       ],
       "levels": [
         {
+          "level": "0",
+          "id": "dataviz_adm0_id",
+          "name": "Adm0_Name"
+        },
+        {
           "level": "1",
           "id": "dataviz_adm1_id",
           "name": "Adm1_Name"
@@ -361,6 +376,11 @@
         }
       ],
       "levels": [
+        {
+          "level": "0",
+          "id": "dataviz_adm0_id",
+          "name": "Adm0_Name"
+        },
         {
           "level": "1",
           "id": "dataviz_adm1_id",
@@ -415,6 +435,11 @@
         }
       ],
       "levels": [
+        {
+          "level": "0",
+          "id": "dataviz_adm0_id",
+          "name": "Adm0_Name"
+        },
         {
           "level": "1",
           "id": "dataviz_adm1_id",
@@ -548,6 +573,11 @@
       ],
       "levels": [
         {
+          "level": "0",
+          "id": "dataviz_adm0_id",
+          "name": "Adm0_Name"
+        },
+        {
           "level": "1",
           "id": "dataviz_adm1_id",
           "name": "Adm1_Name"
@@ -596,6 +626,11 @@
         { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
       ],
       "levels": [
+        {
+          "level": "0",
+          "id": "dataviz_adm0_id",
+          "name": "Adm0_Name"
+        },
         {
           "level": "1",
           "id": "dataviz_adm1_id",
@@ -1248,6 +1283,11 @@
       ],
       "levels": [
         {
+          "level": "0",
+          "id": "dataviz_adm0_id",
+          "name": "Adm0_Name"
+        },
+        {
           "level": "1",
           "id": "dataviz_adm1_id",
           "name": "Adm1_Name"
@@ -1306,6 +1346,11 @@
         }
       ],
       "levels": [
+        {
+          "level": "0",
+          "id": "dataviz_adm0_id",
+          "name": "Adm0_Name"
+        },
         {
           "level": "1",
           "id": "dataviz_adm1_id",
@@ -1663,7 +1708,7 @@
       "datetime_field": "Date_report",
       "measure_field": "NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
-      "filters": {"status": "Approved"}
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1723,7 +1768,7 @@
       "datetime_field": "Date_Dis",
       "measure_field": "NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
-      "filters": {"status": "Approved"}
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1793,7 +1838,7 @@
       "datetime_field": "Date_Dis",
       "measure_field": "DisTyp",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
-      "filters": {"status": "Approved"}
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1821,15 +1866,15 @@
         "type": "text",
         "dataTitle": "Number of people affected"
       },
-        "NumVillAff": {
-          "type": "text",
-          "dataTitle": "Number of villages affected"
-        },
-        "status": {
-          "type": "text",
-          "dataTitle": "Form status"
-        }
+      "NumVillAff": {
+        "type": "text",
+        "dataTitle": "Number of villages affected"
       },
+      "status": {
+        "type": "text",
+        "dataTitle": "Form status"
+      }
+    },
     "legend_text": "Type of disaster",
     "legend": [
       {
