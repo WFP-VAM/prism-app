@@ -7,7 +7,6 @@ import {
 import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
-import { appConfig } from '../../../../../config';
 import { ChartConfig, WMSLayerProps } from '../../../../../config/types';
 import {
   CHART_DATA_PREFIXES,

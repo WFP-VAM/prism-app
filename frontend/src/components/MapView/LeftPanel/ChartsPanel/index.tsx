@@ -241,20 +241,15 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
   const [admin2Title, setAdmin2Title] = useState('');
-
   const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
     countryAdmin0Id ? 0 : 1,
   );
-  const adminPropertiesInitialization =
-    data && countryAdmin0Id ? getProperties(data) : undefined;
 
   const [selectedLayerTitles, setSelectedLayerTitles] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<number | null>(
     new Date().getTime(),
   );
-  const [adminProperties, setAdminProperties] = useState<
-    GeoJsonProperties | undefined
-  >(adminPropertiesInitialization);
+  const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
 
   const { t, i18n: i18nLocale } = useSafeTranslation();
@@ -314,11 +309,13 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   };
 
   useEffect(() => {
-    if (
-      (adminProperties || countryAdmin0Id) &&
-      selectedDate &&
-      selectedLayerTitles.length >= 1
-    ) {
+    if (!adminProperties && countryAdmin0Id && data) {
+      setAdminProperties(getProperties(data));
+    }
+  }, [adminProperties, countryAdmin0Id, data]);
+
+  useEffect(() => {
+    if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
       setPanelSize(PanelSize.xlarge);
     } else {
       setPanelSize(PanelSize.medium);
@@ -333,7 +330,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
 
   useEffect(() => {
     if (
-      (adminProperties || countryAdmin0Id) &&
+      adminProperties &&
       selectedDate &&
       tabIndex === tabValue &&
       selectedLayerTitles.length >= 1
@@ -354,7 +351,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
                 >
                   <ChartSection
                     chartLayer={layer}
-                    adminProperties={adminProperties || {}}
+                    adminProperties={adminProperties}
                     adminLevel={adminLevel}
                     date={selectedDate}
                     dataForCsv={dataForCsv}
@@ -366,28 +363,26 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
             // chart size is not responsive once it is mounted
             // seems to be possible in the newer chart.js versions
             // here we mount a new component if one chart
-            (adminProperties || countryAdmin0Id) &&
-              selectedDate &&
-              selectedLayerTitles.length === 1 && (
-                <Box
-                  style={{
-                    minHeight: '50vh',
-                    width: '100%',
-                  }}
-                >
-                  <ChartSection
-                    chartLayer={
-                      chartLayers.filter(layer =>
-                        selectedLayerTitles.includes(layer.title),
-                      )[0]
-                    }
-                    adminProperties={adminProperties || {}}
-                    adminLevel={adminLevel}
-                    date={selectedDate}
-                    dataForCsv={dataForCsv}
-                  />
-                </Box>
-              )
+            adminProperties && selectedDate && selectedLayerTitles.length === 1 && (
+              <Box
+                style={{
+                  minHeight: '50vh',
+                  width: '100%',
+                }}
+              >
+                <ChartSection
+                  chartLayer={
+                    chartLayers.filter(layer =>
+                      selectedLayerTitles.includes(layer.title),
+                    )[0]
+                  }
+                  adminProperties={adminProperties || {}}
+                  adminLevel={adminLevel}
+                  date={selectedDate}
+                  dataForCsv={dataForCsv}
+                />
+              </Box>
+            )
           }
         </Box>,
       );
