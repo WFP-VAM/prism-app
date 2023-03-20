@@ -443,7 +443,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
           onChange={onChangeAdmin2}
           variant="outlined"
         >
-          <MenuItem key="empty=2">
+          <MenuItem key="empty-2">
             <Box className={classes.removeAdmin2}> {t('Remove Admin 2')}</Box>
           </MenuItem>
           {categories
