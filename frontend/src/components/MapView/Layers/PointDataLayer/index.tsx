@@ -136,7 +136,6 @@ function PointDataLayer({ layer, before }: LayersProps) {
   }
   return (
     <GeoJSONLayer
-      // before={before}
       id={`layer-${layer.id}`}
       data={features}
       circleLayout={circleLayout}
