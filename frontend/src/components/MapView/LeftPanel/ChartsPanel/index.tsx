@@ -18,7 +18,13 @@ import {
 import { DateRangeRounded } from '@material-ui/icons';
 import { GeoJsonProperties } from 'geojson';
 import { groupBy, mapKeys, snakeCase } from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
@@ -155,7 +161,7 @@ const menuProps: Partial<MenuProps> = {
 
 // We export the downloadCsv function to be tested independently
 export const downloadCsv = (
-  dataForCsv: { [key: string]: any[] },
+  dataForCsv: MutableRefObject<{ [key: string]: any[] }>,
   filename: string,
 ) => {
   return () => {
@@ -165,7 +171,7 @@ export const downloadCsv = (
         ? `${snakeCase(chartName)}_avg`
         : snakeCase(chartName);
 
-    const columnsNamesPerChart = Object.entries(dataForCsv).map(
+    const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
       ([key, value]) => {
         const first = value[0];
         const keys = Object.keys(first);
@@ -180,7 +186,7 @@ export const downloadCsv = (
       { [dateColumn]: dateColumn },
     );
 
-    const merged = Object.entries(dataForCsv)
+    const merged = Object.entries(dataForCsv.current)
       .map(([key, value]) => {
         return value.map(x => {
           return mapKeys(x, (v, k) =>
@@ -232,7 +238,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     new Date().getTime(),
   );
 
-  const dataForCsv = React.useRef<{ [key: string]: any[] }>({});
+  const dataForCsv = useRef<{ [key: string]: any[] }>({});
 
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const { t, i18n: i18nLocale } = useSafeTranslation();
@@ -469,7 +475,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
       <Button
         className={classes.downloadButton}
         onClick={downloadCsv(
-          dataForCsv.current,
+          dataForCsv,
           `${admin1Title}_${selectedLayerTitles.map(snakeCase).join('_')}`,
         )}
         disabled={
