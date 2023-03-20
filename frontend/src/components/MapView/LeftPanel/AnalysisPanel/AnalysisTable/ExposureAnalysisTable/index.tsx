@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState, MouseEvent } from 'react';
 import {
   createStyles,
   Table,
@@ -8,6 +8,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TableSortLabel,
   Theme,
   Typography,
   withStyles,
@@ -15,7 +16,12 @@ import {
 } from '@material-ui/core';
 
 import { useSelector } from 'react-redux';
-import { getCurrentData } from '../../../../../../context/analysisResultStateSlice';
+import { orderBy } from 'lodash';
+import {
+  analysisResultSelector,
+  getCurrentData,
+  TableRowType,
+} from '../../../../../../context/analysisResultStateSlice';
 
 import { useSafeTranslation } from '../../../../../../i18n';
 
@@ -28,66 +34,144 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
   const analysisData = useSelector(getCurrentData);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sortColumn, setSortColumn] = useState<string>('');
+  const [isAscending, setIsAscending] = useState(true);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  // The table columns
+  const tableColumns = useMemo(() => {
+    return analysisData.columns;
+  }, [analysisData.columns]);
+
+  // The table rows
+  const tableRows = useMemo(() => {
+    return analysisData.rows;
+  }, [analysisData.rows]);
+
+  const handleChangePage = useCallback((event: unknown, newPage: number) => {
     setPage(newPage);
-  };
+  }, []);
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  const handleChangeRowsPerPage = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRowsPerPage(+event.target.value);
+      setPage(0);
+    },
+    [],
+  );
+
+  const handleChangeOrderBy = useCallback(
+    (newSortColumn: string) => {
+      const newIsAsc = !(sortColumn === newSortColumn && isAscending);
+      setPage(0);
+      setSortColumn(newSortColumn);
+      setIsAscending(newIsAsc);
+    },
+    [isAscending, sortColumn],
+  );
+
+  // Whether the table sort label is active
+  const tableSortLabelIsActive = useCallback(
+    (tableColumn: string) => {
+      return sortColumn === tableColumn;
+    },
+    [sortColumn],
+  );
+
+  // table sort label direction
+  const tableSortLabelDirection = useCallback(
+    (tableColumn: string) => {
+      return sortColumn === tableColumn && !isAscending ? 'desc' : 'asc';
+    },
+    [isAscending, sortColumn],
+  );
+
+  // on table sort label click
+  const onTableSortLabelClick = useCallback(
+    (tableColumn: string) => {
+      return () => {
+        handleChangeOrderBy(tableColumn);
+      };
+    },
+    [handleChangeOrderBy],
+  );
+
+  // The rendered table header cells
+  const renderedTableHeaderCells = useMemo(() => {
+    return tableColumns.map(tableColumn => {
+      const formattedColValue = getTableCellVal(tableRows[0], tableColumn, t);
+      return (
+        <TableCell key={tableColumn} className={classes.tableHead}>
+          <TableSortLabel
+            active={tableSortLabelIsActive(tableColumn)}
+            direction={tableSortLabelDirection(tableColumn)}
+            onClick={onTableSortLabelClick(tableColumn)}
+          >
+            <Typography className={classes.tableHeaderText}>
+              {' '}
+              {formattedColValue}{' '}
+            </Typography>
+          </TableSortLabel>
+        </TableCell>
+      );
+    });
+  }, [
+    classes.tableHead,
+    classes.tableHeaderText,
+    onTableSortLabelClick,
+    t,
+    tableColumns,
+    tableRows,
+    tableSortLabelDirection,
+    tableSortLabelIsActive,
+  ]);
+
+  // The rendered table body cells
+  const renderedTableBodyCells = useCallback(
+    (rowData: TableRowType) => {
+      return tableColumns.map(tableColumn => {
+        const formattedColValue = getTableCellVal(rowData, tableColumn, t);
+        return (
+          <TableCell key={tableColumn} className={classes.tableBody}>
+            <Typography className={classes.tableBodyText}>
+              {' '}
+              {formattedColValue}{' '}
+            </Typography>
+          </TableCell>
+        );
+      });
+    },
+    [classes.tableBody, classes.tableBodyText, t, tableColumns],
+  );
+
+  // The rendered table body rows
+  const renderedTableBodyRows = useMemo(() => {
+    return orderBy(tableRows, sortColumn, isAscending ? 'asc' : 'desc')
+      .slice(page * rowsPerPage + 1, page * rowsPerPage + rowsPerPage + 1)
+      .map(rowData => {
+        return (
+          <TableRow key={JSON.stringify(rowData)}>
+            {renderedTableBodyCells(rowData)}
+          </TableRow>
+        );
+      });
+  }, [
+    isAscending,
+    page,
+    renderedTableBodyCells,
+    rowsPerPage,
+    sortColumn,
+    tableRows,
+  ]);
 
   return (
     <div className={classes.exposureAnalysisTable}>
       <TableContainer className={classes.tableContainer}>
         <Table stickyHeader aria-label="exposure analysis table">
           <TableHead>
-            <TableRow>
-              {analysisData.columns.map(column => {
-                const formattedColValue = getTableCellVal(
-                  analysisData.rows[0],
-                  column,
-                  t,
-                );
-                return (
-                  <TableCell key={column} className={classes.tableHead}>
-                    <Typography className={classes.tableHeaderText}>
-                      {' '}
-                      {formattedColValue}{' '}
-                    </Typography>
-                  </TableCell>
-                );
-              })}
-            </TableRow>
+            <TableRow>{renderedTableHeaderCells}</TableRow>
           </TableHead>
           <TableBody className={classes.tableBody}>
-            {analysisData.rows
-              .slice(
-                page * rowsPerPage + 1,
-                page * rowsPerPage + rowsPerPage + 1,
-              )
-              .map(rowData => (
-                <TableRow>
-                  {analysisData.columns.map(column => {
-                    const formattedColValue = getTableCellVal(
-                      rowData,
-                      column,
-                      t,
-                    );
-                    return (
-                      <TableCell key={column} className={classes.tableBody}>
-                        <Typography className={classes.tableBodyText}>
-                          {' '}
-                          {formattedColValue}{' '}
-                        </Typography>
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
+            {renderedTableBodyRows}
           </TableBody>
         </Table>
       </TableContainer>

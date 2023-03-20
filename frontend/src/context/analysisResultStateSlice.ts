@@ -611,6 +611,7 @@ export const analysisResultSlice = createSlice({
         { result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
       ): AnalysisResultState => {
+        console.log(payload);
         const tableData = convertToTableData(
           payload as ExposedPopulationResult,
         );

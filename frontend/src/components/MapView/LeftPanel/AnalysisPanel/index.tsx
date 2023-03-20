@@ -16,6 +16,7 @@ import {
   IconButton,
   Theme,
   CircularProgress,
+  Box,
 } from '@material-ui/core';
 import {
   BarChartOutlined,
@@ -529,7 +530,11 @@ function AnalysisPanel({
   return (
     <div className={classes.root}>
       <div className={classes.analysisPanel}>
-        {isExposureAnalysisLoading && <CircularProgress size={100} />}
+        {isExposureAnalysisLoading && (
+          <Box className={classes.exposureAnalysisLoadingContainer}>
+            <CircularProgress size={100} />
+          </Box>
+        )}
         {analysisResult instanceof ExposedPopulationResult && (
           <div className={classes.exposureAnalysisTable}>
             <ExposureAnalysisTable maxResults={1000} />
@@ -826,6 +831,13 @@ const styles = (theme: Theme) =>
       display: 'relative',
       paddingTop: 30,
       width: PanelSize.medium,
+    },
+    exposureAnalysisLoadingContainer: {
+      display: 'flex',
+      height: '100%',
+      width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     analysisPanelParams: {
       padding: 10,
