@@ -19,13 +19,6 @@ import {
 // So we override the type of TableKey to make it more flexible.
 export type TableKey = string;
 
-// Layer types that are allowed to have multiple layers overlap on the map.
-export const TYPES_ALLOWED_TO_OVERLAP = [
-  'boundary',
-  'point_data',
-  'static_raster',
-];
-
 /**
  * Check if a string is an explicitly defined table in tables.json
  * @param tableKey the string to check
