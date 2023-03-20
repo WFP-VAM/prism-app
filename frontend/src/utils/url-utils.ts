@@ -2,7 +2,7 @@ import { camelCase } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { AnalysisParams } from './types';
 import { LayerType } from '../config/types';
-import { TYPES_ALLOWED_TO_OVERLAP } from '../config/utils';
+import { keepLayer } from './keep-layer-utils';
 
 /*
   This custom hook tracks the browser url string, which is defined by the useHistory hook.
@@ -49,19 +49,12 @@ export const useUrlHistory = () => {
 
     const selectedLayersUrl = urlLayers !== null ? urlLayers.split(',') : [];
 
-    const filteredSelectedLayers = selectedLayers
-      .filter(
-        l =>
-          selectedLayersUrl.includes(l.id) &&
-          (TYPES_ALLOWED_TO_OVERLAP.includes(layer.type) ||
-            l.type !== layer.type),
-      )
-      .map(l => l.id);
+    const filteredSelectedLayers =
+      selectedLayers
+        .filter(l => selectedLayersUrl.includes(l.id) && keepLayer(l, layer))
+        .map(l => l.id) || [];
 
-    const updatedUrl =
-      filteredSelectedLayers.length !== 0
-        ? [...filteredSelectedLayers, layer.id]
-        : [layer.id];
+    const updatedUrl = [...filteredSelectedLayers, layer.id];
 
     return updatedUrl.join(',');
   };

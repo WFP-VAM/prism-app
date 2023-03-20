@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { LayerKey, LayerType } from '../../config/types';
-import { LayerDefinitions, TYPES_ALLOWED_TO_OVERLAP } from '../../config/utils';
+import { LayerDefinitions } from '../../config/utils';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
+import { keepLayer } from '../../utils/keep-layer-utils';
 
 interface DateRange {
   startDate?: number;
@@ -39,15 +40,6 @@ const initialState: MapState = {
   loadingLayerIds: [],
   boundaryRelationData: {},
 };
-
-function keepLayer(layer: LayerType, payload: LayerType) {
-  // Simple function to control which layers can overlap.
-  return (
-    payload.id !== layer.id &&
-    (payload.type !== layer.type ||
-      TYPES_ALLOWED_TO_OVERLAP.includes(payload.type))
-  );
-}
 
 // Order layers to keep boundaries and point_data on top. point_data first.
 export function layerOrdering(a: LayerType, b: LayerType) {
