@@ -4,6 +4,7 @@ import { LayerKey, LayerType } from '../../config/types';
 import { LayerDefinitions } from '../../config/utils';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
 import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
+import { keepLayer } from '../../utils/keep-layer-utils';
 
 interface DateRange {
   startDate?: number;
@@ -40,12 +41,21 @@ const initialState: MapState = {
   boundaryRelationData: {},
 };
 
-function keepLayer(layer: LayerType, payload: LayerType) {
-  // Simple function to control which layers can overlap.
-  return (
-    payload.id !== layer.id &&
-    (payload.type !== layer.type || payload.type === 'boundary')
-  );
+// Order layers to keep boundaries and point_data on top. boundaries first.
+export function layerOrdering(a: LayerType, b: LayerType) {
+  if (a.type === 'boundary') {
+    return -1;
+  }
+  if (b.type === 'boundary') {
+    return 1;
+  }
+  if (a.type === 'point_data') {
+    return -1;
+  }
+  if (b.type === 'point_data') {
+    return 1;
+  }
+  return 0;
 }
 
 export const mapStateSlice = createSlice({

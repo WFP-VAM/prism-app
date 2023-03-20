@@ -35,6 +35,10 @@ function TimelineItems({
     { class: classes.layerOneDate, color: 'Blue' },
     { class: classes.layerTwoDate, color: 'Yellow' },
     { class: classes.layerThreeDate, color: 'Red' },
+    // For now, super-impose additional layers in case we have too many.
+    // TODO - handle this more cleanly.
+    { class: classes.layerThreeDate, color: 'Blue' },
+    { class: classes.layerThreeDate, color: 'Yellow' },
   ];
 
   const formattedSelectedLayerDates = useMemo(
