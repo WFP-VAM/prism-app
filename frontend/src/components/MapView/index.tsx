@@ -65,6 +65,7 @@ import {
   setMap,
   updateDateRange,
   removeLayer,
+  layerOrdering,
 } from '../../context/mapStateSlice';
 import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
 import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';
@@ -191,7 +192,10 @@ function useMapOnClick(setIsAlertFormOpen: (value: boolean) => void) {
 
 function MapView({ classes }: MapViewProps) {
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
-  const selectedLayers = useSelector(layersSelector);
+  const unsortedSelectedLayers = useSelector(layersSelector);
+  // Prioritize boundary and point_data layers
+  // eslint-disable-next-line fp/no-mutating-methods
+  const selectedLayers = [...unsortedSelectedLayers].sort(layerOrdering);
   const selectedMap = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const datesLoading = useSelector(areDatesLoading);
@@ -405,6 +409,7 @@ function MapView({ classes }: MapViewProps) {
       selectedLayersWithDateSupport.length !== 0 &&
       selectedDate
     ) {
+      // WARNING - This logic doesn't apply anymore if we order layers differently...
       const layerToRemove = selectedLayers[selectedLayers.length - 2];
       const layerToKeep = selectedLayers[selectedLayers.length - 1];
 

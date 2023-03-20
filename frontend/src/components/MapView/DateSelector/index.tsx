@@ -63,6 +63,12 @@ const Input = forwardRef(
   },
 );
 
+function addUserOffset(dates: number[]) {
+  return dates.map(d => {
+    return d + USER_DATE_OFFSET;
+  });
+}
+
 function DateSelector({
   availableDates = [],
   selectedLayers = [],
@@ -171,9 +177,7 @@ function DateSelector({
   }
 
   function setDatePosition(date: number | undefined, increment: number) {
-    const dates = availableDates.map(d => {
-      return d + USER_DATE_OFFSET;
-    });
+    const dates = addUserOffset(availableDates);
     const selectedIndex = findDateIndex(dates, date);
     if (dates[selectedIndex + increment]) {
       updateStartDate(new Date(dates[selectedIndex + increment]));
@@ -198,9 +202,7 @@ function DateSelector({
 
   // Click on available date to move the pointer
   const clickDate = (index: number) => {
-    const dates = availableDates.map(date => {
-      return date + USER_DATE_OFFSET;
-    });
+    const dates = addUserOffset(availableDates);
     const selectedIndex = findDateIndex(dates, dateRange[index].value);
     if (selectedIndex >= 0 && dates[selectedIndex] !== stateStartDate) {
       setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
@@ -219,9 +221,7 @@ function DateSelector({
     if (exactX >= dateRange.length) {
       return;
     }
-    const dates = availableDates.map(date => {
-      return date + USER_DATE_OFFSET;
-    });
+    const dates = addUserOffset(availableDates);
     const selectedIndex = findDateIndex(dates, dateRange[exactX].value);
     if (selectedIndex >= 0 && dates[selectedIndex] !== stateStartDate) {
       setPointerPosition({ x: exactX * TIMELINE_ITEM_WIDTH, y: position.y });
