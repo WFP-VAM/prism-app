@@ -90,62 +90,6 @@ export function getWMSUrl(
   });
 }
 
-/**
- * Generates an array of WCS URLs to request GeoTiff tiles based on the given extent and pixel resolution.
- *
- * @param baseUrl Base resource URL
- * @param layerName ID of coverage/layer to get on the server
- * @param date
- * @param extent Full extent of the area to get coverage images for
- * @param resolution pixels per degree lat/long
- * @param pixelsPerTile
- */
-export function WCSTileUrls(
-  baseUrl: string,
-  layerName: string,
-  date: string,
-  extent: Extent,
-  resolution = 256,
-  pixelsPerTile = 512,
-): string[] {
-  // Set up tile grid in x/y.
-  const [minX, minY, maxX, maxY] = extent;
-  if (minX > maxX || minY > maxY) {
-    throw new Error(
-      `Could not generate tile grid for ${baseUrl}/${layerName}: the extent ${extent} seems malformed or else may contain "wrapping" which is not implemented in the function 'WCSTileUrls'`,
-    );
-  }
-
-  const degPerTile = pixelsPerTile / resolution;
-
-  const xTiles = numberOfTiles(minX, maxX, resolution, pixelsPerTile);
-  const yTiles = numberOfTiles(minY, maxY, resolution, pixelsPerTile);
-
-  return [...Array(xTiles)]
-    .map((_1, xIdx) => {
-      const x = [
-        xIdx * degPerTile + minX,
-        (xIdx + 1) * degPerTile + minX,
-      ] as const;
-      return [...Array(yTiles)].map((_2, yIdx) => {
-        const y = [
-          yIdx * degPerTile + minY,
-          (yIdx + 1) * degPerTile + minY,
-        ] as const;
-        return createGetCoverageUrl({
-          bbox: [x[0], y[0], x[1], y[1]],
-          date,
-          height: pixelsPerTile,
-          layerId: layerName,
-          width: pixelsPerTile,
-          url: baseUrl,
-          version: '1.0.0',
-        });
-      });
-    })
-    .flat();
-}
-
 export function getTransform(geoTiffImage: GeoTiffImage): TransformMatrix {
   const tiepoint = geoTiffImage.getTiePoints()[0];
   const pixelScale = geoTiffImage.getFileDirectory().ModelPixelScale;
@@ -213,22 +157,6 @@ export function featureIntersectsImage(
     (xWithinImage(featureExtent[0]) || xWithinImage(featureExtent[2])) &&
     (yWithinImage(featureExtent[1]) || yWithinImage(featureExtent[2]))
   );
-}
-
-export function filterPointsByFeature(
-  rasterPoints: { x: number; y: number; value: number }[],
-  feature: GeoJsonBoundary,
-) {
-  const [minX, minY, maxX, maxY] = bbox(feature);
-  return rasterPoints.filter(({ x, y }) => {
-    return (
-      x > minX &&
-      x < maxX &&
-      y > minY &&
-      y < maxY &&
-      booleanPointInPolygon(point([x, y]), feature)
-    );
-  });
 }
 
 export function pixelsInFeature(

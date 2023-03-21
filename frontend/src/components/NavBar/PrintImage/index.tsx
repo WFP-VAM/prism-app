@@ -59,6 +59,4 @@ function PrintImage() {
 
 const styles = () => createStyles({});
 
-export interface DownloadProps extends WithStyles<typeof styles> {}
-
 export default withStyles(styles)(PrintImage);

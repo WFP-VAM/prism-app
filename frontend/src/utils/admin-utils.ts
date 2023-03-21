@@ -21,11 +21,6 @@ export function getAdminLevelLayer(
   );
 }
 
-export function getAdminLayerURL(adminLevel: AdminLevelType = 1): string {
-  const adminLayer = getAdminLevelLayer(adminLevel);
-  return adminLayer.path;
-}
-
 export function getAdminNameProperty(adminLevel: AdminLevelType = 1): string {
   const { adminLevelNames } = getBoundaryLayerSingleton();
   return adminLevelNames[adminLevel - 1];

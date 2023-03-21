@@ -360,19 +360,4 @@ function BoundaryDropdown({
   );
 }
 
-export const ButtonStyleBoundaryDropdown = withStyles(() => ({
-  root: {
-    '& label': {
-      textTransform: 'uppercase',
-      letterSpacing: '3px',
-      fontSize: '11px',
-      position: 'absolute',
-      top: '-13px',
-    },
-    '& svg': { color: 'white', fontSize: '1.25rem' },
-    '& .MuiInput-root': { margin: 0 },
-    '& .MuiInputLabel-shrink': { display: 'none' },
-  },
-}))(SimpleBoundaryDropdown);
-
 export default BoundaryDropdown;
