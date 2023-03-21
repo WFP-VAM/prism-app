@@ -230,6 +230,7 @@ export const loadAdminBoundaryDataset = async (
     datasetFields,
   } = params;
 
+  console.log(boundaryProps);
   const { code: adminCode, level } = boundaryProps[id];
 
   const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);

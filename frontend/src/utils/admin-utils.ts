@@ -57,6 +57,9 @@ export const getChartAdminBoundaryParams = (
 
   const { levels, url, fields: datasetFields } = chartData!;
 
+  console.log(properties);
+  console.log({ levels });
+
   const boundaryProps = levels.reduce(
     (obj, item) => ({
       ...obj,
