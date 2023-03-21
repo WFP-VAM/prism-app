@@ -42,22 +42,6 @@ export function findClosestDate(
 }
 
 /**
- * Return the list of available dates the month
- * @param month
- * @param year
- * @param availableDates in millisecond format
- * @return a list of available dates the month
- */
-export function findAvailableDayInMonth(
-  month: number,
-  year: number,
-  availableDates: ReturnType<Date['getTime']>[],
-) {
-  const reference = new Date(year, month);
-  return availableDates.filter(d => moment(d).isSame(reference, 'month'));
-}
-
-/**
  * Binary search to return index of available dates that matched
  * @param availableDates in millisecond format, should be sorted
  * @param date in millisecond format
