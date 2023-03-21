@@ -4,7 +4,7 @@ import { Feature, MultiPolygon, point } from '@turf/helpers';
 import { buffer } from 'd3-fetch';
 import * as GeoTIFF from 'geotiff';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { createGetCoverageUrl, createGetMapUrl } from 'prism-common';
+import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { addNotification } from '../../../context/notificationStateSlice';
 import { BACKEND_URL } from '../../../utils/constants';
@@ -62,16 +62,6 @@ export type GeoTiffImage = {
     fillValue?: number | number[];
   }) => Promise<Rasters>;
 };
-
-function numberOfTiles(
-  min: number,
-  max: number,
-  resolution: number,
-  pixelsPerTile: number,
-) {
-  const range = max - min;
-  return Math.ceil((range * resolution) / pixelsPerTile);
-}
 
 export function getWMSUrl(
   baseUrl: string,

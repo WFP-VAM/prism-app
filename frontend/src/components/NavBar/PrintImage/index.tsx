@@ -3,7 +3,6 @@ import {
   Button,
   createStyles,
   Typography,
-  WithStyles,
   withStyles,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';

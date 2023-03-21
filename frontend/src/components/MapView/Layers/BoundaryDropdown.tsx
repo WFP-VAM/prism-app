@@ -13,7 +13,6 @@ import {
   Theme,
   Typography,
   useMediaQuery,
-  withStyles,
 } from '@material-ui/core';
 import { last, sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
