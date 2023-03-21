@@ -43,7 +43,11 @@ function ChartSection({
   );
 
   const adminKey = levelsDict[adminLevel.toString()];
-  const { code: adminCode, level } = params.boundaryProps[adminKey];
+  // Default to country level data.
+  const { code: adminCode, level } = params.boundaryProps[adminKey] || {
+    level: '0',
+    code: appConfig.countryAdmin0Id,
+  };
   useEffect(() => {
     const requestParams: DatasetRequestParams = {
       id: adminKey,
