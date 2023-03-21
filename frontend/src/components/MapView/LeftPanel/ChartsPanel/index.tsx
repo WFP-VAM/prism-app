@@ -132,7 +132,7 @@ const useStyles = makeStyles(() =>
       marginTop: 0,
       marginBottom: 'auto',
     },
-    removeAdmin2: {
+    removeAdmin: {
       fontWeight: 'bold',
     },
     downloadButton: {
@@ -419,13 +419,18 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
         classes={{ root: classes.selectRoot }}
         id="outlined-admin-1"
         select
-        label={t('Select Admin 1')}
+        label={countryAdmin0Id ? t('National Level') : t('Select Admin 1')}
         value={admin1Title}
         onChange={onChangeAdmin1}
         variant="outlined"
       >
-        <MenuItem key="empty-1">
-          <Box className={classes.removeAdmin2}> {t('Remove Admin 1')}</Box>
+        <MenuItem key="national-1" divider>
+          <Box className={classes.removeAdmin}> {t('National Level')}</Box>
+        </MenuItem>
+        <MenuItem style={{ pointerEvents: 'none' }} key="national-1">
+          <Box style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
+            {t('Admin 1')}
+          </Box>
         </MenuItem>
         {categories.map(option => (
           <MenuItem key={option.title} value={option.title}>
@@ -443,8 +448,8 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
           onChange={onChangeAdmin2}
           variant="outlined"
         >
-          <MenuItem key="empty-2">
-            <Box className={classes.removeAdmin2}> {t('Remove Admin 2')}</Box>
+          <MenuItem key="empty-2" divider>
+            <Box className={classes.removeAdmin}> {t('Remove Admin 2')}</Box>
           </MenuItem>
           {categories
             .filter(elem => elem.title === admin1Title)[0]
