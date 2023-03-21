@@ -1,11 +1,10 @@
 {
   "country": "Zimbabwe",
+  "countryAdmin0Id": 271,
   "alertFormActive": false,
   "enableNavigationDropdown": true,
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "icons": {
     "rainfall": "icon_rain.png",
@@ -20,10 +19,7 @@
     "longitude": 30.095,
     "zoom": 5.99
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "rainfall": {
       "ZMSD_rainfall_data": [
@@ -197,10 +193,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -247,10 +240,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -271,9 +261,7 @@
       ]
     },
     "exposure": {
-      "demographics": [
-        "pop_2020"
-      ]
+      "demographics": ["pop_2020"]
     }
   }
 }
