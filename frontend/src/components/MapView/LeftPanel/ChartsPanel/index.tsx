@@ -42,7 +42,8 @@ import { getCategories } from '../../Layers/BoundaryDropdown';
 import { downloadToFile } from '../../utils';
 import ChartSection from './ChartSection';
 
-// Load boundaryLayer for admin2
+// Load boundary layer for Admin2
+// WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
 const MAX_ADMIN_LEVEL = 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
