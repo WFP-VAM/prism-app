@@ -52,6 +52,7 @@ export const getChartAdminBoundaryParams = (
 
   const { levels, url, fields: datasetFields } = chartData!;
 
+  // TODO - why not reduce this by level directly?
   const boundaryProps = levels.reduce(
     (obj, item) => ({
       ...obj,

@@ -7,6 +7,7 @@ import {
 import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
 import React, { useEffect, useMemo, useState } from 'react';
+import { appConfig } from '../../../../../config';
 import { ChartConfig, WMSLayerProps } from '../../../../../config/types';
 import {
   CHART_DATA_PREFIXES,
@@ -41,10 +42,13 @@ function ChartSection({
     [chartLayer, adminProperties],
   );
 
-  const adminId = levelsDict[adminLevel.toString()];
+  const adminKey = levelsDict[adminLevel.toString()];
+  const { code: adminCode, level } = params.boundaryProps[adminKey];
   useEffect(() => {
     const requestParams: DatasetRequestParams = {
-      id: adminId,
+      id: adminKey,
+      level,
+      adminCode: adminCode || appConfig.countryAdmin0Id,
       boundaryProps: params.boundaryProps,
       url: params.url,
       serverLayerName: params.serverLayerName,

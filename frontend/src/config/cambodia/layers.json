@@ -234,11 +234,6 @@
       ],
       "levels": [
         {
-          "level": "0",
-          "id": "dataviz_adm0_id",
-          "name": "Adm0_Name"
-        },
-        {
           "level": "1",
           "id": "dataviz_adm1_id",
           "name": "Adm1_Name"
@@ -294,11 +289,6 @@
       ],
       "levels": [
         {
-          "level": "0",
-          "id": "dataviz_adm0_id",
-          "name": "Adm0_Name"
-        },
-        {
           "level": "1",
           "id": "dataviz_adm1_id",
           "name": "Adm1_Name"
@@ -351,11 +341,6 @@
         }
       ],
       "levels": [
-        {
-          "level": "0",
-          "id": "dataviz_adm0_id",
-          "name": "Adm0_Name"
-        },
         {
           "level": "1",
           "id": "dataviz_adm1_id",
@@ -410,11 +395,6 @@
         }
       ],
       "levels": [
-        {
-          "level": "0",
-          "id": "dataviz_adm0_id",
-          "name": "Adm0_Name"
-        },
         {
           "level": "1",
           "id": "dataviz_adm1_id",
@@ -548,11 +528,6 @@
       ],
       "levels": [
         {
-          "level": "0",
-          "id": "dataviz_adm0_id",
-          "name": "Adm0_Name"
-        },
-        {
           "level": "1",
           "id": "dataviz_adm1_id",
           "name": "Adm1_Name"
@@ -601,11 +576,6 @@
         { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
       ],
       "levels": [
-        {
-          "level": "0",
-          "id": "dataviz_adm0_id",
-          "name": "Adm0_Name"
-        },
         {
           "level": "1",
           "id": "dataviz_adm1_id",
@@ -1258,11 +1228,6 @@
       ],
       "levels": [
         {
-          "level": "0",
-          "id": "dataviz_adm0_id",
-          "name": "Adm0_Name"
-        },
-        {
           "level": "1",
           "id": "dataviz_adm1_id",
           "name": "Adm1_Name"
@@ -1321,11 +1286,6 @@
         }
       ],
       "levels": [
-        {
-          "level": "0",
-          "id": "dataviz_adm0_id",
-          "name": "Adm0_Name"
-        },
         {
           "level": "1",
           "id": "dataviz_adm1_id",
