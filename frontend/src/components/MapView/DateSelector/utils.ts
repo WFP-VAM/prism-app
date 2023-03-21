@@ -34,6 +34,11 @@ export function findClosestDate(
 ) {
   const dateToCheck = moment(date);
 
+  // TODO - better handle empty arrays.
+  if (availableDates.length === 0) {
+    return dateToCheck;
+  }
+
   const reducerFunc = (
     closest: ReturnType<Date['getTime']>,
     current: ReturnType<Date['getTime']>,
@@ -146,5 +151,5 @@ export function findDateIndex(
 }
 
 export function formatDate(date: number): string {
-  return moment(date + USER_DATE_OFFSET).format(MONTH_FIRST_DATE_FORMAT);
+  return moment(date).format(MONTH_FIRST_DATE_FORMAT);
 }

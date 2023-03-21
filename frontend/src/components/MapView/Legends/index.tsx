@@ -188,6 +188,7 @@ function LegendItem({
                     e,
                     newValue as number,
                     map,
+                    // TODO - get updated layer id in groups after switch. See issue #743
                     id,
                     type,
                     val => setOpacityValue(val),

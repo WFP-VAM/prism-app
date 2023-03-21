@@ -60,6 +60,26 @@
     "additional_query_params": {
       "styles": "rfh_16_0_300"
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "bar"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -90,6 +110,31 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -111,12 +156,87 @@
       { "value": 400, "label": "> 400%", "color": "#a002fa" }
     ]
   },
+  "rainfall_agg_1month": {
+    "title": "1-month rainfall aggregate",
+    "type": "wms",
+    "server_layer_name": "r1h_dekad",
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "additional_query_params": {
+      "styles": "rfh_16_0_400"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "bar"
+    },
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      { "value": 0, "label": "0 mm", "color": "#fafafa" },
+      { "value": 0.01, "label": "1-5 mm", "color": "#fffadf" },
+      { "value": 5, "label": "5-10 mm", "color": "#d3f9d0" },
+      { "value": 10, "label": "10-20 mm", "color": "#a9e4a3" },
+      { "value": 20, "label": "20-30 mm", "color": "#7cc594" },
+      { "value": 30, "label": "30-40 mm", "color": "#5eab91" },
+      { "value": 40, "label": "40-60 mm", "color": "#9fffe8" },
+      { "value": 60, "label": "60-90 mm", "color": "#90e0ef" },
+      { "value": 90, "label": "90-120 mm", "color": "#00b1de" },
+      { "value": 120, "label": "120-150 mm", "color": "#0083f3" },
+      { "value": 150, "label": "150-200 mm", "color": "#0052cd" },
+      { "value": 200, "label": "200-250 mm", "color": "#0000c8" },
+      { "value": 250, "label": "250-300 mm", "color": "#6003b8" },
+      { "value": 300, "label": "300-350 mm", "color": "#a002fa" },
+      { "value": 350, "label": "350-400 mm", "color": "#fa78fa" },
+      { "value": 400, "label": ">= 400 mm", "color": "#ffc4ee" }
+    ]
+  },
   "rain_anomaly_1month": {
     "title": "Monthly rainfall anomaly",
     "type": "wms",
     "server_layer_name": "r1q_dekad",
     "additional_query_params": {
       "styles": "rfq_14_20_400"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r1q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -139,6 +259,56 @@
       { "value": 400, "label": "> 400%", "color": "#a002fa" }
     ]
   },
+  "rainfall_agg_3month": {
+    "title": "3-month rainfall aggregate (mm)",
+    "type": "wms",
+    "server_layer_name": "r3h_dekad",
+    "additional_query_params": {
+      "styles": "rfh_16_0_1000"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "bar"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
+    "legend": [
+      { "value": 0, "label": "0 mm", "color": "#fafafa" },
+      { "value": 0.01, "label": "1-10 mm", "color": "#fffadf" },
+      { "value": 10, "label": "10-20 mm", "color": "#d3f9d0" },
+      { "value": 20, "label": "20-30 mm", "color": "#a9e4a3" },
+      { "value": 30, "label": "30-50 mm", "color": "#7cc594" },
+      { "value": 50, "label": "50-100 mm", "color": "#5eab91" },
+      { "value": 100, "label": "100-200 mm", "color": "#9fffe8" },
+      { "value": 200, "label": "200-300 mm", "color": "#90e0ef" },
+      { "value": 300, "label": "300-400 mm", "color": "#00b1de" },
+      { "value": 400, "label": "400-500 mm", "color": "#0083f3" },
+      { "value": 500, "label": "500-600 mm", "color": "#0052cd" },
+      { "value": 600, "label": "600-700 mm", "color": "#0000c8" },
+      { "value": 700, "label": "700-800 mm", "color": "#6003b8" },
+      { "value": 800, "label": "800-900 mm", "color": "#a002fa" },
+      { "value": 900, "label": "900-1000 mm", "color": "#fa78fa" },
+      { "value": 1000, "label": "> 1000 mm", "color": "#ffc4ee" }
+    ]
+  },
   "rain_anomaly_3month": {
     "title": "3-month rainfall anomaly",
     "type": "wms",
@@ -146,6 +316,31 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "additional_query_params": {
       "styles": "rfq_14_20_400"
+    },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "r3q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
     },
     "date_interval": "days",
     "opacity": 0.7,
@@ -249,66 +444,6 @@
       { "value": 150, "label": "150-170%", "color": "#0052cd" },
       { "value": 170, "label": "170-200%", "color": "#0000c8" },
       { "value": 200, "label": "> 200%", "color": "#a002fa" }
-    ]
-  },
-  "rainfall_agg_1month": {
-    "title": "1-month rainfall aggregate",
-    "type": "wms",
-    "server_layer_name": "r1h_dekad",
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "additional_query_params": {
-      "styles": "rfh_16_0_400"
-    },
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Total aggregate precipitation over a 1-month period, rolling every 10 days. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      { "value": 0, "label": "0 mm", "color": "#fafafa" },
-      { "value": 0.01, "label": "1-5 mm", "color": "#fffadf" },
-      { "value": 5, "label": "5-10 mm", "color": "#d3f9d0" },
-      { "value": 10, "label": "10-20 mm", "color": "#a9e4a3" },
-      { "value": 20, "label": "20-30 mm", "color": "#7cc594" },
-      { "value": 30, "label": "30-40 mm", "color": "#5eab91" },
-      { "value": 40, "label": "40-60 mm", "color": "#9fffe8" },
-      { "value": 60, "label": "60-90 mm", "color": "#90e0ef" },
-      { "value": 90, "label": "90-120 mm", "color": "#00b1de" },
-      { "value": 120, "label": "120-150 mm", "color": "#0083f3" },
-      { "value": 150, "label": "150-200 mm", "color": "#0052cd" },
-      { "value": 200, "label": "200-250 mm", "color": "#0000c8" },
-      { "value": 250, "label": "250-300 mm", "color": "#6003b8" },
-      { "value": 300, "label": "300-350 mm", "color": "#a002fa" },
-      { "value": 350, "label": "350-400 mm", "color": "#fa78fa" },
-      { "value": 400, "label": ">= 400 mm", "color": "#ffc4ee" }
-    ]
-  },
-  "rainfall_agg_3month": {
-    "title": "3-month rainfall aggregate (mm)",
-    "type": "wms",
-    "server_layer_name": "r3h_dekad",
-    "additional_query_params": {
-      "styles": "rfh_16_0_1000"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "CHIRPS 3 month dekadal rainfall aggregations",
-    "legend": [
-      { "value": 0, "label": "0 mm", "color": "#fafafa" },
-      { "value": 0.01, "label": "1-10 mm", "color": "#fffadf" },
-      { "value": 10, "label": "10-20 mm", "color": "#d3f9d0" },
-      { "value": 20, "label": "20-30 mm", "color": "#a9e4a3" },
-      { "value": 30, "label": "30-50 mm", "color": "#7cc594" },
-      { "value": 50, "label": "50-100 mm", "color": "#5eab91" },
-      { "value": 100, "label": "100-200 mm", "color": "#9fffe8" },
-      { "value": 200, "label": "200-300 mm", "color": "#90e0ef" },
-      { "value": 300, "label": "300-400 mm", "color": "#00b1de" },
-      { "value": 400, "label": "400-500 mm", "color": "#0083f3" },
-      { "value": 500, "label": "500-600 mm", "color": "#0052cd" },
-      { "value": 600, "label": "600-700 mm", "color": "#0000c8" },
-      { "value": 700, "label": "700-800 mm", "color": "#6003b8" },
-      { "value": 800, "label": "800-900 mm", "color": "#a002fa" },
-      { "value": 900, "label": "900-1000 mm", "color": "#fa78fa" },
-      { "value": 1000, "label": "> 1000 mm", "color": "#ffc4ee" }
     ]
   },
   "rainfall_agg_6month": {
@@ -1292,6 +1427,26 @@
     "additional_query_params": {
       "styles": "vim_14_01_09"
     },
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "vim", "label": "NDVI", "color": "#4eac5b" },
+        { "key": "vim_avg", "label": "Average", "color": "#99ff99" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
+    },
     "date_interval": "days",
     "wcsConfig": {
       "scale": 0.0001,
@@ -1323,6 +1478,31 @@
     "server_layer_name": "mxd13a2_viq_dekad",
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
+      "fields": [
+        { "key": "viq", "label": "NDVI anomaly", "color": "#5e803f" },
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "fallback": 100
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "adm1_id",
+          "name": "province_n"
+        },
+        {
+          "level": "2",
+          "id": "adm2_id",
+          "name": "district_n"
+        }
+      ],
+      "type": "line"
+    },
     "additional_query_params": {
       "styles": "viq_13_50_150"
     },

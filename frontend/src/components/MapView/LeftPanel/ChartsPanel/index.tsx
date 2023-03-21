@@ -18,7 +18,13 @@ import {
 import { DateRangeRounded } from '@material-ui/icons';
 import { GeoJsonProperties } from 'geojson';
 import { groupBy, mapKeys, snakeCase } from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
@@ -153,6 +159,75 @@ const menuProps: Partial<MenuProps> = {
   },
 };
 
+// We export the downloadCsv function to be tested independently
+export const downloadCsv = (
+  dataForCsv: MutableRefObject<{ [key: string]: any[] }>,
+  filename: string,
+) => {
+  return () => {
+    const dateColumn = 'Date';
+    const getKeyName = (key: string, chartName: string) =>
+      key.endsWith('_avg')
+        ? `${snakeCase(chartName)}_avg`
+        : snakeCase(chartName);
+
+    const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
+      ([key, value]) => {
+        const first = value[0];
+        const keys = Object.keys(first);
+        const filtered = keys.filter(x => x !== dateColumn);
+        const mapped = filtered.map(x => getKeyName(x, key));
+        return Object.fromEntries(mapped.map(x => [x, x]));
+      },
+    );
+
+    const columnsNames = columnsNamesPerChart.reduce(
+      (prev, curr) => ({ ...prev, ...curr }),
+      { [dateColumn]: dateColumn },
+    );
+
+    const merged = Object.entries(dataForCsv.current)
+      .map(([key, value]) => {
+        return value.map(x => {
+          return mapKeys(x, (v, k) =>
+            k === dateColumn ? dateColumn : getKeyName(k, key),
+          );
+        });
+      })
+      .flat();
+    if (merged.length < 1) {
+      return;
+    }
+
+    const grouped = groupBy(merged, dateColumn);
+    // The blueprint of objects array data
+    const initialObjectsArrayBlueprintData = Object.keys(columnsNames).reduce(
+      (acc: { [key: string]: string }, key) => {
+        // eslint-disable-next-line fp/no-mutation
+        acc[key] = '';
+        return acc;
+      },
+      {},
+    );
+
+    const objectsArray = Object.entries(grouped).map(([, value]) => {
+      return value.reduce(
+        (prev, curr) => ({ ...prev, ...curr }),
+        initialObjectsArrayBlueprintData,
+      );
+    });
+
+    downloadToFile(
+      {
+        content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
+        isUrl: false,
+      },
+      filename,
+      'text/csv',
+    );
+  };
+};
+
 function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
@@ -163,7 +238,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     new Date().getTime(),
   );
 
-  const dataForCsv = React.useRef<{ [key: string]: any[] }>({});
+  const dataForCsv = useRef<{ [key: string]: any[] }>({});
 
   const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const { t, i18n: i18nLocale } = useSafeTranslation();
@@ -215,52 +290,6 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   ) => {
     setSelectedLayerTitles(event.target.value as string[]);
   };
-
-  function downloadCsv() {
-    const dateColumn = 'Date';
-    const getKeyName = (key: string, chartName: string) =>
-      key.endsWith('_avg')
-        ? `${snakeCase(chartName)}_avg`
-        : snakeCase(chartName);
-    const columnsNamesPerChart = Object.entries(dataForCsv.current).map(
-      ([key, value]) => {
-        const first = value[0];
-        const keys = Object.keys(first);
-        const filtered = keys.filter(x => x !== dateColumn);
-        const mapped = filtered.map(x => getKeyName(x, key));
-        return Object.fromEntries(mapped.map(x => [x, x]));
-      },
-    );
-    const columnsNames = columnsNamesPerChart.reduce(
-      (prev, curr) => ({ ...prev, ...curr }),
-      { [dateColumn]: dateColumn },
-    );
-
-    const merged = Object.entries(dataForCsv.current)
-      .map(([key, value]) => {
-        return value.map(x => {
-          return mapKeys(x, (v, k) =>
-            k === dateColumn ? dateColumn : getKeyName(k, key),
-          );
-        });
-      })
-      .flat();
-    if (merged.length < 1) {
-      return;
-    }
-    const grouped = groupBy(merged, dateColumn);
-    const objectsArray = Object.entries(grouped).map(([, value]) => {
-      return value.reduce((prev, curr) => ({ ...prev, ...curr }), {});
-    });
-    downloadToFile(
-      {
-        content: castObjectsArrayToCsv(objectsArray, columnsNames, ','),
-        isUrl: false,
-      },
-      `${admin1Title}_${selectedLayerTitles.map(snakeCase).join('_')}`,
-      'text/csv',
-    );
-  }
 
   useEffect(() => {
     if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
@@ -445,7 +474,10 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
       </FormControl>
       <Button
         className={classes.downloadButton}
-        onClick={downloadCsv}
+        onClick={downloadCsv(
+          dataForCsv,
+          `${admin1Title}_${selectedLayerTitles.map(snakeCase).join('_')}`,
+        )}
         disabled={
           !(
             adminProperties &&

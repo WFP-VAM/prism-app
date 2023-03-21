@@ -1,4 +1,3 @@
-import React from 'react';
 import { castObjectsArrayToCsv } from './csv-utils';
 
 describe('Test castObjectsArrayToCsv', () => {
