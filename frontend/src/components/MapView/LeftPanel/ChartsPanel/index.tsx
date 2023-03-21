@@ -31,15 +31,11 @@ import { appConfig } from '../../../../config';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
 import {
   getBoundaryLayersByAdminLevel,
-  getBoundaryLayerSingleton,
   getWMSLayersWithChart,
 } from '../../../../config/utils';
 import { LayerData } from '../../../../context/layers/layer-data';
 import { leftPanelTabValueSelector } from '../../../../context/leftPanelStateSlice';
-import {
-  layerDataSelector,
-  relationSelector,
-} from '../../../../context/mapStateSlice/selectors';
+import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../../i18n';
 import { castObjectsArrayToCsv } from '../../../../utils/csv-utils';
 import { getCategories } from '../../Layers/BoundaryDropdown';
@@ -261,14 +257,6 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   const { t, i18n: i18nLocale } = useSafeTranslation();
 
   const tabValue = useSelector(leftPanelTabValueSelector);
-
-  const boundaryRelationDataDict = useSelector(relationSelector);
-
-  const { levels, relations } = useMemo(
-    () =>
-      boundaryRelationDataDict ?? boundaryRelationDataDict[i18nLocale.language],
-    [boundaryRelationDataDict, i18nLocale],
-  );
 
   const categories = useMemo(
     () => (data ? getCategories(data, boundaryLayer, '', i18nLocale) : []),
