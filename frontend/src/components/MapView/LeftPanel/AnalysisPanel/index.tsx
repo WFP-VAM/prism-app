@@ -537,7 +537,11 @@ function AnalysisPanel({
         )}
         {analysisResult instanceof ExposedPopulationResult && (
           <div className={classes.exposureAnalysisTable}>
-            <ExposureAnalysisTable maxResults={1000} />
+            <ExposureAnalysisTable
+              tableData={analysisResult.tableData}
+              columns={translatedColumns}
+              maxResults={1000}
+            />
           </div>
         )}
         {!isExposureAnalysisLoading &&

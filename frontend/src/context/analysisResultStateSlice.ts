@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { convertArea } from '@turf/helpers';
-import { Position, FeatureCollection, Feature } from 'geojson';
+import {
+  Position,
+  FeatureCollection,
+  Feature,
+  Geometry,
+  GeoJsonProperties,
+} from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
 import { createGetCoverageUrl } from 'prism-common';
@@ -52,7 +58,6 @@ import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
-import { convertToTableData } from '../components/MapView/utils';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
@@ -123,6 +128,7 @@ function generateTableFromApiData(
   groupBy: string, // Reuse the groupBy parameter to generate the table
   baselineLayerData: DataRecord[] | null,
   extraColumns: string[],
+  isExposureAnalysisTable: boolean = false,
 ): TableRow[] {
   // find the key that will let us reference the names of the bounding boxes.
   // We get the one corresponding to the specific level of baseline, or the first if we fail.
@@ -142,12 +148,25 @@ function generateTableFromApiData(
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
     // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
+    let featureBoundary: Feature<Geometry, GeoJsonProperties> | undefined;
 
-    const featureBoundary = adminLayerData.features.find(
-      ({ properties }) =>
-        properties?.[groupBy] === row[groupBy] ||
-        properties?.[adminLevelName] === row[adminLevelName],
-    );
+    if (isExposureAnalysisTable) {
+      // eslint-disable-next-line fp/no-mutation
+      featureBoundary = adminLayerData.features.find(
+        ({ properties }) =>
+          properties?.[groupBy] ===
+            row?.['properties']?.[groupBy as keyof typeof properties] ||
+          properties?.[adminLevelName] ===
+            row?.['properties'][adminLevelName as keyof typeof properties],
+      );
+    } else {
+      // eslint-disable-next-line fp/no-mutation
+      featureBoundary = adminLayerData.features.find(
+        ({ properties }) =>
+          properties?.[groupBy] === row[groupBy] ||
+          properties?.[adminLevelName] === row[adminLevelName],
+      );
+    }
 
     const name = getFullLocationName(
       adminLevelNames.slice(0, adminIndex + 1),
@@ -171,14 +190,31 @@ function generateTableFromApiData(
           adminKey,
         );
       })?.value || 'No Data';
+
+    // The multiple statistics for the new table row
+    let multipleStatistics: { [p: string]: string | number };
+
+    if (isExposureAnalysisTable) {
+      // eslint-disable-next-line fp/no-mutation
+      multipleStatistics = Object.fromEntries(
+        statistics.map(statistic => [
+          statistic,
+          get(row.properties, statistic, 0),
+        ]),
+      );
+    } else {
+      // eslint-disable-next-line fp/no-mutation
+      multipleStatistics = Object.fromEntries(
+        statistics.map(statistic => [statistic, get(row, statistic, 0)]),
+      );
+    }
+
     const tableRow: TableRow = {
       key: i.toString(), // primary key, identifying a unique row in the table
       name,
       localName,
       // copy multiple statistics to the new table row
-      ...Object.fromEntries(
-        statistics.map(statistic => [statistic, get(row, statistic, 0)]),
-      ),
+      ...multipleStatistics,
       // Force parseFloat in case data was stored as a string
       baselineValue:
         rawBaselineValue === 'No Data'
@@ -279,14 +315,14 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       maskLayerId,
     } = params;
 
-    const {
-      adminCode: adminCodeId,
-      id: boundaryLayerId,
-    } = getBoundaryLayerSingleton();
+    const adminBoundaries = getBoundaryLayerSingleton();
+    const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
+      api.getState(),
+    ) as LayerData<BoundaryLayerProps>;
 
-    const boundaryData = layerDataSelector(boundaryLayerId)(api.getState()) as
-      | LayerData<BoundaryLayerProps>
-      | undefined;
+    const boundaryData = layerDataSelector(adminBoundaries.id)(
+      api.getState(),
+    ) as LayerData<BoundaryLayerProps> | undefined;
     const { id, key, calc } = exposure;
 
     const wfsLayer =
@@ -340,7 +376,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       .filter(f => get(f.properties, statistic) != null);
 
     const featuresWithBoundaryProps = appendBoundaryProperties(
-      adminCodeId,
+      adminBoundaries.adminCode,
       features,
       boundaryData!.data.features,
     );
@@ -354,7 +390,18 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     // TODO - use raster legend title
     const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
 
+    const tableRows: TableRow[] = generateTableFromApiData(
+      [statistic],
+      featuresWithBoundaryProps,
+      adminBoundariesData,
+      apiRequest.group_by,
+      null,
+      [], // no extra columns
+      true,
+    );
+
     return new ExposedPopulationResult(
+      tableRows,
       collection,
       statistic,
       legend,
@@ -611,15 +658,10 @@ export const analysisResultSlice = createSlice({
         { result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
       ): AnalysisResultState => {
-        console.log(payload);
-        const tableData = convertToTableData(
-          payload as ExposedPopulationResult,
-        );
         return {
           ...rest,
           result: payload as ExposedPopulationResult,
           isExposureLoading: false,
-          tableData,
         };
       },
     );

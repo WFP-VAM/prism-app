@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   Button,
   createStyles,
@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
-import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { snakeCase } from 'lodash';
 import moment from 'moment';
 import { useSafeTranslation } from '../../../i18n';
@@ -40,23 +40,25 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
     ? moment(new Date(analysisResult?.date)).format('YYYY-MM-DD')
     : '';
 
-  const document = (
-    <ReportDoc
-      t={t}
-      exposureLegendDefinition={analysisResult?.legend ?? []}
-      theme={theme}
-      reportType={reportType}
-      tableName="Population Exposure"
-      tableShowTotal
-      eventName={
-        reportType === ReportType.Storm
-          ? `Storm Report (${eventDate})`
-          : `Flood Report (${eventDate})`
-      }
-      mapImage={mapImage}
-      tableData={analysisData}
-    />
-  );
+  const document = useMemo(() => {
+    return (
+      <ReportDoc
+        t={t}
+        exposureLegendDefinition={analysisResult?.legend ?? []}
+        theme={theme}
+        reportType={reportType}
+        tableName="Population Exposure"
+        tableShowTotal
+        eventName={
+          reportType === ReportType.Storm
+            ? `Storm Report (${eventDate})`
+            : `Flood Report (${eventDate})`
+        }
+        mapImage={mapImage}
+        tableData={analysisData}
+      />
+    );
+  }, [analysisData, analysisResult, eventDate, mapImage, reportType, t, theme]);
 
   const getPDFName = () => {
     const type = snakeCase(analysisResult?.legendText);
@@ -65,7 +67,7 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
     return `PRISM_report_${type}_${dateString}.pdf`;
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!open) {
       return;
     }
@@ -73,8 +75,7 @@ function Report({ classes, open, reportType, handleClose }: ReportProps) {
     const getMapImage = (format: Format = 'png'): string | null => {
       if (selectedMap) {
         const activeLayers = selectedMap.getCanvas();
-        const file = activeLayers.toDataURL(`image/${format}`);
-        return file;
+        return activeLayers.toDataURL(`image/${format}`);
       }
       return null;
     };

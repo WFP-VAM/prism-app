@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, MouseEvent } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   createStyles,
   Table,
@@ -15,37 +15,29 @@ import {
   WithStyles,
 } from '@material-ui/core';
 
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { orderBy } from 'lodash';
-import {
-  analysisResultSelector,
-  getCurrentData,
-  TableRowType,
-} from '../../../../../../context/analysisResultStateSlice';
+import { TableRow as AnalysisTableRow } from '../../../../../../context/analysisResultStateSlice';
 
 import { useSafeTranslation } from '../../../../../../i18n';
 
-import { getTableCellVal } from '../../../../../../utils/data-utils';
+import { Column } from '../../../../../../utils/analysis-utils';
+import { showPopup } from '../../../../../../context/tooltipStateSlice';
 
-function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
+function ExposureAnalysisTable({
+  classes,
+  tableData,
+  columns,
+}: ExposureAnalysisTableProps) {
   // only display local names if local language is selected, otherwise display english name
   const { t } = useSafeTranslation();
 
-  const analysisData = useSelector(getCurrentData);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortColumn, setSortColumn] = useState<string>('');
+  const [sortColumn, setSortColumn] = useState<Column['id']>();
   const [isAscending, setIsAscending] = useState(true);
 
-  // The table columns
-  const tableColumns = useMemo(() => {
-    return analysisData.columns;
-  }, [analysisData.columns]);
-
-  // The table rows
-  const tableRows = useMemo(() => {
-    return analysisData.rows;
-  }, [analysisData.rows]);
+  const dispatch = useDispatch();
 
   const handleChangePage = useCallback((event: unknown, newPage: number) => {
     setPage(newPage);
@@ -60,7 +52,7 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
   );
 
   const handleChangeOrderBy = useCallback(
-    (newSortColumn: string) => {
+    (newSortColumn: Column['id']) => {
       const newIsAsc = !(sortColumn === newSortColumn && isAscending);
       setPage(0);
       setSortColumn(newSortColumn);
@@ -71,25 +63,25 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
 
   // Whether the table sort label is active
   const tableSortLabelIsActive = useCallback(
-    (tableColumn: string) => {
-      return sortColumn === tableColumn;
+    (column: Column) => {
+      return sortColumn === column.id;
     },
     [sortColumn],
   );
 
   // table sort label direction
   const tableSortLabelDirection = useCallback(
-    (tableColumn: string) => {
-      return sortColumn === tableColumn && !isAscending ? 'desc' : 'asc';
+    (column: Column) => {
+      return sortColumn === column.id && !isAscending ? 'desc' : 'asc';
     },
     [isAscending, sortColumn],
   );
 
   // on table sort label click
   const onTableSortLabelClick = useCallback(
-    (tableColumn: string) => {
+    (column: Column) => {
       return () => {
-        handleChangeOrderBy(tableColumn);
+        handleChangeOrderBy(column.id);
       };
     },
     [handleChangeOrderBy],
@@ -97,18 +89,16 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
 
   // The rendered table header cells
   const renderedTableHeaderCells = useMemo(() => {
-    return tableColumns.map(tableColumn => {
-      const formattedColValue = getTableCellVal(tableRows[0], tableColumn, t);
+    return columns.map(column => {
       return (
-        <TableCell key={tableColumn} className={classes.tableHead}>
+        <TableCell key={column.id} className={classes.tableHead}>
           <TableSortLabel
-            active={tableSortLabelIsActive(tableColumn)}
-            direction={tableSortLabelDirection(tableColumn)}
-            onClick={onTableSortLabelClick(tableColumn)}
+            active={tableSortLabelIsActive(column)}
+            direction={tableSortLabelDirection(column)}
+            onClick={onTableSortLabelClick(column)}
           >
             <Typography className={classes.tableHeaderText}>
-              {' '}
-              {formattedColValue}{' '}
+              {t(column.label)}
             </Typography>
           </TableSortLabel>
         </TableCell>
@@ -117,50 +107,72 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
   }, [
     classes.tableHead,
     classes.tableHeaderText,
+    columns,
     onTableSortLabelClick,
     t,
-    tableColumns,
-    tableRows,
     tableSortLabelDirection,
     tableSortLabelIsActive,
   ]);
 
   // The rendered table body cells
   const renderedTableBodyCells = useCallback(
-    (rowData: TableRowType) => {
-      return tableColumns.map(tableColumn => {
-        const formattedColValue = getTableCellVal(rowData, tableColumn, t);
+    (row: AnalysisTableRow) => {
+      return columns.map(column => {
+        const value = row[column.id];
         return (
-          <TableCell key={tableColumn} className={classes.tableBody}>
+          <TableCell key={column.id}>
             <Typography className={classes.tableBodyText}>
-              {' '}
-              {formattedColValue}{' '}
+              {column.format && typeof value === 'number'
+                ? column.format(value)
+                : value}
             </Typography>
           </TableCell>
         );
       });
     },
-    [classes.tableBody, classes.tableBodyText, t, tableColumns],
+    [classes.tableBodyText, columns],
   );
 
   // The rendered table body rows
   const renderedTableBodyRows = useMemo(() => {
-    return orderBy(tableRows, sortColumn, isAscending ? 'asc' : 'desc')
-      .slice(page * rowsPerPage + 1, page * rowsPerPage + rowsPerPage + 1)
-      .map(rowData => {
+    return orderBy(tableData, sortColumn, isAscending ? 'asc' : 'desc')
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((row, index) => {
         return (
-          <TableRow key={JSON.stringify(rowData)}>
-            {renderedTableBodyCells(rowData)}
+          <TableRow
+            hover
+            role="checkbox"
+            tabIndex={-1}
+            key={row.key}
+            onClick={() => {
+              // TODO if we decide to keep, add popup data?
+              if (row.coordinates) {
+                dispatch(
+                  showPopup({
+                    coordinates: row.coordinates,
+                    locationName: row.name,
+                    locationLocalName: row.localName,
+                  }),
+                );
+              }
+            }}
+            style={{
+              cursor: row.coordinates ? 'pointer' : 'none',
+              backgroundColor: index % 2 === 0 ? 'white' : '#EBEBEB',
+            }}
+          >
+            {renderedTableBodyCells(row)}
           </TableRow>
         );
       });
   }, [
+    dispatch,
     isAscending,
     page,
     renderedTableBodyCells,
     rowsPerPage,
     sortColumn,
-    tableRows,
+    tableData,
   ]);
 
   return (
@@ -178,7 +190,7 @@ function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={analysisData.rows.length}
+        count={tableData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}
@@ -271,6 +283,8 @@ const styles = (theme: Theme) =>
 
 interface ExposureAnalysisTableProps extends WithStyles<typeof styles> {
   maxResults: number;
+  tableData: AnalysisTableRow[];
+  columns: Column[];
 }
 
 export default withStyles(styles)(ExposureAnalysisTable);
