@@ -60,6 +60,8 @@ export type AdminBoundaryParams = {
 
 export type AdminBoundaryRequestParams = AdminBoundaryParams & {
   selectedDate: number;
+  level: string;
+  adminCode: number;
 };
 
 export type DatasetRequestParams =
@@ -224,14 +226,11 @@ export const loadAdminBoundaryDataset = async (
 
   const {
     url: hdcUrl,
-    id,
-    boundaryProps,
+    level,
+    adminCode,
     serverLayerName,
     datasetFields,
   } = params;
-
-  console.log(boundaryProps);
-  const { code: adminCode, level } = boundaryProps[id];
 
   const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);
   const startDateStr = startDate.format(DEFAULT_DATE_FORMAT);
