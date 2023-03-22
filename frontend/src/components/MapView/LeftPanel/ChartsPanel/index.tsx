@@ -55,6 +55,7 @@ function getProperties(
   layerData: LayerData<BoundaryLayerProps>['data'],
   id?: string,
 ) {
+  // Return any properties, used for national level data.
   if (id === undefined) {
     return layerData.features[0].properties;
   }
