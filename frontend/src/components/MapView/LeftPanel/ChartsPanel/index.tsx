@@ -27,9 +27,10 @@ import React, {
 } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
+import { appConfig } from '../../../../config';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
 import {
-  getBoundaryLayerSingleton,
+  getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
 } from '../../../../config/utils';
 import { LayerData } from '../../../../context/layers/layer-data';
@@ -41,16 +42,23 @@ import { getCategories } from '../../Layers/BoundaryDropdown';
 import { downloadToFile } from '../../utils';
 import ChartSection from './ChartSection';
 
-const boundaryLayer = getBoundaryLayerSingleton();
+// Load boundary layer for Admin2
+// WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
+const MAX_ADMIN_LEVEL = 2;
+const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
 
 const tabIndex = 1;
 
 function getProperties(
-  id: string,
   layerData: LayerData<BoundaryLayerProps>['data'],
+  id?: string,
 ) {
+  // Return any properties, used for national level data.
+  if (id === undefined) {
+    return layerData.features[0].properties;
+  }
   return layerData.features.filter(
     elem => elem.properties && elem.properties[boundaryLayer.adminCode] === id,
   )[0].properties;
@@ -128,7 +136,7 @@ const useStyles = makeStyles(() =>
       marginTop: 0,
       marginBottom: 'auto',
     },
-    removeAdmin2: {
+    removeAdmin: {
       fontWeight: 'bold',
     },
     downloadButton: {
@@ -229,38 +237,58 @@ export const downloadCsv = (
 };
 
 function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
+  const { countryAdmin0Id } = appConfig;
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+    | LayerData<BoundaryLayerProps>
+    | undefined;
+  const { data } = boundaryLayerData || {};
   const classes = useStyles();
   const [admin1Title, setAdmin1Title] = useState('');
   const [admin2Title, setAdmin2Title] = useState('');
-  const [adminLevel, setAdminLevel] = useState<1 | 2>(1);
+  const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
+    countryAdmin0Id ? 0 : 1,
+  );
+
   const [selectedLayerTitles, setSelectedLayerTitles] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState<number | null>(
     new Date().getTime(),
   );
-
+  const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const dataForCsv = useRef<{ [key: string]: any[] }>({});
 
-  const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
   const { t, i18n: i18nLocale } = useSafeTranslation();
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
+
   const tabValue = useSelector(leftPanelTabValueSelector);
-  const { data } = boundaryLayerData || {};
+
   const categories = useMemo(
     () => (data ? getCategories(data, boundaryLayer, '', i18nLocale) : []),
     [data, i18nLocale],
   );
 
+  const generateCSVFilename = () => {
+    return [appConfig.country, admin1Title, admin2Title, ...selectedLayerTitles]
+      .filter(x => !!x)
+      .map(snakeCase)
+      .join('_');
+  };
+
   const onChangeAdmin1 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.value) {
+      setAdmin1Title('');
+      if (countryAdmin0Id) {
+        setAdminLevel(0);
+      }
+      return;
+    }
+
     // The external chart key for admin 1 is stored in all its children regions
     // here we get the first child properties
-    const admin2Id = categories.filter(
+    const admin1Id = categories.filter(
       elem => elem.title === event.target.value,
     )[0].children[0].value;
 
     if (data) {
-      setAdminProperties(getProperties(admin2Id, data));
+      setAdminProperties(getProperties(data, admin1Id));
     }
     setAdmin1Title(event.target.value);
     setAdmin2Title('');
@@ -273,7 +301,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
         .filter(elem => elem.title === admin1Title)[0]
         .children.filter(elem => elem.label === event.target.value)[0].value;
       if (data) {
-        setAdminProperties(getProperties(admin2Id, data));
+        setAdminProperties(getProperties(data, admin2Id));
       }
       setAdmin2Title(event.target.value);
       setAdminLevel(2);
@@ -292,12 +320,24 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   };
 
   useEffect(() => {
+    if (!adminProperties && countryAdmin0Id && data) {
+      setAdminProperties(getProperties(data));
+    }
+  }, [adminProperties, countryAdmin0Id, data]);
+
+  useEffect(() => {
     if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
       setPanelSize(PanelSize.xlarge);
     } else {
       setPanelSize(PanelSize.medium);
     }
-  }, [setPanelSize, adminProperties, selectedDate, selectedLayerTitles.length]);
+  }, [
+    setPanelSize,
+    adminProperties,
+    selectedDate,
+    selectedLayerTitles.length,
+    countryAdmin0Id,
+  ]);
 
   useEffect(() => {
     if (
@@ -347,7 +387,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
                       selectedLayerTitles.includes(layer.title),
                     )[0]
                   }
-                  adminProperties={adminProperties}
+                  adminProperties={adminProperties || {}}
                   adminLevel={adminLevel}
                   date={selectedDate}
                   dataForCsv={dataForCsv}
@@ -364,6 +404,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     adminLevel,
     adminProperties,
     classes.chartsPanelCharts,
+    countryAdmin0Id,
     selectedDate,
     selectedLayerTitles,
     selectedLayerTitles.length,
@@ -382,11 +423,19 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
         classes={{ root: classes.selectRoot }}
         id="outlined-admin-1"
         select
-        label={t('Select Admin 1')}
+        label={countryAdmin0Id ? t('National Level') : t('Select Admin 1')}
         value={admin1Title}
         onChange={onChangeAdmin1}
         variant="outlined"
       >
+        <MenuItem key="national-1" divider>
+          <Box className={classes.removeAdmin}> {t('National Level')}</Box>
+        </MenuItem>
+        <MenuItem style={{ pointerEvents: 'none' }} key="national-1">
+          <Box style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
+            {t('Admin 1')}
+          </Box>
+        </MenuItem>
         {categories.map(option => (
           <MenuItem key={option.title} value={option.title}>
             {option.title}
@@ -403,8 +452,8 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
           onChange={onChangeAdmin2}
           variant="outlined"
         >
-          <MenuItem key="empty">
-            <Box className={classes.removeAdmin2}> {t('Remove Admin 2')}</Box>
+          <MenuItem key="empty-2" divider>
+            <Box className={classes.removeAdmin}> {t('Remove Admin 2')}</Box>
           </MenuItem>
           {categories
             .filter(elem => elem.title === admin1Title)[0]
@@ -474,10 +523,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
       </FormControl>
       <Button
         className={classes.downloadButton}
-        onClick={downloadCsv(
-          dataForCsv,
-          `${admin1Title}_${selectedLayerTitles.map(snakeCase).join('_')}`,
-        )}
+        onClick={downloadCsv(dataForCsv, generateCSVFilename())}
         disabled={
           !(
             adminProperties &&

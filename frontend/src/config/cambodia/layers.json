@@ -1643,7 +1643,7 @@
       "datetime_field": "Date_report",
       "measure_field": "NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
-      "filters": {"status": "Approved"}
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1703,7 +1703,7 @@
       "datetime_field": "Date_Dis",
       "measure_field": "NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
-      "filters": {"status": "Approved"}
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1773,7 +1773,7 @@
       "datetime_field": "Date_Dis",
       "measure_field": "DisTyp",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
-      "filters": {"status": "Approved"}
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1801,15 +1801,15 @@
         "type": "text",
         "dataTitle": "Number of people affected"
       },
-        "NumVillAff": {
-          "type": "text",
-          "dataTitle": "Number of villages affected"
-        },
-        "status": {
-          "type": "text",
-          "dataTitle": "Form status"
-        }
+      "NumVillAff": {
+        "type": "text",
+        "dataTitle": "Number of villages affected"
       },
+      "status": {
+        "type": "text",
+        "dataTitle": "Form status"
+      }
+    },
     "legend_text": "Type of disaster",
     "legend": [
       {
