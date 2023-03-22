@@ -37,7 +37,7 @@
   },
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/mozambique/moz_admin3_boundaries_w_dataviz.json",
+    "path": "data/mozambique/moz_bnd_adm3_WFP.json",
     "opacity": 0.8,
     "admin_code": "source_id",
     "admin_level_names": ["adm1_name", "adm2_name", "adm3_name"],

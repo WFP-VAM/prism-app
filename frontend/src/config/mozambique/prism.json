@@ -22,7 +22,9 @@
   "map": {
     "latitude": -18.6703535,
     "longitude": 30.526067,
-    "zoom": 4.95
+    "longitudeNoPanel": 35.526067,
+    "zoom": 4.85,
+    "zoomNoPanel": 4.7
   },
   "categories": {
     "rainfall": {
