@@ -816,6 +816,8 @@ function AnalysisPanel({
               analysisButton={classes.analysisButton}
               bottomButton={classes.bottomButton}
               clearAnalysis={clearAnalysis}
+              tableData={analysisResult.tableData}
+              columns={translatedColumns}
             />
           </div>
         )}

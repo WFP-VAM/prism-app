@@ -14,15 +14,19 @@ import { useSafeTranslation } from '../../../../../i18n';
 import {
   getCurrentData,
   getCurrentDefinition,
+  TableRow as AnalysisTableRow,
 } from '../../../../../context/analysisResultStateSlice';
 import { layersSelector } from '../../../../../context/mapStateSlice/selectors';
 import { ReportType } from '../../../../Common/ReportDialog/types';
 import ReportDialog from '../../../../Common/ReportDialog';
+import { Column } from '../../../../../utils/analysis-utils';
 
 function ExposureAnalysisActions({
   analysisButton,
   bottomButton,
   clearAnalysis,
+  tableData,
+  columns,
 }: ExposureAnalysisActionsProps) {
   // only display local names if local language is selected, otherwise display english name
   const { t } = useSafeTranslation();
@@ -71,6 +75,8 @@ function ExposureAnalysisActions({
         open={openReport}
         handleClose={() => setOpenReport(false)}
         reportType={isShowingStormData ? ReportType.Storm : ReportType.Flood}
+        tableData={tableData}
+        columns={columns}
       />
     </>
   );
@@ -130,6 +136,8 @@ interface ExposureAnalysisActionsProps extends WithStyles<typeof styles> {
   analysisButton?: string;
   bottomButton?: string;
   clearAnalysis: () => void;
+  tableData: AnalysisTableRow[];
+  columns: Column[];
 }
 
 export default withStyles(styles)(ExposureAnalysisActions);
