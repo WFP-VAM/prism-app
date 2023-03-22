@@ -30,7 +30,7 @@ import { useSelector } from 'react-redux';
 import { appConfig } from '../../../../config';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
 import {
-  getBoundaryLayerSingleton,
+  getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
 } from '../../../../config/utils';
 import { LayerData } from '../../../../context/layers/layer-data';
@@ -42,7 +42,10 @@ import { getCategories } from '../../Layers/BoundaryDropdown';
 import { downloadToFile } from '../../utils';
 import ChartSection from './ChartSection';
 
-const boundaryLayer = getBoundaryLayerSingleton();
+// Load boundary layer for Admin2
+// WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
+const MAX_ADMIN_LEVEL = 2;
+const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
 

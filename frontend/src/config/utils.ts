@@ -198,6 +198,20 @@ export function getBoundaryLayerSingleton(): BoundaryLayerProps {
   return getDisplayBoundaryLayers()[0];
 }
 
+// Return a boundary layer with the specified adminLevel depth.
+export function getBoundaryLayersByAdminLevel(adminLevel?: number) {
+  if (adminLevel) {
+    const boundaryLayers = getBoundaryLayers();
+    const adminLevelBondary = boundaryLayers.find(
+      boundaryLayer => boundaryLayer.adminLevelNames.length === adminLevel,
+    );
+    if (adminLevelBondary) {
+      return adminLevelBondary;
+    }
+  }
+  return getBoundaryLayerSingleton();
+}
+
 export const isPrimaryBoundaryLayer = (layer: BoundaryLayerProps) =>
   (layer.type === 'boundary' && layer.isPrimary) ||
   layer.id === getBoundaryLayerSingleton().id;
