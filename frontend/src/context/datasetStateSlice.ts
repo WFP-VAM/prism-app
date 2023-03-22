@@ -60,6 +60,8 @@ export type AdminBoundaryParams = {
 
 export type AdminBoundaryRequestParams = AdminBoundaryParams & {
   selectedDate: number;
+  level: string;
+  adminCode: number;
 };
 
 export type DatasetRequestParams =
@@ -179,8 +181,21 @@ const fetchHDC = async (
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
 
-  const response = await fetch(`${url}?${requestParamsStr}`);
-  const responseJson: HDCResponse = await response.json();
+  // TODO - better error handling.
+  let responseJson: HDCResponse = {
+    data: {
+      rfh: [100],
+    },
+    valids: [6.0],
+    date: ['2022-03-21'],
+  };
+  try {
+    const response = await fetch(`${url}?${requestParamsStr}`);
+    // eslint-disable-next-line fp/no-mutation
+    responseJson = await response.json();
+  } catch {
+    console.warn('Impossible to get HDC data.');
+  }
 
   const dates: number[] = responseJson.date.map((date: string) =>
     moment(date).valueOf(),
@@ -211,12 +226,11 @@ export const loadAdminBoundaryDataset = async (
 
   const {
     url: hdcUrl,
-    id,
-    boundaryProps,
+    level,
+    adminCode,
     serverLayerName,
     datasetFields,
   } = params;
-  const { code: adminCode, level } = boundaryProps[id];
 
   const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);
   const startDateStr = startDate.format(DEFAULT_DATE_FORMAT);

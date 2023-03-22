@@ -3,7 +3,6 @@ import {
   Button,
   createStyles,
   Typography,
-  WithStyles,
   withStyles,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
@@ -58,7 +57,5 @@ function PrintImage() {
 }
 
 const styles = () => createStyles({});
-
-export interface DownloadProps extends WithStyles<typeof styles> {}
 
 export default withStyles(styles)(PrintImage);

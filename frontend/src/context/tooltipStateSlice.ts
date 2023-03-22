@@ -90,9 +90,6 @@ export const tooltipStateSlice = createSlice({
 // Getters
 export const tooltipSelector = (state: RootState): MapTooltipState =>
   state.tooltipState;
-export const tooltipShowingSelector = (
-  state: RootState,
-): MapTooltipState['showing'] => state.tooltipState.showing;
 
 // Setters
 export const {
