@@ -1,6 +1,7 @@
 {
   "country": "Jordan",
   "alertFormActive": false,
+  "countryAdmin0Id": 130,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
@@ -18,7 +19,8 @@
   },
   "map": {
     "latitude": 31.305,
-    "longitude": 37.096,
+    "longitude": 36.096,
+    "longitudeNoPanel": 37.096,
     "zoom": 6.58
   },
   "defaultDisplayBoundaries": [
