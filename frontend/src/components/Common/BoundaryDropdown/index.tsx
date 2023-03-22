@@ -92,7 +92,6 @@ const BoundaryDropdown = ({
 
     return relationsToRender.map(item => (
       <MenuItem
-        key={item.level}
         className={setMenuItemStyle(item.level, levels, styles)}
         value={item.bbox.join(',')}
       >
