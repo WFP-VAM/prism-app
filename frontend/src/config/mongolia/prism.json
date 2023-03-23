@@ -42,9 +42,6 @@
     "capacity": {
       "livestock_and_crop_preparedness": [
         "hay_harvest",
-        "mvam_hay_reserves",
-        "mvam_fodder_reserves",
-        "mvam_cash_reserves",
         "mvam_hay_prices"
       ]
     },
