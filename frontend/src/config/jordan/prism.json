@@ -186,46 +186,39 @@
         "lst_amplitude"
       ]
     },
-    "sensitivity": {
-      "socioeconomic": [
-        "male_unemployment",
-        "female_unemployment"
+    "exposure": {
+      "demographics": [
+        "population",
+        "percent_refugees_2022"
       ],
       "agriculture": [
         "rainfed",
         "irrigated",
-        "forest",
-        "rangelands",
         "livestock_per_ha"
-      ],
-      "water": [
-        "groundwater_sens",
-        "groundwater_abstraction",
-        "network_age",
-        "non_revenue_losses",
-        "water_network_coverage"
       ]
     },
-    "exposure": {
-      "exposure": [
-        "population",
-        "syrian_refugees",
-        "percent_refugees",
-        "num_droughts",
-        "num_heatwaves"
-      ]
-    },
-    "capacity": {
+    "sensitivity": {
       "socioeconomic": [
         "poverty"
       ],
+      "natural_resources": [
+        "natural_habitats",
+        "groundwater_abstraction",
+        "groundwater_sens"
+      ]
+    },
+    "capacity": {
       "water": [
         "municipal_water",
-        "gw_per_irrigated",
-        "storage_capacity",
-        "water_per_pop",
+        "gw_irrigation",
         "mobile_tanks_per_10k"
       ]
+    },
+    "risk": {
+      "exposure": ["exposure_scaled"],
+      "sensitivity": ["sensitivity_scaled"],
+      "adaptation": ["adaptation_scaled"],
+      "vulnerability": ["vulnerability_scaled"]
     }
   }
 }

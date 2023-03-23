@@ -2935,7 +2935,7 @@
     "legend_text": "Unemployment forecasted to 2021 (% Female)"
   },
   "rainfed": {
-    "title": "Rainfed area",
+    "title": "Rainfed / Fallow area (ha)",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "rainfed",
@@ -2969,7 +2969,7 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Rainfed/Fallow area (ha)"
+    "legend_text": "Rainfed area (ha)"
   },
   "irrigated": {
     "title": "Irrigated area",
@@ -3083,7 +3083,7 @@
     "legend_text": "Rangelands with feed resources (ha)"
   },
   "livestock_per_ha": {
-    "title": "Livestock per rangelands, agriculture and forested areas",
+    "title": "Livestock (sheep and goats)",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "livestock_per_ha",
@@ -3117,7 +3117,7 @@
         "color": "#993404"
       }
     ],
-    "legend_text": "Livestock per rangelands, agriculture and forested areas (head/ha)"
+    "legend_text": "Number of livestock per unit of lands that have feed resources"
   },
   "groundwater_sens": {
     "title": "Groundwater sensitivity",
@@ -3154,10 +3154,10 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Groundwater sensitivity"
+    "legend_text": "BGR-MWI index based on lithology and precipitation"
   },
   "groundwater_abstraction": {
-    "title": "Groundwater abstraction/safe yield",
+    "title": "Groundwater over-abstraction",
     "type": "admin_level_data",
     "path": "data/jordan/jor_sensitivity_data.json",
     "data_field": "groundwater_abstraction",
@@ -3191,7 +3191,7 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Groundwater abstraction/safe yield"
+    "legend_text": "Groundwater abstraction / safe yield"
   },
   "network_age": {
     "title": "Network age",
@@ -3305,10 +3305,10 @@
     "legend_text": "Water network coverage (# of subscribers / Household)"
   },
   "population": {
-    "title": "Population 2021",
+    "title": "Population 2022",
     "type": "admin_level_data",
-    "path": "data/jordan/jor_exposure_data.json",
-    "data_field": "population",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "pop_2022",
     "admin_level": 3,
     "admin_code": "admin3Pcod",
     "opacity": 0.8,
@@ -3339,12 +3339,12 @@
         "color": "#54278f"
       }
     ],
-    "legend_text": "Population 2021"
+    "legend_text": "Total population in 2022"
   },
   "syrian_refugees": {
     "title": "Syrian refugees 2021",
     "type": "admin_level_data",
-    "path": "data/jordan/jor_exposure_data.json",
+    "path": "data/jordan/jor_in.json",
     "data_field": "syrian_refugees",
     "admin_level": 3,
     "admin_code": "admin3Pcod",
@@ -3378,11 +3378,11 @@
     ],
     "legend_text": "Syrian refugees 2021"
   },
-  "percent_refugees": {
+  "percent_refugees_2022": {
     "title": "Percent of refugees / population",
     "type": "admin_level_data",
-    "path": "data/jordan/jor_exposure_data.json",
-    "data_field": "percent_refugees",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "refugees_2022",
     "admin_level": 3,
     "admin_code": "admin3Pcod",
     "opacity": 0.8,
@@ -3413,7 +3413,7 @@
         "color": "#a63603"
       }
     ],
-    "legend_text": "Percent of refugees / population"
+    "legend_text": "Syrian refugees (% of total population)"
   },
   "num_droughts": {
     "title": "Number of droughts",
@@ -3490,7 +3490,7 @@
     "legend_text": "Heat waves during 1980-2016"
   },
   "poverty": {
-    "title": "Poverty level",
+    "title": "Poverty %",
     "type": "admin_level_data",
     "path": "data/jordan/jor_adaptation_data.json",
     "data_field": "poverty",
@@ -3524,7 +3524,7 @@
         "color": "#a50f15"
       }
     ],
-    "legend_text": "Relative poverty level"
+    "legend_text": "Poverty (%) based on HH income and living expenses"
   },
   "municipal_water": {
     "title": "Municipal water",
@@ -3561,7 +3561,7 @@
         "color": "#08519c"
       }
     ],
-    "legend_text": "Municipal Water (lpcd)"
+    "legend_text": "Allocated municipal water (litre / capita / day)"
   },
   "gw_per_irrigated": {
     "title": "Groundwater per irrigated area",
@@ -3710,5 +3710,202 @@
       }
     ],
     "legend_text": "Number of mobile tanks per 10,000 people"
+  },
+  "natural_habitats": {
+    "title": "Important natural habitats",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "natural_habitats",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 100",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 100,
+        "label": "100 - 500",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 500,
+        "label": "500 - 1000",
+        "color": "#74c476"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 2500",
+        "color": "#31a354"
+      },
+      {
+        "value": 2500,
+        "label": "> 2500",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Areas (ha) of forest and important ecosystems and reserves"
+  },
+  "exposure_scaled": {
+    "title": "Exposure-scaled",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "exposure_scaled",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low exposure",
+        "color": "#bababa"
+      },
+      {
+        "value": 0.19,
+        "label": "Moderate exposure",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 0.39,
+        "label": "High exposure",
+        "color": "#fdae61"
+      },
+      {
+        "value": 0.59,
+        "label": "Severe exposure",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Agriculture and demographic"
+  },
+  "sensitivity_scaled": {
+    "title": "Sensitivity-scaled",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "sensitivity_scaled",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low sensitivity",
+        "color": "#bababa"
+      },
+      {
+        "value": 0.19,
+        "label": "Moderate sensitivity",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 0.39,
+        "label": "High sensitivity",
+        "color": "#fdae61"
+      },
+      {
+        "value": 0.59,
+        "label": "Severe sensitivity",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Average of all sensitivity indicators"
+  },
+  "adaptation_scaled": {
+    "title": "Adaptation-scaled",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "adaptation_scaled",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low adaptation",
+        "color": "#bababa"
+      },
+      {
+        "value": 0.19,
+        "label": "Moderate adaptation",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 0.39,
+        "label": "High adaptation",
+        "color": "#fdae61"
+      },
+      {
+        "value": 0.59,
+        "label": "Very high adaptation",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Average of all adaptation indicators"
+  },
+  "vulnerability_scaled": {
+    "title": "Vulnerability-scaled",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "vulnerability_scaled",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low vulnerability",
+        "color": "#bababa"
+      },
+      {
+        "value": 0.19,
+        "label": "Moderate vulnerability",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 0.39,
+        "label": "High vulnerability",
+        "color": "#fdae61"
+      },
+      {
+        "value": 0.59,
+        "label": "Severe vulnerability",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Sensitivity/Adaptation"
+  },
+  "gw_irrigation": {
+    "title": "Irrigation water",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "gw_irrigation",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 350000,
+        "label": "Medium",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 3500000,
+        "label": "High",
+        "color": "#74c476"
+      },
+      {
+        "value": 10000000,
+        "label": "Very high",
+        "color": "#31a354"
+      }
+    ],
+    "legend_text": "Groundwater developed for irrigation (MCM) "
   }
 }
