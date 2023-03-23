@@ -52,7 +52,6 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
     if (!data || !isPrimaryLayer) {
       return;
     }
-
     const dataDict = languages.reduce((relationsDict, lang) => {
       const locationLevelNames =
         lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
@@ -85,7 +84,9 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
       evt.features[0],
     );
 
-    dispatch(showPopup({ coordinates, locationName, locationLocalName }));
+    const date = '';
+
+    dispatch(showPopup({ coordinates, locationName, locationLocalName, date }));
   };
 
   const onClickFunc = (evt: any) => {

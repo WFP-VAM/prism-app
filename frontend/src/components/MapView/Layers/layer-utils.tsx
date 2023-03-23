@@ -72,6 +72,7 @@ export const addPopupParams = (
   evt: any,
   t: i18nTranslator,
   adminLevel: boolean,
+  adminLevelDate: string,
 ): void => {
   const feature = evt.features[0];
 
@@ -94,6 +95,7 @@ export const addPopupParams = (
           ...adminLevelObj,
           data: getRoundedData(get(feature, propertyField), t),
           coordinates: evt.lngLat,
+          date: adminLevelDate,
         },
       }),
     );

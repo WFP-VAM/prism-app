@@ -84,6 +84,9 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   if (!isLayerOnView(map, boundaryId)) {
     return null;
   }
+  console.log(`layer`);
+  console.log(layer);
+  const adminLevelDate = layer.requestBody?.Period || `0`;
 
   return (
     <GeoJSONLayer
@@ -92,7 +95,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       data={features}
       fillPaint={fillPaintData(layer)}
       fillOnClick={async (evt: any) => {
-        addPopupParams(layer, dispatch, evt, t, true);
+        addPopupParams(layer, dispatch, evt, t, true, adminLevelDate);
       }}
     />
   );

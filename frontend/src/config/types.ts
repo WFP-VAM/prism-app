@@ -351,7 +351,6 @@ export class BoundaryLayerProps extends CommonLayerProps {
   adminLevelNames: string[]; // Ordered (Admin1, Admin2, ...)
   adminLevelLocalNames: string[]; // Same as above, local to country
   styles: LayerStyleProps; // Mapbox line and fill properties.,
-
   @optional
   isPrimary?: boolean | undefined;
 }
@@ -367,6 +366,7 @@ interface FeatureInfoProps {
   type: DataType;
   dataTitle: string;
   labelMap?: { [key: string]: string };
+  date?: string;
 }
 
 export enum DatesPropagation {
@@ -466,6 +466,8 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   fallbackLayerKeys?: string[];
+  @optional
+  adminLevelDate?: string;
 
   @optional
   requestBody?: { [key: string]: string }; // JSON body request params

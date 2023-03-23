@@ -7,6 +7,7 @@ export interface PopupData {
     data: number | string;
     coordinates: GeoJSON.Position;
     adminLevel?: number;
+    date?: string;
   };
 }
 
@@ -17,12 +18,14 @@ export interface MapTooltipState {
   data: PopupData;
   showing: boolean;
   wmsGetFeatureInfoLoading: boolean;
+  date: string;
 }
 
 type ShowPopupType = {
   coordinates: GeoJSON.Position;
   locationName: string;
   locationLocalName: string;
+  date: string;
 };
 
 const initialState: MapTooltipState = {
@@ -31,6 +34,7 @@ const initialState: MapTooltipState = {
   data: {},
   showing: false,
   wmsGetFeatureInfoLoading: false,
+  date: '',
 };
 
 export const tooltipStateSlice = createSlice({
@@ -43,11 +47,13 @@ export const tooltipStateSlice = createSlice({
     ) => ({
       ...rest,
       data: merge({}, data, payload),
+      date: '2023',
     }),
 
     setPopupData: (state, { payload }: PayloadAction<PopupData>) => ({
       ...state,
       data: payload,
+      date: '2023',
     }),
 
     setPopupShowing: (state, { payload }: PayloadAction<boolean>) => ({
@@ -67,6 +73,7 @@ export const tooltipStateSlice = createSlice({
       locationName: payload.locationName,
       locationLocalName: payload.locationLocalName,
       coordinates: payload.coordinates,
+      date: `2023`,
     }),
 
     setPopupCoordinates: (

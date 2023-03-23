@@ -86,6 +86,7 @@ function AnalysisTable({ classes, tableData, columns }: AnalysisTableProps) {
                             coordinates: row.coordinates,
                             locationName: row.name,
                             locationLocalName: row.localName,
+                            date: '2023',
                           }),
                         );
                       }

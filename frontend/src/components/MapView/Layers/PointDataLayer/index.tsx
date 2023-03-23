@@ -115,7 +115,7 @@ function PointDataLayer({ layer, before }: LayersProps) {
   }
 
   const onClickFunc = async (evt: any) => {
-    addPopupParams(layer, dispatch, evt, t, false);
+    addPopupParams(layer, dispatch, evt, t, false, `12`);
 
     const feature = evt.features[0];
     if (layer.loader === PointDataLoader.EWS) {

@@ -34,6 +34,7 @@ function MapTooltip({ classes }: TooltipProps) {
             <h4>
               {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
             </h4>
+            <h4>{`${t(`date`)}: ${value.date}`}</h4>
           </>
         ))}
 
