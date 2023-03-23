@@ -8,10 +8,7 @@ import {
   Image,
 } from '@react-pdf/renderer';
 import { Theme } from '@material-ui/core';
-import {
-  TableRow as AnalysisTableRow,
-  TableRowType,
-} from '../../../context/analysisResultStateSlice';
+import { TableRow as AnalysisTableRow } from '../../../context/analysisResultStateSlice';
 import { getLegendItemLabel } from '../../MapView/utils';
 import { LegendDefinition } from '../../../config/types';
 import { TFunction } from '../../../utils/data-utils';
@@ -86,7 +83,6 @@ const ReportDoc = memo(
     tableRowsNum,
     tableShowTotal,
     eventName,
-    sortByKey,
     exposureLegendDefinition,
     t,
     tableData,
@@ -110,26 +106,11 @@ const ReportDoc = memo(
       return `${100 / (columns.length + (showRowTotal ? 1 : 0))}%`;
     }, [columns.length, showRowTotal]);
 
-    const sortedTableRows = useMemo(() => {
-      return sortByKey !== undefined
-        ? // eslint-disable-next-line fp/no-mutating-methods
-          tableData.sort((a, b) => {
-            if (a[sortByKey] > b[sortByKey] || Number.isNaN(b[sortByKey])) {
-              return -1;
-            }
-            if (a[sortByKey] < b[sortByKey] || Number.isNaN(a[sortByKey])) {
-              return 1;
-            }
-            return 0;
-          })
-        : tableData;
-    }, [sortByKey, tableData]);
-
     const trimmedTableRows = useMemo(() => {
       return tableRowsNum !== undefined
-        ? sortedTableRows.slice(0, tableRowsNum - (tableShowTotal ? 1 : 0))
-        : sortedTableRows;
-    }, [sortedTableRows, tableRowsNum, tableShowTotal]);
+        ? tableData.slice(0, tableRowsNum - (tableShowTotal ? 1 : 0))
+        : tableData;
+    }, [tableData, tableRowsNum, tableShowTotal]);
 
     const areasLegendDefinition: PDFLegendDefinition[] = useMemo(() => {
       return [
@@ -295,7 +276,6 @@ interface ReportDocProps {
   tableRowsNum?: number;
   tableShowTotal: boolean;
   eventName: string;
-  sortByKey?: keyof TableRowType;
   exposureLegendDefinition: LegendDefinition;
   t: TFunction;
   tableData: AnalysisTableRow[];

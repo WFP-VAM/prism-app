@@ -16,7 +16,6 @@ import {
 } from '@material-ui/core';
 
 import { useDispatch } from 'react-redux';
-import { orderBy } from 'lodash';
 import { TableRow as AnalysisTableRow } from '../../../../../../context/analysisResultStateSlice';
 
 import { useSafeTranslation } from '../../../../../../i18n';
@@ -28,14 +27,15 @@ function ExposureAnalysisTable({
   classes,
   tableData,
   columns,
+  sortColumn,
+  isAscending,
+  handleChangeOrderBy,
 }: ExposureAnalysisTableProps) {
   // only display local names if local language is selected, otherwise display english name
   const { t } = useSafeTranslation();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sortColumn, setSortColumn] = useState<Column['id']>();
-  const [isAscending, setIsAscending] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -49,16 +49,6 @@ function ExposureAnalysisTable({
       setPage(0);
     },
     [],
-  );
-
-  const handleChangeOrderBy = useCallback(
-    (newSortColumn: Column['id']) => {
-      const newIsAsc = !(sortColumn === newSortColumn && isAscending);
-      setPage(0);
-      setSortColumn(newSortColumn);
-      setIsAscending(newIsAsc);
-    },
-    [isAscending, sortColumn],
   );
 
   // Whether the table sort label is active
@@ -135,7 +125,7 @@ function ExposureAnalysisTable({
 
   // The rendered table body rows
   const renderedTableBodyRows = useMemo(() => {
-    return orderBy(tableData, sortColumn, isAscending ? 'asc' : 'desc')
+    return tableData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map((row, index) => {
         return (
@@ -165,15 +155,7 @@ function ExposureAnalysisTable({
           </TableRow>
         );
       });
-  }, [
-    dispatch,
-    isAscending,
-    page,
-    renderedTableBodyCells,
-    rowsPerPage,
-    sortColumn,
-    tableData,
-  ]);
+  }, [dispatch, page, renderedTableBodyCells, rowsPerPage, tableData]);
 
   return (
     <div className={classes.exposureAnalysisTable}>
@@ -285,6 +267,9 @@ interface ExposureAnalysisTableProps extends WithStyles<typeof styles> {
   maxResults: number;
   tableData: AnalysisTableRow[];
   columns: Column[];
+  sortColumn: string | number | undefined;
+  isAscending: boolean;
+  handleChangeOrderBy: (newExposureAnalysisSortColumn: Column['id']) => void;
 }
 
 export default withStyles(styles)(ExposureAnalysisTable);

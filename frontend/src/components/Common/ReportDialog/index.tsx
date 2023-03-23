@@ -77,6 +77,36 @@ const ReportDialog = memo(
       setMapImage(getMapImage('png'));
     }, [getMapImage, open, selectedMap]);
 
+    const reportDoc = useMemo(() => {
+      return (
+        <ReportDoc
+          t={t}
+          exposureLegendDefinition={analysisResult?.legend ?? []}
+          theme={theme}
+          reportType={reportType}
+          tableName="Population Exposure"
+          tableShowTotal
+          eventName={
+            reportType === ReportType.Storm
+              ? `Storm Report (${eventDate})`
+              : `Flood Report (${eventDate})`
+          }
+          mapImage={mapImage}
+          tableData={tableData}
+          columns={columns}
+        />
+      );
+    }, [
+      analysisResult,
+      columns,
+      eventDate,
+      mapImage,
+      reportType,
+      t,
+      tableData,
+      theme,
+    ]);
+
     // The report type text
     const reportTypeText = useMemo(() => {
       return reportType === ReportType.Storm
@@ -110,22 +140,7 @@ const ReportDialog = memo(
               style={{ width: '100%', height: '100%' }}
               showToolbar={false}
             >
-              <ReportDoc
-                t={t}
-                exposureLegendDefinition={analysisResult?.legend ?? []}
-                theme={theme}
-                reportType={reportType}
-                tableName="Population Exposure"
-                tableShowTotal
-                eventName={
-                  reportType === ReportType.Storm
-                    ? `Storm Report (${eventDate})`
-                    : `Flood Report (${eventDate})`
-                }
-                mapImage={mapImage}
-                tableData={tableData}
-                columns={columns}
-              />
+              {reportDoc}
             </PDFViewer>
           </div>
         </DialogContent>
@@ -134,27 +149,7 @@ const ReportDialog = memo(
             {t('P R I S M automated report')}
           </span>
           <Button className={classes.actionButton} variant="outlined">
-            <PDFDownloadLink
-              document={
-                <ReportDoc
-                  t={t}
-                  exposureLegendDefinition={analysisResult?.legend ?? []}
-                  theme={theme}
-                  reportType={reportType}
-                  tableName="Population Exposure"
-                  tableShowTotal
-                  eventName={
-                    reportType === ReportType.Storm
-                      ? `Storm Report (${eventDate})`
-                      : `Flood Report (${eventDate})`
-                  }
-                  mapImage={mapImage}
-                  tableData={tableData}
-                  columns={columns}
-                />
-              }
-              fileName={getPDFName}
-            >
+            <PDFDownloadLink document={reportDoc} fileName={getPDFName}>
               {({ loading }) => (loading ? 'Loading document...' : 'Download')}
             </PDFDownloadLink>
           </Button>
