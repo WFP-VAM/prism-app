@@ -69,12 +69,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -124,12 +124,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -173,12 +173,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -227,12 +227,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -275,12 +275,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -331,12 +331,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -1436,12 +1436,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -1492,12 +1492,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],

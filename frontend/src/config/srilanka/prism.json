@@ -1,5 +1,6 @@
 {
   "country": "Sri Lanka",
+  "countryAdmin0Id": 231,
   "alertFormActive": false,
   "icons": {
     "rainfall": "icon_rain.png",
@@ -17,6 +18,7 @@
   "map": {
     "latitude": 7.928,
     "longitude": 79.592,
+    "longitudeNoPanel": 80.592,
     "zoom": 6.84
   },
   "defaultDisplayBoundaries": [
