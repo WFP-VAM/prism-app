@@ -3494,10 +3494,10 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-110 MapView-container-2"
+      class="MuiBox-root MuiBox-root-111 MapView-container-2"
     >
       <div
-        class="MuiBox-root MuiBox-root-111 MapView-optionContainer-3"
+        class="MuiBox-root MuiBox-root-112 MapView-optionContainer-3"
         style="margin-left: 30vw;"
       >
         <mock-tooltip
@@ -3532,11 +3532,11 @@ exports[`renders as expected 1`] = `
               class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-1"
             >
               <div
-                class="makeStyles-button-114"
+                class="makeStyles-button-115"
               >
                 <svg
                   aria-hidden="true"
-                  class="MuiSvgIcon-root makeStyles-icon-115 MuiSvgIcon-fontSizeSmall"
+                  class="MuiSvgIcon-root makeStyles-icon-116 MuiSvgIcon-fontSizeSmall"
                   focusable="false"
                   viewBox="0 0 24 24"
                 >
@@ -3545,7 +3545,7 @@ exports[`renders as expected 1`] = `
                   />
                 </svg>
                 <div
-                  class="makeStyles-selectContainer-116"
+                  class="makeStyles-selectContainer-117"
                 />
               </div>
             </div>
