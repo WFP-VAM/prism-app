@@ -20,6 +20,7 @@ import { GeoJsonProperties } from 'geojson';
 import { groupBy, mapKeys, snakeCase } from 'lodash';
 import React, {
   MutableRefObject,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -145,6 +146,18 @@ const useStyles = makeStyles(() =>
         backgroundColor: '#62B2BD',
       },
       marginTop: '2em',
+      marginLeft: '25%',
+      marginRight: '25%',
+      width: '50%',
+      '&.Mui-disabled': { opacity: 0.5 },
+    },
+    clearAllSelectionsButton: {
+      backgroundColor: '#788489',
+      '&:hover': {
+        backgroundColor: '#788489',
+      },
+      marginTop: 10,
+      marginBottom: 10,
       marginLeft: '25%',
       marginRight: '25%',
       width: '50%',
@@ -413,6 +426,18 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     tabValue,
   ]);
 
+  const handleClearAllSelectedCharts = useCallback(() => {
+    setSelectedLayerTitles([]);
+    // Clear the date
+    setSelectedDate(new Date().getTime());
+    // reset the admin level
+    setAdminLevel(countryAdmin0Id ? 0 : 1);
+    // reset admin 1 title
+    setAdmin1Title('');
+    // reset the admin 2 title
+    setAdmin2Title('');
+  }, [countryAdmin0Id]);
+
   if (tabIndex !== tabValue) {
     return null;
   }
@@ -428,10 +453,10 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
         onChange={onChangeAdmin1}
         variant="outlined"
       >
-        <MenuItem key="national-1" divider>
+        <MenuItem divider>
           <Box className={classes.removeAdmin}> {t('National Level')}</Box>
         </MenuItem>
-        <MenuItem style={{ pointerEvents: 'none' }} key="national-1">
+        <MenuItem style={{ pointerEvents: 'none' }}>
           <Box style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
             {t('Admin 1')}
           </Box>
@@ -452,7 +477,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
           onChange={onChangeAdmin2}
           variant="outlined"
         >
-          <MenuItem key="empty-2" divider>
+          <MenuItem divider>
             <Box className={classes.removeAdmin}> {t('Remove Admin 2')}</Box>
           </MenuItem>
           {categories
@@ -534,6 +559,20 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
         }
       >
         <Typography variant="body2">{t('Download CSV')}</Typography>
+      </Button>
+      <Button
+        className={classes.clearAllSelectionsButton}
+        onClick={handleClearAllSelectedCharts}
+        disabled={
+          !(
+            adminProperties &&
+            selectedDate &&
+            tabIndex === tabValue &&
+            selectedLayerTitles.length >= 1
+          )
+        }
+      >
+        <Typography variant="body2">{t('Clear All')}</Typography>
       </Button>
     </Box>
   );
