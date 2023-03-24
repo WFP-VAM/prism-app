@@ -181,9 +181,10 @@ def get_kobo_form_dates(
     koboUrl: HttpUrl,
     formId: str,
     datetimeField: str,
+    filters: Optional[str] = None,
 ):
     """Get all form response dates."""
-    return get_form_dates(koboUrl, formId, datetimeField)
+    return get_form_dates(koboUrl, formId, datetimeField, filters)
 
 
 @app.get("/kobo/forms")
