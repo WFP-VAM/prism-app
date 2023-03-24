@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { uniq } from 'lodash';
 import {
   mapSelector,
-  relationSelector,
+  boundaryRelationSelector,
 } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 
@@ -66,7 +66,7 @@ const BoundaryDropdown = memo(
   ({ labelText, interaction }: BoundaryDropdownProps) => {
     const [selected, setSelected] = useState();
     const [search, setSearch] = useState('');
-    const boundaryRelationDataDict = useSelector(relationSelector);
+    const boundaryRelationDataDict = useSelector(boundaryRelationSelector);
 
     const map = useSelector(mapSelector);
     const { i18n: i18nLocale } = useSafeTranslation();
