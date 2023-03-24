@@ -415,6 +415,7 @@ export function getAllLayerDays(xml: string): { [layerId: string]: number[] } {
     if (layerId) {
       const oldLayerDays = allDays[layerId] || [];
       const layerDays = parseLayerDays(layer);
+      // eslint-disable-next-line fp/no-mutation
       allDays[layerId] = union(layerDays, oldLayerDays);
     }
   });
