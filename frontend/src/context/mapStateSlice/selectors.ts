@@ -25,5 +25,6 @@ export const layerDataSelector = (id: LayerKey, date?: number) => (
 export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
   state.mapState.loadingLayerIds;
 
-export const relationSelector = (state: RootState): BoundaryRelationsDict =>
-  state.mapState.boundaryRelationData;
+export const boundaryRelationSelector = (
+  state: RootState,
+): BoundaryRelationsDict => state.mapState.boundaryRelationData;
