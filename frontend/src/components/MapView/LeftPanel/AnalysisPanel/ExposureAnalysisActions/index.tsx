@@ -19,7 +19,10 @@ import {
 import { layersSelector } from '../../../../../context/mapStateSlice/selectors';
 import { ReportType } from '../../../../Common/ReportDialog/types';
 import ReportDialog from '../../../../Common/ReportDialog';
-import { Column } from '../../../../../utils/analysis-utils';
+import {
+  Column,
+  quoteAndEscapeCell,
+} from '../../../../../utils/analysis-utils';
 
 function ExposureAnalysisActions({
   analysisButton,
@@ -38,6 +41,13 @@ function ExposureAnalysisActions({
   const isShowingStormData = useMemo(() => {
     return selectedLayers.some(({ id }) => id === 'adamts_buffers');
   }, [selectedLayers]);
+
+  const getCellValue = useCallback((value: string | number, column: Column) => {
+    if (column.format && typeof value === 'number') {
+      return column.format(value);
+    }
+    return quoteAndEscapeCell(value);
+  }, []);
 
   const columnsToRenderCsv = useMemo(() => {
     return columns.reduce(
@@ -58,16 +68,13 @@ function ExposureAnalysisActions({
           const value = tableRowData[column.id];
           return {
             ...acc,
-            [column.id]:
-              column.format && typeof value === 'number'
-                ? column.format(value)
-                : (value as string).split(',').join('/'),
+            [column.id]: getCellValue(value, column),
           };
         },
         {},
       );
     });
-  }, [columns, tableData]);
+  }, [columns, getCellValue, tableData]);
 
   const analysisCsvData = useMemo(() => {
     return [columnsToRenderCsv, ...tableDataRowsToRenderCsv]
