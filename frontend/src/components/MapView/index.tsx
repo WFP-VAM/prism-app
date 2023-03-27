@@ -19,7 +19,6 @@ import moment from 'moment';
 // map
 import ReactMapboxGl from 'react-mapbox-gl';
 import { Map, MapSourceDataEvent } from 'mapbox-gl';
-import geoViewport from '@mapbox/geo-viewport';
 import bbox from '@turf/bbox';
 import inside from '@turf/boolean-point-in-polygon';
 import type { Feature, MultiPolygon } from '@turf/helpers';
@@ -105,14 +104,8 @@ const {
   map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom, boundingBox },
 } = appConfig;
 
-// Get an initial state for the map (avoids map binking on load)
-const { center: centerFromBounds, zoom: zoomFromBounds } = geoViewport.viewport(
-  boundingBox,
-  [1100, 600], // screen size
-);
-
-const center = (centerFromBounds || [longitude, latitude]) as [number, number];
-const zoomList = [zoomFromBounds || zoom] as [number];
+const center = [longitude, latitude] as [number, number];
+const zoomList = [zoom] as [number];
 
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
@@ -541,18 +534,6 @@ function MapView({ classes }: MapViewProps) {
     const { layers } = map.getStyle();
     // Find the first symbol on the map to make sure we add boundary layers below them.
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-    if (boundingBox) {
-      map.fitBounds(boundingBox, {
-        duration: 0,
-        padding: {
-          bottom: 150, // room for dates
-          left: isPanelHidden ? 30 : 500, // room for the left panel if active
-          right: 30,
-          top: 30,
-        },
-      });
-    }
-
     dispatch(setMap(() => map));
     if (showBoundaryInfo) {
       watchBoundaryChange(map);
@@ -634,6 +615,15 @@ function MapView({ classes }: MapViewProps) {
         onStyleLoad={saveAndJumpMap}
         containerStyle={{
           height: '100%',
+        }}
+        fitBounds={boundingBox}
+        fitBoundsOptions={{
+          padding: {
+            bottom: 150, // room for dates.
+            left: isPanelHidden ? 30 : 500, // room for the left panel if active.
+            right: 30,
+            top: 30,
+          },
         }}
         onClick={mapOnClick}
         center={center}
