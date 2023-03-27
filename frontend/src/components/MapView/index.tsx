@@ -101,7 +101,7 @@ import LeftPanel from './LeftPanel';
 import FoldButton from './FoldButton';
 
 const {
-  map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom },
+  map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom, boundingBox },
 } = appConfig;
 
 const center = [longitude, latitude] as [number, number];
@@ -534,6 +534,17 @@ function MapView({ classes }: MapViewProps) {
     const { layers } = map.getStyle();
     // Find the first symbol on the map to make sure we add boundary layers below them.
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
+    if (boundingBox) {
+      map.fitBounds(boundingBox, {
+        padding: {
+          bottom: 150, // room for dates
+          left: isPanelHidden ? 30 : 500, // room for the left panel if active
+          right: 30,
+          top: 30,
+        },
+      });
+    }
+
     dispatch(setMap(() => map));
     if (showBoundaryInfo) {
       watchBoundaryChange(map);
