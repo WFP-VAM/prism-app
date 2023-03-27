@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { convertArea } from '@turf/helpers';
 import {
-  Position,
-  FeatureCollection,
   Feature,
-  Geometry,
+  FeatureCollection,
   GeoJsonProperties,
+  Geometry,
+  Position,
 } from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
@@ -15,38 +15,38 @@ import { calculate } from '../utils/zonal-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesPath } from '../config';
 import {
+  AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
   AllAggregationOperations,
   AsyncReturnType,
   BoundaryLayerProps,
-  AdminLevelDataLayerProps,
-  ThresholdDefinition,
-  WMSLayerProps,
-  WfsRequestParams,
-  LayerKey,
   ExposedPopulationDefinition,
-  TableType,
-  ZonalPolygonRow,
+  LayerKey,
   PolygonalAggregationOperations,
+  TableType,
+  ThresholdDefinition,
+  WfsRequestParams,
+  WMSLayerProps,
+  ZonalPolygonRow,
 } from '../config/types';
 import { getAdminLevelLayer, getAdminNameProperty } from '../utils/admin-utils';
 import {
-  BaselineLayerResult,
-  Column,
-  PolygonAnalysisResult,
   AnalysisResult,
   ApiData,
+  appendBoundaryProperties,
   BaselineLayerData,
+  BaselineLayerResult,
   checkBaselineDataLayer,
+  Column,
+  createLegendFromFeatureArray,
+  ExposedPopulationResult,
   fetchApiData,
   generateFeaturesFromApiData,
-  createLegendFromFeatureArray,
   KeyValueResponse,
+  PolygonAnalysisResult,
   scaleAndFilterAggregateData,
-  ExposedPopulationResult,
   scaleFeatureStat,
-  appendBoundaryProperties,
 } from '../utils/analysis-utils';
 import { getRoundedData } from '../utils/data-utils';
 import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
@@ -76,6 +76,8 @@ type AnalysisResultState = {
   isMapLayerActive: boolean;
   isDataTableDrawerActive: boolean;
   isExposureLoading: boolean;
+  analysisResultDataSortByKey: Column['id'];
+  analysisResultDataSortOrder: 'asc' | 'desc';
 };
 
 export type TableRow = {
@@ -93,6 +95,8 @@ const initialState: AnalysisResultState = {
   isMapLayerActive: true,
   isDataTableDrawerActive: false,
   isExposureLoading: false,
+  analysisResultDataSortByKey: 'name',
+  analysisResultDataSortOrder: 'asc',
 };
 
 /* Gets a public URL for the admin boundaries used by this application.
@@ -604,7 +608,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 
   const boundaryId = getAdminLevelLayer(adminLevel).id;
 
-  const analysisResult = new PolygonAnalysisResult(
+  return new PolygonAnalysisResult(
     tableRows,
     tableColumns,
     result.geojson,
@@ -616,14 +620,26 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     startDate,
     endDate,
   );
-
-  return analysisResult;
 });
 
 export const analysisResultSlice = createSlice({
   name: 'analysisResultState',
   initialState,
   reducers: {
+    setAnalysisResultSortByKey: (
+      state,
+      { payload }: PayloadAction<string | number>,
+    ) => ({
+      ...state,
+      analysisResultDataSortByKey: payload,
+    }),
+    setAnalysisResultSortOrder: (
+      state,
+      { payload }: PayloadAction<'asc' | 'desc'>,
+    ) => ({
+      ...state,
+      analysisResultDataSortOrder: payload,
+    }),
     setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
       ...state,
       isMapLayerActive: payload,
@@ -760,6 +776,14 @@ export const analysisResultSelector = (
   state: RootState,
 ): AnalysisResult | undefined => state.analysisResultState.result;
 
+export const analysisResultSortByKeySelector = (
+  state: RootState,
+): string | number => state.analysisResultState.analysisResultDataSortByKey;
+
+export const analysisResultSortOrderSelector = (
+  state: RootState,
+): 'asc' | 'desc' => state.analysisResultState.analysisResultDataSortOrder;
+
 export const isAnalysisLoadingSelector = (state: RootState): boolean =>
   state.analysisResultState.isLoading;
 
@@ -779,6 +803,8 @@ export const {
   setCurrentDataDefinition,
   hideDataTableDrawer,
   clearAnalysisResult,
+  setAnalysisResultSortByKey,
+  setAnalysisResultSortOrder,
 } = analysisResultSlice.actions;
 
 export default analysisResultSlice.reducer;

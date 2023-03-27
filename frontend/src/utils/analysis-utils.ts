@@ -11,6 +11,7 @@ import {
   omit,
   flatten,
   isNumber,
+  orderBy,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
@@ -834,13 +835,17 @@ export function downloadCSVFromTableData(
   analysisResult: TabularAnalysisResult,
   columns: Column[],
   selectedDate: number | null,
+  sortByKey: Column['id'],
+  sortOrder: 'asc' | 'desc',
 ) {
   const { tableData } = analysisResult;
+
+  const sortedTableData = orderBy(tableData, sortByKey, sortOrder);
 
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
     columns.map(col => quoteAndEscapeCell(col.label)).join(','),
-    ...tableData.map(row =>
+    ...sortedTableData.map(row =>
       columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
     ),
   ];

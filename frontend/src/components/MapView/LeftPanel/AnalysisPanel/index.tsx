@@ -51,6 +51,10 @@ import {
   requestAndStorePolygonAnalysis,
   setIsMapLayerActive,
   isExposureAnalysisLoadingSelector,
+  analysisResultSortByKeySelector,
+  analysisResultSortOrderSelector,
+  setAnalysisResultSortByKey,
+  setAnalysisResultSortOrder,
 } from '../../../../context/analysisResultStateSlice';
 import {
   AdminLevelType,
@@ -124,6 +128,8 @@ function AnalysisPanel({
 
   const availableDates = useSelector(availableDatesSelector);
   const analysisResult = useSelector(analysisResultSelector);
+  const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
+  const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
   const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
   const isExposureAnalysisLoading = useSelector(
     isExposureAnalysisLoadingSelector,
@@ -134,10 +140,19 @@ function AnalysisPanel({
   const [exposureAnalysisSortColumn, setExposureAnalysisSortColumn] = useState<
     Column['id']
   >('name');
+  // exposure analysis sort order
   const [
     exposureAnalysisIsAscending,
     setExposureAnalysisIsAscending,
   ] = useState(true);
+  // defaults the sort column of every other analysis table to 'name'
+  const [analysisSortColumn, setAnalysisSortColumn] = useState<Column['id']>(
+    analysisResultSortByKey,
+  );
+  // general analysis table sort order
+  const [analysisIsAscending, setAnalysisIsAscending] = useState(
+    analysisResultSortOrder === 'asc',
+  );
 
   const {
     analysisHazardLayerId: hazardLayerIdFromUrl,
@@ -261,6 +276,31 @@ function AnalysisPanel({
     }
   }, [analysisResult]);
 
+  // The analysis table data
+  const analysisTableData = useMemo(() => {
+    return orderBy(
+      analysisResult?.tableData,
+      analysisSortColumn,
+      analysisIsAscending ? 'asc' : 'desc',
+    );
+  }, [analysisIsAscending, analysisResult, analysisSortColumn]);
+
+  // handler of general analysis tables sort order
+  const handleAnalysisTableOrderBy = useCallback(
+    (newAnalysisSortColumn: Column['id']) => {
+      const newIsAsc = !(
+        analysisSortColumn === newAnalysisSortColumn && analysisIsAscending
+      );
+      setAnalysisSortColumn(newAnalysisSortColumn);
+      setAnalysisIsAscending(newIsAsc);
+      // set the sort by key of analysis data in redux
+      dispatch(setAnalysisResultSortByKey(newAnalysisSortColumn));
+      // set the sort order of analysis result data in redux
+      dispatch(setAnalysisResultSortOrder(newIsAsc ? 'asc' : 'desc'));
+    },
+    [analysisIsAscending, analysisSortColumn, dispatch],
+  );
+
   useEffect(() => {
     if (tabValue !== tabIndex) {
       return;
@@ -297,8 +337,11 @@ function AnalysisPanel({
             </div>
             <div className={classes.analysisTable}>
               <AnalysisTable
-                tableData={analysisResult.tableData}
+                tableData={analysisTableData}
                 columns={translatedColumns}
+                sortColumn={analysisSortColumn}
+                handleChangeOrderBy={handleAnalysisTableOrderBy}
+                isAscending={analysisIsAscending}
               />
             </div>
           </div>,
@@ -309,7 +352,14 @@ function AnalysisPanel({
       setResultsPage(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showTable, tabValue]);
+  }, [
+    showTable,
+    tabValue,
+    analysisTableData,
+    analysisSortColumn,
+    handleAnalysisTableOrderBy,
+    analysisIsAscending,
+  ]);
 
   const onOptionChange = useCallback(
     <T extends string>(setterFunc: Dispatch<SetStateAction<T>>) => (
@@ -591,6 +641,7 @@ function AnalysisPanel({
     updateAnalysisParams,
   ]);
 
+  // handler of changing exposure analysis sort order
   const handleExposureAnalysisTableOrderBy = useCallback(
     (newExposureAnalysisSortColumn: Column['id']) => {
       const newIsAsc = !(
@@ -612,6 +663,405 @@ function AnalysisPanel({
     );
   }, [analysisResult, exposureAnalysisIsAscending, exposureAnalysisSortColumn]);
 
+  const renderedExposureAnalysisLoading = useMemo(() => {
+    if (!isExposureAnalysisLoading) {
+      return null;
+    }
+    return (
+      <Box className={classes.exposureAnalysisLoadingContainer}>
+        <CircularProgress size={100} />
+      </Box>
+    );
+  }, [classes.exposureAnalysisLoadingContainer, isExposureAnalysisLoading]);
+
+  const renderedExposureAnalysisTable = useMemo(() => {
+    if (!(analysisResult instanceof ExposedPopulationResult)) {
+      return null;
+    }
+    return (
+      <div className={classes.exposureAnalysisTable}>
+        <ExposureAnalysisTable
+          tableData={exposureAnalysisTableData}
+          columns={translatedColumns}
+          maxResults={1000}
+          sortColumn={exposureAnalysisSortColumn}
+          handleChangeOrderBy={handleExposureAnalysisTableOrderBy}
+          isAscending={exposureAnalysisIsAscending}
+        />
+      </div>
+    );
+  }, [
+    analysisResult,
+    classes.exposureAnalysisTable,
+    exposureAnalysisIsAscending,
+    exposureAnalysisSortColumn,
+    exposureAnalysisTableData,
+    handleExposureAnalysisTableOrderBy,
+    translatedColumns,
+  ]);
+
+  const renderedPolygonHazardType = useMemo(() => {
+    if (hazardDataType !== GeometryType.Polygon) {
+      return null;
+    }
+    return (
+      <>
+        <div className={classes.analysisPanelParamContainer}>
+          <Typography className={classes.analysisParamTitle} variant="body2">
+            {t('Admin Level')}
+          </Typography>
+          <SimpleDropdown
+            value={adminLevel}
+            options={range(getAdminLevelCount()).map(i => [
+              (i + 1) as AdminLevelType,
+              `Admin ${i + 1}`,
+            ])}
+            onChange={setAdminLevel}
+            textClass={classes.analysisParamTitle}
+          />
+        </div>
+
+        <div className={classes.analysisPanelParamContainer}>
+          <Typography className={classes.analysisParamTitle} variant="body2">
+            {t('Date Range')}
+          </Typography>
+          <div className={classes.dateRangePicker}>
+            <Typography className={classes.analysisParamTitle} variant="body2">
+              {t('Start')}
+            </Typography>
+            <DatePicker
+              selected={startDate ? new Date(startDate) : null}
+              onChange={date => setStartDate(date?.getTime() || startDate)}
+              maxDate={new Date()}
+              todayButton="Today"
+              peekNextMonth
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              customInput={<Input className={classes.analysisPanelParamText} />}
+              popperClassName={classes.calendarPopper}
+              includeDates={availableHazardDates}
+            />
+          </div>
+          <div className={classes.dateRangePicker}>
+            <Typography className={classes.analysisParamTitle} variant="body2">
+              {t('End')}
+            </Typography>
+            <DatePicker
+              selected={endDate ? new Date(endDate) : null}
+              onChange={date => setEndDate(date?.getTime() || endDate)}
+              maxDate={new Date()}
+              todayButton="Today"
+              peekNextMonth
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              customInput={<Input className={classes.analysisPanelParamText} />}
+              popperClassName={classes.calendarPopper}
+              includeDates={availableHazardDates}
+            />
+          </div>
+        </div>
+      </>
+    );
+  }, [
+    adminLevel,
+    availableHazardDates,
+    classes.analysisPanelParamContainer,
+    classes.analysisPanelParamText,
+    classes.analysisParamTitle,
+    classes.calendarPopper,
+    classes.dateRangePicker,
+    endDate,
+    hazardDataType,
+    startDate,
+    t,
+  ]);
+
+  const renderedRasterType = useMemo(() => {
+    if (hazardDataType !== RasterType.Raster) {
+      return null;
+    }
+    return (
+      <>
+        <div className={classes.analysisPanelParamContainer}>
+          <LayerDropdown
+            type="admin_level_data"
+            value={baselineLayerId || undefined}
+            setValue={setBaselineLayerId}
+            className={classes.analysisPanelParamText}
+            label={t('Baseline Layer')}
+            placeholder="Choose baseline layer"
+          />
+        </div>
+        <div className={classes.analysisPanelParamContainer}>
+          <Typography className={classes.analysisParamTitle} variant="body2">
+            {t('Statistic')}
+          </Typography>
+          <FormControl component="div">
+            <RadioGroup
+              name="statistics"
+              value={statistic}
+              onChange={onOptionChange(setStatistic)}
+            >
+              {statisticOptions}
+            </RadioGroup>
+          </FormControl>
+        </div>
+        <div className={classes.analysisPanelParamContainer}>
+          <Typography className={classes.analysisParamTitle} variant="body2">
+            {t('Threshold')}
+          </Typography>
+          <div style={{ display: 'flex' }}>
+            <TextField
+              id="outlined-number-low"
+              error={!!thresholdError}
+              helperText={t(thresholdError || '')}
+              className={classes.numberField}
+              label={t('Below')}
+              type="number"
+              value={belowThreshold}
+              onChange={onThresholdOptionChange('below')}
+              variant="outlined"
+            />
+            <TextField
+              id="outlined-number-high"
+              label={t('Above')}
+              classes={{ root: classes.numberField }}
+              value={aboveThreshold}
+              onChange={onThresholdOptionChange('above')}
+              type="number"
+              variant="outlined"
+            />
+          </div>
+        </div>
+        <div className={classes.datePickerContainer}>
+          <Typography className={classes.analysisParamTitle} variant="body2">
+            {`${t('Date')}: `}
+          </Typography>
+          <DatePicker
+            locale={t('date_locale')}
+            dateFormat="PP"
+            selected={selectedDate ? new Date(selectedDate) : null}
+            onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
+            maxDate={new Date()}
+            todayButton={t('Today')}
+            peekNextMonth
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            customInput={
+              <Input
+                className={classes.analysisPanelParamText}
+                disableUnderline
+                endAdornment={
+                  <InputAdornment position="end">
+                    <DateRangeRounded />
+                  </InputAdornment>
+                }
+              />
+            }
+            popperClassName={classes.calendarPopper}
+            includeDates={availableHazardDates}
+          />
+        </div>
+      </>
+    );
+  }, [
+    aboveThreshold,
+    availableHazardDates,
+    baselineLayerId,
+    belowThreshold,
+    classes.analysisPanelParamContainer,
+    classes.analysisPanelParamText,
+    classes.analysisParamTitle,
+    classes.calendarPopper,
+    classes.datePickerContainer,
+    classes.numberField,
+    hazardDataType,
+    onOptionChange,
+    onThresholdOptionChange,
+    selectedDate,
+    statistic,
+    statisticOptions,
+    t,
+    thresholdError,
+  ]);
+
+  const renderedAnalysisPanelInfo = useMemo(() => {
+    if (
+      isExposureAnalysisLoading ||
+      analysisResult instanceof ExposedPopulationResult
+    ) {
+      return null;
+    }
+    return (
+      <div id="analysis-parameters" className={classes.analysisPanelParams}>
+        <div className={classes.analysisPanelParamContainer}>
+          <LayerDropdown
+            type="wms"
+            value={hazardLayerId}
+            setValue={setHazardLayerId}
+            className={classes.analysisPanelParamText}
+            label={t('Hazard Layer')}
+            placeholder="Choose hazard layer"
+          />
+        </div>
+        {renderedPolygonHazardType}
+        {renderedRasterType}
+      </div>
+    );
+  }, [
+    analysisResult,
+    classes.analysisPanelParamContainer,
+    classes.analysisPanelParamText,
+    classes.analysisPanelParams,
+    hazardLayerId,
+    isExposureAnalysisLoading,
+    renderedPolygonHazardType,
+    renderedRasterType,
+    t,
+  ]);
+
+  const renderedAnalysisActions = useMemo(() => {
+    if (
+      isAnalysisLoading ||
+      !analysisResult ||
+      analysisResult instanceof ExposedPopulationResult
+    ) {
+      return null;
+    }
+    return (
+      <div
+        className={classes.analysisButtonContainer}
+        style={{
+          width: PanelSize.medium,
+        }}
+      >
+        <Button
+          className={classes.analysisButton}
+          disabled={!analysisResult}
+          onClick={() => setShowTable(!showTable)}
+        >
+          <Typography variant="body2">
+            {panelSize === PanelSize.large ? t('Hide Table') : t('View Table')}
+          </Typography>
+        </Button>
+        <Button className={classes.analysisButton} onClick={clearAnalysis}>
+          <Typography variant="body2">{t('Clear Analysis')}</Typography>
+        </Button>
+        <Button
+          className={classes.bottomButton}
+          onClick={() =>
+            downloadCSVFromTableData(
+              analysisResult,
+              translatedColumns,
+              selectedDate,
+              analysisSortColumn,
+              analysisIsAscending ? 'asc' : 'desc',
+            )
+          }
+        >
+          <Typography variant="body2">{t('Download CSV')}</Typography>
+        </Button>
+      </div>
+    );
+  }, [
+    analysisIsAscending,
+    analysisResult,
+    analysisSortColumn,
+    classes.analysisButton,
+    classes.analysisButtonContainer,
+    classes.bottomButton,
+    clearAnalysis,
+    isAnalysisLoading,
+    panelSize,
+    selectedDate,
+    showTable,
+    t,
+    translatedColumns,
+  ]);
+
+  const renderedRunAnalysisButton = useMemo(() => {
+    if (analysisResult) {
+      return null;
+    }
+    return (
+      <div className={classes.analysisButtonContainer}>
+        <Button
+          className={classes.bottomButton}
+          onClick={runAnalyser}
+          startIcon={<BarChartOutlined />}
+          disabled={
+            !!thresholdError || // if there is a threshold error
+            isAnalysisLoading || // or analysis is currently loading
+            !hazardLayerId || // or hazard layer hasn't been selected
+            (hazardDataType === GeometryType.Polygon
+              ? !startDate || !endDate || !adminLevelLayerData
+              : !selectedDate || !baselineLayerId) // or date hasn't been selected // or baseline layer hasn't been selected
+          }
+        >
+          <Typography variant="body2">{t('Run Analysis')}</Typography>
+        </Button>
+        {isAnalysisLoading ? <LinearProgress /> : null}
+      </div>
+    );
+  }, [
+    adminLevelLayerData,
+    analysisResult,
+    baselineLayerId,
+    classes.analysisButtonContainer,
+    classes.bottomButton,
+    endDate,
+    hazardDataType,
+    hazardLayerId,
+    isAnalysisLoading,
+    runAnalyser,
+    selectedDate,
+    startDate,
+    t,
+    thresholdError,
+  ]);
+
+  const renderedExposureAnalysisActions = useMemo(() => {
+    if (
+      isAnalysisLoading ||
+      !analysisResult ||
+      !(analysisResult instanceof ExposedPopulationResult)
+    ) {
+      return null;
+    }
+    return (
+      <div
+        className={classes.analysisButtonContainer}
+        style={{
+          width: panelSize === PanelSize.large ? '50%' : '100%',
+        }}
+      >
+        <ExposureAnalysisActions
+          key={`${exposureAnalysisSortColumn} - ${exposureAnalysisIsAscending}`} // Whether to rerender the report doc based on the sort order and column
+          analysisButton={classes.analysisButton}
+          bottomButton={classes.bottomButton}
+          clearAnalysis={clearAnalysis}
+          tableData={exposureAnalysisTableData}
+          columns={translatedColumns}
+        />
+      </div>
+    );
+  }, [
+    analysisResult,
+    classes.analysisButton,
+    classes.analysisButtonContainer,
+    classes.bottomButton,
+    clearAnalysis,
+    exposureAnalysisIsAscending,
+    exposureAnalysisSortColumn,
+    exposureAnalysisTableData,
+    isAnalysisLoading,
+    panelSize,
+    translatedColumns,
+  ]);
+
   return useMemo(() => {
     if (tabIndex !== tabValue) {
       return null;
@@ -620,349 +1070,25 @@ function AnalysisPanel({
     return (
       <div className={classes.root}>
         <div className={classes.analysisPanel}>
-          {isExposureAnalysisLoading && (
-            <Box className={classes.exposureAnalysisLoadingContainer}>
-              <CircularProgress size={100} />
-            </Box>
-          )}
-          {analysisResult instanceof ExposedPopulationResult && (
-            <div className={classes.exposureAnalysisTable}>
-              <ExposureAnalysisTable
-                tableData={exposureAnalysisTableData}
-                columns={translatedColumns}
-                maxResults={1000}
-                sortColumn={exposureAnalysisSortColumn}
-                handleChangeOrderBy={handleExposureAnalysisTableOrderBy}
-                isAscending={exposureAnalysisIsAscending}
-              />
-            </div>
-          )}
-          {!isExposureAnalysisLoading &&
-            !(analysisResult instanceof ExposedPopulationResult) && (
-              <div
-                id="analysis-parameters"
-                className={classes.analysisPanelParams}
-              >
-                <div className={classes.analysisPanelParamContainer}>
-                  <LayerDropdown
-                    type="wms"
-                    value={hazardLayerId}
-                    setValue={setHazardLayerId}
-                    className={classes.analysisPanelParamText}
-                    label={t('Hazard Layer')}
-                    placeholder="Choose hazard layer"
-                  />
-                </div>
-
-                {hazardDataType === GeometryType.Polygon && (
-                  <>
-                    <div className={classes.analysisPanelParamContainer}>
-                      <Typography
-                        className={classes.analysisParamTitle}
-                        variant="body2"
-                      >
-                        {t('Admin Level')}
-                      </Typography>
-                      <SimpleDropdown
-                        value={adminLevel}
-                        options={range(getAdminLevelCount()).map(i => [
-                          (i + 1) as AdminLevelType,
-                          `Admin ${i + 1}`,
-                        ])}
-                        onChange={setAdminLevel}
-                        textClass={classes.analysisParamTitle}
-                      />
-                    </div>
-
-                    <div className={classes.analysisPanelParamContainer}>
-                      <Typography
-                        className={classes.analysisParamTitle}
-                        variant="body2"
-                      >
-                        {t('Date Range')}
-                      </Typography>
-                      <div className={classes.dateRangePicker}>
-                        <Typography
-                          className={classes.analysisParamTitle}
-                          variant="body2"
-                        >
-                          {t('Start')}
-                        </Typography>
-                        <DatePicker
-                          selected={startDate ? new Date(startDate) : null}
-                          onChange={date =>
-                            setStartDate(date?.getTime() || startDate)
-                          }
-                          maxDate={new Date()}
-                          todayButton="Today"
-                          peekNextMonth
-                          showMonthDropdown
-                          showYearDropdown
-                          dropdownMode="select"
-                          customInput={
-                            <Input className={classes.analysisPanelParamText} />
-                          }
-                          popperClassName={classes.calendarPopper}
-                          includeDates={availableHazardDates}
-                        />
-                      </div>
-                      <div className={classes.dateRangePicker}>
-                        <Typography
-                          className={classes.analysisParamTitle}
-                          variant="body2"
-                        >
-                          {t('End')}
-                        </Typography>
-                        <DatePicker
-                          selected={endDate ? new Date(endDate) : null}
-                          onChange={date =>
-                            setEndDate(date?.getTime() || endDate)
-                          }
-                          maxDate={new Date()}
-                          todayButton="Today"
-                          peekNextMonth
-                          showMonthDropdown
-                          showYearDropdown
-                          dropdownMode="select"
-                          customInput={
-                            <Input className={classes.analysisPanelParamText} />
-                          }
-                          popperClassName={classes.calendarPopper}
-                          includeDates={availableHazardDates}
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {hazardDataType === RasterType.Raster && (
-                  <>
-                    <div className={classes.analysisPanelParamContainer}>
-                      <LayerDropdown
-                        type="admin_level_data"
-                        value={baselineLayerId || undefined}
-                        setValue={setBaselineLayerId}
-                        className={classes.analysisPanelParamText}
-                        label={t('Baseline Layer')}
-                        placeholder="Choose baseline layer"
-                      />
-                    </div>
-                    <div className={classes.analysisPanelParamContainer}>
-                      <Typography
-                        className={classes.analysisParamTitle}
-                        variant="body2"
-                      >
-                        {t('Statistic')}
-                      </Typography>
-                      <FormControl component="div">
-                        <RadioGroup
-                          name="statistics"
-                          value={statistic}
-                          onChange={onOptionChange(setStatistic)}
-                        >
-                          {statisticOptions}
-                        </RadioGroup>
-                      </FormControl>
-                    </div>
-                    <div className={classes.analysisPanelParamContainer}>
-                      <Typography
-                        className={classes.analysisParamTitle}
-                        variant="body2"
-                      >
-                        {t('Threshold')}
-                      </Typography>
-                      <div style={{ display: 'flex' }}>
-                        <TextField
-                          id="outlined-number-low"
-                          error={!!thresholdError}
-                          helperText={t(thresholdError || '')}
-                          className={classes.numberField}
-                          label={t('Below')}
-                          type="number"
-                          value={belowThreshold}
-                          onChange={onThresholdOptionChange('below')}
-                          variant="outlined"
-                        />
-                        <TextField
-                          id="outlined-number-high"
-                          label={t('Above')}
-                          classes={{ root: classes.numberField }}
-                          value={aboveThreshold}
-                          onChange={onThresholdOptionChange('above')}
-                          type="number"
-                          variant="outlined"
-                        />
-                      </div>
-                    </div>
-                    <div className={classes.datePickerContainer}>
-                      <Typography
-                        className={classes.analysisParamTitle}
-                        variant="body2"
-                      >
-                        {`${t('Date')}: `}
-                      </Typography>
-                      <DatePicker
-                        locale={t('date_locale')}
-                        dateFormat="PP"
-                        selected={selectedDate ? new Date(selectedDate) : null}
-                        onChange={date =>
-                          setSelectedDate(date?.getTime() || selectedDate)
-                        }
-                        maxDate={new Date()}
-                        todayButton={t('Today')}
-                        peekNextMonth
-                        showMonthDropdown
-                        showYearDropdown
-                        dropdownMode="select"
-                        customInput={
-                          <Input
-                            className={classes.analysisPanelParamText}
-                            disableUnderline
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <DateRangeRounded />
-                              </InputAdornment>
-                            }
-                          />
-                        }
-                        popperClassName={classes.calendarPopper}
-                        includeDates={availableHazardDates}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-
-          {!isAnalysisLoading &&
-            analysisResult &&
-            (analysisResult instanceof BaselineLayerResult ||
-              analysisResult instanceof PolygonAnalysisResult) && (
-              <div
-                className={classes.analysisButtonContainer}
-                style={{
-                  width: PanelSize.medium,
-                }}
-              >
-                <Button
-                  className={classes.analysisButton}
-                  disabled={!analysisResult}
-                  onClick={() => setShowTable(!showTable)}
-                >
-                  <Typography variant="body2">
-                    {panelSize === PanelSize.large
-                      ? t('Hide Table')
-                      : t('View Table')}
-                  </Typography>
-                </Button>
-                <Button
-                  className={classes.analysisButton}
-                  onClick={clearAnalysis}
-                >
-                  <Typography variant="body2">{t('Clear Analysis')}</Typography>
-                </Button>
-                <Button
-                  className={classes.bottomButton}
-                  onClick={() =>
-                    downloadCSVFromTableData(
-                      analysisResult,
-                      translatedColumns,
-                      selectedDate,
-                    )
-                  }
-                >
-                  <Typography variant="body2">{t('Download CSV')}</Typography>
-                </Button>
-              </div>
-            )}
-          {!analysisResult && (
-            <div className={classes.analysisButtonContainer}>
-              <Button
-                className={classes.bottomButton}
-                onClick={runAnalyser}
-                startIcon={<BarChartOutlined />}
-                disabled={
-                  !!thresholdError || // if there is a threshold error
-                  isAnalysisLoading || // or analysis is currently loading
-                  !hazardLayerId || // or hazard layer hasn't been selected
-                  (hazardDataType === GeometryType.Polygon
-                    ? !startDate || !endDate || !adminLevelLayerData
-                    : !selectedDate || !baselineLayerId) // or date hasn't been selected // or baseline layer hasn't been selected
-                }
-              >
-                <Typography variant="body2">{t('Run Analysis')}</Typography>
-              </Button>
-              {isAnalysisLoading ? <LinearProgress /> : null}
-            </div>
-          )}
+          {renderedExposureAnalysisLoading}
+          {renderedExposureAnalysisTable}
+          {renderedAnalysisPanelInfo}
+          {renderedAnalysisActions}
+          {renderedRunAnalysisButton}
         </div>
-        {!isAnalysisLoading &&
-          analysisResult &&
-          analysisResult instanceof ExposedPopulationResult && (
-            <div
-              className={classes.analysisButtonContainer}
-              style={{
-                width: panelSize === PanelSize.large ? '50%' : '100%',
-              }}
-            >
-              <ExposureAnalysisActions
-                key={`${exposureAnalysisSortColumn} - ${exposureAnalysisIsAscending}`} // Whether to rerender the report doc based on the sort order and column
-                analysisButton={classes.analysisButton}
-                bottomButton={classes.bottomButton}
-                clearAnalysis={clearAnalysis}
-                tableData={exposureAnalysisTableData}
-                columns={translatedColumns}
-              />
-            </div>
-          )}
+        {renderedExposureAnalysisActions}
       </div>
     );
   }, [
-    aboveThreshold,
-    adminLevel,
-    adminLevelLayerData,
-    analysisResult,
-    availableHazardDates,
-    baselineLayerId,
-    belowThreshold,
-    classes.analysisButton,
-    classes.analysisButtonContainer,
     classes.analysisPanel,
-    classes.analysisPanelParamContainer,
-    classes.analysisPanelParamText,
-    classes.analysisPanelParams,
-    classes.analysisParamTitle,
-    classes.bottomButton,
-    classes.calendarPopper,
-    classes.datePickerContainer,
-    classes.dateRangePicker,
-    classes.exposureAnalysisLoadingContainer,
-    classes.exposureAnalysisTable,
-    classes.numberField,
     classes.root,
-    clearAnalysis,
-    endDate,
-    exposureAnalysisIsAscending,
-    exposureAnalysisSortColumn,
-    exposureAnalysisTableData,
-    handleExposureAnalysisTableOrderBy,
-    hazardDataType,
-    hazardLayerId,
-    isAnalysisLoading,
-    isExposureAnalysisLoading,
-    onOptionChange,
-    onThresholdOptionChange,
-    panelSize,
-    runAnalyser,
-    selectedDate,
-    showTable,
-    startDate,
-    statistic,
-    statisticOptions,
-    t,
+    renderedAnalysisActions,
+    renderedAnalysisPanelInfo,
+    renderedExposureAnalysisActions,
+    renderedExposureAnalysisLoading,
+    renderedExposureAnalysisTable,
+    renderedRunAnalysisButton,
     tabValue,
-    thresholdError,
-    translatedColumns,
   ]);
 }
 
