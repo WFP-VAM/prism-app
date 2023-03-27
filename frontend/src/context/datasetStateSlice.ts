@@ -232,6 +232,18 @@ export const loadAdminBoundaryDataset = async (
     datasetFields,
   } = params;
 
+  // HDC API expects a parameter which depends on the layer: rainfall = rfh; ndvi = vim; blended = rfb
+  // TO DO - replace this approach hacked together by amit for a quick fix
+
+  function getVamParam() {
+    let vamParam: string = 'rfh';
+    if (serverLayerName.includes('vim') || serverLayerName.includes('viq')) {
+      vamParam = 'vim';
+    } else if (serverLayerName.includes('blended')) {
+      vamParam = 'rfb';
+    }
+    return vamParam;
+  }
   const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);
   const startDateStr = startDate.format(DEFAULT_DATE_FORMAT);
 
@@ -239,10 +251,7 @@ export const loadAdminBoundaryDataset = async (
     level,
     admin_id: adminCode,
     coverage: 'full',
-    vam:
-      serverLayerName.includes('vim') || serverLayerName.includes('viq')
-        ? 'vim'
-        : 'rfh',
+    vam: getVamParam(),
     start: startDateStr,
     end: endDateStr,
   };
