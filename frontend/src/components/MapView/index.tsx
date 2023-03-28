@@ -227,6 +227,8 @@ function MapView({ classes }: MapViewProps) {
     | LayerData<BoundaryLayerProps>
     | undefined;
 
+  // TODO - could we simply use the country boundary extent here instead of the calculation?
+  // Or can we foresee any edge cases?
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData) {
       return undefined;
