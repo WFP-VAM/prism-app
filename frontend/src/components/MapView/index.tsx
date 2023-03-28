@@ -623,8 +623,8 @@ function MapView({ classes }: MapViewProps) {
           padding: {
             bottom: 150, // room for dates.
             left: appConfig.hidePanel ? 30 : 500, // room for the left panel if active.
-            right: 30,
-            top: 30,
+            right: 70,
+            top: 70,
           },
         }}
         onClick={mapOnClick}
