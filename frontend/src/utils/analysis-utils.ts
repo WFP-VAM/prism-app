@@ -846,7 +846,17 @@ export function downloadCSVFromTableData(
   const csvLines = [
     columns.map(col => quoteAndEscapeCell(col.label)).join(','),
     ...sortedTableData.map(row =>
-      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
+      columns
+        .map((column: Column) => {
+          const value = row[column.id];
+          if (value === undefined || value === null) {
+            return '';
+          }
+          return column.format && typeof value === 'number'
+            ? column.format(value)
+            : quoteAndEscapeCell(value);
+        })
+        .join(','),
     ),
   ];
   const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
