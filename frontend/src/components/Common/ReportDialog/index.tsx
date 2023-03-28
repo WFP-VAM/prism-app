@@ -1,6 +1,8 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  Box,
   Button,
+  CircularProgress,
   createStyles,
   Dialog,
   DialogActions,
@@ -8,6 +10,7 @@ import {
   DialogTitle,
   IconButton,
   Theme,
+  Typography,
   useTheme,
   WithStyles,
   withStyles,
@@ -40,7 +43,8 @@ const ReportDialog = memo(
   }: ReportProps) => {
     const theme = useTheme();
     const { t } = useSafeTranslation();
-    const [mapImage, setMapImage] = React.useState<string | null>(null);
+    const [mapImage, setMapImage] = useState<string | null>(null);
+    const [documentIsLoading, setDocumentIsLoading] = useState(true);
     const selectedMap = useSelector(mapSelector);
     const analysisResult = useSelector(
       analysisResultSelector,
@@ -69,6 +73,14 @@ const ReportDialog = memo(
       },
       [selectedMap],
     );
+
+    // Manual loader wait to show that the document is loading
+    useEffect(() => {
+      const loadingTimer = setTimeout(() => {
+        setDocumentIsLoading(false);
+      }, 20000);
+      return () => clearTimeout(loadingTimer);
+    }, []);
 
     useEffect(() => {
       if (!open) {
@@ -107,6 +119,29 @@ const ReportDialog = memo(
       theme,
     ]);
 
+    const renderedPdfLoadingProgressBar = useMemo(() => {
+      if (!documentIsLoading) {
+        return null;
+      }
+      return (
+        <Box className={classes.documentLoadingContainer}>
+          <CircularProgress size={100} />
+          <Typography
+            className={classes.documentLoadingText}
+            variant="body1"
+            component="span"
+          >
+            {t('Loading document...')}
+          </Typography>
+        </Box>
+      );
+    }, [
+      classes.documentLoadingContainer,
+      classes.documentLoadingText,
+      documentIsLoading,
+      t,
+    ]);
+
     // The report type text
     const reportTypeText = useMemo(() => {
       return reportType === ReportType.Storm
@@ -134,7 +169,14 @@ const ReportDialog = memo(
             <span className={classes.titleText}>{t(reportTypeText)}</span>
           </div>
         </DialogTitle>
-        <DialogContent style={{ height: '90vh', width: 'calc(90vh / 1.42)' }}>
+        <DialogContent
+          style={{
+            height: '90vh',
+            width: 'calc(90vh / 1.42)',
+            position: 'relative',
+          }}
+        >
+          {renderedPdfLoadingProgressBar}
           <div style={{ width: '100%', height: '100%' }}>
             <PDFViewer
               style={{ width: '100%', height: '100%' }}
@@ -150,7 +192,11 @@ const ReportDialog = memo(
           </span>
           <Button className={classes.actionButton} variant="outlined">
             <PDFDownloadLink document={reportDoc} fileName={getPDFName}>
-              {({ loading }) => (loading ? 'Loading document...' : 'Download')}
+              {({ loading }) =>
+                loading || documentIsLoading
+                  ? 'Loading document...'
+                  : 'Download'
+              }
             </PDFDownloadLink>
           </Button>
         </DialogActions>
@@ -162,11 +208,21 @@ const ReportDialog = memo(
 const styles = (theme: Theme) =>
   createStyles({
     documentLoadingContainer: {
+      backgroundColor: 'white',
       display: 'flex',
       justifyContent: 'center',
+      flexDirection: 'column',
       alignItems: 'center',
       height: '100%',
+      position: 'absolute',
+      gap: '2.5rem',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
       width: '100%',
+    },
+    documentLoadingText: {
+      color: 'black',
     },
     titleRoot: {
       background: theme.dialog?.border,

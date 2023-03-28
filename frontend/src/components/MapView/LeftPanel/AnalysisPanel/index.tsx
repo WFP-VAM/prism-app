@@ -670,9 +670,21 @@ function AnalysisPanel({
     return (
       <Box className={classes.exposureAnalysisLoadingContainer}>
         <CircularProgress size={100} />
+        <Typography
+          className={classes.exposureAnalysisLoadingText}
+          variant="body1"
+          component="span"
+        >
+          {t('Loading Exposure Analysis Data...')}
+        </Typography>
       </Box>
     );
-  }, [classes.exposureAnalysisLoadingContainer, isExposureAnalysisLoading]);
+  }, [
+    classes.exposureAnalysisLoadingContainer,
+    classes.exposureAnalysisLoadingText,
+    isExposureAnalysisLoading,
+    t,
+  ]);
 
   const renderedExposureAnalysisTable = useMemo(() => {
     if (!(analysisResult instanceof ExposedPopulationResult)) {
@@ -1107,10 +1119,15 @@ const styles = (theme: Theme) =>
     },
     exposureAnalysisLoadingContainer: {
       display: 'flex',
+      flexDirection: 'column',
+      gap: '2.5rem',
       height: '100%',
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    exposureAnalysisLoadingText: {
+      color: 'black',
     },
     analysisPanelParams: {
       padding: 10,
