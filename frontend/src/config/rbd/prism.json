@@ -19,7 +19,7 @@
     "latitude": 14.61,
     "longitude": 5.46,
     "zoom": 3.99,
-    "boundingBox": [-19, -4, 27.5, 20]
+    "boundingBox": [-18, -4, 27.5, 28]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
