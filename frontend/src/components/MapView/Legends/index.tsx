@@ -103,7 +103,7 @@ function Legends({ classes, layers }: LegendsProps) {
     ...(isAnalysisLayerActive && hasData
       ? [
           <LegendItem
-            key={analysisResult?.key}
+            key={analysisResult?.key ?? Date.now()}
             legend={analysisResult?.legend}
             title={analysisResult?.getTitle(t)}
             classes={classes}
