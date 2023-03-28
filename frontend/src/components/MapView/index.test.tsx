@@ -22,6 +22,15 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+jest.mock('react-mapbox-gl', () => ({
+  __esModule: true,
+  default: () =>
+    function () {
+      return <span>Mock map</span>;
+    },
+  Cluster: () => <span>Mock cluster</span>,
+}));
+
 test('renders as expected', () => {
   const { container } = render(
     <Provider store={store}>
