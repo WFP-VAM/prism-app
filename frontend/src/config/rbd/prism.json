@@ -13,15 +13,13 @@
   },
   "alertFormActive": false,
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
     "latitude": 14.61,
     "longitude": 5.46,
     "zoom": 3.99,
-    "boundingBox": [-17.5, 7, 27.2, 19.3]
+    "boundingBox": [-19, -4, 27.5, 20]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -123,10 +121,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -173,10 +168,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -221,10 +213,7 @@
           ]
         }
       ],
-      "Test_Backup_Admin_Layers": [
-        "ch_group_adm2_2021_06_01",
-        "ch_group_adm2"
-      ],
+      "Test_Backup_Admin_Layers": ["ch_group_adm2_2021_06_01", "ch_group_adm2"],
       "Special_Populations": [
         "ch_admin2_limited_access",
         "ch_admin2_urban",
