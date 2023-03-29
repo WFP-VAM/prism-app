@@ -102,11 +102,18 @@ import FoldButton from './FoldButton';
 
 // Bounding boxes are adapted from https://github.com/sandstrom/country-bounding-boxes
 const {
-  map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom, boundingBox },
+  map: { boundingBox, maxBounds, minZoom, maxZoom },
 } = appConfig;
 
-const center = [longitude, latitude] as [number, number];
-const zoomList = [zoom] as [number];
+if (boundingBox.length !== 4) {
+  throw Error(
+    `boundingBox ${boundingBox} is not valid. Make sure it is of type [number, number, number, nmuber].`,
+  );
+}
+
+// The map initialization requires a center so we provide a te,porary one.
+// But we actually rely on the boundingBox to fit the country in the available screen space.
+const mapTempCenter = boundingBox.slice(0, 2) as [number, number];
 
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
@@ -631,8 +638,7 @@ function MapView({ classes }: MapViewProps) {
           },
         }}
         onClick={mapOnClick}
-        center={center}
-        zoom={zoomList}
+        center={mapTempCenter}
         maxBounds={maxBounds}
       >
         {selectedLayers.map(layer => {
