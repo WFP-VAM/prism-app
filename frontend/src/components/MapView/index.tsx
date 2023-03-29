@@ -630,6 +630,7 @@ function MapView({ classes }: MapViewProps) {
         }}
         fitBounds={boundingBox}
         fitBoundsOptions={{
+          duration: 0,
           padding: {
             bottom: 150, // room for dates.
             left: appConfig.hidePanel ? 30 : 500, // room for the left panel if active.
