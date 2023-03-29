@@ -2,7 +2,6 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
-  CircularProgress,
   createStyles,
   Dialog,
   DialogActions,
@@ -125,19 +124,22 @@ const ReportDialog = memo(
       }
       return (
         <Box className={classes.documentLoadingContainer}>
-          <CircularProgress size={100} />
           <Typography
-            className={classes.documentLoadingText}
+            className={classes.documentLoaderText}
             variant="body1"
             component="span"
           >
-            {t('Loading document...')}
+            {t('Loading document')}
           </Typography>
+          <span className={classes.documentLoaderDot}>.</span>
+          <span className={classes.documentLoaderDot}>.</span>
+          <span className={classes.documentLoaderDot}>.</span>
         </Box>
       );
     }, [
+      classes.documentLoaderDot,
+      classes.documentLoaderText,
       classes.documentLoadingContainer,
-      classes.documentLoadingText,
       documentIsLoading,
       t,
     ]);
@@ -194,8 +196,8 @@ const ReportDialog = memo(
             <PDFDownloadLink document={reportDoc} fileName={getPDFName}>
               {({ loading }) =>
                 loading || documentIsLoading
-                  ? 'Loading document...'
-                  : 'Download'
+                  ? `${t('Loading document')}...`
+                  : t('Download')
               }
             </PDFDownloadLink>
           </Button>
@@ -207,22 +209,35 @@ const ReportDialog = memo(
 
 const styles = (theme: Theme) =>
   createStyles({
+    '@keyframes blink': {
+      '50%': {
+        color: 'transparent',
+      },
+    },
     documentLoadingContainer: {
       backgroundColor: 'white',
       display: 'flex',
       justifyContent: 'center',
-      flexDirection: 'column',
       alignItems: 'center',
       height: '100%',
       position: 'absolute',
-      gap: '2.5rem',
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
       width: '100%',
     },
-    documentLoadingText: {
+    documentLoaderText: {
       color: 'black',
+    },
+    documentLoaderDot: {
+      color: 'black',
+      animation: '1s $blink infinite',
+      '&:nth-child(2)': {
+        animationDelay: '250ms',
+      },
+      '&:nth-child(3)': {
+        animationDelay: '500ms',
+      },
     },
     titleRoot: {
       background: theme.dialog?.border,

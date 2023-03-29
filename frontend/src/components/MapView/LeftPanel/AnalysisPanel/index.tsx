@@ -675,7 +675,7 @@ function AnalysisPanel({
           variant="body1"
           component="span"
         >
-          {t('Loading Exposure Analysis Data...')}
+          {t('Loading Exposure Analysis Data')}...
         </Typography>
       </Box>
     );

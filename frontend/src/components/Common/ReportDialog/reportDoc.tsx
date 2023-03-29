@@ -89,7 +89,7 @@ const ReportDoc = memo(
     columns,
   }: ReportDocProps) => {
     if (mapImage === null) {
-      return <></>;
+      return <Document />;
     }
 
     const styles = makeStyles(theme);
