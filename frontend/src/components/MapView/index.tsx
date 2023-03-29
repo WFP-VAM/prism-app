@@ -100,6 +100,7 @@ import DataViewer from '../DataViewer';
 import LeftPanel from './LeftPanel';
 import FoldButton from './FoldButton';
 
+// Bounding boxes are adapted from https://github.com/sandstrom/country-bounding-boxes
 const {
   map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom, boundingBox },
 } = appConfig;

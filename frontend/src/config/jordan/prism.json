@@ -12,11 +12,10 @@
     "capacity": "icon_capacity.png"
   },
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
+    "boundingBox": [34.92, 29.2, 39.2, 33.38],
     "latitude": 31.305,
     "longitude": 37.096,
     "zoom": 6.58
@@ -121,10 +120,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -171,10 +167,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -185,10 +178,7 @@
       ]
     },
     "sensitivity": {
-      "socioeconomic": [
-        "male_unemployment",
-        "female_unemployment"
-      ],
+      "socioeconomic": ["male_unemployment", "female_unemployment"],
       "agriculture": [
         "rainfed",
         "irrigated",
@@ -214,9 +204,7 @@
       ]
     },
     "capacity": {
-      "socioeconomic": [
-        "poverty"
-      ],
+      "socioeconomic": ["poverty"],
       "water": [
         "municipal_water",
         "gw_per_irrigated",
