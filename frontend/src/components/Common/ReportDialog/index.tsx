@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import {
   Button,
   createStyles,
@@ -14,125 +14,160 @@ import {
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { ArrowBack } from '@material-ui/icons';
-import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { snakeCase } from 'lodash';
 import moment from 'moment';
 import { useSafeTranslation } from '../../../i18n';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import {
   analysisResultSelector,
-  getCurrentData,
+  TableRow as AnalysisTableRow,
 } from '../../../context/analysisResultStateSlice';
-import { ExposedPopulationResult } from '../../../utils/analysis-utils';
+import { Column, ExposedPopulationResult } from '../../../utils/analysis-utils';
 import ReportDoc from './reportDoc';
 import { ReportType } from './types';
 
-function Report({ classes, open, reportType, handleClose }: ReportProps) {
-  const theme = useTheme();
-  const { t } = useSafeTranslation();
-  const [mapImage, setMapImage] = React.useState<string | null>(null);
-  const selectedMap = useSelector(mapSelector);
-  const analysisData = useSelector(getCurrentData);
-  const analysisResult = useSelector(
-    analysisResultSelector,
-  ) as ExposedPopulationResult;
-  const eventDate = analysisResult?.date
-    ? moment(new Date(analysisResult?.date)).format('YYYY-MM-DD')
-    : '';
+type Format = 'png' | 'jpeg';
 
-  const document = (
-    <ReportDoc
-      t={t}
-      exposureLegendDefinition={analysisResult?.legend ?? []}
-      theme={theme}
-      reportType={reportType}
-      tableName="Population Exposure"
-      tableShowTotal
-      eventName={
-        reportType === ReportType.Storm
-          ? `Storm Report (${eventDate})`
-          : `Flood Report (${eventDate})`
+const ReportDialog = memo(
+  ({
+    classes,
+    open,
+    reportType,
+    handleClose,
+    tableData,
+    columns,
+  }: ReportProps) => {
+    const theme = useTheme();
+    const { t } = useSafeTranslation();
+    const [mapImage, setMapImage] = React.useState<string | null>(null);
+    const selectedMap = useSelector(mapSelector);
+    const analysisResult = useSelector(
+      analysisResultSelector,
+    ) as ExposedPopulationResult;
+
+    const eventDate = useMemo(() => {
+      return analysisResult?.date
+        ? moment(new Date(analysisResult?.date)).format('YYYY-MM-DD')
+        : '';
+    }, [analysisResult]);
+
+    const getPDFName = useMemo(() => {
+      const type = snakeCase(analysisResult?.legendText);
+      const date = new Date();
+      const dateString = moment(date).format('DD_MM_YYYY');
+      return `PRISM_report_${type}_${dateString}.pdf`;
+    }, [analysisResult]);
+
+    const getMapImage = useCallback(
+      (format: Format = 'png'): string | null => {
+        if (selectedMap) {
+          const activeLayers = selectedMap.getCanvas();
+          return activeLayers.toDataURL(`image/${format}`);
+        }
+        return null;
+      },
+      [selectedMap],
+    );
+
+    useEffect(() => {
+      if (!open) {
+        return;
       }
-      mapImage={mapImage}
-      tableData={analysisData}
-    />
-  );
+      setMapImage(getMapImage('png'));
+    }, [getMapImage, open, selectedMap]);
 
-  const getPDFName = () => {
-    const type = snakeCase(analysisResult?.legendText);
-    const date = new Date();
-    const dateString = moment(date).format('DD_MM_YYYY');
-    return `PRISM_report_${type}_${dateString}.pdf`;
-  };
+    const reportDoc = useMemo(() => {
+      return (
+        <ReportDoc
+          t={t}
+          exposureLegendDefinition={analysisResult?.legend ?? []}
+          theme={theme}
+          reportType={reportType}
+          tableName="Population Exposure"
+          tableShowTotal
+          eventName={
+            reportType === ReportType.Storm
+              ? `Storm Report (${eventDate})`
+              : `Flood Report (${eventDate})`
+          }
+          mapImage={mapImage}
+          tableData={tableData}
+          columns={columns}
+        />
+      );
+    }, [
+      analysisResult,
+      columns,
+      eventDate,
+      mapImage,
+      reportType,
+      t,
+      tableData,
+      theme,
+    ]);
 
-  React.useEffect(() => {
-    if (!open) {
-      return;
-    }
-    type Format = 'png' | 'jpeg';
-    const getMapImage = (format: Format = 'png'): string | null => {
-      if (selectedMap) {
-        const activeLayers = selectedMap.getCanvas();
-        const file = activeLayers.toDataURL(`image/${format}`);
-        return file;
-      }
-      return null;
-    };
-    setMapImage(getMapImage('png'));
-  }, [open, selectedMap]);
+    // The report type text
+    const reportTypeText = useMemo(() => {
+      return reportType === ReportType.Storm
+        ? 'Storm impact Report'
+        : 'Flood Report';
+    }, [reportType]);
 
-  return (
-    <Dialog
-      open={open}
-      keepMounted
-      onClose={() => handleClose()}
-      maxWidth={false}
-    >
-      <DialogTitle className={classes.titleRoot}>
-        <div className={classes.title}>
-          <IconButton
-            className={classes.titleIconButton}
-            onClick={() => {
-              handleClose();
-            }}
-          >
-            <ArrowBack />
-          </IconButton>
-          <span className={classes.titleText}>
-            {t(
-              reportType === ReportType.Storm
-                ? 'Storm impact Report'
-                : 'Flood Report',
-            )}
+    return (
+      <Dialog
+        keepMounted
+        open={open}
+        onClose={() => handleClose()}
+        maxWidth={false}
+      >
+        <DialogTitle className={classes.titleRoot}>
+          <div className={classes.title}>
+            <IconButton
+              className={classes.titleIconButton}
+              onClick={() => {
+                handleClose();
+              }}
+            >
+              <ArrowBack />
+            </IconButton>
+            <span className={classes.titleText}>{t(reportTypeText)}</span>
+          </div>
+        </DialogTitle>
+        <DialogContent style={{ height: '90vh', width: 'calc(90vh / 1.42)' }}>
+          <div style={{ width: '100%', height: '100%' }}>
+            <PDFViewer
+              style={{ width: '100%', height: '100%' }}
+              showToolbar={false}
+            >
+              {reportDoc}
+            </PDFViewer>
+          </div>
+        </DialogContent>
+        <DialogActions className={classes.actions}>
+          <span className={classes.signature}>
+            {t('P R I S M automated report')}
           </span>
-        </div>
-      </DialogTitle>
-      <DialogContent style={{ height: '90vh', width: 'calc(90vh / 1.42)' }}>
-        <div style={{ width: '100%', height: '100%' }}>
-          <PDFViewer
-            style={{ width: '100%', height: '100%' }}
-            showToolbar={false}
-          >
-            {document}
-          </PDFViewer>
-        </div>
-      </DialogContent>
-      <DialogActions className={classes.actions}>
-        <span className={classes.signature}>
-          {t('P R I S M automated report')}
-        </span>
-        <Button className={classes.actionButton} variant="outlined">
-          <PDFDownloadLink document={document} fileName={getPDFName()}>
-            {({ loading }) => (loading ? 'Loading document...' : 'Download')}
-          </PDFDownloadLink>
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
+          <Button className={classes.actionButton} variant="outlined">
+            <PDFDownloadLink document={reportDoc} fileName={getPDFName}>
+              {({ loading }) => (loading ? 'Loading document...' : 'Download')}
+            </PDFDownloadLink>
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  },
+);
 
 const styles = (theme: Theme) =>
   createStyles({
+    documentLoadingContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      width: '100%',
+    },
     titleRoot: {
       background: theme.dialog?.border,
       padding: 0,
@@ -172,6 +207,8 @@ export interface ReportProps extends WithStyles<typeof styles> {
   open: boolean;
   reportType: ReportType;
   handleClose: () => void;
+  tableData: AnalysisTableRow[];
+  columns: Column[];
 }
 
-export default withStyles(styles)(Report);
+export default withStyles(styles)(ReportDialog);

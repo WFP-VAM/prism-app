@@ -89,6 +89,7 @@ function MultiOptionsButton({ mainLabel, options }: IProps) {
       >
         {options.map(option => (
           <StyledMenuItem
+            key={option.label}
             disabled={option.disabled}
             onClick={() => handleOptionClick(option.onClick)}
           >
