@@ -3341,23 +3341,23 @@
       "mode": "forward"
     },
     "feature_info_props": {
-      "phase1": {
+      "calc_pop_ph1_admin2": {
         "type": "number",
         "label": "Population in phase 1"
       },
-      "phase2": {
+      "calc_pop_ph2_admin2": {
         "type": "number",
         "label": "Population in phase 2"
       },
-      "phase3": {
+      "calc_pop_ph3_admin2": {
         "type": "number",
         "label": "Population in phase 3"
       },
-      "phase4": {
+      "calc_pop_ph4_admin2": {
         "type": "number",
         "label": "Population in phase 4"
       },
-      "phase5": {
+      "calc_pop_ph5_admin2": {
         "type": "number",
         "label": "Population in phase 5"
       },
@@ -3427,23 +3427,23 @@
       "mode": "forward"
     },
     "feature_info_props": {
-      "phase1": {
+      "calc_pop_ph1_admin1": {
         "type": "number",
         "label": "Population in phase 1"
       },
-      "phase2": {
+      "calc_pop_ph2_admin1": {
         "type": "number",
         "label": "Population in phase 2"
       },
-      "phase3": {
+      "calc_pop_ph3_admin1": {
         "type": "number",
         "label": "Population in phase 3"
       },
-      "phase4": {
+      "calc_pop_ph4_admin1": {
         "type": "number",
         "label": "Population in phase 4"
       },
-      "phase5": {
+      "calc_pop_ph5_admin1": {
         "type": "number",
         "label": "Population in phase 5"
       },
