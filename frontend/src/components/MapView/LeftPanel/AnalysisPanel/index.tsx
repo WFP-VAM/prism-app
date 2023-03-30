@@ -673,9 +673,9 @@ function AnalysisPanel({
         <CircularProgress size={100} />
         <Box className={classes.exposureAnalysisLoadingTextContainer}>
           <Typography
-              className={classes.exposureAnalysisLoadingText}
-              variant="body1"
-              component="span"
+            className={classes.exposureAnalysisLoadingText}
+            variant="body1"
+            component="span"
           >
             {t('Loading Exposure Analysis Data')}
           </Typography>
@@ -686,6 +686,7 @@ function AnalysisPanel({
   }, [
     classes.exposureAnalysisLoadingContainer,
     classes.exposureAnalysisLoadingText,
+    classes.exposureAnalysisLoadingTextContainer,
     isExposureAnalysisLoading,
     t,
   ]);
