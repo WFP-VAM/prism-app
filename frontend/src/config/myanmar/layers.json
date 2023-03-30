@@ -286,7 +286,7 @@
     "feature_info_props": {
       "drought_se": {
         "type": "string",
-        "label": "Drought Sensitivity"
+        "dataTitle": "Drought Sensitivity"
       }
     },
     "admin_level": 3,
@@ -2173,15 +2173,15 @@
     "feature_info_props": {
       "event_name": {
         "type": "text",
-        "label": "Event name"
+        "dataTitle": "Event name"
       },
       "timestamp": {
         "type": "date",
-        "label": "Publication date"
+        "dataTitle": "Publication date"
       },
       "wind_speed": {
         "type": "text",
-        "label": "Estimated wind speed"
+        "dataTitle": "Estimated wind speed"
       }
     },
     "geometry": "point"
@@ -2198,11 +2198,11 @@
     "feature_info_props": {
       "event_name": {
         "type": "text",
-        "label": "Event name"
+        "dataTitle": "Event name"
       },
       "timestamp": {
         "type": "date",
-        "label": "Publication date"
+        "dataTitle": "Publication date"
       },
       "wcsConfig": {
         "scale": 0.1,
@@ -2300,23 +2300,23 @@
     "feature_info_props": {
       "event_type": {
         "type": "string",
-        "label": "Event type"
+        "dataTitle": "Event type"
       },
       "sub_event_type": {
         "type": "string",
-        "label": "Sub event type"
+        "dataTitle": "Sub event type"
       },
       "source": {
         "type": "string",
-        "label": "Source"
+        "dataTitle": "Source"
       },
       "event_date": {
         "type": "string",
-        "label": "Date"
+        "dataTitle": "Date"
       },
       "notes": {
         "type": "string",
-        "label": "Details"
+        "dataTitle": "Details"
       }
     }
   },
@@ -2328,44 +2328,63 @@
       "limit": 0
     },
     "type": "point_data",
-    "data": "http://localhost/acled",
-    "date_url": "http://localhost/acled",
+    "data": "https://prism-api.ovio.org/acled",
+    "date_url": "https://prism-api.ovio.org/acled",
     "data_field": "event_type",
+    "data_field_type": "text",
     "opacity": 1,
     "legend_text": "Types of armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
     "legend": [
+      { "label": "Battles", 
+        "value": "Battles ", 
+        "color": "#ea5545" 
+      },
       {
         "label": "Explosions/Remote violence",
         "value": "Explosions/Remote violence",
-        "color": "#ea5545"
+        "color": "#ef9b20"
       },
-      { "label": "Battles", "value": "Battles ", "color": "#ef9b20" },
+      {
+        "label": "Violence against civilians",
+        "value": "Violence against civilians",
+        "color": "#ede15b"
+      },
+      {
+        "label": "Protests",
+        "value": "Protests",
+        "color": "#87bc45"
+      },
+      {
+        "label": "Riots",
+        "value": "Riots",
+        "color": "#27aeef"
+      },
       {
         "label": "Strategic developments",
         "value": "Strategic developments",
-        "color": "#ede15b"
+        "color": "#666666"
       }
     ],
     "feature_info_props": {
       "event_type": {
         "type": "string",
-        "label": "Event type"
+        "dataTitle": "Event type"
       },
       "sub_event_type": {
         "type": "string",
-        "label": "Sub event type"
+        "dataTitle": "Sub event type"
       },
       "source": {
         "type": "string",
-        "label": "Source"
+        "dataTitle": "Source"
       },
       "event_date": {
         "type": "string",
-        "label": "Date"
+        "dataTitle": "Date"
       },
       "notes": {
         "type": "string",
-        "label": "Details"
+        "dataTitle": "Details"
       }
     }
   }

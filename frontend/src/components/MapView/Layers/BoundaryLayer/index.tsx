@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
@@ -15,11 +15,17 @@ import {
   layerDataSelector,
   layersSelector,
 } from '../../../../context/mapStateSlice/selectors';
+import { setBoundaryRelationData } from '../../../../context/mapStateSlice';
+import {
+  loadBoundaryRelations,
+  BoundaryRelationData,
+} from '../../../Common/BoundaryDropdown/utils';
 import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
 import { isPrimaryBoundaryLayer } from '../../../../config/utils';
 import { getFullLocationName } from '../../../../utils/name-utils';
 
 import { getChartAdminBoundaryParams } from '../../../../utils/admin-utils';
+import { languages } from '../../../../i18n';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation
@@ -40,11 +46,31 @@ function BoundaryLayer({ layer, before }: ComponentProps) {
     | undefined;
   const { data } = boundaryLayer || {};
 
+  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
+
+  useEffect(() => {
+    if (!data || !isPrimaryLayer) {
+      return;
+    }
+
+    const dataDict = languages.reduce((relationsDict, lang) => {
+      const locationLevelNames =
+        lang === 'en' ? layer.adminLevelNames : layer.adminLevelLocalNames;
+
+      const relations: BoundaryRelationData = loadBoundaryRelations(
+        data,
+        locationLevelNames,
+      );
+
+      return { ...relationsDict, [lang]: relations };
+    }, {});
+
+    dispatch(setBoundaryRelationData(dataDict));
+  }, [data, dispatch, layer, isPrimaryLayer]);
+
   if (!data) {
     return null; // boundary layer hasn't loaded yet. We load it on init inside MapView. We can't load it here since its a dependency of other layers.
   }
-
-  const isPrimaryLayer = isPrimaryBoundaryLayer(layer);
 
   const onClickShowPopup = (evt: any) => {
     dispatch(hidePopup());
