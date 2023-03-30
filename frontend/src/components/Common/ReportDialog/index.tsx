@@ -1,5 +1,6 @@
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  Box,
   Button,
   createStyles,
   Dialog,
@@ -8,6 +9,7 @@ import {
   DialogTitle,
   IconButton,
   Theme,
+  Typography,
   useTheme,
   WithStyles,
   withStyles,
@@ -26,6 +28,7 @@ import {
 import { Column, ExposedPopulationResult } from '../../../utils/analysis-utils';
 import ReportDoc from './reportDoc';
 import { ReportType } from './types';
+import LoadingBlinkingDots from '../LoadingBlinkingDots';
 
 type Format = 'png' | 'jpeg';
 
@@ -40,7 +43,8 @@ const ReportDialog = memo(
   }: ReportProps) => {
     const theme = useTheme();
     const { t } = useSafeTranslation();
-    const [mapImage, setMapImage] = React.useState<string | null>(null);
+    const [mapImage, setMapImage] = useState<string | null>(null);
+    const [documentIsLoading, setDocumentIsLoading] = useState(true);
     const selectedMap = useSelector(mapSelector);
     const analysisResult = useSelector(
       analysisResultSelector,
@@ -70,6 +74,17 @@ const ReportDialog = memo(
       [selectedMap],
     );
 
+    // Manual loader wait to show that the document is loading
+    useEffect(() => {
+      const loadingTimer = setTimeout(() => {
+        setDocumentIsLoading(false);
+      }, 15000);
+      if (!open) {
+        return clearTimeout(loadingTimer);
+      }
+      return () => clearTimeout(loadingTimer);
+    }, [open]);
+
     useEffect(() => {
       if (!open) {
         return;
@@ -77,30 +92,118 @@ const ReportDialog = memo(
       setMapImage(getMapImage('png'));
     }, [getMapImage, open, selectedMap]);
 
-    const reportDoc = useMemo(() => {
+    const renderedPdfViewer = useMemo(() => {
+      if (!mapImage) {
+        return null;
+      }
       return (
-        <ReportDoc
-          t={t}
-          exposureLegendDefinition={analysisResult?.legend ?? []}
-          theme={theme}
-          reportType={reportType}
-          tableName="Population Exposure"
-          tableShowTotal
-          eventName={
-            reportType === ReportType.Storm
-              ? `Storm Report (${eventDate})`
-              : `Flood Report (${eventDate})`
-          }
-          mapImage={mapImage}
-          tableData={tableData}
-          columns={columns}
-        />
+        <div style={{ width: '100%', height: '100%' }}>
+          <PDFViewer
+            style={{ width: '100%', height: '100%' }}
+            showToolbar={false}
+          >
+            <ReportDoc
+              t={t}
+              exposureLegendDefinition={analysisResult?.legend ?? []}
+              theme={theme}
+              reportType={reportType}
+              tableName="Population Exposure"
+              tableShowTotal
+              eventName={
+                reportType === ReportType.Storm
+                  ? `Storm Report (${eventDate})`
+                  : `Flood Report (${eventDate})`
+              }
+              mapImage={mapImage}
+              tableData={tableData}
+              columns={columns}
+            />
+          </PDFViewer>
+        </div>
       );
     }, [
       analysisResult,
       columns,
       eventDate,
       mapImage,
+      reportType,
+      t,
+      tableData,
+      theme,
+    ]);
+
+    const renderedPdfDocumentLoading = useMemo(() => {
+      if (!documentIsLoading) {
+        return null;
+      }
+      return (
+        <Box className={classes.documentLoadingContainer}>
+          <Typography
+            className={classes.documentLoaderText}
+            variant="body1"
+            component="span"
+          >
+            {t('Loading document')}
+          </Typography>
+          <LoadingBlinkingDots />
+        </Box>
+      );
+    }, [
+      classes.documentLoaderText,
+      classes.documentLoadingContainer,
+      documentIsLoading,
+      t,
+    ]);
+
+    const renderedLoadingButtonText = useCallback(
+      ({ loading }) => {
+        if (loading || documentIsLoading) {
+          return `${t('Loading document')}...`;
+        }
+        return t('Download');
+      },
+      [documentIsLoading, t],
+    );
+
+    const renderedDownloadPdfButton = useMemo(() => {
+      if (!mapImage) {
+        return null;
+      }
+      return (
+        <Button className={classes.actionButton} variant="outlined">
+          <PDFDownloadLink
+            document={
+              <ReportDoc
+                t={t}
+                exposureLegendDefinition={analysisResult?.legend ?? []}
+                theme={theme}
+                reportType={reportType}
+                tableName="Population Exposure"
+                tableShowTotal
+                eventName={
+                  reportType === ReportType.Storm
+                    ? `Storm Report (${eventDate})`
+                    : `Flood Report (${eventDate})`
+                }
+                mapImage={mapImage}
+                tableData={tableData}
+                columns={columns}
+              />
+            }
+            fileName={getPDFName}
+          >
+            {renderedLoadingButtonText}
+          </PDFDownloadLink>
+        </Button>
+      );
+    }, [
+      analysisResult,
+      classes.actionButton,
+      columns,
+      eventDate,
+      getPDFName,
+      mapImage,
+      renderedLoadingButtonText,
       reportType,
       t,
       tableData,
@@ -134,25 +237,21 @@ const ReportDialog = memo(
             <span className={classes.titleText}>{t(reportTypeText)}</span>
           </div>
         </DialogTitle>
-        <DialogContent style={{ height: '90vh', width: 'calc(90vh / 1.42)' }}>
-          <div style={{ width: '100%', height: '100%' }}>
-            <PDFViewer
-              style={{ width: '100%', height: '100%' }}
-              showToolbar={false}
-            >
-              {reportDoc}
-            </PDFViewer>
-          </div>
+        <DialogContent
+          style={{
+            height: '90vh',
+            width: 'calc(90vh / 1.42)',
+            position: 'relative',
+          }}
+        >
+          {renderedPdfDocumentLoading}
+          {renderedPdfViewer}
         </DialogContent>
         <DialogActions className={classes.actions}>
           <span className={classes.signature}>
             {t('P R I S M automated report')}
           </span>
-          <Button className={classes.actionButton} variant="outlined">
-            <PDFDownloadLink document={reportDoc} fileName={getPDFName}>
-              {({ loading }) => (loading ? 'Loading document...' : 'Download')}
-            </PDFDownloadLink>
-          </Button>
+          {renderedDownloadPdfButton}
         </DialogActions>
       </Dialog>
     );
@@ -162,11 +261,19 @@ const ReportDialog = memo(
 const styles = (theme: Theme) =>
   createStyles({
     documentLoadingContainer: {
+      backgroundColor: 'white',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       height: '100%',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
       width: '100%',
+    },
+    documentLoaderText: {
+      color: 'black',
     },
     titleRoot: {
       background: theme.dialog?.border,
