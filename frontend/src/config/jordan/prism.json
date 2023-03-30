@@ -15,10 +15,7 @@
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [34.92, 29.2, 39.2, 33.38],
-    "latitude": 31.305,
-    "longitude": 37.096,
-    "zoom": 6.58
+    "boundingBox": [34.92, 29.2, 39.2, 33.38]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",

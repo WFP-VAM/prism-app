@@ -14,10 +14,7 @@
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "map": {
-    "boundingBox": [11.73, -29.05, 25.08, -16.94],
-    "latitude": -23.02,
-    "longitude": 17.05,
-    "zoom": 5.12
+    "boundingBox": [11.73, -29.05, 25.08, -16.94]
   },
   "categories": {
     "rainfall": {

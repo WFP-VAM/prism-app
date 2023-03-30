@@ -13,10 +13,7 @@
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "boundingBox": [-171, -56, 180, 76],
-    "latitude": 11.4,
-    "longitude": -30,
-    "zoom": 1.2
+    "boundingBox": [-171, -56, 180, 76]
   },
   "categories": {
     "rainfall": {

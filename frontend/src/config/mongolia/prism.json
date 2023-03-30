@@ -13,10 +13,7 @@
     "wms": ["https://mongolia.sibelius-datacube.org:5000/wms"]
   },
   "map": {
-    "boundingBox": [87.75, 41.6, 119.77, 52.05],
-    "latitude": 46.810021,
-    "longitude": 103.111657,
-    "zoom": 4.5
+    "boundingBox": [87.75, 41.6, 119.77, 52.05]
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {

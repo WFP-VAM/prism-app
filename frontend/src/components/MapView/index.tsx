@@ -107,13 +107,23 @@ const {
 
 if (boundingBox.length !== 4) {
   throw Error(
-    `boundingBox ${boundingBox} is not valid. Make sure it is of type [number, number, number, nmuber].`,
+    `map.boundingBox ${boundingBox} is not valid. Make sure it is of type [number, number, number, nmuber].`,
   );
 }
 
 // The map initialization requires a center so we provide a te,porary one.
 // But we actually rely on the boundingBox to fit the country in the available screen space.
 const mapTempCenter = boundingBox.slice(0, 2) as [number, number];
+
+const fitBoundsOptions = {
+  duration: 0,
+  padding: {
+    bottom: 150, // room for dates.
+    left: appConfig.hidePanel ? 30 : 500, // room for the left panel if active.
+    right: 60,
+    top: 70,
+  },
+};
 
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
@@ -629,15 +639,7 @@ function MapView({ classes }: MapViewProps) {
           height: '100%',
         }}
         fitBounds={boundingBox}
-        fitBoundsOptions={{
-          duration: 0,
-          padding: {
-            bottom: 150, // room for dates.
-            left: appConfig.hidePanel ? 30 : 500, // room for the left panel if active.
-            right: 60,
-            top: 70,
-          },
-        }}
+        fitBoundsOptions={fitBoundsOptions}
         onClick={mapOnClick}
         center={mapTempCenter}
         maxBounds={maxBounds}

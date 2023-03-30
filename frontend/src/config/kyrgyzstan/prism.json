@@ -16,10 +16,7 @@
   },
   "alertFormActive": false,
   "map": {
-    "boundingBox": [69.46, 39.28, 80.26, 43.3],
-    "latitude": 41.256,
-    "longitude": 74.757,
-    "zoom": 6.3
+    "boundingBox": [69.46, 39.28, 80.26, 43.3]
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {

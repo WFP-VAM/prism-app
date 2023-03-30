@@ -22,10 +22,7 @@
     ]
   },
   "map": {
-    "boundingBox": [67.44, 36.74, 74.98, 40.96],
-    "latitude": 38.764,
-    "longitude": 71.254,
-    "zoom": 6.27
+    "boundingBox": [67.44, 36.74, 74.98, 40.96]
   },
   "categories": {
     "rainfall": {

@@ -15,10 +15,6 @@
     "vulnerability": "icon_vulnerable.png"
   },
   "map": {
-    "latitude": -19.11,
-    "longitude": 27.595,
-    "longitudeNoPanel": 30.095,
-    "zoom": 5.99,
     "boundingBox": [25.26, -22.27, 32.85, -15.51]
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
