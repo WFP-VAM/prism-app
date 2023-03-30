@@ -88,10 +88,6 @@ const ReportDoc = memo(
     tableData,
     columns,
   }: ReportDocProps) => {
-    if (mapImage === null) {
-      return <></>;
-    }
-
     const styles = makeStyles(theme);
 
     const date = useMemo(() => {
@@ -271,7 +267,7 @@ const ReportDoc = memo(
 interface ReportDocProps {
   theme: Theme;
   reportType: ReportType;
-  mapImage: string | null;
+  mapImage: string;
   tableName: string;
   tableRowsNum?: number;
   tableShowTotal: boolean;

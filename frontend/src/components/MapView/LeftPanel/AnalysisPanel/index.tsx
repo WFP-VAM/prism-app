@@ -105,6 +105,7 @@ import {
   leftPanelTabValueSelector,
   setTabValue,
 } from '../../../../context/leftPanelStateSlice';
+import LoadingBlinkingDots from '../../../Common/LoadingBlinkingDots';
 
 const tabIndex = 2;
 
@@ -670,9 +671,25 @@ function AnalysisPanel({
     return (
       <Box className={classes.exposureAnalysisLoadingContainer}>
         <CircularProgress size={100} />
+        <Box className={classes.exposureAnalysisLoadingTextContainer}>
+          <Typography
+            className={classes.exposureAnalysisLoadingText}
+            variant="body1"
+            component="span"
+          >
+            {t('Loading Exposure Analysis Data')}
+          </Typography>
+          <LoadingBlinkingDots />
+        </Box>
       </Box>
     );
-  }, [classes.exposureAnalysisLoadingContainer, isExposureAnalysisLoading]);
+  }, [
+    classes.exposureAnalysisLoadingContainer,
+    classes.exposureAnalysisLoadingText,
+    classes.exposureAnalysisLoadingTextContainer,
+    isExposureAnalysisLoading,
+    t,
+  ]);
 
   const renderedExposureAnalysisTable = useMemo(() => {
     if (!(analysisResult instanceof ExposedPopulationResult)) {
@@ -1107,10 +1124,20 @@ const styles = (theme: Theme) =>
     },
     exposureAnalysisLoadingContainer: {
       display: 'flex',
+      flexDirection: 'column',
+      gap: '2.5rem',
       height: '100%',
       width: '100%',
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    exposureAnalysisLoadingTextContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    exposureAnalysisLoadingText: {
+      color: 'black',
     },
     analysisPanelParams: {
       padding: 10,
