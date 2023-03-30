@@ -78,7 +78,7 @@ To find these attributes, we created a help mode that you can activate by settin
 #### Boundary layers
 
 - Configuring multiple boundary layers
-  If multiple boundary layers are configured `layers.json` you can specify which should be displayed by default by defining `defaultDisplayBoundaries` as an array of boundaries.
+  If multiple boundary layers are configured in `layers.json` you can specify which should be displayed by default by defining `defaultDisplayBoundaries` as an array of boundaries.
 
   e.g.
 

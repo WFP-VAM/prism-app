@@ -19,8 +19,6 @@ type LayersCategoriesType = LayersCategoryType[];
 
 type MenuItemsType = MenuItemType[];
 
-type MenuGroupType = MenuGroup[];
-
 function formatLayersCategories(layersList: {
   [key: string]: Array<LayerKey | TableKey>;
 }): LayersCategoriesType {

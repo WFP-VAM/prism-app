@@ -3571,9 +3571,9 @@ exports[`renders as expected 1`] = `
         size="100"
       />
     </div>
-    <div
-      style="height: 100%;"
-    />
+    <span>
+      Mock map
+    </span>
   </div>
 </div>
 `;
