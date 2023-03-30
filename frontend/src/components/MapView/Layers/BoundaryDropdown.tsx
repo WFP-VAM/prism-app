@@ -13,7 +13,6 @@ import {
   Theme,
   Typography,
   useMediaQuery,
-  withStyles,
 } from '@material-ui/core';
 import { last, sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
@@ -50,8 +49,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: 'white',
     display: 'inline-flex',
-    marginTop: '1em',
-    padding: theme.spacing(1, 2.66),
+    // temporary will be removed when the go to button will be revamped
+    marginTop: '-10px',
+    padding: theme.spacing(0.8, 2.66),
     borderRadius: '4px',
     alignItems: 'center',
     boxShadow: theme.shadows[2],
@@ -116,15 +116,16 @@ const SearchField = forwardRef(
  * Converts the boundary layer data into a list of options for the dropdown
  * grouped by admin level 2, with individual sections under admin level 3.
  */
-function getCategories(
+export function getCategories(
   data: LayerData<BoundaryLayerProps>['data'],
+  layer: BoundaryLayerProps,
   search: string,
   i18nLocale: typeof i18n,
 ) {
   const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
-    ? boundaryLayer.adminLevelNames
-    : boundaryLayer.adminLevelLocalNames;
-  if (!boundaryLayer.adminLevelNames.length) {
+    ? layer.adminLevelNames
+    : layer.adminLevelLocalNames;
+  if (!layer.adminLevelNames.length) {
     console.error(
       'Boundary layer has no admin level names. Cannot generate categories.',
     );
@@ -142,7 +143,7 @@ function getCategories(
       >((ret, feature) => {
         const parentCategory = feature.properties?.[locationLevelNames[0]];
         const label = feature.properties?.[last(locationLevelNames)!];
-        const code = feature.properties?.[boundaryLayer.adminCode];
+        const code = feature.properties?.[layer.adminCode];
         if (!label || !code || !parentCategory) {
           return ret;
         }
@@ -207,7 +208,7 @@ function SimpleBoundaryDropdown({
   if (!data) {
     return <CircularProgress size={24} color="secondary" />;
   }
-  const categories = getCategories(data, search, i18nLocale);
+  const categories = getCategories(data, boundaryLayer, search, i18nLocale);
   const allChildren = categories.flatMap(c => c.children);
   const selectOrDeselectAll = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -357,20 +358,5 @@ function BoundaryDropdown({
     />
   );
 }
-
-export const ButtonStyleBoundaryDropdown = withStyles(() => ({
-  root: {
-    '& label': {
-      textTransform: 'uppercase',
-      letterSpacing: '3px',
-      fontSize: '11px',
-      position: 'absolute',
-      top: '-13px',
-    },
-    '& svg': { color: 'white', fontSize: '1.25rem' },
-    '& .MuiInput-root': { margin: 0 },
-    '& .MuiInputLabel-shrink': { display: 'none' },
-  },
-}))(SimpleBoundaryDropdown);
 
 export default BoundaryDropdown;

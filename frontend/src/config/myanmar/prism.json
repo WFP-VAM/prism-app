@@ -17,9 +17,7 @@
     "temperature": "icon_climate.png"
   },
   "map": {
-    "latitude": 19.467,
-    "longitude": 96.371,
-    "zoom": 4.48
+    "boundingBox": [92.3, 9.93, 101.18, 28.34]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -57,9 +55,7 @@
           ]
         }
       ],
-      "floods": [
-        "hydra_s1"
-      ]
+      "floods": ["hydra_s1"]
     },
     "rainfall": {
       "rainfall_amount": [
@@ -169,10 +165,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -219,10 +212,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -232,10 +222,7 @@
       ]
     },
     "vulnerability": {
-      "vulnerability_index": [
-        "multidimensional_disadvantage_index",
-        "inform"
-      ],
+      "vulnerability_index": ["multidimensional_disadvantage_index", "inform"],
       "vulnerable_populations": [
         "age_dependency_ratio",
         "female_headed_hhs",
@@ -266,13 +253,8 @@
       ]
     },
     "exposure": {
-      "population": [
-        "total_pop"
-      ],
-      "conflict": [
-        "conflict_fatalities",
-        "conflict_type"
-      ],
+      "population": ["total_pop"],
+      "conflict": ["conflict_fatalities", "conflict_type"],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",
         "population_exposed_historical_storm_surge"

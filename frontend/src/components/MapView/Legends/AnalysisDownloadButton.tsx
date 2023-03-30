@@ -1,6 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
+import {
+  analysisResultSelector,
+  analysisResultSortByKeySelector,
+  analysisResultSortOrderSelector,
+} from '../../../context/analysisResultStateSlice';
 import { useSafeTranslation } from '../../../i18n';
 import {
   BaselineLayerResult,
@@ -14,6 +18,8 @@ import { downloadToFile } from '../utils';
 
 function AnalysisDownloadButton() {
   const analysisResult = useSelector(analysisResultSelector);
+  const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
+  const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
   const featureCollection = analysisResult?.featureCollection;
   const { translatedColumns } = useAnalysisTableColumns(analysisResult);
 
@@ -71,6 +77,8 @@ function AnalysisDownloadButton() {
         analysisResult,
         translatedColumns,
         getAnalysisDate() ?? null,
+        analysisResultSortByKey,
+        analysisResultSortOrder,
       );
     }
   };
