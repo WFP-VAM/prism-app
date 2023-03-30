@@ -28,6 +28,7 @@ import {
 import { Column, ExposedPopulationResult } from '../../../utils/analysis-utils';
 import ReportDoc from './reportDoc';
 import { ReportType } from './types';
+import LoadingBlinkingDots from '../LoadingBlinkingDots';
 
 type Format = 'png' | 'jpeg';
 
@@ -77,9 +78,12 @@ const ReportDialog = memo(
     useEffect(() => {
       const loadingTimer = setTimeout(() => {
         setDocumentIsLoading(false);
-      }, 20000);
+      }, 15000);
+      if (!open) {
+        return clearTimeout(loadingTimer);
+      }
       return () => clearTimeout(loadingTimer);
-    }, []);
+    }, [open]);
 
     useEffect(() => {
       if (!open) {
@@ -88,24 +92,34 @@ const ReportDialog = memo(
       setMapImage(getMapImage('png'));
     }, [getMapImage, open, selectedMap]);
 
-    const reportDoc = useMemo(() => {
+    const renderedPdfViewer = useMemo(() => {
+      if (!mapImage) {
+        return null;
+      }
       return (
-        <ReportDoc
-          t={t}
-          exposureLegendDefinition={analysisResult?.legend ?? []}
-          theme={theme}
-          reportType={reportType}
-          tableName="Population Exposure"
-          tableShowTotal
-          eventName={
-            reportType === ReportType.Storm
-              ? `Storm Report (${eventDate})`
-              : `Flood Report (${eventDate})`
-          }
-          mapImage={mapImage}
-          tableData={tableData}
-          columns={columns}
-        />
+        <div style={{ width: '100%', height: '100%' }}>
+          <PDFViewer
+            style={{ width: '100%', height: '100%' }}
+            showToolbar={false}
+          >
+            <ReportDoc
+              t={t}
+              exposureLegendDefinition={analysisResult?.legend ?? []}
+              theme={theme}
+              reportType={reportType}
+              tableName="Population Exposure"
+              tableShowTotal
+              eventName={
+                reportType === ReportType.Storm
+                  ? `Storm Report (${eventDate})`
+                  : `Flood Report (${eventDate})`
+              }
+              mapImage={mapImage}
+              tableData={tableData}
+              columns={columns}
+            />
+          </PDFViewer>
+        </div>
       );
     }, [
       analysisResult,
@@ -118,7 +132,7 @@ const ReportDialog = memo(
       theme,
     ]);
 
-    const renderedPdfLoadingProgressBar = useMemo(() => {
+    const renderedPdfDocumentLoading = useMemo(() => {
       if (!documentIsLoading) {
         return null;
       }
@@ -131,17 +145,69 @@ const ReportDialog = memo(
           >
             {t('Loading document')}
           </Typography>
-          <span className={classes.documentLoaderDot}>.</span>
-          <span className={classes.documentLoaderDot}>.</span>
-          <span className={classes.documentLoaderDot}>.</span>
+          <LoadingBlinkingDots />
         </Box>
       );
     }, [
-      classes.documentLoaderDot,
       classes.documentLoaderText,
       classes.documentLoadingContainer,
       documentIsLoading,
       t,
+    ]);
+
+    const renderedLoadingButtonText = useCallback(
+      ({ loading }) => {
+        if (loading || documentIsLoading) {
+          return `${t('Loading document')}...`;
+        }
+        return t('Download');
+      },
+      [documentIsLoading, t],
+    );
+
+    const renderedDownloadPdfButton = useMemo(() => {
+      if (!mapImage) {
+        return null;
+      }
+      return (
+        <Button className={classes.actionButton} variant="outlined">
+          <PDFDownloadLink
+            document={
+              <ReportDoc
+                t={t}
+                exposureLegendDefinition={analysisResult?.legend ?? []}
+                theme={theme}
+                reportType={reportType}
+                tableName="Population Exposure"
+                tableShowTotal
+                eventName={
+                  reportType === ReportType.Storm
+                    ? `Storm Report (${eventDate})`
+                    : `Flood Report (${eventDate})`
+                }
+                mapImage={mapImage}
+                tableData={tableData}
+                columns={columns}
+              />
+            }
+            fileName={getPDFName}
+          >
+            {renderedLoadingButtonText}
+          </PDFDownloadLink>
+        </Button>
+      );
+    }, [
+      analysisResult,
+      classes.actionButton,
+      columns,
+      eventDate,
+      getPDFName,
+      mapImage,
+      renderedLoadingButtonText,
+      reportType,
+      t,
+      tableData,
+      theme,
     ]);
 
     // The report type text
@@ -178,29 +244,14 @@ const ReportDialog = memo(
             position: 'relative',
           }}
         >
-          {renderedPdfLoadingProgressBar}
-          <div style={{ width: '100%', height: '100%' }}>
-            <PDFViewer
-              style={{ width: '100%', height: '100%' }}
-              showToolbar={false}
-            >
-              {reportDoc}
-            </PDFViewer>
-          </div>
+          {renderedPdfDocumentLoading}
+          {renderedPdfViewer}
         </DialogContent>
         <DialogActions className={classes.actions}>
           <span className={classes.signature}>
             {t('P R I S M automated report')}
           </span>
-          <Button className={classes.actionButton} variant="outlined">
-            <PDFDownloadLink document={reportDoc} fileName={getPDFName}>
-              {({ loading }) =>
-                loading || documentIsLoading
-                  ? `${t('Loading document')}...`
-                  : t('Download')
-              }
-            </PDFDownloadLink>
-          </Button>
+          {renderedDownloadPdfButton}
         </DialogActions>
       </Dialog>
     );
@@ -209,11 +260,6 @@ const ReportDialog = memo(
 
 const styles = (theme: Theme) =>
   createStyles({
-    '@keyframes blink': {
-      '50%': {
-        color: 'transparent',
-      },
-    },
     documentLoadingContainer: {
       backgroundColor: 'white',
       display: 'flex',
@@ -228,16 +274,6 @@ const styles = (theme: Theme) =>
     },
     documentLoaderText: {
       color: 'black',
-    },
-    documentLoaderDot: {
-      color: 'black',
-      animation: '1s $blink infinite',
-      '&:nth-child(2)': {
-        animationDelay: '250ms',
-      },
-      '&:nth-child(3)': {
-        animationDelay: '500ms',
-      },
     },
     titleRoot: {
       background: theme.dialog?.border,

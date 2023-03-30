@@ -105,6 +105,7 @@ import {
   leftPanelTabValueSelector,
   setTabValue,
 } from '../../../../context/leftPanelStateSlice';
+import LoadingBlinkingDots from '../../../Common/LoadingBlinkingDots';
 
 const tabIndex = 2;
 
@@ -670,13 +671,16 @@ function AnalysisPanel({
     return (
       <Box className={classes.exposureAnalysisLoadingContainer}>
         <CircularProgress size={100} />
-        <Typography
-          className={classes.exposureAnalysisLoadingText}
-          variant="body1"
-          component="span"
-        >
-          {t('Loading Exposure Analysis Data')}...
-        </Typography>
+        <Box className={classes.exposureAnalysisLoadingTextContainer}>
+          <Typography
+              className={classes.exposureAnalysisLoadingText}
+              variant="body1"
+              component="span"
+          >
+            {t('Loading Exposure Analysis Data')}
+          </Typography>
+          <LoadingBlinkingDots />
+        </Box>
       </Box>
     );
   }, [
@@ -1123,6 +1127,11 @@ const styles = (theme: Theme) =>
       gap: '2.5rem',
       height: '100%',
       width: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    exposureAnalysisLoadingTextContainer: {
+      display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
     },
