@@ -3189,35 +3189,35 @@
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
         "type": "number",
-        "label": "Population in phase 1"
+        "dataTitle": "Population in phase 1"
       },
       "calc_pop_ph2_admin2": {
         "type": "number",
-        "label": "Population in phase 2"
+        "dataTitle": "Population in phase 2"
       },
       "calc_pop_ph3_admin2": {
         "type": "number",
-        "label": "Population in phase 3"
+        "dataTitle": "Population in phase 3"
       },
       "calc_pop_ph4_admin2": {
         "type": "number",
-        "label": "Population in phase 4"
+        "dataTitle": "Population in phase 4"
       },
       "calc_pop_ph5_admin2": {
         "type": "number",
-        "label": "Population in phase 5"
+        "dataTitle": "Population in phase 5"
       },
       "calc_pop_ph3_5_admin2": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       },
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3265,35 +3265,35 @@
     "feature_info_props": {
       "calc_pop_ph1_admin1": {
         "type": "number",
-        "label": "Population in phase 1"
+        "dataTitle": "Population in phase 1"
       },
       "calc_pop_ph2_admin1": {
         "type": "number",
-        "label": "Population in phase 2"
+        "dataTitle": "Population in phase 2"
       },
       "calc_pop_ph3_admin1": {
         "type": "number",
-        "label": "Population in phase 3"
+        "dataTitle": "Population in phase 3"
       },
       "calc_pop_ph4_admin1": {
         "type": "number",
-        "label": "Population in phase 4"
+        "dataTitle": "Population in phase 4"
       },
       "calc_pop_ph5_admin1": {
         "type": "number",
-        "label": "Population in phase 5"
+        "dataTitle": "Population in phase 5"
       },
       "calc_pop_ph3_5_admin1": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       },
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3343,35 +3343,35 @@
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
         "type": "number",
-        "label": "Population in phase 1"
+        "dataTitle": "Population in phase 1"
       },
       "calc_pop_ph2_admin2": {
         "type": "number",
-        "label": "Population in phase 2"
+        "dataTitle": "Population in phase 2"
       },
       "calc_pop_ph3_admin2": {
         "type": "number",
-        "label": "Population in phase 3"
+        "dataTitle": "Population in phase 3"
       },
       "calc_pop_ph4_admin2": {
         "type": "number",
-        "label": "Population in phase 4"
+        "dataTitle": "Population in phase 4"
       },
       "calc_pop_ph5_admin2": {
         "type": "number",
-        "label": "Population in phase 5"
+        "dataTitle": "Population in phase 5"
       },
       "calc_pop_ph3_5_admin2": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       },
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "opacity": 0.7,
@@ -3429,35 +3429,35 @@
     "feature_info_props": {
       "calc_pop_ph1_admin1": {
         "type": "number",
-        "label": "Population in phase 1"
+        "dataTitle": "Population in phase 1"
       },
       "calc_pop_ph2_admin1": {
         "type": "number",
-        "label": "Population in phase 2"
+        "dataTitle": "Population in phase 2"
       },
       "calc_pop_ph3_admin1": {
         "type": "number",
-        "label": "Population in phase 3"
+        "dataTitle": "Population in phase 3"
       },
       "calc_pop_ph4_admin1": {
         "type": "number",
-        "label": "Population in phase 4"
+        "dataTitle": "Population in phase 4"
       },
       "calc_pop_ph5_admin1": {
         "type": "number",
-        "label": "Population in phase 5"
+        "dataTitle": "Population in phase 5"
       },
       "calc_pop_ph3_5_admin1": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       },
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "opacity": 0.7,
@@ -3523,11 +3523,11 @@
     "feature_info_props": {
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3579,11 +3579,11 @@
     "feature_info_props": {
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3638,11 +3638,11 @@
     "feature_info_props": {
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3704,11 +3704,11 @@
     "feature_info_props": {
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3772,11 +3772,11 @@
     "feature_info_props": {
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3830,11 +3830,11 @@
     "feature_info_props": {
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3891,11 +3891,11 @@
     "feature_info_props": {
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3942,11 +3942,11 @@
     "feature_info_props": {
       "start_date": {
         "type": "text",
-        "label": "Reference period start"
+        "dataTitle": "Reference period start"
       },
       "end_date": {
         "type": "text",
-        "label": "Reference period end"
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
