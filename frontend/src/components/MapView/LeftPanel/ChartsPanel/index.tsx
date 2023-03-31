@@ -27,6 +27,7 @@ import React, {
 } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
+import { TFunctionKeys } from 'i18next';
 import { appConfig } from '../../../../config';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
 import {
@@ -261,7 +262,9 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     countryAdmin0Id ? 0 : 1,
   );
 
-  const [selectedLayerTitles, setSelectedLayerTitles] = useState<string[]>([]);
+  const [selectedLayerTitles, setSelectedLayerTitles] = useState<
+    string[] | TFunctionKeys[]
+  >([]);
   const [selectedDate, setSelectedDate] = useState<number | null>(
     new Date().getTime(),
   );
@@ -276,59 +279,69 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     ? getCategories(data, boundaryLayer, '', i18nLocale)
     : [];
 
-  const generateCSVFilename = () => {
+  const generateCSVFilename = useCallback(() => {
     return [appConfig.country, admin1Title, admin2Title, ...selectedLayerTitles]
       .filter(x => !!x)
       .map(snakeCase)
       .join('_');
-  };
+  }, [admin1Title, admin2Title, selectedLayerTitles]);
 
-  const onChangeAdmin1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.value) {
-      setAdmin1Title('');
-      if (countryAdmin0Id) {
-        setAdminLevel(0);
+  const onChangeAdmin1 = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!event.target.value) {
+        setAdmin1Title('');
+        if (countryAdmin0Id) {
+          setAdminLevel(0);
+        }
+        return;
       }
-      return;
-    }
 
-    // The external chart key for admin 1 is stored in all its children regions
-    // here we get the first child properties
-    const admin1Id = categories.filter(
-      elem => elem.title === event.target.value,
-    )[0].children[0].value;
+      // The external chart key for admin 1 is stored in all its children regions
+      // here we get the first child properties
+      const admin1Id = categories.filter(
+        elem => elem.title === event.target.value,
+      )[0].children[0].value;
 
-    if (data) {
-      setAdminProperties(getProperties(data, admin1Id));
-    }
-    setAdmin1Title(event.target.value);
-    setAdmin2Title('');
-    setAdminLevel(1);
-  };
-
-  const onChangeAdmin2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value) {
-      const admin2Id = categories
-        .filter(elem => elem.title === admin1Title)[0]
-        .children.filter(elem => elem.label === event.target.value)[0].value;
       if (data) {
-        setAdminProperties(getProperties(data, admin2Id));
+        setAdminProperties(getProperties(data, admin1Id));
       }
-      setAdmin2Title(event.target.value);
-      setAdminLevel(2);
-    } else {
-      // Unset Admin 2
-      // We don't have to reset the adminProperties because any children contains the admin 1 external key
+      setAdmin1Title(event.target.value);
       setAdmin2Title('');
       setAdminLevel(1);
-    }
-  };
+    },
+    [categories, countryAdmin0Id, data],
+  );
 
-  const onChangeChartLayers = (
-    event: React.ChangeEvent<{ value: unknown }>,
-  ) => {
-    setSelectedLayerTitles(event.target.value as string[]);
-  };
+  const onChangeAdmin2 = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.value) {
+        const admin2Id = categories
+          .filter(elem => elem.title === admin1Title)[0]
+          .children.filter(elem => elem.label === event.target.value)[0].value;
+        if (data) {
+          setAdminProperties(getProperties(data, admin2Id));
+        }
+        setAdmin2Title(event.target.value);
+        setAdminLevel(2);
+      } else {
+        // Unset Admin 2
+        // We don't have to reset the adminProperties because any children contains the admin 1 external key
+        setAdmin2Title('');
+        setAdminLevel(1);
+      }
+    },
+    [admin1Title, categories, data],
+  );
+
+  const onChangeChartLayers = useCallback(
+    (event: React.ChangeEvent<{ value: unknown }>) => {
+      const valuesToSet = (event.target.value as TFunctionKeys[]).map(value => {
+        return t(value);
+      });
+      setSelectedLayerTitles(valuesToSet);
+    },
+    [t],
+  );
 
   useEffect(() => {
     if (!adminProperties && countryAdmin0Id && data) {
@@ -436,6 +449,17 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     setAdmin2Title('');
   }, [countryAdmin0Id]);
 
+  const chartsSelectRenderValue = useCallback(
+    selected => {
+      return selected
+        .map((selectedValue: string | TFunctionKeys) => {
+          return t(selectedValue);
+        })
+        .join(', ');
+    },
+    [t],
+  );
+
   if (tabIndex !== tabValue) {
     return null;
   }
@@ -527,7 +551,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
           value={selectedLayerTitles}
           onChange={onChangeChartLayers}
           input={<Input />}
-          renderValue={selected => (selected as string[]).join(', ')}
+          renderValue={chartsSelectRenderValue}
           MenuProps={menuProps}
         >
           {chartLayers.map(layer => (
