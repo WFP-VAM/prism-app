@@ -197,7 +197,12 @@ export const downloadCsv = (
         const first = value[0];
         const keys = Object.keys(first);
         const filtered = keys.filter(x => x !== dateColumn);
-        const mapped = filtered.map(x => getKeyName(x, key));
+        // created the column names and filters the anomaly_avg column names from the columns collection
+        const mapped = filtered
+          .map(x => getKeyName(x, key))
+          .filter(keyName => {
+            return !keyName.includes('anomaly') || !keyName.includes('_avg');
+          });
         return Object.fromEntries(mapped.map(x => [x, x]));
       },
     );
@@ -209,6 +214,23 @@ export const downloadCsv = (
 
     const merged = Object.entries(dataForCsv.current)
       .map(([key, value]) => {
+        if (key.toLowerCase().includes('anomaly')) {
+          return value.map(x => {
+            // Shallow copy of item data
+            const itemToRender = { ...x };
+            // search to find the key that ends with _avg and delete it
+            Object.keys(x).forEach(nestedKey => {
+              if (nestedKey.endsWith('_avg')) {
+                // eslint-disable-next-line fp/no-delete
+                delete itemToRender[nestedKey];
+              }
+            });
+            // render the shallow copy of the item with the deleted anomaly normal 100 value
+            return mapKeys(itemToRender, (v, k) =>
+              k === dateColumn ? dateColumn : getKeyName(k, key),
+            );
+          });
+        }
         return value.map(x => {
           return mapKeys(x, (v, k) =>
             k === dateColumn ? dateColumn : getKeyName(k, key),
@@ -216,6 +238,7 @@ export const downloadCsv = (
         });
       })
       .flat();
+
     if (merged.length < 1) {
       return;
     }
@@ -278,59 +301,66 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     [data, i18nLocale],
   );
 
-  const generateCSVFilename = () => {
+  const generateCSVFilename = useCallback(() => {
     return [appConfig.country, admin1Title, admin2Title, ...selectedLayerTitles]
       .filter(x => !!x)
       .map(snakeCase)
       .join('_');
-  };
+  }, [admin1Title, admin2Title, selectedLayerTitles]);
 
-  const onChangeAdmin1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.value) {
-      setAdmin1Title('');
-      if (countryAdmin0Id) {
-        setAdminLevel(0);
+  const onChangeAdmin1 = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!event.target.value) {
+        setAdmin1Title('');
+        if (countryAdmin0Id) {
+          setAdminLevel(0);
+        }
+        return;
       }
-      return;
-    }
 
-    // The external chart key for admin 1 is stored in all its children regions
-    // here we get the first child properties
-    const admin1Id = categories.filter(
-      elem => elem.title === event.target.value,
-    )[0].children[0].value;
+      // The external chart key for admin 1 is stored in all its children regions
+      // here we get the first child properties
+      const admin1Id = categories.filter(
+        elem => elem.title === event.target.value,
+      )[0].children[0].value;
 
-    if (data) {
-      setAdminProperties(getProperties(data, admin1Id));
-    }
-    setAdmin1Title(event.target.value);
-    setAdmin2Title('');
-    setAdminLevel(1);
-  };
-
-  const onChangeAdmin2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value) {
-      const admin2Id = categories
-        .filter(elem => elem.title === admin1Title)[0]
-        .children.filter(elem => elem.label === event.target.value)[0].value;
       if (data) {
-        setAdminProperties(getProperties(data, admin2Id));
+        setAdminProperties(getProperties(data, admin1Id));
       }
-      setAdmin2Title(event.target.value);
-      setAdminLevel(2);
-    } else {
-      // Unset Admin 2
-      // We don't have to reset the adminProperties because any children contains the admin 1 external key
+      setAdmin1Title(event.target.value);
       setAdmin2Title('');
       setAdminLevel(1);
-    }
-  };
+    },
+    [categories, countryAdmin0Id, data],
+  );
 
-  const onChangeChartLayers = (
-    event: React.ChangeEvent<{ value: unknown }>,
-  ) => {
-    setSelectedLayerTitles(event.target.value as string[]);
-  };
+  const onChangeAdmin2 = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.value) {
+        const admin2Id = categories
+          .filter(elem => elem.title === admin1Title)[0]
+          .children.filter(elem => elem.label === event.target.value)[0].value;
+        if (data) {
+          setAdminProperties(getProperties(data, admin2Id));
+        }
+        setAdmin2Title(event.target.value);
+        setAdminLevel(2);
+      } else {
+        // Unset Admin 2
+        // We don't have to reset the adminProperties because any children contains the admin 1 external key
+        setAdmin2Title('');
+        setAdminLevel(1);
+      }
+    },
+    [admin1Title, categories, data],
+  );
+
+  const onChangeChartLayers = useCallback(
+    (event: React.ChangeEvent<{ value: unknown }>) => {
+      setSelectedLayerTitles(event.target.value as string[]);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!adminProperties && countryAdmin0Id && data) {
