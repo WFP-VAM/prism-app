@@ -22,7 +22,6 @@ import React, {
   MutableRefObject,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -273,10 +272,9 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
 
   const tabValue = useSelector(leftPanelTabValueSelector);
 
-  const categories = useMemo(
-    () => (data ? getCategories(data, boundaryLayer, '', i18nLocale) : []),
-    [data, i18nLocale],
-  );
+  const categories = data
+    ? getCategories(data, boundaryLayer, '', i18nLocale)
+    : [];
 
   const generateCSVFilename = useCallback(() => {
     return [appConfig.country, admin1Title, admin2Title, ...selectedLayerTitles]
@@ -527,7 +525,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
       </Box>
       <FormControl className={classes.layerFormControl}>
         <InputLabel id="chart-layers-mutiple-checkbox-label">
-          Select Charts
+          {t('Select Charts')}
         </InputLabel>
         <Select
           labelId="chart-layers-mutiple-checkbox-label"
@@ -547,7 +545,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
               />
               <ListItemText
                 classes={{ primary: classes.textLabel }}
-                primary={layer.title}
+                primary={t(layer.title)}
               />
             </MenuItem>
           ))}
