@@ -27,6 +27,7 @@ import React, {
 } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
+import { TFunctionKeys } from 'i18next';
 import { appConfig } from '../../../../config';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
 import {
@@ -261,7 +262,9 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     countryAdmin0Id ? 0 : 1,
   );
 
-  const [selectedLayerTitles, setSelectedLayerTitles] = useState<string[]>([]);
+  const [selectedLayerTitles, setSelectedLayerTitles] = useState<
+    string[] | TFunctionKeys[]
+  >([]);
   const [selectedDate, setSelectedDate] = useState<number | null>(
     new Date().getTime(),
   );
@@ -332,9 +335,12 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
 
   const onChangeChartLayers = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
-      setSelectedLayerTitles(event.target.value as string[]);
+      const valuesToSet = (event.target.value as TFunctionKeys[]).map(value => {
+        return t(value);
+      });
+      setSelectedLayerTitles(valuesToSet);
     },
-    [],
+    [t],
   );
 
   useEffect(() => {
@@ -443,6 +449,17 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     setAdmin2Title('');
   }, [countryAdmin0Id]);
 
+  const chartsSelectRenderValue = useCallback(
+    selected => {
+      return selected
+        .map((selectedValue: string | TFunctionKeys) => {
+          return t(selectedValue);
+        })
+        .join(', ');
+    },
+    [t],
+  );
+
   if (tabIndex !== tabValue) {
     return null;
   }
@@ -534,7 +551,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
           value={selectedLayerTitles}
           onChange={onChangeChartLayers}
           input={<Input />}
-          renderValue={selected => (selected as string[]).join(', ')}
+          renderValue={chartsSelectRenderValue}
           MenuProps={menuProps}
         >
           {chartLayers.map(layer => (
