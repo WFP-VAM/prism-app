@@ -175,7 +175,7 @@ const menuProps: Partial<MenuProps> = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 'auto',
     },
   },
 };
@@ -335,12 +335,9 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
 
   const onChangeChartLayers = useCallback(
     (event: React.ChangeEvent<{ value: unknown }>) => {
-      const valuesToSet = (event.target.value as TFunctionKeys[]).map(value => {
-        return t(value);
-      });
-      setSelectedLayerTitles(valuesToSet);
+      setSelectedLayerTitles(event.target.value as string[]);
     },
-    [t],
+    [],
   );
 
   useEffect(() => {

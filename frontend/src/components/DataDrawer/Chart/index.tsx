@@ -2,8 +2,10 @@ import React from 'react';
 import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
+import { TFunction, TFunctionKeys } from 'i18next';
 import { ChartConfig } from '../../../config/types';
 import { TableData } from '../../../context/tableStateSlice';
+import { useSafeTranslation } from '../../../i18n';
 
 type ChartProps = {
   title: string;
@@ -75,7 +77,7 @@ function getChartConfig(
   } as ChartOptions;
 }
 
-function formatChartData(data: TableData, config: ChartConfig) {
+function formatChartData(data: TableData, config: ChartConfig, t: TFunction) {
   /**
    * This function assumes that the data is fomratted as follows:
    * First Row -> "keys"
@@ -132,7 +134,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
 
   const datasets = !transpose
     ? tableRows.map((row, i) => ({
-        label: (row[config.category] as string) || '',
+        label: t(row[config.category] as TFunctionKeys) || '',
         fill: config.fill || false,
         backgroundColor: colors[i],
         borderColor: colors[i],
@@ -141,7 +143,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
         data: indices.map(index => (row[index] as number) || null),
       }))
     : indices.map((index, i) => ({
-        label: header[index] as string,
+        label: t(header[index] as TFunctionKeys),
         fill: config.fill || false,
         backgroundColor: colors[i],
         borderColor: colors[i],
@@ -152,7 +154,7 @@ function formatChartData(data: TableData, config: ChartConfig) {
 
   const EWSthresholds = data.EWSConfig
     ? Object.values(data.EWSConfig).map(obj => ({
-        label: obj.label,
+        label: t(obj.label as TFunctionKeys),
         backgroundColor: obj.color,
         borderColor: obj.color,
         borderWidth: 2,
@@ -179,8 +181,10 @@ function Chart({
   notMaintainAspectRatio,
   legendAtBottom,
 }: ChartProps) {
+  const { t } = useSafeTranslation();
+
   try {
-    const chartData = formatChartData(data, config);
+    const chartData = formatChartData(data, config, t);
 
     switch (config.type) {
       case 'bar':
