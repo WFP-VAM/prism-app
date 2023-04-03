@@ -121,8 +121,6 @@ function ChartSection({
     colors,
   };
 
-  console.log(config);
-
   return (
     <>
       {!chartDataset ? (

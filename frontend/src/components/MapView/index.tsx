@@ -556,8 +556,6 @@ function MapView({ classes }: MapViewProps) {
     setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
     dispatch(setMap(() => map));
     if (showBoundaryInfo) {
-      // eslint-disable-next-line no-console
-      console.log({ adminBoundariesExtent });
       watchBoundaryChange(map);
     }
     trackLoadingLayers(map);
