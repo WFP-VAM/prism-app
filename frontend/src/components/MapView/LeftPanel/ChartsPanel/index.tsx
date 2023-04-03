@@ -197,12 +197,7 @@ export const downloadCsv = (
         const first = value[0];
         const keys = Object.keys(first);
         const filtered = keys.filter(x => x !== dateColumn);
-        // created the column names and filters the anomaly_avg column names from the columns collection
-        const mapped = filtered
-          .map(x => getKeyName(x, key))
-          .filter(keyName => {
-            return !keyName.includes('anomaly') || !keyName.includes('_avg');
-          });
+        const mapped = filtered.map(x => getKeyName(x, key));
         return Object.fromEntries(mapped.map(x => [x, x]));
       },
     );
@@ -214,23 +209,6 @@ export const downloadCsv = (
 
     const merged = Object.entries(dataForCsv.current)
       .map(([key, value]) => {
-        if (key.toLowerCase().includes('anomaly')) {
-          return value.map(x => {
-            // Shallow copy of item data
-            const itemToRender = { ...x };
-            // search to find the key that ends with _avg and delete it
-            Object.keys(x).forEach(nestedKey => {
-              if (nestedKey.endsWith('_avg')) {
-                // eslint-disable-next-line fp/no-delete
-                delete itemToRender[nestedKey];
-              }
-            });
-            // render the shallow copy of the item with the deleted anomaly normal 100 value
-            return mapKeys(itemToRender, (v, k) =>
-              k === dateColumn ? dateColumn : getKeyName(k, key),
-            );
-          });
-        }
         return value.map(x => {
           return mapKeys(x, (v, k) =>
             k === dateColumn ? dateColumn : getKeyName(k, key),
@@ -238,7 +216,6 @@ export const downloadCsv = (
         });
       })
       .flat();
-
     if (merged.length < 1) {
       return;
     }
