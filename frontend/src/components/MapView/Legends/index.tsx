@@ -164,6 +164,8 @@ function LegendItem({
     initialOpacity || 0,
   );
 
+  const { t } = useSafeTranslation();
+
   return (
     <ListItem disableGutters dense>
       <Paper className={classes.paper}>
@@ -207,7 +209,7 @@ function LegendItem({
               legend.map((item: LegendDefinitionItem) => (
                 <ColorIndicator
                   key={item.value || item.label}
-                  value={getLegendItemLabel(item)}
+                  value={t(getLegendItemLabel(item))}
                   color={item.color as string}
                   opacity={opacity as number}
                 />
