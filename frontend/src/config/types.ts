@@ -157,12 +157,17 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
+export type LegendLabel = {
+  text: string;
+  value: number | string;
+};
+
 export type LegendDefinitionItem = {
   value: string | number;
   color: string;
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
-  label?: string;
+  label?: LegendLabel | string;
 };
 
 export type LegendDefinition = LegendDefinitionItem[];

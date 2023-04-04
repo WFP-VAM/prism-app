@@ -208,8 +208,13 @@ function LegendItem({
             ) : (
               legend.map((item: LegendDefinitionItem) => (
                 <ColorIndicator
-                  key={item.value || item.label}
-                  value={t(getLegendItemLabel(item))}
+                  key={
+                    item.value ||
+                    (typeof item.label === 'string'
+                      ? item?.label
+                      : item?.label?.text)
+                  }
+                  value={getLegendItemLabel(t, item)}
                   color={item.color as string}
                   opacity={opacity as number}
                 />

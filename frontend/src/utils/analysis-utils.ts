@@ -1,34 +1,34 @@
 import {
+  flatten,
   get,
   has,
+  invert,
   isNull,
+  isNumber,
   isString,
   max,
   mean,
   min,
-  invert,
-  sum,
   omit,
-  flatten,
-  isNumber,
   orderBy,
+  sum,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import moment from 'moment';
 import { createGetCoverageUrl } from 'prism-common';
 import {
+  AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
   AsyncReturnType,
+  BoundaryLayerProps,
   ImpactLayerProps,
   LegendDefinition,
-  AdminLevelDataLayerProps,
   StatsApi,
   ThresholdDefinition,
-  WMSLayerProps,
   WfsRequestParams,
-  BoundaryLayerProps,
+  WMSLayerProps,
 } from '../config/types';
 import type { ThunkApi } from '../context/store';
 import { layerDataSelector } from '../context/mapStateSlice/selectors';
@@ -527,7 +527,7 @@ export function createLegendFromFeatureArray(
 
   const delta = (maxNum - minNum) / colors.length;
 
-  const legend: LegendDefinition = colors.map((color, index) => {
+  return colors.map((color, index) => {
     const breakpoint =
       delta > 1
         ? Math.ceil(minNum + (index + 1) * delta)
@@ -539,11 +539,12 @@ export function createLegendFromFeatureArray(
     return {
       value,
       color,
-      label: `${labels[index]} (${Math.round(value).toLocaleString('en-US')})`,
+      label: {
+        text: labels[index],
+        value: `(${Math.round(value).toLocaleString('en-US')})`,
+      },
     };
   });
-
-  return legend;
 }
 
 export class ExposedPopulationResult {
