@@ -1,5 +1,6 @@
 import { values } from 'lodash';
 import { Map } from 'mapbox-gl';
+import { TFunction } from 'i18next';
 import { LayerDefinitions } from '../../config/utils';
 import { formatFeatureInfo } from '../../utils/server-utils';
 import { getExtent } from './Layers/raster-utils';
@@ -103,9 +104,15 @@ export function getFeatureInfoPropsData(
     }, {});
 }
 
-export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
+export const getLegendItemLabel = (
+  t: TFunction,
+  { label, value }: LegendDefinitionItem,
+) => {
   if (typeof label === 'string') {
-    return label;
+    return t(label);
+  }
+  if (label?.text !== undefined) {
+    return `${t(label.text)} ${label.value}`;
   }
   if (typeof value === 'number') {
     const roundedValue = Math.round(value);
@@ -113,7 +120,7 @@ export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
       ? value.toFixed(2)
       : roundedValue.toLocaleString('en-US');
   }
-  return value;
+  return t(value);
 };
 
 export const generateUniqueTableKey = (activityName: string) => {
