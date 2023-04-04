@@ -3,6 +3,7 @@ import colormap from 'colormap';
 import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import { TFunction, TFunctionKeys } from 'i18next';
+import moment, { LocaleSpecifier } from 'moment';
 import { ChartConfig } from '../../../config/types';
 import { TableData } from '../../../context/tableStateSlice';
 import { useSafeTranslation } from '../../../i18n';
@@ -130,7 +131,11 @@ function formatChartData(data: TableData, config: ChartConfig, t: TFunction) {
 
   const labels = !transpose
     ? indices.map(index => header[index])
-    : tableRows.map(row => row[config.category]);
+    : tableRows.map(row => {
+        return moment(row[config.category])
+          .locale(t('date_locale') as LocaleSpecifier)
+          .format('YYYY-MM-DD');
+      });
 
   const datasets = !transpose
     ? tableRows.map((row, i) => ({
@@ -185,6 +190,8 @@ function Chart({
 
   try {
     const chartData = formatChartData(data, config, t);
+
+    console.log(chartData);
 
     switch (config.type) {
       case 'bar':
