@@ -191,8 +191,6 @@ function Chart({
   try {
     const chartData = formatChartData(data, config, t);
 
-    console.log(chartData);
-
     switch (config.type) {
       case 'bar':
         return (
