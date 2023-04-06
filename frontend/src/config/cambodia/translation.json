@@ -142,6 +142,7 @@
   "Select Admin 2": "ជ្រើសរើសអ្នកគ្រប់គ្រង ២",
   "Select Charts": "ជ្រើសរើសគំនូសតាង",
   "Download CSV": "ទាញយក CSV",
+  "Download as CSV": "ទាញយក CSV",
   "Average": "មធ្យម",
   "Normal": "ធម្មតា",
   "Max": "អតិបរមា",
@@ -201,5 +202,9 @@
   "Very high": "ខ្ពស់​ណាស់",
   "Heavy (>75th percentile)": "ធ្ងន់ (75th ភាគរយ)",
   "Intense (>90th percentile)": "ខ្លាំង (90th ភាគរយ)",
-  "Extreme (>95th percentile)": "ខ្លាំង (95th ភាគរយ)"
+  "Extreme (>95th percentile)": "ខ្លាំង (95th ភាគរយ)",
+  "Hide Table": "ខ្លាំង",
+  "(Median)": "ខ្លាំង",
+  "(median)": "ខ្លាំង",
+  "Above Treshold": "ខ្លាំង"
 }
