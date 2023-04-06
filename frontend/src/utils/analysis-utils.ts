@@ -17,6 +17,7 @@ import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import moment from 'moment';
 import { createGetCoverageUrl } from 'prism-common';
+import { TFunctionKeys } from 'i18next';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
@@ -647,7 +648,7 @@ export class BaselineLayerResult {
     const baselineLayer = this.getBaselineLayer();
     // If there is no title, we are using admin boundaries and return StatTitle instead.
     if (!baselineLayer.title) {
-      return this.getStatTitle();
+      return this.getStatTitle(t);
     }
     const baselineTitle = baselineLayer.title || 'Admin levels';
     return t
@@ -786,14 +787,20 @@ export class PolygonAnalysisResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getTitle(): string {
-    return `${this.getHazardLayer().title} intersecting admin level ${
-      this.adminLevel
-    }`;
+  getTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} ${t('intersecting admin level')} ${t(
+          (this.adminLevel as unknown) as TFunctionKeys,
+        )}`
+      : `${this.getHazardLayer().title} intersecting admin level ${
+          this.adminLevel
+        }`;
   }
 
-  getStatTitle(): string {
-    return `${this.getHazardLayer().title} (${this.statistic})`;
+  getStatTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
+      : `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }
 
