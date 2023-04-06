@@ -250,7 +250,6 @@ function DateSelector({
             className={classes.datePickerInput}
             selected={moment(stateStartDate).toDate()}
             onChange={updateStartDate}
-            maxDate={new Date()}
             todayButton={t('Today')}
             peekNextMonth
             showMonthDropdown
