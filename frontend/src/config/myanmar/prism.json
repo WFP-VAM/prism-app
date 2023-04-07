@@ -28,8 +28,7 @@
   ],
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://geonode.wfp.org/geoserver/prism/wms/"
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
   "categories": {
@@ -268,10 +267,6 @@
     "exposure": {
       "population": [
         "total_pop"
-      ],
-      "conflict": [
-        "conflict_fatalities",
-        "conflict_type"
       ],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",

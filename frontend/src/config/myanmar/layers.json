@@ -1,11 +1,11 @@
 {
   "state_admin_boundaries": {
     "type": "boundary",
-    "path": "data/myanmar/mmr_admin1_boundaries.json",
+    "path": "data/myanmar/mmr_polbnda_adm1_mimu_250k.json",
     "opacity": 0.8,
     "admin_code": "ST_PCODE",
     "admin_level_names": ["ST"],
-    "admin_level_local_names": ["mmr_polbnd"],
+    "admin_level_local_names": ["fix_ST_MMR4"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -19,11 +19,11 @@
   },
   "district_admin_boundaries": {
     "type": "boundary",
-    "path": "data/myanmar/mmr_admin2_boundaries.json",
+    "path": "data/myanmar/mmr_polbnda_adm2_250k_mimu_fixed.json",
     "opacity": 0.8,
     "admin_code": "DT_PCODE",
     "admin_level_names": ["ST", "DT"],
-    "admin_level_local_names": ["mmr_polbnd", "DT_MMR4"],
+    "admin_level_local_names": ["fix_ST_MMR4", "DT_MMR4"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -37,11 +37,11 @@
   },
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/myanmar/admin_boundaries.json",
+    "path": "data/myanmar/mmr_polbnda_adm3_250k_mimu_fixed.json",
     "opacity": 0.8,
     "admin_code": "TS_PCODE",
     "admin_level_names": ["ST", "DT", "TS"],
-    "admin_level_local_names": ["mmr_polbnd", "DT_MMR4", "TS_MMR4"],
+    "admin_level_local_names": ["fix_ST_MMR4", "DT_MMR4", "TS_MMR4"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -2277,115 +2277,6 @@
     "legend": [{ "value": "1 - flooded", "color": "#a50f15" }],
     "exposure": {
       "id": "wp_pop_cicunadj"
-    }
-  },
-  "conflict_fatalities": {
-    "title": "Number of fatalities in an armed conflict incident",
-    "loader": "acled",
-    "additional_query_params": {
-      "iso": 104,
-      "limit": 0
-    },
-    "type": "point_data",
-    "data": "https://prism-api.ovio.org/acled",
-    "date_url": "https://prism-api.ovio.org/acled",
-    "data_field": "fatalities",
-    "opacity": 1,
-    "legend_text": "Number of fatalities in an armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
-    "legend": [
-      { "label": "0", "value": 0, "color": "#fee0d2" },
-      { "label": "1 - 20", "value": 1, "color": "#fc9272" },
-      { "label": "> 20", "value": 21, "color": "#de2d26" }
-    ],
-    "feature_info_props": {
-      "event_type": {
-        "type": "string",
-        "dataTitle": "Event type"
-      },
-      "sub_event_type": {
-        "type": "string",
-        "dataTitle": "Sub event type"
-      },
-      "source": {
-        "type": "string",
-        "dataTitle": "Source"
-      },
-      "event_date": {
-        "type": "string",
-        "dataTitle": "Date"
-      },
-      "notes": {
-        "type": "string",
-        "dataTitle": "Details"
-      }
-    }
-  },
-  "conflict_type": {
-    "title": "Types of armed conflict incident",
-    "loader": "acled",
-    "additional_query_params": {
-      "iso": 104,
-      "limit": 0
-    },
-    "type": "point_data",
-    "data": "https://prism-api.ovio.org/acled",
-    "date_url": "https://prism-api.ovio.org/acled",
-    "data_field": "event_type",
-    "data_field_type": "text",
-    "opacity": 1,
-    "legend_text": "Types of armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
-    "legend": [
-      { "label": "Battles", 
-        "value": "Battles ", 
-        "color": "#ea5545" 
-      },
-      {
-        "label": "Explosions/Remote violence",
-        "value": "Explosions/Remote violence",
-        "color": "#ef9b20"
-      },
-      {
-        "label": "Violence against civilians",
-        "value": "Violence against civilians",
-        "color": "#ede15b"
-      },
-      {
-        "label": "Protests",
-        "value": "Protests",
-        "color": "#87bc45"
-      },
-      {
-        "label": "Riots",
-        "value": "Riots",
-        "color": "#27aeef"
-      },
-      {
-        "label": "Strategic developments",
-        "value": "Strategic developments",
-        "color": "#666666"
-      }
-    ],
-    "feature_info_props": {
-      "event_type": {
-        "type": "string",
-        "dataTitle": "Event type"
-      },
-      "sub_event_type": {
-        "type": "string",
-        "dataTitle": "Sub event type"
-      },
-      "source": {
-        "type": "string",
-        "dataTitle": "Source"
-      },
-      "event_date": {
-        "type": "string",
-        "dataTitle": "Date"
-      },
-      "notes": {
-        "type": "string",
-        "dataTitle": "Details"
-      }
     }
   }
 }
