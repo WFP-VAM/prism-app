@@ -4,7 +4,8 @@ import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import { TFunction, TFunctionKeys } from 'i18next';
 import moment, { LocaleSpecifier } from 'moment';
-import { ChartConfig } from '../../../config/types';
+import { ChartConfig, DatasetField, ChartConfig } from '../../../config/types';
+
 import { TableData } from '../../../context/tableStateSlice';
 import { useSafeTranslation } from '../../../i18n';
 
@@ -12,6 +13,7 @@ type ChartProps = {
   title: string;
   data: TableData;
   config: ChartConfig;
+  datasetFields?: DatasetField[];
   xAxisLabel?: string;
   notMaintainAspectRatio?: boolean;
   legendAtBottom?: boolean;
@@ -82,7 +84,12 @@ function getChartConfig(
   } as ChartOptions;
 }
 
-function formatChartData(data: TableData, config: ChartConfig, t: TFunction) {
+function formatChartData(
+  data: TableData,
+  config: ChartConfig,
+  datasetFields: DatasetField[] | undefined,
+  t: TFunction,
+) {
   /**
    * This function assumes that the data is fomratted as follows:
    * First Row -> "keys"
@@ -142,24 +149,44 @@ function formatChartData(data: TableData, config: ChartConfig, t: TFunction) {
       });
 
   const datasets = !transpose
-    ? tableRows.map((row, i) => ({
-        label: t(row[config.category] as TFunctionKeys) || '',
-        fill: config.fill || false,
-        backgroundColor: colors[i],
-        borderColor: colors[i],
-        borderWidth: 2,
-        pointRadius: data.EWSConfig ? 0 : 1, // Disable point rendering for EWS only.
-        data: indices.map(index => (row[index] as number) || null),
-      }))
-    : indices.map((index, i) => ({
-        label: t(header[index] as TFunctionKeys),
-        fill: config.fill || false,
-        backgroundColor: colors[i],
-        borderColor: colors[i],
-        borderWidth: 2,
-        data: tableRows.map(row => (row[index] as number) || null),
-        pointRadius: data.EWSConfig ? 0 : 1, // Disable point rendering for EWS only.
-      }));
+    ? tableRows.map((row, i) => {
+        return {
+          label: t(row[config.category] as TFunctionKeys) || '',
+          fill: config.fill || false,
+          backgroundColor: colors[i],
+          borderColor: colors[i],
+          borderWidth: 2,
+          pointRadius: data.EWSConfig ? 0 : 1, // Disable point rendering for EWS only.
+          data: indices.map(index => (row[index] as number) || null),
+        };
+      })
+    : indices.map((indiceKey, i) => {
+        const foundDataSetFieldPointRadius = datasetFields?.find(
+          datasetField => {
+            return header[indiceKey] === datasetField.label;
+          },
+        )?.pointRadius;
+
+        let pointRadius;
+
+        if (foundDataSetFieldPointRadius !== undefined) {
+          // eslint-disable-next-line fp/no-mutation
+          pointRadius = foundDataSetFieldPointRadius;
+        } else {
+          // eslint-disable-next-line fp/no-mutation
+          pointRadius = data.EWSConfig ? 0 : 1; // Disable point rendering for EWS only.
+        }
+
+        return {
+          label: t(header[indiceKey] as TFunctionKeys),
+          fill: config.fill || false,
+          backgroundColor: colors[i],
+          borderColor: colors[i],
+          borderWidth: 2,
+          data: tableRows.map(row => (row[indiceKey] as number) || null),
+          pointRadius,
+        };
+      });
 
   const EWSthresholds = data.EWSConfig
     ? Object.values(data.EWSConfig).map(obj => ({
@@ -187,13 +214,14 @@ function Chart({
   data,
   config,
   xAxisLabel,
+  datasetFields,
   notMaintainAspectRatio,
   legendAtBottom,
 }: ChartProps) {
   const { t } = useSafeTranslation();
 
   try {
-    const chartData = formatChartData(data, config, t);
+    const chartData = formatChartData(data, config, datasetFields, t);
 
     switch (config.type) {
       case 'bar':

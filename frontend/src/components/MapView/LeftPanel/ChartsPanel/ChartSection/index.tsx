@@ -206,11 +206,12 @@ function ChartSection({
         title={t(title)}
         config={config}
         data={chartDataset}
+        datasetFields={params.datasetFields}
         notMaintainAspectRatio
         legendAtBottom
       />
     );
-  }, [chartDataset, classes.loading, config, t, title]);
+  }, [chartDataset, classes.loading, config, params.datasetFields, t, title]);
 }
 
 const styles = () =>
