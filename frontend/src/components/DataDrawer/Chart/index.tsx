@@ -30,6 +30,8 @@ function getChartConfig(
   xAxisLabel?: string,
   notMaintainAspectRatio?: boolean,
   legendAtBottom?: boolean,
+  minValue?: number,
+  maxValue?: number,
 ) {
   return {
     maintainAspectRatio: !(notMaintainAspectRatio ?? false),
@@ -63,6 +65,8 @@ function getChartConfig(
         {
           ticks: {
             fontColor: '#CCC',
+            ...(minValue && { suggestedMin: minValue }),
+            ...(maxValue && { suggestedMax: maxValue }),
           },
           stacked,
           gridLines: {
@@ -170,11 +174,11 @@ function formatChartData(data: TableData, config: ChartConfig, t: TFunction) {
       }))
     : [];
 
-  const datasetsWithTresholds = [...datasets, ...EWSthresholds];
+  const datasetsWithThresholds = [...datasets, ...EWSthresholds];
 
   return {
     labels,
-    datasets: datasetsWithTresholds,
+    datasets: datasetsWithThresholds,
   };
 }
 
@@ -203,6 +207,8 @@ function Chart({
               xAxisLabel,
               notMaintainAspectRatio,
               legendAtBottom,
+              config?.minValue,
+              config?.maxValue,
             )}
           />
         );
@@ -217,6 +223,8 @@ function Chart({
               xAxisLabel,
               notMaintainAspectRatio,
               legendAtBottom,
+              config?.minValue,
+              config?.maxValue,
             )}
           />
         );

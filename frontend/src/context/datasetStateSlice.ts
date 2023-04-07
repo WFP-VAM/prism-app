@@ -245,7 +245,6 @@ export const loadAdminBoundaryDataset = async (
 
   const results = await fetchHDC(hdcUrl, datasetFields, hdcRequestParams);
   const tableData = createTableData(results, TableDataFormat.DATE);
-
   return new Promise<TableData>(resolve => resolve(tableData));
 };
 
