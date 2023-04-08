@@ -32,34 +32,6 @@
     ]
   },
   "categories": {
-    "storms_and_floods": {
-      "tropical_storms": [
-        {
-          "group_title": "Tropical Storms",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "adamts_buffers",
-              "label": "Wind buffers",
-              "main": true
-            },
-            {
-              "id": "adamts_nodes",
-              "label": "Nodes",
-              "main": false
-            },
-            {
-              "id": "adamts_tracks",
-              "label": "Tracks",
-              "main": false
-            }
-          ]
-        }
-      ],
-      "floods": [
-        "hydra_s1"
-      ]
-    },
     "rainfall": {
       "rainfall_amount": [
         {
