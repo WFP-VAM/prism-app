@@ -82,7 +82,9 @@
   "Above": "ខាងលើ",
   "Below": "ខាងក្រោម",
   "Mean": "មធ្យម",
+  "mean": "មធ្យម",
   "Median": "មេដ្យាន",
+  "median": "មេដ្យាន",
   "Date": "កាលបរិច្ឆេទ",
   "Clear Analysis": "ការវិភាគច្បាស់លាស់",
   "Rows Per Page": "ជួរដេកក្នុងមួយទំព័រ",
@@ -147,6 +149,8 @@
   "Normal": "ធម្មតា",
   "Max": "អតិបរមា",
   "Min": "អប្បបរមា",
+  "max": "អតិបរមា",
+  "min": "អប្បបរមា",
   "Admin Boundaries": "ព្រំប្រទល់រដ្ឋបាល",
   "Admin Levels": "កម្រិតអ្នកគ្រប់គ្រង",
   "Send": "ផ្ញើរ",
@@ -204,6 +208,6 @@
   "Intense (>90th percentile)": "ខ្លាំង (90th ភាគរយ)",
   "Extreme (>95th percentile)": "ខ្លាំង (95th ភាគរយ)",
   "Hide Table": "ខ្លាំង",
-  "median": "មេដ្យាន",
-  "Above Threshold": "ខ្លាំង"
+  "Above Threshold": "លើសពីកម្រិត",
+  "Below Threshold": "ក្រោមកម្រិត"
 }
