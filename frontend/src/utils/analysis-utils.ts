@@ -1,34 +1,35 @@
 import {
+  flatten,
   get,
   has,
+  invert,
   isNull,
+  isNumber,
   isString,
   max,
   mean,
   min,
-  invert,
-  sum,
   omit,
-  flatten,
-  isNumber,
   orderBy,
+  sum,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import moment from 'moment';
 import { createGetCoverageUrl } from 'prism-common';
+import { TFunctionKeys } from 'i18next';
 import {
+  AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
   AsyncReturnType,
+  BoundaryLayerProps,
   ImpactLayerProps,
   LegendDefinition,
-  AdminLevelDataLayerProps,
   StatsApi,
   ThresholdDefinition,
-  WMSLayerProps,
   WfsRequestParams,
-  BoundaryLayerProps,
+  WMSLayerProps,
 } from '../config/types';
 import type { ThunkApi } from '../context/store';
 import { layerDataSelector } from '../context/mapStateSlice/selectors';
@@ -527,7 +528,7 @@ export function createLegendFromFeatureArray(
 
   const delta = (maxNum - minNum) / colors.length;
 
-  const legend: LegendDefinition = colors.map((color, index) => {
+  return colors.map((color, index) => {
     const breakpoint =
       delta > 1
         ? Math.ceil(minNum + (index + 1) * delta)
@@ -539,11 +540,12 @@ export function createLegendFromFeatureArray(
     return {
       value,
       color,
-      label: `${labels[index]} (${Math.round(value).toLocaleString('en-US')})`,
+      label: {
+        text: labels[index],
+        value: `(${Math.round(value).toLocaleString('en-US')})`,
+      },
     };
   });
-
-  return legend;
 }
 
 export class ExposedPopulationResult {
@@ -646,7 +648,7 @@ export class BaselineLayerResult {
     const baselineLayer = this.getBaselineLayer();
     // If there is no title, we are using admin boundaries and return StatTitle instead.
     if (!baselineLayer.title) {
-      return this.getStatTitle();
+      return this.getStatTitle(t);
     }
     const baselineTitle = baselineLayer.title || 'Admin levels';
     return t
@@ -785,14 +787,20 @@ export class PolygonAnalysisResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getTitle(): string {
-    return `${this.getHazardLayer().title} intersecting admin level ${
-      this.adminLevel
-    }`;
+  getTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} ${t('intersecting admin level')} ${t(
+          (this.adminLevel as unknown) as TFunctionKeys,
+        )}`
+      : `${this.getHazardLayer().title} intersecting admin level ${
+          this.adminLevel
+        }`;
   }
 
-  getStatTitle(): string {
-    return `${this.getHazardLayer().title} (${this.statistic})`;
+  getStatTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
+      : `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }
 

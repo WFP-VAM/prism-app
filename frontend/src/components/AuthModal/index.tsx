@@ -19,6 +19,7 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
+import { TFunctionKeys } from 'i18next';
 import { useSafeTranslation } from '../../i18n';
 import { layersSelector } from '../../context/mapStateSlice/selectors';
 
@@ -77,12 +78,12 @@ const AuthModal = ({ classes }: AuthModalProps) => {
     return layersWithAuthRequired.reduce(
       (acc: string, currentLayer, currentLayerIndex) => {
         return currentLayerIndex === 0
-          ? currentLayer?.title ?? ''
-          : `${acc}, ${currentLayer.title}`;
+          ? t(currentLayer?.title as TFunctionKeys) ?? ''
+          : `${acc}, ${t(currentLayer.title as TFunctionKeys)}`;
       },
       '',
     );
-  }, [layersWithAuthRequired]);
+  }, [layersWithAuthRequired, t]);
 
   // function that handles the text-field on change
   const handleInputTextChanged = useCallback((identifier: keyof UserAuth) => {
