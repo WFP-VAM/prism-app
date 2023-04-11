@@ -128,14 +128,15 @@ const useStyles = makeStyles(() =>
       zIndex: 3,
     },
     chartsPanelCharts: {
-      overflow: 'scroll',
+      overflowY: 'auto',
+      overflowX: 'hidden',
       display: 'flex',
       justifyContent: 'center',
       flexWrap: 'wrap',
       flexGrow: 4,
       paddingTop: '1em',
       marginTop: 0,
-      marginBottom: 'auto',
+      paddingBottom: '1em',
     },
     removeAdmin: {
       fontWeight: 'bold',
@@ -339,6 +340,15 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     [],
   );
 
+  const showChartsPanel = useMemo(() => {
+    return (
+      adminProperties &&
+      selectedDate &&
+      tabIndex === tabValue &&
+      selectedLayerTitles.length >= 1
+    );
+  }, [adminProperties, selectedDate, selectedLayerTitles.length, tabValue]);
+
   useEffect(() => {
     if (!adminProperties && countryAdmin0Id && data) {
       setAdminProperties(getProperties(data));
@@ -360,12 +370,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
   ]);
 
   useEffect(() => {
-    if (
-      adminProperties &&
-      selectedDate &&
-      tabIndex === tabValue &&
-      selectedLayerTitles.length >= 1
-    ) {
+    if (showChartsPanel) {
       setPanelSize(PanelSize.xlarge);
       setResultsPage(
         <Box className={classes.chartsPanelCharts}>
@@ -382,9 +387,9 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
                 >
                   <ChartSection
                     chartLayer={layer}
-                    adminProperties={adminProperties}
+                    adminProperties={adminProperties as GeoJsonProperties}
                     adminLevel={adminLevel}
-                    date={selectedDate}
+                    date={selectedDate as number}
                     dataForCsv={dataForCsv}
                   />
                 </Box>
@@ -397,7 +402,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
             adminProperties && selectedDate && selectedLayerTitles.length === 1 && (
               <Box
                 style={{
-                  minHeight: '50vh',
+                  maxHeight: '50vh',
                   width: '100%',
                 }}
               >
@@ -430,6 +435,7 @@ function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
     selectedLayerTitles.length,
     setPanelSize,
     setResultsPage,
+    showChartsPanel,
     tabValue,
   ]);
 
