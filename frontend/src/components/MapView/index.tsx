@@ -596,15 +596,20 @@ function MapView({ classes }: MapViewProps) {
           >
             <Grid item>
               <Grid container spacing={1}>
-                {isShowingExtraFeatures && <GoToBoundaryDropdown />}
-                {appConfig.alertFormActive && isShowingExtraFeatures ? (
-                  <AlertForm
-                    isOpen={isAlertFormOpen}
-                    setOpen={setIsAlertFormOpen}
-                  />
-                ) : null}
+                {isShowingExtraFeatures && (
+                  <Grid item>
+                    <GoToBoundaryDropdown />
+                  </Grid>
+                )}
+                {appConfig.alertFormActive && isShowingExtraFeatures && (
+                  <Grid item>
+                    <AlertForm
+                      isOpen={isAlertFormOpen}
+                      setOpen={setIsAlertFormOpen}
+                    />
+                  </Grid>
+                )}
               </Grid>
-
               {isShowingExtraFeatures && <DataViewer />}
             </Grid>
             {isShowingExtraFeatures && (
@@ -691,7 +696,7 @@ const styles = () =>
         pointerEvents: 'auto',
       },
       width: '100%',
-      padding: '16px',
+      padding: '3px 8px 0 16px',
     },
     loading: {
       position: 'absolute',
