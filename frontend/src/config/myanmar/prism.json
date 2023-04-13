@@ -1,6 +1,7 @@
 {
   "country": "Myanmar",
-  "WFPAuthRequired": true,
+  "countryAdmin0Id": 273,
+  "WFPAuthRequired": false,
   "alertFormActive": false,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
@@ -17,7 +18,7 @@
     "temperature": "icon_climate.png"
   },
   "map": {
-    "boundingBox": [92.3, 9.93, 101.18, 28.34]
+    "boundingBox": [97.3, 11.93, 100.18, 27.34]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -26,36 +27,12 @@
   ],
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://geonode.wfp.org/geoserver/prism/wms/"
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
   "categories": {
     "storms_and_floods": {
-      "tropical_storms": [
-        {
-          "group_title": "Tropical Storms",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "adamts_buffers",
-              "label": "Wind buffers",
-              "main": true
-            },
-            {
-              "id": "adamts_nodes",
-              "label": "Nodes",
-              "main": false
-            },
-            {
-              "id": "adamts_tracks",
-              "label": "Tracks",
-              "main": false
-            }
-          ]
-        }
-      ],
-      "floods": ["hydra_s1"]
+      "floods": ["flood_extent"]
     },
     "rainfall": {
       "rainfall_amount": [
