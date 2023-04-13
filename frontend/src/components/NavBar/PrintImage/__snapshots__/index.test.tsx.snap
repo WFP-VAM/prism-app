@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <div
+    style="padding-top: 4px;"
+  >
+    <mock-button
+      style="background-color: transparent;"
+    >
+      <svg
+        aria-hidden="true"
+        class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
+        focusable="false"
+        style="padding-right: 0.2em;"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"
+        />
+      </svg>
+      <mock-typography
+        classname="PrintImage-printText-1"
+        variant="body2"
+      >
+        Print
+      </mock-typography>
+    </mock-button>
+  </div>
+  <mock-dialog
+    aria-labelledby="dialog-preview"
+    keepmounted="true"
+    maxwidth="xl"
+    open="false"
+  >
+    <mock-dialogtitle
+      classname="DownloadImage-title-2"
+      id="dialog-preview"
+    >
+      Map Preview
+    </mock-dialogtitle>
+    <mock-dialogcontent>
+      <canvas />
+    </mock-dialogcontent>
+    <mock-dialogactions>
+      <mock-button
+        color="primary"
+      >
+        Cancel
+      </mock-button>
+      <mock-button
+        color="primary"
+        variant="contained"
+      >
+        Download PNG
+      </mock-button>
+      <mock-button
+        color="primary"
+        variant="contained"
+      >
+        Download JPEG
+      </mock-button>
+      <mock-button
+        color="primary"
+        variant="contained"
+      >
+        Download PDF
+      </mock-button>
+    </mock-dialogactions>
+  </mock-dialog>
+</div>
+`;

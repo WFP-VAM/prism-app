@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import * as Sentry from '@sentry/browser';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -47,7 +47,7 @@ Font.register({
   ],
 });
 
-const Wrapper = () => {
+const Wrapper = memo(() => {
   return (
     <div id="app">
       <NavBar />
@@ -60,18 +60,24 @@ const Wrapper = () => {
       </Switch>
     </div>
   );
-};
+});
 
 function App() {
   const isAuthenticated = useIsAuthenticated();
+
+  // The rendered content
+  const renderedContent = useMemo(() => {
+    if (isAuthenticated || !authRequired) {
+      return <Wrapper />;
+    }
+    return <Login />;
+  }, [isAuthenticated]);
 
   return (
     <ThemeProvider theme={muiTheme}>
       {/* Used to show notifications from redux as a snackbar. Notifications are stored in notificationState */}
       <Notifier />
-      <Router>
-        {isAuthenticated || !authRequired ? <Wrapper /> : <Login />}
-      </Router>
+      <Router>{renderedContent}</Router>
     </ThemeProvider>
   );
 }

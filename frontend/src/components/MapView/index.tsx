@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  Box,
   CircularProgress,
   createStyles,
   Grid,
@@ -23,7 +24,6 @@ import inside from '@turf/boolean-point-in-polygon';
 import type { Feature, MultiPolygon } from '@turf/helpers';
 import MapTooltip from './MapTooltip';
 import Legends from './Legends';
-import Download from './Download';
 // layers
 import {
   AdminLevelDataLayer,
@@ -40,6 +40,7 @@ import {
   isMainLayer,
   LayerKey,
   LayerType,
+  PanelSize,
 } from '../../config/types';
 
 import { Extent } from './Layers/raster-utils';
@@ -64,6 +65,7 @@ import {
   setMap,
   updateDateRange,
   removeLayer,
+  layerOrdering,
 } from '../../context/mapStateSlice';
 import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
 import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';
@@ -80,7 +82,6 @@ import {
 
 import { appConfig } from '../../config';
 import { LayerData, loadLayerData } from '../../context/layers/layer-data';
-import Analyser from './Analyser';
 import AnalysisLayer from './Layers/AnalysisLayer';
 import {
   DateCompatibleLayer,
@@ -96,13 +97,33 @@ import BoundaryInfoBox from './BoundaryInfoBox';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
 import { firstBoundaryOnView } from '../../utils/map-utils';
 import DataViewer from '../DataViewer';
+import LeftPanel from './LeftPanel';
+import FoldButton from './FoldButton';
 
+// Bounding boxes are adapted from https://github.com/sandstrom/country-bounding-boxes
 const {
-  map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom },
+  map: { boundingBox, maxBounds, minZoom, maxZoom },
 } = appConfig;
 
-const center = [longitude, latitude] as [number, number];
-const zoomList = [zoom] as [number];
+if (boundingBox.length !== 4) {
+  throw Error(
+    `map.boundingBox ${boundingBox} is not valid. Make sure it is of type [number, number, number, nmuber].`,
+  );
+}
+
+// The map initialization requires a center so we provide a te,porary one.
+// But we actually rely on the boundingBox to fit the country in the available screen space.
+const mapTempCenter = boundingBox.slice(0, 2) as [number, number];
+
+const fitBoundsOptions = {
+  duration: 0,
+  padding: {
+    bottom: 150, // room for dates.
+    left: appConfig.hidePanel ? 30 : 500, // room for the left panel if active.
+    right: 60,
+    top: 70,
+  },
+};
 
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
@@ -189,7 +210,10 @@ function useMapOnClick(setIsAlertFormOpen: (value: boolean) => void) {
 
 function MapView({ classes }: MapViewProps) {
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
-  const selectedLayers = useSelector(layersSelector);
+  const unsortedSelectedLayers = useSelector(layersSelector);
+  // Prioritize boundary and point_data layers
+  // eslint-disable-next-line fp/no-mutating-methods
+  const selectedLayers = [...unsortedSelectedLayers].sort(layerOrdering);
   const selectedMap = useSelector(mapSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
   const datesLoading = useSelector(areDatesLoading);
@@ -198,6 +222,10 @@ function MapView({ classes }: MapViewProps) {
   const serverAvailableDates = useSelector(availableDatesSelector);
   const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
     undefined,
+  );
+  const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
+  const [isPanelHidden, setIsPanelHidden] = useState<boolean>(
+    Boolean(appConfig.hidePanel),
   );
 
   const selectedLayersWithDateSupport = selectedLayers
@@ -217,6 +245,8 @@ function MapView({ classes }: MapViewProps) {
     | LayerData<BoundaryLayerProps>
     | undefined;
 
+  // TODO - could we simply use the country boundary extent here instead of the calculation?
+  // Or can we foresee any edge cases?
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData) {
       return undefined;
@@ -399,6 +429,7 @@ function MapView({ classes }: MapViewProps) {
       selectedLayersWithDateSupport.length !== 0 &&
       selectedDate
     ) {
+      // WARNING - This logic doesn't apply anymore if we order layers differently...
       const layerToRemove = selectedLayers[selectedLayers.length - 2];
       const layerToKeep = selectedLayers[selectedLayers.length - 1];
 
@@ -538,8 +569,61 @@ function MapView({ classes }: MapViewProps) {
   const boundaryId = firstBoundaryOnView(selectedMap);
   const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
 
+  const isShowingExtraFeatures =
+    panelSize !== PanelSize.xlarge || isPanelHidden;
+
   return (
-    <Grid item className={classes.container}>
+    <Box className={classes.root}>
+      <LeftPanel
+        extent={adminBoundariesExtent}
+        panelSize={panelSize}
+        setPanelSize={setPanelSize}
+        isPanelHidden={isPanelHidden}
+      />
+      <Box className={classes.container}>
+        <Box
+          className={classes.optionContainer}
+          style={{ marginLeft: isPanelHidden ? PanelSize.folded : panelSize }}
+        >
+          <FoldButton
+            isPanelHidden={isPanelHidden}
+            setIsPanelHidden={setIsPanelHidden}
+          />
+          <Grid
+            container
+            justify="space-between"
+            className={classes.buttonContainer}
+          >
+            <Grid item>
+              <Grid container spacing={1}>
+                {isShowingExtraFeatures && <GoToBoundaryDropdown />}
+                {appConfig.alertFormActive && isShowingExtraFeatures ? (
+                  <AlertForm
+                    isOpen={isAlertFormOpen}
+                    setOpen={setIsAlertFormOpen}
+                  />
+                ) : null}
+              </Grid>
+
+              {isShowingExtraFeatures && <DataViewer />}
+            </Grid>
+            {isShowingExtraFeatures && (
+              <Grid item>
+                <Grid container spacing={1}>
+                  <Legends layers={selectedLayers} />
+                </Grid>
+              </Grid>
+            )}
+          </Grid>
+          {isShowingExtraFeatures && selectedLayerDates.length > 0 && (
+            <DateSelector
+              availableDates={selectedLayerDates}
+              selectedLayers={selectedLayersWithDateSupport}
+            />
+          )}
+          {showBoundaryInfo && <BoundaryInfoBox />}
+        </Box>
+      </Box>
       {datesLoading && (
         <div className={classes.loading}>
           <CircularProgress size={100} />
@@ -552,9 +636,10 @@ function MapView({ classes }: MapViewProps) {
         containerStyle={{
           height: '100%',
         }}
+        fitBounds={boundingBox}
+        fitBoundsOptions={fitBoundsOptions}
         onClick={mapOnClick}
-        center={center}
-        zoom={zoomList}
+        center={mapTempCenter}
         maxBounds={maxBounds}
       >
         {selectedLayers.map(layer => {
@@ -573,42 +658,28 @@ function MapView({ classes }: MapViewProps) {
         <SelectionLayer before={firstSymbolId} />
         <MapTooltip />
       </MapboxMap>
-      <Grid
-        container
-        justify="space-between"
-        className={classes.buttonContainer}
-      >
-        <Grid item>
-          <Analyser extent={adminBoundariesExtent} />
-          <GoToBoundaryDropdown />
-          {appConfig.alertFormActive ? (
-            <AlertForm isOpen={isAlertFormOpen} setOpen={setIsAlertFormOpen} />
-          ) : null}
-          <DataViewer />
-        </Grid>
-        <Grid item>
-          <Grid container spacing={1}>
-            <Download />
-            <Legends layers={selectedLayers} extent={adminBoundariesExtent} />
-          </Grid>
-        </Grid>
-      </Grid>
-      {selectedLayerDates.length > 0 && (
-        <DateSelector
-          availableDates={selectedLayerDates}
-          selectedLayers={selectedLayersWithDateSupport}
-        />
-      )}
-      {showBoundaryInfo && <BoundaryInfoBox />}
-    </Grid>
+    </Box>
   );
 }
 
 const styles = () =>
   createStyles({
+    root: {
+      height: '100%',
+      width: '100%',
+      position: 'relative',
+    },
     container: {
       height: '100%',
+      width: '100%',
+      position: 'absolute',
+      top: 0,
+      rigth: 0,
+    },
+    optionContainer: {
       position: 'relative',
+      height: '100%',
+      display: 'flex',
     },
     buttonContainer: {
       zIndex: 5,
@@ -619,8 +690,6 @@ const styles = () =>
       '& > * > *': {
         pointerEvents: 'auto',
       },
-      position: 'absolute',
-      top: 0,
       width: '100%',
       padding: '16px',
     },
