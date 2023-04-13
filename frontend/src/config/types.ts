@@ -331,6 +331,9 @@ export type DatasetField = {
   label: string;
   fallback?: number; // If key does not exist in json response use fallback (rainfall anomaly).
   color: string;
+  maxValue?: number;
+  minValue?: number;
+  pointRadius?: number;
 };
 
 type DatasetProps = {
@@ -610,6 +613,8 @@ export interface WfsRequestParams {
 export interface ChartConfig {
   type: string;
   category: string;
+  minValue?: number;
+  maxValue?: number;
   stacked?: boolean;
   exclude?: string[];
   data?: string;
