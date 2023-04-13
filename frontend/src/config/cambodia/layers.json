@@ -279,11 +279,15 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
           "fallback": 100,
+          "pointRadius": 0,
           "color": "#eb3223"
         }
       ],

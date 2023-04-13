@@ -38,9 +38,11 @@ function TabPanel(props: TabPanelProps) {
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
       style={{
+        display: index === value ? 'block' : 'none',
         flexGrow: 1,
         height: 'calc(93vh - 48px)',
         order: index === value ? -1 : undefined,
+        overflowX: index === value ? 'hidden' : 'auto',
       }}
       {...other}
     >
@@ -57,6 +59,7 @@ function a11yProps(index: any) {
 }
 
 interface StyleProps {
+  tabValue: number;
   panelSize: PanelSize;
 }
 
@@ -66,6 +69,7 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
       display: 'flex',
       flexDirection: 'row',
       height: '100%',
+      overflowY: ({ tabValue }) => (tabValue === 1 ? 'hidden' : 'auto'),
     },
     tabsWrapper: {
       display: 'flex',
@@ -114,8 +118,8 @@ function LeftPanelTabs({
 }: TabsProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
-  const classes = useStyles({ panelSize });
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const classes = useStyles({ panelSize, tabValue });
 
   const handleChange = (_: any, newValue: number) => {
     setPanelSize(PanelSize.medium);
