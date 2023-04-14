@@ -102,7 +102,7 @@ import FoldButton from './FoldButton';
 
 // Bounding boxes are adapted from https://github.com/sandstrom/country-bounding-boxes
 const {
-  map: { boundingBox, maxBounds, minZoom, maxZoom },
+  map: { boundingBox, maxBounds, minZoom, maxZoom, hidePanel, alertFormActive },
 } = appConfig;
 
 if (boundingBox.length !== 4) {
@@ -119,7 +119,7 @@ const fitBoundsOptions = {
   duration: 0,
   padding: {
     bottom: 150, // room for dates.
-    left: appConfig.hidePanel ? 30 : 500, // room for the left panel if active.
+    left: hidePanel ? 30 : 500, // room for the left panel if active.
     right: 60,
     top: 70,
   },
@@ -225,7 +225,7 @@ function MapView({ classes }: MapViewProps) {
   );
   const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
   const [isPanelHidden, setIsPanelHidden] = useState<boolean>(
-    Boolean(appConfig.hidePanel),
+    Boolean(hidePanel),
   );
 
   const selectedLayersWithDateSupport = selectedLayers
@@ -600,7 +600,7 @@ function MapView({ classes }: MapViewProps) {
                   <Grid item>
                     <GoToBoundaryDropdown />
                   </Grid>
-                  {appConfig.alertFormActive && (
+                  {alertFormActive && (
                     <Grid item>
                       <AlertForm
                         isOpen={isAlertFormOpen}

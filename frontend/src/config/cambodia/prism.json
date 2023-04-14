@@ -1,7 +1,7 @@
 {
   "country": "Cambodia",
   "countryAdmin0Id": 44,
-  "alertFormActive": true,
+  "alertFormActive": false,
   "aboutPath": "data/cambodia/about.md",
   "enableNavigationDropdown": true,
   "icons": {
