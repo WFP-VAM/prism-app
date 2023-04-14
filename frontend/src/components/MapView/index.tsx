@@ -589,37 +589,35 @@ function MapView({ classes }: MapViewProps) {
             isPanelHidden={isPanelHidden}
             setIsPanelHidden={setIsPanelHidden}
           />
-          <Grid
-            container
-            justify="space-between"
-            className={classes.buttonContainer}
-          >
-            <Grid item>
-              <Grid container spacing={1}>
-                {isShowingExtraFeatures && (
+          {isShowingExtraFeatures && (
+            <Grid
+              container
+              justify="space-between"
+              className={classes.buttonContainer}
+            >
+              <Grid item>
+                <Grid container spacing={1}>
                   <Grid item>
                     <GoToBoundaryDropdown />
                   </Grid>
-                )}
-                {appConfig.alertFormActive && isShowingExtraFeatures && (
-                  <Grid item>
-                    <AlertForm
-                      isOpen={isAlertFormOpen}
-                      setOpen={setIsAlertFormOpen}
-                    />
-                  </Grid>
-                )}
+                  {appConfig.alertFormActive && (
+                    <Grid item>
+                      <AlertForm
+                        isOpen={isAlertFormOpen}
+                        setOpen={setIsAlertFormOpen}
+                      />
+                    </Grid>
+                  )}
+                </Grid>
+                <DataViewer />
               </Grid>
-              {isShowingExtraFeatures && <DataViewer />}
-            </Grid>
-            {isShowingExtraFeatures && (
               <Grid item>
                 <Grid container spacing={1}>
                   <Legends layers={selectedLayers} />
                 </Grid>
               </Grid>
-            )}
-          </Grid>
+            </Grid>
+          )}
           {isShowingExtraFeatures && selectedLayerDates.length > 0 && (
             <DateSelector
               availableDates={selectedLayerDates}
