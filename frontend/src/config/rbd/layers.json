@@ -3883,10 +3883,10 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2022-02-01",
-      "2022-06-01",
-      "2023-02-01", 
-      "2023-06-01"
+      "2021-02-01",
+      "2021-06-01",
+      "2022-02-01", 
+      "2022-06-01"
     ],
     "admin_level": 2,
     "data_field": "phase_class",
