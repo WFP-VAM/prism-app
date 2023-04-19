@@ -9,7 +9,13 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { ArrowDropDown, Notifications } from '@material-ui/icons';
-import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BoundaryLayerProps,
@@ -80,7 +86,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
     );
   }, [boundaryLayerData]);
 
-  const generateGeoJsonForRegionNames = () => {
+  const generateGeoJsonForRegionNames = useCallback(() => {
     // TODO - Handle these errors properly.
     if (!boundaryLayerData) {
       throw new Error('Boundary layer data is not loaded yet.');
@@ -103,7 +109,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
     mutableFeatureCollection.features = features;
 
     return mutableFeatureCollection;
-  };
+  }, [boundaryLayerData, regionCodesToFeatureData, regionsList]);
 
   const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = event.target.value;
@@ -120,28 +126,31 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
   };
 
   // specially for threshold values, also does error checking
-  const onThresholdOptionChange = (thresholdType: 'above' | 'below') => (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const setterFunc =
-      thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
-    const changedOption = onOptionChange(setterFunc)(event);
-    // setting a value doesn't update the existing value until next render,
-    // therefore we must decide whether to access the old one or the newly change one here.
-    const aboveThresholdValue = parseFloat(
-      thresholdType === 'above' ? changedOption : aboveThreshold,
-    );
-    const belowThresholdValue = parseFloat(
-      thresholdType === 'below' ? changedOption : belowThreshold,
-    );
-    if (belowThresholdValue > aboveThresholdValue) {
-      setThresholdError('Below threshold is larger than above threshold!');
-    } else {
-      setThresholdError(null);
-    }
-  };
+  const onThresholdOptionChange = useCallback(
+    (thresholdType: 'above' | 'below') => (
+      event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+      const setterFunc =
+        thresholdType === 'above' ? setAboveThreshold : setBelowThreshold;
+      const changedOption = onOptionChange(setterFunc)(event);
+      // setting a value doesn't update the existing value until next render,
+      // therefore we must decide whether to access the old one or the newly change one here.
+      const aboveThresholdValue = parseFloat(
+        thresholdType === 'above' ? changedOption : aboveThreshold,
+      );
+      const belowThresholdValue = parseFloat(
+        thresholdType === 'below' ? changedOption : belowThreshold,
+      );
+      if (belowThresholdValue > aboveThresholdValue) {
+        setThresholdError('Below threshold is larger than above threshold!');
+      } else {
+        setThresholdError(null);
+      }
+    },
+    [aboveThreshold, belowThreshold],
+  );
 
-  const runAlertForm = async () => {
+  const runAlertForm = useCallback(async () => {
     if (!hazardLayerId) {
       throw new Error('Layer should be selected to create alert.');
     }
@@ -169,7 +178,133 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
         }),
       );
     }
-  };
+  }, [
+    aboveThreshold,
+    alertName,
+    belowThreshold,
+    dispatch,
+    email,
+    generateGeoJsonForRegionNames,
+    hazardLayerId,
+  ]);
+
+  const renderedAlertForm = useMemo(() => {
+    if (!isOpen) {
+      return null;
+    }
+    return (
+      <Box className={classes.alertFormMenu}>
+        <div className={classes.newAlertFormContainer}>
+          <div className={classes.alertFormOptions}>
+            <Typography variant="body2">{t('Hazard Layer')}</Typography>
+            <LayerDropdown
+              type="wms"
+              value={hazardLayerId}
+              setValue={setHazardLayerId}
+              className={classes.selector}
+              placeholder="Choose hazard layer"
+            />
+          </div>
+          <div className={classes.alertFormOptions}>
+            <Typography variant="body2">{t('Threshold')}</Typography>
+            <div className={classes.thresholdInputsContainer}>
+              <TextField
+                id="filled-number"
+                error={!!thresholdError}
+                helperText={t(thresholdError || '')}
+                className={classes.numberField}
+                label={t('Below')}
+                InputLabelProps={{
+                  style: { color: '#ffffff' },
+                }}
+                type="number"
+                value={belowThreshold}
+                onChange={onThresholdOptionChange('below')}
+                variant="filled"
+              />
+              <TextField
+                id="filled-number"
+                label={t('Above')}
+                className={classes.numberField}
+                InputLabelProps={{
+                  style: { color: '#ffffff' },
+                }}
+                value={aboveThreshold}
+                onChange={onThresholdOptionChange('above')}
+                type="number"
+                variant="filled"
+              />
+            </div>
+          </div>
+          <div className={classes.alertFormOptions}>
+            <Typography variant="body2">{t('Regions')}</Typography>
+            <BoundaryDropdown className={classes.regionSelector} />
+          </div>
+          <div className={classes.alertFormOptions}>
+            <TextField
+              id="alert-name"
+              label={t('Alert Name')}
+              type="text"
+              InputLabelProps={{
+                style: { color: '#ffffff' },
+              }}
+              variant="filled"
+              value={alertName}
+              onChange={e => setAlertName(e.target.value)}
+              fullWidth
+            />
+          </div>
+          <div className={classes.alertFormOptions}>
+            <TextField
+              id="email-address"
+              label={t('Email Address')}
+              type="text"
+              InputLabelProps={{
+                style: { color: '#ffffff' },
+              }}
+              variant="filled"
+              onChange={onChangeEmail}
+              fullWidth
+            />
+          </div>
+        </div>
+        <Button
+          className={classes.innerCreateAlertButton}
+          onClick={runAlertForm}
+          disabled={
+            !hazardLayerId ||
+            !!thresholdError ||
+            !emailValid ||
+            alertWaiting ||
+            regionsList.length === 0
+          }
+        >
+          <Typography variant="body2">{t('Create Alert')}</Typography>
+        </Button>
+      </Box>
+    );
+  }, [
+    aboveThreshold,
+    alertName,
+    alertWaiting,
+    belowThreshold,
+    classes.alertFormMenu,
+    classes.alertFormOptions,
+    classes.innerCreateAlertButton,
+    classes.newAlertFormContainer,
+    classes.numberField,
+    classes.regionSelector,
+    classes.selector,
+    classes.thresholdInputsContainer,
+    emailValid,
+    hazardLayerId,
+    isOpen,
+    onThresholdOptionChange,
+    regionsList.length,
+    runAlertForm,
+    t,
+    thresholdError,
+  ]);
 
   if (!ALERT_FORM_ENABLED) {
     return null;
@@ -178,6 +313,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
   return (
     <div className={classes.alertForm}>
       <Button
+        className={classes.alertTriggerButton}
         variant="contained"
         color="primary"
         onClick={() => {
@@ -190,91 +326,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
         </Typography>
         <ArrowDropDown fontSize="small" />
       </Button>
-
-      <Box
-        className={classes.alertFormMenu}
-        width={isOpen ? 'min-content' : 0}
-        padding={isOpen ? '10px' : 0}
-      >
-        {isOpen ? (
-          <div>
-            <div className={classes.newAlertFormContainer}>
-              <div className={classes.alertFormOptions}>
-                <Typography variant="body2">{t('Hazard Layer')}</Typography>
-                <LayerDropdown
-                  type="wms"
-                  value={hazardLayerId}
-                  setValue={setHazardLayerId}
-                  className={classes.selector}
-                  placeholder="Choose hazard layer"
-                />
-              </div>
-              <div className={classes.alertFormOptions}>
-                <Typography variant="body2">{t('Threshold')}</Typography>
-                <TextField
-                  id="filled-number"
-                  error={!!thresholdError}
-                  helperText={t(thresholdError || '')}
-                  className={classes.numberField}
-                  label={t('Below')}
-                  type="number"
-                  value={belowThreshold}
-                  onChange={onThresholdOptionChange('below')}
-                  variant="filled"
-                />
-                <TextField
-                  id="filled-number"
-                  label={t('Above')}
-                  className={classes.numberField}
-                  style={{ paddingLeft: '10px' }}
-                  value={aboveThreshold}
-                  onChange={onThresholdOptionChange('above')}
-                  type="number"
-                  variant="filled"
-                />
-              </div>
-              <div className={classes.alertFormOptions}>
-                <Typography variant="body2">{t('Regions')}</Typography>
-                <BoundaryDropdown className={classes.regionSelector} />
-              </div>
-              <div className={classes.alertFormOptions}>
-                <TextField
-                  id="alert-name"
-                  label={t('Alert Name')}
-                  type="text"
-                  variant="filled"
-                  value={alertName}
-                  onChange={e => setAlertName(e.target.value)}
-                  fullWidth
-                />
-              </div>
-              <div className={classes.alertFormOptions}>
-                <TextField
-                  id="email-address"
-                  label={t('Email Address')}
-                  type="text"
-                  variant="filled"
-                  onChange={onChangeEmail}
-                  fullWidth
-                />
-              </div>
-            </div>
-            <Button
-              className={classes.innerCreateAlertButton}
-              onClick={runAlertForm}
-              disabled={
-                !hazardLayerId ||
-                !!thresholdError ||
-                !emailValid ||
-                alertWaiting ||
-                regionsList.length === 0
-              }
-            >
-              <Typography variant="body2">{t('Create Alert')}</Typography>
-            </Button>
-          </div>
-        ) : null}
-      </Box>
+      {renderedAlertForm}
     </div>
   );
 }
@@ -282,26 +334,39 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
 const styles = (theme: Theme) =>
   createStyles({
     alertLabel: { marginLeft: '10px' },
+    alertTriggerButton: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '3em',
+      padding: theme.spacing(0.8, 2.66),
+    },
     alertForm: {
       zIndex: theme.zIndex.drawer,
       textAlign: 'left',
-      marginTop: '5px',
     },
     alertFormMenu: {
       backgroundColor: theme.surfaces?.light,
-      maxWidth: '100vw',
-      minWidth: 'max-content',
       color: 'white',
       overflowX: 'hidden',
       whiteSpace: 'nowrap',
-      borderTopRightRadius: '10px',
-      borderBottomRightRadius: '10px',
       height: 'auto',
       maxHeight: '60vh',
+      width: '23vw',
+      marginTop: '0.5em',
+      borderRadius: '10px',
+      padding: '10px',
     },
     alertFormButton: {
       height: '36px',
       marginLeft: '3px',
+    },
+    thresholdInputsContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: '1em',
+      width: '100%',
     },
     alertFormOptions: {
       padding: '5px 0px',
@@ -319,6 +384,7 @@ const styles = (theme: Theme) =>
     },
     selector: {
       margin: '5px',
+      width: '100%',
     },
     regionSelector: {
       minWidth: '100%',
@@ -326,8 +392,10 @@ const styles = (theme: Theme) =>
     },
     numberField: {
       marginTop: '10px',
-      width: '110px',
-      '&:focused': { color: 'white' },
+      width: '50%',
+    },
+    inputLabelRoot: {
+      color: 'white',
     },
     alertFormResponseText: {
       marginLeft: '15px',

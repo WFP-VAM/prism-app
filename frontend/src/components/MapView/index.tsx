@@ -102,7 +102,7 @@ import FoldButton from './FoldButton';
 
 // Bounding boxes are adapted from https://github.com/sandstrom/country-bounding-boxes
 const {
-  map: { boundingBox, maxBounds, minZoom, maxZoom },
+  map: { boundingBox, maxBounds, minZoom, maxZoom, hidePanel, alertFormActive },
 } = appConfig;
 
 if (boundingBox.length !== 4) {
@@ -119,7 +119,7 @@ const fitBoundsOptions = {
   duration: 0,
   padding: {
     bottom: 150, // room for dates.
-    left: appConfig.hidePanel ? 30 : 500, // room for the left panel if active.
+    left: hidePanel ? 30 : 500, // room for the left panel if active.
     right: 60,
     top: 70,
   },
@@ -225,7 +225,7 @@ function MapView({ classes }: MapViewProps) {
   );
   const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
   const [isPanelHidden, setIsPanelHidden] = useState<boolean>(
-    Boolean(appConfig.hidePanel),
+    Boolean(hidePanel),
   );
 
   const selectedLayersWithDateSupport = selectedLayers
@@ -589,32 +589,35 @@ function MapView({ classes }: MapViewProps) {
             isPanelHidden={isPanelHidden}
             setIsPanelHidden={setIsPanelHidden}
           />
-          <Grid
-            container
-            justify="space-between"
-            className={classes.buttonContainer}
-          >
-            <Grid item>
-              <Grid container spacing={1}>
-                {isShowingExtraFeatures && <GoToBoundaryDropdown />}
-                {appConfig.alertFormActive && isShowingExtraFeatures ? (
-                  <AlertForm
-                    isOpen={isAlertFormOpen}
-                    setOpen={setIsAlertFormOpen}
-                  />
-                ) : null}
+          {isShowingExtraFeatures && (
+            <Grid
+              container
+              justify="space-between"
+              className={classes.buttonContainer}
+            >
+              <Grid item>
+                <Grid container spacing={1}>
+                  <Grid item>
+                    <GoToBoundaryDropdown />
+                  </Grid>
+                  {alertFormActive && (
+                    <Grid item>
+                      <AlertForm
+                        isOpen={isAlertFormOpen}
+                        setOpen={setIsAlertFormOpen}
+                      />
+                    </Grid>
+                  )}
+                </Grid>
+                <DataViewer />
               </Grid>
-
-              {isShowingExtraFeatures && <DataViewer />}
-            </Grid>
-            {isShowingExtraFeatures && (
               <Grid item>
                 <Grid container spacing={1}>
                   <Legends layers={selectedLayers} />
                 </Grid>
               </Grid>
-            )}
-          </Grid>
+            </Grid>
+          )}
           {isShowingExtraFeatures && selectedLayerDates.length > 0 && (
             <DateSelector
               availableDates={selectedLayerDates}
@@ -691,7 +694,7 @@ const styles = () =>
         pointerEvents: 'auto',
       },
       width: '100%',
-      padding: '16px',
+      padding: '3px 8px 0 16px',
     },
     loading: {
       position: 'absolute',

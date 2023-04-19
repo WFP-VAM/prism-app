@@ -127,6 +127,7 @@ function Legends({ classes, layers }: LegendsProps) {
   return (
     <Grid item className={classes.container}>
       <Button
+        className={classes.triggerButton}
         variant="contained"
         color="primary"
         onClick={() => setOpen(!open)}
@@ -239,6 +240,9 @@ const styles = () =>
   createStyles({
     container: {
       textAlign: 'right',
+    },
+    triggerButton: {
+      height: '3em',
     },
     label: {
       marginLeft: '10px',
