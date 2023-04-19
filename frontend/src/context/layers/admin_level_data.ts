@@ -219,7 +219,9 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         const format = match.slice(1, -1);
         return moment(date).format(format);
       });
+      // eslint-disable-next-line no-console
       console.log('Trying to fetch data from these files:');
+      // eslint-disable-next-line no-console
       console.log(datedPath);
 
       // TODO avoid any use, the json should be typed. See issue #307

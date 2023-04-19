@@ -95,9 +95,13 @@ function DateSelector({
   const dateRef = useRef(availableDates);
   const maxDate = new Date(Math.max(...availableDates, new Date().getTime()));
 
+  // eslint-disable-next-line no-console
   console.log('Available dates:');
+  // eslint-disable-next-line no-console
   console.log(availableDates.map(n => new Date(n)));
+  // eslint-disable-next-line no-console
   console.log('Max date:');
+  // eslint-disable-next-line no-console
   console.log(maxDate);
 
   const timeLine = useRef(null);
