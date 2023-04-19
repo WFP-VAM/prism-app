@@ -219,6 +219,8 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
         const format = match.slice(1, -1);
         return moment(date).format(format);
       });
+      console.log('Trying to fetch data from these files:');
+      console.log(datedPath);
 
       // TODO avoid any use, the json should be typed. See issue #307
       const data: { [key: string]: any }[] = (

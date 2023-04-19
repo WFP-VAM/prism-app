@@ -93,6 +93,12 @@ function DateSelector({
   const [pointerPosition, setPointerPosition] = useState<Point>({ x: 0, y: 0 });
 
   const dateRef = useRef(availableDates);
+  const maxDate = new Date(Math.max(...availableDates, new Date().getTime()));
+
+  console.log('Available dates:');
+  console.log(availableDates.map(n => new Date(n)));
+  console.log('Max date:');
+  console.log(maxDate);
 
   const timeLine = useRef(null);
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
@@ -250,6 +256,7 @@ function DateSelector({
             className={classes.datePickerInput}
             selected={moment(stateStartDate).toDate()}
             onChange={updateStartDate}
+            maxDate={maxDate}
             todayButton={t('Today')}
             peekNextMonth
             showMonthDropdown
