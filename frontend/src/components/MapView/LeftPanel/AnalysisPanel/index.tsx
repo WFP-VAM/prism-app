@@ -34,6 +34,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import { isNil, orderBy, range } from 'lodash';
 import moment from 'moment';
+import { TFunctionKeys } from 'i18next';
 import {
   mapSelector,
   layersSelector,
@@ -222,7 +223,7 @@ function AnalysisPanel({
     LayerKey | undefined
   >(preSelectedBaselineLayer?.id);
 
-  const { t } = useSafeTranslation();
+  const { t, i18n } = useSafeTranslation();
 
   // check if there is any available date from the url, otherwise use last available date for the selected hazard layer
   const lastAvailableHazardDate = availableHazardDates
@@ -333,7 +334,7 @@ function AnalysisPanel({
                 <CloseRounded />
               </IconButton>
               <Typography className={classes.analysisTableTitle}>
-                {selectedHazardLayer?.title}
+                {t(selectedHazardLayer?.title as TFunctionKeys)}
               </Typography>
             </div>
             <div className={classes.analysisTable}>
@@ -354,6 +355,7 @@ function AnalysisPanel({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    i18n.language,
     showTable,
     tabValue,
     analysisTableData,

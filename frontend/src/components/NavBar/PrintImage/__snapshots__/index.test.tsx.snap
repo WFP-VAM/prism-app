@@ -20,9 +20,10 @@ exports[`renders as expected 1`] = `
         />
       </svg>
       <mock-typography
+        classname="PrintImage-printText-1"
         variant="body2"
       >
-        PRINT
+        Print
       </mock-typography>
     </mock-button>
   </div>
@@ -33,7 +34,7 @@ exports[`renders as expected 1`] = `
     open="false"
   >
     <mock-dialogtitle
-      classname="DownloadImage-title-1"
+      classname="DownloadImage-title-2"
       id="dialog-preview"
     >
       Map Preview

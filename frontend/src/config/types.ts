@@ -157,12 +157,17 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
+export type LegendLabel = {
+  text: string;
+  value: number | string;
+};
+
 export type LegendDefinitionItem = {
   value: string | number;
   color: string;
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
-  label?: string;
+  label?: LegendLabel | string;
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
@@ -326,6 +331,9 @@ export type DatasetField = {
   label: string;
   fallback?: number; // If key does not exist in json response use fallback (rainfall anomaly).
   color: string;
+  maxValue?: number;
+  minValue?: number;
+  pointRadius?: number;
 };
 
 type DatasetProps = {
@@ -605,6 +613,8 @@ export interface WfsRequestParams {
 export interface ChartConfig {
   type: string;
   category: string;
+  minValue?: number;
+  maxValue?: number;
   stacked?: boolean;
   exclude?: string[];
   data?: string;

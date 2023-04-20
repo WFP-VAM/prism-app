@@ -127,6 +127,7 @@ function Legends({ classes, layers }: LegendsProps) {
   return (
     <Grid item className={classes.container}>
       <Button
+        className={classes.triggerButton}
         variant="contained"
         color="primary"
         onClick={() => setOpen(!open)}
@@ -163,6 +164,8 @@ function LegendItem({
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
   );
+
+  const { t } = useSafeTranslation();
 
   return (
     <ListItem disableGutters dense>
@@ -206,8 +209,13 @@ function LegendItem({
             ) : (
               legend.map((item: LegendDefinitionItem) => (
                 <ColorIndicator
-                  key={item.value || item.label}
-                  value={getLegendItemLabel(item)}
+                  key={
+                    item.value ||
+                    (typeof item.label === 'string'
+                      ? item?.label
+                      : item?.label?.text)
+                  }
+                  value={getLegendItemLabel(t, item)}
                   color={item.color as string}
                   opacity={opacity as number}
                 />
@@ -232,6 +240,9 @@ const styles = () =>
   createStyles({
     container: {
       textAlign: 'right',
+    },
+    triggerButton: {
+      height: '3em',
     },
     label: {
       marginLeft: '10px',
