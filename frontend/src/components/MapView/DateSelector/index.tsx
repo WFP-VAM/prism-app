@@ -93,7 +93,7 @@ function DateSelector({
   const [pointerPosition, setPointerPosition] = useState<Point>({ x: 0, y: 0 });
 
   const dateRef = useRef(availableDates);
-    const maxDate = useMemo(() => {
+  const maxDate = useMemo(() => {
     return new Date(Math.max(...availableDates, new Date().getTime()));
   }, [availableDates]);
 
