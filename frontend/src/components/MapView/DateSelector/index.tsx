@@ -93,7 +93,9 @@ function DateSelector({
   const [pointerPosition, setPointerPosition] = useState<Point>({ x: 0, y: 0 });
 
   const dateRef = useRef(availableDates);
-  const maxDate = new Date(Math.max(...availableDates, new Date().getTime()));
+    const maxDate = useMemo(() => {
+    return new Date(Math.max(...availableDates, new Date().getTime()));
+  }, [availableDates]);
 
   const timeLine = useRef(null);
   const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
