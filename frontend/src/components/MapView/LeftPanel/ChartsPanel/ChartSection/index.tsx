@@ -21,7 +21,7 @@ import {
 import { TableData } from '../../../../../context/tableStateSlice';
 import { useSafeTranslation } from '../../../../../i18n';
 import { getChartAdminBoundaryParams } from '../../../../../utils/admin-utils';
-import Chart from '../../../../DataDrawer/Chart';
+import Chart from '../../../../Common/Chart';
 
 function ChartSection({
   chartLayer,
