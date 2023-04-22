@@ -15,6 +15,7 @@ import React, {
   ChangeEvent,
   memo,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -47,7 +48,7 @@ const useStyles = makeStyles(() =>
       alignItems: 'center',
     },
     chipRoot: {
-      marginLeft: '3%',
+      marginLeft: '1.5%',
     },
     title: {
       color: '#53888F',
@@ -114,11 +115,26 @@ const MenuSwitch = memo(
       });
     }, [layers, selectedLayers]);
 
-    const renderedSelectedInternalLayerLabel = useMemo(() => {
-      return selectedInternalLayers.length === 1
-        ? `${selectedInternalLayers.length} ${t('Active Layer')}`
-        : `${selectedInternalLayers.length} ${t('Active Layers')}`;
+    const [informationChipLabel, setInformationChipLabel] = useState<string>(
+      selectedInternalLayers.length.toString(),
+    );
+
+    useEffect(() => {
+      if (!selectedInternalLayers.length) {
+        return;
+      }
+      setInformationChipLabel(selectedInternalLayers.length.toString());
+    }, [selectedInternalLayers.length]);
+
+    const handleChipOnMouseEnter = useCallback(() => {
+      setInformationChipLabel(
+        `${selectedInternalLayers.length} ${t('Active Layer(s)')}`,
+      );
     }, [selectedInternalLayers.length, t]);
+
+    const handleChipOnMouseLeave = useCallback(() => {
+      setInformationChipLabel(selectedInternalLayers.length.toString());
+    }, [selectedInternalLayers.length]);
 
     const renderedSelectedLayerInformation = useMemo(() => {
       if (!selectedInternalLayers.length) {
@@ -126,14 +142,18 @@ const MenuSwitch = memo(
       }
       return (
         <Chip
+          onMouseEnter={handleChipOnMouseEnter}
+          onMouseLeave={handleChipOnMouseLeave}
           classes={{ root: classes.chipRoot }}
           color="secondary"
-          label={renderedSelectedInternalLayerLabel}
+          label={informationChipLabel}
         />
       );
     }, [
       classes.chipRoot,
-      renderedSelectedInternalLayerLabel,
+      handleChipOnMouseEnter,
+      handleChipOnMouseLeave,
+      informationChipLabel,
       selectedInternalLayers.length,
     ]);
 

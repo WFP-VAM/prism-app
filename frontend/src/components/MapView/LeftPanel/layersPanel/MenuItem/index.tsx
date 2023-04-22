@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   createStyles,
   Grid,
@@ -73,6 +73,17 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
     });
   }, [categoryLayers, selectedLayers]);
 
+  const [informationChipLabel, setInformationChipLabel] = useState<string>(
+    selectedCategoryLayers.length.toString(),
+  );
+
+  useEffect(() => {
+    if (!selectedCategoryLayers.length) {
+      return;
+    }
+    setInformationChipLabel(selectedCategoryLayers.length.toString());
+  }, [selectedCategoryLayers.length]);
+
   const renderedMenuSwitches = useMemo(() => {
     return layersCategories.map((layerCategory: LayersCategoryType) => (
       <MenuSwitch
@@ -85,11 +96,15 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
     ));
   }, [extent, layersCategories]);
 
-  const renderedSelectedLayerLabel = useMemo(() => {
-    return selectedCategoryLayers.length === 1
-      ? `${selectedCategoryLayers.length} ${t('Active Layer')}`
-      : `${selectedCategoryLayers.length} ${t('Active Layers')}`;
+  const handleChipOnMouseEnter = useCallback(() => {
+    setInformationChipLabel(
+      `${selectedCategoryLayers.length} ${t('Active Layer(s)')}`,
+    );
   }, [selectedCategoryLayers.length, t]);
+
+  const handleChipOnMouseLeave = useCallback(() => {
+    setInformationChipLabel(selectedCategoryLayers.length.toString());
+  }, [selectedCategoryLayers.length]);
 
   const renderedSelectedLayerInformation = useMemo(() => {
     if (!selectedCategoryLayers.length) {
@@ -97,14 +112,18 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
     }
     return (
       <Chip
+        onMouseEnter={handleChipOnMouseEnter}
+        onMouseLeave={handleChipOnMouseLeave}
         classes={{ root: classes.chipRoot }}
         color="secondary"
-        label={renderedSelectedLayerLabel}
+        label={informationChipLabel}
       />
     );
   }, [
     classes.chipRoot,
-    renderedSelectedLayerLabel,
+    handleChipOnMouseEnter,
+    handleChipOnMouseLeave,
+    informationChipLabel,
     selectedCategoryLayers.length,
   ]);
 

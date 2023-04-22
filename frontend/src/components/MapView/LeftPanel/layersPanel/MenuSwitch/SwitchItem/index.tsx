@@ -16,6 +16,7 @@ import React, {
   ChangeEvent,
   memo,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -63,6 +64,11 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
     removeLayerFromUrl,
   } = useUrlHistory();
 
+  useEffect(() => {
+    setIsOpacitySelected(false);
+    setOpacityValue(initialOpacity || 0);
+  }, [initialOpacity]);
+
   const selected = useMemo(() => {
     return selectedLayers.some(({ id: testId }) => {
       return (
@@ -102,6 +108,10 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
 
   const toggleLayerValue = useCallback(
     (selectedLayerId: string, checked: boolean) => {
+      // reset opacity value
+      setOpacityValue(initialOpacity || 0);
+      // reset opacity selected
+      setIsOpacitySelected(false);
       // clear previous table dataset loaded first
       // to close the dataseries and thus close chart
       dispatch(clearDataset());
@@ -129,10 +139,6 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
         }
       } else {
         removeLayerFromUrl(urlLayerKey, selectedLayer.id);
-        // reset opacity value
-        setOpacityValue(initialOpacity || 0);
-        // reset opacity selected
-        setIsOpacitySelected(false);
         dispatch(removeLayer(selectedLayer));
 
         // For admin boundary layers with boundary property
