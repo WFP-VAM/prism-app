@@ -12,7 +12,7 @@ export const layersSelector = (state: RootState): MapState['layers'] =>
   state.mapState.layers;
 export const activeLayersSelector = (state: RootState): MapState['layers'] =>
   state.mapState.layers.filter((layer: LayerType) => {
-    return !layer.id.includes('boundaries');
+    return layer.type !== 'boundary';
   });
 export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
   state.mapState.dateRange;
