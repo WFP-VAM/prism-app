@@ -1,30 +1,27 @@
 import { Box } from '@material-ui/core';
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { leftPanelTabValueSelector } from '../../../../context/leftPanelStateSlice';
+import React, { memo, useMemo } from 'react';
 import { Extent } from '../../Layers/raster-utils';
 import MenuItem from './MenuItem';
 import { menuList } from './utils';
+import { MenuItemType } from '../../../../config/types';
 
-const tabIndex = 0;
-
-function LayersPanel({ extent }: LayersPanelProps) {
-  const tabValue = useSelector(leftPanelTabValueSelector);
-
-  return (
-    <Box>
-      {menuList.map(({ title, ...category }) => (
+const LayersPanel = memo(({ extent }: LayersPanelProps) => {
+  const renderedRootAccordionItems = useMemo(() => {
+    return menuList.map((menuItem: MenuItemType) => {
+      return (
         <MenuItem
-          key={title}
-          title={title}
-          {...category}
+          key={menuItem.title}
+          title={menuItem.title}
+          layersCategories={menuItem.layersCategories}
+          icon={menuItem.icon}
           extent={extent}
-          shouldRender={tabIndex === tabValue}
         />
-      ))}
-    </Box>
-  );
-}
+      );
+    });
+  }, [extent]);
+
+  return <Box>{renderedRootAccordionItems}</Box>;
+});
 
 interface LayersPanelProps {
   extent?: Extent;

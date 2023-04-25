@@ -30,8 +30,8 @@ import {
   BoundaryLayer,
   ImpactLayer,
   PointDataLayer,
-  WMSLayer,
   StaticRasterLayer,
+  WMSLayer,
 } from './Layers';
 
 import {
@@ -44,12 +44,12 @@ import {
 } from '../../config/types';
 
 import { Extent } from './Layers/raster-utils';
-import { useUrlHistory, UrlLayerKey, getUrlKey } from '../../utils/url-utils';
+import { getUrlKey, UrlLayerKey, useUrlHistory } from '../../utils/url-utils';
 
 import {
-  LayerDefinitions,
-  getDisplayBoundaryLayers,
   getBoundaryLayerSingleton,
+  getDisplayBoundaryLayers,
+  LayerDefinitions,
 } from '../../config/utils';
 
 import DateSelector from './DateSelector';
@@ -62,10 +62,10 @@ import {
 } from '../../context/mapStateSlice/selectors';
 import {
   addLayer,
+  layerOrdering,
+  removeLayer,
   setMap,
   updateDateRange,
-  removeLayer,
-  layerOrdering,
 } from '../../context/mapStateSlice';
 import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
 import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';

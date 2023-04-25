@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   createStyles,
   makeStyles,
@@ -7,19 +8,20 @@ import {
   Theme,
 } from '@material-ui/core';
 import {
-  LayersOutlined,
   BarChartOutlined,
   ImageAspectRatioOutlined,
+  LayersOutlined,
 } from '@material-ui/icons';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PanelSize } from '../../../config/types';
 import { getWMSLayersWithChart } from '../../../config/utils';
 import {
-  setTabValue,
   leftPanelTabValueSelector,
+  setTabValue,
 } from '../../../context/leftPanelStateSlice';
 import { useSafeTranslation } from '../../../i18n';
+import { activeLayersSelector } from '../../../context/mapStateSlice/selectors';
 
 const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 
@@ -119,12 +121,44 @@ function LeftPanelTabs({
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const activeLayers = useSelector(activeLayersSelector);
   const classes = useStyles({ panelSize, tabValue });
 
-  const handleChange = (_: any, newValue: number) => {
-    setPanelSize(PanelSize.medium);
-    dispatch(setTabValue(newValue));
-  };
+  const handleChange = useCallback(
+    (_: any, newValue: number) => {
+      setPanelSize(PanelSize.medium);
+      dispatch(setTabValue(newValue));
+    },
+    [dispatch, setPanelSize],
+  );
+
+  const renderedLayersTabLabel = useMemo(() => {
+    if (
+      tabValue !== 0 &&
+      panelSize !== PanelSize.folded &&
+      activeLayers.length >= 1
+    ) {
+      return (
+        <Badge
+          anchorOrigin={{
+            horizontal: 'left',
+            vertical: 'top',
+          }}
+          badgeContent={activeLayers.length}
+          color="secondary"
+        >
+          <LayersOutlined style={{ verticalAlign: 'middle' }} />
+          <Box ml={1}>{t('Layers')}</Box>
+        </Badge>
+      );
+    }
+    return (
+      <>
+        <LayersOutlined style={{ verticalAlign: 'middle' }} />
+        <Box ml={1}>{t('Layers')}</Box>
+      </>
+    );
+  }, [activeLayers.length, panelSize, t, tabValue]);
 
   return (
     <div className={classes.root}>
@@ -140,12 +174,7 @@ function LeftPanelTabs({
               classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
               value={0}
               disableRipple
-              label={
-                <Box display="flex">
-                  <LayersOutlined style={{ verticalAlign: 'middle' }} />
-                  <Box ml={1}>{t('Layers')}</Box>
-                </Box>
-              }
+              label={<Box display="flex">{renderedLayersTabLabel}</Box>}
               {...a11yProps(0)}
             />
             {areChartLayersAvailable && (
