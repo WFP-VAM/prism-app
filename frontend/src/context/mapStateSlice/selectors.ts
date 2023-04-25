@@ -5,11 +5,15 @@ import { Map as MapBoxMap } from 'mapbox-gl';
 import type { RootState } from '../store';
 import type { LayerDataTypes } from '../layers/layer-data';
 import type { MapState } from '.';
-import type { LayerKey } from '../../config/types';
+import type { LayerKey, LayerType } from '../../config/types';
 import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
 
 export const layersSelector = (state: RootState): MapState['layers'] =>
   state.mapState.layers;
+export const activeLayersSelector = (state: RootState): MapState['layers'] =>
+  state.mapState.layers.filter((layer: LayerType) => {
+    return layer.type !== 'boundary';
+  });
 export const dateRangeSelector = (state: RootState): MapState['dateRange'] =>
   state.mapState.dateRange;
 export const mapSelector = (state: RootState): MapBoxMap | undefined =>
