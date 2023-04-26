@@ -113,11 +113,17 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        { "key": "rfq", 
+          "label": "Rainfall anomaly", 
+          "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+      },
         {
           "key": "rfq_avg",
           "label": "Normal",
           "fallback": 100,
+          "pointRadius": 0,
           "color": "#eb3223"
         }
       ],
@@ -216,11 +222,16 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        { "key": "rfq", 
+          "label": "Rainfall anomaly", 
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692" },
         {
           "key": "rfq_avg",
           "label": "Normal",
           "fallback": 100,
+          "pointRadius": 0,
           "color": "#eb3223"
         }
       ],
@@ -322,11 +333,17 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r1q", "label": "Rainfall anomaly", "color": "#375692" },
+        { "key": "r1q", 
+          "label": "Rainfall anomaly", 
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
           "fallback": 100,
+          "pointRadius": 0,
           "color": "#eb3223"
         }
       ],
@@ -425,11 +442,16 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r3q", "label": "Rainfall anomaly", "color": "#375692" },
+        { "key": "r3q", 
+          "label": "Rainfall anomaly", 
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692" },
         {
           "key": "rfq_avg",
           "label": "Normal",
           "fallback": 100,
+          "pointRadius": 0,
           "color": "#eb3223"
         }
       ],
@@ -1235,11 +1257,17 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "viq", "label": "NDVI anomaly", "color": "#5e803f" },
+        { "key": "viq", 
+          "label": "NDVI anomaly", 
+          "minValue": 0,
+          "maxValue": 150,
+          "color": "#5e803f" 
+        },
         {
           "key": "viq_avg",
           "label": "Normal",
           "color": "#eb3223",
+          "pointRadius": 0,
           "fallback": 100
         }
       ],
