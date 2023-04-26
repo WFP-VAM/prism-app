@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   createStyles,
   makeStyles,
@@ -7,19 +8,20 @@ import {
   Theme,
 } from '@material-ui/core';
 import {
-  LayersOutlined,
   BarChartOutlined,
   ImageAspectRatioOutlined,
+  LayersOutlined,
 } from '@material-ui/icons';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PanelSize } from '../../../config/types';
 import { getWMSLayersWithChart } from '../../../config/utils';
 import {
-  setTabValue,
   leftPanelTabValueSelector,
+  setTabValue,
 } from '../../../context/leftPanelStateSlice';
 import { useSafeTranslation } from '../../../i18n';
+import { activeLayersSelector } from '../../../context/mapStateSlice/selectors';
 
 const areChartLayersAvailable = getWMSLayersWithChart().length > 0;
 
@@ -38,9 +40,11 @@ function TabPanel(props: TabPanelProps) {
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
       style={{
+        display: index === value ? 'block' : 'none',
         flexGrow: 1,
         height: 'calc(93vh - 48px)',
         order: index === value ? -1 : undefined,
+        overflowX: index === value ? 'hidden' : 'auto',
       }}
       {...other}
     >
@@ -57,6 +61,7 @@ function a11yProps(index: any) {
 }
 
 interface StyleProps {
+  tabValue: number;
   panelSize: PanelSize;
 }
 
@@ -66,6 +71,7 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
       display: 'flex',
       flexDirection: 'row',
       height: '100%',
+      overflowY: ({ tabValue }) => (tabValue === 1 ? 'hidden' : 'auto'),
     },
     tabsWrapper: {
       display: 'flex',
@@ -114,13 +120,45 @@ function LeftPanelTabs({
 }: TabsProps) {
   const { t } = useSafeTranslation();
   const dispatch = useDispatch();
-  const classes = useStyles({ panelSize });
   const tabValue = useSelector(leftPanelTabValueSelector);
+  const activeLayers = useSelector(activeLayersSelector);
+  const classes = useStyles({ panelSize, tabValue });
 
-  const handleChange = (_: any, newValue: number) => {
-    setPanelSize(PanelSize.medium);
-    dispatch(setTabValue(newValue));
-  };
+  const handleChange = useCallback(
+    (_: any, newValue: number) => {
+      setPanelSize(PanelSize.medium);
+      dispatch(setTabValue(newValue));
+    },
+    [dispatch, setPanelSize],
+  );
+
+  const renderedLayersTabLabel = useMemo(() => {
+    if (
+      tabValue !== 0 &&
+      panelSize !== PanelSize.folded &&
+      activeLayers.length >= 1
+    ) {
+      return (
+        <Badge
+          anchorOrigin={{
+            horizontal: 'left',
+            vertical: 'top',
+          }}
+          badgeContent={activeLayers.length}
+          color="secondary"
+        >
+          <LayersOutlined style={{ verticalAlign: 'middle' }} />
+          <Box ml={1}>{t('Layers')}</Box>
+        </Badge>
+      );
+    }
+    return (
+      <>
+        <LayersOutlined style={{ verticalAlign: 'middle' }} />
+        <Box ml={1}>{t('Layers')}</Box>
+      </>
+    );
+  }, [activeLayers.length, panelSize, t, tabValue]);
 
   return (
     <div className={classes.root}>
@@ -136,12 +174,7 @@ function LeftPanelTabs({
               classes={{ root: classes.tabRoot, selected: classes.tabSelected }}
               value={0}
               disableRipple
-              label={
-                <Box display="flex">
-                  <LayersOutlined style={{ verticalAlign: 'middle' }} />
-                  <Box ml={1}>{t('Layers')}</Box>
-                </Box>
-              }
+              label={<Box display="flex">{renderedLayersTabLabel}</Box>}
               {...a11yProps(0)}
             />
             {areChartLayersAvailable && (

@@ -1,33 +1,35 @@
 import {
+  flatten,
   get,
   has,
+  invert,
   isNull,
+  isNumber,
   isString,
   max,
   mean,
   min,
-  invert,
-  sum,
   omit,
-  flatten,
-  isNumber,
+  orderBy,
+  sum,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import moment from 'moment';
 import { createGetCoverageUrl } from 'prism-common';
+import { TFunctionKeys } from 'i18next';
 import {
+  AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
   AsyncReturnType,
+  BoundaryLayerProps,
   ImpactLayerProps,
   LegendDefinition,
-  AdminLevelDataLayerProps,
   StatsApi,
   ThresholdDefinition,
-  WMSLayerProps,
   WfsRequestParams,
-  BoundaryLayerProps,
+  WMSLayerProps,
 } from '../config/types';
 import type { ThunkApi } from '../context/store';
 import { layerDataSelector } from '../context/mapStateSlice/selectors';
@@ -526,7 +528,7 @@ export function createLegendFromFeatureArray(
 
   const delta = (maxNum - minNum) / colors.length;
 
-  const legend: LegendDefinition = colors.map((color, index) => {
+  return colors.map((color, index) => {
     const breakpoint =
       delta > 1
         ? Math.ceil(minNum + (index + 1) * delta)
@@ -538,11 +540,12 @@ export function createLegendFromFeatureArray(
     return {
       value,
       color,
-      label: `${labels[index]} (${Math.round(value).toLocaleString('en-US')})`,
+      label: {
+        text: labels[index],
+        value: `(${Math.round(value).toLocaleString('en-US')})`,
+      },
     };
   });
-
-  return legend;
 }
 
 export class ExposedPopulationResult {
@@ -552,6 +555,7 @@ export class ExposedPopulationResult {
   legend: LegendDefinition;
   legendText: string;
   statistic: AggregationOperations;
+  tableData: TableRow[];
   date: number;
 
   getTitle = (t?: i18nTranslator): string => {
@@ -563,6 +567,7 @@ export class ExposedPopulationResult {
   };
 
   constructor(
+    tableData: TableRow[],
     featureCollection: FeatureCollection,
     statistic: AggregationOperations,
     legend: LegendDefinition,
@@ -571,6 +576,7 @@ export class ExposedPopulationResult {
     key: string,
     date: number,
   ) {
+    this.tableData = tableData;
     this.featureCollection = featureCollection;
     this.statistic = statistic;
     this.legend = legend;
@@ -642,7 +648,7 @@ export class BaselineLayerResult {
     const baselineLayer = this.getBaselineLayer();
     // If there is no title, we are using admin boundaries and return StatTitle instead.
     if (!baselineLayer.title) {
-      return this.getStatTitle();
+      return this.getStatTitle(t);
     }
     const baselineTitle = baselineLayer.title || 'Admin levels';
     return t
@@ -657,7 +663,7 @@ export function getAnalysisTableColumns(
   analysisResult?: AnalysisResult,
   withLocalName = false,
 ): Column[] {
-  if (!analysisResult || analysisResult instanceof ExposedPopulationResult) {
+  if (!analysisResult) {
     return [];
   }
   if ('tableColumns' in analysisResult) {
@@ -673,9 +679,8 @@ export function getAnalysisTableColumns(
     );
   }
   const { statistic } = analysisResult;
-  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
 
-  return [
+  const analysisTableColumns = [
     {
       id: withLocalName ? 'localName' : 'name',
       label: 'Name',
@@ -683,8 +688,18 @@ export function getAnalysisTableColumns(
     {
       id: statistic,
       label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      format: value => getRoundedData(value as number),
+      format: (value: string | number) => getRoundedData(value as number),
     },
+  ];
+
+  if (analysisResult instanceof ExposedPopulationResult) {
+    return analysisTableColumns;
+  }
+
+  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
+
+  return [
+    ...analysisTableColumns,
     // Remove data if no baseline layer is present
     ...(baselineLayerTitle
       ? [
@@ -772,14 +787,20 @@ export class PolygonAnalysisResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getTitle(): string {
-    return `${this.getHazardLayer().title} intersecting admin level ${
-      this.adminLevel
-    }`;
+  getTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} ${t('intersecting admin level')} ${t(
+          (this.adminLevel as unknown) as TFunctionKeys,
+        )}`
+      : `${this.getHazardLayer().title} intersecting admin level ${
+          this.adminLevel
+        }`;
   }
 
-  getStatTitle(): string {
-    return `${this.getHazardLayer().title} (${this.statistic})`;
+  getStatTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
+      : `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }
 
@@ -822,14 +843,28 @@ export function downloadCSVFromTableData(
   analysisResult: TabularAnalysisResult,
   columns: Column[],
   selectedDate: number | null,
+  sortByKey: Column['id'],
+  sortOrder: 'asc' | 'desc',
 ) {
   const { tableData } = analysisResult;
+
+  const sortedTableData = orderBy(tableData, sortByKey, sortOrder);
 
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
     columns.map(col => quoteAndEscapeCell(col.label)).join(','),
-    ...tableData.map(row =>
-      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
+    ...sortedTableData.map(row =>
+      columns
+        .map((column: Column) => {
+          const value = row[column.id];
+          if (value === undefined || value === null) {
+            return '';
+          }
+          return column.format && typeof value === 'number'
+            ? column.format(value)
+            : quoteAndEscapeCell(value);
+        })
+        .join(','),
     ),
   ];
   const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;

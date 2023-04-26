@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState, MouseEvent, useMemo } from 'react';
 import {
   Button,
   createStyles,
@@ -9,47 +9,97 @@ import {
 } from '@material-ui/core';
 import { snakeCase } from 'lodash';
 import { useSelector } from 'react-redux';
-import { downloadToFile, exportDataTableToCSV } from '../../../utils';
+import { downloadToFile } from '../../../utils';
 import { useSafeTranslation } from '../../../../../i18n';
 import {
-  getCurrentData,
   getCurrentDefinition,
+  TableRow,
+  TableRow as AnalysisTableRow,
 } from '../../../../../context/analysisResultStateSlice';
 import { layersSelector } from '../../../../../context/mapStateSlice/selectors';
 import { ReportType } from '../../../../Common/ReportDialog/types';
 import ReportDialog from '../../../../Common/ReportDialog';
+import {
+  Column,
+  quoteAndEscapeCell,
+} from '../../../../../utils/analysis-utils';
 
 function ExposureAnalysisActions({
   analysisButton,
   bottomButton,
   clearAnalysis,
+  tableData,
+  columns,
 }: ExposureAnalysisActionsProps) {
   // only display local names if local language is selected, otherwise display english name
   const { t } = useSafeTranslation();
   const analysisDefinition = useSelector(getCurrentDefinition);
-  const analysisData = useSelector(getCurrentData);
   const selectedLayers = useSelector(layersSelector);
 
   const [openReport, setOpenReport] = useState(false);
 
-  const isShowingStormData = selectedLayers.some(
-    ({ id }) => id === 'adamts_buffers',
-  );
+  const isShowingStormData = useMemo(() => {
+    return selectedLayers.some(({ id }) => id === 'adamts_buffers');
+  }, [selectedLayers]);
 
-  const analysisCsvData = exportDataTableToCSV(analysisData);
-  const handleDownload = (payload: string, e: React.ChangeEvent<{}>) => {
-    e.preventDefault();
-    downloadToFile(
-      {
-        content: payload,
-        isUrl: false,
+  const getCellValue = useCallback((value: string | number, column: Column) => {
+    if (column.format && typeof value === 'number') {
+      return column.format(value);
+    }
+    return quoteAndEscapeCell(value);
+  }, []);
+
+  const columnsToRenderCsv = useMemo(() => {
+    return columns.reduce(
+      (acc: { [key: string]: string | number }, column: Column) => {
+        return {
+          ...acc,
+          [column.id]: column.label,
+        };
       },
-      `${snakeCase(analysisDefinition?.id)}_${snakeCase(
-        analysisDefinition?.legendText,
-      )}`,
-      'text/csv',
+      {},
     );
-  };
+  }, [columns]);
+
+  const tableDataRowsToRenderCsv = useMemo(() => {
+    return tableData.map((tableRowData: TableRow) => {
+      return columns.reduce(
+        (acc: { [key: string]: string | number }, column: Column) => {
+          const value = tableRowData[column.id];
+          return {
+            ...acc,
+            [column.id]: getCellValue(value, column),
+          };
+        },
+        {},
+      );
+    });
+  }, [columns, getCellValue, tableData]);
+
+  const analysisCsvData = useMemo(() => {
+    return [columnsToRenderCsv, ...tableDataRowsToRenderCsv]
+      .map(analysisCsvItem => {
+        return Object.values(analysisCsvItem);
+      })
+      .join('\n');
+  }, [columnsToRenderCsv, tableDataRowsToRenderCsv]);
+
+  const handleOnDownloadCsv = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
+      downloadToFile(
+        {
+          content: analysisCsvData,
+          isUrl: false,
+        },
+        `${snakeCase(analysisDefinition?.id)}_${snakeCase(
+          analysisDefinition?.legendText,
+        )}`,
+        'text/csv',
+      );
+    },
+    [analysisCsvData, analysisDefinition],
+  );
 
   return (
     <>
@@ -57,10 +107,7 @@ function ExposureAnalysisActions({
         <Typography variant="body2">{t('Clear Analysis')}</Typography>
       </Button>
       {analysisCsvData && (
-        <Button
-          className={bottomButton}
-          onClick={e => handleDownload(analysisCsvData, e)}
-        >
+        <Button className={bottomButton} onClick={handleOnDownloadCsv}>
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
       )}
@@ -71,6 +118,8 @@ function ExposureAnalysisActions({
         open={openReport}
         handleClose={() => setOpenReport(false)}
         reportType={isShowingStormData ? ReportType.Storm : ReportType.Flood}
+        tableData={tableData}
+        columns={columns}
       />
     </>
   );
@@ -130,6 +179,8 @@ interface ExposureAnalysisActionsProps extends WithStyles<typeof styles> {
   analysisButton?: string;
   bottomButton?: string;
   clearAnalysis: () => void;
+  tableData: AnalysisTableRow[];
+  columns: Column[];
 }
 
 export default withStyles(styles)(ExposureAnalysisActions);

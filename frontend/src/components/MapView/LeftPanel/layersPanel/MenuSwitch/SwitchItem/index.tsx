@@ -12,13 +12,16 @@ import {
   withStyles,
 } from '@material-ui/core';
 import OpacityIcon from '@material-ui/icons/Opacity';
-import React, { useState } from 'react';
+import React, {
+  ChangeEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  ExposedPopulationDefinition,
-  LayerKey,
-  LayerType,
-} from '../../../../../../config/types';
+import { LayerKey, LayerType } from '../../../../../../config/types';
 import {
   getDisplayBoundaryLayers,
   LayerDefinitions,
@@ -41,18 +44,7 @@ import { Extent } from '../../../../Layers/raster-utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
 
-/**
- * Returns layer identifier used to perform exposure analysis.
- *
- * @return LayerKey or undefined if exposure not found or GeometryType is not Polygon.
- */
-function getExposureFromLayer(
-  layer: LayerType,
-): ExposedPopulationDefinition | undefined {
-  return (layer.type === 'wms' && layer.exposure) || undefined;
-}
-
-function SwitchItem({ classes, layer, extent }: SwitchItemProps) {
+const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   const {
     id: layerId,
     title: layerTitle,
@@ -72,124 +64,267 @@ function SwitchItem({ classes, layer, extent }: SwitchItemProps) {
     removeLayerFromUrl,
   } = useUrlHistory();
 
-  const selected = selectedLayers.some(({ id: testId }) => {
-    return (
-      testId === layerId || (group && group.layers.some(l => l.id === testId))
-    );
-  });
+  useEffect(() => {
+    setIsOpacitySelected(false);
+    setOpacityValue(initialOpacity || 0);
+  }, [initialOpacity]);
 
-  const selectedActiveLayer = selected
-    ? selectedLayers.filter(sl => {
-        return (
-          (group?.activateAll &&
-            group?.layers.find(l => l.id === sl.id && l.main)) ||
-          (!group?.activateAll && group?.layers.map(l => l.id).includes(sl.id))
-        );
-      })
-    : [];
+  const selected = useMemo(() => {
+    return selectedLayers.some(({ id: testId }) => {
+      return (
+        testId === layerId || (group && group.layers.some(l => l.id === testId))
+      );
+    });
+  }, [group, layerId, selectedLayers]);
 
-  const initialActiveLayer =
-    selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : null;
+  const selectedActiveLayer = useMemo(() => {
+    return selected
+      ? selectedLayers.filter(sl => {
+          return (
+            (group?.activateAll &&
+              group?.layers.find(l => l.id === sl.id && l.main)) ||
+            (!group?.activateAll &&
+              group?.layers.map(l => l.id).includes(sl.id))
+          );
+        })
+      : [];
+  }, [group, selected, selectedLayers]);
+
+  const initialActiveLayer = useMemo(() => {
+    return selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : null;
+  }, [selectedActiveLayer]);
 
   const [activeLayer, setActiveLayer] = useState(
     initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
   );
 
-  const exposure = getExposureFromLayer(layer);
+  const exposure = useMemo(() => {
+    return (layer.type === 'wms' && layer.exposure) || undefined;
+  }, [layer.exposure, layer.type]);
 
-  const validatedTitle = t(group?.groupTitle || layerTitle || '');
+  const validatedTitle = useMemo(() => {
+    return t(group?.groupTitle || layerTitle || '');
+  }, [group, layerTitle, t]);
 
-  const toggleLayerValue = (selectedLayerId: string, checked: boolean) => {
-    // clear previous table dataset loaded first
-    // to close the dataseries and thus close chart
-    dispatch(clearDataset());
+  const toggleLayerValue = useCallback(
+    (selectedLayerId: string, checked: boolean) => {
+      // reset opacity value
+      setOpacityValue(initialOpacity || 0);
+      // reset opacity selected
+      setIsOpacitySelected(false);
+      // clear previous table dataset loaded first
+      // to close the dataseries and thus close chart
+      dispatch(clearDataset());
 
-    const selectedLayer = group
-      ? LayerDefinitions[selectedLayerId as LayerKey]
-      : layer;
+      const selectedLayer = group
+        ? LayerDefinitions[selectedLayerId as LayerKey]
+        : layer;
 
-    const urlLayerKey = getUrlKey(selectedLayer);
+      const urlLayerKey = getUrlKey(selectedLayer);
 
-    if (checked) {
-      const updatedUrl = appendLayerToUrl(
-        urlLayerKey,
-        selectedLayers,
-        selectedLayer,
-      );
+      if (checked) {
+        const updatedUrl = appendLayerToUrl(
+          urlLayerKey,
+          selectedLayers,
+          selectedLayer,
+        );
 
-      updateHistory(urlLayerKey, updatedUrl);
+        updateHistory(urlLayerKey, updatedUrl);
 
-      if (
-        !('boundary' in selectedLayer) &&
-        selectedLayer.type === 'admin_level_data'
-      ) {
-        refreshBoundaries(map, dispatch);
-      }
-    } else {
-      removeLayerFromUrl(urlLayerKey, selectedLayer.id);
-      dispatch(removeLayer(selectedLayer));
+        if (
+          !('boundary' in selectedLayer) &&
+          selectedLayer.type === 'admin_level_data'
+        ) {
+          refreshBoundaries(map, dispatch);
+        }
+      } else {
+        removeLayerFromUrl(urlLayerKey, selectedLayer.id);
+        dispatch(removeLayer(selectedLayer));
 
-      // For admin boundary layers with boundary property
-      // we have to de-activate the unique boundary and re-activate
-      // default boundaries
-      if ('boundary' in selectedLayer) {
-        const boundaryId = selectedLayer.boundary || '';
+        // For admin boundary layers with boundary property
+        // we have to de-activate the unique boundary and re-activate
+        // default boundaries
+        if ('boundary' in selectedLayer) {
+          const boundaryId = selectedLayer.boundary || '';
 
-        if (Object.keys(LayerDefinitions).includes(boundaryId)) {
-          const displayBoundaryLayers = getDisplayBoundaryLayers();
-          const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
+          if (Object.keys(LayerDefinitions).includes(boundaryId)) {
+            const displayBoundaryLayers = getDisplayBoundaryLayers();
+            const uniqueBoundaryLayer =
+              LayerDefinitions[boundaryId as LayerKey];
 
-          if (
-            !displayBoundaryLayers
-              .map(l => l.id)
-              .includes(uniqueBoundaryLayer.id)
-          ) {
-            safeDispatchRemoveLayer(map, uniqueBoundaryLayer, dispatch);
+            if (
+              !displayBoundaryLayers
+                .map(l => l.id)
+                .includes(uniqueBoundaryLayer.id)
+            ) {
+              safeDispatchRemoveLayer(map, uniqueBoundaryLayer, dispatch);
+            }
+
+            displayBoundaryLayers.forEach(l => {
+              safeDispatchAddLayer(map, l, dispatch);
+            });
           }
-
-          displayBoundaryLayers.forEach(l => {
-            safeDispatchAddLayer(map, l, dispatch);
-          });
         }
       }
+    },
+    [
+      appendLayerToUrl,
+      dispatch,
+      group,
+      initialOpacity,
+      layer,
+      map,
+      removeLayerFromUrl,
+      selectedLayers,
+      updateHistory,
+    ],
+  );
+
+  const handleSelect = useCallback(
+    (event: React.ChangeEvent<{ value: string | unknown }>) => {
+      const selectedId = event.target.value;
+      setActiveLayer(selectedId as string);
+      toggleLayerValue(selectedId as string, true);
+    },
+    [toggleLayerValue],
+  );
+
+  const renderedGroupLayersMenuItems = useMemo(() => {
+    return group?.layers.map(menu => {
+      return (
+        <MenuItem key={menu.id} value={menu.id}>
+          {t(menu.label)}
+        </MenuItem>
+      );
+    });
+  }, [group, t]);
+
+  const renderedSelectGroupActivateAll = useMemo(() => {
+    if (group?.activateAll) {
+      return null;
     }
-  };
+    return (
+      <Select
+        className={classes.select}
+        classes={{
+          root: selected ? classes.selectItem : classes.selectItemUnchecked,
+        }}
+        value={activeLayer}
+        onChange={e => handleSelect(e)}
+      >
+        {renderedGroupLayersMenuItems}
+      </Select>
+    );
+  }, [
+    activeLayer,
+    classes.select,
+    classes.selectItem,
+    classes.selectItemUnchecked,
+    group,
+    handleSelect,
+    renderedGroupLayersMenuItems,
+    selected,
+  ]);
 
-  const handleSelect = (
-    event: React.ChangeEvent<{ value: string | unknown }>,
-  ) => {
-    const selectedId = event.target.value;
-    setActiveLayer(selectedId as string);
-    toggleLayerValue(selectedId as string, true);
-  };
-
-  const menuTitle = group ? (
-    <>
+  const menuTitle = useMemo(() => {
+    if (group) {
+      return (
+        <>
+          <Typography
+            className={selected ? classes.title : classes.titleUnchecked}
+          >
+            {validatedTitle}
+          </Typography>
+          {renderedSelectGroupActivateAll}
+        </>
+      );
+    }
+    return (
       <Typography className={selected ? classes.title : classes.titleUnchecked}>
         {validatedTitle}
       </Typography>
-      {!group.activateAll && (
-        <Select
-          className={classes.select}
-          classes={{
-            root: selected ? classes.selectItem : classes.selectItemUnchecked,
-          }}
-          value={activeLayer}
-          onChange={e => handleSelect(e)}
-        >
-          {group.layers.map(menu => (
-            <MenuItem key={menu.id} value={menu.id}>
-              {t(menu.label)}
-            </MenuItem>
-          ))}
-        </Select>
-      )}
-    </>
-  ) : (
-    <Typography className={selected ? classes.title : classes.titleUnchecked}>
-      {validatedTitle}
-    </Typography>
+    );
+  }, [
+    classes.title,
+    classes.titleUnchecked,
+    group,
+    renderedSelectGroupActivateAll,
+    selected,
+    validatedTitle,
+  ]);
+
+  const renderedExposureAnalysisOption = useMemo(() => {
+    if (!exposure) {
+      return null;
+    }
+    return (
+      <ExposureAnalysisOption
+        layer={layer}
+        extent={extent}
+        selected={selected}
+        exposure={exposure}
+      />
+    );
+  }, [exposure, extent, layer, selected]);
+
+  const handleOnChangeSliderValue = useCallback(
+    (event: ChangeEvent<{}>, newValue: number | number[]) => {
+      handleChangeOpacity(
+        event,
+        newValue as number,
+        map,
+        layerId,
+        layerType,
+        val => setOpacityValue(val),
+      );
+    },
+    [layerId, layerType, map],
   );
+
+  const renderedOpacitySlider = useMemo(() => {
+    if (!selected || !isOpacitySelected) {
+      return null;
+    }
+    return (
+      <Box display="flex" justifyContent="right" alignItems="center">
+        <Box pr={3}>
+          <Typography
+            classes={{ root: classes.opacityText }}
+          >{`Opacity ${Math.round(opacity * 100)}%`}</Typography>
+        </Box>
+        <Box width="25%" pr={3}>
+          <Slider
+            value={opacity}
+            step={0.01}
+            min={0}
+            max={1}
+            aria-labelledby="left-opacity-slider"
+            classes={{
+              root: classes.opacitySliderRoot,
+              thumb: classes.opacitySliderThumb,
+            }}
+            onChange={handleOnChangeSliderValue}
+          />
+        </Box>
+      </Box>
+    );
+  }, [
+    classes.opacitySliderRoot,
+    classes.opacitySliderThumb,
+    classes.opacityText,
+    handleOnChangeSliderValue,
+    isOpacitySelected,
+    opacity,
+    selected,
+  ]);
+
+  const handleOnChangeSwitch = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      toggleLayerValue(activeLayer, event.target.checked);
+    },
+    [activeLayer, toggleLayerValue],
+  );
+
   return (
     <Box display="flex" flexDirection="column" maxWidth="100%">
       <Box key={layerId} display="flex" alignItems="center" m={2}>
@@ -201,7 +336,7 @@ function SwitchItem({ classes, layer, extent }: SwitchItemProps) {
             track: classes.switchTrack,
           }}
           checked={selected}
-          onChange={e => toggleLayerValue(activeLayer, e.target.checked)}
+          onChange={handleOnChangeSwitch}
           inputProps={{
             'aria-label': validatedTitle,
           }}
@@ -222,55 +357,17 @@ function SwitchItem({ classes, layer, extent }: SwitchItemProps) {
             <OpacityIcon />
           </IconButton>
         </Tooltip>
-        {exposure && (
-          <ExposureAnalysisOption
-            layer={layer}
-            extent={extent}
-            selected={selected}
-            exposure={exposure}
-          />
-        )}
+        {renderedExposureAnalysisOption}
         <LayerDownloadOptions
           layer={layer}
           extent={extent}
           selected={selected}
         />
       </Box>
-      {selected && isOpacitySelected && (
-        <Box display="flex" justifyContent="right" alignItems="center">
-          <Box pr={3}>
-            <Typography
-              classes={{ root: classes.opacityText }}
-            >{`Opacity ${Math.round(opacity * 100)}%`}</Typography>
-          </Box>
-          <Box width="25%" pr={3}>
-            <Slider
-              value={opacity}
-              step={0.01}
-              min={0}
-              max={1}
-              aria-labelledby="left-opacity-slider"
-              classes={{
-                root: classes.opacitySliderRoot,
-                thumb: classes.opacitySliderThumb,
-              }}
-              onChange={(e, newValue) =>
-                handleChangeOpacity(
-                  e,
-                  newValue as number,
-                  map,
-                  layerId,
-                  layerType,
-                  val => setOpacityValue(val),
-                )
-              }
-            />
-          </Box>
-        </Box>
-      )}
+      {renderedOpacitySlider}
     </Box>
   );
-}
+});
 
 const styles = () =>
   createStyles({
