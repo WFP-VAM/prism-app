@@ -102,7 +102,12 @@ const DataTable = memo(
       }
       return (
         <Box className={classes.chartContainer}>
-          <Chart title={t(renderedTitle)} config={chart} data={tableData} />
+          <Chart
+            notMaintainAspectRatio
+            title={t(renderedTitle)}
+            config={chart}
+            data={tableData}
+          />
         </Box>
       );
     }, [chart, classes.chartContainer, renderedTitle, t, tableData]);
@@ -180,10 +185,9 @@ const DataTable = memo(
     const renderedTableBodyRows = useMemo(() => {
       return sortedTableRowsToRender
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        .map((row: TableRowType) => {
-          return (
-            <TableRow key={row.key}>{renderedTableBodyCells(row)}</TableRow>
-          );
+        .map((row: TableRowType, rowIndex: number) => {
+          const key = `TableRow-${(row as unknown) as string}}-${rowIndex}`;
+          return <TableRow key={key}>{renderedTableBodyCells(row)}</TableRow>;
         });
     }, [page, renderedTableBodyCells, rowsPerPage, sortedTableRowsToRender]);
 
@@ -322,6 +326,7 @@ const styles = (theme: Theme) => {
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
+      minHeight: '371px',
     },
     loadingContainer: {
       height: '100%',
