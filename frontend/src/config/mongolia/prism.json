@@ -1,6 +1,5 @@
 {
   "country": "Mongolia",
-  "countryAdmin0Id": 44,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
