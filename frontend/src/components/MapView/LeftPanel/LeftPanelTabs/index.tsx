@@ -15,6 +15,7 @@ import {
 } from '@material-ui/icons';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { sum } from 'lodash';
 import { PanelSize } from '../../../../config/types';
 import { getWMSLayersWithChart } from '../../../../config/utils';
 import {
@@ -143,16 +144,8 @@ const LeftPanelTabs = memo(
     }, []);
 
     const renderedTabWidth = useMemo(() => {
-      if (areChartLayersAvailable && areTablesAvailable) {
-        return 'calc(100% / 4)';
-      }
-      if (
-        (!areChartLayersAvailable && areTablesAvailable) ||
-        (areChartLayersAvailable && !areTablesAvailable)
-      ) {
-        return 'calc(100% / 3)';
-      }
-      return 'calc(100% / 2)';
+      const nTabs = 2 + sum([areChartLayersAvailable, areTablesAvailable]);
+      return `calc(100% / ${nTabs})`;
     }, [areChartLayersAvailable, areTablesAvailable]);
 
     const renderedChartsPanel = useMemo(() => {

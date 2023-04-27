@@ -103,8 +103,8 @@ const TablesPanel = memo(
       if (!dataTableIsLoading) {
         return null;
       }
-      return <LinearProgress />;
-    }, [dataTableIsLoading]);
+      return <LinearProgress className={classes.linearProgress} />;
+    }, [classes.linearProgress, dataTableIsLoading]);
 
     const renderedTablesActions = useMemo(() => {
       if (!tableDefinition || !tableData || !tableShowing) {
@@ -226,6 +226,11 @@ const styles = () =>
       display: 'flex',
       width: '100%',
       height: '100%',
+    },
+    linearProgress: {
+      width: '100%',
+      position: 'absolute',
+      top: 0,
     },
     tablesPanel: {
       display: 'flex',
