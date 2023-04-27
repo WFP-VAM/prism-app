@@ -1,0 +1,204 @@
+{
+  "DataList": [
+    {
+      "district_code": "21",
+      "food_insecure_perc": 13.6,
+      "livelihood_coping_perc": 65.3,
+      "food_coping_perc": 60.4,
+      "food_consumption_perc": 21,
+      "food_expenditure_perc": 14.7
+    },
+    {
+      "district_code": "22",
+      "food_insecure_perc": 17,
+      "livelihood_coping_perc": 50.3,
+      "food_coping_perc": 46.6,
+      "food_consumption_perc": 18.2,
+      "food_expenditure_perc": 22.9
+    },
+    {
+      "district_code": "23",
+      "food_insecure_perc": 31,
+      "livelihood_coping_perc": 79.2,
+      "food_coping_perc": 65.7,
+      "food_consumption_perc": 22.5,
+      "food_expenditure_perc": 33.4
+    },
+    {
+      "district_code": "52",
+      "food_insecure_perc": 22.1,
+      "livelihood_coping_perc": 71.3,
+      "food_coping_perc": 61.2,
+      "food_consumption_perc": 15,
+      "food_expenditure_perc": 27.9
+    },
+    {
+      "district_code": "51",
+      "food_insecure_perc": 27.9,
+      "livelihood_coping_perc": 70.2,
+      "food_coping_perc": 55,
+      "food_consumption_perc": 16.2,
+      "food_expenditure_perc": 38.5
+    },
+    {
+      "district_code": "53",
+      "food_insecure_perc": 19.1,
+      "livelihood_coping_perc": 63.9,
+      "food_coping_perc": 55.1,
+      "food_consumption_perc": 15.9,
+      "food_expenditure_perc": 30.8
+    },
+    {
+      "district_code": "71",
+      "food_insecure_perc": 10.1,
+      "livelihood_coping_perc": 56.2,
+      "food_coping_perc": 48.7,
+      "food_consumption_perc": 23.7,
+      "food_expenditure_perc": 10
+    },
+    {
+      "district_code": "72",
+      "food_insecure_perc": 16.9,
+      "livelihood_coping_perc": 68,
+      "food_coping_perc": 74.1,
+      "food_consumption_perc": 35.1,
+      "food_expenditure_perc": 15.4
+    },
+    {
+      "district_code": "61",
+      "food_insecure_perc": 17.5,
+      "livelihood_coping_perc": 58.8,
+      "food_coping_perc": 56.7,
+      "food_consumption_perc": 35.6,
+      "food_expenditure_perc": 17.1
+    },
+    {
+      "district_code": "62",
+      "food_insecure_perc": 18.5,
+      "livelihood_coping_perc": 66.9,
+      "food_coping_perc": 48.8,
+      "food_consumption_perc": 10.9,
+      "food_expenditure_perc": 27.3
+    },
+    {
+      "district_code": "41",
+      "food_insecure_perc": 27.2,
+      "livelihood_coping_perc": 71.7,
+      "food_coping_perc": 46.6,
+      "food_consumption_perc": 6.4,
+      "food_expenditure_perc": 44.4
+    },
+    {
+      "district_code": "45",
+      "food_insecure_perc": 31.9,
+      "livelihood_coping_perc": 78.3,
+      "food_coping_perc": 52.8,
+      "food_consumption_perc": 13,
+      "food_expenditure_perc": 37.4
+    },
+    {
+      "district_code": "42",
+      "food_insecure_perc": 29.6,
+      "livelihood_coping_perc": 83.6,
+      "food_coping_perc": 55,
+      "food_consumption_perc": 2.9,
+      "food_expenditure_perc": 43.9
+    },
+    {
+      "district_code": "44",
+      "food_insecure_perc": 24.6,
+      "livelihood_coping_perc": 81.7,
+      "food_coping_perc": 49.1,
+      "food_consumption_perc": 11,
+      "food_expenditure_perc": 27.5
+    },
+    {
+      "district_code": "44",
+      "food_insecure_perc": 27.4,
+      "livelihood_coping_perc": 80.6,
+      "food_coping_perc": 56.1,
+      "food_consumption_perc": 11.1,
+      "food_expenditure_perc": 32.7
+    },
+    {
+      "district_code": "92",
+      "food_insecure_perc": 14.9,
+      "livelihood_coping_perc": 53.3,
+      "food_coping_perc": 53.1,
+      "food_consumption_perc": 31.3,
+      "food_expenditure_perc": 19
+    },
+    {
+      "district_code": "91",
+      "food_insecure_perc": 22.6,
+      "livelihood_coping_perc": 61.2,
+      "food_coping_perc": 59.5,
+      "food_consumption_perc": 29.3,
+      "food_expenditure_perc": 22
+    },
+    {
+      "district_code": "31",
+      "food_insecure_perc": 21.3,
+      "livelihood_coping_perc": 69.9,
+      "food_coping_perc": 66.6,
+      "food_consumption_perc": 12.4,
+      "food_expenditure_perc": 21.5
+    },
+    {
+      "district_code": "33",
+      "food_insecure_perc": 14.9,
+      "livelihood_coping_perc": 62.5,
+      "food_coping_perc": 53.3,
+      "food_consumption_perc": 15.2,
+      "food_expenditure_perc": 16.5
+    },
+    {
+      "district_code": "32",
+      "food_insecure_perc": 17.9,
+      "livelihood_coping_perc": 66.6,
+      "food_coping_perc": 57.4,
+      "food_consumption_perc": 21,
+      "food_expenditure_perc": 19.3
+    },
+    {
+      "district_code": "81",
+      "food_insecure_perc": 16.9,
+      "livelihood_coping_perc": 67.2,
+      "food_coping_perc": 55.1,
+      "food_consumption_perc": 17.4,
+      "food_expenditure_perc": 25.7
+    },
+    {
+      "district_code": "82",
+      "food_insecure_perc": 19.8,
+      "livelihood_coping_perc": 75.3,
+      "food_coping_perc": 72,
+      "food_consumption_perc": 24.2,
+      "food_expenditure_perc": 15.6
+    },
+    {
+      "district_code": "11",
+      "food_insecure_perc": 8.6,
+      "livelihood_coping_perc": 47.3,
+      "food_coping_perc": 50.2,
+      "food_consumption_perc": 16.6,
+      "food_expenditure_perc": 12
+    },
+    {
+      "district_code": "12",
+      "food_insecure_perc": 15.6,
+      "livelihood_coping_perc": 65.3,
+      "food_coping_perc": 63.1,
+      "food_consumption_perc": 27.3,
+      "food_expenditure_perc": 16.3
+    },
+    {
+      "district_code": "13",
+      "food_insecure_perc": 13.8,
+      "livelihood_coping_perc": 49.7,
+      "food_coping_perc": 40.7,
+      "food_consumption_perc": 9.1,
+      "food_expenditure_perc": 19.3
+    }
+  ]
+}
