@@ -235,7 +235,14 @@
       ]
     },
     "vulnerability": {
-      "poverty": ["poverty_hc"]
+      "poverty": ["poverty_hc"],
+      "food_insecurity": [
+        "food_insecure", 
+        "livelihood_coping",
+        "food_coping",
+        "food_consumption",
+        "food_expenditure"
+      ]
     },
     "exposure": {
       "population": ["pop_21", "num_hhs"]
