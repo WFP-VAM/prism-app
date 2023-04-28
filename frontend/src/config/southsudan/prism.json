@@ -1,6 +1,7 @@
 {
   "country": "South Sudan",
   "enableNavigationDropdown": true,
+  "countryAdmin0Id": 70001,
   "icons": {
     "capacity": "icon_capacity.png",
     "tables": "icon_table.png",
@@ -175,6 +176,9 @@
     },
     "vulnerability": {
       "food_security": ["ipc"]
+    },
+    "exposure": {
+      "conflict": ["conflict_fatalities", "conflict_type"]
     }
   }
 }
