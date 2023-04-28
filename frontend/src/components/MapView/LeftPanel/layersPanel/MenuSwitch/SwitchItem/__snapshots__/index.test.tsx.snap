@@ -11,18 +11,18 @@ exports[`renders as expected 1`] = `
       <mock-switch
         checked="false"
         classes="[object Object]"
-        classname="SwitchItem-switch-6"
+        classname="memo-switch-6"
         inputprops="[object Object]"
         size="small"
       />
       <mock-typography
-        classname="SwitchItem-titleUnchecked-2"
+        classname="memo-titleUnchecked-2"
       />
       <mock-tooltip
         title="Opacity"
       >
         <button
-          class="MuiButtonBase-root MuiIconButton-root SwitchItem-opacityRoot-9 Mui-disabled Mui-disabled"
+          class="MuiButtonBase-root MuiIconButton-root memo-opacityRoot-9 Mui-disabled Mui-disabled"
           disabled=""
           tabindex="-1"
           type="button"

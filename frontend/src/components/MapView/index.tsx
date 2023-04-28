@@ -30,8 +30,8 @@ import {
   BoundaryLayer,
   ImpactLayer,
   PointDataLayer,
-  WMSLayer,
   StaticRasterLayer,
+  WMSLayer,
 } from './Layers';
 
 import {
@@ -44,12 +44,12 @@ import {
 } from '../../config/types';
 
 import { Extent } from './Layers/raster-utils';
-import { useUrlHistory, UrlLayerKey, getUrlKey } from '../../utils/url-utils';
+import { getUrlKey, UrlLayerKey, useUrlHistory } from '../../utils/url-utils';
 
 import {
-  LayerDefinitions,
-  getDisplayBoundaryLayers,
   getBoundaryLayerSingleton,
+  getDisplayBoundaryLayers,
+  LayerDefinitions,
 } from '../../config/utils';
 
 import DateSelector from './DateSelector';
@@ -62,10 +62,10 @@ import {
 } from '../../context/mapStateSlice/selectors';
 import {
   addLayer,
+  layerOrdering,
+  removeLayer,
   setMap,
   updateDateRange,
-  removeLayer,
-  layerOrdering,
 } from '../../context/mapStateSlice';
 import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
 import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';
@@ -100,12 +100,30 @@ import DataViewer from '../DataViewer';
 import LeftPanel from './LeftPanel';
 import FoldButton from './FoldButton';
 
+// Bounding boxes are adapted from https://github.com/sandstrom/country-bounding-boxes
 const {
-  map: { latitude, longitude, zoom, maxBounds, minZoom, maxZoom },
+  map: { boundingBox, maxBounds, minZoom, maxZoom, hidePanel, alertFormActive },
 } = appConfig;
 
-const center = [longitude, latitude] as [number, number];
-const zoomList = [zoom] as [number];
+if (boundingBox.length !== 4) {
+  throw Error(
+    `map.boundingBox ${boundingBox} is not valid. Make sure it is of type [number, number, number, nmuber].`,
+  );
+}
+
+// The map initialization requires a center so we provide a te,porary one.
+// But we actually rely on the boundingBox to fit the country in the available screen space.
+const mapTempCenter = boundingBox.slice(0, 2) as [number, number];
+
+const fitBoundsOptions = {
+  duration: 0,
+  padding: {
+    bottom: 150, // room for dates.
+    left: hidePanel ? 30 : 500, // room for the left panel if active.
+    right: 60,
+    top: 70,
+  },
+};
 
 const MapboxMap = ReactMapboxGl({
   accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
@@ -207,7 +225,7 @@ function MapView({ classes }: MapViewProps) {
   );
   const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
   const [isPanelHidden, setIsPanelHidden] = useState<boolean>(
-    Boolean(appConfig.hidePanel),
+    Boolean(hidePanel),
   );
 
   const selectedLayersWithDateSupport = selectedLayers
@@ -227,6 +245,8 @@ function MapView({ classes }: MapViewProps) {
     | LayerData<BoundaryLayerProps>
     | undefined;
 
+  // TODO - could we simply use the country boundary extent here instead of the calculation?
+  // Or can we foresee any edge cases?
   const adminBoundariesExtent = useMemo(() => {
     if (!boundaryLayerData) {
       return undefined;
@@ -569,32 +589,35 @@ function MapView({ classes }: MapViewProps) {
             isPanelHidden={isPanelHidden}
             setIsPanelHidden={setIsPanelHidden}
           />
-          <Grid
-            container
-            justify="space-between"
-            className={classes.buttonContainer}
-          >
-            <Grid item>
-              <Grid container spacing={1}>
-                {isShowingExtraFeatures && <GoToBoundaryDropdown />}
-                {appConfig.alertFormActive && isShowingExtraFeatures ? (
-                  <AlertForm
-                    isOpen={isAlertFormOpen}
-                    setOpen={setIsAlertFormOpen}
-                  />
-                ) : null}
+          {isShowingExtraFeatures && (
+            <Grid
+              container
+              justify="space-between"
+              className={classes.buttonContainer}
+            >
+              <Grid item>
+                <Grid container spacing={1}>
+                  <Grid item>
+                    <GoToBoundaryDropdown />
+                  </Grid>
+                  {alertFormActive && (
+                    <Grid item>
+                      <AlertForm
+                        isOpen={isAlertFormOpen}
+                        setOpen={setIsAlertFormOpen}
+                      />
+                    </Grid>
+                  )}
+                </Grid>
+                <DataViewer />
               </Grid>
-
-              {isShowingExtraFeatures && <DataViewer />}
-            </Grid>
-            {isShowingExtraFeatures && (
               <Grid item>
                 <Grid container spacing={1}>
                   <Legends layers={selectedLayers} />
                 </Grid>
               </Grid>
-            )}
-          </Grid>
+            </Grid>
+          )}
           {isShowingExtraFeatures && selectedLayerDates.length > 0 && (
             <DateSelector
               availableDates={selectedLayerDates}
@@ -616,9 +639,10 @@ function MapView({ classes }: MapViewProps) {
         containerStyle={{
           height: '100%',
         }}
+        fitBounds={boundingBox}
+        fitBoundsOptions={fitBoundsOptions}
         onClick={mapOnClick}
-        center={center}
-        zoom={zoomList}
+        center={mapTempCenter}
         maxBounds={maxBounds}
       >
         {selectedLayers.map(layer => {
@@ -670,7 +694,7 @@ const styles = () =>
         pointerEvents: 'auto',
       },
       width: '100%',
-      padding: '16px',
+      padding: '3px 8px 0 16px',
     },
     loading: {
       position: 'absolute',

@@ -1,15 +1,15 @@
 import moment from 'moment';
 import { orderBy } from 'lodash';
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 import { ChartType, DatasetField } from '../config/types';
 import { DEFAULT_DATE_FORMAT } from '../utils/name-utils';
 
 import {
-  fetchEWSDataPointsByLocation,
   EWSSensorData,
   EWSTriggersConfig,
+  fetchEWSDataPointsByLocation,
 } from '../utils/ews-utils';
 
 export type EWSParams = {
@@ -111,12 +111,10 @@ const createTableData = (
     { [CHART_DATA_PREFIXES.date]: CHART_DATA_PREFIXES.date },
   );
 
-  const data: TableData = {
+  return {
     rows: [initRow, ...sortedRows],
     columns,
   };
-
-  return data;
 };
 
 export const loadEWSDataset = async (
@@ -201,7 +199,7 @@ const fetchHDC = async (
     moment(date).valueOf(),
   );
 
-  const dataItems: DataItem[] = dates.map((date, index) => {
+  return dates.map((date, index) => {
     const values = datasetFields.reduce(
       (acc, field) => ({
         ...acc,
@@ -214,8 +212,6 @@ const fetchHDC = async (
 
     return { date, values };
   });
-
-  return dataItems;
 };
 
 export const loadAdminBoundaryDataset = async (
@@ -249,7 +245,6 @@ export const loadAdminBoundaryDataset = async (
 
   const results = await fetchHDC(hdcUrl, datasetFields, hdcRequestParams);
   const tableData = createTableData(results, TableDataFormat.DATE);
-
   return new Promise<TableData>(resolve => resolve(tableData));
 };
 
@@ -258,11 +253,9 @@ export const loadDataset = createAsyncThunk<
   DatasetRequestParams,
   CreateAsyncThunkTypes
 >('datasetState/loadDataset', async (params: DatasetRequestParams) => {
-  const results = (params as AdminBoundaryRequestParams).id
+  return (params as AdminBoundaryRequestParams).id
     ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams)
     : loadEWSDataset(params as EWSDataPointsRequestParams);
-
-  return results;
 });
 
 export const datasetResultStateSlice = createSlice({

@@ -11,15 +11,10 @@
     "vulnerability": "icon_vulnerable.png"
   },
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "latitude": 7.928,
-    "longitude": 79.592,
-    "longitudeNoPanel": 80.592,
-    "zoom": 6.84
+    "boundingBox": [79.7, 5.97, 81.79, 9.82]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -183,10 +178,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -233,10 +225,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -246,7 +235,14 @@
       ]
     },
     "vulnerability": {
-      "poverty": ["poverty_hc"]
+      "poverty": ["poverty_hc"],
+      "food_insecurity": [
+        "food_insecure", 
+        "livelihood_coping",
+        "food_coping",
+        "food_consumption",
+        "food_expenditure"
+      ]
     },
     "exposure": {
       "population": ["pop_21", "num_hhs"]

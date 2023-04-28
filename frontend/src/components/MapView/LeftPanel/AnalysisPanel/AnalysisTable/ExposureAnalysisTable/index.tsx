@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import {
   createStyles,
   Table,
@@ -8,124 +8,224 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  TableSortLabel,
   Theme,
   Typography,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
 
-import { useSelector } from 'react-redux';
-import { getCurrentData } from '../../../../../../context/analysisResultStateSlice';
+import { useDispatch } from 'react-redux';
+import { TableRow as AnalysisTableRow } from '../../../../../../context/analysisResultStateSlice';
 
 import { useSafeTranslation } from '../../../../../../i18n';
 
-import { getTableCellVal } from '../../../../../../utils/data-utils';
+import { Column } from '../../../../../../utils/analysis-utils';
+import { showPopup } from '../../../../../../context/tooltipStateSlice';
 
-function ExposureAnalysisTable({ classes }: ExposureAnalysisTableProps) {
-  // only display local names if local language is selected, otherwise display english name
-  const { t } = useSafeTranslation();
+const ExposureAnalysisTable = memo(
+  ({
+    classes,
+    tableData,
+    columns,
+    sortColumn,
+    isAscending,
+    handleChangeOrderBy,
+  }: ExposureAnalysisTableProps) => {
+    // only display local names if local language is selected, otherwise display english name
+    const { t } = useSafeTranslation();
 
-  const analysisData = useSelector(getCurrentData);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+    const dispatch = useDispatch();
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+    const handleChangePage = useCallback((event: unknown, newPage: number) => {
+      setPage(newPage);
+    }, []);
 
-  return (
-    <div className={classes.exposureAnalysisTable}>
-      <TableContainer className={classes.tableContainer}>
-        <Table stickyHeader aria-label="exposure analysis table">
-          <TableHead>
-            <TableRow>
-              {analysisData.columns.map(column => {
-                const formattedColValue = getTableCellVal(
-                  analysisData.rows[0],
-                  column,
-                  t,
-                );
-                return (
-                  <TableCell key={column} className={classes.tableHead}>
-                    <Typography className={classes.tableHeaderText}>
-                      {' '}
-                      {formattedColValue}{' '}
-                    </Typography>
-                  </TableCell>
-                );
-              })}
+    const handleChangeRowsPerPage = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+      },
+      [],
+    );
+
+    // Whether the table sort label is active
+    const tableSortLabelIsActive = useCallback(
+      (column: Column) => {
+        return sortColumn === column.id;
+      },
+      [sortColumn],
+    );
+
+    // table sort label direction
+    const tableSortLabelDirection = useCallback(
+      (column: Column) => {
+        return sortColumn === column.id && !isAscending ? 'desc' : 'asc';
+      },
+      [isAscending, sortColumn],
+    );
+
+    // on table sort label click
+    const onTableSortLabelClick = useCallback(
+      (column: Column) => {
+        return () => {
+          handleChangeOrderBy(column.id);
+        };
+      },
+      [handleChangeOrderBy],
+    );
+
+    // The rendered table header cells
+    const renderedTableHeaderCells = useMemo(() => {
+      return columns.map(column => {
+        return (
+          <TableCell key={column.id} className={classes.tableHead}>
+            <TableSortLabel
+              active={tableSortLabelIsActive(column)}
+              direction={tableSortLabelDirection(column)}
+              onClick={onTableSortLabelClick(column)}
+            >
+              <Typography className={classes.tableHeaderText}>
+                {t(column.label)}
+              </Typography>
+            </TableSortLabel>
+          </TableCell>
+        );
+      });
+    }, [
+      classes.tableHead,
+      classes.tableHeaderText,
+      columns,
+      onTableSortLabelClick,
+      t,
+      tableSortLabelDirection,
+      tableSortLabelIsActive,
+    ]);
+
+    const renderedTableBodyCellValue = useCallback(
+      (value: string | number, column: Column) => {
+        if (column.format && typeof value === 'number') {
+          return column.format(value);
+        }
+        return value;
+      },
+      [],
+    );
+
+    // The rendered table body cells
+    const renderedTableBodyCells = useCallback(
+      (row: AnalysisTableRow) => {
+        return columns.map(column => {
+          return (
+            <TableCell key={column.id}>
+              <Typography className={classes.tableBodyText}>
+                {renderedTableBodyCellValue(row[column.id], column)}
+              </Typography>
+            </TableCell>
+          );
+        });
+      },
+      [classes.tableBodyText, columns, renderedTableBodyCellValue],
+    );
+
+    const handleClickTableBodyRow = useCallback(
+      row => {
+        return () => {
+          if (!row.coordinates) {
+            return;
+          }
+          dispatch(
+            showPopup({
+              coordinates: row.coordinates,
+              locationName: row.name,
+              locationLocalName: row.localName,
+            }),
+          );
+        };
+      },
+      [dispatch],
+    );
+
+    // The rendered table body rows
+    const renderedTableBodyRows = useMemo(() => {
+      return tableData
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        .map((row, index) => {
+          return (
+            <TableRow
+              hover
+              role="checkbox"
+              tabIndex={-1}
+              key={row.key}
+              onClick={handleClickTableBodyRow(row)}
+              style={{
+                cursor: row.coordinates ? 'pointer' : 'none',
+                backgroundColor: index % 2 === 0 ? 'white' : '#EBEBEB',
+              }}
+            >
+              {renderedTableBodyCells(row)}
             </TableRow>
-          </TableHead>
-          <TableBody className={classes.tableBody}>
-            {analysisData.rows
-              .slice(
-                page * rowsPerPage + 1,
-                page * rowsPerPage + rowsPerPage + 1,
-              )
-              .map(rowData => (
-                <TableRow>
-                  {analysisData.columns.map(column => {
-                    const formattedColValue = getTableCellVal(
-                      rowData,
-                      column,
-                      t,
-                    );
-                    return (
-                      <TableCell key={column} className={classes.tableBody}>
-                        <Typography className={classes.tableBodyText}>
-                          {' '}
-                          {formattedColValue}{' '}
-                        </Typography>
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={analysisData.rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-        labelRowsPerPage={t('Rows Per Page')}
-        // Temporary manual translation before we upgrade to MUI 5.
-        labelDisplayedRows={({ from, to, count }) => {
-          return `${from}–${to} ${t('of')} ${
-            count !== -1 ? count : `${t('more than')} ${to}`
-          }`;
-        }}
-        classes={{
-          root: classes.tablePagination,
-          select: classes.select,
-          caption: classes.caption,
-          spacer: classes.spacer,
-        }}
-        nextIconButtonProps={{
-          classes: {
-            root: classes.nextButton,
-          },
-        }}
-        backIconButtonProps={{
-          classes: {
-            root: classes.backButton,
-          },
-        }}
-      />
-    </div>
-  );
-}
+          );
+        });
+    }, [
+      handleClickTableBodyRow,
+      page,
+      renderedTableBodyCells,
+      rowsPerPage,
+      tableData,
+    ]);
+
+    return (
+      <div className={classes.exposureAnalysisTable}>
+        <TableContainer className={classes.tableContainer}>
+          <Table stickyHeader aria-label="exposure analysis table">
+            <TableHead>
+              <TableRow>{renderedTableHeaderCells}</TableRow>
+            </TableHead>
+            <TableBody className={classes.tableBody}>
+              {renderedTableBodyRows}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={tableData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+          labelRowsPerPage={t('Rows Per Page')}
+          // Temporary manual translation before we upgrade to MUI 5.
+          labelDisplayedRows={({ from, to, count }) => {
+            return `${from}–${to} ${t('of')} ${
+              count !== -1 ? count : `${t('more than')} ${to}`
+            }`;
+          }}
+          classes={{
+            root: classes.tablePagination,
+            select: classes.select,
+            caption: classes.caption,
+            spacer: classes.spacer,
+          }}
+          nextIconButtonProps={{
+            classes: {
+              root: classes.nextButton,
+            },
+          }}
+          backIconButtonProps={{
+            classes: {
+              root: classes.backButton,
+            },
+          }}
+        />
+      </div>
+    );
+  },
+);
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -187,6 +287,11 @@ const styles = (theme: Theme) =>
 
 interface ExposureAnalysisTableProps extends WithStyles<typeof styles> {
   maxResults: number;
+  tableData: AnalysisTableRow[];
+  columns: Column[];
+  sortColumn: string | number | undefined;
+  isAscending: boolean;
+  handleChangeOrderBy: (newExposureAnalysisSortColumn: Column['id']) => void;
 }
 
 export default withStyles(styles)(ExposureAnalysisTable);
