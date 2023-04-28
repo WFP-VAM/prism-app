@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { LayersCategoryType } from '../../../../../config/types';
 import MenuSwitch from '../MenuSwitch';
 import { useSafeTranslation } from '../../../../../i18n';
@@ -68,7 +67,11 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
   const selectedCategoryLayers = useMemo(() => {
     return selectedLayers.filter(layer => {
       return categoryLayers.some(categoryLayer => {
-        return isEqual(categoryLayer, layer);
+        return (
+          layer.id === categoryLayer.id ||
+          (categoryLayer.group &&
+            categoryLayer.group.layers.some(l => l.id === layer.id))
+        );
       });
     });
   }, [categoryLayers, selectedLayers]);

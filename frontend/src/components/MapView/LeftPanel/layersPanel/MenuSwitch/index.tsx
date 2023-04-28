@@ -19,7 +19,6 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { LayerType } from '../../../../../config/types';
 import { useSafeTranslation } from '../../../../../i18n';
 import { Extent } from '../../../Layers/raster-utils';
@@ -89,7 +88,11 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
   const selectedInternalLayers = useMemo(() => {
     return selectedLayers.filter(layer => {
       return layers.some(internalLayer => {
-        return isEqual(internalLayer, layer);
+        return (
+          layer.id === internalLayer.id ||
+          (internalLayer.group &&
+            internalLayer.group.layers.some(l => l.id === layer.id))
+        );
       });
     });
   }, [layers, selectedLayers]);

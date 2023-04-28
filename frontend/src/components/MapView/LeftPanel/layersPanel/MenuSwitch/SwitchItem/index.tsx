@@ -98,6 +98,12 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
     initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
   );
 
+  useEffect(() => {
+    setActiveLayer(
+      initialActiveLayer || (group?.layers?.find(l => l.main)?.id as string),
+    );
+  }, [group, initialActiveLayer]);
+
   const exposure = useMemo(() => {
     return (layer.type === 'wms' && layer.exposure) || undefined;
   }, [layer.exposure, layer.type]);
@@ -273,12 +279,12 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
         event,
         newValue as number,
         map,
-        layerId,
+        activeLayer || layerId,
         layerType,
         val => setOpacityValue(val),
       );
     },
-    [layerId, layerType, map],
+    [activeLayer, layerId, layerType, map],
   );
 
   const renderedOpacitySlider = useMemo(() => {
