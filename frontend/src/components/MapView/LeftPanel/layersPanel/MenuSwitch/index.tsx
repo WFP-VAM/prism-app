@@ -19,6 +19,7 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
+
 import { LayerType } from '../../../../../config/types';
 import { useSafeTranslation } from '../../../../../i18n';
 import { Extent } from '../../../Layers/raster-utils';
