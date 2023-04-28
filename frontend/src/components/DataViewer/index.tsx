@@ -24,7 +24,7 @@ import {
   CHART_DATA_PREFIXES,
 } from '../../context/datasetStateSlice';
 import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
-import Chart from '../DataDrawer/Chart';
+import Chart from '../Common/Chart';
 import { ChartConfig } from '../../config/types';
 import { useSafeTranslation } from '../../i18n';
 import { appConfig } from '../../config';

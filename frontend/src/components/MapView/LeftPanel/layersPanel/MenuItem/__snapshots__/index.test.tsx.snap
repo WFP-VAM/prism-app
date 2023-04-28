@@ -70,7 +70,6 @@ exports[`renders as expected 1`] = `
               >
                 <mock-menuswitch
                   layers="[object Object]"
-                  tables=""
                   title="Category 1"
                 />
               </div>
