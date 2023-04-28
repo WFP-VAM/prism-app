@@ -19,12 +19,12 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { LayerType } from '../../../../../config/types';
 import { useSafeTranslation } from '../../../../../i18n';
 import { Extent } from '../../../Layers/raster-utils';
 import SwitchItem from './SwitchItem';
 import { layersSelector } from '../../../../../context/mapStateSlice/selectors';
+import { filterActiveLayers } from '../utils';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -89,7 +89,7 @@ const MenuSwitch = memo(({ title, layers, extent }: MenuSwitchProps) => {
   const selectedInternalLayers = useMemo(() => {
     return selectedLayers.filter(layer => {
       return layers.some(internalLayer => {
-        return isEqual(internalLayer, layer);
+        return filterActiveLayers(layer, internalLayer);
       });
     });
   }, [layers, selectedLayers]);
