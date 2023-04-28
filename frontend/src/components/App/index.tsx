@@ -8,7 +8,6 @@ import { authRequired } from '../../config';
 // Basic CSS Layout for the whole page
 import './app.css';
 import NavBar from '../NavBar';
-import DataDrawer from '../DataDrawer';
 import MapView from '../MapView';
 import Login from '../Login';
 import muiTheme from '../../muiTheme';
@@ -54,7 +53,6 @@ const Wrapper = memo(() => {
       <Switch>
         <Route default>
           <MapView />
-          <DataDrawer />
           <AuthModal />
         </Route>
       </Switch>

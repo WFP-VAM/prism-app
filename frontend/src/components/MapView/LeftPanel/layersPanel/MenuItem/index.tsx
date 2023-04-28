@@ -90,7 +90,6 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
         key={layerCategory.title}
         title={layerCategory.title}
         layers={layerCategory.layers}
-        tables={layerCategory.tables}
         extent={extent}
       />
     ));
