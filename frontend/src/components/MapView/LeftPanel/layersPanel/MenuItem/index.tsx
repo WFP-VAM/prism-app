@@ -16,6 +16,7 @@ import MenuSwitch from '../MenuSwitch';
 import { useSafeTranslation } from '../../../../../i18n';
 import { Extent } from '../../../Layers/raster-utils';
 import { layersSelector } from '../../../../../context/mapStateSlice/selectors';
+import { filterActiveLayers } from '../utils';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -67,11 +68,7 @@ const MenuItem = memo(({ title, layersCategories, extent }: MenuItemProps) => {
   const selectedCategoryLayers = useMemo(() => {
     return selectedLayers.filter(layer => {
       return categoryLayers.some(categoryLayer => {
-        return (
-          layer.id === categoryLayer.id ||
-          (categoryLayer.group &&
-            categoryLayer.group.layers.some(l => l.id === layer.id))
-        );
+        return filterActiveLayers(layer, categoryLayer);
       });
     });
   }, [categoryLayers, selectedLayers]);
