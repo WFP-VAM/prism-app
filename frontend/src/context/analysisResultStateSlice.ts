@@ -50,7 +50,11 @@ import {
 } from '../utils/analysis-utils';
 import { getRoundedData } from '../utils/data-utils';
 import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
-import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
+import {
+  getBoundaryLayersByAdminLevel,
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from '../utils/server-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
@@ -270,20 +274,19 @@ const createAPIRequestParams = (
   geojsonOut?: boolean,
 ): ApiData => {
   // Get default values for groupBy and admin boundary file path
-  const {
-    path: defaultAdminBoundariesPath,
-    adminCode: defaulGroupBy,
-  } = getBoundaryLayerSingleton();
   // Use baseline layer values if they exist.
   const {
-    path: boundaryFilePath,
+    adminLevel,
     adminCode: paramsGroupBy,
   } = params as AdminLevelDataLayerProps;
 
+  const {
+    path: adminBoundariesPath,
+    adminCode: defaulGroupBy,
+  } = getBoundaryLayersByAdminLevel(adminLevel);
+
   const groupBy = paramsGroupBy ?? defaulGroupBy;
-  const zonesUrl = getAdminBoundariesURL(
-    boundaryFilePath ?? defaultAdminBoundariesPath,
-  );
+  const zonesUrl = getAdminBoundariesURL(adminBoundariesPath);
   // eslint-disable-next-line no-console
   console.log(params);
   // eslint-disable-next-line no-console
