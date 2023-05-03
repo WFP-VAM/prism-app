@@ -25,6 +25,8 @@ import {
 import { useSafeTranslation } from '../../../../i18n';
 import { activeLayersSelector } from '../../../../context/mapStateSlice/selectors';
 import TabPanel from './TabPanel';
+import { analysisResultSelector } from '../../../../context/analysisResultStateSlice';
+import { ExposedPopulationResult } from '../../../../utils/analysis-utils';
 
 interface StyleProps {
   tabValue: number;
@@ -94,6 +96,7 @@ const LeftPanelTabs = memo(
     const dispatch = useDispatch();
     const tabValue = useSelector(leftPanelTabValueSelector);
     const activeLayers = useSelector(activeLayersSelector);
+    const analysisData = useSelector(analysisResultSelector);
     const classes = useStyles({ panelSize, tabValue });
 
     const areChartLayersAvailable = useMemo(() => {
@@ -108,11 +111,18 @@ const LeftPanelTabs = memo(
       [dispatch, setPanelSize],
     );
 
+    const layersBadgeContent = useMemo(() => {
+      if (!analysisData || analysisData instanceof ExposedPopulationResult) {
+        return activeLayers.length;
+      }
+      return activeLayers.length + 1;
+    }, [activeLayers.length, analysisData]);
+
     const renderedLayersTabLabel = useMemo(() => {
       if (
         tabValue !== 0 &&
         panelSize !== PanelSize.folded &&
-        activeLayers.length >= 1
+        layersBadgeContent >= 1
       ) {
         return (
           <Badge
@@ -120,7 +130,7 @@ const LeftPanelTabs = memo(
               horizontal: 'left',
               vertical: 'top',
             }}
-            badgeContent={activeLayers.length}
+            badgeContent={layersBadgeContent}
             color="secondary"
           >
             <LayersOutlined style={{ verticalAlign: 'middle' }} />
@@ -134,7 +144,7 @@ const LeftPanelTabs = memo(
           <Box ml={1}>{t('Layers')}</Box>
         </>
       );
-    }, [activeLayers.length, panelSize, t, tabValue]);
+    }, [layersBadgeContent, panelSize, t, tabValue]);
 
     const a11yProps = useCallback((index: any) => {
       return {

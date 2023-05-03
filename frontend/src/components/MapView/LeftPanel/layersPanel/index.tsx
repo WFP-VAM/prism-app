@@ -1,10 +1,26 @@
 import { Box } from '@material-ui/core';
 import React, { memo, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { Extent } from '../../Layers/raster-utils';
 import MenuItem from './MenuItem';
 import { MenuItemType } from '../../../../config/types';
+import {
+  analysisResultOpacitySelector,
+  analysisResultSelector,
+  analysisResultSortByKeySelector,
+  analysisResultSortOrderSelector,
+} from '../../../../context/analysisResultStateSlice';
+import { ExposedPopulationResult } from '../../../../utils/analysis-utils';
+import AnalysisLayerMenuItem from './AnalysisLayerMenuItem';
+import { useSafeTranslation } from '../../../../i18n';
 
 const LayersPanel = memo(({ extent, layersMenuItems }: LayersPanelProps) => {
+  const analysisData = useSelector(analysisResultSelector);
+  const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
+  const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
+  const analysisResultOpacity = useSelector(analysisResultOpacitySelector);
+  const { t } = useSafeTranslation();
+
   const renderedRootAccordionItems = useMemo(() => {
     return layersMenuItems.map((menuItem: MenuItemType) => {
       return (
@@ -19,7 +35,33 @@ const LayersPanel = memo(({ extent, layersMenuItems }: LayersPanelProps) => {
     });
   }, [extent, layersMenuItems]);
 
-  return <Box>{renderedRootAccordionItems}</Box>;
+  const renderedRootAnalysisAccordionItems = useMemo(() => {
+    if (!analysisData || analysisData instanceof ExposedPopulationResult) {
+      return null;
+    }
+    return (
+      <AnalysisLayerMenuItem
+        title={t('Analysis Results')}
+        analysisResultSortByKey={analysisResultSortByKey}
+        analysisResultSortOrder={analysisResultSortOrder}
+        analysisData={analysisData}
+        initialOpacity={analysisResultOpacity}
+      />
+    );
+  }, [
+    analysisData,
+    analysisResultOpacity,
+    analysisResultSortByKey,
+    analysisResultSortOrder,
+    t,
+  ]);
+
+  return (
+    <Box>
+      {renderedRootAccordionItems}
+      {renderedRootAnalysisAccordionItems}
+    </Box>
+  );
 });
 
 interface LayersPanelProps {

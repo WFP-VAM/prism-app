@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   analysisResultSelector,
@@ -9,6 +9,7 @@ import { useSafeTranslation } from '../../../i18n';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
+  ExposedPopulationResult,
   generateAnalysisFilename,
   PolygonAnalysisResult,
   useAnalysisTableColumns,
@@ -20,17 +21,23 @@ function AnalysisDownloadButton() {
   const analysisResult = useSelector(analysisResultSelector);
   const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
   const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
-  const featureCollection = analysisResult?.featureCollection;
   const { translatedColumns } = useAnalysisTableColumns(analysisResult);
 
   const { t } = useSafeTranslation();
 
-  const doesLayerAcceptCSVDownload =
-    analysisResult &&
-    (analysisResult instanceof BaselineLayerResult ||
-      analysisResult instanceof PolygonAnalysisResult);
+  const featureCollection = useMemo(() => {
+    return analysisResult?.featureCollection;
+  }, [analysisResult]);
 
-  const getAnalysisDate = () => {
+  const doesLayerAcceptCSVDownload = useMemo(() => {
+    return (
+      analysisResult &&
+      (analysisResult instanceof BaselineLayerResult ||
+        analysisResult instanceof PolygonAnalysisResult)
+    );
+  }, [analysisResult]);
+
+  const analysisDate = useMemo(() => {
     if (analysisResult instanceof BaselineLayerResult) {
       return analysisResult.analysisDate;
     }
@@ -38,50 +45,52 @@ function AnalysisDownloadButton() {
       return analysisResult.endDate;
     }
     return null;
-  };
+  }, [analysisResult]);
 
-  const handleAnalysisDownloadGeoJson = (): void => {
-    const getFilename = () => {
-      if (
-        // Explicit condition for type narrowing
-        analysisResult &&
-        (analysisResult instanceof BaselineLayerResult ||
-          analysisResult instanceof PolygonAnalysisResult)
-      ) {
-        return generateAnalysisFilename(
-          analysisResult,
-          getAnalysisDate() ?? null,
-        );
-      }
-      return analysisResult?.getTitle();
-    };
+  const fileName = useMemo(() => {
+    if (
+      // Explicit condition for type narrowing
+      !analysisResult ||
+      analysisResult instanceof ExposedPopulationResult
+    ) {
+      return analysisResult?.getTitle(t);
+    }
+    return generateAnalysisFilename(analysisResult, analysisDate ?? null);
+  }, [analysisDate, analysisResult, t]);
 
+  const handleAnalysisDownloadGeoJson = useCallback((): void => {
     downloadToFile(
       {
         content: JSON.stringify(featureCollection),
         isUrl: false,
       },
-      getFilename() ?? 'prism_extract',
+      fileName ?? 'prism_extract',
       'application/json',
     );
-  };
+  }, [featureCollection, fileName]);
 
-  const handleAnalysisDownloadCsv = (): void => {
+  const handleAnalysisDownloadCsv = useCallback((): void => {
     if (
       // Explicit condition for type narrowing
-      analysisResult &&
-      (analysisResult instanceof BaselineLayerResult ||
-        analysisResult instanceof PolygonAnalysisResult)
+      !analysisResult ||
+      analysisResult instanceof ExposedPopulationResult
     ) {
-      downloadCSVFromTableData(
-        analysisResult,
-        translatedColumns,
-        getAnalysisDate() ?? null,
-        analysisResultSortByKey,
-        analysisResultSortOrder,
-      );
+      return;
     }
-  };
+    downloadCSVFromTableData(
+      analysisResult,
+      translatedColumns,
+      analysisDate ?? null,
+      analysisResultSortByKey,
+      analysisResultSortOrder,
+    );
+  }, [
+    analysisDate,
+    analysisResult,
+    analysisResultSortByKey,
+    analysisResultSortOrder,
+    translatedColumns,
+  ]);
 
   return (
     <MultiOptionsButton

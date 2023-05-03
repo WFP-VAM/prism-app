@@ -76,6 +76,7 @@ type AnalysisResultState = {
   isMapLayerActive: boolean;
   isDataTableDrawerActive: boolean;
   isExposureLoading: boolean;
+  opacity: number;
   analysisResultDataSortByKey: Column['id'];
   analysisResultDataSortOrder: 'asc' | 'desc';
 };
@@ -97,6 +98,7 @@ const initialState: AnalysisResultState = {
   isExposureLoading: false,
   analysisResultDataSortByKey: 'name',
   analysisResultDataSortOrder: 'asc',
+  opacity: 0.5,
 };
 
 /* Gets a public URL for the admin boundaries used by this application.
@@ -640,6 +642,10 @@ export const analysisResultSlice = createSlice({
       ...state,
       analysisResultDataSortOrder: payload,
     }),
+    setAnalysisLayerOpacity: (state, { payload }: PayloadAction<number>) => ({
+      ...state,
+      opacity: payload,
+    }),
     setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
       ...state,
       isMapLayerActive: payload,
@@ -784,6 +790,9 @@ export const analysisResultSortOrderSelector = (
   state: RootState,
 ): 'asc' | 'desc' => state.analysisResultState.analysisResultDataSortOrder;
 
+export const analysisResultOpacitySelector = (state: RootState): number =>
+  state.analysisResultState.opacity;
+
 export const isAnalysisLoadingSelector = (state: RootState): boolean =>
   state.analysisResultState.isLoading;
 
@@ -800,6 +809,7 @@ export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
 export const {
   setIsMapLayerActive,
   setIsDataTableDrawerActive,
+  setAnalysisLayerOpacity,
   setCurrentDataDefinition,
   hideDataTableDrawer,
   clearAnalysisResult,

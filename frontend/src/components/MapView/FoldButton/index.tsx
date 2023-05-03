@@ -11,6 +11,8 @@ import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useSafeTranslation } from '../../../i18n';
 import { activeLayersSelector } from '../../../context/mapStateSlice/selectors';
+import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
+import { ExposedPopulationResult } from '../../../utils/analysis-utils';
 
 interface IProps {
   isPanelHidden: boolean;
@@ -44,20 +46,28 @@ const FoldButton = ({ isPanelHidden, setIsPanelHidden }: IProps) => {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const activeLayers = useSelector(activeLayersSelector);
+  const analysisData = useSelector(analysisResultSelector);
 
   const onClick = useCallback(() => {
     setIsPanelHidden(value => !value);
   }, [setIsPanelHidden]);
 
+  const badgeContent = useMemo(() => {
+    if (!analysisData || analysisData instanceof ExposedPopulationResult) {
+      return activeLayers.length;
+    }
+    return activeLayers.length + 1;
+  }, [activeLayers.length, analysisData]);
+
   const renderedIcon = useMemo(() => {
-    if (isPanelHidden && activeLayers.length >= 1) {
+    if (isPanelHidden && badgeContent >= 1) {
       return (
         <Badge
           anchorOrigin={{
             horizontal: 'right',
             vertical: 'top',
           }}
-          badgeContent={activeLayers.length}
+          badgeContent={badgeContent}
           color="secondary"
         >
           <DragIndicatorIcon />
@@ -65,7 +75,7 @@ const FoldButton = ({ isPanelHidden, setIsPanelHidden }: IProps) => {
       );
     }
     return <DragIndicatorIcon />;
-  }, [activeLayers.length, isPanelHidden]);
+  }, [badgeContent, isPanelHidden]);
 
   return (
     <Tooltip title={<Typography>{t('Menu')}</Typography>} arrow>
