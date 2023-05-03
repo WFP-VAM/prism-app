@@ -285,12 +285,12 @@ const createAPIRequestParams = (
     adminCode: defaulGroupBy,
   } = getBoundaryLayersByAdminLevel(adminLevel);
 
-  const groupBy = paramsGroupBy ?? defaulGroupBy;
+  const groupBy = defaulGroupBy;
   const zonesUrl = getAdminBoundariesURL(adminBoundariesPath);
   // eslint-disable-next-line no-console
   console.log(params);
   // eslint-disable-next-line no-console
-  console.log(groupBy);
+  console.log({ defaulGroupBy, paramsGroupBy });
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
