@@ -113,7 +113,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
-            Build succeeded and deployed at http://${{ env.surge_url }} 
+            Build succeeded and deployed at https://${{ env.surge_url }} 
             (hash ${{ github.event.pull_request.head.sha }} deployed at ${{ steps.date.outputs.date }})
 
   master_frontend_build_and_deploy:
