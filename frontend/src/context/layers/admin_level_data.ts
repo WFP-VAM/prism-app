@@ -81,7 +81,6 @@ export async function getAdminLevelDataLayerData({
   const layerData: DataRecord[] = compact(
     adminBoundaryFeatureProps.map(adminBoundaryFeatureProp => {
       const adminKey = adminBoundaryFeatureProp![adminBoundaryLayer.adminCode];
-
       const matchedData = data.find(
         dataProperty => dataProperty[adminCode!] === adminKey,
       );
