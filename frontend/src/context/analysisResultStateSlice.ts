@@ -106,8 +106,7 @@ const initialState: AnalysisResultState = {
  *
  * If the application is in production, we will attempt to construct a public URL that the backend should be able to access.
  */
-function getAdminBoundariesURL() {
-  const adminBoundariesPath = getBoundaryLayerSingleton().path;
+function getAdminBoundariesURL(adminBoundariesPath: string) {
   // already a remote location, so return it.
   if (adminBoundariesPath.startsWith('http')) {
     return adminBoundariesPath;
@@ -270,8 +269,25 @@ const createAPIRequestParams = (
   maskParams?: any,
   geojsonOut?: boolean,
 ): ApiData => {
-  // Use adminCode always as groupby item in the backend.
-  const { adminCode: groupBy } = getBoundaryLayerSingleton();
+  // Get default values for groupBy and admin boundary file path
+  const {
+    path: defaultAdminBoundariesPath,
+    adminCode: defaulGroupBy,
+  } = getBoundaryLayerSingleton();
+  // Use baseline layer values if they exist.
+  const {
+    path: boundaryFilePath,
+    adminCode: paramsGroupBy,
+  } = params as AdminLevelDataLayerProps;
+
+  const groupBy = paramsGroupBy ?? defaulGroupBy;
+  const zonesUrl = getAdminBoundariesURL(
+    boundaryFilePath ?? defaultAdminBoundariesPath,
+  );
+  // eslint-disable-next-line no-console
+  console.log(params);
+  // eslint-disable-next-line no-console
+  console.log(groupBy);
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -292,7 +308,7 @@ const createAPIRequestParams = (
       resolution: wcsConfig?.pixelResolution,
       url: geotiffLayer.baseUrl,
     }),
-    zones_url: getAdminBoundariesURL(),
+    zones_url: zonesUrl,
     group_by: groupBy,
     ...wfsParams,
     ...maskParams,
@@ -449,6 +465,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     baselineLayer,
   );
 
+  // eslint-disable-next-line no-console
+  console.log(apiRequest);
+
   const aggregateData = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest),
     hazardLayer,
@@ -482,12 +501,18 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const loadedAndCheckedBaselineData: BaselineLayerData = await getCheckedBaselineData();
 
+  // eslint-disable-next-line no-console
+  console.log(loadedAndCheckedBaselineData);
+
   const features = generateFeaturesFromApiData(
     aggregateData,
     loadedAndCheckedBaselineData,
     apiRequest.group_by,
     statistic,
   );
+
+  // eslint-disable-next-line no-console
+  console.log({ apiFeatures: features });
 
   // Create a legend based on statistic data to be used for admin level analsysis.
   const legend = createLegendFromFeatureArray(features, statistic);

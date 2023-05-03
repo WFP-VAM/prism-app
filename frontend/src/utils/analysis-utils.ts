@@ -152,7 +152,10 @@ function mergeFeaturesByProperty(
 ): Feature[] {
   const features = baselineFeatures.map(feature1 => {
     const aggregateProperties = aggregateData.filter(
-      item => get(item, id) === get(feature1, ['properties', id]) && item,
+      item =>
+        item &&
+        // IDs need to be compared as strings to avoid 31 != "31".
+        String(get(item, id)) === String(get(feature1, ['properties', id])),
     );
 
     const filteredProperties = aggregateProperties.map(filteredProperty => {
@@ -295,6 +298,8 @@ export function generateFeaturesFromApiData(
   groupBy: StatsApi['groupBy'],
   operation: AggregationOperations,
 ): GeoJsonBoundary[] {
+  // eslint-disable-next-line no-console
+  console.log({ aggregateData, baselineData, groupBy });
   const mergedFeatures = mergeFeaturesByProperty(
     baselineData.features.features,
     aggregateData,
