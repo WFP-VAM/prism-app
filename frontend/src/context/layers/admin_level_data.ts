@@ -82,6 +82,7 @@ export async function getAdminLevelDataLayerData({
     adminBoundaryFeatureProps.map(adminBoundaryFeatureProp => {
       const adminKey = adminBoundaryFeatureProp![adminBoundaryLayer.adminCode];
 
+      // eslint-disable-next-line no-console
       console.log({ code: adminBoundaryLayer.adminCode, adminCode, adminKey });
       const matchedData = data.find(
         dataProperty => dataProperty[adminCode!] === adminKey,
