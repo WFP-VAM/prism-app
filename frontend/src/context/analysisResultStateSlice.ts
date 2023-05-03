@@ -273,24 +273,16 @@ const createAPIRequestParams = (
   maskParams?: any,
   geojsonOut?: boolean,
 ): ApiData => {
-  // Get default values for groupBy and admin boundary file path
-  // Use baseline layer values if they exist.
-  const {
-    adminLevel,
-    adminCode: paramsGroupBy,
-  } = params as AdminLevelDataLayerProps;
-
+  // Get default values for groupBy and admin boundary file path at the proper adminLevel
+  const { adminLevel } = params as AdminLevelDataLayerProps;
   const {
     path: adminBoundariesPath,
-    adminCode: defaulGroupBy,
+    adminCode: groupBy,
   } = getBoundaryLayersByAdminLevel(adminLevel);
 
-  const groupBy = defaulGroupBy;
+  // Note - This may not work when running locally as the function
+  // will default to the boundary layer hosted in S3.
   const zonesUrl = getAdminBoundariesURL(adminBoundariesPath);
-  // eslint-disable-next-line no-console
-  console.log(params);
-  // eslint-disable-next-line no-console
-  console.log({ defaulGroupBy, paramsGroupBy });
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -470,9 +462,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     baselineLayer,
   );
 
-  // eslint-disable-next-line no-console
-  console.log(apiRequest);
-
   const aggregateData = scaleAndFilterAggregateData(
     await fetchApiData(ANALYSIS_API_URL, apiRequest),
     hazardLayer,
@@ -506,18 +495,12 @@ export const requestAndStoreAnalysis = createAsyncThunk<
 
   const loadedAndCheckedBaselineData: BaselineLayerData = await getCheckedBaselineData();
 
-  // eslint-disable-next-line no-console
-  console.log(loadedAndCheckedBaselineData);
-
   const features = generateFeaturesFromApiData(
     aggregateData,
     loadedAndCheckedBaselineData,
     apiRequest.group_by,
     statistic,
   );
-
-  // eslint-disable-next-line no-console
-  console.log({ apiFeatures: features });
 
   // Create a legend based on statistic data to be used for admin level analsysis.
   const legend = createLegendFromFeatureArray(features, statistic);

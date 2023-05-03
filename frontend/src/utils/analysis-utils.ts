@@ -298,8 +298,6 @@ export function generateFeaturesFromApiData(
   groupBy: StatsApi['groupBy'],
   operation: AggregationOperations,
 ): GeoJsonBoundary[] {
-  // eslint-disable-next-line no-console
-  console.log({ aggregateData, baselineData, groupBy });
   const mergedFeatures = mergeFeaturesByProperty(
     baselineData.features.features,
     aggregateData,
