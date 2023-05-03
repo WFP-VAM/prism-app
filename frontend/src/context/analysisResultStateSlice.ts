@@ -452,7 +452,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
   ) as LayerData<AdminLevelDataLayerProps>;
-  const adminBoundaries = getBoundaryLayerSingleton();
+
+  const { adminLevel } = baselineLayer as AdminLevelDataLayerProps;
+  const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
   ) as LayerData<BoundaryLayerProps>;
