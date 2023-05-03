@@ -3,7 +3,7 @@
     "type": "boundary",
     "path": "data/mozambique/moz_bnd_adm1_WFP.json",
     "opacity": 0.8,
-    "admin_code": "source_id",
+    "admin_code": "adm1_id",
     "admin_level_names": ["adm1_name"],
     "admin_level_local_names": ["adm1_name"],
     "styles:": {
@@ -21,7 +21,7 @@
     "type": "boundary",
     "path": "data/mozambique/moz_bnd_adm2_WFP.json",
     "opacity": 0.8,
-    "admin_code": "source_id",
+    "admin_code": "adm2_id",
     "admin_level_names": ["adm1_name", "adm2_name"],
     "admin_level_local_names": ["adm1_name", "adm2_name"],
     "styles:": {
@@ -1948,7 +1948,7 @@
     "path": "data/mozambique/moz-ipc-2020-12.json",
     "data_field": "overall_phase",
     "admin_level": 2,
-    "admin_code": "ADM2_PCODE",
+    "admin_code": "adm2_id",
     "opacity": 0.7,
     "legend": [
       {
@@ -2149,7 +2149,7 @@
     "path": "data/mozambique/moz-mpi-2020.json",
     "data_field": "mpi",
     "admin_level": 1,
-    "admin_code": "ADM1_PCODE",
+    "admin_code": "adm1_id",
     "opacity": 0.7,
     "feature_info_props": {
       "mpi_headcount": {
