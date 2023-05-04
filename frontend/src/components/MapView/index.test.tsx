@@ -12,8 +12,6 @@ jest.mock('./Layers/BoundaryLayer', () => 'mock-BoundaryLayer');
 
 jest.mock('./Legends', () => 'mock-Legends');
 jest.mock('./DateSelector', () => 'mock-DateSelector');
-jest.mock('./Analyser', () => 'mock-Analyser');
-jest.mock('./Download', () => 'mock-Download');
 
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({
@@ -22,6 +20,14 @@ jest.mock('react-router-dom', () => ({
       search: '',
     },
   }),
+}));
+
+jest.mock('react-mapbox-gl', () => ({
+  __esModule: true,
+  default: () => () => {
+    return <span>Mock map</span>;
+  },
+  Cluster: () => <span>Mock cluster</span>,
 }));
 
 test('renders as expected', () => {

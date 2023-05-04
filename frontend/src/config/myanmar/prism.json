@@ -1,6 +1,7 @@
 {
   "country": "Myanmar",
-  "WFPAuthRequired": true,
+  "countryAdmin0Id": 273,
+  "WFPAuthRequired": false,
   "alertFormActive": false,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
@@ -17,9 +18,7 @@
     "temperature": "icon_climate.png"
   },
   "map": {
-    "latitude": 19.467,
-    "longitude": 96.371,
-    "zoom": 4.48
+    "boundingBox": [97.3, 11.93, 100.18, 27.34]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -28,38 +27,12 @@
   ],
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://geonode.wfp.org/geoserver/prism/wms/"
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
   "categories": {
     "storms_and_floods": {
-      "tropical_storms": [
-        {
-          "group_title": "Tropical Storms",
-          "activate_all": true,
-          "layers": [
-            {
-              "id": "adamts_buffers",
-              "label": "Wind buffers",
-              "main": true
-            },
-            {
-              "id": "adamts_nodes",
-              "label": "Nodes",
-              "main": false
-            },
-            {
-              "id": "adamts_tracks",
-              "label": "Tracks",
-              "main": false
-            }
-          ]
-        }
-      ],
-      "floods": [
-        "hydra_s1"
-      ]
+      "floods": ["flood_extent"]
     },
     "rainfall": {
       "rainfall_amount": [
@@ -169,10 +142,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -219,10 +189,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -232,10 +199,7 @@
       ]
     },
     "vulnerability": {
-      "vulnerability_index": [
-        "multidimensional_disadvantage_index",
-        "inform"
-      ],
+      "vulnerability_index": ["multidimensional_disadvantage_index", "inform"],
       "vulnerable_populations": [
         "age_dependency_ratio",
         "female_headed_hhs",
@@ -266,13 +230,8 @@
       ]
     },
     "exposure": {
-      "population": [
-        "total_pop"
-      ],
-      "conflict": [
-        "conflict_fatalities",
-        "conflict_type"
-      ],
+      "population": ["total_pop"],
+      "conflict": ["conflict_fatalities", "conflict_type"],
       "historical_climate_exposure": [
         "population_exposed_historical_river_floods",
         "population_exposed_historical_storm_surge"
