@@ -221,17 +221,22 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
       });
 
       // TODO avoid any use, the json should be typed. See issue #307
-      const data: { [key: string]: any }[] = (
-        await (
-          await fetch(datedPath, {
-            mode: adminLevelDataLayer.path.includes('http')
-              ? 'cors'
-              : 'same-origin',
-          })
-        ).json()
-      ).DataList;
+      const response = await fetch(datedPath, {
+        mode: adminLevelDataLayer.path.includes('http')
+          ? 'cors'
+          : 'same-origin',
+      });
 
-      return data;
+      try {
+        const data: { [key: string]: any }[] = (await response.json())
+          ?.DataList;
+        return data;
+      } catch {
+        console.warn(
+          `An error occured trying to fetch data from: ${datedPath}.`,
+        );
+      }
+      return [{}];
     }),
   );
 

@@ -11,15 +11,11 @@
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "latitude": 48.945,
-    "longitude": 31.251,
-    "zoom": 4.95,
-    "maxBounds": [16.64,39.9,45.81,55.47]
+    "boundingBox": [22.09, 44.36, 40.08, 52.34],
+    "maxBounds": [16.64, 39.9, 45.81, 55.47]
   },
   "categories": {
     "vegetation": {

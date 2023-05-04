@@ -157,12 +157,17 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
+export type LegendLabel = {
+  text: string;
+  value: number | string;
+};
+
 export type LegendDefinitionItem = {
   value: string | number;
   color: string;
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
-  label?: string;
+  label?: LegendLabel | string;
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
@@ -199,15 +204,6 @@ export enum RasterType {
 }
 
 export type HazardDataType = GeometryType | RasterType;
-
-// not including standard deviation and sum quite yet
-// because we won't be able to re-use the WMS legend
-export enum DisplayZonalStats {
-  Max = 'Max',
-  Mean = 'Mean',
-  Median = 'Median',
-  Min = 'Min',
-}
 
 export type ZonalConfig = {
   // we're keeping snakecase here because that is what zonal uses
@@ -335,6 +331,9 @@ export type DatasetField = {
   label: string;
   fallback?: number; // If key does not exist in json response use fallback (rainfall anomaly).
   color: string;
+  maxValue?: number;
+  minValue?: number;
+  pointRadius?: number;
 };
 
 type DatasetProps = {
@@ -591,14 +590,6 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
-export interface MenuItemMobileType {
-  title: string;
-  icon: string;
-  layersCategories: LayersCategoryType[];
-  expanded: string;
-  selectAccordion: (arg: string) => void;
-}
-
 export type DateItem = {
   displayDate: number; // Date that will be rendered in the calendar.
   queryDate: number; // Date that will be used in the WMS request.
@@ -622,6 +613,8 @@ export interface WfsRequestParams {
 export interface ChartConfig {
   type: string;
   category: string;
+  minValue?: number;
+  maxValue?: number;
   stacked?: boolean;
   exclude?: string[];
   data?: string;
@@ -696,3 +689,10 @@ export type UserAuth = {
   username: string;
   password: string;
 };
+
+export enum PanelSize {
+  folded = '0vw',
+  medium = '30vw',
+  large = '60vw',
+  xlarge = '80vw',
+}

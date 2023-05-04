@@ -1,13 +1,15 @@
 import {
+  createStyles,
   FormControl,
   ListSubheader,
+  makeStyles,
   MenuItem,
-  Select,
+  TextField,
   Typography,
 } from '@material-ui/core';
 import React, { ReactElement } from 'react';
 import { startCase } from 'lodash';
-import { menuList } from '../../NavBar/utils';
+import { menuList } from '../LeftPanel/utils';
 import { LayerKey, LayerType } from '../../../config/types';
 import {
   getDisplayBoundaryLayers,
@@ -16,16 +18,41 @@ import {
 import { useSafeTranslation } from '../../../i18n';
 import { getLayerGeometryIcon } from './layer-utils';
 
+const useStyles = makeStyles(() =>
+  createStyles({
+    selectRoot: {
+      width: '100%',
+      '& .MuiInputBase-root': {
+        '&:hover fieldset': {
+          borderColor: '#333333',
+        },
+      },
+    },
+    input: {
+      color: '#333333',
+    },
+    focused: {
+      borderColor: '#333333',
+      color: '#333333',
+    },
+    label: {
+      color: '#333333',
+    },
+  }),
+);
+
 function LayerDropdown({
   type,
   value,
   setValue,
+  label,
   placeholder,
   ...rest
 }: LayerSelectorProps) {
   // this could be testable, needs to be constructed in a way that prevents it breaking whenever new layers are added. (don't put layer name in snapshot)
 
   const { t } = useSafeTranslation();
+  const classes = useStyles();
 
   // Only take first boundary for now
   const adminBoundaries = getDisplayBoundaryLayers().slice(0, 1);
@@ -83,11 +110,26 @@ function LayerDropdown({
 
   return (
     <FormControl {...rest}>
-      <Select
-        defaultValue={defaultValue}
+      <TextField
+        classes={{ root: classes.selectRoot }}
+        variant="outlined"
         value={value}
         onChange={e => {
           setValue(e.target.value as LayerKey);
+        }}
+        defaultValue=""
+        select
+        label={label}
+        InputProps={{
+          classes: {
+            focused: classes.focused,
+            input: classes.input,
+          },
+        }}
+        InputLabelProps={{
+          classes: {
+            root: classes.label,
+          },
         }}
       >
         {categories.reduce(
@@ -114,7 +156,7 @@ function LayerDropdown({
               ]
             : []) as ReactElement[],
         )}
-      </Select>
+      </TextField>
     </FormControl>
   );
 }
@@ -122,6 +164,7 @@ function LayerDropdown({
 interface LayerSelectorProps {
   type: LayerType['type'];
   value?: LayerKey;
+  label?: string;
   setValue: (val: LayerKey) => void;
   className?: string;
   placeholder?: string;

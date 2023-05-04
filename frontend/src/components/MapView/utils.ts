@@ -1,26 +1,16 @@
-import {
-  values,
-  zipObject,
-  assign,
-  difference,
-  mapValues,
-  groupBy as _groupBy,
-  keysIn,
-  uniq,
-} from 'lodash';
+import { values } from 'lodash';
 import { Map } from 'mapbox-gl';
+import { TFunction } from 'i18next';
 import { LayerDefinitions } from '../../config/utils';
 import { formatFeatureInfo } from '../../utils/server-utils';
 import { getExtent } from './Layers/raster-utils';
 import {
-  WMSLayerProps,
-  FeatureInfoType,
   FeatureInfoObject,
+  FeatureInfoType,
   LegendDefinitionItem,
+  WMSLayerProps,
 } from '../../config/types';
-import { ExposedPopulationResult } from '../../utils/analysis-utils';
 import { TableData } from '../../context/tableStateSlice';
-import { getLowestAdminLevelName } from '../../utils/admin-utils';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
   const matchStr = 'layer-';
@@ -64,90 +54,6 @@ export const getFeatureInfoParams = (
   };
 
   return params;
-};
-
-export const convertToTableData = (result: ExposedPopulationResult) => {
-  const {
-    key,
-    groupBy,
-    statistic,
-    featureCollection: { features },
-  } = result;
-
-  const fields = key
-    ? uniq(features.map(f => f.properties && f.properties[key]))
-    : [statistic];
-
-  const lowestLevel = getLowestAdminLevelName();
-
-  const featureProperties = features
-    .filter(
-      feature => feature.properties?.[key] || feature.properties?.[statistic],
-    )
-    .map(feature => {
-      return {
-        [groupBy]: feature.properties?.[lowestLevel],
-        [key]: feature.properties?.[key],
-        [statistic]: feature.properties?.[statistic],
-      };
-    });
-
-  // TODO - Improve readability and reusability of this function
-  const rowData = key
-    ? mapValues(_groupBy(featureProperties, groupBy), k => {
-        return mapValues(_groupBy(k, key), v =>
-          parseInt(
-            v.map(x => x[statistic]).reduce((acc, value) => acc + value),
-            10,
-          ),
-        );
-      })
-    : mapValues(_groupBy(featureProperties, groupBy), k => {
-        return {
-          [statistic]: parseInt(
-            k.map(x => x[statistic]).reduce((acc, value) => acc + value),
-            10,
-          ),
-        };
-      });
-
-  const groupedRowData = Object.keys(rowData).map(k => {
-    return {
-      [groupBy]: k,
-      ...rowData[k],
-    };
-  });
-
-  const groupedRowDataWithAllLabels = groupedRowData.map(row => {
-    const labelsWithoutValue = difference(fields, keysIn(row));
-    const extras = labelsWithoutValue.map(k => ({ [k]: 0 }));
-    return extras.length !== 0 ? assign(row, ...extras) : row;
-  });
-
-  const columnMapping = {
-    [groupBy]: 'Name',
-    sum: 'Total',
-  };
-
-  const headlessRows = groupedRowDataWithAllLabels.map(row => {
-    // Replace the group by column name with generic value.
-    const obj = Object.entries(row).reduce(
-      (acc, [objKey, value]) => ({
-        ...acc,
-        [columnMapping[objKey] || objKey]: value,
-      }),
-      [],
-    );
-    return obj;
-  });
-
-  const columns = [
-    columnMapping[groupBy],
-    ...fields.map(field => columnMapping[field] || field),
-  ];
-  const headRow = zipObject(columns, columns);
-  const rows = [headRow, ...headlessRows];
-  return { columns, rows };
 };
 
 export const exportDataTableToCSV = (data: TableData) => {
@@ -198,14 +104,15 @@ export function getFeatureInfoPropsData(
     }, {});
 }
 
-export enum ReportType {
-  Storm,
-  Flood,
-}
-
-export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
+export const getLegendItemLabel = (
+  t: TFunction,
+  { label, value }: LegendDefinitionItem,
+) => {
   if (typeof label === 'string') {
-    return label;
+    return t(label);
+  }
+  if (label?.text !== undefined) {
+    return `${t(label.text)} ${label.value}`;
   }
   if (typeof value === 'number') {
     const roundedValue = Math.round(value);
@@ -213,5 +120,9 @@ export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
       ? value.toFixed(2)
       : roundedValue.toLocaleString('en-US');
   }
-  return value;
+  return t(value);
+};
+
+export const generateUniqueTableKey = (activityName: string) => {
+  return `${activityName}_${Date.now()}`;
 };

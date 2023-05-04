@@ -1,51 +1,30 @@
 import { has, get } from 'lodash';
-
 import { PublicClientApplication } from '@azure/msal-browser';
-
 import afghanistan from './afghanistan';
-
 import cambodia from './cambodia';
-
+import cameroon from './cameroon';
 import colombia from './colombia';
-
 import cuba from './cuba';
-
 import ecuador from './ecuador';
-
 import global from './global';
-
 import {
   indonesiaConfig,
   indonesiaRawLayers,
   indonesiaRawTables,
 } from './indonesia';
-
 import jordan from './jordan';
-
 import kyrgyzstan from './kyrgyzstan';
-
 import mongolia from './mongolia';
-
 import mozambique from './mozambique';
-
 import myanmar from './myanmar';
-
 import namibia from './namibia';
-
 import nigeria from './nigeria';
-
 import rbd from './rbd';
-
 import sierraleone from './sierraleone';
-
 import southsudan from './southsudan';
-
 import srilanka from './srilanka';
-
 import tajikistan from './tajikistan';
-
 import ukraine from './ukraine';
-
 import zimbabwe from './zimbabwe';
 
 // Upload the boundary URL to S3 to enable the use of the API in a local environment.
@@ -54,9 +33,10 @@ const DEFAULT_BOUNDARIES_FOLDER =
 
 const configMap = {
   afghanistan,
-  cuba,
   cambodia,
+  cameroon,
   colombia,
+  cuba,
   ecuador,
   global,
   indonesia: {

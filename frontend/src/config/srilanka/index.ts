@@ -9,5 +9,5 @@ export default {
   rawLayers,
   rawTables,
   translation,
-  defaultBoundariesFile: 'lka_boundaries_admin3.json',
+  defaultBoundariesFile: 'lka_bnd_adm3.json',
 };
