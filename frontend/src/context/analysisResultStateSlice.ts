@@ -50,7 +50,11 @@ import {
 } from '../utils/analysis-utils';
 import { getRoundedData } from '../utils/data-utils';
 import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
-import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
+import {
+  getBoundaryLayersByAdminLevel,
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from '../utils/server-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
@@ -108,8 +112,7 @@ const initialState: AnalysisResultState = {
  *
  * If the application is in production, we will attempt to construct a public URL that the backend should be able to access.
  */
-function getAdminBoundariesURL() {
-  const adminBoundariesPath = getBoundaryLayerSingleton().path;
+function getAdminBoundariesURL(adminBoundariesPath: string) {
   // already a remote location, so return it.
   if (adminBoundariesPath.startsWith('http')) {
     return adminBoundariesPath;
@@ -272,8 +275,16 @@ const createAPIRequestParams = (
   maskParams?: any,
   geojsonOut?: boolean,
 ): ApiData => {
-  // Use adminCode always as groupby item in the backend.
-  const { adminCode: groupBy } = getBoundaryLayerSingleton();
+  // Get default values for groupBy and admin boundary file path at the proper adminLevel
+  const { adminLevel } = params as AdminLevelDataLayerProps;
+  const {
+    path: adminBoundariesPath,
+    adminCode: groupBy,
+  } = getBoundaryLayersByAdminLevel(adminLevel);
+
+  // Note - This may not work when running locally as the function
+  // will default to the boundary layer hosted in S3.
+  const zonesUrl = getAdminBoundariesURL(adminBoundariesPath);
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -294,7 +305,7 @@ const createAPIRequestParams = (
       resolution: wcsConfig?.pixelResolution,
       url: geotiffLayer.baseUrl,
     }),
-    zones_url: getAdminBoundariesURL(),
+    zones_url: zonesUrl,
     group_by: groupBy,
     ...wfsParams,
     ...maskParams,
@@ -435,7 +446,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
   ) as LayerData<AdminLevelDataLayerProps>;
-  const adminBoundaries = getBoundaryLayerSingleton();
+
+  const { adminLevel } = baselineLayer as AdminLevelDataLayerProps;
+  const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
   ) as LayerData<BoundaryLayerProps>;
