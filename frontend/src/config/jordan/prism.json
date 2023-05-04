@@ -1,6 +1,7 @@
 {
   "country": "Jordan",
   "alertFormActive": false,
+  "countryAdmin0Id": 130,
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
@@ -12,14 +13,10 @@
     "capacity": "icon_capacity.png"
   },
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "latitude": 31.305,
-    "longitude": 37.096,
-    "zoom": 6.58
+    "boundingBox": [35.42, 29.36, 38.82, 33.16]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -121,10 +118,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -171,10 +165,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -184,46 +175,39 @@
         "lst_amplitude"
       ]
     },
-    "sensitivity": {
-      "socioeconomic": [
-        "male_unemployment",
-        "female_unemployment"
+    "exposure": {
+      "demographics": [
+        "population",
+        "percent_refugees_2022"
       ],
       "agriculture": [
         "rainfed",
         "irrigated",
-        "forest",
-        "rangelands",
         "livestock_per_ha"
-      ],
-      "water": [
-        "groundwater_sens",
-        "groundwater_abstraction",
-        "network_age",
-        "non_revenue_losses",
-        "water_network_coverage"
       ]
     },
-    "exposure": {
-      "exposure": [
-        "population",
-        "syrian_refugees",
-        "percent_refugees",
-        "num_droughts",
-        "num_heatwaves"
-      ]
-    },
-    "capacity": {
+    "sensitivity": {
       "socioeconomic": [
         "poverty"
       ],
+      "natural_resources": [
+        "natural_habitats",
+        "groundwater_abstraction",
+        "groundwater_sens"
+      ]
+    },
+    "capacity": {
       "water": [
         "municipal_water",
-        "gw_per_irrigated",
-        "storage_capacity",
-        "water_per_pop",
+        "gw_irrigation",
         "mobile_tanks_per_10k"
       ]
+    },
+    "risk": {
+      "exposure": ["exposure_scaled"],
+      "sensitivity": ["sensitivity_scaled"],
+      "adaptation": ["adaptation_scaled"],
+      "vulnerability": ["vulnerability_scaled"]
     }
   }
 }
