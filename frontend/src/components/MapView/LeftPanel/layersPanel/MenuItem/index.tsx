@@ -16,7 +16,7 @@ import MenuSwitch from '../MenuSwitch';
 import { useSafeTranslation } from '../../../../../i18n';
 import { Extent } from '../../../Layers/raster-utils';
 import { layersSelector } from '../../../../../context/mapStateSlice/selectors';
-import { filterActiveLayers } from '../utils';
+import { filterActiveLayers } from '../../../utils';
 
 const useStyles = makeStyles(() =>
   createStyles({

@@ -24,7 +24,7 @@ import { useSafeTranslation } from '../../../../../i18n';
 import { Extent } from '../../../Layers/raster-utils';
 import SwitchItem from './SwitchItem';
 import { layersSelector } from '../../../../../context/mapStateSlice/selectors';
-import { filterActiveLayers } from '../utils';
+import { filterActiveLayers } from '../../../utils';
 
 const useStyles = makeStyles(() =>
   createStyles({

@@ -6,6 +6,7 @@ import { downloadToFile } from '../../../../utils';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
+  ExposedPopulationResult,
   generateAnalysisFilename,
   PolygonAnalysisResult,
   useAnalysisTableColumns,
@@ -29,6 +30,14 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
 
     const featureCollection = useMemo(() => {
       return analysisData?.featureCollection;
+    }, [analysisData]);
+
+    const doesLayerAcceptCSVDownload = useMemo(() => {
+      return (
+        analysisData &&
+        (analysisData instanceof BaselineLayerResult ||
+          analysisData instanceof PolygonAnalysisResult)
+      );
     }, [analysisData]);
 
     const handleDownloadMenuClose = useCallback(() => {
@@ -63,18 +72,29 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
       if (analysisData instanceof BaselineLayerResult) {
         return analysisData.analysisDate;
       }
-      return analysisData?.endDate;
+      if (analysisData instanceof PolygonAnalysisResult) {
+        return analysisData.endDate;
+      }
+      return null;
     }, [analysisData]);
 
     const fileName = useMemo(() => {
-      if (!analysisData) {
-        return '';
+      if (
+        // Explicit condition for type narrowing
+        !analysisData ||
+        analysisData instanceof ExposedPopulationResult
+      ) {
+        return analysisData?.getTitle(t);
       }
       return generateAnalysisFilename(analysisData, analysisDate ?? null);
-    }, [analysisData, analysisDate]);
+    }, [analysisData, analysisDate, t]);
 
     const handleDownloadCsv = useCallback((): void => {
-      if (!analysisData) {
+      if (
+        // Explicit condition for type narrowing
+        !analysisData ||
+        analysisData instanceof ExposedPopulationResult
+      ) {
         return;
       }
       downloadCSVFromTableData(
@@ -106,6 +126,17 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
       );
     }, [analysisData, featureCollection, fileName]);
 
+    const renderedDownloadAsCSVMenuItem = useMemo(() => {
+      if (!doesLayerAcceptCSVDownload) {
+        return null;
+      }
+      return (
+        <MenuItem key="download-as-csv" onClick={handleDownloadCsv}>
+          {t('Download as CSV')}
+        </MenuItem>
+      );
+    }, [doesLayerAcceptCSVDownload, handleDownloadCsv, t]);
+
     return (
       <>
         {renderedDownloadButton}
@@ -117,9 +148,7 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
           onClose={handleDownloadMenuClose}
         >
           {[
-            <MenuItem key="download-as-csv" onClick={handleDownloadCsv}>
-              {t('Download as CSV')}
-            </MenuItem>,
+            renderedDownloadAsCSVMenuItem,
             <MenuItem key="download-as-geojson" onClick={handleDownloadGeoJson}>
               {t('Download as GeoJSON')}
             </MenuItem>,
@@ -132,7 +161,10 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
 
 interface AnalysisLayerSwitchItemDownloadOptionsProps {
   selected: boolean;
-  analysisData?: BaselineLayerResult | PolygonAnalysisResult;
+  analysisData?:
+    | BaselineLayerResult
+    | PolygonAnalysisResult
+    | ExposedPopulationResult;
   analysisResultSortByKey: string | number;
   analysisResultSortOrder: 'asc' | 'desc';
 }

@@ -12,7 +12,8 @@ import { useSelector } from 'react-redux';
 import { useSafeTranslation } from '../../../i18n';
 import { activeLayersSelector } from '../../../context/mapStateSlice/selectors';
 import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
-import { ExposedPopulationResult } from '../../../utils/analysis-utils';
+import { LayerType } from '../../../config/types';
+import { filterActiveGroupedLayers } from '../utils';
 
 interface IProps {
   isPanelHidden: boolean;
@@ -52,12 +53,18 @@ const FoldButton = ({ isPanelHidden, setIsPanelHidden }: IProps) => {
     setIsPanelHidden(value => !value);
   }, [setIsPanelHidden]);
 
+  const groupedActiveLayers = useMemo(() => {
+    return activeLayers.filter((activeLayer: LayerType) => {
+      return filterActiveGroupedLayers(activeLayer, activeLayer);
+    });
+  }, [activeLayers]);
+
   const badgeContent = useMemo(() => {
-    if (!analysisData || analysisData instanceof ExposedPopulationResult) {
-      return activeLayers.length;
+    if (!analysisData) {
+      return groupedActiveLayers.length;
     }
-    return activeLayers.length + 1;
-  }, [activeLayers.length, analysisData]);
+    return groupedActiveLayers.length + 1;
+  }, [groupedActiveLayers.length, analysisData]);
 
   const renderedIcon = useMemo(() => {
     if (isPanelHidden && badgeContent >= 1) {

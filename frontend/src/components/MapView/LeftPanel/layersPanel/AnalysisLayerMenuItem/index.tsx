@@ -14,12 +14,16 @@ import { useSafeTranslation } from '../../../../../i18n';
 import AnalysisLayerSwitchItem from '../AnalysisLayerSwitchItem';
 import {
   BaselineLayerResult,
+  ExposedPopulationResult,
   PolygonAnalysisResult,
 } from '../../../../../utils/analysis-utils';
 
 interface AnalysisLayerMenuItemProps {
   title: string;
-  analysisData?: BaselineLayerResult | PolygonAnalysisResult;
+  analysisData?:
+    | BaselineLayerResult
+    | PolygonAnalysisResult
+    | ExposedPopulationResult;
   initialOpacity: number;
   analysisResultSortByKey: string | number;
   analysisResultSortOrder: 'asc' | 'desc';

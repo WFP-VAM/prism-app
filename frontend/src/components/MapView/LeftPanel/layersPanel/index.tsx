@@ -10,7 +10,6 @@ import {
   analysisResultSortByKeySelector,
   analysisResultSortOrderSelector,
 } from '../../../../context/analysisResultStateSlice';
-import { ExposedPopulationResult } from '../../../../utils/analysis-utils';
 import AnalysisLayerMenuItem from './AnalysisLayerMenuItem';
 import { useSafeTranslation } from '../../../../i18n';
 
@@ -36,7 +35,7 @@ const LayersPanel = memo(({ extent, layersMenuItems }: LayersPanelProps) => {
   }, [extent, layersMenuItems]);
 
   const renderedRootAnalysisAccordionItems = useMemo(() => {
-    if (!analysisData || analysisData instanceof ExposedPopulationResult) {
+    if (!analysisData) {
       return null;
     }
     return (

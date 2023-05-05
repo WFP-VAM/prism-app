@@ -16,7 +16,7 @@ import {
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sum } from 'lodash';
-import { PanelSize } from '../../../../config/types';
+import { LayerType, PanelSize } from '../../../../config/types';
 import { getWMSLayersWithChart } from '../../../../config/utils';
 import {
   leftPanelTabValueSelector,
@@ -26,7 +26,7 @@ import { useSafeTranslation } from '../../../../i18n';
 import { activeLayersSelector } from '../../../../context/mapStateSlice/selectors';
 import TabPanel from './TabPanel';
 import { analysisResultSelector } from '../../../../context/analysisResultStateSlice';
-import { ExposedPopulationResult } from '../../../../utils/analysis-utils';
+import { filterActiveGroupedLayers } from '../../utils';
 
 interface StyleProps {
   tabValue: number;
@@ -99,6 +99,12 @@ const LeftPanelTabs = memo(
     const analysisData = useSelector(analysisResultSelector);
     const classes = useStyles({ panelSize, tabValue });
 
+    const groupedActiveLayers = useMemo(() => {
+      return activeLayers.filter((activeLayer: LayerType) => {
+        return filterActiveGroupedLayers(activeLayer, activeLayer);
+      });
+    }, [activeLayers]);
+
     const areChartLayersAvailable = useMemo(() => {
       return getWMSLayersWithChart().length > 0;
     }, []);
@@ -112,11 +118,11 @@ const LeftPanelTabs = memo(
     );
 
     const layersBadgeContent = useMemo(() => {
-      if (!analysisData || analysisData instanceof ExposedPopulationResult) {
-        return activeLayers.length;
+      if (!analysisData) {
+        return groupedActiveLayers.length;
       }
-      return activeLayers.length + 1;
-    }, [activeLayers.length, analysisData]);
+      return groupedActiveLayers.length + 1;
+    }, [groupedActiveLayers.length, analysisData]);
 
     const renderedLayersTabLabel = useMemo(() => {
       if (

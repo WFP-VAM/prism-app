@@ -26,6 +26,7 @@ import { mapSelector } from '../../../../../context/mapStateSlice/selectors';
 import AnalysisLayerSwitchItemDownloadOptions from './AnalysisLayerSwitchItemDownloadOptions';
 import {
   BaselineLayerResult,
+  ExposedPopulationResult,
   PolygonAnalysisResult,
 } from '../../../../../utils/analysis-utils';
 
@@ -275,7 +276,10 @@ const styles = () =>
 interface AnalysisLayerSwitchItemProps extends WithStyles<typeof styles> {
   title: string;
   initialOpacity: number;
-  analysisData?: BaselineLayerResult | PolygonAnalysisResult;
+  analysisData?:
+    | BaselineLayerResult
+    | PolygonAnalysisResult
+    | ExposedPopulationResult;
   analysisResultSortByKey: string | number;
   analysisResultSortOrder: 'asc' | 'desc';
 }

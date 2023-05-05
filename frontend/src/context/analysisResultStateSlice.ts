@@ -276,11 +276,12 @@ const createAPIRequestParams = (
   geojsonOut?: boolean,
 ): ApiData => {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
-  const { adminLevel } = params as AdminLevelDataLayerProps;
   const {
     path: adminBoundariesPath,
     adminCode: groupBy,
-  } = getBoundaryLayersByAdminLevel(adminLevel);
+  } = getBoundaryLayersByAdminLevel(
+    (params as AdminLevelDataLayerProps)?.adminLevel,
+  );
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
