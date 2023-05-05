@@ -154,8 +154,15 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfb", "label": "Rainfall", "color": "#233f5f" },
-        { "key": "rfb_avg", "label": "Average", "color": "#bdf2e6" }
+        { "key": "rfb", 
+          "label": "Rainfall", 
+          "color": "#233f5f"
+      },
+        {
+          "key": "rfb_avg",
+          "label": "Average",
+          "color": "#bdf2e6"
+        }
       ],
       "levels": [
         {
