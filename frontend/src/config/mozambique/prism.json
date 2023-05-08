@@ -15,7 +15,10 @@
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
-    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
+    "wms": [
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
+      "https://sparc.wfp.org/geoserver/prism/wms"
+    ]
   },
   "map": {
     "boundingBox": [30.18, -24.74, 40.78, -10.32]
