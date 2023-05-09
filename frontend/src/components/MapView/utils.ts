@@ -7,6 +7,7 @@ import { getExtent } from './Layers/raster-utils';
 import {
   FeatureInfoObject,
   FeatureInfoType,
+  LayerType,
   LegendDefinitionItem,
   WMSLayerProps,
 } from '../../config/types';
@@ -125,4 +126,35 @@ export const getLegendItemLabel = (
 
 export const generateUniqueTableKey = (activityName: string) => {
   return `${activityName}_${Date.now()}`;
+};
+
+/**
+ * Filters the active layers in a group based on the activateAll property
+ */
+export const filterActiveGroupedLayers = (
+  selectedLayer: LayerType,
+  categoryLayer: LayerType,
+): boolean | undefined => {
+  return (
+    (categoryLayer?.group?.activateAll &&
+      categoryLayer?.group?.layers.some(
+        l => l.id === selectedLayer.id && l.main,
+      )) ||
+    (!categoryLayer?.group?.activateAll &&
+      categoryLayer?.group?.layers.some(l => l.id === selectedLayer.id))
+  );
+};
+
+/**
+ * Filters the active layers in the layers panel
+ * based on the selected layers from the app store and the categoryLayers from the app config
+ */
+export const filterActiveLayers = (
+  selectedLayer: LayerType,
+  categoryLayer: LayerType,
+): boolean | undefined => {
+  return (
+    selectedLayer.id === categoryLayer.id ||
+    filterActiveGroupedLayers(selectedLayer, categoryLayer)
+  );
 };
