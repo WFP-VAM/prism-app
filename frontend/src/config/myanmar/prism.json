@@ -27,12 +27,34 @@
   ],
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
+      "https://sparc.wfp.org/geoserver/prism/wms"
     ]
   },
   "categories": {
     "storms_and_floods": {
-      "floods": ["flood_extent"]
+      "floods": ["flood_extent"],
+      "tropical_storms": [
+        {
+          "group_title": "Tropical Storms",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "adamts_buffers",
+              "label": "Wind buffers",
+              "main": true
+            },
+            {
+              "id": "adamts_nodes",
+              "label": "Nodes"
+            },
+            {
+              "id": "adamts_tracks",
+              "label": "Tracks"
+            }
+          ]
+        }
+      ]
     },
     "rainfall": {
       "rainfall_amount": [
