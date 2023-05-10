@@ -80,6 +80,7 @@ type AnalysisResultState = {
   isMapLayerActive: boolean;
   isDataTableDrawerActive: boolean;
   isExposureLoading: boolean;
+  opacity: number;
   analysisResultDataSortByKey: Column['id'];
   analysisResultDataSortOrder: 'asc' | 'desc';
 };
@@ -101,6 +102,7 @@ const initialState: AnalysisResultState = {
   isExposureLoading: false,
   analysisResultDataSortByKey: 'name',
   analysisResultDataSortOrder: 'asc',
+  opacity: 0.5,
 };
 
 /* Gets a public URL for the admin boundaries used by this application.
@@ -274,11 +276,12 @@ const createAPIRequestParams = (
   geojsonOut?: boolean,
 ): ApiData => {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
-  const { adminLevel } = params as AdminLevelDataLayerProps;
   const {
     path: adminBoundariesPath,
     adminCode: groupBy,
-  } = getBoundaryLayersByAdminLevel(adminLevel);
+  } = getBoundaryLayersByAdminLevel(
+    (params as AdminLevelDataLayerProps)?.adminLevel,
+  );
 
   // Note - This may not work when running locally as the function
   // will default to the boundary layer hosted in S3.
@@ -653,6 +656,10 @@ export const analysisResultSlice = createSlice({
       ...state,
       analysisResultDataSortOrder: payload,
     }),
+    setAnalysisLayerOpacity: (state, { payload }: PayloadAction<number>) => ({
+      ...state,
+      opacity: payload,
+    }),
     setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
       ...state,
       isMapLayerActive: payload,
@@ -797,6 +804,9 @@ export const analysisResultSortOrderSelector = (
   state: RootState,
 ): 'asc' | 'desc' => state.analysisResultState.analysisResultDataSortOrder;
 
+export const analysisResultOpacitySelector = (state: RootState): number =>
+  state.analysisResultState.opacity;
+
 export const isAnalysisLoadingSelector = (state: RootState): boolean =>
   state.analysisResultState.isLoading;
 
@@ -813,6 +823,7 @@ export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
 export const {
   setIsMapLayerActive,
   setIsDataTableDrawerActive,
+  setAnalysisLayerOpacity,
   setCurrentDataDefinition,
   hideDataTableDrawer,
   clearAnalysisResult,
