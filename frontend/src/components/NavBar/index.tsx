@@ -30,7 +30,7 @@ function NavBar({ classes }: NavBarProps) {
     {
       title: 'GitHub',
       icon: faGithub,
-      href: 'https://github.com/oviohub/prism-app',
+      href: 'https://github.com/WFP-VAM/prism-app',
     },
   ];
 
