@@ -95,12 +95,20 @@ function LayerDropdown({
       // 3. get rid of layers within the categories which don't match the given type
       .map(category => ({
         ...category,
-        layers: category.layers.filter(layer =>
-          layer.type === 'wms'
-            ? layer.type === type &&
-              [undefined, 'polygon'].includes(layer.geometry)
-            : layer.type === type,
-        ),
+        layers: category.layers.filter(layer => layer.type === type),
+      }))
+      // 4. additional filter for WMS layers
+      .map(category => ({
+        ...category,
+        layers: category.layers.filter(layer => {
+          if (layer.type === 'wms') {
+            return (
+              [undefined, 'polygon'].includes(layer.geometry) &&
+              layer.runAnalysis !== false
+            );
+          }
+          return true;
+        }),
       }))
       // 4. filter categories which don't have any layers at the end of it all.
       .filter(category => category.layers.length > 0),

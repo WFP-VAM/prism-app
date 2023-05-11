@@ -407,6 +407,9 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
+
+  @optional // Show layer in Analysis feature, defaults to true
+  runAnalysis?: boolean;
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {
