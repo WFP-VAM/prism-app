@@ -11,7 +11,10 @@
     "vulnerability": "icon_vulnerable.png"
   },
   "serversUrls": {
-    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
+    "wms": [
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
+      "https://sparc.wfp.org/geoserver/prism/wms"
+    ]
   },
   "map": {
     "boundingBox": [79.7, 5.97, 81.79, 9.82]
@@ -23,6 +26,27 @@
   ],
   "categories": {
     "rainfall": {
+      "tropical_storms": [
+        {
+          "group_title": "Tropical Storms",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "adamts_buffers",
+              "label": "Wind buffers",
+              "main": true
+            },
+            {
+              "id": "adamts_nodes",
+              "label": "Nodes"
+            },
+            {
+              "id": "adamts_tracks",
+              "label": "Tracks"
+            }
+          ]
+        }
+      ],
       "Met_Dept_rainfall_data": [
         {
           "group_title": "Rainfall aggregate",
@@ -237,7 +261,7 @@
     "vulnerability": {
       "poverty": ["poverty_hc"],
       "food_insecurity": [
-        "food_insecure", 
+        "food_insecure",
         "livelihood_coping",
         "food_coping",
         "food_consumption",
