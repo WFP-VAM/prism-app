@@ -2169,7 +2169,7 @@
     "opacity": 0.7,
     "legend": [],
     "legend_text": "Tropical Storms - Nodes",
-    "base_url": "https://geonode.wfp.org/geoserver",
+    "base_url": "https://sparc.wfp.org/geoserver",
     "feature_info_props": {
       "event_name": {
         "type": "text",
@@ -2194,7 +2194,7 @@
     "opacity": 0.7,
     "legend": [],
     "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
-    "base_url": "https://geonode.wfp.org/geoserver",
+    "base_url": "https://sparc.wfp.org/geoserver",
     "feature_info_props": {
       "event_name": {
         "type": "text",
@@ -2237,7 +2237,7 @@
     "opacity": 0.7,
     "legend": [],
     "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
-    "base_url": "https://geonode.wfp.org/geoserver",
+    "base_url": "https://sparc.wfp.org/geoserver",
     "geometry": "linestring"
   },
   "hydra_s1": {
@@ -2335,10 +2335,7 @@
     "opacity": 1,
     "legend_text": "Types of armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
     "legend": [
-      { "label": "Battles", 
-        "value": "Battles ", 
-        "color": "#ea5545" 
-      },
+      { "label": "Battles", "value": "Battles ", "color": "#ea5545" },
       {
         "label": "Explosions/Remote violence",
         "value": "Explosions/Remote violence",

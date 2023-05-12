@@ -1123,7 +1123,7 @@
     "opacity": 0.5,
     "legend": [],
     "legend_text": "Shakemaps",
-    "base_url": "https://geonode.wfp.org/geoserver",
+    "base_url": "https://sparc.wfp.org/geoserver",
     "geometry": "polygon",
     "exposure": {
       "id": "wp_pop_cicunadj",

@@ -11,7 +11,7 @@
   },
   "serversUrls": {
     "wms": [
-      "https://geonode.wfp.org/geoserver/prism/wms/",
+      "https://sparc.wfp.org/geoserver/prism/wms/",
       "https://api.earthobservation.vam.wfp.org/ows/wms"
     ]
   },
@@ -20,10 +20,7 @@
     "longitude": -74.2973,
     "zoom": 4.7
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "tropical_storms": {
       "tropical_storms": [
@@ -142,10 +139,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -192,10 +186,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -206,10 +197,7 @@
       ]
     },
     "vulnerability": {
-      "poverty": [
-        "avg_pop_flood",
-        "ipm_total"
-      ]
+      "poverty": ["avg_pop_flood", "ipm_total"]
     }
   }
 }
