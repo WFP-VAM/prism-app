@@ -30,7 +30,7 @@
       },
       "line": {
         "line-color": "gray",
-        "line-width": 2,
+        "line-width": 1.5,
         "line-opacity": 0.8
       }
     }
@@ -39,7 +39,7 @@
     "type": "boundary",
     "path": "data/srilanka/lka_bnd_adm2.json",
     "opacity": 0.8,
-    "admin_code": "district_n",
+    "admin_code": "district_code",
     "admin_level_names": ["province_n", "district_n"],
     "admin_level_local_names": ["province_n", "district_n"],
     "styles:": {
@@ -69,12 +69,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -113,10 +113,16 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        { 
+          "key": "rfq", 
+          "label": "Rainfall anomaly", 
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692" },
         {
           "key": "rfq_avg",
           "label": "Normal",
+          "pointRadius": 0,
           "fallback": 100,
           "color": "#eb3223"
         }
@@ -124,12 +130,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -173,12 +179,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -216,23 +222,29 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r1q", "label": "Rainfall anomaly", "color": "#375692" },
+        { 
+          "key": "r1q", 
+          "label": "Rainfall anomaly", 
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692" },
         {
           "key": "rfq_avg",
           "label": "Normal",
           "fallback": 100,
+          "pointRadius": 0,
           "color": "#eb3223"
         }
       ],
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -275,12 +287,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -320,23 +332,30 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r3q", "label": "Rainfall anomaly", "color": "#375692" },
+        { 
+          "key": "r3q", 
+          "label": "Rainfall anomaly", 
+          "minValue": 0,
+          "maxValue": 300,
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
           "fallback": 100,
+          "pointRadius": 0,
           "color": "#eb3223"
         }
       ],
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -1436,12 +1455,12 @@
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -1481,23 +1500,30 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "viq", "label": "NDVI anomaly", "color": "#5e803f" },
+        { 
+          "key": "viq", 
+          "label": "NDVI anomaly",
+          "minValue": 0,
+          "maxValue": 150, 
+          "color": "#5e803f"
+        },
         {
           "key": "viq_avg",
           "label": "Normal",
           "color": "#eb3223",
+          "pointRadius": 0,
           "fallback": 100
         }
       ],
       "levels": [
         {
           "level": "1",
-          "id": "adm1_id",
+          "id": "dataviz_adm1_id",
           "name": "province_n"
         },
         {
           "level": "2",
-          "id": "adm2_id",
+          "id": "dataviz_adm2_id",
           "name": "district_n"
         }
       ],
@@ -1686,6 +1712,196 @@
       }
     ],
     "legend_text": "Percent of households living below the national poverty line"
+  },
+  "food_insecure": {
+    "type": "admin_level_data",
+    "title": "Proportion of food-insecure households (CARI)",
+    "path": "data/srilanka/cfsam_2023.json",
+    "data_field": "food_insecure_perc",
+    "admin_level": 2,
+    "boundary": "admin2_boundaries",
+    "admin_code": "district_code",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": "0",
+        "label": "< 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": "10",
+        "label": "10 - 14%",
+        "color": "#fcae91"
+      },
+      {
+        "value": "15",
+        "label": "15 - 19%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": "20",
+        "label": "20 - 24%",
+        "color": "#de2d26"
+      },
+      {
+        "value": "25",
+        "label": ">= 25%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Proportion of food-insecure households (CARI). CFSAM 2023"
+  },
+  "livelihood_coping": {
+    "type": "admin_level_data",
+    "title": "Proportion of households adopting livelihood-coping strategies",
+    "path": "data/srilanka/cfsam_2023.json",
+    "data_field": "livelihood_coping_perc",
+    "admin_level": 2,
+    "boundary": "admin2_boundaries",
+    "admin_code": "district_code",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": "0",
+        "label": "< 50%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": "50",
+        "label": "50 - 59%",
+        "color": "#fcae91"
+      },
+      {
+        "value": "60",
+        "label": "60 - 69%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": "70",
+        "label": "70 - 79%",
+        "color": "#de2d26"
+      },
+      {
+        "value": "80",
+        "label": ">= 80%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Proportion of households adopting livelihood-coping strategies. CFSAM 2023"
+  },
+  "food_coping": {
+    "type": "admin_level_data",
+    "title": "Proportion of households adopting food-based coping strategies",
+    "path": "data/srilanka/cfsam_2023.json",
+    "data_field": "food_coping_perc",
+    "admin_level": 2,
+    "boundary": "admin2_boundaries",
+    "admin_code": "district_code",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": "0",
+        "label": "< 40%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": "40",
+        "label": "40 - 49%",
+        "color": "#fcae91"
+      },
+      {
+        "value": "50",
+        "label": "50 - 59%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": "60",
+        "label": "60 - 69%",
+        "color": "#de2d26"
+      },
+      {
+        "value": "70",
+        "label": ">= 70%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Proportion of households adopting food-based coping strategies. CFSAM 2023"
+  },
+  "food_consumption": {
+    "type": "admin_level_data",
+    "title": "Proportion of households with inadequate food consumption",
+    "path": "data/srilanka/cfsam_2023.json",
+    "data_field": "food_consumption_perc",
+    "admin_level": 2,
+    "boundary": "admin2_boundaries",
+    "admin_code": "district_code",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": "0",
+        "label": "< 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": "10",
+        "label": "10 - 14%",
+        "color": "#fcae91"
+      },
+      {
+        "value": "15",
+        "label": "15 - 19%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": "20",
+        "label": "20 - 24%",
+        "color": "#de2d26"
+      },
+      {
+        "value": "25",
+        "label": ">= 25%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Proportion of households with inadequate food consumption. CFSAM 2023"
+  }, 
+  "food_expenditure": {
+    "type": "admin_level_data",
+    "title": "Proportion of households spending >75% on food",
+    "path": "data/srilanka/cfsam_2023.json",
+    "data_field": "food_expenditure_perc",
+    "admin_level": 2,
+    "boundary": "admin2_boundaries",
+    "admin_code": "district_code",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": "0",
+        "label": "< 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": "10",
+        "label": "10 - 14%",
+        "color": "#fcae91"
+      },
+      {
+        "value": "15",
+        "label": "15 - 19%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": "20",
+        "label": "20 - 24%",
+        "color": "#de2d26"
+      },
+      {
+        "value": "25",
+        "label": ">= 25%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Proportion of households spending >75% of total expenditure on food. CFSAM 2023"
   },
   "pop_21": {
     "type": "admin_level_data",
