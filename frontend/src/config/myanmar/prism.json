@@ -18,7 +18,10 @@
     "temperature": "icon_climate.png"
   },
   "map": {
-    "boundingBox": [97.3, 11.93, 100.18, 27.34]
+    "boundingBox": [97.3, 11.93, 100.18, 27.34],
+    "latitude": 19.467,
+    "longitude": 96.371,
+    "zoom": 4.48
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
