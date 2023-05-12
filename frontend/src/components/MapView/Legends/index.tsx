@@ -14,14 +14,21 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
-import React, { PropsWithChildren, useState } from 'react';
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import { createGetLegendGraphicUrl } from 'prism-common';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { LayerType, LegendDefinitionItem } from '../../../config/types';
 import {
+  analysisResultOpacitySelector,
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
+  setAnalysisLayerOpacity,
 } from '../../../context/analysisResultStateSlice';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import ColorIndicator from './ColorIndicator';
@@ -61,6 +68,7 @@ function Legends({ classes, layers }: LegendsProps) {
   const [open, setOpen] = useState(true);
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
+  const analysisLayerOpacity = useSelector(analysisResultOpacitySelector);
   const featureCollection = analysisResult?.featureCollection;
   const hasData = featureCollection?.features
     ? featureCollection.features.length > 0
@@ -103,11 +111,11 @@ function Legends({ classes, layers }: LegendsProps) {
     ...(isAnalysisLayerActive && hasData
       ? [
           <LegendItem
-            key={analysisResult?.key}
+            key={analysisResult?.key ?? Date.now()}
             legend={analysisResult?.legend}
             title={analysisResult?.getTitle(t)}
             classes={classes}
-            opacity={0.5} // TODO: initial opacity value
+            opacity={analysisLayerOpacity} // TODO: initial opacity value
             // Control opacity only for analysis
             // for the other layers it is controlled from the left panel
             displayOpacitySlider={isAnalysisLayerActive && hasData}
@@ -127,6 +135,7 @@ function Legends({ classes, layers }: LegendsProps) {
   return (
     <Grid item className={classes.container}>
       <Button
+        className={classes.triggerButton}
         variant="contained"
         color="primary"
         onClick={() => setOpen(!open)}
@@ -159,9 +168,24 @@ function LegendItem({
   legendUrl,
   displayOpacitySlider,
 }: LegendItemProps) {
+  const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const [opacity, setOpacityValue] = useState<number | number[]>(
     initialOpacity || 0,
+  );
+
+  useEffect(() => {
+    setOpacityValue(initialOpacity || 0);
+  }, [initialOpacity]);
+
+  const { t } = useSafeTranslation();
+
+  const handleChangeOpacityValue = useCallback(
+    val => {
+      setOpacityValue(val);
+      dispatch(setAnalysisLayerOpacity(val));
+    },
+    [dispatch],
   );
 
   return (
@@ -191,7 +215,7 @@ function LegendItem({
                     // TODO - get updated layer id in groups after switch. See issue #743
                     id,
                     type,
-                    val => setOpacityValue(val),
+                    handleChangeOpacityValue,
                   )
                 }
               />
@@ -206,8 +230,13 @@ function LegendItem({
             ) : (
               legend.map((item: LegendDefinitionItem) => (
                 <ColorIndicator
-                  key={item.value || item.label}
-                  value={getLegendItemLabel(item)}
+                  key={
+                    item.value ||
+                    (typeof item.label === 'string'
+                      ? item?.label
+                      : item?.label?.text)
+                  }
+                  value={getLegendItemLabel(t, item)}
                   color={item.color as string}
                   opacity={opacity as number}
                 />
@@ -232,6 +261,9 @@ const styles = () =>
   createStyles({
     container: {
       textAlign: 'right',
+    },
+    triggerButton: {
+      height: '3em',
     },
     label: {
       marginLeft: '10px',

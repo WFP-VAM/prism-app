@@ -279,11 +279,15 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692",
+          "minValue": 0,
+          "maxValue": 300
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
           "fallback": 100,
+          "pointRadius": 0,
           "color": "#eb3223"
         }
       ],
@@ -1643,7 +1647,7 @@
       "datetime_field": "Date_report",
       "measure_field": "NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
-      "filters": {"status": "Approved"}
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1703,7 +1707,7 @@
       "datetime_field": "Date_Dis",
       "measure_field": "NumPeoAff",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
-      "filters": {"status": "Approved"}
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1773,7 +1777,7 @@
       "datetime_field": "Date_Dis",
       "measure_field": "DisTyp",
       "kobo_url": "https://kobo.humanitarianresponse.info/api/v2/assets/",
-      "filters": {"status": "Approved"}
+      "filters": { "status": "Approved" }
     },
     "opacity": 0.9,
     "feature_info_props": {
@@ -1801,15 +1805,15 @@
         "type": "text",
         "dataTitle": "Number of people affected"
       },
-        "NumVillAff": {
-          "type": "text",
-          "dataTitle": "Number of villages affected"
-        },
-        "status": {
-          "type": "text",
-          "dataTitle": "Form status"
-        }
+      "NumVillAff": {
+        "type": "text",
+        "dataTitle": "Number of villages affected"
       },
+      "status": {
+        "type": "text",
+        "dataTitle": "Form status"
+      }
+    },
     "legend_text": "Type of disaster",
     "legend": [
       {

@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
+import {
+  analysisResultSelector,
+  analysisResultSortByKeySelector,
+  analysisResultSortOrderSelector,
+} from '../../../context/analysisResultStateSlice';
 import { useSafeTranslation } from '../../../i18n';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
+  ExposedPopulationResult,
   generateAnalysisFilename,
   PolygonAnalysisResult,
   useAnalysisTableColumns,
@@ -14,17 +19,25 @@ import { downloadToFile } from '../utils';
 
 function AnalysisDownloadButton() {
   const analysisResult = useSelector(analysisResultSelector);
-  const featureCollection = analysisResult?.featureCollection;
+  const analysisResultSortByKey = useSelector(analysisResultSortByKeySelector);
+  const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
   const { translatedColumns } = useAnalysisTableColumns(analysisResult);
 
   const { t } = useSafeTranslation();
 
-  const doesLayerAcceptCSVDownload =
-    analysisResult &&
-    (analysisResult instanceof BaselineLayerResult ||
-      analysisResult instanceof PolygonAnalysisResult);
+  const featureCollection = useMemo(() => {
+    return analysisResult?.featureCollection;
+  }, [analysisResult]);
 
-  const getAnalysisDate = () => {
+  const doesLayerAcceptCSVDownload = useMemo(() => {
+    return (
+      analysisResult &&
+      (analysisResult instanceof BaselineLayerResult ||
+        analysisResult instanceof PolygonAnalysisResult)
+    );
+  }, [analysisResult]);
+
+  const analysisDate = useMemo(() => {
     if (analysisResult instanceof BaselineLayerResult) {
       return analysisResult.analysisDate;
     }
@@ -32,48 +45,52 @@ function AnalysisDownloadButton() {
       return analysisResult.endDate;
     }
     return null;
-  };
+  }, [analysisResult]);
 
-  const handleAnalysisDownloadGeoJson = (): void => {
-    const getFilename = () => {
-      if (
-        // Explicit condition for type narrowing
-        analysisResult &&
-        (analysisResult instanceof BaselineLayerResult ||
-          analysisResult instanceof PolygonAnalysisResult)
-      ) {
-        return generateAnalysisFilename(
-          analysisResult,
-          getAnalysisDate() ?? null,
-        );
-      }
-      return analysisResult?.getTitle();
-    };
+  const fileName = useMemo(() => {
+    if (
+      // Explicit condition for type narrowing
+      !analysisResult ||
+      analysisResult instanceof ExposedPopulationResult
+    ) {
+      return analysisResult?.getTitle(t);
+    }
+    return generateAnalysisFilename(analysisResult, analysisDate ?? null);
+  }, [analysisDate, analysisResult, t]);
 
+  const handleAnalysisDownloadGeoJson = useCallback((): void => {
     downloadToFile(
       {
         content: JSON.stringify(featureCollection),
         isUrl: false,
       },
-      getFilename() ?? 'prism_extract',
+      fileName ?? 'prism_extract',
       'application/json',
     );
-  };
+  }, [featureCollection, fileName]);
 
-  const handleAnalysisDownloadCsv = (): void => {
+  const handleAnalysisDownloadCsv = useCallback((): void => {
     if (
       // Explicit condition for type narrowing
-      analysisResult &&
-      (analysisResult instanceof BaselineLayerResult ||
-        analysisResult instanceof PolygonAnalysisResult)
+      !analysisResult ||
+      analysisResult instanceof ExposedPopulationResult
     ) {
-      downloadCSVFromTableData(
-        analysisResult,
-        translatedColumns,
-        getAnalysisDate() ?? null,
-      );
+      return;
     }
-  };
+    downloadCSVFromTableData(
+      analysisResult,
+      translatedColumns,
+      analysisDate ?? null,
+      analysisResultSortByKey,
+      analysisResultSortOrder,
+    );
+  }, [
+    analysisDate,
+    analysisResult,
+    analysisResultSortByKey,
+    analysisResultSortOrder,
+    translatedColumns,
+  ]);
 
   return (
     <MultiOptionsButton

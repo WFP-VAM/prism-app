@@ -4,7 +4,6 @@ exports[`renders as expected 1`] = `
 <div>
   <div
     class="MuiPaper-root MuiAccordion-root makeStyles-root-1 MuiAccordion-rounded MuiPaper-elevation0 MuiPaper-rounded"
-    style="display: none;"
   >
     <div
       aria-controls="title"
@@ -16,7 +15,7 @@ exports[`renders as expected 1`] = `
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content"
+        class="MuiAccordionSummary-content makeStyles-summaryContent-5"
       >
         <mock-typography
           classes="[object Object]"
@@ -71,7 +70,6 @@ exports[`renders as expected 1`] = `
               >
                 <mock-menuswitch
                   layers="[object Object]"
-                  tables=""
                   title="Category 1"
                 />
               </div>

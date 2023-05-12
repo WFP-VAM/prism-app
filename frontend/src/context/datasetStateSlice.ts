@@ -1,15 +1,15 @@
 import moment from 'moment';
 import { orderBy } from 'lodash';
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 import { ChartType, DatasetField } from '../config/types';
 import { DEFAULT_DATE_FORMAT } from '../utils/name-utils';
 
 import {
-  fetchEWSDataPointsByLocation,
   EWSSensorData,
   EWSTriggersConfig,
+  fetchEWSDataPointsByLocation,
 } from '../utils/ews-utils';
 
 export type EWSParams = {
@@ -60,6 +60,8 @@ export type AdminBoundaryParams = {
 
 export type AdminBoundaryRequestParams = AdminBoundaryParams & {
   selectedDate: number;
+  level: string;
+  adminCode: number;
 };
 
 export type DatasetRequestParams =
@@ -109,12 +111,10 @@ const createTableData = (
     { [CHART_DATA_PREFIXES.date]: CHART_DATA_PREFIXES.date },
   );
 
-  const data: TableData = {
+  return {
     rows: [initRow, ...sortedRows],
     columns,
   };
-
-  return data;
 };
 
 export const loadEWSDataset = async (
@@ -179,14 +179,27 @@ const fetchHDC = async (
     .map(([key, value]) => `${key}=${value}`)
     .join('&');
 
-  const response = await fetch(`${url}?${requestParamsStr}`);
-  const responseJson: HDCResponse = await response.json();
+  // TODO - better error handling.
+  let responseJson: HDCResponse = {
+    data: {
+      rfh: [100],
+    },
+    valids: [6.0],
+    date: ['2022-03-21'],
+  };
+  try {
+    const response = await fetch(`${url}?${requestParamsStr}`);
+    // eslint-disable-next-line fp/no-mutation
+    responseJson = await response.json();
+  } catch {
+    console.warn('Impossible to get HDC data.');
+  }
 
   const dates: number[] = responseJson.date.map((date: string) =>
     moment(date).valueOf(),
   );
 
-  const dataItems: DataItem[] = dates.map((date, index) => {
+  return dates.map((date, index) => {
     const values = datasetFields.reduce(
       (acc, field) => ({
         ...acc,
@@ -199,8 +212,6 @@ const fetchHDC = async (
 
     return { date, values };
   });
-
-  return dataItems;
 };
 
 export const loadAdminBoundaryDataset = async (
@@ -211,12 +222,25 @@ export const loadAdminBoundaryDataset = async (
 
   const {
     url: hdcUrl,
-    id,
-    boundaryProps,
+    level,
+    adminCode,
     serverLayerName,
     datasetFields,
   } = params;
-  const { code: adminCode, level } = boundaryProps[id];
+
+  // HDC API expects a parameter which depends on the layer
+  // rainfall = rfh; ndvi = vim; blended = rfb
+  const getVamParam = () => {
+    switch (true) {
+      case serverLayerName.includes('vim'):
+      case serverLayerName.includes('viq'):
+        return 'vim';
+      case serverLayerName.includes('blended'):
+        return 'rfb';
+      default:
+        return 'rfh';
+    }
+  };
 
   const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);
   const startDateStr = startDate.format(DEFAULT_DATE_FORMAT);
@@ -225,17 +249,13 @@ export const loadAdminBoundaryDataset = async (
     level,
     admin_id: adminCode,
     coverage: 'full',
-    vam:
-      serverLayerName.includes('vim') || serverLayerName.includes('viq')
-        ? 'vim'
-        : 'rfh',
+    vam: getVamParam(),
     start: startDateStr,
     end: endDateStr,
   };
 
   const results = await fetchHDC(hdcUrl, datasetFields, hdcRequestParams);
   const tableData = createTableData(results, TableDataFormat.DATE);
-
   return new Promise<TableData>(resolve => resolve(tableData));
 };
 
@@ -244,11 +264,9 @@ export const loadDataset = createAsyncThunk<
   DatasetRequestParams,
   CreateAsyncThunkTypes
 >('datasetState/loadDataset', async (params: DatasetRequestParams) => {
-  const results = (params as AdminBoundaryRequestParams).id
+  return (params as AdminBoundaryRequestParams).id
     ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams)
     : loadEWSDataset(params as EWSDataPointsRequestParams);
-
-  return results;
 });
 
 export const datasetResultStateSlice = createSlice({

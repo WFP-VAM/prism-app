@@ -13,7 +13,6 @@ import {
   Theme,
   Typography,
   useMediaQuery,
-  withStyles,
 } from '@material-ui/core';
 import { last, sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
@@ -139,13 +138,18 @@ export function getCategories(
       .reduce<
         Array<{
           title: string;
-          children: { value: string; label: string }[];
+          key: string;
+          children: { value: string; label: string; key: string }[];
         }>
       >((ret, feature) => {
+        // unique parent key to filter when changing the language
+        const parentKey = feature.properties?.[layer.adminLevelNames[0]];
         const parentCategory = feature.properties?.[locationLevelNames[0]];
+        // unique child key to filter when changing the language
+        const childkey = feature.properties?.[last(layer.adminLevelNames)!];
         const label = feature.properties?.[last(locationLevelNames)!];
         const code = feature.properties?.[layer.adminCode];
-        if (!label || !code || !parentCategory) {
+        if (!label || !code || !parentCategory || !parentKey) {
           return ret;
         }
         // filter via search
@@ -155,21 +159,23 @@ export function getCategories(
           search &&
           !searchIncludes(label) &&
           !searchIncludes(code) &&
-          !searchIncludes(parentCategory)
+          !searchIncludes(parentCategory) &&
+          !searchIncludes(parentKey)
         ) {
           return ret;
         }
         // add to categories if exists
-        const category = ret.find(c => c.title === parentCategory);
+        const category = ret.find(c => c.key === parentKey);
         if (category) {
           // eslint-disable-next-line fp/no-mutating-methods
-          category.children.push({ value: code, label });
+          category.children.push({ value: code, label, key: childkey });
         } else {
           return [
             ...ret,
             {
+              key: parentKey,
               title: parentCategory,
-              children: [{ value: code, label }],
+              children: [{ value: code, label, key: childkey }],
             },
           ];
         }
@@ -177,11 +183,9 @@ export function getCategories(
       }, [])
       .map(category => ({
         ...category,
-        // sort children by label
-        children: sortBy(category.children, 'label'),
+        children: sortBy(category.children, 'key'),
       })),
-    // then finally sort categories.
-    'title',
+    'key',
   );
 }
 
@@ -359,20 +363,5 @@ function BoundaryDropdown({
     />
   );
 }
-
-export const ButtonStyleBoundaryDropdown = withStyles(() => ({
-  root: {
-    '& label': {
-      textTransform: 'uppercase',
-      letterSpacing: '3px',
-      fontSize: '11px',
-      position: 'absolute',
-      top: '-13px',
-    },
-    '& svg': { color: 'white', fontSize: '1.25rem' },
-    '& .MuiInput-root': { margin: 0 },
-    '& .MuiInputLabel-shrink': { display: 'none' },
-  },
-}))(SimpleBoundaryDropdown);
 
 export default BoundaryDropdown;

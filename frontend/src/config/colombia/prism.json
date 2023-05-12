@@ -16,9 +16,7 @@
     ]
   },
   "map": {
-    "latitude": 4.5709,
-    "longitude": -74.2973,
-    "zoom": 4.7
+    "boundingBox": [-78.99, -4.3, -66.88, 12.44]
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {

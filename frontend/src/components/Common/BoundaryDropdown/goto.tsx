@@ -11,16 +11,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.text.primary,
     display: 'inline-flex',
-    // temporary will be removed when the go to button will be revamped
-    marginTop: '-10px',
     padding: theme.spacing(0.8, 2.66),
     borderRadius: '4px',
     alignItems: 'center',
     boxShadow: theme.shadows[2],
-  },
-  icon: {
-    alignSelf: 'end',
-    marginBottom: '0.4em',
   },
   selectContainer: {
     width: '140px',
@@ -36,7 +30,7 @@ const GoToBoundaryDropdown = () => {
   return (
     <>
       <div className={styles.button}>
-        <CenterFocusWeak fontSize="small" className={styles.icon} />
+        <CenterFocusWeak fontSize="small" />
         <div className={styles.selectContainer}>
           <BoundaryDropdown
             labelText={t('Go To')}

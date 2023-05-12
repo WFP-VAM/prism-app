@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import React, { ReactElement } from 'react';
 import { startCase } from 'lodash';
-import { menuList } from '../LeftPanel/layersPanel/utils';
+import { menuList } from '../LeftPanel/utils';
 import { LayerKey, LayerType } from '../../../config/types';
 import {
   getDisplayBoundaryLayers,
@@ -117,6 +117,7 @@ function LayerDropdown({
         onChange={e => {
           setValue(e.target.value as LayerKey);
         }}
+        defaultValue=""
         select
         label={label}
         InputProps={{

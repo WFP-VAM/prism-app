@@ -1,6 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { convertArea } from '@turf/helpers';
-import { Position, FeatureCollection, Feature } from 'geojson';
+import {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  Geometry,
+  Position,
+} from 'geojson';
 import moment from 'moment';
 import { get } from 'lodash';
 import { createGetCoverageUrl } from 'prism-common';
@@ -9,42 +15,46 @@ import { calculate } from '../utils/zonal-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { defaultBoundariesPath } from '../config';
 import {
+  AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
   AllAggregationOperations,
   AsyncReturnType,
   BoundaryLayerProps,
-  AdminLevelDataLayerProps,
-  ThresholdDefinition,
-  WMSLayerProps,
-  WfsRequestParams,
-  LayerKey,
   ExposedPopulationDefinition,
-  TableType,
-  ZonalPolygonRow,
+  LayerKey,
   PolygonalAggregationOperations,
+  TableType,
+  ThresholdDefinition,
+  WfsRequestParams,
+  WMSLayerProps,
+  ZonalPolygonRow,
 } from '../config/types';
 import { getAdminLevelLayer, getAdminNameProperty } from '../utils/admin-utils';
 import {
-  BaselineLayerResult,
-  Column,
-  PolygonAnalysisResult,
   AnalysisResult,
   ApiData,
+  appendBoundaryProperties,
   BaselineLayerData,
+  BaselineLayerResult,
   checkBaselineDataLayer,
+  Column,
+  createLegendFromFeatureArray,
+  ExposedPopulationResult,
   fetchApiData,
   generateFeaturesFromApiData,
-  createLegendFromFeatureArray,
   KeyValueResponse,
+  PolygonAnalysisResult,
   scaleAndFilterAggregateData,
-  ExposedPopulationResult,
   scaleFeatureStat,
-  appendBoundaryProperties,
 } from '../utils/analysis-utils';
 import { getRoundedData } from '../utils/data-utils';
 import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
-import { getBoundaryLayerSingleton, LayerDefinitions } from '../config/utils';
+import {
+  getBoundaryLayersByAdminLevel,
+  getBoundaryLayerSingleton,
+  LayerDefinitions,
+} from '../config/utils';
 import { Extent } from '../components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from '../utils/server-utils';
 import { layerDataSelector } from './mapStateSlice/selectors';
@@ -52,7 +62,6 @@ import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
-import { convertToTableData } from '../components/MapView/utils';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 
@@ -71,6 +80,9 @@ type AnalysisResultState = {
   isMapLayerActive: boolean;
   isDataTableDrawerActive: boolean;
   isExposureLoading: boolean;
+  opacity: number;
+  analysisResultDataSortByKey: Column['id'];
+  analysisResultDataSortOrder: 'asc' | 'desc';
 };
 
 export type TableRow = {
@@ -88,6 +100,9 @@ const initialState: AnalysisResultState = {
   isMapLayerActive: true,
   isDataTableDrawerActive: false,
   isExposureLoading: false,
+  analysisResultDataSortByKey: 'name',
+  analysisResultDataSortOrder: 'asc',
+  opacity: 0.5,
 };
 
 /* Gets a public URL for the admin boundaries used by this application.
@@ -97,8 +112,7 @@ const initialState: AnalysisResultState = {
  *
  * If the application is in production, we will attempt to construct a public URL that the backend should be able to access.
  */
-function getAdminBoundariesURL() {
-  const adminBoundariesPath = getBoundaryLayerSingleton().path;
+function getAdminBoundariesURL(adminBoundariesPath: string) {
   // already a remote location, so return it.
   if (adminBoundariesPath.startsWith('http')) {
     return adminBoundariesPath;
@@ -123,6 +137,7 @@ function generateTableFromApiData(
   groupBy: string, // Reuse the groupBy parameter to generate the table
   baselineLayerData: DataRecord[] | null,
   extraColumns: string[],
+  isExposureAnalysisTable: boolean = false,
 ): TableRow[] {
   // find the key that will let us reference the names of the bounding boxes.
   // We get the one corresponding to the specific level of baseline, or the first if we fail.
@@ -142,12 +157,25 @@ function generateTableFromApiData(
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
     // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
+    let featureBoundary: Feature<Geometry, GeoJsonProperties> | undefined;
 
-    const featureBoundary = adminLayerData.features.find(
-      ({ properties }) =>
-        properties?.[groupBy] === row[groupBy] ||
-        properties?.[adminLevelName] === row[adminLevelName],
-    );
+    if (isExposureAnalysisTable) {
+      // eslint-disable-next-line fp/no-mutation
+      featureBoundary = adminLayerData.features.find(
+        ({ properties }) =>
+          properties?.[groupBy] ===
+            row?.['properties']?.[groupBy as keyof typeof properties] ||
+          properties?.[adminLevelName] ===
+            row?.['properties'][adminLevelName as keyof typeof properties],
+      );
+    } else {
+      // eslint-disable-next-line fp/no-mutation
+      featureBoundary = adminLayerData.features.find(
+        ({ properties }) =>
+          properties?.[groupBy] === row[groupBy] ||
+          properties?.[adminLevelName] === row[adminLevelName],
+      );
+    }
 
     const name = getFullLocationName(
       adminLevelNames.slice(0, adminIndex + 1),
@@ -171,14 +199,31 @@ function generateTableFromApiData(
           adminKey,
         );
       })?.value || 'No Data';
+
+    // The multiple statistics for the new table row
+    let multipleStatistics: { [p: string]: string | number };
+
+    if (isExposureAnalysisTable) {
+      // eslint-disable-next-line fp/no-mutation
+      multipleStatistics = Object.fromEntries(
+        statistics.map(statistic => [
+          statistic,
+          get(row.properties, statistic, 0),
+        ]),
+      );
+    } else {
+      // eslint-disable-next-line fp/no-mutation
+      multipleStatistics = Object.fromEntries(
+        statistics.map(statistic => [statistic, get(row, statistic, 0)]),
+      );
+    }
+
     const tableRow: TableRow = {
       key: i.toString(), // primary key, identifying a unique row in the table
       name,
       localName,
       // copy multiple statistics to the new table row
-      ...Object.fromEntries(
-        statistics.map(statistic => [statistic, get(row, statistic, 0)]),
-      ),
+      ...multipleStatistics,
       // Force parseFloat in case data was stored as a string
       baselineValue:
         rawBaselineValue === 'No Data'
@@ -230,8 +275,17 @@ const createAPIRequestParams = (
   maskParams?: any,
   geojsonOut?: boolean,
 ): ApiData => {
-  // Use adminCode always as groupby item in the backend.
-  const { adminCode: groupBy } = getBoundaryLayerSingleton();
+  // Get default values for groupBy and admin boundary file path at the proper adminLevel
+  const {
+    path: adminBoundariesPath,
+    adminCode: groupBy,
+  } = getBoundaryLayersByAdminLevel(
+    (params as AdminLevelDataLayerProps)?.adminLevel,
+  );
+
+  // Note - This may not work when running locally as the function
+  // will default to the boundary layer hosted in S3.
+  const zonesUrl = getAdminBoundariesURL(adminBoundariesPath);
 
   // eslint-disable-next-line camelcase
   const wfsParams = (params as WfsRequestParams)?.layer_name
@@ -252,7 +306,7 @@ const createAPIRequestParams = (
       resolution: wcsConfig?.pixelResolution,
       url: geotiffLayer.baseUrl,
     }),
-    zones_url: getAdminBoundariesURL(),
+    zones_url: zonesUrl,
     group_by: groupBy,
     ...wfsParams,
     ...maskParams,
@@ -279,14 +333,14 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       maskLayerId,
     } = params;
 
-    const {
-      adminCode: adminCodeId,
-      id: boundaryLayerId,
-    } = getBoundaryLayerSingleton();
+    const adminBoundaries = getBoundaryLayerSingleton();
+    const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
+      api.getState(),
+    ) as LayerData<BoundaryLayerProps>;
 
-    const boundaryData = layerDataSelector(boundaryLayerId)(api.getState()) as
-      | LayerData<BoundaryLayerProps>
-      | undefined;
+    const boundaryData = layerDataSelector(adminBoundaries.id)(
+      api.getState(),
+    ) as LayerData<BoundaryLayerProps> | undefined;
     const { id, key, calc } = exposure;
 
     const wfsLayer =
@@ -340,7 +394,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       .filter(f => get(f.properties, statistic) != null);
 
     const featuresWithBoundaryProps = appendBoundaryProperties(
-      adminCodeId,
+      adminBoundaries.adminCode,
       features,
       boundaryData!.data.features,
     );
@@ -354,7 +408,18 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     // TODO - use raster legend title
     const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
 
+    const tableRows: TableRow[] = generateTableFromApiData(
+      [statistic],
+      featuresWithBoundaryProps,
+      adminBoundariesData,
+      apiRequest.group_by,
+      null,
+      [], // no extra columns
+      true,
+    );
+
     return new ExposedPopulationResult(
+      tableRows,
       collection,
       statistic,
       legend,
@@ -382,7 +447,9 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
   ) as LayerData<AdminLevelDataLayerProps>;
-  const adminBoundaries = getBoundaryLayerSingleton();
+
+  const { adminLevel } = baselineLayer as AdminLevelDataLayerProps;
+  const adminBoundaries = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesData = layerDataSelector(adminBoundaries.id)(
     api.getState(),
   ) as LayerData<BoundaryLayerProps>;
@@ -557,7 +624,7 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
 
   const boundaryId = getAdminLevelLayer(adminLevel).id;
 
-  const analysisResult = new PolygonAnalysisResult(
+  return new PolygonAnalysisResult(
     tableRows,
     tableColumns,
     result.geojson,
@@ -569,14 +636,30 @@ export const requestAndStorePolygonAnalysis = createAsyncThunk<
     startDate,
     endDate,
   );
-
-  return analysisResult;
 });
 
 export const analysisResultSlice = createSlice({
   name: 'analysisResultState',
   initialState,
   reducers: {
+    setAnalysisResultSortByKey: (
+      state,
+      { payload }: PayloadAction<string | number>,
+    ) => ({
+      ...state,
+      analysisResultDataSortByKey: payload,
+    }),
+    setAnalysisResultSortOrder: (
+      state,
+      { payload }: PayloadAction<'asc' | 'desc'>,
+    ) => ({
+      ...state,
+      analysisResultDataSortOrder: payload,
+    }),
+    setAnalysisLayerOpacity: (state, { payload }: PayloadAction<number>) => ({
+      ...state,
+      opacity: payload,
+    }),
     setIsMapLayerActive: (state, { payload }: PayloadAction<boolean>) => ({
       ...state,
       isMapLayerActive: payload,
@@ -611,14 +694,10 @@ export const analysisResultSlice = createSlice({
         { result, ...rest },
         { payload }: PayloadAction<AnalysisResult>,
       ): AnalysisResultState => {
-        const tableData = convertToTableData(
-          payload as ExposedPopulationResult,
-        );
         return {
           ...rest,
           result: payload as ExposedPopulationResult,
           isExposureLoading: false,
-          tableData,
         };
       },
     );
@@ -717,6 +796,17 @@ export const analysisResultSelector = (
   state: RootState,
 ): AnalysisResult | undefined => state.analysisResultState.result;
 
+export const analysisResultSortByKeySelector = (
+  state: RootState,
+): string | number => state.analysisResultState.analysisResultDataSortByKey;
+
+export const analysisResultSortOrderSelector = (
+  state: RootState,
+): 'asc' | 'desc' => state.analysisResultState.analysisResultDataSortOrder;
+
+export const analysisResultOpacitySelector = (state: RootState): number =>
+  state.analysisResultState.opacity;
+
 export const isAnalysisLoadingSelector = (state: RootState): boolean =>
   state.analysisResultState.isLoading;
 
@@ -733,9 +823,12 @@ export const isDataTableDrawerActiveSelector = (state: RootState): boolean =>
 export const {
   setIsMapLayerActive,
   setIsDataTableDrawerActive,
+  setAnalysisLayerOpacity,
   setCurrentDataDefinition,
   hideDataTableDrawer,
   clearAnalysisResult,
+  setAnalysisResultSortByKey,
+  setAnalysisResultSortOrder,
 } = analysisResultSlice.actions;
 
 export default analysisResultSlice.reducer;

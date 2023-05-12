@@ -6,8 +6,13 @@ import {
 } from '@material-ui/core';
 import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
-import { ChartConfig, WMSLayerProps } from '../../../../../config/types';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { appConfig } from '../../../../../config';
+import {
+  ChartConfig,
+  DatasetField,
+  WMSLayerProps,
+} from '../../../../../config/types';
 import {
   CHART_DATA_PREFIXES,
   DatasetRequestParams,
@@ -16,7 +21,7 @@ import {
 import { TableData } from '../../../../../context/tableStateSlice';
 import { useSafeTranslation } from '../../../../../i18n';
 import { getChartAdminBoundaryParams } from '../../../../../utils/admin-utils';
-import Chart from '../../../../DataDrawer/Chart';
+import Chart from '../../../../Common/Chart';
 
 function ChartSection({
   chartLayer,
@@ -30,6 +35,8 @@ function ChartSection({
   const [chartDataset, setChartDataset] = useState<undefined | TableData>();
   const { levels } = chartLayer.chartData!;
 
+  const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
+
   const params = useMemo(
     () =>
       getChartAdminBoundaryParams(
@@ -39,19 +46,41 @@ function ChartSection({
     [chartLayer, adminProperties],
   );
 
-  useEffect(() => {
-    const requestParams: DatasetRequestParams = {
-      id: levels[adminLevel - 1].id,
+  const adminKey = levelsDict[adminLevel.toString()];
+  // Default to country level data.
+  const { code: adminCode } = useMemo(() => {
+    return (
+      params.boundaryProps[adminKey] || {
+        code: appConfig.countryAdmin0Id,
+      }
+    );
+  }, [adminKey, params.boundaryProps]);
+
+  const requestParams: DatasetRequestParams = useMemo(() => {
+    return {
+      id: adminKey,
+      level: adminLevel.toString(),
+      adminCode: adminCode || appConfig.countryAdmin0Id,
       boundaryProps: params.boundaryProps,
       url: params.url,
       serverLayerName: params.serverLayerName,
       datasetFields: params.datasetFields,
       selectedDate: date,
     };
+  }, [
+    adminCode,
+    adminKey,
+    adminLevel,
+    date,
+    params.boundaryProps,
+    params.datasetFields,
+    params.serverLayerName,
+    params.url,
+  ]);
 
-    const getData = async () => {
-      const results = await loadAdminBoundaryDataset(requestParams);
-      const keyMap = Object.fromEntries(
+  const createDataKeyMap = useCallback(
+    (results: TableData) => {
+      return Object.fromEntries(
         Object.entries(results.rows[0]).map(([key, value]) => {
           const newKey = requestParams.datasetFields.find(
             x => x.label === value,
@@ -59,72 +88,130 @@ function ChartSection({
           return [key, newKey];
         }),
       );
-      const csvData = results.rows.slice(1).map(row => {
+    },
+    [requestParams.datasetFields],
+  );
+
+  const createCsvDataFromDataKeyMap = useCallback(
+    (results: TableData, keyMap: { [p: string]: string | undefined }) => {
+      // The column names of the csv based on the rows first item
+      const columnNamesObject = results.rows.slice(0, 1)[0];
+      return results.rows.slice(1).map(row => {
         return Object.fromEntries(
-          Object.entries(row).map(([key, value]) => {
-            const newKey = keyMap[key] ? keyMap[key] : key;
-            return [newKey, value];
-          }),
+          // Filters the Normal column or `fallback` data from every data set
+          Object.entries(row)
+            .filter(([key]) => {
+              return columnNamesObject[key] !== 'Normal';
+            })
+            .map(([key, value]) => {
+              const newKey = keyMap[key] ? keyMap[key] : key;
+              return [newKey, value];
+            }),
         );
       });
-      // eslint-disable-next-line no-param-reassign
-      dataForCsv.current = {
-        ...dataForCsv.current,
-        [chartLayer.title]: csvData,
-      };
-      setChartDataset(results);
+    },
+    [],
+  );
+
+  const getData = useCallback(async () => {
+    const results = await loadAdminBoundaryDataset(requestParams);
+    if (!results) {
+      return;
+    }
+    const keyMap = createDataKeyMap(results);
+
+    const csvData = createCsvDataFromDataKeyMap(results, keyMap);
+    // eslint-disable-next-line no-param-reassign
+    dataForCsv.current = {
+      ...dataForCsv.current,
+      [chartLayer.title]: csvData,
     };
+    setChartDataset(results);
+  }, [
+    chartLayer.title,
+    createCsvDataFromDataKeyMap,
+    createDataKeyMap,
+    dataForCsv,
+    requestParams,
+  ]);
 
+  useEffect(() => {
     getData();
-
     return () => {
       // eslint-disable-next-line no-param-reassign
       dataForCsv.current = omit(dataForCsv.current, chartLayer.title);
     };
+  }, [chartLayer.title, dataForCsv, getData]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    adminLevel,
-    adminProperties,
-    date,
-    levels,
-    params.boundaryProps,
-    params.datasetFields,
-    params.serverLayerName,
-    params.url,
-  ]);
+  const chartType = useMemo(() => {
+    return chartLayer.chartData!.type;
+  }, [chartLayer.chartData]);
 
-  const { title } = chartLayer;
-  const chartType = chartLayer.chartData!.type;
-  const colors = params.datasetFields?.map(row => row.color);
+  const colors = useMemo(() => {
+    return params.datasetFields?.map(row => row.color);
+  }, [params.datasetFields]);
 
-  const config: ChartConfig = {
-    type: chartType,
-    stacked: false,
-    category: CHART_DATA_PREFIXES.date,
-    data: CHART_DATA_PREFIXES.col,
-    transpose: true,
-    displayLegend: true,
-    colors,
-  };
+  const minValue = useMemo(() => {
+    return Math.min(
+      ...(params.datasetFields
+        ?.filter((row: DatasetField) => {
+          return row?.minValue !== undefined;
+        })
+        .map((row: DatasetField) => {
+          return row.minValue;
+        }) as number[]),
+    );
+  }, [params.datasetFields]);
 
-  return (
-    <>
-      {!chartDataset ? (
+  const maxValue = useMemo(() => {
+    return Math.max(
+      ...(params.datasetFields
+        ?.filter((row: DatasetField) => {
+          return row?.maxValue !== undefined;
+        })
+        .map((row: DatasetField) => {
+          return row.maxValue;
+        }) as number[]),
+    );
+  }, [params.datasetFields]);
+
+  const config: ChartConfig = useMemo(() => {
+    return {
+      type: chartType,
+      stacked: false,
+      category: CHART_DATA_PREFIXES.date,
+      data: CHART_DATA_PREFIXES.col,
+      transpose: true,
+      displayLegend: true,
+      minValue,
+      maxValue,
+      colors,
+    };
+  }, [chartType, colors, maxValue, minValue]);
+
+  const title = useMemo(() => {
+    return chartLayer.title;
+  }, [chartLayer.title]);
+
+  return useMemo(() => {
+    if (!chartDataset) {
+      return (
         <div className={classes.loading}>
           <CircularProgress size={50} />
         </div>
-      ) : (
-        <Chart
-          title={t(title)}
-          config={config}
-          data={chartDataset}
-          notMaintainAspectRatio
-          legendAtBottom
-        />
-      )}
-    </>
-  );
+      );
+    }
+    return (
+      <Chart
+        title={t(title)}
+        config={config}
+        data={chartDataset}
+        datasetFields={params.datasetFields}
+        notMaintainAspectRatio
+        legendAtBottom
+      />
+    );
+  }, [chartDataset, classes.loading, config, params.datasetFields, t, title]);
 }
 
 const styles = () =>
@@ -141,7 +228,7 @@ const styles = () =>
 export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
-  adminLevel: 1 | 2;
+  adminLevel: 0 | 1 | 2;
   date: number;
   dataForCsv: React.MutableRefObject<any>;
 }
