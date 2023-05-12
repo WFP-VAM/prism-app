@@ -226,6 +226,10 @@
     "additional_query_params": {
       "styles": "rfh_16_0_300"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
