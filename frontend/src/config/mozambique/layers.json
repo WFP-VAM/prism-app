@@ -1909,7 +1909,7 @@
     "wcsConfig": {
       "disableDateParam": true,
       "version": "2.0.0",
-      "scale": 0.1,
+      "scale": 1,
       "offset": 0
     },
     "server_layer_name": "wp_pop_cicunadj",
