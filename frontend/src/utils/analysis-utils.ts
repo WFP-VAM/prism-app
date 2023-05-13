@@ -708,7 +708,6 @@ export function getAnalysisTableColumns(
       label: col, // invert maps from computer name to display name.
       format: (value: string | number) => getRoundedData(value as number),
     })) as Column[];
-    console.log({ extraCols });
     return [...analysisTableColumns, ...extraCols];
   }
 

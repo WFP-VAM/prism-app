@@ -261,6 +261,7 @@ function generateTableFromApiData(
   // If we want to show all comma separated admin levels, we can use all names until "adminIndex".
   const adminLevelName = adminLevelNames[adminIndex];
 
+  // eslint-disable-next-line no-console
   console.log({ aggregateData, isExposureAnalysisTable });
 
   return (aggregateData as KeyValueResponse[]).map((row, i) => {
@@ -330,12 +331,11 @@ function generateTableFromApiData(
 
     if (key) {
       const label = get(row.properties, key);
-      console.log({ row, key, label, fields });
       if (fields.includes(label)) {
         // eslint-disable-next-line fp/no-mutation
         labeledColumns = { [label]: get(row.properties, 'sum', 0) };
-        console.log(labeledColumns);
       } else {
+        // eslint-disable-next-line fp/no-mutation
         labeledColumns = {};
       }
     } else {
@@ -550,6 +550,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       key,
     );
 
+    // eslint-disable-next-line no-console
     console.log({ tableRows });
 
     return new ExposedPopulationResult(
