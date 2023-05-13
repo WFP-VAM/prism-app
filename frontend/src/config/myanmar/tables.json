@@ -1,0 +1,18 @@
+{
+    "storm_table": {
+      "title": "Population exposure to Cyclone Mocha - v1 (11-May estimates)",
+      "table": "data/myanmar/tables/constrained_un_adjusted_sum.csv",
+      "legend_text": "Potential population exposure to Cyclone Mocha by Township using WorldPop constrained population estimates"
+    },
+    "storm_table2": {
+        "title": "Population exposure to Cyclone Mocha - v2 (11-May estimates)",
+        "table": "data/myanmar/tables/unconstrained_un_adjusted_sum.csv",
+        "legend_text": "Potential population exposure to Cyclone Mocha by Township using WorldPop unconstrained population estimates"
+    },
+    "adam_table": {
+        "title": "Population exposure to Cyclone Mocha - v3 (ADAM 11-May estimates)",
+        "table": "data/myanmar/tables/adam.csv",
+        "legend_text": "Potential population exposure to Cyclone Mocha by District WFP ADAM estimates"
+      }
+  }
+  
