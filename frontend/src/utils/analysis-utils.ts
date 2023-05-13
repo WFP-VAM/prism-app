@@ -6,6 +6,7 @@ import {
   isNull,
   isNumber,
   isString,
+  isUndefined,
   max,
   mean,
   min,
@@ -461,6 +462,9 @@ export async function loadFeaturesClientSide(
 }
 
 export function quoteAndEscapeCell(value: number | string) {
+  if (isUndefined(value)) {
+    return '';
+  }
   return `"${value.toString().replaceAll('"', '""')}"`;
 }
 
@@ -560,6 +564,7 @@ export class ExposedPopulationResult {
   statistic: AggregationOperations;
   tableData: TableRow[];
   date: number;
+  tableColumns: any;
 
   getTitle = (t?: i18nTranslator): string => {
     return t ? t('Population Exposure') : 'Population Exposure';
@@ -578,6 +583,7 @@ export class ExposedPopulationResult {
     groupBy: string,
     key: string,
     date: number,
+    tableColumns: any,
   ) {
     this.tableData = tableData;
     this.featureCollection = featureCollection;
@@ -587,6 +593,7 @@ export class ExposedPopulationResult {
     this.groupBy = groupBy;
     this.key = key;
     this.date = date;
+    this.tableColumns = tableColumns;
   }
 }
 
@@ -696,7 +703,13 @@ export function getAnalysisTableColumns(
   ];
 
   if (analysisResult instanceof ExposedPopulationResult) {
-    return analysisTableColumns;
+    const extraCols = analysisResult?.tableColumns.map((col: string) => ({
+      id: col,
+      label: col, // invert maps from computer name to display name.
+      format: (value: string | number) => getRoundedData(value as number),
+    })) as Column[];
+    console.log({ extraCols });
+    return [...analysisTableColumns, ...extraCols];
   }
 
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;

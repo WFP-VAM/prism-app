@@ -8,7 +8,7 @@ import {
   Position,
 } from 'geojson';
 import moment from 'moment';
-import { get } from 'lodash';
+import { get, uniq } from 'lodash';
 import { createGetCoverageUrl } from 'prism-common';
 import { calculate } from '../utils/zonal-utils';
 
@@ -126,6 +126,107 @@ function getAdminBoundariesURL(adminBoundariesPath: string) {
   );
 }
 
+// Used for comparison only
+// export const convertToTableData = (
+//   key: string,
+//   groupBy: string,
+//   statistic: AggregationOperations,
+//   aggregateData: AsyncReturnType<typeof fetchApiData>,
+// ) => {
+//   const fields = key
+//     ? uniq(aggregateData.map(f => f.properties && (f.properties as any)[key]))
+//     : [statistic];
+
+//   const lowestLevel = getLowestAdminLevelName();
+
+//   const featureProperties = (aggregateData as Feature<
+//     Geometry,
+//     GeoJsonProperties
+//   >[])
+//     .filter(
+//       feature => feature.properties?.[key] || feature.properties?.[statistic],
+//     )
+//     .map(feature => {
+//       return {
+//         [groupBy]: feature.properties?.[lowestLevel],
+//         [key]: feature.properties?.[key],
+//         [statistic]: feature.properties?.[statistic],
+//       };
+//     });
+
+//   // TODO - Improve readability and reusability of this function
+//   const rowData = key
+//     ? mapValues(_groupBy(featureProperties, groupBy), k => {
+//         return mapValues(_groupBy(k, key), v =>
+//           parseInt(
+//             v.map(x => x[statistic]).reduce((acc, value) => acc + value),
+//             10,
+//           ),
+//         );
+//       })
+//     : mapValues(_groupBy(featureProperties, groupBy), k => {
+//         return {
+//           [statistic]: parseInt(
+//             k.map(x => x[statistic]).reduce((acc, value) => acc + value),
+//             10,
+//           ),
+//         };
+//       });
+
+//   const groupedRowData = Object.keys(rowData).map(k => {
+//     return {
+//       [groupBy]: k,
+//       ...rowData[k],
+//     };
+//   });
+
+//   const groupedRowDataWithAllLabels = groupedRowData.map(row => {
+//     const labelsWithoutValue = difference(fields, keysIn(row));
+//     const extras = labelsWithoutValue.map(k => ({ [k]: 0 }));
+//     return extras.length !== 0 ? assign(row, ...extras) : row;
+//   });
+
+//   const columnMapping = {
+//     [groupBy]: 'Name',
+//     sum: 'Total',
+//   };
+
+//   const headlessRows = groupedRowDataWithAllLabels.map(row => {
+//     // Replace the group by column name with generic value.
+//     const obj = Object.entries(row).reduce(
+//       (acc, [objKey, value]) => ({
+//         ...acc,
+//         [columnMapping[objKey] || objKey]: value,
+//       }),
+//       [],
+//     );
+//     return obj;
+//   });
+
+//   const columns = [
+//     columnMapping[groupBy],
+//     ...fields.map(field => columnMapping[field] || field),
+//   ];
+//   const headRow = zipObject(columns, columns);
+//   const rows = [headRow, ...headlessRows] as Record<string, any>[];
+//   return { columns, rows };
+// };
+
+function generateTableColumnsFromApiData(
+  aggregateData: AsyncReturnType<typeof fetchApiData>,
+  key: string = 'label',
+) {
+  const fields = uniq(
+    aggregateData.map(f => f.properties && (f.properties as any)[key]),
+  ).map((col: string) => ({
+    id: col,
+    label: col, // invert maps from computer name to display name.
+    format: (value: string | number) => getRoundedData(value as number),
+  })) as Column[];
+  return fields;
+}
+
+// TODO - get key from results?
 function generateTableFromApiData(
   statistics: AllAggregationOperations[],
   aggregateData: AsyncReturnType<typeof fetchApiData>, // data from api
@@ -138,6 +239,7 @@ function generateTableFromApiData(
   baselineLayerData: DataRecord[] | null,
   extraColumns: string[],
   isExposureAnalysisTable: boolean = false,
+  key?: string,
 ): TableRow[] {
   // find the key that will let us reference the names of the bounding boxes.
   // We get the one corresponding to the specific level of baseline, or the first if we fail.
@@ -147,11 +249,19 @@ function generateTableFromApiData(
     levelName => levelName === groupBy,
   );
 
+  const fields = isExposureAnalysisTable
+    ? uniq(aggregateData.map(f => f.properties && (f.properties as any).label))
+    : statistics;
+
+  // const statistics = ['60 km/h', '90 km/h', '120 km/h', 'Uncertainty Cones'];
+
   const adminIndex =
     groupByAdminIndex !== -1 ? groupByAdminIndex : adminLevelNames.length - 1;
 
   // If we want to show all comma separated admin levels, we can use all names until "adminIndex".
   const adminLevelName = adminLevelNames[adminIndex];
+
+  console.log({ aggregateData, isExposureAnalysisTable });
 
   return (aggregateData as KeyValueResponse[]).map((row, i) => {
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
@@ -202,14 +312,12 @@ function generateTableFromApiData(
 
     // The multiple statistics for the new table row
     let multipleStatistics: { [p: string]: string | number };
+    let labeledColumns: { [p: string]: string | number };
 
     if (isExposureAnalysisTable) {
       // eslint-disable-next-line fp/no-mutation
       multipleStatistics = Object.fromEntries(
-        statistics.map(statistic => [
-          statistic,
-          get(row.properties, statistic, 0),
-        ]),
+        fields.map(statistic => [statistic, get(row.properties, statistic, 0)]),
       );
     } else {
       // eslint-disable-next-line fp/no-mutation
@@ -218,12 +326,30 @@ function generateTableFromApiData(
       );
     }
 
+    // The multiple statistics for the new table row
+
+    if (key) {
+      const label = get(row.properties, key);
+      console.log({ row, key, label, fields });
+      if (fields.includes(label)) {
+        // eslint-disable-next-line fp/no-mutation
+        labeledColumns = { [label]: get(row.properties, 'sum', 0) };
+        console.log(labeledColumns);
+      } else {
+        labeledColumns = {};
+      }
+    } else {
+      // eslint-disable-next-line fp/no-mutation
+      labeledColumns = {};
+    }
+
     const tableRow: TableRow = {
       key: i.toString(), // primary key, identifying a unique row in the table
       name,
       localName,
       // copy multiple statistics to the new table row
       ...multipleStatistics,
+      ...labeledColumns,
       // Force parseFloat in case data was stored as a string
       baselineValue:
         rawBaselineValue === 'No Data'
@@ -408,6 +534,11 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     // TODO - use raster legend title
     const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
 
+    const tableColumns = generateTableColumnsFromApiData(
+      featuresWithBoundaryProps,
+      key,
+    );
+
     const tableRows: TableRow[] = generateTableFromApiData(
       [statistic],
       featuresWithBoundaryProps,
@@ -416,7 +547,10 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       null,
       [], // no extra columns
       true,
+      key,
     );
+
+    console.log({ tableRows });
 
     return new ExposedPopulationResult(
       tableRows,
@@ -427,6 +561,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       apiRequest.group_by,
       key,
       date,
+      tableColumns,
     );
   },
 );
