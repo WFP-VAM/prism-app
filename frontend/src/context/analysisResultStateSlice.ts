@@ -8,7 +8,7 @@ import {
   Position,
 } from 'geojson';
 import moment from 'moment';
-import { get, uniq } from 'lodash';
+import { get, groupBy as _groupBy, uniq } from 'lodash';
 import { createGetCoverageUrl } from 'prism-common';
 import { calculate } from '../utils/zonal-utils';
 
@@ -443,6 +443,24 @@ const createAPIRequestParams = (
   return apiRequest;
 };
 
+function mergeTableRows(tableRows: TableRow[]) {
+  const mergedObject: Record<string, any> = {};
+
+  tableRows.forEach(obj => {
+    Object.keys(obj).forEach(objectKey => {
+      if (typeof obj[objectKey] === 'number') {
+        mergedObject[objectKey] = mergedObject[objectKey]
+          ? mergedObject[objectKey] + obj[objectKey]
+          : obj[objectKey];
+      } else {
+        mergedObject[objectKey] = obj[objectKey];
+      }
+    });
+  });
+
+  return mergedObject as TableRow;
+}
+
 export const requestAndStoreExposedPopulation = createAsyncThunk<
   AnalysisResult,
   ExposedPopulationDispatchParams,
@@ -539,7 +557,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       key,
     );
 
-    const tableRows: TableRow[] = generateTableFromApiData(
+    let tableRows: TableRow[] = generateTableFromApiData(
       [statistic],
       featuresWithBoundaryProps,
       adminBoundariesData,
@@ -549,6 +567,12 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       true,
       key,
     );
+
+    if (key) {
+      tableRows = Object.values(_groupBy(tableRows, 'name')).map(adminRows =>
+        mergeTableRows(adminRows),
+      );
+    }
 
     // eslint-disable-next-line no-console
     console.log({ tableRows });
