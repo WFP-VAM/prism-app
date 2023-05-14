@@ -10,5 +10,5 @@ export default {
   rawLayers,
   rawTables,
   translation,
-  defaultBoundariesFile: 'mmr_admin_boundaries.json',
+  defaultBoundariesFile: 'mmr_polbnda_adm3_250k_mimu.json',
 };
