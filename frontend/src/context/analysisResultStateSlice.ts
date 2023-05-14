@@ -449,14 +449,26 @@ function mergeTableRows(tableRows: TableRow[]) {
   tableRows.forEach(obj => {
     Object.keys(obj).forEach(objectKey => {
       if (typeof obj[objectKey] === 'number') {
+        // eslint-disable-next-line fp/no-mutation
         mergedObject[objectKey] = mergedObject[objectKey]
           ? mergedObject[objectKey] + obj[objectKey]
           : obj[objectKey];
       } else {
+        // eslint-disable-next-line fp/no-mutation
         mergedObject[objectKey] = obj[objectKey];
       }
     });
   });
+
+  // TEMPORARY LOGIC TO DEDUP POPULATION COUNTS FOR WIND BUFFERS.
+  const ninety =
+    get(mergedObject, '90 km/h', 0) - get(mergedObject, '120 km/h', 0);
+  const sixty =
+    get(mergedObject, '60 km/h', 0) - get(mergedObject, '90 km/h', 0);
+  // eslint-disable-next-line fp/no-mutation
+  mergedObject['90 km/h'] = ninety;
+  // eslint-disable-next-line fp/no-mutation
+  mergedObject['60 km/h'] = sixty;
 
   return mergedObject as TableRow;
 }
@@ -569,6 +581,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     );
 
     if (key) {
+      // eslint-disable-next-line fp/no-mutation
       tableRows = Object.values(_groupBy(tableRows, 'name')).map(adminRows =>
         mergeTableRows(adminRows),
       );
