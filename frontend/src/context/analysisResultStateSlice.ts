@@ -468,11 +468,11 @@ function mergeTableRows(tableRows: TableRow[]) {
     get(mergedObject, '60 km/h', 0) - get(mergedObject, '90 km/h', 0);
 
   // eslint-disable-next-line fp/no-mutation
-  mergedObject['120 km/h'] = oneHundredTwenty.toPrecision(0);
+  mergedObject['120 km/h'] = Math.ceil(oneHundredTwenty);
   // eslint-disable-next-line fp/no-mutation
-  mergedObject['90 km/h'] = ninety.toPrecision(0);
+  mergedObject['90 km/h'] = Math.ceil(ninety);
   // eslint-disable-next-line fp/no-mutation
-  mergedObject['60 km/h'] = sixty.toPrecision(0);
+  mergedObject['60 km/h'] = Math.ceil(sixty);
 
   return mergedObject as TableRow;
 }
