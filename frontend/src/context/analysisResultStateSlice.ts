@@ -461,14 +461,18 @@ function mergeTableRows(tableRows: TableRow[]) {
   });
 
   // TEMPORARY LOGIC TO DEDUP POPULATION COUNTS FOR WIND BUFFERS.
+  const oneHundredTwenty = get(mergedObject, '120 km/h', 0);
   const ninety =
     get(mergedObject, '90 km/h', 0) - get(mergedObject, '120 km/h', 0);
   const sixty =
     get(mergedObject, '60 km/h', 0) - get(mergedObject, '90 km/h', 0);
+
   // eslint-disable-next-line fp/no-mutation
-  mergedObject['90 km/h'] = ninety;
+  mergedObject['120 km/h'] = oneHundredTwenty.toPrecision(0);
   // eslint-disable-next-line fp/no-mutation
-  mergedObject['60 km/h'] = sixty;
+  mergedObject['90 km/h'] = ninety.toPrecision(0);
+  // eslint-disable-next-line fp/no-mutation
+  mergedObject['60 km/h'] = sixty.toPrecision(0);
 
   return mergedObject as TableRow;
 }
