@@ -44,9 +44,16 @@ export const notificationStateSlice = createSlice({
     ) => {
       const { notifications, ...rest } = state;
       const notification = new Notification(payload);
+
+      /**
+       * If there is a notification with the same key (hash), it means that there
+       * is an existing notification with the same message. In this case
+       * we do not update the state and return the existing.
+       */
       if (notifications.find(n => n.key === notification.key)) {
         return state;
       }
+
       return {
         ...rest,
         notifications: notifications.concat(notification),
