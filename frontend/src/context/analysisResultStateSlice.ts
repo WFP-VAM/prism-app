@@ -211,7 +211,6 @@ const getLabeledColumns = (
   return {};
 };
 
-// TODO - get key from results?
 const generateTableFromApiData = (
   statistics: AllAggregationOperations[],
   aggregateData: AsyncReturnType<typeof fetchApiData>, // data from api

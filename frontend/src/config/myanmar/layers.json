@@ -2533,10 +2533,7 @@
     "opacity": 1,
     "legend_text": "Types of armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
     "legend": [
-      { "label": "Battles", 
-        "value": "Battles ", 
-        "color": "#ea5545" 
-      },
+      { "label": "Battles", "value": "Battles ", "color": "#ea5545" },
       {
         "label": "Explosions/Remote violence",
         "value": "Explosions/Remote violence",
