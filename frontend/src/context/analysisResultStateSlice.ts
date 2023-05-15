@@ -135,7 +135,7 @@ const generateTableColumnsFromApiData = (
       {
         id: 'sum',
         label: 'Sum',
-        format: (value: string | number) => getRoundedData(value),
+        format: (value: string | number) => getRoundedData(value, undefined, 0),
       },
     ];
   }
@@ -143,8 +143,8 @@ const generateTableColumnsFromApiData = (
     aggregateData.map(f => f.properties && (f.properties as any)[key]),
   ).map((col: string) => ({
     id: col,
-    label: col, // invert maps from computer name to display name.
-    format: (value: string | number) => getRoundedData(value),
+    label: col,
+    format: (value: string | number) => getRoundedData(value, undefined, 0),
   })) as Column[];
 };
 
