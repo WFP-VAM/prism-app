@@ -17,7 +17,7 @@ type NotificationConstructor = {
 export class Notification {
   readonly message: string;
   readonly type: Color;
-  readonly key: string; // each notification needs a unique ID. Date.now() seems to do the job
+  readonly key: string; // each notification needs a unique ID. We generate a hash from the notification message
 
   constructor({ message, type }: NotificationConstructor) {
     this.type = type;
