@@ -94,6 +94,10 @@ To find these attributes, we created a help mode that you can activate by settin
   }
   ```
 
+In some cases, a boundary file may load without any issues but fail to provide correct results in an exposure analysis, or correctly render the 'Go To' feature. Troubleshooting this is challenging. It is recommended to use a validation tool on your boundary file before utilizing it in PRISM. https://geojsonlint.com/ works well for this purpose.
+
+In addition, boundary files sometimes carry more precise coordinates than is neccessary which makes for a large data file. PRISM will alert you with a message in the browser if the precision is too high. You can run bash /frontend/scripts/truncate_precision.sh to fix this. The script will update any boundary file in the /frontend/public/data folder
+
 ### layers.json
 
 There are 4 main types of layers:
