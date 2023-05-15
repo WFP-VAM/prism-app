@@ -32,11 +32,12 @@ const LayerContentPreview = ({ layerId, classes }: PreviewProps) => {
 
   return (
     <Grid item>
-      <IconButton size="small" className={classes.icon}>
-        <InfoIcon
-          fontSize="inherit"
-          onClick={() => loadLayerContent(layer.contentPath!, setContent)}
-        />
+      <IconButton
+        onClick={() => loadLayerContent(layer.contentPath!, setContent)}
+        size="small"
+        className={classes.icon}
+      >
+        <InfoIcon fontSize="inherit" />
       </IconButton>
       <ContentDialog content={content} setContent={setContent} />
     </Grid>

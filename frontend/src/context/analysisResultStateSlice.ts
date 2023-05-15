@@ -126,108 +126,93 @@ function getAdminBoundariesURL(adminBoundariesPath: string) {
   );
 }
 
-// Used for comparison only
-// export const convertToTableData = (
-//   key: string,
-//   groupBy: string,
-//   statistic: AggregationOperations,
-//   aggregateData: AsyncReturnType<typeof fetchApiData>,
-// ) => {
-//   const fields = key
-//     ? uniq(aggregateData.map(f => f.properties && (f.properties as any)[key]))
-//     : [statistic];
-
-//   const lowestLevel = getLowestAdminLevelName();
-
-//   const featureProperties = (aggregateData as Feature<
-//     Geometry,
-//     GeoJsonProperties
-//   >[])
-//     .filter(
-//       feature => feature.properties?.[key] || feature.properties?.[statistic],
-//     )
-//     .map(feature => {
-//       return {
-//         [groupBy]: feature.properties?.[lowestLevel],
-//         [key]: feature.properties?.[key],
-//         [statistic]: feature.properties?.[statistic],
-//       };
-//     });
-
-//   // TODO - Improve readability and reusability of this function
-//   const rowData = key
-//     ? mapValues(_groupBy(featureProperties, groupBy), k => {
-//         return mapValues(_groupBy(k, key), v =>
-//           parseInt(
-//             v.map(x => x[statistic]).reduce((acc, value) => acc + value),
-//             10,
-//           ),
-//         );
-//       })
-//     : mapValues(_groupBy(featureProperties, groupBy), k => {
-//         return {
-//           [statistic]: parseInt(
-//             k.map(x => x[statistic]).reduce((acc, value) => acc + value),
-//             10,
-//           ),
-//         };
-//       });
-
-//   const groupedRowData = Object.keys(rowData).map(k => {
-//     return {
-//       [groupBy]: k,
-//       ...rowData[k],
-//     };
-//   });
-
-//   const groupedRowDataWithAllLabels = groupedRowData.map(row => {
-//     const labelsWithoutValue = difference(fields, keysIn(row));
-//     const extras = labelsWithoutValue.map(k => ({ [k]: 0 }));
-//     return extras.length !== 0 ? assign(row, ...extras) : row;
-//   });
-
-//   const columnMapping = {
-//     [groupBy]: 'Name',
-//     sum: 'Total',
-//   };
-
-//   const headlessRows = groupedRowDataWithAllLabels.map(row => {
-//     // Replace the group by column name with generic value.
-//     const obj = Object.entries(row).reduce(
-//       (acc, [objKey, value]) => ({
-//         ...acc,
-//         [columnMapping[objKey] || objKey]: value,
-//       }),
-//       [],
-//     );
-//     return obj;
-//   });
-
-//   const columns = [
-//     columnMapping[groupBy],
-//     ...fields.map(field => columnMapping[field] || field),
-//   ];
-//   const headRow = zipObject(columns, columns);
-//   const rows = [headRow, ...headlessRows] as Record<string, any>[];
-//   return { columns, rows };
-// };
-
-function generateTableColumnsFromApiData(
+const generateTableColumnsFromApiData = (
   aggregateData: AsyncReturnType<typeof fetchApiData>,
-  key: string = 'label',
-) {
-  const fields = uniq(
+  key: string = 'sum',
+): Column[] => {
+  if (key === 'sum') {
+    return [
+      {
+        id: 'sum',
+        label: 'Sum',
+        format: (value: string | number) => getRoundedData(value),
+      },
+    ];
+  }
+  return uniq(
     aggregateData.map(f => f.properties && (f.properties as any)[key]),
   ).map((col: string) => ({
     id: col,
     label: col, // invert maps from computer name to display name.
-    format: (value: string | number) => getRoundedData(value as number),
+    format: (value: string | number) => getRoundedData(value),
   })) as Column[];
-  return fields;
-}
+};
+
+const getFeatureBoundary = (
+  isExposureAnalysisTable: boolean,
+  adminLayerData: BoundaryLayerData,
+  groupBy: string,
+  row: KeyValueResponse,
+  adminLevelName: string,
+): Feature<Geometry, GeoJsonProperties> | undefined => {
+  if (isExposureAnalysisTable) {
+    return adminLayerData.features.find(
+      ({ properties }) =>
+        properties?.[groupBy] ===
+          row?.['properties']?.[groupBy as keyof typeof properties] ||
+        properties?.[adminLevelName] ===
+          row?.['properties'][adminLevelName as keyof typeof properties],
+    );
+  }
+  return adminLayerData.features.find(
+    ({ properties }) =>
+      properties?.[groupBy] === row[groupBy] ||
+      properties?.[adminLevelName] === row[adminLevelName],
+  );
+};
+
+const getMultipleStatistics = (
+  isExposureAnalysisTable: boolean,
+  fields: (
+    | AllAggregationOperations
+    | (KeyValueResponse | Feature<Geometry, GeoJsonProperties>)
+  )[],
+  statistics: AllAggregationOperations[],
+  row: KeyValueResponse,
+): { [p: string]: string | number } => {
+  if (isExposureAnalysisTable) {
+    return Object.fromEntries(
+      fields.map(statistic => [
+        statistic,
+        get(row.properties, statistic as string, 0),
+      ]),
+    );
+  }
+  return Object.fromEntries(
+    statistics.map(statistic => [statistic, get(row, statistic, 0)]),
+  );
+};
+
+const getLabeledColumns = (
+  row: KeyValueResponse,
+  fields: (
+    | AllAggregationOperations
+    | (KeyValueResponse | Feature<Geometry, GeoJsonProperties>)
+  )[],
+  key?: string,
+): { [p: string]: string | number } => {
+  if (!key) {
+    return {};
+  }
+  const label = get(row.properties, key);
+  if (fields.includes(label)) {
+    return { [label]: get(row.properties, 'sum', 0) };
+  }
+  return {};
+};
 
 // TODO - get key from results?
-function generateTableFromApiData(
+const generateTableFromApiData = (
   statistics: AllAggregationOperations[],
   aggregateData: AsyncReturnType<typeof fetchApiData>, // data from api
   // admin layer, both props and data. Aimed to closely match LayerData<BoundaryLayerProps>
@@ -240,7 +225,7 @@ function generateTableFromApiData(
   extraColumns: string[],
   isExposureAnalysisTable: boolean = false,
   key?: string,
-): TableRow[] {
+): TableRow[] => {
   // find the key that will let us reference the names of the bounding boxes.
   // We get the one corresponding to the specific level of baseline, or the first if we fail.
   const { adminLevelNames, adminLevelLocalNames } = adminLayer;
@@ -249,11 +234,12 @@ function generateTableFromApiData(
     levelName => levelName === groupBy,
   );
 
-  const fields = isExposureAnalysisTable
+  const fields: (
+    | AllAggregationOperations
+    | (KeyValueResponse | Feature<Geometry, GeoJsonProperties>)
+  )[] = key
     ? uniq(aggregateData.map(f => f.properties && (f.properties as any).label))
     : statistics;
-
-  // const statistics = ['60 km/h', '90 km/h', '120 km/h', 'Uncertainty Cones'];
 
   const adminIndex =
     groupByAdminIndex !== -1 ? groupByAdminIndex : adminLevelNames.length - 1;
@@ -261,32 +247,19 @@ function generateTableFromApiData(
   // If we want to show all comma separated admin levels, we can use all names until "adminIndex".
   const adminLevelName = adminLevelNames[adminIndex];
 
-  // eslint-disable-next-line no-console
-  console.log({ aggregateData, isExposureAnalysisTable });
-
   return (aggregateData as KeyValueResponse[]).map((row, i) => {
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
     // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
-    let featureBoundary: Feature<Geometry, GeoJsonProperties> | undefined;
-
-    if (isExposureAnalysisTable) {
-      // eslint-disable-next-line fp/no-mutation
-      featureBoundary = adminLayerData.features.find(
-        ({ properties }) =>
-          properties?.[groupBy] ===
-            row?.['properties']?.[groupBy as keyof typeof properties] ||
-          properties?.[adminLevelName] ===
-            row?.['properties'][adminLevelName as keyof typeof properties],
-      );
-    } else {
-      // eslint-disable-next-line fp/no-mutation
-      featureBoundary = adminLayerData.features.find(
-        ({ properties }) =>
-          properties?.[groupBy] === row[groupBy] ||
-          properties?.[adminLevelName] === row[adminLevelName],
-      );
-    }
+    const featureBoundary:
+      | Feature<Geometry, GeoJsonProperties>
+      | undefined = getFeatureBoundary(
+      isExposureAnalysisTable,
+      adminLayerData,
+      groupBy,
+      row,
+      adminLevelName,
+    );
 
     const name = getFullLocationName(
       adminLevelNames.slice(0, adminIndex + 1),
@@ -312,36 +285,16 @@ function generateTableFromApiData(
       })?.value || 'No Data';
 
     // The multiple statistics for the new table row
-    let multipleStatistics: { [p: string]: string | number };
-    let labeledColumns: { [p: string]: string | number };
+    const multipleStatistics: {
+      [p: string]: string | number;
+    } = getMultipleStatistics(isExposureAnalysisTable, fields, statistics, row);
 
-    if (isExposureAnalysisTable) {
-      // eslint-disable-next-line fp/no-mutation
-      multipleStatistics = Object.fromEntries(
-        fields.map(statistic => [statistic, get(row.properties, statistic, 0)]),
-      );
-    } else {
-      // eslint-disable-next-line fp/no-mutation
-      multipleStatistics = Object.fromEntries(
-        statistics.map(statistic => [statistic, get(row, statistic, 0)]),
-      );
-    }
-
-    // The multiple statistics for the new table row
-
-    if (key) {
-      const label = get(row.properties, key);
-      if (fields.includes(label)) {
-        // eslint-disable-next-line fp/no-mutation
-        labeledColumns = { [label]: get(row.properties, 'sum', 0) };
-      } else {
-        // eslint-disable-next-line fp/no-mutation
-        labeledColumns = {};
-      }
-    } else {
-      // eslint-disable-next-line fp/no-mutation
-      labeledColumns = {};
-    }
+    // The labeled columns
+    const labeledColumns: { [p: string]: string | number } = getLabeledColumns(
+      row,
+      fields,
+      key,
+    );
 
     const tableRow: TableRow = {
       key: i.toString(), // primary key, identifying a unique row in the table
@@ -362,7 +315,7 @@ function generateTableFromApiData(
     };
     return tableRow;
   });
-}
+};
 
 export type AnalysisDispatchParams = {
   baselineLayer: AdminLevelDataLayerProps | BoundaryLayerProps;
@@ -443,39 +396,48 @@ const createAPIRequestParams = (
   return apiRequest;
 };
 
-function mergeTableRows(tableRows: TableRow[]) {
-  const mergedObject: Record<string, any> = {};
-
-  tableRows.forEach(obj => {
-    Object.keys(obj).forEach(objectKey => {
-      if (typeof obj[objectKey] === 'number') {
-        // eslint-disable-next-line fp/no-mutation
-        mergedObject[objectKey] = mergedObject[objectKey]
-          ? mergedObject[objectKey] + obj[objectKey]
-          : obj[objectKey];
-      } else {
-        // eslint-disable-next-line fp/no-mutation
-        mergedObject[objectKey] = obj[objectKey];
-      }
-    });
-  });
+const mergeTableRows = (tableRows: TableRow[]): TableRow => {
+  const mergedObject: TableRow = tableRows.reduce(
+    (acc, tableRow) => {
+      return Object.keys(tableRow).reduce((tableRowAcc, tableRowKey) => {
+        if (typeof tableRow[tableRowKey] === 'number') {
+          // eslint-disable-next-line no-param-reassign,fp/no-mutation
+          tableRowAcc[tableRowKey] = tableRowAcc[tableRowKey]
+            ? Number(tableRowAcc[tableRowKey]) + Number(tableRow[tableRowKey])
+            : tableRow[tableRowKey];
+        } else {
+          // eslint-disable-next-line no-param-reassign,fp/no-mutation
+          tableRowAcc[tableRowKey] = tableRow[tableRowKey];
+        }
+        return tableRowAcc;
+      }, acc);
+    },
+    {
+      key: '',
+      localName: '',
+      name: '',
+      baselineValue: '',
+    },
+  );
 
   // TEMPORARY LOGIC TO DEDUP POPULATION COUNTS FOR WIND BUFFERS.
-  const oneHundredTwenty = get(mergedObject, '120 km/h', 0);
+  const oneHundredTwenty = Number(get(mergedObject, '120 km/h', 0));
   const ninety =
-    get(mergedObject, '90 km/h', 0) - get(mergedObject, '120 km/h', 0);
+    Number(get(mergedObject, '90 km/h', 0)) -
+    Number(get(mergedObject, '120 km/h', 0));
   const sixty =
-    get(mergedObject, '60 km/h', 0) - get(mergedObject, '90 km/h', 0);
+    Number(get(mergedObject, '60 km/h', 0)) -
+    Number(get(mergedObject, '90 km/h', 0));
 
   // eslint-disable-next-line fp/no-mutation
-  mergedObject['120 km/h'] = Math.ceil(oneHundredTwenty);
+  mergedObject['120 km/h'] = Number(Math.ceil(oneHundredTwenty));
   // eslint-disable-next-line fp/no-mutation
-  mergedObject['90 km/h'] = Math.ceil(ninety);
+  mergedObject['90 km/h'] = Number(Math.ceil(ninety));
   // eslint-disable-next-line fp/no-mutation
-  mergedObject['60 km/h'] = Math.ceil(sixty);
+  mergedObject['60 km/h'] = Number(Math.ceil(sixty));
 
-  return mergedObject as TableRow;
-}
+  return mergedObject;
+};
 
 export const requestAndStoreExposedPopulation = createAsyncThunk<
   AnalysisResult,
@@ -590,9 +552,6 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
         mergeTableRows(adminRows),
       );
     }
-
-    // eslint-disable-next-line no-console
-    console.log({ tableRows });
 
     return new ExposedPopulationResult(
       tableRows,
