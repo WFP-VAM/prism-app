@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback, useMemo } from 'react';
+import React, { Fragment, memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Popup } from 'react-mapbox-gl';
 import {
@@ -7,101 +7,53 @@ import {
   WithStyles,
   LinearProgress,
 } from '@material-ui/core';
-import { GeoJSON } from 'geojson';
 import { isEqual } from 'lodash';
 import { tooltipSelector } from '../../../context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
-import { getRoundedData } from '../../../utils/data-utils';
 
 const MapTooltip = memo(({ classes }: TooltipProps) => {
   const popup = useSelector(tooltipSelector);
   const { t, i18n } = useSafeTranslation();
 
-  const popupShowing = useMemo(() => {
-    return popup.showing;
-  }, [popup.showing]);
-
-  const popupCoordinates = useMemo(() => {
-    return popup.coordinates;
-  }, [popup.coordinates]);
-
-  const popupLocationName = useMemo(() => {
-    return popup.locationName;
-  }, [popup.locationName]);
-
-  const popupLocationLocalName = useMemo(() => {
-    return popup.locationLocalName;
-  }, [popup.locationLocalName]);
-
   const popupTitle = useMemo(() => {
     if (isEnglishLanguageSelected(i18n)) {
-      return popupLocationName;
+      return popup.locationName;
     }
-    return popupLocationLocalName;
-  }, [i18n, popupLocationLocalName, popupLocationName]);
-
-  const popupData = useMemo(() => {
-    return popup.data;
-  }, [popup.data]);
-
-  const popupWmsGetFeatureInfoLoading = useMemo(() => {
-    return popup.wmsGetFeatureInfoLoading;
-  }, [popup.wmsGetFeatureInfoLoading]);
-
-  const getRenderedKeyValuePopupContent = useCallback(
-    (
-      key: string,
-      value: {
-        data: number | string;
-        coordinates: GeoJSON.Position;
-        adminLevel?: number;
-      },
-    ) => {
-      if (key === 'Population Exposure') {
-        // The value is of localeString format and there is no easy way to revert it back
-        const valueToShow =
-          typeof value.data === 'number'
-            ? value.data
-            : value.data.split(',').join('');
-        return `${t(key)}: ${getRoundedData(Number(valueToShow), t, 0)}`;
-      }
-      return `${t(key)}: ${value.data}`;
-    },
-    [t],
-  );
+    return popup.locationLocalName;
+  }, [i18n, popup.locationLocalName, popup.locationName]);
 
   const renderedPopupContent = useMemo(() => {
-    return Object.entries(popupData)
+    return Object.entries(popup.data)
       .filter(([, value]) => {
-        return isEqual(value.coordinates, popupCoordinates);
+        return isEqual(value.coordinates, popup.coordinates);
       })
       .map(([key, value]) => {
         return (
           <Fragment key={key}>
-            <h4 key={key}>{getRenderedKeyValuePopupContent(key, value)}</h4>
+            <h4 key={key}>{`${t(key)}: ${value.data}`}</h4>
             <h4>
               {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
             </h4>
           </Fragment>
         );
       });
-  }, [getRenderedKeyValuePopupContent, popupCoordinates, popupData, t]);
+  }, [popup.coordinates, popup.data, t]);
 
   const renderedPopupLoader = useMemo(() => {
-    if (!popupWmsGetFeatureInfoLoading) {
+    if (!popup.wmsGetFeatureInfoLoading) {
       return null;
     }
     return <LinearProgress />;
-  }, [popupWmsGetFeatureInfoLoading]);
+  }, [popup.wmsGetFeatureInfoLoading]);
 
   return useMemo(() => {
-    if (!popupShowing || !popupCoordinates) {
+    if (!popup.showing || !popup.coordinates) {
       return null;
     }
     return (
       <Popup
         anchor="bottom"
-        coordinates={popupCoordinates as GeoJSON.Position}
+        coordinates={popup.coordinates}
         className={classes.popup}
       >
         <h4>{popupTitle}</h4>
@@ -111,8 +63,8 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
     );
   }, [
     classes.popup,
-    popupCoordinates,
-    popupShowing,
+    popup.coordinates,
+    popup.showing,
     popupTitle,
     renderedPopupContent,
     renderedPopupLoader,
