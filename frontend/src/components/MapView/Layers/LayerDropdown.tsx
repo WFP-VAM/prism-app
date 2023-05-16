@@ -67,6 +67,16 @@ function LayerDropdown({
     tables: [],
   };
 
+  const filterLayersForAnalysis = (layer: LayerType) => {
+    if (layer.type === 'wms') {
+      return (
+        !layer.disableAnalysis &&
+        [undefined, 'polygon'].includes(layer.geometry)
+      );
+    }
+    return true;
+  };
+
   const categories = [
     // If type is admin_level_data, add admin boundaries at the begining to run analysis
     ...(type === 'admin_level_data' ? [AdminBoundaryCategory] : []),
@@ -92,23 +102,12 @@ function LayerDropdown({
         }
         return layerCategory;
       })
-      // 3. get rid of layers within the categories which don't match the given type
+      // 3. filter layers based on layer properties
       .map(category => ({
         ...category,
-        layers: category.layers.filter(layer => layer.type === type),
-      }))
-      // 4. additional filter for WMS layers
-      .map(category => ({
-        ...category,
-        layers: category.layers.filter(layer => {
-          if (layer.type === 'wms') {
-            return (
-              [undefined, 'polygon'].includes(layer.geometry) &&
-              layer.runAnalysis !== false
-            );
-          }
-          return true;
-        }),
+        layers: category.layers
+          .filter(layer => layer.type === type)
+          .filter(filterLayersForAnalysis),
       }))
       // 4. filter categories which don't have any layers at the end of it all.
       .filter(category => category.layers.length > 0),
