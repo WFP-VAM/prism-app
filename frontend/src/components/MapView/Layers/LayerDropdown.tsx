@@ -67,10 +67,13 @@ function LayerDropdown({
     tables: [],
   };
 
+  // Filter out layers that are not supported by the analysis tool
   const filterLayersForAnalysis = (layer: LayerType) => {
-    if (layer.type === 'wms') {
+    if (layer.disableAnalysis) {
+      return false;
+    }
+    else if (layer.type === 'wms') {
       return (
-        !layer.disableAnalysis &&
         [undefined, 'polygon'].includes(layer.geometry)
       );
     }

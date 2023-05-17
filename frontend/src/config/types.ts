@@ -303,6 +303,9 @@ export class CommonLayerProps {
 
   @optional
   validity?: Validity; // Include additional dates in the calendar based on the number provided.
+
+  @optional
+  disableAnalysis?: boolean; // Hide layer in Analysis feature
 }
 
 /*
@@ -407,9 +410,6 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
-
-  @optional // Hide layer in Analysis feature
-  disableAnalysis?: boolean;
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {
