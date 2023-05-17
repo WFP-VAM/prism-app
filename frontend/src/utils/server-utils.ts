@@ -314,8 +314,6 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
     {},
   );
 
-  console.log(mergedLayersWithUpdatedDates);
-
   return mergedLayersWithUpdatedDates;
 }
 
