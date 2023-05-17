@@ -72,10 +72,8 @@ function LayerDropdown({
     if (layer.disableAnalysis) {
       return false;
     }
-    else if (layer.type === 'wms') {
-      return (
-        [undefined, 'polygon'].includes(layer.geometry)
-      );
+    if (layer.type === 'wms') {
+      return [undefined, 'polygon'].includes(layer.geometry);
     }
     return true;
   };
