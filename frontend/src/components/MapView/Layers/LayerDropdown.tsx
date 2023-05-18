@@ -73,6 +73,8 @@ function LayerDropdown({
       return false;
     }
     if (layer.type === 'wms') {
+      // Only raster and polygon layers are supported at the moment.
+      // linestring and point geometries are not supported.
       return [undefined, 'polygon'].includes(layer.geometry);
     }
     return true;
