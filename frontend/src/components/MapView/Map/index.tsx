@@ -184,8 +184,7 @@ const MapComponent = memo(
       (map: Map) => {
         const { layers } = map.getStyle();
         // Find the first symbol on the map to make sure we add boundary layers below them.
-        const foundLayer = layers?.find(layer => layer.type === 'symbol')?.id;
-        setFirstSymbolId(foundLayer);
+        setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
         dispatch(setMap(() => map));
         if (showBoundaryInfo) {
           watchBoundaryChange(map);
@@ -195,13 +194,9 @@ const MapComponent = memo(
       [dispatch, showBoundaryInfo, trackLoadingLayers, watchBoundaryChange],
     );
 
-    const boundaryId = useMemo(() => {
-      return firstBoundaryOnView(selectedMap);
-    }, [selectedMap]);
+    const boundaryId = firstBoundaryOnView(selectedMap);
 
-    const firstBoundaryId = useMemo(() => {
-      return boundaryId && `layer-${boundaryId}-line`;
-    }, [boundaryId]);
+    const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
 
     const componentTypes: LayerComponentsMap<LayerType> = useMemo(() => {
       return {
