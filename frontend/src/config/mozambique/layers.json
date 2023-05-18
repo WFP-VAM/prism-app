@@ -684,6 +684,7 @@
     "additional_query_params": {
       "styles": "r1b_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -714,6 +715,7 @@
     "additional_query_params": {
       "styles": "r1q_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -742,6 +744,7 @@
     "additional_query_params": {
       "styles": "r3b_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -772,6 +775,7 @@
     "additional_query_params": {
       "styles": "r3q_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -800,6 +804,7 @@
     "additional_query_params": {
       "styles": "r6b_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -830,6 +835,7 @@
     "additional_query_params": {
       "styles": "r6q_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -858,6 +864,7 @@
     "additional_query_params": {
       "styles": "r9b_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -888,6 +895,7 @@
     "additional_query_params": {
       "styles": "r9q_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -916,6 +924,7 @@
     "additional_query_params": {
       "styles": "ryb_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -946,6 +955,7 @@
     "additional_query_params": {
       "styles": "ryq_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
