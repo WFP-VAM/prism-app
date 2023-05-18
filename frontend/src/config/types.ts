@@ -303,6 +303,9 @@ export class CommonLayerProps {
 
   @optional
   validity?: Validity; // Include additional dates in the calendar based on the number provided.
+
+  @optional
+  disableAnalysis?: boolean; // Hide layer in Analysis feature
 }
 
 /*
