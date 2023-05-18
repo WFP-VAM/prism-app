@@ -542,6 +542,9 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       key,
     );
 
+    // If a key exists, we are likely running an exposure analysis for storms or earthquakes.
+    // We need to merge the data returned by the API as it will be split
+    // by category for each admin boundary.
     if (key) {
       // eslint-disable-next-line fp/no-mutation
       tableRows = Object.values(_groupBy(tableRows, 'name')).map(adminRows =>
