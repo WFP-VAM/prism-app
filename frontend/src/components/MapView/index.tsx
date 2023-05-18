@@ -261,10 +261,8 @@ const MapView = memo(({ classes }: MapViewProps) => {
   }, []);
 
   const loadBoundaryLayerData = useCallback(() => {
-    displayedBoundaryLayers.forEach(l => {
-      dispatch(addLayer(l));
-      dispatch(loadLayerData({ layer: l }));
-    });
+    displayedBoundaryLayers.forEach(l => dispatch(addLayer(l)));
+    displayedBoundaryLayers.forEach(l => dispatch(loadLayerData({ layer: l })));
   }, [dispatch, displayedBoundaryLayers]);
 
   const showBoundaryInfo = useMemo(() => {
