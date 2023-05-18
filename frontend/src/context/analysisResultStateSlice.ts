@@ -396,16 +396,15 @@ const createAPIRequestParams = (
 };
 
 const mergeTableRows = (tableRows: TableRow[]): TableRow => {
+  /* eslint-disable no-param-reassign, fp/no-mutation */
   const mergedObject: TableRow = tableRows.reduce(
     (acc, tableRow) => {
       return Object.keys(tableRow).reduce((tableRowAcc, tableRowKey) => {
         if (typeof tableRow[tableRowKey] === 'number') {
-          // eslint-disable-next-line no-param-reassign,fp/no-mutation
           tableRowAcc[tableRowKey] = tableRowAcc[tableRowKey]
             ? Number(tableRowAcc[tableRowKey]) + Number(tableRow[tableRowKey])
             : tableRow[tableRowKey];
         } else {
-          // eslint-disable-next-line no-param-reassign,fp/no-mutation
           tableRowAcc[tableRowKey] = tableRow[tableRowKey];
         }
         return tableRowAcc;
@@ -428,13 +427,11 @@ const mergeTableRows = (tableRows: TableRow[]): TableRow => {
     Number(get(mergedObject, '60 km/h', 0)) -
     Number(get(mergedObject, '90 km/h', 0));
 
-  // eslint-disable-next-line fp/no-mutation
-  mergedObject['120 km/h'] = Number(Math.ceil(oneHundredTwenty));
-  // eslint-disable-next-line fp/no-mutation
-  mergedObject['90 km/h'] = Number(Math.ceil(ninety));
-  // eslint-disable-next-line fp/no-mutation
-  mergedObject['60 km/h'] = Number(Math.ceil(sixty));
+  mergedObject['120 km/h'] = oneHundredTwenty;
+  mergedObject['90 km/h'] = ninety;
+  mergedObject['60 km/h'] = sixty;
 
+  /* eslint-enable no-param-reassign, fp/no-mutation */
   return mergedObject;
 };
 
