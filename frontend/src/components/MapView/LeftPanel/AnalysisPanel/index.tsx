@@ -1147,8 +1147,8 @@ const styles = (theme: Theme) =>
     },
     analysisPanel: {
       position: 'relative',
-      paddingTop: 30,
       width: PanelSize.medium,
+      height: '100%',
     },
     exposureAnalysisLoadingContainer: {
       display: 'flex',
@@ -1168,9 +1168,8 @@ const styles = (theme: Theme) =>
       color: 'black',
     },
     analysisPanelParams: {
-      padding: 10,
-      position: 'fixed',
-      width: '30%',
+      padding: '30px 10px 10px 10px',
+      height: '100%',
     },
     analysisParamTitle: {
       color: 'black',
@@ -1210,7 +1209,7 @@ const styles = (theme: Theme) =>
       opacity: 1,
     },
     analysisButtonContainer: {
-      position: 'absolute',
+      position: 'sticky',
       backgroundColor: '#566064',
       width: '100%',
       bottom: 0,
