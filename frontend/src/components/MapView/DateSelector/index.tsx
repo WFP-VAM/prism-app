@@ -232,7 +232,7 @@ const DateSelector = memo(
     }, [availableDates]);
 
     const checkIntersectingDateAndShowPopup = useCallback(
-      (selectedDate: Date) => {
+      (selectedDate: Date, positionY: number) => {
         const findDateInIntersectingDates = includedDates.find(date => {
           return (
             date.getDate() === selectedDate.getDate() &&
@@ -243,6 +243,11 @@ const DateSelector = memo(
         if (findDateInIntersectingDates) {
           return;
         }
+        // if the date is not an intersecting one default to last intersecting date
+        setPointerPosition({
+          x: dateIndex * TIMELINE_ITEM_WIDTH,
+          y: positionY,
+        });
         dispatch(
           addNotification({
             message: t(
@@ -252,7 +257,7 @@ const DateSelector = memo(
           }),
         );
       },
-      [dispatch, includedDates, t],
+      [dateIndex, dispatch, includedDates, t],
     );
 
     // Click on available date to move the pointer
@@ -264,7 +269,7 @@ const DateSelector = memo(
         }
         setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
         updateStartDate(new Date(dates[selectedIndex]));
-        checkIntersectingDateAndShowPopup(new Date(dateRange[index].value));
+        checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
       },
       [
         checkIntersectingDateAndShowPopup,
@@ -301,7 +306,10 @@ const DateSelector = memo(
         });
         const updatedDate = new Date(dates[selectedIndex]);
         updateStartDate(updatedDate);
-        checkIntersectingDateAndShowPopup(new Date(dateRange[exactX].value));
+        checkIntersectingDateAndShowPopup(
+          new Date(dateRange[exactX].value),
+          position.y,
+        );
       },
       [
         checkIntersectingDateAndShowPopup,
