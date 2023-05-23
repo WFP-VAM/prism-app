@@ -182,11 +182,19 @@ const DateSelector = memo(
     const updateStartDate = useCallback(
       (date: Date) => {
         const time = date.getTime();
+        const startDate = new Date(stateStartDate as number);
+        const dateEqualsToStartDate =
+          date.getDate() === startDate.getDate() &&
+          date.getMonth() === startDate.getMonth() &&
+          date.getFullYear() === startDate.getFullYear();
+        if (dateEqualsToStartDate) {
+          return;
+        }
         // This updates state because a useEffect in MapView updates the redux state
         // TODO this is convoluted coupling, we should update state here if feasible.
         updateHistory('date', moment(time).format(DEFAULT_DATE_FORMAT));
       },
-      [updateHistory],
+      [stateStartDate, updateHistory],
     );
 
     const addUserOffset = useCallback((dates: number[]) => {
@@ -268,8 +276,9 @@ const DateSelector = memo(
           return;
         }
         setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
-        updateStartDate(new Date(dates[selectedIndex]));
+        const updatedDate = new Date(dates[selectedIndex]);
         checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
+        updateStartDate(updatedDate);
       },
       [
         checkIntersectingDateAndShowPopup,
@@ -305,11 +314,11 @@ const DateSelector = memo(
           y: position.y,
         });
         const updatedDate = new Date(dates[selectedIndex]);
-        updateStartDate(updatedDate);
         checkIntersectingDateAndShowPopup(
           new Date(dateRange[exactX].value),
           position.y,
         );
+        updateStartDate(updatedDate);
       },
       [
         checkIntersectingDateAndShowPopup,
