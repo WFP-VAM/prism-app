@@ -16,10 +16,12 @@ import {
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { get } from 'lodash';
 import { useSafeTranslation } from '../../i18n';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
+import { appConfig } from '../../config';
 
 function NavBar({ classes }: NavBarProps) {
   const { t } = useSafeTranslation();
@@ -48,18 +50,24 @@ function NavBar({ classes }: NavBarProps) {
     </Grid>
   ));
 
+  const appTitle = get(appConfig, 'appTitle', 'PRISM');
+  const appLogo = get(appConfig, 'appLogo', null);
+
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
         <Grid container>
           <Grid item xs={3} className={classes.logoContainer}>
+            {appLogo && (
+              <img className={classes.appLogo} src={appLogo} alt="logo" />
+            )}
             <Typography
               variant="h6"
               className={classes.logo}
               component={Link}
               to="/"
             >
-              {t('Prism')}
+              {t(appTitle)}
             </Typography>
           </Grid>
 
@@ -116,6 +124,11 @@ function NavBar({ classes }: NavBarProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
+    appLogo: {
+      height: 32,
+      marginRight: 15,
+    },
+
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
       height: '7vh',
