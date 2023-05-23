@@ -3,13 +3,13 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="DateSelector-container-1"
+    class="memo-container-1"
   >
     <div
-      class="MuiGrid-root DateSelector-datePickerContainer-2 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
+      class="MuiGrid-root memo-datePickerContainer-2 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
     >
       <div
-        class="MuiGrid-root DateSelector-datePickerGrid-4 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
+        class="MuiGrid-root memo-datePickerGrid-4 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
       >
         <mock-hidden
           smup="true"
@@ -40,7 +40,7 @@ exports[`renders as expected 1`] = `
         </mock-hidden>
       </div>
       <div
-        class="MuiGrid-root DateSelector-slider-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
+        class="MuiGrid-root memo-slider-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
       >
         <mock-hidden
           xsdown="true"
@@ -50,25 +50,26 @@ exports[`renders as expected 1`] = `
           </mock-button>
         </mock-hidden>
         <div
-          class="MuiGrid-root DateSelector-dateContainer-6"
+          class="MuiGrid-root memo-dateContainer-6"
         >
           <div
-            class="DateSelector-timeline-8 react-draggable"
+            class="memo-timeline-8 react-draggable"
             id="dateTimelineSelector"
             style="transform: translate(-1820px,0px);"
           >
             <div
-              class="MuiGrid-root DateSelector-dateLabelContainer-7 MuiGrid-container"
+              class="MuiGrid-root memo-dateLabelContainer-7 MuiGrid-container"
             >
               <mock-timelineitems
                 daterange="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
                 intersectiondates=""
+                locale="en"
                 selectedlayerdates=""
                 selectedlayertitles=""
               />
             </div>
             <div
-              class="DateSelector-pointer-9 react-draggable"
+              class="memo-pointer-9 react-draggable"
               id="datePointerSelector"
               style="transform: translate(1820px,0px);"
             >
