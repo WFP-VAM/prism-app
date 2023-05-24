@@ -5,20 +5,20 @@ import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
   AvailableDates,
+  DateItem,
   PointDataLayerProps,
   RequestFeatureInfo,
   ValidityLayer,
-  DateItem,
 } from '../config/types';
 import {
   AdminLevelDataLayerProps,
-  DatesPropagation,
-  ImpactLayerProps,
-  WMSLayerProps,
-  FeatureInfoType,
   DataType,
+  DatesPropagation,
+  FeatureInfoType,
+  ImpactLayerProps,
   PointDataLoader,
   StaticRasterLayerProps,
+  WMSLayerProps,
 } from '../config/types';
 import { queryParamsToString } from './url-utils';
 import { createEWSDatesArray } from './ews-utils';
@@ -194,7 +194,7 @@ const createDefaultDateItem = (date: number): DateItem => {
 const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
   const { dates, validity } = layer;
 
-  const { days: value, mode } = validity;
+  const { days, mode } = validity;
 
   const momentDates = Array.prototype.sort
     .call(dates)
@@ -207,44 +207,42 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 
   const dateItemsWithValidity = momentDates.reduce(
     (acc: DateItem[], momentDate) => {
-      const endDate =
-        mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD
-          ? momentDate.clone().add(value, 'days')
-          : momentDate.clone();
+      let startDate = momentDate.clone();
+      let endDate = momentDate.clone();
 
-      const startDate =
-        mode === DatesPropagation.BOTH || mode === DatesPropagation.BACKWARD
-          ? momentDate.clone().subtract(value, 'days')
-          : momentDate.clone();
+      if (mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD) {
+        // eslint-disable-next-line fp/no-mutation
+        endDate = endDate.add(days, 'days');
+      }
 
-      const daysToAdd = [...Array(endDate.diff(startDate, 'days') + 1).keys()];
+      if (
+        mode === DatesPropagation.BOTH ||
+        mode === DatesPropagation.BACKWARD
+      ) {
+        // eslint-disable-next-line fp/no-mutation
+        startDate = startDate.subtract(days, 'days');
+      }
 
-      const days: number[] = daysToAdd
-        .map(day => startDate.clone().add(day, 'days').valueOf())
-        .filter(d => d > momentDate.valueOf());
+      const daysToAdd = Array.from(
+        { length: endDate.diff(startDate, 'days') + 1 },
+        (_, index) => startDate.clone().add(index, 'days').valueOf(),
+      );
 
-      const dateItemsToAdd: DateItem[] = days.map(dateToAdd => ({
+      const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd,
         queryDate: momentDate.valueOf(),
       }));
 
       const filteredDateItems = acc.filter(
-        dateItem => days.includes(dateItem.displayDate) === false,
+        dateItem => !daysToAdd.includes(dateItem.displayDate),
       );
 
-      const mergedDateItems: DateItem[] = [
-        ...filteredDateItems,
-        ...dateItemsToAdd,
-      ];
-
-      return mergedDateItems;
+      return [...filteredDateItems, ...dateItemsToAdd];
     },
     [],
   );
 
-  const dateItems = [...dateItemsDefault, ...dateItemsWithValidity];
-
-  return sortBy(dateItems, 'displayDate');
+  return sortBy([...dateItemsDefault, ...dateItemsWithValidity], 'displayDate');
 };
 
 /**
