@@ -406,6 +406,7 @@ const ChartsPanel = memo(
                       height: '240px',
                       minWidth: '150px',
                       flex: 1,
+                      position: 'relative',
                     }}
                   >
                     <ChartSection

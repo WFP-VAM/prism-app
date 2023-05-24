@@ -1144,6 +1144,7 @@ const styles = (theme: Theme) =>
       flexDirection: 'row',
       width: '100%',
       height: '100%',
+      flexWrap: 'wrap',
     },
     analysisPanel: {
       position: 'relative',
