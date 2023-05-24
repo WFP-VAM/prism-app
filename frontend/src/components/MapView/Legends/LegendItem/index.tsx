@@ -80,7 +80,6 @@ const LegendItem = memo(
                   e,
                   newValue as number,
                   map,
-                  // TODO - get updated layer id in groups after switch. See issue #743
                   id,
                   type,
                   handleChangeOpacityValue,
