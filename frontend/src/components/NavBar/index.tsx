@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
   Button,
+  Box,
   createStyles,
   Drawer,
   Grid,
@@ -51,6 +52,7 @@ function NavBar({ classes }: NavBarProps) {
   ));
 
   const appTitle = get(appConfig, 'appTitle', 'PRISM');
+  const appSubTitle = get(appConfig, 'appSubTitle', null);
   const appLogo = get(appConfig, 'appLogo', null);
 
   return (
@@ -59,16 +61,23 @@ function NavBar({ classes }: NavBarProps) {
         <Grid container>
           <Grid item xs={3} className={classes.logoContainer}>
             {appLogo && (
-              <img className={classes.appLogo} src={appLogo} alt="logo" />
+              <img className={classes.logo} src={appLogo} alt="logo" />
             )}
-            <Typography
-              variant="h6"
-              className={classes.logo}
-              component={Link}
-              to="/"
-            >
-              {t(appTitle)}
-            </Typography>
+            <Box display="flex" flexDirection="column">
+              <Typography
+                variant="h6"
+                className={classes.title}
+                component={Link}
+                to="/"
+              >
+                {t(appTitle)}
+              </Typography>
+              {appSubTitle && (
+                <Typography variant="subtitle2" className={classes.subtitle}>
+                  {t(appSubTitle)}
+                </Typography>
+              )}
+            </Box>
           </Grid>
 
           <Hidden smDown>
@@ -124,7 +133,7 @@ function NavBar({ classes }: NavBarProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
-    appLogo: {
+    logo: {
       height: 32,
       marginRight: 15,
     },
@@ -142,10 +151,19 @@ const styles = (theme: Theme) =>
       alignItems: 'center',
     },
 
-    logo: {
+    title: {
       letterSpacing: '.3rem',
       fontSize: '1.25rem',
+      lineHeight: '1.5rem',
       textTransform: 'uppercase',
+      padding: 0,
+    },
+
+    subtitle: {
+      fontSize: '.8rem',
+      fontWeight: 300,
+      letterSpacing: '.1rem',
+      lineHeight: '.8rem',
       padding: 0,
     },
 
