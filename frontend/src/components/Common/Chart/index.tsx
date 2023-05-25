@@ -246,6 +246,7 @@ const Chart = memo(
         legend: {
           display: config.displayLegend,
           position: legendAtBottom ? 'bottom' : 'right',
+          align: 'start',
         },
       } as ChartOptions;
     }, [config, legendAtBottom, notMaintainAspectRatio, title, xAxisLabel]);
