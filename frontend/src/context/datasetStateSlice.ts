@@ -188,7 +188,13 @@ const fetchHDC = async (
     date: ['2022-03-21'],
   };
   try {
-    const response = await fetch(`${url}?${requestParamsStr}`);
+    const accessToken = (process.env.REACT_APP_HDC_API_TOKEN as string) || '';
+    const response = await fetch(`${url}?${requestParamsStr}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
     // eslint-disable-next-line fp/no-mutation
     responseJson = await response.json();
   } catch {
@@ -247,7 +253,7 @@ export const loadAdminBoundaryDataset = async (
 
   const hdcRequestParams = {
     level,
-    admin_id: adminCode,
+    id_code: adminCode,
     coverage: 'full',
     vam: getVamParam(),
     start: startDateStr,
