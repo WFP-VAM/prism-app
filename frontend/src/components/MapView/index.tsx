@@ -327,7 +327,9 @@ const MapView = memo(({ classes }: MapViewProps) => {
         defaultLayerInLayerDefinitions,
       );
       updateHistory(urlLayerKey, defaultLayer);
-    } else if (!defaultLayerAttempted) {
+      return;
+    }
+    if (!defaultLayerAttempted) {
       dispatch(
         addNotification({
           message: `Invalid default layer identifier: ${defaultLayer}`,

@@ -196,6 +196,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 
   const { days, mode } = validity;
 
+  // Convert the dates to moment dates
   const momentDates = Array.prototype.sort
     .call(dates)
     .map(d => moment(d).set({ hour: 12 }));
@@ -207,14 +208,17 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 
   const dateItemsWithValidity = momentDates.reduce(
     (acc: DateItem[], momentDate) => {
+      // We create the start and the end date for every moment date
       let startDate = momentDate.clone();
       let endDate = momentDate.clone();
 
+      // if the mode is `both` or backward we add the days of the validity to the end date keeping the startDate as it is
       if (mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD) {
         // eslint-disable-next-line fp/no-mutation
         endDate = endDate.add(days, 'days');
       }
 
+      // if the mode is `both` or `forward` we subtract the days of the validity to the start date keeping the endDate as it is
       if (
         mode === DatesPropagation.BOTH ||
         mode === DatesPropagation.BACKWARD
@@ -223,16 +227,19 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
         startDate = startDate.subtract(days, 'days');
       }
 
+      // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
       const daysToAdd = Array.from(
         { length: endDate.diff(startDate, 'days') + 1 },
         (_, index) => startDate.clone().add(index, 'days').valueOf(),
       );
 
+      // convert the available days for a specific moment day to the DefaultDate format
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd,
         queryDate: momentDate.valueOf(),
       }));
 
+      // We filter the dates that don't include the displayDate of the previous item array
       const filteredDateItems = acc.filter(
         dateItem => !daysToAdd.includes(dateItem.displayDate),
       );
@@ -242,6 +249,8 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
     [],
   );
 
+  // We sort the defaultDateItems and the dateItemsWithValidity and we order by displayDate to filter the duplicates
+  // or the overlapping dates
   return sortedUniqBy(
     sortBy([...dateItemsDefault, ...dateItemsWithValidity], 'displayDate'),
     'displayDate',
