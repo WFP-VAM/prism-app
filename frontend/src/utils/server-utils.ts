@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { get, merge, snakeCase, sortBy } from 'lodash';
+import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
@@ -144,15 +144,15 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     return loadPointLayerDataFromURL(fallbackUrl || '');
   });
 
-  const possibleDates = data
-    // adding 12 hours to avoid  errors due to daylight saving, and convert to number
-    .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
-    // remove duplicate dates - indexOf returns first index of item
-    .filter((date, index, arr) => {
-      return arr.indexOf(date) === index;
-    });
-
-  return possibleDates;
+  return (
+    data
+      // adding 12 hours to avoid  errors due to daylight saving, and convert to number
+      .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
+      // remove duplicate dates - indexOf returns first index of item
+      .filter((date, index, arr) => {
+        return arr.indexOf(date) === index;
+      })
+  );
 }
 
 async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
@@ -242,7 +242,10 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
     [],
   );
 
-  return sortBy([...dateItemsDefault, ...dateItemsWithValidity], 'displayDate');
+  return sortedUniqBy(
+    sortBy([...dateItemsDefault, ...dateItemsWithValidity], 'displayDate'),
+    'displayDate',
+  );
 };
 
 /**
@@ -297,22 +300,17 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
       };
     });
 
-  const mergedLayersWithUpdatedDates = Object.entries(mergedLayers).reduce(
-    (acc, [layerKey, dates]) => {
-      const layerWithValidity = layersWithValidity.find(
-        validityLayer => validityLayer.name === layerKey,
-      );
+  return Object.entries(mergedLayers).reduce((acc, [layerKey, dates]) => {
+    const layerWithValidity = layersWithValidity.find(
+      validityLayer => validityLayer.name === layerKey,
+    );
 
-      const updatedDates = layerWithValidity
-        ? updateLayerDatesWithValidity(layerWithValidity)
-        : dates.map((d: number) => createDefaultDateItem(d));
+    const updatedDates = layerWithValidity
+      ? updateLayerDatesWithValidity(layerWithValidity)
+      : dates.map((d: number) => createDefaultDateItem(d));
 
-      return { ...acc, [layerKey]: updatedDates };
-    },
-    {},
-  );
-
-  return mergedLayersWithUpdatedDates;
+    return { ...acc, [layerKey]: updatedDates };
+  }, {});
 }
 
 /**
@@ -460,15 +458,11 @@ export async function fetchWMSLayerAsGeoJSON(options: {
 
     const wfsLayer = await wfs.getLayer(lyr.serverLayerName);
 
-    const featureCollection: GeoJSON.FeatureCollection = await wfsLayer.getFeatures(
-      {
-        count: 100000,
-        dateRange: startDate && endDate ? [startDate, endDate] : undefined,
-        method: 'GET',
-      },
-    );
-
-    return featureCollection;
+    return await wfsLayer.getFeatures({
+      count: 100000,
+      dateRange: startDate && endDate ? [startDate, endDate] : undefined,
+      method: 'GET',
+    });
   } catch (error) {
     console.error(error);
     return { type: 'FeatureCollection', features: [] };

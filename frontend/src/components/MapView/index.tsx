@@ -139,12 +139,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
-  const {
-    urlParams,
-    updateHistory,
-    removeKeyFromUrl,
-    removeLayerFromUrl,
-  } = useUrlHistory();
+  const { urlParams, updateHistory, removeLayerFromUrl } = useUrlHistory();
 
   // let users know if their current date doesn't exist in possible dates
   const urlDate = useMemo(() => {
@@ -272,6 +267,44 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return panelSize !== PanelSize.xlarge || isPanelHidden;
   }, [isPanelHidden, panelSize]);
 
+  const removeLayerAndUpdateHistory = useCallback(
+    (layerToRemove: LayerType, layerToKeep: LayerType) => {
+      if (!selectedDate) {
+        return;
+      }
+      // Remove layer from url.
+      const urlLayerKey = getUrlKey(layerToRemove);
+      removeLayerFromUrl(urlLayerKey, layerToRemove.id);
+      dispatch(removeLayer(layerToRemove));
+
+      const layerToKeepDates = getPossibleDatesForLayer(
+        layerToKeep as DateCompatibleLayer,
+        serverAvailableDates,
+      );
+
+      const closestDate = findClosestDate(selectedDate, layerToKeepDates);
+
+      updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
+    },
+    [
+      dispatch,
+      removeLayerFromUrl,
+      selectedDate,
+      serverAvailableDates,
+      updateHistory,
+    ],
+  );
+
+  const possibleDatesForLayerIncludeMomentSelectedDate = useCallback(
+    (layer: DateCompatibleLayer, momentSelectedDate: moment.Moment) => {
+      // we convert to date strings, so hh:ss is irrelevant
+      return getPossibleDatesForLayer(layer, serverAvailableDates)
+        .map(date => moment(date).format(DEFAULT_DATE_FORMAT))
+        .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT));
+    },
+    [serverAvailableDates],
+  );
+
   useEffect(() => {
     /*
       This useEffect hook keeps track of parameters obtained from url and loads layers according
@@ -363,6 +396,8 @@ const MapView = memo(({ classes }: MapViewProps) => {
 
   useEffect(() => {
     dispatch(loadAvailableDates());
+    // when we switch layers, or change dates, close any active pop-ups
+    dispatch(hidePopup());
 
     // we must load boundary layer here for two reasons
     // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
@@ -370,87 +405,83 @@ const MapView = memo(({ classes }: MapViewProps) => {
     loadBoundaryLayerData();
   }, [dispatch, loadBoundaryLayerData]);
 
-  // close popups and show warning notifications
+  // let users know if the layers selected are not possible to view together.
   useEffect(() => {
-    // when we switch layers, or change dates, close any active pop-ups
-    dispatch(hidePopup());
-
-    // let users know if the layers selected are not possible to view together.
     if (
-      selectedLayerDates.length === 0 &&
-      selectedLayersWithDateSupport.length !== 0 &&
-      selectedDate
+      selectedLayerDates.length !== 0 ||
+      selectedLayersWithDateSupport.length === 0 ||
+      !selectedDate
     ) {
-      // WARNING - This logic doesn't apply anymore if we order layers differently...
-      const layerToRemove = selectedLayers[selectedLayers.length - 2];
-      const layerToKeep = selectedLayers[selectedLayers.length - 1];
+      return;
+    }
+
+    // WARNING - This logic doesn't apply anymore if we order layers differently...
+    const layerToRemove = selectedLayers[selectedLayers.length - 2];
+    const layerToKeep = selectedLayers[selectedLayers.length - 1];
+
+    dispatch(
+      addNotification({
+        message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.id}.`,
+        type: 'warning',
+      }),
+    );
+    removeLayerAndUpdateHistory(layerToRemove, layerToKeep);
+  }, [
+    dispatch,
+    removeLayerAndUpdateHistory,
+    selectedDate,
+    selectedLayerDates.length,
+    selectedLayers,
+    selectedLayersWithDateSupport.length,
+  ]);
+
+  useEffect(() => {
+    if (
+      !selectedDate ||
+      !urlDate ||
+      moment(urlDate).valueOf() === selectedDate
+    ) {
+      return;
+    }
+    selectedLayersWithDateSupport.forEach(layer => {
+      const momentSelectedDate = moment(selectedDate);
+
+      if (
+        serverAvailableDatesAreEmpty ||
+        possibleDatesForLayerIncludeMomentSelectedDate(
+          layer,
+          momentSelectedDate,
+        )
+      ) {
+        return;
+      }
+
+      const closestDate = findClosestDate(selectedDate, selectedLayerDates);
+
+      updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
 
       dispatch(
         addNotification({
-          message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.id}.`,
+          message: `No data was found for layer '${
+            layer.title
+          }' on ${momentSelectedDate.format(
+            DEFAULT_DATE_FORMAT,
+          )}. The closest date ${closestDate.format(
+            DEFAULT_DATE_FORMAT,
+          )} has been loaded instead.`,
           type: 'warning',
         }),
       );
-
-      // Remove layer from url.
-      const urlLayerKey = getUrlKey(layerToRemove);
-      removeLayerFromUrl(urlLayerKey, layerToRemove.id);
-      dispatch(removeLayer(layerToRemove));
-
-      const layerToKeepDates = getPossibleDatesForLayer(
-        layerToKeep as DateCompatibleLayer,
-        serverAvailableDates,
-      );
-
-      const closestDate = findClosestDate(selectedDate, layerToKeepDates);
-
-      updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
-    }
-
-    if (selectedDate && urlDate && moment(urlDate).valueOf() !== selectedDate) {
-      selectedLayersWithDateSupport.forEach(layer => {
-        const momentSelectedDate = moment(selectedDate);
-
-        // we convert to date strings, so hh:ss is irrelevant
-        if (
-          // TODO - Replace the serverAvailableDates check by a loading flag
-          // to know if dates haven't been loaded yet?
-          Object.keys(serverAvailableDates).length !== 0 &&
-          !getPossibleDatesForLayer(layer, serverAvailableDates)
-            .map(date => moment(date).format(DEFAULT_DATE_FORMAT))
-            .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT))
-        ) {
-          const closestDate = findClosestDate(selectedDate, selectedLayerDates);
-
-          updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
-
-          dispatch(
-            addNotification({
-              message: `No data was found for layer '${
-                layer.title
-              }' on ${momentSelectedDate.format(
-                DEFAULT_DATE_FORMAT,
-              )}. The closest date ${closestDate.format(
-                DEFAULT_DATE_FORMAT,
-              )} has been loaded instead.`,
-              type: 'warning',
-            }),
-          );
-        }
-      });
-    }
+    });
   }, [
     dispatch,
+    possibleDatesForLayerIncludeMomentSelectedDate,
     selectedDate,
     selectedLayerDates,
     selectedLayersWithDateSupport,
-    serverAvailableDates,
+    serverAvailableDatesAreEmpty,
     updateHistory,
-    urlParams,
     urlDate,
-    removeKeyFromUrl,
-    removeLayerFromUrl,
-    selectedLayers,
   ]);
 
   const renderedGridItemAlertForm = useMemo(() => {
