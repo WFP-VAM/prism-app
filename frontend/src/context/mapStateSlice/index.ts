@@ -56,7 +56,16 @@ const getTypeOrder = (layer: LayerType) => {
 export const layerOrdering = (a: LayerType, b: LayerType) => {
   // Dictionary with all the available layerTypes
   // Note: polygon is layer.type === 'wms' && layer.geometry
-  const order: { [key: string]: number } = {
+  const order: {
+    [key in
+      | 'boundary'
+      | 'wms'
+      | 'admin_level_data'
+      | 'impact'
+      | 'point_data'
+      | 'polygon'
+      | 'static_raster']: number;
+  } = {
     point_data: 0,
     polygon: 1,
     boundary: 2,
