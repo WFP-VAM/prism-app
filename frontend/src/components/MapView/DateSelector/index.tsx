@@ -156,6 +156,7 @@ const DateSelector = memo(
           value: date.valueOf(),
           label: dateStrToUpperCase(date.format(MONTH_FIRST_DATE_FORMAT)),
           month: dateStrToUpperCase(date.format(MONTH_ONLY_DATE_FORMAT)),
+          date: date.format('yyyy-MM-DD'),
           isFirstDay: date.date() === date.startOf('month').date(),
         };
       });
@@ -396,9 +397,10 @@ const DateSelector = memo(
                       dateRange={dateRange}
                       intersectionDates={availableDates}
                       selectedLayerDates={selectedLayerDates}
-                      clickDate={clickDate}
                       selectedLayerTitles={selectedLayerTitles}
+                      clickDate={clickDate}
                       locale={locale}
+                      selectedLayers={selectedLayers}
                     />
                   </Grid>
                   <Draggable

@@ -1,7 +1,7 @@
-import 'reflect-metadata';
-import { FillPaint, LinePaint } from 'mapbox-gl';
-import { map, every } from 'lodash';
 import { GeoJSON } from 'geojson';
+import { every, map } from 'lodash';
+import { FillPaint, LinePaint } from 'mapbox-gl';
+import 'reflect-metadata';
 import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
@@ -643,6 +643,7 @@ export type DateRangeType = {
   label: string;
   month: string;
   isFirstDay: boolean;
+  date?: string;
 };
 
 export interface FeatureInfoType {

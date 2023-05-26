@@ -15,6 +15,7 @@ import { TIMELINE_ITEM_WIDTH, formatDate } from '../utils';
 import { moment, useSafeTranslation } from '../../../../i18n';
 import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
 import TooltipItem from './TooltipItem';
+import { DateCompatibleLayer } from '../../../../utils/server-utils';
 
 const TimelineItems = memo(
   ({
@@ -25,6 +26,7 @@ const TimelineItems = memo(
     selectedLayerTitles,
     clickDate,
     locale,
+    selectedLayers,
   }: TimelineItemsProps) => {
     const handleClick = useCallback(
       (dateIndex: number) => {
@@ -122,12 +124,33 @@ const TimelineItems = memo(
               return null;
             }
             return (
-              <div
-                key={`Nested-${date.label}-${date.value}-${layerDates[layerIndex]}`}
-                className={DATE_ITEM_STYLING[layerIndex].class}
-                role="presentation"
-                onClick={handleClick(index)}
-              />
+              <div>
+                {selectedLayers &&
+                  selectedLayers[layerIndex] &&
+                  selectedLayers[layerIndex].validity &&
+                  /* @ts-ignore */
+                  selectedLayers[layerIndex].dates
+                    /* @ts-ignore */
+                    .includes(date.date) && (
+                    <img
+                      src="images/icon_blue_triangle.svg"
+                      alt="Validity direction"
+                      style={{
+                        height: '15px',
+                        top: '5px',
+                        display: 'block',
+                        position: 'absolute',
+                      }}
+                    />
+                  )}
+
+                <div
+                  key={`Nested-${date.label}-${date.value}-${layerDates[layerIndex]}`}
+                  className={DATE_ITEM_STYLING[layerIndex].class}
+                  role="presentation"
+                  onClick={handleClick(index)}
+                />
+              </div>
             );
           },
         );
@@ -137,6 +160,7 @@ const TimelineItems = memo(
         formattedIntersectionDates,
         formattedSelectedLayerDates,
         handleClick,
+        selectedLayers,
       ],
     );
 
@@ -245,6 +269,7 @@ export interface TimelineItemsProps extends WithStyles<typeof styles> {
   selectedLayerTitles: string[];
   clickDate: (arg: number) => void;
   locale: string;
+  selectedLayers: DateCompatibleLayer[];
 }
 
 export default withStyles(styles)(TimelineItems);
