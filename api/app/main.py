@@ -13,6 +13,7 @@ from app.database.alert_model import AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
+from app.hdc import get_hdc_stats
 from app.models import AcledRequest, FilterProperty, RasterGeotiffModel
 from app.timer import timed
 from app.validation import validate_intersect_parameter
@@ -175,6 +176,9 @@ def get_acled_incidents(request: Request):
 
     return Response(content=response.content, media_type="application/json")
 
+@app.get("/hdc")
+def wrap_get_hdc_stats(request: Request):
+    return get_hdc_stats(**request.query_params)
 
 @app.get("/kobo/dates")
 def get_kobo_form_dates(
