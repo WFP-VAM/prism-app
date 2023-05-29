@@ -188,13 +188,7 @@ const fetchHDC = async (
     date: ['2022-03-21'],
   };
   try {
-    const accessToken = (process.env.REACT_APP_HDC_API_TOKEN as string) || '';
-    const response = await fetch(`${url}?${requestParamsStr}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
+    const response = await fetch(`${url}?${requestParamsStr}`);
     // eslint-disable-next-line fp/no-mutation
     responseJson = await response.json();
   } catch {
