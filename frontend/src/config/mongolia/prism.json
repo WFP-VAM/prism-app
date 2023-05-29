@@ -1,8 +1,5 @@
 {
   "country": "Mongolia",
-  "appTitle": "PRISM X",
-  "appSubTitle": "",
-  "appLogo": "images/icon_rain.png",
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",

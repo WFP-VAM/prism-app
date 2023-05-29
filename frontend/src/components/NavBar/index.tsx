@@ -51,18 +51,16 @@ function NavBar({ classes }: NavBarProps) {
     </Grid>
   ));
 
-  const appTitle = get(appConfig, 'appTitle', 'PRISM');
-  const appSubTitle = get(appConfig, 'appSubTitle', null);
-  const appLogo = get(appConfig, 'appLogo', null);
+  const title = get(appConfig, 'title', 'PRISM');
+  const subtitle = get(appConfig, 'subtitle', null);
+  const logo = get(appConfig, 'logo', null);
 
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
         <Grid container>
           <Grid item xs={3} className={classes.logoContainer}>
-            {appLogo && (
-              <img className={classes.logo} src={appLogo} alt="logo" />
-            )}
+            {logo && <img className={classes.logo} src={logo} alt="logo" />}
             <Box display="flex" flexDirection="column">
               <Typography
                 variant="h6"
@@ -70,11 +68,11 @@ function NavBar({ classes }: NavBarProps) {
                 component={Link}
                 to="/"
               >
-                {t(appTitle)}
+                {t(title)}
               </Typography>
-              {appSubTitle && (
+              {subtitle && (
                 <Typography variant="subtitle2" className={classes.subtitle}>
-                  {t(appSubTitle)}
+                  {t(subtitle)}
                 </Typography>
               )}
             </Box>
