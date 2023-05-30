@@ -65,7 +65,7 @@ exports[`renders as expected 1`] = `
                 intersectiondates=""
                 locale="en"
                 selectedlayerdates=""
-                selectedlayertitles=""
+                selectedlayers=""
               />
             </div>
             <div
