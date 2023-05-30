@@ -63,7 +63,7 @@ const TimelineItems = memo(
     }[] = [
       {
         class: classes.layerOneDirection,
-        src: 'images/icon_yellow_triangle.svg',
+        src: 'images/icon_blue_triangle.svg',
       },
       {
         class: classes.layerTwoDirection,
