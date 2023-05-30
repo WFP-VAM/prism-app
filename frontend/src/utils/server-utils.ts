@@ -1,24 +1,24 @@
 import moment from 'moment';
-import { get, merge, snakeCase, sortBy } from 'lodash';
+import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
 import { appConfig } from '../config';
 import { LayerDefinitions } from '../config/utils';
 import type {
   AvailableDates,
+  DateItem,
   PointDataLayerProps,
   RequestFeatureInfo,
   ValidityLayer,
-  DateItem,
 } from '../config/types';
 import {
   AdminLevelDataLayerProps,
-  DatesPropagation,
-  ImpactLayerProps,
-  WMSLayerProps,
-  FeatureInfoType,
   DataType,
+  DatesPropagation,
+  FeatureInfoType,
+  ImpactLayerProps,
   PointDataLoader,
   StaticRasterLayerProps,
+  WMSLayerProps,
 } from '../config/types';
 import { queryParamsToString } from './url-utils';
 import { createEWSDatesArray } from './ews-utils';
@@ -145,15 +145,15 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
     return loadPointLayerDataFromURL(fallbackUrl || '');
   });
 
-  const possibleDates = data
-    // adding 12 hours to avoid  errors due to daylight saving, and convert to number
-    .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
-    // remove duplicate dates - indexOf returns first index of item
-    .filter((date, index, arr) => {
-      return arr.indexOf(date) === index;
-    });
-
-  return possibleDates;
+  return (
+    data
+      // adding 12 hours to avoid  errors due to daylight saving, and convert to number
+      .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
+      // remove duplicate dates - indexOf returns first index of item
+      .filter((date, index, arr) => {
+        return arr.indexOf(date) === index;
+      })
+  );
 }
 
 async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
@@ -195,8 +195,9 @@ const createDefaultDateItem = (date: number): DateItem => {
 const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
   const { dates, validity } = layer;
 
-  const { days: value, mode } = validity;
+  const { days, mode } = validity;
 
+  // Convert the dates to moment dates
   const momentDates = Array.prototype.sort
     .call(dates)
     .map(d => moment(d).set({ hour: 12 }));
@@ -208,44 +209,53 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 
   const dateItemsWithValidity = momentDates.reduce(
     (acc: DateItem[], momentDate) => {
-      const endDate =
-        mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD
-          ? momentDate.clone().add(value, 'days')
-          : momentDate.clone();
+      // We create the start and the end date for every moment date
+      let startDate = momentDate.clone();
+      let endDate = momentDate.clone();
 
-      const startDate =
-        mode === DatesPropagation.BOTH || mode === DatesPropagation.BACKWARD
-          ? momentDate.clone().subtract(value, 'days')
-          : momentDate.clone();
+      // if the mode is `both` or backward we add the days of the validity to the end date keeping the startDate as it is
+      if (mode === DatesPropagation.BOTH || mode === DatesPropagation.FORWARD) {
+        // eslint-disable-next-line fp/no-mutation
+        endDate = endDate.add(days, 'days');
+      }
 
-      const daysToAdd = [...Array(endDate.diff(startDate, 'days') + 1).keys()];
+      // if the mode is `both` or `forward` we subtract the days of the validity to the start date keeping the endDate as it is
+      if (
+        mode === DatesPropagation.BOTH ||
+        mode === DatesPropagation.BACKWARD
+      ) {
+        // eslint-disable-next-line fp/no-mutation
+        startDate = startDate.subtract(days, 'days');
+      }
 
-      const days: number[] = daysToAdd
-        .map(day => startDate.clone().add(day, 'days').valueOf())
-        .filter(d => d > momentDate.valueOf());
+      // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
+      const daysToAdd = Array.from(
+        { length: endDate.diff(startDate, 'days') + 1 },
+        (_, index) => startDate.clone().add(index, 'days').valueOf(),
+      );
 
-      const dateItemsToAdd: DateItem[] = days.map(dateToAdd => ({
+      // convert the available days for a specific moment day to the DefaultDate format
+      const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
         displayDate: dateToAdd,
         queryDate: momentDate.valueOf(),
       }));
 
+      // We filter the dates that don't include the displayDate of the previous item array
       const filteredDateItems = acc.filter(
-        dateItem => days.includes(dateItem.displayDate) === false,
+        dateItem => !daysToAdd.includes(dateItem.displayDate),
       );
 
-      const mergedDateItems: DateItem[] = [
-        ...filteredDateItems,
-        ...dateItemsToAdd,
-      ];
-
-      return mergedDateItems;
+      return [...filteredDateItems, ...dateItemsToAdd];
     },
     [],
   );
 
-  const dateItems = [...dateItemsDefault, ...dateItemsWithValidity];
-
-  return sortBy(dateItems, 'displayDate');
+  // We sort the defaultDateItems and the dateItemsWithValidity and we order by displayDate to filter the duplicates
+  // or the overlapping dates
+  return sortedUniqBy(
+    sortBy([...dateItemsDefault, ...dateItemsWithValidity], 'displayDate'),
+    'displayDate',
+  );
 };
 
 /**
@@ -300,22 +310,17 @@ export async function getLayersAvailableDates(): Promise<AvailableDates> {
       };
     });
 
-  const mergedLayersWithUpdatedDates = Object.entries(mergedLayers).reduce(
-    (acc, [layerKey, dates]) => {
-      const layerWithValidity = layersWithValidity.find(
-        validityLayer => validityLayer.name === layerKey,
-      );
+  return Object.entries(mergedLayers).reduce((acc, [layerKey, dates]) => {
+    const layerWithValidity = layersWithValidity.find(
+      validityLayer => validityLayer.name === layerKey,
+    );
 
-      const updatedDates = layerWithValidity
-        ? updateLayerDatesWithValidity(layerWithValidity)
-        : dates.map((d: number) => createDefaultDateItem(d));
+    const updatedDates = layerWithValidity
+      ? updateLayerDatesWithValidity(layerWithValidity)
+      : dates.map((d: number) => createDefaultDateItem(d));
 
-      return { ...acc, [layerKey]: updatedDates };
-    },
-    {},
-  );
-
-  return mergedLayersWithUpdatedDates;
+    return { ...acc, [layerKey]: updatedDates };
+  }, {});
 }
 
 /**
@@ -463,15 +468,11 @@ export async function fetchWMSLayerAsGeoJSON(options: {
 
     const wfsLayer = await wfs.getLayer(lyr.serverLayerName);
 
-    const featureCollection: GeoJSON.FeatureCollection = await wfsLayer.getFeatures(
-      {
-        count: 100000,
-        dateRange: startDate && endDate ? [startDate, endDate] : undefined,
-        method: 'GET',
-      },
-    );
-
-    return featureCollection;
+    return await wfsLayer.getFeatures({
+      count: 100000,
+      dateRange: startDate && endDate ? [startDate, endDate] : undefined,
+      method: 'GET',
+    });
   } catch (error) {
     console.error(error);
     return { type: 'FeatureCollection', features: [] };

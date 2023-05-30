@@ -26,7 +26,7 @@ import { useSafeTranslation } from '../../../../i18n';
 import { activeLayersSelector } from '../../../../context/mapStateSlice/selectors';
 import TabPanel from './TabPanel';
 import { analysisResultSelector } from '../../../../context/analysisResultStateSlice';
-import { filterActiveGroupedLayers } from '../../utils';
+import { filterActiveLayers } from '../../utils';
 
 interface StyleProps {
   tabValue: number;
@@ -101,7 +101,7 @@ const LeftPanelTabs = memo(
 
     const groupedActiveLayers = useMemo(() => {
       return activeLayers.filter((activeLayer: LayerType) => {
-        return filterActiveGroupedLayers(activeLayer, activeLayer);
+        return filterActiveLayers(activeLayer, activeLayer);
       });
     }, [activeLayers]);
 
