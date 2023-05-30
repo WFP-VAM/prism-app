@@ -75,19 +75,15 @@ const TimelineItems = memo(
 
     const DIRECTION_ITEM_STYLING: {
       class: string;
-      src: string;
     }[] = [
       {
         class: classes.layerOneDirection,
-        src: 'images/icon_blue_triangle.svg',
       },
       {
         class: classes.layerTwoDirection,
-        src: 'images/icon_yellow_triangle.svg',
       },
       {
         class: classes.layerThreeDirection,
-        src: 'images/icon_red_triangle.svg',
       },
     ];
 
@@ -196,9 +192,7 @@ const TimelineItems = memo(
                   selectedLayers,
                   layerIndex,
                 ) && (
-                  <img
-                    src={DIRECTION_ITEM_STYLING[layerIndex].src}
-                    alt="Validity direction forward"
+                  <div
                     className={`${DIRECTION_ITEM_STYLING[layerIndex].class} ${classes.layerDirectionBase}`}
                   />
                 )}
@@ -207,9 +201,7 @@ const TimelineItems = memo(
                   selectedLayers,
                   layerIndex,
                 ) && (
-                  <img
-                    src={DIRECTION_ITEM_STYLING[layerIndex].src}
-                    alt="Validity direction backward"
+                  <div
                     className={`${DIRECTION_ITEM_STYLING[layerIndex].class} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
                   />
                 )}
@@ -335,20 +327,25 @@ const styles = () =>
     },
 
     layerDirectionBase: {
-      height: '15px',
       display: 'block',
       position: 'absolute',
+      borderTop: '8px solid transparent',
+      borderBottom: '8px solid transparent',
+      height: '0px',
       zIndex: 1,
     },
 
     layerOneDirection: {
       top: 5,
+      borderLeft: '8px solid darkblue',
     },
     layerTwoDirection: {
       top: 10,
+      borderLeft: '8px solid yellow',
     },
     layerThreeDirection: {
       top: 15,
+      borderLeft: '8px solid darkred',
     },
 
     layerDirectionBackwardBase: {
