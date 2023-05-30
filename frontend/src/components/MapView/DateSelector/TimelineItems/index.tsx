@@ -9,7 +9,8 @@ import {
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
 import { compact, merge } from 'lodash';
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   AdminLevelDataLayerProps,
   DateRangeType,
@@ -17,20 +18,25 @@ import {
 } from '../../../../config/types';
 import { moment, useSafeTranslation } from '../../../../i18n';
 import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
-import { DateCompatibleLayer } from '../../../../utils/server-utils';
+import {
+  DateCompatibleLayer,
+  getPossibleDatesForLayer,
+} from '../../../../utils/server-utils';
 import { TIMELINE_ITEM_WIDTH, formatDate } from '../utils';
 import TooltipItem from './TooltipItem';
+import { availableDatesSelector } from '../../../../context/serverStateSlice';
 
 const TimelineItems = memo(
   ({
     classes,
     intersectionDates,
     dateRange,
-    selectedLayerDates,
     clickDate,
     locale,
     selectedLayers,
   }: TimelineItemsProps) => {
+    const serverAvailableDates = useSelector(availableDatesSelector);
+
     const handleClick = useCallback(
       (dateIndex: number) => {
         return () => {
@@ -41,6 +47,16 @@ const TimelineItems = memo(
     );
 
     const { t } = useSafeTranslation();
+
+    const selectedLayerDates = useMemo(
+      () =>
+        selectedLayers.map(layer => {
+          return getPossibleDatesForLayer(layer, serverAvailableDates)
+            .filter(value => value) // null check
+            .flat();
+        }),
+      [selectedLayers, serverAvailableDates],
+    );
 
     // Hard coded styling for date items (first, second, and third layers)
     const DATE_ITEM_STYLING: {
@@ -343,7 +359,6 @@ const styles = () =>
 
 export interface TimelineItemsProps extends WithStyles<typeof styles> {
   intersectionDates: number[];
-  selectedLayerDates: number[][];
   dateRange: DateRangeType[];
   clickDate: (arg: number) => void;
   locale: string;

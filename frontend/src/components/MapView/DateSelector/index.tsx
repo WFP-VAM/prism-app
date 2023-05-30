@@ -1,3 +1,16 @@
+import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  Button,
+  Grid,
+  Hidden,
+  Theme,
+  WithStyles,
+  createStyles,
+  withStyles,
+} from '@material-ui/core';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { findIndex, get, isEqual } from 'lodash';
 import React, {
   memo,
   useCallback,
@@ -6,41 +19,24 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  Button,
-  createStyles,
-  Grid,
-  Hidden,
-  Theme,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
 import DatePicker from 'react-datepicker';
-import Draggable, { DraggableEvent } from 'react-draggable';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import 'react-datepicker/dist/react-datepicker.css';
-import { findIndex, get, isEqual } from 'lodash';
-import { useUrlHistory } from '../../../utils/url-utils';
+import Draggable, { DraggableEvent } from 'react-draggable';
+import { useDispatch, useSelector } from 'react-redux';
 import { DateRangeType } from '../../../config/types';
-import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
-import TimelineItems from './TimelineItems';
+import { addNotification } from '../../../context/notificationStateSlice';
 import { moment, useSafeTranslation } from '../../../i18n';
 import {
   DEFAULT_DATE_FORMAT,
   MONTH_FIRST_DATE_FORMAT,
   MONTH_ONLY_DATE_FORMAT,
 } from '../../../utils/name-utils';
-import {
-  DateCompatibleLayer,
-  getPossibleDatesForLayer,
-} from '../../../utils/server-utils';
-import { availableDatesSelector } from '../../../context/serverStateSlice';
+import { DateCompatibleLayer } from '../../../utils/server-utils';
+import { useUrlHistory } from '../../../utils/url-utils';
 import DateSelectorInput from './DateSelectorInput';
-import { addNotification } from '../../../context/notificationStateSlice';
+import TimelineItems from './TimelineItems';
+import { TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET, findDateIndex } from './utils';
 
 type Point = {
   x: number;
@@ -57,7 +53,6 @@ const DateSelector = memo(
     classes,
   }: DateSelectorProps) => {
     const { startDate: stateStartDate } = useSelector(dateRangeSelector);
-    const serverAvailableDates = useSelector(availableDatesSelector);
     const [dateRange, setDateRange] = useState<DateRangeType[]>([
       {
         value: 0,
@@ -88,16 +83,6 @@ const DateSelector = memo(
     }, [availableDates]);
 
     const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
-
-    const selectedLayerDates = useMemo(
-      () =>
-        selectedLayers.map(layer => {
-          return getPossibleDatesForLayer(layer, serverAvailableDates)
-            .filter(value => value) // null check
-            .flat();
-        }),
-      [selectedLayers, serverAvailableDates],
-    );
 
     const setPointerXPosition = useCallback(() => {
       if (
@@ -410,7 +395,6 @@ const DateSelector = memo(
                     <TimelineItems
                       dateRange={dateRange}
                       intersectionDates={availableDates}
-                      selectedLayerDates={selectedLayerDates}
                       clickDate={clickDate}
                       locale={locale}
                       selectedLayers={selectedLayers}
