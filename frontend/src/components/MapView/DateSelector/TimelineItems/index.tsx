@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import {
   createStyles,
   Fade,
@@ -14,137 +14,159 @@ import { DateRangeType } from '../../../../config/types';
 import { TIMELINE_ITEM_WIDTH, formatDate } from '../utils';
 import { moment, useSafeTranslation } from '../../../../i18n';
 import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
+import TooltipItem from './TooltipItem';
 
-function TimelineItems({
-  classes,
-  intersectionDates,
-  dateRange,
-  selectedLayerDates,
-  selectedLayerTitles,
-  clickDate,
-}: TimelineItemsProps) {
-  const click = (dateIndex: number) => {
-    clickDate(dateIndex);
-  };
-
-  const { t } = useSafeTranslation();
-
-  // Hard coded styling for date items (first, second, and third layers)
-  const DATE_ITEM_STYLING: { class: string; color: string }[] = [
-    { class: classes.intersectionDate, color: 'White' },
-    { class: classes.layerOneDate, color: 'Blue' },
-    { class: classes.layerTwoDate, color: 'Yellow' },
-    { class: classes.layerThreeDate, color: 'Red' },
-    // For now, super-impose additional layers in case we have too many.
-    // TODO - handle this more cleanly.
-    { class: classes.layerThreeDate, color: 'Blue' },
-    { class: classes.layerThreeDate, color: 'Yellow' },
-  ];
-
-  const formattedSelectedLayerDates = useMemo(
-    () =>
-      selectedLayerDates.map(layerDates =>
-        layerDates.map(layerDate => formatDate(layerDate)),
-      ),
-    [selectedLayerDates],
-  );
-
-  const formattedIntersectionDates = useMemo(
-    () => intersectionDates.map(layerDate => formatDate(layerDate)),
-    [intersectionDates],
-  );
-
-  const TooltipItem = ({
-    layerTitle,
-    color,
-  }: {
-    layerTitle: string;
-    color: string;
-  }) => {
-    return (
-      <div className={classes.tooltipItemContainer}>
-        <div>{layerTitle}</div>
-        <div
-          className={classes.tooltipItemColor}
-          style={{
-            backgroundColor: color,
-          }}
-        />
-      </div>
+const TimelineItems = memo(
+  ({
+    classes,
+    intersectionDates,
+    dateRange,
+    selectedLayerDates,
+    selectedLayerTitles,
+    clickDate,
+    locale,
+  }: TimelineItemsProps) => {
+    const handleClick = useCallback(
+      (dateIndex: number) => {
+        return () => {
+          clickDate(dateIndex);
+        };
+      },
+      [clickDate],
     );
-  };
 
-  const getTooltipTitle = (date: DateRangeType): JSX.Element[] => {
-    const tooltipTitleArray: JSX.Element[] = compact(
-      selectedLayerTitles.map((selectedLayerTitle, layerIndex) => {
-        if (
-          formattedSelectedLayerDates[layerIndex].includes(
-            formatDate(date.value),
-          )
-        ) {
+    const { t } = useSafeTranslation();
+
+    // Hard coded styling for date items (first, second, and third layers)
+    const DATE_ITEM_STYLING: {
+      class: string;
+      color: string;
+    }[] = useMemo(() => {
+      return [
+        { class: classes.intersectionDate, color: 'White' },
+        { class: classes.layerOneDate, color: 'Blue' },
+        { class: classes.layerTwoDate, color: 'Yellow' },
+        { class: classes.layerThreeDate, color: 'Red' },
+        // For now, super-impose additional layers in case we have too many.
+        // TODO - handle this more cleanly.
+        { class: classes.layerThreeDate, color: 'Blue' },
+        { class: classes.layerThreeDate, color: 'Yellow' },
+      ];
+    }, [
+      classes.intersectionDate,
+      classes.layerOneDate,
+      classes.layerThreeDate,
+      classes.layerTwoDate,
+    ]);
+
+    const formattedSelectedLayerDates = useMemo(
+      () =>
+        selectedLayerDates.map(layerDates =>
+          layerDates.map(layerDate => formatDate(layerDate)),
+        ),
+      [selectedLayerDates],
+    );
+
+    const formattedIntersectionDates = useMemo(
+      () => intersectionDates.map(layerDate => formatDate(layerDate)),
+      [intersectionDates],
+    );
+
+    const getTooltipTitle = useCallback(
+      (date: DateRangeType): JSX.Element[] => {
+        const tooltipTitleArray: JSX.Element[] = compact(
+          selectedLayerTitles.map((selectedLayerTitle, layerIndex) => {
+            if (
+              !formattedSelectedLayerDates[layerIndex].includes(
+                formatDate(date.value),
+              )
+            ) {
+              return undefined;
+            }
+            return (
+              <TooltipItem
+                key={selectedLayerTitle}
+                layerTitle={t(selectedLayerTitle)}
+                color={DATE_ITEM_STYLING[layerIndex + 1].color}
+              />
+            );
+          }),
+        );
+        // eslint-disable-next-line fp/no-mutating-methods
+        tooltipTitleArray.unshift(<div key={date.label}>{date.label}</div>);
+
+        return tooltipTitleArray;
+      },
+      [DATE_ITEM_STYLING, formattedSelectedLayerDates, selectedLayerTitles, t],
+    );
+
+    const renderDateItemLabel = useCallback(
+      (date: DateRangeType) => {
+        if (date.isFirstDay) {
           return (
-            <TooltipItem
-              key={selectedLayerTitle}
-              layerTitle={t(selectedLayerTitle)}
-              color={DATE_ITEM_STYLING[layerIndex + 1].color}
-            />
+            <Typography variant="body2" className={classes.dateItemLabel}>
+              {moment(date.value).locale(locale).format(MONTH_YEAR_DATE_FORMAT)}
+            </Typography>
           );
         }
-        return undefined;
-      }),
+        return <div className={classes.dayItem} />;
+      },
+      [classes.dateItemLabel, classes.dayItem, locale],
     );
-    // eslint-disable-next-line fp/no-mutating-methods
-    tooltipTitleArray.unshift(<div key={date.label}>{date.label}</div>);
 
-    return tooltipTitleArray;
-  };
-
-  const locale = t('date_locale') ? t('date_locale') : 'en';
-
-  return (
-    <>
-      {dateRange.map((date, index) => (
-        <Tooltip
-          title={<div>{getTooltipTitle(date)}</div>}
-          key={`Root-${date.label}-${date.value}`}
-          TransitionComponent={Fade}
-          TransitionProps={{ timeout: 0 }}
-          placement="top"
-          arrow
-        >
-          <Grid
-            item
-            xs
-            className={
-              date.isFirstDay ? classes.dateItemFull : classes.dateItem
+    const renderLayerDates = useCallback(
+      (date: DateRangeType, index: number) => {
+        return [formattedIntersectionDates, ...formattedSelectedLayerDates].map(
+          (layerDates, layerIndex) => {
+            if (!layerDates.includes(formatDate(date.value))) {
+              return null;
             }
+            return (
+              <div
+                key={`Nested-${date.label}-${date.value}-${layerDates[layerIndex]}`}
+                className={DATE_ITEM_STYLING[layerIndex].class}
+                role="presentation"
+                onClick={handleClick(index)}
+              />
+            );
+          },
+        );
+      },
+      [
+        DATE_ITEM_STYLING,
+        formattedIntersectionDates,
+        formattedSelectedLayerDates,
+        handleClick,
+      ],
+    );
+
+    return (
+      <>
+        {dateRange.map((date, index) => (
+          <Tooltip
+            title={<div>{getTooltipTitle(date)}</div>}
+            key={`Root-${date.label}-${date.value}`}
+            TransitionComponent={Fade}
+            TransitionProps={{ timeout: 0 }}
+            placement="top"
+            arrow
           >
-            {date.isFirstDay ? (
-              <Typography variant="body2" className={classes.dateItemLabel}>
-                {moment(date.value)
-                  .locale(locale)
-                  .format(MONTH_YEAR_DATE_FORMAT)}
-              </Typography>
-            ) : (
-              <div className={classes.dayItem} />
-            )}
-            {[formattedIntersectionDates, ...formattedSelectedLayerDates].map(
-              (layerDates, layerIndex) =>
-                layerDates.includes(formatDate(date.value)) && (
-                  <div
-                    key={`Nested-${date.label}-${date.value}-${layerDates[layerIndex]}`}
-                    className={DATE_ITEM_STYLING[layerIndex].class}
-                    role="presentation"
-                    onClick={() => click(index)}
-                  />
-                ),
-            )}
-          </Grid>
-        </Tooltip>
-      ))}
-    </>
-  );
-}
+            <Grid
+              item
+              xs
+              className={
+                date.isFirstDay ? classes.dateItemFull : classes.dateItem
+              }
+            >
+              {renderDateItemLabel(date)}
+              {renderLayerDates(date, index)}
+            </Grid>
+          </Tooltip>
+        ))}
+      </>
+    );
+  },
+);
 
 const DATE_ITEM_STYLES: CreateCSSProperties = {
   borderTop: '1px solid white',
@@ -214,17 +236,6 @@ const styles = () =>
       top: 15,
       backgroundColor: 'red',
     },
-    tooltipItemContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    tooltipItemColor: {
-      display: 'flex',
-      width: 5,
-      height: 5,
-      marginLeft: 3,
-    },
   });
 
 export interface TimelineItemsProps extends WithStyles<typeof styles> {
@@ -233,6 +244,7 @@ export interface TimelineItemsProps extends WithStyles<typeof styles> {
   dateRange: DateRangeType[];
   selectedLayerTitles: string[];
   clickDate: (arg: number) => void;
+  locale: string;
 }
 
 export default withStyles(styles)(TimelineItems);
