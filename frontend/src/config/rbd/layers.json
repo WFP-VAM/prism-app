@@ -78,6 +78,10 @@
     "additional_query_params": {
       "styles": "rfh_16_0_300"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -3177,7 +3181,7 @@
     "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-06-01"],
     "validity": {
       "days": 122,
-      "mode": "forward"
+      "mode": "backward"
     },
     "fallbackLayerKeys": [
       "ch_phase_admin1"
@@ -3333,7 +3337,7 @@
     ],
     "validity": {
       "days": 150,
-      "mode": "forward"
+      "mode": "both"
     },
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
@@ -3797,7 +3801,7 @@
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
-      "2023-06-01" 
+      "2023-06-01"
     ],
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
@@ -3859,7 +3863,7 @@
     "dates": [
       "2021-02-01",
       "2021-06-01",
-      "2022-02-01", 
+      "2022-02-01",
       "2022-06-01"
     ],
     "validity": {
@@ -3916,7 +3920,7 @@
     "dates": [
       "2022-02-01",
       "2022-06-01",
-      "2023-06-01" 
+      "2023-06-01"
     ],
     "validity": {
       "days": 122,
