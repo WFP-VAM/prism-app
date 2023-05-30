@@ -63,7 +63,7 @@ const configMap = {
 
 type Country = keyof typeof configMap;
 
-const DEFAULT: Country = 'rbd';
+const DEFAULT: Country = 'mozambique';
 
 const {
   REACT_APP_COUNTRY: COUNTRY,
