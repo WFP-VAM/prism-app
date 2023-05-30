@@ -64,6 +64,7 @@ const DateSelector = memo(
         label: '',
         month: '',
         isFirstDay: false,
+        date: moment().toISOString(),
       },
     ]);
     const [timelinePosition, setTimelinePosition] = useState<Point>({

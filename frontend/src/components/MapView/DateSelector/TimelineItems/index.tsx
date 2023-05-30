@@ -10,7 +10,10 @@ import {
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
 import { merge, compact } from 'lodash';
-import { DateRangeType } from '../../../../config/types';
+import {
+  AdminLevelDataLayerProps,
+  DateRangeType,
+} from '../../../../config/types';
 import { TIMELINE_ITEM_WIDTH, formatDate } from '../utils';
 import { moment, useSafeTranslation } from '../../../../i18n';
 import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
@@ -59,6 +62,30 @@ const TimelineItems = memo(
       classes.layerOneDate,
       classes.layerThreeDate,
       classes.layerTwoDate,
+    ]);
+
+    const DIRECTION_ITEM_STYLING: {
+      class: string;
+      src: string;
+    }[] = useMemo(() => {
+      return [
+        {
+          class: classes.layerOneDirection,
+          src: 'images/icon_blue_triangle.svg',
+        },
+        {
+          class: classes.layerTwoDirection,
+          src: 'images/icon_yellow_triangle.svg',
+        },
+        {
+          class: classes.layerThreeDirection,
+          src: 'images/icon_red_triangle.svg',
+        },
+      ];
+    }, [
+      classes.layerOneDirection,
+      classes.layerTwoDirection,
+      classes.layerThreeDirection,
     ]);
 
     const formattedSelectedLayerDates = useMemo(
@@ -128,16 +155,17 @@ const TimelineItems = memo(
                 {selectedLayers &&
                   selectedLayers[layerIndex] &&
                   selectedLayers[layerIndex].validity &&
-                  /* @ts-ignore */
-                  selectedLayers[layerIndex].dates
-                    /* @ts-ignore */
-                    .includes(date.date) && (
+                  (selectedLayers[layerIndex] as AdminLevelDataLayerProps)
+                    .dates &&
+                  (selectedLayers[
+                    layerIndex
+                  ] as AdminLevelDataLayerProps).dates!.includes(date.date) && (
                     <img
-                      src="images/icon_blue_triangle.svg"
+                      src={DIRECTION_ITEM_STYLING[layerIndex].src}
                       alt="Validity direction"
+                      className={DIRECTION_ITEM_STYLING[layerIndex].class}
                       style={{
                         height: '15px',
-                        top: '5px',
                         display: 'block',
                         position: 'absolute',
                       }}
@@ -157,6 +185,7 @@ const TimelineItems = memo(
       },
       [
         DATE_ITEM_STYLING,
+        DIRECTION_ITEM_STYLING,
         formattedIntersectionDates,
         formattedSelectedLayerDates,
         handleClick,
@@ -259,6 +288,23 @@ const styles = () =>
       ...BASE_DATE_ITEM,
       top: 15,
       backgroundColor: 'red',
+    },
+
+    layerOneDirection: {
+      top: 5,
+      height: '15px',
+      display: 'block',
+      position: 'absolute',
+    },
+    layerTwoDirection: {
+      top: 10,
+      display: 'block',
+      position: 'absolute',
+    },
+    layerThreeDirection: {
+      top: 15,
+      display: 'block',
+      position: 'absolute',
     },
   });
 

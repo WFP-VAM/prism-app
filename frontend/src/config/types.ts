@@ -643,7 +643,7 @@ export type DateRangeType = {
   label: string;
   month: string;
   isFirstDay: boolean;
-  date?: string;
+  date: string;
 };
 
 export interface FeatureInfoType {

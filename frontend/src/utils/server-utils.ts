@@ -60,6 +60,7 @@ export type DateCompatibleLayer =
   | ImpactLayerProps
   | PointDataLayerProps
   | StaticRasterLayerProps;
+
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
