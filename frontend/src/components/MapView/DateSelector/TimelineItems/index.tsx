@@ -13,6 +13,7 @@ import React, { memo, useCallback } from 'react';
 import {
   AdminLevelDataLayerProps,
   DateRangeType,
+  DatesPropagation,
 } from '../../../../config/types';
 import { moment, useSafeTranslation } from '../../../../i18n';
 import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
@@ -62,7 +63,7 @@ const TimelineItems = memo(
     }[] = [
       {
         class: classes.layerOneDirection,
-        src: 'images/icon_blue_triangle.svg',
+        src: 'images/icon_yellow_triangle.svg',
       },
       {
         class: classes.layerTwoDirection,
@@ -142,6 +143,32 @@ const TimelineItems = memo(
 
     const renderLayerDates = useCallback(
       (date: DateRangeType, index: number) => {
+        const isValidityBackwardOrBothDirection = (
+          selectedLayersList: DateCompatibleLayer[],
+          layerIndex: number,
+        ) => {
+          return (
+            hasValidityDates(selectedLayers, layerIndex, date) &&
+            (selectedLayersList[layerIndex].validity?.mode ===
+              DatesPropagation.BACKWARD ||
+              selectedLayersList[layerIndex].validity?.mode ===
+                DatesPropagation.BOTH)
+          );
+        };
+
+        const isValidityForwardOrBothDirection = (
+          selectedLayersList: DateCompatibleLayer[],
+          layerIndex: number,
+        ) => {
+          return (
+            hasValidityDates(selectedLayers, layerIndex, date) &&
+            (selectedLayersList[layerIndex].validity?.mode ===
+              DatesPropagation.FORWARD ||
+              selectedLayersList[layerIndex].validity?.mode ===
+                DatesPropagation.BOTH)
+          );
+        };
+
         return [formattedIntersectionDates, ...formattedSelectedLayerDates].map(
           (layerDates, layerIndex) => {
             if (!layerDates.includes(formatDate(date.value))) {
@@ -149,11 +176,25 @@ const TimelineItems = memo(
             }
             return (
               <div>
-                {hasValidityDates(selectedLayers, layerIndex, date) && (
+                {isValidityForwardOrBothDirection(
+                  selectedLayers,
+                  layerIndex,
+                ) && (
                   <img
                     src={DIRECTION_ITEM_STYLING[layerIndex].src}
-                    alt="Validity direction"
+                    alt="Validity direction forward"
                     className={`${DIRECTION_ITEM_STYLING[layerIndex].class} ${classes.layerDirectionBase}`}
+                  />
+                )}
+
+                {isValidityBackwardOrBothDirection(
+                  selectedLayers,
+                  layerIndex,
+                ) && (
+                  <img
+                    src={DIRECTION_ITEM_STYLING[layerIndex].src}
+                    alt="Validity direction backward"
+                    className={`${DIRECTION_ITEM_STYLING[layerIndex].class} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
                   />
                 )}
 
@@ -171,6 +212,7 @@ const TimelineItems = memo(
       [
         DATE_ITEM_STYLING,
         DIRECTION_ITEM_STYLING,
+        classes.layerDirectionBackwardBase,
         classes.layerDirectionBase,
         formattedIntersectionDates,
         formattedSelectedLayerDates,
@@ -280,6 +322,7 @@ const styles = () =>
       height: '15px',
       display: 'block',
       position: 'absolute',
+      zIndex: 1,
     },
 
     layerOneDirection: {
@@ -290,6 +333,11 @@ const styles = () =>
     },
     layerThreeDirection: {
       top: 15,
+    },
+
+    layerDirectionBackwardBase: {
+      transform: 'rotate(180deg)',
+      right: '10px',
     },
   });
 
