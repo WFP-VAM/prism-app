@@ -98,10 +98,6 @@ const DateSelector = memo(
         }),
       [selectedLayers, serverAvailableDates],
     );
-    const selectedLayerTitles = useMemo(
-      () => selectedLayers.map(layer => layer.title),
-      [selectedLayers],
-    );
 
     const setPointerXPosition = useCallback(() => {
       if (
@@ -398,7 +394,6 @@ const DateSelector = memo(
                       dateRange={dateRange}
                       intersectionDates={availableDates}
                       selectedLayerDates={selectedLayerDates}
-                      selectedLayerTitles={selectedLayerTitles}
                       clickDate={clickDate}
                       locale={locale}
                       selectedLayers={selectedLayers}

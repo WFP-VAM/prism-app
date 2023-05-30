@@ -1,24 +1,24 @@
-import React, { memo, useCallback, useMemo } from 'react';
 import {
-  createStyles,
   Fade,
   Grid,
   Tooltip,
   Typography,
   WithStyles,
+  createStyles,
   withStyles,
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
-import { merge, compact } from 'lodash';
+import { compact, merge } from 'lodash';
+import React, { memo, useCallback } from 'react';
 import {
   AdminLevelDataLayerProps,
   DateRangeType,
 } from '../../../../config/types';
-import { TIMELINE_ITEM_WIDTH, formatDate } from '../utils';
 import { moment, useSafeTranslation } from '../../../../i18n';
 import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
-import TooltipItem from './TooltipItem';
 import { DateCompatibleLayer } from '../../../../utils/server-utils';
+import { TIMELINE_ITEM_WIDTH, formatDate } from '../utils';
+import TooltipItem from './TooltipItem';
 
 const TimelineItems = memo(
   ({
@@ -26,7 +26,6 @@ const TimelineItems = memo(
     intersectionDates,
     dateRange,
     selectedLayerDates,
-    selectedLayerTitles,
     clickDate,
     locale,
     selectedLayers,
@@ -46,65 +45,47 @@ const TimelineItems = memo(
     const DATE_ITEM_STYLING: {
       class: string;
       color: string;
-    }[] = useMemo(() => {
-      return [
-        { class: classes.intersectionDate, color: 'White' },
-        { class: classes.layerOneDate, color: 'Blue' },
-        { class: classes.layerTwoDate, color: 'Yellow' },
-        { class: classes.layerThreeDate, color: 'Red' },
-        // For now, super-impose additional layers in case we have too many.
-        // TODO - handle this more cleanly.
-        { class: classes.layerThreeDate, color: 'Blue' },
-        { class: classes.layerThreeDate, color: 'Yellow' },
-      ];
-    }, [
-      classes.intersectionDate,
-      classes.layerOneDate,
-      classes.layerThreeDate,
-      classes.layerTwoDate,
-    ]);
+    }[] = [
+      { class: classes.intersectionDate, color: 'White' },
+      { class: classes.layerOneDate, color: 'Blue' },
+      { class: classes.layerTwoDate, color: 'Yellow' },
+      { class: classes.layerThreeDate, color: 'Red' },
+      // For now, super-impose additional layers in case we have too many.
+      // TODO - handle this more cleanly.
+      { class: classes.layerThreeDate, color: 'Blue' },
+      { class: classes.layerThreeDate, color: 'Yellow' },
+    ];
 
     const DIRECTION_ITEM_STYLING: {
       class: string;
       src: string;
-    }[] = useMemo(() => {
-      return [
-        {
-          class: classes.layerOneDirection,
-          src: 'images/icon_blue_triangle.svg',
-        },
-        {
-          class: classes.layerTwoDirection,
-          src: 'images/icon_yellow_triangle.svg',
-        },
-        {
-          class: classes.layerThreeDirection,
-          src: 'images/icon_red_triangle.svg',
-        },
-      ];
-    }, [
-      classes.layerOneDirection,
-      classes.layerTwoDirection,
-      classes.layerThreeDirection,
-    ]);
+    }[] = [
+      {
+        class: classes.layerOneDirection,
+        src: 'images/icon_blue_triangle.svg',
+      },
+      {
+        class: classes.layerTwoDirection,
+        src: 'images/icon_yellow_triangle.svg',
+      },
+      {
+        class: classes.layerThreeDirection,
+        src: 'images/icon_red_triangle.svg',
+      },
+    ];
 
-    const formattedSelectedLayerDates = useMemo(
-      () =>
-        selectedLayerDates.map(layerDates =>
-          layerDates.map(layerDate => formatDate(layerDate)),
-        ),
-      [selectedLayerDates],
+    const formattedSelectedLayerDates = selectedLayerDates.map(layerDates =>
+      layerDates.map(layerDate => formatDate(layerDate)),
     );
 
-    const formattedIntersectionDates = useMemo(
-      () => intersectionDates.map(layerDate => formatDate(layerDate)),
-      [intersectionDates],
+    const formattedIntersectionDates = intersectionDates.map(layerDate =>
+      formatDate(layerDate),
     );
 
     const getTooltipTitle = useCallback(
       (date: DateRangeType): JSX.Element[] => {
         const tooltipTitleArray: JSX.Element[] = compact(
-          selectedLayerTitles.map((selectedLayerTitle, layerIndex) => {
+          selectedLayers.map((selectedLayer, layerIndex) => {
             if (
               !formattedSelectedLayerDates[layerIndex].includes(
                 formatDate(date.value),
@@ -114,8 +95,8 @@ const TimelineItems = memo(
             }
             return (
               <TooltipItem
-                key={selectedLayerTitle}
-                layerTitle={t(selectedLayerTitle)}
+                key={selectedLayer.title}
+                layerTitle={t(selectedLayer.title)}
                 color={DATE_ITEM_STYLING[layerIndex + 1].color}
               />
             );
@@ -126,7 +107,7 @@ const TimelineItems = memo(
 
         return tooltipTitleArray;
       },
-      [DATE_ITEM_STYLING, formattedSelectedLayerDates, selectedLayerTitles, t],
+      [DATE_ITEM_STYLING, formattedSelectedLayerDates, selectedLayers, t],
     );
 
     const renderDateItemLabel = useCallback(
@@ -143,6 +124,22 @@ const TimelineItems = memo(
       [classes.dateItemLabel, classes.dayItem, locale],
     );
 
+    const hasValidityDates = (
+      selectedLayersList: DateCompatibleLayer[],
+      layerIndex: number,
+      date: DateRangeType,
+    ) => {
+      return (
+        selectedLayersList &&
+        selectedLayersList[layerIndex] &&
+        selectedLayersList[layerIndex].validity &&
+        (selectedLayersList[layerIndex] as AdminLevelDataLayerProps).dates &&
+        (selectedLayersList[
+          layerIndex
+        ] as AdminLevelDataLayerProps).dates!.includes(date.date)
+      );
+    };
+
     const renderLayerDates = useCallback(
       (date: DateRangeType, index: number) => {
         return [formattedIntersectionDates, ...formattedSelectedLayerDates].map(
@@ -152,25 +149,13 @@ const TimelineItems = memo(
             }
             return (
               <div>
-                {selectedLayers &&
-                  selectedLayers[layerIndex] &&
-                  selectedLayers[layerIndex].validity &&
-                  (selectedLayers[layerIndex] as AdminLevelDataLayerProps)
-                    .dates &&
-                  (selectedLayers[
-                    layerIndex
-                  ] as AdminLevelDataLayerProps).dates!.includes(date.date) && (
-                    <img
-                      src={DIRECTION_ITEM_STYLING[layerIndex].src}
-                      alt="Validity direction"
-                      className={DIRECTION_ITEM_STYLING[layerIndex].class}
-                      style={{
-                        height: '15px',
-                        display: 'block',
-                        position: 'absolute',
-                      }}
-                    />
-                  )}
+                {hasValidityDates(selectedLayers, layerIndex, date) && (
+                  <img
+                    src={DIRECTION_ITEM_STYLING[layerIndex].src}
+                    alt="Validity direction"
+                    className={`${DIRECTION_ITEM_STYLING[layerIndex].class} ${classes.layerDirectionBase}`}
+                  />
+                )}
 
                 <div
                   key={`Nested-${date.label}-${date.value}-${layerDates[layerIndex]}`}
@@ -186,6 +171,7 @@ const TimelineItems = memo(
       [
         DATE_ITEM_STYLING,
         DIRECTION_ITEM_STYLING,
+        classes.layerDirectionBase,
         formattedIntersectionDates,
         formattedSelectedLayerDates,
         handleClick,
@@ -290,21 +276,20 @@ const styles = () =>
       backgroundColor: 'red',
     },
 
-    layerOneDirection: {
-      top: 5,
+    layerDirectionBase: {
       height: '15px',
       display: 'block',
       position: 'absolute',
     },
+
+    layerOneDirection: {
+      top: 5,
+    },
     layerTwoDirection: {
       top: 10,
-      display: 'block',
-      position: 'absolute',
     },
     layerThreeDirection: {
       top: 15,
-      display: 'block',
-      position: 'absolute',
     },
   });
 
@@ -312,7 +297,6 @@ export interface TimelineItemsProps extends WithStyles<typeof styles> {
   intersectionDates: number[];
   selectedLayerDates: number[][];
   dateRange: DateRangeType[];
-  selectedLayerTitles: string[];
   clickDate: (arg: number) => void;
   locale: string;
   selectedLayers: DateCompatibleLayer[];

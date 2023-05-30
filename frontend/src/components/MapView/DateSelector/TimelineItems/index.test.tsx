@@ -20,6 +20,8 @@ const props = {
 };
 
 test('renders as expected', () => {
-  const { container } = render(<TimelineItems {...props} />);
+  const { container } = render(
+    <TimelineItems selectedLayers={[]} {...props} />,
+  );
   expect(container).toMatchSnapshot();
 });
