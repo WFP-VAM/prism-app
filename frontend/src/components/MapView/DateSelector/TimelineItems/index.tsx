@@ -175,6 +175,19 @@ const TimelineItems = memo(
           );
         };
 
+        const isModuloDays = (
+          layerDates: string[][],
+          layerIndex: number,
+          currentDateRange: DateRangeType,
+          selectedLayersList: DateCompatibleLayer[],
+        ): boolean => {
+          return (
+            layerDates[layerIndex].indexOf(currentDateRange.label) %
+              selectedLayersList[layerIndex].validity!.days ===
+            0
+          );
+        };
+
         const isValidityForwardOrBothDirection = (
           selectedLayersList: DateCompatibleLayer[],
           layerIndex: number,
@@ -182,9 +195,12 @@ const TimelineItems = memo(
           return (
             hasValidity(selectedLayersList, layerIndex) &&
             (hasValidityDates(selectedLayers, layerIndex, date) ||
-              formattedSelectedLayerDates[layerIndex].indexOf(date.label) %
-                10 ===
-                0) &&
+              isModuloDays(
+                formattedSelectedLayerDates,
+                layerIndex,
+                date,
+                selectedLayersList,
+              )) &&
             (selectedLayersList[layerIndex].validity?.mode ===
               DatesPropagation.FORWARD ||
               selectedLayersList[layerIndex].validity?.mode ===
