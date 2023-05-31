@@ -137,29 +137,39 @@ const TimelineItems = memo(
       [classes.dateItemLabel, classes.dayItem, locale],
     );
 
-    const hasValidityDates = (
+    const hasValidity = (
       selectedLayersList: DateCompatibleLayer[],
       layerIndex: number,
-      date: DateRangeType,
-    ) => {
+    ): boolean => {
       return (
         selectedLayersList &&
         selectedLayersList[layerIndex] &&
-        selectedLayersList[layerIndex].validity &&
-        (selectedLayersList[layerIndex] as AdminLevelDataLayerProps).dates &&
-        (selectedLayersList[
-          layerIndex
-        ] as AdminLevelDataLayerProps).dates!.includes(date.date)
+        !!selectedLayersList[layerIndex].validity
       );
     };
 
     const renderLayerDates = useCallback(
       (date: DateRangeType, index: number) => {
+        const hasValidityDates = (
+          selectedLayersList: DateCompatibleLayer[],
+          layerIndex: number,
+          currentDateRange: DateRangeType,
+        ): boolean => {
+          const adminLevelDataLayer: AdminLevelDataLayerProps = selectedLayersList[
+            layerIndex
+          ] as AdminLevelDataLayerProps;
+          return !!(
+            adminLevelDataLayer.dates &&
+            adminLevelDataLayer.dates!.includes(currentDateRange.date)
+          );
+        };
+
         const isValidityBackwardOrBothDirection = (
           selectedLayersList: DateCompatibleLayer[],
           layerIndex: number,
         ) => {
           return (
+            hasValidity(selectedLayersList, layerIndex) &&
             hasValidityDates(selectedLayers, layerIndex, date) &&
             (selectedLayersList[layerIndex].validity?.mode ===
               DatesPropagation.BACKWARD ||
@@ -173,6 +183,7 @@ const TimelineItems = memo(
           layerIndex: number,
         ) => {
           return (
+            hasValidity(selectedLayersList, layerIndex) &&
             hasValidityDates(selectedLayers, layerIndex, date) &&
             (selectedLayersList[layerIndex].validity?.mode ===
               DatesPropagation.FORWARD ||
