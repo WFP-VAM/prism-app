@@ -48,12 +48,13 @@ const TimelineItems = memo(
 
     const { t } = useSafeTranslation();
 
-    const selectedLayerDates = useMemo(
+    const formattedSelectedLayerDates = useMemo(
       () =>
         selectedLayers.map(layer => {
           return getPossibleDatesForLayer(layer, serverAvailableDates)
             .filter(value => value) // null check
-            .flat();
+            .flat()
+            .map(layerDate => formatDate(layerDate));
         }),
       [selectedLayers, serverAvailableDates],
     );
@@ -86,10 +87,6 @@ const TimelineItems = memo(
         class: classes.layerThreeDirection,
       },
     ];
-
-    const formattedSelectedLayerDates = selectedLayerDates.map(layerDates =>
-      layerDates.map(layerDate => formatDate(layerDate)),
-    );
 
     const formattedIntersectionDates = intersectionDates.map(layerDate =>
       formatDate(layerDate),
@@ -184,7 +181,10 @@ const TimelineItems = memo(
         ) => {
           return (
             hasValidity(selectedLayersList, layerIndex) &&
-            hasValidityDates(selectedLayers, layerIndex, date) &&
+            (hasValidityDates(selectedLayers, layerIndex, date) ||
+              formattedSelectedLayerDates[layerIndex].indexOf(date.label) %
+                10 ===
+                0) &&
             (selectedLayersList[layerIndex].validity?.mode ===
               DatesPropagation.FORWARD ||
               selectedLayersList[layerIndex].validity?.mode ===
