@@ -333,6 +333,7 @@ const styles = () =>
       borderBottom: '8px solid transparent',
       height: '0px',
       zIndex: 1,
+      right: '-9px',
     },
 
     layerOneDirection: {
@@ -350,7 +351,7 @@ const styles = () =>
 
     layerDirectionBackwardBase: {
       transform: 'rotate(180deg)',
-      right: '10px',
+      right: '0px',
     },
   });
 
