@@ -377,7 +377,6 @@ const styles = () =>
 
     layerDirectionBackwardBase: {
       transform: 'rotate(180deg)',
-      right: '10px',
     },
   });
 
