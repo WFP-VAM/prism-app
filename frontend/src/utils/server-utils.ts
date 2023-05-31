@@ -42,7 +42,9 @@ export const getRequestDate = (
   }
 
   const dateItem = layerAvailableDates.find(
-    date => date.displayDate === selectedDate,
+    date =>
+      moment.utc(date.displayDate).format('YYYY-MM-DD') ===
+      moment.utc(selectedDate).format('YYYY-MM-DD'),
   );
   if (!dateItem) {
     return layerAvailableDates[layerAvailableDates.length - 1].queryDate;

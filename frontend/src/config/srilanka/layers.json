@@ -113,12 +113,13 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { 
-          "key": "rfq", 
-          "label": "Rainfall anomaly", 
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
-          "color": "#375692" },
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -222,12 +223,13 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { 
-          "key": "r1q", 
-          "label": "Rainfall anomaly", 
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
-          "color": "#375692" },
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -332,9 +334,9 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { 
-          "key": "r3q", 
-          "label": "Rainfall anomaly", 
+        {
+          "key": "r3q",
+          "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
           "color": "#375692"
@@ -1510,11 +1512,11 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { 
-          "key": "viq", 
+        {
+          "key": "viq",
           "label": "NDVI anomaly",
           "minValue": 0,
-          "maxValue": 150, 
+          "maxValue": 150,
           "color": "#5e803f"
         },
         {
@@ -1902,7 +1904,7 @@
       }
     ],
     "legend_text": "Proportion of households with inadequate food consumption. CFSAM 2023"
-  }, 
+  },
   "food_expenditure": {
     "type": "admin_level_data",
     "title": "Proportion of households spending >75% on food",
@@ -2076,5 +2078,324 @@
     "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
     "base_url": "https://sparc.wfp.org/geoserver",
     "geometry": "linestring"
+  },
+  "noaa_viirs": {
+    "title": "NOAA VIIRS 5 day-composite",
+    "type": "wms",
+    "server_layer_name": "lka_noaa_reduced",
+    "opacity": 1,
+    "legend": [],
+    "legend_text": "VIIRS flood product on SNPP & NOAA-20. Composite of the previous 5 days. Product updates once daily at ~0700 UTC. All tiles available at ~1030 UTC",
+    "base_url": "https://sparc.wfp.org/geoserver",
+    "geometry": "polygon",
+    "exposure": {
+      "id": "worldpop_unconstrained_un_adj",
+      "key": "label"
+    }
+  },
+  "flood_risk": {
+    "type": "admin_level_data",
+    "title": "Flood index",
+    "path": "data/srilanka/risk_general_table.json",
+    "data_field": "flood_final_index",
+    "admin_level": 3,
+    "admin_code": "dsd_c_1",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": 2,
+        "label": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 3,
+        "label": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 5,
+        "label": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": 10,
+        "label": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Flood index data from risk analysis"
+  },
+  "cyclone_risk": {
+    "type": "admin_level_data",
+    "title": "Cyclone index",
+    "path": "data/srilanka/risk_general_table.json",
+    "data_field": "cyclone_final_index",
+    "admin_level": 3,
+    "admin_code": "dsd_c_1",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": 2,
+        "label": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 3,
+        "label": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 5,
+        "label": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": 10,
+        "label": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Cyclone index data from risk analysis"
+  },
+  "landslide_risk": {
+    "type": "admin_level_data",
+    "title": "Lanslide index",
+    "path": "data/srilanka/risk_general_table.json",
+    "data_field": "landslide_final_index",
+    "admin_level": 3,
+    "admin_code": "dsd_c_1",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": 2,
+        "label": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 3,
+        "label": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 5,
+        "label": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": 10,
+        "label": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Landslide index data from risk analysis"
+  },
+  "multihazard_risk": {
+    "type": "admin_level_data",
+    "title": "Multihazard index",
+    "path": "data/srilanka/risk_general_table.json",
+    "data_field": "multi_hazard_index",
+    "admin_level": 3,
+    "admin_code": "dsd_c_1",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": 2,
+        "label": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 3,
+        "label": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 5,
+        "label": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": 10,
+        "label": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Multihazard index data from risk analysis"
+  },
+  "district_flood_risk": {
+    "type": "admin_level_data",
+    "title": "Flood index",
+    "path": "data/srilanka/district_general_table.json",
+    "data_field": "Flood_Final_index",
+    "admin_level": 2,
+    "admin_code": "district_code",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": 2,
+        "label": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 3,
+        "label": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 5,
+        "label": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": 10,
+        "label": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Flood index data from risk analysis"
+  },
+  "district_cyclone_risk": {
+    "type": "admin_level_data",
+    "title": "Cyclone index",
+    "path": "data/srilanka/district_general_table.json",
+    "data_field": "Cyclone_final_index",
+    "admin_level": 2,
+    "admin_code": "district_code",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": 2,
+        "label": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 3,
+        "label": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 5,
+        "label": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": 10,
+        "label": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Landslide index data from risk analysis"
+  },
+  "district_landslide_risk": {
+    "type": "admin_level_data",
+    "title": "Lanslide index",
+    "path": "data/srilanka/district_general_table.json",
+    "data_field": "Landslide_final_index",
+    "admin_level": 2,
+    "admin_code": "district_code",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": 2,
+        "label": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 3,
+        "label": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 5,
+        "label": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": 10,
+        "label": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Landslide index data from risk analysis"
+  },
+  "district_multihazard_risk": {
+    "type": "admin_level_data",
+    "title": "Multihazard index",
+    "path": "data/srilanka/district_general_table.json",
+    "data_field": "Multi_Hazard_Index",
+    "admin_level": 2,
+    "admin_code": "district_code",
+    "opacity": 0.7,
+    "legend": [
+      {
+        "value": 1,
+        "label": "1 to 2",
+        "color": "#1a9641"
+      },
+      {
+        "value": 2,
+        "label": "2 to 3",
+        "color": "#a6d96a"
+      },
+      {
+        "value": 3,
+        "label": "3 to 5",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 5,
+        "label": "5 to 10",
+        "color": "#fdae61"
+      },
+      {
+        "value": 10,
+        "label": "10 to 30",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Multihazard index data from risk analysis"
+  },
+  "worldcover": {
+    "title": "ESA World Cover",
+    "type": "wms",
+    "server_layer_name": "WORLDCOVER_2020_MAP",
+    "opacity": 0.7,
+    "legend": [],
+    "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
+    "base_url": "https://services.terrascope.be/wms/v2"
   }
 }

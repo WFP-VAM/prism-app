@@ -63,7 +63,7 @@ import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
 import { isLocalhost } from '../serviceWorker';
 
-const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
+const ANALYSIS_API_URL = 'http://localhost/stats'; // TODO both needs to be stored somewhere
 
 export type TableRowType = { [key: string]: string | number };
 export type TableData = {

@@ -143,11 +143,14 @@ def _create_shapely_geoms(
         if f.get("geometry", {}).get("type", "") not in ["MultiPolygon", "Polygon"]:
             continue
 
-        obj_key = f["properties"][filter_property_key]
+        try:
+            obj_key = f["properties"][filter_property_key]
 
-        # Excluding 'Uncertainty Cones' from storm analysis.
-        if obj_key == "Uncertainty Cones":
-            continue
+            # Excluding 'Uncertainty Cones' from storm analysis.
+            if obj_key == "Uncertainty Cones":
+                continue
+        except:
+            obj_key = "population affected"
 
         shapely_dicts.append((obj_key, shape(f.get("geometry"))))
 

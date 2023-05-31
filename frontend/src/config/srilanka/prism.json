@@ -181,10 +181,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -230,7 +227,31 @@
         }
       ]
     },
-    "tropical_storms": {
+    "vegetation": {
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+    },
+    "temperature": {
+      "land_surface_temperature": [
+        "lst_daytime",
+        "lst_anomaly",
+        "lst_amplitude"
+      ]
+    },
+    "vulnerability": {
+      "poverty": ["poverty_hc"],
+      "food_insecurity": [
+        "food_insecure",
+        "livelihood_coping",
+        "food_coping",
+        "food_consumption",
+        "food_expenditure"
+      ]
+    },
+    "exposure": {
+      "population": ["pop_21", "num_hhs"]
+    },
+    "ADAM": {
+      "floods": ["noaa_viirs"],
       "tropical_storms": [
         {
           "group_title": "Tropical Storms",
@@ -253,35 +274,18 @@
         }
       ]
     },
-    "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
-    },
-    "temperature": {
-      "land_surface_temperature": [
-        "lst_daytime",
-        "lst_anomaly",
-        "lst_amplitude"
-      ]
-    },
-    "vulnerability": {
-      "poverty": [
-        "poverty_hc"
+    "risk analysis": {
+      "Divisional secretariat division": [
+        "flood_risk",
+        "cyclone_risk",
+        "landslide_risk",
+        "multihazard_risk"
       ],
-      "food_insecurity": [
-        "food_insecure",
-        "livelihood_coping",
-        "food_coping",
-        "food_consumption",
-        "food_expenditure"
-      ]
-    },
-    "exposure": {
-      "population": [
-        "pop_21",
-        "num_hhs"
+      "District level analysis": [
+        "district_flood_risk",
+        "district_landslide_risk",
+        "district_cyclone_risk",
+        "district_multihazard_risk"
       ]
     }
   }

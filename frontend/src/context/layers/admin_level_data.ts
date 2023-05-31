@@ -4,11 +4,10 @@ import moment from 'moment';
 import {
   BoundaryLayerProps,
   AdminLevelDataLayerProps,
-  LayerKey,
 } from '../../config/types';
 import type { RootState, ThunkApi } from '../store';
 import {
-  getBoundaryLayerSingleton,
+  getBoundaryLayersByAdminLevel,
   LayerDefinitions,
 } from '../../config/utils';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
@@ -44,7 +43,6 @@ export async function getAdminLevelDataLayerData({
 }) {
   const {
     adminCode,
-    boundary,
     dataField,
     featureInfoProps,
     adminLevel,
@@ -52,11 +50,7 @@ export async function getAdminLevelDataLayerData({
   // check unique boundary layer presence into this layer
   // use the boundary once available or
   // use the default boundary singleton instead
-  const adminBoundaryLayer =
-    boundary !== undefined
-      ? (LayerDefinitions[boundary as LayerKey] as BoundaryLayerProps)
-      : getBoundaryLayerSingleton();
-
+  const adminBoundaryLayer = getBoundaryLayersByAdminLevel(adminLevel);
   const adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
     getState(),
   ) as LayerData<BoundaryLayerProps> | undefined;
@@ -71,6 +65,7 @@ export async function getAdminLevelDataLayerData({
     throw new Error('Boundary Layer not loaded!');
   }
   const adminBoundaries = adminBoundariesLayer.data;
+
   const adminBoundaryFeatureProps = adminBoundaries.features.map(feature =>
     pick(feature.properties, [
       adminBoundaryLayer.adminCode,
