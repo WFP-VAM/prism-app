@@ -391,6 +391,18 @@ const ChartsPanel = memo(
       countryAdmin0Id,
     ]);
 
+    const handleUncheckChart = useCallback(
+      (chartTitle: string | TFunctionKeys) => {
+        const filteredSelectedLayerTitles = selectedLayerTitles.filter(
+          (selectedLayerTitle: string | TFunctionKeys) => {
+            return selectedLayerTitle !== chartTitle;
+          },
+        );
+        setSelectedLayerTitles(filteredSelectedLayerTitles);
+      },
+      [selectedLayerTitles],
+    );
+
     useEffect(() => {
       if (showChartsPanel) {
         setPanelSize(PanelSize.xlarge);
@@ -411,6 +423,7 @@ const ChartsPanel = memo(
                   >
                     <ChartSection
                       chartLayer={layer}
+                      removeChart={handleUncheckChart}
                       adminProperties={adminProperties as GeoJsonProperties}
                       adminLevel={adminLevel}
                       date={selectedDate as number}
@@ -438,6 +451,7 @@ const ChartsPanel = memo(
                           selectedLayerTitles.includes(layer.title),
                         )[0]
                       }
+                      removeChart={handleUncheckChart}
                       adminProperties={adminProperties || {}}
                       adminLevel={adminLevel}
                       date={selectedDate}
@@ -455,14 +469,12 @@ const ChartsPanel = memo(
       adminLevel,
       adminProperties,
       classes.chartsPanelCharts,
-      countryAdmin0Id,
+      handleUncheckChart,
       selectedDate,
       selectedLayerTitles,
-      selectedLayerTitles.length,
       setPanelSize,
       setResultsPage,
       showChartsPanel,
-      tabValue,
     ]);
 
     const handleClearAllSelectedCharts = useCallback(() => {

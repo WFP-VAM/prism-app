@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { orderBy } from 'lodash';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Dispatch } from 'redux';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 import { TableData } from './tableStateSlice';
 import { ChartType, DatasetField } from '../config/types';
@@ -11,6 +12,8 @@ import {
   EWSTriggersConfig,
   fetchEWSDataPointsByLocation,
 } from '../utils/ews-utils';
+import { fetchWithTimeout } from '../utils/fetch-with-timeout';
+import { catchErrorAndDispatchNotification } from '../utils/error-utils';
 
 export type EWSParams = {
   externalId: string;
@@ -119,12 +122,14 @@ const createTableData = (
 
 export const loadEWSDataset = async (
   params: EWSDataPointsRequestParams,
+  dispatch: Dispatch,
 ): Promise<TableData> => {
   const { date, externalId, triggerLevels, baseUrl } = params;
 
   const dataPoints: EWSSensorData[] = await fetchEWSDataPointsByLocation(
     baseUrl,
     date,
+    dispatch,
     externalId,
   );
 
@@ -174,6 +179,7 @@ const fetchHDC = async (
   url: string,
   datasetFields: DatasetField[],
   params: { [key: string]: any },
+  dispatch: Dispatch,
 ): Promise<DataItem[]> => {
   const requestParamsStr = Object.entries(params)
     .map(([key, value]) => `${key}=${value}`)
@@ -188,35 +194,57 @@ const fetchHDC = async (
     date: ['2022-03-21'],
   };
   try {
-    const response = await fetch(`${url}?${requestParamsStr}`);
+    throw new Error('Something went wrong');
+    // eslint-disable-next-line no-unreachable
+    const response = await fetchWithTimeout(`${url}?${requestParamsStr}`);
     // eslint-disable-next-line fp/no-mutation
     responseJson = await response.json();
-  } catch {
-    console.warn('Impossible to get HDC data.');
-  }
 
-  const dates: number[] = responseJson.date.map((date: string) =>
-    moment(date).valueOf(),
-  );
-
-  return dates.map((date, index) => {
-    const values = datasetFields.reduce(
-      (acc, field) => ({
-        ...acc,
-        [field.label]: responseJson.data[field.key]
-          ? responseJson.data[field.key][index]
-          : field.fallback,
-      }),
-      {},
+    const dates: number[] = responseJson.date.map((date: string) =>
+      moment(date).valueOf(),
     );
 
-    return { date, values };
-  });
+    return dates.map((date, index) => {
+      const values = datasetFields.reduce(
+        (acc, field) => ({
+          ...acc,
+          [field.label]: responseJson.data[field.key]
+            ? responseJson.data[field.key][index]
+            : field.fallback,
+        }),
+        {},
+      );
+
+      return { date, values };
+    });
+  } catch {
+    const error = new Error('Impossible to get HDC data.');
+    catchErrorAndDispatchNotification(
+      error,
+      dispatch,
+      undefined,
+      'fetchHDC request timeout',
+    );
+    throw error;
+  }
+};
+
+// HDC API expects a parameter which depends on the layer
+// rainfall = rfh; ndvi = vim; blended = rfb
+const getVamParam = (serverLayerName: string): string => {
+  if (serverLayerName.includes('vim') || serverLayerName.includes('viq')) {
+    return 'vim';
+  }
+  if (serverLayerName.includes('blended')) {
+    return 'rfb';
+  }
+  return 'rfh';
 };
 
 export const loadAdminBoundaryDataset = async (
   params: AdminBoundaryRequestParams,
-): Promise<TableData> => {
+  dispatch: Dispatch,
+): Promise<TableData | undefined> => {
   const endDate = moment(params.selectedDate);
   const startDate = endDate.clone().subtract(1, 'year');
 
@@ -228,20 +256,6 @@ export const loadAdminBoundaryDataset = async (
     datasetFields,
   } = params;
 
-  // HDC API expects a parameter which depends on the layer
-  // rainfall = rfh; ndvi = vim; blended = rfb
-  const getVamParam = () => {
-    switch (true) {
-      case serverLayerName.includes('vim'):
-      case serverLayerName.includes('viq'):
-        return 'vim';
-      case serverLayerName.includes('blended'):
-        return 'rfb';
-      default:
-        return 'rfh';
-    }
-  };
-
   const endDateStr = endDate.format(DEFAULT_DATE_FORMAT);
   const startDateStr = startDate.format(DEFAULT_DATE_FORMAT);
 
@@ -249,25 +263,42 @@ export const loadAdminBoundaryDataset = async (
     level,
     admin_id: adminCode,
     coverage: 'full',
-    vam: getVamParam(),
+    vam: getVamParam(serverLayerName),
     start: startDateStr,
     end: endDateStr,
   };
 
-  const results = await fetchHDC(hdcUrl, datasetFields, hdcRequestParams);
-  const tableData = createTableData(results, TableDataFormat.DATE);
-  return new Promise<TableData>(resolve => resolve(tableData));
+  try {
+    const results = await fetchHDC(
+      hdcUrl,
+      datasetFields,
+      hdcRequestParams,
+      dispatch,
+    );
+
+    const tableData = createTableData(results, TableDataFormat.DATE);
+    return new Promise<TableData>(resolve => resolve(tableData));
+  } catch (error) {
+    return catchErrorAndDispatchNotification(
+      error as Error,
+      dispatch,
+      undefined,
+    );
+  }
 };
 
 export const loadDataset = createAsyncThunk<
-  TableData,
+  TableData | undefined,
   DatasetRequestParams,
   CreateAsyncThunkTypes
->('datasetState/loadDataset', async (params: DatasetRequestParams) => {
-  return (params as AdminBoundaryRequestParams).id
-    ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams)
-    : loadEWSDataset(params as EWSDataPointsRequestParams);
-});
+>(
+  'datasetState/loadDataset',
+  async (params: DatasetRequestParams, { dispatch }) => {
+    return (params as AdminBoundaryRequestParams).id
+      ? loadAdminBoundaryDataset(params as AdminBoundaryRequestParams, dispatch)
+      : loadEWSDataset(params as EWSDataPointsRequestParams, dispatch);
+  },
+);
 
 export const datasetResultStateSlice = createSlice({
   name: 'DatasetResultSlice',
@@ -317,13 +348,19 @@ export const datasetResultStateSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(
       loadDataset.fulfilled,
-      ({ ...rest }, { payload }: PayloadAction<TableData>): DatasetState => ({
+      (
+        { ...rest },
+        { payload }: PayloadAction<TableData | undefined>,
+      ): DatasetState => ({
         ...rest,
         data: payload,
         isLoading: false,
       }),
     );
-
+    builder.addCase(loadDataset.rejected, state => ({
+      ...state,
+      loading: false,
+    }));
     builder.addCase(loadDataset.pending, state => ({
       ...state,
       isLoading: true,

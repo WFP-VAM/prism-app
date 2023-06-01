@@ -1,6 +1,9 @@
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
 import moment from 'moment';
+import { Dispatch } from 'redux';
 import { PointData, PointLayerData } from '../config/types';
+import { fetchWithTimeout } from './fetch-with-timeout';
+import { catchErrorAndDispatchNotification } from './error-utils';
 
 type EWSChartConfig = {
   label: string;
@@ -76,18 +79,29 @@ export const createEWSDatesArray = (): number[] => {
 
 const fetchEWSLocations = async (
   baseUrl: string,
+  dispatch: Dispatch,
 ): Promise<FeatureCollection> => {
   const url = `${baseUrl}/location.geojson?type=River`;
-
-  const resp = await fetch(url);
-  const featureCollection: FeatureCollection = await resp.json();
-
-  return featureCollection;
+  try {
+    const resp = await fetchWithTimeout(url);
+    return await resp.json();
+  } catch {
+    return catchErrorAndDispatchNotification(
+      new Error(`Failed to fetch EWS locations from ${url}`),
+      dispatch,
+      {
+        type: 'FeatureCollection',
+        features: [],
+      },
+      'fetch EWS locations request timeout',
+    );
+  }
 };
 
 export const fetchEWSDataPointsByLocation = async (
   baseUrl: string,
   date: number,
+  dispatch: Dispatch,
   externalId?: string,
 ): Promise<EWSSensorData[]> => {
   const endDate = moment(date)
@@ -100,12 +114,21 @@ export const fetchEWSDataPointsByLocation = async (
     format,
   )}&end=${endDate.format(format)}`;
 
-  const resp = await fetch(
-    externalId ? `${url}&external_id=${externalId}` : url,
-  );
-  const values: EWSSensorData[] = await resp.json();
-
-  return values;
+  try {
+    const resp = await fetchWithTimeout(
+      externalId ? `${url}&external_id=${externalId}` : url,
+    );
+    return await resp.json();
+  } catch (error) {
+    return catchErrorAndDispatchNotification(
+      new Error(
+        'Something went wrong when requesting ews data points by location',
+      ),
+      dispatch,
+      [],
+      'fetch EWS data Points By Location request timeout',
+    );
+  }
 };
 
 const getLevelStatus = (
@@ -130,10 +153,11 @@ const getLevelStatus = (
 export const fetchEWSData = async (
   baseUrl: string,
   date: number,
+  dispatch: Dispatch,
 ): Promise<PointLayerData> => {
   const [locations, values] = await Promise.all([
-    fetchEWSLocations(baseUrl),
-    fetchEWSDataPointsByLocation(baseUrl, date),
+    fetchEWSLocations(baseUrl, dispatch),
+    fetchEWSDataPointsByLocation(baseUrl, date, dispatch),
   ]);
 
   const processedFeatures: PointData[] = locations.features.reduce(
@@ -200,15 +224,11 @@ export const createEWSDatasetParams = (
     warning: parsedLevels.warning,
     severeWarning: parsedLevels.severe_warning,
   };
-
-  const ewsDatasetParams = {
+  /* eslint-enable camelcase */
+  return {
     externalId: external_id,
     triggerLevels,
     chartTitle,
     baseUrl,
   };
-
-  /* eslint-enable camelcase */
-
-  return ewsDatasetParams;
 };

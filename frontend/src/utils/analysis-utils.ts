@@ -19,6 +19,7 @@ import bbox from '@turf/bbox';
 import moment from 'moment';
 import { createGetCoverageUrl } from 'prism-common';
 import { TFunctionKeys } from 'i18next';
+import { Dispatch } from 'redux';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
@@ -59,6 +60,8 @@ import {
 } from '../i18n';
 import { getRoundedData } from './data-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
+import { fetchWithTimeout } from './fetch-with-timeout';
+import { catchErrorAndDispatchNotification } from './error-utils';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -236,12 +239,13 @@ export type KeyValueResponse = {
   [k in string]: string | number;
 };
 
-export async function fetchApiData(
+export const fetchApiData = async (
   url: string,
   apiData: ApiData | AlertRequest,
-): Promise<Array<KeyValueResponse | Feature>> {
+  dispatch: Dispatch,
+): Promise<Array<KeyValueResponse | Feature>> => {
   return (
-    await fetch(url, {
+    await fetchWithTimeout(url, {
       method: 'POST',
       cache: 'no-cache',
       headers: {
@@ -263,8 +267,16 @@ export async function fetchApiData(
           message,
         };
       }
+    })
+    .catch(() => {
+      catchErrorAndDispatchNotification(
+        new Error('Something went wrong by posting analysis api data'),
+        dispatch,
+        undefined,
+        'analysis post api data request timeout',
+      );
     });
-}
+};
 
 export function scaleAndFilterAggregateData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
@@ -316,6 +328,7 @@ export async function loadFeaturesFromApi(
   baselineData: BaselineLayerData,
   hazardLayerDef: WMSLayerProps,
   operation: AggregationOperations,
+  dispatch: Dispatch,
   extent?: Extent,
   date?: number,
 ): Promise<GeoJsonBoundary[]> {
@@ -339,7 +352,7 @@ export async function loadFeaturesFromApi(
   };
 
   const aggregateData = scaleAndFilterAggregateData(
-    await fetchApiData(apiUrl, apiData),
+    await fetchApiData(apiUrl, apiData, dispatch),
     hazardLayerDef,
     operation,
     layer.threshold,

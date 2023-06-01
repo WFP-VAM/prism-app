@@ -499,8 +499,11 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       true,
     );
 
-    const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
-      []) as Feature[];
+    const apiFeatures = ((await fetchApiData(
+      ANALYSIS_API_URL,
+      apiRequest,
+      api.dispatch,
+    )) || []) as Feature[];
 
     const { scale, offset } = populationLayer.wcsConfig ?? {
       scale: undefined,
@@ -601,7 +604,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   const aggregateData = scaleAndFilterAggregateData(
-    await fetchApiData(ANALYSIS_API_URL, apiRequest),
+    await fetchApiData(ANALYSIS_API_URL, apiRequest, api.dispatch),
     hazardLayer,
     statistic,
     threshold,
