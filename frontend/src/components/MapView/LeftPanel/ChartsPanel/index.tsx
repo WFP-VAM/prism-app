@@ -404,7 +404,7 @@ const ChartsPanel = memo(
                     key={layer.title}
                     style={{
                       height: '240px',
-                      minWidth: '150px',
+                      minWidth: '40%',
                       flex: 1,
                       position: 'relative',
                     }}
