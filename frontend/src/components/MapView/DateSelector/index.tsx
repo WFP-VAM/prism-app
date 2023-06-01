@@ -447,7 +447,7 @@ const styles = (theme: Theme) =>
       position: 'absolute',
       bottom: '8%',
       width: '100%',
-      zIndex: 1,
+      zIndex: 5,
     },
 
     datePickerContainer: {

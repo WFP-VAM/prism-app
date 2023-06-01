@@ -633,6 +633,7 @@ const styles = () =>
         pointerEvents: 'auto',
       },
       width: '100%',
+      maxHeight: '100px',
       padding: '3px 8px 0 16px',
     },
     loading: {

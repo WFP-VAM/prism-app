@@ -136,7 +136,8 @@ const useStyles = makeStyles(() =>
       justifyContent: 'center',
       flexWrap: 'wrap',
       flexGrow: 4,
-      paddingTop: '1em',
+      gap: '16px',
+      padding: '16px',
       marginTop: 0,
       paddingBottom: '1em',
     },
@@ -403,7 +404,9 @@ const ChartsPanel = memo(
                     key={layer.title}
                     style={{
                       height: '240px',
-                      width: '45%',
+                      minWidth: '150px',
+                      flex: 1,
+                      position: 'relative',
                     }}
                   >
                     <ChartSection
