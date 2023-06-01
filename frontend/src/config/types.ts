@@ -596,6 +596,9 @@ export interface MenuItemType {
 export type DateItem = {
   displayDate: number; // Date that will be rendered in the calendar.
   queryDate: number; // Date that will be used in the WMS request.
+  isStartDate?: boolean;
+  isEndDate?: boolean;
+  validity?: Validity;
 };
 
 export type AvailableDates = {

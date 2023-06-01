@@ -32,11 +32,15 @@ import {
   MONTH_FIRST_DATE_FORMAT,
   MONTH_ONLY_DATE_FORMAT,
 } from '../../../utils/name-utils';
-import { DateCompatibleLayer } from '../../../utils/server-utils';
 import { useUrlHistory } from '../../../utils/url-utils';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
-import { TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET, findDateIndex } from './utils';
+import {
+  TIMELINE_ITEM_WIDTH,
+  USER_DATE_OFFSET,
+  findDateIndex,
+  DateCompatibleLayerWithDateItems,
+} from './utils';
 
 type Point = {
   x: number;
@@ -500,7 +504,7 @@ const styles = (theme: Theme) =>
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
   availableDates?: number[];
-  selectedLayers: DateCompatibleLayer[];
+  selectedLayers: DateCompatibleLayerWithDateItems[];
 }
 
 export default withStyles(styles)(DateSelector);

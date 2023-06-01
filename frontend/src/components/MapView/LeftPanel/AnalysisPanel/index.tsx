@@ -218,7 +218,7 @@ const AnalysisPanel = memo(
       : null;
     const availableHazardDates = selectedHazardLayer
       ? getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
-          d => new Date(d),
+          d => new Date(d.displayDate),
         ) || []
       : undefined;
 

@@ -54,7 +54,7 @@ const TimelineItems = memo(
           return getPossibleDatesForLayer(layer, serverAvailableDates)
             .filter(value => value) // null check
             .flat()
-            .map(layerDate => formatDate(layerDate));
+            .map(layerDate => formatDate(layerDate.displayDate));
         }),
       [selectedLayers, serverAvailableDates],
     );
