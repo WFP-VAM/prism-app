@@ -24,6 +24,7 @@ const useStyles = makeStyles<Theme, StyleProps>(() =>
       height: '93%',
       width: ({ panelSize }) => panelSize,
       backgroundColor: '#F5F7F8',
+      maxWidth: '100%',
     },
   }),
 );
