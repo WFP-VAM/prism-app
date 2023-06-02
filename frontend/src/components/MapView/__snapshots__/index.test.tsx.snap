@@ -3498,7 +3498,7 @@ exports[`renders as expected 1`] = `
     >
       <div
         class="MuiBox-root MuiBox-root-120 memo-optionContainer-3"
-        style="margin-left: 30vw;"
+        style="margin-left: 400px;"
       >
         <mock-tooltip
           arrow="true"

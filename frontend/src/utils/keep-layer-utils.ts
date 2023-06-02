@@ -31,9 +31,5 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
   }
 
   // Some types are allowed to overlap. See defintion above.
-  if (TYPES_ALLOWED_TO_OVERLAP.includes(newLayer.type)) {
-    return true;
-  }
-
-  return false;
+  return TYPES_ALLOWED_TO_OVERLAP.includes(newLayer.type);
 }
