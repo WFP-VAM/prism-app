@@ -51,25 +51,27 @@ function NavBar({ classes }: NavBarProps) {
     </Grid>
   ));
 
-  const title = get(appConfig, 'title', 'PRISM');
-  const subtitle = get(appConfig, 'subtitle', null);
-  const logo = get(appConfig, 'logo', null);
+  const { title, subtitle, logo } = get(appConfig, 'header', {
+    title: 'PRISM',
+  });
 
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
         <Grid container>
-          <Grid item xs={3} className={classes.logoContainer}>
+          <Grid item xs={6} className={classes.logoContainer}>
             {logo && <img className={classes.logo} src={logo} alt="logo" />}
             <Box display="flex" flexDirection="column">
-              <Typography
-                variant="h6"
-                className={classes.title}
-                component={Link}
-                to="/"
-              >
-                {t(title)}
-              </Typography>
+              {title && (
+                <Typography
+                  variant="h6"
+                  className={classes.title}
+                  component={Link}
+                  to="/"
+                >
+                  {t(title)}
+                </Typography>
+              )}
               {subtitle && (
                 <Typography variant="subtitle2" className={classes.subtitle}>
                   {t(subtitle)}
@@ -85,7 +87,7 @@ function NavBar({ classes }: NavBarProps) {
               justify="flex-end"
               alignItems="center"
               item
-              xs={9}
+              xs={6}
             >
               <PrintImage />
               {buttons}
@@ -95,7 +97,7 @@ function NavBar({ classes }: NavBarProps) {
           </Hidden>
 
           <Hidden mdUp>
-            <Grid item xs={9} className={classes.mobileMenuContainer}>
+            <Grid item xs={6} className={classes.mobileMenuContainer}>
               <Button
                 onClick={() => setOpenMobileMenu(prevOpen => !prevOpen)}
                 aria-controls={openMobileMenu ? 'mobile-menu-list' : undefined}
@@ -145,7 +147,6 @@ const styles = (theme: Theme) =>
 
     logoContainer: {
       display: 'flex',
-      justifyContent: 'center',
       alignItems: 'center',
     },
 
