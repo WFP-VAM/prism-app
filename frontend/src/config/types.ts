@@ -699,7 +699,7 @@ export type UserAuth = {
 
 export enum PanelSize {
   folded = '0vw',
-  medium = '400px',
-  large = '800px',
-  xlarge = '900px',
+  medium = '500px',
+  large = '1000px',
+  xlarge = '1400px',
 }
