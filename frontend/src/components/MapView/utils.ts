@@ -1,11 +1,13 @@
 import { values } from 'lodash';
 import { Map } from 'mapbox-gl';
+import { TFunction } from 'i18next';
 import { LayerDefinitions } from '../../config/utils';
 import { formatFeatureInfo } from '../../utils/server-utils';
 import { getExtent } from './Layers/raster-utils';
 import {
   FeatureInfoObject,
   FeatureInfoType,
+  LayerType,
   LegendDefinitionItem,
   WMSLayerProps,
 } from '../../config/types';
@@ -103,9 +105,15 @@ export function getFeatureInfoPropsData(
     }, {});
 }
 
-export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
+export const getLegendItemLabel = (
+  t: TFunction,
+  { label, value }: LegendDefinitionItem,
+) => {
   if (typeof label === 'string') {
-    return label;
+    return t(label);
+  }
+  if (label?.text !== undefined) {
+    return `${t(label.text)} ${label.value}`;
   }
   if (typeof value === 'number') {
     const roundedValue = Math.round(value);
@@ -113,9 +121,40 @@ export const getLegendItemLabel = ({ label, value }: LegendDefinitionItem) => {
       ? value.toFixed(2)
       : roundedValue.toLocaleString('en-US');
   }
-  return value;
+  return t(value);
 };
 
 export const generateUniqueTableKey = (activityName: string) => {
   return `${activityName}_${Date.now()}`;
+};
+
+/**
+ * Filters the active layers in a group based on the activateAll property
+ */
+export const filterActiveGroupedLayers = (
+  selectedLayer: LayerType,
+  categoryLayer: LayerType,
+): boolean | undefined => {
+  return (
+    (categoryLayer?.group?.activateAll &&
+      categoryLayer?.group?.layers.some(
+        l => l.id === selectedLayer.id && l.main,
+      )) ||
+    (!categoryLayer?.group?.activateAll &&
+      categoryLayer?.group?.layers.some(l => l.id === selectedLayer.id))
+  );
+};
+
+/**
+ * Filters the active layers in the layers panel
+ * based on the selected layers from the app store and the categoryLayers from the app config
+ */
+export const filterActiveLayers = (
+  selectedLayer: LayerType,
+  categoryLayer: LayerType,
+): boolean | undefined => {
+  return (
+    selectedLayer.id === categoryLayer.id ||
+    filterActiveGroupedLayers(selectedLayer, categoryLayer)
+  );
 };

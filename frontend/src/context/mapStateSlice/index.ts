@@ -41,22 +41,44 @@ const initialState: MapState = {
   boundaryRelationData: {},
 };
 
+const getTypeOrder = (layer: LayerType) => {
+  if (layer.type !== 'wms') {
+    return layer.type;
+  }
+  if (!layer.geometry) {
+    return 'wms';
+  }
+  return 'polygon';
+};
+
 // Order layers to keep boundaries and point_data on top. boundaries first.
-export function layerOrdering(a: LayerType, b: LayerType) {
-  if (a.type === 'boundary') {
-    return -1;
-  }
-  if (b.type === 'boundary') {
-    return 1;
-  }
-  if (a.type === 'point_data') {
-    return -1;
-  }
-  if (b.type === 'point_data') {
-    return 1;
-  }
-  return 0;
-}
+export const layerOrdering = (a: LayerType, b: LayerType) => {
+  // Dictionary with all the available layerTypes
+  // Note: polygon is layer.type === 'wms' && layer.geometry
+  const order: {
+    [key in
+      | 'boundary'
+      | 'wms'
+      | 'admin_level_data'
+      | 'impact'
+      | 'point_data'
+      | 'polygon'
+      | 'static_raster']: number;
+  } = {
+    point_data: 0,
+    polygon: 1,
+    boundary: 2,
+    admin_level_data: 3,
+    impact: 4,
+    wms: 5,
+    static_raster: 6,
+  };
+
+  const typeA = getTypeOrder(a);
+  const typeB = getTypeOrder(b);
+
+  return order[typeA] - order[typeB];
+};
 
 export const mapStateSlice = createSlice({
   name: 'mapState',

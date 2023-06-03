@@ -3,6 +3,7 @@ import {
   Button,
   createStyles,
   Typography,
+  WithStyles,
   withStyles,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
@@ -11,7 +12,7 @@ import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../i18n';
 import DownloadImage from './image';
 
-function PrintImage() {
+function PrintImage({ classes }: PrintImageProps) {
   const [openImage, setOpenImage] = useState(false);
   const selectedMap = useSelector(mapSelector);
 
@@ -44,7 +45,9 @@ function PrintImage() {
       <div style={{ paddingTop: '4px' }}>
         <Button onClick={openModal} style={{ backgroundColor: 'transparent' }}>
           <Print fontSize="small" style={{ paddingRight: '0.2em' }} />
-          <Typography variant="body2">{t('PRINT')}</Typography>
+          <Typography className={classes.printText} variant="body2">
+            {t('Print')}
+          </Typography>
         </Button>
       </div>
       <DownloadImage
@@ -56,6 +59,13 @@ function PrintImage() {
   );
 }
 
-const styles = () => createStyles({});
+const styles = () =>
+  createStyles({
+    printText: {
+      textTransform: 'uppercase',
+    },
+  });
+
+export interface PrintImageProps extends WithStyles<typeof styles> {}
 
 export default withStyles(styles)(PrintImage);

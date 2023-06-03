@@ -44,7 +44,7 @@ function ExposureAnalysisActions({
 
   const getCellValue = useCallback((value: string | number, column: Column) => {
     if (column.format && typeof value === 'number') {
-      return column.format(value);
+      return quoteAndEscapeCell(column.format(value));
     }
     return quoteAndEscapeCell(value);
   }, []);

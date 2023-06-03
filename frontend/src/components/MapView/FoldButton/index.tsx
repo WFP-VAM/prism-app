@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   makeStyles,
   Theme,
@@ -6,8 +7,13 @@ import {
   Typography,
 } from '@material-ui/core';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { useSafeTranslation } from '../../../i18n';
+import { activeLayersSelector } from '../../../context/mapStateSlice/selectors';
+import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
+import { LayerType } from '../../../config/types';
+import { filterActiveGroupedLayers } from '../utils';
 
 interface IProps {
   isPanelHidden: boolean;
@@ -37,13 +43,46 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-function FoldButton({ isPanelHidden, setIsPanelHidden }: IProps) {
+const FoldButton = ({ isPanelHidden, setIsPanelHidden }: IProps) => {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const activeLayers = useSelector(activeLayersSelector);
+  const analysisData = useSelector(analysisResultSelector);
 
-  const onClick = () => {
+  const onClick = useCallback(() => {
     setIsPanelHidden(value => !value);
-  };
+  }, [setIsPanelHidden]);
+
+  const groupedActiveLayers = useMemo(() => {
+    return activeLayers.filter((activeLayer: LayerType) => {
+      return filterActiveGroupedLayers(activeLayer, activeLayer);
+    });
+  }, [activeLayers]);
+
+  const badgeContent = useMemo(() => {
+    if (!analysisData) {
+      return groupedActiveLayers.length;
+    }
+    return groupedActiveLayers.length + 1;
+  }, [groupedActiveLayers.length, analysisData]);
+
+  const renderedIcon = useMemo(() => {
+    if (isPanelHidden && badgeContent >= 1) {
+      return (
+        <Badge
+          anchorOrigin={{
+            horizontal: 'right',
+            vertical: 'top',
+          }}
+          badgeContent={badgeContent}
+          color="secondary"
+        >
+          <DragIndicatorIcon />
+        </Badge>
+      );
+    }
+    return <DragIndicatorIcon />;
+  }, [badgeContent, isPanelHidden]);
 
   return (
     <Tooltip title={<Typography>{t('Menu')}</Typography>} arrow>
@@ -56,10 +95,10 @@ function FoldButton({ isPanelHidden, setIsPanelHidden }: IProps) {
         size="medium"
         onClick={onClick}
       >
-        <DragIndicatorIcon />
+        {renderedIcon}
       </Button>
     </Tooltip>
   );
-}
+};
 
 export default FoldButton;

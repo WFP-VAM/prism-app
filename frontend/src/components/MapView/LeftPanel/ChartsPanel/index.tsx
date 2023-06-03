@@ -19,6 +19,7 @@ import { DateRangeRounded } from '@material-ui/icons';
 import { GeoJsonProperties } from 'geojson';
 import { groupBy, mapKeys, snakeCase } from 'lodash';
 import React, {
+  memo,
   MutableRefObject,
   useCallback,
   useEffect,
@@ -28,6 +29,7 @@ import React, {
 } from 'react';
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
+import { TFunctionKeys } from 'i18next';
 import { appConfig } from '../../../../config';
 import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
 import {
@@ -128,14 +130,16 @@ const useStyles = makeStyles(() =>
       zIndex: 3,
     },
     chartsPanelCharts: {
-      overflow: 'scroll',
+      overflowY: 'auto',
+      overflowX: 'hidden',
       display: 'flex',
       justifyContent: 'center',
       flexWrap: 'wrap',
       flexGrow: 4,
-      paddingTop: '1em',
+      gap: '16px',
+      padding: '16px',
       marginTop: 0,
-      marginBottom: 'auto',
+      paddingBottom: '1em',
     },
     removeAdmin: {
       fontWeight: 'bold',
@@ -175,7 +179,7 @@ const menuProps: Partial<MenuProps> = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 'auto',
     },
   },
 };
@@ -249,341 +253,403 @@ export const downloadCsv = (
   };
 };
 
-function ChartsPanel({ setPanelSize, setResultsPage }: ChartsPanelProps) {
-  const { countryAdmin0Id } = appConfig;
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
-  const { data } = boundaryLayerData || {};
-  const classes = useStyles();
-  const [admin1Title, setAdmin1Title] = useState('');
-  const [admin2Title, setAdmin2Title] = useState('');
-  const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
-    countryAdmin0Id ? 0 : 1,
-  );
+const ChartsPanel = memo(
+  ({ setPanelSize, setResultsPage }: ChartsPanelProps) => {
+    const { countryAdmin0Id } = appConfig;
+    const boundaryLayerData = useSelector(
+      layerDataSelector(boundaryLayer.id),
+    ) as LayerData<BoundaryLayerProps> | undefined;
+    const { data } = boundaryLayerData || {};
+    const classes = useStyles();
+    const [admin1Key, setAdmin1Key] = useState('');
+    const [admin2Key, setAdmin2Key] = useState('');
+    const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
+      countryAdmin0Id ? 0 : 1,
+    );
 
-  const [selectedLayerTitles, setSelectedLayerTitles] = useState<string[]>([]);
-  const [selectedDate, setSelectedDate] = useState<number | null>(
-    new Date().getTime(),
-  );
-  const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
-  const dataForCsv = useRef<{ [key: string]: any[] }>({});
+    const [selectedLayerTitles, setSelectedLayerTitles] = useState<
+      string[] | TFunctionKeys[]
+    >([]);
+    const [selectedDate, setSelectedDate] = useState<number | null>(
+      new Date().getTime(),
+    );
+    const [adminProperties, setAdminProperties] = useState<GeoJsonProperties>();
+    const dataForCsv = useRef<{ [key: string]: any[] }>({});
 
-  const { t, i18n: i18nLocale } = useSafeTranslation();
+    const { t, i18n: i18nLocale } = useSafeTranslation();
 
-  const tabValue = useSelector(leftPanelTabValueSelector);
+    const tabValue = useSelector(leftPanelTabValueSelector);
 
-  const categories = useMemo(
-    () => (data ? getCategories(data, boundaryLayer, '', i18nLocale) : []),
-    [data, i18nLocale],
-  );
+    const categories = data
+      ? getCategories(data, boundaryLayer, '', i18nLocale)
+      : [];
 
-  const generateCSVFilename = useCallback(() => {
-    return [appConfig.country, admin1Title, admin2Title, ...selectedLayerTitles]
-      .filter(x => !!x)
-      .map(snakeCase)
-      .join('_');
-  }, [admin1Title, admin2Title, selectedLayerTitles]);
+    const admin1Category = useMemo(() => {
+      return categories.find(category => {
+        return admin1Key === category.key;
+      });
+    }, [admin1Key, categories]);
 
-  const onChangeAdmin1 = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!event.target.value) {
-        setAdmin1Title('');
-        if (countryAdmin0Id) {
-          setAdminLevel(0);
+    const admin2ChildCategory = useMemo(() => {
+      return admin1Category?.children.find(childCategory => {
+        return admin2Key === childCategory.key;
+      });
+    }, [admin1Category, admin2Key]);
+
+    const generateCSVFilename = useCallback(() => {
+      return [
+        appConfig.country,
+        admin1Category?.title ?? '',
+        admin2ChildCategory?.label ?? '',
+        ...selectedLayerTitles,
+      ]
+        .filter(x => !!x)
+        .map(snakeCase)
+        .join('_');
+    }, [admin1Category, admin2ChildCategory, selectedLayerTitles]);
+
+    const onChangeAdmin1 = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.value) {
+          setAdmin1Key('');
+          if (countryAdmin0Id) {
+            setAdminLevel(0);
+          }
+          return;
         }
-        return;
-      }
 
-      // The external chart key for admin 1 is stored in all its children regions
-      // here we get the first child properties
-      const admin1Id = categories.filter(
-        elem => elem.title === event.target.value,
-      )[0].children[0].value;
+        // The external chart key for admin 1 is stored in all its children regions
+        // here we get the first child properties
+        const admin1Id = categories.find(category => {
+          return category.key === event.target.value;
+        })?.children[0].value;
 
-      if (data) {
-        setAdminProperties(getProperties(data, admin1Id));
-      }
-      setAdmin1Title(event.target.value);
-      setAdmin2Title('');
-      setAdminLevel(1);
-    },
-    [categories, countryAdmin0Id, data],
-  );
+        if (data) {
+          setAdminProperties(getProperties(data, admin1Id));
+        }
+        setAdmin1Key(event.target.value);
+        setAdmin2Key('');
+        setAdminLevel(1);
+      },
+      [categories, countryAdmin0Id, data],
+    );
 
-  const onChangeAdmin2 = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (event.target.value) {
-        const admin2Id = categories
-          .filter(elem => elem.title === admin1Title)[0]
-          .children.filter(elem => elem.label === event.target.value)[0].value;
+    const onChangeAdmin2 = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (!event.target.value) {
+          // Unset Admin 2
+          // We don't have to reset the adminProperties because any children contains the admin 1 external key
+          setAdmin2Key('');
+          setAdminLevel(1);
+          return;
+        }
+        const admin2Id = admin1Category?.children.find(childCategory => {
+          return childCategory.key === event.target.value;
+        })?.value;
         if (data) {
           setAdminProperties(getProperties(data, admin2Id));
         }
-        setAdmin2Title(event.target.value);
+        setAdmin2Key(event.target.value);
         setAdminLevel(2);
-      } else {
-        // Unset Admin 2
-        // We don't have to reset the adminProperties because any children contains the admin 1 external key
-        setAdmin2Title('');
-        setAdminLevel(1);
-      }
-    },
-    [admin1Title, categories, data],
-  );
+      },
+      [admin1Category, data],
+    );
 
-  const onChangeChartLayers = useCallback(
-    (event: React.ChangeEvent<{ value: unknown }>) => {
-      setSelectedLayerTitles(event.target.value as string[]);
-    },
-    [],
-  );
+    const onChangeChartLayers = useCallback(
+      (event: React.ChangeEvent<{ value: unknown }>) => {
+        setSelectedLayerTitles(event.target.value as string[]);
+      },
+      [],
+    );
 
-  useEffect(() => {
-    if (!adminProperties && countryAdmin0Id && data) {
-      setAdminProperties(getProperties(data));
-    }
-  }, [adminProperties, countryAdmin0Id, data]);
-
-  useEffect(() => {
-    if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
-      setPanelSize(PanelSize.xlarge);
-    } else {
-      setPanelSize(PanelSize.medium);
-    }
-  }, [
-    setPanelSize,
-    adminProperties,
-    selectedDate,
-    selectedLayerTitles.length,
-    countryAdmin0Id,
-  ]);
-
-  useEffect(() => {
-    if (
-      adminProperties &&
-      selectedDate &&
-      tabIndex === tabValue &&
-      selectedLayerTitles.length >= 1
-    ) {
-      setPanelSize(PanelSize.xlarge);
-      setResultsPage(
-        <Box className={classes.chartsPanelCharts}>
-          {selectedLayerTitles.length > 1 &&
-            chartLayers
-              .filter(layer => selectedLayerTitles.includes(layer.title))
-              .map(layer => (
-                <Box
-                  key={layer.title}
-                  style={{
-                    height: '240px',
-                    width: '45%',
-                  }}
-                >
-                  <ChartSection
-                    chartLayer={layer}
-                    adminProperties={adminProperties}
-                    adminLevel={adminLevel}
-                    date={selectedDate}
-                    dataForCsv={dataForCsv}
-                  />
-                </Box>
-              ))}
-
-          {
-            // chart size is not responsive once it is mounted
-            // seems to be possible in the newer chart.js versions
-            // here we mount a new component if one chart
-            adminProperties && selectedDate && selectedLayerTitles.length === 1 && (
-              <Box
-                style={{
-                  minHeight: '50vh',
-                  width: '100%',
-                }}
-              >
-                <ChartSection
-                  chartLayer={
-                    chartLayers.filter(layer =>
-                      selectedLayerTitles.includes(layer.title),
-                    )[0]
-                  }
-                  adminProperties={adminProperties || {}}
-                  adminLevel={adminLevel}
-                  date={selectedDate}
-                  dataForCsv={dataForCsv}
-                />
-              </Box>
-            )
-          }
-        </Box>,
+    const showChartsPanel = useMemo(() => {
+      return (
+        adminProperties &&
+        selectedDate &&
+        tabIndex === tabValue &&
+        selectedLayerTitles.length >= 1
       );
+    }, [adminProperties, selectedDate, selectedLayerTitles.length, tabValue]);
+
+    useEffect(() => {
+      if (!adminProperties && countryAdmin0Id && data) {
+        setAdminProperties(getProperties(data));
+      }
+    }, [adminProperties, countryAdmin0Id, data]);
+
+    useEffect(() => {
+      if (adminProperties && selectedDate && selectedLayerTitles.length >= 1) {
+        setPanelSize(PanelSize.xlarge);
+      } else {
+        setPanelSize(PanelSize.medium);
+      }
+    }, [
+      setPanelSize,
+      adminProperties,
+      selectedDate,
+      selectedLayerTitles.length,
+      countryAdmin0Id,
+    ]);
+
+    useEffect(() => {
+      if (showChartsPanel) {
+        setPanelSize(PanelSize.xlarge);
+        setResultsPage(
+          <Box className={classes.chartsPanelCharts}>
+            {selectedLayerTitles.length > 1 &&
+              chartLayers
+                .filter(layer => selectedLayerTitles.includes(layer.title))
+                .map(layer => (
+                  <Box
+                    key={layer.title}
+                    style={{
+                      height: '240px',
+                      minWidth: '40%',
+                      flex: 1,
+                      position: 'relative',
+                    }}
+                  >
+                    <ChartSection
+                      chartLayer={layer}
+                      adminProperties={adminProperties as GeoJsonProperties}
+                      adminLevel={adminLevel}
+                      date={selectedDate as number}
+                      dataForCsv={dataForCsv}
+                    />
+                  </Box>
+                ))}
+
+            {
+              // chart size is not responsive once it is mounted
+              // seems to be possible in the newer chart.js versions
+              // here we mount a new component if one chart
+              adminProperties &&
+                selectedDate &&
+                selectedLayerTitles.length === 1 && (
+                  <Box
+                    style={{
+                      maxHeight: '50vh',
+                      width: '100%',
+                    }}
+                  >
+                    <ChartSection
+                      chartLayer={
+                        chartLayers.filter(layer =>
+                          selectedLayerTitles.includes(layer.title),
+                        )[0]
+                      }
+                      adminProperties={adminProperties || {}}
+                      adminLevel={adminLevel}
+                      date={selectedDate}
+                      dataForCsv={dataForCsv}
+                    />
+                  </Box>
+                )
+            }
+          </Box>,
+        );
+      }
+
+      return () => setResultsPage(null);
+    }, [
+      adminLevel,
+      adminProperties,
+      classes.chartsPanelCharts,
+      countryAdmin0Id,
+      selectedDate,
+      selectedLayerTitles,
+      selectedLayerTitles.length,
+      setPanelSize,
+      setResultsPage,
+      showChartsPanel,
+      tabValue,
+    ]);
+
+    const handleClearAllSelectedCharts = useCallback(() => {
+      setSelectedLayerTitles([]);
+      // Clear the date
+      setSelectedDate(new Date().getTime());
+      // reset the admin level
+      setAdminLevel(countryAdmin0Id ? 0 : 1);
+      // reset admin 1 title
+      setAdmin1Key('');
+      // reset the admin 2 title
+      setAdmin2Key('');
+    }, [countryAdmin0Id]);
+
+    const chartsSelectRenderValue = useCallback(
+      selected => {
+        return selected
+          .map((selectedValue: string | TFunctionKeys) => {
+            return t(selectedValue);
+          })
+          .join(', ');
+      },
+      [t],
+    );
+
+    const renderAdmin1Value = useCallback(
+      admin1keyValue => {
+        return categories.find(category => {
+          return category.key === admin1keyValue;
+        })?.title;
+      },
+      [categories],
+    );
+
+    const renderAdmin2Value = useCallback(
+      admin2KeyValue => {
+        return admin1Category?.children.find(childCategory => {
+          return childCategory.key === admin2KeyValue;
+        })?.label;
+      },
+      [admin1Category],
+    );
+
+    if (tabIndex !== tabValue) {
+      return null;
     }
 
-    return () => setResultsPage(null);
-  }, [
-    adminLevel,
-    adminProperties,
-    classes.chartsPanelCharts,
-    countryAdmin0Id,
-    selectedDate,
-    selectedLayerTitles,
-    selectedLayerTitles.length,
-    setPanelSize,
-    setResultsPage,
-    tabValue,
-  ]);
-
-  const handleClearAllSelectedCharts = useCallback(() => {
-    setSelectedLayerTitles([]);
-    // Clear the date
-    setSelectedDate(new Date().getTime());
-    // reset the admin level
-    setAdminLevel(countryAdmin0Id ? 0 : 1);
-    // reset admin 1 title
-    setAdmin1Title('');
-    // reset the admin 2 title
-    setAdmin2Title('');
-  }, [countryAdmin0Id]);
-
-  if (tabIndex !== tabValue) {
-    return null;
-  }
-
-  return (
-    <Box className={classes.chartsPanelParams}>
-      <TextField
-        classes={{ root: classes.selectRoot }}
-        id="outlined-admin-1"
-        select
-        label={countryAdmin0Id ? t('National Level') : t('Select Admin 1')}
-        value={admin1Title}
-        onChange={onChangeAdmin1}
-        variant="outlined"
-      >
-        <MenuItem divider>
-          <Box className={classes.removeAdmin}> {t('National Level')}</Box>
-        </MenuItem>
-        <MenuItem style={{ pointerEvents: 'none' }}>
-          <Box style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
-            {t('Admin 1')}
-          </Box>
-        </MenuItem>
-        {categories.map(option => (
-          <MenuItem key={option.title} value={option.title}>
-            {option.title}
-          </MenuItem>
-        ))}
-      </TextField>
-      {admin1Title && (
+    return (
+      <Box className={classes.chartsPanelParams}>
         <TextField
           classes={{ root: classes.selectRoot }}
-          id="outlined-admin-2"
+          id="outlined-admin-1"
           select
-          label={t('Select Admin 2')}
-          value={admin2Title}
-          onChange={onChangeAdmin2}
+          label={countryAdmin0Id ? t('National Level') : t('Select Admin 1')}
+          value={admin1Category?.key ?? ''}
+          SelectProps={{
+            renderValue: renderAdmin1Value,
+          }}
+          onChange={onChangeAdmin1}
           variant="outlined"
         >
           <MenuItem divider>
-            <Box className={classes.removeAdmin}> {t('Remove Admin 2')}</Box>
+            <Box className={classes.removeAdmin}> {t('National Level')}</Box>
           </MenuItem>
-          {categories
-            .filter(elem => elem.title === admin1Title)[0]
-            .children.map(option => (
-              <MenuItem key={option.value} value={option.label}>
+          <MenuItem style={{ pointerEvents: 'none' }}>
+            <Box style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
+              {t('Admin 1')}
+            </Box>
+          </MenuItem>
+          {categories.map(option => (
+            <MenuItem key={option.key} value={option.key}>
+              {option.title}
+            </MenuItem>
+          ))}
+        </TextField>
+        {admin1Key && (
+          <TextField
+            classes={{ root: classes.selectRoot }}
+            id="outlined-admin-2"
+            select
+            label={t('Select Admin 2')}
+            value={admin2ChildCategory?.key ?? ''}
+            SelectProps={{
+              renderValue: renderAdmin2Value,
+            }}
+            onChange={onChangeAdmin2}
+            variant="outlined"
+          >
+            <MenuItem divider>
+              <Box className={classes.removeAdmin}> {t('Remove Admin 2')}</Box>
+            </MenuItem>
+            {admin1Category?.children.map(option => (
+              <MenuItem key={option.key} value={option.key}>
                 {option.label}
               </MenuItem>
             ))}
-        </TextField>
-      )}
-      <Box className={classes.datePickerContainer}>
-        <Typography className={classes.textLabel} variant="body2">
-          {`${t('Date')}: `}
-        </Typography>
-        <DatePicker
-          locale={t('date_locale')}
-          dateFormat="PP"
-          selected={selectedDate ? new Date(selectedDate) : null}
-          onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
-          maxDate={new Date()}
-          todayButton={t('Today')}
-          peekNextMonth
-          showMonthDropdown
-          showYearDropdown
-          dropdownMode="select"
-          customInput={
-            <Input
-              className={classes.textLabel}
-              disableUnderline
-              endAdornment={
-                <InputAdornment position="end">
-                  <DateRangeRounded />
-                </InputAdornment>
-              }
-            />
+          </TextField>
+        )}
+        <Box className={classes.datePickerContainer}>
+          <Typography className={classes.textLabel} variant="body2">
+            {`${t('Date')}: `}
+          </Typography>
+          <DatePicker
+            locale={t('date_locale')}
+            dateFormat="PP"
+            selected={selectedDate ? new Date(selectedDate) : null}
+            onChange={date => setSelectedDate(date?.getTime() || selectedDate)}
+            maxDate={new Date()}
+            todayButton={t('Today')}
+            peekNextMonth
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            customInput={
+              <Input
+                className={classes.textLabel}
+                disableUnderline
+                endAdornment={
+                  <InputAdornment position="end">
+                    <DateRangeRounded />
+                  </InputAdornment>
+                }
+              />
+            }
+            popperClassName={classes.calendarPopper}
+          />
+        </Box>
+        <FormControl className={classes.layerFormControl}>
+          <InputLabel id="chart-layers-mutiple-checkbox-label">
+            {t('Select Charts')}
+          </InputLabel>
+          <Select
+            labelId="chart-layers-mutiple-checkbox-label"
+            id="chart-layers-mutiple-checkbox"
+            multiple
+            value={selectedLayerTitles}
+            onChange={onChangeChartLayers}
+            input={<Input />}
+            renderValue={chartsSelectRenderValue}
+            MenuProps={menuProps}
+          >
+            {chartLayers.map(layer => (
+              <MenuItem key={layer.id} value={layer.title}>
+                <Checkbox
+                  checked={selectedLayerTitles.indexOf(layer.title) > -1}
+                  color="primary"
+                />
+                <ListItemText
+                  classes={{ primary: classes.textLabel }}
+                  primary={t(layer.title)}
+                />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button
+          className={classes.downloadButton}
+          onClick={downloadCsv(dataForCsv, generateCSVFilename())}
+          disabled={
+            !(
+              adminProperties &&
+              selectedDate &&
+              tabIndex === tabValue &&
+              selectedLayerTitles.length >= 1
+            )
           }
-          popperClassName={classes.calendarPopper}
-        />
-      </Box>
-      <FormControl className={classes.layerFormControl}>
-        <InputLabel id="chart-layers-mutiple-checkbox-label">
-          Select Charts
-        </InputLabel>
-        <Select
-          labelId="chart-layers-mutiple-checkbox-label"
-          id="chart-layers-mutiple-checkbox"
-          multiple
-          value={selectedLayerTitles}
-          onChange={onChangeChartLayers}
-          input={<Input />}
-          renderValue={selected => (selected as string[]).join(', ')}
-          MenuProps={menuProps}
         >
-          {chartLayers.map(layer => (
-            <MenuItem key={layer.id} value={layer.title}>
-              <Checkbox
-                checked={selectedLayerTitles.indexOf(layer.title) > -1}
-                color="primary"
-              />
-              <ListItemText
-                classes={{ primary: classes.textLabel }}
-                primary={layer.title}
-              />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <Button
-        className={classes.downloadButton}
-        onClick={downloadCsv(dataForCsv, generateCSVFilename())}
-        disabled={
-          !(
-            adminProperties &&
-            selectedDate &&
-            tabIndex === tabValue &&
-            selectedLayerTitles.length >= 1
-          )
-        }
-      >
-        <Typography variant="body2">{t('Download CSV')}</Typography>
-      </Button>
-      <Button
-        className={classes.clearAllSelectionsButton}
-        onClick={handleClearAllSelectedCharts}
-        disabled={
-          !(
-            adminProperties &&
-            selectedDate &&
-            tabIndex === tabValue &&
-            selectedLayerTitles.length >= 1
-          )
-        }
-      >
-        <Typography variant="body2">{t('Clear All')}</Typography>
-      </Button>
-    </Box>
-  );
-}
+          <Typography variant="body2">{t('Download CSV')}</Typography>
+        </Button>
+        <Button
+          className={classes.clearAllSelectionsButton}
+          onClick={handleClearAllSelectedCharts}
+          disabled={
+            !(
+              adminProperties &&
+              selectedDate &&
+              tabIndex === tabValue &&
+              selectedLayerTitles.length >= 1
+            )
+          }
+        >
+          <Typography variant="body2">{t('Clear All')}</Typography>
+        </Button>
+      </Box>
+    );
+  },
+);
 
 interface ChartsPanelProps {
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;

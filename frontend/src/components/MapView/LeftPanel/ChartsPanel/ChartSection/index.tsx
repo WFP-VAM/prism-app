@@ -8,7 +8,11 @@ import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { appConfig } from '../../../../../config';
-import { ChartConfig, WMSLayerProps } from '../../../../../config/types';
+import {
+  ChartConfig,
+  DatasetField,
+  WMSLayerProps,
+} from '../../../../../config/types';
 import {
   CHART_DATA_PREFIXES,
   DatasetRequestParams,
@@ -17,7 +21,7 @@ import {
 import { TableData } from '../../../../../context/tableStateSlice';
 import { useSafeTranslation } from '../../../../../i18n';
 import { getChartAdminBoundaryParams } from '../../../../../utils/admin-utils';
-import Chart from '../../../../DataDrawer/Chart';
+import Chart from '../../../../Common/Chart';
 
 function ChartSection({
   chartLayer,
@@ -147,6 +151,30 @@ function ChartSection({
     return params.datasetFields?.map(row => row.color);
   }, [params.datasetFields]);
 
+  const minValue = useMemo(() => {
+    return Math.min(
+      ...(params.datasetFields
+        ?.filter((row: DatasetField) => {
+          return row?.minValue !== undefined;
+        })
+        .map((row: DatasetField) => {
+          return row.minValue;
+        }) as number[]),
+    );
+  }, [params.datasetFields]);
+
+  const maxValue = useMemo(() => {
+    return Math.max(
+      ...(params.datasetFields
+        ?.filter((row: DatasetField) => {
+          return row?.maxValue !== undefined;
+        })
+        .map((row: DatasetField) => {
+          return row.maxValue;
+        }) as number[]),
+    );
+  }, [params.datasetFields]);
+
   const config: ChartConfig = useMemo(() => {
     return {
       type: chartType,
@@ -155,9 +183,11 @@ function ChartSection({
       data: CHART_DATA_PREFIXES.col,
       transpose: true,
       displayLegend: true,
+      minValue,
+      maxValue,
       colors,
     };
-  }, [chartType, colors]);
+  }, [chartType, colors, maxValue, minValue]);
 
   const title = useMemo(() => {
     return chartLayer.title;
@@ -176,11 +206,12 @@ function ChartSection({
         title={t(title)}
         config={config}
         data={chartDataset}
+        datasetFields={params.datasetFields}
         notMaintainAspectRatio
         legendAtBottom
       />
     );
-  }, [chartDataset, classes.loading, config, t, title]);
+  }, [chartDataset, classes.loading, config, params.datasetFields, t, title]);
 }
 
 const styles = () =>

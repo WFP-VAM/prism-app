@@ -169,10 +169,10 @@ const ReportDoc = memo(
 
     const populationExposureLegendDefinition: PDFLegendDefinition[] = useMemo(() => {
       return exposureLegendDefinition.map(item => ({
-        value: getLegendItemLabel(item),
+        value: getLegendItemLabel(t, item),
         style: [styles.box, { backgroundColor: item.color, opacity: 0.5 }],
       }));
-    }, [exposureLegendDefinition, styles.box]);
+    }, [exposureLegendDefinition, styles.box, t]);
 
     // The rendered report doc legend
     const renderedReportDocLegend = useMemo(() => {

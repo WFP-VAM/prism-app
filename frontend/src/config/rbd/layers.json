@@ -78,6 +78,10 @@
     "additional_query_params": {
       "styles": "rfh_16_0_300"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
@@ -3199,10 +3203,10 @@
     "title": "Phase classification",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
-    "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01"],
+    "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-06-01"],
     "validity": {
       "days": 122,
-      "mode": "forward"
+      "mode": "backward"
     },
     "fallbackLayerKeys": [
       "ch_phase_admin1"
@@ -3278,11 +3282,6 @@
     "title": "ch_admin1_phase_all_dates",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
-    "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01"],
-    "validity": {
-      "days": 122,
-      "mode": "forward"
-    },
     "admin_level": 1,
     "data_field": "calc_ph_admin1",
     "admin_code": "adm1_pcod2",
@@ -3354,7 +3353,7 @@
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin2_{YYYY_MM_DD}.json",
-    "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-02-01"],
+    "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-06-01"],
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
@@ -3363,7 +3362,7 @@
     ],
     "validity": {
       "days": 150,
-      "mode": "forward"
+      "mode": "both"
     },
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
@@ -3443,14 +3442,9 @@
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/admin1_{YYYY_MM_DD}.json",
-    "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-02-01"],
     "data_field": "calc_pop_ph3_5_admin1",
     "admin_level": 1,
     "admin_code": "adm1_pcod2",
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
     "feature_info_props": {
       "calc_pop_ph1_admin1": {
         "type": "number",
@@ -3529,21 +3523,17 @@
     "title": "IDPs - phase classification",
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin2_{YYYY_MM_DD}.json",
-    "dates": [
-      "2019-10-01",
-      "2021-02-01",
-      "2021-06-01",
-      "2021-10-01",
-      "2022-02-01",
-      "2022-06-01",
-      "2022-10-01"
-    ],
+    "dates": ["2019-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-06-01"],
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": [
       "ch_idps_phase_admin1"
     ],
+    "validity": {
+      "days": 122,
+      "mode": "forward"
+    },
     "opacity": 0.9,
     "feature_info_props": {
       "start_date": {
@@ -3588,15 +3578,6 @@
     "title": "IDPs - phase classification",
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2019-10-01",
-      "2021-02-01",
-      "2021-06-01",
-      "2021-10-01",
-      "2022-02-01",
-      "2022-06-01",
-      "2022-10-01"
-    ],
     "admin_level": 1,
     "data_field": "calc_ph_admin1",
     "admin_code": "adm1_pcod2",
@@ -3651,7 +3632,9 @@
       "2021-10-01",
       "2022-02-01",
       "2022-06-01",
-      "2022-10-01"
+      "2022-10-01",
+      "2023-02-01",
+      "2023-06-01"
     ],
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
@@ -3713,15 +3696,6 @@
     "title": "IDPs in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/rbd/ch/idps_admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2019-10-01",
-      "2021-02-01",
-      "2021-06-01",
-      "2021-10-01",
-      "2022-02-01",
-      "2022-06-01",
-      "2022-10-01"
-    ],
     "admin_level": 1,
     "data_field": "calc_pop_ph3_5_admin1",
     "admin_code": "adm1_pcod2",
@@ -3788,8 +3762,13 @@
       "2021-10-01",
       "2022-02-01",
       "2022-06-01",
-      "2022-10-01"
+      "2022-10-01",
+      "2023-06-01"
     ],
+    "validity": {
+      "days": 122,
+      "mode": "forward"
+    },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
@@ -3846,7 +3825,8 @@
       "2021-10-01",
       "2022-02-01",
       "2022-06-01",
-      "2022-10-01"
+      "2022-10-01",
+      "2023-06-01"
     ],
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
@@ -3906,9 +3886,15 @@
     "type": "admin_level_data",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": [
+      "2021-02-01",
+      "2021-06-01",
       "2022-02-01",
       "2022-06-01"
     ],
+    "validity": {
+      "days": 122,
+      "mode": "forward"
+    },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
@@ -3958,8 +3944,13 @@
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2022-02-01",
-      "2022-06-01"
+      "2022-06-01",
+      "2023-06-01"
     ],
+    "validity": {
+      "days": 122,
+      "mode": "forward"
+    },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",

@@ -100,12 +100,15 @@ function AnalysisLayer({ before }: { before?: string }) {
           dispatch(addPopupData(popupData));
         } else {
           const statisticKey = analysisData.statistic;
+          const precision =
+            analysisData instanceof ExposedPopulationResult ? 0 : undefined;
           dispatch(
             addPopupData({
               [analysisData.getStatTitle(t)]: {
                 data: getRoundedData(
                   get(evt.features[0], ['properties', statisticKey]),
                   t,
+                  precision,
                 ),
                 coordinates,
               },

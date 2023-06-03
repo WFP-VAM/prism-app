@@ -1,34 +1,36 @@
 import {
+  flatten,
   get,
   has,
+  invert,
   isNull,
+  isNumber,
   isString,
+  isUndefined,
   max,
   mean,
   min,
-  invert,
-  sum,
   omit,
-  flatten,
-  isNumber,
   orderBy,
+  sum,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import moment from 'moment';
 import { createGetCoverageUrl } from 'prism-common';
+import { TFunctionKeys } from 'i18next';
 import {
+  AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
   AsyncReturnType,
+  BoundaryLayerProps,
   ImpactLayerProps,
   LegendDefinition,
-  AdminLevelDataLayerProps,
   StatsApi,
   ThresholdDefinition,
-  WMSLayerProps,
   WfsRequestParams,
-  BoundaryLayerProps,
+  WMSLayerProps,
 } from '../config/types';
 import type { ThunkApi } from '../context/store';
 import { layerDataSelector } from '../context/mapStateSlice/selectors';
@@ -151,7 +153,10 @@ function mergeFeaturesByProperty(
 ): Feature[] {
   const features = baselineFeatures.map(feature1 => {
     const aggregateProperties = aggregateData.filter(
-      item => get(item, id) === get(feature1, ['properties', id]) && item,
+      item =>
+        item &&
+        // IDs need to be compared as strings to avoid 31 != "31".
+        String(get(item, id)) === String(get(feature1, ['properties', id])),
     );
 
     const filteredProperties = aggregateProperties.map(filteredProperty => {
@@ -457,6 +462,9 @@ export async function loadFeaturesClientSide(
 }
 
 export function quoteAndEscapeCell(value: number | string) {
+  if (isUndefined(value)) {
+    return '';
+  }
   return `"${value.toString().replaceAll('"', '""')}"`;
 }
 
@@ -527,7 +535,7 @@ export function createLegendFromFeatureArray(
 
   const delta = (maxNum - minNum) / colors.length;
 
-  const legend: LegendDefinition = colors.map((color, index) => {
+  return colors.map((color, index) => {
     const breakpoint =
       delta > 1
         ? Math.ceil(minNum + (index + 1) * delta)
@@ -539,11 +547,12 @@ export function createLegendFromFeatureArray(
     return {
       value,
       color,
-      label: `${labels[index]} (${Math.round(value).toLocaleString('en-US')})`,
+      label: {
+        text: labels[index],
+        value: `(${Math.round(value).toLocaleString('en-US')})`,
+      },
     };
   });
-
-  return legend;
 }
 
 export class ExposedPopulationResult {
@@ -555,6 +564,7 @@ export class ExposedPopulationResult {
   statistic: AggregationOperations;
   tableData: TableRow[];
   date: number;
+  tableColumns: any;
 
   getTitle = (t?: i18nTranslator): string => {
     return t ? t('Population Exposure') : 'Population Exposure';
@@ -573,6 +583,7 @@ export class ExposedPopulationResult {
     groupBy: string,
     key: string,
     date: number,
+    tableColumns: any,
   ) {
     this.tableData = tableData;
     this.featureCollection = featureCollection;
@@ -582,6 +593,7 @@ export class ExposedPopulationResult {
     this.groupBy = groupBy;
     this.key = key;
     this.date = date;
+    this.tableColumns = tableColumns;
   }
 }
 
@@ -646,7 +658,7 @@ export class BaselineLayerResult {
     const baselineLayer = this.getBaselineLayer();
     // If there is no title, we are using admin boundaries and return StatTitle instead.
     if (!baselineLayer.title) {
-      return this.getStatTitle();
+      return this.getStatTitle(t);
     }
     const baselineTitle = baselineLayer.title || 'Admin levels';
     return t
@@ -691,7 +703,12 @@ export function getAnalysisTableColumns(
   ];
 
   if (analysisResult instanceof ExposedPopulationResult) {
-    return analysisTableColumns;
+    const extraCols = analysisResult?.tableColumns.map((col: string) => ({
+      id: col,
+      label: col, // invert maps from computer name to display name.
+      format: (value: string | number) => getRoundedData(value as number),
+    })) as Column[];
+    return [...analysisTableColumns, ...extraCols];
   }
 
   const baselineLayerTitle = analysisResult.getBaselineLayer().title;
@@ -785,14 +802,20 @@ export class PolygonAnalysisResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getTitle(): string {
-    return `${this.getHazardLayer().title} intersecting admin level ${
-      this.adminLevel
-    }`;
+  getTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} ${t('intersecting admin level')} ${t(
+          (this.adminLevel as unknown) as TFunctionKeys,
+        )}`
+      : `${this.getHazardLayer().title} intersecting admin level ${
+          this.adminLevel
+        }`;
   }
 
-  getStatTitle(): string {
-    return `${this.getHazardLayer().title} (${this.statistic})`;
+  getStatTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
+      : `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }
 
