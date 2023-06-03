@@ -180,7 +180,10 @@ const DateSelector = memo(
     }, [dateIndex, range]);
 
     const updateStartDate = useCallback(
-      (date: Date) => {
+      (date: Date, isUpdatingHistory: boolean) => {
+        if (!isUpdatingHistory) {
+          return;
+        }
         const time = date.getTime();
         const startDate = new Date(stateStartDate as number);
         const dateEqualsToStartDate =
@@ -204,11 +207,18 @@ const DateSelector = memo(
     }, []);
 
     const setDatePosition = useCallback(
-      (date: number | undefined, increment: number) => {
+      (
+        date: number | undefined,
+        increment: number,
+        isUpdatingHistory: boolean,
+      ) => {
         const dates = addUserOffset(availableDates);
         const selectedIndex = findDateIndex(dates, date);
         if (dates[selectedIndex + increment]) {
-          updateStartDate(new Date(dates[selectedIndex + increment]));
+          updateStartDate(
+            new Date(dates[selectedIndex + increment]),
+            isUpdatingHistory,
+          );
         }
       },
       [addUserOffset, availableDates, updateStartDate],
@@ -219,16 +229,16 @@ const DateSelector = memo(
       if (isEqual(dateRef.current, availableDates)) {
         return;
       }
-      setDatePosition(stateStartDate, 0);
+      setDatePosition(stateStartDate, 0, false);
       dateRef.current = availableDates;
     });
 
     const incrementDate = useCallback(() => {
-      setDatePosition(stateStartDate, 1);
+      setDatePosition(stateStartDate, 1, true);
     }, [setDatePosition, stateStartDate]);
 
     const decrementDate = useCallback(() => {
-      setDatePosition(stateStartDate, -1);
+      setDatePosition(stateStartDate, -1, true);
     }, [setDatePosition, stateStartDate]);
 
     const dates = useMemo(() => {
@@ -278,7 +288,7 @@ const DateSelector = memo(
         setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
         const updatedDate = new Date(dates[selectedIndex]);
         checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
-        updateStartDate(updatedDate);
+        updateStartDate(updatedDate, true);
       },
       [
         checkIntersectingDateAndShowPopup,
@@ -318,7 +328,7 @@ const DateSelector = memo(
           new Date(dateRange[exactX].value),
           position.y,
         );
-        updateStartDate(updatedDate);
+        updateStartDate(updatedDate, true);
       },
       [
         checkIntersectingDateAndShowPopup,
@@ -327,6 +337,13 @@ const DateSelector = memo(
         stateStartDate,
         updateStartDate,
       ],
+    );
+
+    const handleOnDatePickerChange = useCallback(
+      (date: Date) => {
+        updateStartDate(date, true);
+      },
+      [updateStartDate],
     );
 
     return (
@@ -349,7 +366,7 @@ const DateSelector = memo(
               dateFormat="PP"
               className={classes.datePickerInput}
               selected={moment(stateStartDate).toDate()}
-              onChange={updateStartDate}
+              onChange={handleOnDatePickerChange}
               maxDate={maxDate}
               todayButton={t('Today')}
               peekNextMonth
@@ -444,7 +461,7 @@ const styles = (theme: Theme) =>
       position: 'absolute',
       bottom: '8%',
       width: '100%',
-      zIndex: 1,
+      zIndex: 5,
     },
 
     datePickerContainer: {
