@@ -25,6 +25,7 @@
       "https://kyrgyzstan.sibelius-datacube.org:5000/wms"
     ]
   },
+  "chartApiUrl": "https://prism-api.ovio.org/hdc",
   "categories": {
     "rainfall": {
       "rainfall_amount": [

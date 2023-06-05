@@ -12,13 +12,13 @@ if hdc_token == "":
 
 
 def get_hdc_stats(
-    level: str, id_code: str, coverage: str, vam: str, start: str, end: str
+    level: str, admin_id: str, coverage: str, vam: str, start: str, end: str
 ):
     """Get statistical charts data"""
     url = "https://api.wfp.org/hdc/1.0.0/stats/admin"
     params = {
         "level": level,
-        "id_code": id_code,
+        "id_code": admin_id,
         "coverage": coverage,
         "vam": vam,
         "start": start,

@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+import { appConfig } from '../config';
 import {
   AdminLevelType,
   DatasetLevel,
@@ -50,7 +52,12 @@ export const getChartAdminBoundaryParams = (
 ): AdminBoundaryParams => {
   const { serverLayerName, chartData } = layer;
 
-  const { levels, url, fields: datasetFields } = chartData!;
+  const { levels, url: chartUrl, fields: datasetFields } = chartData!;
+  const chartDefaultUrl = get(appConfig, 'chartApiUrl');
+  const url = chartUrl || chartDefaultUrl;
+  if (!url) {
+    throw new Error('No chart url found');
+  }
 
   // TODO - why not reduce this by level directly?
   const boundaryProps = levels.reduce(

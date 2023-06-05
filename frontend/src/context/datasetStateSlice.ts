@@ -247,7 +247,7 @@ export const loadAdminBoundaryDataset = async (
 
   const hdcRequestParams = {
     level,
-    id_code: adminCode,
+    admin_id: adminCode,
     coverage: 'full',
     vam: getVamParam(),
     start: startDateStr,

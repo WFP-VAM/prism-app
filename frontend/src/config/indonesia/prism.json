@@ -13,6 +13,7 @@
     "wcs": ["https://mongolia.sibelius-datacube.org:5000"],
     "wms": ["https://vampire.idn.wfp.org:8081/geoserver/vampire/wms"]
   },
+  "chartApiUrl": "https://prism-api.ovio.org/hdc",
   "map": {
     "boundingBox": [94, -10.36, 141.03, 5.48]
   },

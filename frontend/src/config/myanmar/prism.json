@@ -34,6 +34,7 @@
       "https://sparc.wfp.org/geoserver/prism/wms"
     ]
   },
+  "chartApiUrl": "https://prism-api.ovio.org/hdc",
   "categories": {
     "storms_and_floods": {
       "floods": ["flood_extent"],
