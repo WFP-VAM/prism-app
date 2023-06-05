@@ -332,7 +332,8 @@ const MapView = memo(({ classes }: MapViewProps) => {
       In case we don't have hazard or baseline layers we will use the default
       layer provided in the appConfig defined within `prism.json` file.
      */
-    if (layerDefinitionsIncludeDefaultLayer) {
+    if (!defaultLayerAttempted && layerDefinitionsIncludeDefaultLayer) {
+      setDefaultLayerAttempted(true);
       const urlLayerKey: UrlLayerKey = getUrlKey(
         defaultLayerInLayerDefinitions,
       );
