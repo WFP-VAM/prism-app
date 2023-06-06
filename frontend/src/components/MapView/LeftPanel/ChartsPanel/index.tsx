@@ -44,10 +44,11 @@ import { castObjectsArrayToCsv } from '../../../../utils/csv-utils';
 import { getCategories } from '../../Layers/BoundaryDropdown';
 import { downloadToFile } from '../../utils';
 import ChartSection from './ChartSection';
+import { BoundaryLayerData } from '../../../../context/layers/boundary';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
-const MAX_ADMIN_LEVEL = 2;
+const MAX_ADMIN_LEVEL = 3; // not sure about the impact /!\
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
@@ -261,6 +262,7 @@ const ChartsPanel = memo(
     ) as LayerData<BoundaryLayerProps> | undefined;
     const { data } = boundaryLayerData || {};
     const classes = useStyles();
+    const [admin0Key, setAdmin0Key] = useState('');
     const [admin1Key, setAdmin1Key] = useState('');
     const [admin2Key, setAdmin2Key] = useState('');
     const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
@@ -280,9 +282,29 @@ const ChartsPanel = memo(
 
     const tabValue = useSelector(leftPanelTabValueSelector);
 
-    const categories = data
-      ? getCategories(data, boundaryLayer, '', i18nLocale)
-      : [];
+    const categories = useMemo(() => {
+      return data
+        ? getCategories(data, boundaryLayer, '', i18nLocale, admin0Key)
+        : [];
+    }, [admin0Key, data, i18nLocale]);
+
+    const getCountries = (
+      boudaryLayerData: BoundaryLayerData,
+      boudaryLayer: BoundaryLayerProps,
+    ) => {
+      if (boudaryLayer.adminLevelNames.length === 3) {
+        return [
+          ...new Set(
+            boudaryLayerData.features.map(
+              feature => feature.properties?.[boudaryLayer.adminLevelNames[0]],
+            ),
+          ),
+        ];
+      }
+      return [];
+    };
+
+    const countries = data ? getCountries(data, boundaryLayer) : [];
 
     const admin1Category = useMemo(() => {
       return categories.find(category => {
@@ -307,6 +329,10 @@ const ChartsPanel = memo(
         .map(snakeCase)
         .join('_');
     }, [admin1Category, admin2ChildCategory, selectedLayerTitles]);
+
+    const onChangeAdmin0 = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setAdmin0Key(event.target.value);
+    };
 
     const onChangeAdmin1 = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -512,6 +538,26 @@ const ChartsPanel = memo(
 
     return (
       <Box className={classes.chartsPanelParams}>
+        <TextField
+          classes={{ root: classes.selectRoot }}
+          id="outlined-admin-1"
+          select
+          label={t('Select Admin 0')}
+          value={admin0Key || appConfig.country}
+          onChange={onChangeAdmin0}
+          variant="outlined"
+          disabled={countries.length === 0}
+        >
+          <MenuItem key={appConfig.country} value={appConfig.country} disabled>
+            {appConfig.country}
+          </MenuItem>
+          {countries.map(country => (
+            <MenuItem key={country} value={country}>
+              {country}
+            </MenuItem>
+          ))}
+        </TextField>
+
         <TextField
           classes={{ root: classes.selectRoot }}
           id="outlined-admin-1"

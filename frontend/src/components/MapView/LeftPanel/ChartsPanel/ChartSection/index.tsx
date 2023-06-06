@@ -49,14 +49,22 @@ function ChartSection({
   const adminKey = levelsDict[adminLevel.toString()];
   // Default to country level data.
   const { code: adminCode } = useMemo(() => {
+    console.log('----ChartSection----');
+    console.log('adminKey', adminKey);
+    console.log('params', params);
+    console.log('appConfig', appConfig);
     return (
       params.boundaryProps[adminKey] || {
         code: appConfig.countryAdmin0Id,
       }
     );
-  }, [adminKey, params.boundaryProps]);
+  }, [adminKey, params]);
 
   const requestParams: DatasetRequestParams = useMemo(() => {
+    console.log('----ChartSection----');
+    console.log('levelsDict', levelsDict);
+    console.log('adminLevel', adminLevel);
+    console.log('adminKey', adminKey);
     return {
       id: adminKey,
       level: adminLevel.toString(),
@@ -72,6 +80,7 @@ function ChartSection({
     adminKey,
     adminLevel,
     date,
+    levelsDict,
     params.boundaryProps,
     params.datasetFields,
     params.serverLayerName,

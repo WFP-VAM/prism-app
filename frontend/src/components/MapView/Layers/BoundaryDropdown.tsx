@@ -14,7 +14,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@material-ui/core';
-import { last, sortBy } from 'lodash';
+import { sortBy } from 'lodash';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import i18n from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -121,6 +121,7 @@ export function getCategories(
   layer: BoundaryLayerProps,
   search: string,
   i18nLocale: typeof i18n,
+  country?: string,
 ) {
   const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
     ? layer.adminLevelNames
@@ -132,9 +133,19 @@ export function getCategories(
     return [];
   }
 
+  const layerLevel1 = layer.adminLevelNames.length === 3 ? 1 : 0;
+  const layerLevel2 = layer.adminLevelNames.length === 3 ? 2 : 1;
+
+  let { features } = data;
+  if (country) {
+    features = data.features.filter(
+      feature => feature.properties?.[layer.adminLevelNames[0]] === country,
+    );
+  }
+
   // Make categories based off the level of all boundaries
   return sortBy(
-    data.features
+    features
       .reduce<
         Array<{
           title: string;
@@ -143,11 +154,14 @@ export function getCategories(
         }>
       >((ret, feature) => {
         // unique parent key to filter when changing the language
-        const parentKey = feature.properties?.[layer.adminLevelNames[0]];
-        const parentCategory = feature.properties?.[locationLevelNames[0]];
+        const parentKey =
+          feature.properties?.[layer.adminLevelNames[layerLevel1]];
+        const parentCategory =
+          feature.properties?.[locationLevelNames[layerLevel1]];
         // unique child key to filter when changing the language
-        const childkey = feature.properties?.[last(layer.adminLevelNames)!];
-        const label = feature.properties?.[last(locationLevelNames)!];
+        const childkey =
+          feature.properties?.[layer.adminLevelNames[layerLevel2]!];
+        const label = feature.properties?.[locationLevelNames[layerLevel2]!];
         const code = feature.properties?.[layer.adminCode];
         if (!label || !code || !parentCategory || !parentKey) {
           return ret;
