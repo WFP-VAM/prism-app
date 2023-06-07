@@ -121,7 +121,8 @@ export function getCategories(
   layer: BoundaryLayerProps,
   search: string,
   i18nLocale: typeof i18n,
-  country?: string,
+  layerLevel: number = 0,
+  parentCategoryValue?: string,
 ) {
   const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
     ? layer.adminLevelNames
@@ -133,13 +134,15 @@ export function getCategories(
     return [];
   }
 
-  const layerLevel1 = layer.adminLevelNames.length === 3 ? 1 : 0;
-  const layerLevel2 = layer.adminLevelNames.length === 3 ? 2 : 1;
+  const layerLevel1 = layerLevel || 0;
+  const layerLevel2 = layerLevel1 + 1;
 
   let { features } = data;
-  if (country) {
+  if (parentCategoryValue && layerLevel > 0) {
     features = data.features.filter(
-      feature => feature.properties?.[layer.adminLevelNames[0]] === country,
+      feature =>
+        feature.properties?.[layer.adminLevelNames[layerLevel - 1]] ===
+        parentCategoryValue,
     );
   }
 
