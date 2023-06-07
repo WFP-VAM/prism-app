@@ -1759,6 +1759,7 @@
     "admin_level": 2,
     "boundary": "admin2_boundaries",
     "admin_code": "district_code",
+    "content_path": "data/srilanka/layerinfo.md#food-insecure",
     "opacity": 0.7,
     "legend": [
       {
@@ -1797,6 +1798,7 @@
     "admin_level": 2,
     "boundary": "admin2_boundaries",
     "admin_code": "district_code",
+    "content_path": "data/srilanka/layerinfo.md#livelihood-coping",
     "opacity": 0.7,
     "legend": [
       {
@@ -1835,6 +1837,7 @@
     "admin_level": 2,
     "boundary": "admin2_boundaries",
     "admin_code": "district_code",
+    "content_path": "data/srilanka/layerinfo.md#food-coping",
     "opacity": 0.7,
     "legend": [
       {
@@ -1873,6 +1876,7 @@
     "admin_level": 2,
     "boundary": "admin2_boundaries",
     "admin_code": "district_code",
+    "content_path": "data/srilanka/layerinfo.md#food-consumption",
     "opacity": 0.7,
     "legend": [
       {
@@ -1910,6 +1914,7 @@
     "data_field": "food_expenditure_perc",
     "admin_level": 2,
     "boundary": "admin2_boundaries",
+    "content_path": "data/srilanka/layerinfo.md#food-expenditure",
     "admin_code": "district_code",
     "opacity": 0.7,
     "legend": [
