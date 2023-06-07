@@ -21,7 +21,6 @@
       "https://sparc.wfp.org/geoserver/prism/wms"
     ]
   },
-  "chartApiUrl": "https://prism-api.ovio.org/hdc",
   "map": {
     "boundingBox": [67.44, 36.74, 74.98, 40.96]
   },

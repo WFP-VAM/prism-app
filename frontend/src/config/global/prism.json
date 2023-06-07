@@ -12,7 +12,6 @@
   "serversUrls": {
     "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
-  "chartApiUrl": "https://prism-api.ovio.org/hdc",
   "map": {
     "boundingBox": [-171, -56, 180, 76]
   },

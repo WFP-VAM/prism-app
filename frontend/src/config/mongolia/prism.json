@@ -12,7 +12,6 @@
   "serversUrls": {
     "wms": ["https://mongolia.sibelius-datacube.org:5000/wms"]
   },
-  "chartApiUrl": "https://prism-api.ovio.org/hdc",
   "map": {
     "boundingBox": [87.75, 41.6, 119.77, 52.05]
   },

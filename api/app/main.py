@@ -179,7 +179,7 @@ def get_acled_incidents(request: Request):
 
 @app.get("/hdc")
 def wrap_get_hdc_stats(request: Request):
-    return get_hdc_stats(**request.query_params)
+    return JSONResponse(content=get_hdc_stats(**request.query_params), status_code=200)
 
 
 @app.get("/kobo/dates")
