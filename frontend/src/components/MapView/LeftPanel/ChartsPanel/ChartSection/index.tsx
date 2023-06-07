@@ -8,7 +8,6 @@ import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { TFunctionKeys } from 'i18next';
 import { appConfig } from '../../../../../config';
 import {
   ChartConfig,
@@ -31,13 +30,15 @@ const ChartSection = memo(
     adminProperties,
     adminLevel,
     date,
-    removeChart,
     dataForCsv,
     classes,
   }: ChartSectionProps) => {
     const dispatch = useDispatch();
     const { t } = useSafeTranslation();
     const [chartDataset, setChartDataset] = useState<undefined | TableData>();
+    const [chartDataSetIsLoading, setChartDataSetIsLoading] = useState<boolean>(
+      false,
+    );
     const { levels } = chartLayer.chartData!;
 
     const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
@@ -119,28 +120,33 @@ const ChartSection = memo(
     );
 
     const getData = useCallback(async () => {
-      const results = await loadAdminBoundaryDataset(requestParams, dispatch);
-      // if an error has occured in the http request or the results are undefined clear the chart
-      if (!results) {
-        removeChart(chartLayer.title);
-        return;
-      }
-      const keyMap = createDataKeyMap(results);
+      setChartDataSetIsLoading(true);
+      try {
+        const results = await loadAdminBoundaryDataset(requestParams, dispatch);
+        // if an error has occured in the http request or the results are undefined clear the chart
+        if (!results) {
+          return;
+        }
+        const keyMap = createDataKeyMap(results);
 
-      const csvData = createCsvDataFromDataKeyMap(results, keyMap);
-      // eslint-disable-next-line no-param-reassign
-      dataForCsv.current = {
-        ...dataForCsv.current,
-        [chartLayer.title]: csvData,
-      };
-      setChartDataset(results);
+        const csvData = createCsvDataFromDataKeyMap(results, keyMap);
+        // eslint-disable-next-line no-param-reassign
+        dataForCsv.current = {
+          ...dataForCsv.current,
+          [chartLayer.title]: csvData,
+        };
+        setChartDataset(results);
+      } catch (error) {
+        console.warn(error);
+      } finally {
+        setChartDataSetIsLoading(false);
+      }
     }, [
       chartLayer.title,
       createCsvDataFromDataKeyMap,
       createDataKeyMap,
       dataForCsv,
       dispatch,
-      removeChart,
       requestParams,
     ]);
 
@@ -203,24 +209,35 @@ const ChartSection = memo(
     }, [chartLayer.title]);
 
     return useMemo(() => {
-      if (!chartDataset) {
+      if (chartDataSetIsLoading) {
         return (
           <div className={classes.loading}>
             <CircularProgress size={50} />
           </div>
         );
       }
-      return (
-        <Chart
-          title={t(title)}
-          config={config}
-          data={chartDataset}
-          datasetFields={params.datasetFields}
-          notMaintainAspectRatio
-          legendAtBottom
-        />
-      );
-    }, [chartDataset, classes.loading, config, params.datasetFields, t, title]);
+      if (chartDataset && !chartDataSetIsLoading) {
+        return (
+          <Chart
+            title={t(title)}
+            config={config}
+            data={chartDataset as TableData}
+            datasetFields={params.datasetFields}
+            notMaintainAspectRatio
+            legendAtBottom
+          />
+        );
+      }
+      return null;
+    }, [
+      chartDataSetIsLoading,
+      chartDataset,
+      classes.loading,
+      config,
+      params.datasetFields,
+      t,
+      title,
+    ]);
   },
 );
 
@@ -238,7 +255,6 @@ const styles = () =>
 export interface ChartSectionProps extends WithStyles<typeof styles> {
   chartLayer: WMSLayerProps;
   adminProperties: GeoJsonProperties;
-  removeChart: (chartTitle: string | TFunctionKeys) => void;
   adminLevel: 0 | 1 | 2;
   date: number;
   dataForCsv: React.MutableRefObject<any>;

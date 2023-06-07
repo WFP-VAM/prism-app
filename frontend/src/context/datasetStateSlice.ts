@@ -194,17 +194,20 @@ const fetchHDC = async (
     date: ['2022-03-21'],
   };
   try {
-    throw new Error('Something went wrong');
-    // eslint-disable-next-line no-unreachable
     const response = await fetchWithTimeout(`${url}?${requestParamsStr}`);
+
     // eslint-disable-next-line fp/no-mutation
     responseJson = await response.json();
 
-    const dates: number[] = responseJson.date.map((date: string) =>
+    if (response.status > 299) {
+      throw new Error('Impossible to get HDC data.');
+    }
+
+    const dates: number[] = responseJson?.date?.map((date: string) =>
       moment(date).valueOf(),
     );
 
-    return dates.map((date, index) => {
+    return dates?.map((date, index) => {
       const values = datasetFields.reduce(
         (acc, field) => ({
           ...acc,
@@ -217,10 +220,9 @@ const fetchHDC = async (
 
       return { date, values };
     });
-  } catch {
-    const error = new Error('Impossible to get HDC data.');
+  } catch (error) {
     catchErrorAndDispatchNotification(
-      error,
+      error as Error,
       dispatch,
       undefined,
       'fetchHDC request timeout',
