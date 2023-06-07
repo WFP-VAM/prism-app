@@ -139,6 +139,7 @@ export function getCategories(
 
   let { features } = data;
   if (parentCategoryValue && layerLevel > 0) {
+    // eslint-disable-next-line no-param-reassign
     features = data.features.filter(
       feature =>
         feature.properties?.[layer.adminLevelNames[layerLevel - 1]] ===
