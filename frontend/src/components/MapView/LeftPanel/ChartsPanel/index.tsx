@@ -570,7 +570,7 @@ const ChartsPanel = memo(
           classes={{ root: classes.selectRoot }}
           id="outlined-admin-1"
           select
-          label={t('Select Admin 0')}
+          label={t('Country')}
           value={selectedaAdmin0Area?.key ?? country}
           SelectProps={{
             renderValue: renderAdmin0Value,
@@ -593,7 +593,7 @@ const ChartsPanel = memo(
           classes={{ root: classes.selectRoot }}
           id="outlined-admin-1"
           select
-          label={countryAdmin0Id ? t('National Level') : t('Select Admin 1')}
+          label={t('Admin 1')}
           value={selectedAdmin1Area?.key ?? ''}
           SelectProps={{
             renderValue: renderAdmin1Value,
@@ -602,11 +602,8 @@ const ChartsPanel = memo(
           variant="outlined"
         >
           <MenuItem divider>
-            <Box className={classes.removeAdmin}> {t('National Level')}</Box>
-          </MenuItem>
-          <MenuItem style={{ pointerEvents: 'none' }}>
             <Box style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
-              {t('Admin 1')}
+              {t('Remove Admin 1')}
             </Box>
           </MenuItem>
           {orderedAdmin1areas.map(option => (
@@ -620,7 +617,7 @@ const ChartsPanel = memo(
             classes={{ root: classes.selectRoot }}
             id="outlined-admin-2"
             select
-            label={t('Select Admin 2')}
+            label={t('Admin 2')}
             value={seletectdAdmin2Area?.key ?? ''}
             SelectProps={{
               renderValue: renderAdmin2Value,
