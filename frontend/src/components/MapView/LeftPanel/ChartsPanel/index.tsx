@@ -354,7 +354,7 @@ const ChartsPanel = memo(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!event.target.value) {
           setAdmin1Key('');
-          if (countryAdmin0Id) {
+          if (countryAdmin0Id || multiCountries) {
             setAdminLevel(0);
           }
           return;
@@ -373,7 +373,7 @@ const ChartsPanel = memo(
         setAdmin2Key('');
         setAdminLevel(1);
       },
-      [orderedAdmin1areas, countryAdmin0Id, data],
+      [orderedAdmin1areas, countryAdmin0Id, multiCountries, data],
     );
 
     const onChangeAdmin2Area = useCallback(
@@ -602,9 +602,7 @@ const ChartsPanel = memo(
           variant="outlined"
         >
           <MenuItem divider>
-            <Box style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
-              {t('Remove Admin 1')}
-            </Box>
+            <Box className={classes.removeAdmin}> {t('Remove Admin 1')}</Box>
           </MenuItem>
           {orderedAdmin1areas.map(option => (
             <MenuItem key={option.key} value={option.key}>
