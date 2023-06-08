@@ -25,7 +25,8 @@ import { queryParamsToString } from './url-utils';
 import { createEWSDatesArray } from './ews-utils';
 import { fetchACLEDDates } from './acled-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
-import { catchErrorAndDispatchNotification } from './error-utils';
+import { LocalError } from './error-utils';
+import { addNotification } from '../context/notificationStateSlice';
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
@@ -103,25 +104,18 @@ const loadPointLayerDataFromURL = async (
   layerId: string,
   dispatch: Dispatch,
 ) => {
-  try {
-    if (!fetchUrl) {
-      throw new Error(
-        'load point layer data from url failed because fetchUrl is missing',
-      );
-    }
-    const response = await fetchWithTimeout(fetchUrl);
-    if (response.status !== 200) {
-      throw new Error(`Impossible to get point data dates for ${layerId}`);
-    }
-    return (await response.json()) as PointDataDates;
-  } catch (error) {
-    return catchErrorAndDispatchNotification(
-      error as Error,
-      dispatch,
-      [],
-      'load point layer data from url request timeout',
+  if (!fetchUrl) {
+    throw new LocalError(
+      'load point layer data from url failed because fetchUrl is missing',
     );
   }
+  const response = await fetchWithTimeout(
+    fetchUrl,
+    dispatch,
+    {},
+    `Impossible to get point data dates for ${layerId}`,
+  );
+  return (await response.json()) as PointDataDates;
 };
 
 /**
@@ -156,17 +150,19 @@ const getPointDataCoverage = async (
   // eslint-disable-next-line fp/no-mutation
   const data = await (pointDataFetchPromises[fetchUrlWithParams] =
     pointDataFetchPromises[fetchUrlWithParams] ||
-    loadPointLayerDataFromURL(fetchUrlWithParams, id, dispatch)).catch(() => {
-    catchErrorAndDispatchNotification(
-      new Error(
-        `Failed loading point data layer: ${id}. Attempting to load fallback URL...`,
-      ),
-      dispatch,
-      undefined,
-      'load point layer data from url request timeout',
-    );
-    return loadPointLayerDataFromURL(fallbackUrl || '', id, dispatch);
-  });
+    loadPointLayerDataFromURL(fetchUrlWithParams, id, dispatch)).catch(
+    error => {
+      dispatch(
+        addNotification({
+          message:
+            error.message ||
+            `Failed loading point data layer: ${id}. Attempting to load fallback URL...`,
+          type: 'warning',
+        }),
+      );
+      return loadPointLayerDataFromURL(fallbackUrl || '', id, dispatch);
+    },
+  );
 
   return (
     data
@@ -392,11 +388,15 @@ const runFeatureInfoRequest = async (
     }),
     {},
   );
-
+  const resource = formatUrl(`${url}/ows`, wmsParamsInSnakeCase);
   try {
     const res = await fetchWithTimeout(
-      formatUrl(`${url}/ows`, wmsParamsInSnakeCase),
+      resource,
+      dispatch,
+      {},
+      `Request failed on running feature info request at ${resource}`,
     );
+
     const resJson: GeoJSON.FeatureCollection = await res.json();
 
     const parsedProps = resJson.features.map(feature => {
@@ -427,12 +427,7 @@ const runFeatureInfoRequest = async (
 
     return parsedProps.reduce((obj, item) => ({ ...obj, ...item }), {});
   } catch (error) {
-    return catchErrorAndDispatchNotification(
-      new Error('Something went wrong when running feature info request'),
-      dispatch,
-      {},
-      'run  feature info request timeout',
-    );
+    return {};
   }
 };
 

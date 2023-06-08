@@ -1,8 +1,10 @@
 import {
   CircularProgress,
   createStyles,
+  Typography,
   WithStyles,
   withStyles,
+  Box,
 } from '@material-ui/core';
 import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
@@ -39,6 +41,9 @@ const ChartSection = memo(
     const [chartDataSetIsLoading, setChartDataSetIsLoading] = useState<boolean>(
       false,
     );
+    const [chartDataSetError, setChartDataSetError] = useState<
+      string | undefined
+    >(undefined);
     const { levels } = chartLayer.chartData!;
 
     const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
@@ -121,6 +126,7 @@ const ChartSection = memo(
 
     const getData = useCallback(async () => {
       setChartDataSetIsLoading(true);
+      setChartDataset(undefined);
       try {
         const results = await loadAdminBoundaryDataset(requestParams, dispatch);
         // if an error has occured in the http request or the results are undefined clear the chart
@@ -138,6 +144,9 @@ const ChartSection = memo(
         setChartDataset(results);
       } catch (error) {
         console.warn(error);
+        setChartDataSetError(
+          `${t('Error: Impossible to get data for')} ${t(chartLayer.title)} `,
+        );
       } finally {
         setChartDataSetIsLoading(false);
       }
@@ -148,6 +157,7 @@ const ChartSection = memo(
       dataForCsv,
       dispatch,
       requestParams,
+      t,
     ]);
 
     useEffect(() => {
@@ -228,10 +238,21 @@ const ChartSection = memo(
           />
         );
       }
+      if (chartDataSetError) {
+        return (
+          <Box className={classes.errorContainer}>
+            <Typography color="error" component="p" variant="h4">
+              {chartDataSetError}
+            </Typography>
+          </Box>
+        );
+      }
       return null;
     }, [
+      chartDataSetError,
       chartDataSetIsLoading,
       chartDataset,
+      classes.errorContainer,
       classes.loading,
       config,
       params.datasetFields,
@@ -243,6 +264,13 @@ const ChartSection = memo(
 
 const styles = () =>
   createStyles({
+    errorContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      height: '100%',
+    },
     loading: {
       height: 240,
       width: '100%',

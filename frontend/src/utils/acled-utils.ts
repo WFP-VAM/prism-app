@@ -5,8 +5,9 @@ import { Dispatch } from 'redux';
 import { PointLayerData, PointDataLayerProps } from '../config/types';
 import { DEFAULT_DATE_FORMAT } from './name-utils';
 import { queryParamsToString } from './url-utils';
-import { catchErrorAndDispatchNotification } from './error-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
+import { addNotification } from '../context/notificationStateSlice';
+import { LocalError } from './error-utils';
 
 export const fetchACLEDDates = async (
   url: string,
@@ -18,7 +19,7 @@ export const fetchACLEDDates = async (
       additionalQueryParams &&
       !Object.keys(additionalQueryParams).includes('iso')
     ) {
-      throw new Error(
+      throw new LocalError(
         'ACLED processing is defined in layers.json. However, no country ISO code was set in the additional_query_params field. Please set the "iso" parameter.',
       );
     }
@@ -26,7 +27,12 @@ export const fetchACLEDDates = async (
 
     const datesUrl = `${url}?${queryParamsToString(queryParams)}`;
 
-    const resp = await fetchWithTimeout(datesUrl);
+    const resp = await fetchWithTimeout(
+      datesUrl,
+      dispatch,
+      {},
+      `Request failed for fetching ACLED Dates at ${datesUrl}`,
+    );
     const respJson = await resp.json();
 
     /* eslint-disable camelcase */
@@ -39,12 +45,15 @@ export const fetchACLEDDates = async (
 
     return sortBy(datesSet);
   } catch (error) {
-    return catchErrorAndDispatchNotification(
-      error as Error,
-      dispatch,
-      [],
-      'fetch ACLED dates request timeout',
-    );
+    if (error instanceof LocalError) {
+      dispatch(
+        addNotification({
+          message: error.message,
+          type: 'warning',
+        }),
+      );
+    }
+    return [];
   }
 };
 
@@ -60,7 +69,12 @@ export const fetchACLEDIncidents = async (
 
   const incidentsUrl = `${url}?${queryParamsToString(queryParams, true)}`;
   try {
-    const resp = await fetchWithTimeout(incidentsUrl);
+    const resp = await fetchWithTimeout(
+      incidentsUrl,
+      dispatch,
+      {},
+      `Request failed for fetching ACLED incidents at ${incidentsUrl}`,
+    );
     const respJson = await resp.json();
 
     const incidents = respJson.data.map((incident: any) => ({
@@ -76,13 +90,8 @@ export const fetchACLEDIncidents = async (
       }),
     };
   } catch (error) {
-    return catchErrorAndDispatchNotification(
-      error as Error,
-      dispatch,
-      {
-        features: [],
-      },
-      'fetch ACLED incidents request timeout',
-    );
+    return {
+      features: [],
+    };
   }
 };

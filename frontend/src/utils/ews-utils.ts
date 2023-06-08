@@ -3,7 +3,6 @@ import moment from 'moment';
 import { Dispatch } from 'redux';
 import { PointData, PointLayerData } from '../config/types';
 import { fetchWithTimeout } from './fetch-with-timeout';
-import { catchErrorAndDispatchNotification } from './error-utils';
 
 type EWSChartConfig = {
   label: string;
@@ -83,18 +82,18 @@ const fetchEWSLocations = async (
 ): Promise<FeatureCollection> => {
   const url = `${baseUrl}/location.geojson?type=River`;
   try {
-    const resp = await fetchWithTimeout(url);
+    const resp = await fetchWithTimeout(
+      url,
+      dispatch,
+      {},
+      `Request failed for fetching EWS locations at ${url}`,
+    );
     return await resp.json();
   } catch {
-    return catchErrorAndDispatchNotification(
-      new Error(`Failed to fetch EWS locations from ${url}`),
-      dispatch,
-      {
-        type: 'FeatureCollection',
-        features: [],
-      },
-      'fetch EWS locations request timeout',
-    );
+    return {
+      type: 'FeatureCollection',
+      features: [],
+    };
   }
 };
 
@@ -114,20 +113,18 @@ export const fetchEWSDataPointsByLocation = async (
     format,
   )}&end=${endDate.format(format)}`;
 
+  const resource = externalId ? `${url}&external_id=${externalId}` : url;
+
   try {
     const resp = await fetchWithTimeout(
-      externalId ? `${url}&external_id=${externalId}` : url,
+      resource,
+      dispatch,
+      {},
+      `Request failed for fetching EWS data points by location at ${resource}`,
     );
     return await resp.json();
   } catch (error) {
-    return catchErrorAndDispatchNotification(
-      new Error(
-        'Something went wrong when requesting ews data points by location',
-      ),
-      dispatch,
-      [],
-      'fetch EWS data Points By Location request timeout',
-    );
+    return [];
   }
 };
 

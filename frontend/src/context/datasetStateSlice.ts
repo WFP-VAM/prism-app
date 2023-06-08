@@ -13,7 +13,6 @@ import {
   fetchEWSDataPointsByLocation,
 } from '../utils/ews-utils';
 import { fetchWithTimeout } from '../utils/fetch-with-timeout';
-import { catchErrorAndDispatchNotification } from '../utils/error-utils';
 
 export type EWSParams = {
   externalId: string;
@@ -193,42 +192,33 @@ const fetchHDC = async (
     valids: [6.0],
     date: ['2022-03-21'],
   };
-  try {
-    const response = await fetchWithTimeout(`${url}?${requestParamsStr}`);
+  const response = await fetchWithTimeout(
+    `${url}?${requestParamsStr}`,
+    dispatch,
+    {},
+    `Request failed to get HDC data at ${url}?${requestParamsStr}`,
+  );
 
-    // eslint-disable-next-line fp/no-mutation
-    responseJson = await response.json();
+  // eslint-disable-next-line fp/no-mutation
+  responseJson = await response.json();
 
-    if (response.status > 299) {
-      throw new Error('Impossible to get HDC data.');
-    }
+  const dates: number[] = responseJson?.date?.map((date: string) =>
+    moment(date).valueOf(),
+  );
 
-    const dates: number[] = responseJson?.date?.map((date: string) =>
-      moment(date).valueOf(),
+  return dates?.map((date, index) => {
+    const values = datasetFields.reduce(
+      (acc, field) => ({
+        ...acc,
+        [field.label]: responseJson.data[field.key]
+          ? responseJson.data[field.key][index]
+          : field.fallback,
+      }),
+      {},
     );
 
-    return dates?.map((date, index) => {
-      const values = datasetFields.reduce(
-        (acc, field) => ({
-          ...acc,
-          [field.label]: responseJson.data[field.key]
-            ? responseJson.data[field.key][index]
-            : field.fallback,
-        }),
-        {},
-      );
-
-      return { date, values };
-    });
-  } catch (error) {
-    catchErrorAndDispatchNotification(
-      error as Error,
-      dispatch,
-      undefined,
-      'fetchHDC request timeout',
-    );
-    throw error;
-  }
+    return { date, values };
+  });
 };
 
 // HDC API expects a parameter which depends on the layer
@@ -270,23 +260,15 @@ export const loadAdminBoundaryDataset = async (
     end: endDateStr,
   };
 
-  try {
-    const results = await fetchHDC(
-      hdcUrl,
-      datasetFields,
-      hdcRequestParams,
-      dispatch,
-    );
+  const results = await fetchHDC(
+    hdcUrl,
+    datasetFields,
+    hdcRequestParams,
+    dispatch,
+  );
 
-    const tableData = createTableData(results, TableDataFormat.DATE);
-    return new Promise<TableData>(resolve => resolve(tableData));
-  } catch (error) {
-    return catchErrorAndDispatchNotification(
-      error as Error,
-      dispatch,
-      undefined,
-    );
-  }
+  const tableData = createTableData(results, TableDataFormat.DATE);
+  return new Promise<TableData>(resolve => resolve(tableData));
 };
 
 export const loadDataset = createAsyncThunk<

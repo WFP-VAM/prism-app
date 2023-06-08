@@ -1,26 +1,12 @@
-import { Dispatch } from 'redux';
-import { addNotification } from '../context/notificationStateSlice';
-
-export const catchErrorAndDispatchNotification = <T>(
-  error: Error,
-  dispatch: Dispatch,
-  returnedValue: T,
-  abortErrorText = 'Request Timeout',
-): T => {
-  if (error.name === 'AbortError') {
-    dispatch(
-      addNotification({
-        message: abortErrorText,
-        type: 'warning',
-      }),
-    );
-    return returnedValue;
+export class LocalError extends Error {
+  constructor(public readonly message: string) {
+    super(message);
+    // We are extending a built-in class
+    // eslint-disable-next-line fp/no-mutating-methods
+    Object.setPrototypeOf(this, LocalError.prototype);
   }
-  dispatch(
-    addNotification({
-      message: error.message,
-      type: 'warning',
-    }),
-  );
-  return returnedValue;
-};
+
+  getErrorMessage(): string {
+    return this.message;
+  }
+}

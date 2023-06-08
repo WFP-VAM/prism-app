@@ -8,7 +8,8 @@ import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { BACKEND_URL } from '../../../utils/constants';
 import { fetchWithTimeout } from '../../../utils/fetch-with-timeout';
-import { catchErrorAndDispatchNotification } from '../../../utils/error-utils';
+import { LocalError } from '../../../utils/error-utils';
+import { addNotification } from '../../../context/notificationStateSlice';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =
@@ -205,7 +206,7 @@ export async function downloadGeotiff(
 ) {
   try {
     if (!boundingBox) {
-      throw new Error(
+      throw new LocalError(
         `Missing bounding box: ${collection} Geotiff couldn't be downloaded`,
       );
     }
@@ -217,33 +218,35 @@ export async function downloadGeotiff(
       long_max: boundingBox[3],
       date,
     };
-    const response = await fetchWithTimeout(`${BACKEND_URL}/raster_geotiff`, {
-      method: 'POST',
-      cache: 'no-cache',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+    const response = await fetchWithTimeout(
+      `${BACKEND_URL}/raster_geotiff`,
+      dispatch,
+      {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        // body data type must match "Content-Type" header
+        body: JSON.stringify(body),
       },
-      // body data type must match "Content-Type" header
-      body: JSON.stringify(body),
-    });
-    if (response.status !== 200) {
-      throw new Error(
-        `The raster layer ${collection} could not be generated. Please try your download again later.`,
-      );
-    }
+      `Request failed for downloading Geotiff at ${BACKEND_URL}/raster_geotiff`,
+    );
     const responseJson = await response.json();
 
     const link = document.createElement('a');
     link.setAttribute('href', responseJson.download_url);
     link.click();
   } catch (error) {
-    catchErrorAndDispatchNotification(
-      error as Error,
-      dispatch,
-      undefined,
-      'Download Geotiff request timeout',
-    );
+    if (error instanceof LocalError) {
+      dispatch(
+        addNotification({
+          message: error.message,
+          type: 'warning',
+        }),
+      );
+    }
   } finally {
     callback();
   }

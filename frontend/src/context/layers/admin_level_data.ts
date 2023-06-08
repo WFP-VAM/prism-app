@@ -14,7 +14,6 @@ import {
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 import { layerDataSelector } from '../mapStateSlice/selectors';
 import { fetchWithTimeout } from '../../utils/fetch-with-timeout';
-import { catchErrorAndDispatchNotification } from '../../utils/error-utils';
 
 export type DataRecord = {
   adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
@@ -223,26 +222,23 @@ export const fetchAdminLevelDataLayerData: LazyLoader<AdminLevelDataLayerProps> 
       });
       try {
         // TODO avoid any use, the json should be typed. See issue #307
-        const response = await fetchWithTimeout(datedPath, {
-          mode: adminLevelDataLayer.path.includes('http')
-            ? 'cors'
-            : 'same-origin',
-        });
+        const response = await fetchWithTimeout(
+          datedPath,
+          api.dispatch,
+          {
+            mode: adminLevelDataLayer.path.includes('http')
+              ? 'cors'
+              : 'same-origin',
+          },
+          `Request failed for fetching admin level data at ${adminLevelDataLayer.path}`,
+        );
 
         const data: { [key: string]: any }[] = (await response.json())
           ?.DataList;
         return data;
       } catch {
-        catchErrorAndDispatchNotification(
-          new Error(
-            `An error occurred trying to fetch data from: ${datedPath}.`,
-          ),
-          api.dispatch,
-          undefined,
-          'fetch admin level data layer data request timeout',
-        );
+        return [{}];
       }
-      return [{}];
     }),
   );
 

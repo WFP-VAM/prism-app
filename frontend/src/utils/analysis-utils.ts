@@ -60,8 +60,10 @@ import {
 } from '../i18n';
 import { getRoundedData } from './data-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
-import { fetchWithTimeout } from './fetch-with-timeout';
-import { catchErrorAndDispatchNotification } from './error-utils';
+import {
+  ANALYSIS_REQUEST_TIMEOUT,
+  fetchWithTimeout,
+} from './fetch-with-timeout';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -245,16 +247,22 @@ export const fetchApiData = async (
   dispatch: Dispatch,
 ): Promise<Array<KeyValueResponse | Feature>> => {
   return (
-    await fetchWithTimeout(url, {
-      method: 'POST',
-      cache: 'no-cache',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+    await fetchWithTimeout(
+      url,
+      dispatch,
+      {
+        method: 'POST',
+        cache: 'no-cache',
+        timeout: ANALYSIS_REQUEST_TIMEOUT,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        // body data type must match "Content-Type" header
+        body: JSON.stringify(apiData),
       },
-      // body data type must match "Content-Type" header
-      body: JSON.stringify(apiData),
-    })
+      `Request failed fetching analysis api data at ${url}`,
+    )
   )
     .text()
     .then(message => {
@@ -267,14 +275,6 @@ export const fetchApiData = async (
           message,
         };
       }
-    })
-    .catch(() => {
-      catchErrorAndDispatchNotification(
-        new Error('Something went wrong by posting analysis api data'),
-        dispatch,
-        undefined,
-        'analysis post api data request timeout',
-      );
     });
 };
 

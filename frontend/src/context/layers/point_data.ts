@@ -11,7 +11,6 @@ import { fetchEWSData } from '../../utils/ews-utils';
 import { getAdminLevelDataLayerData } from './admin_level_data';
 import { fetchACLEDIncidents } from '../../utils/acled-utils';
 import { queryParamsToString } from '../../utils/url-utils';
-import { catchErrorAndDispatchNotification } from '../../utils/error-utils';
 import { fetchWithTimeout } from '../../utils/fetch-with-timeout';
 
 declare module 'geojson' {
@@ -86,19 +85,26 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
   // TODO - Better error handling, esp. for unauthorized requests.
   try {
     // eslint-disable-next-line fp/no-mutation
-    response = await fetchWithTimeout(requestUrl, {
-      mode: 'cors',
-      headers,
-    });
+    response = await fetchWithTimeout(
+      requestUrl,
+      dispatch,
+      {
+        mode: 'cors',
+        headers,
+      },
+      `Request failed for fetching point layer data at ${requestUrl}`,
+    );
     // eslint-disable-next-line fp/no-mutation
     data = (await response.json()) as PointData[];
-    if (response.status > 299) {
-      throw new Error((data as any)?.detail);
-    }
   } catch (error) {
     // fallback data isn't filtered, therefore we must filter it.
     // eslint-disable-next-line fp/no-mutation
-    response = await fetchWithTimeout(fallbackData || '');
+    response = await fetchWithTimeout(
+      fallbackData || '',
+      dispatch,
+      {},
+      `Request failed for fetching point layer data at fallback url ${fallbackData}`,
+    );
     // eslint-disable-next-line fp/no-mutation
     data = ((await response.json()) as PointData[]).filter(
       // we cant do a string comparison here because sometimes the date in json is stored as YYYY-M-D instead of YYYY-MM-DD
@@ -106,12 +112,6 @@ export const fetchPointLayerData: LazyLoader<PointDataLayerProps> = () => async 
       obj =>
         moment(obj.date).format(DEFAULT_DATE_FORMAT) ===
         moment(formattedDate).format(DEFAULT_DATE_FORMAT),
-    );
-    catchErrorAndDispatchNotification(
-      error as Error,
-      dispatch,
-      undefined,
-      'fetch point data layer request timeout',
     );
   }
 

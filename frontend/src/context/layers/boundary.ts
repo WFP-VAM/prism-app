@@ -3,7 +3,8 @@ import type { LayerDataParams, LazyLoader } from './layer-data';
 import { BoundaryLayerProps } from '../../config/types';
 import { coordFirst } from '../../utils/data-utils';
 import { fetchWithTimeout } from '../../utils/fetch-with-timeout';
-import { catchErrorAndDispatchNotification } from '../../utils/error-utils';
+import { LocalError } from '../../utils/error-utils';
+import { addNotification } from '../notificationStateSlice';
 
 export interface BoundaryLayerData extends FeatureCollection {}
 
@@ -14,7 +15,12 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> = () => asyn
   const { layer } = params;
   const { path } = layer;
   try {
-    const response = await fetchWithTimeout(path);
+    const response = await fetchWithTimeout(
+      path,
+      dispatch,
+      {},
+      `Request failed for fetching boundary layer data at ${path}`,
+    );
     const geojson = await response.json();
 
     const coordinate = coordFirst(geojson);
@@ -24,7 +30,7 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> = () => asyn
         numberString.includes('.') &&
         numberString.length - numberString.indexOf('.') - 1 > 9
       ) {
-        throw new Error(
+        throw new LocalError(
           `Coordinates in ${path.replace(
             '..',
             '',
@@ -34,11 +40,15 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> = () => asyn
     });
     return geojson;
   } catch (error) {
-    return catchErrorAndDispatchNotification(
-      error as Error,
-      dispatch,
-      undefined,
-      'fetch boundary layer data request timeout',
+    if (!(error instanceof LocalError)) {
+      return undefined;
+    }
+    dispatch(
+      addNotification({
+        message: error.message,
+        type: 'warning',
+      }),
     );
+    return undefined;
   }
 };

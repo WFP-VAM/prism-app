@@ -1,5 +1,4 @@
 import { Dispatch } from 'redux';
-import { catchErrorAndDispatchNotification } from './error-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 
 export const loadLayerContent = async (
@@ -7,14 +6,14 @@ export const loadLayerContent = async (
   dispatch: Dispatch,
 ): Promise<string> => {
   try {
-    const resp = await fetchWithTimeout(path);
+    const resp = await fetchWithTimeout(
+      path,
+      dispatch,
+      {},
+      `Request failed for loading layer content at ${path}`,
+    );
     return resp.text();
   } catch (error) {
-    return catchErrorAndDispatchNotification(
-      new Error('Something went wrong loading layer content'),
-      dispatch,
-      '',
-      'load layer content request timeout',
-    );
+    return '';
   }
 };
