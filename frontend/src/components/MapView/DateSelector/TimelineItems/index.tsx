@@ -11,11 +11,8 @@ import { CreateCSSProperties } from '@material-ui/styles';
 import { compact, merge } from 'lodash';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  AdminLevelDataLayerProps,
-  DateRangeType,
-  DatesPropagation,
-} from '../../../../config/types';
+import { DateItem, DateRangeType } from '../../../../config/types';
+import { availableDatesSelector } from '../../../../context/serverStateSlice';
 import { moment, useSafeTranslation } from '../../../../i18n';
 import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
 import {
@@ -24,7 +21,6 @@ import {
 } from '../../../../utils/server-utils';
 import { TIMELINE_ITEM_WIDTH, formatDate } from '../utils';
 import TooltipItem from './TooltipItem';
-import { availableDatesSelector } from '../../../../context/serverStateSlice';
 
 const TimelineItems = memo(
   ({
@@ -48,13 +44,12 @@ const TimelineItems = memo(
 
     const { t } = useSafeTranslation();
 
-    const formattedSelectedLayerDates = useMemo(
+    const formattedSelectedLayerDates: DateItem[][] = useMemo(
       () =>
         selectedLayers.map(layer => {
           return getPossibleDatesForLayer(layer, serverAvailableDates)
             .filter(value => value) // null check
-            .flat()
-            .map(layerDate => formatDate(layerDate.displayDate));
+            .flat();
         }),
       [selectedLayers, serverAvailableDates],
     );
@@ -83,23 +78,21 @@ const TimelineItems = memo(
       {
         class: classes.layerTwoDirection,
       },
-      {
-        class: classes.layerThreeDirection,
-      },
     ];
 
-    const formattedIntersectionDates = intersectionDates.map(layerDate =>
-      formatDate(layerDate),
-    );
+    const intersectionDateItems: DateItem[] = intersectionDates.map(date => ({
+      displayDate: date,
+      queryDate: date,
+    }));
 
     const getTooltipTitle = useCallback(
       (date: DateRangeType): JSX.Element[] => {
         const tooltipTitleArray: JSX.Element[] = compact(
           selectedLayers.map((selectedLayer, layerIndex) => {
             if (
-              !formattedSelectedLayerDates[layerIndex].includes(
-                formatDate(date.value),
-              )
+              !formattedSelectedLayerDates[layerIndex]
+                .map(di => formatDate(di.displayDate))
+                .includes(formatDate(date.value))
             ) {
               return undefined;
             }
@@ -134,125 +127,62 @@ const TimelineItems = memo(
       [classes.dateItemLabel, classes.dayItem, locale],
     );
 
-    const hasValidity = (
-      selectedLayersList: DateCompatibleLayer[],
-      layerIndex: number,
-    ): boolean => {
-      return (
-        selectedLayersList &&
-        selectedLayersList[layerIndex] &&
-        !!selectedLayersList[layerIndex].validity
-      );
-    };
-
     const renderLayerDates = useCallback(
       (date: DateRangeType, index: number) => {
-        const hasValidityDates = (
-          selectedLayersList: DateCompatibleLayer[],
-          layerIndex: number,
-          currentDateRange: DateRangeType,
-        ): boolean => {
-          const adminLevelDataLayer: AdminLevelDataLayerProps = selectedLayersList[
-            layerIndex
-          ] as AdminLevelDataLayerProps;
-          return !!(
-            adminLevelDataLayer.dates &&
-            adminLevelDataLayer.dates!.includes(currentDateRange.date)
-          );
-        };
-
-        const isValidityBackwardOrBothDirection = (
-          selectedLayersList: DateCompatibleLayer[],
-          layerIndex: number,
-        ) => {
+        const concatenatedLayers = [
+          intersectionDateItems,
+          ...formattedSelectedLayerDates,
+        ];
+        return concatenatedLayers.map((layerDates, layerIndex) => {
+          if (
+            !layerDates
+              .map(di => formatDate(di.displayDate))
+              .includes(formatDate(date.value))
+          ) {
+            return null;
+          }
           return (
-            hasValidity(selectedLayersList, layerIndex) &&
-            hasValidityDates(selectedLayers, layerIndex, date) &&
-            (selectedLayersList[layerIndex].validity?.mode ===
-              DatesPropagation.BACKWARD ||
-              selectedLayersList[layerIndex].validity?.mode ===
-                DatesPropagation.BOTH)
-          );
-        };
-
-        const isModuloDays = (
-          layerDates: string[][],
-          layerIndex: number,
-          currentDateRange: DateRangeType,
-          selectedLayersList: DateCompatibleLayer[],
-        ): boolean => {
-          return (
-            layerDates[layerIndex].indexOf(currentDateRange.label) %
-              selectedLayersList[layerIndex].validity!.days ===
-            0
-          );
-        };
-
-        const isValidityForwardOrBothDirection = (
-          selectedLayersList: DateCompatibleLayer[],
-          layerIndex: number,
-        ) => {
-          return (
-            hasValidity(selectedLayersList, layerIndex) &&
-            (hasValidityDates(selectedLayers, layerIndex, date) ||
-              isModuloDays(
-                formattedSelectedLayerDates,
-                layerIndex,
-                date,
-                selectedLayersList,
-              )) &&
-            (selectedLayersList[layerIndex].validity?.mode ===
-              DatesPropagation.FORWARD ||
-              selectedLayersList[layerIndex].validity?.mode ===
-                DatesPropagation.BOTH)
-          );
-        };
-
-        return [formattedIntersectionDates, ...formattedSelectedLayerDates].map(
-          (layerDates, layerIndex) => {
-            if (!layerDates.includes(formatDate(date.value))) {
-              return null;
-            }
-            return (
-              <div>
-                {isValidityForwardOrBothDirection(
-                  selectedLayers,
-                  layerIndex,
-                ) && (
+            <>
+              {layerIndex !== 0 &&
+                concatenatedLayers[layerIndex][index].isStartDate && (
                   <div
-                    className={`${DIRECTION_ITEM_STYLING[layerIndex].class} ${classes.layerDirectionBase}`}
+                    key={`Forward-${date.label}-${date.value}-${layerDates[layerIndex]}`}
+                    className={`${
+                      DIRECTION_ITEM_STYLING[layerIndex - 1].class
+                    } ${classes.layerDirectionBase}`}
                   />
                 )}
 
-                {isValidityBackwardOrBothDirection(
-                  selectedLayers,
-                  layerIndex,
-                ) && (
+              {layerIndex !== 0 &&
+                concatenatedLayers[layerIndex][index].isEndDate && (
                   <div
-                    className={`${DIRECTION_ITEM_STYLING[layerIndex].class} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
+                    key={`Backward-${date.label}-${date.value}-${layerDates[layerIndex]}`}
+                    className={`${
+                      DIRECTION_ITEM_STYLING[layerIndex - 1].class
+                    } ${classes.layerDirectionBase} ${
+                      classes.layerDirectionBackwardBase
+                    }`}
                   />
                 )}
 
-                <div
-                  key={`Nested-${date.label}-${date.value}-${layerDates[layerIndex]}`}
-                  className={DATE_ITEM_STYLING[layerIndex].class}
-                  role="presentation"
-                  onClick={handleClick(index)}
-                />
-              </div>
-            );
-          },
-        );
+              <div
+                key={`Nested-${date.label}-${date.value}-${layerDates[layerIndex]}`}
+                className={DATE_ITEM_STYLING[layerIndex].class}
+                role="presentation"
+                onClick={handleClick(index)}
+              />
+            </>
+          );
+        });
       },
       [
         DATE_ITEM_STYLING,
         DIRECTION_ITEM_STYLING,
         classes.layerDirectionBackwardBase,
         classes.layerDirectionBase,
-        formattedIntersectionDates,
+        intersectionDateItems,
         formattedSelectedLayerDates,
         handleClick,
-        selectedLayers,
       ],
     );
 
@@ -369,10 +299,6 @@ const styles = () =>
     layerTwoDirection: {
       top: 10,
       borderLeft: '8px solid yellow',
-    },
-    layerThreeDirection: {
-      top: 15,
-      borderLeft: '8px solid darkred',
     },
 
     layerDirectionBackwardBase: {
