@@ -138,11 +138,10 @@ const TimelineItems = memo(
           }
 
           // eslint-disable-next-line fp/no-mutating-methods
-          const trunkedLayer = dateItemsForLayer.slice(
+          return dateItemsForLayer.slice(
             firstIndex,
             dateItemsForLayer.length - 1,
           );
-          return trunkedLayer;
         },
       );
     }, [intersectionDateItems, selectedLayerDateItems, timelineStartDate]);
