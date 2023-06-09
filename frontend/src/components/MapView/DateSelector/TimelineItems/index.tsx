@@ -10,15 +10,10 @@ import {
 import { CreateCSSProperties } from '@material-ui/styles';
 import { compact, merge } from 'lodash';
 import React, { memo, useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { DateItem, DateRangeType } from '../../../../config/types';
-import { availableDatesSelector } from '../../../../context/serverStateSlice';
 import { moment, useSafeTranslation } from '../../../../i18n';
 import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
-import {
-  DateCompatibleLayer,
-  getPossibleDatesForLayer,
-} from '../../../../utils/server-utils';
+import { DateCompatibleLayer } from '../../../../utils/server-utils';
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
@@ -34,8 +29,6 @@ const TimelineItems = memo(
     locale,
     selectedLayers,
   }: TimelineItemsProps) => {
-    const serverAvailableDates = useSelector(availableDatesSelector);
-
     const handleClick = useCallback(
       (dateIndex: number) => {
         return () => {
@@ -50,11 +43,9 @@ const TimelineItems = memo(
     const selectedLayerDateItems: DateItem[][] = useMemo(
       () =>
         selectedLayers.map(layer => {
-          return getPossibleDatesForLayer(layer, serverAvailableDates)
-            .filter(value => value) // null check
-            .flat();
+          return (layer as DateCompatibleLayerWithDateItems).dateItems;
         }),
-      [selectedLayers, serverAvailableDates],
+      [selectedLayers],
     );
 
     // Hard coded styling for date items (first, second, and third layers)
@@ -136,7 +127,7 @@ const TimelineItems = memo(
         dateRange[0].value,
       ).toDateString();
 
-      const hello = [intersectionDateItems, ...selectedLayerDateItems].map(
+      const layers = [intersectionDateItems, ...selectedLayerDateItems].map(
         (dateItemsForLayer: DateItem[]) => {
           const firstIndex = dateItemsForLayer
             .map(d => new Date(d.displayDate).toDateString())
@@ -154,7 +145,7 @@ const TimelineItems = memo(
         },
       );
 
-      return hello;
+      return layers;
     }, [dateRange, intersectionDateItems, selectedLayerDateItems]);
 
     const renderLayerDates = useCallback(
