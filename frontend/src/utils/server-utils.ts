@@ -175,23 +175,23 @@ const getPointDataCoverage = async (
   );
 };
 
-async function getAdminLevelDataCoverage(layer: AdminLevelDataLayerProps) {
+const getAdminLevelDataCoverage = (layer: AdminLevelDataLayerProps) => {
   const { dates } = layer;
   if (!dates) {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
   return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
-}
+};
 
-async function getStaticRasterDataCoverage(layer: StaticRasterLayerProps) {
+const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
   const { dates } = layer;
   if (!dates) {
     return [];
   }
   // raw data comes in as {"dates": ["YYYY-MM-DD"]}
   return dates.map(v => moment(v, 'YYYY-MM-DD').valueOf());
-}
+};
 
 /**
  * Creates DateItem object whose fields have the same value.
@@ -308,11 +308,11 @@ export async function getLayersAvailableDates(
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer, dispatch),
     })),
-    ...adminWithDateLayers.map(async layer => ({
-      [layer.id]: await getAdminLevelDataCoverage(layer),
+    ...adminWithDateLayers.map(layer => ({
+      [layer.id]: getAdminLevelDataCoverage(layer),
     })),
-    ...staticRasterWithDateLayers.map(async layer => ({
-      [layer.id]: await getStaticRasterDataCoverage(layer),
+    ...staticRasterWithDateLayers.map(layer => ({
+      [layer.id]: getStaticRasterDataCoverage(layer),
     })),
   ]);
 
