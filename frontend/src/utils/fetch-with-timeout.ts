@@ -15,7 +15,6 @@ export const fetchWithTimeout = async (
   options?: FetchWithTimeoutOptions,
   fetchErrorMessage?: string,
 ): Promise<Response> => {
-  // The abort controller
   const controller = new AbortController();
   // the setTimeout id to abort the request
   const id = setTimeout(
@@ -51,7 +50,6 @@ export const fetchWithTimeout = async (
     );
     throw error;
   } finally {
-    // Clear the timeout
     clearTimeout(id);
   }
 };
