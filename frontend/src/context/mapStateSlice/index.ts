@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { cloneDeep } from 'lodash';
 import { LayerKey, LayerType } from '../../config/types';
 import { LayerDefinitions } from '../../config/utils';
 import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
@@ -86,16 +85,13 @@ export const mapStateSlice = createSlice({
   initialState,
   reducers: {
     addLayer: ({ layers, ...rest }, { payload }: PayloadAction<LayerType>) => {
-      const storeLayers = cloneDeep(layers);
       const layersToAdd = payload?.group?.activateAll
         ? Object.values(LayerDefinitions).filter(l =>
             payload?.group?.layers?.map(layer => layer.id).includes(l.id),
           )
         : [payload];
 
-      const filteredLayers = storeLayers.filter(layer =>
-        keepLayer(layer, payload),
-      );
+      const filteredLayers = layers.filter(layer => keepLayer(layer, payload));
 
       // Keep boundary layers at the top of our stack
       const newLayers =
