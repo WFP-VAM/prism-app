@@ -341,7 +341,7 @@ export async function getLayersAvailableDates(
       };
     });
 
-  const res = Object.entries(mergedLayers).reduce((acc, [layerKey, dates]) => {
+  return Object.entries(mergedLayers).reduce((acc, [layerKey, dates]) => {
     const layerWithValidity = layersWithValidity.find(
       validityLayer => validityLayer.name === layerKey,
     );
@@ -352,8 +352,6 @@ export async function getLayersAvailableDates(
 
     return { ...acc, [layerKey]: updatedDates };
   }, {});
-  console.log(res);
-  return res;
 }
 
 /**
