@@ -189,7 +189,6 @@ const createDefaultDateItem = (date: number, validity?: Validity): DateItem => {
         mode === DatesPropagation.FORWARD || mode === DatesPropagation.BOTH,
       isEndDate:
         mode === DatesPropagation.BACKWARD || mode === DatesPropagation.BOTH,
-      validity,
     };
   }
   return {

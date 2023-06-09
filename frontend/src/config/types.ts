@@ -598,7 +598,6 @@ export type DateItem = {
   queryDate: number; // Date that will be used in the WMS request.
   isStartDate?: boolean;
   isEndDate?: boolean;
-  validity?: Validity;
 };
 
 export type AvailableDates = {
