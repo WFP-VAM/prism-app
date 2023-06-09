@@ -122,12 +122,13 @@ const TimelineItems = memo(
       [classes.dateItemLabel, classes.dayItem, locale],
     );
 
-    const concatenatedLayers = useMemo(() => {
-      const timelineStartDate: string = new Date(
-        dateRange[0].value,
-      ).toDateString();
+    const timelineStartDate: string = useMemo(
+      () => new Date(dateRange[0].value).toDateString(),
+      [dateRange],
+    );
 
-      const layers = [intersectionDateItems, ...selectedLayerDateItems].map(
+    const concatenatedLayers = useMemo(() => {
+      return [intersectionDateItems, ...selectedLayerDateItems].map(
         (dateItemsForLayer: DateItem[]) => {
           const firstIndex = dateItemsForLayer
             .map(d => new Date(d.displayDate).toDateString())
@@ -144,9 +145,7 @@ const TimelineItems = memo(
           return trunkedLayer;
         },
       );
-
-      return layers;
-    }, [dateRange, intersectionDateItems, selectedLayerDateItems]);
+    }, [intersectionDateItems, selectedLayerDateItems, timelineStartDate]);
 
     const renderLayerDates = useCallback(
       (date: DateRangeType, index: number) => {
