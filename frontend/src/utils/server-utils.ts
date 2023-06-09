@@ -41,9 +41,16 @@ export const getRequestDate = (
     return selectedDate;
   }
 
-  const dateItem = layerAvailableDates.find(
-    date => date.displayDate === selectedDate,
-  );
+  const dateItem = layerAvailableDates.find(date => {
+    return (
+      new Date(date.displayDate).getDate() ===
+        new Date(selectedDate).getDate() &&
+      new Date(date.displayDate).getMonth() ===
+        new Date(selectedDate).getMonth() &&
+      new Date(date.displayDate).getFullYear() ===
+        new Date(selectedDate).getFullYear()
+    );
+  });
   if (!dateItem) {
     return layerAvailableDates[layerAvailableDates.length - 1].queryDate;
   }
