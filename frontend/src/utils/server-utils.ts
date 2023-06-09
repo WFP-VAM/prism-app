@@ -103,19 +103,41 @@ const loadPointLayerDataFromURL = async (
   fetchUrl: string,
   layerId: string,
   dispatch: Dispatch,
-) => {
-  if (!fetchUrl) {
-    throw new LocalError(
-      'load point layer data from url failed because fetchUrl is missing',
+  fallbackUrl?: string,
+): Promise<PointDataDates> => {
+  try {
+    if (!fetchUrl) {
+      throw new LocalError(
+        'load point layer data from url failed because fetchUrl is missing',
+      );
+    }
+    const response = await fetchWithTimeout(
+      fetchUrl,
+      dispatch,
+      {},
+      `Impossible to get point data dates for ${layerId}`,
     );
+    return (await response.json()) as PointDataDates;
+  } catch (error) {
+    if (!fetchUrl && fallbackUrl) {
+      dispatch(
+        addNotification({
+          message: `Failed loading point data layer: ${layerId}. Attempting to load fallback URL...`,
+          type: 'warning',
+        }),
+      );
+      return loadPointLayerDataFromURL(fallbackUrl || '', layerId, dispatch);
+    }
+    if ((!fetchUrl && !fallbackUrl) || error instanceof LocalError) {
+      dispatch(
+        addNotification({
+          message: error.message,
+          type: 'warning',
+        }),
+      );
+    }
+    return [];
   }
-  const response = await fetchWithTimeout(
-    fetchUrl,
-    dispatch,
-    {},
-    `Impossible to get point data dates for ${layerId}`,
-  );
-  return (await response.json()) as PointDataDates;
 };
 
 /**
@@ -150,19 +172,7 @@ const getPointDataCoverage = async (
   // eslint-disable-next-line fp/no-mutation
   const data = await (pointDataFetchPromises[fetchUrlWithParams] =
     pointDataFetchPromises[fetchUrlWithParams] ||
-    loadPointLayerDataFromURL(fetchUrlWithParams, id, dispatch)).catch(
-    error => {
-      dispatch(
-        addNotification({
-          message:
-            error.message ||
-            `Failed loading point data layer: ${id}. Attempting to load fallback URL...`,
-          type: 'warning',
-        }),
-      );
-      return loadPointLayerDataFromURL(fallbackUrl || '', id, dispatch);
-    },
-  );
+    loadPointLayerDataFromURL(fetchUrlWithParams, id, dispatch, fallbackUrl));
 
   return (
     data
@@ -331,7 +341,7 @@ export async function getLayersAvailableDates(
       };
     });
 
-  return Object.entries(mergedLayers).reduce((acc, [layerKey, dates]) => {
+  const res = Object.entries(mergedLayers).reduce((acc, [layerKey, dates]) => {
     const layerWithValidity = layersWithValidity.find(
       validityLayer => validityLayer.name === layerKey,
     );
@@ -342,6 +352,8 @@ export async function getLayersAvailableDates(
 
     return { ...acc, [layerKey]: updatedDates };
   }, {});
+  console.log(res);
+  return res;
 }
 
 /**
