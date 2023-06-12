@@ -72,6 +72,9 @@ const TimelineItems = memo(
       {
         class: classes.layerTwoDirection,
       },
+      {
+        class: classes.layerThreeDirection,
+      },
     ];
 
     const intersectionDateItems: DateItem[] = intersectionDates.map(date => ({
@@ -316,6 +319,10 @@ const styles = () =>
     layerTwoDirection: {
       top: 10,
       borderLeft: '8px solid yellow',
+    },
+    layerThreeDirection: {
+      top: 15,
+      borderLeft: '8px solid darkred',
     },
 
     layerDirectionBackwardBase: {
