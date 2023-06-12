@@ -25,22 +25,24 @@ const TimelineItem = memo(
       <>
         {concatenatedLayers.map(
           (layerDates: DateItem[], layerIndex: number) => {
-            if (
-              layerDates[index] === undefined ||
-              (layerIndex !== 0 &&
-                new Date(layerDates[index].displayDate).toDateString() !==
-                  new Date(currentDate.value).toDateString())
-            ) {
+            // TODO: fix not really efficient algorithm
+            const matchingDateItemInLayer = layerDates.find(
+              f =>
+                new Date(f.displayDate).toDateString() ===
+                new Date(currentDate.value).toDateString(),
+            );
+
+            if (!matchingDateItemInLayer) {
               return null;
             }
             return (
               <React.Fragment key={Math.random()}>
-                {layerIndex !== 0 && layerDates[index].isStartDate && (
+                {layerIndex !== 0 && matchingDateItemInLayer.isStartDate && (
                   <div
                     className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
                   />
                 )}
-                {layerIndex !== 0 && layerDates[index].isEndDate && (
+                {layerIndex !== 0 && matchingDateItemInLayer.isEndDate && (
                   <div
                     className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
                   />

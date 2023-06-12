@@ -11,3 +11,5 @@ exports[`TimelineItem renders as expected 1`] = `
   />
 </div>
 `;
+
+exports[`TimelineItem renders as expected with data point starting after Timeline start date 1`] = `<div />`;
