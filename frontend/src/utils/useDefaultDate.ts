@@ -7,7 +7,6 @@ import {
   dateRangeSelector,
   layersSelector,
 } from '../context/mapStateSlice/selectors';
-// import { USER_DATE_OFFSET } from '../components/MapView/DateSelector/utils';
 
 import { useUrlHistory } from './url-utils';
 import { DEFAULT_DATE_FORMAT } from './name-utils';
