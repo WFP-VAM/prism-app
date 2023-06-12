@@ -43,6 +43,7 @@ export const fetchBoundaryLayerData: LazyLoader<BoundaryLayerProps> = () => asyn
     if (!(error instanceof LocalError)) {
       return undefined;
     }
+    console.error(error);
     dispatch(
       addNotification({
         message: error.message,

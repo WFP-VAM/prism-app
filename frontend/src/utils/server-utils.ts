@@ -129,6 +129,7 @@ const loadPointLayerDataFromURL = async (
       return loadPointLayerDataFromURL(fallbackUrl || '', layerId, dispatch);
     }
     if ((!fetchUrl && !fallbackUrl) || error instanceof LocalError) {
+      console.error(error);
       dispatch(
         addNotification({
           message: error.message,

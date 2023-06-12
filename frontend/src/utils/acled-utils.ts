@@ -46,6 +46,7 @@ export const fetchACLEDDates = async (
     return sortBy(datesSet);
   } catch (error) {
     if (error instanceof LocalError) {
+      console.error(error);
       dispatch(
         addNotification({
           message: error.message,

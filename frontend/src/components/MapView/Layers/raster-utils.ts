@@ -240,6 +240,7 @@ export async function downloadGeotiff(
     link.click();
   } catch (error) {
     if (error instanceof LocalError) {
+      console.error(error);
       dispatch(
         addNotification({
           message: error.message,

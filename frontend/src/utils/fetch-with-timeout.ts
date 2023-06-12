@@ -34,6 +34,7 @@ export const fetchWithTimeout = async (
     }
     return res;
   } catch (error) {
+    console.error(error);
     if (error.name === 'AbortError') {
       dispatch(
         addNotification({
