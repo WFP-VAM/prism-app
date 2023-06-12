@@ -219,7 +219,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
 
   // The date integer from url
   const dateInt = useMemo(() => {
-    return moment(urlDate).set({ hour: 12 }).valueOf();
+    return moment(urlDate).set({ hour: 12, minute: 0 }).valueOf();
   }, [urlDate]);
 
   /*
@@ -250,7 +250,9 @@ const MapView = memo(({ classes }: MapViewProps) => {
         dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
       ),
       // convert back to number array after using YYYY-MM-DD strings in countBy
-    ).map(dateString => moment.utc(dateString).set({ hour: 12 }).valueOf());
+    ).map(dateString =>
+      moment.utc(dateString).set({ hour: 12, minute: 0 }).valueOf(),
+    );
   }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport.length]);
 
   /*
