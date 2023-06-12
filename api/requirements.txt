@@ -5,7 +5,7 @@ Fiona==1.8.22
 greenlet==1.1.2
 gunicorn==20.1.0
 odc-geo==0.3.2
-odc-stac==0.3.3
+odc-stac==0.3.6
 pystac-client==0.6.1
 pystac==1.6.1
 rasterstats==0.17.0
