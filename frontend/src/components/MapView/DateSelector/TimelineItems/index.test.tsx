@@ -1,7 +1,5 @@
-import React from 'react';
 import { render } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { store } from '../../../../context/store';
+import React from 'react';
 
 import TimelineItems from '.';
 
@@ -23,10 +21,6 @@ const props = {
 };
 
 test('renders as expected', () => {
-  const { container } = render(
-    <Provider store={store}>
-      <TimelineItems {...props} />
-    </Provider>,
-  );
+  const { container } = render(<TimelineItems {...props} />);
   expect(container).toMatchSnapshot();
 });

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TimelineItem renders as expected 1`] = `
+<div>
+  <div
+    class="layerDirectionClass memo-layerDirectionBase-1"
+  />
+  <div
+    class="layerOneDate"
+    role="presentation"
+  />
+</div>
+`;
