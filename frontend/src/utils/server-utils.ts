@@ -148,7 +148,7 @@ async function getPointDataCoverage(layer: PointDataLayerProps) {
   return (
     data
       // adding 12 hours to avoid  errors due to daylight saving, and convert to number
-      .map(item => moment.utc(item.date).set({ hour: 12 }).valueOf())
+      .map(item => moment.utc(item.date).set({ hour: 12, minute: 0 }).valueOf())
       // remove duplicate dates - indexOf returns first index of item
       .filter((date, index, arr) => {
         return arr.indexOf(date) === index;
@@ -180,7 +180,7 @@ async function getStaticRasterDataCoverage(layer: StaticRasterLayerProps) {
  * @return DateItem
  */
 const createDefaultDateItem = (date: number): DateItem => {
-  const dateWithTz = moment(date).set({ hour: 12 }).valueOf();
+  const dateWithTz = moment(date).set({ hour: 12, minute: 0 }).valueOf();
   return {
     displayDate: dateWithTz,
     queryDate: dateWithTz,
@@ -200,7 +200,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
   // Convert the dates to moment dates
   const momentDates = Array.prototype.sort
     .call(dates)
-    .map(d => moment(d).set({ hour: 12 }));
+    .map(d => moment(d).set({ hour: 12, minute: 0 }));
 
   // Generate first DateItem[] from dates array.
   const dateItemsDefault: DateItem[] = momentDates.map(momentDate =>
