@@ -13,13 +13,12 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { DateItem, DateRangeType } from '../../../../config/types';
 import { moment, useSafeTranslation } from '../../../../i18n';
 import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
-import { DateCompatibleLayer } from '../../../../utils/server-utils';
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
 } from '../utils';
-import TooltipItem from './TooltipItem';
 import TimelineItem from './TimelineItem';
+import TooltipItem from './TooltipItem';
 
 const TimelineItems = memo(
   ({
@@ -35,7 +34,7 @@ const TimelineItems = memo(
     const selectedLayerDateItems: DateItem[][] = useMemo(
       () =>
         selectedLayers.map(layer => {
-          return (layer as DateCompatibleLayerWithDateItems).dateItems;
+          return layer.dateItems;
         }),
       [selectedLayers],
     );
@@ -77,11 +76,10 @@ const TimelineItems = memo(
       (date: DateRangeType, index): JSX.Element[] => {
         const tooltipTitleArray: JSX.Element[] = compact(
           selectedLayers.map((selectedLayer, layerIndex) => {
-            const dateSelectedLayer = (selectedLayers as unknown) as DateCompatibleLayerWithDateItems;
             if (
-              dateSelectedLayer.dateItems &&
-              dateSelectedLayer.dateItems[index] &&
-              dateSelectedLayer.dateItems[index].displayDate === date.value
+              selectedLayer.dateItems &&
+              selectedLayer.dateItems[index] &&
+              selectedLayer.dateItems[index].displayDate === date.value
             ) {
               return undefined;
             }
@@ -262,7 +260,7 @@ export interface TimelineItemsProps extends WithStyles<typeof styles> {
   dateRange: DateRangeType[];
   clickDate: (arg: number) => void;
   locale: string;
-  selectedLayers: DateCompatibleLayer[];
+  selectedLayers: DateCompatibleLayerWithDateItems[];
 }
 
 export default withStyles(styles)(TimelineItems);
