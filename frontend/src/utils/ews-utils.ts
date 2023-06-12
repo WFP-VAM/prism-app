@@ -68,7 +68,7 @@ export const createEWSDatesArray = (): number[] => {
 
   while (tempDate.valueOf() <= endDate) {
     // eslint-disable-next-line fp/no-mutating-methods
-    datesArray.push(tempDate.clone().set({ hour: 12 }).valueOf());
+    datesArray.push(tempDate.clone().set({ hour: 12, minute: 0 }).valueOf());
 
     tempDate.add(1, 'days');
   }
