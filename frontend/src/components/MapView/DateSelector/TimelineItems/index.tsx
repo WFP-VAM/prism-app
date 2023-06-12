@@ -2,7 +2,6 @@ import {
   Fade,
   Grid,
   Tooltip,
-  Typography,
   WithStyles,
   createStyles,
   withStyles,
@@ -11,13 +10,13 @@ import { CreateCSSProperties } from '@material-ui/styles';
 import { compact, merge } from 'lodash';
 import React, { memo, useCallback, useMemo } from 'react';
 import { DateItem, DateRangeType } from '../../../../config/types';
-import { moment, useSafeTranslation } from '../../../../i18n';
-import { MONTH_YEAR_DATE_FORMAT } from '../../../../utils/name-utils';
+import { useSafeTranslation } from '../../../../i18n';
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
 } from '../utils';
 import TimelineItem from './TimelineItem';
+import TimelineLabel from './TimelineLabel';
 import TooltipItem from './TooltipItem';
 
 const TimelineItems = memo(
@@ -93,20 +92,6 @@ const TimelineItems = memo(
       [DATE_ITEM_STYLING, selectedLayers, t],
     );
 
-    const renderDateItemLabel = useCallback(
-      (date: DateRangeType) => {
-        if (date.isFirstDay) {
-          return (
-            <Typography variant="body2" className={classes.dateItemLabel}>
-              {moment(date.value).locale(locale).format(MONTH_YEAR_DATE_FORMAT)}
-            </Typography>
-          );
-        }
-        return <div className={classes.dayItem} />;
-      },
-      [classes.dateItemLabel, classes.dayItem, locale],
-    );
-
     const timelineStartDate: string = new Date(
       dateRange[0].value,
     ).toDateString();
@@ -141,7 +126,7 @@ const TimelineItems = memo(
         {dateRange.map((date, index) => (
           <Tooltip
             key={`Root-${date.label}-${date.value}`}
-            title={<div>{getTooltipTitle(date)}</div>}
+            title={<>{getTooltipTitle(date)}</>}
             TransitionComponent={Fade}
             TransitionProps={{ timeout: 0 }}
             placement="top"
@@ -154,7 +139,7 @@ const TimelineItems = memo(
                 date.isFirstDay ? classes.dateItemFull : classes.dateItem
               }
             >
-              {renderDateItemLabel(date)}
+              <TimelineLabel locale={locale} date={date} />
               <TimelineItem
                 concatenatedLayers={concatenatedLayers}
                 currentDate={date}
@@ -204,19 +189,6 @@ const styles = () =>
         },
       },
     }),
-
-    dateItemLabel: {
-      position: 'absolute',
-      top: 22,
-      textAlign: 'left',
-      paddingLeft: 5,
-      minWidth: 400,
-    },
-
-    dayItem: {
-      height: 10,
-      borderLeft: '1px solid white',
-    },
 
     intersectionDate: {
       ...BASE_DATE_ITEM,
