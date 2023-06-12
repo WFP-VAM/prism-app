@@ -99,7 +99,7 @@ const useMapOnClick = (
 
       dispatch(setWMSGetFeatureInfoLoading(true));
 
-      makeFeatureInfoRequest(featureInfoLayers, params).then(
+      makeFeatureInfoRequest(featureInfoLayers, params, dispatch).then(
         (result: { [name: string]: string } | null) => {
           if (!result) {
             dispatch(setWMSGetFeatureInfoLoading(false));
