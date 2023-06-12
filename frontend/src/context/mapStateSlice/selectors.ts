@@ -7,6 +7,7 @@ import type { LayerDataTypes } from '../layers/layer-data';
 import type { MapState } from '.';
 import type { LayerKey, LayerType } from '../../config/types';
 import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
+import { datesAreEqualWithoutTime } from '../../utils/date-utils';
 
 export const layersSelector = (state: RootState): MapState['layers'] =>
   state.mapState.layers;
@@ -24,11 +25,7 @@ export const layerDataSelector = (id: LayerKey, date?: number) => (
 ): LayerDataTypes | undefined =>
   state.mapState.layersData.find(
     ({ layer, date: dataDate }) =>
-      layer.id === id &&
-      (!date ||
-        (new Date(date).getDate() === new Date(dataDate).getDate() &&
-          new Date(date).getMonth() === new Date(dataDate).getMonth() &&
-          new Date(date).getFullYear() === new Date(dataDate).getFullYear())),
+      layer.id === id && (!date || datesAreEqualWithoutTime(date, dataDate)),
   );
 export const loadingLayerIdsSelector = (state: RootState): LayerKey[] =>
   state.mapState.loadingLayerIds;

@@ -20,14 +20,6 @@ function WMSLayers({
     return null;
   }
   const layerAvailableDates = serverAvailableDates[serverLayerName];
-  /* eslint-disable no-console */
-  console.log(new Date(selectedDate));
-  console.log(
-    layerAvailableDates
-      .slice(-10)
-      .map(dateItem => new Date(dateItem.displayDate)),
-  );
-  /* eslint-enable no-console */
   const queryDate = getRequestDate(layerAvailableDates, selectedDate);
 
   return (

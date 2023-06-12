@@ -23,6 +23,7 @@ import {
 import { queryParamsToString } from './url-utils';
 import { createEWSDatesArray } from './ews-utils';
 import { fetchACLEDDates } from './acled-utils';
+import { datesAreEqualWithoutTime } from './date-utils';
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
@@ -42,14 +43,7 @@ export const getRequestDate = (
   }
 
   const dateItem = layerAvailableDates.find(date => {
-    return (
-      new Date(date.displayDate).getDate() ===
-        new Date(selectedDate).getDate() &&
-      new Date(date.displayDate).getMonth() ===
-        new Date(selectedDate).getMonth() &&
-      new Date(date.displayDate).getFullYear() ===
-        new Date(selectedDate).getFullYear()
-    );
+    return datesAreEqualWithoutTime(date.displayDate, selectedDate);
   });
   if (!dateItem) {
     return layerAvailableDates[layerAvailableDates.length - 1].queryDate;
