@@ -6,6 +6,7 @@ import {
   withStyles,
   WithStyles,
   LinearProgress,
+  Typography,
 } from '@material-ui/core';
 import { isEqual } from 'lodash';
 import { tooltipSelector } from '../../../context/tooltipStateSlice';
@@ -30,14 +31,32 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
       .map(([key, value]) => {
         return (
           <Fragment key={key}>
-            <h4 key={key}>{`${t(key)}: ${value.data}`}</h4>
-            <h4>
+            {/* Allow users to show data without a key/title */}
+            {!key.includes('do_not_display') && (
+              <Typography
+                display="inline"
+                variant="h4"
+                color="inherit"
+                className={classes.text}
+              >
+                {`${t(key)}: `}
+              </Typography>
+            )}
+            <Typography
+              display="inline"
+              variant="h4"
+              color="inherit"
+              className={classes.text}
+            >
+              {`${value.data}`}
+            </Typography>
+            <Typography variant="h4" color="inherit" className={classes.text}>
               {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
-            </h4>
+            </Typography>
           </Fragment>
         );
       });
-  }, [popup.coordinates, popup.data, t]);
+  }, [classes.text, popup.coordinates, popup.data, t]);
 
   const renderedPopupLoader = useMemo(() => {
     if (!popup.wmsGetFeatureInfoLoading) {
@@ -51,18 +70,17 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
       return null;
     }
     return (
-      <Popup
-        anchor="bottom"
-        coordinates={popup.coordinates}
-        className={classes.popup}
-      >
-        <h4>{popupTitle}</h4>
+      <Popup coordinates={popup.coordinates} className={classes.popup}>
+        <Typography variant="h4" color="inherit" className={classes.title}>
+          {popupTitle}
+        </Typography>
         {renderedPopupContent}
         {renderedPopupLoader}
       </Popup>
     );
   }, [
     classes.popup,
+    classes.title,
     popup.coordinates,
     popup.showing,
     popupTitle,
@@ -73,17 +91,25 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
 
 const styles = () =>
   createStyles({
+    title: {
+      fontWeight: 600,
+      marginBottom: '8px',
+    },
+    text: {
+      marginBottom: '4px',
+    },
     popup: {
       '& div.mapboxgl-popup-content': {
         background: 'black',
         color: 'white',
-        padding: '10px 10px 10px',
+        padding: '5px 5px 5px 5px',
         maxWidth: '30em',
-        maxHeight: '12em',
+        maxHeight: '20em',
         overflow: 'auto',
       },
       '& div.mapboxgl-popup-tip': {
         'border-top-color': 'black',
+        'border-bottom-color': 'black',
       },
     },
   });

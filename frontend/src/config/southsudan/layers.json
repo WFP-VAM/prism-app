@@ -3,14 +3,8 @@
     "type": "boundary",
     "path": "data/southsudan/ssd_admbnda_adm2_imwg_nbs_20180817.json",
     "admin_code": "ADM2_PCODE",
-    "admin_level_names": [
-      "ADM1_EN",
-      "ADM2_EN"
-    ],
-    "admin_level_local_names": [
-      "ADM1_EN",
-      "ADM2_EN"
-    ],
+    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
+    "admin_level_local_names": ["ADM1_EN", "ADM2_EN"],
     "opacity": 0.8,
     "styles:": {
       "fill": {
@@ -27,12 +21,8 @@
     "type": "boundary",
     "path": "data/southsudan/ssd_admbnda_adm1_imwg_nbs_20210924.json",
     "admin_code": "ADM1_PCODE",
-    "admin_level_names": [
-      "ADM1_EN"
-    ],
-    "admin_level_local_names": [
-      "ADM1_EN"
-    ],
+    "admin_level_names": ["ADM1_EN"],
+    "admin_level_local_names": ["ADM1_EN"],
     "opacity": 0.8,
     "styles:": {
       "fill": {
@@ -169,8 +159,9 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", 
-          "label": "Rainfall anomaly", 
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
           "color": "#375692",
           "minValue": 0,
           "maxValue": 300
@@ -398,11 +389,13 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r1q", 
+        {
+          "key": "r1q",
           "label": "Rainfall anomaly",
           "minValue": 0,
-          "maxValue": 300, 
-          "color": "#375692" },
+          "maxValue": 300,
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -626,11 +619,13 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r3q", 
+        {
+          "key": "r3q",
           "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
-          "color": "#375692" },
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -2285,11 +2280,13 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "viq", 
-          "label": "NDVI anomaly", 
+        {
+          "key": "viq",
+          "label": "NDVI anomaly",
           "minValue": 0,
           "maxValue": 150,
-          "color": "#5e803f" },
+          "color": "#5e803f"
+        },
         {
           "key": "viq_avg",
           "label": "Normal",
@@ -2896,10 +2893,7 @@
     "title": "Flood events over time",
     "type": "static_raster",
     "base_url": "http://prism-raster-tiles.s3-website-us-east-1.amazonaws.com/ssd-flood-events/test/{YYYY_MM_DD}/{z}/{x}/{y}.png",
-    "dates": [
-      "2022-12-01",
-      "2022-12-11"
-    ],
+    "dates": ["2022-12-01", "2022-12-11"],
     "opacity": 1.0,
     "legend_text": "Flood events",
     "min_zoom": 0,
@@ -3025,11 +3019,11 @@
       },
       "event_date": {
         "type": "string",
-        "dataTitle": "Date"
+        "dataTitle": "do_not_display_date"
       },
       "notes": {
         "type": "string",
-        "dataTitle": "Details"
+        "dataTitle": "do_not_display_details"
       }
     }
   },
@@ -3048,10 +3042,7 @@
     "opacity": 1,
     "legend_text": "Types of armed conflict incident. Provided by ACLED (Armed Conflict Location & Event Data Project): https://acleddata.com/",
     "legend": [
-      { "label": "Battles", 
-        "value": "Battles ", 
-        "color": "#ea5545" 
-      },
+      { "label": "Battles", "value": "Battles ", "color": "#ea5545" },
       {
         "label": "Explosions/Remote violence",
         "value": "Explosions/Remote violence",
