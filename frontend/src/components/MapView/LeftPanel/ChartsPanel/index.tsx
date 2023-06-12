@@ -31,7 +31,11 @@ import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
 import { appConfig } from '../../../../config';
-import { BoundaryLayerProps, PanelSize } from '../../../../config/types';
+import {
+  BoundaryLayerProps,
+  PanelSize,
+  WMSLayerProps,
+} from '../../../../config/types';
 import {
   getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
@@ -391,78 +395,72 @@ const ChartsPanel = memo(
       countryAdmin0Id,
     ]);
 
+    const renderResultsPage = useMemo(() => {
+      // chart size is not responsive once it is mounted
+      // seems to be possible in the newer chart.js versions
+      // here we mount a new component if one chart
+      if (adminProperties && selectedDate && selectedLayerTitles.length === 1) {
+        const chartLayer = chartLayers.find(layer =>
+          selectedLayerTitles.includes(layer.title),
+        );
+        return (
+          <Box
+            style={{
+              maxHeight: '50vh',
+              width: '100%',
+            }}
+          >
+            <ChartSection
+              chartLayer={chartLayer as WMSLayerProps}
+              adminProperties={adminProperties || {}}
+              adminLevel={adminLevel}
+              date={selectedDate}
+              dataForCsv={dataForCsv}
+            />
+          </Box>
+        );
+      }
+      return (
+        selectedLayerTitles.length > 1 &&
+        chartLayers
+          .filter(layer => selectedLayerTitles.includes(layer.title))
+          .map(layer => (
+            <Box
+              key={layer.title}
+              style={{
+                height: '240px',
+                minWidth: '40%',
+                flex: 1,
+                position: 'relative',
+              }}
+            >
+              <ChartSection
+                chartLayer={layer}
+                adminProperties={adminProperties as GeoJsonProperties}
+                adminLevel={adminLevel}
+                date={selectedDate as number}
+                dataForCsv={dataForCsv}
+              />
+            </Box>
+          ))
+      );
+    }, [adminLevel, adminProperties, selectedDate, selectedLayerTitles]);
+
     useEffect(() => {
       if (showChartsPanel) {
         setPanelSize(PanelSize.xlarge);
         setResultsPage(
-          <Box className={classes.chartsPanelCharts}>
-            {selectedLayerTitles.length > 1 &&
-              chartLayers
-                .filter(layer => selectedLayerTitles.includes(layer.title))
-                .map(layer => (
-                  <Box
-                    key={layer.title}
-                    style={{
-                      height: '240px',
-                      minWidth: '40%',
-                      flex: 1,
-                      position: 'relative',
-                    }}
-                  >
-                    <ChartSection
-                      chartLayer={layer}
-                      adminProperties={adminProperties as GeoJsonProperties}
-                      adminLevel={adminLevel}
-                      date={selectedDate as number}
-                      dataForCsv={dataForCsv}
-                    />
-                  </Box>
-                ))}
-
-            {
-              // chart size is not responsive once it is mounted
-              // seems to be possible in the newer chart.js versions
-              // here we mount a new component if one chart
-              adminProperties &&
-                selectedDate &&
-                selectedLayerTitles.length === 1 && (
-                  <Box
-                    style={{
-                      maxHeight: '50vh',
-                      width: '100%',
-                    }}
-                  >
-                    <ChartSection
-                      chartLayer={
-                        chartLayers.filter(layer =>
-                          selectedLayerTitles.includes(layer.title),
-                        )[0]
-                      }
-                      adminProperties={adminProperties || {}}
-                      adminLevel={adminLevel}
-                      date={selectedDate}
-                      dataForCsv={dataForCsv}
-                    />
-                  </Box>
-                )
-            }
-          </Box>,
+          <Box className={classes.chartsPanelCharts}>{renderResultsPage}</Box>,
         );
       }
 
       return () => setResultsPage(null);
     }, [
-      adminLevel,
-      adminProperties,
       classes.chartsPanelCharts,
-      countryAdmin0Id,
-      selectedDate,
-      selectedLayerTitles,
-      selectedLayerTitles.length,
+      renderResultsPage,
       setPanelSize,
       setResultsPage,
       showChartsPanel,
-      tabValue,
     ]);
 
     const handleClearAllSelectedCharts = useCallback(() => {
