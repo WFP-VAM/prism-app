@@ -3,7 +3,8 @@
 exports[`TimelineItem renders as expected 1`] = `
 <div>
   <div
-    class="layerDirectionClass memo-layerDirectionBase-1"
+    class="intersectionDate"
+    role="presentation"
   />
   <div
     class="layerOneDate"
