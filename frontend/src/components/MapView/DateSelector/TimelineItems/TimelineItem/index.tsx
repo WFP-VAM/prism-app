@@ -26,40 +26,32 @@ const TimelineItem = memo(
         {concatenatedLayers.map(
           (layerDates: DateItem[], layerIndex: number) => {
             if (
-              concatenatedLayers[layerIndex][index] === undefined ||
+              layerDates[index] === undefined ||
               (layerIndex !== 0 &&
-                new Date(
-                  concatenatedLayers[layerIndex][index].displayDate,
-                ).toDateString() !== new Date(currentDate.value).toDateString())
+                new Date(layerDates[index].displayDate).toDateString() !==
+                  new Date(currentDate.value).toDateString())
             ) {
               return null;
             }
             return (
-              <>
-                {layerIndex !== 0 &&
-                  concatenatedLayers[layerIndex][index].isStartDate && (
-                    <div
-                      key={`Forward-${currentDate.label}-${currentDate.value}-${layerDates[layerIndex]}`}
-                      className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
-                    />
-                  )}
-                <div>
-                  {layerIndex !== 0 &&
-                    concatenatedLayers[layerIndex][index].isEndDate && (
-                      <div
-                        key={`Backward-${currentDate.label}-${currentDate.value}-${layerDates[layerIndex]}`}
-                        className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
-                      />
-                    )}
-                </div>
+              <React.Fragment key={Math.random()}>
+                {layerIndex !== 0 && layerDates[index].isStartDate && (
+                  <div
+                    className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
+                  />
+                )}
+                {layerIndex !== 0 && layerDates[index].isEndDate && (
+                  <div
+                    className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
+                  />
+                )}
 
                 <div
-                  key={`Nested-${currentDate.label}-${currentDate.value}-${layerDates[layerIndex]}`}
                   className={dateItemStyling[layerIndex].class}
                   role="presentation"
                   onClick={handleClick(index)}
                 />
-              </>
+              </React.Fragment>
             );
           },
         )}

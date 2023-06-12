@@ -73,19 +73,12 @@ const TimelineItems = memo(
     }));
 
     const getTooltipTitle = useCallback(
-      (date: DateRangeType, index): JSX.Element[] => {
+      (date: DateRangeType): JSX.Element[] => {
         const tooltipTitleArray: JSX.Element[] = compact(
           selectedLayers.map((selectedLayer, layerIndex) => {
-            if (
-              selectedLayer.dateItems &&
-              selectedLayer.dateItems[index] &&
-              selectedLayer.dateItems[index].displayDate === date.value
-            ) {
-              return undefined;
-            }
             return (
               <TooltipItem
-                key={selectedLayer.title}
+                key={`Tootlip-${date.label}-${date.value}`}
                 layerTitle={t(selectedLayer.title)}
                 color={DATE_ITEM_STYLING[layerIndex + 1].color}
               />
@@ -142,8 +135,8 @@ const TimelineItems = memo(
       <>
         {dateRange.map((date, index) => (
           <Tooltip
-            title={<div>{getTooltipTitle(date, index)}</div>}
             key={`Root-${date.label}-${date.value}`}
+            title={<div>{getTooltipTitle(date)}</div>}
             TransitionComponent={Fade}
             TransitionProps={{ timeout: 0 }}
             placement="top"
