@@ -166,7 +166,7 @@ function AlertForm({ classes, isOpen, setOpen }: AlertFormProps) {
     };
 
     setAlertWaiting(true);
-    const response = await fetchApiData(ALERT_API_URL, request);
+    const response = await fetchApiData(ALERT_API_URL, request, dispatch);
     setAlertWaiting(false);
 
     if ((response as unknown) === 'Success') {

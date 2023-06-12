@@ -41,6 +41,7 @@ import {
 import { availableDatesSelector } from '../../../context/serverStateSlice';
 import DateSelectorInput from './DateSelectorInput';
 import { addNotification } from '../../../context/notificationStateSlice';
+import { datesAreEqualWithoutTime } from '../../../utils/date-utils';
 
 type Point = {
   x: number;
@@ -186,10 +187,7 @@ const DateSelector = memo(
         }
         const time = date.getTime();
         const startDate = new Date(stateStartDate as number);
-        const dateEqualsToStartDate =
-          date.getDate() === startDate.getDate() &&
-          date.getMonth() === startDate.getMonth() &&
-          date.getFullYear() === startDate.getFullYear();
+        const dateEqualsToStartDate = datesAreEqualWithoutTime(date, startDate);
         if (dateEqualsToStartDate) {
           return;
         }
@@ -252,11 +250,7 @@ const DateSelector = memo(
     const checkIntersectingDateAndShowPopup = useCallback(
       (selectedDate: Date, positionY: number) => {
         const findDateInIntersectingDates = includedDates.find(date => {
-          return (
-            date.getDate() === selectedDate.getDate() &&
-            date.getMonth() === selectedDate.getMonth() &&
-            date.getFullYear() === selectedDate.getFullYear()
-          );
+          return datesAreEqualWithoutTime(date, selectedDate);
         });
         if (findDateInIntersectingDates) {
           return;

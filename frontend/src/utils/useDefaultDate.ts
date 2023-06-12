@@ -7,7 +7,6 @@ import {
   dateRangeSelector,
   layersSelector,
 } from '../context/mapStateSlice/selectors';
-import { USER_DATE_OFFSET } from '../components/MapView/DateSelector/utils';
 
 import { useUrlHistory } from './url-utils';
 import { DEFAULT_DATE_FORMAT } from './name-utils';
@@ -34,7 +33,7 @@ export function useDefaultDate(
   ];
 
   const defaultDate: number | undefined =
-    possibleDates?.[possibleDates?.length - 1]?.displayDate + USER_DATE_OFFSET;
+    possibleDates?.[possibleDates?.length - 1]?.displayDate;
 
   // React doesn't allow updating other components within another component
   // useEffect removes this error and updates DateSelector correctly in the lifecycle.
