@@ -2,6 +2,7 @@ import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import React, { memo, useCallback } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from '../../../../../config/types';
+import { datesAreEqualWithoutTime } from '../../../../../utils/date-utils';
 
 const TimelineItem = memo(
   ({
@@ -26,10 +27,8 @@ const TimelineItem = memo(
         {concatenatedLayers.map(
           (layerDates: DateItem[], layerIndex: number) => {
             // TODO: fix not really efficient algorithm
-            const matchingDateItemInLayer = layerDates.find(
-              f =>
-                new Date(f.displayDate).toDateString() ===
-                new Date(currentDate.value).toDateString(),
+            const matchingDateItemInLayer = layerDates.find(f =>
+              datesAreEqualWithoutTime(f.displayDate, currentDate.value),
             );
 
             if (!matchingDateItemInLayer) {
