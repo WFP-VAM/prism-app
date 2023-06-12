@@ -6,8 +6,10 @@ import * as GeoTIFF from 'geotiff';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import { addNotification } from '../../../context/notificationStateSlice';
 import { BACKEND_URL } from '../../../utils/constants';
+import { fetchWithTimeout } from '../../../utils/fetch-with-timeout';
+import { LocalError } from '../../../utils/error-utils';
+import { addNotification } from '../../../context/notificationStateSlice';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =
@@ -202,14 +204,12 @@ export async function downloadGeotiff(
   dispatch: Dispatch,
   callback: () => void,
 ) {
-  if (!boundingBox) {
-    dispatch(
-      addNotification({
-        message: `Missing bounding box: ${collection} Geotiff couldn't be downloaded`,
-        type: 'warning',
-      }),
-    );
-  } else {
+  try {
+    if (!boundingBox) {
+      throw new LocalError(
+        `Missing bounding box: ${collection} Geotiff couldn't be downloaded`,
+      );
+    }
     const body = {
       collection,
       lat_min: boundingBox[0],
@@ -218,8 +218,10 @@ export async function downloadGeotiff(
       long_max: boundingBox[3],
       date,
     };
-    try {
-      const response = await fetch(`${BACKEND_URL}/raster_geotiff`, {
+    const response = await fetchWithTimeout(
+      `${BACKEND_URL}/raster_geotiff`,
+      dispatch,
+      {
         method: 'POST',
         cache: 'no-cache',
         headers: {
@@ -228,30 +230,25 @@ export async function downloadGeotiff(
         },
         // body data type must match "Content-Type" header
         body: JSON.stringify(body),
-      });
-      if (response.status !== 200) {
-        dispatch(
-          addNotification({
-            message: `The raster layer ${collection} could not be generated. Please try your download again later.`,
-            type: 'warning',
-          }),
-        );
-      } else {
-        const responseJson = await response.json();
+      },
+      `Request failed for downloading Geotiff at ${BACKEND_URL}/raster_geotiff`,
+    );
+    const responseJson = await response.json();
 
-        const link = document.createElement('a');
-        link.setAttribute('href', responseJson.download_url);
-        link.click();
-      }
-    } catch {
+    const link = document.createElement('a');
+    link.setAttribute('href', responseJson.download_url);
+    link.click();
+  } catch (error) {
+    if (error instanceof LocalError) {
+      console.error(error);
       dispatch(
         addNotification({
-          message: `The raster layer ${collection} could not be generated. Please try your download again later.`,
+          message: error.message,
           type: 'warning',
         }),
       );
-    } finally {
-      callback();
     }
+  } finally {
+    callback();
   }
 }

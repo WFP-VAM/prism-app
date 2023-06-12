@@ -8,6 +8,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
+import { useDispatch } from 'react-redux';
 import { LayerType } from '../../../config/types';
 import { LayerDefinitions } from '../../../config/utils';
 import ContentDialog from '../../NavBar/ContentDialog';
@@ -15,6 +16,8 @@ import { loadLayerContent } from '../../../utils/load-layer-utils';
 
 const LayerContentPreview = memo(({ layerId, classes }: PreviewProps) => {
   const [content, setContent] = useState<string | undefined>(undefined);
+
+  const dispatch = useDispatch();
 
   const layer = useMemo(() => {
     return LayerDefinitions[layerId || 'admin_boundaries'];
@@ -24,9 +27,9 @@ const LayerContentPreview = memo(({ layerId, classes }: PreviewProps) => {
     if (!layer.contentPath) {
       return;
     }
-    const layerContent = await loadLayerContent(layer.contentPath);
+    const layerContent = await loadLayerContent(layer.contentPath, dispatch);
     setContent(layerContent);
-  }, [layer.contentPath]);
+  }, [dispatch, layer.contentPath]);
 
   const handleDialogClose = useCallback(() => {
     setContent(undefined);

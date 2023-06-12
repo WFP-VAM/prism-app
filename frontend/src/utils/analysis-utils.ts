@@ -19,6 +19,7 @@ import bbox from '@turf/bbox';
 import moment from 'moment';
 import { createGetCoverageUrl } from 'prism-common';
 import { TFunctionKeys } from 'i18next';
+import { Dispatch } from 'redux';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
@@ -59,6 +60,10 @@ import {
 } from '../i18n';
 import { getRoundedData } from './data-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
+import {
+  ANALYSIS_REQUEST_TIMEOUT,
+  fetchWithTimeout,
+} from './fetch-with-timeout';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -236,21 +241,28 @@ export type KeyValueResponse = {
   [k in string]: string | number;
 };
 
-export async function fetchApiData(
+export const fetchApiData = async (
   url: string,
   apiData: ApiData | AlertRequest,
-): Promise<Array<KeyValueResponse | Feature>> {
+  dispatch: Dispatch,
+): Promise<Array<KeyValueResponse | Feature>> => {
   return (
-    await fetch(url, {
-      method: 'POST',
-      cache: 'no-cache',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+    await fetchWithTimeout(
+      url,
+      dispatch,
+      {
+        method: 'POST',
+        cache: 'no-cache',
+        timeout: ANALYSIS_REQUEST_TIMEOUT,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        // body data type must match "Content-Type" header
+        body: JSON.stringify(apiData),
       },
-      // body data type must match "Content-Type" header
-      body: JSON.stringify(apiData),
-    })
+      `Request failed fetching analysis api data at ${url}`,
+    )
   )
     .text()
     .then(message => {
@@ -264,7 +276,7 @@ export async function fetchApiData(
         };
       }
     });
-}
+};
 
 export function scaleAndFilterAggregateData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
@@ -316,6 +328,7 @@ export async function loadFeaturesFromApi(
   baselineData: BaselineLayerData,
   hazardLayerDef: WMSLayerProps,
   operation: AggregationOperations,
+  dispatch: Dispatch,
   extent?: Extent,
   date?: number,
 ): Promise<GeoJsonBoundary[]> {
@@ -339,7 +352,7 @@ export async function loadFeaturesFromApi(
   };
 
   const aggregateData = scaleAndFilterAggregateData(
-    await fetchApiData(apiUrl, apiData),
+    await fetchApiData(apiUrl, apiData, dispatch),
     hazardLayerDef,
     operation,
     layer.threshold,
