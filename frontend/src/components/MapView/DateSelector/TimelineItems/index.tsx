@@ -19,6 +19,7 @@ import {
   TIMELINE_ITEM_WIDTH,
 } from '../utils';
 import TooltipItem from './TooltipItem';
+import TimelineItem from './TimelineItem';
 
 const TimelineItems = memo(
   ({
@@ -29,15 +30,6 @@ const TimelineItems = memo(
     locale,
     selectedLayers,
   }: TimelineItemsProps) => {
-    const handleClick = useCallback(
-      (dateIndex: number) => {
-        return () => {
-          clickDate(dateIndex);
-        };
-      },
-      [clickDate],
-    );
-
     const { t } = useSafeTranslation();
 
     const selectedLayerDateItems: DateItem[][] = useMemo(
@@ -61,20 +53,6 @@ const TimelineItems = memo(
       // TODO - handle this more cleanly.
       { class: classes.layerThreeDate, color: 'Blue' },
       { class: classes.layerThreeDate, color: 'Yellow' },
-    ];
-
-    const DIRECTION_ITEM_STYLING: {
-      class: string;
-    }[] = [
-      {
-        class: classes.layerOneDirection,
-      },
-      {
-        class: classes.layerTwoDirection,
-      },
-      {
-        class: classes.layerThreeDirection,
-      },
     ];
 
     const intersectionDateItems: DateItem[] = intersectionDates.map(date => ({
@@ -149,63 +127,6 @@ const TimelineItems = memo(
       );
     }, [intersectionDateItems, selectedLayerDateItems, timelineStartDate]);
 
-    const renderLayerDates = useCallback(
-      (date: DateRangeType, index: number) => {
-        return concatenatedLayers.map((layerDates, layerIndex) => {
-          if (
-            concatenatedLayers[layerIndex][index] === undefined ||
-            (layerIndex !== 0 &&
-              new Date(
-                concatenatedLayers[layerIndex][index].displayDate,
-              ).toDateString() !== new Date(date.value).toDateString())
-          ) {
-            return null;
-          }
-          return (
-            <>
-              {layerIndex !== 0 &&
-                concatenatedLayers[layerIndex][index].isStartDate && (
-                  <div
-                    key={`Forward-${date.label}-${date.value}-${layerDates[layerIndex]}`}
-                    className={`${
-                      DIRECTION_ITEM_STYLING[layerIndex - 1].class
-                    } ${classes.layerDirectionBase}`}
-                  />
-                )}
-              <div>
-                {layerIndex !== 0 &&
-                  concatenatedLayers[layerIndex][index].isEndDate && (
-                    <div
-                      key={`Backward-${date.label}-${date.value}-${layerDates[layerIndex]}`}
-                      className={`${
-                        DIRECTION_ITEM_STYLING[layerIndex - 1].class
-                      } ${classes.layerDirectionBase} ${
-                        classes.layerDirectionBackwardBase
-                      }`}
-                    />
-                  )}
-              </div>
-
-              <div
-                key={`Nested-${date.label}-${date.value}-${layerDates[layerIndex]}`}
-                className={DATE_ITEM_STYLING[layerIndex].class}
-                role="presentation"
-                onClick={handleClick(index)}
-              />
-            </>
-          );
-        });
-      },
-      [
-        DATE_ITEM_STYLING,
-        DIRECTION_ITEM_STYLING,
-        classes.layerDirectionBackwardBase,
-        classes.layerDirectionBase,
-        concatenatedLayers,
-        handleClick,
-      ],
-    );
-
     return (
       <>
         {dateRange.map((date, index) => (
@@ -225,7 +146,12 @@ const TimelineItems = memo(
               }
             >
               {renderDateItemLabel(date)}
-              {renderLayerDates(date, index)}
+              <TimelineItem
+                concatenatedLayers={concatenatedLayers}
+                currentDate={date}
+                index={index}
+                clickDate={clickDate}
+              />
             </Grid>
           </Tooltip>
         ))}
