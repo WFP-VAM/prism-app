@@ -44,11 +44,24 @@ const TimelineItems = memo(
     const DATE_ITEM_STYLING: {
       class: string;
       color: string;
+      layerDirectionClass?: string;
     }[] = [
       { class: classes.intersectionDate, color: 'White' },
-      { class: classes.layerOneDate, color: 'Blue' },
-      { class: classes.layerTwoDate, color: 'Yellow' },
-      { class: classes.layerThreeDate, color: 'Red' },
+      {
+        class: classes.layerOneDate,
+        color: 'Blue',
+        layerDirectionClass: classes.layerOneDirection,
+      },
+      {
+        class: classes.layerTwoDate,
+        color: 'Yellow',
+        layerDirectionClass: classes.layerTwoDirection,
+      },
+      {
+        class: classes.layerThreeDate,
+        color: 'Red',
+        layerDirectionClass: classes.layerThreeDirection,
+      },
       // For now, super-impose additional layers in case we have too many.
       // TODO - handle this more cleanly.
       { class: classes.layerThreeDate, color: 'Blue' },
@@ -108,7 +121,7 @@ const TimelineItems = memo(
       [dateRange],
     );
 
-    const concatenatedLayers = useMemo(() => {
+    const concatenatedLayers: DateItem[][] = useMemo(() => {
       return [intersectionDateItems, ...selectedLayerDateItems].map(
         (dateItemsForLayer: DateItem[]) => {
           const firstIndex = dateItemsForLayer
@@ -151,6 +164,7 @@ const TimelineItems = memo(
                 currentDate={date}
                 index={index}
                 clickDate={clickDate}
+                dateItemStyling={DATE_ITEM_STYLING}
               />
             </Grid>
           </Tooltip>
@@ -229,15 +243,6 @@ const styles = () =>
       backgroundColor: 'red',
     },
 
-    layerDirectionBase: {
-      display: 'block',
-      position: 'absolute',
-      borderTop: '8px solid transparent',
-      borderBottom: '8px solid transparent',
-      height: '0px',
-      zIndex: 1,
-    },
-
     layerOneDirection: {
       top: 5,
       borderLeft: '8px solid darkblue',
@@ -249,10 +254,6 @@ const styles = () =>
     layerThreeDirection: {
       top: 15,
       borderLeft: '8px solid darkred',
-    },
-
-    layerDirectionBackwardBase: {
-      transform: 'rotate(180deg)',
     },
   });
 
