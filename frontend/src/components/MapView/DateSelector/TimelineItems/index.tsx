@@ -107,21 +107,26 @@ const TimelineItems = memo(
       [classes.dateItemLabel, classes.dayItem, locale],
     );
 
-    const timelineStartDate: string = useMemo(
-      () => new Date(dateRange[0].value).toDateString(),
-      [dateRange],
-    );
+    const timelineStartDate: string = new Date(
+      dateRange[0].value,
+    ).toDateString();
 
     const concatenatedLayers: DateItem[][] = useMemo(() => {
+      // returns the index of the fist date in layer that match the first Timeline date
+      const findLayerFirstDateIndex = (items: DateItem[]): number => {
+        return items
+          .map(d => new Date(d.displayDate).toDateString())
+          .indexOf(timelineStartDate);
+      };
+
       return [intersectionDateItems, ...selectedLayerDateItems].map(
         (dateItemsForLayer: DateItem[]) => {
-          const firstIndex = dateItemsForLayer
-            .map(d => new Date(d.displayDate).toDateString())
-            .indexOf(timelineStartDate);
+          const firstIndex = findLayerFirstDateIndex(dateItemsForLayer);
           if (firstIndex === -1) {
             return dateItemsForLayer;
           }
 
+          // truncate the date item array at index matching timeline first date
           // eslint-disable-next-line fp/no-mutating-methods
           return dateItemsForLayer.slice(
             firstIndex,
