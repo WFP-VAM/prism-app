@@ -450,6 +450,7 @@
       "styles": "rfb_blended"
     },
     "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfb", 
           "label": "Rainfall", 
@@ -506,6 +507,7 @@
       "styles": "rfq_blended"
     },
     "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfq", 
           "label": "Rainfall anomaly", 

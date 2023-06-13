@@ -53,7 +53,7 @@ export const getChartAdminBoundaryParams = (
 
   const { levels, url: chartUrl, fields: datasetFields } = chartData!;
 
-  // Take in chartUrl if provided, otherwise use default CHART_API_URL
+  // Take in chart url if provided, otherwise use default CHART_API_URL
   const url = chartUrl || CHART_API_URL;
 
   // TODO - why not reduce this by level directly?
