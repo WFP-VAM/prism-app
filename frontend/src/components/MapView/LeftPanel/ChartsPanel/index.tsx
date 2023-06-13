@@ -51,7 +51,7 @@ import ChartSection from './ChartSection';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
-const MAX_ADMIN_LEVEL = appConfig.multiCountries ? 3 : 2;
+const MAX_ADMIN_LEVEL = appConfig.multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
@@ -259,7 +259,7 @@ export const downloadCsv = (
 
 const ChartsPanel = memo(
   ({ setPanelSize, setResultsPage }: ChartsPanelProps) => {
-    const { countryAdmin0Id, country, multiCountries } = appConfig;
+    const { countryAdmin0Id, country, multiCountry } = appConfig;
     const boundaryLayerData = useSelector(
       layerDataSelector(boundaryLayer.id),
     ) as LayerData<BoundaryLayerProps> | undefined;
@@ -286,11 +286,11 @@ const ChartsPanel = memo(
     const tabValue = useSelector(leftPanelTabValueSelector);
 
     const orderedAdmin0areas = useMemo(() => {
-      if (!multiCountries) {
+      if (!multiCountry) {
         return [];
       }
       return data ? getCategories(data, boundaryLayer, '', i18nLocale) : [];
-    }, [data, i18nLocale, multiCountries]);
+    }, [data, i18nLocale, multiCountry]);
 
     const orderedAdmin1areas = useMemo(() => {
       return data
@@ -299,11 +299,11 @@ const ChartsPanel = memo(
             boundaryLayer,
             '',
             i18nLocale,
-            multiCountries ? 1 : 0,
+            multiCountry ? 1 : 0,
             admin0Key,
           )
         : [];
-    }, [admin0Key, data, i18nLocale, multiCountries]);
+    }, [admin0Key, data, i18nLocale, multiCountry]);
 
     const selectedaAdmin0Area = useMemo(() => {
       return orderedAdmin0areas.find(area => {
@@ -358,7 +358,7 @@ const ChartsPanel = memo(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!event.target.value) {
           setAdmin1Key('');
-          if (countryAdmin0Id || multiCountries) {
+          if (countryAdmin0Id || multiCountry) {
             setAdminLevel(0);
           }
           return;
@@ -377,7 +377,7 @@ const ChartsPanel = memo(
         setAdmin2Key('');
         setAdminLevel(1);
       },
-      [orderedAdmin1areas, countryAdmin0Id, multiCountries, data],
+      [orderedAdmin1areas, countryAdmin0Id, multiCountry, data],
     );
 
     const onChangeAdmin2Area = useCallback(
@@ -530,14 +530,14 @@ const ChartsPanel = memo(
 
     const renderAdmin0Value = useCallback(
       admin0keyValue => {
-        if (!multiCountries) {
+        if (!multiCountry) {
           return country;
         }
         return orderedAdmin0areas.find(category => {
           return category.key === admin0keyValue;
         })?.title;
       },
-      [country, multiCountries, orderedAdmin0areas],
+      [country, multiCountry, orderedAdmin0areas],
     );
 
     const renderAdmin1Value = useCallback(
@@ -575,7 +575,7 @@ const ChartsPanel = memo(
           }}
           onChange={onChangeAdmin0Area}
           variant="outlined"
-          disabled={!multiCountries}
+          disabled={!multiCountry}
         >
           <MenuItem key={country} value={country} disabled>
             {country}

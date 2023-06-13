@@ -1,6 +1,6 @@
 {
   "country": "Regional Bureau Dakar",
-  "multiCountries": true,
+  "multiCountry": true,
   "enableNavigationDropdown": true,
   "aboutPath": "data/rbd/about.md",
   "icons": {
