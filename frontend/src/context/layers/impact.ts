@@ -75,6 +75,7 @@ export const fetchImpactLayerData: LazyLoader<ImpactLayerProps> = loadLayerData 
         baselineData,
         hazardLayerDef,
         operation,
+        dispatch,
         extent,
         date,
       )
