@@ -45,7 +45,7 @@ import { leftPanelTabValueSelector } from '../../../../context/leftPanelStateSli
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../../i18n';
 import { castObjectsArrayToCsv } from '../../../../utils/csv-utils';
-import { getCategories } from '../../Layers/BoundaryDropdown';
+import { getOrdereAreas, OrderedArea } from '../../Layers/BoundaryDropdown';
 import { downloadToFile } from '../../utils';
 import ChartSection from './ChartSection';
 
@@ -289,19 +289,19 @@ const ChartsPanel = memo(
       if (!multiCountry) {
         return [];
       }
-      return data ? getCategories(data, boundaryLayer, '', i18nLocale) : [];
+      return data ? getOrdereAreas(data, boundaryLayer, '', i18nLocale) : [];
     }, [data, i18nLocale, multiCountry]);
 
     const orderedAdmin1areas = useMemo(() => {
       return data
-        ? getCategories(
-          data,
-          boundaryLayer,
-          '',
-          i18nLocale,
-          multiCountry ? 1 : 0,
-          admin0Key,
-        )
+        ? getOrdereAreas(
+            data,
+            boundaryLayer,
+            '',
+            i18nLocale,
+            multiCountry ? 1 : 0,
+            admin0Key,
+          )
         : [];
     }, [admin0Key, data, i18nLocale, multiCountry]);
 
@@ -528,23 +528,27 @@ const ChartsPanel = memo(
       [t],
     );
 
+    const findArea = (
+      orderedAdminAreas: OrderedArea[],
+      adminKeyValue: string,
+    ) =>
+      orderedAdminAreas.find(category => {
+        return category.key === adminKeyValue;
+      })?.title;
+
     const renderAdmin0Value = useCallback(
       admin0keyValue => {
         if (!multiCountry) {
           return country;
         }
-        return orderedAdmin0areas.find(category => {
-          return category.key === admin0keyValue;
-        })?.title;
+        return findArea(orderedAdmin0areas, admin0keyValue);
       },
       [country, multiCountry, orderedAdmin0areas],
     );
 
     const renderAdmin1Value = useCallback(
       admin1keyValue => {
-        return orderedAdmin1areas.find(category => {
-          return category.key === admin1keyValue;
-        })?.title;
+        return findArea(orderedAdmin1areas, admin1keyValue);
       },
       [orderedAdmin1areas],
     );
@@ -561,6 +565,13 @@ const ChartsPanel = memo(
     if (tabIndex !== tabValue) {
       return null;
     }
+
+    const renderMenuItemList = (orderedAdminArea: OrderedArea[]) =>
+      orderedAdminArea.map(option => (
+        <MenuItem key={option.key} value={option.key}>
+          {option.title}
+        </MenuItem>
+      ));
 
     return (
       <Box className={classes.chartsPanelParams}>
@@ -580,11 +591,7 @@ const ChartsPanel = memo(
           <MenuItem key={country} value={country} disabled>
             {country}
           </MenuItem>
-          {orderedAdmin0areas.map(option => (
-            <MenuItem key={option.key} value={option.key}>
-              {option.title}
-            </MenuItem>
-          ))}
+          {renderMenuItemList(orderedAdmin0areas)}
         </TextField>
 
         <TextField
@@ -602,11 +609,7 @@ const ChartsPanel = memo(
           <MenuItem divider>
             <Box className={classes.removeAdmin}> {t('Remove Admin 1')}</Box>
           </MenuItem>
-          {orderedAdmin1areas.map(option => (
-            <MenuItem key={option.key} value={option.key}>
-              {option.title}
-            </MenuItem>
-          ))}
+          {renderMenuItemList(orderedAdmin1areas)}
         </TextField>
         {admin1Key && (
           <TextField

@@ -112,18 +112,27 @@ const SearchField = forwardRef(
   },
 );
 
+export interface OrderedArea {
+  children: {
+    value: string;
+    label: string;
+    key: string;
+  }[];
+  title: string;
+  key: string;
+}
 /**
  * Converts the boundary layer data into a list of options for the dropdown
  * grouped by admin level 2, with individual sections under admin level 3.
  */
-export function getCategories(
+export function getOrdereAreas(
   data: LayerData<BoundaryLayerProps>['data'],
   layer: BoundaryLayerProps,
   search: string,
   i18nLocale: typeof i18n,
   layerLevel: number = 0,
   parentCategoryValue?: string,
-) {
+): OrderedArea[] {
   const locationLevelNames = isEnglishLanguageSelected(i18nLocale)
     ? layer.adminLevelNames
     : layer.adminLevelLocalNames;
@@ -138,6 +147,9 @@ export function getCategories(
   const layerLevel2 = layerLevel1 + 1;
 
   let { features } = data;
+  // filter to get only layers having prentCategoryValue as parent layer
+  // when layerLevel is 0, there is only one layer loaded
+  // then parent category can't exist
   if (parentCategoryValue && layerLevel > 0) {
     // eslint-disable-next-line fp/no-mutation
     features = data.features.filter(
@@ -150,13 +162,7 @@ export function getCategories(
   // Make categories based off the level of all boundaries
   return sortBy(
     features
-      .reduce<
-        Array<{
-          title: string;
-          key: string;
-          children: { value: string; label: string; key: string }[];
-        }>
-      >((ret, feature) => {
+      .reduce<OrderedArea[]>((ret, feature) => {
         // unique parent key to filter when changing the language
         const parentKey =
           feature.properties?.[layer.adminLevelNames[layerLevel1]];
@@ -231,14 +237,14 @@ function SimpleBoundaryDropdown({
   if (!data) {
     return <CircularProgress size={24} color="secondary" />;
   }
-  const categories = getCategories(data, boundaryLayer, search, i18nLocale);
-  const allChildren = categories.flatMap(c => c.children);
+  const areas = getOrdereAreas(data, boundaryLayer, search, i18nLocale);
+  const allChildrenAreas = areas.flatMap(c => c.children);
   const selectOrDeselectAll = (e: React.MouseEvent) => {
     e.preventDefault();
     if (selectedBoundaries.length > 0) {
       setSelectedBoundaries([]);
     } else {
-      setSelectedBoundaries(allChildren.map(({ value }) => value));
+      setSelectedBoundaries(allChildrenAreas.map(({ value }) => value));
     }
   };
   // It's important for this to be another component, since the Select component
@@ -279,10 +285,10 @@ function SimpleBoundaryDropdown({
               : t('Deselect All')}
           </MenuItem>
         )}
-        {search && allChildren.length === 0 && (
+        {search && allChildrenAreas.length === 0 && (
           <MenuItem disabled>{t('No Results')}</MenuItem>
         )}
-        {categories.reduce<ReactNode[]>(
+        {areas.reduce<ReactNode[]>(
           // map wouldn't work here because <Select> doesn't support <Fragment> with keys, so we need one array
           (components, category) => [
             ...components,
