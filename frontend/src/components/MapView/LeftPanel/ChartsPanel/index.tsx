@@ -45,7 +45,7 @@ import { leftPanelTabValueSelector } from '../../../../context/leftPanelStateSli
 import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
 import { useSafeTranslation } from '../../../../i18n';
 import { castObjectsArrayToCsv } from '../../../../utils/csv-utils';
-import { getOrdereAreas, OrderedArea } from '../../Layers/BoundaryDropdown';
+import { getOrderedAreas, OrderedArea } from '../../Layers/BoundaryDropdown';
 import { downloadToFile } from '../../utils';
 import ChartSection from './ChartSection';
 
@@ -289,12 +289,12 @@ const ChartsPanel = memo(
       if (!multiCountry) {
         return [];
       }
-      return data ? getOrdereAreas(data, boundaryLayer, '', i18nLocale) : [];
+      return data ? getOrderedAreas(data, boundaryLayer, '', i18nLocale) : [];
     }, [data, i18nLocale, multiCountry]);
 
     const orderedAdmin1areas = useMemo(() => {
       return data
-        ? getOrdereAreas(
+        ? getOrderedAreas(
             data,
             boundaryLayer,
             '',

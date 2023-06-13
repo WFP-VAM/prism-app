@@ -125,7 +125,7 @@ export interface OrderedArea {
  * Converts the boundary layer data into a list of options for the dropdown
  * grouped by admin level 2, with individual sections under admin level 3.
  */
-export function getOrdereAreas(
+export function getOrderedAreas(
   data: LayerData<BoundaryLayerProps>['data'],
   layer: BoundaryLayerProps,
   search: string,
@@ -237,7 +237,7 @@ function SimpleBoundaryDropdown({
   if (!data) {
     return <CircularProgress size={24} color="secondary" />;
   }
-  const areas = getOrdereAreas(data, boundaryLayer, search, i18nLocale);
+  const areas = getOrderedAreas(data, boundaryLayer, search, i18nLocale);
   const allChildrenAreas = areas.flatMap(c => c.children);
   const selectOrDeselectAll = (e: React.MouseEvent) => {
     e.preventDefault();
