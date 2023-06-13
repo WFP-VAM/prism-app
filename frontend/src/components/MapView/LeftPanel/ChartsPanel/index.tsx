@@ -295,13 +295,13 @@ const ChartsPanel = memo(
     const orderedAdmin1areas = useMemo(() => {
       return data
         ? getOrdereAreas(
-            data,
-            boundaryLayer,
-            '',
-            i18nLocale,
-            multiCountry ? 1 : 0,
-            admin0Key,
-          )
+          data,
+          boundaryLayer,
+          '',
+          i18nLocale,
+          multiCountry ? 1 : 0,
+          admin0Key,
+        )
         : [];
     }, [admin0Key, data, i18nLocale, multiCountry]);
 
