@@ -3,6 +3,7 @@
 import functools
 import json
 import logging
+from datetime import date
 from typing import Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
@@ -162,11 +163,25 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 
 
 @app.get("/acled")
-def get_acled_incidents(request: Request):
+def get_acled_incidents(
+    iso: int,
+    limit: int,
+    fields: Optional[str],
+    email: str,
+    key: str,
+    event_date: Optional[date],
+):
     acled_url = "https://api.acleddata.com/acled/read"
 
     try:
-        params = AcledRequest(**request.query_params)
+        params = AcledRequest(
+            iso=iso,
+            limit=limit,
+            fields=fields,
+            email=email,
+            key=key,
+            event_date=event_date,
+        )
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=str(e))
 
@@ -174,12 +189,23 @@ def get_acled_incidents(request: Request):
     response = get(acled_url, params=params.dict())
     response.raise_for_status()
 
-    return Response(content=response.content, media_type="application/json")
+    return JSONResponse(content=response.content)
 
 
 @app.get("/hdc")
-def wrap_get_hdc_stats(request: Request):
-    return JSONResponse(content=get_hdc_stats(**request.query_params), status_code=200)
+def wrap_get_hdc_stats(
+    level: str, admin_id: str, coverage: str, vam: str, start: str, end: str
+):
+    return JSONResponse(
+        content=get_hdc_stats(
+            level=level,
+            admin_id=admin_id,
+            coverage=coverage,
+            vam=vam,
+            start=start,
+            end=end,
+        )
+    )
 
 
 @app.get("/kobo/dates")
