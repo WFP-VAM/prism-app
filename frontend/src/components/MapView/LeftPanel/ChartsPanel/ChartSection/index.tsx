@@ -57,15 +57,15 @@ const ChartSection = memo(
       [chartLayer, adminProperties],
     );
 
-  const adminKey = levelsDict[adminLevel.toString()];
-  // Default to country level data.
-  const { code: adminCode } = useMemo(() => {
-    return (
-      params.boundaryProps[adminKey] || {
-        code: appConfig.countryAdmin0Id,
-      }
-    );
-  }, [adminKey, params]);
+    const adminKey = levelsDict[adminLevel.toString()];
+    // Default to country level data.
+    const { code: adminCode } = useMemo(() => {
+      return (
+        params.boundaryProps[adminKey] || {
+          code: appConfig.countryAdmin0Id,
+        }
+      );
+    }, [adminKey, params]);
 
     const requestParams: DatasetRequestParams = useMemo(() => {
       return {
