@@ -65,7 +65,7 @@ const ChartSection = memo(
           code: appConfig.countryAdmin0Id,
         }
       );
-    }, [adminKey, params.boundaryProps]);
+    }, [adminKey, params]);
 
     const requestParams: DatasetRequestParams = useMemo(() => {
       return {

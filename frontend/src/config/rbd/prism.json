@@ -1,5 +1,6 @@
 {
   "country": "Regional Bureau Dakar",
+  "multiCountry": true,
   "enableNavigationDropdown": true,
   "aboutPath": "data/rbd/about.md",
   "icons": {
@@ -14,10 +15,17 @@
   },
   "alertFormActive": false,
   "serversUrls": {
-    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
+    "wms": [
+      "https://api.earthobservation.vam.wfp.org/ows/wms"
+    ]
   },
   "map": {
-    "boundingBox": [0, -2.5, 7, 29]
+    "boundingBox": [
+      0,
+      -2.5,
+      7,
+      29
+    ]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -119,7 +127,10 @@
           ]
         }
       ],
-      "dry_periods": ["days_dry", "streak_dry_days"],
+      "dry_periods": [
+        "days_dry",
+        "streak_dry_days"
+      ],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -166,7 +177,10 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
+      "vegetation_conditions": [
+        "ndvi_dekad",
+        "ndvi_dekad_anomaly"
+      ]
     },
     "temperature": {
       "land_surface_temperature": [
