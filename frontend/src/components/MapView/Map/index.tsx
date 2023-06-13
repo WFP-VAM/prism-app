@@ -190,6 +190,30 @@ const MapComponent = memo(
           watchBoundaryChange(map);
         }
         trackLoadingLayers(map);
+        map.loadImage(
+          'https://docs.mapbox.com/mapbox-gl-js/assets/colorado_flag.png',
+          (
+            err: any,
+            image:
+              | HTMLImageElement
+              | ArrayBufferView
+              | {
+                  width: number;
+                  height: number;
+                  data: Uint8Array | Uint8ClampedArray;
+                }
+              | ImageData
+              | ImageBitmap,
+          ) => {
+            // Throw an error if something goes wrong.
+            if (err) {
+              throw err;
+            }
+
+            // Add the image to the map style.
+            map.addImage('pattern', image);
+          },
+        );
       },
       [dispatch, showBoundaryInfo, trackLoadingLayers, watchBoundaryChange],
     );

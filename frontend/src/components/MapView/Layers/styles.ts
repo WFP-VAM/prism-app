@@ -46,11 +46,16 @@ export const circlePaint = ({
 export const fillPaintData = (
   { opacity, legend }: CommonLayerProps,
   property: string = 'data',
-): MapboxGL.FillPaint => ({
-  'fill-opacity': opacity || 0.3,
-  'fill-color': {
-    property,
-    stops: legendToStops(legend),
-    type: 'interval',
-  },
-});
+): MapboxGL.FillPaint => {
+  const fillPaint = {
+    // 'fill-opacity': opacity || 0.3,
+    'fill-color': {
+      property,
+      stops: legendToStops(legend),
+      type: 'interval',
+    },
+    'fill-pattern': 'pattern',
+  };
+  console.log({ fillPaint });
+  return fillPaint as MapboxGL.FillPaint;
+};
