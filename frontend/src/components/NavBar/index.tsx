@@ -59,7 +59,7 @@ function NavBar({ classes }: NavBarProps) {
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
         <Grid container>
-          <Grid item xs={6} className={classes.logoContainer}>
+          <Grid item xs={6} md={3} className={classes.logoContainer}>
             {logo && <img className={classes.logo} src={logo} alt="logo" />}
             <Box display="flex" flexDirection="column">
               {title && (
@@ -88,6 +88,7 @@ function NavBar({ classes }: NavBarProps) {
               alignItems="center"
               item
               xs={6}
+              md={9}
             >
               <PrintImage />
               {buttons}
@@ -147,6 +148,7 @@ const styles = (theme: Theme) =>
 
     logoContainer: {
       display: 'flex',
+      justifyContent: 'center',
       alignItems: 'center',
     },
 
