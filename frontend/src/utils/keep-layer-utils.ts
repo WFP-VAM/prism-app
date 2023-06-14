@@ -5,7 +5,6 @@ export const TYPES_ALLOWED_TO_OVERLAP = [
   'boundary',
   'point_data',
   'static_raster',
-  'admin_level_data',
 ];
 
 export function keepLayer(layer: LayerType, newLayer: LayerType) {

@@ -263,6 +263,9 @@ export class CommonLayerProps {
   @optional
   dateInterval?: string;
 
+  @optional
+  fillPattern?: boolean;
+
   @optional // only optional for boundary layer
   legend?: LegendDefinition;
 

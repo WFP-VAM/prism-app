@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import {
@@ -46,6 +46,41 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const { features } = data || {};
   const { t } = useSafeTranslation();
 
+  const addFillPatternImageInMap = useCallback(() => {
+    if (!map || !layer.fillPattern) {
+      return;
+    }
+    map.loadImage(
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAABDlBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAEAAAAAAAAAAAAAAAAAAAEAAADAAADAAADAAADAAADAAADAAADAAADAAADAAADAAADAAACAAACAAACAAACAAICAAICAAICAAACAAACAAICAAICAAACAAACAAACAAICAAACAAICAAACAAICAAACAAACAAICAAICAAICAAICAAICAAICAAIBAAEBAAEBAAEBAAEBAAEBAAEBAAEDAAEDAAEBAAEDAAEDAAEDAAEDAAEDAAH////+RBh8AAAAWXRSTlMAAQMEBQcICgsMDRMUFxscHR4fJygqLC0xMjQ1ODo7P0BBQkdQUVZXWFlcXWBhZWdoaW9wcXR1gYKDhIaRkpKTk5aXnJ2foaKpqqyvsLGztLe3uLm5u7y9vqQlt1oAAAABYktHRFmasvQYAAABU0lEQVRIx53Wh1LCUBQE0BWsETt2xYJYYi8EFQsqFowiBhL5/y/Rmzwy4yjDXT7gzO7doTz4O8B4+XESPRvNYyB1484AKzUniaGClwHm3ooW+k4aWWCqcj+ChA1bzFj5eUJtfhSbA2NGH57URtr524yBtNttbhEGktS7H2zqTdQuudfQ58RrExt0YbK0QbTC3bDeIGyXrlyn1MZclH65VXfD70+pyli0gbQ79RkDSeo/8whjVmByzEVUzn/f7g4mQxtI0ny1OKA3CNstVi8H1cZctPB+oe6Gtr9w7U2SNpB2594SYSBJVuFjWW/MCkyOuYjKQZyj3qDTv8lfA0larTsJvUHYbr2e1xtz0Votr+4Wr/3pcGaW2kDaldxpwiC86OqV2BrRCkxOazkiBy1TctVG2n3pXiLGIFrhiDAIL8oFB3pjVsgFh2rDvV66NuxrzPa/AZH9LT54BxTLAAAAAElFTkSuQmCC',
+      (
+        err: any,
+        image:
+          | HTMLImageElement
+          | ArrayBufferView
+          | {
+              width: number;
+              height: number;
+              data: Uint8Array | Uint8ClampedArray;
+            }
+          | ImageData
+          | ImageBitmap,
+      ) => {
+        // Throw an error if something goes wrong.
+        if (err) {
+          map.removeImage(`pattern-${layer.id}`);
+          throw err;
+        }
+
+        // Add the image to the map style.
+        map.addImage(`pattern-${layer.id}`, image);
+      },
+    );
+  }, [layer.fillPattern, layer.id, map]);
+
+  useEffect(() => {
+    addFillPatternImageInMap();
+  }, [addFillPatternImageInMap]);
+
   useEffect(() => {
     // before loading layer check if it has unique boundary?
     const boundaryLayers = getBoundaryLayers();
@@ -75,31 +110,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     if (!features) {
       dispatch(loadLayerData({ layer, date: queryDate }));
     }
-    (map as maplibregl.Map).loadImage(
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAABDlBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAEAAAAAAAAAAAAAAAAAAAEAAADAAADAAADAAADAAADAAADAAADAAADAAADAAADAAADAAACAAACAAACAAACAAICAAICAAICAAACAAACAAICAAICAAACAAACAAACAAICAAACAAICAAACAAICAAACAAACAAICAAICAAICAAICAAICAAICAAIBAAEBAAEBAAEBAAEBAAEBAAEBAAEDAAEDAAEBAAEDAAEDAAEDAAEDAAEDAAH////+RBh8AAAAWXRSTlMAAQMEBQcICgsMDRMUFxscHR4fJygqLC0xMjQ1ODo7P0BBQkdQUVZXWFlcXWBhZWdoaW9wcXR1gYKDhIaRkpKTk5aXnJ2foaKpqqyvsLGztLe3uLm5u7y9vqQlt1oAAAABYktHRFmasvQYAAABU0lEQVRIx53Wh1LCUBQE0BWsETt2xYJYYi8EFQsqFowiBhL5/y/Rmzwy4yjDXT7gzO7doTz4O8B4+XESPRvNYyB1484AKzUniaGClwHm3ooW+k4aWWCqcj+ChA1bzFj5eUJtfhSbA2NGH57URtr524yBtNttbhEGktS7H2zqTdQuudfQ58RrExt0YbK0QbTC3bDeIGyXrlyn1MZclH65VXfD70+pyli0gbQ79RkDSeo/8whjVmByzEVUzn/f7g4mQxtI0ny1OKA3CNstVi8H1cZctPB+oe6Gtr9w7U2SNpB2594SYSBJVuFjWW/MCkyOuYjKQZyj3qDTv8lfA0larTsJvUHYbr2e1xtz0Votr+4Wr/3pcGaW2kDaldxpwiC86OqV2BrRCkxOazkiBy1TctVG2n3pXiLGIFrhiDAIL8oFB3pjVsgFh2rDvV66NuxrzPa/AZH9LT54BxTLAAAAAElFTkSuQmCC',
-      (
-        err: any,
-        image:
-          | HTMLImageElement
-          | ArrayBufferView
-          | {
-              width: number;
-              height: number;
-              data: Uint8Array | Uint8ClampedArray;
-            }
-          | ImageData
-          | ImageBitmap,
-      ) => {
-        // Throw an error if something goes wrong.
-        if (err) {
-          throw err;
-        }
-
-        // Add the image to the map style.
-        (map as maplibregl.Map).addImage('pattern', image);
-      },
-    );
-  }, [dispatch, features, layer, queryDate, boundaryId, map]);
+  }, [boundaryId, dispatch, features, layer, map, queryDate]);
 
   if (!features) {
     return null;
@@ -109,14 +120,12 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     return null;
   }
 
-  console.log(layer.type);
-
   return (
     <GeoJSONLayer
       before={`layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={features}
-      fillPaint={fillPaintData(layer, 'data', true)}
+      fillPaint={fillPaintData(layer, 'data', layer?.fillPattern ?? false)}
       fillOnClick={async (evt: any) => {
         addPopupParams(layer, dispatch, evt, t, true);
       }}

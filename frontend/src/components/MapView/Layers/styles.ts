@@ -44,7 +44,7 @@ export const circlePaint = ({
 
 // We use the legend values from the config to define "intervals".
 export const fillPaintData = (
-  { opacity, legend }: CommonLayerProps,
+  { opacity, legend, id }: CommonLayerProps,
   property: string = 'data',
   hasFillPattern = false,
 ): MapboxGL.FillPaint => {
@@ -60,7 +60,7 @@ export const fillPaintData = (
     // eslint-disable-next-line fp/no-mutation
     fillPaint = {
       ...fillPaint,
-      'fill-pattern': 'pattern',
+      'fill-pattern': `pattern-${id}`,
     };
   }
   return fillPaint;

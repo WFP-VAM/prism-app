@@ -186,8 +186,8 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", 
-          "label": "Rainfall anomaly", 
+        { "key": "rfq",
+          "label": "Rainfall anomaly",
           "color": "#375692",
           "minValue": 0,
           "maxValue": 300
@@ -426,8 +426,8 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r1q", 
-          "label": "Rainfall anomaly", 
+        { "key": "r1q",
+          "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
           "color": "#375692"
@@ -664,8 +664,8 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r3q", 
-          "label": "Rainfall anomaly", 
+        { "key": "r3q",
+          "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
           "color": "#375692" },
@@ -2335,11 +2335,11 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "viq", 
-          "label": "NDVI anomaly", 
+        { "key": "viq",
+          "label": "NDVI anomaly",
           "minValue": 0,
           "maxValue": 150,
-          "color": "#5e803f" 
+          "color": "#5e803f"
         },
         {
           "key": "viq_avg",
@@ -3765,6 +3765,7 @@
     ],
     "admin_level": 2,
     "data_field": "phase_class",
+    "fill_pattern": true,
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": ["ch_idps_phase_admin1"],
     "validity": {
