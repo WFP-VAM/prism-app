@@ -2,8 +2,8 @@ import * as MapboxGL from 'mapbox-gl';
 import {
   CommonLayerProps,
   DataFieldType,
-  PointDataLayerProps,
   LegendDefinitionItem,
+  PointDataLayerProps,
 } from '../../../config/types';
 import { legendToStops } from './layer-utils';
 
@@ -46,16 +46,22 @@ export const circlePaint = ({
 export const fillPaintData = (
   { opacity, legend }: CommonLayerProps,
   property: string = 'data',
+  hasFillPattern = false,
 ): MapboxGL.FillPaint => {
-  const fillPaint = {
-    // 'fill-opacity': opacity || 0.3,
+  let fillPaint: MapboxGL.FillPaint = {
+    'fill-opacity': opacity || 0.3,
     'fill-color': {
       property,
       stops: legendToStops(legend),
       type: 'interval',
     },
-    'fill-pattern': 'pattern',
   };
-  console.log({ fillPaint });
-  return fillPaint as MapboxGL.FillPaint;
+  if (hasFillPattern) {
+    // eslint-disable-next-line fp/no-mutation
+    fillPaint = {
+      ...fillPaint,
+      'fill-pattern': 'pattern',
+    };
+  }
+  return fillPaint;
 };
