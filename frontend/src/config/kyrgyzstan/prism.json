@@ -1,5 +1,6 @@
 {
   "country": "Kyrgyzstan",
+  "countryAdmin0Id": 138,
   "icons": {
     "exposure": "icon_basemap.png",
     "hazards": "icon_flood.png",
