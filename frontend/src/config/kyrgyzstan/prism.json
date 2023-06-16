@@ -22,7 +22,8 @@
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
+      "https://kyrgyzstan.sibelius-datacube.org:5000/wms"
     ]
   },
   "categories": {
