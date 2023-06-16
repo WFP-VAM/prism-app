@@ -30,6 +30,16 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
     return false;
   }
 
+  // Authorize two admin_level_data layers if one
+  // uses fillPatern and the other does not.
+  if (
+    newLayer.type === 'admin_level_data' &&
+    layer.type === 'admin_level_data' &&
+    newLayer.fillPattern !== layer.fillPattern
+  ) {
+    return true;
+  }
+
   // Some types are allowed to overlap. See defintion above.
   return TYPES_ALLOWED_TO_OVERLAP.includes(newLayer.type);
 }

@@ -150,7 +150,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return urlParams.get(UrlLayerKey.HAZARD);
   }, [urlParams]);
 
-  const baselineLayerId = useMemo(() => {
+  const baselineLayerIds = useMemo(() => {
     return urlParams.get(UrlLayerKey.ADMINLEVEL);
   }, [urlParams]);
 
@@ -178,12 +178,13 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return hazardLayerIds !== null ? hazardLayerIds.split(',') : [];
   }, [hazardLayerIds]);
 
+  const baselineLayersArray = useMemo(() => {
+    return baselineLayerIds !== null ? baselineLayerIds.split(',') : [];
+  }, [baselineLayerIds]);
+
   const urlLayerIds = useMemo(() => {
-    return [
-      ...hazardLayersArray,
-      ...(baselineLayerId === null ? [] : [baselineLayerId]),
-    ];
-  }, [baselineLayerId, hazardLayersArray]);
+    return [...hazardLayersArray, ...baselineLayersArray];
+  }, [baselineLayersArray, hazardLayersArray]);
 
   const layerDefinitionIds = useMemo(() => {
     return Object.keys(LayerDefinitions);
@@ -314,7 +315,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       status is also updated. There are guards in case the values are not valid, such as invalid
       date or layerids.
       */
-    if (hazardLayerIds || baselineLayerId) {
+    if (hazardLayerIds || baselineLayerIds) {
       return;
     }
     if (!defaultLayer) {
@@ -342,7 +343,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       setDefaultLayerAttempted(true);
     }
   }, [
-    baselineLayerId,
+    baselineLayerIds,
     defaultLayer,
     defaultLayerAttempted,
     defaultLayerInLayerDefinitions,
@@ -353,7 +354,10 @@ const MapView = memo(({ classes }: MapViewProps) => {
   ]);
 
   useEffect(() => {
-    if ((!hazardLayerIds && !baselineLayerId) || serverAvailableDatesAreEmpty) {
+    if (
+      (!hazardLayerIds && !baselineLayerIds) ||
+      serverAvailableDatesAreEmpty
+    ) {
       return;
     }
 
@@ -388,7 +392,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     );
   }, [
     addMissingLayers,
-    baselineLayerId,
+    baselineLayerIds,
     dateInt,
     dispatch,
     hazardLayerIds,
