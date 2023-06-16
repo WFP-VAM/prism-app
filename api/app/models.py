@@ -34,7 +34,8 @@ class AcledRequest(BaseModel):
         api_key = getenv("ACLED_API_KEY", None)
         api_email = getenv("ACLED_API_EMAIL", None)
 
-        new_values = {**values, "email": api_email, "key": api_key}
+        filtered_values = {k: v for k, v in values.items() if v is not None}
+        new_values = {**filtered_values, "email": api_email, "key": api_key}
         return new_values
 
 
