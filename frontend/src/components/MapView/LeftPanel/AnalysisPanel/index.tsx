@@ -25,6 +25,8 @@ import {
   Theme,
   CircularProgress,
   Box,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 import {
   BarChartOutlined,
@@ -69,6 +71,10 @@ import {
   BoundaryLayerProps,
   GeometryType,
   PanelSize,
+  AnalysisType,
+  displayAnalysisType,
+  ExposureOperator,
+  ExposureValue,
 } from '../../../../config/types';
 import {
   getAdminLevelCount,
@@ -179,6 +185,13 @@ const AnalysisPanel = memo(
     const [hazardLayerId, setHazardLayerId] = useState<LayerKey | undefined>(
       hazardLayerIdFromUrl,
     );
+    const [analysisType, setAnalysisType] = useState<AnalysisType>(
+      AnalysisType.ADMIN_LEVEL_STATISTICS,
+    );
+    const [exposureValue, setExposureValue] = useState<ExposureValue>({
+      operator: ExposureOperator.EQUAL,
+      value: '',
+    });
     const [statistic, setStatistic] = useState(
       (selectedStatisticFromUrl as AggregationOperations) ||
         AggregationOperations.Mean,
@@ -372,9 +385,9 @@ const AnalysisPanel = memo(
     ]);
 
     const onOptionChange = useCallback(
-      <T extends string>(setterFunc: Dispatch<SetStateAction<T>>) => (
-        event: React.ChangeEvent<HTMLInputElement>,
-      ) => {
+      <T extends string | AnalysisType>(
+        setterFunc: Dispatch<SetStateAction<T>>,
+      ) => (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value as T;
         setterFunc(value);
         return value;
@@ -404,6 +417,35 @@ const AnalysisPanel = memo(
       },
       [aboveThreshold, belowThreshold, onOptionChange],
     );
+
+    const analysisTypeOptions = useMemo(() => {
+      return Object.entries(AnalysisType).map(([key, value]) => (
+        <FormControlLabel
+          key={key}
+          value={value}
+          control={
+            <Radio
+              classes={{
+                root: classes.radioOptions,
+                checked: classes.radioOptionsChecked,
+              }}
+              color="default"
+              size="small"
+            />
+          }
+          label={
+            <Typography className={classes.analysisPanelParamText}>
+              {t(displayAnalysisType[value])}
+            </Typography>
+          }
+        />
+      ));
+    }, [
+      classes.analysisPanelParamText,
+      classes.radioOptions,
+      classes.radioOptionsChecked,
+      t,
+    ]);
 
     const statisticOptions = useMemo(() => {
       return Object.entries(AggregationOperations)
@@ -608,6 +650,8 @@ const AnalysisPanel = memo(
           baselineLayer: selectedBaselineLayer,
           date: selectedDate,
           statistic,
+          analysisType,
+          exposureValue,
           extent,
           threshold: {
             above: parseFloat(aboveThreshold) || undefined,
@@ -623,32 +667,35 @@ const AnalysisPanel = memo(
           analysisStatistic: statistic,
           analysisThresholdAbove: aboveThreshold || undefined,
           analysisThresholdBelow: belowThreshold || undefined,
+          analysisType,
         });
 
         dispatch(requestAndStoreAnalysis(params));
       }
     }, [
-      aboveThreshold,
-      activateUniqueBoundary,
-      adminLevel,
+      preSelectedBaselineLayer,
+      analysisResult,
+      extent,
+      selectedHazardLayer,
+      hazardDataType,
+      removeKeyFromUrl,
+      dispatch,
+      clearAnalysis,
+      startDate,
+      endDate,
       adminLevelLayer,
       adminLevelLayerData,
-      analysisResult,
-      baselineLayerId,
-      belowThreshold,
-      clearAnalysis,
-      dispatch,
-      endDate,
-      extent,
-      hazardDataType,
-      hazardLayerId,
-      preSelectedBaselineLayer,
-      removeKeyFromUrl,
-      selectedDate,
-      selectedHazardLayer,
-      startDate,
-      statistic,
+      adminLevel,
+      activateUniqueBoundary,
       updateAnalysisParams,
+      hazardLayerId,
+      statistic,
+      selectedDate,
+      baselineLayerId,
+      analysisType,
+      exposureValue,
+      aboveThreshold,
+      belowThreshold,
     ]);
 
     // handler of changing exposure analysis sort order
@@ -737,7 +784,7 @@ const AnalysisPanel = memo(
       return (
         <>
           <div className={classes.analysisPanelParamContainer}>
-            <Typography className={classes.analysisParamTitle} variant="body2">
+            <Typography className={classes.colorBlack} variant="body2">
               {t('Admin Level')}
             </Typography>
             <SimpleDropdown
@@ -747,19 +794,16 @@ const AnalysisPanel = memo(
                 `Admin ${i + 1}`,
               ])}
               onChange={setAdminLevel}
-              textClass={classes.analysisParamTitle}
+              textClass={classes.colorBlack}
             />
           </div>
 
           <div className={classes.analysisPanelParamContainer}>
-            <Typography className={classes.analysisParamTitle} variant="body2">
+            <Typography className={classes.colorBlack} variant="body2">
               {t('Date Range')}
             </Typography>
             <div className={classes.dateRangePicker}>
-              <Typography
-                className={classes.analysisParamTitle}
-                variant="body2"
-              >
+              <Typography className={classes.colorBlack} variant="body2">
                 {t('Start')}
               </Typography>
               <DatePicker
@@ -779,10 +823,7 @@ const AnalysisPanel = memo(
               />
             </div>
             <div className={classes.dateRangePicker}>
-              <Typography
-                className={classes.analysisParamTitle}
-                variant="body2"
-              >
+              <Typography className={classes.colorBlack} variant="body2">
                 {t('End')}
               </Typography>
               <DatePicker
@@ -809,7 +850,7 @@ const AnalysisPanel = memo(
       availableHazardDates,
       classes.analysisPanelParamContainer,
       classes.analysisPanelParamText,
-      classes.analysisParamTitle,
+      classes.colorBlack,
       classes.calendarPopper,
       classes.dateRangePicker,
       endDate,
@@ -835,7 +876,76 @@ const AnalysisPanel = memo(
             />
           </div>
           <div className={classes.analysisPanelParamContainer}>
-            <Typography className={classes.analysisParamTitle} variant="body2">
+            <Typography className={classes.colorBlack} variant="body2">
+              {t('Type of analysis')}
+            </Typography>
+            <FormControl component="div">
+              <RadioGroup
+                name="analysis-type"
+                value={analysisType}
+                onChange={onOptionChange(setAnalysisType)}
+              >
+                {analysisTypeOptions}
+              </RadioGroup>
+            </FormControl>
+          </div>
+          <div className={classes.analysisPanelParamContainer}>
+            <Typography className={classes.colorBlack} variant="body2">
+              {t('Exposure value')}
+            </Typography>
+            <FormControl
+              component="div"
+              className={classes.exposureValueOptionsInputContainer}
+            >
+              <Typography variant="body1" className={classes.colorBlack}>
+                {t('Operator')}
+              </Typography>
+              <Select
+                className={classes.exposureValueOptionsSelect}
+                name="exposure-value-operator"
+                value={exposureValue.operator}
+                onChange={e =>
+                  setExposureValue({
+                    ...exposureValue,
+                    operator: e.target.value as ExposureOperator,
+                  })
+                }
+              >
+                {Object.values(ExposureOperator).map(item => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl
+              component="div"
+              className={classes.exposureValueOptionsInputContainer}
+            >
+              <Typography variant="body1" className={classes.colorBlack}>
+                {t('Value')}
+              </Typography>
+              <Select
+                className={classes.exposureValueOptionsSelect}
+                name="exposure-value"
+                value={exposureValue.value}
+                onChange={e =>
+                  setExposureValue({
+                    ...exposureValue,
+                    value: e.target.value as ExposureOperator,
+                  })
+                }
+              >
+                {['value 1', 'value 2', 'value 3'].map(item => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+          <div className={classes.analysisPanelParamContainer}>
+            <Typography className={classes.colorBlack} variant="body2">
               {t('Statistic')}
             </Typography>
             <FormControl component="div">
@@ -849,7 +959,7 @@ const AnalysisPanel = memo(
             </FormControl>
           </div>
           <div className={classes.analysisPanelParamContainer}>
-            <Typography className={classes.analysisParamTitle} variant="body2">
+            <Typography className={classes.colorBlack} variant="body2">
               {t('Threshold')}
             </Typography>
             <div style={{ display: 'flex' }}>
@@ -876,7 +986,7 @@ const AnalysisPanel = memo(
             </div>
           </div>
           <div className={classes.datePickerContainer}>
-            <Typography className={classes.analysisParamTitle} variant="body2">
+            <Typography className={classes.colorBlack} variant="body2">
               {`${t('Date')}: `}
             </Typography>
             <DatePicker
@@ -910,24 +1020,29 @@ const AnalysisPanel = memo(
         </>
       );
     }, [
-      aboveThreshold,
-      availableHazardDates,
-      baselineLayerId,
-      belowThreshold,
+      hazardDataType,
       classes.analysisPanelParamContainer,
       classes.analysisPanelParamText,
-      classes.analysisParamTitle,
-      classes.calendarPopper,
-      classes.datePickerContainer,
+      classes.colorBlack,
+      classes.exposureValueOptionsInputContainer,
+      classes.exposureValueOptionsSelect,
       classes.numberField,
-      hazardDataType,
+      classes.datePickerContainer,
+      classes.calendarPopper,
+      baselineLayerId,
+      t,
+      analysisType,
       onOptionChange,
-      onThresholdOptionChange,
-      selectedDate,
+      analysisTypeOptions,
+      exposureValue,
       statistic,
       statisticOptions,
-      t,
       thresholdError,
+      belowThreshold,
+      onThresholdOptionChange,
+      aboveThreshold,
+      selectedDate,
+      availableHazardDates,
     ]);
 
     const renderedAnalysisPanelInfo = useMemo(() => {
@@ -1160,6 +1275,17 @@ const styles = (theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
+    exposureValueOptionsInputContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: '16px',
+      margin: '8px 0',
+    },
+    exposureValueOptionsSelect: {
+      flexGrow: 1,
+      color: 'black',
+    },
     exposureAnalysisLoadingTextContainer: {
       display: 'flex',
       justifyContent: 'center',
@@ -1172,7 +1298,7 @@ const styles = (theme: Theme) =>
       padding: '30px 10px 10px 10px',
       height: '100%',
     },
-    analysisParamTitle: {
+    colorBlack: {
       color: 'black',
     },
     analysisPanelParamText: {

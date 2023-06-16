@@ -19,9 +19,11 @@ import {
   AdminLevelType,
   AggregationOperations,
   AllAggregationOperations,
+  AnalysisType,
   AsyncReturnType,
   BoundaryLayerProps,
   ExposedPopulationDefinition,
+  ExposureValue,
   LayerKey,
   PolygonalAggregationOperations,
   TableType,
@@ -323,6 +325,8 @@ export type AnalysisDispatchParams = {
   threshold: ThresholdDefinition;
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
+  analysisType: AnalysisType;
+  exposureValue: ExposureValue;
 };
 
 export type PolygonAnalysisDispatchParams = {
@@ -569,6 +573,16 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   },
 );
 
+const getAnalysisUrl = (
+  analysisType: AnalysisType,
+  exposureValue: ExposureValue,
+): string => {
+  if (!(analysisType === AnalysisType.THRESHOLD_EXCEEDANCE)) {
+    return ANALYSIS_API_URL;
+  }
+  return `${ANALYSIS_API_URL}?intersect_comparison${exposureValue.operator}${exposureValue.value}`;
+};
+
 export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisResult,
   AnalysisDispatchParams,
@@ -581,6 +595,8 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     extent,
     statistic,
     threshold,
+    analysisType,
+    exposureValue,
   } = params;
   const baselineData = layerDataSelector(baselineLayer.id)(
     api.getState(),
@@ -604,7 +620,11 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   const aggregateData = scaleAndFilterAggregateData(
-    await fetchApiData(ANALYSIS_API_URL, apiRequest, api.dispatch),
+    await fetchApiData(
+      getAnalysisUrl(analysisType, exposureValue),
+      apiRequest,
+      api.dispatch,
+    ),
     hazardLayer,
     statistic,
     threshold,

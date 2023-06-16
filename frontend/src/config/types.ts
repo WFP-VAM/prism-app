@@ -484,6 +484,31 @@ export enum AggregationOperations {
   Sum = 'sum',
 }
 
+export enum AnalysisType {
+  ADMIN_LEVEL_STATISTICS = 'ADMIN_LEVEL_STATISTICS',
+  AREA_EXPOSED = 'AREA_EXPOSED',
+  THRESHOLD_EXCEEDANCE = 'THRESHOLD_EXCEEDANCE',
+}
+
+export const displayAnalysisType: Record<AnalysisType, string> = {
+  [AnalysisType.ADMIN_LEVEL_STATISTICS]: 'Generate admin level statistics',
+  [AnalysisType.AREA_EXPOSED]: 'Calculate area exposed',
+  [AnalysisType.THRESHOLD_EXCEEDANCE]: 'Threshold exceedance',
+};
+
+export enum ExposureOperator {
+  LOWER_THAN = '<',
+  LOWER_THAN_EQUAL = '<=',
+  EQUAL = '=',
+  GREATER_THAN = '>',
+  GREATER_THAN_EQUAL = '>=',
+}
+
+export interface ExposureValue {
+  operator: ExposureOperator;
+  value: string;
+}
+
 export enum PolygonalAggregationOperations {
   Area = 'area',
   Percentage = 'percentage',
