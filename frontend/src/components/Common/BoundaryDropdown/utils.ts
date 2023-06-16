@@ -186,7 +186,7 @@ export const setMenuItemStyle = (
 };
 
 export const containsText = (text: string, searchText: string) => {
-  return text?.toLowerCase().indexOf(searchText?.toLowerCase()) > -1;
+  return (text?.toLowerCase().indexOf(searchText?.toLowerCase()) || 0) > -1;
 };
 
 /*
