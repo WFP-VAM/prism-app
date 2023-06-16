@@ -166,7 +166,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 def get_acled_incidents(
     iso: int,
     limit: int,
-    fields: Optional[str],
+    fields: Optional[str] = None,
     event_date: Optional[date] = None,
 ):
     acled_url = "https://api.acleddata.com/acled/read"
