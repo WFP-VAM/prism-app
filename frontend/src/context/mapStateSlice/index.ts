@@ -72,7 +72,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     point_data: 0,
     polygon: 1,
     boundary: 2,
-    pattern_admin_level_data: 3,
+    pattern_admin_level_data: 4.5,
     admin_level_data: 4,
     impact: 5,
     wms: 6,

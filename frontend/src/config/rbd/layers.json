@@ -3757,6 +3757,7 @@
   "ch_idps_phase": {
     "title": "IDPs - phase classification",
     "type": "admin_level_data",
+    "fill_pattern": true,
     "path": "data/rbd/ch/idps_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2019-10-01",
@@ -3770,7 +3771,6 @@
     ],
     "admin_level": 2,
     "data_field": "phase_class",
-    "fill_pattern": true,
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": ["ch_idps_phase_admin1"],
     "validity": {
@@ -3993,6 +3993,7 @@
   "ch_inaccessible_phase": {
     "title": "Limited access areas - phase classification",
     "type": "admin_level_data",
+    "fill_pattern": true,
     "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2020-02-01",
@@ -4056,6 +4057,7 @@
   "ch_inaccessible_pop3_5": {
     "title": "Limited access areas - population in phase 3 to 5",
     "type": "admin_level_data",
+    "fill_pattern": true,
     "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2020-02-01",
@@ -4125,6 +4127,7 @@
   "ch_urban_phase": {
     "title": "Urban areas - phase classification",
     "type": "admin_level_data",
+    "fill_pattern": true,
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": ["2021-02-01", "2021-06-01", "2022-02-01", "2022-06-01"],
     "validity": {
@@ -4177,6 +4180,7 @@
   "ch_urban_pop3_5": {
     "title": "Urban areas - population in phase 3 to 5",
     "type": "admin_level_data",
+    "fill_pattern": true,
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": ["2022-02-01", "2022-06-01", "2023-06-01"],
     "validity": {
