@@ -187,7 +187,9 @@ def get_acled_incidents(
     response = get(acled_url, params=params.dict())
     response.raise_for_status()
 
-    return JSONResponse(content=response.content)
+    print(response)
+
+    return Response(content=response.content)
 
 
 @app.get("/hdc")
