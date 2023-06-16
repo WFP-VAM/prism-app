@@ -67,6 +67,8 @@ const MapComponent = memo(
       return [...unsortedSelectedLayers].sort(layerOrdering);
     }, [unsortedSelectedLayers]);
 
+    console.log({ selectedLayers });
+
     const mapOnClick = useMapOnClick(setIsAlertFormOpen, boundaryLayerId);
 
     const style = useMemo(() => {
