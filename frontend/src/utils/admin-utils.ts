@@ -8,6 +8,7 @@ import {
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
 } from '../config/utils';
+import { CHART_API_URL } from './constants';
 
 import { AdminBoundaryParams } from '../context/datasetStateSlice';
 
@@ -50,7 +51,10 @@ export const getChartAdminBoundaryParams = (
 ): AdminBoundaryParams => {
   const { serverLayerName, chartData } = layer;
 
-  const { levels, url, fields: datasetFields } = chartData!;
+  const { levels, url: chartUrl, fields: datasetFields } = chartData!;
+
+  // Take in chart url if provided, otherwise use default CHART_API_URL
+  const url = chartUrl || CHART_API_URL;
 
   // TODO - why not reduce this by level directly?
   const boundaryProps = levels.reduce(
