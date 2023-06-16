@@ -186,12 +186,13 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq",
+        {
+          "key": "rfq",
           "label": "Rainfall anomaly",
           "color": "#375692",
           "minValue": 0,
           "maxValue": 300
-      },
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -426,7 +427,8 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r1q",
+        {
+          "key": "r1q",
           "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
@@ -664,11 +666,13 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r3q",
+        {
+          "key": "r3q",
           "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
-          "color": "#375692" },
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -2335,7 +2339,8 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "viq",
+        {
+          "key": "viq",
           "label": "NDVI anomaly",
           "minValue": 0,
           "maxValue": 150,
@@ -3429,7 +3434,7 @@
     "admin_level": 2,
     "data_field": "calc_ph_admin2",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
         "type": "number",
@@ -3500,7 +3505,7 @@
     "admin_level": 1,
     "data_field": "calc_ph_admin1",
     "admin_code": "adm1_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "calc_pop_ph1_admin1": {
         "type": "number",
@@ -3772,7 +3777,7 @@
       "days": 122,
       "mode": "forward"
     },
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -3819,7 +3824,7 @@
     "admin_level": 1,
     "data_field": "calc_ph_admin1",
     "admin_code": "adm1_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -3878,7 +3883,7 @@
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": ["ch_idps_phase_admin1"],
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -3935,7 +3940,7 @@
     "admin_level": 1,
     "data_field": "calc_pop_ph3_5_admin1",
     "admin_code": "adm1_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -4008,7 +4013,7 @@
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -4067,7 +4072,7 @@
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -4129,7 +4134,7 @@
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -4181,7 +4186,7 @@
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
