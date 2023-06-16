@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import moment from 'moment';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
@@ -213,7 +212,10 @@ const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
  *
  * @return DateItem
  */
-const createDefaultDateItem = (date: number, validity?: Validity): DateItem => {
+const generateDefaultDateItem = (
+  date: number,
+  validity?: Validity,
+): DateItem => {
   const dateWithTz = moment(date).set({ hour: 12, minute: 0 }).valueOf();
   const dateItemToReturn = {
     displayDate: dateWithTz,
@@ -239,20 +241,20 @@ const createDefaultDateItem = (date: number, validity?: Validity): DateItem => {
  *
  * @return Array of integers which represents a given date.
  */
-const updateLayerDatesWithValidity = async (
+const generateLayerDatesFromValidity = async (
   layer: ValidityLayer,
-): DateItem[] => {
+): Promise<DateItem[]> => {
   const { dates, validity } = layer;
 
   const { days, mode } = validity;
 
-  if (layer.name === 'ch_phase') {
+  if (layer.name === 'ch_phase' && layer.pathTemplate) {
     const ranges: {
       startDate: Date;
       endDate: Date;
     }[] = await Promise.all(
       layer.dates.map(async r => {
-        const path = layer.path.replace(/{.*?}/g, match => {
+        const path = layer.pathTemplate!.replace(/{.*?}/g, match => {
           const format = match.slice(1, -1);
           return moment(r).format(format);
         });
@@ -277,7 +279,7 @@ const updateLayerDatesWithValidity = async (
 
   // Generate first DateItem[] from dates array.
   const dateItemsDefault: DateItem[] = momentDates.map(momentDate =>
-    createDefaultDateItem(momentDate.valueOf(), validity),
+    generateDefaultDateItem(momentDate.valueOf(), validity),
   );
 
   const dateItemsWithValidity = momentDates.reduce(
@@ -428,6 +430,7 @@ export async function getLayersAvailableDates(
   // Merge all layer types results into a single dictionary of date arrays.
   const mergedLayers: { [key: string]: number[] } = merge({}, ...layerDates);
 
+  // Retrieve layer that have a validity object
   const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
     .filter(layer => layer.validity !== undefined)
     .map(layer => {
@@ -437,8 +440,7 @@ export async function getLayersAvailableDates(
         name: layerId,
         dates: mergedLayers[layerId],
         validity: layer.validity!,
-        path: layer.path ? layer.path : undefined,
-        rawDates: layer.dates,
+        pathTemplate: (layer as AdminLevelDataLayerProps).path,
       };
     });
 
@@ -450,26 +452,15 @@ export async function getLayersAvailableDates(
         );
 
         const updatedDates = layerWithValidity
-          ? await updateLayerDatesWithValidity(layerWithValidity)
-          : layerWithDate[1].map((d: number) => createDefaultDateItem(d));
+          ? await generateLayerDatesFromValidity(layerWithValidity)
+          : layerWithDate[1].map((d: number) => generateDefaultDateItem(d));
 
-        return [layerWithDate[0], updatedDates];
+        return { [layerWithDate[0]]: updatedDates };
       },
     ),
   );
-  return new Map(layerDateItemsMap);
 
-  // return Object.entries(mergedLayers).reduce((acc, [layerKey, dates]) => {
-  //   const layerWithValidity = layersWithValidity.find(
-  //     validityLayer => validityLayer.name === layerKey,
-  //   );
-
-  //   const updatedDates = layerWithValidity
-  //     ? updateLayerDatesWithValidity(layerWithValidity)
-  //     : dates.map((d: number) => createDefaultDateItem(d));
-
-  //   return { ...acc, [layerKey]: updatedDates };
-  // }, {});
+  return Object.assign({}, ...layerDateItemsMap);
 }
 
 /**

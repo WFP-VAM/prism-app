@@ -689,6 +689,7 @@ export type ValidityLayer = {
   name: string;
   dates: number[];
   validity: Validity;
+  pathTemplate?: string;
 };
 
 export type UserAuth = {
