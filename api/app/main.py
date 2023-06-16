@@ -15,11 +15,11 @@ from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
 from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
-from app.models import AcledRequest, FilterProperty, RasterGeotiffModel
+from app.models import AcledRequest, RasterGeotiffModel
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
-from fastapi import Depends, FastAPI, HTTPException, Path, Query, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import EmailStr, HttpUrl, ValidationError
@@ -166,10 +166,8 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 def get_acled_incidents(
     iso: int,
     limit: int,
-    fields: Optional[str],
-    email: str,
-    key: str,
-    event_date: Optional[date],
+    fields: Optional[str] = None,
+    event_date: Optional[date] = None,
 ):
     acled_url = "https://api.acleddata.com/acled/read"
 
@@ -178,18 +176,16 @@ def get_acled_incidents(
             iso=iso,
             limit=limit,
             fields=fields,
-            email=email,
-            key=key,
             event_date=event_date,
         )
-    except ValidationError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+    except ValidationError as error:
+        raise HTTPException(status_code=422, detail=str(error))
 
     # Make a new request to acled api including the credentials.
     response = get(acled_url, params=params.dict())
     response.raise_for_status()
 
-    return JSONResponse(content=response.content)
+    return Response(content=response.content)
 
 
 @app.get("/hdc")
