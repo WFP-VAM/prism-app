@@ -109,27 +109,31 @@ const MapComponent = memo(
 
     const onDragEnd = useCallback(
       (map: Map) => {
-        const bounds = map.getBounds();
-        dispatch(setBounds(bounds));
+        return () => {
+          const bounds = map.getBounds();
+          dispatch(setBounds(bounds));
+        };
       },
       [dispatch],
     );
 
     const onZoomEnd = useCallback(
       (map: Map) => {
-        const bounds = map.getBounds();
-        const newZoom = map.getZoom();
-        dispatch(setLocation({ bounds, zoom: newZoom }));
+        return () => {
+          const bounds = map.getBounds();
+          const newZoom = map.getZoom();
+          dispatch(setLocation({ bounds, zoom: newZoom }));
+        };
       },
       [dispatch],
     );
 
     const watchBoundaryChange = useCallback(
       (map: Map) => {
-        map.on('dragend', onDragEnd);
-        map.on('zoomend', onZoomEnd);
+        map.on('dragend', onDragEnd(map));
+        map.on('zoomend', onZoomEnd(map));
         // Show initial value
-        onZoomEnd(map);
+        onZoomEnd(map)();
       },
       [onDragEnd, onZoomEnd],
     );
