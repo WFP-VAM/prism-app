@@ -167,8 +167,6 @@ def get_acled_incidents(
     iso: int,
     limit: int,
     fields: Optional[str],
-    email: str,
-    key: str,
     event_date: Optional[date],
 ):
     acled_url = "https://api.acleddata.com/acled/read"
@@ -178,12 +176,12 @@ def get_acled_incidents(
             iso=iso,
             limit=limit,
             fields=fields,
-            email=email,
-            key=key,
             event_date=event_date,
         )
-    except ValidationError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+    except ValidationError as error:
+        raise HTTPException(status_code=422, detail=str(error))
+
+    print(params)
 
     # Make a new request to acled api including the credentials.
     response = get(acled_url, params=params.dict())
