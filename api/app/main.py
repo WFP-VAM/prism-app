@@ -181,13 +181,9 @@ def get_acled_incidents(
     except ValidationError as error:
         raise HTTPException(status_code=422, detail=str(error))
 
-    print(params)
-
     # Make a new request to acled api including the credentials.
     response = get(acled_url, params=params.dict())
     response.raise_for_status()
-
-    print(response)
 
     return Response(content=response.content)
 
