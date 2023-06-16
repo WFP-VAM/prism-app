@@ -1,12 +1,11 @@
-import moment from 'moment';
+// @ts-nocheck
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
-import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
+import moment from 'moment';
+import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { appConfig } from '../config';
-import { LayerDefinitions } from '../config/utils';
 import type {
   AvailableDates,
-  DateItem,
   PointDataLayerProps,
   RequestFeatureInfo,
   Validity,
@@ -15,6 +14,7 @@ import type {
 import {
   AdminLevelDataLayerProps,
   DataType,
+  DateItem,
   DatesPropagation,
   FeatureInfoType,
   ImpactLayerProps,
@@ -22,13 +22,19 @@ import {
   StaticRasterLayerProps,
   WMSLayerProps,
 } from '../config/types';
-import { queryParamsToString } from './url-utils';
-import { createEWSDatesArray } from './ews-utils';
-import { fetchACLEDDates } from './acled-utils';
-import { fetchWithTimeout } from './fetch-with-timeout';
-import { LocalError } from './error-utils';
+import { LayerDefinitions } from '../config/utils';
+
 import { addNotification } from '../context/notificationStateSlice';
-import { datesAreEqualWithoutTime } from './date-utils';
+import { fetchACLEDDates } from './acled-utils';
+import {
+  datesAreEqualWithoutTime,
+  generateDateItemsBetweenForRanges,
+  generateTimesBetweenRange,
+} from './date-utils';
+import { LocalError } from './error-utils';
+import { createEWSDatesArray } from './ews-utils';
+import { fetchWithTimeout } from './fetch-with-timeout';
+import { queryParamsToString } from './url-utils';
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
@@ -233,10 +239,36 @@ const createDefaultDateItem = (date: number, validity?: Validity): DateItem => {
  *
  * @return Array of integers which represents a given date.
  */
-const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
+const updateLayerDatesWithValidity = async (
+  layer: ValidityLayer,
+): DateItem[] => {
   const { dates, validity } = layer;
 
   const { days, mode } = validity;
+
+  if (layer.name === 'ch_phase') {
+    const ranges: {
+      startDate: Date;
+      endDate: Date;
+    }[] = await Promise.all(
+      layer.dates.map(async r => {
+        const path = layer.path.replace(/{.*?}/g, match => {
+          const format = match.slice(1, -1);
+          return moment(r).format(format);
+        });
+
+        const res = await fetch(path);
+        const jsonBody = await res.json();
+
+        return {
+          startDate: new Date(jsonBody.DataList[0].start_date),
+          endDate: new Date(jsonBody.DataList[0].end_date),
+        };
+      }),
+    );
+
+    return generateDateItemsBetweenForRanges(ranges);
+  }
 
   // Convert the dates to moment dates
   const momentDates = Array.prototype.sort
@@ -270,10 +302,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
-      const daysToAdd = Array.from(
-        { length: endDate.diff(startDate, 'days') + 1 },
-        (_, index) => startDate.clone().add(index, 'days').valueOf(),
-      );
+      const daysToAdd = generateTimesBetweenRange(startDate, endDate);
 
       // convert the available days for a specific moment day to the DefaultDate format
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
@@ -408,20 +437,39 @@ export async function getLayersAvailableDates(
         name: layerId,
         dates: mergedLayers[layerId],
         validity: layer.validity!,
+        path: layer.path ? layer.path : undefined,
+        rawDates: layer.dates,
       };
     });
 
-  return Object.entries(mergedLayers).reduce((acc, [layerKey, dates]) => {
-    const layerWithValidity = layersWithValidity.find(
-      validityLayer => validityLayer.name === layerKey,
-    );
+  const layerDateItemsMap = await Promise.all(
+    Object.entries(mergedLayers).map(
+      async (layerWithDate: [string, number[]]) => {
+        const layerWithValidity = layersWithValidity.find(
+          validityLayer => validityLayer.name === layerWithDate[0],
+        );
 
-    const updatedDates = layerWithValidity
-      ? updateLayerDatesWithValidity(layerWithValidity)
-      : dates.map((d: number) => createDefaultDateItem(d));
+        const updatedDates = layerWithValidity
+          ? await updateLayerDatesWithValidity(layerWithValidity)
+          : layerWithDate[1].map((d: number) => createDefaultDateItem(d));
 
-    return { ...acc, [layerKey]: updatedDates };
-  }, {});
+        return [layerWithDate[0], updatedDates];
+      },
+    ),
+  );
+  return new Map(layerDateItemsMap);
+
+  // return Object.entries(mergedLayers).reduce((acc, [layerKey, dates]) => {
+  //   const layerWithValidity = layersWithValidity.find(
+  //     validityLayer => validityLayer.name === layerKey,
+  //   );
+
+  //   const updatedDates = layerWithValidity
+  //     ? updateLayerDatesWithValidity(layerWithValidity)
+  //     : dates.map((d: number) => createDefaultDateItem(d));
+
+  //   return { ...acc, [layerKey]: updatedDates };
+  // }, {});
 }
 
 /**
