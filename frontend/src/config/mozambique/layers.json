@@ -43,7 +43,6 @@
       "styles": "rfh_16_0_300"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
         { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
@@ -93,7 +92,6 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfq", 
           "label": "Rainfall anomaly", 
@@ -270,7 +268,6 @@
     "date_interval": "days",
     "opacity": 0.7,
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
         { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
@@ -320,7 +317,6 @@
     "date_interval": "days",
     "opacity": 0.7,
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r1q", 
           "label": "Rainfall anomaly", 
@@ -379,7 +375,6 @@
     "date_interval": "days",
     "opacity": 0.7,
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
         { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
@@ -429,7 +424,6 @@
     "date_interval": "days",
     "opacity": 0.7,
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r3q", 
           "label": "Rainfall anomaly", 
@@ -1168,7 +1162,6 @@
       "styles": "vim_14_01_09"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "vim", "label": "NDVI", "color": "#4eac5b" },
         { "key": "vim_avg", "label": "Average", "color": "#99ff99" }
@@ -1254,7 +1247,6 @@
       "styles": "viq_13_50_150"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "viq", 
           "label": "NDVI anomaly", 
