@@ -142,7 +142,6 @@ export const convertSvgToPngBase64Image = async (
       mimeType: 'image/png',
       outputFormat: 'base64',
     });
-    console.log(base64Image);
     return base64Image as string;
   } catch (error) {
     console.error(error);
@@ -165,7 +164,6 @@ export const convertSvgToPngBaseBlobImage = async (
       mimeType: 'image/png',
       outputFormat: 'blob',
     });
-    console.log(blobImage);
     return blobImage as Blob;
   } catch (error) {
     console.error(error);
