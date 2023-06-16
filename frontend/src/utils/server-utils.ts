@@ -294,11 +294,26 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
  */
 const localFetchCoverageLayerDays = async (
   url: string,
+  dispatch: Dispatch,
 ): Promise<{ [layerId: string]: number[] }> => {
   try {
     return await fetchCoverageLayerDays(url, { fetch: fetchWithTimeout });
   } catch (error) {
     console.error(error);
+    if (error.name === 'AbortError') {
+      dispatch(
+        addNotification({
+          message: `Request at ${url} timeout`,
+          type: 'warning',
+        }),
+      );
+    }
+    dispatch(
+      addNotification({
+        message: `fetch coverage layer days request failed at ${url}`,
+        type: 'warning',
+      }),
+    );
     return {};
   }
 };
@@ -308,11 +323,26 @@ const localFetchCoverageLayerDays = async (
  */
 const localWMSGetLayerDates = async (
   url: string,
+  dispatch: Dispatch,
 ): Promise<{ [layerId: string]: number[] }> => {
   try {
     return await new WMS(url, { fetch: fetchWithTimeout }).getLayerDays();
   } catch (error) {
     console.error(error);
+    if (error.name === 'AbortError') {
+      dispatch(
+        addNotification({
+          message: `Request at ${url} timeout`,
+          type: 'warning',
+        }),
+      );
+    }
+    dispatch(
+      addNotification({
+        message: `WMS layer dates request failed at ${url}`,
+        type: 'warning',
+      }),
+    );
     return {};
   }
 };
@@ -343,8 +373,8 @@ export async function getLayersAvailableDates(
   );
 
   const layerDates = await Promise.all([
-    ...wmsServerUrls.map(url => localWMSGetLayerDates(url)),
-    ...wcsServerUrls.map(url => localFetchCoverageLayerDays(url)),
+    ...wmsServerUrls.map(url => localWMSGetLayerDates(url, dispatch)),
+    ...wcsServerUrls.map(url => localFetchCoverageLayerDays(url, dispatch)),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer, dispatch),
     })),
