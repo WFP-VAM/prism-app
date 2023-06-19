@@ -62,6 +62,7 @@ const MapComponent = memo(
       undefined,
     );
 
+    // eslint-disable-next-line no-console
     console.log({ selectedLayers });
 
     const mapOnClick = useMapOnClick(setIsAlertFormOpen, boundaryLayerId);

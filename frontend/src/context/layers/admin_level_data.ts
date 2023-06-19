@@ -66,7 +66,7 @@ export async function getAdminLevelDataLayerData({
   // TODO - make sure we only run this once.
   if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
     await new Promise(resolve => setTimeout(resolve, 15000));
-    // eslint-disable-next-line no-param-reassign
+    // eslint-disable-next-line fp/no-mutation
     adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
       getState(),
     ) as LayerData<BoundaryLayerProps> | undefined;
