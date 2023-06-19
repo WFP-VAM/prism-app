@@ -45,13 +45,10 @@ const getTypeOrder = (layer: LayerType) => {
   if (layer.type === 'admin_level_data' && layer.fillPattern) {
     return 'pattern_admin_level_data';
   }
-  if (layer.type !== 'wms') {
-    return layer.type;
+  if (layer.type === 'wms' && layer.geometry) {
+    return 'polygon';
   }
-  if (!layer.geometry) {
-    return 'wms';
-  }
-  return 'polygon';
+  return layer.type;
 };
 
 // Order layers to keep boundaries and point_data on top. boundaries first.
@@ -72,8 +69,8 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     point_data: 0,
     polygon: 1,
     boundary: 2,
-    pattern_admin_level_data: 4.5,
-    admin_level_data: 4,
+    admin_level_data: 3,
+    pattern_admin_level_data: 4,
     impact: 5,
     wms: 6,
     static_raster: 7,

@@ -107,10 +107,8 @@ const MapView = memo(({ classes }: MapViewProps) => {
   const dispatch = useDispatch();
 
   // Prioritize boundary and point_data layers
-  const selectedLayers = useMemo(() => {
-    // eslint-disable-next-line fp/no-mutating-methods
-    return [...unsortedSelectedLayers].sort(layerOrdering);
-  }, [unsortedSelectedLayers]);
+  // eslint-disable-next-line fp/no-mutating-methods
+  const selectedLayers = [...unsortedSelectedLayers].sort(layerOrdering);
 
   const selectedLayersWithDateSupport = useMemo(() => {
     return selectedLayers
@@ -594,6 +592,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       </Box>
       {renderedDatesLoader}
       <MapComponent
+        selectedLayers={selectedLayers}
         setIsAlertFormOpen={setIsAlertFormOpen}
         boundaryLayerId={boundaryLayerId}
       />

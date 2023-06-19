@@ -264,7 +264,7 @@ export class CommonLayerProps {
   dateInterval?: string;
 
   @optional
-  fillPattern?: boolean;
+  fillPattern?: 'left' | 'right';
 
   @optional // only optional for boundary layer
   legend?: LegendDefinition;

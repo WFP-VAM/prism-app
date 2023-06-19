@@ -46,7 +46,7 @@ export const circlePaint = ({
 export const fillPaintData = (
   { opacity, legend, id }: CommonLayerProps,
   property: string = 'data',
-  hasFillPattern = false,
+  fillPattern?: 'right' | 'left',
 ): MapboxGL.FillPaint => {
   let fillPaint: MapboxGL.FillPaint = {
     'fill-opacity': opacity || 0.3,
@@ -56,7 +56,7 @@ export const fillPaintData = (
       type: 'interval',
     },
   };
-  if (hasFillPattern) {
+  if (fillPattern) {
     // eslint-disable-next-line fp/no-mutation
     fillPaint = {
       ...fillPaint,
