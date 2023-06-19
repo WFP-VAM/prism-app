@@ -335,10 +335,11 @@ const DateSelector = memo(
           justify="center"
           className={classes.datePickerContainer}
         >
+          {/* Mobile */}
           <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
             <Hidden smUp>
               <Button onClick={decrementDate}>
-                <ChevronLeft />
+                <ChevronLeft style={{ color: '#101010' }} />
               </Button>
             </Hidden>
 
@@ -360,15 +361,16 @@ const DateSelector = memo(
 
             <Hidden smUp>
               <Button onClick={incrementDate}>
-                <ChevronRight />
+                <ChevronRight style={{ color: '#101010' }} />
               </Button>
             </Hidden>
           </Grid>
 
+          {/* Desktop */}
           <Grid item xs={12} sm className={classes.slider}>
             <Hidden xsDown>
               <Button onClick={decrementDate}>
-                <ChevronLeft />
+                <ChevronLeft style={{ color: '#101010' }} />
               </Button>
             </Hidden>
             <Grid className={classes.dateContainer} ref={timeLine}>
@@ -416,7 +418,7 @@ const DateSelector = memo(
                       <FontAwesomeIcon
                         icon={faCaretUp}
                         style={{ fontSize: 40 }}
-                        color="white"
+                        color="black"
                       />
                     </div>
                   </Draggable>
@@ -425,7 +427,7 @@ const DateSelector = memo(
             </Grid>
             <Hidden xsDown>
               <Button onClick={incrementDate}>
-                <ChevronRight />
+                <ChevronRight style={{ color: '#101010' }} />
               </Button>
             </Hidden>
           </Grid>
@@ -445,16 +447,20 @@ const styles = (theme: Theme) =>
     },
 
     datePickerContainer: {
-      backgroundColor: theme.palette.primary.main,
+      border: '1px solid #D4D4D4',
+      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      backgroundColor: 'white',
+      color: '#101010',
       borderRadius: theme.shape.borderRadius,
-      padding: theme.spacing(1),
+      padding: theme.spacing(2),
       width: '90%',
       margin: 'auto',
       textAlign: 'center',
     },
 
     datePickerInput: {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: 'white',
+      color: '#101010',
     },
 
     datePickerGrid: {

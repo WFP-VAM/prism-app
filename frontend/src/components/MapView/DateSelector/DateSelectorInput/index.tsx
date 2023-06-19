@@ -12,7 +12,12 @@ const DateSelectorInput = forwardRef(
     ref?: Ref<HTMLButtonElement>,
   ) => {
     return (
-      <Button variant="outlined" onClick={onClick} ref={ref}>
+      <Button
+        variant="outlined"
+        style={{ color: '#101010', fontWeight: 'bold' }}
+        onClick={onClick}
+        ref={ref}
+      >
         {value}
       </Button>
     );

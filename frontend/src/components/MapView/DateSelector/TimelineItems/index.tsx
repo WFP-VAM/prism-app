@@ -43,27 +43,27 @@ const TimelineItems = memo(
       class: string;
       color: string;
       layerDirectionClass?: string;
+      emphasis?: string;
     }[] = [
       { class: classes.intersectionDate, color: 'White' },
       {
         class: classes.layerOneDate,
-        color: 'Blue',
+        color: '#C0E8FF',
         layerDirectionClass: classes.layerOneDirection,
+        emphasis: classes.layerOneEmphasis,
       },
       {
         class: classes.layerTwoDate,
-        color: 'Yellow',
+        color: '#FFF176',
         layerDirectionClass: classes.layerTwoDirection,
+        emphasis: classes.layerTwoEmphasis,
       },
       {
         class: classes.layerThreeDate,
-        color: 'Red',
+        color: '#F9CEC1',
         layerDirectionClass: classes.layerThreeDirection,
+        emphasis: classes.layerThreeEmphasis,
       },
-      // For now, super-impose additional layers in case we have too many.
-      // TODO - handle this more cleanly.
-      { class: classes.layerThreeDate, color: 'Blue' },
-      { class: classes.layerThreeDate, color: 'Yellow' },
     ];
 
     const intersectionDateItems: DateItem[] = intersectionDates.map(date => ({
@@ -156,21 +156,25 @@ const TimelineItems = memo(
 );
 
 const DATE_ITEM_STYLES: CreateCSSProperties = {
-  borderTop: '1px solid white',
-  color: 'white',
+  color: '#101010',
+  borderLeft: '1px solid white',
   position: 'relative',
   top: -5,
   cursor: 'pointer',
   minWidth: TIMELINE_ITEM_WIDTH,
   '&:hover': {
-    borderLeft: '1px solid #5ccfff',
+    borderLeft: '1px solid #101010',
   },
 };
 
-const BASE_DATE_ITEM: CreateCSSProperties = {
+const DEFAULT_ITEM: CreateCSSProperties = {
   position: 'absolute',
-  height: 5,
+  height: 10,
   width: TIMELINE_ITEM_WIDTH,
+};
+
+const BASE_DATE_ITEM: CreateCSSProperties = {
+  ...DEFAULT_ITEM,
   opacity: 0.6,
 };
 
@@ -178,7 +182,7 @@ const styles = () =>
   createStyles({
     dateItemFull: {
       ...DATE_ITEM_STYLES,
-      borderLeft: '1px solid white',
+      borderLeft: '1px solid #101010',
       height: 36,
     },
 
@@ -193,35 +197,52 @@ const styles = () =>
     intersectionDate: {
       ...BASE_DATE_ITEM,
       top: 0,
-      backgroundColor: 'white',
+      backgroundColor: 'grey',
     },
+
     layerOneDate: {
       ...BASE_DATE_ITEM,
-      top: 5,
-      backgroundColor: 'blue',
+      top: 10,
+      backgroundColor: '#C0E8FF',
     },
     layerTwoDate: {
       ...BASE_DATE_ITEM,
-      top: 10,
-      backgroundColor: 'yellow',
+      top: 20,
+      backgroundColor: '#FFF176',
     },
     layerThreeDate: {
       ...BASE_DATE_ITEM,
-      top: 15,
-      backgroundColor: 'red',
+      top: 30,
+      backgroundColor: '#F9CEC1',
+    },
+
+    layerOneEmphasis: {
+      ...DEFAULT_ITEM,
+      top: 10,
+      backgroundColor: '#00A3FF',
+    },
+    layerTwoEmphasis: {
+      ...DEFAULT_ITEM,
+      top: 20,
+      backgroundColor: '#FEC600',
+    },
+    layerThreeEmphasis: {
+      ...DEFAULT_ITEM,
+      top: 30,
+      backgroundColor: '#FF9473',
     },
 
     layerOneDirection: {
-      top: 5,
-      borderLeft: '8px solid darkblue',
+      top: 10,
+      borderLeft: '6px solid #00A3FF',
     },
     layerTwoDirection: {
-      top: 10,
-      borderLeft: '8px solid yellow',
+      top: 20,
+      borderLeft: '6px solid #FEC600',
     },
     layerThreeDirection: {
-      top: 15,
-      borderLeft: '8px solid darkred',
+      top: 30,
+      borderLeft: '6px solid #FF9473',
     },
   });
 

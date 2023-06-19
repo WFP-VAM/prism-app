@@ -41,17 +41,30 @@ const TimelineItem = memo(
                     className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
                   />
                 )}
-                {layerIndex !== 0 && matchingDateItemInLayer.isEndDate && (
-                  <div
-                    className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
-                  />
-                )}
+
+                {layerIndex !== 0 &&
+                  layerDates.indexOf(matchingDateItemInLayer) !==
+                    layerDates.length - 1 &&
+                  layerDates[layerDates.indexOf(matchingDateItemInLayer) + 1]
+                    .isEndDate && (
+                    <div
+                      className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
+                    />
+                  )}
 
                 <div
                   className={dateItemStyling[layerIndex].class}
                   role="presentation"
                   onClick={handleClick(index)}
                 />
+
+                {layerIndex !== 0 && matchingDateItemInLayer.isEndDate && (
+                  <div
+                    className={dateItemStyling[layerIndex].emphasis}
+                    role="presentation"
+                    onClick={handleClick(index)}
+                  />
+                )}
               </React.Fragment>
             );
           },
@@ -66,13 +79,15 @@ const styles = () =>
     layerDirectionBase: {
       display: 'block',
       position: 'absolute',
-      borderTop: '8px solid transparent',
-      borderBottom: '8px solid transparent',
+      borderTop: '4px solid transparent',
+      borderBottom: '6px solid transparent',
       height: '0px',
       zIndex: 1,
+      left: 0,
     },
 
     layerDirectionBackwardBase: {
+      right: 0,
       transform: 'rotate(180deg)',
     },
   });
@@ -86,6 +101,7 @@ export interface TimelineItemProps extends WithStyles<typeof styles> {
     class: string;
     color: string;
     layerDirectionClass?: string;
+    emphasis?: string;
   }[];
 }
 
