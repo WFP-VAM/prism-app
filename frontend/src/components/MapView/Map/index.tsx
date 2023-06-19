@@ -225,6 +225,10 @@ const MapComponent = memo(
       });
     }, [componentTypes, firstBoundaryId, firstSymbolId, selectedLayers]);
 
+    console.log(selectedMap?.getStyle()?.layers);
+
+    console.log(selectedLayers);
+
     return (
       <MapboxMap
         // eslint-disable-next-line react/style-prop-object
