@@ -382,6 +382,24 @@ export type Validity = {
   mode: DatesPropagation; // Propagation mode for dates.
 };
 
+export enum AnalysisType {
+  ADMIN_LEVEL_STATISTICS = 'ADMIN_LEVEL_STATISTICS',
+  AREA_EXPOSED = 'AREA_EXPOSED',
+  THRESHOLD_EXCEEDANCE = 'THRESHOLD_EXCEEDANCE',
+}
+
+export const displayAnalysisType: Record<AnalysisType, string> = {
+  [AnalysisType.ADMIN_LEVEL_STATISTICS]: 'Generate admin level statistics',
+  [AnalysisType.AREA_EXPOSED]: 'Calculate area exposed',
+  [AnalysisType.THRESHOLD_EXCEEDANCE]: 'Threshold exceedance',
+};
+
+export enum WmsExposureValuesAttribute {
+  ADMIN_LEVEL_STATISTICS = '',
+  AREA_EXPOSED = 'areaExposedValues',
+  THRESHOLD_EXCEEDANCE = 'thresholdValues',
+}
+
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
   baseUrl: string;
@@ -410,6 +428,12 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
+
+  @optional
+  'areaExposedValues'?: { label: string; value: string | number }[];
+
+  @optional
+  'thresholdValues'?: { label: string; value: string | number }[];
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {
@@ -483,18 +507,6 @@ export enum AggregationOperations {
   Min = 'min',
   Sum = 'sum',
 }
-
-export enum AnalysisType {
-  ADMIN_LEVEL_STATISTICS = 'ADMIN_LEVEL_STATISTICS',
-  AREA_EXPOSED = 'AREA_EXPOSED',
-  THRESHOLD_EXCEEDANCE = 'THRESHOLD_EXCEEDANCE',
-}
-
-export const displayAnalysisType: Record<AnalysisType, string> = {
-  [AnalysisType.ADMIN_LEVEL_STATISTICS]: 'Generate admin level statistics',
-  [AnalysisType.AREA_EXPOSED]: 'Calculate area exposed',
-  [AnalysisType.THRESHOLD_EXCEEDANCE]: 'Threshold exceedance',
-};
 
 export enum ExposureOperator {
   LOWER_THAN = '<',
