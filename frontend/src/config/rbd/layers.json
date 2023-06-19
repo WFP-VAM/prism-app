@@ -3758,6 +3758,7 @@
     "title": "IDPs - phase classification",
     "type": "admin_level_data",
     "fill_pattern": "left",
+    "fill_color": "#000000",
     "path": "data/rbd/ch/idps_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2019-10-01",
@@ -3994,6 +3995,7 @@
     "title": "Limited access areas - phase classification",
     "type": "admin_level_data",
     "fill_pattern": "left",
+    "fill_color": "#000000",
     "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2020-02-01",
@@ -4058,6 +4060,7 @@
     "title": "Limited access areas - population in phase 3 to 5",
     "type": "admin_level_data",
     "fill_pattern": "left",
+    "fill_color": "#000000",
     "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2020-02-01",
@@ -4128,6 +4131,7 @@
     "title": "Urban areas - phase classification",
     "type": "admin_level_data",
     "fill_pattern": "left",
+    "fill_color": "#000000",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": ["2021-02-01", "2021-06-01", "2022-02-01", "2022-06-01"],
     "validity": {
@@ -4181,6 +4185,7 @@
     "title": "Urban areas - population in phase 3 to 5",
     "type": "admin_level_data",
     "fill_pattern": "left",
+    "fill_color": "#000000",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": ["2022-02-01", "2022-06-01", "2023-06-01"],
     "validity": {

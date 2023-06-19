@@ -266,6 +266,9 @@ export class CommonLayerProps {
   @optional
   fillPattern?: 'left' | 'right';
 
+  @optional
+  fillColor: string;
+
   @optional // only optional for boundary layer
   legend?: LegendDefinition;
 

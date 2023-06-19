@@ -55,7 +55,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
       return;
     }
     const convertedImage = await convertSvgToPngBase64Image(
-      getSVGShape('#000000', 'right'),
+      getSVGShape(layer.fillColor, layer.fillPattern),
     );
     map.loadImage(
       convertedImage,
@@ -82,7 +82,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
         map.addImage(`pattern-${layer.id}`, image);
       },
     );
-  }, [layer.fillPattern, layer.id, map]);
+  }, [layer.fillColor, layer.fillPattern, layer.id, map]);
 
   useEffect(() => {
     addFillPatternImageInMap();

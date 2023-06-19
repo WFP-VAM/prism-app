@@ -62,9 +62,6 @@ const MapComponent = memo(
       undefined,
     );
 
-    // eslint-disable-next-line no-console
-    console.log({ selectedLayers });
-
     const mapOnClick = useMapOnClick(setIsAlertFormOpen, boundaryLayerId);
 
     const style = useMemo(() => {
@@ -224,10 +221,6 @@ const MapComponent = memo(
         });
       });
     }, [componentTypes, firstBoundaryId, firstSymbolId, selectedLayers]);
-
-    console.log(selectedMap?.getStyle()?.layers);
-
-    console.log(selectedLayers);
 
     return (
       <MapboxMap
