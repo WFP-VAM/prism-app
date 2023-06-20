@@ -1,5 +1,3 @@
-import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
   Grid,
@@ -27,6 +25,7 @@ import { DateRangeType } from '../../../config/types';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import { addNotification } from '../../../context/notificationStateSlice';
 import { moment, useSafeTranslation } from '../../../i18n';
+import { datesAreEqualWithoutTime } from '../../../utils/date-utils';
 import {
   DEFAULT_DATE_FORMAT,
   MONTH_FIRST_DATE_FORMAT,
@@ -36,12 +35,11 @@ import { useUrlHistory } from '../../../utils/url-utils';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
 import {
+  DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
   USER_DATE_OFFSET,
   findDateIndex,
-  DateCompatibleLayerWithDateItems,
 } from './utils';
-import { datesAreEqualWithoutTime } from '../../../utils/date-utils';
 
 type Point = {
   x: number;
@@ -369,8 +367,8 @@ const DateSelector = memo(
           {/* Desktop */}
           <Grid item xs={12} sm className={classes.slider}>
             <Hidden xsDown>
-              <Button onClick={decrementDate}>
-                <ChevronLeft style={{ color: '#101010' }} />
+              <Button onClick={decrementDate} className={classes.chevronDate}>
+                <ChevronLeft />
               </Button>
             </Hidden>
             <Grid className={classes.dateContainer} ref={timeLine}>
@@ -392,13 +390,16 @@ const DateSelector = memo(
                     alignItems="stretch"
                     className={classes.dateLabelContainer}
                   >
-                    <TimelineItems
-                      dateRange={dateRange}
-                      intersectionDates={availableDates}
-                      clickDate={clickDate}
-                      locale={locale}
-                      selectedLayers={selectedLayers}
-                    />
+                    {stateStartDate && (
+                      <TimelineItems
+                        dateRange={dateRange}
+                        intersectionDates={availableDates}
+                        clickDate={clickDate}
+                        locale={locale}
+                        selectedLayers={selectedLayers}
+                        selectedCurrentDate={stateStartDate}
+                      />
+                    )}
                   </Grid>
                   <Draggable
                     axis="x"
@@ -415,19 +416,24 @@ const DateSelector = memo(
                     onStop={onPointerStop}
                   >
                     <div className={classes.pointer} id={POINTER_ID}>
-                      <FontAwesomeIcon
+                      <img
+                        src="images/tick.svg"
+                        alt="Cursor for the timeline"
+                        style={{ height: '17px' }}
+                      />
+                      {/* <FontAwesomeIcon
                         icon={faCaretUp}
                         style={{ fontSize: 40 }}
                         color="black"
-                      />
+                      /> */}
                     </div>
                   </Draggable>
                 </div>
               </Draggable>
             </Grid>
             <Hidden xsDown>
-              <Button onClick={incrementDate}>
-                <ChevronRight style={{ color: '#101010' }} />
+              <Button onClick={incrementDate} className={classes.chevronDate}>
+                <ChevronRight />
               </Button>
             </Hidden>
           </Grid>
@@ -444,6 +450,19 @@ const styles = (theme: Theme) =>
       bottom: '8%',
       width: '100%',
       zIndex: 5,
+    },
+
+    chevronDate: {
+      padding: 0,
+      minWidth: '24px',
+      marginBottom: 'auto',
+      marginTop: 'auto',
+      marginRight: '10px',
+      marginLeft: '10px',
+      color: '#101010',
+      '&:hover': {
+        backgroundColor: 'rgba(211,211,211, 0.3)',
+      },
     },
 
     datePickerContainer: {
@@ -478,7 +497,7 @@ const styles = (theme: Theme) =>
 
     dateContainer: {
       position: 'relative',
-      height: 36,
+      height: 50,
       flexGrow: 1,
       cursor: 'e-resize',
       overflow: 'hidden',
@@ -491,14 +510,16 @@ const styles = (theme: Theme) =>
 
     timeline: {
       position: 'relative',
-      top: 5,
+      top: 8,
     },
 
     pointer: {
       cursor: 'pointer',
       position: 'absolute',
-      left: -12,
-      top: -12,
+      zIndex: 5,
+      top: 24,
+      left: -4,
+      height: '16px',
     },
   });
 

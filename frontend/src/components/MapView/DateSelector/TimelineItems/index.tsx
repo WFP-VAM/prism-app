@@ -18,6 +18,7 @@ import {
 import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
 import TooltipItem from './TooltipItem';
+import { datesAreEqualWithoutTime } from '../../../../utils/date-utils';
 
 const TimelineItems = memo(
   ({
@@ -27,6 +28,7 @@ const TimelineItems = memo(
     clickDate,
     locale,
     selectedLayers,
+    selectedCurrentDate,
   }: TimelineItemsProps) => {
     const { t } = useSafeTranslation();
 
@@ -123,33 +125,39 @@ const TimelineItems = memo(
 
     return (
       <>
-        {dateRange.map((date, index) => (
-          <Tooltip
-            key={`Root-${date.label}-${date.value}`}
-            title={<>{getTooltipTitle(date)}</>}
-            TransitionComponent={Fade}
-            TransitionProps={{ timeout: 0 }}
-            placement="top"
-            arrow
-          >
-            <Grid
-              item
-              xs
-              className={
-                date.isFirstDay ? classes.dateItemFull : classes.dateItem
-              }
+        {dateRange.map((date, index) => {
+          const isCurrentDateSelectedDate: boolean = datesAreEqualWithoutTime(
+            date.value,
+            selectedCurrentDate,
+          );
+          return (
+            <Tooltip
+              key={`Root-${date.label}-${date.value}`}
+              title={<>{getTooltipTitle(date)}</>}
+              TransitionComponent={Fade}
+              TransitionProps={{ timeout: 0 }}
+              placement="top"
+              arrow
             >
-              <TimelineLabel locale={locale} date={date} />
-              <TimelineItem
-                concatenatedLayers={concatenatedLayers}
-                currentDate={date}
-                index={index}
-                clickDate={clickDate}
-                dateItemStyling={DATE_ITEM_STYLING}
-              />
-            </Grid>
-          </Tooltip>
-        ))}
+              <Grid
+                item
+                xs
+                className={`${
+                  date.isFirstDay ? classes.dateItemFull : classes.dateItem
+                } ${isCurrentDateSelectedDate ? classes.currentDate : ''} `}
+              >
+                <TimelineLabel locale={locale} date={date} />
+                <TimelineItem
+                  concatenatedLayers={concatenatedLayers}
+                  currentDate={date}
+                  index={index}
+                  clickDate={clickDate}
+                  dateItemStyling={DATE_ITEM_STYLING}
+                />
+              </Grid>
+            </Tooltip>
+          );
+        })}
       </>
     );
   },
@@ -244,6 +252,16 @@ const styles = () =>
       top: 30,
       borderLeft: '6px solid #FF9473',
     },
+
+    currentDate: {
+      border: '2px solid black',
+      top: '-7px',
+      minWidth: '13.9px',
+      maxHeight: '34.05px',
+      '&:hover': {
+        border: '2px solid black',
+      },
+    },
   });
 
 export interface TimelineItemsProps extends WithStyles<typeof styles> {
@@ -252,6 +270,7 @@ export interface TimelineItemsProps extends WithStyles<typeof styles> {
   clickDate: (arg: number) => void;
   locale: string;
   selectedLayers: DateCompatibleLayerWithDateItems[];
+  selectedCurrentDate: number;
 }
 
 export default withStyles(styles)(TimelineItems);

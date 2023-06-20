@@ -34,6 +34,7 @@ const TimelineItem = memo(
             if (!matchingDateItemInLayer) {
               return null;
             }
+
             return (
               <React.Fragment key={Math.random()}>
                 {layerIndex !== 0 && matchingDateItemInLayer.isStartDate && (
@@ -79,7 +80,7 @@ const styles = () =>
     layerDirectionBase: {
       display: 'block',
       position: 'absolute',
-      borderTop: '4px solid transparent',
+      borderTop: '5px solid transparent',
       borderBottom: '6px solid transparent',
       height: '0px',
       zIndex: 1,

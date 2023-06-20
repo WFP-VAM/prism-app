@@ -25,9 +25,9 @@ const styles = () =>
     dateItemLabel: {
       color: '#101010',
       position: 'absolute',
-      top: 22,
+      top: 33,
       textAlign: 'left',
-      paddingLeft: 5,
+      paddingLeft: 2,
       minWidth: 400,
       fontWeight: 'bold',
       zIndex: 1,
