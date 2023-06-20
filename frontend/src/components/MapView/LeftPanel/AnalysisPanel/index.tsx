@@ -426,6 +426,7 @@ const AnalysisPanel = memo(
         selectedHazardLayer &&
         selectedHazardLayer[WmsExposureValuesAttribute.AREA_EXPOSED]?.length
       ) {
+        // eslint-disable-next-line fp/no-mutating-methods
         options.push(AnalysisType.AREA_EXPOSED);
       }
       if (
@@ -433,6 +434,7 @@ const AnalysisPanel = memo(
         selectedHazardLayer[WmsExposureValuesAttribute.THRESHOLD_EXCEEDANCE]
           ?.length
       ) {
+        // eslint-disable-next-line fp/no-mutating-methods
         options.push(AnalysisType.THRESHOLD_EXCEEDANCE);
       }
       return options.map(item => (
