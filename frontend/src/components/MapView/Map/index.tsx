@@ -7,6 +7,7 @@ import React, {
   Dispatch,
   useMemo,
   useState,
+  useEffect,
 } from 'react';
 import { Map, MapSourceDataEvent } from 'mapbox-gl';
 import ReactMapboxGl from 'react-mapbox-gl';
@@ -57,6 +58,29 @@ const MapComponent = memo(
     const dispatch = useDispatch();
 
     const selectedMap = useSelector(mapSelector);
+
+    useEffect(() => {
+      if (!selectedMap) {
+        return;
+      }
+      const { layers } = selectedMap.getStyle();
+      if (!layers) {
+        return;
+      }
+      const filteredMapLayers = layers.filter(mapLayer => {
+        return selectedLayers.some(selectedLayer => {
+          return `layer-${selectedLayer.id}` === mapLayer.id;
+        });
+      });
+      // eslint-disable-next-line no-console
+      console.log(filteredMapLayers);
+      if (!filteredMapLayers) {
+        return;
+      }
+      filteredMapLayers.forEach(filteredMapLayer => {
+        selectedMap.moveLayer(filteredMapLayer.id, layers[1].id);
+      });
+    }, [selectedLayers, selectedMap]);
 
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
       undefined,
