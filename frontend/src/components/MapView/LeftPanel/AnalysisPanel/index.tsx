@@ -429,14 +429,6 @@ const AnalysisPanel = memo(
         // eslint-disable-next-line fp/no-mutating-methods
         options.push(AnalysisType.AREA_EXPOSED);
       }
-      if (
-        selectedHazardLayer &&
-        selectedHazardLayer[WmsExposureValuesAttribute.THRESHOLD_EXCEEDANCE]
-          ?.length
-      ) {
-        // eslint-disable-next-line fp/no-mutating-methods
-        options.push(AnalysisType.THRESHOLD_EXCEEDANCE);
-      }
       return options.map(item => (
         <FormControlLabel
           key={item}
