@@ -60,8 +60,22 @@ export const fillPaintData = (
     // eslint-disable-next-line fp/no-mutation
     fillPaint = {
       ...fillPaint,
-      'fill-pattern': `fill-pattern-${id}-legend`,
+      'fill-pattern': [
+        'step',
+        ['get', property],
+        ...legend!.reduce(
+          (acc: string[], legendItem: LegendDefinitionItem, index) => [
+            ...acc,
+            // figure out how to better handle indices.
+            `fill-pattern-${id}-legend-${index - 1}` as string,
+            legendItem.value as string,
+          ],
+          [],
+        ),
+        '#CCC',
+      ] as MapboxGL.Expression,
     };
   }
+  console.log(fillPaint);
   return fillPaint;
 };
