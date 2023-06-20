@@ -1,5 +1,5 @@
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from '../../../../../config/types';
 import { datesAreEqualWithoutTime } from '../../../../../utils/date-utils';
@@ -13,15 +13,6 @@ const TimelineItem = memo(
     clickDate,
     dateItemStyling,
   }: TimelineItemProps) => {
-    const handleClick = useCallback(
-      (dateIndex: number) => {
-        return () => {
-          clickDate(dateIndex);
-        };
-      },
-      [clickDate],
-    );
-
     return (
       <>
         {concatenatedLayers.map(
@@ -57,20 +48,16 @@ const TimelineItem = memo(
                   )}
 
                 <div
-                  className={dateItemStyling[layerIndex].class}
+                  className={`${
+                    layerIndex !== 0 &&
+                    (matchingDateItemInLayer.isEndDate ||
+                      matchingDateItemInLayer.isStartDate)
+                      ? dateItemStyling[layerIndex].emphasis
+                      : dateItemStyling[layerIndex].class
+                  }`}
                   role="presentation"
-                  onClick={handleClick(index)}
+                  onClick={() => clickDate(index)}
                 />
-
-                {layerIndex !== 0 &&
-                  (matchingDateItemInLayer.isEndDate ||
-                    matchingDateItemInLayer.isStartDate) && (
-                    <div
-                      className={dateItemStyling[layerIndex].emphasis}
-                      role="presentation"
-                      onClick={handleClick(index)}
-                    />
-                  )}
               </React.Fragment>
             );
           },
