@@ -76,6 +76,7 @@ export const fillPaintData = (
       ] as MapboxGL.Expression,
     };
   }
+  // eslint-disable-next-line no-console
   console.log(fillPaint);
   return fillPaint;
 };
