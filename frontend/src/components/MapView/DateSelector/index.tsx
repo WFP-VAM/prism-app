@@ -21,6 +21,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useDispatch, useSelector } from 'react-redux';
+import { ReactComponent as TickSvg } from './tick.svg';
 import { DateRangeType } from '../../../config/types';
 import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
 import { addNotification } from '../../../context/notificationStateSlice';
@@ -416,16 +417,7 @@ const DateSelector = memo(
                     onStop={onPointerStop}
                   >
                     <div className={classes.pointer} id={POINTER_ID}>
-                      <img
-                        src="images/tick.svg"
-                        alt="Cursor for the timeline"
-                        style={{ height: '17px' }}
-                      />
-                      {/* <FontAwesomeIcon
-                        icon={faCaretUp}
-                        style={{ fontSize: 40 }}
-                        color="black"
-                      /> */}
+                      <TickSvg height="19px" />
                     </div>
                   </Draggable>
                 </div>
@@ -518,7 +510,7 @@ const styles = (theme: Theme) =>
       position: 'absolute',
       zIndex: 5,
       top: 24,
-      left: -4,
+      left: -8,
       height: '16px',
     },
   });
