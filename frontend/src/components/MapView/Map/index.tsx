@@ -67,9 +67,15 @@ const MapComponent = memo(
       if (!layers) {
         return;
       }
+      // eslint-disable-next-line no-console
+      console.log(
+        layers.filter(
+          layer => 'source' in layer && layer.source !== 'openmaptiles',
+        ),
+      );
       const filteredMapLayers = layers.filter(mapLayer => {
         return selectedLayers.some(selectedLayer => {
-          return `layer-${selectedLayer.id}` === mapLayer.id;
+          return mapLayer.id.includes(`layer-${selectedLayer.id}`);
         });
       });
       // eslint-disable-next-line no-console
