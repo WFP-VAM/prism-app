@@ -1,20 +1,20 @@
 import React, { forwardRef, Ref } from 'react';
-import { Button } from '@material-ui/core';
-
-interface DateSelectorInputProps {
-  value?: string;
-  onClick?: () => void;
-}
+import {
+  Button,
+  createStyles,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core';
 
 const DateSelectorInput = forwardRef(
   (
-    { value, onClick }: DateSelectorInputProps,
+    { value, onClick, classes }: DateSelectorInputProps,
     ref?: Ref<HTMLButtonElement>,
   ) => {
     return (
       <Button
+        className={classes.buttonStyle}
         variant="outlined"
-        style={{ color: '#101010', fontWeight: 'bold' }}
         onClick={onClick}
         ref={ref}
       >
@@ -24,4 +24,17 @@ const DateSelectorInput = forwardRef(
   },
 );
 
-export default DateSelectorInput;
+const styles = () =>
+  createStyles({
+    buttonStyle: {
+      color: '#101010',
+      fontWeight: 'bold',
+    },
+  });
+
+interface DateSelectorInputProps extends WithStyles<typeof styles> {
+  value?: string;
+  onClick?: () => void;
+}
+
+export default withStyles(styles)(DateSelectorInput);

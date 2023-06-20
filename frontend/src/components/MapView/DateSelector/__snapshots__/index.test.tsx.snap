@@ -27,7 +27,7 @@ exports[`renders as expected 1`] = `
             class="react-datepicker__input-container"
           >
             <mock-button
-              style="color: rgb(16, 16, 16); font-weight: bold;"
+              classname="ForwardRef-buttonStyle-11"
               variant="outlined"
             >
               Jul 2, 2018
