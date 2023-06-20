@@ -63,16 +63,16 @@ export const fillPaintData = (
       'fill-pattern': [
         'step',
         ['get', property],
+        // start with step 0.
+        ...[`fill-pattern-${id}-legend-0`],
         ...legend!.reduce(
           (acc: string[], legendItem: LegendDefinitionItem, index) => [
             ...acc,
-            // figure out how to better handle indices.
-            `fill-pattern-${id}-legend-${index - 1}` as string,
             legendItem.value as string,
+            `fill-pattern-${id}-legend-${index}` as string,
           ],
           [],
         ),
-        '#CCC',
       ] as MapboxGL.Expression,
     };
   }
