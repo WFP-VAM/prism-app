@@ -43,7 +43,6 @@
       "styles": "rfh_16_0_300"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
         { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
@@ -273,7 +272,6 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
         {
