@@ -43,7 +43,6 @@
       "styles": "rfh_16_0_300"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
         { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
@@ -273,7 +272,6 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
         {
@@ -1186,7 +1184,7 @@
     "opacity": 0.9,
     "legend": [],
     "legend_text": "Nodes visualize estimated maximum wind speed along a storm's path at various points in time. Source: GDACS",
-    "base_url": "https://geonode.wfp.org/geoserver",
+    "base_url": "https://sparc.wfp.org/geoserver",
     "geometry": "point"
   },
   "adamts_buffers": {
@@ -1196,7 +1194,7 @@
     "opacity": 0.9,
     "legend": [],
     "legend_text": "Wind buffers (radii) estimate potential wind speeds along the path of a storm with a buffer estimating the area exposed to each wind speed category. Source: GDACS",
-    "base_url": "https://geonode.wfp.org/geoserver",
+    "base_url": "https://sparc.wfp.org/geoserver",
     "feature_info_props": {
       "event_name": {
         "type": "text",
@@ -1215,7 +1213,7 @@
     "wcsConfig": {
       "disableDateParam": true,
       "version": "2.0.0",
-      "scale": 0.1,
+      "scale": 1,
       "offset": 0
     },
     "server_layer_name": "wp_pop_cicunadj",
@@ -1231,7 +1229,7 @@
     "opacity": 0.9,
     "legend": [],
     "legend_text": "Tracks visualize the projected path of a storm based on the forecasted position of it's center at various points in time. Source: GDACS",
-    "base_url": "https://geonode.wfp.org/geoserver",
+    "base_url": "https://sparc.wfp.org/geoserver",
     "geometry": "linestring"
   },
   "avg_pop_flood": {

@@ -43,7 +43,6 @@
       "styles": "rfh_16_0_300"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
         { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
@@ -93,7 +92,6 @@
       "styles": "rfq_14_20_400"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "rfq", 
           "label": "Rainfall anomaly", 
@@ -270,7 +268,6 @@
     "date_interval": "days",
     "opacity": 0.7,
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
         { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
@@ -320,7 +317,6 @@
     "date_interval": "days",
     "opacity": 0.7,
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r1q", 
           "label": "Rainfall anomaly", 
@@ -379,7 +375,6 @@
     "date_interval": "days",
     "opacity": 0.7,
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
         { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
@@ -429,7 +424,6 @@
     "date_interval": "days",
     "opacity": 0.7,
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "r3q", 
           "label": "Rainfall anomaly", 
@@ -684,6 +678,7 @@
     "additional_query_params": {
       "styles": "r1b_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -714,6 +709,7 @@
     "additional_query_params": {
       "styles": "r1q_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -742,6 +738,7 @@
     "additional_query_params": {
       "styles": "r3b_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -772,6 +769,7 @@
     "additional_query_params": {
       "styles": "r3q_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -800,6 +798,7 @@
     "additional_query_params": {
       "styles": "r6b_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -830,6 +829,7 @@
     "additional_query_params": {
       "styles": "r6q_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -858,6 +858,7 @@
     "additional_query_params": {
       "styles": "r9b_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -888,6 +889,7 @@
     "additional_query_params": {
       "styles": "r9q_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -916,6 +918,7 @@
     "additional_query_params": {
       "styles": "ryb_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -946,6 +949,7 @@
     "additional_query_params": {
       "styles": "ryq_blended"
     },
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1158,7 +1162,6 @@
       "styles": "vim_14_01_09"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "vim", "label": "NDVI", "color": "#4eac5b" },
         { "key": "vim_avg", "label": "Average", "color": "#99ff99" }
@@ -1244,7 +1247,6 @@
       "styles": "viq_13_50_150"
     },
     "chart_data": {
-      "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
         { "key": "viq", 
           "label": "NDVI anomaly", 
@@ -1909,7 +1911,7 @@
     "wcsConfig": {
       "disableDateParam": true,
       "version": "2.0.0",
-      "scale": 0.1,
+      "scale": 1,
       "offset": 0
     },
     "server_layer_name": "wp_pop_cicunadj",

@@ -1,5 +1,6 @@
 {
   "country": "Kyrgyzstan",
+  "countryAdmin0Id": 138,
   "icons": {
     "exposure": "icon_basemap.png",
     "hazards": "icon_flood.png",
@@ -16,7 +17,7 @@
   },
   "alertFormActive": false,
   "map": {
-    "boundingBox": [69.46, 39.28, 80.26, 43.3]
+    "boundingBox": [68, 39.28, 80.26, 43.3]
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {

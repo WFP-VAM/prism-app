@@ -16,6 +16,7 @@ const props = {
     },
   ],
   clickDate: () => {},
+  locale: 'en',
 };
 
 test('renders as expected', () => {

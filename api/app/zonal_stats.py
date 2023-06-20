@@ -145,6 +145,10 @@ def _create_shapely_geoms(
 
         obj_key = f["properties"][filter_property_key]
 
+        # Excluding 'Uncertainty Cones' from storm analysis.
+        if obj_key == "Uncertainty Cones":
+            continue
+
         shapely_dicts.append((obj_key, shape(f.get("geometry"))))
 
     return shapely_dicts

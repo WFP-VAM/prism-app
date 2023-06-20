@@ -1,10 +1,4 @@
-import React, {
-  ComponentType,
-  createElement,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -17,26 +11,11 @@ import {
 import { countBy, get, pickBy } from 'lodash';
 import moment from 'moment';
 // map
-import ReactMapboxGl from 'react-mapbox-gl';
-import { Map, MapSourceDataEvent } from 'mapbox-gl';
 import bbox from '@turf/bbox';
-import inside from '@turf/boolean-point-in-polygon';
-import type { Feature, MultiPolygon } from '@turf/helpers';
-import MapTooltip from './MapTooltip';
 import Legends from './Legends';
-// layers
-import {
-  AdminLevelDataLayer,
-  BoundaryLayer,
-  ImpactLayer,
-  PointDataLayer,
-  StaticRasterLayer,
-  WMSLayer,
-} from './Layers';
 
 import {
   BoundaryLayerProps,
-  DiscriminateUnion,
   isMainLayer,
   LayerKey,
   LayerType,
@@ -58,22 +37,14 @@ import {
   dateRangeSelector,
   layerDataSelector,
   layersSelector,
-  mapSelector,
 } from '../../context/mapStateSlice/selectors';
 import {
   addLayer,
   layerOrdering,
   removeLayer,
-  setMap,
   updateDateRange,
 } from '../../context/mapStateSlice';
-import * as boundaryInfoStateSlice from '../../context/mapBoundaryInfoStateSlice';
-import { setLoadingLayerIds } from '../../context/mapTileLoadingStateSlice';
-import {
-  addPopupData,
-  hidePopup,
-  setWMSGetFeatureInfoLoading,
-} from '../../context/tooltipStateSlice';
+import { hidePopup } from '../../context/tooltipStateSlice';
 import {
   availableDatesSelector,
   isLoading as areDatesLoading,
@@ -82,68 +53,18 @@ import {
 
 import { appConfig } from '../../config';
 import { LayerData, loadLayerData } from '../../context/layers/layer-data';
-import AnalysisLayer from './Layers/AnalysisLayer';
 import {
   DateCompatibleLayer,
   getPossibleDatesForLayer,
-  makeFeatureInfoRequest,
 } from '../../utils/server-utils';
 import { addNotification } from '../../context/notificationStateSlice';
-import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
 import AlertForm from './AlertForm';
-import SelectionLayer from './Layers/SelectionLayer';
 import GoToBoundaryDropdown from '../Common/BoundaryDropdown/goto';
 import BoundaryInfoBox from './BoundaryInfoBox';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
-import { firstBoundaryOnView } from '../../utils/map-utils';
-import DataViewer from '../DataViewer';
 import LeftPanel from './LeftPanel';
 import FoldButton from './FoldButton';
-
-// Bounding boxes are adapted from https://github.com/sandstrom/country-bounding-boxes
-const {
-  map: { boundingBox, maxBounds, minZoom, maxZoom, hidePanel, alertFormActive },
-} = appConfig;
-
-if (boundingBox.length !== 4) {
-  throw Error(
-    `map.boundingBox ${boundingBox} is not valid. Make sure it is of type [number, number, number, nmuber].`,
-  );
-}
-
-// The map initialization requires a center so we provide a te,porary one.
-// But we actually rely on the boundingBox to fit the country in the available screen space.
-const mapTempCenter = boundingBox.slice(0, 2) as [number, number];
-
-const fitBoundsOptions = {
-  duration: 0,
-  padding: {
-    bottom: 150, // room for dates.
-    left: hidePanel ? 30 : 500, // room for the left panel if active.
-    right: 60,
-    top: 70,
-  },
-};
-
-const MapboxMap = ReactMapboxGl({
-  accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
-  preserveDrawingBuffer: true,
-  minZoom,
-  maxZoom,
-});
-
-type LayerComponentsMap<U extends LayerType> = {
-  [T in U['type']]: ComponentType<{ layer: DiscriminateUnion<U, 'type', T> }>;
-};
-
-const componentTypes: LayerComponentsMap<LayerType> = {
-  boundary: BoundaryLayer,
-  wms: WMSLayer,
-  admin_level_data: AdminLevelDataLayer,
-  impact: ImpactLayer,
-  point_data: PointDataLayer,
-  static_raster: StaticRasterLayer,
-};
+import MapComponent from './Map';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -151,99 +72,63 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
   'wms',
   'static_raster',
 ];
-const boundaryLayer = getBoundaryLayerSingleton();
 
-function useMapOnClick(setIsAlertFormOpen: (value: boolean) => void) {
-  const dispatch = useDispatch();
+const MapView = memo(({ classes }: MapViewProps) => {
+  // App config attributes
+  const {
+    map: { hidePanel, alertFormActive },
+  } = appConfig;
+
+  const boundaryLayer = useMemo(() => {
+    return getBoundaryLayerSingleton();
+  }, []);
+
+  const boundaryLayerId = useMemo(() => {
+    return boundaryLayer.id;
+  }, [boundaryLayer.id]);
+
+  // Selectors
+  const unsortedSelectedLayers = useSelector(layersSelector);
   const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
+  const datesLoading = useSelector(areDatesLoading);
+  const serverAvailableDates = useSelector(availableDatesSelector);
+  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayerId)) as
     | LayerData<BoundaryLayerProps>
     | undefined;
 
-  return (
-    // this function will only work when boundary data loads.
-    // due to how the library works, we can only set this function once,
-    // so we should set it when boundary data is present
-    boundaryLayerData &&
-    ((map: Map, evt: any) => {
-      dispatch(hidePopup());
-      // Hide the alert popup if we click outside the target country (outside boundary bbox)
-      if (
-        boundaryLayerData.data.features.every(
-          feature =>
-            !inside(
-              [evt.lngLat.lng, evt.lngLat.lat],
-              feature as Feature<MultiPolygon>,
-            ),
-        )
-      ) {
-        setIsAlertFormOpen(false);
-      }
-      // Get layers that have getFeatureInfo option.
-      const featureInfoLayers = getActiveFeatureInfoLayers(map);
-      if (featureInfoLayers.length === 0) {
-        const dateFromRef = moment(selectedDate).format(DEFAULT_DATE_FORMAT);
-
-        const params = getFeatureInfoParams(map, evt, dateFromRef);
-        dispatch(setWMSGetFeatureInfoLoading(true));
-        makeFeatureInfoRequest(featureInfoLayers, params).then(
-          (result: { [name: string]: string } | null) => {
-            if (result) {
-              Object.keys(result).forEach((k: string) => {
-                dispatch(
-                  addPopupData({
-                    [k]: {
-                      data: result[k],
-                      coordinates: evt.lngLat,
-                    },
-                  }),
-                );
-              });
-            }
-            dispatch(setWMSGetFeatureInfoLoading(false));
-          },
-        );
-      }
-    })
-  );
-}
-
-function MapView({ classes }: MapViewProps) {
+  // State attributes
   const [defaultLayerAttempted, setDefaultLayerAttempted] = useState(false);
-  const unsortedSelectedLayers = useSelector(layersSelector);
-  // Prioritize boundary and point_data layers
-  // eslint-disable-next-line fp/no-mutating-methods
-  const selectedLayers = [...unsortedSelectedLayers].sort(layerOrdering);
-  const selectedMap = useSelector(mapSelector);
-  const { startDate: selectedDate } = useSelector(dateRangeSelector);
-  const datesLoading = useSelector(areDatesLoading);
-  const dispatch = useDispatch();
   const [isAlertFormOpen, setIsAlertFormOpen] = useState(false);
-  const serverAvailableDates = useSelector(availableDatesSelector);
-  const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
-    undefined,
-  );
   const [panelSize, setPanelSize] = useState<PanelSize>(PanelSize.medium);
   const [isPanelHidden, setIsPanelHidden] = useState<boolean>(
     Boolean(hidePanel),
   );
 
-  const selectedLayersWithDateSupport = selectedLayers
-    .filter((layer): layer is DateCompatibleLayer => {
-      if (layer.type === 'admin_level_data' || layer.type === 'static_raster') {
-        return Boolean(layer.dates);
-      }
-      if (layer.type === 'wms') {
-        // some WMS layer might not have date dimension (i.e. static data)
-        return layer.serverLayerName in serverAvailableDates;
-      }
-      return dateSupportLayerTypes.includes(layer.type);
-    })
-    .filter(layer => isMainLayer(layer.id, selectedLayers));
+  const dispatch = useDispatch();
 
-  const boundaryLayerData = useSelector(layerDataSelector(boundaryLayer.id)) as
-    | LayerData<BoundaryLayerProps>
-    | undefined;
+  // Prioritize boundary and point_data layers
+  const selectedLayers = useMemo(() => {
+    // eslint-disable-next-line fp/no-mutating-methods
+    return [...unsortedSelectedLayers].sort(layerOrdering);
+  }, [unsortedSelectedLayers]);
+
+  const selectedLayersWithDateSupport = useMemo(() => {
+    return selectedLayers
+      .filter((layer): layer is DateCompatibleLayer => {
+        if (
+          layer.type === 'admin_level_data' ||
+          layer.type === 'static_raster'
+        ) {
+          return Boolean(layer.dates);
+        }
+        if (layer.type === 'wms') {
+          // some WMS layer might not have date dimension (i.e. static data)
+          return layer.serverLayerName in serverAvailableDates;
+        }
+        return dateSupportLayerTypes.includes(layer.type);
+      })
+      .filter(layer => isMainLayer(layer.id, selectedLayers));
+  }, [selectedLayers, serverAvailableDates]);
 
   // TODO - could we simply use the country boundary extent here instead of the calculation?
   // Or can we foresee any edge cases?
@@ -254,158 +139,100 @@ function MapView({ classes }: MapViewProps) {
     return bbox(boundaryLayerData.data) as Extent; // we get extents of admin boundaries to give to the api.
   }, [boundaryLayerData]);
 
-  const {
-    urlParams,
-    updateHistory,
-    removeKeyFromUrl,
-    removeLayerFromUrl,
-  } = useUrlHistory();
+  const { urlParams, updateHistory, removeLayerFromUrl } = useUrlHistory();
+
   // let users know if their current date doesn't exist in possible dates
-  const urlDate = urlParams.get('date');
-  const mapOnClick = useMapOnClick(setIsAlertFormOpen);
+  const urlDate = useMemo(() => {
+    return urlParams.get('date');
+  }, [urlParams]);
 
-  useEffect(() => {
-    /*
-      This useEffect hook keeps track of parameters obtained from url and loads layers according
-      to the hazardLayerId and baselineLayerId values. If the date field is found, the application
-      status is also updated. There are guards in case the values are not valid, such as invalid
-      date or layerids.
-      */
-    const hazardLayerIds = urlParams.get(UrlLayerKey.HAZARD);
-    const baselineLayerId = urlParams.get(UrlLayerKey.ADMINLEVEL);
+  const hazardLayerIds = useMemo(() => {
+    return urlParams.get(UrlLayerKey.HAZARD);
+  }, [urlParams]);
 
-    /*
-      In case we don't have hazard or baseline layers we will use the default
-      layer provided in the appConfig defined within `prism.json` file.
-     */
-    if (!hazardLayerIds && !baselineLayerId) {
-      const defaultLayer = get(appConfig, 'defaultLayer');
+  const baselineLayerId = useMemo(() => {
+    return urlParams.get(UrlLayerKey.ADMINLEVEL);
+  }, [urlParams]);
 
-      if (defaultLayer) {
-        if (Object.keys(LayerDefinitions).includes(defaultLayer)) {
-          const layer = LayerDefinitions[defaultLayer as LayerKey];
-          const urlLayerKey: UrlLayerKey = getUrlKey(layer);
-          updateHistory(urlLayerKey, defaultLayer);
-        } else if (!defaultLayerAttempted) {
-          dispatch(
-            addNotification({
-              message: `Invalid default layer identifier: ${defaultLayer}`,
-              type: 'error',
-            }),
-          );
-          setDefaultLayerAttempted(true);
-        }
-      }
-    }
+  const defaultLayer = useMemo(() => {
+    return get(appConfig, 'defaultLayer');
+  }, []);
 
-    if (
-      (!hazardLayerIds && !baselineLayerId) ||
-      Object.keys(serverAvailableDates).length === 0
-    ) {
-      return;
-    }
+  const layerDefinitionsIncludeDefaultLayer = useMemo(() => {
+    return Object.keys(LayerDefinitions).includes(defaultLayer);
+  }, [defaultLayer]);
 
-    const selectedLayersIds: LayerKey[] = selectedLayers.map(layer => layer.id);
+  const defaultLayerInLayerDefinitions = useMemo(() => {
+    return LayerDefinitions[defaultLayer as LayerKey];
+  }, [defaultLayer]);
 
-    const hazardLayersArray =
-      hazardLayerIds !== null ? hazardLayerIds.split(',') : [];
+  const serverAvailableDatesAreEmpty = useMemo(() => {
+    return Object.keys(serverAvailableDates).length === 0;
+  }, [serverAvailableDates]);
 
-    const urlLayerIds = [
+  const selectedLayersIds = useMemo(() => {
+    return selectedLayers.map(layer => layer.id);
+  }, [selectedLayers]);
+
+  const hazardLayersArray = useMemo(() => {
+    return hazardLayerIds !== null ? hazardLayerIds.split(',') : [];
+  }, [hazardLayerIds]);
+
+  const urlLayerIds = useMemo(() => {
+    return [
       ...hazardLayersArray,
       ...(baselineLayerId === null ? [] : [baselineLayerId]),
     ];
+  }, [baselineLayerId, hazardLayersArray]);
 
-    // Check for invalid layer ids.
-    const layerDefinitionIds = Object.keys(LayerDefinitions);
-    const invalidLayersIds = urlLayerIds.filter(
-      layerId => layerDefinitionIds.includes(layerId) === false,
+  const layerDefinitionIds = useMemo(() => {
+    return Object.keys(LayerDefinitions);
+  }, []);
+
+  // Check for invalid layer ids.
+  const invalidLayersIds = useMemo(() => {
+    return urlLayerIds.filter(layerId => !layerDefinitionIds.includes(layerId));
+  }, [layerDefinitionIds, urlLayerIds]);
+
+  // Check for layers that have not been included.
+  const missingLayers = useMemo(() => {
+    return urlLayerIds.filter(
+      layerId => !selectedLayersIds.includes(layerId as LayerKey),
     );
+  }, [selectedLayersIds, urlLayerIds]);
 
-    if (invalidLayersIds.length > 0) {
-      const invalidLayersStr = invalidLayersIds.join(',');
-
-      dispatch(
-        addNotification({
-          message: `Invalid layer identifier(s): ${invalidLayersStr}`,
-          type: 'error',
-        }),
-      );
-
-      return;
-    }
-
-    // Check for layers that have not been included.
-    const missingLayers = urlLayerIds.filter(
-      layerId => selectedLayersIds.includes(layerId as LayerKey) === false,
-    );
-
+  // Adds missing layers to existing map instance
+  const addMissingLayers = useCallback(() => {
     missingLayers.forEach(layerId => {
       const layer = LayerDefinitions[layerId as LayerKey];
       dispatch(addLayer(layer));
     });
+  }, [dispatch, missingLayers]);
 
-    const dateInt = moment(urlDate).set({ hour: 12 }).valueOf();
+  // The date integer from url
+  const dateInt = useMemo(() => {
+    return moment(urlDate).set({ hour: 12, minute: 0 }).valueOf();
+  }, [urlDate]);
 
-    if (!urlDate || dateInt === selectedDate) {
-      return;
-    }
-
-    if (Number.isNaN(dateInt)) {
-      dispatch(
-        addNotification({
-          message: 'Invalid date found. Using most recent date',
-          type: 'warning',
-        }),
-      );
-    } else {
-      dispatch(updateDateRange({ startDate: dateInt }));
-      updateHistory('date', moment(dateInt).format(DEFAULT_DATE_FORMAT));
-    }
-  }, [
-    urlParams,
-    urlDate,
-    dispatch,
-    selectedLayers,
-    serverAvailableDates,
-    selectedDate,
-    updateHistory,
-    defaultLayerAttempted,
-  ]);
-
-  useEffect(() => {
-    dispatch(loadAvailableDates());
-
-    /*
-      reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
-      to prevent other boundary layers being covered by any layers
-    */
-    // eslint-disable-next-line fp/no-mutating-methods
-    const displayBoundaryLayers = getDisplayBoundaryLayers().reverse();
-
-    // we must load boundary layer here for two reasons
-    // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
-    // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
-    displayBoundaryLayers.map(l => dispatch(addLayer(l)));
-    displayBoundaryLayers.map(l => dispatch(loadLayerData({ layer: l })));
-  }, [dispatch]);
-
-  // calculate possible dates user can pick from the currently selected layers
-  const selectedLayerDates: number[] = useMemo(() => {
-    if (selectedLayersWithDateSupport.length === 0) {
-      return [];
-    }
-
-    /*
-       takes all the dates possible for every layer and counts the amount of times each one is duplicated.
-       if a date's duplicate amount is the same as the number of layers active, then this date is compatible with all layers selected.
-    */
-    const selectedLayerDatesDupCount = countBy(
+  /*
+    takes all the dates possible for every layer and counts the amount of times each one is duplicated.
+    if a date's duplicate amount is the same as the number of layers active, then this date is compatible with all layers selected.
+  */
+  const selectedLayerDatesDupCount = useMemo(() => {
+    return countBy(
       selectedLayersWithDateSupport
         .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
         .filter(value => value) // null check
         .flat()
         .map(value => moment(value).format(DEFAULT_DATE_FORMAT)),
     );
+  }, [selectedLayersWithDateSupport, serverAvailableDates]);
+
+  // calculate possible dates user can pick from the currently selected layers
+  const selectedLayerDates: number[] = useMemo(() => {
+    if (selectedLayersWithDateSupport.length === 0) {
+      return [];
+    }
     /*
       Only keep the dates which were duplicated the same amount of times as the amount of layers active...and convert back to array.
      */
@@ -415,31 +242,38 @@ function MapView({ classes }: MapViewProps) {
         dupTimes => dupTimes >= selectedLayersWithDateSupport.length,
       ),
       // convert back to number array after using YYYY-MM-DD strings in countBy
-    ).map(dateString => moment.utc(dateString).set({ hour: 12 }).valueOf());
-  }, [selectedLayersWithDateSupport, serverAvailableDates]);
+    ).map(dateString =>
+      moment.utc(dateString).set({ hour: 12, minute: 0 }).valueOf(),
+    );
+  }, [selectedLayerDatesDupCount, selectedLayersWithDateSupport.length]);
 
-  // close popups and show warning notifications
-  useEffect(() => {
-    // when we switch layers, or change dates, close any active pop-ups
-    dispatch(hidePopup());
+  /*
+    reverse the order off adding layers so that the first boundary layer will be placed at the very bottom,
+    to prevent other boundary layers being covered by any layers
+  */
+  const displayedBoundaryLayers = useMemo(() => {
+    // eslint-disable-next-line fp/no-mutating-methods
+    return getDisplayBoundaryLayers().reverse();
+  }, []);
 
-    // let users know if the layers selected are not possible to view together.
-    if (
-      selectedLayerDates.length === 0 &&
-      selectedLayersWithDateSupport.length !== 0 &&
-      selectedDate
-    ) {
-      // WARNING - This logic doesn't apply anymore if we order layers differently...
-      const layerToRemove = selectedLayers[selectedLayers.length - 2];
-      const layerToKeep = selectedLayers[selectedLayers.length - 1];
+  const loadBoundaryLayerData = useCallback(() => {
+    displayedBoundaryLayers.forEach(l => dispatch(addLayer(l)));
+    displayedBoundaryLayers.forEach(l => dispatch(loadLayerData({ layer: l })));
+  }, [dispatch, displayedBoundaryLayers]);
 
-      dispatch(
-        addNotification({
-          message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.id}.`,
-          type: 'warning',
-        }),
-      );
+  const showBoundaryInfo = useMemo(() => {
+    return JSON.parse(process.env.REACT_APP_SHOW_MAP_INFO || 'false');
+  }, []);
 
+  const isShowingExtraFeatures = useMemo(() => {
+    return panelSize !== PanelSize.xlarge || isPanelHidden;
+  }, [isPanelHidden, panelSize]);
+
+  const removeLayerAndUpdateHistory = useCallback(
+    (layerToRemove: LayerType, layerToKeep: LayerType) => {
+      if (!selectedDate) {
+        return;
+      }
       // Remove layer from url.
       const urlLayerKey = getUrlKey(layerToRemove);
       removeLayerFromUrl(urlLayerKey, layerToRemove.id);
@@ -453,124 +287,284 @@ function MapView({ classes }: MapViewProps) {
       const closestDate = findClosestDate(selectedDate, layerToKeepDates);
 
       updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
+    },
+    [
+      dispatch,
+      removeLayerFromUrl,
+      selectedDate,
+      serverAvailableDates,
+      updateHistory,
+    ],
+  );
+
+  const possibleDatesForLayerIncludeMomentSelectedDate = useCallback(
+    (layer: DateCompatibleLayer, momentSelectedDate: moment.Moment) => {
+      // we convert to date strings, so hh:ss is irrelevant
+      return getPossibleDatesForLayer(layer, serverAvailableDates)
+        .map(date => moment(date).format(DEFAULT_DATE_FORMAT))
+        .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT));
+    },
+    [serverAvailableDates],
+  );
+
+  useEffect(() => {
+    /*
+      This useEffect hook keeps track of parameters obtained from url and loads layers according
+      to the hazardLayerId and baselineLayerId values. If the date field is found, the application
+      status is also updated. There are guards in case the values are not valid, such as invalid
+      date or layerids.
+      */
+    if (hazardLayerIds || baselineLayerId) {
+      return;
     }
-
-    if (selectedDate && urlDate && moment(urlDate).valueOf() !== selectedDate) {
-      selectedLayersWithDateSupport.forEach(layer => {
-        const momentSelectedDate = moment(selectedDate);
-
-        // we convert to date strings, so hh:ss is irrelevant
-        if (
-          // TODO - Replace the serverAvailableDates check by a loading flag
-          // to know if dates haven't been loaded yet?
-          Object.keys(serverAvailableDates).length !== 0 &&
-          !getPossibleDatesForLayer(layer, serverAvailableDates)
-            .map(date => moment(date).format(DEFAULT_DATE_FORMAT))
-            .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT))
-        ) {
-          const closestDate = findClosestDate(selectedDate, selectedLayerDates);
-
-          updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
-
-          dispatch(
-            addNotification({
-              message: `No data was found for layer '${
-                layer.title
-              }' on ${momentSelectedDate.format(
-                DEFAULT_DATE_FORMAT,
-              )}. The closest date ${closestDate.format(
-                DEFAULT_DATE_FORMAT,
-              )} has been loaded instead.`,
-              type: 'warning',
-            }),
-          );
-        }
-      });
+    if (!defaultLayer) {
+      return;
+    }
+    /*
+      In case we don't have hazard or baseline layers we will use the default
+      layer provided in the appConfig defined within `prism.json` file.
+     */
+    if (!defaultLayerAttempted && layerDefinitionsIncludeDefaultLayer) {
+      setDefaultLayerAttempted(true);
+      const urlLayerKey: UrlLayerKey = getUrlKey(
+        defaultLayerInLayerDefinitions,
+      );
+      updateHistory(urlLayerKey, defaultLayer);
+      return;
+    }
+    if (!defaultLayerAttempted) {
+      dispatch(
+        addNotification({
+          message: `Invalid default layer identifier: ${defaultLayer}`,
+          type: 'error',
+        }),
+      );
+      setDefaultLayerAttempted(true);
     }
   }, [
+    baselineLayerId,
+    defaultLayer,
+    defaultLayerAttempted,
+    defaultLayerInLayerDefinitions,
     dispatch,
+    hazardLayerIds,
+    layerDefinitionsIncludeDefaultLayer,
+    updateHistory,
+  ]);
+
+  useEffect(() => {
+    if ((!hazardLayerIds && !baselineLayerId) || serverAvailableDatesAreEmpty) {
+      return;
+    }
+
+    if (invalidLayersIds.length > 0) {
+      dispatch(
+        addNotification({
+          message: `Invalid layer identifier(s): ${invalidLayersIds.join(',')}`,
+          type: 'error',
+        }),
+      );
+      return;
+    }
+
+    // Add the missing layers
+    addMissingLayers();
+
+    if (!urlDate || dateInt === selectedDate) {
+      return;
+    }
+
+    if (!Number.isNaN(dateInt)) {
+      dispatch(updateDateRange({ startDate: dateInt }));
+      updateHistory('date', moment(dateInt).format(DEFAULT_DATE_FORMAT));
+      return;
+    }
+
+    dispatch(
+      addNotification({
+        message: 'Invalid date found. Using most recent date',
+        type: 'warning',
+      }),
+    );
+  }, [
+    addMissingLayers,
+    baselineLayerId,
+    dateInt,
+    dispatch,
+    hazardLayerIds,
+    invalidLayersIds,
+    selectedDate,
+    serverAvailableDatesAreEmpty,
+    updateHistory,
+    urlDate,
+  ]);
+
+  useEffect(() => {
+    dispatch(loadAvailableDates());
+    // when we switch layers, or change dates, close any active pop-ups
+    dispatch(hidePopup());
+
+    // we must load boundary layer here for two reasons
+    // 1. Stop showing two loading screens on startup - Mapbox renders its children very late, so we can't rely on BoundaryLayer to load internally
+    // 2. Prevent situations where a user can toggle a layer like NSO (depends on Boundaries) before Boundaries finish loading.
+    loadBoundaryLayerData();
+  }, [dispatch, loadBoundaryLayerData]);
+
+  // let users know if the layers selected are not possible to view together.
+  useEffect(() => {
+    if (
+      selectedLayerDates.length !== 0 ||
+      selectedLayersWithDateSupport.length === 0 ||
+      !selectedDate
+    ) {
+      return;
+    }
+
+    // WARNING - This logic doesn't apply anymore if we order layers differently...
+    const layerToRemove = selectedLayers[selectedLayers.length - 2];
+    const layerToKeep = selectedLayers[selectedLayers.length - 1];
+
+    dispatch(
+      addNotification({
+        message: `No dates overlap with the selected layers. Removing previous layer: ${layerToRemove.id}.`,
+        type: 'warning',
+      }),
+    );
+    removeLayerAndUpdateHistory(layerToRemove, layerToKeep);
+  }, [
+    dispatch,
+    removeLayerAndUpdateHistory,
+    selectedDate,
+    selectedLayerDates.length,
+    selectedLayers,
+    selectedLayersWithDateSupport.length,
+  ]);
+
+  useEffect(() => {
+    if (
+      !selectedDate ||
+      !urlDate ||
+      moment(urlDate).valueOf() === selectedDate
+    ) {
+      return;
+    }
+    selectedLayersWithDateSupport.forEach(layer => {
+      const momentSelectedDate = moment(selectedDate);
+
+      if (
+        serverAvailableDatesAreEmpty ||
+        possibleDatesForLayerIncludeMomentSelectedDate(
+          layer,
+          momentSelectedDate,
+        )
+      ) {
+        return;
+      }
+
+      const closestDate = findClosestDate(selectedDate, selectedLayerDates);
+
+      updateHistory('date', closestDate.format(DEFAULT_DATE_FORMAT));
+
+      dispatch(
+        addNotification({
+          message: `No data was found for layer '${
+            layer.title
+          }' on ${momentSelectedDate.format(
+            DEFAULT_DATE_FORMAT,
+          )}. The closest date ${closestDate.format(
+            DEFAULT_DATE_FORMAT,
+          )} has been loaded instead.`,
+          type: 'warning',
+        }),
+      );
+    });
+  }, [
+    dispatch,
+    possibleDatesForLayerIncludeMomentSelectedDate,
     selectedDate,
     selectedLayerDates,
     selectedLayersWithDateSupport,
-    serverAvailableDates,
+    serverAvailableDatesAreEmpty,
     updateHistory,
-    urlParams,
     urlDate,
-    removeKeyFromUrl,
-    removeLayerFromUrl,
+  ]);
+
+  const renderedGridItemAlertForm = useMemo(() => {
+    if (!alertFormActive) {
+      return null;
+    }
+    return (
+      <Grid item>
+        <AlertForm isOpen={isAlertFormOpen} setOpen={setIsAlertFormOpen} />
+      </Grid>
+    );
+  }, [alertFormActive, isAlertFormOpen]);
+
+  const renderedExtraFeatures = useMemo(() => {
+    if (!isShowingExtraFeatures) {
+      return null;
+    }
+    return (
+      <Grid
+        container
+        justify="space-between"
+        className={classes.buttonContainer}
+      >
+        <Grid item>
+          <Grid container spacing={1}>
+            <Grid item>
+              <GoToBoundaryDropdown />
+            </Grid>
+            {renderedGridItemAlertForm}
+          </Grid>
+        </Grid>
+        <Grid item>
+          <Grid container spacing={1}>
+            <Legends layers={selectedLayers} />
+          </Grid>
+        </Grid>
+      </Grid>
+    );
+  }, [
+    classes.buttonContainer,
+    isShowingExtraFeatures,
+    renderedGridItemAlertForm,
     selectedLayers,
   ]);
 
-  // Listen for MapSourceData events to track WMS Layers that are currently loading its tile images.
-  const trackLoadingLayers = (map: Map) => {
-    // Track with local state to minimize expensive dispatch call
-    const layerIds = new Set<LayerKey>();
-    const listener = (e: MapSourceDataEvent) => {
-      if (e.sourceId && e.sourceId.startsWith('source-')) {
-        const layerId = e.sourceId.substring('source-'.length) as LayerKey;
-        const included = layerIds.has(layerId);
-        if (!included && !e.isSourceLoaded) {
-          layerIds.add(layerId);
-          dispatch(setLoadingLayerIds([...layerIds]));
-        } else if (included && e.isSourceLoaded) {
-          layerIds.delete(layerId);
-          dispatch(setLoadingLayerIds([...layerIds]));
-        }
-      }
-    };
-    map.on('sourcedataloading', listener);
-    map.on('sourcedata', listener);
-    map.on('idle', () => {
-      if (layerIds.size > 0) {
-        layerIds.clear();
-        dispatch(setLoadingLayerIds([...layerIds]));
-      }
-    });
-  };
-
-  const watchBoundaryChange = (map: Map) => {
-    const { setBounds, setLocation } = boundaryInfoStateSlice;
-    const onDragend = () => {
-      const bounds = map.getBounds();
-      dispatch(setBounds(bounds));
-    };
-    const onZoomend = () => {
-      const bounds = map.getBounds();
-      const newZoom = map.getZoom();
-      dispatch(setLocation({ bounds, zoom: newZoom }));
-    };
-    map.on('dragend', onDragend);
-    map.on('zoomend', onZoomend);
-    // Show initial value
-    onZoomend();
-  };
-
-  const showBoundaryInfo = JSON.parse(
-    process.env.REACT_APP_SHOW_MAP_INFO || 'false',
-  );
-
-  // Saves a reference to base MapboxGL Map object in case child layers need access beyond the React wrappers.
-  const saveAndJumpMap = (map: Map) => {
-    const { layers } = map.getStyle();
-    // Find the first symbol on the map to make sure we add boundary layers below them.
-    setFirstSymbolId(layers?.find(layer => layer.type === 'symbol')?.id);
-    dispatch(setMap(() => map));
-    if (showBoundaryInfo) {
-      watchBoundaryChange(map);
+  const renderedDateSelector = useMemo(() => {
+    if (!isShowingExtraFeatures || selectedLayerDates.length <= 0) {
+      return null;
     }
-    trackLoadingLayers(map);
-  };
+    return (
+      <DateSelector
+        availableDates={selectedLayerDates}
+        selectedLayers={selectedLayersWithDateSupport}
+      />
+    );
+  }, [
+    isShowingExtraFeatures,
+    selectedLayerDates,
+    selectedLayersWithDateSupport,
+  ]);
 
-  const style = new URL(
-    process.env.REACT_APP_DEFAULT_STYLE ||
-      'https://api.maptiler.com/maps/0ad52f6b-ccf2-4a36-a9b8-7ebd8365e56f/style.json?key=y2DTSu9yWiu755WByJr3',
-  );
+  const renderedBoundaryInfoBox = useMemo(() => {
+    if (!showBoundaryInfo) {
+      return null;
+    }
+    return <BoundaryInfoBox />;
+  }, [showBoundaryInfo]);
 
-  const boundaryId = firstBoundaryOnView(selectedMap);
-  const firstBoundaryId = boundaryId && `layer-${boundaryId}-line`;
-
-  const isShowingExtraFeatures =
-    panelSize !== PanelSize.xlarge || isPanelHidden;
+  const renderedDatesLoader = useMemo(() => {
+    if (!datesLoading) {
+      return null;
+    }
+    return (
+      <div className={classes.loading}>
+        <CircularProgress size={100} />
+      </div>
+    );
+  }, [classes.loading, datesLoading]);
 
   return (
     <Box className={classes.root}>
@@ -589,81 +583,19 @@ function MapView({ classes }: MapViewProps) {
             isPanelHidden={isPanelHidden}
             setIsPanelHidden={setIsPanelHidden}
           />
-          {isShowingExtraFeatures && (
-            <Grid
-              container
-              justify="space-between"
-              className={classes.buttonContainer}
-            >
-              <Grid item>
-                <Grid container spacing={1}>
-                  <Grid item>
-                    <GoToBoundaryDropdown />
-                  </Grid>
-                  {alertFormActive && (
-                    <Grid item>
-                      <AlertForm
-                        isOpen={isAlertFormOpen}
-                        setOpen={setIsAlertFormOpen}
-                      />
-                    </Grid>
-                  )}
-                </Grid>
-                <DataViewer />
-              </Grid>
-              <Grid item>
-                <Grid container spacing={1}>
-                  <Legends layers={selectedLayers} />
-                </Grid>
-              </Grid>
-            </Grid>
-          )}
-          {isShowingExtraFeatures && selectedLayerDates.length > 0 && (
-            <DateSelector
-              availableDates={selectedLayerDates}
-              selectedLayers={selectedLayersWithDateSupport}
-            />
-          )}
-          {showBoundaryInfo && <BoundaryInfoBox />}
+          {renderedExtraFeatures}
+          {renderedDateSelector}
+          {renderedBoundaryInfoBox}
         </Box>
       </Box>
-      {datesLoading && (
-        <div className={classes.loading}>
-          <CircularProgress size={100} />
-        </div>
-      )}
-      <MapboxMap
-        // eslint-disable-next-line react/style-prop-object
-        style={style.toString()}
-        onStyleLoad={saveAndJumpMap}
-        containerStyle={{
-          height: '100%',
-        }}
-        fitBounds={boundingBox}
-        fitBoundsOptions={fitBoundsOptions}
-        onClick={mapOnClick}
-        center={mapTempCenter}
-        maxBounds={maxBounds}
-      >
-        {selectedLayers.map(layer => {
-          const component: ComponentType<{
-            layer: any;
-            before?: string;
-          }> = componentTypes[layer.type];
-          return createElement(component, {
-            key: layer.id,
-            layer,
-            before: layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
-          });
-        })}
-        {/* These are custom layers which provide functionality and are not really controllable via JSON */}
-        <AnalysisLayer before={firstBoundaryId} />
-        <SelectionLayer before={firstSymbolId} />
-        <MapTooltip />
-      </MapboxMap>
+      {renderedDatesLoader}
+      <MapComponent
+        setIsAlertFormOpen={setIsAlertFormOpen}
+        boundaryLayerId={boundaryLayerId}
+      />
     </Box>
   );
-}
+});
 
 const styles = () =>
   createStyles({
@@ -694,6 +626,7 @@ const styles = () =>
         pointerEvents: 'auto',
       },
       width: '100%',
+      maxHeight: '100px',
       padding: '3px 8px 0 16px',
     },
     loading: {

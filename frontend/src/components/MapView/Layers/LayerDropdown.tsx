@@ -67,6 +67,19 @@ function LayerDropdown({
     tables: [],
   };
 
+  // Filter out layers that are not supported by the analysis tool
+  const filterLayersForAnalysis = (layer: LayerType) => {
+    if (layer.disableAnalysis) {
+      return false;
+    }
+    if (layer.type === 'wms') {
+      // Only raster and polygon layers are supported at the moment.
+      // linestring and point geometries are not supported.
+      return [undefined, 'polygon'].includes(layer.geometry);
+    }
+    return true;
+  };
+
   const categories = [
     // If type is admin_level_data, add admin boundaries at the begining to run analysis
     ...(type === 'admin_level_data' ? [AdminBoundaryCategory] : []),
@@ -92,15 +105,12 @@ function LayerDropdown({
         }
         return layerCategory;
       })
-      // 3. get rid of layers within the categories which don't match the given type
+      // 3. filter layers based on layer properties
       .map(category => ({
         ...category,
-        layers: category.layers.filter(layer =>
-          layer.type === 'wms'
-            ? layer.type === type &&
-              [undefined, 'polygon'].includes(layer.geometry)
-            : layer.type === type,
-        ),
+        layers: category.layers
+          .filter(layer => layer.type === type)
+          .filter(filterLayersForAnalysis),
       }))
       // 4. filter categories which don't have any layers at the end of it all.
       .filter(category => category.layers.length > 0),

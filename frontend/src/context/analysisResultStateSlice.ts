@@ -8,7 +8,7 @@ import {
   Position,
 } from 'geojson';
 import moment from 'moment';
-import { get } from 'lodash';
+import { get, groupBy as _groupBy, uniq } from 'lodash';
 import { createGetCoverageUrl } from 'prism-common';
 import { calculate } from '../utils/zonal-utils';
 
@@ -126,7 +126,92 @@ function getAdminBoundariesURL(adminBoundariesPath: string) {
   );
 }
 
-function generateTableFromApiData(
+const generateTableColumnsFromApiData = (
+  aggregateData: AsyncReturnType<typeof fetchApiData>,
+  key: string = 'sum',
+): Column[] => {
+  if (key === 'sum') {
+    return [
+      {
+        id: 'sum',
+        label: 'Sum',
+        format: (value: string | number) => getRoundedData(value, undefined, 0),
+      },
+    ];
+  }
+  return uniq(
+    aggregateData.map(f => f.properties && (f.properties as any)[key]),
+  ).map((col: string) => ({
+    id: col,
+    label: col,
+    format: (value: string | number) => getRoundedData(value, undefined, 0),
+  })) as Column[];
+};
+
+const getFeatureBoundary = (
+  isExposureAnalysisTable: boolean,
+  adminLayerData: BoundaryLayerData,
+  groupBy: string,
+  row: KeyValueResponse,
+  adminLevelName: string,
+): Feature<Geometry, GeoJsonProperties> | undefined => {
+  if (isExposureAnalysisTable) {
+    return adminLayerData.features.find(
+      ({ properties }) =>
+        properties?.[groupBy] ===
+          row?.['properties']?.[groupBy as keyof typeof properties] ||
+        properties?.[adminLevelName] ===
+          row?.['properties'][adminLevelName as keyof typeof properties],
+    );
+  }
+  return adminLayerData.features.find(
+    ({ properties }) =>
+      properties?.[groupBy] === row[groupBy] ||
+      properties?.[adminLevelName] === row[adminLevelName],
+  );
+};
+
+const getMultipleStatistics = (
+  isExposureAnalysisTable: boolean,
+  fields: (
+    | AllAggregationOperations
+    | (KeyValueResponse | Feature<Geometry, GeoJsonProperties>)
+  )[],
+  statistics: AllAggregationOperations[],
+  row: KeyValueResponse,
+): { [p: string]: string | number } => {
+  if (isExposureAnalysisTable) {
+    return Object.fromEntries(
+      fields.map(statistic => [
+        statistic,
+        get(row.properties, statistic as string, 0),
+      ]),
+    );
+  }
+  return Object.fromEntries(
+    statistics.map(statistic => [statistic, get(row, statistic, 0)]),
+  );
+};
+
+const getLabeledColumns = (
+  row: KeyValueResponse,
+  fields: (
+    | AllAggregationOperations
+    | (KeyValueResponse | Feature<Geometry, GeoJsonProperties>)
+  )[],
+  key?: string,
+): { [p: string]: string | number } => {
+  if (!key) {
+    return {};
+  }
+  const label = get(row.properties, key);
+  if (fields.includes(label)) {
+    return { [label]: get(row.properties, 'sum', 0) };
+  }
+  return {};
+};
+
+const generateTableFromApiData = (
   statistics: AllAggregationOperations[],
   aggregateData: AsyncReturnType<typeof fetchApiData>, // data from api
   // admin layer, both props and data. Aimed to closely match LayerData<BoundaryLayerProps>
@@ -138,7 +223,8 @@ function generateTableFromApiData(
   baselineLayerData: DataRecord[] | null,
   extraColumns: string[],
   isExposureAnalysisTable: boolean = false,
-): TableRow[] {
+  key?: string,
+): TableRow[] => {
   // find the key that will let us reference the names of the bounding boxes.
   // We get the one corresponding to the specific level of baseline, or the first if we fail.
   const { adminLevelNames, adminLevelLocalNames } = adminLayer;
@@ -146,6 +232,13 @@ function generateTableFromApiData(
   const groupByAdminIndex = adminLevelNames.findIndex(
     levelName => levelName === groupBy,
   );
+
+  const fields: (
+    | AllAggregationOperations
+    | (KeyValueResponse | Feature<Geometry, GeoJsonProperties>)
+  )[] = key
+    ? uniq(aggregateData.map(f => f.properties && (f.properties as any).label))
+    : statistics;
 
   const adminIndex =
     groupByAdminIndex !== -1 ? groupByAdminIndex : adminLevelNames.length - 1;
@@ -157,25 +250,15 @@ function generateTableFromApiData(
     // find feature (a cell on the map) from admin boundaries json that closely matches this api row.
     // we decide it matches if the feature json has the same name as the name for this row.
     // once we find it we can get the corresponding local name.
-    let featureBoundary: Feature<Geometry, GeoJsonProperties> | undefined;
-
-    if (isExposureAnalysisTable) {
-      // eslint-disable-next-line fp/no-mutation
-      featureBoundary = adminLayerData.features.find(
-        ({ properties }) =>
-          properties?.[groupBy] ===
-            row?.['properties']?.[groupBy as keyof typeof properties] ||
-          properties?.[adminLevelName] ===
-            row?.['properties'][adminLevelName as keyof typeof properties],
-      );
-    } else {
-      // eslint-disable-next-line fp/no-mutation
-      featureBoundary = adminLayerData.features.find(
-        ({ properties }) =>
-          properties?.[groupBy] === row[groupBy] ||
-          properties?.[adminLevelName] === row[adminLevelName],
-      );
-    }
+    const featureBoundary:
+      | Feature<Geometry, GeoJsonProperties>
+      | undefined = getFeatureBoundary(
+      isExposureAnalysisTable,
+      adminLayerData,
+      groupBy,
+      row,
+      adminLevelName,
+    );
 
     const name = getFullLocationName(
       adminLevelNames.slice(0, adminIndex + 1),
@@ -201,22 +284,16 @@ function generateTableFromApiData(
       })?.value || 'No Data';
 
     // The multiple statistics for the new table row
-    let multipleStatistics: { [p: string]: string | number };
+    const multipleStatistics: {
+      [p: string]: string | number;
+    } = getMultipleStatistics(isExposureAnalysisTable, fields, statistics, row);
 
-    if (isExposureAnalysisTable) {
-      // eslint-disable-next-line fp/no-mutation
-      multipleStatistics = Object.fromEntries(
-        statistics.map(statistic => [
-          statistic,
-          get(row.properties, statistic, 0),
-        ]),
-      );
-    } else {
-      // eslint-disable-next-line fp/no-mutation
-      multipleStatistics = Object.fromEntries(
-        statistics.map(statistic => [statistic, get(row, statistic, 0)]),
-      );
-    }
+    // The labeled columns
+    const labeledColumns: { [p: string]: string | number } = getLabeledColumns(
+      row,
+      fields,
+      key,
+    );
 
     const tableRow: TableRow = {
       key: i.toString(), // primary key, identifying a unique row in the table
@@ -224,6 +301,7 @@ function generateTableFromApiData(
       localName,
       // copy multiple statistics to the new table row
       ...multipleStatistics,
+      ...labeledColumns,
       // Force parseFloat in case data was stored as a string
       baselineValue:
         rawBaselineValue === 'No Data'
@@ -236,7 +314,7 @@ function generateTableFromApiData(
     };
     return tableRow;
   });
-}
+};
 
 export type AnalysisDispatchParams = {
   baselineLayer: AdminLevelDataLayerProps | BoundaryLayerProps;
@@ -317,6 +395,46 @@ const createAPIRequestParams = (
   return apiRequest;
 };
 
+const mergeTableRows = (tableRows: TableRow[]): TableRow => {
+  /* eslint-disable no-param-reassign, fp/no-mutation */
+  const mergedObject: TableRow = tableRows.reduce(
+    (acc, tableRow) => {
+      return Object.keys(tableRow).reduce((tableRowAcc, tableRowKey) => {
+        if (typeof tableRow[tableRowKey] === 'number') {
+          tableRowAcc[tableRowKey] = tableRowAcc[tableRowKey]
+            ? Number(tableRowAcc[tableRowKey]) + Number(tableRow[tableRowKey])
+            : tableRow[tableRowKey];
+        } else {
+          tableRowAcc[tableRowKey] = tableRow[tableRowKey];
+        }
+        return tableRowAcc;
+      }, acc);
+    },
+    {
+      key: '',
+      localName: '',
+      name: '',
+      baselineValue: '',
+    },
+  );
+
+  // TEMPORARY LOGIC TO DEDUP POPULATION COUNTS FOR WIND BUFFERS.
+  const oneHundredTwenty = Number(get(mergedObject, '120 km/h', 0));
+  const ninety =
+    Number(get(mergedObject, '90 km/h', 0)) -
+    Number(get(mergedObject, '120 km/h', 0));
+  const sixty =
+    Number(get(mergedObject, '60 km/h', 0)) -
+    Number(get(mergedObject, '90 km/h', 0));
+
+  mergedObject['120 km/h'] = oneHundredTwenty;
+  mergedObject['90 km/h'] = ninety;
+  mergedObject['60 km/h'] = sixty;
+
+  /* eslint-enable no-param-reassign, fp/no-mutation */
+  return mergedObject;
+};
+
 export const requestAndStoreExposedPopulation = createAsyncThunk<
   AnalysisResult,
   ExposedPopulationDispatchParams,
@@ -381,8 +499,11 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       true,
     );
 
-    const apiFeatures = ((await fetchApiData(ANALYSIS_API_URL, apiRequest)) ||
-      []) as Feature[];
+    const apiFeatures = ((await fetchApiData(
+      ANALYSIS_API_URL,
+      apiRequest,
+      api.dispatch,
+    )) || []) as Feature[];
 
     const { scale, offset } = populationLayer.wcsConfig ?? {
       scale: undefined,
@@ -408,7 +529,12 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
     // TODO - use raster legend title
     const legendText = wfsLayer ? wfsLayer.title : 'Exposure Analysis';
 
-    const tableRows: TableRow[] = generateTableFromApiData(
+    const tableColumns = generateTableColumnsFromApiData(
+      featuresWithBoundaryProps,
+      key,
+    );
+
+    let tableRows: TableRow[] = generateTableFromApiData(
       [statistic],
       featuresWithBoundaryProps,
       adminBoundariesData,
@@ -416,7 +542,18 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       null,
       [], // no extra columns
       true,
+      key,
     );
+
+    // If a key exists, we are likely running an exposure analysis for storms or earthquakes.
+    // We need to merge the data returned by the API as it will be split
+    // by category for each admin boundary.
+    if (key) {
+      // eslint-disable-next-line fp/no-mutation
+      tableRows = Object.values(_groupBy(tableRows, 'name')).map(adminRows =>
+        mergeTableRows(adminRows),
+      );
+    }
 
     return new ExposedPopulationResult(
       tableRows,
@@ -427,6 +564,7 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
       apiRequest.group_by,
       key,
       date,
+      tableColumns,
     );
   },
 );
@@ -466,7 +604,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   );
 
   const aggregateData = scaleAndFilterAggregateData(
-    await fetchApiData(ANALYSIS_API_URL, apiRequest),
+    await fetchApiData(ANALYSIS_API_URL, apiRequest, api.dispatch),
     hazardLayer,
     statistic,
     threshold,

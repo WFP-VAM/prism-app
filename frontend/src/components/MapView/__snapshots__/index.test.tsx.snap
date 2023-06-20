@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <div
-    class="MuiBox-root MuiBox-root-6 MapView-root-1"
+    class="MuiBox-root MuiBox-root-6 memo-root-1"
   >
     <mock-drawer
       anchor="left"
@@ -3494,11 +3494,11 @@ exports[`renders as expected 1`] = `
       </div>
     </mock-drawer>
     <div
-      class="MuiBox-root MuiBox-root-119 MapView-container-2"
+      class="MuiBox-root MuiBox-root-119 memo-container-2"
     >
       <div
-        class="MuiBox-root MuiBox-root-120 MapView-optionContainer-3"
-        style="margin-left: 30vw;"
+        class="MuiBox-root MuiBox-root-120 memo-optionContainer-3"
+        style="margin-left: 500px;"
       >
         <mock-tooltip
           arrow="true"
@@ -3523,7 +3523,7 @@ exports[`renders as expected 1`] = `
           </mock-button>
         </mock-tooltip>
         <div
-          class="MuiGrid-root MapView-buttonContainer-4 MuiGrid-container MuiGrid-justify-xs-space-between"
+          class="MuiGrid-root memo-buttonContainer-4 MuiGrid-container MuiGrid-justify-xs-space-between"
         >
           <div
             class="MuiGrid-root MuiGrid-item"
@@ -3569,7 +3569,7 @@ exports[`renders as expected 1`] = `
       </div>
     </div>
     <div
-      class="MapView-loading-5"
+      class="memo-loading-5"
     >
       <mock-circularprogress
         size="100"

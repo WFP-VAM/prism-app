@@ -303,6 +303,9 @@ export class CommonLayerProps {
 
   @optional
   validity?: Validity; // Include additional dates in the calendar based on the number provided.
+
+  @optional
+  disableAnalysis?: boolean; // Hide layer in Analysis feature
 }
 
 /*
@@ -692,7 +695,7 @@ export type UserAuth = {
 
 export enum PanelSize {
   folded = '0vw',
-  medium = '30vw',
-  large = '60vw',
-  xlarge = '80vw',
+  medium = '500px',
+  large = '1000px',
+  xlarge = '1400px',
 }
