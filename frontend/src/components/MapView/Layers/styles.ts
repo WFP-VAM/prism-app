@@ -60,7 +60,7 @@ export const fillPaintData = (
     // eslint-disable-next-line fp/no-mutation
     fillPaint = {
       ...fillPaint,
-      'fill-pattern': `pattern-${id}`,
+      'fill-pattern': `fill-pattern-${id}-legend`,
     };
   }
   return fillPaint;

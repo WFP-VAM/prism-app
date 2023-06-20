@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import {
   AdminLevelDataLayerProps,
@@ -26,7 +26,7 @@ import { useSafeTranslation } from '../../../../i18n';
 import { fillPaintData } from '../styles';
 import { availableDatesSelector } from '../../../../context/serverStateSlice';
 import { getRequestDate } from '../../../../utils/server-utils';
-import { addPopupParams } from '../layer-utils';
+import { addPopupParams, legendToStops } from '../layer-utils';
 import {
   convertSvgToPngBase64Image,
   getSVGShape,
@@ -50,43 +50,68 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const { features } = data || {};
   const { t } = useSafeTranslation();
 
-  const addFillPatternImageInMap = useCallback(async () => {
+  const createFillPatternsForLayerLegends = useCallback(async () => {
+    return Promise.all(
+      legendToStops(layer.legend).map(async legendToStop => {
+        return convertSvgToPngBase64Image(
+          getSVGShape(legendToStop[1] as string, layer.fillPattern),
+        );
+      }),
+    );
+  }, [layer.fillPattern, layer.legend]);
+
+  const addFillPatternImageInMap = useCallback(
+    async (convertedImage: string, index: number) => {
+      if (!map || !layer.fillPattern) {
+        return;
+      }
+      map.loadImage(
+        convertedImage,
+        (
+          err: any,
+          image:
+            | HTMLImageElement
+            | ArrayBufferView
+            | {
+                width: number;
+                height: number;
+                data: Uint8Array | Uint8ClampedArray;
+              }
+            | ImageData
+            | ImageBitmap,
+        ) => {
+          // Throw an error if something goes wrong.
+          if (err) {
+            map.removeImage(`fill-pattern-${layer.id}-legend-${index}`);
+            throw err;
+          }
+
+          // Add the image to the map style.
+          map.addImage(`fill-pattern-${layer.id}-legend-${index}`, image);
+        },
+      );
+    },
+    [layer.fillPattern, layer.id, map],
+  );
+
+  const addFillPatternImagesInMap = useCallback(async () => {
     if (!map || !layer.fillPattern) {
       return;
     }
-    const convertedImage = await convertSvgToPngBase64Image(
-      getSVGShape(layer.fillColor, layer.fillPattern),
-    );
-    map.loadImage(
-      convertedImage,
-      (
-        err: any,
-        image:
-          | HTMLImageElement
-          | ArrayBufferView
-          | {
-              width: number;
-              height: number;
-              data: Uint8Array | Uint8ClampedArray;
-            }
-          | ImageData
-          | ImageBitmap,
-      ) => {
-        // Throw an error if something goes wrong.
-        if (err) {
-          map.removeImage(`pattern-${layer.id}`);
-          throw err;
-        }
-
-        // Add the image to the map style.
-        map.addImage(`pattern-${layer.id}`, image);
-      },
-    );
-  }, [layer.fillColor, layer.fillPattern, layer.id, map]);
+    const fillPatternsForLayer = await createFillPatternsForLayerLegends();
+    fillPatternsForLayer.forEach((base64Image, index) => {
+      addFillPatternImageInMap(base64Image, index);
+    });
+  }, [
+    addFillPatternImageInMap,
+    createFillPatternsForLayerLegends,
+    layer.fillPattern,
+    map,
+  ]);
 
   useEffect(() => {
-    addFillPatternImageInMap();
-  }, [addFillPatternImageInMap]);
+    addFillPatternImagesInMap();
+  }, [addFillPatternImagesInMap]);
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?
