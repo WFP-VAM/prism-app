@@ -37,11 +37,14 @@ const TimelineItem = memo(
 
             return (
               <React.Fragment key={Math.random()}>
-                {layerIndex !== 0 && matchingDateItemInLayer.isStartDate && (
-                  <div
-                    className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
-                  />
-                )}
+                {layerIndex !== 0 &&
+                  layerDates.indexOf(matchingDateItemInLayer) !== 0 &&
+                  layerDates[layerDates.indexOf(matchingDateItemInLayer) - 1]
+                    .isStartDate && (
+                    <div
+                      className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
+                    />
+                  )}
 
                 {layerIndex !== 0 &&
                   layerDates.indexOf(matchingDateItemInLayer) !==
@@ -59,13 +62,15 @@ const TimelineItem = memo(
                   onClick={handleClick(index)}
                 />
 
-                {layerIndex !== 0 && matchingDateItemInLayer.isEndDate && (
-                  <div
-                    className={dateItemStyling[layerIndex].emphasis}
-                    role="presentation"
-                    onClick={handleClick(index)}
-                  />
-                )}
+                {layerIndex !== 0 &&
+                  (matchingDateItemInLayer.isEndDate ||
+                    matchingDateItemInLayer.isStartDate) && (
+                    <div
+                      className={dateItemStyling[layerIndex].emphasis}
+                      role="presentation"
+                      onClick={handleClick(index)}
+                    />
+                  )}
               </React.Fragment>
             );
           },
