@@ -92,7 +92,7 @@ const MapComponent = memo(
     const MapboxMap = useMemo(() => {
       return ReactMapboxGl({
         accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
-        preserveDrawingBuffer: false,
+        preserveDrawingBuffer: true,
         minZoom,
         maxZoom,
       });
