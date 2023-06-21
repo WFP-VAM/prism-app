@@ -222,20 +222,19 @@ const MapComponent = memo(
       }
       return firstBoundaryId;
     };
-    const renderedSelectedGeoJsonLayers = () =>
-      selectedLayers.map((layer, index) => {
-        const component: ComponentType<{
-          layer: any;
-          before?: string;
-        }> = componentTypes[layer.type];
-        // eslint-disable-next-line no-console
-        console.log({ layerId: layer.id, beforeId: beforeId(layer, index) });
-        return createElement(component, {
-          key: layer.id,
-          layer,
-          before: beforeId(layer, index),
-        });
+    const renderedSelectedGeoJsonLayers = selectedLayers.map((layer, index) => {
+      const component: ComponentType<{
+        layer: any;
+        before?: string;
+      }> = componentTypes[layer.type];
+      // eslint-disable-next-line no-console
+      console.log({ layerId: layer.id, beforeId: beforeId(layer, index) });
+      return createElement(component, {
+        key: layer.id,
+        layer,
+        before: beforeId(layer, index),
       });
+    });
 
     return (
       <MapboxMap
@@ -251,7 +250,7 @@ const MapComponent = memo(
         center={mapTempCenter}
         maxBounds={maxBounds}
       >
-        {renderedSelectedGeoJsonLayers()}
+        {renderedSelectedGeoJsonLayers}
         {/* These are custom layers which provide functionality and are not really controllable via JSON */}
         <AnalysisLayer before={firstBoundaryId} />
         <SelectionLayer before={firstSymbolId} />
