@@ -119,7 +119,14 @@ def parse_form_response(
     datetime_value_string = get_first(
         [value for key, value in form_dict.items() if key.endswith(datetime_field)]
     )
-    datetime_value = parse_form_field(datetime_value_string, labels.get(datetime_field))  # type: ignore
+    if datetime_value_string is None:
+        logger.warning(
+            "datetime_field %s is missing in form: %s", datetime_field, form_dict
+        )
+
+    datetime_value = datetime_value_string and parse_form_field(
+        datetime_value_string, labels.get(datetime_field)  # type: ignore
+    )
 
     geom_field = form_fields.get("geom_field") or "DoesNotExist"
     geom_value_string = get_first(
