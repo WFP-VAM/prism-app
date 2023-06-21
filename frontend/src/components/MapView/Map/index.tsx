@@ -208,33 +208,41 @@ const MapComponent = memo(
       };
     }, []);
 
-    const beforeId = (layer: LayerType, index: number) => {
-      if (layer.type === 'boundary') {
-        return firstSymbolId;
-      }
-      if (index === 0) {
-        return firstSymbolId;
-      }
-      const previousLayerId = selectedLayers[index - 1].id;
+    const renderedSelectedGeoJsonLayers = useMemo(() => {
+      const getBeforeId = (layer: LayerType, index: number) => {
+        if (layer.type === 'boundary') {
+          return firstSymbolId;
+        }
+        if (index === 0) {
+          return firstSymbolId;
+        }
+        const previousLayerId = selectedLayers[index - 1].id;
 
-      if (isLayerOnView(selectedMap, previousLayerId)) {
-        return `layer-${previousLayerId}-line`;
-      }
-      return firstBoundaryId;
-    };
-    const renderedSelectedGeoJsonLayers = selectedLayers.map((layer, index) => {
-      const component: ComponentType<{
-        layer: any;
-        before?: string;
-      }> = componentTypes[layer.type];
-      // eslint-disable-next-line no-console
-      console.log({ layerId: layer.id, beforeId: beforeId(layer, index) });
-      return createElement(component, {
-        key: layer.id,
-        layer,
-        before: beforeId(layer, index),
+        if (isLayerOnView(selectedMap, previousLayerId)) {
+          return `layer-${previousLayerId}-line`;
+        }
+        return firstBoundaryId;
+      };
+      return selectedLayers.map((layer, index) => {
+        const component: ComponentType<{
+          layer: any;
+          before?: string;
+        }> = componentTypes[layer.type];
+        // eslint-disable-next-line no-console
+        console.log({ layerId: layer.id, beforeId: getBeforeId(layer, index) });
+        return createElement(component, {
+          key: layer.id,
+          layer,
+          before: getBeforeId(layer, index),
+        });
       });
-    });
+    }, [
+      componentTypes,
+      firstBoundaryId,
+      firstSymbolId,
+      selectedLayers,
+      selectedMap,
+    ]);
 
     return (
       <MapboxMap
