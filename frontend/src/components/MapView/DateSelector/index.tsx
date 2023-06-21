@@ -259,25 +259,16 @@ const DateSelector = memo(
     );
 
     // Click on available date to move the pointer
-    const clickDate = useCallback(
-      (index: number) => {
-        const selectedIndex = findDateIndex(dates, dateRange[index].value);
-        if (selectedIndex < 0 || dates[selectedIndex] === stateStartDate) {
-          return;
-        }
-        setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
-        const updatedDate = new Date(dates[selectedIndex]);
-        checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
-        updateStartDate(updatedDate, true);
-      },
-      [
-        checkIntersectingDateAndShowPopup,
-        dateRange,
-        dates,
-        stateStartDate,
-        updateStartDate,
-      ],
-    );
+    const clickDate = (index: number) => {
+      const selectedIndex = findDateIndex(dates, dateRange[index].value);
+      if (selectedIndex < 0 || dates[selectedIndex] === stateStartDate) {
+        return;
+      }
+      setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
+      const updatedDate = new Date(dates[selectedIndex]);
+      checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
+      updateStartDate(updatedDate, true);
+    };
 
     // Set timeline position after being dragged
     const onTimelineStop = useCallback((e: DraggableEvent, position: Point) => {

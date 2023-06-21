@@ -145,13 +145,12 @@ const TimelineItems = memo(
                 className={`${
                   date.isFirstDay ? classes.dateItemFull : classes.dateItem
                 } ${isCurrentDateSelectedDate ? classes.currentDate : ''} `}
+                onClick={() => clickDate(index)}
               >
                 <TimelineLabel locale={locale} date={date} />
                 <TimelineItem
                   concatenatedLayers={concatenatedLayers}
                   currentDate={date}
-                  index={index}
-                  clickDate={clickDate}
                   dateItemStyling={DATE_ITEM_STYLING}
                 />
               </Grid>
@@ -179,6 +178,7 @@ const DEFAULT_ITEM: CreateCSSProperties = {
   position: 'absolute',
   height: 10,
   width: TIMELINE_ITEM_WIDTH,
+  pointerEvents: 'none',
 };
 
 const BASE_DATE_ITEM: CreateCSSProperties = {

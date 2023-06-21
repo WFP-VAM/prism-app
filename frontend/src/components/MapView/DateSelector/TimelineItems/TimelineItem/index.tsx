@@ -9,8 +9,6 @@ const TimelineItem = memo(
     classes,
     concatenatedLayers,
     currentDate,
-    index,
-    clickDate,
     dateItemStyling,
   }: TimelineItemProps) => {
     return (
@@ -56,7 +54,6 @@ const TimelineItem = memo(
                       : dateItemStyling[layerIndex].class
                   }`}
                   role="presentation"
-                  onClick={() => clickDate(index)}
                 />
               </React.Fragment>
             );
@@ -88,8 +85,6 @@ const styles = () =>
 export interface TimelineItemProps extends WithStyles<typeof styles> {
   concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
-  index: number;
-  clickDate: (arg: number) => void;
   dateItemStyling: {
     class: string;
     color: string;
