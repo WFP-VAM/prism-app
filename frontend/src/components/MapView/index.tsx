@@ -361,6 +361,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       return;
     }
 
+    // TODO - remove layers after dispatching the error message.
     if (invalidLayersIds.length > 0) {
       dispatch(
         addNotification({
