@@ -7,7 +7,6 @@ import React, {
   Dispatch,
   useMemo,
   useState,
-  useEffect,
 } from 'react';
 import { Map, MapSourceDataEvent } from 'mapbox-gl';
 import ReactMapboxGl from 'react-mapbox-gl';
@@ -24,7 +23,7 @@ import {
 } from '../../../context/mapBoundaryInfoStateSlice';
 import { DiscriminateUnion, LayerKey, LayerType } from '../../../config/types';
 import { setLoadingLayerIds } from '../../../context/mapTileLoadingStateSlice';
-import { firstBoundaryOnView } from '../../../utils/map-utils';
+import { firstBoundaryOnView, isLayerOnView } from '../../../utils/map-utils';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
@@ -58,35 +57,6 @@ const MapComponent = memo(
     const dispatch = useDispatch();
 
     const selectedMap = useSelector(mapSelector);
-
-    useEffect(() => {
-      if (!selectedMap) {
-        return;
-      }
-      const { layers } = selectedMap.getStyle();
-      if (!layers) {
-        return;
-      }
-      // eslint-disable-next-line no-console
-      console.log(
-        layers.filter(
-          layer => 'source' in layer && layer.source !== 'openmaptiles',
-        ),
-      );
-      const filteredMapLayers = layers.filter(mapLayer => {
-        return selectedLayers.some(selectedLayer => {
-          return mapLayer.id.includes(`layer-${selectedLayer.id}`);
-        });
-      });
-      // eslint-disable-next-line no-console
-      console.log(filteredMapLayers);
-      if (!filteredMapLayers) {
-        return;
-      }
-      filteredMapLayers.forEach(filteredMapLayer => {
-        selectedMap.moveLayer(filteredMapLayer.id, layers[1].id);
-      });
-    }, [selectedLayers, selectedMap]);
 
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
       undefined,
@@ -122,7 +92,7 @@ const MapComponent = memo(
     const MapboxMap = useMemo(() => {
       return ReactMapboxGl({
         accessToken: (process.env.REACT_APP_MAPBOX_TOKEN as string) || '',
-        preserveDrawingBuffer: true,
+        preserveDrawingBuffer: false,
         minZoom,
         maxZoom,
       });
@@ -238,19 +208,34 @@ const MapComponent = memo(
       };
     }, []);
 
-    const renderedSelectedGeoJsonLayers = useMemo(() => {
-      return selectedLayers.map(layer => {
+    const beforeId = (layer: LayerType, index: number) => {
+      if (layer.type === 'boundary') {
+        return firstSymbolId;
+      }
+      if (index === 0) {
+        return firstSymbolId;
+      }
+      const previousLayerId = selectedLayers[index - 1].id;
+
+      if (isLayerOnView(selectedMap, previousLayerId)) {
+        return `layer-${previousLayerId}-line`;
+      }
+      return firstBoundaryId;
+    };
+    const renderedSelectedGeoJsonLayers = () =>
+      selectedLayers.map((layer, index) => {
         const component: ComponentType<{
           layer: any;
           before?: string;
         }> = componentTypes[layer.type];
+        // eslint-disable-next-line no-console
+        console.log({ layerId: layer.id, beforeId: beforeId(layer, index) });
         return createElement(component, {
           key: layer.id,
           layer,
-          before: layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
+          before: beforeId(layer, index),
         });
       });
-    }, [componentTypes, firstBoundaryId, firstSymbolId, selectedLayers]);
 
     return (
       <MapboxMap
@@ -266,7 +251,7 @@ const MapComponent = memo(
         center={mapTempCenter}
         maxBounds={maxBounds}
       >
-        {renderedSelectedGeoJsonLayers}
+        {renderedSelectedGeoJsonLayers()}
         {/* These are custom layers which provide functionality and are not really controllable via JSON */}
         <AnalysisLayer before={firstBoundaryId} />
         <SelectionLayer before={firstSymbolId} />
