@@ -151,8 +151,11 @@ const DateSelector = memo(
     const dateIndex = useMemo(() => {
       return findIndex(range, date => {
         return (
-          date.label ===
-          moment(stateStartDate).locale(locale).format(MONTH_FIRST_DATE_FORMAT)
+          date.label.toLocaleLowerCase() ===
+          moment(stateStartDate)
+            .locale(locale)
+            .format(MONTH_FIRST_DATE_FORMAT)
+            .toLocaleLowerCase()
         );
       });
     }, [locale, range, stateStartDate]);
