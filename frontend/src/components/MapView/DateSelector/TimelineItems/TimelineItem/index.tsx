@@ -11,6 +11,26 @@ const TimelineItem = memo(
     currentDate,
     dateItemStyling,
   }: TimelineItemProps) => {
+    const hasNextItemDirectionForward = (
+      matchingDate: DateItem,
+      layerDates: DateItem[],
+    ): boolean => {
+      return (
+        layerDates.indexOf(matchingDate) !== 0 &&
+        !!layerDates[layerDates.indexOf(matchingDate) - 1].isStartDate
+      );
+    };
+
+    const hasNextItemDirectionBackward = (
+      matchingDate: DateItem,
+      layerDates: DateItem[],
+    ): boolean => {
+      return (
+        layerDates.indexOf(matchingDate) !== layerDates.length - 1 &&
+        !!layerDates[layerDates.indexOf(matchingDate) + 1].isEndDate
+      );
+    };
+
     return (
       <>
         {concatenatedLayers.map(
@@ -26,22 +46,23 @@ const TimelineItem = memo(
 
             return (
               <React.Fragment key={Math.random()}>
-                {layerDates.indexOf(matchingDateItemInLayer) !== 0 &&
-                  layerDates[layerDates.indexOf(matchingDateItemInLayer) - 1]
-                    .isStartDate && (
-                    <div
-                      className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
-                    />
-                  )}
+                {hasNextItemDirectionForward(
+                  matchingDateItemInLayer,
+                  layerDates,
+                ) && (
+                  <div
+                    className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
+                  />
+                )}
 
-                {layerDates.indexOf(matchingDateItemInLayer) !==
-                  layerDates.length - 1 &&
-                  layerDates[layerDates.indexOf(matchingDateItemInLayer) + 1]
-                    .isEndDate && (
-                    <div
-                      className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
-                    />
-                  )}
+                {hasNextItemDirectionBackward(
+                  matchingDateItemInLayer,
+                  layerDates,
+                ) && (
+                  <div
+                    className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
+                  />
+                )}
 
                 <div
                   className={`${
