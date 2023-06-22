@@ -32,7 +32,13 @@ import {
   getSVGShape,
 } from '../../../../utils/image-utils';
 
-function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
+function AdminLevelDataLayers({
+  layer,
+  before,
+}: {
+  layer: AdminLevelDataLayerProps;
+  before?: string;
+}) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -147,7 +153,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
 
   return (
     <GeoJSONLayer
-      before={`layer-${boundaryId}-line`}
+      before={before || `layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={features}
       fillPaint={fillPaintData(layer, 'data', layer?.fillPattern)}

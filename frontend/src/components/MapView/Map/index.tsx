@@ -23,7 +23,7 @@ import {
 } from '../../../context/mapBoundaryInfoStateSlice';
 import { DiscriminateUnion, LayerKey, LayerType } from '../../../config/types';
 import { setLoadingLayerIds } from '../../../context/mapTileLoadingStateSlice';
-import { firstBoundaryOnView } from '../../../utils/map-utils';
+import { firstBoundaryOnView, isLayerOnView } from '../../../utils/map-utils';
 import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
@@ -209,18 +209,40 @@ const MapComponent = memo(
     }, []);
 
     const renderedSelectedGeoJsonLayers = useMemo(() => {
-      return selectedLayers.map(layer => {
+      const getBeforeId = (layer: LayerType, index: number) => {
+        if (layer.type === 'boundary') {
+          return firstSymbolId;
+        }
+        if (index === 0) {
+          return firstSymbolId;
+        }
+        const previousLayerId = selectedLayers[index - 1].id;
+
+        if (isLayerOnView(selectedMap, previousLayerId)) {
+          return `layer-${previousLayerId}-line`;
+        }
+        return firstBoundaryId;
+      };
+      return selectedLayers.map((layer, index) => {
         const component: ComponentType<{
           layer: any;
           before?: string;
         }> = componentTypes[layer.type];
+        // eslint-disable-next-line no-console
+        console.log({ layerId: layer.id, beforeId: getBeforeId(layer, index) });
         return createElement(component, {
           key: layer.id,
           layer,
-          before: layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
+          before: getBeforeId(layer, index),
         });
       });
-    }, [componentTypes, firstBoundaryId, firstSymbolId, selectedLayers]);
+    }, [
+      componentTypes,
+      firstBoundaryId,
+      firstSymbolId,
+      selectedLayers,
+      selectedMap,
+    ]);
 
     return (
       <MapboxMap
