@@ -209,6 +209,8 @@ const MapComponent = memo(
     }, []);
 
     const renderedSelectedGeoJsonLayers = useMemo(() => {
+      // make sure that the layers are ordered in the same order that they
+      // are passed to the component. See the `layerOrdering` function for details.
       const getBeforeId = (layer: LayerType, index: number) => {
         if (layer.type === 'boundary') {
           return firstSymbolId;
@@ -228,8 +230,6 @@ const MapComponent = memo(
           layer: any;
           before?: string;
         }> = componentTypes[layer.type];
-        // eslint-disable-next-line no-console
-        console.log({ layerId: layer.id, beforeId: getBeforeId(layer, index) });
         return createElement(component, {
           key: layer.id,
           layer,
