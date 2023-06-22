@@ -152,10 +152,10 @@ const LegendItem = memo(
             <LayerContentPreview layerId={id} />
           </Grid>
           <Divider />
-          {renderedOpacitySlider}
           {renderedLegend}
           <LoadingBar layerId={id} />
           {renderedChildren}
+          {renderedOpacitySlider}
         </Paper>
       </ListItem>
     );
@@ -165,11 +165,11 @@ const LegendItem = memo(
 const styles = () =>
   createStyles({
     paper: {
-      padding: 8,
+      padding: 6,
       width: 180,
     },
     slider: {
-      padding: '0 5px',
+      padding: '0 0px',
     },
   });
 
