@@ -72,9 +72,7 @@ exports[`renders as expected 1`] = `
               id="datePointerSelector"
               style="transform: translate(1820px,0px);"
             >
-              <svg
-                height="19px"
-              >
+              <svg>
                 tick.svg
               </svg>
             </div>

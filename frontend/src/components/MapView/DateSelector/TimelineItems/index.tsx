@@ -18,7 +18,6 @@ import {
 import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
 import TooltipItem from './TooltipItem';
-import { datesAreEqualWithoutTime } from '../../../../utils/date-utils';
 
 const TimelineItems = memo(
   ({
@@ -27,7 +26,6 @@ const TimelineItems = memo(
     clickDate,
     locale,
     selectedLayers,
-    selectedCurrentDate,
   }: TimelineItemsProps) => {
     const { t } = useSafeTranslation();
 
@@ -81,7 +79,6 @@ const TimelineItems = memo(
         );
         // eslint-disable-next-line fp/no-mutating-methods
         tooltipTitleArray.unshift(<div key={date.label}>{date.label}</div>);
-
         return tooltipTitleArray;
       },
       [DATE_ITEM_STYLING, selectedLayers, t],
@@ -119,10 +116,6 @@ const TimelineItems = memo(
     return (
       <>
         {dateRange.map((date, index) => {
-          const isCurrentDateSelectedDate: boolean = datesAreEqualWithoutTime(
-            date.value,
-            selectedCurrentDate,
-          );
           return (
             <Tooltip
               key={`Root-${date.label}-${date.value}`}
@@ -137,7 +130,7 @@ const TimelineItems = memo(
                 xs
                 className={`${
                   date.isFirstDay ? classes.dateItemFull : classes.dateItem
-                } ${isCurrentDateSelectedDate ? classes.currentDate : ''} `}
+                }`}
                 onClick={() => clickDate(index)}
               >
                 <TimelineLabel locale={locale} date={date} />
@@ -256,7 +249,6 @@ export interface TimelineItemsProps extends WithStyles<typeof styles> {
   clickDate: (arg: number) => void;
   locale: string;
   selectedLayers: DateCompatibleLayerWithDateItems[];
-  selectedCurrentDate: number;
 }
 
 export default withStyles(styles)(TimelineItems);

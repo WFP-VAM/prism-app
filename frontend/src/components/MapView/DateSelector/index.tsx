@@ -388,7 +388,6 @@ const DateSelector = memo(
                         clickDate={clickDate}
                         locale={locale}
                         selectedLayers={selectedLayers}
-                        selectedCurrentDate={stateStartDate}
                       />
                     )}
                   </Grid>
@@ -407,7 +406,7 @@ const DateSelector = memo(
                     onStop={onPointerStop}
                   >
                     <div className={classes.pointer} id={POINTER_ID}>
-                      <TickSvg height="19px" />
+                      <TickSvg />
                     </div>
                   </Draggable>
                 </div>
@@ -479,7 +478,7 @@ const styles = (theme: Theme) =>
 
     dateContainer: {
       position: 'relative',
-      height: 50,
+      height: 54,
       flexGrow: 1,
       cursor: 'e-resize',
       overflow: 'hidden',
@@ -499,8 +498,8 @@ const styles = (theme: Theme) =>
       cursor: 'pointer',
       position: 'absolute',
       zIndex: 5,
-      top: 24,
-      left: -8,
+      top: -20,
+      left: -9,
       height: '16px',
     },
   });

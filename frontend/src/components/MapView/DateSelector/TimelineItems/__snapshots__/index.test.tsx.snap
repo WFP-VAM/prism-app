@@ -10,7 +10,7 @@ exports[`renders as expected 1`] = `
     transitionprops="[object Object]"
   >
     <div
-      class="MuiGrid-root memo-dateItem-2   MuiGrid-item MuiGrid-grid-xs-true"
+      class="MuiGrid-root memo-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
     >
       <div
         class="TimelineLabel-dayItem-14"
