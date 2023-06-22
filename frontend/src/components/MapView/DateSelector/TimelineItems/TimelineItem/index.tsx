@@ -26,8 +26,7 @@ const TimelineItem = memo(
 
             return (
               <React.Fragment key={Math.random()}>
-                {layerIndex !== 0 &&
-                  layerDates.indexOf(matchingDateItemInLayer) !== 0 &&
+                {layerDates.indexOf(matchingDateItemInLayer) !== 0 &&
                   layerDates[layerDates.indexOf(matchingDateItemInLayer) - 1]
                     .isStartDate && (
                     <div
@@ -35,9 +34,8 @@ const TimelineItem = memo(
                     />
                   )}
 
-                {layerIndex !== 0 &&
-                  layerDates.indexOf(matchingDateItemInLayer) !==
-                    layerDates.length - 1 &&
+                {layerDates.indexOf(matchingDateItemInLayer) !==
+                  layerDates.length - 1 &&
                   layerDates[layerDates.indexOf(matchingDateItemInLayer) + 1]
                     .isEndDate && (
                     <div
@@ -47,9 +45,8 @@ const TimelineItem = memo(
 
                 <div
                   className={`${
-                    layerIndex !== 0 &&
-                    (matchingDateItemInLayer.isEndDate ||
-                      matchingDateItemInLayer.isStartDate)
+                    matchingDateItemInLayer.isEndDate ||
+                    matchingDateItemInLayer.isStartDate
                       ? dateItemStyling[layerIndex].emphasis
                       : dateItemStyling[layerIndex].class
                   }`}

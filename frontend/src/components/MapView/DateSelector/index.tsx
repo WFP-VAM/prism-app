@@ -385,7 +385,6 @@ const DateSelector = memo(
                     {stateStartDate && (
                       <TimelineItems
                         dateRange={dateRange}
-                        intersectionDates={availableDates}
                         clickDate={clickDate}
                         locale={locale}
                         selectedLayers={selectedLayers}

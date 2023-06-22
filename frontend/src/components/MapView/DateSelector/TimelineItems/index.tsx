@@ -23,7 +23,6 @@ import { datesAreEqualWithoutTime } from '../../../../utils/date-utils';
 const TimelineItems = memo(
   ({
     classes,
-    intersectionDates,
     dateRange,
     clickDate,
     locale,
@@ -47,7 +46,6 @@ const TimelineItems = memo(
       layerDirectionClass?: string;
       emphasis?: string;
     }[] = [
-      { class: classes.intersectionDate, color: 'White' },
       {
         class: classes.layerOneDate,
         color: '#C0E8FF',
@@ -68,11 +66,6 @@ const TimelineItems = memo(
       },
     ];
 
-    const intersectionDateItems: DateItem[] = intersectionDates.map(date => ({
-      displayDate: date,
-      queryDate: date,
-    }));
-
     const getTooltipTitle = useCallback(
       (date: DateRangeType): JSX.Element[] => {
         const tooltipTitleArray: JSX.Element[] = compact(
@@ -81,7 +74,7 @@ const TimelineItems = memo(
               <TooltipItem
                 key={`Tootlip-${date.label}-${date.value}-${selectedLayer.title}`}
                 layerTitle={t(selectedLayer.title)}
-                color={DATE_ITEM_STYLING[layerIndex + 1].color}
+                color={DATE_ITEM_STYLING[layerIndex].color}
               />
             );
           }),
@@ -106,7 +99,7 @@ const TimelineItems = memo(
           .indexOf(timelineStartDate);
       };
 
-      return [intersectionDateItems, ...selectedLayerDateItems].map(
+      return [...selectedLayerDateItems].map(
         (dateItemsForLayer: DateItem[]) => {
           const firstIndex = findLayerFirstDateIndex(dateItemsForLayer);
           if (firstIndex === -1) {
@@ -121,7 +114,7 @@ const TimelineItems = memo(
           );
         },
       );
-    }, [intersectionDateItems, selectedLayerDateItems, timelineStartDate]);
+    }, [selectedLayerDateItems, timelineStartDate]);
 
     return (
       <>
@@ -202,54 +195,48 @@ const styles = () =>
       },
     }),
 
-    intersectionDate: {
-      ...BASE_DATE_ITEM,
-      top: 0,
-      backgroundColor: 'grey',
-    },
-
     layerOneDate: {
       ...BASE_DATE_ITEM,
-      top: 10,
+      top: 0,
       backgroundColor: '#C0E8FF',
     },
     layerTwoDate: {
       ...BASE_DATE_ITEM,
-      top: 20,
+      top: 10,
       backgroundColor: '#FFF176',
     },
     layerThreeDate: {
       ...BASE_DATE_ITEM,
-      top: 30,
+      top: 20,
       backgroundColor: '#F9CEC1',
     },
 
     layerOneEmphasis: {
       ...DEFAULT_ITEM,
-      top: 10,
+      top: 0,
       backgroundColor: '#00A3FF',
     },
     layerTwoEmphasis: {
       ...DEFAULT_ITEM,
-      top: 20,
+      top: 10,
       backgroundColor: '#FEC600',
     },
     layerThreeEmphasis: {
       ...DEFAULT_ITEM,
-      top: 30,
+      top: 20,
       backgroundColor: '#FF9473',
     },
 
     layerOneDirection: {
-      top: 10,
+      top: 0,
       borderLeft: '6px solid #00A3FF',
     },
     layerTwoDirection: {
-      top: 20,
+      top: 10,
       borderLeft: '6px solid #FEC600',
     },
     layerThreeDirection: {
-      top: 30,
+      top: 20,
       borderLeft: '6px solid #FF9473',
     },
 
@@ -265,7 +252,6 @@ const styles = () =>
   });
 
 export interface TimelineItemsProps extends WithStyles<typeof styles> {
-  intersectionDates: number[];
   dateRange: DateRangeType[];
   clickDate: (arg: number) => void;
   locale: string;
