@@ -61,8 +61,8 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   }, [layer.fillPattern, layer.legend]);
 
   const addFillPatternImageInMap = useCallback(
-    async (convertedImage: string, index: number) => {
-      if (!map || !layer.fillPattern) {
+    (index: number, convertedImage?: string) => {
+      if (!map || !layer.fillPattern || !convertedImage) {
         return;
       }
       map.loadImage(
@@ -82,10 +82,8 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
         ) => {
           // Throw an error if something goes wrong.
           if (err) {
-            map.removeImage(`fill-pattern-${layer.id}-legend-${index}`);
             throw err;
           }
-
           // Add the image to the map style.
           map.addImage(`fill-pattern-${layer.id}-legend-${index}`, image);
         },
@@ -95,23 +93,18 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   );
 
   const addFillPatternImagesInMap = useCallback(async () => {
-    if (!map || !layer.fillPattern) {
-      return;
-    }
     const fillPatternsForLayer = await createFillPatternsForLayerLegends();
     fillPatternsForLayer.forEach((base64Image, index) => {
-      addFillPatternImageInMap(base64Image, index);
+      addFillPatternImageInMap(index, base64Image);
     });
-  }, [
-    addFillPatternImageInMap,
-    createFillPatternsForLayerLegends,
-    layer.fillPattern,
-    map,
-  ]);
+  }, [addFillPatternImageInMap, createFillPatternsForLayerLegends]);
 
   useEffect(() => {
+    if (isLayerOnView(map, layer.id)) {
+      return;
+    }
     addFillPatternImagesInMap();
-  }, [addFillPatternImagesInMap]);
+  }, [addFillPatternImagesInMap, layer.id, map]);
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?
