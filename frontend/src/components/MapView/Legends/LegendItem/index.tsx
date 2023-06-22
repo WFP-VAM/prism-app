@@ -165,11 +165,11 @@ const LegendItem = memo(
 const styles = () =>
   createStyles({
     paper: {
-      padding: 6,
+      padding: 8,
       width: 180,
     },
     slider: {
-      padding: '0 0px',
+      padding: '0 0',
     },
   });
 
