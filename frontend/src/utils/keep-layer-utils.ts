@@ -31,7 +31,7 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
   }
 
   // Authorize different admin_level_data layers as long as
-  // they use different (None | right | left).
+  // they use different fillPattern (None | right | left).
   if (
     newLayer.type === 'admin_level_data' &&
     layer.type === 'admin_level_data' &&
