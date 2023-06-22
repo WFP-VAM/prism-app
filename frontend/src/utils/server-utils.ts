@@ -290,6 +290,64 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 };
 
 /**
+ * Wrapper function for utility fetchCoverageLayerDays from Common Library
+ */
+const localFetchCoverageLayerDays = async (
+  url: string,
+  dispatch: Dispatch,
+): Promise<{ [layerId: string]: number[] }> => {
+  try {
+    return await fetchCoverageLayerDays(url, { fetch: fetchWithTimeout });
+  } catch (error) {
+    console.error(error);
+    if (error.name === 'AbortError') {
+      dispatch(
+        addNotification({
+          message: `Request at ${url} timeout`,
+          type: 'warning',
+        }),
+      );
+    }
+    dispatch(
+      addNotification({
+        message: `fetch coverage layer days request failed at ${url}`,
+        type: 'warning',
+      }),
+    );
+    return {};
+  }
+};
+
+/**
+ * Wrapper function for utility getLayerDays from WMS class from Common Library
+ */
+const localWMSGetLayerDates = async (
+  url: string,
+  dispatch: Dispatch,
+): Promise<{ [layerId: string]: number[] }> => {
+  try {
+    return await new WMS(url, { fetch: fetchWithTimeout }).getLayerDays();
+  } catch (error) {
+    console.error(error);
+    if (error.name === 'AbortError') {
+      dispatch(
+        addNotification({
+          message: `Request at ${url} timeout`,
+          type: 'warning',
+        }),
+      );
+    }
+    dispatch(
+      addNotification({
+        message: `WMS layer dates request failed at ${url}`,
+        type: 'warning',
+      }),
+    );
+    return {};
+  }
+};
+
+/**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
@@ -315,8 +373,8 @@ export async function getLayersAvailableDates(
   );
 
   const layerDates = await Promise.all([
-    ...wmsServerUrls.map(url => new WMS(url).getLayerDays()),
-    ...wcsServerUrls.map(url => fetchCoverageLayerDays(url)),
+    ...wmsServerUrls.map(url => localWMSGetLayerDates(url, dispatch)),
+    ...wcsServerUrls.map(url => localFetchCoverageLayerDays(url, dispatch)),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer, dispatch),
     })),
