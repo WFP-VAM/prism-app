@@ -149,8 +149,11 @@ const DateSelector = memo(
     }, [dateStrToUpperCase, locale, stateStartDate]);
 
     const dateIndex = useMemo(() => {
-      return findIndex(range, date =>
-        datesAreEqualWithoutTime(date.value, stateStartDate || 0),
+      return findIndex(
+        range,
+        date =>
+          !!stateStartDate &&
+          datesAreEqualWithoutTime(date.value, stateStartDate),
       );
     }, [range, stateStartDate]);
 
