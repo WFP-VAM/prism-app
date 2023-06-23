@@ -1,18 +1,22 @@
 import React, { memo, useMemo } from 'react';
 import {
-  Page,
   Document,
-  StyleSheet,
-  View,
-  Text,
   Image,
+  Page,
+  StyleSheet,
+  Text,
+  View,
 } from '@react-pdf/renderer';
 import { Theme } from '@material-ui/core';
 import { TableRow as AnalysisTableRow } from '../../../context/analysisResultStateSlice';
 import { getLegendItemLabel } from '../../MapView/utils';
-import { LegendDefinition } from '../../../config/types';
+import {
+  LegendDefinition,
+  ReportType,
+  ReportTypeEnum,
+} from '../../../config/types';
 import { TFunction } from '../../../utils/data-utils';
-import { PDFLegendDefinition, ReportType } from './types';
+import { PDFLegendDefinition } from './types';
 import ReportDocLegend from './ReportDocLegend';
 import ReportDocTable from './ReportDocTable';
 import { Column } from '../../../utils/analysis-utils';
@@ -77,12 +81,11 @@ const makeStyles = (theme: Theme) =>
 const ReportDoc = memo(
   ({
     theme,
-    reportType,
     mapImage,
-    tableName,
     tableRowsNum,
     tableShowTotal,
-    eventName,
+    reportTitle,
+    reportConfig,
     exposureLegendDefinition,
     t,
     tableData,
@@ -93,6 +96,12 @@ const ReportDoc = memo(
     const date = useMemo(() => {
       return new Date().toUTCString();
     }, []);
+
+    const tableName = useMemo(() => {
+      return reportConfig?.tableName
+        ? reportConfig?.tableName
+        : 'Population Exposure';
+    }, [reportConfig]);
 
     const showRowTotal = useMemo(() => {
       return columns.length > 2;
@@ -109,63 +118,40 @@ const ReportDoc = memo(
     }, [tableData, tableRowsNum, tableShowTotal]);
 
     const areasLegendDefinition: PDFLegendDefinition[] = useMemo(() => {
-      return [
-        {
-          value: 'Province',
-          style: [styles.dash, { backgroundColor: '#000000' }],
-        },
-        {
-          value: 'District',
-          style: [styles.dash, { backgroundColor: '#999797' }],
-        },
-        {
-          value: 'Township',
-          style: [styles.dash, { backgroundColor: '#D8D6D6' }],
-        },
-      ];
-    }, [styles.dash]);
+      return reportConfig.areasLegendDefinition.items.map(areaDefinition => {
+        return {
+          value: t(areaDefinition.title),
+          style: [styles.dash, { backgroundColor: areaDefinition.color }],
+        };
+      });
+    }, [reportConfig.areasLegendDefinition.items, styles.dash, t]);
 
-    const stormWindBuffersLegendDefinition: PDFLegendDefinition[] = useMemo(() => {
-      return [
-        {
-          value: 'Uncertainty Cones',
-          style: [
-            styles.borderedBox,
-            { backgroundColor: '#ffffff', borderColor: '#b8b1b1' },
-          ],
+    const typeLegendDefinition: PDFLegendDefinition[] = useMemo(() => {
+      return reportConfig.typeLegendDefinition.items.map(
+        typeLegendDefinitionItem => {
+          return {
+            value: t(typeLegendDefinitionItem.title),
+            style: [
+              reportConfig.type === ReportTypeEnum.TROPICAL_STORMS
+                ? styles.borderedBox
+                : styles.box,
+              {
+                backgroundColor: typeLegendDefinitionItem.color,
+                ...(typeLegendDefinitionItem?.border && {
+                  borderColor: typeLegendDefinitionItem.border,
+                }),
+              },
+            ],
+          };
         },
-        {
-          value: 'Wind Buffer 60 km/h',
-          style: [
-            styles.borderedBox,
-            { backgroundColor: '#fffcf1', borderColor: '#f7e705' },
-          ],
-        },
-        {
-          value: 'Wind Buffer 90 km/h',
-          style: [
-            styles.borderedBox,
-            { backgroundColor: '#ffeed8', borderColor: '#f99408' },
-          ],
-        },
-        {
-          value: 'Wind Buffer 120 km/h',
-          style: [
-            styles.borderedBox,
-            { backgroundColor: '#fcd4ce', borderColor: '#f90c08' },
-          ],
-        },
-      ];
-    }, [styles.borderedBox]);
-
-    const floodsLegendDefinition: PDFLegendDefinition[] = useMemo(() => {
-      return [
-        {
-          value: 'flooded',
-          style: [styles.box, { backgroundColor: '#a50f15' }],
-        },
-      ];
-    }, [styles.box]);
+      );
+    }, [
+      reportConfig.type,
+      reportConfig.typeLegendDefinition.items,
+      styles.borderedBox,
+      styles.box,
+      t,
+    ]);
 
     const populationExposureLegendDefinition: PDFLegendDefinition[] = useMemo(() => {
       return exposureLegendDefinition.map(item => ({
@@ -174,41 +160,77 @@ const ReportDoc = memo(
       }));
     }, [exposureLegendDefinition, styles.box, t]);
 
-    // The rendered report doc legend
-    const renderedReportDocLegend = useMemo(() => {
-      if (reportType === ReportType.Storm) {
-        return (
-          <ReportDocLegend
-            title="Tropical Storms - Wind buffers"
-            definition={stormWindBuffersLegendDefinition}
-            theme={theme}
-          />
-        );
+    const renderedSourcesPrimaryText = useMemo(() => {
+      if (!reportConfig?.sourcesPrimaryText) {
+        return null;
       }
       return (
-        <ReportDocLegend
-          title="Potential Flooding"
-          definition={floodsLegendDefinition}
-          theme={theme}
-        />
+        <Text style={{ fontSize: theme.pdf?.fontSizes.small }}>
+          {reportConfig.sourcesPrimaryText}
+        </Text>
+      );
+    }, [reportConfig, theme.pdf]);
+
+    const renderedSourcesSecondaryText = useMemo(() => {
+      if (!reportConfig?.sourcesSecondaryText) {
+        return null;
+      }
+      return (
+        <Text
+          style={{
+            fontSize: theme.pdf?.fontSizes.extraSmall,
+            color: theme.pdf?.secondaryTextColor,
+          }}
+        >
+          {reportConfig.sourcesSecondaryText}
+        </Text>
+      );
+    }, [reportConfig, theme.pdf]);
+
+    const renderedSourcesView = useMemo(() => {
+      if (
+        !reportConfig?.sourcesPrimaryText &&
+        !reportConfig?.sourcesSecondaryText
+      ) {
+        return null;
+      }
+      return (
+        <View style={styles.section}>
+          {renderedSourcesPrimaryText}
+          {renderedSourcesSecondaryText}
+        </View>
       );
     }, [
-      floodsLegendDefinition,
-      reportType,
-      stormWindBuffersLegendDefinition,
-      theme,
+      renderedSourcesPrimaryText,
+      renderedSourcesSecondaryText,
+      reportConfig,
+      styles.section,
     ]);
+
+    const renderedSubText = useMemo(() => {
+      if (!reportConfig?.subText) {
+        return null;
+      }
+      return <Text style={styles.subText}>{t(reportConfig.subText)}</Text>;
+    }, [reportConfig, styles.subText, t]);
+
+    const renderedSignatureText = useMemo(() => {
+      return reportConfig?.signatureText
+        ? t(reportConfig.signatureText)
+        : t('PRISM automated report');
+    }, [reportConfig, t]);
 
     return (
       <Document>
         <Page size="A4" style={styles.page}>
           <View style={[styles.section]}>
-            <Text style={styles.title}>Event name: {eventName}</Text>
-            <Text style={styles.title}>Publication date: {date}</Text>
-            <Text style={styles.subText}>
-              This is an automated report.
-              <Text> Information should be treated as preliminary</Text>
+            <Text style={styles.title}>
+              {t(reportConfig.titleKey)}: {reportTitle}
             </Text>
+            <Text style={styles.title}>
+              {t(reportConfig.subTitleKey)}: {date}
+            </Text>
+            {renderedSubText}
           </View>
           <View style={styles.section}>
             <Image src={mapImage} style={styles.mapImage} />
@@ -216,33 +238,21 @@ const ReportDoc = memo(
           <View style={[styles.legendsContainer, styles.section]}>
             <ReportDocLegend
               theme={theme}
-              title="Areas"
+              title={t(reportConfig.areasLegendDefinition.title)}
               definition={areasLegendDefinition}
             />
-            {renderedReportDocLegend}
+            <ReportDocLegend
+              title={t(reportConfig.typeLegendDefinition.title)}
+              definition={typeLegendDefinition}
+              theme={theme}
+            />
             <ReportDocLegend
               title="Population Exposure"
               definition={populationExposureLegendDefinition}
               theme={theme}
             />
           </View>
-          <View style={styles.section}>
-            <Text style={{ fontSize: theme.pdf?.fontSizes.small }}>
-              Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB
-            </Text>
-            <Text
-              style={{
-                fontSize: theme.pdf?.fontSizes.extraSmall,
-                color: theme.pdf?.secondaryTextColor,
-              }}
-            >
-              The designations employed and the presentation of material in the
-              map(s) do not imply the expression of any opinion on the part of
-              WFP concerning the legal or constitutional status of any country,
-              territory, city or sea, or concerning the delimitation of its
-              frontiers or boundaries.
-            </Text>
-          </View>
+          {renderedSourcesView}
           <View style={[styles.section]}>
             <ReportDocTable
               theme={theme}
@@ -256,7 +266,7 @@ const ReportDoc = memo(
             />
           </View>
           <Text fixed style={styles.footer}>
-            P R I S M automated report
+            {renderedSignatureText}
           </Text>
         </Page>
       </Document>
@@ -266,12 +276,11 @@ const ReportDoc = memo(
 
 interface ReportDocProps {
   theme: Theme;
-  reportType: ReportType;
   mapImage: string;
-  tableName: string;
   tableRowsNum?: number;
+  reportTitle: string;
+  reportConfig: ReportType;
   tableShowTotal: boolean;
-  eventName: string;
   exposureLegendDefinition: LegendDefinition;
   t: TFunction;
   tableData: AnalysisTableRow[];

@@ -29,6 +29,7 @@ import {
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
   LayerDefinitions,
+  ReportsDefinitions,
 } from '../../config/utils';
 
 import DateSelector from './DateSelector';
@@ -582,6 +583,8 @@ const MapView = memo(({ classes }: MapViewProps) => {
       </div>
     );
   }, [classes.loading, datesLoading]);
+
+  console.log(ReportsDefinitions);
 
   return (
     <Box className={classes.root}>

@@ -1,23 +1,33 @@
-import { camelCase, mapKeys, get } from 'lodash';
-import { rawLayers, rawTables, appConfig } from '.';
+import { camelCase, get, mapKeys } from 'lodash';
+import { appConfig, rawLayers, rawReports, rawTables } from '.';
 import {
+  AdminLevelDataLayerProps,
   BoundaryLayerProps,
   checkRequiredKeys,
-  PointDataLayerProps,
   ImpactLayerProps,
   LayerKey,
   LayersMap,
   LayerType,
-  AdminLevelDataLayerProps,
+  PointDataLayerProps,
+  ReportType,
+  StaticRasterLayerProps,
   StatsApi,
   TableType,
   WMSLayerProps,
-  StaticRasterLayerProps,
 } from './types';
 
 // Typescript does not handle our configuration methods very well
-// So we override the type of TableKey to make it more flexible.
+// So we override the type of TableKey and ReportKey to make it more flexible.
 export type TableKey = string;
+export type ReportKey = string;
+
+/**
+ * Check if a string is an explicitly defined report in reports.json
+ * @param reportsKey the string to check
+ */
+export const isReportsKey = (reportsKey: string): reportsKey is ReportKey => {
+  return reportsKey in rawReports;
+};
 
 /**
  * Check if a string is an explicitly defined table in tables.json
@@ -139,11 +149,9 @@ export const LayerDefinitions: LayersMap = (() => {
 })();
 
 export function getBoundaryLayers(): BoundaryLayerProps[] {
-  const boundaryLayers = Object.values(LayerDefinitions).filter(
+  return Object.values(LayerDefinitions).filter(
     (layer): layer is BoundaryLayerProps => layer.type === 'boundary',
   );
-
-  return boundaryLayers;
 }
 
 export function getDisplayBoundaryLayers(): BoundaryLayerProps[] {
@@ -217,16 +225,37 @@ export const isPrimaryBoundaryLayer = (layer: BoundaryLayerProps) =>
   layer.id === getBoundaryLayerSingleton().id;
 
 export function getWMSLayersWithChart(): WMSLayerProps[] {
-  const chartsLayers = Object.values(LayerDefinitions).filter(
+  return Object.values(LayerDefinitions).filter(
     l => l.type === 'wms' && l.chartData,
   ) as WMSLayerProps[];
-
-  return chartsLayers;
 }
+
+const isValidReportsDefinition = (
+  maybeReport: object,
+): maybeReport is ReportType => {
+  return checkRequiredKeys(ReportType, maybeReport, true);
+};
 
 function isValidTableDefinition(maybeTable: object): maybeTable is TableType {
   return checkRequiredKeys(TableType, maybeTable, true);
 }
+
+const getReportByKey = (key: ReportKey): ReportType => {
+  // Typescript does not handle our configuration methods very well
+  // So we temporarily override the type of rawReports to make it more flexible.
+  const reports = rawReports as Record<string, any>;
+  const rawDefinition = {
+    id: key,
+    ...mapKeys(isReportsKey(key) ? reports[key] : {}, (v, k) => camelCase(k)),
+  };
+
+  if (isValidReportsDefinition(rawDefinition)) {
+    return rawDefinition;
+  }
+  throw new Error(
+    `Found invalid report definition for report '${key}'. Check config/reports.json`,
+  );
+};
 
 function getTableByKey(key: TableKey): TableType {
   // Typescript does not handle our configuration methods very well
@@ -252,3 +281,11 @@ export const TableDefinitions = Object.keys(rawTables).reduce(
   }),
   {},
 ) as { [key in TableKey]: TableType };
+
+export const ReportsDefinitions = Object.keys(rawReports).reduce(
+  (acc, reportsKey) => ({
+    ...acc,
+    [reportsKey]: getReportByKey(reportsKey as ReportKey),
+  }),
+  {},
+) as { [key in ReportKey]: ReportType };

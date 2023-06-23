@@ -11,6 +11,7 @@ import {
   indonesiaConfig,
   indonesiaRawLayers,
   indonesiaRawTables,
+  indonesiaRawReports,
 } from './indonesia';
 import jordan from './jordan';
 import kyrgyzstan from './kyrgyzstan';
@@ -43,6 +44,7 @@ const configMap = {
     appConfig: indonesiaConfig,
     rawLayers: indonesiaRawLayers,
     rawTables: indonesiaRawTables,
+    rawReports: indonesiaRawReports,
     defaultBoundariesFile: 'idn_admin_boundaries.json',
   },
   jordan,
@@ -83,11 +85,13 @@ const {
   defaultBoundariesFile,
   rawLayers,
   rawTables,
+  rawReports,
 }: {
   appConfig: Record<string, any>;
   defaultBoundariesFile: string;
   rawLayers: Record<string, any>;
   rawTables: Record<string, any>;
+  rawReports: Record<string, any>;
 } = configMap[safeCountry];
 
 const translation = get(configMap[safeCountry], 'translation', {});
@@ -124,6 +128,7 @@ export {
   defaultBoundariesPath,
   rawLayers,
   rawTables,
+  rawReports,
   msalInstance,
   msalRequest,
   enableNavigationDropdown,

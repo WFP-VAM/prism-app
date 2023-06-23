@@ -3,7 +3,7 @@ import { every, map } from 'lodash';
 import { FillPaint, LinePaint } from 'mapbox-gl';
 import 'reflect-metadata';
 import { rawLayers } from '.';
-import type { TableKey } from './utils';
+import type { ReportKey, TableKey } from './utils';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
@@ -630,6 +630,49 @@ export interface ChartConfig {
   fill?: boolean;
   displayLegend?: boolean;
   colors?: string[]; // Array of hex codes.
+}
+
+export enum ReportTypeEnum {
+  FLOODS = 'floods',
+  TROPICAL_STORMS = 'tropical storms',
+}
+
+export interface ReportLegendDefinitionItem {
+  title: string;
+  color: string;
+  border?: string;
+}
+
+export interface ReportLegendDefinition {
+  title: string;
+  items: ReportLegendDefinitionItem[];
+}
+
+export class ReportType {
+  id: ReportKey;
+  layerId: LayerKey;
+  type: ReportTypeEnum;
+  titleKey: string;
+  titleValue: string;
+  subTitleKey: string;
+
+  @optional
+  subText?: string;
+
+  areasLegendDefinition: ReportLegendDefinition;
+  typeLegendDefinition: ReportLegendDefinition;
+
+  @optional
+  sourcesPrimaryText?: string;
+
+  @optional
+  sourcesSecondaryText?: string;
+
+  @optional
+  tableName?: string;
+
+  @optional
+  signatureText?: string;
 }
 
 export class TableType {
