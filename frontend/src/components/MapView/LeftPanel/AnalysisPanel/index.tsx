@@ -25,7 +25,6 @@ import {
   Theme,
   CircularProgress,
   Box,
-  Select,
   MenuItem,
 } from '@material-ui/core';
 import {
@@ -71,11 +70,8 @@ import {
   BoundaryLayerProps,
   GeometryType,
   PanelSize,
-  AnalysisType,
-  displayAnalysisType,
   ExposureOperator,
   ExposureValue,
-  WmsExposureValuesAttribute,
 } from '../../../../config/types';
 import {
   getAdminLevelCount,
@@ -186,13 +182,12 @@ const AnalysisPanel = memo(
     const [hazardLayerId, setHazardLayerId] = useState<LayerKey | undefined>(
       hazardLayerIdFromUrl,
     );
-    const [analysisType, setAnalysisType] = useState<AnalysisType>(
-      AnalysisType.ADMIN_LEVEL_STATISTICS,
-    );
+
     const [exposureValue, setExposureValue] = useState<ExposureValue>({
       operator: ExposureOperator.EQUAL,
       value: '',
     });
+
     const [statistic, setStatistic] = useState(
       (selectedStatisticFromUrl as AggregationOperations) ||
         AggregationOperations.Mean,
@@ -235,7 +230,6 @@ const AnalysisPanel = memo(
           d => new Date(d),
         ) || []
       : undefined;
-    const exposureValuesAttribute = WmsExposureValuesAttribute[analysisType];
 
     const BASELINE_URL_LAYER_KEY = 'baselineLayerId';
     const preSelectedBaselineLayer = selectedLayers.find(
@@ -387,9 +381,9 @@ const AnalysisPanel = memo(
     ]);
 
     const onOptionChange = useCallback(
-      <T extends string | AnalysisType>(
-        setterFunc: Dispatch<SetStateAction<T>>,
-      ) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      <T extends string>(setterFunc: Dispatch<SetStateAction<T>>) => (
+        event: React.ChangeEvent<HTMLInputElement>,
+      ) => {
         const value = event.target.value as T;
         setterFunc(value);
         return value;
@@ -419,44 +413,6 @@ const AnalysisPanel = memo(
       },
       [aboveThreshold, belowThreshold, onOptionChange],
     );
-
-    const analysisTypeOptions = useMemo(() => {
-      const options = [AnalysisType.ADMIN_LEVEL_STATISTICS];
-      if (
-        selectedHazardLayer &&
-        selectedHazardLayer[WmsExposureValuesAttribute.AREA_EXPOSED]?.length
-      ) {
-        // eslint-disable-next-line fp/no-mutating-methods
-        options.push(AnalysisType.AREA_EXPOSED);
-      }
-      return options.map(item => (
-        <FormControlLabel
-          key={item}
-          value={item}
-          control={
-            <Radio
-              classes={{
-                root: classes.radioOptions,
-                checked: classes.radioOptionsChecked,
-              }}
-              color="default"
-              size="small"
-            />
-          }
-          label={
-            <Typography className={classes.analysisPanelParamText}>
-              {t(displayAnalysisType[item])}
-            </Typography>
-          }
-        />
-      ));
-    }, [
-      classes.analysisPanelParamText,
-      classes.radioOptions,
-      classes.radioOptionsChecked,
-      selectedHazardLayer,
-      t,
-    ]);
 
     const statisticOptions = useMemo(() => {
       return Object.entries(AggregationOperations)
@@ -661,7 +617,6 @@ const AnalysisPanel = memo(
           baselineLayer: selectedBaselineLayer,
           date: selectedDate,
           statistic,
-          analysisType,
           exposureValue,
           extent,
           threshold: {
@@ -678,35 +633,33 @@ const AnalysisPanel = memo(
           analysisStatistic: statistic,
           analysisThresholdAbove: aboveThreshold || undefined,
           analysisThresholdBelow: belowThreshold || undefined,
-          analysisType,
         });
 
         dispatch(requestAndStoreAnalysis(params));
       }
     }, [
-      preSelectedBaselineLayer,
-      analysisResult,
-      extent,
-      selectedHazardLayer,
-      hazardDataType,
-      removeKeyFromUrl,
-      dispatch,
-      clearAnalysis,
-      startDate,
-      endDate,
+      aboveThreshold,
+      activateUniqueBoundary,
+      adminLevel,
       adminLevelLayer,
       adminLevelLayerData,
-      adminLevel,
-      activateUniqueBoundary,
-      updateAnalysisParams,
-      hazardLayerId,
-      statistic,
-      selectedDate,
+      analysisResult,
       baselineLayerId,
-      analysisType,
-      exposureValue,
-      aboveThreshold,
       belowThreshold,
+      clearAnalysis,
+      dispatch,
+      endDate,
+      extent,
+      hazardDataType,
+      hazardLayerId,
+      preSelectedBaselineLayer,
+      removeKeyFromUrl,
+      selectedDate,
+      selectedHazardLayer,
+      startDate,
+      statistic,
+      updateAnalysisParams,
+      exposureValue,
     ]);
 
     // handler of changing exposure analysis sort order
@@ -888,96 +841,72 @@ const AnalysisPanel = memo(
           </div>
           <div className={classes.analysisPanelParamContainer}>
             <Typography className={classes.colorBlack} variant="body2">
-              {t('Type of analysis')}
+              {t('Statistic')}
             </Typography>
             <FormControl component="div">
               <RadioGroup
-                name="analysis-type"
-                value={analysisType}
-                onChange={onOptionChange(setAnalysisType)}
+                name="statistics"
+                value={statistic}
+                onChange={onOptionChange(setStatistic)}
               >
-                {analysisTypeOptions}
+                {statisticOptions}
               </RadioGroup>
             </FormControl>
-          </div>
-          {selectedHazardLayer &&
-            analysisType !== AnalysisType.ADMIN_LEVEL_STATISTICS &&
-            exposureValuesAttribute &&
-            selectedHazardLayer[exposureValuesAttribute]?.length && (
-              <>
-                <div className={classes.analysisPanelParamContainer}>
-                  <Typography className={classes.colorBlack} variant="body2">
-                    {t('Exposure value')}
-                  </Typography>
-                  <FormControl
-                    component="div"
-                    className={classes.exposureValueOptionsInputContainer}
+            {statistic === AggregationOperations['Exposure value'] && (
+              <div className={classes.exposureValueContainer}>
+                <FormControl
+                  component="div"
+                  className={classes.exposureValueOptionsInputContainer}
+                >
+                  <TextField
+                    select
+                    variant="outlined"
+                    label={t('Operator')}
+                    className={classes.exposureValueOptionsSelect}
+                    name="exposure-value-operator"
+                    value={exposureValue.operator}
+                    onChange={e =>
+                      setExposureValue({
+                        ...exposureValue,
+                        operator: e.target.value as ExposureOperator,
+                      })
+                    }
                   >
-                    <Typography variant="body1" className={classes.colorBlack}>
-                      {t('Operator')}
-                    </Typography>
-                    <Select
-                      className={classes.exposureValueOptionsSelect}
-                      name="exposure-value-operator"
-                      value={exposureValue.operator}
-                      onChange={e =>
-                        setExposureValue({
-                          ...exposureValue,
-                          operator: e.target.value as ExposureOperator,
-                        })
-                      }
-                    >
-                      {Object.values(ExposureOperator).map(item => (
-                        <MenuItem key={item} value={item}>
-                          {item}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <FormControl
-                    component="div"
-                    className={classes.exposureValueOptionsInputContainer}
+                    {Object.values(ExposureOperator).map(item => (
+                      <MenuItem key={item} value={item}>
+                        {item}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </FormControl>
+                <FormControl
+                  component="div"
+                  className={classes.exposureValueOptionsInputContainer}
+                >
+                  <TextField
+                    select
+                    variant="outlined"
+                    label={t('Value')}
+                    className={classes.exposureValueOptionsSelect}
+                    name="exposure-value"
+                    value={exposureValue.value}
+                    onChange={e =>
+                      setExposureValue({
+                        ...exposureValue,
+                        value: e.target.value as ExposureOperator,
+                      })
+                    }
                   >
-                    <Typography variant="body1" className={classes.colorBlack}>
-                      {t('Value')}
-                    </Typography>
-                    <Select
-                      className={classes.exposureValueOptionsSelect}
-                      name="exposure-value"
-                      value={exposureValue.value}
-                      onChange={e =>
-                        setExposureValue({
-                          ...exposureValue,
-                          value: e.target.value as ExposureOperator,
-                        })
-                      }
-                    >
-                      {selectedHazardLayer[exposureValuesAttribute]?.map(
-                        item => (
-                          <MenuItem key={item.value} value={item.value}>
-                            {item.label}
-                          </MenuItem>
-                        ),
-                      )}
-                    </Select>
-                  </FormControl>
-                </div>
-                <div className={classes.analysisPanelParamContainer}>
-                  <Typography className={classes.colorBlack} variant="body2">
-                    {t('Statistic')}
-                  </Typography>
-                  <FormControl component="div">
-                    <RadioGroup
-                      name="statistics"
-                      value={statistic}
-                      onChange={onOptionChange(setStatistic)}
-                    >
-                      {statisticOptions}
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-              </>
+                    {selectedHazardLayer?.legend?.map(item => (
+                      <MenuItem key={item.value} value={item.value}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </FormControl>
+              </div>
             )}
+          </div>
           <div className={classes.analysisPanelParamContainer}>
             <Typography className={classes.colorBlack} variant="body2">
               {t('Threshold')}
@@ -1044,6 +973,7 @@ const AnalysisPanel = memo(
       classes.analysisPanelParamContainer,
       classes.analysisPanelParamText,
       classes.colorBlack,
+      classes.exposureValueContainer,
       classes.exposureValueOptionsInputContainer,
       classes.exposureValueOptionsSelect,
       classes.numberField,
@@ -1051,14 +981,11 @@ const AnalysisPanel = memo(
       classes.calendarPopper,
       baselineLayerId,
       t,
-      analysisType,
-      onOptionChange,
-      analysisTypeOptions,
-      selectedHazardLayer,
-      exposureValuesAttribute,
-      exposureValue,
       statistic,
+      onOptionChange,
       statisticOptions,
+      exposureValue,
+      selectedHazardLayer,
       thresholdError,
       belowThreshold,
       onThresholdOptionChange,
@@ -1179,7 +1106,9 @@ const AnalysisPanel = memo(
               !hazardLayerId || // or hazard layer hasn't been selected
               (hazardDataType === GeometryType.Polygon
                 ? !startDate || !endDate || !adminLevelLayerData
-                : !selectedDate || !baselineLayerId) // or date hasn't been selected // or baseline layer hasn't been selected
+                : !selectedDate || !baselineLayerId) || // or date hasn't been selected // or baseline layer hasn't been selected
+              (statistic === AggregationOperations['Exposure value'] &&
+                (!exposureValue.operator || !exposureValue.value))
             }
           >
             <Typography variant="body2">{t('Run Analysis')}</Typography>
@@ -1194,12 +1123,15 @@ const AnalysisPanel = memo(
       classes.analysisButtonContainer,
       classes.bottomButton,
       endDate,
+      exposureValue.operator,
+      exposureValue.value,
       hazardDataType,
       hazardLayerId,
       isAnalysisLoading,
       runAnalyser,
       selectedDate,
       startDate,
+      statistic,
       t,
       thresholdError,
     ]);
@@ -1297,16 +1229,28 @@ const styles = (theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-    exposureValueOptionsInputContainer: {
+    exposureValueContainer: {
       display: 'flex',
       flexDirection: 'row',
-      alignItems: 'center',
       gap: '16px',
+    },
+    exposureValueOptionsInputContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
       margin: '8px 0',
     },
     exposureValueOptionsSelect: {
-      flexGrow: 1,
-      color: 'black',
+      width: '100%',
+      '& .MuiInputBase-root': {
+        color: 'black',
+      },
+      '& .MuiFormLabel-root': {
+        color: 'black',
+        '&:hover fieldset': {
+          borderColor: '#333333',
+        },
+      },
     },
     exposureAnalysisLoadingTextContainer: {
       display: 'flex',

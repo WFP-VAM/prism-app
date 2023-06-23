@@ -1,4 +1,4 @@
-import { AnalysisType, LayerKey } from '../config/types';
+import { LayerKey } from '../config/types';
 
 export type AnalysisParams = {
   analysisBaselineLayerId?: LayerKey;
@@ -10,5 +10,4 @@ export type AnalysisParams = {
   analysisStartDate?: string;
   analysisEndDate?: string;
   analysisAdminLevel?: string;
-  analysisType?: AnalysisType;
 };

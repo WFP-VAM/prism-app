@@ -19,7 +19,6 @@ import {
   AdminLevelType,
   AggregationOperations,
   AllAggregationOperations,
-  AnalysisType,
   AsyncReturnType,
   BoundaryLayerProps,
   ExposedPopulationDefinition,
@@ -325,7 +324,6 @@ export type AnalysisDispatchParams = {
   threshold: ThresholdDefinition;
   date: ReturnType<Date['getTime']>; // just a hint to developers that we give a date number here, not just any number
   statistic: AggregationOperations; // we might have to deviate from this if analysis accepts more than what this enum provides
-  analysisType: AnalysisType;
   exposureValue: ExposureValue;
 };
 
@@ -356,6 +354,7 @@ const createAPIRequestParams = (
   params?: WfsRequestParams | AdminLevelDataLayerProps | BoundaryLayerProps,
   maskParams?: any,
   geojsonOut?: boolean,
+  exposureValue?: ExposureValue,
 ): ApiData => {
   // Get default values for groupBy and admin boundary file path at the proper adminLevel
   const {
@@ -394,6 +393,10 @@ const createAPIRequestParams = (
     ...maskParams,
     // TODO - remove the need for the geojson_out parameters. See TODO in zonal_stats.py.
     geojson_out: Boolean(geojsonOut),
+    intersect_comparison:
+      exposureValue?.operator && exposureValue.value
+        ? `${exposureValue?.operator}${exposureValue?.value}`
+        : undefined,
   };
 
   return apiRequest;
@@ -573,16 +576,6 @@ export const requestAndStoreExposedPopulation = createAsyncThunk<
   },
 );
 
-const getAnalysisUrl = (
-  analysisType: AnalysisType,
-  exposureValue: ExposureValue,
-): string => {
-  if (!(analysisType === AnalysisType.THRESHOLD_EXCEEDANCE)) {
-    return ANALYSIS_API_URL;
-  }
-  return `${ANALYSIS_API_URL}?intersect_comparison${exposureValue.operator}${exposureValue.value}`;
-};
-
 export const requestAndStoreAnalysis = createAsyncThunk<
   AnalysisResult,
   AnalysisDispatchParams,
@@ -595,7 +588,6 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     extent,
     statistic,
     threshold,
-    analysisType,
     exposureValue,
   } = params;
   const baselineData = layerDataSelector(baselineLayer.id)(
@@ -617,14 +609,13 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     extent,
     date,
     baselineLayer,
+    undefined,
+    undefined,
+    exposureValue,
   );
 
   const aggregateData = scaleAndFilterAggregateData(
-    await fetchApiData(
-      getAnalysisUrl(analysisType, exposureValue),
-      apiRequest,
-      api.dispatch,
-    ),
+    await fetchApiData(ANALYSIS_API_URL, apiRequest, api.dispatch),
     hazardLayer,
     statistic,
     threshold,

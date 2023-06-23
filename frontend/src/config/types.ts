@@ -382,24 +382,6 @@ export type Validity = {
   mode: DatesPropagation; // Propagation mode for dates.
 };
 
-export enum AnalysisType {
-  ADMIN_LEVEL_STATISTICS = 'ADMIN_LEVEL_STATISTICS',
-  AREA_EXPOSED = 'AREA_EXPOSED',
-  THRESHOLD_EXCEEDANCE = 'THRESHOLD_EXCEEDANCE',
-}
-
-export const displayAnalysisType: Record<AnalysisType, string> = {
-  [AnalysisType.ADMIN_LEVEL_STATISTICS]: 'Generate admin level statistics',
-  [AnalysisType.AREA_EXPOSED]: 'Calculate area exposed',
-  [AnalysisType.THRESHOLD_EXCEEDANCE]: 'Threshold exceedance',
-};
-
-export enum WmsExposureValuesAttribute {
-  ADMIN_LEVEL_STATISTICS = '',
-  AREA_EXPOSED = 'areaExposedValues',
-  THRESHOLD_EXCEEDANCE = 'thresholdValues',
-}
-
 export class WMSLayerProps extends CommonLayerProps {
   type: 'wms';
   baseUrl: string;
@@ -506,6 +488,7 @@ export enum AggregationOperations {
   Median = 'median',
   Min = 'min',
   Sum = 'sum',
+  'Exposure value' = 'intersect_percentage',
 }
 
 export enum ExposureOperator {
