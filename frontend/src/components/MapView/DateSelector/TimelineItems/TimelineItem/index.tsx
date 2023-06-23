@@ -31,12 +31,18 @@ const TimelineItem = memo(
       );
     };
 
+    const isStartOrEndDate = (date: DateItem): boolean => {
+      return !!date.isEndDate || !!date.isStartDate;
+    };
+
     return (
       <>
         {concatenatedLayers.map(
           (layerDates: DateItem[], layerIndex: number) => {
             // TODO: fix not really efficient algorithm
-            const matchingDateItemInLayer = layerDates.find(f =>
+            const matchingDateItemInLayer:
+              | DateItem
+              | undefined = layerDates.find(f =>
               datesAreEqualWithoutTime(f.displayDate, currentDate.value),
             );
 
@@ -46,6 +52,7 @@ const TimelineItem = memo(
 
             return (
               <React.Fragment key={Math.random()}>
+                {/* Add a directional arrow forward if previous item is a start date */}
                 {hasNextItemDirectionForward(
                   matchingDateItemInLayer,
                   layerDates,
@@ -55,6 +62,7 @@ const TimelineItem = memo(
                   />
                 )}
 
+                {/* Add a directional arrow backward if next item is an end date */}
                 {hasNextItemDirectionBackward(
                   matchingDateItemInLayer,
                   layerDates,
@@ -64,10 +72,10 @@ const TimelineItem = memo(
                   />
                 )}
 
+                {/* Add a bold square if start or end date (emphasis), normal otherwise */}
                 <div
                   className={`${
-                    matchingDateItemInLayer.isEndDate ||
-                    matchingDateItemInLayer.isStartDate
+                    isStartOrEndDate(matchingDateItemInLayer)
                       ? dateItemStyling[layerIndex].emphasis
                       : dateItemStyling[layerIndex].class
                   }`}

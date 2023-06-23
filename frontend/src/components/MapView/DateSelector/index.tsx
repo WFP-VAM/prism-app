@@ -149,16 +149,10 @@ const DateSelector = memo(
     }, [dateStrToUpperCase, locale, stateStartDate]);
 
     const dateIndex = useMemo(() => {
-      return findIndex(range, date => {
-        return (
-          date.label.toLocaleLowerCase() ===
-          moment(stateStartDate)
-            .locale(locale)
-            .format(MONTH_FIRST_DATE_FORMAT)
-            .toLocaleLowerCase()
-        );
-      });
-    }, [locale, range, stateStartDate]);
+      return findIndex(range, date =>
+        datesAreEqualWithoutTime(date.value, stateStartDate || 0),
+      );
+    }, [range, stateStartDate]);
 
     // Create timeline range and set pointer position
     useEffect(() => {

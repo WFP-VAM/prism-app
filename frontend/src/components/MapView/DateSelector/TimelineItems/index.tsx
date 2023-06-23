@@ -29,14 +29,6 @@ const TimelineItems = memo(
   }: TimelineItemsProps) => {
     const { t } = useSafeTranslation();
 
-    const selectedLayerDateItems: DateItem[][] = useMemo(
-      () =>
-        selectedLayers.map(layer => {
-          return layer.dateItems;
-        }),
-      [selectedLayers],
-    );
-
     // Hard coded styling for date items (first, second, and third layers)
     const DATE_ITEM_STYLING: {
       class: string;
@@ -88,7 +80,8 @@ const TimelineItems = memo(
       dateRange[0].value,
     ).toDateString();
 
-    const concatenatedLayers: DateItem[][] = useMemo(() => {
+    // We truncate layer by removing date that will not be drawn to the Timeline
+    const truncatedLayers: DateItem[][] = useMemo(() => {
       // returns the index of the fist date in layer that match the first Timeline date
       const findLayerFirstDateIndex = (items: DateItem[]): number => {
         return items
@@ -96,7 +89,8 @@ const TimelineItems = memo(
           .indexOf(timelineStartDate);
       };
 
-      return [...selectedLayerDateItems].map(
+      // For each selectedLayer truncate DateItem array
+      return [...selectedLayers.map(layer => layer.dateItems)].map(
         (dateItemsForLayer: DateItem[]) => {
           const firstIndex = findLayerFirstDateIndex(dateItemsForLayer);
           if (firstIndex === -1) {
@@ -111,8 +105,9 @@ const TimelineItems = memo(
           );
         },
       );
-    }, [selectedLayerDateItems, timelineStartDate]);
+    }, [selectedLayers, timelineStartDate]);
 
+    // Draw a colomn for each date of the Timeline that start at the begining of the year
     return (
       <>
         {dateRange.map((date, index) => {
@@ -135,7 +130,7 @@ const TimelineItems = memo(
               >
                 <TimelineLabel locale={locale} date={date} />
                 <TimelineItem
-                  concatenatedLayers={concatenatedLayers}
+                  concatenatedLayers={truncatedLayers}
                   currentDate={date}
                   dateItemStyling={DATE_ITEM_STYLING}
                 />
