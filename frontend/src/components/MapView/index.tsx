@@ -62,6 +62,7 @@ import AlertForm from './AlertForm';
 import GoToBoundaryDropdown from '../Common/BoundaryDropdown/goto';
 import BoundaryInfoBox from './BoundaryInfoBox';
 import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
+import DataViewer from '../DataViewer';
 import LeftPanel from './LeftPanel';
 import FoldButton from './FoldButton';
 import MapComponent from './Map';
@@ -527,6 +528,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
             </Grid>
             {renderedGridItemAlertForm}
           </Grid>
+          <DataViewer />
         </Grid>
         <Grid item>
           <Grid container spacing={1}>
