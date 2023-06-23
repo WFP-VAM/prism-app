@@ -449,7 +449,6 @@ const styles = (theme: Theme) =>
       backgroundColor: 'white',
       color: '#101010',
       borderRadius: theme.shape.borderRadius,
-      padding: theme.spacing(2),
       width: '90%',
       margin: 'auto',
       textAlign: 'center',
@@ -458,6 +457,8 @@ const styles = (theme: Theme) =>
     datePickerInput: {
       backgroundColor: 'white',
       color: '#101010',
+      paddingBottom: theme.spacing(2),
+      paddingTop: theme.spacing(2),
     },
 
     datePickerGrid: {

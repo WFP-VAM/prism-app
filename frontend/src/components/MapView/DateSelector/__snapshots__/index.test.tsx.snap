@@ -62,7 +62,7 @@ exports[`renders as expected 1`] = `
           <div
             class="memo-timeline-9 react-draggable"
             id="dateTimelineSelector"
-            style="transform: translate(-1820px,0px);"
+            style="transform: translate(0px,0px);"
           >
             <div
               class="MuiGrid-root memo-dateLabelContainer-8 MuiGrid-container"
@@ -70,7 +70,7 @@ exports[`renders as expected 1`] = `
             <div
               class="memo-pointer-10 react-draggable"
               id="datePointerSelector"
-              style="transform: translate(1820px,0px);"
+              style="transform: translate(-10px,0px);"
             >
               <svg>
                 tick.svg
