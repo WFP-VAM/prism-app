@@ -425,7 +425,7 @@ const styles = (theme: Theme) =>
   createStyles({
     container: {
       position: 'absolute',
-      bottom: '8%',
+      bottom: '40px',
       width: '100%',
       zIndex: 5,
     },

@@ -96,7 +96,7 @@ const styles = () =>
       display: 'block',
       position: 'absolute',
       borderTop: '5px solid transparent',
-      borderBottom: '6px solid transparent',
+      borderBottom: '5px solid transparent',
       height: '0px',
       zIndex: 1,
       left: 0,
