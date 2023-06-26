@@ -99,10 +99,7 @@ const TimelineItems = memo(
 
           // truncate the date item array at index matching timeline first date
           // eslint-disable-next-line fp/no-mutating-methods
-          return dateItemsForLayer.slice(
-            firstIndex,
-            dateItemsForLayer.length - 1,
-          );
+          return dateItemsForLayer.slice(firstIndex, dateItemsForLayer.length);
         },
       );
     }, [selectedLayers, timelineStartDate]);
