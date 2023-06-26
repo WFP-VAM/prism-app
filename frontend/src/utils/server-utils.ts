@@ -9,6 +9,7 @@ import type {
   DateItem,
   PointDataLayerProps,
   RequestFeatureInfo,
+  Validity,
   ValidityLayer,
 } from '../config/types';
 import {
@@ -65,31 +66,27 @@ export type DateCompatibleLayer =
   | ImpactLayerProps
   | PointDataLayerProps
   | StaticRasterLayerProps;
+
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
   // eslint-disable-next-line consistent-return
-): number[] => {
-  // eslint-disable-next-line default-case
-  const datesArray = () => {
-    switch (layer.type) {
-      case 'wms':
-        return serverAvailableDates[layer.serverLayerName];
-      case 'impact':
-        return serverAvailableDates[
-          (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
-        ];
-      case 'point_data':
-      case 'admin_level_data':
-        return serverAvailableDates[layer.id];
-      case 'static_raster':
-        return serverAvailableDates[layer.id];
-      default:
-        return [];
-    }
-  };
-
-  return datesArray()?.map(d => d.displayDate) ?? [];
+): DateItem[] => {
+  switch (layer.type) {
+    case 'wms':
+      return serverAvailableDates[layer.serverLayerName];
+    case 'impact':
+      return serverAvailableDates[
+        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
+      ];
+    case 'point_data':
+    case 'admin_level_data':
+      return serverAvailableDates[layer.id];
+    case 'static_raster':
+      return serverAvailableDates[layer.id];
+    default:
+      return [];
+  }
 };
 
 type PointDataDates = Array<{
@@ -133,7 +130,7 @@ const loadPointLayerDataFromURL = async (
       console.error(error);
       dispatch(
         addNotification({
-          message: error.message,
+          message: (error as Error).message,
           type: 'warning',
         }),
       );
@@ -210,11 +207,24 @@ const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
  *
  * @return DateItem
  */
-const createDefaultDateItem = (date: number): DateItem => {
+const createDefaultDateItem = (date: number, validity?: Validity): DateItem => {
   const dateWithTz = moment(date).set({ hour: 12, minute: 0 }).valueOf();
-  return {
+  const dateItemToReturn = {
     displayDate: dateWithTz,
     queryDate: dateWithTz,
+  };
+  if (validity) {
+    const { mode } = validity;
+    return {
+      ...dateItemToReturn,
+      isStartDate:
+        mode === DatesPropagation.FORWARD || mode === DatesPropagation.BOTH,
+      isEndDate:
+        mode === DatesPropagation.BACKWARD || mode === DatesPropagation.BOTH,
+    };
+  }
+  return {
+    ...dateItemToReturn,
   };
 };
 
@@ -235,7 +245,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 
   // Generate first DateItem[] from dates array.
   const dateItemsDefault: DateItem[] = momentDates.map(momentDate =>
-    createDefaultDateItem(momentDate.valueOf()),
+    createDefaultDateItem(momentDate.valueOf(), validity),
   );
 
   const dateItemsWithValidity = momentDates.reduce(

@@ -13,7 +13,7 @@ exports[`renders as expected 1`] = `
       class="MuiGrid-root memo-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
     >
       <div
-        class="memo-dayItem-4"
+        class="TimelineLabel-dayItem-14"
       />
     </div>
   </mock-tooltip>
