@@ -1,7 +1,7 @@
-import 'reflect-metadata';
-import { FillPaint, LinePaint } from 'mapbox-gl';
-import { map, every } from 'lodash';
 import { GeoJSON } from 'geojson';
+import { every, map } from 'lodash';
+import { FillPaint, LinePaint } from 'mapbox-gl';
+import 'reflect-metadata';
 import { rawLayers } from '.';
 import type { TableKey } from './utils';
 
@@ -599,6 +599,8 @@ export interface MenuItemType {
 export type DateItem = {
   displayDate: number; // Date that will be rendered in the calendar.
   queryDate: number; // Date that will be used in the WMS request.
+  isStartDate?: boolean;
+  isEndDate?: boolean;
 };
 
 export type AvailableDates = {
@@ -646,6 +648,7 @@ export type DateRangeType = {
   label: string;
   month: string;
   isFirstDay: boolean;
+  date: string;
 };
 
 export interface FeatureInfoType {

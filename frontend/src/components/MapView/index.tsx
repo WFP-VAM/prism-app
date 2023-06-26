@@ -128,7 +128,15 @@ const MapView = memo(({ classes }: MapViewProps) => {
         }
         return dateSupportLayerTypes.includes(layer.type);
       })
-      .filter(layer => isMainLayer(layer.id, selectedLayers));
+      .filter(layer => isMainLayer(layer.id, selectedLayers))
+      .map(layer => {
+        return {
+          ...layer,
+          dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
+            .filter(value => value) // null check
+            .flat(),
+        };
+      });
   }, [selectedLayers, serverAvailableDates]);
 
   // TODO - could we simply use the country boundary extent here instead of the calculation?
@@ -226,7 +234,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
         .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
         .filter(value => value) // null check
         .flat()
-        .map(value => moment(value).format(DEFAULT_DATE_FORMAT)),
+        .map(value => moment(value.displayDate).format(DEFAULT_DATE_FORMAT)),
     );
   }, [selectedLayersWithDateSupport, serverAvailableDates]);
 
@@ -284,7 +292,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       const layerToKeepDates = getPossibleDatesForLayer(
         layerToKeep as DateCompatibleLayer,
         serverAvailableDates,
-      );
+      ).map(dateItem => dateItem.displayDate);
 
       const closestDate = findClosestDate(selectedDate, layerToKeepDates);
 
@@ -303,7 +311,9 @@ const MapView = memo(({ classes }: MapViewProps) => {
     (layer: DateCompatibleLayer, momentSelectedDate: moment.Moment) => {
       // we convert to date strings, so hh:ss is irrelevant
       return getPossibleDatesForLayer(layer, serverAvailableDates)
-        .map(date => moment(date).format(DEFAULT_DATE_FORMAT))
+        .map(dateItem =>
+          moment(dateItem.displayDate).format(DEFAULT_DATE_FORMAT),
+        )
         .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT));
     },
     [serverAvailableDates],
