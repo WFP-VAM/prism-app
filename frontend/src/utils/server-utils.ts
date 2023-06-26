@@ -257,7 +257,9 @@ async function generateIntermediateDateItemFromDataFile(
 
       const contentType = res.headers.get('content-type');
       if (!contentType || contentType.indexOf('application/json') === -1) {
-        console.error(`Wrong date / path configuration configured : ${path}`);
+        console.error(
+          `Wrong date / path configuration : ${path}, does not exist`,
+        );
         return {};
       }
       if (!res.ok) {
