@@ -23,16 +23,18 @@ const TimelineLabel = ({ classes, locale, date }: TimelineLabelProps) => {
 const styles = () =>
   createStyles({
     dateItemLabel: {
+      color: '#101010',
       position: 'absolute',
-      top: 22,
+      top: 33,
       textAlign: 'left',
-      paddingLeft: 5,
+      paddingLeft: 2,
       minWidth: 400,
+      fontWeight: 'bold',
+      zIndex: 1,
     },
 
     dayItem: {
       height: 10,
-      borderLeft: '1px solid white',
     },
   });
 

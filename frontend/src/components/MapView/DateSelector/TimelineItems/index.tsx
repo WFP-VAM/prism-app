@@ -22,7 +22,6 @@ import TooltipItem from './TooltipItem';
 const TimelineItems = memo(
   ({
     classes,
-    intersectionDates,
     dateRange,
     clickDate,
     locale,
@@ -30,46 +29,32 @@ const TimelineItems = memo(
   }: TimelineItemsProps) => {
     const { t } = useSafeTranslation();
 
-    const selectedLayerDateItems: DateItem[][] = useMemo(
-      () =>
-        selectedLayers.map(layer => {
-          return layer.dateItems;
-        }),
-      [selectedLayers],
-    );
-
     // Hard coded styling for date items (first, second, and third layers)
     const DATE_ITEM_STYLING: {
       class: string;
       color: string;
       layerDirectionClass?: string;
+      emphasis?: string;
     }[] = [
-      { class: classes.intersectionDate, color: 'White' },
       {
         class: classes.layerOneDate,
-        color: 'Blue',
+        color: '#C0E8FF',
         layerDirectionClass: classes.layerOneDirection,
+        emphasis: classes.layerOneEmphasis,
       },
       {
         class: classes.layerTwoDate,
-        color: 'Yellow',
+        color: '#FFF176',
         layerDirectionClass: classes.layerTwoDirection,
+        emphasis: classes.layerTwoEmphasis,
       },
       {
         class: classes.layerThreeDate,
-        color: 'Red',
+        color: '#F9CEC1',
         layerDirectionClass: classes.layerThreeDirection,
+        emphasis: classes.layerThreeEmphasis,
       },
-      // For now, super-impose additional layers in case we have too many.
-      // TODO - handle this more cleanly.
-      { class: classes.layerThreeDate, color: 'Blue' },
-      { class: classes.layerThreeDate, color: 'Yellow' },
     ];
-
-    const intersectionDateItems: DateItem[] = intersectionDates.map(date => ({
-      displayDate: date,
-      queryDate: date,
-    }));
 
     const getTooltipTitle = useCallback(
       (date: DateRangeType): JSX.Element[] => {
@@ -79,14 +64,13 @@ const TimelineItems = memo(
               <TooltipItem
                 key={`Tootlip-${date.label}-${date.value}-${selectedLayer.title}`}
                 layerTitle={t(selectedLayer.title)}
-                color={DATE_ITEM_STYLING[layerIndex + 1].color}
+                color={DATE_ITEM_STYLING[layerIndex].color}
               />
             );
           }),
         );
         // eslint-disable-next-line fp/no-mutating-methods
         tooltipTitleArray.unshift(<div key={date.label}>{date.label}</div>);
-
         return tooltipTitleArray;
       },
       [DATE_ITEM_STYLING, selectedLayers, t],
@@ -96,7 +80,8 @@ const TimelineItems = memo(
       dateRange[0].value,
     ).toDateString();
 
-    const concatenatedLayers: DateItem[][] = useMemo(() => {
+    // We truncate layer by removing date that will not be drawn to the Timeline
+    const truncatedLayers: DateItem[][] = useMemo(() => {
       // returns the index of the fist date in layer that match the first Timeline date
       const findLayerFirstDateIndex = (items: DateItem[]): number => {
         return items
@@ -104,7 +89,8 @@ const TimelineItems = memo(
           .indexOf(timelineStartDate);
       };
 
-      return [intersectionDateItems, ...selectedLayerDateItems].map(
+      // For each selectedLayer truncate DateItem array
+      return [...selectedLayers.map(layer => layer.dateItems)].map(
         (dateItemsForLayer: DateItem[]) => {
           const firstIndex = findLayerFirstDateIndex(dateItemsForLayer);
           if (firstIndex === -1) {
@@ -119,58 +105,65 @@ const TimelineItems = memo(
           );
         },
       );
-    }, [intersectionDateItems, selectedLayerDateItems, timelineStartDate]);
+    }, [selectedLayers, timelineStartDate]);
 
+    // Draw a column for each date of the Timeline that start at the begining of the year
     return (
       <>
-        {dateRange.map((date, index) => (
-          <Tooltip
-            key={`Root-${date.label}-${date.value}`}
-            title={<>{getTooltipTitle(date)}</>}
-            TransitionComponent={Fade}
-            TransitionProps={{ timeout: 0 }}
-            placement="top"
-            arrow
-          >
-            <Grid
-              item
-              xs
-              className={
-                date.isFirstDay ? classes.dateItemFull : classes.dateItem
-              }
+        {dateRange.map((date, index) => {
+          return (
+            <Tooltip
+              key={`Root-${date.label}-${date.value}`}
+              title={<>{getTooltipTitle(date)}</>}
+              TransitionComponent={Fade}
+              TransitionProps={{ timeout: 0 }}
+              placement="top"
+              arrow
             >
-              <TimelineLabel locale={locale} date={date} />
-              <TimelineItem
-                concatenatedLayers={concatenatedLayers}
-                currentDate={date}
-                index={index}
-                clickDate={clickDate}
-                dateItemStyling={DATE_ITEM_STYLING}
-              />
-            </Grid>
-          </Tooltip>
-        ))}
+              <Grid
+                item
+                xs
+                className={`${
+                  date.isFirstDay ? classes.dateItemFull : classes.dateItem
+                }`}
+                onClick={() => clickDate(index)}
+              >
+                <TimelineLabel locale={locale} date={date} />
+                <TimelineItem
+                  concatenatedLayers={truncatedLayers}
+                  currentDate={date}
+                  dateItemStyling={DATE_ITEM_STYLING}
+                />
+              </Grid>
+            </Tooltip>
+          );
+        })}
       </>
     );
   },
 );
 
 const DATE_ITEM_STYLES: CreateCSSProperties = {
-  borderTop: '1px solid white',
-  color: 'white',
+  color: '#101010',
+  borderLeft: '1px solid white',
   position: 'relative',
   top: -5,
   cursor: 'pointer',
   minWidth: TIMELINE_ITEM_WIDTH,
   '&:hover': {
-    borderLeft: '1px solid #5ccfff',
+    borderLeft: '1px solid #101010',
   },
 };
 
-const BASE_DATE_ITEM: CreateCSSProperties = {
+const DEFAULT_ITEM: CreateCSSProperties = {
   position: 'absolute',
-  height: 5,
+  height: 10,
   width: TIMELINE_ITEM_WIDTH,
+  pointerEvents: 'none',
+};
+
+const BASE_DATE_ITEM: CreateCSSProperties = {
+  ...DEFAULT_ITEM,
   opacity: 0.6,
 };
 
@@ -178,7 +171,7 @@ const styles = () =>
   createStyles({
     dateItemFull: {
       ...DATE_ITEM_STYLES,
-      borderLeft: '1px solid white',
+      borderLeft: '1px solid #101010',
       height: 36,
     },
 
@@ -190,43 +183,63 @@ const styles = () =>
       },
     }),
 
-    intersectionDate: {
-      ...BASE_DATE_ITEM,
-      top: 0,
-      backgroundColor: 'white',
-    },
     layerOneDate: {
       ...BASE_DATE_ITEM,
-      top: 5,
-      backgroundColor: 'blue',
+      top: 0,
+      backgroundColor: '#C0E8FF',
     },
     layerTwoDate: {
       ...BASE_DATE_ITEM,
       top: 10,
-      backgroundColor: 'yellow',
+      backgroundColor: '#FFF176',
     },
     layerThreeDate: {
       ...BASE_DATE_ITEM,
-      top: 15,
-      backgroundColor: 'red',
+      top: 20,
+      backgroundColor: '#F9CEC1',
+    },
+
+    layerOneEmphasis: {
+      ...DEFAULT_ITEM,
+      top: 0,
+      backgroundColor: '#00A3FF',
+    },
+    layerTwoEmphasis: {
+      ...DEFAULT_ITEM,
+      top: 10,
+      backgroundColor: '#FEC600',
+    },
+    layerThreeEmphasis: {
+      ...DEFAULT_ITEM,
+      top: 20,
+      backgroundColor: '#FF9473',
     },
 
     layerOneDirection: {
-      top: 5,
-      borderLeft: '8px solid darkblue',
+      top: 0,
+      borderLeft: '6px solid #00A3FF',
     },
     layerTwoDirection: {
       top: 10,
-      borderLeft: '8px solid yellow',
+      borderLeft: '6px solid #FEC600',
     },
     layerThreeDirection: {
-      top: 15,
-      borderLeft: '8px solid darkred',
+      top: 20,
+      borderLeft: '6px solid #FF9473',
+    },
+
+    currentDate: {
+      border: '2px solid black',
+      top: '-7px',
+      minWidth: '13.9px',
+      maxHeight: '34.05px',
+      '&:hover': {
+        border: '2px solid black',
+      },
     },
   });
 
 export interface TimelineItemsProps extends WithStyles<typeof styles> {
-  intersectionDates: number[];
   dateRange: DateRangeType[];
   clickDate: (arg: number) => void;
   locale: string;

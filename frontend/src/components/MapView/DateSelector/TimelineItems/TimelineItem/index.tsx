@@ -1,5 +1,5 @@
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DateItem, DateRangeType } from '../../../../../config/types';
 import { datesAreEqualWithoutTime } from '../../../../../utils/date-utils';
@@ -9,48 +9,77 @@ const TimelineItem = memo(
     classes,
     concatenatedLayers,
     currentDate,
-    index,
-    clickDate,
     dateItemStyling,
   }: TimelineItemProps) => {
-    const handleClick = useCallback(
-      (dateIndex: number) => {
-        return () => {
-          clickDate(dateIndex);
-        };
-      },
-      [clickDate],
-    );
+    const hasNextItemDirectionForward = (
+      matchingDate: DateItem,
+      layerDates: DateItem[],
+    ): boolean => {
+      return (
+        layerDates.indexOf(matchingDate) !== 0 &&
+        !!layerDates[layerDates.indexOf(matchingDate) - 1].isStartDate
+      );
+    };
+
+    const hasNextItemDirectionBackward = (
+      matchingDate: DateItem,
+      layerDates: DateItem[],
+    ): boolean => {
+      return (
+        layerDates.indexOf(matchingDate) !== layerDates.length - 1 &&
+        !!layerDates[layerDates.indexOf(matchingDate) + 1].isEndDate
+      );
+    };
+
+    const isStartOrEndDate = (date: DateItem): boolean => {
+      return !!date.isEndDate || !!date.isStartDate;
+    };
 
     return (
       <>
         {concatenatedLayers.map(
           (layerDates: DateItem[], layerIndex: number) => {
             // TODO: fix not really efficient algorithm
-            const matchingDateItemInLayer = layerDates.find(f =>
+            const matchingDateItemInLayer:
+              | DateItem
+              | undefined = layerDates.find(f =>
               datesAreEqualWithoutTime(f.displayDate, currentDate.value),
             );
 
             if (!matchingDateItemInLayer) {
               return null;
             }
+
             return (
               <React.Fragment key={Math.random()}>
-                {layerIndex !== 0 && matchingDateItemInLayer.isStartDate && (
+                {/* Add a directional arrow forward if previous item is a start date */}
+                {hasNextItemDirectionForward(
+                  matchingDateItemInLayer,
+                  layerDates,
+                ) && (
                   <div
                     className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase}`}
                   />
                 )}
-                {layerIndex !== 0 && matchingDateItemInLayer.isEndDate && (
+
+                {/* Add a directional arrow backward if next item is an end date */}
+                {hasNextItemDirectionBackward(
+                  matchingDateItemInLayer,
+                  layerDates,
+                ) && (
                   <div
                     className={`${dateItemStyling[layerIndex].layerDirectionClass} ${classes.layerDirectionBase} ${classes.layerDirectionBackwardBase}`}
                   />
                 )}
 
+                {/* Add a bold square if start or end date (emphasis), normal otherwise */}
                 <div
-                  className={dateItemStyling[layerIndex].class}
+                  className={`${
+                    isStartOrEndDate(matchingDateItemInLayer)
+                      ? dateItemStyling[layerIndex].emphasis
+                      : dateItemStyling[layerIndex].class
+                  }`}
                   role="presentation"
-                  onClick={handleClick(index)}
                 />
               </React.Fragment>
             );
@@ -66,13 +95,15 @@ const styles = () =>
     layerDirectionBase: {
       display: 'block',
       position: 'absolute',
-      borderTop: '8px solid transparent',
-      borderBottom: '8px solid transparent',
+      borderTop: '5px solid transparent',
+      borderBottom: '5px solid transparent',
       height: '0px',
       zIndex: 1,
+      left: 0,
     },
 
     layerDirectionBackwardBase: {
+      right: 0,
       transform: 'rotate(180deg)',
     },
   });
@@ -80,12 +111,11 @@ const styles = () =>
 export interface TimelineItemProps extends WithStyles<typeof styles> {
   concatenatedLayers: DateItem[][];
   currentDate: DateRangeType;
-  index: number;
-  clickDate: (arg: number) => void;
   dateItemStyling: {
     class: string;
     color: string;
     layerDirectionClass?: string;
+    emphasis?: string;
   }[];
 }
 
