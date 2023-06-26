@@ -147,7 +147,11 @@ const LegendItem = memo(
       if (!fillPattern) {
         return null;
       }
-      return <Typography variant="h5">{t('Fill pattern is used')}</Typography>;
+      return (
+        <Typography variant="h5">
+          {t('Fill pattern is used')} ({t(fillPattern)})
+        </Typography>
+      );
     }, [fillPattern, t]);
 
     return (
