@@ -239,7 +239,8 @@ const generateDefaultDateItem = (
 };
 
 /**
- *
+ * Generate intermediate date items using start_date and end_date field
+ * for every available file ressources
  */
 async function generateIntermediateDateItemFromDataFile(
   layerDates: number[],
@@ -259,6 +260,10 @@ async function generateIntermediateDateItemFromDataFile(
         console.error(`Wrong date / path configuration configured : ${path}`);
         return {};
       }
+      if (!res.ok) {
+        console.error(`Could not load data file for ressource: ${path}`);
+        return {};
+      }
       const jsonBody = await res.json();
 
       return {
@@ -269,8 +274,7 @@ async function generateIntermediateDateItemFromDataFile(
   );
 
   const rangesWithoutMissing = ranges.filter(ra => ra.startDate && ra.endDate);
-  const dates = generateDateItemsBetweenForRanges(rangesWithoutMissing);
-  return dates;
+  return generateDateItemsBetweenForRanges(rangesWithoutMissing);
 }
 
 function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
