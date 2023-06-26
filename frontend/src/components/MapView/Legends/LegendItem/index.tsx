@@ -41,6 +41,7 @@ const LegendItem = memo(
     children,
     legendUrl,
     displayOpacitySlider,
+    fillPattern,
   }: LegendItemProps) => {
     const dispatch = useDispatch();
     const map = useSelector(mapSelector);
@@ -142,6 +143,13 @@ const LegendItem = memo(
       );
     }, [children]);
 
+    const renderedFillPatterInfo = useMemo(() => {
+      if (!fillPattern) {
+        return null;
+      }
+      return <Typography variant="h5">{t('Fill pattern is used')}</Typography>;
+    }, [fillPattern, t]);
+
     return (
       <ListItem disableGutters dense>
         <Paper className={classes.paper}>
@@ -154,6 +162,7 @@ const LegendItem = memo(
           <Divider />
           {renderedOpacitySlider}
           {renderedLegend}
+          {renderedFillPatterInfo}
           <LoadingBar layerId={id} />
           {renderedChildren}
         </Paper>
@@ -183,6 +192,7 @@ interface LegendItemProps
   type?: LayerType['type'];
   opacity: LayerType['opacity'];
   displayOpacitySlider?: boolean;
+  fillPattern?: 'left' | 'right';
 }
 
 export default withStyles(styles)(LegendItem);
