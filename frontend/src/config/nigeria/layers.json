@@ -3648,10 +3648,6 @@
       "2022-06-01",
       "2022-09-01"
     ],
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
     "fallbackLayerKeys": ["ch_phase_admin1"],
     "admin_level": 2,
     "data_field": "phase_class",
@@ -3822,10 +3818,6 @@
       "2022-06-01",
       "2022-09-01"
     ],
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
     "data_field": "phase35",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
@@ -3920,10 +3912,6 @@
       "2022-06-01",
       "2022-09-01"
     ],
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
     "data_field": "phase35",
     "admin_level": 1,
     "admin_code": "adm1_pcod2",
@@ -4013,10 +4001,6 @@
         "2022-09-01",
         "2023-06-01"
       ],
-      "validity": {
-        "days": 150,
-        "mode": "forward"
-      },
       "admin_level": 2,
       "data_field": "phase_class",
       "admin_code": "adm2_pcod2",
@@ -4072,10 +4056,6 @@
         "2022-09-01",
         "2023-06-01"
       ],
-      "validity": {
-        "days": 150,
-        "mode": "forward"
-      },
       "admin_level": 2,
       "data_field": "phase35",
       "admin_code": "adm2_pcod2",

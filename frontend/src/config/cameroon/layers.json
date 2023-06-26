@@ -3636,10 +3636,6 @@
     "type": "admin_level_data",
     "path": "data/cameroon/ch/admin2_{YYYY_MM_DD}.json",
     "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-06-01"],
-    "validity": {
-      "days": 122,
-      "mode": "forward"
-    },
     "fallbackLayerKeys": [
       "ch_phase_admin1"
     ],
@@ -3792,10 +3788,6 @@
     "fallbackLayerKeys": [
       "ch_pop3_5_admin1"
     ],
-    "validity": {
-      "days": 122,
-      "mode": "forward"
-    },
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
         "type": "number",

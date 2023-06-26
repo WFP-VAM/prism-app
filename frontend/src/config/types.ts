@@ -685,12 +685,18 @@ export type PointLayerData = {
   features: PointData[];
 };
 
-export type ValidityLayer = {
+export interface BaseLayer {
   name: string;
   dates: number[];
+}
+
+export interface ValidityLayer extends BaseLayer {
   validity: Validity;
-  pathTemplate?: string;
-};
+}
+
+export interface PathLayer extends BaseLayer {
+  path: string;
+}
 
 export type UserAuth = {
   username: string;

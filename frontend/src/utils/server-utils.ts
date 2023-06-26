@@ -5,6 +5,7 @@ import { Dispatch } from 'redux';
 import { appConfig } from '../config';
 import type {
   AvailableDates,
+  PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
   Validity,
@@ -26,6 +27,7 @@ import { LayerDefinitions } from '../config/utils';
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';
 import {
+  StartEndDate,
   datesAreEqualWithoutTime,
   generateDateItemsBetweenForRanges,
   generateTimesBetweenRange,
@@ -237,40 +239,43 @@ const generateDefaultDateItem = (
 };
 
 /**
- * Create new array including dates specified within the validity parameter.
  *
- * @return Array of integers which represents a given date.
  */
-const generateLayerDatesFromValidity = async (
-  layer: ValidityLayer,
-): Promise<DateItem[]> => {
-  const { dates, validity } = layer;
+async function generateIntermediateDateItemFromDataFile(
+  layerDates: number[],
+  layerPathTemplate: string,
+) {
+  const ranges: StartEndDate[] = await Promise.all(
+    layerDates.map(async r => {
+      const path = layerPathTemplate.replace(/{.*?}/g, match => {
+        const format = match.slice(1, -1);
+        return moment(r).format(format);
+      });
 
-  const { days, mode } = validity;
+      const res = await fetch(path);
 
-  if (layer.name === 'ch_phase' && layer.pathTemplate) {
-    const ranges: {
-      startDate: Date;
-      endDate: Date;
-    }[] = await Promise.all(
-      layer.dates.map(async r => {
-        const path = layer.pathTemplate!.replace(/{.*?}/g, match => {
-          const format = match.slice(1, -1);
-          return moment(r).format(format);
-        });
+      const contentType = res.headers.get('content-type');
+      if (!contentType || contentType.indexOf('application/json') === -1) {
+        console.error(`Wrong date / path configuration configured : ${path}`);
+        return {};
+      }
+      const jsonBody = await res.json();
 
-        const res = await fetch(path);
-        const jsonBody = await res.json();
+      return {
+        startDate: new Date(jsonBody.DataList[0].start_date),
+        endDate: new Date(jsonBody.DataList[0].end_date),
+      };
+    }),
+  );
 
-        return {
-          startDate: new Date(jsonBody.DataList[0].start_date),
-          endDate: new Date(jsonBody.DataList[0].end_date),
-        };
-      }),
-    );
+  const rangesWithoutMissing = ranges.filter(ra => ra.startDate && ra.endDate);
+  const dates = generateDateItemsBetweenForRanges(rangesWithoutMissing);
+  return dates;
+}
 
-    return generateDateItemsBetweenForRanges(ranges);
-  }
+function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
+  const { dates } = layer;
+  const { days, mode } = layer.validity;
 
   // Convert the dates to moment dates
   const momentDates = Array.prototype.sort
@@ -279,7 +284,7 @@ const generateLayerDatesFromValidity = async (
 
   // Generate first DateItem[] from dates array.
   const dateItemsDefault: DateItem[] = momentDates.map(momentDate =>
-    generateDefaultDateItem(momentDate.valueOf(), validity),
+    generateDefaultDateItem(momentDate.valueOf(), layer.validity),
   );
 
   const dateItemsWithValidity = momentDates.reduce(
@@ -328,7 +333,7 @@ const generateLayerDatesFromValidity = async (
     sortBy([...dateItemsDefault, ...dateItemsWithValidity], 'displayDate'),
     'displayDate',
   );
-};
+}
 
 /**
  * Wrapper function for utility fetchCoverageLayerDays from Common Library
@@ -432,7 +437,11 @@ export async function getLayersAvailableDates(
 
   // Retrieve layer that have a validity object
   const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
-    .filter(layer => layer.validity !== undefined)
+    .filter(
+      layer =>
+        layer.validity !== undefined &&
+        !(layer as AdminLevelDataLayerProps).path,
+    )
     .map(layer => {
       const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
 
@@ -440,22 +449,59 @@ export async function getLayersAvailableDates(
         name: layerId,
         dates: mergedLayers[layerId],
         validity: layer.validity!,
-        pathTemplate: (layer as AdminLevelDataLayerProps).path,
       };
     });
 
+  // Retrieve layer that have a path object
+  const layersWithPath: PathLayer[] = Object.values(LayerDefinitions)
+    .filter(layer => !!(layer as AdminLevelDataLayerProps).path)
+    .map(layer => {
+      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
+
+      return {
+        name: layerId,
+        dates: mergedLayers[layerId],
+        path: (layer as AdminLevelDataLayerProps).path,
+      };
+    });
+
+  // Generate and replace date items for layers with all intermediates dates
   const layerDateItemsMap = await Promise.all(
     Object.entries(mergedLayers).map(
-      async (layerWithDate: [string, number[]]) => {
-        const layerWithValidity = layersWithValidity.find(
-          validityLayer => validityLayer.name === layerWithDate[0],
+      async (layerDatesEnntry: [string, number[]]) => {
+        // Generate date for layers with validity and no path
+        const matchingValidityLayer = layersWithValidity.find(
+          validityLayer => validityLayer.name === layerDatesEnntry[0],
         );
 
-        const updatedDates = layerWithValidity
-          ? await generateLayerDatesFromValidity(layerWithValidity)
-          : layerWithDate[1].map((d: number) => generateDefaultDateItem(d));
+        if (matchingValidityLayer) {
+          return {
+            [layerDatesEnntry[0]]: generateIntermediateDateItemFromValidity(
+              matchingValidityLayer,
+            ),
+          };
+        }
 
-        return { [layerWithDate[0]]: updatedDates };
+        // Generate date for layers with path
+        const matchingPathLayer = layersWithPath.find(
+          validityLayer => validityLayer.name === layerDatesEnntry[0],
+        );
+
+        if (matchingPathLayer) {
+          return {
+            [layerDatesEnntry[0]]: await generateIntermediateDateItemFromDataFile(
+              matchingPathLayer.dates,
+              matchingPathLayer.path,
+            ),
+          };
+        }
+
+        // Genererate date for layers with validity but not an admin_level_data type
+        return {
+          [layerDatesEnntry[0]]: layerDatesEnntry[1].map((d: number) =>
+            generateDefaultDateItem(d),
+          ),
+        };
       },
     ),
   );

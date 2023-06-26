@@ -1,6 +1,11 @@
 import moment, { Moment } from 'moment';
 import { DateItem } from '../config/types';
 
+export interface StartEndDate {
+  startDate?: Date;
+  endDate?: Date;
+}
+
 export const datesAreEqualWithoutTime = (
   date1: number | Date,
   date2: number | Date,
@@ -19,7 +24,7 @@ export const generateTimesBetweenRange = (
 };
 
 export const generateDateItemsBetweenForRanges = (
-  startEndDateList: { startDate: Date; endDate: Date }[],
+  startEndDateList: StartEndDate[],
 ): DateItem[] => {
   if (startEndDateList.length === 0) {
     return [];
@@ -33,7 +38,7 @@ export const generateDateItemsBetweenForRanges = (
 
     const dateItems: DateItem[] = datesInTime.map(dateInTime => ({
       displayDate: dateInTime,
-      queryDate: range.startDate.getTime(),
+      queryDate: range.startDate!.getTime(),
     }));
 
     // eslint-disable-next-line fp/no-mutation
