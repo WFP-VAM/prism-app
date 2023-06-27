@@ -128,50 +128,50 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
 
       const urlLayerKey = getUrlKey(selectedLayer);
 
-      if (checked) {
-        const updatedUrl = appendLayerToUrl(
-          urlLayerKey,
-          selectedLayers,
-          selectedLayer,
-        );
-
-        updateHistory(urlLayerKey, updatedUrl);
-
-        if (
-          !('boundary' in selectedLayer) &&
-          selectedLayer.type === 'admin_level_data'
-        ) {
-          refreshBoundaries(map, dispatch);
-        }
-      } else {
+      if (!checked) {
         removeLayerFromUrl(urlLayerKey, selectedLayer.id);
         dispatch(removeLayer(selectedLayer));
 
         // For admin boundary layers with boundary property
         // we have to de-activate the unique boundary and re-activate
         // default boundaries
-        if ('boundary' in selectedLayer) {
-          const boundaryId = selectedLayer.boundary || '';
-
-          if (Object.keys(LayerDefinitions).includes(boundaryId)) {
-            const displayBoundaryLayers = getDisplayBoundaryLayers();
-            const uniqueBoundaryLayer =
-              LayerDefinitions[boundaryId as LayerKey];
-
-            if (
-              !displayBoundaryLayers
-                .map(l => l.id)
-                .includes(uniqueBoundaryLayer.id)
-            ) {
-              safeDispatchRemoveLayer(map, uniqueBoundaryLayer, dispatch);
-            }
-
-            displayBoundaryLayers.forEach(l => {
-              safeDispatchAddLayer(map, l, dispatch);
-            });
-          }
+        if (!('boundary' in selectedLayer)) {
+          return;
         }
+        const boundaryId = selectedLayer.boundary || '';
+
+        if (!Object.keys(LayerDefinitions).includes(boundaryId)) {
+          return;
+        }
+        const displayBoundaryLayers = getDisplayBoundaryLayers();
+        const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
+
+        if (
+          !displayBoundaryLayers.map(l => l.id).includes(uniqueBoundaryLayer.id)
+        ) {
+          safeDispatchRemoveLayer(map, uniqueBoundaryLayer, dispatch);
+        }
+
+        displayBoundaryLayers.forEach(l => {
+          safeDispatchAddLayer(map, l, dispatch);
+        });
+        return;
       }
+      const updatedUrl = appendLayerToUrl(
+        urlLayerKey,
+        selectedLayers,
+        selectedLayer,
+      );
+
+      updateHistory(urlLayerKey, updatedUrl);
+
+      if (
+        'boundary' in selectedLayer ||
+        selectedLayer.type !== 'admin_level_data'
+      ) {
+        return;
+      }
+      refreshBoundaries(map, dispatch);
     },
     [
       appendLayerToUrl,

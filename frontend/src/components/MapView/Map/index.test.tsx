@@ -18,6 +18,7 @@ test('renders as expected', () => {
       <MapComponent
         boundaryLayerId="Some Boundary Layer Id"
         setIsAlertFormOpen={() => {}}
+        selectedLayers={[]}
       />
     </Provider>,
   );
