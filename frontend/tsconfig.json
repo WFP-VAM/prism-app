@@ -19,6 +19,5 @@
     "downlevelIteration": true
   },
   "include": ["src"],
-  "exclude": ["**/node_modules", "**/.*/", "package.json"],
   "files": ["src/types/custom.d.ts"]
 }
