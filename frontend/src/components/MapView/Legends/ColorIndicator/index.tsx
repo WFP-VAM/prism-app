@@ -26,7 +26,7 @@ const useStyles = makeStyles(() =>
       width: 10,
       marginRight: 4,
       background: ({ color, fillPattern }: StylesProps) =>
-        `repeating-linear-gradient(to ${fillPattern} bottom, transparent, ${color} 3px)`,
+        `repeating-linear-gradient(to ${fillPattern} bottom, ${color}, ${color} 2px, white 2px, white 4px)`,
     },
   }),
 );
