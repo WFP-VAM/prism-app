@@ -111,6 +111,7 @@ import {
   setTabValue,
 } from '../../../../context/leftPanelStateSlice';
 import LoadingBlinkingDots from '../../../Common/LoadingBlinkingDots';
+import { formatTableData } from '../../utils';
 
 const tabIndex = 2;
 
@@ -678,7 +679,7 @@ const AnalysisPanel = memo(
     // The exposure analysis table data
     const exposureAnalysisTableData = useMemo(() => {
       return orderBy(
-        analysisResult?.tableData,
+        analysisResult?.tableData && formatTableData(analysisResult.tableData),
         exposureAnalysisSortColumn,
         exposureAnalysisIsAscending ? 'asc' : 'desc',
       );
@@ -852,7 +853,8 @@ const AnalysisPanel = memo(
                 {statisticOptions}
               </RadioGroup>
             </FormControl>
-            {statistic === AggregationOperations['Exposure value'] && (
+            {statistic ===
+              AggregationOperations['Percentage of area exposed'] && (
               <div className={classes.exposureValueContainer}>
                 <FormControl
                   component="div"
@@ -886,7 +888,7 @@ const AnalysisPanel = memo(
                   <TextField
                     select
                     variant="outlined"
-                    label={t('Value')}
+                    label={t('Exposure value')}
                     className={classes.exposureValueOptionsSelect}
                     name="exposure-value"
                     value={exposureValue.value}
@@ -899,7 +901,7 @@ const AnalysisPanel = memo(
                   >
                     {selectedHazardLayer?.legend?.map(item => (
                       <MenuItem key={item.value} value={item.value}>
-                        {item.label}
+                        {`${item.label} (${item.value})`}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -1107,7 +1109,8 @@ const AnalysisPanel = memo(
               (hazardDataType === GeometryType.Polygon
                 ? !startDate || !endDate || !adminLevelLayerData
                 : !selectedDate || !baselineLayerId) || // or date hasn't been selected // or baseline layer hasn't been selected
-              (statistic === AggregationOperations['Exposure value'] &&
+              (statistic ===
+                AggregationOperations['Percentage of area exposed'] &&
                 (!exposureValue.operator || !exposureValue.value))
             }
           >

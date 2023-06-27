@@ -93,7 +93,7 @@ export type TableRow = {
   baselineValue: DataRecord['value'];
   coordinates?: Position;
 } & {
-  [k in AggregationOperations]?: number;
+  [k in AggregationOperations]?: number | string;
 } & { [key: string]: number | string }; // extra columns like wind speed or earthquake magnitude
 
 const initialState: AnalysisResultState = {

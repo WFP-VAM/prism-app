@@ -111,7 +111,7 @@ const operations = {
     const ceil = sortedValues.length / 2;
     return (sortedValues[floor] + sortedValues[ceil]) / 2;
   },
-  intersect_percentage: (data: number[]) => mean(data),
+  intersect_percentage: () => 0,
 };
 
 const scaleValueIfDefined = (

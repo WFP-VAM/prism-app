@@ -18,6 +18,7 @@ import {
 import { getRoundedData } from '../../../../utils/data-utils';
 import { useSafeTranslation } from '../../../../i18n';
 import { LayerDefinitions } from '../../../../config/utils';
+import { formatIntersectPercentageAttribute } from '../../utils';
 
 function AnalysisLayer({ before }: { before?: string }) {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly
@@ -106,7 +107,9 @@ function AnalysisLayer({ before }: { before?: string }) {
             addPopupData({
               [analysisData.getStatTitle(t)]: {
                 data: getRoundedData(
-                  get(evt.features[0], ['properties', statisticKey]),
+                  formatIntersectPercentageAttribute(
+                    evt.features[0].properties,
+                  )[statisticKey],
                   t,
                   precision,
                 ),

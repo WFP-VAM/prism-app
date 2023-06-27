@@ -12,6 +12,7 @@ import {
   WMSLayerProps,
 } from '../../config/types';
 import { TableData } from '../../context/tableStateSlice';
+import { TableRow } from '../../context/analysisResultStateSlice';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
   const matchStr = 'layer-';
@@ -158,3 +159,24 @@ export const filterActiveLayers = (
     filterActiveGroupedLayers(selectedLayer, categoryLayer)
   );
 };
+
+export const formatIntersectPercentageAttribute = (
+  /* eslint-disable camelcase */
+  data: { intersect_percentage?: number | string; [key: string]: any },
+) => {
+  const formattedData = data;
+  if (data.intersect_percentage) {
+    formattedData.intersect_percentage = `${(
+      100 * ((data.intersect_percentage as number) || 0)
+    ).toFixed(2)}%`;
+  }
+  return formattedData;
+};
+
+/**
+ *
+ * Format table data analysis
+ * Convert intersect_percent [0-1] value to [0%-100%] value
+ */
+export const formatTableData = (tableData: TableRow[]): TableRow[] =>
+  tableData.map(data => formatIntersectPercentageAttribute(data) as TableRow);
