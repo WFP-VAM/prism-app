@@ -179,7 +179,7 @@ const styles = () =>
   createStyles({
     paper: {
       padding: 8,
-      width: 200,
+      width: 180,
     },
     slider: {
       padding: '0 5px',

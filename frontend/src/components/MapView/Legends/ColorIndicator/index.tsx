@@ -15,18 +15,18 @@ const useStyles = makeStyles(() =>
       alignItems: 'center',
     },
     indicator: {
-      height: 20,
-      width: 20,
+      height: 10,
+      width: 10,
       marginRight: 4,
       backgroundColor: ({ color, opacity }: StylesProps) =>
         fade(color, opacity),
     },
     fillPatternIndicator: {
-      height: 20,
-      width: 20,
+      height: 10,
+      width: 10,
       marginRight: 4,
       background: ({ color, fillPattern }: StylesProps) =>
-        `repeating-linear-gradient(to ${fillPattern} bottom, transparent, ${color} 4px)`,
+        `repeating-linear-gradient(to ${fillPattern} bottom, transparent, ${color} 3px)`,
     },
   }),
 );
