@@ -8,6 +8,12 @@ interface StylesProps {
   fillPattern: 'left' | 'right' | undefined;
 }
 
+const indicatorsCommonStyles = {
+  height: 10,
+  width: 10,
+  marginRight: 4,
+};
+
 const useStyles = makeStyles(() =>
   createStyles({
     container: {
@@ -15,16 +21,12 @@ const useStyles = makeStyles(() =>
       alignItems: 'center',
     },
     indicator: {
-      height: 10,
-      width: 10,
-      marginRight: 4,
+      ...indicatorsCommonStyles,
       backgroundColor: ({ color, opacity }: StylesProps) =>
         fade(color, opacity),
     },
     fillPatternIndicator: {
-      height: 10,
-      width: 10,
-      marginRight: 4,
+      ...indicatorsCommonStyles,
       background: ({ color, fillPattern }: StylesProps) =>
         `repeating-linear-gradient(to ${fillPattern} bottom, transparent, ${color} 3px)`,
     },
