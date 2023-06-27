@@ -443,11 +443,7 @@ export async function getLayersAvailableDates(
 
   // Retrieve layer that have a validity object
   const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
-    .filter(
-      layer =>
-        layer.validity !== undefined &&
-        !(layer as AdminLevelDataLayerProps).path,
-    )
+    .filter(layer => layer.validity !== undefined)
     .map(layer => {
       const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
 
@@ -460,7 +456,12 @@ export async function getLayersAvailableDates(
 
   // Retrieve layer that have a path object
   const layersWithPath: PathLayer[] = Object.values(LayerDefinitions)
-    .filter(layer => !!(layer as AdminLevelDataLayerProps).path)
+    .filter(
+      layer =>
+        !!(layer as AdminLevelDataLayerProps).path &&
+        !layer.validity &&
+        !!(layer as AdminLevelDataLayerProps).dates,
+    )
     .map(layer => {
       const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
 
