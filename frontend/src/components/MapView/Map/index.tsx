@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AnalysisLayer from '../Layers/AnalysisLayer';
 import SelectionLayer from '../Layers/SelectionLayer';
 import MapTooltip from '../MapTooltip';
-import { layerOrdering, setMap } from '../../../context/mapStateSlice';
+import { setMap } from '../../../context/mapStateSlice';
 import { appConfig } from '../../../config';
 import useMapOnClick from '../useMapOnClick';
 import {
@@ -23,11 +23,8 @@ import {
 } from '../../../context/mapBoundaryInfoStateSlice';
 import { DiscriminateUnion, LayerKey, LayerType } from '../../../config/types';
 import { setLoadingLayerIds } from '../../../context/mapTileLoadingStateSlice';
-import { firstBoundaryOnView } from '../../../utils/map-utils';
-import {
-  layersSelector,
-  mapSelector,
-} from '../../../context/mapStateSlice/selectors';
+import { firstBoundaryOnView, isLayerOnView } from '../../../utils/map-utils';
+import { mapSelector } from '../../../context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
   BoundaryLayer,
@@ -40,6 +37,7 @@ import {
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
   boundaryLayerId: string;
+  selectedLayers: LayerType[];
 }
 
 type LayerComponentsMap<U extends LayerType> = {
@@ -47,7 +45,11 @@ type LayerComponentsMap<U extends LayerType> = {
 };
 
 const MapComponent = memo(
-  ({ setIsAlertFormOpen, boundaryLayerId }: MapComponentProps) => {
+  ({
+    setIsAlertFormOpen,
+    boundaryLayerId,
+    selectedLayers,
+  }: MapComponentProps) => {
     const {
       map: { boundingBox, hidePanel, minZoom, maxZoom, maxBounds },
     } = appConfig;
@@ -55,17 +57,10 @@ const MapComponent = memo(
     const dispatch = useDispatch();
 
     const selectedMap = useSelector(mapSelector);
-    const unsortedSelectedLayers = useSelector(layersSelector);
 
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
       undefined,
     );
-
-    // Prioritize boundary and point_data layers
-    const selectedLayers = useMemo(() => {
-      // eslint-disable-next-line fp/no-mutating-methods
-      return [...unsortedSelectedLayers].sort(layerOrdering);
-    }, [unsortedSelectedLayers]);
 
     const mapOnClick = useMapOnClick(setIsAlertFormOpen, boundaryLayerId);
 
@@ -214,7 +209,23 @@ const MapComponent = memo(
     }, []);
 
     const renderedSelectedGeoJsonLayers = useMemo(() => {
-      return selectedLayers.map(layer => {
+      // make sure that the layers are ordered in the same order that they
+      // are passed to the component. See the `layerOrdering` function for details.
+      const getBeforeId = (layer: LayerType, index: number) => {
+        if (layer.type === 'boundary') {
+          return firstSymbolId;
+        }
+        if (index === 0) {
+          return firstSymbolId;
+        }
+        const previousLayerId = selectedLayers[index - 1].id;
+
+        if (isLayerOnView(selectedMap, previousLayerId)) {
+          return `layer-${previousLayerId}-line`;
+        }
+        return firstBoundaryId;
+      };
+      return selectedLayers.map((layer, index) => {
         const component: ComponentType<{
           layer: any;
           before?: string;
@@ -222,10 +233,16 @@ const MapComponent = memo(
         return createElement(component, {
           key: layer.id,
           layer,
-          before: layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
+          before: getBeforeId(layer, index),
         });
       });
-    }, [componentTypes, firstBoundaryId, firstSymbolId, selectedLayers]);
+    }, [
+      componentTypes,
+      firstBoundaryId,
+      firstSymbolId,
+      selectedLayers,
+      selectedMap,
+    ]);
 
     return (
       <MapboxMap
