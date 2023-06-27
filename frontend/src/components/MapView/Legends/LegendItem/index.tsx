@@ -109,14 +109,26 @@ const LegendItem = memo(
 
     const renderedLegendDefinitionItems = useMemo(() => {
       return legend?.map((item: LegendDefinitionItem) => (
-        <ColorIndicator
+        <div
           key={getColorIndicatorKey(item)}
-          value={getLegendItemLabel(t, item)}
-          color={item.color as string}
-          opacity={opacity as number}
-        />
+          className={classes.legendDefinitionItem}
+        >
+          <ColorIndicator
+            value={getLegendItemLabel(t, item)}
+            color={item.color as string}
+            opacity={opacity as number}
+            fillPattern={fillPattern}
+          />
+        </div>
       ));
-    }, [getColorIndicatorKey, legend, opacity, t]);
+    }, [
+      classes.legendDefinitionItem,
+      fillPattern,
+      getColorIndicatorKey,
+      legend,
+      opacity,
+      t,
+    ]);
 
     const renderedLegendUrl = useMemo(() => {
       if (legendUrl) {
@@ -143,17 +155,6 @@ const LegendItem = memo(
       );
     }, [children]);
 
-    const renderedFillPatterInfo = useMemo(() => {
-      if (!fillPattern) {
-        return null;
-      }
-      return (
-        <Typography variant="h5">
-          {t('Fill pattern is used')} ({t(fillPattern)})
-        </Typography>
-      );
-    }, [fillPattern, t]);
-
     return (
       <ListItem disableGutters dense>
         <Paper className={classes.paper}>
@@ -166,7 +167,6 @@ const LegendItem = memo(
           <Divider />
           {renderedOpacitySlider}
           {renderedLegend}
-          {renderedFillPatterInfo}
           <LoadingBar layerId={id} />
           {renderedChildren}
         </Paper>
@@ -179,10 +179,13 @@ const styles = () =>
   createStyles({
     paper: {
       padding: 8,
-      width: 180,
+      width: 200,
     },
     slider: {
       padding: '0 5px',
+    },
+    legendDefinitionItem: {
+      marginTop: 4,
     },
   });
 
