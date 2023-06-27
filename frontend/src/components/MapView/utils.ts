@@ -164,13 +164,15 @@ export const formatIntersectPercentageAttribute = (
   /* eslint-disable camelcase */
   data: { intersect_percentage?: number | string; [key: string]: any },
 ) => {
-  const formattedData = data;
   if (data.intersect_percentage) {
-    formattedData.intersect_percentage = `${(
-      100 * ((data.intersect_percentage as number) || 0)
-    ).toFixed(2)}%`;
+    return {
+      ...data,
+      intersect_percentage: `${(
+        100 * ((data.intersect_percentage as number) || 0)
+      ).toFixed(2)}%`,
+    };
   }
-  return formattedData;
+  return data;
 };
 
 /**
