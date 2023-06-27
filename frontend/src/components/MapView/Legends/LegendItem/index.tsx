@@ -109,26 +109,15 @@ const LegendItem = memo(
 
     const renderedLegendDefinitionItems = useMemo(() => {
       return legend?.map((item: LegendDefinitionItem) => (
-        <div
+        <ColorIndicator
           key={getColorIndicatorKey(item)}
-          className={classes.legendDefinitionItem}
-        >
-          <ColorIndicator
-            value={getLegendItemLabel(t, item)}
-            color={item.color as string}
-            opacity={opacity as number}
-            fillPattern={fillPattern}
-          />
-        </div>
+          value={getLegendItemLabel(t, item)}
+          color={item.color as string}
+          opacity={opacity as number}
+          fillPattern={fillPattern}
+        />
       ));
-    }, [
-      classes.legendDefinitionItem,
-      fillPattern,
-      getColorIndicatorKey,
-      legend,
-      opacity,
-      t,
-    ]);
+    }, [fillPattern, getColorIndicatorKey, legend, opacity, t]);
 
     const renderedLegendUrl = useMemo(() => {
       if (legendUrl) {
@@ -183,9 +172,6 @@ const styles = () =>
     },
     slider: {
       padding: '0 5px',
-    },
-    legendDefinitionItem: {
-      marginTop: 4,
     },
   });
 
