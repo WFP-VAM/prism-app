@@ -30,14 +30,14 @@ exports[`renders as expected 1`] = `
         />
       </div>
       <div
-        class="MuiLinearProgress-root makeStyles-root-6 MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate"
+        class="MuiLinearProgress-root makeStyles-root-7 MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate"
         role="progressbar"
       >
         <div
-          class="MuiLinearProgress-bar makeStyles-hide-8 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar1Indeterminate"
+          class="MuiLinearProgress-bar makeStyles-hide-9 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar1Indeterminate"
         />
         <div
-          class="MuiLinearProgress-bar makeStyles-hide-8 MuiLinearProgress-bar2Indeterminate MuiLinearProgress-barColorPrimary"
+          class="MuiLinearProgress-bar makeStyles-hide-9 MuiLinearProgress-bar2Indeterminate MuiLinearProgress-barColorPrimary"
         />
       </div>
       <div
