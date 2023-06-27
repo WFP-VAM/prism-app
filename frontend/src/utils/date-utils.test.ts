@@ -1,9 +1,9 @@
-import { generateDateItemsBetweenForRanges } from './date-utils';
+import { generateDateItemsRange } from './date-utils';
 
 describe('Test buildDateItemsFromStartEndDates', () => {
   test('should return empty', () => {
     // Act
-    expect(generateDateItemsBetweenForRanges([])).toEqual([]);
+    expect(generateDateItemsRange([])).toEqual([]);
   });
 
   test('should return and array of DateItems for one range of 5 days', () => {
@@ -21,7 +21,7 @@ describe('Test buildDateItemsFromStartEndDates', () => {
     ];
 
     // Act
-    expect(generateDateItemsBetweenForRanges(dateRanges)).toEqual([
+    expect(generateDateItemsRange(dateRanges)).toEqual([
       {
         displayDate: new Date('2018-02-01').getTime(),
         queryDate: startDate0.getTime(),

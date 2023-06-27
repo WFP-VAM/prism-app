@@ -13,7 +13,7 @@ export const datesAreEqualWithoutTime = (
   return new Date(date1).toDateString() === new Date(date2).toDateString();
 };
 
-export const generateTimesBetweenRange = (
+export const generateDatesRange = (
   startDate: Moment,
   endDate: Moment,
 ): number[] => {
@@ -23,7 +23,7 @@ export const generateTimesBetweenRange = (
   );
 };
 
-export const generateDateItemsBetweenForRanges = (
+export const generateDateItemsRange = (
   startEndDateList: StartEndDate[],
 ): DateItem[] => {
   if (startEndDateList.length === 0) {
@@ -31,7 +31,7 @@ export const generateDateItemsBetweenForRanges = (
   }
 
   const ranges: DateItem[] = startEndDateList.flatMap(range => {
-    const datesInTime: number[] = generateTimesBetweenRange(
+    const datesInTime: number[] = generateDatesRange(
       moment(range.startDate),
       moment(range.endDate),
     );

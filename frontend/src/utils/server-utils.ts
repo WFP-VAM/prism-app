@@ -29,8 +29,8 @@ import { fetchACLEDDates } from './acled-utils';
 import {
   StartEndDate,
   datesAreEqualWithoutTime,
-  generateDateItemsBetweenForRanges,
-  generateTimesBetweenRange,
+  generateDateItemsRange,
+  generateDatesRange,
 } from './date-utils';
 import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
@@ -276,7 +276,7 @@ async function generateIntermediateDateItemFromDataFile(
   );
 
   const rangesWithoutMissing = ranges.filter(ra => ra.startDate && ra.endDate);
-  return generateDateItemsBetweenForRanges(rangesWithoutMissing);
+  return generateDateItemsRange(rangesWithoutMissing);
 }
 
 function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
@@ -315,7 +315,7 @@ function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
-      const daysToAdd = generateTimesBetweenRange(startDate, endDate);
+      const daysToAdd = generateDatesRange(startDate, endDate);
 
       // convert the available days for a specific moment day to the DefaultDate format
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
@@ -476,7 +476,7 @@ export async function getLayersAvailableDates(
   const layerDateItemsMap = await Promise.all(
     Object.entries(mergedLayers).map(
       async (layerDatesEnntry: [string, number[]]) => {
-        // Generate date for layers with validity and no path
+        // Generate dates for layers with validity and no path
         const matchingValidityLayer = layersWithValidity.find(
           validityLayer => validityLayer.name === layerDatesEnntry[0],
         );
@@ -489,7 +489,7 @@ export async function getLayersAvailableDates(
           };
         }
 
-        // Generate date for layers with path
+        // Generate dates for layers with path
         const matchingPathLayer = layersWithPath.find(
           validityLayer => validityLayer.name === layerDatesEnntry[0],
         );
@@ -503,7 +503,7 @@ export async function getLayersAvailableDates(
           };
         }
 
-        // Genererate date for layers with validity but not an admin_level_data type
+        // Genererate dates for layers with validity but not an admin_level_data type
         return {
           [layerDatesEnntry[0]]: layerDatesEnntry[1].map((d: number) =>
             generateDefaultDateItem(d),
