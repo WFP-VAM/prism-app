@@ -128,7 +128,15 @@ const MapView = memo(({ classes }: MapViewProps) => {
         }
         return dateSupportLayerTypes.includes(layer.type);
       })
-      .filter(layer => isMainLayer(layer.id, selectedLayers));
+      .filter(layer => isMainLayer(layer.id, selectedLayers))
+      .map(layer => {
+        return {
+          ...layer,
+          dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
+            .filter(value => value) // null check
+            .flat(),
+        };
+      });
   }, [selectedLayers, serverAvailableDates]);
 
   // TODO - could we simply use the country boundary extent here instead of the calculation?
@@ -151,7 +159,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return urlParams.get(UrlLayerKey.HAZARD);
   }, [urlParams]);
 
-  const baselineLayerId = useMemo(() => {
+  const baselineLayerIds = useMemo(() => {
     return urlParams.get(UrlLayerKey.ADMINLEVEL);
   }, [urlParams]);
 
@@ -179,12 +187,13 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return hazardLayerIds !== null ? hazardLayerIds.split(',') : [];
   }, [hazardLayerIds]);
 
+  const baselineLayersArray = useMemo(() => {
+    return baselineLayerIds !== null ? baselineLayerIds.split(',') : [];
+  }, [baselineLayerIds]);
+
   const urlLayerIds = useMemo(() => {
-    return [
-      ...hazardLayersArray,
-      ...(baselineLayerId === null ? [] : [baselineLayerId]),
-    ];
-  }, [baselineLayerId, hazardLayersArray]);
+    return [...hazardLayersArray, ...baselineLayersArray];
+  }, [baselineLayersArray, hazardLayersArray]);
 
   const layerDefinitionIds = useMemo(() => {
     return Object.keys(LayerDefinitions);
@@ -225,7 +234,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
         .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
         .filter(value => value) // null check
         .flat()
-        .map(value => moment(value).format(DEFAULT_DATE_FORMAT)),
+        .map(value => moment(value.displayDate).format(DEFAULT_DATE_FORMAT)),
     );
   }, [selectedLayersWithDateSupport, serverAvailableDates]);
 
@@ -283,7 +292,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       const layerToKeepDates = getPossibleDatesForLayer(
         layerToKeep as DateCompatibleLayer,
         serverAvailableDates,
-      );
+      ).map(dateItem => dateItem.displayDate);
 
       const closestDate = findClosestDate(selectedDate, layerToKeepDates);
 
@@ -302,7 +311,9 @@ const MapView = memo(({ classes }: MapViewProps) => {
     (layer: DateCompatibleLayer, momentSelectedDate: moment.Moment) => {
       // we convert to date strings, so hh:ss is irrelevant
       return getPossibleDatesForLayer(layer, serverAvailableDates)
-        .map(date => moment(date).format(DEFAULT_DATE_FORMAT))
+        .map(dateItem =>
+          moment(dateItem.displayDate).format(DEFAULT_DATE_FORMAT),
+        )
         .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT));
     },
     [serverAvailableDates],
@@ -315,7 +326,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       status is also updated. There are guards in case the values are not valid, such as invalid
       date or layerids.
       */
-    if (hazardLayerIds || baselineLayerId) {
+    if (hazardLayerIds || baselineLayerIds) {
       return;
     }
     if (!defaultLayer) {
@@ -343,7 +354,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       setDefaultLayerAttempted(true);
     }
   }, [
-    baselineLayerId,
+    baselineLayerIds,
     defaultLayer,
     defaultLayerAttempted,
     defaultLayerInLayerDefinitions,
@@ -354,10 +365,14 @@ const MapView = memo(({ classes }: MapViewProps) => {
   ]);
 
   useEffect(() => {
-    if ((!hazardLayerIds && !baselineLayerId) || serverAvailableDatesAreEmpty) {
+    if (
+      (!hazardLayerIds && !baselineLayerIds) ||
+      serverAvailableDatesAreEmpty
+    ) {
       return;
     }
 
+    // TODO - remove layers after dispatching the error message.
     if (invalidLayersIds.length > 0) {
       dispatch(
         addNotification({
@@ -389,7 +404,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     );
   }, [
     addMissingLayers,
-    baselineLayerId,
+    baselineLayerIds,
     dateInt,
     dispatch,
     hazardLayerIds,
@@ -592,6 +607,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       </Box>
       {renderedDatesLoader}
       <MapComponent
+        selectedLayers={selectedLayers}
         setIsAlertFormOpen={setIsAlertFormOpen}
         boundaryLayerId={boundaryLayerId}
       />
