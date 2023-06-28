@@ -334,9 +334,7 @@ def calculate_stats(
     # Add function to calculate overlap percentage.
     add_stats = None
     if intersect_comparison is not None:
-
         pixel_area = calculate_pixel_area(geotiff)
-        print("Pixel area in square kilometers:", pixel_area)
 
         def intersect_pixels(masked) -> float:
             # Get total number of elements matching our operator in the boundary.
@@ -348,12 +346,8 @@ def calculate_stats(
             return float((intersect_operator(masked, intersect_baseline)).sum())
 
         def intersect_area(masked) -> float:
-            # Get total number of elements in the boundary.
-            intersect_operator, intersect_baseline = intersect_comparison  # type: ignore
-            intersect_sum = (
-                intersect_operator(masked, intersect_baseline)
-            ).sum() or 0.0
-            return intersect_sum * pixel_area  # area in sq km per pixel value
+            # Area in sq km per pixel value
+            return intersect_pixels(masked) * pixel_area
 
         add_stats = {
             "intersect_pixels": intersect_pixels,
@@ -404,7 +398,6 @@ def calculate_stats(
                     float(clean_stats_properties[f"{safe_prefix}intersect_pixels"])
                     / total
                 )
-                # intersect_percentage = result[f"{safe_prefix}intersect_area"]
 
             clean_stats_properties = {
                 **clean_stats_properties,
