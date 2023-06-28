@@ -12,18 +12,17 @@ import rasterio  # type: ignore
 from app.caching import CACHE_DIRECTORY, cache_file, get_json_file, is_file_valid
 from app.models import (
     FilePath,
-    FilterProperty,
     GeoJSON,
     GeoJSONFeature,
-    Geometry,
     GroupBy,
     WfsParamsModel,
     WfsResponse,
 )
-from app.raster_utils import gdal_calc, reproj_match
+from app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
 from app.timer import timed
 from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
+from osgeo import gdal
 from rasterio.warp import Resampling
 from rasterstats import zonal_stats  # type: ignore
 from shapely.geometry import mapping, shape  # type: ignore
@@ -336,6 +335,9 @@ def calculate_stats(
     add_stats = None
     if intersect_comparison is not None:
 
+        pixel_area = calculate_pixel_area(geotiff)
+        print("Pixel area in square kilometers:", pixel_area)
+
         def intersect_pixels(masked) -> float:
             # Get total number of elements matching our operator in the boundary.
             intersect_operator, intersect_baseline = intersect_comparison  # type: ignore
@@ -345,17 +347,13 @@ def calculate_stats(
                 return 0.0
             return float((intersect_operator(masked, intersect_baseline)).sum())
 
-        # calculate size of pixel area
-        ras = rasterio.open(geotiff)
-        a = ras.transform
-        x, y = abs(a[0]), abs(a[4])
-        pixelarea = x * y
-
         def intersect_area(masked) -> float:
             # Get total number of elements in the boundary.
             intersect_operator, intersect_baseline = intersect_comparison  # type: ignore
-            intersect_sum = (intersect_operator(masked, intersect_baseline)).sum() or 0
-            return intersect_sum * pixelarea / 1e6  # area in sq km per pixel value
+            intersect_sum = (
+                intersect_operator(masked, intersect_baseline)
+            ).sum() or 0.0
+            return intersect_sum * pixel_area  # area in sq km per pixel value
 
         add_stats = {
             "intersect_pixels": intersect_pixels,
@@ -403,7 +401,8 @@ def calculate_stats(
                 intersect_percentage = 0.0
             else:
                 intersect_percentage = (
-                    float(clean_stats_properties[f"{safe_prefix}intersect_pixels"]) / total
+                    float(clean_stats_properties[f"{safe_prefix}intersect_pixels"])
+                    / total
                 )
                 # intersect_percentage = result[f"{safe_prefix}intersect_area"]
 
@@ -416,9 +415,7 @@ def calculate_stats(
         if not geojson_out:
             clean_results.append(clean_stats_properties)
         else:
-            clean_results.append(
-                {**result, "properties": clean_stats_properties}
-            )
+            clean_results.append({**result, "properties": clean_stats_properties})
 
     stats_results = clean_results
 
