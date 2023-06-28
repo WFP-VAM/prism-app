@@ -298,7 +298,7 @@ const AnalysisPanel = memo(
     // The analysis table data
     const analysisTableData = useMemo(() => {
       return orderBy(
-        analysisResult?.tableData,
+        analysisResult?.tableData && formatTableData(analysisResult?.tableData),
         analysisSortColumn,
         analysisIsAscending ? 'asc' : 'desc',
       );
