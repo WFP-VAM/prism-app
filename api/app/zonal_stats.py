@@ -381,13 +381,6 @@ def calculate_stats(
     except ValueError as error:
         stats_results = []
 
-    # TODO - make it work for geonjson_out
-    # filter out nan values
-    stats_results = [
-        {k2: 0 if str(v2).lower() == "nan" else v2 for k2, v2 in r.items()}
-        for r in stats_results
-    ]
-
     # cleanup data and remove nan values
     # add intersect stats if requested
     clean_results = []
