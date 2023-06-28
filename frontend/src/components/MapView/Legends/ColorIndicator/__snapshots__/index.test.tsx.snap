@@ -6,7 +6,7 @@ exports[`renders as expected 1`] = `
     class="makeStyles-container-1"
   >
     <div
-      class="makeStyles-indicator-2 makeStyles-indicator-3"
+      class="makeStyles-indicator-2 makeStyles-indicator-4"
     />
     <mock-typography
       color="textSecondary"

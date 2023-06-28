@@ -41,6 +41,7 @@ const LegendItem = memo(
     children,
     legendUrl,
     displayOpacitySlider,
+    fillPattern,
   }: LegendItemProps) => {
     const dispatch = useDispatch();
     const map = useSelector(mapSelector);
@@ -113,9 +114,10 @@ const LegendItem = memo(
           value={getLegendItemLabel(t, item)}
           color={item.color as string}
           opacity={opacity as number}
+          fillPattern={fillPattern}
         />
       ));
-    }, [getColorIndicatorKey, legend, opacity, t]);
+    }, [fillPattern, getColorIndicatorKey, legend, opacity, t]);
 
     const renderedLegendUrl = useMemo(() => {
       if (legendUrl) {
@@ -183,6 +185,7 @@ interface LegendItemProps
   type?: LayerType['type'];
   opacity: LayerType['opacity'];
   displayOpacitySlider?: boolean;
+  fillPattern?: 'left' | 'right';
 }
 
 export default withStyles(styles)(LegendItem);

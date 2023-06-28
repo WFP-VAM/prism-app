@@ -76,6 +76,7 @@ const Legends = memo(({ classes, layers }: LegendsProps) => {
           legendUrl={getLayerLegendUrl(layer)}
           type={layer.type}
           opacity={layer.opacity}
+          fillPattern={layer.fillPattern}
         >
           {t(layer.legendText)}
         </LegendItem>

@@ -24,8 +24,8 @@ const styles = () =>
     },
     tooltipItemColor: {
       display: 'flex',
-      width: 5,
-      height: 5,
+      width: 10,
+      height: 10,
       marginLeft: 3,
     },
   });
