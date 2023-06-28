@@ -111,7 +111,11 @@ const operations = {
     const ceil = sortedValues.length / 2;
     return (sortedValues[floor] + sortedValues[ceil]) / 2;
   },
-  intersect_percentage: () => 0,
+  intersect_percentage: () => {
+    throw new Error(
+      'intersect_percentage calculation is not available from client side',
+    );
+  },
 };
 
 const scaleValueIfDefined = (
