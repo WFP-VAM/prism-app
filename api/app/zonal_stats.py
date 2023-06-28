@@ -395,8 +395,7 @@ def calculate_stats(
                 intersect_percentage = 0.0
             else:
                 intersect_percentage = (
-                    float(clean_stats_properties[f"{safe_prefix}intersect_pixels"])
-                    / total
+                    clean_stats_properties[f"{safe_prefix}intersect_pixels"] / total
                 )
 
             clean_stats_properties = {
