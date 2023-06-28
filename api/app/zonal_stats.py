@@ -32,7 +32,7 @@ from shapely.ops import unary_union  # type: ignore
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_STATS = ["min", "max", "mean", "median"]
+DEFAULT_STATS = ["min", "max", "mean", "median", "nodata", "count"]
 
 
 def get_wfs_response(wfs_params: WfsParamsModel) -> WfsResponse:
@@ -336,18 +336,30 @@ def calculate_stats(
     add_stats = None
     if intersect_comparison is not None:
 
-        def intersect_percentage(masked) -> float:
+        def intersect_pixels(masked) -> float:
+            # Get total number of elements matching our operator in the boundary.
+            intersect_operator, intersect_baseline = intersect_comparison  # type: ignore
+            # If total is 0, no need to count. This avoids returning NaN.
+            total = masked.count()
+            if total == 0:
+                return 0.0
+            return float((intersect_operator(masked, intersect_baseline)).sum())
+
+        # calculate size of pixel area
+        ras = rasterio.open(geotiff)
+        a = ras.transform
+        x, y = abs(a[0]), abs(a[4])
+        pixelarea = x * y
+
+        def intersect_area(masked) -> float:
             # Get total number of elements in the boundary.
             intersect_operator, intersect_baseline = intersect_comparison  # type: ignore
-            total = masked.count()
-            # Avoid dividing by 0
-            if total == 0:
-                return 0
-            percentage = (intersect_operator(masked, intersect_baseline)).sum()
-            return percentage / total
+            intersect_sum = (intersect_operator(masked, intersect_baseline)).sum() or 0
+            return intersect_sum * pixelarea / 1e6  # area in sq km per pixel value
 
         add_stats = {
-            "intersect_percentage": intersect_percentage,
+            "intersect_pixels": intersect_pixels,
+            "intersect_area": intersect_area,
         }
 
     try:
@@ -359,6 +371,7 @@ def calculate_stats(
             geojson_out=geojson_out,
             add_stats=add_stats,
         )
+
     except rasterio.errors.RasterioError as error:
         logger.error(error)
         raise HTTPException(
@@ -367,6 +380,54 @@ def calculate_stats(
     # This Exception is raised by rasterstats library when feature collection as 0 elements within the feature array.
     except ValueError as error:
         stats_results = []
+
+    # TODO - make it work for geonjson_out
+    # filter out nan values
+    stats_results = [
+        {k2: 0 if str(v2).lower() == "nan" else v2 for k2, v2 in r.items()}
+        for r in stats_results
+    ]
+
+    # cleanup data and remove nan values
+    # add intersect stats if requested
+    clean_results = []
+    for result in stats_results:
+        stats_properties: dict = result if not geojson_out else result["properties"]
+
+        # clean results
+        clean_stats_properties = {
+            k: 0 if str(v).lower() == "nan" else v for k, v in stats_properties.items()
+        }
+
+        # calculate intersect_percentage
+        if intersect_comparison is not None:
+            safe_prefix = prefix or ""
+            total = (
+                float(clean_stats_properties[f"{safe_prefix}count"])
+                + clean_stats_properties[f"{safe_prefix}nodata"]
+            )
+            if total == 0:
+                intersect_percentage = 0.0
+            else:
+                intersect_percentage = (
+                    float(clean_stats_properties[f"{safe_prefix}intersect_pixels"]) / total
+                )
+                # intersect_percentage = result[f"{safe_prefix}intersect_area"]
+
+            clean_stats_properties = {
+                **clean_stats_properties,
+                f"{safe_prefix}intersect_percentage": intersect_percentage,
+            }
+
+        # merge properties back at the proper level
+        if not geojson_out:
+            clean_results.append(clean_stats_properties)
+        else:
+            clean_results.append(
+                {**result, "properties": clean_stats_properties}
+            )
+
+    stats_results = clean_results
 
     if not geojson_out:
         feature_properties = _extract_features_properties(zones_filepath)
