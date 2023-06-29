@@ -4,7 +4,7 @@ from collections import defaultdict
 from datetime import datetime
 from json import dump, load
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, NewType, Optional
 from urllib.parse import urlencode
 
 import numpy as np
@@ -32,6 +32,9 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "nodata", "count"]
+
+AreaInSqKm = NewType("AreaInSqKm", float)
+Percentage = NewType("Percentage", float)
 
 
 def get_wfs_response(wfs_params: WfsParamsModel) -> WfsResponse:
@@ -345,9 +348,9 @@ def calculate_stats(
                 return 0.0
             return float((intersect_operator(masked, intersect_baseline)).sum())
 
-        def intersect_area(masked) -> float:
+        def intersect_area(masked) -> AreaInSqKm:
             # Area in sq km per pixel value
-            return intersect_pixels(masked) * pixel_area
+            return AreaInSqKm(intersect_pixels(masked) * pixel_area)
 
         add_stats = {
             "intersect_pixels": intersect_pixels,
@@ -392,9 +395,9 @@ def calculate_stats(
                 + clean_stats_properties[f"{safe_prefix}nodata"]
             )
             if total == 0:
-                intersect_percentage = 0.0
+                intersect_percentage = Percentage(0.0)
             else:
-                intersect_percentage = (
+                intersect_percentage = Percentage(
                     clean_stats_properties[f"{safe_prefix}intersect_pixels"] / total
                 )
 
