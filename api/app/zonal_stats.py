@@ -31,7 +31,7 @@ from shapely.ops import unary_union  # type: ignore
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_STATS = ["min", "max", "mean", "median", "nodata", "count"]
+DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "nodata", "count"]
 
 
 def get_wfs_response(wfs_params: WfsParamsModel) -> WfsResponse:
