@@ -7,11 +7,11 @@ test('TimelineLabel renders as expected', () => {
   const props: Omit<TimelineLabelProps, 'classes'> = {
     locale: 'fr',
     date: {
-      value: new Date().getTime(),
-      date: new Date().toISOString(),
-      label: '',
-      month: '',
-      isFirstDay: true,
+      value: 1640883600000,
+      label: '31 Dec 2021',
+      month: 'Dec 2021',
+      isFirstDay: false,
+      date: '2021-12-31',
     },
   };
 

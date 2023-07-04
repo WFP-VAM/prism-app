@@ -216,12 +216,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     missingLayers.forEach(layerId => {
       const layer = LayerDefinitions[layerId as LayerKey];
       const { serverLayerName } = layer as any;
-      if (
-        // The layer does not have date support
-        serverAvailableDates[serverLayerName] !== undefined &&
-        // The layer does have date support but no additional available dates are loaded
-        serverAvailableDates[serverLayerName].length === 0
-      ) {
+      if (serverAvailableDates[serverLayerName]?.length === 0) {
         const urlLayerKey = getUrlKey(layer);
         removeLayerFromUrl(urlLayerKey, layerId);
         dispatch(
