@@ -6,7 +6,7 @@ exports[`TimelineLabel renders as expected 1`] = `
     classname="TimelineLabel-dateItemLabel-1"
     variant="body2"
   >
-    juin 2023
+    juillet 2023
   </mock-typography>
 </div>
 `;

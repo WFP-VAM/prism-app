@@ -13,7 +13,7 @@ import { useSafeTranslation } from '../../../i18n';
 import { activeLayersSelector } from '../../../context/mapStateSlice/selectors';
 import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
 import { LayerType } from '../../../config/types';
-import { filterActiveGroupedLayers } from '../utils';
+import { filterActiveLayers } from '../utils';
 
 interface IProps {
   isPanelHidden: boolean;
@@ -55,7 +55,7 @@ const FoldButton = ({ isPanelHidden, setIsPanelHidden }: IProps) => {
 
   const groupedActiveLayers = useMemo(() => {
     return activeLayers.filter((activeLayer: LayerType) => {
-      return filterActiveGroupedLayers(activeLayer, activeLayer);
+      return filterActiveLayers(activeLayer, activeLayer);
     });
   }, [activeLayers]);
 

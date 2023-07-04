@@ -43,6 +43,9 @@ import { handleChangeOpacity } from '../../../../Legends/handleChangeOpacity';
 import { Extent } from '../../../../Layers/raster-utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
+import { availableDatesSelector } from '../../../../../../context/serverStateSlice';
+import { addNotification } from '../../../../../../context/notificationStateSlice';
+import { filterActiveLayers } from '../../../../utils';
 
 const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   const {
@@ -54,6 +57,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   } = layer;
   const { t } = useSafeTranslation();
   const selectedLayers = useSelector(layersSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
   const map = useSelector(mapSelector);
   const [isOpacitySelected, setIsOpacitySelected] = useState(false);
   const [opacity, setOpacityValue] = useState<number>(initialOpacity || 0);
@@ -79,16 +83,9 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
 
   const selectedActiveLayer = useMemo(() => {
     return selected
-      ? selectedLayers.filter(sl => {
-          return (
-            (group?.activateAll &&
-              group?.layers.find(l => l.id === sl.id && l.main)) ||
-            (!group?.activateAll &&
-              group?.layers.map(l => l.id).includes(sl.id))
-          );
-        })
+      ? selectedLayers.filter(sl => filterActiveLayers(sl, sl))
       : [];
-  }, [group, selected, selectedLayers]);
+  }, [selected, selectedLayers]);
 
   const initialActiveLayer = useMemo(() => {
     return selectedActiveLayer.length > 0 ? selectedActiveLayer[0].id : null;
@@ -157,14 +154,27 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
         });
         return;
       }
+      const { serverLayerName } = layer as any;
+      if (
+        // The layer does not have date support
+        serverAvailableDates[serverLayerName] !== undefined &&
+        // The layer does have date support but no additional available dates are loaded
+        serverAvailableDates[serverLayerName].length === 0
+      ) {
+        dispatch(
+          addNotification({
+            message: `The layer: ${layer.title} does not have available dates to load`,
+            type: 'warning',
+          }),
+        );
+        return;
+      }
       const updatedUrl = appendLayerToUrl(
         urlLayerKey,
         selectedLayers,
         selectedLayer,
       );
-
       updateHistory(urlLayerKey, updatedUrl);
-
       if (
         'boundary' in selectedLayer ||
         selectedLayer.type !== 'admin_level_data'
@@ -182,6 +192,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
       map,
       removeLayerFromUrl,
       selectedLayers,
+      serverAvailableDates,
       updateHistory,
     ],
   );

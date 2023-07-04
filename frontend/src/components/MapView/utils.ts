@@ -131,7 +131,7 @@ export const generateUniqueTableKey = (activityName: string) => {
 /**
  * Filters the active layers in a group based on the activateAll property
  */
-export const filterActiveGroupedLayers = (
+const filterActiveGroupedLayers = (
   selectedLayer: LayerType,
   categoryLayer: LayerType,
 ): boolean | undefined => {
@@ -153,6 +153,13 @@ export const filterActiveLayers = (
   selectedLayer: LayerType,
   categoryLayer: LayerType,
 ): boolean | undefined => {
+  // Special case for tropical storms `adamts_buffers`
+  if (
+    selectedLayer.id.includes('adamts') &&
+    selectedLayer.id.includes('adamts')
+  ) {
+    return filterActiveGroupedLayers(selectedLayer, categoryLayer);
+  }
   return (
     selectedLayer.id === categoryLayer.id ||
     filterActiveGroupedLayers(selectedLayer, categoryLayer)

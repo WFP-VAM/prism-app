@@ -310,7 +310,7 @@ const localFetchCoverageLayerDays = async (
     return await fetchCoverageLayerDays(url, { fetch: fetchWithTimeout });
   } catch (error) {
     console.error(error);
-    if (error.name === 'AbortError') {
+    if ((error as Error).name === 'AbortError') {
       dispatch(
         addNotification({
           message: `Request at ${url} timeout`,
@@ -339,7 +339,7 @@ const localWMSGetLayerDates = async (
     return await new WMS(url, { fetch: fetchWithTimeout }).getLayerDays();
   } catch (error) {
     console.error(error);
-    if (error.name === 'AbortError') {
+    if ((error as Error).name === 'AbortError') {
       dispatch(
         addNotification({
           message: `Request at ${url} timeout`,
@@ -356,6 +356,22 @@ const localWMSGetLayerDates = async (
     return {};
   }
 };
+
+// The layer definitions bluerPrint is used as a schema for the availableDates if a request is failed to be fulfilled
+const layerDefinitionsBluePrint: AvailableDates = Object.keys(
+  LayerDefinitions,
+).reduce((acc, layerDefinitionKey) => {
+  const { serverLayerName } = LayerDefinitions[layerDefinitionKey] as any;
+  if (!serverLayerName) {
+    return {
+      ...acc,
+    };
+  }
+  return {
+    ...acc,
+    [serverLayerName]: [],
+  };
+}, {});
 
 /**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
@@ -421,7 +437,7 @@ export async function getLayersAvailableDates(
       : dates.map((d: number) => createDefaultDateItem(d));
 
     return { ...acc, [layerKey]: updatedDates };
-  }, {});
+  }, layerDefinitionsBluePrint);
 }
 
 /**

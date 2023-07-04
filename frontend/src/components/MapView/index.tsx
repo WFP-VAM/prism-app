@@ -215,9 +215,26 @@ const MapView = memo(({ classes }: MapViewProps) => {
   const addMissingLayers = useCallback(() => {
     missingLayers.forEach(layerId => {
       const layer = LayerDefinitions[layerId as LayerKey];
+      const { serverLayerName } = layer as any;
+      if (
+        // The layer does not have date support
+        serverAvailableDates[serverLayerName] !== undefined &&
+        // The layer does have date support but no additional available dates are loaded
+        serverAvailableDates[serverLayerName].length === 0
+      ) {
+        const urlLayerKey = getUrlKey(layer);
+        removeLayerFromUrl(urlLayerKey, layerId);
+        dispatch(
+          addNotification({
+            message: `The layer: ${layer.title} does not have available dates to load`,
+            type: 'warning',
+          }),
+        );
+        return;
+      }
       dispatch(addLayer(layer));
     });
-  }, [dispatch, missingLayers]);
+  }, [dispatch, missingLayers, removeLayerFromUrl, serverAvailableDates]);
 
   // The date integer from url
   const dateInt = useMemo(() => {
