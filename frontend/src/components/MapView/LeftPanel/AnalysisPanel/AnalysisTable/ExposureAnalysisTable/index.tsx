@@ -196,7 +196,7 @@ const ExposureAnalysisTable = memo(
           count={tableData.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onChangePage={handleChangePage}
+          onPageChange={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
           labelRowsPerPage={t('Rows Per Page')}
           // Temporary manual translation before we upgrade to MUI 5.

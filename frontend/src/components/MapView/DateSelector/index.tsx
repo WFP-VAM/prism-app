@@ -322,7 +322,7 @@ const DateSelector = memo(
         <Grid
           container
           alignItems="center"
-          justify="center"
+          justifyContent="center"
           className={classes.datePickerContainer}
         >
           {/* Mobile */}
