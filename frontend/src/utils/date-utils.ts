@@ -2,8 +2,8 @@ import moment, { Moment } from 'moment';
 import { DateItem } from '../config/types';
 
 export interface StartEndDate {
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: number;
+  endDate?: number;
 }
 
 export const datesAreEqualWithoutTime = (
@@ -38,7 +38,7 @@ export const generateDateItemsRange = (
 
     const dateItems: DateItem[] = datesInTime.map(dateInTime => ({
       displayDate: dateInTime,
-      queryDate: range.startDate!.getTime(),
+      queryDate: range.startDate!,
     }));
 
     // eslint-disable-next-line fp/no-mutation

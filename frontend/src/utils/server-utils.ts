@@ -268,9 +268,12 @@ async function generateIntermediateDateItemFromDataFile(
       }
       const jsonBody = await res.json();
 
+      /* eslint-disable camelcase */
+      const { start_date, end_date } = jsonBody.DataList[0];
+
       return {
-        startDate: new Date(jsonBody.DataList[0].start_date),
-        endDate: new Date(jsonBody.DataList[0].end_date),
+        startDate: moment(start_date).set({ hour: 12, minute: 0 }).valueOf(),
+        endDate: moment(end_date).set({ hour: 12, minute: 0 }).valueOf(),
       };
     }),
   );
