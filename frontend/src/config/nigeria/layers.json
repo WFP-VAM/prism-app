@@ -3632,59 +3632,60 @@
     "type": "admin_level_data",
     "path": "data/nigeria/ch/admin2_{YYYY_MM_DD}.json",
     "dates": [
-      "2018-01-01",
+      "2018-02-01",
       "2018-06-01",
-      "2018-09-01",
-      "2019-01-01",
+      "2018-10-01",
+      "2019-02-01",
       "2019-06-01",
-      "2019-09-01",
-      "2020-01-01",
+      "2019-10-01",
+      "2020-02-01",
       "2020-06-01",
-      "2020-09-01",
-      "2021-01-01",
+      "2020-10-01",
+      "2021-02-01",
       "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
+      "2021-10-01",
+      "2022-02-01",
       "2022-06-01",
-      "2022-09-01"
+      "2022-10-01",
+      "2023-06-01"
     ],
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
     "fallbackLayerKeys": ["ch_phase_admin1"],
     "admin_level": 2,
-    "data_field": "phase_class",
+    "data_field": "calc_ph_admin2",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
-      "phase1": {
+      "calc_pop_ph1_admin2": {
         "type": "number",
-        "label": "Population in phase 1"
+        "dataTitle": "Population in phase 1"
       },
-      "phase2": {
+      "calc_pop_ph2_admin2": {
         "type": "number",
-        "label": "Population in phase 2"
+        "dataTitle": "Population in phase 2"
       },
-      "phase3": {
+      "calc_pop_ph3_admin2": {
         "type": "number",
-        "label": "Population in phase 3"
+        "dataTitle": "Population in phase 3"
       },
-      "phase4": {
+      "calc_pop_ph4_admin2": {
         "type": "number",
-        "label": "Population in phase 4"
+        "dataTitle": "Population in phase 4"
       },
-      "phase5": {
+      "calc_pop_ph5_admin2": {
         "type": "number",
-        "label": "Population in phase 5"
+        "dataTitle": "Population in phase 5"
       },
-      "phase35": {
+      "calc_pop_ph3_5_admin2": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       },
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3720,55 +3721,42 @@
     "title": "ch_admin1_phase_all_dates",
     "type": "admin_level_data",
     "path": "data/nigeria/ch/admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2018-01-01",
-      "2018-06-01",
-      "2018-09-01",
-      "2019-01-01",
-      "2019-06-01",
-      "2019-09-01",
-      "2020-01-01",
-      "2020-06-01",
-      "2020-09-01",
-      "2021-01-01",
-      "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
-      "2022-06-01",
-      "2022-09-01"
-    ],
     "admin_level": 1,
-    "data_field": "phase_class",
+    "data_field": "calc_ph_admin1",
     "admin_code": "adm1_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
-      "phase1": {
+      "calc_pop_ph1_admin1": {
         "type": "number",
-        "label": "Population in phase 1"
+        "dataTitle": "Population in phase 1"
       },
-      "phase2": {
+      "calc_pop_ph2_admin1": {
         "type": "number",
-        "label": "Population in phase 2"
+        "dataTitle": "Population in phase 2"
       },
-      "phase3": {
+      "calc_pop_ph3_admin1": {
         "type": "number",
-        "label": "Population in phase 3"
+        "dataTitle": "Population in phase 3"
       },
-      "phase4": {
+      "calc_pop_ph4_admin1": {
         "type": "number",
-        "label": "Population in phase 4"
+        "dataTitle": "Population in phase 4"
       },
-      "phase5": {
+      "calc_pop_ph5_admin1": {
         "type": "number",
-        "label": "Population in phase 5"
+        "dataTitle": "Population in phase 5"
       },
-      "phase35": {
+      "calc_pop_ph3_5_admin1": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       },
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
       }
     },
     "legend": [
@@ -3804,59 +3792,60 @@
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/nigeria/ch/admin2_{YYYY_MM_DD}.json",
-    "fallbackLayerKeys": ["ch_pop3_5_admin1"],
     "dates": [
-      "2018-01-01",
+      "2018-02-01",
       "2018-06-01",
-      "2018-09-01",
-      "2019-01-01",
+      "2018-10-01",
+      "2019-02-01",
       "2019-06-01",
-      "2019-09-01",
-      "2020-01-01",
+      "2019-10-01",
+      "2020-02-01",
       "2020-06-01",
-      "2020-09-01",
-      "2021-01-01",
+      "2020-10-01",
+      "2021-02-01",
       "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
+      "2021-10-01",
+      "2022-02-01",
       "2022-06-01",
-      "2022-09-01"
+      "2022-10-01",
+      "2023-06-01"
     ],
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
-    "data_field": "phase35",
+    "data_field": "calc_pop_ph3_5_admin2",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
+    "fallbackLayerKeys": ["ch_pop3_5_admin1"],
     "feature_info_props": {
-      "phase1": {
+      "calc_pop_ph1_admin2": {
         "type": "number",
-        "label": "Population in phase 1"
+        "dataTitle": "Population in phase 1"
       },
-      "phase2": {
+      "calc_pop_ph2_admin2": {
         "type": "number",
-        "label": "Population in phase 2"
+        "dataTitle": "Population in phase 2"
       },
-      "phase3": {
+      "calc_pop_ph3_admin2": {
         "type": "number",
-        "label": "Population in phase 3"
+        "dataTitle": "Population in phase 3"
       },
-      "phase4": {
+      "calc_pop_ph4_admin2": {
         "type": "number",
-        "label": "Population in phase 4"
+        "dataTitle": "Population in phase 4"
       },
-      "phase5": {
+      "calc_pop_ph5_admin2": {
         "type": "number",
-        "label": "Population in phase 5"
+        "dataTitle": "Population in phase 5"
       },
-      "phase35": {
+      "calc_pop_ph3_5_admin2": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       },
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
       }
     },
     "opacity": 0.7,
@@ -3903,58 +3892,41 @@
     "title": "Population in phase 3 to 5",
     "type": "admin_level_data",
     "path": "data/nigeria/ch/admin1_{YYYY_MM_DD}.json",
-    "dates": [
-      "2018-01-01",
-      "2018-06-01",
-      "2018-09-01",
-      "2019-01-01",
-      "2019-06-01",
-      "2019-09-01",
-      "2020-01-01",
-      "2020-06-01",
-      "2020-09-01",
-      "2021-01-01",
-      "2021-06-01",
-      "2021-09-01",
-      "2022-01-01",
-      "2022-06-01",
-      "2022-09-01"
-    ],
-    "validity": {
-      "days": 150,
-      "mode": "forward"
-    },
-    "data_field": "phase35",
+    "data_field": "calc_pop_ph3_5_admin1",
     "admin_level": 1,
     "admin_code": "adm1_pcod2",
     "feature_info_props": {
-      "phase1": {
+      "calc_pop_ph1_admin1": {
         "type": "number",
-        "label": "Population in phase 1"
+        "dataTitle": "Population in phase 1"
       },
-      "phase2": {
+      "calc_pop_ph2_admin1": {
         "type": "number",
-        "label": "Population in phase 2"
+        "dataTitle": "Population in phase 2"
       },
-      "phase3": {
+      "calc_pop_ph3_admin1": {
         "type": "number",
-        "label": "Population in phase 3"
+        "dataTitle": "Population in phase 3"
       },
-      "phase4": {
+      "calc_pop_ph4_admin1": {
         "type": "number",
-        "label": "Population in phase 4"
+        "dataTitle": "Population in phase 4"
       },
-      "phase5": {
+      "calc_pop_ph5_admin1": {
         "type": "number",
-        "label": "Population in phase 5"
+        "dataTitle": "Population in phase 5"
       },
-      "phase35": {
+      "calc_pop_ph3_5_admin1": {
         "type": "number",
-        "label": "Population in phase 3 to 5"
+        "dataTitle": "Population in phase 3 to 5"
       },
-      "reference_date": {
+      "start_date": {
         "type": "text",
-        "label": "Reference period"
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
       }
     },
     "opacity": 0.7,
@@ -3995,134 +3967,475 @@
         "color": "#99000d"
       }
     ],
-      "legend_text": "Population in phase 3 to 5"
+    "legend_text": "Population in phase 3 to 5"
+  },
+  "ch_idps_phase": {
+    "title": "IDPs - phase classification",
+    "type": "admin_level_data",
+    "fill_pattern": "left",
+    "path": "data/nigeria/ch/idps_admin2_{YYYY_MM_DD}.json",
+    "dates": [
+      "2019-10-01",
+      "2021-02-01",
+      "2021-06-01",
+      "2021-10-01",
+      "2022-02-01",
+      "2022-06-01",
+      "2022-10-01",
+      "2023-06-01"
+    ],
+    "admin_level": 2,
+    "data_field": "phase_class",
+    "admin_code": "adm2_pcod2",
+    "fallbackLayerKeys": ["ch_idps_phase_admin1"],
+    "opacity": 0.7,
+    "feature_info_props": {
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
     },
-    "ch_inaccessible_phase": {
-      "title": "Limited access areas - phase classification",
-      "type": "admin_level_data",
-      "path": "data/nigeria/ch/inaccessible_admin2_{YYYY_MM_DD}.json",
-      "dates": [
-        "2020-01-01",
-        "2020-06-01",
-        "2020-09-01",
-        "2021-01-01",
-        "2021-06-01",
-        "2021-09-01",
-        "2022-01-01",
-        "2022-06-01",
-        "2022-09-01",
-        "2023-06-01"
-      ],
-      "validity": {
-        "days": 150,
-        "mode": "forward"
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
       },
-      "admin_level": 2,
-      "data_field": "phase_class",
-      "admin_code": "adm2_pcod2",
-      "opacity": 0.9,
-      "feature_info_props": {
-        "reference_date": {
-          "type": "text",
-          "label": "Reference period"
-        }
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
       },
-      "legend": [
-        {
-          "value": 1,
-          "label": "Phase 1 - None / minimal",
-          "color": "#c6ffc7"
-        },
-        {
-          "value": 2,
-          "label": "Phase 2 - Stressed",
-          "color": "#ffe718"
-        },
-        {
-          "value": 3,
-          "label": "Phase 3 - Crisis",
-          "color": "#e88400"
-        },
-        {
-          "value": 4,
-          "label": "Phase 4 - Emergency",
-          "color": "#e02d00"
-        },
-        {
-          "value": 5,
-          "label": "Phase 5 - Disaster / famine",
-          "color": "#5e0803"
-        }
-      ],
-      "legend_text": "Limited access areas overall phase classification"
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Internally displaced people (IDPs) overall phase classification"
+  },
+  "ch_idps_phase_admin1": {
+    "title": "IDPs - phase classification",
+    "type": "admin_level_data",
+    "path": "data/nigeria/ch/idps_admin1_{YYYY_MM_DD}.json",
+    "admin_level": 1,
+    "data_field": "calc_ph_admin1",
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
     },
-    "ch_inaccessible_pop3_5": {
-      "title": "Limited access areas - population in phase 3 to 5",
-      "type": "admin_level_data",
-      "path": "data/nigeria/ch/inaccessible_admin2_{YYYY_MM_DD}.json",
-      "dates": [
-        "2020-01-01",
-        "2020-06-01",
-        "2020-09-01",
-        "2021-01-01",
-        "2021-06-01",
-        "2021-09-01",
-        "2022-01-01",
-        "2022-06-01",
-        "2022-09-01",
-        "2023-06-01"
-      ],
-      "validity": {
-        "days": 150,
-        "mode": "forward"
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
       },
-      "admin_level": 2,
-      "data_field": "phase35",
-      "admin_code": "adm2_pcod2",
-      "opacity": 0.9,
-      "feature_info_props": {
-        "reference_date": {
-          "type": "text",
-          "label": "Reference period"
-        }
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
       },
-      "legend": [
-        {
-          "value": 1,
-          "label": "< 10,000",
-          "color": "#fee5d9"
-        },
-        {
-          "value": 10000,
-          "label": "10,000 - 20,000",
-          "color": "#fcbba1"
-        },
-        {
-          "value": 20000,
-          "label": "20,000 - 30,000",
-          "color": "#fc9272"
-        },
-        {
-          "value": 30000,
-          "label": "30,000 - 40,000",
-          "color": "#fb6a4a"
-        },
-        {
-          "value": 40000,
-          "label": "40,000 - 50,000",
-          "color": "#ef3b2c"
-        },
-        {
-          "value": 50000,
-          "label": "50,000 - 75,000",
-          "color": "#cb181d"
-        },
-        {
-          "value": 75000,
-          "label": "> 75,000",
-          "color": "#99000d"
-        }
-      ],
-      "legend_text": "Limited access areas - population in phase 3 to 5"
-    }
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Internally displaced people (IDPs) overall phase classification"
+  },
+  "ch_idps_pop3_5": {
+    "title": "IDPs in phase 3 to 5",
+    "type": "admin_level_data",
+    "path": "data/nigeria/ch/idps_admin2_{YYYY_MM_DD}.json",
+    "dates": [
+      "2019-10-01",
+      "2021-02-01",
+      "2021-06-01",
+      "2022-02-01",
+      "2022-06-01",
+      "2022-10-01",
+      "2023-02-01",
+      "2023-06-01"
+    ],
+    "admin_level": 2,
+    "data_field": "calc_pop_ph3_5_admin2",
+    "admin_code": "adm2_pcod2",
+    "fallbackLayerKeys": ["ch_idps_phase_admin1"],
+    "opacity": 0.7,
+    "feature_info_props": {
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 20,000",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 20000,
+        "label": "20,000 - 30,000",
+        "color": "#fc9272"
+      },
+      {
+        "value": 30000,
+        "label": "30,000 - 40,000",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40000,
+        "label": "40,000 - 50,000",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 75,000",
+        "color": "#cb181d"
+      },
+      {
+        "value": 75000,
+        "label": "> 75,000",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Population in phase 3 to 5"
+  },
+  "ch_idps_pop3_5_admin1": {
+    "title": "IDPs in phase 3 to 5",
+    "type": "admin_level_data",
+    "path": "data/nigeria/ch/idps_admin1_{YYYY_MM_DD}.json",
+    "admin_level": 1,
+    "data_field": "calc_pop_ph3_5_admin1",
+    "admin_code": "adm1_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 20,000",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 20000,
+        "label": "20,000 - 30,000",
+        "color": "#fc9272"
+      },
+      {
+        "value": 30000,
+        "label": "30,000 - 40,000",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40000,
+        "label": "40,000 - 50,000",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 75,000",
+        "color": "#cb181d"
+      },
+      {
+        "value": 75000,
+        "label": "> 75,000",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Population in phase 3 to 5"
+  },
+  "ch_inaccessible_phase": {
+    "title": "Limited access areas - phase classification",
+    "type": "admin_level_data",
+    "fill_pattern": "left",
+    "path": "data/nigeria/ch/al_admin2_{YYYY_MM_DD}.json",
+    "dates": [
+      "2020-02-01",
+      "2020-06-01",
+      "2020-10-01",
+      "2021-02-01",
+      "2021-06-01",
+      "2021-10-01",
+      "2022-02-01",
+      "2022-06-01",
+      "2022-10-01",
+      "2023-06-01"
+    ],
+    "admin_level": 2,
+    "data_field": "phase_class",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Limited access areas overall phase classification"
+  },
+  "ch_inaccessible_pop3_5": {
+    "title": "Limited access areas - population in phase 3 to 5",
+    "type": "admin_level_data",
+    "fill_pattern": "left",
+    "path": "data/nigeria/ch/al_admin2_{YYYY_MM_DD}.json",
+    "dates": [
+      "2020-02-01",
+      "2020-06-01",
+      "2020-10-01",
+      "2021-02-01",
+      "2021-06-01",
+      "2021-10-01",
+      "2022-02-01",
+      "2022-06-01",
+      "2022-10-01",
+      "2023-06-01"
+    ],
+    "admin_level": 2,
+    "data_field": "calc_pop_ph3_5_admin2",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 20,000",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 20000,
+        "label": "20,000 - 30,000",
+        "color": "#fc9272"
+      },
+      {
+        "value": 30000,
+        "label": "30,000 - 40,000",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40000,
+        "label": "40,000 - 50,000",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 75,000",
+        "color": "#cb181d"
+      },
+      {
+        "value": 75000,
+        "label": "> 75,000",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Limited access areas - population in phase 3 to 5"
+  },
+  "ch_urban_phase": {
+    "title": "Urban areas - phase classification",
+    "type": "admin_level_data",
+    "fill_pattern": "left",
+    "path": "data/nigeria/ch/urb_admin2_{YYYY_MM_DD}.json",
+    "dates": ["2021-02-01", "2021-06-01", "2022-02-01", "2022-06-01"],
+    "admin_level": 2,
+    "data_field": "phase_class",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "Phase 1 - None / minimal",
+        "color": "#c6ffc7"
+      },
+      {
+        "value": 2,
+        "label": "Phase 2 - Stressed",
+        "color": "#ffe718"
+      },
+      {
+        "value": 3,
+        "label": "Phase 3 - Crisis",
+        "color": "#e88400"
+      },
+      {
+        "value": 4,
+        "label": "Phase 4 - Emergency",
+        "color": "#e02d00"
+      },
+      {
+        "value": 5,
+        "label": "Phase 5 - Disaster / famine",
+        "color": "#5e0803"
+      }
+    ],
+    "legend_text": "Urban areas - overall phase classification"
+  },
+  "ch_urban_pop3_5": {
+    "title": "Urban areas - population in phase 3 to 5",
+    "type": "admin_level_data",
+    "fill_pattern": "left",
+    "path": "data/nigeria/ch/urb_admin2_{YYYY_MM_DD}.json",
+    "dates": ["2022-02-01", "2022-06-01", "2023-06-01"],
+    "admin_level": 2,
+    "data_field": "calc_pop_ph3_5_admin2",
+    "admin_code": "adm2_pcod2",
+    "opacity": 0.7,
+    "feature_info_props": {
+      "start_date": {
+        "type": "text",
+        "dataTitle": "Reference period start"
+      },
+      "end_date": {
+        "type": "text",
+        "dataTitle": "Reference period end"
+      }
+    },
+    "legend": [
+      {
+        "value": 1,
+        "label": "< 10,000",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 20,000",
+        "color": "#fcbba1"
+      },
+      {
+        "value": 20000,
+        "label": "20,000 - 30,000",
+        "color": "#fc9272"
+      },
+      {
+        "value": 30000,
+        "label": "30,000 - 40,000",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40000,
+        "label": "40,000 - 50,000",
+        "color": "#ef3b2c"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 75,000",
+        "color": "#cb181d"
+      },
+      {
+        "value": 75000,
+        "label": "> 75,000",
+        "color": "#99000d"
+      }
+    ],
+    "legend_text": "Urban areas - population in phase 3 to 5"
+  }
 }
