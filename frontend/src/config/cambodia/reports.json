@@ -7,7 +7,7 @@
     "sub_title_key": "Publication Date",
     "sub_text": "This is an automated report. Information should be treated as preliminary",
     "areas_legend_definition": {
-      "title": "Areas",
+      "title": "Boundaries",
       "items": [
         {
           "title": "Province",
@@ -18,7 +18,7 @@
           "color": "#999797"
         },
         {
-          "title": "Township",
+          "title": "Commune",
           "color": "#D8D6D6"
         }
       ]
@@ -29,12 +29,20 @@
         {
           "title": "Flooded",
           "color": "#a50f15"
+        },
+        {
+          "title": "Permanent Water",
+          "color": "#0571b0"
+        },
+        {
+          "title": "Seasonal Water",
+          "color": "#92c5de"
         }
       ]
     },
-    "sources_primary_text": "Sources WFP, UNGIWG, OCHA, GAUL, USGS, NASA, UCSB",
-    "sources_secondary_text": "The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal or constitutional status of any country, territory, city or sea, or concerning the delimitation of its frontiers or boundaries.",
-    "table_name": "Population Exposure",
+    "sources_primary_text": "Sources: Flood extent from SERVIR Mekong HYDRAFloods. Population data from WorldPop",
+    "sources_secondary_text": "Contains modified Copernicus Sentinel data. The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal or constitutional status of any country, territory, city or sea, or concerning the delimitation of its frontiers or boundaries.",
+    "table_name": "Population exposed to floods",
     "signature_text": "PRISM automated report"
   }
 }
