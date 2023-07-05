@@ -44,7 +44,8 @@ import { Extent } from '../../../../Layers/raster-utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
 import { availableDatesSelector } from '../../../../../../context/serverStateSlice';
-import { addNotification } from '../../../../../../context/notificationStateSlice';
+import { checkLayerAvailableDatesAndContinueOrRemove } from '../../../../utils';
+import { LocalError } from '../../../../../../utils/error-utils';
 
 const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   const {
@@ -160,14 +161,15 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
         });
         return;
       }
-      const { serverLayerName } = layer as any;
-      if (serverAvailableDates[serverLayerName]?.length === 0) {
-        dispatch(
-          addNotification({
-            message: `The layer: ${layer.title} does not have available dates to load`,
-            type: 'warning',
-          }),
+      try {
+        checkLayerAvailableDatesAndContinueOrRemove(
+          layer,
+          serverAvailableDates,
+          removeLayerFromUrl,
+          dispatch,
         );
+      } catch (error) {
+        console.error((error as LocalError).getErrorMessage());
         return;
       }
       const updatedUrl = appendLayerToUrl(
