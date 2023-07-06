@@ -19,16 +19,16 @@ import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import i18n from 'i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from '@material-ui/icons';
-import { BoundaryLayerProps } from '../../../config/types';
+import { BoundaryLayerProps } from 'config/types';
 import {
   getSelectedBoundaries,
   setIsSelectionMode,
   setSelectedBoundaries as setSelectedBoundariesRedux,
-} from '../../../context/mapSelectionLayerStateSlice';
-import { getBoundaryLayerSingleton } from '../../../config/utils';
-import { layerDataSelector } from '../../../context/mapStateSlice/selectors';
-import { LayerData } from '../../../context/layers/layer-data';
-import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
+} from 'context/mapSelectionLayerStateSlice';
+import { getBoundaryLayerSingleton } from 'config/utils';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { LayerData } from 'context/layers/layer-data';
+import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 const ClickableListSubheader = styled(ListSubheader)(({ theme }) => ({

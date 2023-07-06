@@ -9,12 +9,12 @@ import {
 import { CreateCSSProperties } from '@material-ui/styles';
 import { compact, merge } from 'lodash';
 import React, { memo, useCallback, useMemo } from 'react';
-import { DateItem, DateRangeType } from '../../../../config/types';
-import { useSafeTranslation } from '../../../../i18n';
+import { DateItem, DateRangeType } from 'config/types';
+import { useSafeTranslation } from 'i18n';
 import {
   DateCompatibleLayerWithDateItems,
   TIMELINE_ITEM_WIDTH,
-} from '../utils';
+} from 'components/MapView/DateSelector/utils';
 import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
 import TooltipItem from './TooltipItem';

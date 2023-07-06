@@ -15,10 +15,10 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { TableRow as AnalysisTableRow } from '../../../../../context/analysisResultStateSlice';
-import { showPopup } from '../../../../../context/tooltipStateSlice';
-import { Column } from '../../../../../utils/analysis-utils';
-import { useSafeTranslation } from '../../../../../i18n';
+import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
+import { showPopup } from 'context/tooltipStateSlice';
+import { Column } from 'utils/analysis-utils';
+import { useSafeTranslation } from 'i18n';
 
 const AnalysisTable = memo(
   ({

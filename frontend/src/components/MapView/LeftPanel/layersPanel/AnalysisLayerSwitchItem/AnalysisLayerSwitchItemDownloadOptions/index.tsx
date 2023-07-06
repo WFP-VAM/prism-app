@@ -1,8 +1,8 @@
 import React, { memo, useMemo, useCallback, useState } from 'react';
 import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { useSafeTranslation } from '../../../../../../i18n';
-import { downloadToFile } from '../../../../utils';
+import { useSafeTranslation } from 'i18n';
+import { downloadToFile } from 'components/MapView/utils';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
@@ -10,7 +10,7 @@ import {
   generateAnalysisFilename,
   PolygonAnalysisResult,
   useAnalysisTableColumns,
-} from '../../../../../../utils/analysis-utils';
+} from 'utils/analysis-utils';
 
 const AnalysisLayerSwitchItemDownloadOptions = memo(
   ({

@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Typography, Grid } from '@material-ui/core';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch } from 'react-redux';
-import { appConfig } from '../../../config';
-import ContentDialog from '../ContentDialog';
-import { useSafeTranslation } from '../../../i18n';
-import { loadLayerContent } from '../../../utils/load-layer-utils';
+import { appConfig } from 'config';
+import ContentDialog from 'components/NavBar/ContentDialog';
+import { useSafeTranslation } from 'i18n';
+import { loadLayerContent } from 'utils/load-layer-utils';
 
 const About = memo(() => {
   const [content, setContent] = useState<string | undefined>(undefined);

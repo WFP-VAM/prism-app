@@ -1,25 +1,22 @@
 import { FeatureCollection } from 'geojson';
-import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 import {
   AggregationOperations,
   BoundaryLayerProps,
   ImpactLayerProps,
   AdminLevelDataLayerProps,
   WMSLayerProps,
-} from '../../config/types';
-import type { ThunkApi } from '../store';
+} from 'config/types';
+import type { ThunkApi } from 'context/store';
 
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../config/utils';
-import { layerDataSelector } from '../mapStateSlice/selectors';
-import type { BaselineLayerData } from '../../utils/analysis-utils';
+import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import type { BaselineLayerData } from 'utils/analysis-utils';
 import {
   checkBaselineDataLayer,
   loadFeaturesClientSide,
   loadFeaturesFromApi,
-} from '../../utils/analysis-utils';
+} from 'utils/analysis-utils';
+import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
 
 export type ImpactLayerData = {
   boundaries: FeatureCollection;

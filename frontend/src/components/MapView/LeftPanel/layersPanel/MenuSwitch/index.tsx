@@ -19,12 +19,12 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { LayerType } from '../../../../../config/types';
-import { useSafeTranslation } from '../../../../../i18n';
-import { Extent } from '../../../Layers/raster-utils';
+import { LayerType } from 'config/types';
+import { useSafeTranslation } from 'i18n';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { layersSelector } from 'context/mapStateSlice/selectors';
+import { filterActiveLayers } from 'components/MapView/utils';
 import SwitchItem from './SwitchItem';
-import { layersSelector } from '../../../../../context/mapStateSlice/selectors';
-import { filterActiveLayers } from '../../../utils';
 
 const useStyles = makeStyles(() =>
   createStyles({

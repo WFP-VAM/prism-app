@@ -2,8 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 
+import { store } from 'context/store';
 import MapView from '.';
-import { store } from '../../context/store';
 
 jest.mock('./Layers/WMSLayer', () => 'mock-WMSLayer');
 jest.mock('./Layers/ImpactLayer', () => 'mock-ImpactLayer');

@@ -3,14 +3,13 @@ import {
   DatasetLevel,
   BoundaryLayerProps,
   WMSLayerProps,
-} from '../config/types';
+} from 'config/types';
 import {
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
-} from '../config/utils';
+} from 'config/utils';
+import { AdminBoundaryParams } from 'context/datasetStateSlice';
 import { CHART_API_URL } from './constants';
-
-import { AdminBoundaryParams } from '../context/datasetStateSlice';
 
 export function getAdminLevelLayer(
   adminLevel: AdminLevelType = 1,

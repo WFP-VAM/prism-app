@@ -10,21 +10,17 @@ import { GeoJsonProperties } from 'geojson';
 import { omit } from 'lodash';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { appConfig } from '../../../../../config';
-import {
-  ChartConfig,
-  DatasetField,
-  WMSLayerProps,
-} from '../../../../../config/types';
+import { appConfig } from 'config';
+import { ChartConfig, DatasetField, WMSLayerProps } from 'config/types';
 import {
   CHART_DATA_PREFIXES,
   DatasetRequestParams,
   loadAdminBoundaryDataset,
-} from '../../../../../context/datasetStateSlice';
-import { TableData } from '../../../../../context/tableStateSlice';
-import { useSafeTranslation } from '../../../../../i18n';
-import { getChartAdminBoundaryParams } from '../../../../../utils/admin-utils';
-import Chart from '../../../../Common/Chart';
+} from 'context/datasetStateSlice';
+import { TableData } from 'context/tableStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { getChartAdminBoundaryParams } from 'utils/admin-utils';
+import Chart from 'components/Common/Chart';
 
 const ChartSection = memo(
   ({

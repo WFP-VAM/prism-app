@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-import { colors } from '../../muiTheme';
+import { colors } from 'muiTheme';
 
 function NotFound({ classes }: NotFoundProps) {
   return (

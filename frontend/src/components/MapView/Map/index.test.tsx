@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import React from 'react';
-import { store } from '../../../context/store';
+import { store } from 'context/store';
 import MapComponent from '.';
 
 jest.mock('react-mapbox-gl', () => ({

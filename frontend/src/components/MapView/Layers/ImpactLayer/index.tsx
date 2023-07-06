@@ -4,24 +4,21 @@ import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FillPaint, LinePaint } from 'mapbox-gl';
 import { get } from 'lodash';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core';
-import { getExtent, Extent } from '../raster-utils';
-import { legendToStops } from '../layer-utils';
-import { ImpactLayerProps } from '../../../../config/types';
-import { LayerDefinitions } from '../../../../config/utils';
-import {
-  LayerData,
-  loadLayerData,
-} from '../../../../context/layers/layer-data';
+import { getExtent, Extent } from 'components/MapView/Layers/raster-utils';
+import { legendToStops } from 'components/MapView/Layers/layer-utils';
+import { ImpactLayerProps } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import { LayerData, loadLayerData } from 'context/layers/layer-data';
 
-import { addPopupData } from '../../../../context/tooltipStateSlice';
+import { addPopupData } from 'context/tooltipStateSlice';
 import {
   dateRangeSelector,
   layerDataSelector,
   mapSelector,
-} from '../../../../context/mapStateSlice/selectors';
-import { getFeatureInfoPropsData } from '../../utils';
-import { i18nTranslator, useSafeTranslation } from '../../../../i18n';
-import { getRoundedData } from '../../../../utils/data-utils';
+} from 'context/mapStateSlice/selectors';
+import { getFeatureInfoPropsData } from 'components/MapView/utils';
+import { i18nTranslator, useSafeTranslation } from 'i18n';
+import { getRoundedData } from 'utils/data-utils';
 
 const linePaint: LinePaint = {
   'line-color': 'grey',
