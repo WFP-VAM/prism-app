@@ -494,15 +494,15 @@ export async function getLayersAvailableDates(
   // Generate and replace date items for layers with all intermediates dates
   const layerDateItemsMap = await Promise.all(
     Object.entries(mergedLayers).map(
-      async (layerDatesEnntry: [string, number[]]) => {
+      async (layerDatesEntry: [string, number[]]) => {
         // Generate dates for layers with validity and no path
         const matchingValidityLayer = layersWithValidity.find(
-          validityLayer => validityLayer.name === layerDatesEnntry[0],
+          validityLayer => validityLayer.name === layerDatesEntry[0],
         );
 
         if (matchingValidityLayer) {
           return {
-            [layerDatesEnntry[0]]: generateIntermediateDateItemFromValidity(
+            [layerDatesEntry[0]]: generateIntermediateDateItemFromValidity(
               matchingValidityLayer,
             ),
           };
@@ -510,12 +510,12 @@ export async function getLayersAvailableDates(
 
         // Generate dates for layers with path
         const matchingPathLayer = layersWithPath.find(
-          validityLayer => validityLayer.name === layerDatesEnntry[0],
+          validityLayer => validityLayer.name === layerDatesEntry[0],
         );
 
         if (matchingPathLayer) {
           return {
-            [layerDatesEnntry[0]]: await generateIntermediateDateItemFromDataFile(
+            [layerDatesEntry[0]]: await generateIntermediateDateItemFromDataFile(
               matchingPathLayer.dates,
               matchingPathLayer.path,
             ),
@@ -524,7 +524,7 @@ export async function getLayersAvailableDates(
 
         // Genererate dates for layers with validity but not an admin_level_data type
         return {
-          [layerDatesEnntry[0]]: layerDatesEnntry[1].map((d: number) =>
+          [layerDatesEntry[0]]: layerDatesEntry[1].map((d: number) =>
             generateDefaultDateItem(d),
           ),
         };
@@ -532,11 +532,8 @@ export async function getLayersAvailableDates(
     ),
   );
 
-  console.log('Layer Date Items Map', layerDateItemsMap);
-
-  console.log('Layer Definitions blueprint', layerDefinitionsBluePrint);
-
-  return Object.assign({}, ...layerDateItemsMap);
+  // eslint-disable-next-line fp/no-mutating-assign
+  return Object.assign(layerDefinitionsBluePrint, ...layerDateItemsMap);
 }
 
 /**
