@@ -10,14 +10,12 @@ import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useSafeTranslation } from '../../../i18n';
-import { activeLayersSelector } from '../../../context/mapStateSlice/selectors';
 import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
-import { LayerType } from '../../../config/types';
-import { filterActiveGroupedLayers } from '../utils';
 
 interface IProps {
   isPanelHidden: boolean;
   setIsPanelHidden: React.Dispatch<React.SetStateAction<boolean>>;
+  activeLayers: number;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -43,28 +41,25 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const FoldButton = ({ isPanelHidden, setIsPanelHidden }: IProps) => {
+const FoldButton = ({
+  isPanelHidden,
+  setIsPanelHidden,
+  activeLayers,
+}: IProps) => {
   const classes = useStyles();
   const { t } = useSafeTranslation();
-  const activeLayers = useSelector(activeLayersSelector);
   const analysisData = useSelector(analysisResultSelector);
 
   const onClick = useCallback(() => {
     setIsPanelHidden(value => !value);
   }, [setIsPanelHidden]);
 
-  const groupedActiveLayers = useMemo(() => {
-    return activeLayers.filter((activeLayer: LayerType) => {
-      return filterActiveGroupedLayers(activeLayer, activeLayer);
-    });
-  }, [activeLayers]);
-
   const badgeContent = useMemo(() => {
     if (!analysisData) {
-      return groupedActiveLayers.length;
+      return activeLayers;
     }
-    return groupedActiveLayers.length + 1;
-  }, [groupedActiveLayers.length, analysisData]);
+    return activeLayers + 1;
+  }, [activeLayers, analysisData]);
 
   const renderedIcon = useMemo(() => {
     if (isPanelHidden && badgeContent >= 1) {

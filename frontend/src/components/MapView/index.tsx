@@ -66,6 +66,8 @@ import DataViewer from '../DataViewer';
 import LeftPanel from './LeftPanel';
 import FoldButton from './FoldButton';
 import MapComponent from './Map';
+import { checkLayerAvailableDatesAndContinueOrRemove } from './utils';
+import { LocalError } from '../../utils/error-utils';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -215,9 +217,20 @@ const MapView = memo(({ classes }: MapViewProps) => {
   const addMissingLayers = useCallback(() => {
     missingLayers.forEach(layerId => {
       const layer = LayerDefinitions[layerId as LayerKey];
+      try {
+        checkLayerAvailableDatesAndContinueOrRemove(
+          layer,
+          serverAvailableDates,
+          removeLayerFromUrl,
+          dispatch,
+        );
+      } catch (error) {
+        console.error((error as LocalError).getErrorMessage());
+        return;
+      }
       dispatch(addLayer(layer));
     });
-  }, [dispatch, missingLayers]);
+  }, [dispatch, missingLayers, removeLayerFromUrl, serverAvailableDates]);
 
   // The date integer from url
   const dateInt = useMemo(() => {
@@ -583,6 +596,10 @@ const MapView = memo(({ classes }: MapViewProps) => {
     );
   }, [classes.loading, datesLoading]);
 
+  const activeLayers = useMemo(() => {
+    return hazardLayersArray.length + baselineLayersArray.length;
+  }, [baselineLayersArray.length, hazardLayersArray.length]);
+
   return (
     <Box className={classes.root}>
       <LeftPanel
@@ -590,6 +607,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
         panelSize={panelSize}
         setPanelSize={setPanelSize}
         isPanelHidden={isPanelHidden}
+        activeLayers={activeLayers}
       />
       <Box className={classes.container}>
         <Box
@@ -597,6 +615,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
           style={{ marginLeft: isPanelHidden ? PanelSize.folded : panelSize }}
         >
           <FoldButton
+            activeLayers={activeLayers}
             isPanelHidden={isPanelHidden}
             setIsPanelHidden={setIsPanelHidden}
           />
@@ -627,7 +646,7 @@ const styles = () =>
       width: '100%',
       position: 'absolute',
       top: 0,
-      rigth: 0,
+      right: 0,
     },
     optionContainer: {
       position: 'relative',
