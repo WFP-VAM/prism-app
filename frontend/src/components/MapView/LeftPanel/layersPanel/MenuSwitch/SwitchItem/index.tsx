@@ -44,6 +44,9 @@ import { handleChangeOpacity } from '../../../../Legends/handleChangeOpacity';
 import { Extent } from '../../../../Layers/raster-utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
+import { availableDatesSelector } from '../../../../../../context/serverStateSlice';
+import { checkLayerAvailableDatesAndContinueOrRemove } from '../../../../utils';
+import { LocalError } from '../../../../../../utils/error-utils';
 
 const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   const {
@@ -55,6 +58,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   } = layer;
   const { t } = useSafeTranslation();
   const selectedLayers = useSelector(layersSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
   const map = useSelector(mapSelector);
   const [isOpacitySelected, setIsOpacitySelected] = useState(false);
   const [opacity, setOpacityValue] = useState<number>(initialOpacity || 0);
@@ -158,14 +162,23 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
         });
         return;
       }
+      try {
+        checkLayerAvailableDatesAndContinueOrRemove(
+          layer,
+          serverAvailableDates,
+          removeLayerFromUrl,
+          dispatch,
+        );
+      } catch (error) {
+        console.error((error as LocalError).getErrorMessage());
+        return;
+      }
       const updatedUrl = appendLayerToUrl(
         urlLayerKey,
         selectedLayers,
         selectedLayer,
       );
-
       updateHistory(urlLayerKey, updatedUrl);
-
       if (
         'boundary' in selectedLayer ||
         selectedLayer.type !== 'admin_level_data'
@@ -183,6 +196,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
       map,
       removeLayerFromUrl,
       selectedLayers,
+      serverAvailableDates,
       updateHistory,
     ],
   );
