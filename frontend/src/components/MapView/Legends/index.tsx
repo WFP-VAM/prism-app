@@ -22,14 +22,14 @@ import {
 } from '../../../context/analysisResultStateSlice';
 
 import { BaselineLayerResult } from '../../../utils/analysis-utils';
-
+import { Extent } from '../Layers/raster-utils';
 import { useSafeTranslation } from '../../../i18n';
 
 import AnalysisDownloadButton from './AnalysisDownloadButton';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
 
-const Legends = memo(({ classes, layers }: LegendsProps) => {
+const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
   // Selectors
   const isAnalysisLayerActive = useSelector(isAnalysisLayerActiveSelector);
   const analysisResult = useSelector(analysisResultSelector);
@@ -77,12 +77,13 @@ const Legends = memo(({ classes, layers }: LegendsProps) => {
           type={layer.type}
           opacity={layer.opacity}
           fillPattern={layer.fillPattern}
+          extent={extent}
         >
           {t(layer.legendText)}
         </LegendItem>
       );
     });
-  }, [getLayerLegendUrl, layers, t]);
+  }, [getLayerLegendUrl, layers, t, extent]);
 
   const renderedLegendImpactResult = useMemo(() => {
     if (!(analysisResult instanceof BaselineLayerResult)) {
@@ -197,6 +198,7 @@ const styles = () =>
   });
 
 export interface LegendsProps extends WithStyles<typeof styles> {
+  extent?: Extent;
   layers: LayerType[];
 }
 

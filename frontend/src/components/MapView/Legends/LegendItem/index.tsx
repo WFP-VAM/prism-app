@@ -11,23 +11,34 @@ import {
   createStyles,
   Divider,
   Grid,
+  IconButton,
   ListItem,
   Paper,
+  Popover,
   Slider,
+  Theme,
+  Tooltip,
   Typography,
   withStyles,
   WithStyles,
 } from '@material-ui/core';
+import { Close, Opacity } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerType, LegendDefinitionItem } from '../../../../config/types';
-import { mapSelector } from '../../../../context/mapStateSlice/selectors';
+import {
+  mapSelector,
+  layersSelector,
+} from '../../../../context/mapStateSlice/selectors';
+// import { removeLayer } from '../../../../context/mapStateSlice';
 import { useSafeTranslation } from '../../../../i18n';
 import { setAnalysisLayerOpacity } from '../../../../context/analysisResultStateSlice';
 import LayerContentPreview from '../layerContentPreview';
 import { handleChangeOpacity } from '../handleChangeOpacity';
 import ColorIndicator from '../ColorIndicator';
 import { getLegendItemLabel } from '../../utils';
+import { Extent } from '../../Layers/raster-utils';
 import LoadingBar from '../LoadingBar';
+import LayerDownloadOptions from '../../LeftPanel/layersPanel/MenuSwitch/SwitchItem/LayerDownloadOptions';
 
 // Children here is legendText
 const LegendItem = memo(
@@ -42,9 +53,11 @@ const LegendItem = memo(
     legendUrl,
     displayOpacitySlider,
     fillPattern,
+    extent,
   }: LegendItemProps) => {
     const dispatch = useDispatch();
     const map = useSelector(mapSelector);
+    const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
     const [opacity, setOpacityValue] = useState<number | number[]>(
       initialOpacity || 0,
     );
@@ -55,6 +68,17 @@ const LegendItem = memo(
 
     const { t } = useSafeTranslation();
 
+    const openOpacity = (event: React.MouseEvent<HTMLButtonElement>) => {
+      setOpacityEl(event.currentTarget);
+    };
+
+    const closeOpacity = () => {
+      setOpacityEl(null);
+    };
+
+    const open = Boolean(opacityEl);
+    const opacityId = open ? 'opacity-popover' : undefined;
+
     const handleChangeOpacityValue = useCallback(
       val => {
         setOpacityValue(val);
@@ -62,6 +86,11 @@ const LegendItem = memo(
       },
       [dispatch],
     );
+
+    const selectedLayers = useSelector(layersSelector);
+    const layer = useMemo(() => {
+      return selectedLayers.find(l => l.id === id);
+    }, [id, selectedLayers]);
 
     const renderedOpacitySlider = useMemo(() => {
       if (!displayOpacitySlider) {
@@ -158,13 +187,70 @@ const LegendItem = memo(
           {renderedLegend}
           <LoadingBar layerId={id} />
           {renderedChildren}
+          <Box display="flex" justifyContent="flex-end">
+            <Tooltip title="Opacity">
+              <IconButton size="small" onClick={openOpacity}>
+                <Opacity fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Popover
+              id={opacityId}
+              open={open}
+              anchorEl={opacityEl}
+              onClose={closeOpacity}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+            >
+              <Box px={2} display="flex" className={classes.opacityBox}>
+                <Typography classes={{ root: classes.opacityText }}>
+                  {`${Math.round((opacity as number) * 100)}%`}
+                </Typography>
+                <Slider
+                  value={opacity}
+                  step={0.01}
+                  min={0}
+                  max={1}
+                  aria-labelledby="opacity-slider"
+                  classes={{
+                    root: classes.opacitySliderRoot,
+                    thumb: classes.opacitySliderThumb,
+                  }}
+                  onChange={(e, newValue) =>
+                    handleChangeOpacity(
+                      e,
+                      newValue as number,
+                      map,
+                      id,
+                      type,
+                      handleChangeOpacityValue,
+                    )
+                  }
+                />
+              </Box>
+            </Popover>
+            {layer && (
+              <LayerDownloadOptions
+                layer={layer}
+                extent={extent}
+                selected
+                size="small"
+              />
+            )}
+            <Tooltip title="Close layer">
+              <IconButton size="small">
+                <Close fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Paper>
       </ListItem>
     );
   },
 );
 
-const styles = () =>
+const styles = (theme: Theme) =>
   createStyles({
     paper: {
       padding: 8,
@@ -172,6 +258,24 @@ const styles = () =>
     },
     slider: {
       padding: '0 5px',
+    },
+    opacityBox: {
+      backgroundColor: theme.palette.primary.main,
+      overflow: 'hidden',
+    },
+    opacitySliderRoot: {
+      color: '#fff',
+      width: 140,
+      height: 4,
+    },
+    opacitySliderThumb: {
+      backgroundColor: '#fff',
+    },
+    opacityText: {
+      color: '#fff',
+      marginRight: 5,
+      width: 28,
+      lineHeight: '28px',
     },
   });
 
@@ -186,6 +290,7 @@ interface LegendItemProps
   opacity: LayerType['opacity'];
   displayOpacitySlider?: boolean;
   fillPattern?: 'left' | 'right';
+  extent?: Extent;
 }
 
 export default withStyles(styles)(LegendItem);
