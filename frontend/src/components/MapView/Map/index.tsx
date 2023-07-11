@@ -35,6 +35,7 @@ interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
   boundaryLayerId: string;
   selectedLayers: LayerType[];
+  panelHidden: boolean;
 }
 
 type LayerComponentsMap<U extends LayerType> = {
@@ -46,9 +47,10 @@ const MapComponent = memo(
     setIsAlertFormOpen,
     boundaryLayerId,
     selectedLayers,
+    panelHidden,
   }: MapComponentProps) => {
     const {
-      map: { boundingBox, hidePanel, minZoom, maxZoom, maxBounds },
+      map: { boundingBox, minZoom, maxZoom, maxBounds },
     } = appConfig;
 
     const dispatch = useDispatch();
@@ -79,12 +81,12 @@ const MapComponent = memo(
         duration: 0,
         padding: {
           bottom: 150, // room for dates.
-          left: hidePanel ? 30 : 500, // room for the left panel if active.
+          left: panelHidden ? 30 : 500, // room for the left panel if active.
           right: 60,
           top: 70,
         },
       };
-    }, [hidePanel]);
+    }, [panelHidden]);
 
     const MapboxMap = useMemo(() => {
       return ReactMapboxGl({
