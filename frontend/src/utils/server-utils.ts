@@ -10,6 +10,7 @@ import type {
   RequestFeatureInfo,
   Validity,
   ValidityLayer,
+  ValidityPeriod,
 } from '../config/types';
 import {
   AdminLevelDataLayerProps,
@@ -245,6 +246,7 @@ const generateDefaultDateItem = (
 async function generateIntermediateDateItemFromDataFile(
   layerDates: number[],
   layerPathTemplate: string,
+  validityPeriod: ValidityPeriod,
 ) {
   const ranges: StartEndDate[] = await Promise.all(
     layerDates.map(async r => {
@@ -268,12 +270,12 @@ async function generateIntermediateDateItemFromDataFile(
       }
       const jsonBody = await res.json();
 
-      /* eslint-disable camelcase */
-      const { start_date, end_date } = jsonBody.DataList[0];
+      const startDate = jsonBody.DataList[0][validityPeriod.start_date_field];
+      const endDate = jsonBody.DataList[0][validityPeriod.end_date_field];
 
       return {
-        startDate: moment(start_date).set({ hour: 12, minute: 0 }).valueOf(),
-        endDate: moment(end_date).set({ hour: 12, minute: 0 }).valueOf(),
+        startDate: moment(startDate).set({ hour: 12, minute: 0 }).valueOf(),
+        endDate: moment(endDate).set({ hour: 12, minute: 0 }).valueOf(),
       };
     }),
   );
@@ -473,14 +475,11 @@ export async function getLayersAvailableDates(
       };
     });
 
-  // Retrieve layer that have a path object
-  const layersWithPath: PathLayer[] = Object.values(LayerDefinitions)
-    .filter(
-      layer =>
-        !!(layer as AdminLevelDataLayerProps).path &&
-        !layer.validity &&
-        !!(layer as AdminLevelDataLayerProps).dates,
-    )
+  // Retrieve layers that have validityPeriod
+  const layersWithValidityStartEndDate: PathLayer[] = Object.values(
+    LayerDefinitions,
+  )
+    .filter(layer => !!(layer as AdminLevelDataLayerProps).validityPeriod)
     .map(layer => {
       const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
 
@@ -488,6 +487,8 @@ export async function getLayersAvailableDates(
         name: layerId,
         dates: mergedLayers[layerId],
         path: (layer as AdminLevelDataLayerProps).path,
+        validityPeriod: (layer as AdminLevelDataLayerProps)
+          .validityPeriod as ValidityPeriod,
       };
     });
 
@@ -509,7 +510,7 @@ export async function getLayersAvailableDates(
         }
 
         // Generate dates for layers with path
-        const matchingPathLayer = layersWithPath.find(
+        const matchingPathLayer = layersWithValidityStartEndDate.find(
           validityLayer => validityLayer.name === layerDatesEntry[0],
         );
 
@@ -518,6 +519,7 @@ export async function getLayersAvailableDates(
             [layerDatesEntry[0]]: await generateIntermediateDateItemFromDataFile(
               matchingPathLayer.dates,
               matchingPathLayer.path,
+              matchingPathLayer.validityPeriod,
             ),
           };
         }

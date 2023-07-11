@@ -380,6 +380,13 @@ export enum DatesPropagation {
   BOTH = 'both',
 }
 
+export type ValidityPeriod = {
+  // eslint-disable-next-line camelcase
+  start_date_field: string;
+  // eslint-disable-next-line camelcase
+  end_date_field: string;
+};
+
 export type Validity = {
   days: number; // Number of days to include in the calendar.
   mode: DatesPropagation; // Propagation mode for dates.
@@ -447,6 +454,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   dates?: string[];
+
+  @optional
+  validityPeriod?: ValidityPeriod;
 
   @makeRequired
   title: string;
@@ -699,6 +709,7 @@ export interface ValidityLayer extends BaseLayer {
 
 export interface PathLayer extends BaseLayer {
   path: string;
+  validityPeriod: ValidityPeriod;
 }
 
 export type UserAuth = {

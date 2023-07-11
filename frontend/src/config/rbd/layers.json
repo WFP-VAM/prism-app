@@ -3426,6 +3426,10 @@
       "2022-10-01",
       "2023-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "fallbackLayerKeys": ["ch_phase_admin1"],
     "admin_level": 2,
     "data_field": "calc_ph_admin2",
@@ -3587,6 +3591,10 @@
       "2022-10-01",
       "2023-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
@@ -3761,6 +3769,10 @@
       "2022-10-01",
       "2023-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
@@ -3866,6 +3878,10 @@
       "2023-02-01",
       "2023-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
@@ -3994,6 +4010,10 @@
       "2022-10-01",
       "2023-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
@@ -4054,6 +4074,10 @@
       "2022-10-01",
       "2023-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
@@ -4113,6 +4137,10 @@
     "fill_pattern": "left",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": ["2021-02-01", "2021-06-01", "2022-02-01", "2022-06-01"],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
@@ -4162,6 +4190,10 @@
     "fill_pattern": "left",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
     "dates": ["2022-02-01", "2022-06-01", "2023-06-01"],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
