@@ -652,9 +652,8 @@ export class ReportType {
   id: ReportKey;
   layerId: LayerKey;
   type: ReportTypeEnum;
-  titleKey: string;
-  titleValue: string;
-  subTitleKey: string;
+  title: string;
+  publicationDateLabel: string;
 
   @optional
   subText?: string;
@@ -663,10 +662,10 @@ export class ReportType {
   typeLegendDefinition: ReportLegendDefinition;
 
   @optional
-  sourcesPrimaryText?: string;
+  mapFooterText?: string;
 
   @optional
-  sourcesSecondaryText?: string;
+  mapFooterSubText?: string;
 
   @optional
   tableName?: string;

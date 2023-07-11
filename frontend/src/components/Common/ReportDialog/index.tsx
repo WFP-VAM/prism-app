@@ -107,7 +107,7 @@ const ReportDialog = memo(
               exposureLegendDefinition={analysisResult?.legend ?? []}
               theme={theme}
               tableShowTotal
-              reportTitle={`${t(reportConfig.titleValue)} ${reportDate}`}
+              reportTitle={`${t(reportConfig.title)} ${reportDate}`}
               reportConfig={reportConfig}
               mapImage={mapImage}
               tableData={tableData}
@@ -172,7 +172,7 @@ const ReportDialog = memo(
                 t={t}
                 exposureLegendDefinition={analysisResult?.legend ?? []}
                 theme={theme}
-                reportTitle={`${t(reportConfig.titleValue)} ${reportDate}`}
+                reportTitle={`${t(reportConfig.title)} ${reportDate}`}
                 reportConfig={reportConfig}
                 tableShowTotal
                 mapImage={mapImage}
@@ -223,9 +223,7 @@ const ReportDialog = memo(
             >
               <ArrowBack />
             </IconButton>
-            <span className={classes.titleText}>
-              {t(reportConfig.titleValue)}
-            </span>
+            <span className={classes.titleText}>{t(reportConfig.title)}</span>
           </div>
         </DialogTitle>
         <DialogContent

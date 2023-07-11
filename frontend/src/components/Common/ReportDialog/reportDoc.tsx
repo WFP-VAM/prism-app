@@ -160,19 +160,19 @@ const ReportDoc = memo(
       }));
     }, [exposureLegendDefinition, styles.box, t]);
 
-    const renderedSourcesPrimaryText = useMemo(() => {
-      if (!reportConfig?.sourcesPrimaryText) {
+    const renderedMapFooterText = useMemo(() => {
+      if (!reportConfig?.mapFooterText) {
         return null;
       }
       return (
         <Text style={{ fontSize: theme.pdf?.fontSizes.small }}>
-          {reportConfig.sourcesPrimaryText}
+          {reportConfig.mapFooterText}
         </Text>
       );
     }, [reportConfig, theme.pdf]);
 
-    const renderedSourcesSecondaryText = useMemo(() => {
-      if (!reportConfig?.sourcesSecondaryText) {
+    const renderedMapFooterSubText = useMemo(() => {
+      if (!reportConfig?.mapFooterSubText) {
         return null;
       }
       return (
@@ -182,27 +182,24 @@ const ReportDoc = memo(
             color: theme.pdf?.secondaryTextColor,
           }}
         >
-          {reportConfig.sourcesSecondaryText}
+          {reportConfig.mapFooterSubText}
         </Text>
       );
     }, [reportConfig, theme.pdf]);
 
     const renderedSourcesView = useMemo(() => {
-      if (
-        !reportConfig?.sourcesPrimaryText &&
-        !reportConfig?.sourcesSecondaryText
-      ) {
+      if (!reportConfig?.mapFooterText && !reportConfig?.mapFooterSubText) {
         return null;
       }
       return (
         <View style={styles.section}>
-          {renderedSourcesPrimaryText}
-          {renderedSourcesSecondaryText}
+          {renderedMapFooterText}
+          {renderedMapFooterSubText}
         </View>
       );
     }, [
-      renderedSourcesPrimaryText,
-      renderedSourcesSecondaryText,
+      renderedMapFooterSubText,
+      renderedMapFooterText,
       reportConfig,
       styles.section,
     ]);
@@ -224,11 +221,9 @@ const ReportDoc = memo(
       <Document>
         <Page size="A4" style={styles.page}>
           <View style={[styles.section]}>
+            <Text style={styles.title}>{reportTitle}</Text>
             <Text style={styles.title}>
-              {t(reportConfig.titleKey)}: {reportTitle}
-            </Text>
-            <Text style={styles.title}>
-              {t(reportConfig.subTitleKey)}: {date}
+              {t(reportConfig.publicationDateLabel)}: {date}
             </Text>
             {renderedSubText}
           </View>

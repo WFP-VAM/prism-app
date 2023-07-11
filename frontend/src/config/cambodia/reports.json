@@ -2,9 +2,8 @@
   "flood_extent_report": {
     "layer_id": "flood_extent",
     "type": "floods",
-    "title_key": "Event name",
-    "title_value": "Flood Report",
-    "sub_title_key": "Publication Date",
+    "title": "Event name: Flood Report",
+    "publication_date_label": "Publication Date",
     "sub_text": "This is an automated report. Information should be treated as preliminary",
     "areas_legend_definition": {
       "title": "Boundaries",
@@ -40,8 +39,8 @@
         }
       ]
     },
-    "sources_primary_text": "Sources: Flood extent from SERVIR Mekong HYDRAFloods. Population data from WorldPop",
-    "sources_secondary_text": "Contains modified Copernicus Sentinel data. The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal or constitutional status of any country, territory, city or sea, or concerning the delimitation of its frontiers or boundaries.",
+    "map_footer_text": "Sources: Flood extent from SERVIR Mekong HYDRAFloods. Population data from WorldPop",
+    "map_footer_sub_text": "Contains modified Copernicus Sentinel data. The designations employed and the presentation of material in the map(s) do not imply the expression of any opinion on the part of WFP concerning the legal or constitutional status of any country, territory, city or sea, or concerning the delimitation of its frontiers or boundaries.",
     "table_name": "Population exposed to floods",
     "signature_text": "PRISM automated report"
   }
