@@ -102,9 +102,16 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   }, [dispatch, initialAuthState, layersWithAuthRequired, removeLayerFromUrl]);
 
   // function that handles the close modal
-  const closeModal = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const closeModal = useCallback(
+    (event, reason) => {
+      if (reason === 'backdropClick') {
+        onCancelClick();
+        return;
+      }
+      setOpen(false);
+    },
+    [onCancelClick],
+  );
 
   // renders the Auth modal only if a user isn't already authenticated
   return useMemo(() => {
@@ -115,7 +122,6 @@ const AuthModal = ({ classes }: AuthModalProps) => {
       <Dialog
         maxWidth="xl"
         open={open}
-        onBackdropClick={onCancelClick}
         keepMounted
         onClose={closeModal}
         aria-labelledby="dialog-preview"
