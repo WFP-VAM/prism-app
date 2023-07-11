@@ -18,12 +18,12 @@ import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
 import TooltipItem from './TooltipItem';
 
-interface DateItemStyle {
+type DateItemStyle = {
   class: string;
   color: string;
   layerDirectionClass?: string;
   emphasis?: string;
-}
+};
 
 const TimelineItems = memo(
   ({
