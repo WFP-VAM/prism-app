@@ -9,10 +9,10 @@ import {
 } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import { useDispatch } from 'react-redux';
-import { LayerType } from '../../../config/types';
-import { LayerDefinitions } from '../../../config/utils';
-import ContentDialog from '../../NavBar/ContentDialog';
-import { loadLayerContent } from '../../../utils/load-layer-utils';
+import { LayerType } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import ContentDialog from 'components/NavBar/ContentDialog';
+import { loadLayerContent } from 'utils/load-layer-utils';
 
 const LayerContentPreview = memo(({ layerId, classes }: PreviewProps) => {
   const [content, setContent] = useState<string | undefined>(undefined);

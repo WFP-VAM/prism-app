@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   AppBar,
   Button,
+  Box,
   createStyles,
   Drawer,
   Grid,
@@ -16,7 +17,9 @@ import {
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSafeTranslation } from '../../i18n';
+import { get } from 'lodash';
+import { useSafeTranslation } from 'i18n';
+import { appConfig } from 'config';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
@@ -48,29 +51,44 @@ function NavBar({ classes }: NavBarProps) {
     </Grid>
   ));
 
+  const { title, subtitle, logo } = get(appConfig, 'header', {
+    title: 'PRISM',
+  });
+
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar variant="dense">
         <Grid container>
-          <Grid item xs={3} className={classes.logoContainer}>
-            <Typography
-              variant="h6"
-              className={classes.logo}
-              component={Link}
-              to="/"
-            >
-              {t('Prism')}
-            </Typography>
+          <Grid item xs={6} md={3} className={classes.logoContainer}>
+            {logo && <img className={classes.logo} src={logo} alt="logo" />}
+            <Box display="flex" flexDirection="column">
+              {title && (
+                <Typography
+                  variant="h6"
+                  className={classes.title}
+                  component={Link}
+                  to="/"
+                >
+                  {t(title)}
+                </Typography>
+              )}
+              {subtitle && (
+                <Typography variant="subtitle2" className={classes.subtitle}>
+                  {t(subtitle)}
+                </Typography>
+              )}
+            </Box>
           </Grid>
 
           <Hidden smDown>
             <Grid
               spacing={3}
               container
-              justify="flex-end"
+              justifyContent="flex-end"
               alignItems="center"
               item
-              xs={9}
+              xs={6}
+              md={9}
             >
               <PrintImage />
               {buttons}
@@ -80,7 +98,7 @@ function NavBar({ classes }: NavBarProps) {
           </Hidden>
 
           <Hidden mdUp>
-            <Grid item xs={9} className={classes.mobileMenuContainer}>
+            <Grid item xs={6} className={classes.mobileMenuContainer}>
               <Button
                 onClick={() => setOpenMobileMenu(prevOpen => !prevOpen)}
                 aria-controls={openMobileMenu ? 'mobile-menu-list' : undefined}
@@ -116,6 +134,11 @@ function NavBar({ classes }: NavBarProps) {
 
 const styles = (theme: Theme) =>
   createStyles({
+    logo: {
+      height: 32,
+      marginRight: 15,
+    },
+
     appBar: {
       backgroundImage: `linear-gradient(180deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
       height: '7vh',
@@ -129,10 +152,19 @@ const styles = (theme: Theme) =>
       alignItems: 'center',
     },
 
-    logo: {
+    title: {
       letterSpacing: '.3rem',
       fontSize: '1.25rem',
+      lineHeight: '1.5rem',
       textTransform: 'uppercase',
+      padding: 0,
+    },
+
+    subtitle: {
+      fontSize: '.8rem',
+      fontWeight: 300,
+      letterSpacing: '.1rem',
+      lineHeight: '.8rem',
       padding: 0,
     },
 

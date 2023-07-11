@@ -1,7 +1,7 @@
 import GeoJSON, { FeatureCollection, Point } from 'geojson';
 import moment from 'moment';
 import { Dispatch } from 'redux';
-import { PointData, PointLayerData } from '../config/types';
+import { PointData, PointLayerData } from 'config/types';
 import { fetchWithTimeout } from './fetch-with-timeout';
 
 type EWSChartConfig = {

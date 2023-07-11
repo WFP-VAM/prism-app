@@ -4,9 +4,9 @@ import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import { TFunctionKeys } from 'i18next';
 import moment, { LocaleSpecifier } from 'moment';
-import { ChartConfig, DatasetField } from '../../../config/types';
-import { TableData } from '../../../context/tableStateSlice';
-import { useSafeTranslation } from '../../../i18n';
+import { ChartConfig, DatasetField } from 'config/types';
+import { TableData } from 'context/tableStateSlice';
+import { useSafeTranslation } from 'i18n';
 
 type ChartProps = {
   title: string;
@@ -80,11 +80,24 @@ const Chart = memo(
         return indices.map(index => header[index]);
       }
       return tableRows.map(row => {
+        if (data.EWSConfig) {
+          return moment(row[config.category], 'HH:mm')
+            .locale(t('date_locale') as LocaleSpecifier)
+            .format('HH:mm');
+        }
         return moment(row[config.category])
           .locale(t('date_locale') as LocaleSpecifier)
           .format('YYYY-MM-DD');
       });
-    }, [config.category, header, indices, t, tableRows, transpose]);
+    }, [
+      config.category,
+      data.EWSConfig,
+      header,
+      indices,
+      t,
+      tableRows,
+      transpose,
+    ]);
 
     // The table rows data sets
     const tableRowsDataSet = useMemo(() => {

@@ -7,11 +7,11 @@ import {
   LegendDefinition,
   AdminLevelDataLayerProps,
   PointDataLayerProps,
-} from '../../../config/types';
-import { addPopupData } from '../../../context/tooltipStateSlice';
-import { getRoundedData } from '../../../utils/data-utils';
-import { i18nTranslator } from '../../../i18n';
-import { getFeatureInfoPropsData } from '../utils';
+} from 'config/types';
+import { addPopupData } from 'context/tooltipStateSlice';
+import { getRoundedData } from 'utils/data-utils';
+import { i18nTranslator } from 'i18n';
+import { getFeatureInfoPropsData } from 'components/MapView/utils';
 
 export function legendToStops(legend: LegendDefinition = []) {
   // TODO - Make this function easier to use for point data and explicit its behavior.

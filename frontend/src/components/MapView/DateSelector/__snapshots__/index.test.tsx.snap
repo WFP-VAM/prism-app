@@ -6,16 +6,18 @@ exports[`renders as expected 1`] = `
     class="memo-container-1"
   >
     <div
-      class="MuiGrid-root memo-datePickerContainer-2 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
+      class="MuiGrid-root memo-datePickerContainer-3 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-center"
     >
       <div
-        class="MuiGrid-root memo-datePickerGrid-4 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
+        class="MuiGrid-root memo-datePickerGrid-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"
       >
         <mock-hidden
           smup="true"
         >
           <mock-button>
-            <mock-chevronleft />
+            <mock-chevronleft
+              style="color: rgb(16, 16, 16);"
+            />
           </mock-button>
         </mock-hidden>
         <div
@@ -25,6 +27,7 @@ exports[`renders as expected 1`] = `
             class="react-datepicker__input-container"
           >
             <mock-button
+              classname="ForwardRef-buttonStyle-11"
               variant="outlined"
             >
               Jul 2, 2018
@@ -35,60 +38,42 @@ exports[`renders as expected 1`] = `
           smup="true"
         >
           <mock-button>
-            <mock-chevronright />
+            <mock-chevronright
+              style="color: rgb(16, 16, 16);"
+            />
           </mock-button>
         </mock-hidden>
       </div>
       <div
-        class="MuiGrid-root memo-slider-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
+        class="MuiGrid-root memo-slider-6 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-true"
       >
         <mock-hidden
           xsdown="true"
         >
-          <mock-button>
+          <mock-button
+            classname="memo-chevronDate-2"
+          >
             <mock-chevronleft />
           </mock-button>
         </mock-hidden>
         <div
-          class="MuiGrid-root memo-dateContainer-6"
+          class="MuiGrid-root memo-dateContainer-7"
         >
           <div
-            class="memo-timeline-8 react-draggable"
+            class="memo-timeline-9 react-draggable"
             id="dateTimelineSelector"
-            style="transform: translate(-1820px,0px);"
+            style="transform: translate(0px,0px);"
           >
             <div
-              class="MuiGrid-root memo-dateLabelContainer-7 MuiGrid-container"
-            >
-              <mock-timelineitems
-                daterange="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
-                intersectiondates=""
-                locale="en"
-                selectedlayerdates=""
-                selectedlayertitles=""
-              />
-            </div>
+              class="MuiGrid-root memo-dateLabelContainer-8 MuiGrid-container"
+            />
             <div
-              class="memo-pointer-9 react-draggable"
+              class="memo-pointer-10 react-draggable"
               id="datePointerSelector"
-              style="transform: translate(1820px,0px);"
+              style="transform: translate(-10px,0px);"
             >
-              <svg
-                aria-hidden="true"
-                class="svg-inline--fa fa-caret-up fa-w-10 "
-                color="white"
-                data-icon="caret-up"
-                data-prefix="fas"
-                focusable="false"
-                role="img"
-                style="font-size: 40px;"
-                viewBox="0 0 320 512"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"
-                  fill="currentColor"
-                />
+              <svg>
+                tick.svg
               </svg>
             </div>
           </div>
@@ -96,7 +81,9 @@ exports[`renders as expected 1`] = `
         <mock-hidden
           xsdown="true"
         >
-          <mock-button>
+          <mock-button
+            classname="memo-chevronDate-2"
+          >
             <mock-chevronright />
           </mock-button>
         </mock-hidden>

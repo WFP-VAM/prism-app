@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { addNotification } from '../context/notificationStateSlice';
+import { addNotification } from 'context/notificationStateSlice';
 
 interface FetchWithTimeoutOptions extends RequestInit {
   timeout?: number;
@@ -11,7 +11,7 @@ const DEFAULT_REQUEST_TIMEOUT = 15000;
 
 export const fetchWithTimeout = async (
   resource: RequestInfo,
-  dispatch: Dispatch,
+  dispatch?: Dispatch,
   options?: FetchWithTimeoutOptions,
   fetchErrorMessage?: string,
 ): Promise<Response> => {
@@ -35,6 +35,9 @@ export const fetchWithTimeout = async (
     return res;
   } catch (error) {
     console.error(error);
+    if (!dispatch) {
+      throw error;
+    }
     if (error.name === 'AbortError') {
       dispatch(
         addNotification({

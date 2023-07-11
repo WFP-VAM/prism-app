@@ -3,6 +3,7 @@
 import functools
 import json
 import logging
+from datetime import date
 from typing import Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
@@ -12,12 +13,13 @@ from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
+from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
-from app.models import AcledRequest, FilterProperty, RasterGeotiffModel
+from app.models import AcledRequest, RasterGeotiffModel
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
-from fastapi import Depends, FastAPI, HTTPException, Path, Query, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import EmailStr, HttpUrl, ValidationError
@@ -161,19 +163,45 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 
 
 @app.get("/acled")
-def get_acled_incidents(request: Request):
+def get_acled_incidents(
+    iso: int,
+    limit: int,
+    fields: Optional[str] = None,
+    event_date: Optional[date] = None,
+):
     acled_url = "https://api.acleddata.com/acled/read"
 
     try:
-        params = AcledRequest(**request.query_params)
-    except ValidationError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+        params = AcledRequest(
+            iso=iso,
+            limit=limit,
+            fields=fields,
+            event_date=event_date,
+        )
+    except ValidationError as error:
+        raise HTTPException(status_code=422, detail=str(error))
 
     # Make a new request to acled api including the credentials.
     response = get(acled_url, params=params.dict())
     response.raise_for_status()
 
-    return Response(content=response.content, media_type="application/json")
+    return Response(content=response.content)
+
+
+@app.get("/hdc")
+def wrap_get_hdc_stats(
+    level: str, admin_id: str, coverage: str, vam: str, start: str, end: str
+):
+    return JSONResponse(
+        content=get_hdc_stats(
+            level=level,
+            admin_id=admin_id,
+            coverage=coverage,
+            vam=vam,
+            start=start,
+            end=end,
+        )
+    )
 
 
 @app.get("/kobo/dates")

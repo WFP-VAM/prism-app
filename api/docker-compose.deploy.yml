@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 networks:
   traefik_default:
@@ -7,48 +7,49 @@ networks:
 services:
   traefik:
     # https://docs.traefik.io/user-guides/docker-compose/acme-tls/
-    image: 'traefik:v2.4'
-    container_name: 'traefik'
+    image: "traefik:v2.4"
+    container_name: "traefik"
     command:
-      - '--log.level=INFO'
-      - '--api.insecure=true'
-      - '--providers.docker=true'
-      - '--providers.docker.network=traefik_default'
-      - '--providers.docker.exposedbydefault=false'
-      - '--entrypoints.websecure.address=:443'
-      - '--certificatesresolvers.myresolver.acme.tlschallenge=true'
-      - '--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
-      - '--certificatesresolvers.myresolver.acme.email=info@ovio.org'
-      - '--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json'
+      - "--log.level=INFO"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.network=traefik_default"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email=info@ovio.org"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
       - traefik.docker.network=traefik_default
     networks:
       - traefik_default
     ports:
-      - '443:443'
-      - '8080:8080'
+      - "443:443"
+      - "8080:8080"
     volumes:
-      - './letsencrypt:/letsencrypt'
-      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     restart: unless-stopped
 
   api:
-    container_name: 'api'
+    container_name: "api"
     networks:
       - traefik_default
       - default
     ports:
-      - '80:80'
+      - "80:80"
     labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.whoami.rule=Host(`prism-api.ovio.org`)'
-      - 'traefik.http.routers.whoami.entrypoints=websecure'
-      - 'traefik.http.routers.whoami.tls.certresolver=myresolver'
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`prism-api.ovio.org`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
     environment:
-      - 'RUN=uvicorn app.main:app --host 0.0.0.0 --port 80'
+      - "RUN=uvicorn app.main:app --host 0.0.0.0 --port 80"
       # make sure that the alert password is properly set
       - DATABASE_URL=${DATABASE_URL:?"Provide a URL for the alerts database."}
       - KOBO_PW=${KOBO_PW:?"Add a password to access KOBO data."}
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
+      - HDC_TOKEN=${HDC_TOKEN:?"Provide a token to access HDC chart data."}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:?"Provide the AWS access key for the stac api."}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:?"Provide the AWS secret key for the stac api."}
     command: uvicorn app.main:app --host 0.0.0.0 --port 80

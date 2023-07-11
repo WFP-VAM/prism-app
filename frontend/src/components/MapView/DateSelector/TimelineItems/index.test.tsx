@@ -1,11 +1,11 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 
 import TimelineItems from '.';
 
 const props = {
   intersectionDates: [],
-  selectedLayerDates: [[]],
+  selectedLayers: [],
   selectedLayerTitles: [],
   dateRange: [
     {
@@ -13,6 +13,7 @@ const props = {
       label: '31 Dec 2021',
       month: 'Dec 2021',
       isFirstDay: false,
+      date: '2021-12-31',
     },
   ],
   clickDate: () => {},

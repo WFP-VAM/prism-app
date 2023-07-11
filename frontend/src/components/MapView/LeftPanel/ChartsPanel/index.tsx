@@ -30,28 +30,27 @@ import React, {
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
-import { appConfig } from '../../../../config';
-import {
-  BoundaryLayerProps,
-  PanelSize,
-  WMSLayerProps,
-} from '../../../../config/types';
+import { appConfig } from 'config';
+import { BoundaryLayerProps, PanelSize, WMSLayerProps } from 'config/types';
 import {
   getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
-} from '../../../../config/utils';
-import { LayerData } from '../../../../context/layers/layer-data';
-import { leftPanelTabValueSelector } from '../../../../context/leftPanelStateSlice';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../../i18n';
-import { castObjectsArrayToCsv } from '../../../../utils/csv-utils';
-import { getCategories } from '../../Layers/BoundaryDropdown';
-import { downloadToFile } from '../../utils';
+} from 'config/utils';
+import { LayerData } from 'context/layers/layer-data';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { castObjectsArrayToCsv } from 'utils/csv-utils';
+import {
+  getOrderedAreas,
+  OrderedArea,
+} from 'components/MapView/Layers/BoundaryDropdown';
+import { downloadToFile } from 'components/MapView/utils';
 import ChartSection from './ChartSection';
 
 // Load boundary layer for Admin2
 // WARNING - Make sure the dataviz_ids are available in the boundary file for Admin2
-const MAX_ADMIN_LEVEL = 2;
+const MAX_ADMIN_LEVEL = appConfig.multiCountry ? 3 : 2;
 const boundaryLayer = getBoundaryLayersByAdminLevel(MAX_ADMIN_LEVEL);
 
 const chartLayers = getWMSLayersWithChart();
@@ -259,12 +258,13 @@ export const downloadCsv = (
 
 const ChartsPanel = memo(
   ({ setPanelSize, setResultsPage }: ChartsPanelProps) => {
-    const { countryAdmin0Id } = appConfig;
+    const { countryAdmin0Id, country, multiCountry } = appConfig;
     const boundaryLayerData = useSelector(
       layerDataSelector(boundaryLayer.id),
     ) as LayerData<BoundaryLayerProps> | undefined;
     const { data } = boundaryLayerData || {};
     const classes = useStyles();
+    const [admin0Key, setAdmin0Key] = useState('');
     const [admin1Key, setAdmin1Key] = useState('');
     const [admin2Key, setAdmin2Key] = useState('');
     const [adminLevel, setAdminLevel] = useState<0 | 1 | 2>(
@@ -284,39 +284,80 @@ const ChartsPanel = memo(
 
     const tabValue = useSelector(leftPanelTabValueSelector);
 
-    const categories = data
-      ? getCategories(data, boundaryLayer, '', i18nLocale)
-      : [];
+    const orderedAdmin0areas = useMemo(() => {
+      if (!multiCountry) {
+        return [];
+      }
+      return data ? getOrderedAreas(data, boundaryLayer, '', i18nLocale) : [];
+    }, [data, i18nLocale, multiCountry]);
 
-    const admin1Category = useMemo(() => {
-      return categories.find(category => {
-        return admin1Key === category.key;
-      });
-    }, [admin1Key, categories]);
+    const orderedAdmin1areas = useMemo(() => {
+      return data
+        ? getOrderedAreas(
+            data,
+            boundaryLayer,
+            '',
+            i18nLocale,
+            multiCountry ? 1 : 0,
+            admin0Key,
+          )
+        : [];
+    }, [admin0Key, data, i18nLocale, multiCountry]);
 
-    const admin2ChildCategory = useMemo(() => {
-      return admin1Category?.children.find(childCategory => {
-        return admin2Key === childCategory.key;
+    const selectedaAdmin0Area = useMemo(() => {
+      return orderedAdmin0areas.find(area => {
+        return admin0Key === area.key;
       });
-    }, [admin1Category, admin2Key]);
+    }, [admin0Key, orderedAdmin0areas]);
+
+    const selectedAdmin1Area = useMemo(() => {
+      return orderedAdmin1areas.find(area => {
+        return admin1Key === area.key;
+      });
+    }, [admin1Key, orderedAdmin1areas]);
+
+    const seletectdAdmin2Area = useMemo(() => {
+      return selectedAdmin1Area?.children.find(childArea => {
+        return admin2Key === childArea.key;
+      });
+    }, [selectedAdmin1Area, admin2Key]);
 
     const generateCSVFilename = useCallback(() => {
       return [
-        appConfig.country,
-        admin1Category?.title ?? '',
-        admin2ChildCategory?.label ?? '',
+        country,
+        selectedAdmin1Area?.title ?? '',
+        seletectdAdmin2Area?.label ?? '',
         ...selectedLayerTitles,
       ]
         .filter(x => !!x)
         .map(snakeCase)
         .join('_');
-    }, [admin1Category, admin2ChildCategory, selectedLayerTitles]);
+    }, [selectedAdmin1Area, seletectdAdmin2Area, selectedLayerTitles, country]);
 
-    const onChangeAdmin1 = useCallback(
+    const onChangeAdmin0Area = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        // The external chart key for admin 0 is stored in all its children regions
+        // here we get the first child properties
+        const admin0Id = orderedAdmin0areas.find(area => {
+          return area.key === event.target.value;
+        })?.children[0].value;
+
+        if (data) {
+          setAdminProperties(getProperties(data, admin0Id));
+        }
+        setAdmin0Key(event.target.value);
+        setAdmin1Key('');
+        setAdmin2Key('');
+        setAdminLevel(0);
+      },
+      [orderedAdmin0areas, data],
+    );
+
+    const onChangeAdmin1Area = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!event.target.value) {
           setAdmin1Key('');
-          if (countryAdmin0Id) {
+          if (countryAdmin0Id || multiCountry) {
             setAdminLevel(0);
           }
           return;
@@ -324,8 +365,8 @@ const ChartsPanel = memo(
 
         // The external chart key for admin 1 is stored in all its children regions
         // here we get the first child properties
-        const admin1Id = categories.find(category => {
-          return category.key === event.target.value;
+        const admin1Id = orderedAdmin1areas.find(area => {
+          return area.key === event.target.value;
         })?.children[0].value;
 
         if (data) {
@@ -335,10 +376,10 @@ const ChartsPanel = memo(
         setAdmin2Key('');
         setAdminLevel(1);
       },
-      [categories, countryAdmin0Id, data],
+      [orderedAdmin1areas, countryAdmin0Id, multiCountry, data],
     );
 
-    const onChangeAdmin2 = useCallback(
+    const onChangeAdmin2Area = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!event.target.value) {
           // Unset Admin 2
@@ -347,8 +388,8 @@ const ChartsPanel = memo(
           setAdminLevel(1);
           return;
         }
-        const admin2Id = admin1Category?.children.find(childCategory => {
-          return childCategory.key === event.target.value;
+        const admin2Id = selectedAdmin1Area?.children.find(childArea => {
+          return childArea.key === event.target.value;
         })?.value;
         if (data) {
           setAdminProperties(getProperties(data, admin2Id));
@@ -356,7 +397,7 @@ const ChartsPanel = memo(
         setAdmin2Key(event.target.value);
         setAdminLevel(2);
       },
-      [admin1Category, data],
+      [selectedAdmin1Area, data],
     );
 
     const onChangeChartLayers = useCallback(
@@ -486,27 +527,50 @@ const ChartsPanel = memo(
       [t],
     );
 
+    const findArea = (
+      orderedAdminAreas: OrderedArea[],
+      adminKeyValue: string,
+    ) =>
+      orderedAdminAreas.find(category => {
+        return category.key === adminKeyValue;
+      })?.title;
+
+    const renderAdmin0Value = useCallback(
+      admin0keyValue => {
+        if (!multiCountry) {
+          return country;
+        }
+        return findArea(orderedAdmin0areas, admin0keyValue);
+      },
+      [country, multiCountry, orderedAdmin0areas],
+    );
+
     const renderAdmin1Value = useCallback(
       admin1keyValue => {
-        return categories.find(category => {
-          return category.key === admin1keyValue;
-        })?.title;
+        return findArea(orderedAdmin1areas, admin1keyValue);
       },
-      [categories],
+      [orderedAdmin1areas],
     );
 
     const renderAdmin2Value = useCallback(
       admin2KeyValue => {
-        return admin1Category?.children.find(childCategory => {
+        return selectedAdmin1Area?.children.find(childCategory => {
           return childCategory.key === admin2KeyValue;
         })?.label;
       },
-      [admin1Category],
+      [selectedAdmin1Area],
     );
 
     if (tabIndex !== tabValue) {
       return null;
     }
+
+    const renderMenuItemList = (orderedAdminArea: OrderedArea[]) =>
+      orderedAdminArea.map(option => (
+        <MenuItem key={option.key} value={option.key}>
+          {option.title}
+        </MenuItem>
+      ));
 
     return (
       <Box className={classes.chartsPanelParams}>
@@ -514,45 +578,55 @@ const ChartsPanel = memo(
           classes={{ root: classes.selectRoot }}
           id="outlined-admin-1"
           select
-          label={countryAdmin0Id ? t('National Level') : t('Select Admin 1')}
-          value={admin1Category?.key ?? ''}
+          label={t('Country')}
+          value={selectedaAdmin0Area?.key ?? country}
+          SelectProps={{
+            renderValue: renderAdmin0Value,
+          }}
+          onChange={onChangeAdmin0Area}
+          variant="outlined"
+          disabled={!multiCountry}
+        >
+          <MenuItem key={country} value={country} disabled>
+            {country}
+          </MenuItem>
+          {renderMenuItemList(orderedAdmin0areas)}
+        </TextField>
+
+        <TextField
+          classes={{ root: classes.selectRoot }}
+          id="outlined-admin-1"
+          select
+          label={t('Admin 1')}
+          value={selectedAdmin1Area?.key ?? ''}
           SelectProps={{
             renderValue: renderAdmin1Value,
           }}
-          onChange={onChangeAdmin1}
+          onChange={onChangeAdmin1Area}
           variant="outlined"
         >
           <MenuItem divider>
-            <Box className={classes.removeAdmin}> {t('National Level')}</Box>
+            <Box className={classes.removeAdmin}> {t('Remove Admin 1')}</Box>
           </MenuItem>
-          <MenuItem style={{ pointerEvents: 'none' }}>
-            <Box style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
-              {t('Admin 1')}
-            </Box>
-          </MenuItem>
-          {categories.map(option => (
-            <MenuItem key={option.key} value={option.key}>
-              {option.title}
-            </MenuItem>
-          ))}
+          {renderMenuItemList(orderedAdmin1areas)}
         </TextField>
         {admin1Key && (
           <TextField
             classes={{ root: classes.selectRoot }}
             id="outlined-admin-2"
             select
-            label={t('Select Admin 2')}
-            value={admin2ChildCategory?.key ?? ''}
+            label={t('Admin 2')}
+            value={seletectdAdmin2Area?.key ?? ''}
             SelectProps={{
               renderValue: renderAdmin2Value,
             }}
-            onChange={onChangeAdmin2}
+            onChange={onChangeAdmin2Area}
             variant="outlined"
           >
             <MenuItem divider>
               <Box className={classes.removeAdmin}> {t('Remove Admin 2')}</Box>
             </MenuItem>
-            {admin1Category?.children.map(option => (
+            {selectedAdmin1Area?.children.map(option => (
               <MenuItem key={option.key} value={option.key}>
                 {option.label}
               </MenuItem>

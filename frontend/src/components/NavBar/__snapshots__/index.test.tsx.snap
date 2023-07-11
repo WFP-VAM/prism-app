@@ -3,7 +3,7 @@
 exports[`renders as expected 1`] = `
 <div>
   <mock-appbar
-    classname="NavBar-appBar-1"
+    classname="NavBar-appBar-2"
     position="static"
   >
     <mock-toolbar
@@ -13,22 +13,26 @@ exports[`renders as expected 1`] = `
         class="MuiGrid-root MuiGrid-container"
       >
         <div
-          class="MuiGrid-root NavBar-logoContainer-2 MuiGrid-item MuiGrid-grid-xs-3"
+          class="MuiGrid-root NavBar-logoContainer-3 MuiGrid-item MuiGrid-grid-xs-6 MuiGrid-grid-md-3"
         >
-          <mock-typography
-            classname="NavBar-logo-3"
-            component="[object Object]"
-            to="/"
-            variant="h6"
+          <div
+            class="MuiBox-root MuiBox-root-10"
           >
-            Prism
-          </mock-typography>
+            <mock-typography
+              classname="NavBar-title-4"
+              component="[object Object]"
+              to="/"
+              variant="h6"
+            >
+              PRISM
+            </mock-typography>
+          </div>
         </div>
         <mock-hidden
           smdown="true"
         >
           <div
-            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 MuiGrid-item MuiGrid-align-items-xs-center MuiGrid-justify-xs-flex-end MuiGrid-grid-xs-9"
+            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 MuiGrid-item MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-flex-end MuiGrid-grid-xs-6 MuiGrid-grid-md-9"
           >
             <mock-printimage />
             <div
@@ -88,7 +92,7 @@ exports[`renders as expected 1`] = `
               </mock-typography>
             </div>
             <div
-              class="MuiButtonGroup-root LanguageSelector-block-8"
+              class="MuiButtonGroup-root LanguageSelector-block-11"
               role="group"
             >
               <mock-button
@@ -136,11 +140,11 @@ exports[`renders as expected 1`] = `
           mdup="true"
         >
           <div
-            class="MuiGrid-root NavBar-mobileMenuContainer-7 MuiGrid-item MuiGrid-grid-xs-9"
+            class="MuiGrid-root NavBar-mobileMenuContainer-9 MuiGrid-item MuiGrid-grid-xs-6"
           >
             <mock-button
               aria-haspopup="true"
-              classname="NavBar-menuBars-6"
+              classname="NavBar-menuBars-8"
             >
               <svg
                 aria-hidden="true"
@@ -163,7 +167,7 @@ exports[`renders as expected 1`] = `
               open="false"
             >
               <div
-                class="MuiGrid-root NavBar-mobileDrawerContent-5 MuiGrid-container MuiGrid-spacing-xs-3"
+                class="MuiGrid-root NavBar-mobileDrawerContent-7 MuiGrid-container MuiGrid-spacing-xs-3"
               >
                 <mock-printimage />
                 <div
@@ -223,7 +227,7 @@ exports[`renders as expected 1`] = `
                   </mock-typography>
                 </div>
                 <div
-                  class="MuiButtonGroup-root LanguageSelector-block-8"
+                  class="MuiButtonGroup-root LanguageSelector-block-11"
                   role="group"
                 >
                   <mock-button

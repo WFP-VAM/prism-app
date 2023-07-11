@@ -1,10 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { LayerKey, LayerType } from '../../config/types';
-import { LayerDefinitions } from '../../config/utils';
-import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
-import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
-import { keepLayer } from '../../utils/keep-layer-utils';
+import { LayerKey, LayerType } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import {
+  LayerData,
+  LayerDataTypes,
+  loadLayerData,
+} from 'context/layers/layer-data';
+import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import { keepLayer } from 'utils/keep-layer-utils';
 
 interface DateRange {
   startDate?: number;
@@ -42,13 +46,13 @@ const initialState: MapState = {
 };
 
 const getTypeOrder = (layer: LayerType) => {
-  if (layer.type !== 'wms') {
-    return layer.type;
+  if (layer.type === 'admin_level_data' && layer.fillPattern) {
+    return 'pattern_admin_level_data';
   }
-  if (!layer.geometry) {
-    return 'wms';
+  if (layer.type === 'wms' && layer.geometry) {
+    return 'polygon';
   }
-  return 'polygon';
+  return layer.type;
 };
 
 // Order layers to keep boundaries and point_data on top. boundaries first.
@@ -60,6 +64,7 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
       | 'boundary'
       | 'wms'
       | 'admin_level_data'
+      | 'pattern_admin_level_data'
       | 'impact'
       | 'point_data'
       | 'polygon'
@@ -68,10 +73,11 @@ export const layerOrdering = (a: LayerType, b: LayerType) => {
     point_data: 0,
     polygon: 1,
     boundary: 2,
-    admin_level_data: 3,
-    impact: 4,
-    wms: 5,
-    static_raster: 6,
+    pattern_admin_level_data: 3,
+    admin_level_data: 4,
+    impact: 5,
+    wms: 6,
+    static_raster: 7,
   };
 
   const typeA = getTypeOrder(a);

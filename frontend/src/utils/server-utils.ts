@@ -2,15 +2,16 @@ import moment from 'moment';
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
 import { Dispatch } from 'redux';
-import { appConfig } from '../config';
-import { LayerDefinitions } from '../config/utils';
+import { appConfig } from 'config';
+import { LayerDefinitions } from 'config/utils';
 import type {
   AvailableDates,
   DateItem,
   PointDataLayerProps,
   RequestFeatureInfo,
+  Validity,
   ValidityLayer,
-} from '../config/types';
+} from 'config/types';
 import {
   AdminLevelDataLayerProps,
   DataType,
@@ -20,13 +21,13 @@ import {
   PointDataLoader,
   StaticRasterLayerProps,
   WMSLayerProps,
-} from '../config/types';
+} from 'config/types';
+import { addNotification } from 'context/notificationStateSlice';
 import { queryParamsToString } from './url-utils';
 import { createEWSDatesArray } from './ews-utils';
 import { fetchACLEDDates } from './acled-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { LocalError } from './error-utils';
-import { addNotification } from '../context/notificationStateSlice';
 import { datesAreEqualWithoutTime } from './date-utils';
 
 /**
@@ -65,31 +66,27 @@ export type DateCompatibleLayer =
   | ImpactLayerProps
   | PointDataLayerProps
   | StaticRasterLayerProps;
+
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
   // eslint-disable-next-line consistent-return
-): number[] => {
-  // eslint-disable-next-line default-case
-  const datesArray = () => {
-    switch (layer.type) {
-      case 'wms':
-        return serverAvailableDates[layer.serverLayerName];
-      case 'impact':
-        return serverAvailableDates[
-          (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
-        ];
-      case 'point_data':
-      case 'admin_level_data':
-        return serverAvailableDates[layer.id];
-      case 'static_raster':
-        return serverAvailableDates[layer.id];
-      default:
-        return [];
-    }
-  };
-
-  return datesArray()?.map(d => d.displayDate) ?? [];
+): DateItem[] => {
+  switch (layer.type) {
+    case 'wms':
+      return serverAvailableDates[layer.serverLayerName];
+    case 'impact':
+      return serverAvailableDates[
+        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
+      ];
+    case 'point_data':
+    case 'admin_level_data':
+      return serverAvailableDates[layer.id];
+    case 'static_raster':
+      return serverAvailableDates[layer.id];
+    default:
+      return [];
+  }
 };
 
 type PointDataDates = Array<{
@@ -133,7 +130,7 @@ const loadPointLayerDataFromURL = async (
       console.error(error);
       dispatch(
         addNotification({
-          message: error.message,
+          message: (error as Error).message,
           type: 'warning',
         }),
       );
@@ -210,11 +207,24 @@ const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
  *
  * @return DateItem
  */
-const createDefaultDateItem = (date: number): DateItem => {
+const createDefaultDateItem = (date: number, validity?: Validity): DateItem => {
   const dateWithTz = moment(date).set({ hour: 12, minute: 0 }).valueOf();
-  return {
+  const dateItemToReturn = {
     displayDate: dateWithTz,
     queryDate: dateWithTz,
+  };
+  if (validity) {
+    const { mode } = validity;
+    return {
+      ...dateItemToReturn,
+      isStartDate:
+        mode === DatesPropagation.FORWARD || mode === DatesPropagation.BOTH,
+      isEndDate:
+        mode === DatesPropagation.BACKWARD || mode === DatesPropagation.BOTH,
+    };
+  }
+  return {
+    ...dateItemToReturn,
   };
 };
 
@@ -235,7 +245,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 
   // Generate first DateItem[] from dates array.
   const dateItemsDefault: DateItem[] = momentDates.map(momentDate =>
-    createDefaultDateItem(momentDate.valueOf()),
+    createDefaultDateItem(momentDate.valueOf(), validity),
   );
 
   const dateItemsWithValidity = momentDates.reduce(
@@ -290,6 +300,80 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 };
 
 /**
+ * Wrapper function for utility fetchCoverageLayerDays from Common Library
+ */
+const localFetchCoverageLayerDays = async (
+  url: string,
+  dispatch: Dispatch,
+): Promise<{ [layerId: string]: number[] }> => {
+  try {
+    return await fetchCoverageLayerDays(url, { fetch: fetchWithTimeout });
+  } catch (error) {
+    console.error(error);
+    if ((error as Error).name === 'AbortError') {
+      dispatch(
+        addNotification({
+          message: `Request at ${url} timeout`,
+          type: 'warning',
+        }),
+      );
+    }
+    dispatch(
+      addNotification({
+        message: `fetch coverage layer days request failed at ${url}`,
+        type: 'warning',
+      }),
+    );
+    return {};
+  }
+};
+
+/**
+ * Wrapper function for utility getLayerDays from WMS class from Common Library
+ */
+const localWMSGetLayerDates = async (
+  url: string,
+  dispatch: Dispatch,
+): Promise<{ [layerId: string]: number[] }> => {
+  try {
+    return await new WMS(url, { fetch: fetchWithTimeout }).getLayerDays();
+  } catch (error) {
+    console.error(error);
+    if ((error as Error).name === 'AbortError') {
+      dispatch(
+        addNotification({
+          message: `Request at ${url} timeout`,
+          type: 'warning',
+        }),
+      );
+    }
+    dispatch(
+      addNotification({
+        message: `WMS layer dates request failed at ${url}`,
+        type: 'warning',
+      }),
+    );
+    return {};
+  }
+};
+
+// The layer definitions bluerPrint is used as a schema for the availableDates if a request is failed to be fulfilled
+const layerDefinitionsBluePrint: AvailableDates = Object.keys(
+  LayerDefinitions,
+).reduce((acc, layerDefinitionKey) => {
+  const { serverLayerName } = LayerDefinitions[layerDefinitionKey] as any;
+  if (!serverLayerName) {
+    return {
+      ...acc,
+    };
+  }
+  return {
+    ...acc,
+    [serverLayerName]: [],
+  };
+}, {});
+
+/**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
  *
  * @return a Promise of Map<LayerID (not always id from LayerProps but can be), availableDates[]>
@@ -315,8 +399,8 @@ export async function getLayersAvailableDates(
   );
 
   const layerDates = await Promise.all([
-    ...wmsServerUrls.map(url => new WMS(url).getLayerDays()),
-    ...wcsServerUrls.map(url => fetchCoverageLayerDays(url)),
+    ...wmsServerUrls.map(url => localWMSGetLayerDates(url, dispatch)),
+    ...wcsServerUrls.map(url => localFetchCoverageLayerDays(url, dispatch)),
     ...pointDataLayers.map(async layer => ({
       [layer.id]: await getPointDataCoverage(layer, dispatch),
     })),
@@ -353,7 +437,7 @@ export async function getLayersAvailableDates(
       : dates.map((d: number) => createDefaultDateItem(d));
 
     return { ...acc, [layerKey]: updatedDates };
-  }, {});
+  }, layerDefinitionsBluePrint);
 }
 
 /**

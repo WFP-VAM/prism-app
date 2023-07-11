@@ -12,8 +12,8 @@ import { uniq } from 'lodash';
 import {
   mapSelector,
   boundaryRelationSelector,
-} from '../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../i18n';
+} from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
 
 import SearchBar from './searchBar';
 import { setMenuItemStyle, containsText, createMatchesTree } from './utils';
@@ -84,9 +84,15 @@ const BoundaryDropdown = memo(
         return undefined;
       }
 
-      const relationsFiltered = levelsRelations?.relations.filter(rel =>
-        containsText(rel.name, search),
-      );
+      const relationsFiltered = levelsRelations?.relations.filter(rel => {
+        if (!rel.name) {
+          console.warn(
+            `The boundary polygon ${rel} is misconfigured and has no "name" attribute.`,
+          );
+          return false;
+        }
+        return containsText(rel.name, search);
+      });
 
       const relations =
         relationsFiltered.length === levelsRelations?.relations.length

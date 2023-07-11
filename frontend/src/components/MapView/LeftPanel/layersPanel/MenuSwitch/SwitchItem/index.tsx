@@ -21,26 +21,23 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerKey, LayerType } from '../../../../../../config/types';
-import {
-  getDisplayBoundaryLayers,
-  LayerDefinitions,
-} from '../../../../../../config/utils';
-import { clearDataset } from '../../../../../../context/datasetStateSlice';
-import { removeLayer } from '../../../../../../context/mapStateSlice';
-import {
-  layersSelector,
-  mapSelector,
-} from '../../../../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../../../../i18n';
+import { LayerKey, LayerType } from 'config/types';
+import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
+import { clearDataset } from 'context/datasetStateSlice';
+import { removeLayer } from 'context/mapStateSlice';
+import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
 import {
   refreshBoundaries,
   safeDispatchAddLayer,
   safeDispatchRemoveLayer,
-} from '../../../../../../utils/map-utils';
-import { getUrlKey, useUrlHistory } from '../../../../../../utils/url-utils';
-import { handleChangeOpacity } from '../../../../Legends/handleChangeOpacity';
-import { Extent } from '../../../../Layers/raster-utils';
+} from 'utils/map-utils';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
+import { LocalError } from 'utils/error-utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
 
@@ -54,6 +51,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   } = layer;
   const { t } = useSafeTranslation();
   const selectedLayers = useSelector(layersSelector);
+  const serverAvailableDates = useSelector(availableDatesSelector);
   const map = useSelector(mapSelector);
   const [isOpacitySelected, setIsOpacitySelected] = useState(false);
   const [opacity, setOpacityValue] = useState<number>(initialOpacity || 0);
@@ -128,50 +126,59 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
 
       const urlLayerKey = getUrlKey(selectedLayer);
 
-      if (checked) {
-        const updatedUrl = appendLayerToUrl(
-          urlLayerKey,
-          selectedLayers,
-          selectedLayer,
-        );
-
-        updateHistory(urlLayerKey, updatedUrl);
-
-        if (
-          !('boundary' in selectedLayer) &&
-          selectedLayer.type === 'admin_level_data'
-        ) {
-          refreshBoundaries(map, dispatch);
-        }
-      } else {
+      if (!checked) {
         removeLayerFromUrl(urlLayerKey, selectedLayer.id);
         dispatch(removeLayer(selectedLayer));
 
         // For admin boundary layers with boundary property
         // we have to de-activate the unique boundary and re-activate
         // default boundaries
-        if ('boundary' in selectedLayer) {
-          const boundaryId = selectedLayer.boundary || '';
-
-          if (Object.keys(LayerDefinitions).includes(boundaryId)) {
-            const displayBoundaryLayers = getDisplayBoundaryLayers();
-            const uniqueBoundaryLayer =
-              LayerDefinitions[boundaryId as LayerKey];
-
-            if (
-              !displayBoundaryLayers
-                .map(l => l.id)
-                .includes(uniqueBoundaryLayer.id)
-            ) {
-              safeDispatchRemoveLayer(map, uniqueBoundaryLayer, dispatch);
-            }
-
-            displayBoundaryLayers.forEach(l => {
-              safeDispatchAddLayer(map, l, dispatch);
-            });
-          }
+        if (!('boundary' in selectedLayer)) {
+          return;
         }
+        const boundaryId = selectedLayer.boundary || '';
+
+        if (!Object.keys(LayerDefinitions).includes(boundaryId)) {
+          return;
+        }
+        const displayBoundaryLayers = getDisplayBoundaryLayers();
+        const uniqueBoundaryLayer = LayerDefinitions[boundaryId as LayerKey];
+
+        if (
+          !displayBoundaryLayers.map(l => l.id).includes(uniqueBoundaryLayer.id)
+        ) {
+          safeDispatchRemoveLayer(map, uniqueBoundaryLayer, dispatch);
+        }
+
+        displayBoundaryLayers.forEach(l => {
+          safeDispatchAddLayer(map, l, dispatch);
+        });
+        return;
       }
+      try {
+        checkLayerAvailableDatesAndContinueOrRemove(
+          layer,
+          serverAvailableDates,
+          removeLayerFromUrl,
+          dispatch,
+        );
+      } catch (error) {
+        console.error((error as LocalError).getErrorMessage());
+        return;
+      }
+      const updatedUrl = appendLayerToUrl(
+        urlLayerKey,
+        selectedLayers,
+        selectedLayer,
+      );
+      updateHistory(urlLayerKey, updatedUrl);
+      if (
+        'boundary' in selectedLayer ||
+        selectedLayer.type !== 'admin_level_data'
+      ) {
+        return;
+      }
+      refreshBoundaries(map, dispatch);
     },
     [
       appendLayerToUrl,
@@ -182,6 +189,7 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
       map,
       removeLayerFromUrl,
       selectedLayers,
+      serverAvailableDates,
       updateHistory,
     ],
   );
