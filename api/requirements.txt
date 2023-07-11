@@ -1,6 +1,6 @@
 boto3==1.26.26
 cachetools==5.2.0
-fastapi==0.79.0
+fastapi==0.95.2
 Fiona==1.8.22
 greenlet==1.1.2
 gunicorn==20.1.0
@@ -16,7 +16,7 @@ uvicorn[standard]==0.18.2
 mock==4.0.3
 # to get email validation
 pydantic[email]==1.9.2
-pytest==7.1.2
+pytest==7.4.0
 pytest-cov==3.0.0
 schemathesis==3.19.5
 # Used by `make lint` only:
