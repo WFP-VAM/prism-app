@@ -21,31 +21,25 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerKey, LayerType } from '../../../../../../config/types';
-import {
-  getDisplayBoundaryLayers,
-  LayerDefinitions,
-} from '../../../../../../config/utils';
-import { clearDataset } from '../../../../../../context/datasetStateSlice';
-import { removeLayer } from '../../../../../../context/mapStateSlice';
-import {
-  layersSelector,
-  mapSelector,
-} from '../../../../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../../../../i18n';
+import { LayerKey, LayerType } from 'config/types';
+import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
+import { clearDataset } from 'context/datasetStateSlice';
+import { removeLayer } from 'context/mapStateSlice';
+import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
 import {
   refreshBoundaries,
   safeDispatchAddLayer,
   safeDispatchRemoveLayer,
-} from '../../../../../../utils/map-utils';
-import { getUrlKey, useUrlHistory } from '../../../../../../utils/url-utils';
-import { handleChangeOpacity } from '../../../../Legends/handleChangeOpacity';
-import { Extent } from '../../../../Layers/raster-utils';
+} from 'utils/map-utils';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
+import { LocalError } from 'utils/error-utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
-import { availableDatesSelector } from '../../../../../../context/serverStateSlice';
-import { checkLayerAvailableDatesAndContinueOrRemove } from '../../../../utils';
-import { LocalError } from '../../../../../../utils/error-utils';
 
 const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   const {

@@ -7,20 +7,20 @@ import {
   ExposedPopulationDefinition,
   GeometryType,
   LayerType,
-} from '../../../../../../config/types';
-import { TableKey } from '../../../../../../config/utils';
+} from 'config/types';
+import { TableKey } from 'config/utils';
 import {
   analysisResultSelector,
   clearAnalysisResult,
   ExposedPopulationDispatchParams,
   requestAndStoreExposedPopulation,
   setCurrentDataDefinition,
-} from '../../../../../../context/analysisResultStateSlice';
-import { setTabValue } from '../../../../../../context/leftPanelStateSlice';
-import { dateRangeSelector } from '../../../../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../../../../i18n';
-import { Extent } from '../../../../Layers/raster-utils';
-import { generateUniqueTableKey } from '../../../../utils';
+} from 'context/analysisResultStateSlice';
+import { setTabValue } from 'context/leftPanelStateSlice';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { generateUniqueTableKey } from 'components/MapView/utils';
 
 function ExposureAnalysisOption({
   layer,

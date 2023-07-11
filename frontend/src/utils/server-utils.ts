@@ -2,8 +2,8 @@ import moment from 'moment';
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
 import { Dispatch } from 'redux';
-import { appConfig } from '../config';
-import { LayerDefinitions } from '../config/utils';
+import { appConfig } from 'config';
+import { LayerDefinitions } from 'config/utils';
 import type {
   AvailableDates,
   DateItem,
@@ -11,7 +11,7 @@ import type {
   RequestFeatureInfo,
   Validity,
   ValidityLayer,
-} from '../config/types';
+} from 'config/types';
 import {
   AdminLevelDataLayerProps,
   DataType,
@@ -21,13 +21,13 @@ import {
   PointDataLoader,
   StaticRasterLayerProps,
   WMSLayerProps,
-} from '../config/types';
+} from 'config/types';
+import { addNotification } from 'context/notificationStateSlice';
 import { queryParamsToString } from './url-utils';
 import { createEWSDatesArray } from './ews-utils';
 import { fetchACLEDDates } from './acled-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { LocalError } from './error-utils';
-import { addNotification } from '../context/notificationStateSlice';
 import { datesAreEqualWithoutTime } from './date-utils';
 
 /**

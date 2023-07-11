@@ -5,15 +5,12 @@ import {
   BoundaryLayerProps,
   AdminLevelDataLayerProps,
   LayerKey,
-} from '../../config/types';
-import type { RootState, ThunkApi } from '../store';
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../config/utils';
+} from 'config/types';
+import type { RootState, ThunkApi } from 'context/store';
+import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
-import { layerDataSelector } from '../mapStateSlice/selectors';
-import { fetchWithTimeout } from '../../utils/fetch-with-timeout';
 
 export type DataRecord = {
   adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level

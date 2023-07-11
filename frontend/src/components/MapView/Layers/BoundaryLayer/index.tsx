@@ -2,21 +2,21 @@ import * as MapboxGL from 'mapbox-gl';
 import React, { useEffect } from 'react';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
-import { BoundaryLayerProps } from '../../../../config/types';
-import { LayerData } from '../../../../context/layers/layer-data';
-import { hidePopup, showPopup } from '../../../../context/tooltipStateSlice';
+import { BoundaryLayerProps } from 'config/types';
+import { LayerData } from 'context/layers/layer-data';
+import { hidePopup, showPopup } from 'context/tooltipStateSlice';
 
-import { setBoundaryRelationData } from '../../../../context/mapStateSlice';
+import { setBoundaryRelationData } from 'context/mapStateSlice';
 import {
   loadBoundaryRelations,
   BoundaryRelationData,
-} from '../../../Common/BoundaryDropdown/utils';
-import { isPrimaryBoundaryLayer } from '../../../../config/utils';
-import { toggleSelectedBoundary } from '../../../../context/mapSelectionLayerStateSlice';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
-import { getFullLocationName } from '../../../../utils/name-utils';
+} from 'components/Common/BoundaryDropdown/utils';
+import { isPrimaryBoundaryLayer } from 'config/utils';
+import { toggleSelectedBoundary } from 'context/mapSelectionLayerStateSlice';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { getFullLocationName } from 'utils/name-utils';
 
-import { languages } from '../../../../i18n';
+import { languages } from 'i18n';
 
 function onToggleHover(cursor: string, targetMap: MapboxGL.Map) {
   // eslint-disable-next-line no-param-reassign, fp/no-mutation

@@ -11,20 +11,17 @@ import React, {
 import { Map, MapSourceDataEvent } from 'mapbox-gl';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
-import AnalysisLayer from '../Layers/AnalysisLayer';
-import SelectionLayer from '../Layers/SelectionLayer';
-import MapTooltip from '../MapTooltip';
-import { setMap } from '../../../context/mapStateSlice';
-import { appConfig } from '../../../config';
-import useMapOnClick from '../useMapOnClick';
-import {
-  setBounds,
-  setLocation,
-} from '../../../context/mapBoundaryInfoStateSlice';
-import { DiscriminateUnion, LayerKey, LayerType } from '../../../config/types';
-import { setLoadingLayerIds } from '../../../context/mapTileLoadingStateSlice';
-import { firstBoundaryOnView, isLayerOnView } from '../../../utils/map-utils';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
+import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
+import MapTooltip from 'components/MapView/MapTooltip';
+import { setMap } from 'context/mapStateSlice';
+import { appConfig } from 'config';
+import useMapOnClick from 'components/MapView/useMapOnClick';
+import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
+import { DiscriminateUnion, LayerKey, LayerType } from 'config/types';
+import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
+import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
   BoundaryLayer,
@@ -32,7 +29,7 @@ import {
   PointDataLayer,
   StaticRasterLayer,
   WMSLayer,
-} from '../Layers';
+} from 'components/MapView/Layers';
 
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;

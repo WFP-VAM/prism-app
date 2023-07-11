@@ -20,16 +20,12 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { TFunctionKeys } from 'i18next';
-import { useSafeTranslation } from '../../i18n';
-import { layersSelector } from '../../context/mapStateSlice/selectors';
-
-import {
-  setUserAuthGlobal,
-  userAuthSelector,
-} from '../../context/serverStateSlice';
-import { UserAuth } from '../../config/types';
-import { getUrlKey, useUrlHistory } from '../../utils/url-utils';
-import { removeLayer } from '../../context/mapStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { layersSelector } from 'context/mapStateSlice/selectors';
+import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';
+import { UserAuth } from 'config/types';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { removeLayer } from 'context/mapStateSlice';
 
 const AuthModal = ({ classes }: AuthModalProps) => {
   const initialAuthState: UserAuth = {

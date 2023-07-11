@@ -5,8 +5,8 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { Color } from '@material-ui/lab';
+import { stringHash } from 'utils/string-utils';
 import type { AppDispatch, RootState } from './store';
-import { stringHash } from '../utils/string-utils';
 
 // to test notification reaction to various error codes, http://httpstat.us/404 can be used where 404 is the status to test.
 type NotificationConstructor = {

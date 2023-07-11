@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { DateItem } from 'config/types';
 import TimelineItem, { TimelineItemProps } from '.';
-import { DateItem } from '../../../../../config/types';
 
 test('TimelineItem renders as expected', () => {
   // Arrange

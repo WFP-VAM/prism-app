@@ -1,12 +1,12 @@
 import { createGetCoverageUrl } from 'prism-common';
-import type { LayerDataParams, LazyLoader } from './layer-data';
-import { WMSLayerProps } from '../../config/types';
+import { WMSLayerProps } from 'config/types';
 import {
   GeoTiffImage,
   loadGeoTiff,
   Rasters,
   TransformMatrix,
-} from '../../components/MapView/Layers/raster-utils';
+} from 'components/MapView/Layers/raster-utils';
+import type { LayerDataParams, LazyLoader } from './layer-data';
 
 export type WMSLayerData = {
   image: GeoTiffImage;

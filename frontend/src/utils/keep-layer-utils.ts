@@ -1,4 +1,4 @@
-import { LayerType } from '../config/types';
+import { LayerType } from 'config/types';
 
 // Layer types that are allowed to have multiple layers overlap on the map.
 export const TYPES_ALLOWED_TO_OVERLAP = [

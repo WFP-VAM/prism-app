@@ -15,15 +15,12 @@ import {
   Typography,
 } from '@material-ui/core';
 import { orderBy } from 'lodash';
-import { useSafeTranslation } from '../../../../../i18n';
-import { ChartConfig } from '../../../../../config/types';
-import {
-  TableData,
-  TableRowType,
-} from '../../../../../context/tableStateSlice';
-import Chart from '../../../../Common/Chart';
-import LoadingBlinkingDots from '../../../../Common/LoadingBlinkingDots';
-import { getTableCellVal } from '../../../../../utils/data-utils';
+import { useSafeTranslation } from 'i18n';
+import { ChartConfig } from 'config/types';
+import { TableData, TableRowType } from 'context/tableStateSlice';
+import Chart from 'components/Common/Chart';
+import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import { getTableCellVal } from 'utils/data-utils';
 
 const DataTable = memo(
   ({
