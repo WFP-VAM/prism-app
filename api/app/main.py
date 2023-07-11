@@ -18,7 +18,7 @@ from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.models import AcledRequest, RasterGeotiffModel
 from app.timer import timed
 from app.validation import validate_intersect_parameter
-from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
+from app.zonal_stats import DEFAULT_STATS, GroupBy, calculate_stats, get_wfs_response
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -146,7 +146,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     features = _calculate_stats(
         zones,
         geotiff,
-        stats=" ".join(["min", "max", "mean", "median", "sum", "std"]),
+        stats=" ".join(DEFAULT_STATS),
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
@@ -356,7 +356,7 @@ def stats_demo(
     features = _calculate_stats(
         zones_filepath,
         geotiff,
-        stats=" ".join(["min", "max", "mean", "median", "sum", "std"]),
+        stats=" ".join(DEFAULT_STATS),
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
