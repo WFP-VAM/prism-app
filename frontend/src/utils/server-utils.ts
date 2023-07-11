@@ -1,4 +1,3 @@
-import { LayerDefinitions } from 'config/utils';
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import moment from 'moment';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
@@ -37,6 +36,7 @@ import { LocalError } from './error-utils';
 import { createEWSDatesArray } from './ews-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
 import { queryParamsToString } from './url-utils';
+import { LayerDefinitions } from '../config/utils';
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
