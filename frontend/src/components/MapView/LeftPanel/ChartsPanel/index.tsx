@@ -30,23 +30,22 @@ import React, {
 import DatePicker from 'react-datepicker';
 import { useSelector } from 'react-redux';
 import { TFunctionKeys } from 'i18next';
-import { appConfig } from '../../../../config';
-import {
-  BoundaryLayerProps,
-  PanelSize,
-  WMSLayerProps,
-} from '../../../../config/types';
+import { appConfig } from 'config';
+import { BoundaryLayerProps, PanelSize, WMSLayerProps } from 'config/types';
 import {
   getBoundaryLayersByAdminLevel,
   getWMSLayersWithChart,
-} from '../../../../config/utils';
-import { LayerData } from '../../../../context/layers/layer-data';
-import { leftPanelTabValueSelector } from '../../../../context/leftPanelStateSlice';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../../i18n';
-import { castObjectsArrayToCsv } from '../../../../utils/csv-utils';
-import { getOrderedAreas, OrderedArea } from '../../Layers/BoundaryDropdown';
-import { downloadToFile } from '../../utils';
+} from 'config/utils';
+import { LayerData } from 'context/layers/layer-data';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { castObjectsArrayToCsv } from 'utils/csv-utils';
+import {
+  getOrderedAreas,
+  OrderedArea,
+} from 'components/MapView/Layers/BoundaryDropdown';
+import { downloadToFile } from 'components/MapView/utils';
 import ChartSection from './ChartSection';
 
 // Load boundary layer for Admin2

@@ -9,20 +9,17 @@ import {
 } from '@material-ui/core';
 import { snakeCase } from 'lodash';
 import { useSelector } from 'react-redux';
-import { downloadToFile } from '../../../utils';
-import { useSafeTranslation } from '../../../../../i18n';
+import { downloadToFile } from 'components/MapView/utils';
+import { useSafeTranslation } from 'i18n';
 import {
   exposureLayerIdSelector,
   getCurrentDefinition,
   TableRow,
   TableRow as AnalysisTableRow,
-} from '../../../../../context/analysisResultStateSlice';
-import ReportDialog from '../../../../Common/ReportDialog';
-import {
-  Column,
-  quoteAndEscapeCell,
-} from '../../../../../utils/analysis-utils';
-import { ReportsDefinitions } from '../../../../../config/utils';
+} from 'context/analysisResultStateSlice';
+import ReportDialog from 'components/Common/ReportDialog';
+import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
+import { ReportsDefinitions } from 'config/utils';
 
 function ExposureAnalysisActions({
   analysisButton,

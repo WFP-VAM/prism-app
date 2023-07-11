@@ -12,62 +12,59 @@ import { countBy, get, pickBy } from 'lodash';
 import moment from 'moment';
 // map
 import bbox from '@turf/bbox';
-import Legends from './Legends';
-
 import {
   BoundaryLayerProps,
   isMainLayer,
   LayerKey,
   LayerType,
   PanelSize,
-} from '../../config/types';
-
-import { Extent } from './Layers/raster-utils';
-import { getUrlKey, UrlLayerKey, useUrlHistory } from '../../utils/url-utils';
-
+} from 'config/types';
+import { getUrlKey, UrlLayerKey, useUrlHistory } from 'utils/url-utils';
 import {
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
   LayerDefinitions,
-} from '../../config/utils';
-
-import DateSelector from './DateSelector';
-import { findClosestDate } from './DateSelector/utils';
+} from 'config/utils';
 import {
   dateRangeSelector,
   layerDataSelector,
   layersSelector,
-} from '../../context/mapStateSlice/selectors';
+} from 'context/mapStateSlice/selectors';
+
 import {
   addLayer,
   layerOrdering,
   removeLayer,
   updateDateRange,
-} from '../../context/mapStateSlice';
-import { hidePopup } from '../../context/tooltipStateSlice';
+} from 'context/mapStateSlice';
+import { hidePopup } from 'context/tooltipStateSlice';
 import {
   availableDatesSelector,
   isLoading as areDatesLoading,
   loadAvailableDates,
-} from '../../context/serverStateSlice';
+} from 'context/serverStateSlice';
 
-import { appConfig } from '../../config';
-import { LayerData, loadLayerData } from '../../context/layers/layer-data';
+import { appConfig } from 'config';
+import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import {
   DateCompatibleLayer,
   getPossibleDatesForLayer,
-} from '../../utils/server-utils';
-import { addNotification } from '../../context/notificationStateSlice';
+} from 'utils/server-utils';
+import { addNotification } from 'context/notificationStateSlice';
+import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
+import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import DataViewer from 'components/DataViewer';
+import { LocalError } from 'utils/error-utils';
 import AlertForm from './AlertForm';
-import GoToBoundaryDropdown from '../Common/BoundaryDropdown/goto';
 import BoundaryInfoBox from './BoundaryInfoBox';
-import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
-import DataViewer from '../DataViewer';
 import LeftPanel from './LeftPanel';
 import FoldButton from './FoldButton';
 import MapComponent from './Map';
 import { checkLayerAvailableDatesAndContinueOrRemove } from './utils';
-import { LocalError } from '../../utils/error-utils';
+import DateSelector from './DateSelector';
+import { findClosestDate } from './DateSelector/utils';
+import { Extent } from './Layers/raster-utils';
+import Legends from './Legends';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -536,7 +533,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return (
       <Grid
         container
-        justify="space-between"
+        justifyContent="space-between"
         className={classes.buttonContainer}
       >
         <Grid item>

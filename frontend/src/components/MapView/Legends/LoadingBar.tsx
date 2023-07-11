@@ -1,9 +1,9 @@
 import React from 'react';
 import { makeStyles, LinearProgress } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { LayerKey } from '../../../config/types';
-import { loadingLayerIdsSelector as tileLayerIdsSelector } from '../../../context/mapTileLoadingStateSlice';
-import { loadingLayerIdsSelector as vectorLayerIdsSelector } from '../../../context/mapStateSlice/selectors';
+import { LayerKey } from 'config/types';
+import { loadingLayerIdsSelector as tileLayerIdsSelector } from 'context/mapTileLoadingStateSlice';
+import { loadingLayerIdsSelector as vectorLayerIdsSelector } from 'context/mapStateSlice/selectors';
 
 export interface LoadingBarProps {
   layerId: LayerKey | undefined;

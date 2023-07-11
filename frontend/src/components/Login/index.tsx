@@ -8,9 +8,9 @@ import {
   Grid,
 } from '@material-ui/core';
 import { useMsal } from '@azure/msal-react';
-import { msalRequest } from '../../config';
+import { msalRequest } from 'config';
 
-import { colors } from '../../muiTheme';
+import { colors } from 'muiTheme';
 
 const Login = ({ classes }: LoginProps) => {
   const { instance } = useMsal();

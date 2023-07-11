@@ -4,9 +4,9 @@ import { ChartOptions } from 'chart.js';
 import { Bar, Line } from 'react-chartjs-2';
 import { TFunctionKeys } from 'i18next';
 import moment, { LocaleSpecifier } from 'moment';
-import { ChartConfig, DatasetField } from '../../../config/types';
-import { TableData } from '../../../context/tableStateSlice';
-import { useSafeTranslation } from '../../../i18n';
+import { ChartConfig, DatasetField } from 'config/types';
+import { TableData } from 'context/tableStateSlice';
+import { useSafeTranslation } from 'i18n';
 
 type ChartProps = {
   title: string;

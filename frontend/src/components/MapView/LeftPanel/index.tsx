@@ -1,11 +1,7 @@
 import { createStyles, Drawer, makeStyles, Theme } from '@material-ui/core';
 import React, { memo, useMemo } from 'react';
-import {
-  LayersCategoryType,
-  MenuItemType,
-  PanelSize,
-} from '../../../config/types';
-import { Extent } from '../Layers/raster-utils';
+import { LayersCategoryType, MenuItemType, PanelSize } from 'config/types';
+import { Extent } from 'components/MapView/Layers/raster-utils';
 import AnalysisPanel from './AnalysisPanel';
 import ChartsPanel from './ChartsPanel';
 import LayersPanel from './layersPanel';

@@ -5,9 +5,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import React from 'react';
-import { DateRangeType } from '../../../../../config/types';
-import { moment } from '../../../../../i18n';
-import { MONTH_YEAR_DATE_FORMAT } from '../../../../../utils/name-utils';
+import { DateRangeType } from 'config/types';
+import { moment } from 'i18n';
+import { MONTH_YEAR_DATE_FORMAT } from 'utils/name-utils';
 
 const TimelineLabel = ({ classes, locale, date }: TimelineLabelProps) => {
   if (date.isFirstDay) {

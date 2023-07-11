@@ -1,7 +1,7 @@
 import type { Feature, MultiPolygon, BBox } from '@turf/helpers';
 import { sortBy } from 'lodash';
 import bbox from '@turf/bbox';
-import { BoundaryLayerData } from '../../../context/layers/boundary';
+import { BoundaryLayerData } from 'context/layers/boundary';
 
 export type BoundaryRelationsDict = { [key: string]: BoundaryRelationData };
 

@@ -19,16 +19,16 @@ import { ArrowBack } from '@material-ui/icons';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { snakeCase } from 'lodash';
 import moment from 'moment';
-import { useSafeTranslation } from '../../../i18n';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   analysisResultSelector,
   TableRow as AnalysisTableRow,
-} from '../../../context/analysisResultStateSlice';
-import { Column, ExposedPopulationResult } from '../../../utils/analysis-utils';
+} from 'context/analysisResultStateSlice';
+import { Column, ExposedPopulationResult } from 'utils/analysis-utils';
+import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import { ReportType } from 'config/types';
 import ReportDoc from './reportDoc';
-import LoadingBlinkingDots from '../LoadingBlinkingDots';
-import { ReportType } from '../../../config/types';
 
 type Format = 'png' | 'jpeg';
 

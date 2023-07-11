@@ -8,18 +8,14 @@ import {
   View,
 } from '@react-pdf/renderer';
 import { Theme } from '@material-ui/core';
-import { TableRow as AnalysisTableRow } from '../../../context/analysisResultStateSlice';
-import { getLegendItemLabel } from '../../MapView/utils';
-import {
-  LegendDefinition,
-  ReportType,
-  ReportTypeEnum,
-} from '../../../config/types';
-import { TFunction } from '../../../utils/data-utils';
+import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
+import { getLegendItemLabel } from 'components/MapView/utils';
+import { LegendDefinition, ReportType, ReportTypeEnum } from 'config/types';
+import { TFunction } from 'utils/data-utils';
+import { Column } from 'utils/analysis-utils';
 import { PDFLegendDefinition } from './types';
 import ReportDocLegend from './ReportDocLegend';
 import ReportDocTable from './ReportDocTable';
-import { Column } from '../../../utils/analysis-utils';
 
 const makeStyles = (theme: Theme) =>
   StyleSheet.create({

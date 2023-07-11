@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import {
   boundsSelector,
   zoomSelector,
-} from '../../../context/mapBoundaryInfoStateSlice';
+} from 'context/mapBoundaryInfoStateSlice';
 
 function LocationBox({ classes }: LocationBoxProps) {
   const bounds = useSelector(boundsSelector);

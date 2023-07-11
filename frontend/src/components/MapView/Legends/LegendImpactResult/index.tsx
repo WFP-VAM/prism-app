@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { useSafeTranslation } from '../../../../i18n';
+import { useSafeTranslation } from 'i18n';
 
 interface LegendImpactProps {
   legendText: string;

@@ -1,10 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { LayerKey, LayerType } from '../../config/types';
-import { LayerDefinitions } from '../../config/utils';
-import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
-import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
-import { keepLayer } from '../../utils/keep-layer-utils';
+import { LayerKey, LayerType } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import {
+  LayerData,
+  LayerDataTypes,
+  loadLayerData,
+} from 'context/layers/layer-data';
+import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import { keepLayer } from 'utils/keep-layer-utils';
 
 interface DateRange {
   startDate?: number;
