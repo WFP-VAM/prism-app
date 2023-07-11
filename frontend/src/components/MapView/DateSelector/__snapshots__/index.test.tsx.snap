@@ -6,7 +6,7 @@ exports[`renders as expected 1`] = `
     class="memo-container-1"
   >
     <div
-      class="MuiGrid-root memo-datePickerContainer-3 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
+      class="MuiGrid-root memo-datePickerContainer-3 MuiGrid-container MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-center"
     >
       <div
         class="MuiGrid-root memo-datePickerGrid-5 MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-sm-1"

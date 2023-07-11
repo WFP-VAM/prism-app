@@ -533,7 +533,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return (
       <Grid
         container
-        justify="space-between"
+        justifyContent="space-between"
         className={classes.buttonContainer}
       >
         <Grid item>

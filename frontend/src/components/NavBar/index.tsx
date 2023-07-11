@@ -84,7 +84,7 @@ function NavBar({ classes }: NavBarProps) {
             <Grid
               spacing={3}
               container
-              justify="flex-end"
+              justifyContent="flex-end"
               alignItems="center"
               item
               xs={6}
