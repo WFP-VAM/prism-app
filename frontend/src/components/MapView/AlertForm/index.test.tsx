@@ -6,6 +6,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { store } from 'context/store';
 import AlertForm from '.';
 
+jest.mock('../Layers/LayerDropdown', () => 'mock-Layer-Dropdown');
+
 test('renders as expected', () => {
   const rendered = render(
     <Provider store={store}>
