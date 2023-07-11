@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as Papa from 'papaparse';
-import { TableType } from '../config/types';
-import { TableDefinitions } from '../config/utils';
+import { TableType } from 'config/types';
+import { TableDefinitions } from 'config/utils';
+import { EWSChartItemsObject } from 'utils/ews-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
-import { EWSChartItemsObject } from '../utils/ews-utils';
 
 export type TableRowType = { [key: string]: string | number };
 export type TableData = {

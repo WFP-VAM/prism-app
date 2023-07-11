@@ -16,12 +16,12 @@ import {
 } from '@material-ui/core';
 
 import { useDispatch } from 'react-redux';
-import { TableRow as AnalysisTableRow } from '../../../../../../context/analysisResultStateSlice';
+import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 
-import { useSafeTranslation } from '../../../../../../i18n';
+import { useSafeTranslation } from 'i18n';
 
-import { Column } from '../../../../../../utils/analysis-utils';
-import { showPopup } from '../../../../../../context/tooltipStateSlice';
+import { Column } from 'utils/analysis-utils';
+import { showPopup } from 'context/tooltipStateSlice';
 
 const ExposureAnalysisTable = memo(
   ({

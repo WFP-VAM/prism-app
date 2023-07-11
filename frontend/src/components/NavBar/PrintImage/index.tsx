@@ -8,8 +8,8 @@ import {
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import Print from '@material-ui/icons/Print';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../i18n';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
 import DownloadImage from './image';
 
 function PrintImage({ classes }: PrintImageProps) {

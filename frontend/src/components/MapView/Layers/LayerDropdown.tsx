@@ -9,13 +9,10 @@ import {
 } from '@material-ui/core';
 import React, { ReactElement } from 'react';
 import { startCase } from 'lodash';
-import { menuList } from '../LeftPanel/utils';
-import { LayerKey, LayerType } from '../../../config/types';
-import {
-  getDisplayBoundaryLayers,
-  LayerDefinitions,
-} from '../../../config/utils';
-import { useSafeTranslation } from '../../../i18n';
+import { menuList } from 'components/MapView/LeftPanel/utils';
+import { LayerKey, LayerType } from 'config/types';
+import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
+import { useSafeTranslation } from 'i18n';
 import { getLayerGeometryIcon } from './layer-utils';
 
 const useStyles = makeStyles(() =>

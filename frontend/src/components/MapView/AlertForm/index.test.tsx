@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
+import { store } from 'context/store';
 import AlertForm from '.';
-import { store } from '../../../context/store';
 
 jest.mock('../Layers/LayerDropdown', () => 'mock-Layer-Dropdown');
 

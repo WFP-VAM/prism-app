@@ -1,0 +1,5 @@
+# Changed all relative paths in the app
+8a2cbc93a3e74641e0543e416a3568c793fc08a3
+
+# Fixed tests for changing the relative paths
+82e4d061f8988bb42fc416e9357d06a6475cc2ea

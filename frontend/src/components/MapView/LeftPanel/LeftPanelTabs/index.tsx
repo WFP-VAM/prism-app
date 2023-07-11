@@ -16,15 +16,15 @@ import {
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sum } from 'lodash';
-import { PanelSize } from '../../../../config/types';
-import { getWMSLayersWithChart } from '../../../../config/utils';
+import { PanelSize } from 'config/types';
+import { getWMSLayersWithChart } from 'config/utils';
 import {
   leftPanelTabValueSelector,
   setTabValue,
-} from '../../../../context/leftPanelStateSlice';
-import { useSafeTranslation } from '../../../../i18n';
+} from 'context/leftPanelStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import TabPanel from './TabPanel';
-import { analysisResultSelector } from '../../../../context/analysisResultStateSlice';
 
 interface StyleProps {
   tabValue: number;

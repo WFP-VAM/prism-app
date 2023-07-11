@@ -1,8 +1,8 @@
 import { WithStyles, createStyles, withStyles } from '@material-ui/core';
 import React, { memo } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
-import { DateItem, DateRangeType } from '../../../../../config/types';
-import { datesAreEqualWithoutTime } from '../../../../../utils/date-utils';
+import { DateItem, DateRangeType } from 'config/types';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 
 const TimelineItem = memo(
   ({

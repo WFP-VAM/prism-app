@@ -12,8 +12,8 @@ import {
 } from '@material-ui/core';
 import { jsPDF } from 'jspdf';
 import React from 'react';
-import { useSafeTranslation } from '../../../i18n';
-import { downloadToFile } from '../../MapView/utils';
+import { useSafeTranslation } from 'i18n';
+import { downloadToFile } from 'components/MapView/utils';
 
 function DownloadImage({
   classes,

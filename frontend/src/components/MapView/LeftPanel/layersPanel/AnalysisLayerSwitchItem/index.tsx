@@ -20,15 +20,15 @@ import OpacityIcon from '@material-ui/icons/Opacity';
 import {
   clearAnalysisResult,
   setAnalysisLayerOpacity,
-} from '../../../../../context/analysisResultStateSlice';
-import { handleChangeOpacity } from '../../../Legends/handleChangeOpacity';
-import { mapSelector } from '../../../../../context/mapStateSlice/selectors';
-import AnalysisLayerSwitchItemDownloadOptions from './AnalysisLayerSwitchItemDownloadOptions';
+} from 'context/analysisResultStateSlice';
+import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
-} from '../../../../../utils/analysis-utils';
+} from 'utils/analysis-utils';
+import AnalysisLayerSwitchItemDownloadOptions from './AnalysisLayerSwitchItemDownloadOptions';
 
 const AnalysisLayerSwitchItem = memo(
   ({

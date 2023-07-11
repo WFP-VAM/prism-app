@@ -4,9 +4,10 @@ import {
   LayerType,
   PointLayerData,
   StaticRasterLayerProps,
-} from '../../config/types';
-import { Extent } from '../../components/MapView/Layers/raster-utils';
+} from 'config/types';
+import { Extent } from 'components/MapView/Layers/raster-utils';
 
+import type { CreateAsyncThunkTypes, ThunkApi } from 'context/store';
 import {
   fetchAdminLevelDataLayerData,
   AdminLevelDataLayerData,
@@ -15,8 +16,6 @@ import { fetchWCSLayerData, WMSLayerData } from './wms';
 import { fetchPointLayerData } from './point_data';
 import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
 import { fetchImpactLayerData, ImpactLayerData } from './impact';
-
-import type { CreateAsyncThunkTypes, ThunkApi } from '../store';
 
 export type LayerAcceptingDataType = Exclude<LayerType, StaticRasterLayerProps>;
 
