@@ -2,7 +2,7 @@
   "flood_extent_report": {
     "layer_id": "flood_extent",
     "type": "floods",
-    "title": "Event name: Flood Report",
+    "title": "Flood Report",
     "publication_date_label": "Publication Date",
     "sub_text": "This is an automated report. Information should be treated as preliminary",
     "areas_legend_definition": {
