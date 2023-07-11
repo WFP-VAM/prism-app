@@ -32,32 +32,32 @@ import {
   ThresholdDefinition,
   WfsRequestParams,
   WMSLayerProps,
-} from '../config/types';
-import type { ThunkApi } from '../context/store';
-import { layerDataSelector } from '../context/mapStateSlice/selectors';
+} from 'config/types';
+import type { ThunkApi } from 'context/store';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import {
   Extent,
   featureIntersectsImage,
   GeoJsonBoundary,
   pixelsInFeature,
-} from '../components/MapView/Layers/raster-utils';
-import { BoundaryLayerData } from '../context/layers/boundary';
-import { AdminLevelDataLayerData } from '../context/layers/admin_level_data';
-import { WMSLayerData } from '../context/layers/wms';
+} from 'components/MapView/Layers/raster-utils';
+import { BoundaryLayerData } from 'context/layers/boundary';
+import { AdminLevelDataLayerData } from 'context/layers/admin_level_data';
+import { WMSLayerData } from 'context/layers/wms';
 import type {
   LayerAcceptingDataType,
   LayerData,
   LayerDataParams,
   LoadLayerDataFuncType,
-} from '../context/layers/layer-data';
-import { LayerDefinitions } from '../config/utils';
-import type { TableRow } from '../context/analysisResultStateSlice';
-import { isLocalhost } from '../serviceWorker';
+} from 'context/layers/layer-data';
+import { LayerDefinitions } from 'config/utils';
+import type { TableRow } from 'context/analysisResultStateSlice';
+import { isLocalhost } from 'serviceWorker';
 import {
   i18nTranslator,
   isEnglishLanguageSelected,
   useSafeTranslation,
-} from '../i18n';
+} from 'i18n';
 import { getRoundedData } from './data-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
 import {

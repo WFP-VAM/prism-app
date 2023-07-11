@@ -4,7 +4,7 @@ import {
   DataFieldType,
   LegendDefinitionItem,
   PointDataLayerProps,
-} from '../../../config/types';
+} from 'config/types';
 import { legendToStops } from './layer-utils';
 
 export const circleLayout: MapboxGL.CircleLayout = { visibility: 'visible' };

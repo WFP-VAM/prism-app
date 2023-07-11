@@ -7,17 +7,17 @@ import { useCallback, useMemo } from 'react';
 import {
   dateRangeSelector,
   layerDataSelector,
-} from '../../context/mapStateSlice/selectors';
-import { LayerData } from '../../context/layers/layer-data';
-import { BoundaryLayerProps } from '../../config/types';
+} from 'context/mapStateSlice/selectors';
+import { LayerData } from 'context/layers/layer-data';
+import { BoundaryLayerProps } from 'config/types';
 import {
   addPopupData,
   hidePopup,
   setWMSGetFeatureInfoLoading,
-} from '../../context/tooltipStateSlice';
+} from 'context/tooltipStateSlice';
+import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import { makeFeatureInfoRequest } from 'utils/server-utils';
 import { getActiveFeatureInfoLayers, getFeatureInfoParams } from './utils';
-import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
-import { makeFeatureInfoRequest } from '../../utils/server-utils';
 
 const useMapOnClick = (
   setIsAlertFormOpen: (value: boolean) => void,

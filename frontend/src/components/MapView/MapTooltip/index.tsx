@@ -8,8 +8,8 @@ import {
   LinearProgress,
 } from '@material-ui/core';
 import { isEqual } from 'lodash';
-import { tooltipSelector } from '../../../context/tooltipStateSlice';
-import { isEnglishLanguageSelected, useSafeTranslation } from '../../../i18n';
+import { tooltipSelector } from 'context/tooltipStateSlice';
+import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 
 const MapTooltip = memo(({ classes }: TooltipProps) => {
   const popup = useSelector(tooltipSelector);

@@ -2,11 +2,11 @@ import { sortBy } from 'lodash';
 import GeoJSON from 'geojson';
 import moment from 'moment';
 import { Dispatch } from 'redux';
-import { PointLayerData, PointDataLayerProps } from '../config/types';
+import { PointLayerData, PointDataLayerProps } from 'config/types';
+import { addNotification } from 'context/notificationStateSlice';
 import { DEFAULT_DATE_FORMAT } from './name-utils';
 import { queryParamsToString } from './url-utils';
 import { fetchWithTimeout } from './fetch-with-timeout';
-import { addNotification } from '../context/notificationStateSlice';
 import { LocalError } from './error-utils';
 
 export const fetchACLEDDates = async (

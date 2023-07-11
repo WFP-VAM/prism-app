@@ -1,3 +1,4 @@
+import { LayerDefinitions } from 'config/utils';
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
 import moment from 'moment';
 import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
@@ -23,7 +24,6 @@ import {
   StaticRasterLayerProps,
   WMSLayerProps,
 } from '../config/types';
-import { LayerDefinitions } from '../config/utils';
 
 import { addNotification } from '../context/notificationStateSlice';
 import { fetchACLEDDates } from './acled-utils';

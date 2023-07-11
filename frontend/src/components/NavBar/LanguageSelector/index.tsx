@@ -8,7 +8,7 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core';
-import { languages, useSafeTranslation } from '../../../i18n';
+import { languages, useSafeTranslation } from 'i18n';
 
 function LanguageSelector({ classes }: LanguageSelectorProps) {
   const { i18n } = useSafeTranslation();

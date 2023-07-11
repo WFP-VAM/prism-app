@@ -9,8 +9,8 @@ import {
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useSafeTranslation } from '../../../i18n';
-import { analysisResultSelector } from '../../../context/analysisResultStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { analysisResultSelector } from 'context/analysisResultStateSlice';
 
 interface IProps {
   isPanelHidden: boolean;

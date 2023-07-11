@@ -1,8 +1,8 @@
 import { GeoJSON } from 'geojson';
 import { TFunction as _TFunction } from 'i18next';
 import { isNumber } from 'lodash';
-import { TableRowType } from '../context/tableStateSlice';
-import { i18nTranslator } from '../i18n';
+import { TableRowType } from 'context/tableStateSlice';
+import { i18nTranslator } from 'i18n';
 
 export type TFunction = _TFunction;
 

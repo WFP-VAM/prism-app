@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { addNotification } from '../context/notificationStateSlice';
+import { addNotification } from 'context/notificationStateSlice';
 
 interface FetchWithTimeoutOptions extends RequestInit {
   timeout?: number;

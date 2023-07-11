@@ -12,8 +12,8 @@ import { uniq } from 'lodash';
 import {
   mapSelector,
   boundaryRelationSelector,
-} from '../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../i18n';
+} from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
 
 import SearchBar from './searchBar';
 import { setMenuItemStyle, containsText, createMatchesTree } from './utils';

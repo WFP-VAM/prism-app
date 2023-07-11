@@ -10,13 +10,13 @@ import {
   Typography,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { useSafeTranslation } from '../../../../../i18n';
-import AnalysisLayerSwitchItem from '../AnalysisLayerSwitchItem';
+import { useSafeTranslation } from 'i18n';
+import AnalysisLayerSwitchItem from 'components/MapView/LeftPanel/layersPanel/AnalysisLayerSwitchItem';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
-} from '../../../../../utils/analysis-utils';
+} from 'utils/analysis-utils';
 
 interface AnalysisLayerMenuItemProps {
   title: string;

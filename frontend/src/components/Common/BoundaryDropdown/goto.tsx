@@ -1,9 +1,8 @@
 import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import { CenterFocusWeak } from '@material-ui/icons';
+import { useSafeTranslation } from 'i18n';
 import BoundaryDropdown, { MapInteraction } from '.';
-
-import { useSafeTranslation } from '../../../i18n';
 
 // TODO - Dedup files and styling in BoundaryDropdown.tsx
 const useStyles = makeStyles((theme: Theme) => ({

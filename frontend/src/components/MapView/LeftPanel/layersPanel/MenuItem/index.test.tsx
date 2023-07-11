@@ -2,11 +2,14 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 
+import { store } from 'context/store';
+import { LayerKey, MenuItemType } from 'config/types';
 import MenuItem from '.';
-import { store } from '../../../../../context/store';
-import { LayerKey, MenuItemType } from '../../../../../config/types';
 
-jest.mock('../MenuSwitch', () => 'mock-MenuSwitch');
+jest.mock(
+  'components/MapView/LeftPanel/layersPanel/MenuSwitch',
+  () => 'mock-MenuSwitch',
+);
 
 const props: MenuItemType = {
   title: 'title',

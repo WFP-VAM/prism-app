@@ -2,17 +2,16 @@ import moment from 'moment';
 import { orderBy } from 'lodash';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Dispatch } from 'redux';
-import type { CreateAsyncThunkTypes, RootState } from './store';
-import { TableData } from './tableStateSlice';
-import { ChartType, DatasetField } from '../config/types';
-import { DEFAULT_DATE_FORMAT } from '../utils/name-utils';
-
+import { ChartType, DatasetField } from 'config/types';
+import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
 import {
   EWSSensorData,
   EWSTriggersConfig,
   fetchEWSDataPointsByLocation,
-} from '../utils/ews-utils';
-import { fetchWithTimeout } from '../utils/fetch-with-timeout';
+} from 'utils/ews-utils';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
+import type { CreateAsyncThunkTypes, RootState } from './store';
+import { TableData } from './tableStateSlice';
 
 export type EWSParams = {
   externalId: string;

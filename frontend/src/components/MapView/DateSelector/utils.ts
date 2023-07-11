@@ -1,7 +1,7 @@
 import moment from 'moment';
-import { MONTH_FIRST_DATE_FORMAT } from '../../../utils/name-utils';
-import { DateCompatibleLayer } from '../../../utils/server-utils';
-import { DateItem } from '../../../config/types';
+import { MONTH_FIRST_DATE_FORMAT } from 'utils/name-utils';
+import { DateCompatibleLayer } from 'utils/server-utils';
+import { DateItem } from 'config/types';
 
 export const TIMELINE_ITEM_WIDTH = 10;
 
