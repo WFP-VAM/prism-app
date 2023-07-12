@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStyles, makeStyles, Typography } from '@material-ui/core';
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import { alpha } from '@material-ui/core/styles';
 
 interface StylesProps {
   color: string;
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() =>
     indicator: {
       ...indicatorsCommonStyles,
       backgroundColor: ({ color, opacity }: StylesProps) =>
-        fade(color, opacity),
+        alpha(color, opacity),
     },
     fillPatternIndicator: {
       ...indicatorsCommonStyles,

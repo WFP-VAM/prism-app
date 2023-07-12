@@ -10,10 +10,9 @@ import {
 import moment from 'moment';
 import { get, groupBy as _groupBy, uniq } from 'lodash';
 import { createGetCoverageUrl } from 'prism-common';
-import { calculate } from '../utils/zonal-utils';
+import { calculate } from 'utils/zonal-utils';
 
-import type { CreateAsyncThunkTypes, RootState } from './store';
-import { defaultBoundariesPath } from '../config';
+import { defaultBoundariesPath } from 'config';
 import {
   AdminLevelDataLayerProps,
   AdminLevelType,
@@ -30,8 +29,8 @@ import {
   WfsRequestParams,
   WMSLayerProps,
   ZonalPolygonRow,
-} from '../config/types';
-import { getAdminLevelLayer, getAdminNameProperty } from '../utils/admin-utils';
+} from 'config/types';
+import { getAdminLevelLayer, getAdminNameProperty } from 'utils/admin-utils';
 import {
   AnalysisResult,
   ApiData,
@@ -48,21 +47,22 @@ import {
   PolygonAnalysisResult,
   scaleAndFilterAggregateData,
   scaleFeatureStat,
-} from '../utils/analysis-utils';
-import { getRoundedData } from '../utils/data-utils';
-import { DEFAULT_DATE_FORMAT, getFullLocationName } from '../utils/name-utils';
+} from 'utils/analysis-utils';
+import { getRoundedData } from 'utils/data-utils';
+import { DEFAULT_DATE_FORMAT, getFullLocationName } from 'utils/name-utils';
 import {
   getBoundaryLayersByAdminLevel,
   getBoundaryLayerSingleton,
   LayerDefinitions,
-} from '../config/utils';
-import { Extent } from '../components/MapView/Layers/raster-utils';
-import { fetchWMSLayerAsGeoJSON } from '../utils/server-utils';
+} from 'config/utils';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
+import { isLocalhost } from 'serviceWorker';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
 import { BoundaryLayerData } from './layers/boundary';
-import { isLocalhost } from '../serviceWorker';
+import type { CreateAsyncThunkTypes, RootState } from './store';
 
 const ANALYSIS_API_URL = 'https://prism-api.ovio.org/stats'; // TODO both needs to be stored somewhere
 

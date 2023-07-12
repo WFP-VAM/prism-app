@@ -11,20 +11,17 @@ import React, {
 import { Map, MapSourceDataEvent } from 'mapbox-gl';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
-import AnalysisLayer from '../Layers/AnalysisLayer';
-import SelectionLayer from '../Layers/SelectionLayer';
-import MapTooltip from '../MapTooltip';
-import { setMap } from '../../../context/mapStateSlice';
-import { appConfig } from '../../../config';
-import useMapOnClick from '../useMapOnClick';
-import {
-  setBounds,
-  setLocation,
-} from '../../../context/mapBoundaryInfoStateSlice';
-import { DiscriminateUnion, LayerKey, LayerType } from '../../../config/types';
-import { setLoadingLayerIds } from '../../../context/mapTileLoadingStateSlice';
-import { firstBoundaryOnView, isLayerOnView } from '../../../utils/map-utils';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
+import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
+import MapTooltip from 'components/MapView/MapTooltip';
+import { setMap } from 'context/mapStateSlice';
+import { appConfig } from 'config';
+import useMapOnClick from 'components/MapView/useMapOnClick';
+import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
+import { DiscriminateUnion, LayerKey, LayerType } from 'config/types';
+import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
+import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
   BoundaryLayer,
@@ -32,12 +29,13 @@ import {
   PointDataLayer,
   StaticRasterLayer,
   WMSLayer,
-} from '../Layers';
+} from 'components/MapView/Layers';
 
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
   boundaryLayerId: string;
   selectedLayers: LayerType[];
+  panelHidden: boolean;
 }
 
 type LayerComponentsMap<U extends LayerType> = {
@@ -49,9 +47,10 @@ const MapComponent = memo(
     setIsAlertFormOpen,
     boundaryLayerId,
     selectedLayers,
+    panelHidden,
   }: MapComponentProps) => {
     const {
-      map: { boundingBox, hidePanel, minZoom, maxZoom, maxBounds },
+      map: { boundingBox, minZoom, maxZoom, maxBounds },
     } = appConfig;
 
     const dispatch = useDispatch();
@@ -82,12 +81,12 @@ const MapComponent = memo(
         duration: 0,
         padding: {
           bottom: 150, // room for dates.
-          left: hidePanel ? 30 : 500, // room for the left panel if active.
+          left: panelHidden ? 30 : 500, // room for the left panel if active.
           right: 60,
           top: 70,
         },
       };
-    }, [hidePanel]);
+    }, [panelHidden]);
 
     const MapboxMap = useMemo(() => {
       return ReactMapboxGl({

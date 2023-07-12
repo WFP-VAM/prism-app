@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 
 const skyBlue: string = '#009EE0';
 const greyBlue: string = '#5A686C';
@@ -8,7 +8,7 @@ const lightGray = '#CCCCCC';
 
 export const colors = { skyBlue, greyBlue, darkGreyBlue };
 
-declare module '@material-ui/core/styles/createMuiTheme' {
+declare module '@material-ui/core/styles/createTheme' {
   interface ThemeOptions {
     dialog?: {
       border?: React.CSSProperties['color'];
@@ -62,7 +62,7 @@ declare module '@material-ui/core/styles/createMuiTheme' {
   }
 }
 
-const theme: any = createMuiTheme({
+const theme: any = createTheme({
   dialog: {
     border: '#2E6EAF',
     actionButton: '#6F9FD2',

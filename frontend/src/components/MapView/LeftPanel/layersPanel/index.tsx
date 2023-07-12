@@ -1,17 +1,17 @@
 import { Box } from '@material-ui/core';
 import React, { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Extent } from '../../Layers/raster-utils';
-import MenuItem from './MenuItem';
-import { MenuItemType } from '../../../../config/types';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { MenuItemType } from 'config/types';
 import {
   analysisResultOpacitySelector,
   analysisResultSelector,
   analysisResultSortByKeySelector,
   analysisResultSortOrderSelector,
-} from '../../../../context/analysisResultStateSlice';
+} from 'context/analysisResultStateSlice';
+import { useSafeTranslation } from 'i18n';
 import AnalysisLayerMenuItem from './AnalysisLayerMenuItem';
-import { useSafeTranslation } from '../../../../i18n';
+import MenuItem from './MenuItem';
 
 const LayersPanel = memo(({ extent, layersMenuItems }: LayersPanelProps) => {
   const analysisData = useSelector(analysisResultSelector);

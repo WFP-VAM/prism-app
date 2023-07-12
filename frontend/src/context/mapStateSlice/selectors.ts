@@ -2,12 +2,12 @@
 // layerDataSelector(used to be mapStateSlice) -> nso/impact -> layer-data -> mapStateSlice
 // x -> y .. x is used by y
 import { Map as MapBoxMap } from 'mapbox-gl';
-import type { RootState } from '../store';
-import type { LayerDataTypes } from '../layers/layer-data';
+import type { RootState } from 'context/store';
+import type { LayerDataTypes } from 'context/layers/layer-data';
+import type { LayerKey, LayerType } from 'config/types';
+import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 import type { MapState } from '.';
-import type { LayerKey, LayerType } from '../../config/types';
-import { BoundaryRelationsDict } from '../../components/Common/BoundaryDropdown/utils';
-import { datesAreEqualWithoutTime } from '../../utils/date-utils';
 
 export const layersSelector = (state: RootState): MapState['layers'] =>
   state.mapState.layers;

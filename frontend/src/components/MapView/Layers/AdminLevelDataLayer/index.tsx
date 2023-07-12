@@ -5,32 +5,26 @@ import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
   LayerKey,
-} from '../../../../config/types';
-import {
-  LayerData,
-  loadLayerData,
-} from '../../../../context/layers/layer-data';
+} from 'config/types';
+import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import {
   layerDataSelector,
   mapSelector,
-} from '../../../../context/mapStateSlice/selectors';
-import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
-import { useDefaultDate } from '../../../../utils/useDefaultDate';
-import { getBoundaryLayers, LayerDefinitions } from '../../../../config/utils';
-import { addNotification } from '../../../../context/notificationStateSlice';
+} from 'context/mapStateSlice/selectors';
+import { addLayer, removeLayer } from 'context/mapStateSlice';
+import { useDefaultDate } from 'utils/useDefaultDate';
+import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
+import { addNotification } from 'context/notificationStateSlice';
+import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
+import { useSafeTranslation } from 'i18n';
+import { fillPaintData } from 'components/MapView/Layers/styles';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { getRequestDate } from 'utils/server-utils';
 import {
-  firstBoundaryOnView,
-  isLayerOnView,
-} from '../../../../utils/map-utils';
-import { useSafeTranslation } from '../../../../i18n';
-import { fillPaintData } from '../styles';
-import { availableDatesSelector } from '../../../../context/serverStateSlice';
-import { getRequestDate } from '../../../../utils/server-utils';
-import { addPopupParams, legendToStops } from '../layer-utils';
-import {
-  convertSvgToPngBase64Image,
-  getSVGShape,
-} from '../../../../utils/image-utils';
+  addPopupParams,
+  legendToStops,
+} from 'components/MapView/Layers/layer-utils';
+import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
 
 function AdminLevelDataLayers({
   layer,

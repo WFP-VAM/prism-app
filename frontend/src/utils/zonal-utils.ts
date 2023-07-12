@@ -1,5 +1,5 @@
 import * as Comlink from 'comlink';
-import { ZonalOptions } from '../config/types';
+import { ZonalOptions } from 'config/types';
 
 // instantiate worker to handle zonal statistics requests
 const text = `

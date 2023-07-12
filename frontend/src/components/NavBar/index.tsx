@@ -18,11 +18,11 @@ import {
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from 'lodash';
-import { useSafeTranslation } from '../../i18n';
+import { useSafeTranslation } from 'i18n';
+import { appConfig } from 'config';
 import About from './About';
 import LanguageSelector from './LanguageSelector';
 import PrintImage from './PrintImage';
-import { appConfig } from '../../config';
 
 function NavBar({ classes }: NavBarProps) {
   const { t } = useSafeTranslation();
@@ -84,7 +84,7 @@ function NavBar({ classes }: NavBarProps) {
             <Grid
               spacing={3}
               container
-              justify="flex-end"
+              justifyContent="flex-end"
               alignItems="center"
               item
               xs={6}

@@ -3,22 +3,22 @@ import { get } from 'lodash';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPopupData } from '../../../../context/tooltipStateSlice';
+import { addPopupData } from 'context/tooltipStateSlice';
 import {
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
-} from '../../../../context/analysisResultStateSlice';
-import { legendToStops } from '../layer-utils';
-import { LegendDefinition } from '../../../../config/types';
+} from 'context/analysisResultStateSlice';
+import { legendToStops } from 'components/MapView/Layers/layer-utils';
+import { LegendDefinition } from 'config/types';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
   PolygonAnalysisResult,
-} from '../../../../utils/analysis-utils';
-import { getRoundedData } from '../../../../utils/data-utils';
-import { useSafeTranslation } from '../../../../i18n';
-import { LayerDefinitions } from '../../../../config/utils';
-import { formatIntersectPercentageAttribute } from '../../utils';
+} from 'utils/analysis-utils';
+import { getRoundedData } from 'utils/data-utils';
+import { useSafeTranslation } from 'i18n';
+import { LayerDefinitions } from 'config/utils';
+import { formatIntersectPercentageAttribute } from 'components/MapView/utils';
 
 function AnalysisLayer({ before }: { before?: string }) {
   // TODO maybe in the future we can try add this to LayerType so we don't need exclusive code in Legends and MapView to make this display correctly

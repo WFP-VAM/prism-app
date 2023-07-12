@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import moment from 'moment';
-import { AvailableDates, isMainLayer, LayerKey } from '../config/types';
-import { availableDatesSelector } from '../context/serverStateSlice';
+import { AvailableDates, isMainLayer, LayerKey } from 'config/types';
+import { availableDatesSelector } from 'context/serverStateSlice';
 import {
   dateRangeSelector,
   layersSelector,
-} from '../context/mapStateSlice/selectors';
+} from 'context/mapStateSlice/selectors';
 
 import { useUrlHistory } from './url-utils';
 import { DEFAULT_DATE_FORMAT } from './name-utils';

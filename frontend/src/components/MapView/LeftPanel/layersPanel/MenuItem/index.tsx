@@ -11,12 +11,12 @@ import {
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useSelector } from 'react-redux';
-import { LayersCategoryType } from '../../../../../config/types';
-import MenuSwitch from '../MenuSwitch';
-import { useSafeTranslation } from '../../../../../i18n';
-import { Extent } from '../../../Layers/raster-utils';
-import { layersSelector } from '../../../../../context/mapStateSlice/selectors';
-import { filterActiveLayers } from '../../../utils';
+import { LayersCategoryType } from 'config/types';
+import MenuSwitch from 'components/MapView/LeftPanel/layersPanel/MenuSwitch';
+import { useSafeTranslation } from 'i18n';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { layersSelector } from 'context/mapStateSlice/selectors';
+import { filterActiveLayers } from 'components/MapView/utils';
 
 const useStyles = makeStyles(() =>
   createStyles({

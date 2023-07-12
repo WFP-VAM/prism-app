@@ -10,7 +10,7 @@ import {
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import { ArrowDropDown } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { useSafeTranslation } from '../../../i18n';
+import { useSafeTranslation } from 'i18n';
 
 const StyledMenu = withStyles((theme: Theme) => ({
   paper: {

@@ -2,9 +2,8 @@ import { values } from 'lodash';
 import { Map } from 'mapbox-gl';
 import { TFunction } from 'i18next';
 import { Dispatch } from 'redux';
-import { LayerDefinitions } from '../../config/utils';
-import { formatFeatureInfo } from '../../utils/server-utils';
-import { getExtent } from './Layers/raster-utils';
+import { LayerDefinitions } from 'config/utils';
+import { formatFeatureInfo } from 'utils/server-utils';
 import {
   AvailableDates,
   FeatureInfoObject,
@@ -12,12 +11,13 @@ import {
   LayerType,
   LegendDefinitionItem,
   WMSLayerProps,
-} from '../../config/types';
-import { TableData } from '../../context/tableStateSlice';
-import { TableRow } from '../../context/analysisResultStateSlice';
-import { addNotification } from '../../context/notificationStateSlice';
-import { LocalError } from '../../utils/error-utils';
-import { getUrlKey, UrlLayerKey } from '../../utils/url-utils';
+} from 'config/types';
+import { TableData } from 'context/tableStateSlice';
+import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
+import { addNotification } from 'context/notificationStateSlice';
+import { LocalError } from 'utils/error-utils';
+import { TableRow } from 'context/analysisResultStateSlice';
+import { getExtent } from './Layers/raster-utils';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
   const matchStr = 'layer-';

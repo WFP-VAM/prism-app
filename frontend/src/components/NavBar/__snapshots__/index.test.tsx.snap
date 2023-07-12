@@ -32,7 +32,7 @@ exports[`renders as expected 1`] = `
           smdown="true"
         >
           <div
-            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 MuiGrid-item MuiGrid-align-items-xs-center MuiGrid-justify-xs-flex-end MuiGrid-grid-xs-6 MuiGrid-grid-md-9"
+            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-3 MuiGrid-item MuiGrid-align-items-xs-center MuiGrid-justify-content-xs-flex-end MuiGrid-grid-xs-6 MuiGrid-grid-md-9"
           >
             <mock-printimage />
             <div
