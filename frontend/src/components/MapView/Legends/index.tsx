@@ -117,7 +117,7 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
         opacity={analysisLayerOpacity} // TODO: initial opacity value
         // Control opacity only for analysis
         // for the other layers it is controlled from the left panel
-        displayOpacitySlider={isAnalysisLayerActive && hasData}
+        isAnalysis={isAnalysisLayerActive && hasData}
       >
         {renderedLegendImpactResult}
         <Divider />

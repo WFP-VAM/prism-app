@@ -16,7 +16,6 @@ import {
   Paper,
   Popover,
   Slider,
-  Theme,
   Tooltip,
   Typography,
   withStyles,
@@ -29,7 +28,7 @@ import {
   mapSelector,
   layersSelector,
 } from '../../../../context/mapStateSlice/selectors';
-// import { removeLayer } from '../../../../context/mapStateSlice';
+import { clearDataset } from '../../../../context/datasetStateSlice';
 import { useSafeTranslation } from '../../../../i18n';
 import { setAnalysisLayerOpacity } from '../../../../context/analysisResultStateSlice';
 import LayerContentPreview from '../layerContentPreview';
@@ -37,8 +36,10 @@ import { handleChangeOpacity } from '../handleChangeOpacity';
 import ColorIndicator from '../ColorIndicator';
 import { getLegendItemLabel } from '../../utils';
 import { Extent } from '../../Layers/raster-utils';
+import { getUrlKey, useUrlHistory } from '../../../../utils/url-utils';
 import LoadingBar from '../LoadingBar';
 import LayerDownloadOptions from '../../LeftPanel/layersPanel/MenuSwitch/SwitchItem/LayerDownloadOptions';
+import { toggleRemoveLayer } from '../../LeftPanel/layersPanel/MenuSwitch/SwitchItem/utils';
 
 // Children here is legendText
 const LegendItem = memo(
@@ -51,11 +52,12 @@ const LegendItem = memo(
     opacity: initialOpacity,
     children,
     legendUrl,
-    displayOpacitySlider,
+    isAnalysis,
     fillPattern,
     extent,
   }: LegendItemProps) => {
     const dispatch = useDispatch();
+    const { removeLayerFromUrl } = useUrlHistory();
     const map = useSelector(mapSelector);
     const [opacityEl, setOpacityEl] = useState<HTMLButtonElement | null>(null);
     const [opacity, setOpacityValue] = useState<number | number[]>(
@@ -82,9 +84,11 @@ const LegendItem = memo(
     const handleChangeOpacityValue = useCallback(
       val => {
         setOpacityValue(val);
-        dispatch(setAnalysisLayerOpacity(val));
+        if (isAnalysis) {
+          dispatch(setAnalysisLayerOpacity(val));
+        }
       },
-      [dispatch],
+      [dispatch, isAnalysis],
     );
 
     const selectedLayers = useSelector(layersSelector);
@@ -93,41 +97,68 @@ const LegendItem = memo(
     }, [id, selectedLayers]);
 
     const renderedOpacitySlider = useMemo(() => {
-      if (!displayOpacitySlider) {
-        return null;
-      }
       return (
-        <Grid item className={classes.slider}>
-          <Box px={1}>
-            <Slider
-              value={opacity}
-              step={0.01}
-              min={0}
-              max={1}
-              aria-labelledby="opacity-slider"
-              onChange={(e, newValue) =>
-                handleChangeOpacity(
-                  e,
-                  newValue as number,
-                  map,
-                  id,
-                  type,
-                  handleChangeOpacityValue,
-                )
-              }
-            />
-          </Box>
-        </Grid>
+        <Box
+          px={isAnalysis ? 0 : 2}
+          display="flex"
+          className={classes.opacityBox}
+        >
+          <Typography classes={{ root: classes.opacityText }}>
+            {`${Math.round((opacity as number) * 100)}%`}
+          </Typography>
+          <Slider
+            value={opacity}
+            step={0.01}
+            min={0}
+            max={1}
+            aria-labelledby="opacity-slider"
+            classes={{
+              root: classes.opacitySliderRoot,
+              thumb: classes.opacitySliderThumb,
+            }}
+            onChange={(e, newValue) =>
+              handleChangeOpacity(
+                e,
+                newValue as number,
+                map,
+                id,
+                type,
+                handleChangeOpacityValue,
+              )
+            }
+          />
+        </Box>
       );
-    }, [
-      classes.slider,
-      displayOpacitySlider,
-      handleChangeOpacityValue,
-      id,
-      map,
-      opacity,
-      type,
-    ]);
+    }, [classes, handleChangeOpacityValue, id, map, opacity, type, isAnalysis]);
+
+    const layerDownloadOptions = useMemo(() => {
+      return layer ? (
+        <LayerDownloadOptions
+          layer={layer}
+          extent={extent}
+          selected
+          size="small"
+        />
+      ) : null;
+    }, [layer, extent]);
+
+    const remove = useCallback(() => {
+      if (layer) {
+        // reset opacity value
+        setOpacityValue(initialOpacity || 0);
+        // clear previous table dataset loaded first
+        // to close the dataseries and thus close chart
+        dispatch(clearDataset());
+        const urlLayerKey = getUrlKey(layer);
+        toggleRemoveLayer(
+          layer,
+          map,
+          urlLayerKey,
+          dispatch,
+          removeLayerFromUrl,
+        );
+      }
+    }, [layer, map, dispatch, removeLayerFromUrl, initialOpacity]);
 
     const getColorIndicatorKey = useCallback((item: LegendDefinitionItem) => {
       return (
@@ -183,7 +214,6 @@ const LegendItem = memo(
             <LayerContentPreview layerId={id} />
           </Grid>
           <Divider />
-          {renderedOpacitySlider}
           {renderedLegend}
           <LoadingBar layerId={id} />
           {renderedChildren}
@@ -193,56 +223,30 @@ const LegendItem = memo(
                 <Opacity fontSize="small" />
               </IconButton>
             </Tooltip>
-            <Popover
-              id={opacityId}
-              open={open}
-              anchorEl={opacityEl}
-              onClose={closeOpacity}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-            >
-              <Box px={2} display="flex" className={classes.opacityBox}>
-                <Typography classes={{ root: classes.opacityText }}>
-                  {`${Math.round((opacity as number) * 100)}%`}
-                </Typography>
-                <Slider
-                  value={opacity}
-                  step={0.01}
-                  min={0}
-                  max={1}
-                  aria-labelledby="opacity-slider"
-                  classes={{
-                    root: classes.opacitySliderRoot,
-                    thumb: classes.opacitySliderThumb,
+            {isAnalysis ? (
+              renderedOpacitySlider
+            ) : (
+              <Box>
+                <Popover
+                  id={opacityId}
+                  open={open}
+                  anchorEl={opacityEl}
+                  onClose={closeOpacity}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
                   }}
-                  onChange={(e, newValue) =>
-                    handleChangeOpacity(
-                      e,
-                      newValue as number,
-                      map,
-                      id,
-                      type,
-                      handleChangeOpacityValue,
-                    )
-                  }
-                />
+                >
+                  {renderedOpacitySlider}
+                </Popover>
+                {layerDownloadOptions}
+                <Tooltip title="Remove layer">
+                  <IconButton size="small" onClick={remove}>
+                    <Close fontSize="small" />
+                  </IconButton>
+                </Tooltip>
               </Box>
-            </Popover>
-            {layer && (
-              <LayerDownloadOptions
-                layer={layer}
-                extent={extent}
-                selected
-                size="small"
-              />
             )}
-            <Tooltip title="Close layer">
-              <IconButton size="small">
-                <Close fontSize="small" />
-              </IconButton>
-            </Tooltip>
           </Box>
         </Paper>
       </ListItem>
@@ -250,32 +254,33 @@ const LegendItem = memo(
   },
 );
 
-const styles = (theme: Theme) =>
+const styles = () =>
   createStyles({
     paper: {
       padding: 8,
-      width: 180,
+      width: 172,
     },
     slider: {
       padding: '0 5px',
     },
     opacityBox: {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: '#fff',
+      width: 180,
       overflow: 'hidden',
     },
     opacitySliderRoot: {
-      color: '#fff',
-      width: 140,
-      height: 4,
+      color: '#4CA1AD',
+      flexGrow: 1,
+      padding: '18px 0',
     },
     opacitySliderThumb: {
-      backgroundColor: '#fff',
+      backgroundColor: '#4CA1AD',
     },
     opacityText: {
-      color: '#fff',
+      color: '#4CA1AD',
       marginRight: 5,
       width: 28,
-      lineHeight: '28px',
+      lineHeight: '36px',
     },
   });
 
@@ -288,7 +293,7 @@ interface LegendItemProps
   legendUrl?: string;
   type?: LayerType['type'];
   opacity: LayerType['opacity'];
-  displayOpacitySlider?: boolean;
+  isAnalysis?: boolean;
   fillPattern?: 'left' | 'right';
   extent?: Extent;
 }
