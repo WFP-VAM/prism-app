@@ -15352,12 +15352,12 @@ __metadata:
 
 "prism-common@file:../common::locator=prism-frontend%40workspace%3A.":
   version: 0.0.0
-  resolution: "prism-common@file:../common#../common::hash=ab1313&locator=prism-frontend%40workspace%3A."
+  resolution: "prism-common@file:../common#../common::hash=a7e46e&locator=prism-frontend%40workspace%3A."
   dependencies:
     lodash: ^4.17.21
     moment: ^2.29.4
     xml-utils: ^1.6.0-0
-  checksum: c0947825f12bf110eb3c4ccd3707867b4cea20340db6bccc2cafa21edee198dd79279d050ff020389e44db59fae70bb3e6b62316f3b36582f8c037bee11ea3c5
+  checksum: c4514808ec23d04d5fd73d8c93304259704d55a79c6e8721aa30d100cf19b93773e89c68c6bd144a2ee1661b62f3aa0ba685ceb841c2f22507fdebe75630d581
   languageName: node
   linkType: hard
 
