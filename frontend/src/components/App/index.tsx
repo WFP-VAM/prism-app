@@ -2,7 +2,12 @@ import React, { memo, useMemo } from 'react';
 import * as Sentry from '@sentry/browser';
 import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from 'react-router-dom';
 import { Font } from '@react-pdf/renderer';
 import { authRequired } from 'config';
 import NavBar from 'components/NavBar';
@@ -11,6 +16,8 @@ import Login from 'components/Login';
 import muiTheme from 'muiTheme';
 import Notifier from 'components/Notifier';
 import AuthModal from 'components/AuthModal';
+import ReportPage from '../Common/ReportPage';
+
 // Basic CSS Layout for the whole page
 import './app.css';
 
@@ -51,10 +58,14 @@ const Wrapper = memo(() => {
     <div id="app">
       <NavBar />
       <Switch>
-        <Route default>
+        <Route exact path="/">
+          <Redirect to="/app" />
+        </Route>
+        <Route path="/app">
           <MapView />
           <AuthModal />
         </Route>
+        <Route component={ReportPage} path="report" />
       </Switch>
     </div>
   );
