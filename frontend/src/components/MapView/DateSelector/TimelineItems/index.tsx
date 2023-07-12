@@ -165,6 +165,14 @@ const createDirectionStyles = (
   borderLeft: `6px solid ${borderColor}`,
 });
 
+const LIGHT_BLUE_HEX = '#C0E8FF';
+const LIGHT_YELLOW_HEX = '#FFF176';
+const LIGHT_ORANGE_HEX = '#F9CEC1';
+
+const DARK_BLUE_HEX = '#00A3FF';
+const DARK_YELLOW_HEX = '#FEC600';
+const DARK_ORANGE_HEX = '#FF9473';
+
 const styles = () =>
   createStyles({
     dateItemFull: {
@@ -193,17 +201,17 @@ const styles = () =>
         },
       },
     },
-    layerOneDate: createLayerStyles('#C0E8FF', 0),
-    layerTwoDate: createLayerStyles('#FFF176', 10),
-    layerThreeDate: createLayerStyles('#F9CEC1', 20),
+    layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
+    layerTwoDate: createLayerStyles(LIGHT_YELLOW_HEX, 10),
+    layerThreeDate: createLayerStyles(LIGHT_ORANGE_HEX, 20),
 
-    layerOneEmphasis: createLayerStyles('#00A3FF', 0),
-    layerTwoEmphasis: createLayerStyles('#FEC600', 10),
-    layerThreeEmphasis: createLayerStyles('#FF9473', 20),
+    layerOneEmphasis: createLayerStyles(DARK_BLUE_HEX, 0),
+    layerTwoEmphasis: createLayerStyles(DARK_YELLOW_HEX, 10),
+    layerThreeEmphasis: createLayerStyles(DARK_ORANGE_HEX, 20),
 
-    layerOneDirection: createDirectionStyles('#00A3FF', 0),
-    layerTwoDirection: createDirectionStyles('#FEC600', 10),
-    layerThreeDirection: createDirectionStyles('#FF9473', 20),
+    layerOneDirection: createDirectionStyles(DARK_BLUE_HEX, 0),
+    layerTwoDirection: createDirectionStyles(DARK_YELLOW_HEX, 10),
+    layerThreeDirection: createDirectionStyles(DARK_ORANGE_HEX, 20),
 
     currentDate: {
       border: '2px solid black',
