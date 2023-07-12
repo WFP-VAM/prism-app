@@ -30,7 +30,7 @@
     "lint": "eslint --ext .js,.jsx,.ts,.tsx -c .eslintrc ./src ../common/src",
     "postinstall": "yarn run setup:maplibre",
     "precommit": "lint-staged",
-    "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 240000 && yarn build && cd ../frontend && yarn install --check-files",
+    "setup:common": "rimraf ./node_modules/prism-common && cd ../common && yarn install --network-timeout 100000 && yarn build && cd ../frontend && yarn install --check-files",
     "setup:maplibre": "node -e \"const fs = require('fs'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.css', './node_modules/mapbox-gl/dist/mapbox-gl.css'); fs.copyFileSync('./node_modules/mapbox-gl/dist/maplibre-gl.js', './node_modules/mapbox-gl/dist/mapbox-gl.js');\""
   },
   "dependencies": {
