@@ -183,6 +183,10 @@
     "additional_query_params": {
       "styles": "rfq_14_20_400"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
@@ -304,6 +308,10 @@
     "additional_query_params": {
       "styles": "rfh_16_0_400"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
@@ -423,6 +431,10 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "additional_query_params": {
       "styles": "rfq_14_20_400"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
@@ -544,6 +556,10 @@
     "additional_query_params": {
       "styles": "rfh_16_0_800"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
@@ -662,6 +678,10 @@
     "server_layer_name": "r3q_dekad",
     "additional_query_params": {
       "styles": "rfq_14_20_400"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
@@ -784,6 +804,10 @@
     "additional_query_params": {
       "styles": "rfh_16_0_1600"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -878,6 +902,10 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -961,6 +989,10 @@
     "server_layer_name": "r9h_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_2400"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1056,6 +1088,10 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1139,6 +1175,10 @@
     "server_layer_name": "ryh_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_2400"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1234,6 +1274,10 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1322,6 +1366,10 @@
       "offset": 0,
       "pixelResolution": 64
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "opacity": 0.7,
     "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
@@ -1381,6 +1429,10 @@
       "scale": 0.001,
       "offset": 0,
       "pixelResolution": 64
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "opacity": 0.7,
     "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
@@ -1442,6 +1494,10 @@
       "offset": 0,
       "pixelResolution": 64
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "opacity": 0.7,
     "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
@@ -1501,6 +1557,10 @@
       "scale": 0.001,
       "offset": 0,
       "pixelResolution": 64
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "opacity": 0.7,
     "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
@@ -1562,6 +1622,10 @@
       "offset": 0,
       "pixelResolution": 64
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "opacity": 0.7,
     "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
@@ -1617,6 +1681,10 @@
     "server_layer_name": "dlc_dekad",
     "additional_query_params": {
       "styles": "dlx_13_0_26"
+    },
+    "validity": {
+      "days": 30,
+      "mode": "backward"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1697,6 +1765,10 @@
     "additional_query_params": {
       "styles": "dlx_13_0_26"
     },
+    "validity": {
+      "days": 30,
+      "mode": "backward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1776,6 +1848,10 @@
     "additional_query_params": {
       "styles": "xnhie_12_0_14"
     },
+    "validity": {
+      "days": 30,
+      "mode": "backward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1849,6 +1925,10 @@
     "server_layer_name": "xni_dekad",
     "additional_query_params": {
       "styles": "xnhie_12_0_14"
+    },
+    "validity": {
+      "days": 30,
+      "mode": "backward"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1924,6 +2004,10 @@
     "additional_query_params": {
       "styles": "xnhie_12_0_14"
     },
+    "validity": {
+      "days": 30,
+      "mode": "backward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1997,6 +2081,10 @@
     "server_layer_name": "xlh_dekad",
     "additional_query_params": {
       "styles": "xnhie_12_0_14"
+    },
+    "validity": {
+      "days": 30,
+      "mode": "backward"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -2072,6 +2160,10 @@
     "additional_query_params": {
       "styles": "xnhie_12_0_14"
     },
+    "validity": {
+      "days": 30,
+      "mode": "backward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -2146,6 +2238,10 @@
     "additional_query_params": {
       "styles": "xnhie_12_0_14"
     },
+    "validity": {
+      "days": 30,
+      "mode": "backward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -2219,6 +2315,10 @@
     "server_layer_name": "mxd13a2_vim_dekad",
     "additional_query_params": {
       "styles": "vim_14_01_09"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
@@ -2336,6 +2436,10 @@
     "additional_query_params": {
       "styles": "viq_13_50_150"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
@@ -2449,6 +2553,10 @@
     "server_layer_name": "myd11a2_taa_dekad",
     "additional_query_params": {
       "styles": "taa_21_1_48"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "wcsConfig": {
@@ -2578,6 +2686,10 @@
       "offset": -273,
       "pixelResolution": 64
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "opacity": 0.7,
     "legend_text": "Daytime land surface temperature",
     "additional_query_params": {
@@ -2693,6 +2805,10 @@
     "additional_query_params": {
       "styles": "tna_42_n24_70"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
@@ -2804,6 +2920,10 @@
     "opacity": 0.7,
     "additional_query_params": {
       "styles": "tdd_21_m12_12"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "legend_text": "Daytime land surface temperature anomaly when compared to long-term average",
     "legend": [
@@ -3763,7 +3883,6 @@
       "2019-10-01",
       "2021-02-01",
       "2021-06-01",
-      "2021-10-01",
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
@@ -3875,7 +3994,6 @@
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
-      "2023-02-01",
       "2023-06-01"
     ],
     "validityPeriod": {
@@ -4136,7 +4254,7 @@
     "type": "admin_level_data",
     "fill_pattern": "left",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
-    "dates": ["2021-02-01", "2021-06-01", "2022-02-01", "2022-06-01"],
+    "dates": ["2022-02-01", "2022-06-01"],
     "validityPeriod": {
       "start_date_field" : "start_date",
       "end_date_field" : "end_date"
@@ -4189,7 +4307,7 @@
     "type": "admin_level_data",
     "fill_pattern": "left",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
-    "dates": ["2022-02-01", "2022-06-01", "2023-06-01"],
+    "dates": ["2022-02-01", "2022-06-01"],
     "validityPeriod": {
       "start_date_field" : "start_date",
       "end_date_field" : "end_date"
