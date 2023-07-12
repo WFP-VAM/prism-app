@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 16
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: yarn-cache
         with:
           path: |
@@ -39,11 +39,14 @@ jobs:
         run: |
           cd frontend
           yarn set version berry
-          yarn install --frozen-lockfile --network-timeout 100000
+          yarn install --immutable --network-timeout 100000
           yarn setup:common
 
       - name: yarn lint
-        run: cd frontend && yarn lint
+        run: |
+          cd frontend
+          yarn set version berry
+          yarn lint
 
       - name: yarn test
         run: cd frontend && yarn test
