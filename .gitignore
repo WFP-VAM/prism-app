@@ -41,3 +41,4 @@ packages/*/dist/
 packages/common/pnpm-lock.yaml
 
 .yarn
+!.yarn/releases
