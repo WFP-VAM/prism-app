@@ -561,13 +561,20 @@ export function createLegendFromFeatureArray(
 
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
+    let formattedValue;
+
+    if (statistic === AggregationOperations['Area exposed']) {
+      formattedValue = `${(value * 100).toFixed(2)}%`;
+    } else {
+      formattedValue = `(${Math.round(value).toLocaleString('en-US')})`;
+    }
 
     return {
       value,
       color,
       label: {
         text: labels[index],
-        value: `(${Math.round(value).toLocaleString('en-US')})`,
+        value: formattedValue,
       },
     };
   });

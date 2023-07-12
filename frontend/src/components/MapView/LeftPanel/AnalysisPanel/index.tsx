@@ -847,8 +847,7 @@ const AnalysisPanel = memo(
                 {statisticOptions}
               </RadioGroup>
             </FormControl>
-            {statistic ===
-              AggregationOperations['Percentage of area exposed'] && (
+            {statistic === AggregationOperations['Area exposed'] && (
               <div className={classes.exposureValueContainer}>
                 <FormControl
                   component="div"
@@ -1103,8 +1102,7 @@ const AnalysisPanel = memo(
               (hazardDataType === GeometryType.Polygon
                 ? !startDate || !endDate || !adminLevelLayerData
                 : !selectedDate || !baselineLayerId) || // or date hasn't been selected // or baseline layer hasn't been selected
-              (statistic ===
-                AggregationOperations['Percentage of area exposed'] &&
+              (statistic === AggregationOperations['Area exposed'] &&
                 (!exposureValue.operator || !exposureValue.value))
             }
           >

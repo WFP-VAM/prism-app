@@ -491,7 +491,7 @@ export enum AggregationOperations {
   Median = 'median',
   Min = 'min',
   Sum = 'sum',
-  'Percentage of area exposed' = 'intersect_percentage',
+  'Area exposed' = 'intersect_percentage',
 }
 
 export enum ExposureOperator {
