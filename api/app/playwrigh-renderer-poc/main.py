@@ -15,6 +15,8 @@ def playwright_download_report(url, language):
         page.wait_for_selector(create_report_selector, state="visible")
 
         page.query_selector('p:has-text("' + language + '")').click()
+        page.wait_for_timeout(30000)
+        page.pdf(path="page.pdf")
         page.query_selector(create_report_selector).click()
 
         download_report_selector = "a[download]"
@@ -28,10 +30,6 @@ def playwright_download_report(url, language):
         browser.close()
 
 
-def main():
-    playwright_download_report(
-        "http://localhost:3000/?hazardLayerIds=flood_extent&date=2023-07-07", "en"
-    )
-
-
-main()
+playwright_download_report(
+    "http://localhost:3000/?hazardLayerIds=flood_extent&date=2023-07-07", "kh"
+)
