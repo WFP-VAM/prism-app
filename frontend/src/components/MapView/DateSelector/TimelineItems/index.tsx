@@ -6,9 +6,8 @@ import {
   createStyles,
   withStyles,
 } from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/styles';
-import { compact, merge } from 'lodash';
-import React, { memo, useCallback, useMemo } from 'react';
+import { compact } from 'lodash';
+import React, { CSSProperties, memo, useCallback, useMemo } from 'react';
 import { DateItem, DateRangeType } from 'config/types';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -18,6 +17,13 @@ import {
 import TimelineItem from './TimelineItem';
 import TimelineLabel from './TimelineLabel';
 import TooltipItem from './TooltipItem';
+
+type DateItemStyle = {
+  class: string;
+  color: string;
+  layerDirectionClass?: string;
+  emphasis?: string;
+};
 
 const TimelineItems = memo(
   ({
@@ -30,12 +36,7 @@ const TimelineItems = memo(
     const { t } = useSafeTranslation();
 
     // Hard coded styling for date items (first, second, and third layers)
-    const DATE_ITEM_STYLING: {
-      class: string;
-      color: string;
-      layerDirectionClass?: string;
-      emphasis?: string;
-    }[] = [
+    const DATE_ITEM_STYLING: DateItemStyle[] = [
       {
         class: classes.layerOneDate,
         color: '#C0E8FF',
@@ -140,90 +141,74 @@ const TimelineItems = memo(
   },
 );
 
-const DATE_ITEM_STYLES: CreateCSSProperties = {
-  color: '#101010',
-  borderLeft: '1px solid white',
-  position: 'relative',
-  top: -5,
-  cursor: 'pointer',
-  minWidth: TIMELINE_ITEM_WIDTH,
-  '&:hover': {
-    borderLeft: '1px solid #101010',
-  },
-};
-
-const DEFAULT_ITEM: CreateCSSProperties = {
+const createLayerStyles = (
+  backgroundColor: CSSProperties['backgroundColor'],
+  top: CSSProperties['top'],
+): LayerStyle => ({
   position: 'absolute',
   height: 10,
   width: TIMELINE_ITEM_WIDTH,
   pointerEvents: 'none',
-};
-
-const BASE_DATE_ITEM: CreateCSSProperties = {
-  ...DEFAULT_ITEM,
   opacity: 0.6,
-};
+  top,
+  backgroundColor,
+});
+
+const createDirectionStyles = (
+  borderColor: CSSProperties['borderColor'],
+  top: CSSProperties['top'],
+): DirectionStyle => ({
+  top,
+  borderLeft: `6px solid ${borderColor}`,
+});
+
+const LIGHT_BLUE_HEX = '#C0E8FF';
+const LIGHT_YELLOW_HEX = '#FFF176';
+const LIGHT_ORANGE_HEX = '#F9CEC1';
+
+const DARK_BLUE_HEX = '#00A3FF';
+const DARK_YELLOW_HEX = '#FEC600';
+const DARK_ORANGE_HEX = '#FF9473';
 
 const styles = () =>
   createStyles({
     dateItemFull: {
-      ...DATE_ITEM_STYLES,
+      color: '#101010',
+      position: 'relative',
+      top: -5,
+      cursor: 'pointer',
+      minWidth: TIMELINE_ITEM_WIDTH,
+      '&:hover': {
+        borderLeft: '1px solid #101010',
+      },
       borderLeft: '1px solid #101010',
       height: 36,
     },
-
-    dateItem: merge(DATE_ITEM_STYLES, {
+    dateItem: {
+      color: '#101010',
+      borderLeft: '1px solid white',
+      position: 'relative',
+      top: -5,
+      cursor: 'pointer',
+      minWidth: TIMELINE_ITEM_WIDTH,
       '&:hover': {
+        borderLeft: '1px solid #101010',
         '& $dayItem': {
           borderLeft: 0,
         },
       },
-    }),
+    },
+    layerOneDate: createLayerStyles(LIGHT_BLUE_HEX, 0),
+    layerTwoDate: createLayerStyles(LIGHT_YELLOW_HEX, 10),
+    layerThreeDate: createLayerStyles(LIGHT_ORANGE_HEX, 20),
 
-    layerOneDate: {
-      ...BASE_DATE_ITEM,
-      top: 0,
-      backgroundColor: '#C0E8FF',
-    },
-    layerTwoDate: {
-      ...BASE_DATE_ITEM,
-      top: 10,
-      backgroundColor: '#FFF176',
-    },
-    layerThreeDate: {
-      ...BASE_DATE_ITEM,
-      top: 20,
-      backgroundColor: '#F9CEC1',
-    },
+    layerOneEmphasis: createLayerStyles(DARK_BLUE_HEX, 0),
+    layerTwoEmphasis: createLayerStyles(DARK_YELLOW_HEX, 10),
+    layerThreeEmphasis: createLayerStyles(DARK_ORANGE_HEX, 20),
 
-    layerOneEmphasis: {
-      ...DEFAULT_ITEM,
-      top: 0,
-      backgroundColor: '#00A3FF',
-    },
-    layerTwoEmphasis: {
-      ...DEFAULT_ITEM,
-      top: 10,
-      backgroundColor: '#FEC600',
-    },
-    layerThreeEmphasis: {
-      ...DEFAULT_ITEM,
-      top: 20,
-      backgroundColor: '#FF9473',
-    },
-
-    layerOneDirection: {
-      top: 0,
-      borderLeft: '6px solid #00A3FF',
-    },
-    layerTwoDirection: {
-      top: 10,
-      borderLeft: '6px solid #FEC600',
-    },
-    layerThreeDirection: {
-      top: 20,
-      borderLeft: '6px solid #FF9473',
-    },
+    layerOneDirection: createDirectionStyles(DARK_BLUE_HEX, 0),
+    layerTwoDirection: createDirectionStyles(DARK_YELLOW_HEX, 10),
+    layerThreeDirection: createDirectionStyles(DARK_ORANGE_HEX, 20),
 
     currentDate: {
       border: '2px solid black',
@@ -235,6 +220,21 @@ const styles = () =>
       },
     },
   });
+
+type LayerStyle = {
+  position: CSSProperties['position'];
+  height: CSSProperties['height'];
+  width: CSSProperties['width'];
+  pointerEvents: CSSProperties['pointerEvents'];
+  opacity: CSSProperties['opacity'];
+  top: CSSProperties['top'];
+  backgroundColor: CSSProperties['backgroundColor'];
+};
+
+type DirectionStyle = {
+  top: CSSProperties['top'];
+  borderLeft: CSSProperties['borderLeft'];
+};
 
 export interface TimelineItemsProps extends WithStyles<typeof styles> {
   dateRange: DateRangeType[];
