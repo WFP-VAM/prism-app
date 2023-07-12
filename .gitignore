@@ -39,3 +39,5 @@ yarn-error.log*
 packages/*/dist/
 
 packages/common/pnpm-lock.yaml
+
+.yarn
