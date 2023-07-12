@@ -75,9 +75,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
 
 const MapView = memo(({ classes }: MapViewProps) => {
   // App config attributes
-  const {
-    map: { hidePanel, alertFormActive },
-  } = appConfig;
+  const { alertFormActive, hidePanel } = appConfig;
 
   const boundaryLayer = useMemo(() => {
     return getBoundaryLayerSingleton();
@@ -623,6 +621,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       </Box>
       {renderedDatesLoader}
       <MapComponent
+        panelHidden={isPanelHidden}
         selectedLayers={selectedLayers}
         setIsAlertFormOpen={setIsAlertFormOpen}
         boundaryLayerId={boundaryLayerId}
