@@ -39,7 +39,7 @@ jobs:
         run: |
           cd frontend
           yarn set version berry
-          yarn install --immutable --network-timeout 100000
+          yarn install --network-timeout 100000
           yarn setup:common
 
       - name: yarn lint
