@@ -16,17 +16,15 @@ import {
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sum } from 'lodash';
-import { LayerType, PanelSize } from '../../../../config/types';
-import { getWMSLayersWithChart } from '../../../../config/utils';
+import { PanelSize } from 'config/types';
+import { getWMSLayersWithChart } from 'config/utils';
 import {
   leftPanelTabValueSelector,
   setTabValue,
-} from '../../../../context/leftPanelStateSlice';
-import { useSafeTranslation } from '../../../../i18n';
-import { activeLayersSelector } from '../../../../context/mapStateSlice/selectors';
+} from 'context/leftPanelStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { analysisResultSelector } from 'context/analysisResultStateSlice';
 import TabPanel from './TabPanel';
-import { analysisResultSelector } from '../../../../context/analysisResultStateSlice';
-import { filterActiveLayers } from '../../utils';
 
 interface StyleProps {
   tabValue: number;
@@ -79,6 +77,7 @@ interface TabsProps {
   panelSize: PanelSize;
   resultsPage: JSX.Element | null;
   setPanelSize: React.Dispatch<React.SetStateAction<PanelSize>>;
+  activeLayers: number;
 }
 
 const LeftPanelTabs = memo(
@@ -91,19 +90,13 @@ const LeftPanelTabs = memo(
     panelSize,
     resultsPage,
     setPanelSize,
+    activeLayers,
   }: TabsProps) => {
     const { t } = useSafeTranslation();
     const dispatch = useDispatch();
     const tabValue = useSelector(leftPanelTabValueSelector);
-    const activeLayers = useSelector(activeLayersSelector);
     const analysisData = useSelector(analysisResultSelector);
     const classes = useStyles({ panelSize, tabValue });
-
-    const groupedActiveLayers = useMemo(() => {
-      return activeLayers.filter((activeLayer: LayerType) => {
-        return filterActiveLayers(activeLayer, activeLayer);
-      });
-    }, [activeLayers]);
 
     const areChartLayersAvailable = useMemo(() => {
       return getWMSLayersWithChart().length > 0;
@@ -119,10 +112,10 @@ const LeftPanelTabs = memo(
 
     const layersBadgeContent = useMemo(() => {
       if (!analysisData) {
-        return groupedActiveLayers.length;
+        return activeLayers;
       }
-      return groupedActiveLayers.length + 1;
-    }, [groupedActiveLayers.length, analysisData]);
+      return activeLayers + 1;
+    }, [activeLayers, analysisData]);
 
     const renderedLayersTabLabel = useMemo(() => {
       if (

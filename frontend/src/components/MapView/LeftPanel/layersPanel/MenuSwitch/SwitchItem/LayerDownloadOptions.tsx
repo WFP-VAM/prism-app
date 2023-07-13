@@ -15,21 +15,24 @@ import {
   AdminLevelDataLayerProps,
   LayerType,
   WMSLayerProps,
-} from '../../../../../../config/types';
+} from 'config/types';
 import {
   dateRangeSelector,
   layerDataSelector,
-} from '../../../../../../context/mapStateSlice/selectors';
-import { LayerData } from '../../../../../../context/layers/layer-data';
-import { downloadToFile } from '../../../../utils';
+} from 'context/mapStateSlice/selectors';
+import { LayerData } from 'context/layers/layer-data';
+import { downloadToFile } from 'components/MapView/utils';
 import {
   DEFAULT_DATE_FORMAT,
   DEFAULT_DATE_FORMAT_SNAKE_CASE,
-} from '../../../../../../utils/name-utils';
-import { castObjectsArrayToCsv } from '../../../../../../utils/csv-utils';
-import { downloadGeotiff, Extent } from '../../../../Layers/raster-utils';
-import { useSafeTranslation } from '../../../../../../i18n';
-import { isExposureAnalysisLoadingSelector } from '../../../../../../context/analysisResultStateSlice';
+} from 'utils/name-utils';
+import { castObjectsArrayToCsv } from 'utils/csv-utils';
+import {
+  downloadGeotiff,
+  Extent,
+} from 'components/MapView/Layers/raster-utils';
+import { useSafeTranslation } from 'i18n';
+import { isExposureAnalysisLoadingSelector } from 'context/analysisResultStateSlice';
 
 function LayerDownloadOptions({
   layer,

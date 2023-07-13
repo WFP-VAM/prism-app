@@ -1,17 +1,22 @@
 import { values } from 'lodash';
 import { Map } from 'mapbox-gl';
 import { TFunction } from 'i18next';
-import { LayerDefinitions } from '../../config/utils';
-import { formatFeatureInfo } from '../../utils/server-utils';
-import { getExtent } from './Layers/raster-utils';
+import { Dispatch } from 'redux';
+import { LayerDefinitions } from 'config/utils';
+import { formatFeatureInfo } from 'utils/server-utils';
 import {
+  AvailableDates,
   FeatureInfoObject,
   FeatureInfoType,
   LayerType,
   LegendDefinitionItem,
   WMSLayerProps,
-} from '../../config/types';
-import { TableData } from '../../context/tableStateSlice';
+} from 'config/types';
+import { TableData } from 'context/tableStateSlice';
+import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
+import { addNotification } from 'context/notificationStateSlice';
+import { LocalError } from 'utils/error-utils';
+import { getExtent } from './Layers/raster-utils';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
   const matchStr = 'layer-';
@@ -128,10 +133,31 @@ export const generateUniqueTableKey = (activityName: string) => {
   return `${activityName}_${Date.now()}`;
 };
 
+export const checkLayerAvailableDatesAndContinueOrRemove = (
+  layer: LayerType,
+  serverAvailableDates: AvailableDates,
+  removeLayerFromUrl: (layerKey: UrlLayerKey, layerId: string) => void,
+  dispatch: Dispatch,
+) => {
+  const { serverLayerName } = layer as any;
+  if (serverAvailableDates[serverLayerName]?.length !== 0) {
+    return;
+  }
+  const urlLayerKey = getUrlKey(layer);
+  removeLayerFromUrl(urlLayerKey, layer.id);
+  dispatch(
+    addNotification({
+      message: `The layer: ${layer.title} does not have available dates to load`,
+      type: 'warning',
+    }),
+  );
+  throw new LocalError('Layer does not have available dates to load'); // Stop code execution
+};
+
 /**
  * Filters the active layers in a group based on the activateAll property
  */
-export const filterActiveGroupedLayers = (
+const filterActiveGroupedLayers = (
   selectedLayer: LayerType,
   categoryLayer: LayerType,
 ): boolean | undefined => {

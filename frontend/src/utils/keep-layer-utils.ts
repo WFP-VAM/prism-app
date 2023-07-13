@@ -1,4 +1,4 @@
-import { LayerType } from '../config/types';
+import { LayerType } from 'config/types';
 
 // Layer types that are allowed to have multiple layers overlap on the map.
 export const TYPES_ALLOWED_TO_OVERLAP = [
@@ -28,6 +28,16 @@ export function keepLayer(layer: LayerType, newLayer: LayerType) {
     layer.dateUrl.includes('kobo')
   ) {
     return false;
+  }
+
+  // Authorize different admin_level_data layers as long as
+  // they use different fillPattern (None | right | left).
+  if (
+    newLayer.type === 'admin_level_data' &&
+    layer.type === 'admin_level_data' &&
+    newLayer.fillPattern !== layer.fillPattern
+  ) {
+    return true;
   }
 
   // Some types are allowed to overlap. See defintion above.

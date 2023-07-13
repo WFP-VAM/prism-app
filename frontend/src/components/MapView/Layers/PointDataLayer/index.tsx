@@ -3,30 +3,28 @@ import moment from 'moment';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import { FeatureCollection } from 'geojson';
 import { useDispatch, useSelector } from 'react-redux';
-import { PointDataLayerProps, PointDataLoader } from '../../../../config/types';
+import { PointDataLayerProps, PointDataLoader } from 'config/types';
 import {
   clearUserAuthGlobal,
   userAuthSelector,
   availableDatesSelector,
-} from '../../../../context/serverStateSlice';
+} from 'context/serverStateSlice';
+import { LayerData, loadLayerData } from 'context/layers/layer-data';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { removeLayerData } from 'context/mapStateSlice';
+import { addNotification } from 'context/notificationStateSlice';
+import { useDefaultDate } from 'utils/useDefaultDate';
+import { getRequestDate } from 'utils/server-utils';
+import { useUrlHistory } from 'utils/url-utils';
+import { useSafeTranslation } from 'i18n';
 import {
-  LayerData,
-  loadLayerData,
-} from '../../../../context/layers/layer-data';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
-import { removeLayerData } from '../../../../context/mapStateSlice';
-import { addNotification } from '../../../../context/notificationStateSlice';
-import { useDefaultDate } from '../../../../utils/useDefaultDate';
-import { getRequestDate } from '../../../../utils/server-utils';
-import { useUrlHistory } from '../../../../utils/url-utils';
-import { useSafeTranslation } from '../../../../i18n';
-import { circleLayout, circlePaint, fillPaintData } from '../styles';
-import {
-  setEWSParams,
-  clearDataset,
-} from '../../../../context/datasetStateSlice';
-import { createEWSDatasetParams } from '../../../../utils/ews-utils';
-import { addPopupParams } from '../layer-utils';
+  circleLayout,
+  circlePaint,
+  fillPaintData,
+} from 'components/MapView/Layers/styles';
+import { setEWSParams, clearDataset } from 'context/datasetStateSlice';
+import { createEWSDatasetParams } from 'utils/ews-utils';
+import { addPopupParams } from 'components/MapView/Layers/layer-utils';
 
 // Point Data, takes any GeoJSON of points and shows it.
 function PointDataLayer({ layer, before }: LayersProps) {

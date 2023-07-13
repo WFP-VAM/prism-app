@@ -40,9 +40,9 @@ import {
   mapSelector,
   layersSelector,
   layerDataSelector,
-} from '../../../../context/mapStateSlice/selectors';
-import { useUrlHistory } from '../../../../utils/url-utils';
-import { availableDatesSelector } from '../../../../context/serverStateSlice';
+} from 'context/mapStateSlice/selectors';
+import { useUrlHistory } from 'utils/url-utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
 import {
   AnalysisDispatchParams,
   PolygonAnalysisDispatchParams,
@@ -57,7 +57,7 @@ import {
   analysisResultSortOrderSelector,
   setAnalysisResultSortByKey,
   setAnalysisResultSortOrder,
-} from '../../../../context/analysisResultStateSlice';
+} from 'context/analysisResultStateSlice';
 import {
   AdminLevelType,
   AggregationOperations,
@@ -69,19 +69,13 @@ import {
   BoundaryLayerProps,
   GeometryType,
   PanelSize,
-} from '../../../../config/types';
-import {
-  getAdminLevelCount,
-  getAdminLevelLayer,
-} from '../../../../utils/admin-utils';
-import { LayerData } from '../../../../context/layers/layer-data';
-import {
-  LayerDefinitions,
-  getDisplayBoundaryLayers,
-} from '../../../../config/utils';
-import { useSafeTranslation } from '../../../../i18n';
-import { getDateFromList } from '../../../../utils/data-utils';
-import { getPossibleDatesForLayer } from '../../../../utils/server-utils';
+} from 'config/types';
+import { getAdminLevelCount, getAdminLevelLayer } from 'utils/admin-utils';
+import { LayerData } from 'context/layers/layer-data';
+import { LayerDefinitions, getDisplayBoundaryLayers } from 'config/utils';
+import { useSafeTranslation } from 'i18n';
+import { getDateFromList } from 'utils/data-utils';
+import { getPossibleDatesForLayer } from 'utils/server-utils';
 import {
   downloadCSVFromTableData,
   BaselineLayerResult,
@@ -89,25 +83,25 @@ import {
   PolygonAnalysisResult,
   useAnalysisTableColumns,
   Column,
-} from '../../../../utils/analysis-utils';
+} from 'utils/analysis-utils';
 import {
   refreshBoundaries,
   safeDispatchRemoveLayer,
   safeDispatchAddLayer,
-} from '../../../../utils/map-utils';
-import { removeLayer } from '../../../../context/mapStateSlice';
-import { DEFAULT_DATE_FORMAT } from '../../../../utils/name-utils';
-import LayerDropdown from '../../Layers/LayerDropdown';
-import SimpleDropdown from '../../../Common/SimpleDropdown';
-import AnalysisTable from './AnalysisTable';
-import { Extent } from '../../Layers/raster-utils';
-import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
-import ExposureAnalysisActions from './ExposureAnalysisActions';
+} from 'utils/map-utils';
+import { removeLayer } from 'context/mapStateSlice';
+import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
+import SimpleDropdown from 'components/Common/SimpleDropdown';
+import { Extent } from 'components/MapView/Layers/raster-utils';
 import {
   leftPanelTabValueSelector,
   setTabValue,
-} from '../../../../context/leftPanelStateSlice';
-import LoadingBlinkingDots from '../../../Common/LoadingBlinkingDots';
+} from 'context/leftPanelStateSlice';
+import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import AnalysisTable from './AnalysisTable';
+import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
+import ExposureAnalysisActions from './ExposureAnalysisActions';
 
 const tabIndex = 2;
 
@@ -218,7 +212,7 @@ const AnalysisPanel = memo(
       : null;
     const availableHazardDates = selectedHazardLayer
       ? getPossibleDatesForLayer(selectedHazardLayer, availableDates)?.map(
-          d => new Date(d),
+          d => new Date(d.displayDate),
         ) || []
       : undefined;
 

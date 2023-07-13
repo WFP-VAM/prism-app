@@ -183,15 +183,20 @@
     "additional_query_params": {
       "styles": "rfq_14_20_400"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", 
-          "label": "Rainfall anomaly", 
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
           "color": "#375692",
           "minValue": 0,
           "maxValue": 300
-      },
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -302,6 +307,10 @@
     "server_layer_name": "r1h_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_400"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
@@ -423,11 +432,16 @@
     "additional_query_params": {
       "styles": "rfq_14_20_400"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r1q", 
-          "label": "Rainfall anomaly", 
+        {
+          "key": "r1q",
+          "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
           "color": "#375692"
@@ -541,6 +555,10 @@
     "server_layer_name": "r3h_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_800"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
@@ -661,14 +679,20 @@
     "additional_query_params": {
       "styles": "rfq_14_20_400"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "r3q", 
-          "label": "Rainfall anomaly", 
+        {
+          "key": "r3q",
+          "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
-          "color": "#375692" },
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -780,6 +804,10 @@
     "additional_query_params": {
       "styles": "rfh_16_0_1600"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -874,6 +902,10 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -957,6 +989,10 @@
     "server_layer_name": "r9h_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_2400"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1052,6 +1088,10 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1135,6 +1175,10 @@
     "server_layer_name": "ryh_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_2400"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1230,6 +1274,10 @@
     "additional_query_params": {
       "styles": "ryq_14_50_200"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1318,6 +1366,10 @@
       "offset": 0,
       "pixelResolution": 64
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "opacity": 0.7,
     "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
@@ -1377,6 +1429,10 @@
       "scale": 0.001,
       "offset": 0,
       "pixelResolution": 64
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "opacity": 0.7,
     "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
@@ -1438,6 +1494,10 @@
       "offset": 0,
       "pixelResolution": 64
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "opacity": 0.7,
     "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
@@ -1498,6 +1558,10 @@
       "offset": 0,
       "pixelResolution": 64
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "opacity": 0.7,
     "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
@@ -1557,6 +1621,10 @@
       "scale": 0.001,
       "offset": 0,
       "pixelResolution": 64
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "opacity": 0.7,
     "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
@@ -2216,6 +2284,10 @@
     "additional_query_params": {
       "styles": "vim_14_01_09"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
@@ -2332,14 +2404,19 @@
     "additional_query_params": {
       "styles": "viq_13_50_150"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "viq", 
-          "label": "NDVI anomaly", 
+        {
+          "key": "viq",
+          "label": "NDVI anomaly",
           "minValue": 0,
           "maxValue": 150,
-          "color": "#5e803f" 
+          "color": "#5e803f"
         },
         {
           "key": "viq_avg",
@@ -2444,6 +2521,10 @@
     "server_layer_name": "myd11a2_taa_dekad",
     "additional_query_params": {
       "styles": "taa_21_1_48"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "wcsConfig": {
@@ -2573,6 +2654,10 @@
       "offset": -273,
       "pixelResolution": 64
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "opacity": 0.7,
     "legend_text": "Daytime land surface temperature",
     "additional_query_params": {
@@ -2688,6 +2773,10 @@
     "additional_query_params": {
       "styles": "tna_42_n24_70"
     },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
@@ -2799,6 +2888,10 @@
     "opacity": 0.7,
     "additional_query_params": {
       "styles": "tdd_21_m12_12"
+    },
+    "validity": {
+      "days": 10,
+      "mode": "forward"
     },
     "legend_text": "Daytime land surface temperature anomaly when compared to long-term average",
     "legend": [
@@ -3421,15 +3514,15 @@
       "2022-10-01",
       "2023-06-01"
     ],
-    "validity": {
-      "days": 122,
-      "mode": "backward"
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
     },
     "fallbackLayerKeys": ["ch_phase_admin1"],
     "admin_level": 2,
     "data_field": "calc_ph_admin2",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
         "type": "number",
@@ -3500,7 +3593,7 @@
     "admin_level": 1,
     "data_field": "calc_ph_admin1",
     "admin_code": "adm1_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "calc_pop_ph1_admin1": {
         "type": "number",
@@ -3586,14 +3679,14 @@
       "2022-10-01",
       "2023-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": ["ch_pop3_5_admin1"],
-    "validity": {
-      "days": 150,
-      "mode": "both"
-    },
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
         "type": "number",
@@ -3752,26 +3845,26 @@
   "ch_idps_phase": {
     "title": "IDPs - phase classification",
     "type": "admin_level_data",
+    "fill_pattern": "left",
     "path": "data/rbd/ch/idps_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2019-10-01",
       "2021-02-01",
       "2021-06-01",
-      "2021-10-01",
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
       "2023-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": ["ch_idps_phase_admin1"],
-    "validity": {
-      "days": 122,
-      "mode": "forward"
-    },
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -3818,7 +3911,7 @@
     "admin_level": 1,
     "data_field": "calc_ph_admin1",
     "admin_code": "adm1_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -3866,18 +3959,20 @@
       "2019-10-01",
       "2021-02-01",
       "2021-06-01",
-      "2021-10-01",
       "2022-02-01",
       "2022-06-01",
       "2022-10-01",
-      "2023-02-01",
       "2023-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": ["ch_idps_phase_admin1"],
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -3934,7 +4029,7 @@
     "admin_level": 1,
     "data_field": "calc_pop_ph3_5_admin1",
     "admin_code": "adm1_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -3987,6 +4082,7 @@
   "ch_inaccessible_phase": {
     "title": "Limited access areas - phase classification",
     "type": "admin_level_data",
+    "fill_pattern": "left",
     "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2020-02-01",
@@ -4000,14 +4096,14 @@
       "2022-10-01",
       "2023-06-01"
     ],
-    "validity": {
-      "days": 122,
-      "mode": "forward"
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
     },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -4050,6 +4146,7 @@
   "ch_inaccessible_pop3_5": {
     "title": "Limited access areas - population in phase 3 to 5",
     "type": "admin_level_data",
+    "fill_pattern": "left",
     "path": "data/rbd/ch/al_admin2_{YYYY_MM_DD}.json",
     "dates": [
       "2020-02-01",
@@ -4063,10 +4160,14 @@
       "2022-10-01",
       "2023-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -4119,16 +4220,17 @@
   "ch_urban_phase": {
     "title": "Urban areas - phase classification",
     "type": "admin_level_data",
+    "fill_pattern": "left",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
-    "dates": ["2021-02-01", "2021-06-01", "2022-02-01", "2022-06-01"],
-    "validity": {
-      "days": 122,
-      "mode": "forward"
+    "dates": ["2022-02-01", "2022-06-01"],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
     },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",
@@ -4171,16 +4273,17 @@
   "ch_urban_pop3_5": {
     "title": "Urban areas - population in phase 3 to 5",
     "type": "admin_level_data",
+    "fill_pattern": "left",
     "path": "data/rbd/ch/urb_admin2_{YYYY_MM_DD}.json",
-    "dates": ["2022-02-01", "2022-06-01", "2023-06-01"],
-    "validity": {
-      "days": 122,
-      "mode": "forward"
+    "dates": ["2022-02-01", "2022-06-01"],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
     },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
-    "opacity": 0.9,
+    "opacity": 0.7,
     "feature_info_props": {
       "start_date": {
         "type": "text",

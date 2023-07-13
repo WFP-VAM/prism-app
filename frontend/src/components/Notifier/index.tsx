@@ -7,7 +7,7 @@ import {
   Notification,
   notificationsSelector,
   removeNotification,
-} from '../../context/notificationStateSlice';
+} from 'context/notificationStateSlice';
 
 const AUTO_CLOSE_TIME = 10 * 1000;
 

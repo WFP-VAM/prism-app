@@ -5,11 +5,11 @@ import * as MapboxGL from 'mapbox-gl';
 import {
   getIsSelectionMode,
   getSelectedBoundaries,
-} from '../../../../context/mapSelectionLayerStateSlice';
-import { getBoundaryLayerSingleton } from '../../../../config/utils';
-import { layerDataSelector } from '../../../../context/mapStateSlice/selectors';
-import { LayerData } from '../../../../context/layers/layer-data';
-import { BoundaryLayerProps } from '../../../../config/types';
+} from 'context/mapSelectionLayerStateSlice';
+import { getBoundaryLayerSingleton } from 'config/utils';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { LayerData } from 'context/layers/layer-data';
+import { BoundaryLayerProps } from 'config/types';
 
 const boundaryLayer = getBoundaryLayerSingleton();
 const LINE_PAINT_DATA: MapboxGL.LinePaint = {

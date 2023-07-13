@@ -1,19 +1,19 @@
 import { camelCase, get, map, mapKeys, startCase } from 'lodash';
 
-import { appConfig } from '../../../config';
 import {
   isTableKey,
   LayerDefinitions,
   TableDefinitions,
   TableKey,
-} from '../../../config/utils';
+} from 'config/utils';
 import {
   isLayerKey,
   LayerKey,
   LayersCategoryType,
   MenuGroup,
   MenuItemType,
-} from '../../../config/types';
+} from 'config/types';
+import { appConfig } from 'config';
 
 type LayersCategoriesType = LayersCategoryType[];
 

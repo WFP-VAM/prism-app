@@ -11,23 +11,17 @@ import React, {
 import { Map, MapSourceDataEvent } from 'mapbox-gl';
 import ReactMapboxGl from 'react-mapbox-gl';
 import { useDispatch, useSelector } from 'react-redux';
-import AnalysisLayer from '../Layers/AnalysisLayer';
-import SelectionLayer from '../Layers/SelectionLayer';
-import MapTooltip from '../MapTooltip';
-import { layerOrdering, setMap } from '../../../context/mapStateSlice';
-import { appConfig } from '../../../config';
-import useMapOnClick from '../useMapOnClick';
-import {
-  setBounds,
-  setLocation,
-} from '../../../context/mapBoundaryInfoStateSlice';
-import { DiscriminateUnion, LayerKey, LayerType } from '../../../config/types';
-import { setLoadingLayerIds } from '../../../context/mapTileLoadingStateSlice';
-import { firstBoundaryOnView } from '../../../utils/map-utils';
-import {
-  layersSelector,
-  mapSelector,
-} from '../../../context/mapStateSlice/selectors';
+import AnalysisLayer from 'components/MapView/Layers/AnalysisLayer';
+import SelectionLayer from 'components/MapView/Layers/SelectionLayer';
+import MapTooltip from 'components/MapView/MapTooltip';
+import { setMap } from 'context/mapStateSlice';
+import { appConfig } from 'config';
+import useMapOnClick from 'components/MapView/useMapOnClick';
+import { setBounds, setLocation } from 'context/mapBoundaryInfoStateSlice';
+import { DiscriminateUnion, LayerKey, LayerType } from 'config/types';
+import { setLoadingLayerIds } from 'context/mapTileLoadingStateSlice';
+import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   AdminLevelDataLayer,
   BoundaryLayer,
@@ -35,11 +29,13 @@ import {
   PointDataLayer,
   StaticRasterLayer,
   WMSLayer,
-} from '../Layers';
+} from 'components/MapView/Layers';
 
 interface MapComponentProps {
   setIsAlertFormOpen: Dispatch<SetStateAction<boolean>>;
   boundaryLayerId: string;
+  selectedLayers: LayerType[];
+  panelHidden: boolean;
 }
 
 type LayerComponentsMap<U extends LayerType> = {
@@ -47,25 +43,23 @@ type LayerComponentsMap<U extends LayerType> = {
 };
 
 const MapComponent = memo(
-  ({ setIsAlertFormOpen, boundaryLayerId }: MapComponentProps) => {
+  ({
+    setIsAlertFormOpen,
+    boundaryLayerId,
+    selectedLayers,
+    panelHidden,
+  }: MapComponentProps) => {
     const {
-      map: { boundingBox, hidePanel, minZoom, maxZoom, maxBounds },
+      map: { boundingBox, minZoom, maxZoom, maxBounds },
     } = appConfig;
 
     const dispatch = useDispatch();
 
     const selectedMap = useSelector(mapSelector);
-    const unsortedSelectedLayers = useSelector(layersSelector);
 
     const [firstSymbolId, setFirstSymbolId] = useState<string | undefined>(
       undefined,
     );
-
-    // Prioritize boundary and point_data layers
-    const selectedLayers = useMemo(() => {
-      // eslint-disable-next-line fp/no-mutating-methods
-      return [...unsortedSelectedLayers].sort(layerOrdering);
-    }, [unsortedSelectedLayers]);
 
     const mapOnClick = useMapOnClick(setIsAlertFormOpen, boundaryLayerId);
 
@@ -87,12 +81,12 @@ const MapComponent = memo(
         duration: 0,
         padding: {
           bottom: 150, // room for dates.
-          left: hidePanel ? 30 : 500, // room for the left panel if active.
+          left: panelHidden ? 30 : 500, // room for the left panel if active.
           right: 60,
           top: 70,
         },
       };
-    }, [hidePanel]);
+    }, [panelHidden]);
 
     const MapboxMap = useMemo(() => {
       return ReactMapboxGl({
@@ -213,19 +207,23 @@ const MapComponent = memo(
       };
     }, []);
 
-    const renderedSelectedGeoJsonLayers = useMemo(() => {
-      return selectedLayers.map(layer => {
-        const component: ComponentType<{
-          layer: any;
-          before?: string;
-        }> = componentTypes[layer.type];
-        return createElement(component, {
-          key: layer.id,
-          layer,
-          before: layer.type === 'boundary' ? firstSymbolId : firstBoundaryId,
-        });
-      });
-    }, [componentTypes, firstBoundaryId, firstSymbolId, selectedLayers]);
+    const getBeforeId = useCallback(
+      (layer: LayerType, index: number) => {
+        if (layer.type === 'boundary') {
+          return firstSymbolId;
+        }
+        if (index === 0) {
+          return firstSymbolId;
+        }
+        const previousLayerId = selectedLayers[index - 1].id;
+
+        if (isLayerOnView(selectedMap, previousLayerId)) {
+          return `layer-${previousLayerId}-line`;
+        }
+        return firstBoundaryId;
+      },
+      [firstBoundaryId, firstSymbolId, selectedLayers, selectedMap],
+    );
 
     return (
       <MapboxMap
@@ -241,7 +239,18 @@ const MapComponent = memo(
         center={mapTempCenter}
         maxBounds={maxBounds}
       >
-        {renderedSelectedGeoJsonLayers}
+        {/* We cannot memoize the above behavior because tooltip becomes sluggish and does not render at all, when we enable a layer */}
+        {selectedLayers.map((layer, index) => {
+          const component: ComponentType<{
+            layer: any;
+            before?: string;
+          }> = componentTypes[layer.type];
+          return createElement(component, {
+            key: layer.id,
+            layer,
+            before: getBeforeId(layer, index),
+          });
+        })}
         {/* These are custom layers which provide functionality and are not really controllable via JSON */}
         <AnalysisLayer before={firstBoundaryId} />
         <SelectionLayer before={firstSymbolId} />

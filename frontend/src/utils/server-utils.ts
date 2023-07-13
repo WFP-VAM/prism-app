@@ -1,19 +1,21 @@
-import moment from 'moment';
 import { get, merge, snakeCase, sortBy, sortedUniqBy } from 'lodash';
-import { fetchCoverageLayerDays, formatUrl, WFS, WMS } from 'prism-common';
+import moment from 'moment';
+import { WFS, WMS, fetchCoverageLayerDays, formatUrl } from 'prism-common';
 import { Dispatch } from 'redux';
 import { appConfig } from '../config';
-import { LayerDefinitions } from '../config/utils';
 import type {
   AvailableDates,
-  DateItem,
+  PathLayer,
   PointDataLayerProps,
   RequestFeatureInfo,
+  Validity,
   ValidityLayer,
+  ValidityPeriod,
 } from '../config/types';
 import {
   AdminLevelDataLayerProps,
   DataType,
+  DateItem,
   DatesPropagation,
   FeatureInfoType,
   ImpactLayerProps,
@@ -21,13 +23,20 @@ import {
   StaticRasterLayerProps,
   WMSLayerProps,
 } from '../config/types';
-import { queryParamsToString } from './url-utils';
-import { createEWSDatesArray } from './ews-utils';
-import { fetchACLEDDates } from './acled-utils';
-import { fetchWithTimeout } from './fetch-with-timeout';
-import { LocalError } from './error-utils';
+
 import { addNotification } from '../context/notificationStateSlice';
-import { datesAreEqualWithoutTime } from './date-utils';
+import { fetchACLEDDates } from './acled-utils';
+import {
+  StartEndDate,
+  datesAreEqualWithoutTime,
+  generateDateItemsRange,
+  generateDatesRange,
+} from './date-utils';
+import { LocalError } from './error-utils';
+import { createEWSDatesArray } from './ews-utils';
+import { fetchWithTimeout } from './fetch-with-timeout';
+import { queryParamsToString } from './url-utils';
+import { LayerDefinitions } from '../config/utils';
 
 /**
  * Function that gets the correct date used to make the request. If available dates is undefined. Return selectedDate as default.
@@ -65,31 +74,27 @@ export type DateCompatibleLayer =
   | ImpactLayerProps
   | PointDataLayerProps
   | StaticRasterLayerProps;
+
 export const getPossibleDatesForLayer = (
   layer: DateCompatibleLayer,
   serverAvailableDates: AvailableDates,
   // eslint-disable-next-line consistent-return
-): number[] => {
-  // eslint-disable-next-line default-case
-  const datesArray = () => {
-    switch (layer.type) {
-      case 'wms':
-        return serverAvailableDates[layer.serverLayerName];
-      case 'impact':
-        return serverAvailableDates[
-          (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
-        ];
-      case 'point_data':
-      case 'admin_level_data':
-        return serverAvailableDates[layer.id];
-      case 'static_raster':
-        return serverAvailableDates[layer.id];
-      default:
-        return [];
-    }
-  };
-
-  return datesArray()?.map(d => d.displayDate) ?? [];
+): DateItem[] => {
+  switch (layer.type) {
+    case 'wms':
+      return serverAvailableDates[layer.serverLayerName];
+    case 'impact':
+      return serverAvailableDates[
+        (LayerDefinitions[layer.hazardLayer] as WMSLayerProps).serverLayerName
+      ];
+    case 'point_data':
+    case 'admin_level_data':
+      return serverAvailableDates[layer.id];
+    case 'static_raster':
+      return serverAvailableDates[layer.id];
+    default:
+      return [];
+  }
 };
 
 type PointDataDates = Array<{
@@ -133,7 +138,7 @@ const loadPointLayerDataFromURL = async (
       console.error(error);
       dispatch(
         addNotification({
-          message: error.message,
+          message: (error as Error).message,
           type: 'warning',
         }),
       );
@@ -210,23 +215,78 @@ const getStaticRasterDataCoverage = (layer: StaticRasterLayerProps) => {
  *
  * @return DateItem
  */
-const createDefaultDateItem = (date: number): DateItem => {
+const generateDefaultDateItem = (
+  date: number,
+  validity?: Validity,
+): DateItem => {
   const dateWithTz = moment(date).set({ hour: 12, minute: 0 }).valueOf();
-  return {
+  const dateItemToReturn = {
     displayDate: dateWithTz,
     queryDate: dateWithTz,
+  };
+  if (validity) {
+    const { mode } = validity;
+    return {
+      ...dateItemToReturn,
+      isStartDate:
+        mode === DatesPropagation.FORWARD || mode === DatesPropagation.BOTH,
+      isEndDate:
+        mode === DatesPropagation.BACKWARD || mode === DatesPropagation.BOTH,
+    };
+  }
+  return {
+    ...dateItemToReturn,
   };
 };
 
 /**
- * Create new array including dates specified within the validity parameter.
- *
- * @return Array of integers which represents a given date.
+ * Generate intermediate date items using start_date and end_date field
+ * for every available file ressources
  */
-const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
-  const { dates, validity } = layer;
+async function generateIntermediateDateItemFromDataFile(
+  layerDates: number[],
+  layerPathTemplate: string,
+  validityPeriod: ValidityPeriod,
+) {
+  const ranges: StartEndDate[] = await Promise.all(
+    layerDates.map(async r => {
+      const path = layerPathTemplate.replace(/{.*?}/g, match => {
+        const format = match.slice(1, -1);
+        return moment(r).format(format);
+      });
 
-  const { days, mode } = validity;
+      const res = await fetch(path);
+
+      const contentType = res.headers.get('content-type');
+      if (!contentType || contentType.indexOf('application/json') === -1) {
+        console.error(
+          `Wrong date / path configuration : ${path}, does not exist`,
+        );
+        return {};
+      }
+      if (!res.ok) {
+        console.error(`Could not load data file for ressource: ${path}`);
+        return {};
+      }
+      const jsonBody = await res.json();
+
+      const startDate = jsonBody.DataList[0][validityPeriod.start_date_field];
+      const endDate = jsonBody.DataList[0][validityPeriod.end_date_field];
+
+      return {
+        startDate: moment(startDate).set({ hour: 12, minute: 0 }).valueOf(),
+        endDate: moment(endDate).set({ hour: 12, minute: 0 }).valueOf(),
+      };
+    }),
+  );
+
+  const rangesWithoutMissing = ranges.filter(ra => ra.startDate && ra.endDate);
+  return generateDateItemsRange(rangesWithoutMissing);
+}
+
+function generateIntermediateDateItemFromValidity(layer: ValidityLayer) {
+  const { dates } = layer;
+  const { days, mode } = layer.validity;
 
   // Convert the dates to moment dates
   const momentDates = Array.prototype.sort
@@ -235,7 +295,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
 
   // Generate first DateItem[] from dates array.
   const dateItemsDefault: DateItem[] = momentDates.map(momentDate =>
-    createDefaultDateItem(momentDate.valueOf()),
+    generateDefaultDateItem(momentDate.valueOf(), layer.validity),
   );
 
   const dateItemsWithValidity = momentDates.reduce(
@@ -260,10 +320,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
       }
 
       // We create an array with the diff between the endDate and startDate and we create an array with the addition of the days in the startDate
-      const daysToAdd = Array.from(
-        { length: endDate.diff(startDate, 'days') + 1 },
-        (_, index) => startDate.clone().add(index, 'days').valueOf(),
-      );
+      const daysToAdd = generateDatesRange(startDate, endDate);
 
       // convert the available days for a specific moment day to the DefaultDate format
       const dateItemsToAdd = daysToAdd.map(dateToAdd => ({
@@ -287,7 +344,7 @@ const updateLayerDatesWithValidity = (layer: ValidityLayer): DateItem[] => {
     sortBy([...dateItemsDefault, ...dateItemsWithValidity], 'displayDate'),
     'displayDate',
   );
-};
+}
 
 /**
  * Wrapper function for utility fetchCoverageLayerDays from Common Library
@@ -300,7 +357,7 @@ const localFetchCoverageLayerDays = async (
     return await fetchCoverageLayerDays(url, { fetch: fetchWithTimeout });
   } catch (error) {
     console.error(error);
-    if (error.name === 'AbortError') {
+    if ((error as Error).name === 'AbortError') {
       dispatch(
         addNotification({
           message: `Request at ${url} timeout`,
@@ -329,7 +386,7 @@ const localWMSGetLayerDates = async (
     return await new WMS(url, { fetch: fetchWithTimeout }).getLayerDays();
   } catch (error) {
     console.error(error);
-    if (error.name === 'AbortError') {
+    if ((error as Error).name === 'AbortError') {
       dispatch(
         addNotification({
           message: `Request at ${url} timeout`,
@@ -346,6 +403,22 @@ const localWMSGetLayerDates = async (
     return {};
   }
 };
+
+// The layer definitions bluerPrint is used as a schema for the availableDates if a request is failed to be fulfilled
+const layerDefinitionsBluePrint: AvailableDates = Object.keys(
+  LayerDefinitions,
+).reduce((acc, layerDefinitionKey) => {
+  const { serverLayerName } = LayerDefinitions[layerDefinitionKey] as any;
+  if (!serverLayerName) {
+    return {
+      ...acc,
+    };
+  }
+  return {
+    ...acc,
+    [serverLayerName]: [],
+  };
+}, {});
 
 /**
  * Load available dates for WMS and WCS using a serverUri defined in prism.json and for GeoJSONs (point data) using their API endpoint.
@@ -389,6 +462,7 @@ export async function getLayersAvailableDates(
   // Merge all layer types results into a single dictionary of date arrays.
   const mergedLayers: { [key: string]: number[] } = merge({}, ...layerDates);
 
+  // Retrieve layer that have a validity object
   const layersWithValidity: ValidityLayer[] = Object.values(LayerDefinitions)
     .filter(layer => layer.validity !== undefined)
     .map(layer => {
@@ -401,17 +475,67 @@ export async function getLayersAvailableDates(
       };
     });
 
-  return Object.entries(mergedLayers).reduce((acc, [layerKey, dates]) => {
-    const layerWithValidity = layersWithValidity.find(
-      validityLayer => validityLayer.name === layerKey,
-    );
+  // Retrieve layers that have validityPeriod
+  const layersWithValidityStartEndDate: PathLayer[] = Object.values(
+    LayerDefinitions,
+  )
+    .filter(layer => !!(layer as AdminLevelDataLayerProps).validityPeriod)
+    .map(layer => {
+      const layerId = layer.type === 'wms' ? layer.serverLayerName : layer.id;
 
-    const updatedDates = layerWithValidity
-      ? updateLayerDatesWithValidity(layerWithValidity)
-      : dates.map((d: number) => createDefaultDateItem(d));
+      return {
+        name: layerId,
+        dates: mergedLayers[layerId],
+        path: (layer as AdminLevelDataLayerProps).path,
+        validityPeriod: (layer as AdminLevelDataLayerProps)
+          .validityPeriod as ValidityPeriod,
+      };
+    });
 
-    return { ...acc, [layerKey]: updatedDates };
-  }, {});
+  // Generate and replace date items for layers with all intermediates dates
+  const layerDateItemsMap = await Promise.all(
+    Object.entries(mergedLayers).map(
+      async (layerDatesEntry: [string, number[]]) => {
+        // Generate dates for layers with validity and no path
+        const matchingValidityLayer = layersWithValidity.find(
+          validityLayer => validityLayer.name === layerDatesEntry[0],
+        );
+
+        if (matchingValidityLayer) {
+          return {
+            [layerDatesEntry[0]]: generateIntermediateDateItemFromValidity(
+              matchingValidityLayer,
+            ),
+          };
+        }
+
+        // Generate dates for layers with path
+        const matchingPathLayer = layersWithValidityStartEndDate.find(
+          validityLayer => validityLayer.name === layerDatesEntry[0],
+        );
+
+        if (matchingPathLayer) {
+          return {
+            [layerDatesEntry[0]]: await generateIntermediateDateItemFromDataFile(
+              matchingPathLayer.dates,
+              matchingPathLayer.path,
+              matchingPathLayer.validityPeriod,
+            ),
+          };
+        }
+
+        // Genererate dates for layers with validity but not an admin_level_data type
+        return {
+          [layerDatesEntry[0]]: layerDatesEntry[1].map((d: number) =>
+            generateDefaultDateItem(d),
+          ),
+        };
+      },
+    ),
+  );
+
+  // eslint-disable-next-line fp/no-mutating-assign
+  return Object.assign(layerDefinitionsBluePrint, ...layerDateItemsMap);
 }
 
 /**

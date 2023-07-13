@@ -19,15 +19,15 @@ import {
   WithStyles,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerType, LegendDefinitionItem } from '../../../../config/types';
-import { mapSelector } from '../../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../../i18n';
-import { setAnalysisLayerOpacity } from '../../../../context/analysisResultStateSlice';
-import LayerContentPreview from '../layerContentPreview';
-import { handleChangeOpacity } from '../handleChangeOpacity';
-import ColorIndicator from '../ColorIndicator';
-import { getLegendItemLabel } from '../../utils';
-import LoadingBar from '../LoadingBar';
+import { LayerType, LegendDefinitionItem } from 'config/types';
+import { mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { setAnalysisLayerOpacity } from 'context/analysisResultStateSlice';
+import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
+import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
+import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
+import { getLegendItemLabel } from 'components/MapView/utils';
+import LoadingBar from 'components/MapView/Legends/LoadingBar';
 
 // Children here is legendText
 const LegendItem = memo(
@@ -41,6 +41,7 @@ const LegendItem = memo(
     children,
     legendUrl,
     displayOpacitySlider,
+    fillPattern,
   }: LegendItemProps) => {
     const dispatch = useDispatch();
     const map = useSelector(mapSelector);
@@ -113,9 +114,10 @@ const LegendItem = memo(
           value={getLegendItemLabel(t, item)}
           color={item.color as string}
           opacity={opacity as number}
+          fillPattern={fillPattern}
         />
       ));
-    }, [getColorIndicatorKey, legend, opacity, t]);
+    }, [fillPattern, getColorIndicatorKey, legend, opacity, t]);
 
     const renderedLegendUrl = useMemo(() => {
       if (legendUrl) {
@@ -183,6 +185,7 @@ interface LegendItemProps
   type?: LayerType['type'];
   opacity: LayerType['opacity'];
   displayOpacitySlider?: boolean;
+  fillPattern?: 'left' | 'right';
 }
 
 export default withStyles(styles)(LegendItem);

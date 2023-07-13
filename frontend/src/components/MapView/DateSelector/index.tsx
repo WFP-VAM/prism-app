@@ -1,3 +1,14 @@
+import {
+  Button,
+  Grid,
+  Hidden,
+  Theme,
+  WithStyles,
+  createStyles,
+  withStyles,
+} from '@material-ui/core';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { findIndex, get, isEqual } from 'lodash';
 import React, {
   memo,
   useCallback,
@@ -6,42 +17,30 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  Button,
-  createStyles,
-  Grid,
-  Hidden,
-  Theme,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
 import DatePicker from 'react-datepicker';
-import Draggable, { DraggableEvent } from 'react-draggable';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import 'react-datepicker/dist/react-datepicker.css';
-import { findIndex, get, isEqual } from 'lodash';
-import { useUrlHistory } from '../../../utils/url-utils';
-import { DateRangeType } from '../../../config/types';
-import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
-import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
-import TimelineItems from './TimelineItems';
-import { moment, useSafeTranslation } from '../../../i18n';
+import Draggable, { DraggableEvent } from 'react-draggable';
+import { useDispatch, useSelector } from 'react-redux';
+import { DateRangeType } from 'config/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { addNotification } from 'context/notificationStateSlice';
+import { moment, useSafeTranslation } from 'i18n';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 import {
   DEFAULT_DATE_FORMAT,
   MONTH_FIRST_DATE_FORMAT,
   MONTH_ONLY_DATE_FORMAT,
-} from '../../../utils/name-utils';
-import {
-  DateCompatibleLayer,
-  getPossibleDatesForLayer,
-} from '../../../utils/server-utils';
-import { availableDatesSelector } from '../../../context/serverStateSlice';
+} from 'utils/name-utils';
+import { useUrlHistory } from 'utils/url-utils';
+import { ReactComponent as TickSvg } from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
-import { addNotification } from '../../../context/notificationStateSlice';
-import { datesAreEqualWithoutTime } from '../../../utils/date-utils';
+import TimelineItems from './TimelineItems';
+import {
+  DateCompatibleLayerWithDateItems,
+  TIMELINE_ITEM_WIDTH,
+  USER_DATE_OFFSET,
+  findDateIndex,
+} from './utils';
 
 type Point = {
   x: number;
@@ -58,13 +57,13 @@ const DateSelector = memo(
     classes,
   }: DateSelectorProps) => {
     const { startDate: stateStartDate } = useSelector(dateRangeSelector);
-    const serverAvailableDates = useSelector(availableDatesSelector);
     const [dateRange, setDateRange] = useState<DateRangeType[]>([
       {
         value: 0,
         label: '',
         month: '',
         isFirstDay: false,
+        date: moment().toISOString(),
       },
     ]);
     const [timelinePosition, setTimelinePosition] = useState<Point>({
@@ -88,20 +87,6 @@ const DateSelector = memo(
     }, [availableDates]);
 
     const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
-
-    const selectedLayerDates = useMemo(
-      () =>
-        selectedLayers.map(layer => {
-          return getPossibleDatesForLayer(layer, serverAvailableDates)
-            .filter(value => value) // null check
-            .flat();
-        }),
-      [selectedLayers, serverAvailableDates],
-    );
-    const selectedLayerTitles = useMemo(
-      () => selectedLayers.map(layer => layer.title),
-      [selectedLayers],
-    );
 
     const setPointerXPosition = useCallback(() => {
       if (
@@ -157,19 +142,20 @@ const DateSelector = memo(
           value: date.valueOf(),
           label: dateStrToUpperCase(date.format(MONTH_FIRST_DATE_FORMAT)),
           month: dateStrToUpperCase(date.format(MONTH_ONLY_DATE_FORMAT)),
+          date: date.format('yyyy-MM-DD'),
           isFirstDay: date.date() === date.startOf('month').date(),
         };
       });
     }, [dateStrToUpperCase, locale, stateStartDate]);
 
     const dateIndex = useMemo(() => {
-      return findIndex(range, date => {
-        return (
-          date.label ===
-          moment(stateStartDate).locale(locale).format(MONTH_FIRST_DATE_FORMAT)
-        );
-      });
-    }, [locale, range, stateStartDate]);
+      return findIndex(
+        range,
+        date =>
+          !!stateStartDate &&
+          datesAreEqualWithoutTime(date.value, stateStartDate),
+      );
+    }, [range, stateStartDate]);
 
     // Create timeline range and set pointer position
     useEffect(() => {
@@ -273,25 +259,16 @@ const DateSelector = memo(
     );
 
     // Click on available date to move the pointer
-    const clickDate = useCallback(
-      (index: number) => {
-        const selectedIndex = findDateIndex(dates, dateRange[index].value);
-        if (selectedIndex < 0 || dates[selectedIndex] === stateStartDate) {
-          return;
-        }
-        setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
-        const updatedDate = new Date(dates[selectedIndex]);
-        checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
-        updateStartDate(updatedDate, true);
-      },
-      [
-        checkIntersectingDateAndShowPopup,
-        dateRange,
-        dates,
-        stateStartDate,
-        updateStartDate,
-      ],
-    );
+    const clickDate = (index: number) => {
+      const selectedIndex = findDateIndex(dates, dateRange[index].value);
+      if (selectedIndex < 0 || dates[selectedIndex] === stateStartDate) {
+        return;
+      }
+      setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
+      const updatedDate = new Date(dates[selectedIndex]);
+      checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
+      updateStartDate(updatedDate, true);
+    };
 
     // Set timeline position after being dragged
     const onTimelineStop = useCallback((e: DraggableEvent, position: Point) => {
@@ -345,13 +322,14 @@ const DateSelector = memo(
         <Grid
           container
           alignItems="center"
-          justify="center"
+          justifyContent="center"
           className={classes.datePickerContainer}
         >
+          {/* Mobile */}
           <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
             <Hidden smUp>
               <Button onClick={decrementDate}>
-                <ChevronLeft />
+                <ChevronLeft style={{ color: '#101010' }} />
               </Button>
             </Hidden>
 
@@ -373,14 +351,15 @@ const DateSelector = memo(
 
             <Hidden smUp>
               <Button onClick={incrementDate}>
-                <ChevronRight />
+                <ChevronRight style={{ color: '#101010' }} />
               </Button>
             </Hidden>
           </Grid>
 
+          {/* Desktop */}
           <Grid item xs={12} sm className={classes.slider}>
             <Hidden xsDown>
-              <Button onClick={decrementDate}>
+              <Button onClick={decrementDate} className={classes.chevronDate}>
                 <ChevronLeft />
               </Button>
             </Hidden>
@@ -403,14 +382,14 @@ const DateSelector = memo(
                     alignItems="stretch"
                     className={classes.dateLabelContainer}
                   >
-                    <TimelineItems
-                      dateRange={dateRange}
-                      intersectionDates={availableDates}
-                      selectedLayerDates={selectedLayerDates}
-                      clickDate={clickDate}
-                      selectedLayerTitles={selectedLayerTitles}
-                      locale={locale}
-                    />
+                    {stateStartDate && (
+                      <TimelineItems
+                        dateRange={dateRange}
+                        clickDate={clickDate}
+                        locale={locale}
+                        selectedLayers={selectedLayers}
+                      />
+                    )}
                   </Grid>
                   <Draggable
                     axis="x"
@@ -427,18 +406,14 @@ const DateSelector = memo(
                     onStop={onPointerStop}
                   >
                     <div className={classes.pointer} id={POINTER_ID}>
-                      <FontAwesomeIcon
-                        icon={faCaretUp}
-                        style={{ fontSize: 40 }}
-                        color="white"
-                      />
+                      <TickSvg />
                     </div>
                   </Draggable>
                 </div>
               </Draggable>
             </Grid>
             <Hidden xsDown>
-              <Button onClick={incrementDate}>
+              <Button onClick={incrementDate} className={classes.chevronDate}>
                 <ChevronRight />
               </Button>
             </Hidden>
@@ -453,22 +428,40 @@ const styles = (theme: Theme) =>
   createStyles({
     container: {
       position: 'absolute',
-      bottom: '8%',
+      bottom: '40px',
       width: '100%',
       zIndex: 5,
     },
 
+    chevronDate: {
+      padding: 0,
+      minWidth: '24px',
+      marginBottom: 'auto',
+      marginTop: 'auto',
+      marginRight: '10px',
+      marginLeft: '10px',
+      color: '#101010',
+      '&:hover': {
+        backgroundColor: 'rgba(211,211,211, 0.3)',
+      },
+    },
+
     datePickerContainer: {
-      backgroundColor: theme.palette.primary.main,
+      border: '1px solid #D4D4D4',
+      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      backgroundColor: 'white',
+      color: '#101010',
       borderRadius: theme.shape.borderRadius,
-      padding: theme.spacing(1),
       width: '90%',
       margin: 'auto',
       textAlign: 'center',
     },
 
     datePickerInput: {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: 'white',
+      color: '#101010',
+      paddingBottom: theme.spacing(2),
+      paddingTop: theme.spacing(2),
     },
 
     datePickerGrid: {
@@ -486,7 +479,7 @@ const styles = (theme: Theme) =>
 
     dateContainer: {
       position: 'relative',
-      height: 36,
+      height: 54,
       flexGrow: 1,
       cursor: 'e-resize',
       overflow: 'hidden',
@@ -499,20 +492,22 @@ const styles = (theme: Theme) =>
 
     timeline: {
       position: 'relative',
-      top: 5,
+      top: 8,
     },
 
     pointer: {
       cursor: 'pointer',
       position: 'absolute',
-      left: -12,
-      top: -12,
+      zIndex: 5,
+      top: -20,
+      left: -9,
+      height: '16px',
     },
   });
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
   availableDates?: number[];
-  selectedLayers: DateCompatibleLayer[];
+  selectedLayers: DateCompatibleLayerWithDateItems[];
 }
 
 export default withStyles(styles)(DateSelector);

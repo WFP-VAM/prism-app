@@ -12,60 +12,59 @@ import { countBy, get, pickBy } from 'lodash';
 import moment from 'moment';
 // map
 import bbox from '@turf/bbox';
-import Legends from './Legends';
-
 import {
   BoundaryLayerProps,
   isMainLayer,
   LayerKey,
   LayerType,
   PanelSize,
-} from '../../config/types';
-
-import { Extent } from './Layers/raster-utils';
-import { getUrlKey, UrlLayerKey, useUrlHistory } from '../../utils/url-utils';
-
+} from 'config/types';
+import { getUrlKey, UrlLayerKey, useUrlHistory } from 'utils/url-utils';
 import {
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
   LayerDefinitions,
-} from '../../config/utils';
-
-import DateSelector from './DateSelector';
-import { findClosestDate } from './DateSelector/utils';
+} from 'config/utils';
 import {
   dateRangeSelector,
   layerDataSelector,
   layersSelector,
-} from '../../context/mapStateSlice/selectors';
+} from 'context/mapStateSlice/selectors';
+
 import {
   addLayer,
   layerOrdering,
   removeLayer,
   updateDateRange,
-} from '../../context/mapStateSlice';
-import { hidePopup } from '../../context/tooltipStateSlice';
+} from 'context/mapStateSlice';
+import { hidePopup } from 'context/tooltipStateSlice';
 import {
   availableDatesSelector,
   isLoading as areDatesLoading,
   loadAvailableDates,
-} from '../../context/serverStateSlice';
+} from 'context/serverStateSlice';
 
-import { appConfig } from '../../config';
-import { LayerData, loadLayerData } from '../../context/layers/layer-data';
+import { appConfig } from 'config';
+import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import {
   DateCompatibleLayer,
   getPossibleDatesForLayer,
-} from '../../utils/server-utils';
-import { addNotification } from '../../context/notificationStateSlice';
+} from 'utils/server-utils';
+import { addNotification } from 'context/notificationStateSlice';
+import GoToBoundaryDropdown from 'components/Common/BoundaryDropdown/goto';
+import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import DataViewer from 'components/DataViewer';
+import { LocalError } from 'utils/error-utils';
 import AlertForm from './AlertForm';
-import GoToBoundaryDropdown from '../Common/BoundaryDropdown/goto';
 import BoundaryInfoBox from './BoundaryInfoBox';
-import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
-import DataViewer from '../DataViewer';
 import LeftPanel from './LeftPanel';
 import FoldButton from './FoldButton';
 import MapComponent from './Map';
+import { checkLayerAvailableDatesAndContinueOrRemove } from './utils';
+import DateSelector from './DateSelector';
+import { findClosestDate } from './DateSelector/utils';
+import { Extent } from './Layers/raster-utils';
+import Legends from './Legends';
 
 const dateSupportLayerTypes: Array<LayerType['type']> = [
   'impact',
@@ -76,9 +75,7 @@ const dateSupportLayerTypes: Array<LayerType['type']> = [
 
 const MapView = memo(({ classes }: MapViewProps) => {
   // App config attributes
-  const {
-    map: { hidePanel, alertFormActive },
-  } = appConfig;
+  const { alertFormActive, hidePanel } = appConfig;
 
   const boundaryLayer = useMemo(() => {
     return getBoundaryLayerSingleton();
@@ -128,7 +125,15 @@ const MapView = memo(({ classes }: MapViewProps) => {
         }
         return dateSupportLayerTypes.includes(layer.type);
       })
-      .filter(layer => isMainLayer(layer.id, selectedLayers));
+      .filter(layer => isMainLayer(layer.id, selectedLayers))
+      .map(layer => {
+        return {
+          ...layer,
+          dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
+            .filter(value => value) // null check
+            .flat(),
+        };
+      });
   }, [selectedLayers, serverAvailableDates]);
 
   // TODO - could we simply use the country boundary extent here instead of the calculation?
@@ -151,7 +156,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return urlParams.get(UrlLayerKey.HAZARD);
   }, [urlParams]);
 
-  const baselineLayerId = useMemo(() => {
+  const baselineLayerIds = useMemo(() => {
     return urlParams.get(UrlLayerKey.ADMINLEVEL);
   }, [urlParams]);
 
@@ -179,12 +184,13 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return hazardLayerIds !== null ? hazardLayerIds.split(',') : [];
   }, [hazardLayerIds]);
 
+  const baselineLayersArray = useMemo(() => {
+    return baselineLayerIds !== null ? baselineLayerIds.split(',') : [];
+  }, [baselineLayerIds]);
+
   const urlLayerIds = useMemo(() => {
-    return [
-      ...hazardLayersArray,
-      ...(baselineLayerId === null ? [] : [baselineLayerId]),
-    ];
-  }, [baselineLayerId, hazardLayersArray]);
+    return [...hazardLayersArray, ...baselineLayersArray];
+  }, [baselineLayersArray, hazardLayersArray]);
 
   const layerDefinitionIds = useMemo(() => {
     return Object.keys(LayerDefinitions);
@@ -206,9 +212,20 @@ const MapView = memo(({ classes }: MapViewProps) => {
   const addMissingLayers = useCallback(() => {
     missingLayers.forEach(layerId => {
       const layer = LayerDefinitions[layerId as LayerKey];
+      try {
+        checkLayerAvailableDatesAndContinueOrRemove(
+          layer,
+          serverAvailableDates,
+          removeLayerFromUrl,
+          dispatch,
+        );
+      } catch (error) {
+        console.error((error as LocalError).getErrorMessage());
+        return;
+      }
       dispatch(addLayer(layer));
     });
-  }, [dispatch, missingLayers]);
+  }, [dispatch, missingLayers, removeLayerFromUrl, serverAvailableDates]);
 
   // The date integer from url
   const dateInt = useMemo(() => {
@@ -225,7 +242,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
         .map(layer => getPossibleDatesForLayer(layer, serverAvailableDates))
         .filter(value => value) // null check
         .flat()
-        .map(value => moment(value).format(DEFAULT_DATE_FORMAT)),
+        .map(value => moment(value.displayDate).format(DEFAULT_DATE_FORMAT)),
     );
   }, [selectedLayersWithDateSupport, serverAvailableDates]);
 
@@ -283,7 +300,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       const layerToKeepDates = getPossibleDatesForLayer(
         layerToKeep as DateCompatibleLayer,
         serverAvailableDates,
-      );
+      ).map(dateItem => dateItem.displayDate);
 
       const closestDate = findClosestDate(selectedDate, layerToKeepDates);
 
@@ -302,7 +319,9 @@ const MapView = memo(({ classes }: MapViewProps) => {
     (layer: DateCompatibleLayer, momentSelectedDate: moment.Moment) => {
       // we convert to date strings, so hh:ss is irrelevant
       return getPossibleDatesForLayer(layer, serverAvailableDates)
-        .map(date => moment(date).format(DEFAULT_DATE_FORMAT))
+        .map(dateItem =>
+          moment(dateItem.displayDate).format(DEFAULT_DATE_FORMAT),
+        )
         .includes(momentSelectedDate.format(DEFAULT_DATE_FORMAT));
     },
     [serverAvailableDates],
@@ -315,7 +334,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       status is also updated. There are guards in case the values are not valid, such as invalid
       date or layerids.
       */
-    if (hazardLayerIds || baselineLayerId) {
+    if (hazardLayerIds || baselineLayerIds) {
       return;
     }
     if (!defaultLayer) {
@@ -343,7 +362,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
       setDefaultLayerAttempted(true);
     }
   }, [
-    baselineLayerId,
+    baselineLayerIds,
     defaultLayer,
     defaultLayerAttempted,
     defaultLayerInLayerDefinitions,
@@ -354,10 +373,14 @@ const MapView = memo(({ classes }: MapViewProps) => {
   ]);
 
   useEffect(() => {
-    if ((!hazardLayerIds && !baselineLayerId) || serverAvailableDatesAreEmpty) {
+    if (
+      (!hazardLayerIds && !baselineLayerIds) ||
+      serverAvailableDatesAreEmpty
+    ) {
       return;
     }
 
+    // TODO - remove layers after dispatching the error message.
     if (invalidLayersIds.length > 0) {
       dispatch(
         addNotification({
@@ -389,7 +412,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     );
   }, [
     addMissingLayers,
-    baselineLayerId,
+    baselineLayerIds,
     dateInt,
     dispatch,
     hazardLayerIds,
@@ -508,7 +531,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
     return (
       <Grid
         container
-        justify="space-between"
+        justifyContent="space-between"
         className={classes.buttonContainer}
       >
         <Grid item>
@@ -568,6 +591,10 @@ const MapView = memo(({ classes }: MapViewProps) => {
     );
   }, [classes.loading, datesLoading]);
 
+  const activeLayers = useMemo(() => {
+    return hazardLayersArray.length + baselineLayersArray.length;
+  }, [baselineLayersArray.length, hazardLayersArray.length]);
+
   return (
     <Box className={classes.root}>
       <LeftPanel
@@ -575,6 +602,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
         panelSize={panelSize}
         setPanelSize={setPanelSize}
         isPanelHidden={isPanelHidden}
+        activeLayers={activeLayers}
       />
       <Box className={classes.container}>
         <Box
@@ -582,6 +610,7 @@ const MapView = memo(({ classes }: MapViewProps) => {
           style={{ marginLeft: isPanelHidden ? PanelSize.folded : panelSize }}
         >
           <FoldButton
+            activeLayers={activeLayers}
             isPanelHidden={isPanelHidden}
             setIsPanelHidden={setIsPanelHidden}
           />
@@ -592,6 +621,8 @@ const MapView = memo(({ classes }: MapViewProps) => {
       </Box>
       {renderedDatesLoader}
       <MapComponent
+        panelHidden={isPanelHidden}
+        selectedLayers={selectedLayers}
         setIsAlertFormOpen={setIsAlertFormOpen}
         boundaryLayerId={boundaryLayerId}
       />
@@ -611,7 +642,7 @@ const styles = () =>
       width: '100%',
       position: 'absolute',
       top: 0,
-      rigth: 0,
+      right: 0,
     },
     optionContainer: {
       position: 'relative',

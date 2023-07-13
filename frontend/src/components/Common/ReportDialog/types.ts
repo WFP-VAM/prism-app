@@ -1,12 +1,8 @@
 import { Style } from '@react-pdf/types';
-
-export enum ReportType {
-  Storm,
-  Flood,
-}
+import { TFunctionResult } from 'i18next';
 
 export interface PDFLegendDefinition {
-  value: string | number;
+  value: string | number | TFunctionResult;
   style: Style | Style[];
 }
 

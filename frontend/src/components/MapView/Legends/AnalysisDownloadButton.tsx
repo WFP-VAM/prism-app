@@ -4,8 +4,8 @@ import {
   analysisResultSelector,
   analysisResultSortByKeySelector,
   analysisResultSortOrderSelector,
-} from '../../../context/analysisResultStateSlice';
-import { useSafeTranslation } from '../../../i18n';
+} from 'context/analysisResultStateSlice';
+import { useSafeTranslation } from 'i18n';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
@@ -13,9 +13,9 @@ import {
   generateAnalysisFilename,
   PolygonAnalysisResult,
   useAnalysisTableColumns,
-} from '../../../utils/analysis-utils';
-import MultiOptionsButton from '../../Common/MultiOptionsButton';
-import { downloadToFile } from '../utils';
+} from 'utils/analysis-utils';
+import MultiOptionsButton from 'components/Common/MultiOptionsButton';
+import { downloadToFile } from 'components/MapView/utils';
 
 function AnalysisDownloadButton() {
   const analysisResult = useSelector(analysisResultSelector);

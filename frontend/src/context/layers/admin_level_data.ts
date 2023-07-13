@@ -5,15 +5,12 @@ import {
   BoundaryLayerProps,
   AdminLevelDataLayerProps,
   LayerKey,
-} from '../../config/types';
-import type { RootState, ThunkApi } from '../store';
-import {
-  getBoundaryLayerSingleton,
-  LayerDefinitions,
-} from '../../config/utils';
+} from 'config/types';
+import type { RootState, ThunkApi } from 'context/store';
+import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import type { LayerData, LayerDataParams, LazyLoader } from './layer-data';
-import { layerDataSelector } from '../mapStateSlice/selectors';
-import { fetchWithTimeout } from '../../utils/fetch-with-timeout';
 
 export type DataRecord = {
   adminKey: string; // refers to a specific admin boundary feature (cell on map). Could be several based off admin level
@@ -58,7 +55,7 @@ export async function getAdminLevelDataLayerData({
       ? (LayerDefinitions[boundary as LayerKey] as BoundaryLayerProps)
       : getBoundaryLayerSingleton();
 
-  const adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
+  let adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
     getState(),
   ) as LayerData<BoundaryLayerProps> | undefined;
   // TEMP - add a 15s wait time to load admin boundaries which are very large
@@ -66,6 +63,10 @@ export async function getAdminLevelDataLayerData({
   // TODO - make sure we only run this once.
   if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
     await new Promise(resolve => setTimeout(resolve, 15000));
+    // eslint-disable-next-line fp/no-mutation
+    adminBoundariesLayer = layerDataSelector(adminBoundaryLayer.id)(
+      getState(),
+    ) as LayerData<BoundaryLayerProps> | undefined;
   }
   if (!adminBoundariesLayer || !adminBoundariesLayer.data) {
     // TODO we are assuming here it's already loaded. In the future if layers can be preloaded like boundary this will break.
