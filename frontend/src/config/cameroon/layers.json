@@ -3636,13 +3636,13 @@
     "type": "admin_level_data",
     "path": "data/cameroon/ch/admin2_{YYYY_MM_DD}.json",
     "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-06-01"],
-    "validity": {
-      "days": 122,
-      "mode": "forward"
-    },
     "fallbackLayerKeys": [
       "ch_phase_admin1"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "calc_ph_admin2",
     "admin_code": "adm2_pcod2",
@@ -3786,16 +3786,16 @@
     "type": "admin_level_data",
     "path": "data/cameroon/ch/admin2_{YYYY_MM_DD}.json",
     "dates": ["2018-02-01", "2018-06-01", "2018-10-01", "2019-02-01", "2019-06-01", "2019-10-01", "2020-02-01", "2020-06-01", "2020-10-01", "2021-02-01", "2021-06-01", "2021-10-01", "2022-02-01", "2022-06-01", "2022-10-01", "2023-06-01"],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_level": 2,
     "admin_code": "adm2_pcod2",
     "fallbackLayerKeys": [
       "ch_pop3_5_admin1"
     ],
-    "validity": {
-      "days": 122,
-      "mode": "forward"
-    },
     "feature_info_props": {
       "calc_pop_ph1_admin2": {
         "type": "number",
@@ -3964,6 +3964,10 @@
       "2022-06-01",
       "2022-10-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
@@ -4023,6 +4027,10 @@
       "2022-06-01",
       "2022-10-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 1,
     "data_field": "calc_ph_admin1",
     "admin_code": "adm1_pcod2",
@@ -4079,6 +4087,10 @@
       "2022-06-01",
       "2022-10-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
@@ -4148,6 +4160,10 @@
       "2022-06-01",
       "2022-10-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 1,
     "data_field": "calc_pop_ph3_5_admin1",
     "admin_code": "adm1_pcod2",
@@ -4216,6 +4232,10 @@
       "2022-06-01",
       "2022-10-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",
@@ -4274,6 +4294,10 @@
       "2022-06-01",
       "2022-10-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "calc_pop_ph3_5_admin2",
     "admin_code": "adm2_pcod2",
@@ -4335,6 +4359,10 @@
       "2022-02-01",
       "2022-06-01"
     ],
+    "validityPeriod": {
+      "start_date_field" : "start_date",
+      "end_date_field" : "end_date"
+    },
     "admin_level": 2,
     "data_field": "phase_class",
     "admin_code": "adm2_pcod2",

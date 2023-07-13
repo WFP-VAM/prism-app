@@ -11,7 +11,10 @@ jobs:
   frontend_tests:
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os:
+          - ubuntu-latest
+          - windows-latest
+
     name: frontend_tests
     runs-on: ${{ matrix.os }}
     steps:
