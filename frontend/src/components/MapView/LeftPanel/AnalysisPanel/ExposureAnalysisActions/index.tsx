@@ -107,11 +107,11 @@ function ExposureAnalysisActions({
     [analysisCsvData, analysisDefinition],
   );
 
-  const handleToggleReport = useCallback((toggle: boolean) => {
+  const handleToggleReport = (toggle: boolean) => {
     return () => {
       setOpenReport(toggle);
     };
-  }, []);
+  };
 
   return (
     <>
