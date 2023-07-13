@@ -22,7 +22,11 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LayerKey, LayerType } from 'config/types';
-import { getDisplayBoundaryLayers, LayerDefinitions } from 'config/utils';
+import {
+  getDisplayBoundaryLayers,
+  LayerDefinitions,
+  ReportsDefinitions,
+} from 'config/utils';
 import { clearDataset } from 'context/datasetStateSlice';
 import { removeLayer } from 'context/mapStateSlice';
 import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
@@ -268,7 +272,13 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   ]);
 
   const renderedExposureAnalysisOption = useMemo(() => {
-    if (!exposure) {
+    // find if there are reports with the specific layer id in the reports.json
+    const foundReports = Object.keys(ReportsDefinitions).filter(
+      reportDefinitionKey => {
+        return ReportsDefinitions[reportDefinitionKey].layerId === layer.id;
+      },
+    );
+    if (!exposure || !foundReports.length) {
       return null;
     }
     return (

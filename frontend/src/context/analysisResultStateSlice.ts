@@ -77,6 +77,7 @@ type AnalysisResultState = {
   tableData?: TableData;
   result?: AnalysisResult;
   error?: string;
+  exposureLayerId: string;
   isLoading: boolean;
   isMapLayerActive: boolean;
   isDataTableDrawerActive: boolean;
@@ -100,6 +101,7 @@ const initialState: AnalysisResultState = {
   isLoading: false,
   isMapLayerActive: true,
   isDataTableDrawerActive: false,
+  exposureLayerId: '',
   isExposureLoading: false,
   analysisResultDataSortByKey: 'name',
   analysisResultDataSortOrder: 'asc',
@@ -821,6 +823,10 @@ export const analysisResultSlice = createSlice({
       ...state,
       isMapLayerActive: payload,
     }),
+    setExposureLayerId: (state, { payload }: PayloadAction<string>) => ({
+      ...state,
+      exposureLayerId: payload,
+    }),
     setIsDataTableDrawerActive: (
       state,
       { payload }: PayloadAction<boolean>,
@@ -961,6 +967,9 @@ export const analysisResultSortOrderSelector = (
   state: RootState,
 ): 'asc' | 'desc' => state.analysisResultState.analysisResultDataSortOrder;
 
+export const exposureLayerIdSelector = (state: RootState): string =>
+  state.analysisResultState.exposureLayerId;
+
 export const analysisResultOpacitySelector = (state: RootState): number =>
   state.analysisResultState.opacity;
 
@@ -981,6 +990,7 @@ export const {
   setIsMapLayerActive,
   setIsDataTableDrawerActive,
   setAnalysisLayerOpacity,
+  setExposureLayerId,
   setCurrentDataDefinition,
   hideDataTableDrawer,
   clearAnalysisResult,

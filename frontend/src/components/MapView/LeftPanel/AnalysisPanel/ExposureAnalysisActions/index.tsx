@@ -12,14 +12,14 @@ import { useSelector } from 'react-redux';
 import { downloadToFile } from 'components/MapView/utils';
 import { useSafeTranslation } from 'i18n';
 import {
+  exposureLayerIdSelector,
   getCurrentDefinition,
   TableRow,
   TableRow as AnalysisTableRow,
 } from 'context/analysisResultStateSlice';
-import { layersSelector } from 'context/mapStateSlice/selectors';
-import { ReportType } from 'components/Common/ReportDialog/types';
 import ReportDialog from 'components/Common/ReportDialog';
 import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
+import { ReportsDefinitions } from 'config/utils';
 
 function ExposureAnalysisActions({
   analysisButton,
@@ -31,13 +31,9 @@ function ExposureAnalysisActions({
   // only display local names if local language is selected, otherwise display english name
   const { t } = useSafeTranslation();
   const analysisDefinition = useSelector(getCurrentDefinition);
-  const selectedLayers = useSelector(layersSelector);
+  const exposureLayerId = useSelector(exposureLayerIdSelector);
 
   const [openReport, setOpenReport] = useState(false);
-
-  const isShowingStormData = useMemo(() => {
-    return selectedLayers.some(({ id }) => id === 'adamts_buffers');
-  }, [selectedLayers]);
 
   const getCellValue = useCallback((value: string | number, column: Column) => {
     if (column.format && typeof value === 'number') {
@@ -57,6 +53,19 @@ function ExposureAnalysisActions({
       {},
     );
   }, [columns]);
+
+  const reportConfig = useMemo(() => {
+    // We use find here because exposure reports and layers have 1 - 1 sync.
+    // TODO Future enhancement if exposure reports are more than one for specific layer
+    const foundReportKeyBasedOnLayerId = Object.keys(ReportsDefinitions).find(
+      reportDefinitionKey => {
+        return (
+          ReportsDefinitions[reportDefinitionKey].layerId === exposureLayerId
+        );
+      },
+    );
+    return ReportsDefinitions[foundReportKeyBasedOnLayerId as string];
+  }, [exposureLayerId]);
 
   const tableDataRowsToRenderCsv = useMemo(() => {
     return tableData.map((tableRowData: TableRow) => {
@@ -98,6 +107,12 @@ function ExposureAnalysisActions({
     [analysisCsvData, analysisDefinition],
   );
 
+  const handleToggleReport = (toggle: boolean) => {
+    return () => {
+      setOpenReport(toggle);
+    };
+  };
+
   return (
     <>
       <Button className={analysisButton} onClick={clearAnalysis}>
@@ -108,13 +123,13 @@ function ExposureAnalysisActions({
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
       )}
-      <Button className={bottomButton} onClick={() => setOpenReport(true)}>
+      <Button className={bottomButton} onClick={handleToggleReport(true)}>
         <Typography variant="body2">{t('Create Report')}</Typography>
       </Button>
       <ReportDialog
         open={openReport}
-        handleClose={() => setOpenReport(false)}
-        reportType={isShowingStormData ? ReportType.Storm : ReportType.Flood}
+        handleClose={handleToggleReport(false)}
+        reportConfig={reportConfig}
         tableData={tableData}
         columns={columns}
       />

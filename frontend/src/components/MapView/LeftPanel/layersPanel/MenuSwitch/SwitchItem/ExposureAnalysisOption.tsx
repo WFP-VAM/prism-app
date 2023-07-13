@@ -15,6 +15,7 @@ import {
   ExposedPopulationDispatchParams,
   requestAndStoreExposedPopulation,
   setCurrentDataDefinition,
+  setExposureLayerId,
 } from 'context/analysisResultStateSlice';
 import { setTabValue } from 'context/leftPanelStateSlice';
 import { dateRangeSelector } from 'context/mapStateSlice/selectors';
@@ -58,6 +59,9 @@ function ExposureAnalysisOption({
       extent,
       ...hazardLayer,
     };
+
+    // Set the exposure layer id in redux so that we can have access to the reports configurations through the layer id
+    dispatch(setExposureLayerId(layer.id));
 
     dispatch(requestAndStoreExposedPopulation(params));
     dispatch(
