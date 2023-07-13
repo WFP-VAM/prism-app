@@ -239,6 +239,7 @@ const MapComponent = memo(
         center={mapTempCenter}
         maxBounds={maxBounds}
       >
+        {/* We cannot memoize the above behavior because tooltip becomes sluggish and does not render at all, when we enable a layer */}
         {selectedLayers.map((layer, index) => {
           const component: ComponentType<{
             layer: any;
