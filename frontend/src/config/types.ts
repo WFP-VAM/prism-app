@@ -514,7 +514,8 @@ export enum PolygonalAggregationOperations {
 
 export type AllAggregationOperations =
   | AggregationOperations
-  | PolygonalAggregationOperations;
+  | PolygonalAggregationOperations
+  | 'stats_intersect_area';
 
 export type ThresholdDefinition = { below?: number; above?: number };
 

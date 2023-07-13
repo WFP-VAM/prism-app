@@ -9,7 +9,7 @@ import {
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
-import { LegendDefinition } from 'config/types';
+import { AggregationOperations, LegendDefinition } from 'config/types';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
@@ -103,13 +103,14 @@ function AnalysisLayer({ before }: { before?: string }) {
           const statisticKey = analysisData.statistic;
           const precision =
             analysisData instanceof ExposedPopulationResult ? 0 : undefined;
+          const formattedProperties = formatIntersectPercentageAttribute(
+            evt.features[0].properties,
+          );
           dispatch(
             addPopupData({
               [analysisData.getStatTitle(t)]: {
                 data: getRoundedData(
-                  formatIntersectPercentageAttribute(
-                    evt.features[0].properties,
-                  )[statisticKey],
+                  formattedProperties[statisticKey],
                   t,
                   precision,
                 ),
@@ -117,6 +118,20 @@ function AnalysisLayer({ before }: { before?: string }) {
               },
             }),
           );
+          if (statisticKey === AggregationOperations['Area exposed']) {
+            dispatch(
+              addPopupData({
+                'Flood extent (intersect_area)': {
+                  data: getRoundedData(
+                    formattedProperties.stats_intersect_area || null,
+                    t,
+                    precision,
+                  ),
+                  coordinates,
+                },
+              }),
+            );
+          }
         }
 
         if (analysisData instanceof BaselineLayerResult) {

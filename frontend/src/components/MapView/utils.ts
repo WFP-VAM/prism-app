@@ -188,17 +188,30 @@ export const filterActiveLayers = (
 
 export const formatIntersectPercentageAttribute = (
   /* eslint-disable camelcase */
-  data: { intersect_percentage?: number | string; [key: string]: any },
+  data: {
+    intersect_percentage?: number | string;
+    stats_intersect_area?: number | string;
+    [key: string]: any;
+  },
 ) => {
-  if (data.intersect_percentage) {
-    return {
-      ...data,
+  let transformedData = data;
+  if (parseInt(data.intersect_percentage as string, 10) >= 0) {
+    transformedData = {
+      ...transformedData,
       intersect_percentage: `${(
         100 * ((data.intersect_percentage as number) || 0)
       ).toFixed(2)}%`,
     };
   }
-  return data;
+  if (data.stats_intersect_area) {
+    transformedData = {
+      ...transformedData,
+      stats_intersect_area: `${(data.stats_intersect_area as number).toFixed(
+        2,
+      )}%`,
+    };
+  }
+  return transformedData;
 };
 
 /**

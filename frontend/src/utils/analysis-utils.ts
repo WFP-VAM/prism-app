@@ -727,6 +727,13 @@ export function getAnalysisTableColumns(
     },
   ];
 
+  if (statistic === AggregationOperations['Area exposed']) {
+    analysisTableColumns.push({
+      id: 'stats_intersect_area',
+      label: 'Intersect Area',
+    });
+  }
+
   if (analysisResult instanceof ExposedPopulationResult) {
     const extraCols = analysisResult?.tableColumns.map((col: string) => ({
       id: col,

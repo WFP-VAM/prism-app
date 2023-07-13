@@ -657,8 +657,16 @@ export const requestAndStoreAnalysis = createAsyncThunk<
   // Create a legend based on statistic data to be used for admin level analsysis.
   const legend = createLegendFromFeatureArray(features, statistic);
 
+  const enrichedStatistics: (
+    | AggregationOperations
+    | 'stats_intersect_area'
+  )[] = [statistic];
+  if (statistic === AggregationOperations['Area exposed']) {
+    enrichedStatistics.push('stats_intersect_area');
+  }
+
   const tableRows: TableRow[] = generateTableFromApiData(
-    [statistic],
+    enrichedStatistics,
     aggregateData,
     adminBoundariesData,
     apiRequest.group_by,
