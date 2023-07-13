@@ -1,0 +1,360 @@
+{
+    "DataList": [
+        {
+          "district_pcode": "1503",
+          "max_class": 3
+        },
+        {
+          "district_pcode": "1402",
+          "max_class": 2
+        },
+        {
+          "district_pcode": "1105",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1121",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1504",
+          "max_class": 2
+        },
+        {
+          "district_pcode": "1601",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1604",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1301",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1303",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1404",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1701",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1104",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1705",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1505",
+          "max_class": 3
+        },
+        {
+          "district_pcode": "1703",
+          "max_class": 2
+        },
+        {
+          "district_pcode": "1702",
+          "max_class": 2
+        },
+        {
+          "district_pcode": "1101",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1607",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1605",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1502",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1704",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1723",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1602",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1506",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1606",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1021",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1507",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1603",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1623",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1621",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1706",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1708",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1804",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1707",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1803",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1802",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1821",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1807",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1801",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1805",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1102",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1103",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1123",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1622",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1721",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1725",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1728",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1806",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1822",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1501",
+          "max_class": 3
+        },
+        {
+          "district_pcode": "1424",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1503",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1522",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1729",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1305",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1307",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1309",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1207",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1921",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1304",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1203",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1204",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1205",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1302",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1321",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1425",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1401",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1427",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1106",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1107",
+          "max_class": 1
+        },
+        {
+          "district_pcode": "1122",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1406",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1403",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1428",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1201",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1421",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1202",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1426",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1306",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1308",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1922",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1405",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1208",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1206",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1722",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1923",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1326",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1221",
+          "max_class": 99
+        },
+        {
+          "district_pcode": "1423",
+          "max_class": 99
+        }
+      ]
+}

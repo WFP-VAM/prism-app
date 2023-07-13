@@ -2310,6 +2310,70 @@
     ],
     "legend_text": "Cereal Insecurity 2021"
   },
+  "spi_forecasts": {
+    "title": "SPI-based triggers",
+    "type": "admin_level_data",
+    "path": "data/zimbabwe/zim_spi_demo.json",
+    "data_field": "max_class",
+    "admin_level": 2,
+    "admin_code": "district_pcode",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": 1,
+        "label": "Low",
+        "color": "#ffeda0"
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "color": "#feb24c"
+      },
+      {
+        "value": 3,
+        "label": "High",
+        "color": "#cc301b"
+      },
+      {
+        "value": 99,
+        "label": "N/A",
+        "color": "#efefef"
+      }
+    ],
+    "legend_text": "SPI trigger exceedence. The highest threshold exceeded is used to classify each district"
+  },
+  "dryspell_forecasts": {
+    "title": "Dryspell-based triggers",
+    "type": "admin_level_data",
+    "path": "data/zimbabwe/zim_spi_demo.json",
+    "data_field": "max_class",
+    "admin_level": 2,
+    "admin_code": "district_pcode",
+    "opacity": 0.5,
+    "legend": [
+      {
+        "value": 99,
+        "label": "N/A",
+        "color": "#efefef"
+      },
+      {
+        "value": 1,
+        "label": "Low",
+        "color": "#ffeda0"
+      },
+      {
+        "value": 2,
+        "label": "Moderate",
+        "color": "#feb24c"
+      },
+      {
+        "value": 3,
+        "label": "High",
+        "color": "#cc301b"
+      }
+    ],
+    "legend_text": "SPI trigger exceedence. The highest threshold exceeded is used to classify each district"
+  },
   "10_year_avg_cereal_insecurity": {
     "title": "10-year average cereal insecurity",
     "type": "admin_level_data",

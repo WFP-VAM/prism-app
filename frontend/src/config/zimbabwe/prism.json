@@ -19,6 +19,12 @@
   },
   "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
+    "forecasts": {
+      "forecast_based_triggers": [
+          "spi_forecasts",
+          "dryspell_forecasts"
+      ]
+    },
     "rainfall": {
       "ZMSD_rainfall_data": [
         {
