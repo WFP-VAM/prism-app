@@ -1,7 +1,6 @@
 {
   "flood_extent_report": {
     "layer_id": "flood_extent",
-    "type": "floods",
     "title": "Event name: Flood Report",
     "publication_date_label": "Publication Date",
     "sub_text": "This is an automated report. Information should be treated as preliminary",
@@ -38,7 +37,6 @@
   },
   "adamts_buffers_report": {
     "layer_id": "adamts_buffers",
-    "type": "tropical storms",
     "title": "Event name: Storm Report",
     "publication_date_label": "Publication Date",
     "sub_text": "This is an automated report. Information should be treated as preliminary",

@@ -10,7 +10,7 @@ import {
 import { Theme } from '@material-ui/core';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { getLegendItemLabel } from 'components/MapView/utils';
-import { LegendDefinition, ReportType, ReportTypeEnum } from 'config/types';
+import { LegendDefinition, ReportType } from 'config/types';
 import { TFunction } from 'utils/data-utils';
 import { Column } from 'utils/analysis-utils';
 import { PDFLegendDefinition } from './types';
@@ -128,7 +128,7 @@ const ReportDoc = memo(
           return {
             value: t(typeLegendDefinitionItem.title),
             style: [
-              reportConfig.type === ReportTypeEnum.TROPICAL_STORMS
+              typeLegendDefinitionItem?.border
                 ? styles.borderedBox
                 : styles.box,
               {
@@ -142,7 +142,6 @@ const ReportDoc = memo(
         },
       );
     }, [
-      reportConfig.type,
       reportConfig.typeLegendDefinition.items,
       styles.borderedBox,
       styles.box,
