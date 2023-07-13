@@ -632,11 +632,6 @@ export interface ChartConfig {
   colors?: string[]; // Array of hex codes.
 }
 
-export enum ReportTypeEnum {
-  FLOODS = 'floods',
-  TROPICAL_STORMS = 'tropical storms',
-}
-
 export interface ReportLegendDefinitionItem {
   title: string;
   color: string;
@@ -651,7 +646,6 @@ export interface ReportLegendDefinition {
 export class ReportType {
   id: ReportKey;
   layerId: LayerKey;
-  type: ReportTypeEnum;
   title: string;
   publicationDateLabel: string;
 
