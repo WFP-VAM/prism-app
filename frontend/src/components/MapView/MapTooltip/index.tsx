@@ -95,8 +95,10 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
     ).reduce((acc: any, cur: any) => {
       const [key, value] = cur;
       if (
-        !key.includes('Population in phase ') &&
-        !key.includes('Reference period ')
+        // keep "Population in phase 1" as a placeholder for the phase population table
+        key === 'Population in phase 1' ||
+        (!key.includes('Population in phase ') &&
+          !key.includes('Reference period '))
       ) {
         return { ...acc, [key]: value };
       }
@@ -110,29 +112,32 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
         return (
           <Fragment key={key}>
             {/* Allow users to show data without a key/title */}
-            {!key.includes('do_not_display') && (
+            {!key.includes('do_not_display') &&
+              key !== 'Population in phase 1' && (
+                <Typography
+                  display="inline"
+                  variant="h4"
+                  color="inherit"
+                  className={classes.text}
+                >
+                  {`${t(key)}: `}
+                </Typography>
+              )}
+            {key !== 'Population in phase 1' && (
               <Typography
                 display="inline"
                 variant="h4"
                 color="inherit"
                 className={classes.text}
               >
-                {`${t(key)}: `}
+                {`${value.data}`}
               </Typography>
             )}
-            <Typography
-              display="inline"
-              variant="h4"
-              color="inherit"
-              className={classes.text}
-            >
-              {`${value.data}`}
-            </Typography>
             {/* Phase classification data */}
             <Typography variant="h4" color="inherit">
               {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
             </Typography>
-            {value.adminLevel && phasePopulationTable}
+            {key === 'Population in phase 1' && phasePopulationTable}
           </Fragment>
         );
       });
