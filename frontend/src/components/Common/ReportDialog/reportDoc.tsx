@@ -19,8 +19,9 @@ import { useSafeTranslation } from 'i18n';
 import { PDFLegendDefinition } from './types';
 import ReportDocLegend from './ReportDocLegend';
 import ReportDocTable from './ReportDocTable';
+import { getReportFontFamily } from './utils';
 
-// Register Fonts
+// Register all the fonts necessary
 Font.register({
   family: 'Roboto',
   src: RobotoFont,
@@ -38,7 +39,7 @@ const makeStyles = (theme: Theme, selectedLanguage: string) =>
       backgroundColor: '#FFF',
       paddingBottom: 25,
       paddingTop: '1vh',
-      fontFamily: selectedLanguage === 'kh' ? 'Khmer' : 'Roboto',
+      fontFamily: getReportFontFamily(selectedLanguage),
     },
     section: {
       width: '96vw',
