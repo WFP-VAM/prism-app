@@ -13,7 +13,7 @@ import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import { LegendDefinition, ReportType } from 'config/types';
 import { Column } from 'utils/analysis-utils';
-import RobotoFont from 'fonts/Roboto-Medium.ttf';
+import RobotoFont from 'fonts/Roboto-Regular.ttf';
 import KhmerFont from 'fonts/Khmer-Regular.ttf';
 import { useSafeTranslation } from 'i18n';
 import { PDFLegendDefinition } from './types';
