@@ -8,13 +8,77 @@ import {
   LinearProgress,
   Typography,
 } from '@material-ui/core';
-import { isEqual } from 'lodash';
-import { tooltipSelector } from 'context/tooltipStateSlice';
+import { isEmpty, isEqual, sum } from 'lodash';
+import { PopupData, tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
+
+const generatePhasePopulationTable = (popupData: PopupData) => {
+  const phasePopulations: Record<string, number> = Object.entries(
+    popupData,
+  ).reduce((acc: any, cur: any) => {
+    const [key, value] = cur;
+    if (key.includes('Population in phase ')) {
+      // extract number from string looking like "Phase classification 1"
+      const phaseNumber = key.replace('Population in phase ', '');
+      if (phaseNumber) {
+        return { ...acc, [phaseNumber]: value.data };
+      }
+    }
+    return acc;
+  }, {});
+
+  if (isEmpty(phasePopulations)) {
+    return null;
+  }
+
+  // calculate total population
+  // eslint-disable-next-line no-param-reassign, fp/no-mutation
+  phasePopulations.Total =
+    sum(Object.values(phasePopulations)) - phasePopulations['3 to 5'];
+
+  const phasePopulationTable = (
+    <div>
+      <Typography display="inline" variant="h4" color="inherit">
+        Ref. period: {popupData['Reference period start']?.data} to{' '}
+        {popupData['Reference period end']?.data}
+      </Typography>
+      <table
+        style={{
+          tableLayout: 'fixed',
+          borderCollapse: 'collapse',
+          width: '100%',
+          borderWidth: '1px;',
+          borderColor: 'inherit',
+          borderStyle: 'solid',
+        }}
+      >
+        <tr style={{ border: '1px solid white' }}>
+          {Object.keys(phasePopulations).map((phase: string) => (
+            <th>{phase}</th>
+          ))}
+        </tr>
+        <tr style={{ border: '1px solid white' }}>
+          {Object.values(phasePopulations).map((phase: number) => (
+            <th>{phase.toLocaleString()}</th>
+          ))}
+        </tr>
+        <tr style={{ border: '1px solid white' }}>
+          {Object.values(phasePopulations).map((phase: number) => (
+            <th>{Math.round((phase / phasePopulations.Total) * 100)}%</th>
+          ))}
+        </tr>
+      </table>
+    </div>
+  );
+
+  return phasePopulationTable;
+};
 
 const MapTooltip = memo(({ classes }: TooltipProps) => {
   const popup = useSelector(tooltipSelector);
   const { t, i18n } = useSafeTranslation();
+
+  const popupData = popup.data;
 
   const popupTitle = useMemo(() => {
     if (isEnglishLanguageSelected(i18n)) {
@@ -24,7 +88,21 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
   }, [i18n, popup.locationLocalName, popup.locationName]);
 
   const renderedPopupContent = useMemo(() => {
-    return Object.entries(popup.data)
+    const phasePopulationTable = generatePhasePopulationTable(popupData);
+    // filter out popupData where key value contains "Population in phase "
+    const popupDataWithoutPhasePopulations: PopupData = Object.entries(
+      popupData,
+    ).reduce((acc: any, cur: any) => {
+      const [key, value] = cur;
+      if (
+        !key.includes('Population in phase ') &&
+        !key.includes('Reference period ')
+      ) {
+        return { ...acc, [key]: value };
+      }
+      return acc;
+    }, {});
+    return Object.entries(popupDataWithoutPhasePopulations)
       .filter(([, value]) => {
         return isEqual(value.coordinates, popup.coordinates);
       })
@@ -50,13 +128,15 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
             >
               {`${value.data}`}
             </Typography>
-            <Typography variant="h4" color="inherit" className={classes.text}>
+            {/* Phase classification data */}
+            <Typography variant="h4" color="inherit">
               {value.adminLevel && `${t('Admin Level')}: ${value.adminLevel}`}
             </Typography>
+            {value.adminLevel && phasePopulationTable}
           </Fragment>
         );
       });
-  }, [classes.text, popup.coordinates, popup.data, t]);
+  }, [classes.text, popup.coordinates, popupData, t]);
 
   const renderedPopupLoader = useMemo(() => {
     if (!popup.wmsGetFeatureInfoLoading) {

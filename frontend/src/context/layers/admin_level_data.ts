@@ -142,6 +142,7 @@ export async function getAdminLevelDataLayerData({
           ...adminBoundaryLayer.adminLevelLocalNames,
         ]),
         value: matchedData ? matchedData[dataField!] : fallbackValue,
+        // TODO - verify the logic for deciding which admin level to use
         adminLevel: fallbackAdminLevel ?? adminLevel,
         ...featureInfoPropsValues,
       } as DataRecord;
