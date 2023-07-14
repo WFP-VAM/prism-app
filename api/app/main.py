@@ -261,7 +261,7 @@ def get_kobo_forms(
 def alert_by_id(
     email: EmailStr,
     deactivate: Optional[bool] = None,
-    id: int = Path(1, description="The ID of the alert (an integer)"),
+    id: int = Path(description="The ID of the alert (an integer)"),
 ) -> Response:
     """Get alert with an ID."""
 

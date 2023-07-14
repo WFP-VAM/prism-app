@@ -1,7 +1,7 @@
 import { camelCase } from 'lodash';
 import { useHistory } from 'react-router-dom';
+import { LayerType } from 'config/types';
 import { AnalysisParams } from './types';
-import { LayerType } from '../config/types';
 import { keepLayer } from './keep-layer-utils';
 
 /*

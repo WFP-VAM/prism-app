@@ -20,16 +20,12 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { TFunctionKeys } from 'i18next';
-import { useSafeTranslation } from '../../i18n';
-import { layersSelector } from '../../context/mapStateSlice/selectors';
-
-import {
-  setUserAuthGlobal,
-  userAuthSelector,
-} from '../../context/serverStateSlice';
-import { UserAuth } from '../../config/types';
-import { getUrlKey, useUrlHistory } from '../../utils/url-utils';
-import { removeLayer } from '../../context/mapStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { layersSelector } from 'context/mapStateSlice/selectors';
+import { setUserAuthGlobal, userAuthSelector } from 'context/serverStateSlice';
+import { UserAuth } from 'config/types';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { removeLayer } from 'context/mapStateSlice';
 
 const AuthModal = ({ classes }: AuthModalProps) => {
   const initialAuthState: UserAuth = {
@@ -106,9 +102,16 @@ const AuthModal = ({ classes }: AuthModalProps) => {
   }, [dispatch, initialAuthState, layersWithAuthRequired, removeLayerFromUrl]);
 
   // function that handles the close modal
-  const closeModal = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const closeModal = useCallback(
+    (event, reason) => {
+      if (reason === 'backdropClick') {
+        onCancelClick();
+        return;
+      }
+      setOpen(false);
+    },
+    [onCancelClick],
+  );
 
   // renders the Auth modal only if a user isn't already authenticated
   return useMemo(() => {
@@ -119,7 +122,6 @@ const AuthModal = ({ classes }: AuthModalProps) => {
       <Dialog
         maxWidth="xl"
         open={open}
-        onBackdropClick={onCancelClick}
         keepMounted
         onClose={closeModal}
         aria-labelledby="dialog-preview"

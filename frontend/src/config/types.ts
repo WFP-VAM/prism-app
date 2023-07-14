@@ -3,7 +3,7 @@ import { every, map } from 'lodash';
 import { FillPaint, LinePaint } from 'mapbox-gl';
 import 'reflect-metadata';
 import { rawLayers } from '.';
-import type { TableKey } from './utils';
+import type { ReportKey, TableKey } from './utils';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
@@ -380,6 +380,13 @@ export enum DatesPropagation {
   BOTH = 'both',
 }
 
+export type ValidityPeriod = {
+  // eslint-disable-next-line camelcase
+  start_date_field: string;
+  // eslint-disable-next-line camelcase
+  end_date_field: string;
+};
+
 export type Validity = {
   days: number; // Number of days to include in the calendar.
   mode: DatesPropagation; // Propagation mode for dates.
@@ -447,6 +454,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   dates?: string[];
+
+  @optional
+  validityPeriod?: ValidityPeriod;
 
   @makeRequired
   title: string;
@@ -632,6 +642,42 @@ export interface ChartConfig {
   colors?: string[]; // Array of hex codes.
 }
 
+export interface ReportLegendDefinitionItem {
+  title: string;
+  color: string;
+  border?: string;
+}
+
+export interface ReportLegendDefinition {
+  title: string;
+  items: ReportLegendDefinitionItem[];
+}
+
+export class ReportType {
+  id: ReportKey;
+  layerId: LayerKey;
+  title: string;
+  publicationDateLabel: string;
+
+  @optional
+  subText?: string;
+
+  areasLegendDefinition: ReportLegendDefinition;
+  typeLegendDefinition: ReportLegendDefinition;
+
+  @optional
+  mapFooterText?: string;
+
+  @optional
+  mapFooterSubText?: string;
+
+  @optional
+  tableName?: string;
+
+  @optional
+  signatureText?: string;
+}
+
 export class TableType {
   id: TableKey;
   title: string;
@@ -688,11 +734,19 @@ export type PointLayerData = {
   features: PointData[];
 };
 
-export type ValidityLayer = {
+export interface BaseLayer {
   name: string;
   dates: number[];
+}
+
+export interface ValidityLayer extends BaseLayer {
   validity: Validity;
-};
+}
+
+export interface PathLayer extends BaseLayer {
+  path: string;
+  validityPeriod: ValidityPeriod;
+}
 
 export type UserAuth = {
   username: string;

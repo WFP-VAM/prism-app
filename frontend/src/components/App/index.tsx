@@ -4,15 +4,15 @@ import { useIsAuthenticated } from '@azure/msal-react';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Font } from '@react-pdf/renderer';
-import { authRequired } from '../../config';
+import { authRequired } from 'config';
+import NavBar from 'components/NavBar';
+import MapView from 'components/MapView';
+import Login from 'components/Login';
+import muiTheme from 'muiTheme';
+import Notifier from 'components/Notifier';
+import AuthModal from 'components/AuthModal';
 // Basic CSS Layout for the whole page
 import './app.css';
-import NavBar from '../NavBar';
-import MapView from '../MapView';
-import Login from '../Login';
-import muiTheme from '../../muiTheme';
-import Notifier from '../Notifier';
-import AuthModal from '../AuthModal';
 
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'development') {
   if (process.env.REACT_APP_SENTRY_URL) {

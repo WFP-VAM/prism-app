@@ -22,12 +22,12 @@ import {
   EWSParams,
   DatasetRequestParams,
   CHART_DATA_PREFIXES,
-} from '../../context/datasetStateSlice';
-import { dateRangeSelector } from '../../context/mapStateSlice/selectors';
-import Chart from '../Common/Chart';
-import { ChartConfig } from '../../config/types';
-import { useSafeTranslation } from '../../i18n';
-import { appConfig } from '../../config';
+} from 'context/datasetStateSlice';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import Chart from 'components/Common/Chart';
+import { ChartConfig } from 'config/types';
+import { useSafeTranslation } from 'i18n';
+import { appConfig } from 'config';
 
 const isAdminBoundary = (
   params: AdminBoundaryParams | EWSParams,

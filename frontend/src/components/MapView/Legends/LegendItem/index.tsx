@@ -23,23 +23,20 @@ import {
 } from '@material-ui/core';
 import { Close, Opacity } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerType, LegendDefinitionItem } from '../../../../config/types';
-import {
-  mapSelector,
-  layersSelector,
-} from '../../../../context/mapStateSlice/selectors';
-import { clearDataset } from '../../../../context/datasetStateSlice';
-import { useSafeTranslation } from '../../../../i18n';
-import { setAnalysisLayerOpacity } from '../../../../context/analysisResultStateSlice';
-import LayerContentPreview from '../layerContentPreview';
-import { handleChangeOpacity } from '../handleChangeOpacity';
-import ColorIndicator from '../ColorIndicator';
-import { getLegendItemLabel } from '../../utils';
-import { Extent } from '../../Layers/raster-utils';
-import { getUrlKey, useUrlHistory } from '../../../../utils/url-utils';
+import { LayerType, LegendDefinitionItem } from 'config/types';
+import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
+import { clearDataset } from 'context/datasetStateSlice';
+import { useSafeTranslation } from 'i18n';
+import { setAnalysisLayerOpacity } from 'context/analysisResultStateSlice';
+import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
+import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
+import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
+import { getLegendItemLabel } from 'components/MapView/utils';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuSwitch/SwitchItem/LayerDownloadOptions';
+import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuSwitch/SwitchItem/utils';
 import LoadingBar from '../LoadingBar';
-import LayerDownloadOptions from '../../LeftPanel/layersPanel/MenuSwitch/SwitchItem/LayerDownloadOptions';
-import { toggleRemoveLayer } from '../../LeftPanel/layersPanel/MenuSwitch/SwitchItem/utils';
 
 // Children here is legendText
 const LegendItem = memo(

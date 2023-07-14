@@ -21,24 +21,21 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayerKey, LayerType } from '../../../../../../config/types';
-import { LayerDefinitions } from '../../../../../../config/utils';
-import { clearDataset } from '../../../../../../context/datasetStateSlice';
-import {
-  layersSelector,
-  mapSelector,
-} from '../../../../../../context/mapStateSlice/selectors';
-import { useSafeTranslation } from '../../../../../../i18n';
-import { refreshBoundaries } from '../../../../../../utils/map-utils';
-import { getUrlKey, useUrlHistory } from '../../../../../../utils/url-utils';
-import { handleChangeOpacity } from '../../../../Legends/handleChangeOpacity';
-import { Extent } from '../../../../Layers/raster-utils';
+import { LayerKey, LayerType } from 'config/types';
+import { LayerDefinitions, ReportsDefinitions } from 'config/utils';
+import { clearDataset } from 'context/datasetStateSlice';
+import { layersSelector, mapSelector } from 'context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { refreshBoundaries } from 'utils/map-utils';
+import { getUrlKey, useUrlHistory } from 'utils/url-utils';
+import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
+import { Extent } from 'components/MapView/Layers/raster-utils';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { checkLayerAvailableDatesAndContinueOrRemove } from 'components/MapView/utils';
+import { LocalError } from 'utils/error-utils';
+import { toggleRemoveLayer } from './utils';
 import LayerDownloadOptions from './LayerDownloadOptions';
 import ExposureAnalysisOption from './ExposureAnalysisOption';
-import { availableDatesSelector } from '../../../../../../context/serverStateSlice';
-import { checkLayerAvailableDatesAndContinueOrRemove } from '../../../../utils';
-import { LocalError } from '../../../../../../utils/error-utils';
-import { toggleRemoveLayer } from './utils';
 
 const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   const {
@@ -248,7 +245,13 @@ const SwitchItem = memo(({ classes, layer, extent }: SwitchItemProps) => {
   ]);
 
   const renderedExposureAnalysisOption = useMemo(() => {
-    if (!exposure) {
+    // find if there are reports with the specific layer id in the reports.json
+    const foundReports = Object.keys(ReportsDefinitions).filter(
+      reportDefinitionKey => {
+        return ReportsDefinitions[reportDefinitionKey].layerId === layer.id;
+      },
+    );
+    if (!exposure || !foundReports.length) {
       return null;
     }
     return (

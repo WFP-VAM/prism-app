@@ -49,7 +49,7 @@ const ReportDocLegend = memo(({ theme, title, definition }: LegendProps) => {
   const renderedDefinitions = useMemo(() => {
     return definition.map(item => {
       return (
-        <View key={item.value} style={styles.legendContent}>
+        <View key={item.value as string} style={styles.legendContent}>
           <View style={item.style} />
           <Text style={[styles.legendText]}>{item.value}</Text>
         </View>

@@ -1,4 +1,4 @@
-import { LayerKey } from '../config/types';
+import { LayerKey } from 'config/types';
 
 export type AnalysisParams = {
   analysisBaselineLayerId?: LayerKey;

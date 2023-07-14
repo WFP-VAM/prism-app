@@ -15,15 +15,12 @@ import {
   Typography,
 } from '@material-ui/core';
 import { orderBy } from 'lodash';
-import { useSafeTranslation } from '../../../../../i18n';
-import { ChartConfig } from '../../../../../config/types';
-import {
-  TableData,
-  TableRowType,
-} from '../../../../../context/tableStateSlice';
-import Chart from '../../../../Common/Chart';
-import LoadingBlinkingDots from '../../../../Common/LoadingBlinkingDots';
-import { getTableCellVal } from '../../../../../utils/data-utils';
+import { useSafeTranslation } from 'i18n';
+import { ChartConfig } from 'config/types';
+import { TableData, TableRowType } from 'context/tableStateSlice';
+import Chart from 'components/Common/Chart';
+import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import { getTableCellVal } from 'utils/data-utils';
 
 const DataTable = memo(
   ({
@@ -211,7 +208,7 @@ const DataTable = memo(
             count={rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
-            onChangePage={handleChangePage}
+            onPageChange={handleChangePage}
             onChangeRowsPerPage={handleChangeRowsPerPage}
             labelRowsPerPage={t('Rows Per Page')}
             // Temporary manual translation before we upgrade to MUI 5.

@@ -14,16 +14,15 @@ import React, { useState, memo, useMemo, useCallback } from 'react';
 
 import { createGetLegendGraphicUrl } from 'prism-common';
 import { useSelector } from 'react-redux';
-import { LayerType } from '../../../config/types';
 import {
   analysisResultOpacitySelector,
   analysisResultSelector,
   isAnalysisLayerActiveSelector,
-} from '../../../context/analysisResultStateSlice';
-
-import { BaselineLayerResult } from '../../../utils/analysis-utils';
-import { Extent } from '../Layers/raster-utils';
-import { useSafeTranslation } from '../../../i18n';
+} from 'context/analysisResultStateSlice';
+import { LayerType } from 'config/types';
+import { BaselineLayerResult } from 'utils/analysis-utils';
+import { useSafeTranslation } from 'i18n';
+import { Extent } from 'components/MapView/Layers/raster-utils';
 
 import AnalysisDownloadButton from './AnalysisDownloadButton';
 import LegendItem from './LegendItem';

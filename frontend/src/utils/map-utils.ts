@@ -1,7 +1,7 @@
 import { AnyLayer, AnySourceData, Map as MapBoxMap } from 'mapbox-gl';
-import { LayerKey, BoundaryLayerProps, LayerType } from '../config/types';
-import { getDisplayBoundaryLayers } from '../config/utils';
-import { addLayer, removeLayer } from '../context/mapStateSlice';
+import { LayerKey, BoundaryLayerProps, LayerType } from 'config/types';
+import { getDisplayBoundaryLayers } from 'config/utils';
+import { addLayer, removeLayer } from 'context/mapStateSlice';
 
 // fixes the issue that property 'source' is not guaranteed to exist on type 'AnyLayer'
 // because 'CustomLayerInterface' does not specify a 'source' property

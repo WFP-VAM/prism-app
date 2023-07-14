@@ -19,16 +19,16 @@ import { ArrowBack } from '@material-ui/icons';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { snakeCase } from 'lodash';
 import moment from 'moment';
-import { useSafeTranslation } from '../../../i18n';
-import { mapSelector } from '../../../context/mapStateSlice/selectors';
+import { useSafeTranslation } from 'i18n';
+import { mapSelector } from 'context/mapStateSlice/selectors';
 import {
   analysisResultSelector,
   TableRow as AnalysisTableRow,
-} from '../../../context/analysisResultStateSlice';
-import { Column, ExposedPopulationResult } from '../../../utils/analysis-utils';
+} from 'context/analysisResultStateSlice';
+import { Column, ExposedPopulationResult } from 'utils/analysis-utils';
+import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
+import { ReportType } from 'config/types';
 import ReportDoc from './reportDoc';
-import { ReportType } from './types';
-import LoadingBlinkingDots from '../LoadingBlinkingDots';
 
 type Format = 'png' | 'jpeg';
 
@@ -36,7 +36,7 @@ const ReportDialog = memo(
   ({
     classes,
     open,
-    reportType,
+    reportConfig,
     handleClose,
     tableData,
     columns,
@@ -50,7 +50,7 @@ const ReportDialog = memo(
       analysisResultSelector,
     ) as ExposedPopulationResult;
 
-    const eventDate = useMemo(() => {
+    const reportDate = useMemo(() => {
       return analysisResult?.date
         ? moment(new Date(analysisResult?.date)).format('YYYY-MM-DD')
         : '';
@@ -106,14 +106,9 @@ const ReportDialog = memo(
               t={t}
               exposureLegendDefinition={analysisResult?.legend ?? []}
               theme={theme}
-              reportType={reportType}
-              tableName="Population Exposure"
               tableShowTotal
-              eventName={
-                reportType === ReportType.Storm
-                  ? `Storm Report (${eventDate})`
-                  : `Flood Report (${eventDate})`
-              }
+              reportTitle={`${t(reportConfig.title)} ${reportDate}`}
+              reportConfig={reportConfig}
               mapImage={mapImage}
               tableData={tableData}
               columns={columns}
@@ -124,9 +119,9 @@ const ReportDialog = memo(
     }, [
       analysisResult,
       columns,
-      eventDate,
       mapImage,
-      reportType,
+      reportConfig,
+      reportDate,
       t,
       tableData,
       theme,
@@ -177,14 +172,9 @@ const ReportDialog = memo(
                 t={t}
                 exposureLegendDefinition={analysisResult?.legend ?? []}
                 theme={theme}
-                reportType={reportType}
-                tableName="Population Exposure"
+                reportTitle={`${t(reportConfig.title)} ${reportDate}`}
+                reportConfig={reportConfig}
                 tableShowTotal
-                eventName={
-                  reportType === ReportType.Storm
-                    ? `Storm Report (${eventDate})`
-                    : `Flood Report (${eventDate})`
-                }
                 mapImage={mapImage}
                 tableData={tableData}
                 columns={columns}
@@ -200,22 +190,21 @@ const ReportDialog = memo(
       analysisResult,
       classes.actionButton,
       columns,
-      eventDate,
       getPDFName,
       mapImage,
       renderedLoadingButtonText,
-      reportType,
+      reportConfig,
+      reportDate,
       t,
       tableData,
       theme,
     ]);
 
-    // The report type text
-    const reportTypeText = useMemo(() => {
-      return reportType === ReportType.Storm
-        ? 'Storm impact Report'
-        : 'Flood Report';
-    }, [reportType]);
+    const renderedSignatureText = useMemo(() => {
+      return reportConfig?.signatureText
+        ? t(reportConfig.signatureText)
+        : t('PRISM automated report');
+    }, [reportConfig, t]);
 
     return (
       <Dialog
@@ -234,7 +223,7 @@ const ReportDialog = memo(
             >
               <ArrowBack />
             </IconButton>
-            <span className={classes.titleText}>{t(reportTypeText)}</span>
+            <span className={classes.titleText}>{t(reportConfig.title)}</span>
           </div>
         </DialogTitle>
         <DialogContent
@@ -248,9 +237,7 @@ const ReportDialog = memo(
           {renderedPdfViewer}
         </DialogContent>
         <DialogActions className={classes.actions}>
-          <span className={classes.signature}>
-            {t('P R I S M automated report')}
-          </span>
+          <span className={classes.signature}>{renderedSignatureText}</span>
           {renderedDownloadPdfButton}
         </DialogActions>
       </Dialog>
@@ -312,7 +299,7 @@ const styles = (theme: Theme) =>
 
 export interface ReportProps extends WithStyles<typeof styles> {
   open: boolean;
-  reportType: ReportType;
+  reportConfig: ReportType;
   handleClose: () => void;
   tableData: AnalysisTableRow[];
   columns: Column[];

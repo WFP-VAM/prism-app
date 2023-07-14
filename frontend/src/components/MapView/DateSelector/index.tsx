@@ -21,18 +21,18 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Draggable, { DraggableEvent } from 'react-draggable';
 import { useDispatch, useSelector } from 'react-redux';
-import { ReactComponent as TickSvg } from './tick.svg';
-import { DateRangeType } from '../../../config/types';
-import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
-import { addNotification } from '../../../context/notificationStateSlice';
-import { moment, useSafeTranslation } from '../../../i18n';
-import { datesAreEqualWithoutTime } from '../../../utils/date-utils';
+import { DateRangeType } from 'config/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { addNotification } from 'context/notificationStateSlice';
+import { moment, useSafeTranslation } from 'i18n';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 import {
   DEFAULT_DATE_FORMAT,
   MONTH_FIRST_DATE_FORMAT,
   MONTH_ONLY_DATE_FORMAT,
-} from '../../../utils/name-utils';
-import { useUrlHistory } from '../../../utils/url-utils';
+} from 'utils/name-utils';
+import { useUrlHistory } from 'utils/url-utils';
+import { ReactComponent as TickSvg } from './tick.svg';
 import DateSelectorInput from './DateSelectorInput';
 import TimelineItems from './TimelineItems';
 import {
@@ -322,7 +322,7 @@ const DateSelector = memo(
         <Grid
           container
           alignItems="center"
-          justify="center"
+          justifyContent="center"
           className={classes.datePickerContainer}
         >
           {/* Mobile */}

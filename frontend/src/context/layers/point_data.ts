@@ -1,17 +1,13 @@
 import GeoJSON from 'geojson';
 import moment from 'moment';
-import type { LazyLoader } from './layer-data';
-import {
-  PointDataLayerProps,
-  PointDataLoader,
-  PointData,
-} from '../../config/types';
-import { DEFAULT_DATE_FORMAT } from '../../utils/name-utils';
-import { fetchEWSData } from '../../utils/ews-utils';
+import { PointDataLayerProps, PointDataLoader, PointData } from 'config/types';
+import { DEFAULT_DATE_FORMAT } from 'utils/name-utils';
+import { fetchEWSData } from 'utils/ews-utils';
+import { fetchACLEDIncidents } from 'utils/acled-utils';
+import { queryParamsToString } from 'utils/url-utils';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { getAdminLevelDataLayerData } from './admin_level_data';
-import { fetchACLEDIncidents } from '../../utils/acled-utils';
-import { queryParamsToString } from '../../utils/url-utils';
-import { fetchWithTimeout } from '../../utils/fetch-with-timeout';
+import type { LazyLoader } from './layer-data';
 
 declare module 'geojson' {
   export const version: string;

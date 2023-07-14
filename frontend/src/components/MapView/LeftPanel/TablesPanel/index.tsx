@@ -20,17 +20,17 @@ import {
   MenuItemType,
   PanelSize,
   TableType,
-} from '../../../../config/types';
-import { useSafeTranslation } from '../../../../i18n';
+} from 'config/types';
+import { useSafeTranslation } from 'i18n';
 import {
   getCurrentData as getTableData,
   getCurrentDefinition as getTableDefinition,
   getIsShowing as getTableIsShowing,
   isLoading as tableLoading,
   loadTable,
-} from '../../../../context/tableStateSlice';
+} from 'context/tableStateSlice';
+import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import TablesActions from './TablesActions';
-import { leftPanelTabValueSelector } from '../../../../context/leftPanelStateSlice';
 import DataTable from './DataTable';
 
 const tabIndex = 3;

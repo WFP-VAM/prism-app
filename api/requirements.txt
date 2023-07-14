@@ -1,24 +1,24 @@
 boto3==1.26.26
 cachetools==5.2.0
-fastapi==0.79.0
+fastapi==0.95.2
 Fiona==1.8.22
 greenlet==1.1.2
 gunicorn==20.1.0
 odc-geo==0.3.2
-odc-stac==0.3.3
-pystac-client==0.5.1
-pystac==1.6.1
+odc-stac==0.3.6
+pystac-client==0.7.2
+pystac==1.8.1
 rasterstats==0.17.0
-requests==2.27.1
+requests==2.31.0
 Shapely==1.8.2
 uvicorn[standard]==0.18.2
 # Used by `make test` only:
 mock==4.0.3
 # to get email validation
 pydantic[email]==1.9.2
-pytest==7.1.2
+pytest==7.4.0
 pytest-cov==3.0.0
-schemathesis==3.16.5
+schemathesis==3.19.5
 # Used by `make lint` only:
 black==22.6.0
 isort==5.10.1
