@@ -2,7 +2,12 @@ import React, { memo, useMemo, useCallback, useState } from 'react';
 import { IconButton, Menu, MenuItem, Tooltip } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { useSafeTranslation } from 'i18n';
-import { downloadToFile } from 'components/MapView/utils';
+import {
+  downloadToFile,
+  getExposureAnalysisColumnsToRender,
+  getExposureAnalysisTableData,
+  getExposureAnalysisTableDataRowsToRender,
+} from 'components/MapView/utils';
 import {
   BaselineLayerResult,
   downloadCSVFromTableData,
@@ -11,6 +16,15 @@ import {
   PolygonAnalysisResult,
   useAnalysisTableColumns,
 } from 'utils/analysis-utils';
+import { snakeCase } from 'lodash';
+import { useSelector } from 'react-redux';
+import {
+  exposureAnalysisResultSortByKeySelector,
+  exposureAnalysisResultSortOrderSelector,
+  getCurrentDefinition,
+  TableRow,
+} from 'context/analysisResultStateSlice';
+import { getExposureAnalysisCsvData } from 'utils/csv-utils';
 
 const AnalysisLayerSwitchItemDownloadOptions = memo(
   ({
@@ -26,18 +40,31 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
 
     const { translatedColumns } = useAnalysisTableColumns(analysisData);
 
+    const exposureAnalysisResultSortByKey = useSelector(
+      exposureAnalysisResultSortByKeySelector,
+    );
+    const exposureAnalysisResultSortOrder = useSelector(
+      exposureAnalysisResultSortOrderSelector,
+    );
+    const analysisDefinition = useSelector(getCurrentDefinition);
+
+    const exposureAnalysisTableData = getExposureAnalysisTableData(
+      analysisData?.tableData as TableRow[],
+      exposureAnalysisResultSortByKey,
+      exposureAnalysisResultSortOrder,
+    );
+    const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
+      translatedColumns,
+    );
+    const exposureAnalysisTableRowsToRender = getExposureAnalysisTableDataRowsToRender(
+      translatedColumns,
+      exposureAnalysisTableData,
+    );
+
     const { t } = useSafeTranslation();
 
     const featureCollection = useMemo(() => {
       return analysisData?.featureCollection;
-    }, [analysisData]);
-
-    const doesLayerAcceptCSVDownload = useMemo(() => {
-      return (
-        analysisData &&
-        (analysisData instanceof BaselineLayerResult ||
-          analysisData instanceof PolygonAnalysisResult)
-      );
     }, [analysisData]);
 
     const handleDownloadMenuClose = useCallback(() => {
@@ -90,11 +117,23 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
     }, [analysisData, analysisDate, t]);
 
     const handleDownloadCsv = useCallback((): void => {
-      if (
-        // Explicit condition for type narrowing
-        !analysisData ||
-        analysisData instanceof ExposedPopulationResult
-      ) {
+      if (!analysisData) {
+        return;
+      }
+      if (analysisData instanceof ExposedPopulationResult) {
+        downloadToFile(
+          {
+            content: getExposureAnalysisCsvData(
+              exposureAnalysisColumnsToRender,
+              exposureAnalysisTableRowsToRender,
+            ),
+            isUrl: false,
+          },
+          `${snakeCase(analysisDefinition?.id)}_${snakeCase(
+            analysisDefinition?.legendText,
+          )}`,
+          'text/csv',
+        );
         return;
       }
       downloadCSVFromTableData(
@@ -107,8 +146,11 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
     }, [
       analysisData,
       analysisDate,
+      analysisDefinition,
       analysisResultSortByKey,
       analysisResultSortOrder,
+      exposureAnalysisColumnsToRender,
+      exposureAnalysisTableRowsToRender,
       translatedColumns,
     ]);
 
@@ -127,15 +169,12 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
     }, [analysisData, featureCollection, fileName]);
 
     const renderedDownloadAsCSVMenuItem = useMemo(() => {
-      if (!doesLayerAcceptCSVDownload) {
-        return null;
-      }
       return (
         <MenuItem key="download-as-csv" onClick={handleDownloadCsv}>
           {t('Download as CSV')}
         </MenuItem>
       );
-    }, [doesLayerAcceptCSVDownload, handleDownloadCsv, t]);
+    }, [handleDownloadCsv, t]);
 
     return (
       <>

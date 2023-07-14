@@ -4,6 +4,10 @@ import {
   analysisResultSelector,
   analysisResultSortByKeySelector,
   analysisResultSortOrderSelector,
+  exposureAnalysisResultSortByKeySelector,
+  exposureAnalysisResultSortOrderSelector,
+  getCurrentDefinition,
+  TableRow,
 } from 'context/analysisResultStateSlice';
 import { useSafeTranslation } from 'i18n';
 import {
@@ -15,7 +19,14 @@ import {
   useAnalysisTableColumns,
 } from 'utils/analysis-utils';
 import MultiOptionsButton from 'components/Common/MultiOptionsButton';
-import { downloadToFile } from 'components/MapView/utils';
+import {
+  downloadToFile,
+  getExposureAnalysisColumnsToRender,
+  getExposureAnalysisTableData,
+  getExposureAnalysisTableDataRowsToRender,
+} from 'components/MapView/utils';
+import { snakeCase } from 'lodash';
+import { getExposureAnalysisCsvData } from 'utils/csv-utils';
 
 function AnalysisDownloadButton() {
   const analysisResult = useSelector(analysisResultSelector);
@@ -23,18 +34,31 @@ function AnalysisDownloadButton() {
   const analysisResultSortOrder = useSelector(analysisResultSortOrderSelector);
   const { translatedColumns } = useAnalysisTableColumns(analysisResult);
 
+  const exposureAnalysisResultSortByKey = useSelector(
+    exposureAnalysisResultSortByKeySelector,
+  );
+  const exposureAnalysisResultSortOrder = useSelector(
+    exposureAnalysisResultSortOrderSelector,
+  );
+  const analysisDefinition = useSelector(getCurrentDefinition);
+
+  const exposureAnalysisTableData = getExposureAnalysisTableData(
+    analysisResult?.tableData as TableRow[],
+    exposureAnalysisResultSortByKey,
+    exposureAnalysisResultSortOrder,
+  );
+  const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
+    translatedColumns,
+  );
+  const exposureAnalysisTableRowsToRender = getExposureAnalysisTableDataRowsToRender(
+    translatedColumns,
+    exposureAnalysisTableData,
+  );
+
   const { t } = useSafeTranslation();
 
   const featureCollection = useMemo(() => {
     return analysisResult?.featureCollection;
-  }, [analysisResult]);
-
-  const doesLayerAcceptCSVDownload = useMemo(() => {
-    return (
-      analysisResult &&
-      (analysisResult instanceof BaselineLayerResult ||
-        analysisResult instanceof PolygonAnalysisResult)
-    );
   }, [analysisResult]);
 
   const analysisDate = useMemo(() => {
@@ -70,11 +94,23 @@ function AnalysisDownloadButton() {
   }, [featureCollection, fileName]);
 
   const handleAnalysisDownloadCsv = useCallback((): void => {
-    if (
-      // Explicit condition for type narrowing
-      !analysisResult ||
-      analysisResult instanceof ExposedPopulationResult
-    ) {
+    if (!analysisResult) {
+      return;
+    }
+    if (analysisResult instanceof ExposedPopulationResult) {
+      downloadToFile(
+        {
+          content: getExposureAnalysisCsvData(
+            exposureAnalysisColumnsToRender,
+            exposureAnalysisTableRowsToRender,
+          ),
+          isUrl: false,
+        },
+        `${snakeCase(analysisDefinition?.id)}_${snakeCase(
+          analysisDefinition?.legendText,
+        )}`,
+        'text/csv',
+      );
       return;
     }
     downloadCSVFromTableData(
@@ -86,9 +122,12 @@ function AnalysisDownloadButton() {
     );
   }, [
     analysisDate,
+    analysisDefinition,
     analysisResult,
     analysisResultSortByKey,
     analysisResultSortOrder,
+    exposureAnalysisColumnsToRender,
+    exposureAnalysisTableRowsToRender,
     translatedColumns,
   ]);
 
@@ -100,14 +139,10 @@ function AnalysisDownloadButton() {
           label: 'GEOJSON',
           onClick: handleAnalysisDownloadGeoJson,
         },
-        ...(doesLayerAcceptCSVDownload
-          ? [
-              {
-                label: 'CSV',
-                onClick: handleAnalysisDownloadCsv,
-              },
-            ]
-          : []),
+        {
+          label: 'CSV',
+          onClick: handleAnalysisDownloadCsv,
+        },
       ]}
     />
   );
