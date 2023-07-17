@@ -18,6 +18,7 @@ services:
     # Infinite loop, to keep it alive, for debugging
     # command: bash -c "while true; do echo 'sleeping...' && sleep 10; done"
     #
+    network_mode: "none"
   testdb:
     image: kartoza/postgis:12.1
     environment:
