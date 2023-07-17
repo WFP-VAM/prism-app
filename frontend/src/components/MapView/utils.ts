@@ -194,13 +194,14 @@ export const formatIntersectPercentageAttribute = (
     [key: string]: any;
   },
 ) => {
+  /* eslint-disable fp/no-mutation */
   let transformedData = data;
   if (parseInt(data.intersect_percentage as string, 10) >= 0) {
     transformedData = {
       ...transformedData,
       intersect_percentage: `${(
         100 * ((data.intersect_percentage as number) || 0)
-      ).toFixed(2)}%`,
+      ).toFixed(2)} %`,
     };
   }
   if (data.stats_intersect_area) {
@@ -208,9 +209,10 @@ export const formatIntersectPercentageAttribute = (
       ...transformedData,
       stats_intersect_area: `${(data.stats_intersect_area as number).toFixed(
         2,
-      )}%`,
+      )} km²`,
     };
   }
+  /* eslint-enable fp/no-mutation */
   return transformedData;
 };
 

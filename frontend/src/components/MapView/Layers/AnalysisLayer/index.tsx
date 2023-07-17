@@ -121,7 +121,7 @@ function AnalysisLayer({ before }: { before?: string }) {
           if (statisticKey === AggregationOperations['Area exposed']) {
             dispatch(
               addPopupData({
-                'Flood extent (intersect_area)': {
+                'Flood extent (Area exposed in sq km)': {
                   data: getRoundedData(
                     formattedProperties.stats_intersect_area || null,
                     t,

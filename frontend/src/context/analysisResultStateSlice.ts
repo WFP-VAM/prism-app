@@ -664,6 +664,7 @@ export const requestAndStoreAnalysis = createAsyncThunk<
     | 'stats_intersect_area'
   )[] = [statistic];
   if (statistic === AggregationOperations['Area exposed']) {
+    /* eslint-disable-next-line fp/no-mutating-methods */
     enrichedStatistics.push('stats_intersect_area');
   }
 

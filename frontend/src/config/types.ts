@@ -504,6 +504,18 @@ export enum AggregationOperations {
   'Area exposed' = 'intersect_percentage',
 }
 
+export const aggregationOperationsToDisplay: Record<
+  AggregationOperations,
+  string
+> = {
+  [AggregationOperations.Max]: 'Max',
+  [AggregationOperations.Mean]: 'Mean',
+  [AggregationOperations.Median]: 'Median',
+  [AggregationOperations.Min]: 'Min',
+  [AggregationOperations.Sum]: 'Sum',
+  [AggregationOperations['Area exposed']]: 'Percent of area exposed',
+};
+
 export enum ExposureOperator {
   LOWER_THAN = '<',
   LOWER_THAN_EQUAL = '<=',

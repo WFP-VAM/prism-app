@@ -2,7 +2,6 @@ import {
   flatten,
   get,
   has,
-  invert,
   isNull,
   isNumber,
   isString,
@@ -24,6 +23,7 @@ import {
   AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
+  aggregationOperationsToDisplay,
   AsyncReturnType,
   BoundaryLayerProps,
   ImpactLayerProps,
@@ -561,6 +561,7 @@ export function createLegendFromFeatureArray(
 
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
+    /* eslint-disable fp/no-mutation */
     let formattedValue;
 
     if (statistic === AggregationOperations['Area exposed']) {
@@ -568,6 +569,7 @@ export function createLegendFromFeatureArray(
     } else {
       formattedValue = `(${Math.round(value).toLocaleString('en-US')})`;
     }
+    /* eslint-enable fp/no-mutation */
 
     return {
       value,
@@ -675,8 +677,12 @@ export class BaselineLayerResult {
 
   getStatTitle(t?: i18nTranslator): string {
     return t
-      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
-      : `${this.getHazardLayer().title} (${this.statistic})`;
+      ? `${t(this.getHazardLayer().title)} (${t(
+          aggregationOperationsToDisplay[this.statistic],
+        )})`
+      : `${this.getHazardLayer().title} (${
+          aggregationOperationsToDisplay[this.statistic]
+        })`;
   }
 
   getTitle(t?: i18nTranslator): string | undefined {
@@ -722,15 +728,16 @@ export function getAnalysisTableColumns(
     },
     {
       id: statistic,
-      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
+      label: aggregationOperationsToDisplay[statistic],
       format: (value: string | number) => getRoundedData(value as number),
     },
   ];
 
   if (statistic === AggregationOperations['Area exposed']) {
+    /* eslint-disable-next-line fp/no-mutating-methods */
     analysisTableColumns.push({
       id: 'stats_intersect_area',
-      label: 'Intersect Area',
+      label: 'Area exposed in sq km',
     });
   }
 
