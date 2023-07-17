@@ -123,7 +123,11 @@ function ExposureAnalysisActions({
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
       )}
-      <Button className={bottomButton} onClick={handleToggleReport(true)}>
+      <Button
+        id="create-report"
+        className={bottomButton}
+        onClick={handleToggleReport(true)}
+      >
         <Typography variant="body2">{t('Create Report')}</Typography>
       </Button>
       <ReportDialog

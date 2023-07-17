@@ -160,31 +160,63 @@ const ReportDialog = memo(
       [documentIsLoading, t],
     );
 
+    const API_URL = 'http://localhost:80/report/';
+
     const renderedDownloadPdfButton = useMemo(() => {
       if (!mapImage) {
         return null;
       }
       return (
-        <Button className={classes.actionButton} variant="outlined">
-          <PDFDownloadLink
-            document={
-              <ReportDoc
-                t={t}
-                exposureLegendDefinition={analysisResult?.legend ?? []}
-                theme={theme}
-                reportTitle={`${t(reportConfig.title)} ${reportDate}`}
-                reportConfig={reportConfig}
-                tableShowTotal
-                mapImage={mapImage}
-                tableData={tableData}
-                columns={columns}
-              />
-            }
-            fileName={getPDFName}
+        <>
+          <Button
+            className={classes.actionButton}
+            variant="outlined"
+            onClick={async () => {
+              const response = await fetch(
+                `${API_URL}?url=${window.location.href}&language=en`,
+              );
+              const blob = await response.blob();
+              // Create a temporary URL for the blob
+              const url = window.URL.createObjectURL(new Blob([blob]));
+
+              // Create a link element
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', 'file.pdf');
+
+              // Append the link to the document body and click it to initiate download
+              document.body.appendChild(link);
+              link.click();
+
+              // Clean up the temporary URL and link element
+              document.body.removeChild(link);
+              window.URL.revokeObjectURL(url);
+            }}
           >
-            {renderedLoadingButtonText}
-          </PDFDownloadLink>
-        </Button>
+            Faster Download
+          </Button>
+
+          <Button id="download-action">
+            <PDFDownloadLink
+              document={
+                <ReportDoc
+                  t={t}
+                  exposureLegendDefinition={analysisResult?.legend ?? []}
+                  theme={theme}
+                  reportTitle={`${t(reportConfig.title)} ${reportDate}`}
+                  reportConfig={reportConfig}
+                  tableShowTotal
+                  mapImage={mapImage}
+                  tableData={tableData}
+                  columns={columns}
+                />
+              }
+              fileName={getPDFName}
+            >
+              {renderedLoadingButtonText}
+            </PDFDownloadLink>
+          </Button>
+        </>
       );
     }, [
       analysisResult,
