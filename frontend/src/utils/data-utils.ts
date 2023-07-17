@@ -17,9 +17,11 @@ export function getRoundedData(
   }
   let result = '';
   if (isNumber(data)) {
+    // eslint-disable-next-line fp/no-mutation
     result = parseFloat(data.toFixed(decimals)).toLocaleString();
   } else {
     // TODO - investigate why we received string 'null' values in data.
+    // eslint-disable-next-line fp/no-mutation
     result = data && data !== 'null' ? data : 'No Data';
   }
   return `${t ? t(result) : result} ${unit || ''}`;
