@@ -22,7 +22,7 @@ from app.validation import validate_intersect_parameter
 from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 
@@ -164,8 +164,9 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 
 
 @app.get("/report")
-def get_report(url: str, language: str):
-    return playwright_download_report(url, str)
+async def get_report(url: str, language: str):
+    tmp_file_path: str = await playwright_download_report(url, language)
+    return FileResponse(tmp_file_path)
 
 
 @app.get("/acled")
