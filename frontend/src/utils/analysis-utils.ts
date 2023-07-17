@@ -563,9 +563,8 @@ export function createLegendFromFeatureArray(
     const value = Math.min(breakpoint, maxNum);
     /* eslint-disable fp/no-mutation */
     let formattedValue;
-
     if (statistic === AggregationOperations['Area exposed']) {
-      formattedValue = `${(value * 100).toFixed(2)}%`;
+      formattedValue = `${(value * 100).toFixed(2)} %`;
     } else {
       formattedValue = `(${Math.round(value).toLocaleString('en-US')})`;
     }
@@ -721,7 +720,7 @@ export function getAnalysisTableColumns(
   }
   const { statistic } = analysisResult;
 
-  const analysisTableColumns = [
+  const analysisTableColumns: Column[] = [
     {
       id: withLocalName ? 'localName' : 'name',
       label: 'Name',
@@ -729,7 +728,8 @@ export function getAnalysisTableColumns(
     {
       id: statistic,
       label: aggregationOperationsToDisplay[statistic],
-      format: (value: string | number) => getRoundedData(value as number),
+      format: (value: string | number) =>
+        getRoundedData(100 * (Number(value) || 0), undefined, 2, '%'),
     },
   ];
 
@@ -738,6 +738,8 @@ export function getAnalysisTableColumns(
     analysisTableColumns.push({
       id: 'stats_intersect_area',
       label: 'Area exposed in sq km',
+      format: (value: string | number) =>
+        getRoundedData(value as number, undefined, 2, 'km²'),
     });
   }
 

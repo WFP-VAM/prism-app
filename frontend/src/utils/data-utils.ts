@@ -10,16 +10,19 @@ export function getRoundedData(
   data: number | string | null,
   t?: i18nTranslator,
   decimals: number = 3,
+  unit?: string,
 ): string {
   if (isNumber(data) && Number.isNaN(data)) {
     return '-';
   }
+  let result = '';
   if (isNumber(data)) {
-    return parseFloat(data.toFixed(decimals)).toLocaleString();
+    result = parseFloat(data.toFixed(decimals)).toLocaleString();
+  } else {
+    // TODO - investigate why we received string 'null' values in data.
+    result = data && data !== 'null' ? data : 'No Data';
   }
-  // TODO - investigate why we received string 'null' values in data.
-  const dataString = data && data !== 'null' ? data : 'No Data';
-  return t ? t(dataString) : dataString;
+  return `${t ? t(result) : result} ${unit || ''}`;
 }
 
 export function getTableCellVal(

@@ -16,7 +16,6 @@ import { TableData } from 'context/tableStateSlice';
 import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
 import { addNotification } from 'context/notificationStateSlice';
 import { LocalError } from 'utils/error-utils';
-import { TableRow } from 'context/analysisResultStateSlice';
 import { getExtent } from './Layers/raster-utils';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
@@ -189,37 +188,25 @@ export const filterActiveLayers = (
 export const formatIntersectPercentageAttribute = (
   /* eslint-disable camelcase */
   data: {
-    intersect_percentage?: number | string;
-    stats_intersect_area?: number | string;
+    intersect_percentage?: string | number;
+    stats_intersect_area?: string | number;
     [key: string]: any;
   },
 ) => {
   /* eslint-disable fp/no-mutation */
   let transformedData = data;
-  if (parseInt(data.intersect_percentage as string, 10) >= 0) {
+  if (parseInt((data.intersect_percentage as unknown) as string, 10) >= 0) {
     transformedData = {
       ...transformedData,
-      intersect_percentage: `${(
-        100 * ((data.intersect_percentage as number) || 0)
-      ).toFixed(2)} %`,
+      intersect_percentage: 100 * ((data.intersect_percentage as number) || 0),
     };
   }
   if (data.stats_intersect_area) {
     transformedData = {
       ...transformedData,
-      stats_intersect_area: `${(data.stats_intersect_area as number).toFixed(
-        2,
-      )} km²`,
+      stats_intersect_area: data.stats_intersect_area,
     };
   }
   /* eslint-enable fp/no-mutation */
   return transformedData;
 };
-
-/**
- *
- * Format table data analysis
- * Convert intersect_percent [0-1] value to [0%-100%] value
- */
-export const formatTableData = (tableData: TableRow[]): TableRow[] =>
-  tableData.map(data => formatIntersectPercentageAttribute(data) as TableRow);

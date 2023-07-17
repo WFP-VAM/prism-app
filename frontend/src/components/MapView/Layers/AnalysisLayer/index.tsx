@@ -109,11 +109,11 @@ function AnalysisLayer({ before }: { before?: string }) {
           dispatch(
             addPopupData({
               [analysisData.getStatTitle(t)]: {
-                data: getRoundedData(
+                data: `${getRoundedData(
                   formattedProperties[statisticKey],
                   t,
                   precision,
-                ),
+                )} %`,
                 coordinates,
               },
             }),
@@ -121,12 +121,12 @@ function AnalysisLayer({ before }: { before?: string }) {
           if (statisticKey === AggregationOperations['Area exposed']) {
             dispatch(
               addPopupData({
-                'Flood extent (Area exposed in sq km)': {
-                  data: getRoundedData(
+                'Flood extent (Area exposed in km²)': {
+                  data: `${getRoundedData(
                     formattedProperties.stats_intersect_area || null,
                     t,
                     precision,
-                  ),
+                  )} km²`,
                   coordinates,
                 },
               }),

@@ -102,7 +102,6 @@ import {
   setTabValue,
 } from 'context/leftPanelStateSlice';
 import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
-import { formatTableData } from 'components/MapView/utils';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
@@ -292,7 +291,7 @@ const AnalysisPanel = memo(
     // The analysis table data
     const analysisTableData = useMemo(() => {
       return orderBy(
-        analysisResult?.tableData && formatTableData(analysisResult?.tableData),
+        analysisResult?.tableData,
         analysisSortColumn,
         analysisIsAscending ? 'asc' : 'desc',
       );
@@ -673,7 +672,7 @@ const AnalysisPanel = memo(
     // The exposure analysis table data
     const exposureAnalysisTableData = useMemo(() => {
       return orderBy(
-        analysisResult?.tableData && formatTableData(analysisResult.tableData),
+        analysisResult?.tableData,
         exposureAnalysisSortColumn,
         exposureAnalysisIsAscending ? 'asc' : 'desc',
       );
