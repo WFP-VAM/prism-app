@@ -129,6 +129,7 @@ const LeftPanelTabs = memo(
               horizontal: 'left',
               vertical: 'top',
             }}
+            overlap="rectangular"
             badgeContent={layersBadgeContent}
             color="secondary"
           >
