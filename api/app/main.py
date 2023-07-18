@@ -4,7 +4,7 @@ import functools
 import json
 import logging
 from datetime import date
-from typing import Any, Optional
+from typing import Annotated, Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
 import rasterio  # type: ignore
@@ -231,7 +231,7 @@ def get_kobo_forms(
     filters: Optional[str] = None,
     beginDateTime=Query(default="2000-01-01"),
     endDateTime: Optional[str] = None,
-    user_info: UserInfoModel = Depends(validate_user),
+    user_info: UserInfoModel = Annotated[UserInfoModel, Depends(validate_user)],
 ):
     """Get all form responses."""
     begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)
