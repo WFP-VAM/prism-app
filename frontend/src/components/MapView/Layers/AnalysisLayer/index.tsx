@@ -9,7 +9,7 @@ import {
   isAnalysisLayerActiveSelector,
 } from 'context/analysisResultStateSlice';
 import { legendToStops } from 'components/MapView/Layers/layer-utils';
-import { AggregationOperations, LegendDefinition } from 'config/types';
+import { AggregationOperations, LegendDefinition, units } from 'config/types';
 import {
   BaselineLayerResult,
   ExposedPopulationResult,
@@ -113,7 +113,7 @@ function AnalysisLayer({ before }: { before?: string }) {
                   formattedProperties[statisticKey],
                   t,
                   precision,
-                )} %`,
+                )} ${units[statisticKey] || ''}`,
                 coordinates,
               },
             }),
@@ -126,7 +126,7 @@ function AnalysisLayer({ before }: { before?: string }) {
                     formattedProperties.stats_intersect_area || null,
                     t,
                     precision,
-                  )} km²`,
+                  )} ${units.stats_intersect_area}`,
                   coordinates,
                 },
               }),

@@ -3,6 +3,7 @@ import { TFunction as _TFunction } from 'i18next';
 import { isNumber } from 'lodash';
 import { TableRowType } from 'context/tableStateSlice';
 import { i18nTranslator } from 'i18n';
+import { AggregationOperations, units } from 'config/types';
 
 export type TFunction = _TFunction;
 
@@ -10,20 +11,24 @@ export function getRoundedData(
   data: number | string | null,
   t?: i18nTranslator,
   decimals: number = 3,
-  unit?: string,
+  statistic?: AggregationOperations | string,
 ): string {
-  if (isNumber(data) && Number.isNaN(data)) {
+  /* eslint-disable fp/no-mutation */
+  let result = data;
+  if (isNumber(result) && Number.isNaN(result)) {
     return '-';
   }
-  let result = '';
-  if (isNumber(data)) {
-    // eslint-disable-next-line fp/no-mutation
-    result = parseFloat(data.toFixed(decimals)).toLocaleString();
+  if (statistic === AggregationOperations['Area exposed']) {
+    result = 100 * (Number(result) || 0);
+  }
+  if (isNumber(result)) {
+    result = parseFloat(result.toFixed(decimals)).toLocaleString();
   } else {
     // TODO - investigate why we received string 'null' values in data.
-    // eslint-disable-next-line fp/no-mutation
-    result = data && data !== 'null' ? data : 'No Data';
+    result = result && result !== 'null' ? result : 'No Data';
+    /* eslint-enable fp/no-mutation */
   }
+  const unit = statistic && units[statistic];
   return `${t ? t(result) : result} ${unit || ''}`;
 }
 

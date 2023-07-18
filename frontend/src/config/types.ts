@@ -504,6 +504,11 @@ export enum AggregationOperations {
   'Area exposed' = 'intersect_percentage',
 }
 
+export const units: Partial<Record<AggregationOperations | string, string>> = {
+  intersect_percentage: '%',
+  stats_intersect_area: 'km²',
+};
+
 export const aggregationOperationsToDisplay: Record<
   AggregationOperations,
   string
