@@ -222,40 +222,40 @@ def get_kobo_form_dates(
     return get_form_dates(koboUrl, formId, datetimeField, filters)
 
 
-# @app.get("/kobo/forms")
-# def get_kobo_forms(
-#     formId: str,
-#     datetimeField: str,
-#     koboUrl: HttpUrl,
-#     geomField: Optional[str] = None,
-#     filters: Optional[str] = None,
-#     beginDateTime=Query(default="2000-01-01"),
-#     endDateTime: Optional[str] = None,
-#     user_info: UserInfoModel = Depends(validate_user),
-# ):
-#     """Get all form responses."""
-#     begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)
+@app.get("/kobo/forms")
+def get_kobo_forms(
+    formId: str,
+    datetimeField: str,
+    koboUrl: HttpUrl,
+    geomField: Optional[str] = None,
+    filters: Optional[str] = None,
+    beginDateTime=Query(default="2000-01-01"),
+    endDateTime: Optional[str] = None,
+    user_info: UserInfoModel = Depends(validate_user),
+):
+    """Get all form responses."""
+    begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)
 
-#     if begin_datetime > end_datetime:
-#         raise HTTPException(
-#             status_code=400, detail="beginDateTime value must be lower than endDateTime"
-#         )
+    if begin_datetime > end_datetime:
+        raise HTTPException(
+            status_code=400, detail="beginDateTime value must be lower than endDateTime"
+        )
 
-#     # Extract province access information
-#     province = user_info.access.get("province", None)
+    # Extract province access information
+    province = user_info.access.get("province", None)
 
-#     form_responses = get_form_responses(
-#         begin_datetime,
-#         end_datetime,
-#         formId,
-#         datetimeField,
-#         geomField,
-#         filters,
-#         koboUrl,
-#         province,
-#     )
+    form_responses = get_form_responses(
+        begin_datetime,
+        end_datetime,
+        formId,
+        datetimeField,
+        geomField,
+        filters,
+        koboUrl,
+        province,
+    )
 
-#     return form_responses
+    return form_responses
 
 
 @app.get(
