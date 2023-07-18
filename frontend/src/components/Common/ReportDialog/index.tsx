@@ -103,7 +103,6 @@ const ReportDialog = memo(
             showToolbar={false}
           >
             <ReportDoc
-              t={t}
               exposureLegendDefinition={analysisResult?.legend ?? []}
               theme={theme}
               tableShowTotal
@@ -169,7 +168,6 @@ const ReportDialog = memo(
           <PDFDownloadLink
             document={
               <ReportDoc
-                t={t}
                 exposureLegendDefinition={analysisResult?.legend ?? []}
                 theme={theme}
                 reportTitle={`${t(reportConfig.title)} ${reportDate}`}
