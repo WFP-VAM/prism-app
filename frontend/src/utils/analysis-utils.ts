@@ -739,7 +739,7 @@ export function getAnalysisTableColumns(
       id: 'stats_intersect_area',
       label: 'Area exposed in sq km',
       format: (value: string | number) =>
-        getRoundedData(value as number, undefined, 2, statistic),
+        getRoundedData(value as number, undefined, 2, 'stats_intersect_area'),
     });
   }
 
