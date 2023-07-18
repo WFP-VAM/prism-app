@@ -1,30 +1,48 @@
+# import asyncio
+from typing import Optional
+from urllib.parse import parse_qs, urlparse
+
 from playwright.async_api import async_playwright
 
 
-async def playwright_download_report(url: str, language: str) -> str:
+async def playwright_download_report(url: str, language: Optional[str]) -> str:
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
-        page.set_default_timeout(50000)
+
+        page.set_default_timeout(30000)
         await page.goto(url)
 
-        dropdown1_selector = await page.query_selector('div[id="Flood"]')
-        await dropdown1_selector.click()
+        parsed_url = urlparse(url)
+        query_params = parse_qs(parsed_url.query)
+        layerIdParam = query_params.get("hazardLayerIds", [""])[0]
 
-        dropdown2_selector = await page.query_selector('p:has-text("Flood Monitoring")')
-        await dropdown2_selector.click()
+        layer_chip_selector = 'span[class="MuiChip-label"]'
+        await page.wait_for_selector(layer_chip_selector, state="visible")
 
-        exposure_analysis_selector = await page.query_selector(
-            'button[title="Exposure Analysis"]'
+        dropdown_level_one_selector = await page.query_selector(layer_chip_selector)
+        await dropdown_level_one_selector.click()
+
+        dropdown_level_two_selectors = await page.query_selector_all(
+            layer_chip_selector
         )
-        await exposure_analysis_selector.click()
+        await dropdown_level_two_selectors[1].click()
+
+        selected_exposure_analysis_button = await page.query_selector(
+            'button[id="' + layerIdParam + '"]'
+        )
+        await selected_exposure_analysis_button.click()
 
         create_report_selector_query = 'button[id="create-report"]'
         await page.wait_for_selector(create_report_selector_query, state="visible")
 
-        language_selector = await page.query_selector('p:has-text("' + language + '")')
-        await language_selector.click()
-        # await page.wait_for_timeout(30000)
+        if language and language is not "en":
+            language_selector = await page.query_selector(
+                'p:has-text("' + language + '")'
+            )
+            await language_selector.click()
+            await page.wait_for_timeout(30000)
+
         # await page.pdf(path="page.pdf")
         create_report_selector = await page.query_selector(create_report_selector_query)
         await create_report_selector.click()
@@ -46,7 +64,7 @@ async def playwright_download_report(url: str, language: str) -> str:
 
 # asyncio.run(
 #     playwright_download_report(
-#         "http://localhost:3000/?hazardLayerIds=flood_extent&date=2023-07-07", "kh"
+#         "http://localhost:3000/?hazardLayerIds=flood_extent&date=2023-06-09", None
 #     )
 # )
 
