@@ -1,3 +1,6 @@
+build:
+	docker compose build api
+
 api:
 	docker-compose -f docker-compose.yml -f docker-compose.develop.yml up
 
