@@ -10,7 +10,7 @@ from urllib.parse import ParseResult, urlencode, urlunparse
 import rasterio  # type: ignore
 from app.auth import validate_user
 from app.caching import FilePath, cache_file, cache_geojson
-from app.database.alert_model import AlertModel
+from app.database.alert_model import AlchemyEncoder, AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
 from app.hdc import get_hdc_stats
@@ -164,7 +164,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 
 
 @app.get("/report")
-async def get_report(url: str, language: str):
+async def get_report(url: str, language: str) -> FileResponse:
     tmp_file_path: str = await playwright_download_report(url, language)
     return FileResponse(tmp_file_path)
 
