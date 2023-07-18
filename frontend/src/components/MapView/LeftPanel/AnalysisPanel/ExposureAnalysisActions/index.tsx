@@ -113,6 +113,8 @@ function ExposureAnalysisActions({
     };
   };
 
+  const API_URL = 'http://localhost:80/report/';
+
   return (
     <>
       <Button className={analysisButton} onClick={clearAnalysis}>
@@ -128,7 +130,35 @@ function ExposureAnalysisActions({
         className={bottomButton}
         onClick={handleToggleReport(true)}
       >
-        <Typography variant="body2">{t('Create Report')}</Typography>
+        <Typography variant="body2">{t('Preview Report')}</Typography>
+      </Button>
+      <Button
+        className={bottomButton}
+        onClick={async () => {
+          const response = await fetch(
+            `${API_URL}?url=${encodeURIComponent(
+              window.location.href,
+            )}&language=en`,
+          );
+          const blob = await response.blob();
+          // Create a temporary URL for the blob
+          const url = window.URL.createObjectURL(new Blob([blob]));
+
+          // Create a link element
+          const link = document.createElement('a');
+          link.setAttribute('href', url);
+          link.setAttribute('download', 'report.pdf');
+
+          // Append the link to the document body and click it to initiate download
+          document.body.appendChild(link);
+          link.click();
+
+          // Clean up the temporary URL and link element
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        }}
+      >
+        <Typography variant="body2">Download Report</Typography>
       </Button>
       <ReportDialog
         open={openReport}
