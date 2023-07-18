@@ -181,7 +181,7 @@ const ReportDialog = memo(
 
               // Create a link element
               const link = document.createElement('a');
-              link.href = url;
+              link.setAttribute('href', url);
               link.setAttribute('download', 'file.pdf');
 
               // Append the link to the document body and click it to initiate download
