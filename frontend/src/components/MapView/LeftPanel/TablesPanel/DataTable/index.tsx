@@ -209,7 +209,7 @@ const DataTable = memo(
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
             labelRowsPerPage={t('Rows Per Page')}
             // Temporary manual translation before we upgrade to MUI 5.
             labelDisplayedRows={({ from, to, count }) => {

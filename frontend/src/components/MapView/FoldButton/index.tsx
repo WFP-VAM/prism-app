@@ -69,6 +69,7 @@ const FoldButton = ({
             horizontal: 'right',
             vertical: 'top',
           }}
+          overlap="rectangular"
           badgeContent={badgeContent}
           color="secondary"
         >
