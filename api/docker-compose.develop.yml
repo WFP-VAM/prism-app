@@ -1,16 +1,16 @@
-version: '3'
+version: "3"
 
 services:
   api:
     volumes:
       - ./app:/app
     ports:
-      - '80:80'
+      - "80:80"
     build:
       context: ./
       dockerfile: ./Dockerfile
     environment:
-      - 'RUN=uvicorn app.main:app --host 0.0.0.0 --port 80'
+      - "RUN=uvicorn app.main:app --host 0.0.0.0 --port 80"
       - POSTGRES_HOST=host.docker.internal
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres

@@ -18,10 +18,10 @@ api-typecheck:
 	docker-compose run --no-deps api bash -c "mypy ."
 
 test-services:
-	docker-compose -f docker-compose.yml -f docker-compose.develop.yml -f docker-compose.test.yml up -d
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
 
 api-test: test-services
-	docker-compose -f docker-compose.yml -f docker-compose.develop.yml -f docker-compose.test.yml run api bash -c "pytest -s tests"
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "pytest -s tests"
 
 api-add-users:
 	docker-compose -f docker-compose.yml -f docker-compose.develop.yml run api bash -c "python scripts/add_users.py"
