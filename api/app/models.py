@@ -140,3 +140,6 @@ class UserInfoPydanticModel(BaseModel):
     email: str | None
     details: str
     created_at: datetime
+
+    class Config:
+        orm_mode = True

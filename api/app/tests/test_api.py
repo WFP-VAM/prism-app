@@ -51,8 +51,7 @@ def add_test_users():
     add_users()
 
 
-# schema = schemathesis.from_asgi("/openapi.json", app)
-schema = None
+schema = schemathesis.from_asgi("/openapi.json", app)
 
 # install all available compatibility fixups between schemathesis and fastapi
 # see https://schemathesis.readthedocs.io/en/stable/compatibility.html
