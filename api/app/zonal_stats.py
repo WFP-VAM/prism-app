@@ -394,8 +394,9 @@ def calculate_stats(
                 float(clean_stats_properties[f"{safe_prefix}count"])
                 + clean_stats_properties[f"{safe_prefix}nodata"]
             )
+            # filter out regions with 0 overlap
             if total == 0:
-                intersect_percentage = Percentage(0.0)
+                continue
             else:
                 intersect_percentage = Percentage(
                     clean_stats_properties[f"{safe_prefix}intersect_pixels"] / total
