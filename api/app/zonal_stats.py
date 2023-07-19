@@ -394,9 +394,8 @@ def calculate_stats(
                 float(clean_stats_properties[f"{safe_prefix}count"])
                 + clean_stats_properties[f"{safe_prefix}nodata"]
             )
-            # filter out regions with 0 overlap
             if total == 0:
-                continue
+                intersect_percentage = Percentage(0.0)
             else:
                 intersect_percentage = Percentage(
                     clean_stats_properties[f"{safe_prefix}intersect_pixels"] / total
@@ -408,6 +407,9 @@ def calculate_stats(
             }
 
         # merge properties back at the proper level
+        # filter out properties that have no intersection
+        if intersect_comparison is not None and total == 0:
+            continue
         if not geojson_out:
             clean_results.append(clean_stats_properties)
         else:
