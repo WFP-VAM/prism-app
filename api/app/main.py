@@ -27,7 +27,7 @@ from pydantic import EmailStr, HttpUrl, ValidationError
 from requests import get
 
 from .geotiff_from_stac_api import get_geotiff
-from .models import AlertsModel, StatsModel
+from .models import AlertsModel, StatsModel, UserInfoPydanticModel
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -227,12 +227,12 @@ def get_kobo_forms(
     formId: str,
     datetimeField: str,
     koboUrl: HttpUrl,
+    user_info: Annotated[UserInfoPydanticModel, Depends(validate_user)],
     geomField: Optional[str] = None,
     filters: Optional[str] = None,
     beginDateTime=Query(default="2000-01-01"),
     endDateTime: Optional[str] = None,
-    user_info: UserInfoModel = Annotated[UserInfoModel, Depends(validate_user)],
-):
+) -> list[dict]:
     """Get all form responses."""
     begin_datetime, end_datetime = parse_datetime_params(beginDateTime, endDateTime)
 
