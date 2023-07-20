@@ -11,8 +11,9 @@ import {
 import { isEmpty, isEqual, sum } from 'lodash';
 import { PopupData, tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
+import { TFunction } from 'utils/data-utils';
 
-const generatePhasePopulationTable = (popupData: PopupData) => {
+const generatePhasePopulationTable = (popupData: PopupData, t: TFunction) => {
   const phasePopulations: Record<string, number> = Object.entries(
     popupData,
   ).reduce((acc: any, cur: any) => {
@@ -39,8 +40,11 @@ const generatePhasePopulationTable = (popupData: PopupData) => {
   const phasePopulationTable = (
     <div>
       <Typography display="inline" variant="h4" color="inherit">
-        Ref. period: {popupData['Reference period start']?.data} to{' '}
+        {t('Ref. period')}: {popupData['Reference period start']?.data} -{' '}
         {popupData['Reference period end']?.data}
+      </Typography>
+      <Typography variant="h4" color="inherit">
+        {t('Population and percentage by phase classification')}
       </Typography>
       <table
         style={{
@@ -88,7 +92,7 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
   }, [i18n, popup.locationLocalName, popup.locationName]);
 
   const renderedPopupContent = useMemo(() => {
-    const phasePopulationTable = generatePhasePopulationTable(popupData);
+    const phasePopulationTable = generatePhasePopulationTable(popupData, t);
     // filter out popupData where key value contains "Population in phase "
     const popupDataWithoutPhasePopulations: PopupData = Object.entries(
       popupData,
