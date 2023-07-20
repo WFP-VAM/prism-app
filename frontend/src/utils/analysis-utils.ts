@@ -600,6 +600,10 @@ export class ExposedPopulationResult {
     return this.getTitle(t);
   };
 
+  getHazardLayer = (): WMSLayerProps => {
+    return this.getHazardLayer();
+  };
+
   constructor(
     tableData: TableRow[],
     featureCollection: FeatureCollection,
