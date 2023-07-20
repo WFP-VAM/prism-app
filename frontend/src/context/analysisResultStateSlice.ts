@@ -85,6 +85,8 @@ type AnalysisResultState = {
   opacity: number;
   analysisResultDataSortByKey: Column['id'];
   analysisResultDataSortOrder: 'asc' | 'desc';
+  exposureAnalysisResultDataSortByKey: Column['id'];
+  exposureAnalysisResultDataSortOrder: 'asc' | 'desc';
 };
 
 export type TableRow = {
@@ -105,6 +107,8 @@ const initialState: AnalysisResultState = {
   isExposureLoading: false,
   analysisResultDataSortByKey: 'name',
   analysisResultDataSortOrder: 'asc',
+  exposureAnalysisResultDataSortByKey: 'name',
+  exposureAnalysisResultDataSortOrder: 'asc',
   opacity: 0.5,
 };
 
@@ -816,6 +820,20 @@ export const analysisResultSlice = createSlice({
       ...state,
       analysisResultDataSortOrder: payload,
     }),
+    setExposureAnalysisResultSortByKey: (
+      state,
+      { payload }: PayloadAction<string | number>,
+    ) => ({
+      ...state,
+      exposureAnalysisResultDataSortByKey: payload,
+    }),
+    setExposureAnalysisResultSortOrder: (
+      state,
+      { payload }: PayloadAction<'asc' | 'desc'>,
+    ) => ({
+      ...state,
+      exposureAnalysisResultDataSortOrder: payload,
+    }),
     setAnalysisLayerOpacity: (state, { payload }: PayloadAction<number>) => ({
       ...state,
       opacity: payload,
@@ -968,6 +986,16 @@ export const analysisResultSortOrderSelector = (
   state: RootState,
 ): 'asc' | 'desc' => state.analysisResultState.analysisResultDataSortOrder;
 
+export const exposureAnalysisResultSortByKeySelector = (
+  state: RootState,
+): string | number =>
+  state.analysisResultState.exposureAnalysisResultDataSortByKey;
+
+export const exposureAnalysisResultSortOrderSelector = (
+  state: RootState,
+): 'asc' | 'desc' =>
+  state.analysisResultState.exposureAnalysisResultDataSortOrder;
+
 export const exposureLayerIdSelector = (state: RootState): string =>
   state.analysisResultState.exposureLayerId;
 
@@ -997,6 +1025,8 @@ export const {
   clearAnalysisResult,
   setAnalysisResultSortByKey,
   setAnalysisResultSortOrder,
+  setExposureAnalysisResultSortByKey,
+  setExposureAnalysisResultSortOrder,
 } = analysisResultSlice.actions;
 
 export default analysisResultSlice.reducer;

@@ -15,3 +15,14 @@ export function castObjectsArrayToCsv<T extends { [key: string]: any }>(
     }),
   ].join('\n');
 }
+
+export const getExposureAnalysisCsvData = (
+  exposureAnalysisColumnsToRender: { [x: string]: string | number },
+  exposureAnalysisTableRowsToRender: { [x: string]: string | number }[],
+) => {
+  return [exposureAnalysisColumnsToRender, ...exposureAnalysisTableRowsToRender]
+    .map(analysisCsvItem => {
+      return Object.values(analysisCsvItem);
+    })
+    .join('\n');
+};
