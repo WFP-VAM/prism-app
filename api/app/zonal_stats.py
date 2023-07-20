@@ -271,6 +271,8 @@ def calculate_stats(
     prefix: Optional[str] = "stats_",
     geojson_out: bool = False,
     wfs_response: Optional[WfsResponse] = None,
+    # WARNING - currently, when intersect_comparison is used,
+    # regions with 0 overlap are excluded from the results.
     intersect_comparison: Optional[tuple] = None,
     mask_geotiff: Optional[str] = None,
     mask_calc_expr: Optional[str] = None,
@@ -373,7 +375,7 @@ def calculate_stats(
             status_code=500, detail="An error occured calculating statistics."
         ) from error
     # This Exception is raised by rasterstats library when feature collection as 0 elements within the feature array.
-    except ValueError as error:
+    except ValueError:
         stats_results = []
 
     # cleanup data and remove nan values
