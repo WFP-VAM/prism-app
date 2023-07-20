@@ -10,7 +10,7 @@ export type TFunction = _TFunction;
 export function getRoundedData(
   data: number | string | null,
   t?: i18nTranslator,
-  decimals: number = 3,
+  decimals: number = 2,
   statistic?: AggregationOperations | string,
 ): string {
   /* eslint-disable fp/no-mutation */
