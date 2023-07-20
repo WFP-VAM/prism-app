@@ -407,8 +407,9 @@ def calculate_stats(
             }
 
         # merge properties back at the proper level
-        # filter out properties that have no intersection
-        if intersect_comparison is not None and total == 0:
+        # and filter out properties that have "no" intersection
+        # by setting a limit at 0.005 (0.5%).
+        if intersect_comparison is not None and intersect_percentage < 0.005:
             continue
         if not geojson_out:
             clean_results.append(clean_stats_properties)
