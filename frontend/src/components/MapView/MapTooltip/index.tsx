@@ -12,8 +12,17 @@ import { isEmpty, isEqual, sum } from 'lodash';
 import { PopupData, tooltipSelector } from 'context/tooltipStateSlice';
 import { isEnglishLanguageSelected, useSafeTranslation } from 'i18n';
 import { TFunction } from 'utils/data-utils';
+import { ClassNameMap } from '@material-ui/styles';
 
-const generatePhasePopulationTable = (popupData: PopupData, t: TFunction) => {
+// This function prepares phasePopulationTable for rendering and is specific
+// to the data structure of the phase classification layer.
+// Note - this is a bit hacky for now and will likely need to be revamped if we
+// encounter other complex needs for tooltips.
+const generatePhasePopulationTable = (
+  popupData: PopupData,
+  t: TFunction,
+  classes: ClassNameMap,
+) => {
   const phasePopulations: Record<string, number> = Object.entries(
     popupData,
   ).reduce((acc: any, cur: any) => {
@@ -46,27 +55,18 @@ const generatePhasePopulationTable = (popupData: PopupData, t: TFunction) => {
       <Typography variant="h4" color="inherit">
         {t('Population and percentage by phase classification')}
       </Typography>
-      <table
-        style={{
-          tableLayout: 'fixed',
-          borderCollapse: 'collapse',
-          width: '100%',
-          borderWidth: '1px;',
-          borderColor: 'inherit',
-          borderStyle: 'solid',
-        }}
-      >
-        <tr style={{ border: '1px solid white' }}>
+      <table className={classes.phasePopulationTable}>
+        <tr className={classes.phasePopulationTableRow}>
           {Object.keys(phasePopulations).map((phaseName: string) => (
             <th>{t(phaseName)}</th>
           ))}
         </tr>
-        <tr style={{ border: '1px solid white' }}>
+        <tr className={classes.phasePopulationTableRow}>
           {Object.values(phasePopulations).map((populationInPhase: number) => (
             <th>{populationInPhase.toLocaleString()}</th>
           ))}
         </tr>
-        <tr style={{ border: '1px solid white' }}>
+        <tr className={classes.phasePopulationTableRow}>
           {Object.values(phasePopulations).map((populationInPhase: number) => (
             <th>
               {Math.round((populationInPhase / phasePopulations.Total) * 100)}%
@@ -94,7 +94,11 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
   }, [i18n, popup.locationLocalName, popup.locationName]);
 
   const renderedPopupContent = useMemo(() => {
-    const phasePopulationTable = generatePhasePopulationTable(popupData, t);
+    const phasePopulationTable = generatePhasePopulationTable(
+      popupData,
+      t,
+      classes,
+    );
     // filter out popupData where key value contains "Population in phase "
     const popupDataWithoutPhasePopulations: PopupData = Object.entries(
       popupData,
@@ -147,7 +151,7 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
           </Fragment>
         );
       });
-  }, [classes.text, popup.coordinates, popupData, t]);
+  }, [classes, popup.coordinates, popupData, t]);
 
   const renderedPopupLoader = useMemo(() => {
     if (!popup.wmsGetFeatureInfoLoading) {
@@ -182,6 +186,18 @@ const MapTooltip = memo(({ classes }: TooltipProps) => {
 
 const styles = () =>
   createStyles({
+    phasePopulationTable: {
+      tableLayout: 'fixed',
+      borderCollapse: 'collapse',
+      width: '100%',
+      borderWidth: '1px;',
+      borderColor: 'inherit',
+      borderStyle: 'solid',
+      border: '1px solid white',
+    },
+    phasePopulationTableRow: {
+      border: '1px solid white',
+    },
     title: {
       fontWeight: 600,
       marginBottom: '8px',
