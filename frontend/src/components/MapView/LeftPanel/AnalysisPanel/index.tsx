@@ -678,7 +678,7 @@ const AnalysisPanel = memo(
 
     // The exposure analysis table data
     const exposureAnalysisTableData = getExposureAnalysisTableData(
-      analysisResult?.tableData as TableRow[],
+      (analysisResult?.tableData || []) as TableRow[],
       exposureAnalysisSortColumn,
       exposureAnalysisIsAscending ? 'asc' : 'desc',
     );

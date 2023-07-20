@@ -49,7 +49,7 @@ const AnalysisLayerSwitchItemDownloadOptions = memo(
     const analysisDefinition = useSelector(getCurrentDefinition);
 
     const exposureAnalysisTableData = getExposureAnalysisTableData(
-      analysisData?.tableData as TableRow[],
+      (analysisData?.tableData || []) as TableRow[],
       exposureAnalysisResultSortByKey,
       exposureAnalysisResultSortOrder,
     );

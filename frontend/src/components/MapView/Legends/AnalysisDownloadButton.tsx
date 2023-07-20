@@ -43,7 +43,7 @@ function AnalysisDownloadButton() {
   const analysisDefinition = useSelector(getCurrentDefinition);
 
   const exposureAnalysisTableData = getExposureAnalysisTableData(
-    analysisResult?.tableData as TableRow[],
+    (analysisResult?.tableData || []) as TableRow[],
     exposureAnalysisResultSortByKey,
     exposureAnalysisResultSortOrder,
   );
