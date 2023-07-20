@@ -536,6 +536,11 @@ const AnalysisPanel = memo(
       updateHistory,
     ]);
 
+    const scaleThreshold = (threshold: number) =>
+      statistic === AggregationOperations['Area exposed']
+        ? threshold / 100
+        : threshold;
+
     const runAnalyser = useCallback(async () => {
       if (preSelectedBaselineLayer) {
         setPreviousBaselineId(preSelectedBaselineLayer.id);
@@ -614,8 +619,8 @@ const AnalysisPanel = memo(
           exposureValue,
           extent,
           threshold: {
-            above: parseFloat(aboveThreshold) || undefined,
-            below: parseFloat(belowThreshold) || undefined,
+            above: scaleThreshold(parseFloat(aboveThreshold)) || undefined,
+            below: scaleThreshold(parseFloat(belowThreshold)) || undefined,
           },
         };
 
@@ -632,28 +637,29 @@ const AnalysisPanel = memo(
         dispatch(requestAndStoreAnalysis(params));
       }
     }, [
-      aboveThreshold,
-      activateUniqueBoundary,
-      adminLevel,
+      preSelectedBaselineLayer,
+      analysisResult,
+      extent,
+      selectedHazardLayer,
+      hazardDataType,
+      removeKeyFromUrl,
+      dispatch,
+      clearAnalysis,
+      startDate,
+      endDate,
       adminLevelLayer,
       adminLevelLayerData,
-      analysisResult,
-      baselineLayerId,
-      belowThreshold,
-      clearAnalysis,
-      dispatch,
-      endDate,
-      extent,
-      hazardDataType,
-      hazardLayerId,
-      preSelectedBaselineLayer,
-      removeKeyFromUrl,
-      selectedDate,
-      selectedHazardLayer,
-      startDate,
-      statistic,
+      adminLevel,
+      activateUniqueBoundary,
       updateAnalysisParams,
+      hazardLayerId,
+      statistic,
+      selectedDate,
+      baselineLayerId,
       exposureValue,
+      scaleThreshold,
+      aboveThreshold,
+      belowThreshold,
     ]);
 
     // handler of changing exposure analysis sort order
@@ -905,7 +911,7 @@ const AnalysisPanel = memo(
             <Typography className={classes.colorBlack} variant="body2">
               {t('Threshold')}
             </Typography>
-            <div style={{ display: 'flex' }}>
+            <div className={classes.rowInputContainer}>
               <TextField
                 id="outlined-number-low"
                 error={!!thresholdError}
@@ -926,6 +932,11 @@ const AnalysisPanel = memo(
                 type="number"
                 variant="outlined"
               />
+              {statistic === AggregationOperations['Area exposed'] && (
+                <Typography className={classes.colorBlack} variant="body1">
+                  %
+                </Typography>
+              )}
             </div>
           </div>
           <div className={classes.datePickerContainer}>
@@ -970,6 +981,7 @@ const AnalysisPanel = memo(
       classes.exposureValueContainer,
       classes.exposureValueOptionsInputContainer,
       classes.exposureValueOptionsSelect,
+      classes.rowInputContainer,
       classes.numberField,
       classes.datePickerContainer,
       classes.calendarPopper,
@@ -1327,7 +1339,6 @@ const styles = (theme: Theme) =>
     },
     numberField: {
       paddingRight: '10px',
-      marginTop: '10px',
       maxWidth: '140px',
       '& .MuiInputBase-root': {
         color: 'black',
@@ -1335,6 +1346,11 @@ const styles = (theme: Theme) =>
       '& label': {
         color: '#333333',
       },
+    },
+    rowInputContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      marginTop: '10px',
     },
     calendarPopper: {
       zIndex: 3,
