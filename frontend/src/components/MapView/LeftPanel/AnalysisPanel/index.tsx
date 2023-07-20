@@ -57,6 +57,11 @@ import {
   analysisResultSortOrderSelector,
   setAnalysisResultSortByKey,
   setAnalysisResultSortOrder,
+  exposureAnalysisResultSortByKeySelector,
+  exposureAnalysisResultSortOrderSelector,
+  setExposureAnalysisResultSortByKey,
+  setExposureAnalysisResultSortOrder,
+  TableRow,
 } from 'context/analysisResultStateSlice';
 import {
   AdminLevelType,
@@ -102,6 +107,7 @@ import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
+import { getExposureAnalysisTableData } from '../../utils';
 
 const tabIndex = 2;
 
@@ -132,6 +138,12 @@ const AnalysisPanel = memo(
     const analysisResultSortOrder = useSelector(
       analysisResultSortOrderSelector,
     );
+    const exposureAnalysisResultSortByKey = useSelector(
+      exposureAnalysisResultSortByKeySelector,
+    );
+    const exposureAnalysisResultSortOrder = useSelector(
+      exposureAnalysisResultSortOrderSelector,
+    );
     const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
     const isExposureAnalysisLoading = useSelector(
       isExposureAnalysisLoadingSelector,
@@ -142,12 +154,12 @@ const AnalysisPanel = memo(
     const [
       exposureAnalysisSortColumn,
       setExposureAnalysisSortColumn,
-    ] = useState<Column['id']>('name');
+    ] = useState<Column['id']>(exposureAnalysisResultSortByKey);
     // exposure analysis sort order
     const [
       exposureAnalysisIsAscending,
       setExposureAnalysisIsAscending,
-    ] = useState(true);
+    ] = useState(exposureAnalysisResultSortOrder === 'asc');
     // defaults the sort column of every other analysis table to 'name'
     const [analysisSortColumn, setAnalysisSortColumn] = useState<Column['id']>(
       analysisResultSortByKey,
@@ -654,22 +666,22 @@ const AnalysisPanel = memo(
         );
         setExposureAnalysisSortColumn(newExposureAnalysisSortColumn);
         setExposureAnalysisIsAscending(newIsAsc);
+        // set the sort by key of exposure analysis data in redux
+        dispatch(
+          setExposureAnalysisResultSortByKey(newExposureAnalysisSortColumn),
+        );
+        // set the sort order of exposure analysis result data in redux
+        dispatch(setExposureAnalysisResultSortOrder(newIsAsc ? 'asc' : 'desc'));
       },
-      [exposureAnalysisIsAscending, exposureAnalysisSortColumn],
+      [dispatch, exposureAnalysisIsAscending, exposureAnalysisSortColumn],
     );
 
     // The exposure analysis table data
-    const exposureAnalysisTableData = useMemo(() => {
-      return orderBy(
-        analysisResult?.tableData,
-        exposureAnalysisSortColumn,
-        exposureAnalysisIsAscending ? 'asc' : 'desc',
-      );
-    }, [
-      analysisResult,
-      exposureAnalysisIsAscending,
+    const exposureAnalysisTableData = getExposureAnalysisTableData(
+      (analysisResult?.tableData || []) as TableRow[],
       exposureAnalysisSortColumn,
-    ]);
+      exposureAnalysisIsAscending ? 'asc' : 'desc',
+    );
 
     const renderedExposureAnalysisLoading = useMemo(() => {
       if (!isExposureAnalysisLoading) {
