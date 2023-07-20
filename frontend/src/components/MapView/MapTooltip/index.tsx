@@ -57,18 +57,20 @@ const generatePhasePopulationTable = (popupData: PopupData, t: TFunction) => {
         }}
       >
         <tr style={{ border: '1px solid white' }}>
-          {Object.keys(phasePopulations).map((phase: string) => (
-            <th>{phase}</th>
+          {Object.keys(phasePopulations).map((phaseName: string) => (
+            <th>{t(phaseName)}</th>
           ))}
         </tr>
         <tr style={{ border: '1px solid white' }}>
-          {Object.values(phasePopulations).map((phase: number) => (
-            <th>{phase.toLocaleString()}</th>
+          {Object.values(phasePopulations).map((populationInPhase: number) => (
+            <th>{populationInPhase.toLocaleString()}</th>
           ))}
         </tr>
         <tr style={{ border: '1px solid white' }}>
-          {Object.values(phasePopulations).map((phase: number) => (
-            <th>{Math.round((phase / phasePopulations.Total) * 100)}%</th>
+          {Object.values(phasePopulations).map((populationInPhase: number) => (
+            <th>
+              {Math.round((populationInPhase / phasePopulations.Total) * 100)}%
+            </th>
           ))}
         </tr>
       </table>
