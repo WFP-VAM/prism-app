@@ -536,10 +536,13 @@ const AnalysisPanel = memo(
       updateHistory,
     ]);
 
-    const scaleThreshold = (threshold: number) =>
-      statistic === AggregationOperations['Area exposed']
-        ? threshold / 100
-        : threshold;
+    const scaleThreshold = useCallback(
+      (threshold: number) =>
+        statistic === AggregationOperations['Area exposed']
+          ? threshold / 100
+          : threshold,
+      [statistic],
+    );
 
     const runAnalyser = useCallback(async () => {
       if (preSelectedBaselineLayer) {
