@@ -1,6 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import {
   Document,
+  Font,
   Image,
   Page,
   StyleSheet,
@@ -11,20 +12,34 @@ import { Theme } from '@material-ui/core';
 import { TableRow as AnalysisTableRow } from 'context/analysisResultStateSlice';
 import { getLegendItemLabel } from 'components/MapView/utils';
 import { LegendDefinition, ReportType } from 'config/types';
-import { TFunction } from 'utils/data-utils';
 import { Column } from 'utils/analysis-utils';
+import RobotoFont from 'fonts/Roboto-Regular.ttf';
+import KhmerFont from 'fonts/Khmer-Regular.ttf';
+import { useSafeTranslation } from 'i18n';
 import { PDFLegendDefinition } from './types';
 import ReportDocLegend from './ReportDocLegend';
 import ReportDocTable from './ReportDocTable';
+import { getReportFontFamily } from './utils';
 
-const makeStyles = (theme: Theme) =>
+// Register all the fonts necessary
+Font.register({
+  family: 'Roboto',
+  src: RobotoFont,
+});
+
+Font.register({
+  family: 'Khmer',
+  src: KhmerFont,
+});
+
+const makeStyles = (theme: Theme, selectedLanguage: string) =>
   StyleSheet.create({
     page: {
       flexDirection: 'column',
       backgroundColor: '#FFF',
       paddingBottom: 25,
       paddingTop: '1vh',
-      fontFamily: 'Roboto',
+      fontFamily: getReportFontFamily(selectedLanguage),
     },
     section: {
       width: '96vw',
@@ -83,11 +98,12 @@ const ReportDoc = memo(
     reportTitle,
     reportConfig,
     exposureLegendDefinition,
-    t,
     tableData,
     columns,
   }: ReportDocProps) => {
-    const styles = makeStyles(theme);
+    const { t, i18n } = useSafeTranslation();
+
+    const styles = makeStyles(theme, i18n.language);
 
     const date = useMemo(() => {
       return new Date().toUTCString();
@@ -272,7 +288,6 @@ interface ReportDocProps {
   reportConfig: ReportType;
   tableShowTotal: boolean;
   exposureLegendDefinition: LegendDefinition;
-  t: TFunction;
   tableData: AnalysisTableRow[];
   columns: Column[];
 }
