@@ -9,17 +9,21 @@ import {
 } from '@material-ui/core';
 import { snakeCase } from 'lodash';
 import { useSelector } from 'react-redux';
-import { downloadToFile } from 'components/MapView/utils';
+import {
+  downloadToFile,
+  getExposureAnalysisColumnsToRender,
+  getExposureAnalysisTableDataRowsToRender,
+} from 'components/MapView/utils';
 import { useSafeTranslation } from 'i18n';
 import {
   exposureLayerIdSelector,
   getCurrentDefinition,
-  TableRow,
   TableRow as AnalysisTableRow,
 } from 'context/analysisResultStateSlice';
 import ReportDialog from 'components/Common/ReportDialog';
-import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
+import { Column } from 'utils/analysis-utils';
 import { ReportsDefinitions } from 'config/utils';
+import { getExposureAnalysisCsvData } from 'utils/csv-utils';
 
 function ExposureAnalysisActions({
   analysisButton,
@@ -35,24 +39,17 @@ function ExposureAnalysisActions({
 
   const [openReport, setOpenReport] = useState(false);
 
-  const getCellValue = useCallback((value: string | number, column: Column) => {
-    if (column.format && typeof value === 'number') {
-      return quoteAndEscapeCell(column.format(value));
-    }
-    return quoteAndEscapeCell(value);
-  }, []);
-
-  const columnsToRenderCsv = useMemo(() => {
-    return columns.reduce(
-      (acc: { [key: string]: string | number }, column: Column) => {
-        return {
-          ...acc,
-          [column.id]: column.label,
-        };
-      },
-      {},
-    );
-  }, [columns]);
+  const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
+    columns,
+  );
+  const exposureAnalysisTableRowsToRender = getExposureAnalysisTableDataRowsToRender(
+    columns,
+    tableData,
+  );
+  const exposureAnalysisCsvData = getExposureAnalysisCsvData(
+    exposureAnalysisColumnsToRender,
+    exposureAnalysisTableRowsToRender,
+  );
 
   const reportConfig = useMemo(() => {
     // We use find here because exposure reports and layers have 1 - 1 sync.
@@ -67,35 +64,12 @@ function ExposureAnalysisActions({
     return ReportsDefinitions[foundReportKeyBasedOnLayerId as string];
   }, [exposureLayerId]);
 
-  const tableDataRowsToRenderCsv = useMemo(() => {
-    return tableData.map((tableRowData: TableRow) => {
-      return columns.reduce(
-        (acc: { [key: string]: string | number }, column: Column) => {
-          const value = tableRowData[column.id];
-          return {
-            ...acc,
-            [column.id]: getCellValue(value, column),
-          };
-        },
-        {},
-      );
-    });
-  }, [columns, getCellValue, tableData]);
-
-  const analysisCsvData = useMemo(() => {
-    return [columnsToRenderCsv, ...tableDataRowsToRenderCsv]
-      .map(analysisCsvItem => {
-        return Object.values(analysisCsvItem);
-      })
-      .join('\n');
-  }, [columnsToRenderCsv, tableDataRowsToRenderCsv]);
-
   const handleOnDownloadCsv = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
       downloadToFile(
         {
-          content: analysisCsvData,
+          content: exposureAnalysisCsvData,
           isUrl: false,
         },
         `${snakeCase(analysisDefinition?.id)}_${snakeCase(
@@ -104,7 +78,7 @@ function ExposureAnalysisActions({
         'text/csv',
       );
     },
-    [analysisCsvData, analysisDefinition],
+    [analysisDefinition, exposureAnalysisCsvData],
   );
 
   const handleToggleReport = (toggle: boolean) => {
@@ -120,7 +94,7 @@ function ExposureAnalysisActions({
       <Button className={analysisButton} onClick={clearAnalysis}>
         <Typography variant="body2">{t('Clear Analysis')}</Typography>
       </Button>
-      {analysisCsvData && (
+      {exposureAnalysisCsvData && (
         <Button className={bottomButton} onClick={handleOnDownloadCsv}>
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
