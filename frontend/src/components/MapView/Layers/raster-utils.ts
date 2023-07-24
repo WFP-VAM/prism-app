@@ -6,7 +6,7 @@ import * as GeoTIFF from 'geotiff';
 import { Map as MapBoxMap } from 'mapbox-gl';
 import { createGetMapUrl } from 'prism-common';
 import { Dispatch } from 'redux';
-import { DEFAULT_API_URL } from 'utils/constants';
+import { RASTER_API_URL } from 'utils/constants';
 import { fetchWithTimeout } from 'utils/fetch-with-timeout';
 import { LocalError } from 'utils/error-utils';
 import { addNotification } from 'context/notificationStateSlice';
@@ -219,7 +219,7 @@ export async function downloadGeotiff(
       date,
     };
     const response = await fetchWithTimeout(
-      `${DEFAULT_API_URL}/raster_geotiff`,
+      RASTER_API_URL,
       dispatch,
       {
         method: 'POST',
@@ -231,7 +231,7 @@ export async function downloadGeotiff(
         // body data type must match "Content-Type" header
         body: JSON.stringify(body),
       },
-      `Request failed for downloading Geotiff at ${DEFAULT_API_URL}/raster_geotiff`,
+      `Request failed for downloading Geotiff at ${RASTER_API_URL}`,
     );
     const responseJson = await response.json();
 
