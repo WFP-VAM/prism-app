@@ -24,6 +24,7 @@ import ReportDialog from 'components/Common/ReportDialog';
 import { Column } from 'utils/analysis-utils';
 import { ReportsDefinitions } from 'config/utils';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
+import LoadingBlinkingDots from '../../../../Common/LoadingBlinkingDots';
 
 function ExposureAnalysisActions({
   analysisButton,
@@ -38,6 +39,9 @@ function ExposureAnalysisActions({
   const exposureLayerId = useSelector(exposureLayerIdSelector);
 
   const [openReport, setOpenReport] = useState(false);
+  const [downloadReportIsLoading, setDownloadReportIsLoading] = useState(false);
+
+  const API_URL = 'http://localhost:80/report/';
 
   const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
     columns,
@@ -81,13 +85,41 @@ function ExposureAnalysisActions({
     [analysisDefinition, exposureAnalysisCsvData],
   );
 
+  const handleDownloadReport = async () => {
+    setDownloadReportIsLoading(true);
+    try {
+      const response = await fetch(
+        `${API_URL}?url=${encodeURIComponent(
+          window.location.href,
+        )}&language=en`,
+      );
+      const blob = await response.blob();
+      // Create a temporary URL for the blob
+      const url = window.URL.createObjectURL(new Blob([blob]));
+
+      // Create a link element
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'report.pdf');
+
+      // Append the link to the document body and click it to initiate download
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up the temporary URL and link element
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      setDownloadReportIsLoading(false);
+    }
+    setDownloadReportIsLoading(false);
+  };
+
   const handleToggleReport = (toggle: boolean) => {
     return () => {
       setOpenReport(toggle);
     };
   };
-
-  const API_URL = 'http://localhost:80/report/';
 
   return (
     <>
@@ -108,31 +140,11 @@ function ExposureAnalysisActions({
       </Button>
       <Button
         className={bottomButton}
-        onClick={async () => {
-          const response = await fetch(
-            `${API_URL}?url=${encodeURIComponent(
-              window.location.href,
-            )}&language=en`,
-          );
-          const blob = await response.blob();
-          // Create a temporary URL for the blob
-          const url = window.URL.createObjectURL(new Blob([blob]));
-
-          // Create a link element
-          const link = document.createElement('a');
-          link.setAttribute('href', url);
-          link.setAttribute('download', 'report.pdf');
-
-          // Append the link to the document body and click it to initiate download
-          document.body.appendChild(link);
-          link.click();
-
-          // Clean up the temporary URL and link element
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-        }}
+        onClick={handleDownloadReport}
+        disabled={downloadReportIsLoading}
       >
         <Typography variant="body2">Download Report</Typography>
+        {downloadReportIsLoading && <LoadingBlinkingDots />}
       </Button>
       <ReportDialog
         open={openReport}
