@@ -7,10 +7,10 @@ from playwright.async_api import async_playwright
 
 async def playwright_download_report(url: str, language: Optional[str]) -> str:
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        browser = await p.firefox.launch()
         page = await browser.new_page()
 
-        page.set_default_timeout(30000)
+        page.set_default_timeout(50000)
         await page.goto(url)
 
         parsed_url = urlparse(url)
