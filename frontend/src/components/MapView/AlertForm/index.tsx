@@ -21,13 +21,13 @@ import { BoundaryLayerProps, LayerKey, WMSLayerProps } from 'config/types';
 import { getBoundaryLayerSingleton, LayerDefinitions } from 'config/utils';
 import { LayerData } from 'context/layers/layer-data';
 import { layerDataSelector } from 'context/mapStateSlice/selectors';
-import { ALERT_API_URL } from 'constants';
 import { AlertRequest, fetchApiData, getPrismUrl } from 'utils/analysis-utils';
 import LayerDropdown from 'components/MapView/Layers/LayerDropdown';
 import BoundaryDropdown from 'components/MapView/Layers/BoundaryDropdown';
 import { getSelectedBoundaries } from 'context/mapSelectionLayerStateSlice';
 import { addNotification } from 'context/notificationStateSlice';
 import { useSafeTranslation } from 'i18n';
+import { ALERT_API_URL } from 'utils/constants';
 
 // Not fully RFC-compliant, but should filter out obviously-invalid emails.
 // Source: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript

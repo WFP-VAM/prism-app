@@ -52,13 +52,13 @@ import type {
 } from 'context/layers/layer-data';
 import { LayerDefinitions } from 'config/utils';
 import type { TableRow } from 'context/analysisResultStateSlice';
-import { ANALYSIS_API_URL } from 'constants';
 import { isLocalhost } from 'serviceWorker';
 import {
   i18nTranslator,
   isEnglishLanguageSelected,
   useSafeTranslation,
 } from 'i18n';
+import { ANALYSIS_API_URL } from 'utils/constants';
 import { getRoundedData } from './data-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
 import {

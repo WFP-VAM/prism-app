@@ -9,7 +9,7 @@ import {
   getDisplayBoundaryLayers,
 } from 'config/utils';
 import { AdminBoundaryParams } from 'context/datasetStateSlice';
-import { CHART_API_URL } from './constants';
+import { CHART_API_URL } from 'utils/constants';
 
 export function getAdminLevelLayer(
   adminLevel: AdminLevelType = 1,

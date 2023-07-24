@@ -55,10 +55,10 @@ import {
   getBoundaryLayerSingleton,
   LayerDefinitions,
 } from 'config/utils';
-import { ANALYSIS_API_URL } from 'constants';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { fetchWMSLayerAsGeoJSON } from 'utils/server-utils';
 import { isLocalhost } from 'serviceWorker';
+import { ANALYSIS_API_URL } from 'utils/constants';
 import { layerDataSelector } from './mapStateSlice/selectors';
 import { LayerData, LayerDataParams, loadLayerData } from './layers/layer-data';
 import { DataRecord } from './layers/admin_level_data';
