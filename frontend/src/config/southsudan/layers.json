@@ -3066,11 +3066,11 @@
       },
       "event_date": {
         "type": "string",
-        "dataTitle": "Date"
+        "dataTitle": "do_not_display_date"
       },
       "notes": {
         "type": "string",
-        "dataTitle": "Details"
+        "dataTitle": "do_not_display_details"
       }
     }
   },
