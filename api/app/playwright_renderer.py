@@ -1,4 +1,4 @@
-import uuid
+import os
 from typing import Final, Optional
 from urllib.parse import parse_qs, urlparse
 
@@ -18,14 +18,27 @@ PAGE_LANGUAGE_CHANGE_TIMEOUT: Final[int] = 5000
 
 async def playwright_download_report(url: str, language: Optional[str]) -> str:
     language = "en" if language is None else language
+    layerIdParam = extract_layerId_query_param(url)
+    dateParam = extract_layerDate_quer_param(url)
+    report_file_path = (
+        "/cache/reports/report-"
+        + layerIdParam
+        + "-"
+        + language
+        + "-"
+        + dateParam
+        + ".pdf"
+    )
+
+    if os.path.exists(report_file_path):
+        return report_file_path
+
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
 
         page.set_default_timeout(PAGE_TIMEOUT)
         await page.goto(url)
-
-        layerIdParam = extract_layerId_query_param(url)
 
         # Wait for page to be loaded
         await page.wait_for_selector(LAYER_ACCORDION_SELECTOR, state="visible")
@@ -57,16 +70,6 @@ async def playwright_download_report(url: str, language: Optional[str]) -> str:
             await download_report_selector.click()
 
         download = await download_info.value
-        random_uuid = uuid.uuid4()
-        report_file_path = (
-            "./report-"
-            + layerIdParam
-            + "-"
-            + language
-            + "-"
-            + str(random_uuid)
-            + ".pdf"
-        )
 
         await download.save_as(report_file_path)
         await browser.close()
@@ -97,6 +100,13 @@ def extract_layerId_query_param(url) -> str:
     query_params = parse_qs(parsed_url.query)
     layerIdParam = query_params.get("hazardLayerIds", [""])[0]
     return layerIdParam
+
+
+def extract_layerDate_quer_param(url) -> str:
+    parsed_url = urlparse(url)
+    query_params = parse_qs(parsed_url.query)
+    dateParam = query_params.get("date", [""])[0]
+    return dateParam
 
 
 async def toggle_every_visible_dropdown(page) -> None:
