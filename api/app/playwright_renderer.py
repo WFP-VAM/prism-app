@@ -17,6 +17,7 @@ PAGE_LANGUAGE_CHANGE_TIMEOUT: Final[int] = 5000
 
 
 async def playwright_download_report(url: str, language: Optional[str]) -> str:
+    language = "en" if language is None else language
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
