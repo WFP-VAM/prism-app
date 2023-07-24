@@ -2,6 +2,7 @@ import os
 from typing import Final, Optional
 from urllib.parse import parse_qs, urlparse
 
+from app.caching import CACHE_DIRECTORY
 from playwright.async_api import async_playwright
 
 # Html selectors
@@ -18,10 +19,11 @@ PAGE_LANGUAGE_CHANGE_TIMEOUT: Final[int] = 5000
 
 async def playwright_download_report(url: str, language: Optional[str]) -> str:
     language = "en" if language is None else language
-    layerIdParam = extract_layerId_query_param(url)
-    dateParam = extract_layerDate_quer_param(url)
+    layerIdParam = extract_query_param(url, "hazardLayerIds")
+    dateParam = extract_query_param(url, "date")
     report_file_path = (
-        "/cache/reports/report-"
+        CACHE_DIRECTORY
+        + "reports/report-"
         + layerIdParam
         + "-"
         + language
@@ -95,17 +97,10 @@ async def click_target_exposure_analysis(page, layerIdParam) -> None:
     await selected_exposure_analysis_button.click()
 
 
-def extract_layerId_query_param(url) -> str:
+def extract_query_param(url, query_param) -> str:
     parsed_url = urlparse(url)
     query_params = parse_qs(parsed_url.query)
-    layerIdParam = query_params.get("hazardLayerIds", [""])[0]
-    return layerIdParam
-
-
-def extract_layerDate_quer_param(url) -> str:
-    parsed_url = urlparse(url)
-    query_params = parse_qs(parsed_url.query)
-    dateParam = query_params.get("date", [""])[0]
+    dateParam = query_params.get(query_param, [""])[0]
     return dateParam
 
 
