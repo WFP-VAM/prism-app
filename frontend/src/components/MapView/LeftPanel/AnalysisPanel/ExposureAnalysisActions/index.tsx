@@ -41,7 +41,7 @@ function ExposureAnalysisActions({
   const [openReport, setOpenReport] = useState(false);
   const [downloadReportIsLoading, setDownloadReportIsLoading] = useState(false);
 
-  const API_URL = 'http://localhost:80/report/';
+  const API_URL = 'https://prism-api.ovio.org/report/';
 
   const exposureAnalysisColumnsToRender = getExposureAnalysisColumnsToRender(
     columns,
