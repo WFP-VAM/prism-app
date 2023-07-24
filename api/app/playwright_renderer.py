@@ -1,4 +1,6 @@
 # import asyncio
+import asyncio
+import uuid
 from typing import Optional
 from urllib.parse import parse_qs, urlparse
 
@@ -10,23 +12,31 @@ async def playwright_download_report(url: str, language: Optional[str]) -> str:
         browser = await p.firefox.launch()
         page = await browser.new_page()
 
-        page.set_default_timeout(50000)
+        page.set_default_timeout(25000)
         await page.goto(url)
 
         parsed_url = urlparse(url)
         query_params = parse_qs(parsed_url.query)
         layerIdParam = query_params.get("hazardLayerIds", [""])[0]
 
-        layer_chip_selector = 'span[class="MuiChip-label"]'
+        layer_chip_selector = (
+            'div[class="MuiAccordionSummary-root"], div[aria-expanded="false"]'
+        )
+
         await page.wait_for_selector(layer_chip_selector, state="visible")
 
-        dropdown_level_one_selector = await page.query_selector(layer_chip_selector)
-        await dropdown_level_one_selector.click()
+        dropdown_level_one_selectors = await page.query_selector_all(
+            layer_chip_selector
+        )
+        for dropdown in dropdown_level_one_selectors:
+            await dropdown.click()
 
         dropdown_level_two_selectors = await page.query_selector_all(
             layer_chip_selector
         )
-        await dropdown_level_two_selectors[1].click()
+
+        for dropdown in dropdown_level_two_selectors:
+            await dropdown.click()
 
         selected_exposure_analysis_button = await page.query_selector(
             'button[id="' + layerIdParam + '"]'
@@ -36,12 +46,12 @@ async def playwright_download_report(url: str, language: Optional[str]) -> str:
         create_report_selector_query = 'button[id="create-report"]'
         await page.wait_for_selector(create_report_selector_query, state="visible")
 
-        if language and language is not "en":
+        if language and language != "en":
             language_selector = await page.query_selector(
                 'p:has-text("' + language + '")'
             )
             await language_selector.click()
-            await page.wait_for_timeout(30000)
+            await page.wait_for_timeout(5000)
 
         # await page.pdf(path="page.pdf")
         create_report_selector = await page.query_selector(create_report_selector_query)
@@ -57,15 +67,26 @@ async def playwright_download_report(url: str, language: Optional[str]) -> str:
             await download_report_selector.click()
 
         download = await download_info.value
-        await download.save_as("./report.pdf")
+        random_uuid = uuid.uuid4()
+        report_file_path = (
+            "./report-"
+            + layerIdParam
+            + "-"
+            + language
+            + "-"
+            + str(random_uuid)
+            + ".pdf"
+        )
+
+        await download.save_as(report_file_path)
         await browser.close()
-        return str("./report.pdf")
+        return str(report_file_path)
 
 
-# asyncio.run(
-#     playwright_download_report(
-#         "http://localhost:3000/?hazardLayerIds=flood_extent&date=2023-06-09", None
-#     )
-# )
+asyncio.run(
+    playwright_download_report(
+        "http://localhost:3000/?hazardLayerIds=flood_extent&date=2023-07-21", "kh"
+    )
+)
 
 # http://host.docker.internal:3000/?hazardLayerIds=flood_extent&date=2023-07-07
