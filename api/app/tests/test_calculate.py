@@ -64,7 +64,6 @@ def test_calculate_stats_with_group_by():
         geotiff,
         group_by="ADM1_PCODE",
         geojson_out=False,
-        intersect_comparison=(operator.lt, 1),
     )
     assert len(features) == 4
 

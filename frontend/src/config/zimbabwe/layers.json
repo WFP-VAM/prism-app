@@ -50,46 +50,57 @@
     "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -110,46 +121,57 @@
     "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -170,46 +192,57 @@
     "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -230,46 +263,57 @@
     "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -290,46 +334,57 @@
     "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -395,8 +450,9 @@
     "date_interval": "days",
     "chart_data": {
       "fields": [
-        { "key": "rfq", 
-          "label": "Rainfall anomaly", 
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
           "color": "#375692",
           "minValue": 0,
           "maxValue": 300
@@ -452,10 +508,7 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfb", 
-          "label": "Rainfall", 
-          "color": "#233f5f"
-      },
+        { "key": "rfb", "label": "Rainfall", "color": "#233f5f" },
         {
           "key": "rfb_avg",
           "label": "Average",
@@ -509,11 +562,13 @@
     "chart_data": {
       "url": "https://api.earthobservation.vam.wfp.org/stats/admin/fetch",
       "fields": [
-        { "key": "rfq", 
-          "label": "Rainfall anomaly", 
+        {
+          "key": "rfq",
+          "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
-          "color": "#375692" },
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -615,11 +670,13 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "r1q", 
+        {
+          "key": "r1q",
           "label": "Rainfall anomaly",
           "minValue": 0,
-          "maxValue": 300, 
-          "color": "#375692" },
+          "maxValue": 300,
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -937,11 +994,13 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "chart_data": {
       "fields": [
-        { "key": "r3q", 
+        {
+          "key": "r3q",
           "label": "Rainfall anomaly",
           "minValue": 0,
           "maxValue": 300,
-          "color": "#375692" },
+          "color": "#375692"
+        },
         {
           "key": "rfq_avg",
           "label": "Normal",
@@ -1412,7 +1471,7 @@
     "additional_query_params": {
       "styles": "r6b_blended"
     },
-    "disableAnalysis": true, 
+    "disableAnalysis": true,
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "opacity": 0.7,
@@ -1435,7 +1494,7 @@
       { "value": 1400, "label": "1400-1600 mm", "color": "#fa78fa" },
       { "value": 1600, "label": "> 1600 mm", "color": "#ffc4ee" }
     ]
-  },  
+  },
   "precip_blended_9m": {
     "title": "Blended rainfall aggregate (9-month)",
     "type": "wms",
@@ -1497,7 +1556,7 @@
       { "value": 2000, "label": "2000-2400 mm", "color": "#fa78fa" },
       { "value": 2400, "label": "> 2400 mm", "color": "#ffc4ee" }
     ]
-  },           
+  },
   "precip_blended_anomaly_1m": {
     "title": "Blended rainfall anomaly (1-month)",
     "type": "wms",
@@ -1671,7 +1730,7 @@
       { "value": 170, "label": "170-200%", "color": "#0000c8" },
       { "value": 200, "label": "> 200%", "color": "#a002fa" }
     ]
-  }, 
+  },
   "precip_blended_anomaly_9m": {
     "title": "Blended rainfall anomaly (9-month)",
     "type": "wms",
@@ -1700,7 +1759,7 @@
       { "value": 170, "label": "170-200%", "color": "#0000c8" },
       { "value": 200, "label": "> 200%", "color": "#a002fa" }
     ]
-  }, 
+  },
   "precip_blended_anomaly_1y": {
     "title": "Blended rainfall anomaly (1-year)",
     "type": "wms",
@@ -1729,7 +1788,7 @@
       { "value": 170, "label": "170-200%", "color": "#0000c8" },
       { "value": 200, "label": "> 200%", "color": "#a002fa" }
     ]
-  }, 
+  },
   "days_dry": {
     "title": "Days since last rain",
     "type": "wms",
@@ -2003,11 +2062,13 @@
     },
     "chart_data": {
       "fields": [
-        { "key": "viq", 
-          "label": "NDVI anomaly", 
+        {
+          "key": "viq",
+          "label": "NDVI anomaly",
           "minValue": 0,
           "maxValue": 150,
-          "color": "#5e803f" },
+          "color": "#5e803f"
+        },
         {
           "key": "viq_avg",
           "label": "Normal",

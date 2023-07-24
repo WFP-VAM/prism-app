@@ -5,7 +5,7 @@ import subprocess
 
 import rasterio
 from app.timer import timed
-from rasterio.warp import Resampling, calculate_default_transform, reproject
+from rasterio.warp import CRS, Resampling, calculate_default_transform, reproject
 
 from .models import FilePath
 
@@ -99,3 +99,17 @@ def reproj_match(
                     dst_crs=dst_crs,
                     resampling=resampling_mode,
                 )
+
+
+def calculate_pixel_area(geotiff_file):
+    with rasterio.open(geotiff_file) as dataset:
+        crs = dataset.crs
+        # Get pixel width and height in the CRS units
+        _, pixel_width, pixel_height = calculate_default_transform(
+            crs, CRS.from_epsg(4326), dataset.width, dataset.height, *dataset.bounds
+        )
+
+        # Convert pixel width and height to square kilometers
+        area = pixel_width * pixel_height / 1e6
+
+        return area
