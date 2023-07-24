@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test,scripts}/**/*.{ts,js}\" --max-warnings 0 --fix",
     "setup:common": "sh -c \"rimraf ./node_modules/prism-common && cd ../common && yarn install && yarn build\" && sh -c \"yarn install --check-files\"",
@@ -22,7 +22,7 @@
     "migration:revert": "yarn typeorm migration:revert",
     "typeorm-seeding": "ts-node $(yarn bin typeorm-seeding)",
     "alert-worker": "yarn ts-node src/alert-worker.ts",
-    "docker-alert": "docker-compose run --entrypoint 'yarn alert-worker' alerting-node"
+    "docker-alert": "docker compose run --entrypoint 'yarn alert-worker' alerting-node"
   },
   "dependencies": {
     "@turf/bbox": "^6.3.0",

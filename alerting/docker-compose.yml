@@ -17,8 +17,8 @@ services:
       dockerfile: ./alerting/Dockerfile
     restart: always
     volumes:
-      - ./alerting:/app
-      - ./common:/common
+      - ../alerting:/app
+      - ../common:/common
     working_dir: /app
     environment:
       - POSTGRES_HOST=alerting-db
