@@ -47,7 +47,7 @@
   "horse_prices": {
     "title": "Monthly horse prices",
     "table": "data/mongolia/tables/2021-02-06/NSO_Horse_Price_Monthly_2021.csv",
-    "legend_text": "Price of adult horse month. Source: National Statistics Office",
+    "legend_text": "Price of adult horse by month. Source: National Statistics Office",
     "chart": {
       "type": "line",
       "stacked": false,

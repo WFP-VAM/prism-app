@@ -5,13 +5,12 @@ import {
   ListItemText,
   MenuItem,
   Theme,
-  Typography,
   withStyles,
 } from '@material-ui/core';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import { ArrowDropDown } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { useSafeTranslation } from '../../../i18n';
+import { useSafeTranslation } from 'i18n';
 
 const StyledMenu = withStyles((theme: Theme) => ({
   paper: {
@@ -33,6 +32,14 @@ const StyledMenu = withStyles((theme: Theme) => ({
     {...props}
   />
 ));
+
+const StyledButton = withStyles(() => ({
+  root: {
+    marginTop: '0.4rem',
+    marginBottom: '0.1rem',
+    fontSize: '0.7rem',
+  },
+}))(Button);
 
 const StyledMenuItem = withStyles((theme: Theme) => ({
   root: {
@@ -64,17 +71,15 @@ function MultiOptionsButton({ mainLabel, options }: IProps) {
 
   return (
     <Grid item>
-      <Button
+      <StyledButton
         variant="contained"
         color="primary"
         fullWidth
         onClick={handleClick}
       >
-        <Hidden smDown>
-          <Typography variant="body2">{t(mainLabel)}</Typography>
-        </Hidden>
+        <Hidden smDown>{t(mainLabel)}</Hidden>
         <ArrowDropDown fontSize="small" />
-      </Button>
+      </StyledButton>
       <StyledMenu
         id="button-menu"
         anchorEl={anchorEl}
@@ -84,6 +89,7 @@ function MultiOptionsButton({ mainLabel, options }: IProps) {
       >
         {options.map(option => (
           <StyledMenuItem
+            key={option.label}
             disabled={option.disabled}
             onClick={() => handleOptionClick(option.onClick)}
           >

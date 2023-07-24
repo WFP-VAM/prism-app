@@ -1,11 +1,13 @@
 {
   "country": "Cambodia",
+  "countryAdmin0Id": 44,
   "alertFormActive": false,
   "aboutPath": "data/cambodia/about.md",
   "enableNavigationDropdown": true,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
+    "field_reports": "icon_basemap.png",
     "hazards": "icon_climate.png",
     "flood": "icon_flood.png",
     "risk": "icon_impact.png",
@@ -16,14 +18,10 @@
     "temperature": "icon_climate.png"
   },
   "serversUrls": {
-    "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
-    ]
+    "wms": ["https://api.earthobservation.vam.wfp.org/ows/wms"]
   },
   "map": {
-    "latitude": 12.058,
-    "longitude": 105.281,
-    "zoom": 6.49
+    "boundingBox": [102.35, 10.49, 107.61, 14.57]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -32,15 +30,9 @@
   ],
   "categories": {
     "flood": {
-      "flood_monitoring": [
-        "flood_extent"
-    ],
-      "flood_risk": [
-        "flood_hazard"
-      ],
-      "early_warning": [
-        "ews_remote"
-      ]
+      "flood_monitoring": ["flood_extent"],
+      "flood_risk": ["flood_hazard"],
+      "early_warning": ["ews_remote"]
     },
     "rainfall": {
       "rainfall_amount": [
@@ -150,13 +142,10 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
-          "group_title": "Rainfall categories:",
+          "group_title": "Rainfall categories",
           "activate_all": false,
           "layers": [
             {
@@ -177,7 +166,7 @@
           ]
         },
         {
-          "group_title": "Consecutive days of rainfall:",
+          "group_title": "Consecutive days of rainfall",
           "activate_all": false,
           "layers": [
             {
@@ -200,10 +189,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -213,18 +199,10 @@
       ]
     },
     "vulnerability": {
-      "poverty": [
-        "idpoor",
-        "idpoor_1",
-        "idpoor_2"
-      ]
+      "poverty": ["idpoor", "idpoor_1", "idpoor_2"]
     },
-    "exposure": {
-      "field_reports": [
-        "flood_report",
-        "drought_report",
-        "kh_incident_report"
-      ]
+    "field_reports": {
+      "field_reports": ["flood_report", "drought_report", "kh_incident_report"]
     }
   }
 }

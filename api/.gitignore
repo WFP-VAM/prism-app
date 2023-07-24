@@ -1,6 +1,5 @@
 # Python files
 *.pyc
-app/.flake8
 app/.coverage
 
 #Cached folder
@@ -11,3 +10,6 @@ cache/
 
 # Test files
 **.json.*
+**/.hypothesis/**
+app/__pycache__/**
+

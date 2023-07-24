@@ -1,61 +1,70 @@
 import {
+  flatten,
   get,
   has,
   isNull,
+  isNumber,
   isString,
+  isUndefined,
   max,
   mean,
   min,
-  invert,
-  sum,
   omit,
-  flatten,
-  isNumber,
+  orderBy,
+  sum,
 } from 'lodash';
 import { Feature, FeatureCollection } from 'geojson';
 import bbox from '@turf/bbox';
 import moment from 'moment';
+import { createGetCoverageUrl } from 'prism-common';
+import { TFunctionKeys } from 'i18next';
+import { Dispatch } from 'redux';
 import {
+  AdminLevelDataLayerProps,
   AdminLevelType,
   AggregationOperations,
+  aggregationOperationsToDisplay,
   AsyncReturnType,
+  BoundaryLayerProps,
   ImpactLayerProps,
-  LayerType,
   LegendDefinition,
-  AdminLevelDataLayerProps,
   StatsApi,
   ThresholdDefinition,
-  WMSLayerProps,
   WfsRequestParams,
-  BoundaryLayerProps,
-} from '../config/types';
-import type { ThunkApi } from '../context/store';
-import { layerDataSelector } from '../context/mapStateSlice/selectors';
+  WMSLayerProps,
+} from 'config/types';
+import type { ThunkApi } from 'context/store';
+import { layerDataSelector } from 'context/mapStateSlice/selectors';
 import {
   Extent,
   featureIntersectsImage,
   GeoJsonBoundary,
   pixelsInFeature,
-} from '../components/MapView/Layers/raster-utils';
-import { BoundaryLayerData } from '../context/layers/boundary';
-import { AdminLevelDataLayerData } from '../context/layers/admin_level_data';
-import { getWCSLayerUrl, WMSLayerData } from '../context/layers/wms';
+} from 'components/MapView/Layers/raster-utils';
+import { BoundaryLayerData } from 'context/layers/boundary';
+import { AdminLevelDataLayerData } from 'context/layers/admin_level_data';
+import { WMSLayerData } from 'context/layers/wms';
 import type {
+  LayerAcceptingDataType,
   LayerData,
   LayerDataParams,
   LoadLayerDataFuncType,
-} from '../context/layers/layer-data';
-import { LayerDefinitions } from '../config/utils';
-import type { TableRow } from '../context/analysisResultStateSlice';
-import { isLocalhost } from '../serviceWorker';
+} from 'context/layers/layer-data';
+import { LayerDefinitions } from 'config/utils';
+import type { TableRow } from 'context/analysisResultStateSlice';
+import { ANALYSIS_API_URL } from 'constants';
+import { isLocalhost } from 'serviceWorker';
 import {
   i18nTranslator,
   isEnglishLanguageSelected,
   useSafeTranslation,
-} from '../i18n';
+} from 'i18n';
 import { getRoundedData } from './data-utils';
 import { DEFAULT_DATE_FORMAT_SNAKE_CASE } from './name-utils';
-import { ANALYSIS_API_URL } from '../constants';
+import {
+  ANALYSIS_REQUEST_TIMEOUT,
+  fetchWithTimeout,
+} from './fetch-with-timeout';
 
 export type BaselineLayerData = AdminLevelDataLayerData;
 type BaselineRecord = BaselineLayerData['layerData'][0];
@@ -70,7 +79,9 @@ export type Column = {
 const hasKeys = (obj: any, keys: string[]): boolean =>
   !keys.find(key => !has(obj, key));
 
-const checkRasterLayerData = (layerData: LayerData<LayerType>): RasterLayer => {
+const checkRasterLayerData = (
+  layerData: LayerData<LayerAcceptingDataType>,
+): RasterLayer => {
   const isRasterLayerData = (maybeData: any): maybeData is WMSLayerData =>
     hasKeys(maybeData, ['rasters', 'image', 'transform']);
 
@@ -100,6 +111,11 @@ const operations = {
     const floor = sortedValues.length / 2 - 1;
     const ceil = sortedValues.length / 2;
     return (sortedValues[floor] + sortedValues[ceil]) / 2;
+  },
+  intersect_percentage: () => {
+    throw new Error(
+      'intersect_percentage calculation is not available from client side',
+    );
   },
 };
 
@@ -148,7 +164,10 @@ function mergeFeaturesByProperty(
 ): Feature[] {
   const features = baselineFeatures.map(feature1 => {
     const aggregateProperties = aggregateData.filter(
-      item => get(item, id) === get(feature1, ['properties', id]) && item,
+      item =>
+        item &&
+        // IDs need to be compared as strings to avoid 31 != "31".
+        String(get(item, id)) === String(get(feature1, ['properties', id])),
     );
 
     const filteredProperties = aggregateProperties.map(filteredProperty => {
@@ -195,7 +214,7 @@ export const checkBaselineDataLayer = (
 
 /* eslint-disable camelcase */
 export type ApiData = {
-  geotiff_url: ReturnType<typeof getWCSLayerUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
+  geotiff_url: ReturnType<typeof createGetCoverageUrl>; // helps developers get an understanding of what might go here, despite the type eventually being a string.
   zones_url: string;
   group_by: string;
   geojson_out?: boolean;
@@ -228,21 +247,28 @@ export type KeyValueResponse = {
   [k in string]: string | number;
 };
 
-export async function fetchApiData(
+export const fetchApiData = async (
   url: string,
   apiData: ApiData | AlertRequest,
-): Promise<Array<KeyValueResponse | Feature>> {
+  dispatch: Dispatch,
+): Promise<Array<KeyValueResponse | Feature>> => {
   return (
-    await fetch(url, {
-      method: 'POST',
-      cache: 'no-cache',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+    await fetchWithTimeout(
+      url,
+      dispatch,
+      {
+        method: 'POST',
+        cache: 'no-cache',
+        timeout: ANALYSIS_REQUEST_TIMEOUT,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        // body data type must match "Content-Type" header
+        body: JSON.stringify(apiData),
       },
-      // body data type must match "Content-Type" header
-      body: JSON.stringify(apiData),
-    })
+      `Request failed fetching analysis api data at ${url}`,
+    )
   )
     .text()
     .then(message => {
@@ -256,7 +282,7 @@ export async function fetchApiData(
         };
       }
     });
-}
+};
 
 export function scaleAndFilterAggregateData(
   aggregateData: AsyncReturnType<typeof fetchApiData>,
@@ -308,14 +334,18 @@ export async function loadFeaturesFromApi(
   baselineData: BaselineLayerData,
   hazardLayerDef: WMSLayerProps,
   operation: AggregationOperations,
+  dispatch: Dispatch,
   extent?: Extent,
   date?: number,
 ): Promise<GeoJsonBoundary[]> {
-  const wcsUrl = getWCSLayerUrl({
-    layer: hazardLayerDef,
-    extent,
+  const wcsUrl = createGetCoverageUrl({
+    bbox: extent,
+    bboxDigits: 1,
     date,
-  } as LayerDataParams<WMSLayerProps>);
+    layerId: hazardLayerDef.serverLayerName,
+    url: hazardLayerDef.baseUrl,
+    version: hazardLayerDef.wcsConfig?.version,
+  });
 
   const statsApi = layer.api as StatsApi;
   const apiUrl = statsApi.url || ANALYSIS_API_URL;
@@ -328,7 +358,7 @@ export async function loadFeaturesFromApi(
   };
 
   const aggregateData = scaleAndFilterAggregateData(
-    await fetchApiData(apiUrl, apiData),
+    await fetchApiData(apiUrl, apiData, dispatch),
     hazardLayerDef,
     operation,
     layer.threshold,
@@ -451,6 +481,9 @@ export async function loadFeaturesClientSide(
 }
 
 export function quoteAndEscapeCell(value: number | string) {
+  if (isUndefined(value)) {
+    return '';
+  }
   return `"${value.toString().replaceAll('"', '""')}"`;
 }
 
@@ -521,7 +554,7 @@ export function createLegendFromFeatureArray(
 
   const delta = (maxNum - minNum) / colors.length;
 
-  const legend: LegendDefinition = colors.map((color, index) => {
+  return colors.map((color, index) => {
     const breakpoint =
       delta > 1
         ? Math.ceil(minNum + (index + 1) * delta)
@@ -529,15 +562,24 @@ export function createLegendFromFeatureArray(
 
     // Make sure you don't have a value greater than maxNum.
     const value = Math.min(breakpoint, maxNum);
+    /* eslint-disable fp/no-mutation */
+    let formattedValue;
+    if (statistic === AggregationOperations['Area exposed']) {
+      formattedValue = `${(value * 100).toFixed(2)} %`;
+    } else {
+      formattedValue = `(${Math.round(value).toLocaleString('en-US')})`;
+    }
+    /* eslint-enable fp/no-mutation */
 
     return {
       value,
       color,
-      label: `${labels[index]} (${Math.round(value).toLocaleString('en-US')})`,
+      label: {
+        text: labels[index],
+        value: formattedValue,
+      },
     };
   });
-
-  return legend;
 }
 
 export class ExposedPopulationResult {
@@ -547,7 +589,9 @@ export class ExposedPopulationResult {
   legend: LegendDefinition;
   legendText: string;
   statistic: AggregationOperations;
+  tableData: TableRow[];
   date: number;
+  tableColumns: any;
 
   getTitle = (t?: i18nTranslator): string => {
     return t ? t('Population Exposure') : 'Population Exposure';
@@ -557,7 +601,12 @@ export class ExposedPopulationResult {
     return this.getTitle(t);
   };
 
+  getHazardLayer = (): WMSLayerProps => {
+    return this.getHazardLayer();
+  };
+
   constructor(
+    tableData: TableRow[],
     featureCollection: FeatureCollection,
     statistic: AggregationOperations,
     legend: LegendDefinition,
@@ -565,7 +614,9 @@ export class ExposedPopulationResult {
     groupBy: string,
     key: string,
     date: number,
+    tableColumns: any,
   ) {
+    this.tableData = tableData;
     this.featureCollection = featureCollection;
     this.statistic = statistic;
     this.legend = legend;
@@ -573,6 +624,7 @@ export class ExposedPopulationResult {
     this.groupBy = groupBy;
     this.key = key;
     this.date = date;
+    this.tableColumns = tableColumns;
   }
 }
 
@@ -629,15 +681,19 @@ export class BaselineLayerResult {
 
   getStatTitle(t?: i18nTranslator): string {
     return t
-      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
-      : `${this.getHazardLayer().title} (${this.statistic})`;
+      ? `${t(this.getHazardLayer().title)} (${t(
+          aggregationOperationsToDisplay[this.statistic],
+        )})`
+      : `${this.getHazardLayer().title} (${
+          aggregationOperationsToDisplay[this.statistic]
+        })`;
   }
 
   getTitle(t?: i18nTranslator): string | undefined {
     const baselineLayer = this.getBaselineLayer();
     // If there is no title, we are using admin boundaries and return StatTitle instead.
     if (!baselineLayer.title) {
-      return this.getStatTitle();
+      return this.getStatTitle(t);
     }
     const baselineTitle = baselineLayer.title || 'Admin levels';
     return t
@@ -652,25 +708,59 @@ export function getAnalysisTableColumns(
   analysisResult?: AnalysisResult,
   withLocalName = false,
 ): Column[] {
-  if (!analysisResult || analysisResult instanceof ExposedPopulationResult) {
+  if (!analysisResult) {
     return [];
   }
   if ('tableColumns' in analysisResult) {
-    return (analysisResult as PolygonAnalysisResult).tableColumns;
+    return [
+      {
+        id: withLocalName ? 'localName' : 'name',
+        label: 'Name',
+      } as Column,
+    ].concat(
+      (analysisResult as PolygonAnalysisResult).tableColumns.filter(
+        column => !['name', 'localName'].includes(column.id as string),
+      ),
+    );
   }
   const { statistic } = analysisResult;
-  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
 
-  return [
+  const analysisTableColumns: Column[] = [
     {
       id: withLocalName ? 'localName' : 'name',
       label: 'Name',
     },
     {
       id: statistic,
-      label: invert(AggregationOperations)[statistic], // invert maps from computer name to display name.
-      format: value => getRoundedData(value as number),
+      label: aggregationOperationsToDisplay[statistic],
+      format: (value: string | number) =>
+        getRoundedData(value, undefined, 2, statistic),
     },
+  ];
+
+  if (statistic === AggregationOperations['Area exposed']) {
+    /* eslint-disable-next-line fp/no-mutating-methods */
+    analysisTableColumns.push({
+      id: 'stats_intersect_area',
+      label: 'Area exposed in sq km',
+      format: (value: string | number) =>
+        getRoundedData(value as number, undefined, 2, 'stats_intersect_area'),
+    });
+  }
+
+  if (analysisResult instanceof ExposedPopulationResult) {
+    const extraCols = analysisResult?.tableColumns.map((col: string) => ({
+      id: col,
+      label: col, // invert maps from computer name to display name.
+      format: (value: string | number) => getRoundedData(value as number),
+    })) as Column[];
+    return [...analysisTableColumns, ...extraCols];
+  }
+
+  const baselineLayerTitle = analysisResult.getBaselineLayer().title;
+
+  return [
+    ...analysisTableColumns,
     // Remove data if no baseline layer is present
     ...(baselineLayerTitle
       ? [
@@ -758,14 +848,20 @@ export class PolygonAnalysisResult {
     return LayerDefinitions[this.hazardLayerId] as WMSLayerProps;
   }
 
-  getTitle(): string {
-    return `${this.getHazardLayer().title} intersecting admin level ${
-      this.adminLevel
-    }`;
+  getTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} ${t('intersecting admin level')} ${t(
+          (this.adminLevel as unknown) as TFunctionKeys,
+        )}`
+      : `${this.getHazardLayer().title} intersecting admin level ${
+          this.adminLevel
+        }`;
   }
 
-  getStatTitle(): string {
-    return `${this.getHazardLayer().title} (${this.statistic})`;
+  getStatTitle(t?: i18nTranslator): string {
+    return t
+      ? `${t(this.getHazardLayer().title)} (${t(this.statistic)})`
+      : `${this.getHazardLayer().title} (${this.statistic})`;
   }
 }
 
@@ -808,14 +904,28 @@ export function downloadCSVFromTableData(
   analysisResult: TabularAnalysisResult,
   columns: Column[],
   selectedDate: number | null,
+  sortByKey: Column['id'],
+  sortOrder: 'asc' | 'desc',
 ) {
   const { tableData } = analysisResult;
+
+  const sortedTableData = orderBy(tableData, sortByKey, sortOrder);
 
   // Built with https://stackoverflow.com/a/14966131/5279269
   const csvLines = [
     columns.map(col => quoteAndEscapeCell(col.label)).join(','),
-    ...tableData.map(row =>
-      columns.map(col => quoteAndEscapeCell(row[col.id])).join(','),
+    ...sortedTableData.map(row =>
+      columns
+        .map((column: Column) => {
+          const value = row[column.id];
+          if (value === undefined || value === null) {
+            return '';
+          }
+          return column.format && typeof value === 'number'
+            ? column.format(value)
+            : quoteAndEscapeCell(value);
+        })
+        .join(','),
     ),
   ];
   const rawCsv = `data:text/csv;charset=utf-8,${csvLines.join('\n')}`;
@@ -836,3 +946,32 @@ export function downloadCSVFromTableData(
 // type of results that have the tableData property
 // and are displayed in the left-hand "RUN ANALYSIS" panel
 export type TabularAnalysisResult = BaselineLayerResult | PolygonAnalysisResult;
+
+/*
+This function includes the feature properties of the boundary geojson layer within the analysis result one.
+For each analysis feature, the algorithm find the boundary feature that exactly matches the adminCode identifier.
+If there is a match, all the properties for both features are merged
+*/
+export const appendBoundaryProperties = (
+  adminCodeId: BoundaryLayerProps['adminCode'],
+  analysisFeatures: Feature[],
+  boundaryLayerFeatures: Feature[],
+): Feature[] => {
+  const featuresWithBoundaryProps = analysisFeatures.reduce((acc, feature) => {
+    const matchedFeature = boundaryLayerFeatures.find(
+      boundaryLayerFeature =>
+        boundaryLayerFeature.properties![adminCodeId] ===
+        feature.properties![adminCodeId],
+    );
+
+    if (!matchedFeature) {
+      return acc;
+    }
+
+    const newProps = { ...matchedFeature.properties!, ...feature.properties! };
+
+    return [...acc, { ...feature, properties: newProps }];
+  }, [] as Feature[]);
+
+  return featuresWithBoundaryProps;
+};

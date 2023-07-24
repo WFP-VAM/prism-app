@@ -13,17 +13,17 @@
     "wms": ["https://mongolia.sibelius-datacube.org:5000/wms"]
   },
   "map": {
-    "latitude": 46.810021,
-    "longitude": 103.111657,
-    "zoom": 4.5
+    "boundingBox": [87.75, 41.6, 119.77, 52.05]
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "categories": {
     "hazards": {
-      "drought_indicators": ["pasture_anomaly", "pasture_biomass", "ndvi", "ModisVHI"],
+      "drought_indicators": [
+        "pasture_anomaly",
+        "pasture_biomass",
+        "ndvi",
+        "ModisVHI"
+      ],
       "winter_conditions": ["ModisSnowPercentage", "ModisLST"]
     },
     "exposure": {
@@ -49,7 +49,6 @@
       ]
     },
     "risk": {
-      "dzud_risk": ["DzudRiskMap"],
       "impact_analysis": [
         "herd_pasture_impact",
         "livestock_vhi",
@@ -65,7 +64,8 @@
         "cattle_prices",
         "goat_prices",
         "horse_prices",
-        "sheep_prices"]
+        "sheep_prices"
+      ]
     }
   }
 }

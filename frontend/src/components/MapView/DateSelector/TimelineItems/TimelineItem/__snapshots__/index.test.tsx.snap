@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TimelineItem renders as expected 1`] = `
+<div>
+  <div
+    class="intersectionDate"
+    role="presentation"
+  />
+  <div
+    class="layerOneDate"
+    role="presentation"
+  />
+</div>
+`;
+
+exports[`TimelineItem renders as expected with data point starting after Timeline start date 1`] = `<div />`;

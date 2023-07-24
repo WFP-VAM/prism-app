@@ -51,6 +51,7 @@ For each category, you can define sub categories as "subcategorie_name":
     ]
   },
   "alertFormActive": false,
+  "hidePanel": false,
   "icons": {
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png",
@@ -77,7 +78,7 @@ To find these attributes, we created a help mode that you can activate by settin
 #### Boundary layers
 
 - Configuring multiple boundary layers
-  If multiple boundary layers are configured `layers.json` you can specify which should be displayed by default by defining `defaultDisplayBoundaries` as an array of boundaries.
+  If multiple boundary layers are configured in `layers.json` you can specify which should be displayed by default by defining `defaultDisplayBoundaries` as an array of boundaries.
 
   e.g.
 
@@ -92,6 +93,10 @@ To find these attributes, we created a help mode that you can activate by settin
     ...
   }
   ```
+
+In some cases, a boundary file may load without any issues but fail to provide correct results in an exposure analysis, or correctly render the 'Go To' feature. Troubleshooting this is challenging. It is recommended to use a validation tool on your boundary file before utilizing it in PRISM. https://geojsonlint.com/ works well for this purpose.
+
+In addition, boundary files sometimes carry more precise coordinates than is neccessary which makes for a large data file. PRISM will alert you with a message in the browser if the precision is too high. You can run bash /frontend/scripts/truncate_precision.sh to fix this. The script will update any boundary file in the /frontend/public/data folder
 
 ### layers.json
 

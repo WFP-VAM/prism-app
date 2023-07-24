@@ -3,7 +3,11 @@ import { merge } from 'lodash';
 import type { RootState } from './store';
 
 export interface PopupData {
-  [key: string]: { data: number | string; coordinates: GeoJSON.Position };
+  [key: string]: {
+    data: number | string;
+    coordinates: GeoJSON.Position;
+    adminLevel?: number;
+  };
 }
 
 export interface MapTooltipState {
@@ -86,9 +90,6 @@ export const tooltipStateSlice = createSlice({
 // Getters
 export const tooltipSelector = (state: RootState): MapTooltipState =>
   state.tooltipState;
-export const tooltipShowingSelector = (
-  state: RootState,
-): MapTooltipState['showing'] => state.tooltipState.showing;
 
 // Setters
 export const {

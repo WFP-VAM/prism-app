@@ -15,6 +15,7 @@ import mapSelectionLayerStateReduce from './mapSelectionLayerStateSlice';
 import mapBoundaryInfoStateReduce from './mapBoundaryInfoStateSlice';
 import datasetResultStateReduce from './datasetStateSlice';
 import mapTileLoadingStateReduce from './mapTileLoadingStateSlice';
+import leftPanelStateReduce from './leftPanelStateSlice';
 
 const reducer = combineReducers({
   mapState: mapStateReduce,
@@ -27,6 +28,7 @@ const reducer = combineReducers({
   mapBoundaryInfoState: mapBoundaryInfoStateReduce,
   datasetState: datasetResultStateReduce,
   mapTileLoadingState: mapTileLoadingStateReduce,
+  leftPanelState: leftPanelStateReduce,
 });
 
 export const store = configureStore({

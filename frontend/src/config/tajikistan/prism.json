@@ -18,13 +18,11 @@
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://geonode.wfp.org/geoserver/prism/wms"
+      "https://sparc.wfp.org/geoserver/prism/wms"
     ]
   },
   "map": {
-    "latitude": 38.764,
-    "longitude": 71.254,
-    "zoom": 6.27
+    "boundingBox": [67.44, 36.74, 74.98, 40.96]
   },
   "categories": {
     "rainfall": {
@@ -135,10 +133,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -185,10 +180,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "land_surface_temperature": [
@@ -199,15 +191,11 @@
       ]
     },
     "hazards": {
-      "earthquakes": [
-        "usgs_shakemaps"
-      ],
-      "floods": [
-        "Flood_freq"
-      ]
+      "earthquakes": ["usgs_shakemaps"],
+      "floods": ["Flood_freq"]
     },
     "exposure": {
-      "crops": ["Agricultural_areas"], 
+      "crops": ["Agricultural_areas"],
       "human_exposure": ["Population_2020"]
     },
     "vulnerability": {

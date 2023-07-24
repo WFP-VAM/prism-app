@@ -1,23 +1,32 @@
-import { findTagsByName, findTagsByPath, getAttribute } from "xml-utils";
+import { uniq, union } from "lodash";
+import moment from "moment";
+import { findTagsByName } from "xml-utils";
 
 import { findAndParseEnvelope } from "../../gml";
 import {
   bboxToString,
   checkExtent,
+  DEFAULT_DATE_FORMAT,
   findAndParseCapabilityUrl,
+  findTagArray,
   findTagText,
+  findVersion,
   formatUrl,
   scaleImage,
+  setNoon,
+  setTimeoutAsync,
 } from "../../utils";
 
 import {
+  findException,
   findAndParseBoundingBox,
   findAndParseKeywords,
   findAndParseOperationUrl,
   findAndParseWGS84BoundingBox,
+  getCapabilities,
 } from "../../ows";
 
-import type { BBOX } from "../../types";
+import type { BBOX, WCS_FORMAT } from "../../types";
 
 export type Coverage = {
   id: string;
@@ -28,7 +37,11 @@ export type Coverage = {
 };
 
 export function findCoverages(xml: string): string[] {
-  const tagNames = ["CoverageOfferingBrief", "wcs:CoverageSummary"];
+  const tagNames = [
+    "wcs:CoverageOfferingBrief",
+    "CoverageOfferingBrief",
+    "wcs:CoverageSummary",
+  ];
   // eslint-disable-next-line fp/no-mutation
   for (let i = 0; i < tagNames.length; i += 1) {
     const tagName = tagNames[i];
@@ -52,7 +65,7 @@ export function findCoverageId(xml: string): string | undefined {
 }
 
 export function findCoverageName(xml: string): string | undefined {
-  return findTagText(xml, "name");
+  return findTagText(xml, "name") || findTagText(xml, "wcs:name");
 }
 
 export function findLayerId(
@@ -106,23 +119,22 @@ export function findCoverageDisplayName(xml: string): string | undefined {
 
 export function findCoverage(
   xml: string,
-  layerName: string
+  layerIdOrName: string
 ): string | undefined {
+  const normalized = normalizeCoverageId(layerIdOrName);
   return findCoverages(xml).find(
-    (layer) => findCoverageTitle(layer) === layerName
+    (layer) =>
+      findLayerId(layer, { normalize: true }) === normalized ||
+      findCoverageDisplayName(layer) === layerIdOrName
   );
 }
 
 export function findCoverageDisplayNames(xml: string): string[] {
-  const displayNames: string[] = [];
-  findCoverages(xml).forEach((layer) => {
-    const displayName = findCoverageDisplayName(layer);
-    if (displayName) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      displayNames.push(displayName);
-    }
-  });
-  return displayNames;
+  const coverages = findCoverages(xml);
+  const displayNames = coverages.map((coverage) =>
+    findCoverageDisplayName(coverage)
+  );
+  return displayNames.filter((name) => name !== undefined).map((name) => name!);
 }
 
 export function findLayerIds(
@@ -161,7 +173,7 @@ export function findAndParseLonLatEnvelope(
 export function findAndParseExtent(
   xml: string
 ): Readonly<[number, number, number, number]> | undefined {
-  return findAndParseEnvelope(xml) || findAndParseLonLatEnvelope(xml);
+  return findAndParseLonLatEnvelope(xml) || findAndParseEnvelope(xml);
 }
 
 export function findCoverageOpUrl(xml: string, op: string): string | undefined {
@@ -178,36 +190,55 @@ export function findGetCoverageUrl(xml: string): string | undefined {
   return findCoverageOpUrl(xml, "GetCoverage");
 }
 
-export function createGetCoverageUrl(
-  xml: string,
-  layerId: string,
-  {
-    bbox,
-    bboxDigits,
-    checkExtent: doCheckExtent = true,
-    crs = "EPSG:4326",
-    format = "GeoTIFF",
-    height: givenHeight,
-    maxPixels = 5096,
-    resolution = 256,
-    time,
-    width: givenWidth,
-  }: {
-    bbox: BBOX;
-    bboxDigits?: number;
-    checkExtent?: boolean;
-    crs?: string;
-    format?: string;
-    height: number;
-    maxPixels?: number;
-    resolution?: 256;
-    time?: string;
-    width: number;
-  }
-): string {
-  const base = findGetCoverageUrl(xml);
+export function createGetCoverageUrl({
+  bbox,
+  bboxDigits,
+  capabilities,
+  checkExtent: doCheckExtent = true,
+  crs = "EPSG:4326",
+  date,
+  format = "GeoTIFF",
+  height: givenHeight,
+  layerId,
+  maxPixels = 5096,
+  needExtent = false,
+  resolution = 256,
+  url,
+  version = "1.0.0",
+  width: givenWidth,
+}: {
+  bbox: BBOX;
+  bboxDigits?: number;
+  capabilities?: string;
+  checkExtent?: boolean;
+  crs?: string;
+  date?: Date | string;
+  format?: WCS_FORMAT | string;
+  height: number;
+  layerId: string;
+  maxPixels?: number;
+  needExtent?: boolean;
+  resolution?: 256;
+  url?: string;
+  version?: string;
+  width: number;
+}): string {
+  const base = (() => {
+    if (url) {
+      return url;
+    }
+    if (capabilities) {
+      return findGetCoverageUrl(capabilities);
+    }
+    return undefined;
+  })();
+
   if (!base) {
     throw new Error("failed to create DescribeCoverage Url");
+  }
+
+  if (needExtent && !bbox) {
+    throw new Error("no extent provided to createGetCoverageUrl");
   }
 
   if (doCheckExtent) {
@@ -225,18 +256,54 @@ export function createGetCoverageUrl(
     return { height: givenHeight, width: givenWidth };
   })();
 
-  return formatUrl(base, {
-    bbox: bboxToString(bbox, bboxDigits),
-    coverage: layerId,
-    crs,
-    format,
-    height,
-    request: "GetCoverage",
-    service: "WCS",
-    time,
-    version: "1.0.0",
-    width,
-  });
+  const time = date ? moment(date).format(DEFAULT_DATE_FORMAT) : undefined;
+
+  if (version.startsWith("0") || version.startsWith("1")) {
+    return formatUrl(base, {
+      bbox: bboxToString(bbox, bboxDigits),
+      coverage: layerId,
+      crs,
+      format,
+      height,
+      request: "GetCoverage",
+      service: "WCS",
+      time,
+      version,
+      width,
+    });
+  }
+  if (version.startsWith("2")) {
+    // Subsets are used as spatial and temporal filters.
+    // For more info: https://docs.geoserver.geo-solutions.it/edu/en/wcs/get.html
+    const spatialSubsets = (() => {
+      if (bbox) {
+        const [xmin, ymin, xmax, ymax] = bbox;
+        return [`Long(${xmin},${xmax})`, `Lat(${ymin},${ymax})`];
+      }
+      return [];
+    })();
+
+    const temporalSubsets = time ? [`time("${time}")`] : [];
+
+    const subsets = [...spatialSubsets, ...temporalSubsets];
+
+    const formattedUrl = formatUrl(base, {
+      format,
+      coverageId: layerId,
+      height,
+      outputCRS: crs,
+      request: "GetCoverage",
+      service: "WCS",
+      width,
+    });
+
+    const formattedSubsets = subsets.map((s) => `subset=${s}`).join("&");
+
+    return `${formattedUrl}&${formattedSubsets}`;
+  }
+  throw new Error(
+    "[prism-common] createGetCoverageUrl was called with an unexpected version"
+  );
 }
 
 export function createDescribeCoverageUrl(
@@ -247,26 +314,50 @@ export function createDescribeCoverageUrl(
   if (!base) {
     throw new Error("failed to create DescribeCoverage Url");
   }
-  const url = new URL(base);
-  const version = getAttribute(xml, "version");
-  url.searchParams.set("coverage", layerId);
-  url.searchParams.set("request", "DescribeCoverage");
-  url.searchParams.set("service", "WCS");
-  url.searchParams.set("version", version);
-  return url.toString();
+
+  const version = findVersion(xml)!;
+
+  const layerParamName = (() => {
+    if (version.startsWith("1.1")) {
+      return "identifiers";
+    }
+    if (version.startsWith("0") || version.startsWith("1")) {
+      return "coverage";
+    }
+    return "coverageId";
+  })();
+
+  return formatUrl(base, {
+    [layerParamName]: layerId,
+    request: "DescribeCoverage",
+    service: "WCS",
+    version,
+  });
 }
 
 export async function fetchCoverageDescriptionFromCapabilities(
   capabilities: string,
   layerId: string,
-  options: { fetch?: any } = {}
+  options: { debug?: boolean; fetch?: any; wait?: number } = {}
 ) {
-  const url = createDescribeCoverageUrl(capabilities, layerId);
-  const response = await (options.fetch || fetch)(url);
-  if (response.status !== 200) {
-    throw new Error("failed to fetch CoverageDescription");
-  }
-  return response.text();
+  const run = async () => {
+    const url = createDescribeCoverageUrl(capabilities, layerId);
+    const response = await (options.fetch || fetch)(url);
+    if (response.status !== 200) {
+      throw new Error(
+        `failed to fetch CoverageDescription from "${url}". status was ${response.status}`
+      );
+    }
+    const text = await response.text();
+    const exception = findException(text);
+    if (exception) {
+      throw new Error(
+        `couldn't fetch coverage description because of the following error:\n${exception}`
+      );
+    }
+    return text;
+  };
+  return setTimeoutAsync(options.wait || 0, run);
 }
 
 export function parseCoverage(xml: string) {
@@ -282,25 +373,72 @@ export function parseCoverage(xml: string) {
   };
 }
 
+export function findAndParseCoverage(xml: string, layerIdOrName: string) {
+  const coverage = findCoverage(xml, layerIdOrName);
+  return coverage ? parseCoverage(coverage) : undefined;
+}
+
 export function parseDates(description: string): string[] {
-  const path = ["domainSet", "temporalDomain", "gml:timePosition"];
-  const dates: string[] = [];
-  findTagsByPath(description, path).forEach((tag) => {
-    if (tag?.inner) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      dates.push(tag.inner);
-    }
-  });
-  return dates;
+  const timePositions = findTagArray(description, [
+    "domainSet",
+    "temporalDomain",
+    "gml:timePosition",
+  ]);
+
+  if (timePositions.length > 0) {
+    return timePositions;
+  }
+
+  return findTagArray(description, ["lonLatEnvelope", "gml:timePosition"]);
 }
 
 export function parseSupportedFormats(xml: string): string[] {
-  const formats: string[] = [];
-  findTagsByPath(xml, ["supportedFormats", "formats"]).forEach((tag) => {
-    if (tag?.inner) {
-      // eslint-disable-next-line fp/no-mutating-methods
-      formats.push(tag.inner);
+  return findTagArray(xml, ["supportedFormats", "formats"]);
+}
+
+export function parseLayerDays(xml: string): number[] {
+  const dateStrings = parseDates(xml);
+
+  // round to noon to avoid errors due to daylight saving
+  const days = dateStrings.map(setNoon);
+
+  const uniqueDays = uniq(days);
+
+  return uniqueDays.map((date) => new Date(date).getTime());
+}
+
+export function getAllLayerDays(xml: string): { [layerId: string]: number[] } {
+  const layers = findCoverages(xml);
+  const allDays: { [key: string]: number[] } = {};
+  layers.forEach((layer) => {
+    const layerId = findLayerId(layer);
+    if (layerId) {
+      const oldLayerDays = allDays[layerId] || [];
+      const layerDays = parseLayerDays(layer);
+      // eslint-disable-next-line fp/no-mutation
+      allDays[layerId] = union(layerDays, oldLayerDays);
     }
   });
-  return formats;
+  return allDays;
+}
+
+export async function fetchCoverageLayerDays(
+  url: string,
+  {
+    errorStrategy = "throw",
+    fetch,
+  }: { errorStrategy?: string; fetch?: any } = {}
+): Promise<{ [layerId: string]: number[] }> {
+  try {
+    const capabilities = await getCapabilities(url, {
+      fetch,
+      version: "1.0.0",
+    });
+    return getAllLayerDays(capabilities);
+  } catch (error) {
+    if (errorStrategy === "empty") {
+      return {};
+    }
+    throw error;
+  }
 }

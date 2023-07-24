@@ -3,9 +3,11 @@ import {
   DiscriminateUnion,
   LayerType,
   PointLayerData,
-} from '../../config/types';
-import { Extent } from '../../components/MapView/Layers/raster-utils';
+  StaticRasterLayerProps,
+} from 'config/types';
+import { Extent } from 'components/MapView/Layers/raster-utils';
 
+import type { CreateAsyncThunkTypes, ThunkApi } from 'context/store';
 import {
   fetchAdminLevelDataLayerData,
   AdminLevelDataLayerData,
@@ -15,7 +17,7 @@ import { fetchPointLayerData } from './point_data';
 import { BoundaryLayerData, fetchBoundaryLayerData } from './boundary';
 import { fetchImpactLayerData, ImpactLayerData } from './impact';
 
-import type { CreateAsyncThunkTypes, ThunkApi } from '../store';
+export type LayerAcceptingDataType = Exclude<LayerType, StaticRasterLayerProps>;
 
 type LayerSpecificDataTypes = {
   boundary: BoundaryLayerData;
@@ -27,14 +29,14 @@ type LayerSpecificDataTypes = {
   point_data: PointLayerData | AdminLevelDataLayerData;
 };
 
-export interface LayerData<L extends LayerType> {
+export interface LayerData<L extends LayerAcceptingDataType> {
   layer: L;
   date: number;
   extent?: Extent;
   data: LayerSpecificDataTypes[L['type']];
 }
 
-export interface LayerDataParams<T extends LayerType> {
+export interface LayerDataParams<T extends LayerAcceptingDataType> {
   layer: T;
   extent?: Extent;
   date?: number;
@@ -44,29 +46,29 @@ export interface LayerDataParams<T extends LayerType> {
 
 // Create a union of all the possible param types
 type ParamsTypeMap = {
-  [key in LayerType['type']]: LayerDataParams<
-    DiscriminateUnion<LayerType, 'type', key>
+  [key in LayerAcceptingDataType['type']]: LayerDataParams<
+    DiscriminateUnion<LayerAcceptingDataType, 'type', key>
   >;
 };
 type ParamTypes = ParamsTypeMap[keyof ParamsTypeMap];
 
 // Create a union of all the possible return types
 type LayerDataMap = {
-  [key in LayerType['type']]: LayerData<
-    DiscriminateUnion<LayerType, 'type', key>
+  [key in LayerAcceptingDataType['type']]: LayerData<
+    DiscriminateUnion<LayerAcceptingDataType, 'type', key>
   >;
 };
 export type LayerDataTypes = LayerDataMap[keyof LayerDataMap];
 
 // Define a type for the object mapping layer type to fetch function
 type LayerLoaders = {
-  [key in LayerType['type']]: LazyLoader<
-    DiscriminateUnion<LayerType, 'type', key>
+  [key in LayerAcceptingDataType['type']]: LazyLoader<
+    DiscriminateUnion<LayerAcceptingDataType, 'type', key>
   >;
 };
 
 // Less restrictive handler type since Typescript doesn't support nested union discrimination
-export type LazyLoader<T extends LayerType> = (
+export type LazyLoader<T extends LayerAcceptingDataType> = (
   recursive: LoadLayerDataFuncType, // just in case a loader wants to load another layer, we pass the function recursively to prevent import cycles.
 ) => (
   params: LayerDataParams<T>,

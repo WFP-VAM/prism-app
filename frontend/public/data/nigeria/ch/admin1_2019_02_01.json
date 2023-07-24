@@ -1,0 +1,41 @@
+{
+    "DataList": [
+        {
+            "adm0_name": "Nigeria",
+            "adm0_pcod2": "NG",
+            "adm0_pcod3": "NGA",
+            "adm1_name": "Sokoto",
+            "adm1_pcod2": "NG34",
+            "exercise_code": 2,
+            "exercise_label": "Jan-May",
+            "exercise_year": 2019,
+            "chtype": "current",
+            "reference_code": 2,
+            "reference_label": "Jan-May",
+            "reference_year": 2019,
+            "population": 5596192.0,
+            "usethisperiod": "Y",
+            "adj_ref_year": 2019,
+            "Month-Day": "01-01",
+            "date": "2019-01-01",
+            "start_date": "2019-02-01",
+            "end_date": "2019-05-31",
+            "adm1_round_ID": "2019-02-01_NG34",
+            "adm2_round_ID": "2019-02-01_",
+            "calc_ph_admin1": 1,
+            "calc_pop_ph1_admin1": 5596192,
+            "calc_pop_ph2_admin1": 0,
+            "calc_pop_ph3_admin1": 0,
+            "calc_pop_ph4_admin1": 0,
+            "calc_pop_ph5_admin1": 0,
+            "calc_pop_ph3_5_admin1": 0,
+            "calc_ph_admin2": 1,
+            "calc_pop_ph1_admin2": 118883987,
+            "calc_pop_ph2_admin2": 17016203,
+            "calc_pop_ph3_admin2": 3050517,
+            "calc_pop_ph4_admin2": 558081,
+            "calc_pop_ph5_admin2": 0,
+            "calc_pop_ph3_5_admin2": 3608598
+        }
+    ]
+}

@@ -1,6 +1,17 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
-import { LayerType, LegendDefinition } from '../../../config/types';
+import { get } from 'lodash';
+import { Dispatch } from 'redux';
+import {
+  LayerType,
+  LegendDefinition,
+  AdminLevelDataLayerProps,
+  PointDataLayerProps,
+} from 'config/types';
+import { addPopupData } from 'context/tooltipStateSlice';
+import { getRoundedData } from 'utils/data-utils';
+import { i18nTranslator } from 'i18n';
+import { getFeatureInfoPropsData } from 'components/MapView/utils';
 
 export function legendToStops(legend: LegendDefinition = []) {
   // TODO - Make this function easier to use for point data and explicit its behavior.
@@ -54,3 +65,42 @@ export function getLayerGeometryIcon(layer: LayerType) {
     </Tooltip>
   );
 }
+
+export const addPopupParams = (
+  layer: AdminLevelDataLayerProps | PointDataLayerProps,
+  dispatch: Dispatch,
+  evt: any,
+  t: i18nTranslator,
+  adminLevel: boolean,
+): void => {
+  const feature = evt.features[0];
+
+  const { dataField, featureInfoProps, title } = layer;
+
+  // adminLevelLayer uses data field by default.
+  const propertyField: string = dataField
+    ? `properties.${dataField}`
+    : 'properties.data';
+
+  // by default add `dataField` to the tooltip if it is not within the feature_info_props dictionary.
+  if (!Object.keys(featureInfoProps || {}).includes(dataField)) {
+    const adminLevelObj = adminLevel
+      ? { adminLevel: feature.properties.adminLevel }
+      : {};
+
+    dispatch(
+      addPopupData({
+        [title]: {
+          ...adminLevelObj,
+          data: getRoundedData(get(feature, propertyField), t),
+          coordinates: evt.lngLat,
+        },
+      }),
+    );
+  }
+
+  // Add feature_info_props as extra fields to the tooltip
+  dispatch(
+    addPopupData(getFeatureInfoPropsData(layer.featureInfoProps || {}, evt)),
+  );
+};

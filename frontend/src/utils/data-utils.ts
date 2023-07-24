@@ -1,25 +1,35 @@
 import { GeoJSON } from 'geojson';
 import { TFunction as _TFunction } from 'i18next';
 import { isNumber } from 'lodash';
-import { TableRowType } from '../context/tableStateSlice';
-import { i18nTranslator } from '../i18n';
+import { TableRowType } from 'context/tableStateSlice';
+import { i18nTranslator } from 'i18n';
+import { AggregationOperations, units } from 'config/types';
 
 export type TFunction = _TFunction;
 
 export function getRoundedData(
   data: number | string | null,
   t?: i18nTranslator,
-  decimals: number = 3,
+  decimals: number = 2,
+  statistic?: AggregationOperations | string,
 ): string {
-  if (isNumber(data) && Number.isNaN(data)) {
+  /* eslint-disable fp/no-mutation */
+  let result = data;
+  if (isNumber(result) && Number.isNaN(result)) {
     return '-';
   }
-  if (isNumber(data)) {
-    return parseFloat(data.toFixed(decimals)).toLocaleString();
+  if (statistic === AggregationOperations['Area exposed']) {
+    result = 100 * (Number(result) || 0);
   }
-  // TODO - investigate why we received string 'null' values in data.
-  const dataString = data && data !== 'null' ? data : 'No Data';
-  return t ? t(dataString) : dataString;
+  if (isNumber(result)) {
+    result = parseFloat(result.toFixed(decimals)).toLocaleString();
+  } else {
+    // TODO - investigate why we received string 'null' values in data.
+    result = result && result !== 'null' ? result : 'No Data';
+    /* eslint-enable fp/no-mutation */
+  }
+  const unit = statistic && units[statistic];
+  return `${t ? t(result) : result} ${unit || ''}`;
 }
 
 export function getTableCellVal(

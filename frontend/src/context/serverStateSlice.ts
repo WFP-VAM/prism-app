@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { AvailableDates, UserAuth } from '../config/types';
-import { getLayersAvailableDates } from '../utils/server-utils';
+import { AvailableDates, UserAuth } from 'config/types';
+import { getLayersAvailableDates } from 'utils/server-utils';
 import type { CreateAsyncThunkTypes, RootState } from './store';
 
 type ServerState = {
@@ -19,7 +19,9 @@ export const loadAvailableDates = createAsyncThunk<
   AvailableDates,
   void,
   CreateAsyncThunkTypes
->('serverState/loadAvailableDates', () => getLayersAvailableDates());
+>('serverState/loadAvailableDates', (_, { dispatch }) =>
+  getLayersAvailableDates(dispatch),
+);
 
 export const serverStateSlice = createSlice({
   name: 'serverState',

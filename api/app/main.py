@@ -3,6 +3,7 @@
 import functools
 import json
 import logging
+from datetime import date
 from typing import Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
 
@@ -12,16 +13,19 @@ from app.caching import FilePath, cache_file, cache_geojson
 from app.database.alert_model import AlertModel
 from app.database.database import AlertsDataBase
 from app.database.user_info_model import UserInfoModel
+from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
-from app.models import FilterProperty
+from app.models import AcledRequest, RasterGeotiffModel
 from app.timer import timed
 from app.validation import validate_intersect_parameter
-from app.zonal_stats import GroupBy, calculate_stats, get_wfs_response
+from app.zonal_stats import DEFAULT_STATS, GroupBy, calculate_stats, get_wfs_response
 from fastapi import Depends, FastAPI, HTTPException, Path, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import EmailStr, HttpUrl
+from pydantic import EmailStr, HttpUrl, ValidationError
+from requests import get
 
+from .geotiff_from_stac_api import get_geotiff
 from .models import AlertsModel, StatsModel
 
 logging.basicConfig(level=logging.DEBUG)
@@ -142,7 +146,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     features = _calculate_stats(
         zones,
         geotiff,
-        stats=" ".join(["min", "max", "mean", "median", "sum", "std"]),
+        stats=" ".join(DEFAULT_STATS),
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
@@ -158,14 +162,57 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
     return features
 
 
+@app.get("/acled")
+def get_acled_incidents(
+    iso: int,
+    limit: int,
+    fields: Optional[str] = None,
+    event_date: Optional[date] = None,
+):
+    acled_url = "https://api.acleddata.com/acled/read"
+
+    try:
+        params = AcledRequest(
+            iso=iso,
+            limit=limit,
+            fields=fields,
+            event_date=event_date,
+        )
+    except ValidationError as error:
+        raise HTTPException(status_code=422, detail=str(error))
+
+    # Make a new request to acled api including the credentials.
+    response = get(acled_url, params=params.dict())
+    response.raise_for_status()
+
+    return Response(content=response.content)
+
+
+@app.get("/hdc")
+def wrap_get_hdc_stats(
+    level: str, admin_id: str, coverage: str, vam: str, start: str, end: str
+):
+    return JSONResponse(
+        content=get_hdc_stats(
+            level=level,
+            admin_id=admin_id,
+            coverage=coverage,
+            vam=vam,
+            start=start,
+            end=end,
+        )
+    )
+
+
 @app.get("/kobo/dates")
 def get_kobo_form_dates(
     koboUrl: HttpUrl,
     formId: str,
     datetimeField: str,
+    filters: Optional[str] = None,
 ):
     """Get all form response dates."""
-    return get_form_dates(koboUrl, formId, datetimeField)
+    return get_form_dates(koboUrl, formId, datetimeField, filters)
 
 
 @app.get("/kobo/forms")
@@ -214,7 +261,7 @@ def get_kobo_forms(
 def alert_by_id(
     email: EmailStr,
     deactivate: Optional[bool] = None,
-    id: int = Path(1, description="The ID of the alert (an integer)"),
+    id: int = Path(description="The ID of the alert (an integer)"),
 ) -> Response:
     """Get alert with an ID."""
 
@@ -309,7 +356,7 @@ def stats_demo(
     features = _calculate_stats(
         zones_filepath,
         geotiff,
-        stats=" ".join(["min", "max", "mean", "median", "sum", "std"]),
+        stats=" ".join(DEFAULT_STATS),
         prefix="stats_",
         group_by=group_by,
         geojson_out=geojson_out,
@@ -320,3 +367,21 @@ def stats_demo(
 
     # TODO - Properly encode before returning. Mongolian characters are returned as hex.
     return features
+
+
+@app.post("/raster_geotiff", responses={500: {"description": "Internal server error"}})
+def post_raster_geotiff(raster_geotiff: RasterGeotiffModel):
+    """Get the geotiff of a raster"""
+    collection = raster_geotiff.collection
+    bbox = (
+        raster_geotiff.lat_min,
+        raster_geotiff.long_min,
+        raster_geotiff.lat_max,
+        raster_geotiff.long_max,
+    )
+    date = raster_geotiff.date
+    presigned_download_url = get_geotiff(collection, bbox, date)
+
+    return JSONResponse(
+        content={"download_url": presigned_download_url}, status_code=200
+    )

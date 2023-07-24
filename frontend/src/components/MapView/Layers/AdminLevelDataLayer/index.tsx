@@ -1,37 +1,38 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { get } from 'lodash';
+import React, { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { GeoJSONLayer } from 'react-mapbox-gl';
 import {
   AdminLevelDataLayerProps,
   BoundaryLayerProps,
   LayerKey,
-} from '../../../../config/types';
-import {
-  LayerData,
-  loadLayerData,
-} from '../../../../context/layers/layer-data';
+} from 'config/types';
+import { LayerData, loadLayerData } from 'context/layers/layer-data';
 import {
   layerDataSelector,
   mapSelector,
-} from '../../../../context/mapStateSlice/selectors';
-import { addLayer, removeLayer } from '../../../../context/mapStateSlice';
-import { addPopupData } from '../../../../context/tooltipStateSlice';
-import { useDefaultDate } from '../../../../utils/useDefaultDate';
-import { getFeatureInfoPropsData } from '../../utils';
-import { getBoundaryLayers, LayerDefinitions } from '../../../../config/utils';
-import { addNotification } from '../../../../context/notificationStateSlice';
+} from 'context/mapStateSlice/selectors';
+import { addLayer, removeLayer } from 'context/mapStateSlice';
+import { useDefaultDate } from 'utils/useDefaultDate';
+import { getBoundaryLayers, LayerDefinitions } from 'config/utils';
+import { addNotification } from 'context/notificationStateSlice';
+import { firstBoundaryOnView, isLayerOnView } from 'utils/map-utils';
+import { useSafeTranslation } from 'i18n';
+import { fillPaintData } from 'components/MapView/Layers/styles';
+import { availableDatesSelector } from 'context/serverStateSlice';
+import { getRequestDate } from 'utils/server-utils';
 import {
-  firstBoundaryOnView,
-  isLayerOnView,
-} from '../../../../utils/map-utils';
-import { getRoundedData } from '../../../../utils/data-utils';
-import { useSafeTranslation } from '../../../../i18n';
-import { fillPaintData } from '../styles';
-import { availableDatesSelector } from '../../../../context/serverStateSlice';
-import { getRequestDate } from '../../../../utils/server-utils';
+  addPopupParams,
+  legendToStops,
+} from 'components/MapView/Layers/layer-utils';
+import { convertSvgToPngBase64Image, getSVGShape } from 'utils/image-utils';
 
-function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
+function AdminLevelDataLayers({
+  layer,
+  before,
+}: {
+  layer: AdminLevelDataLayerProps;
+  before?: string;
+}) {
   const dispatch = useDispatch();
   const map = useSelector(mapSelector);
   const serverAvailableDates = useSelector(availableDatesSelector);
@@ -48,6 +49,62 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
   const { data } = layerData || {};
   const { features } = data || {};
   const { t } = useSafeTranslation();
+
+  const createFillPatternsForLayerLegends = useCallback(async () => {
+    return Promise.all(
+      legendToStops(layer.legend).map(async legendToStop => {
+        return convertSvgToPngBase64Image(
+          getSVGShape(legendToStop[1] as string, layer.fillPattern),
+        );
+      }),
+    );
+  }, [layer.fillPattern, layer.legend]);
+
+  const addFillPatternImageInMap = useCallback(
+    (index: number, convertedImage?: string) => {
+      if (!map || !layer.fillPattern || !convertedImage) {
+        return;
+      }
+      map.loadImage(
+        convertedImage,
+        (
+          err: any,
+          image:
+            | HTMLImageElement
+            | ArrayBufferView
+            | {
+                width: number;
+                height: number;
+                data: Uint8Array | Uint8ClampedArray;
+              }
+            | ImageData
+            | ImageBitmap,
+        ) => {
+          // Throw an error if something goes wrong.
+          if (err) {
+            throw err;
+          }
+          // Add the image to the map style.
+          map.addImage(`fill-pattern-${layer.id}-legend-${index}`, image);
+        },
+      );
+    },
+    [layer.fillPattern, layer.id, map],
+  );
+
+  const addFillPatternImagesInMap = useCallback(async () => {
+    const fillPatternsForLayer = await createFillPatternsForLayerLegends();
+    fillPatternsForLayer.forEach((base64Image, index) => {
+      addFillPatternImageInMap(index, base64Image);
+    });
+  }, [addFillPatternImageInMap, createFillPatternsForLayerLegends]);
+
+  useEffect(() => {
+    if (isLayerOnView(map, layer.id)) {
+      return;
+    }
+    addFillPatternImagesInMap();
+  }, [addFillPatternImagesInMap, layer.id, map]);
 
   useEffect(() => {
     // before loading layer check if it has unique boundary?
@@ -78,7 +135,7 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
     if (!features) {
       dispatch(loadLayerData({ layer, date: queryDate }));
     }
-  }, [dispatch, features, layer, queryDate, boundaryId, map]);
+  }, [boundaryId, dispatch, features, layer, map, queryDate]);
 
   if (!features) {
     return null;
@@ -90,26 +147,12 @@ function AdminLevelDataLayers({ layer }: { layer: AdminLevelDataLayerProps }) {
 
   return (
     <GeoJSONLayer
-      before={`layer-${boundaryId}-line`}
+      before={before || `layer-${boundaryId}-line`}
       id={`layer-${layer.id}`}
       data={features}
-      fillPaint={fillPaintData(layer)}
+      fillPaint={fillPaintData(layer, 'data', layer?.fillPattern)}
       fillOnClick={async (evt: any) => {
-        // by default add `data_field` to the tooltip
-        dispatch(
-          addPopupData({
-            [layer.title]: {
-              data: getRoundedData(get(evt.features[0], 'properties.data'), t),
-              coordinates: evt.lngLat,
-            },
-          }),
-        );
-        // then add feature_info_props as extra fields to the tooltip
-        dispatch(
-          addPopupData(
-            getFeatureInfoPropsData(layer.featureInfoProps || {}, evt),
-          ),
-        );
+        addPopupParams(layer, dispatch, evt, t, true);
       }}
     />
   );

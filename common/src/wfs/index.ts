@@ -8,14 +8,14 @@ import {
 import FeatureLayer from "./layer";
 
 export class WFS extends Base {
+  version = "1.0.0"; // default version
+
   async getLayerIds() {
-    const caps = await this.capabilities;
-    return parseFullFeatureTypeNames(caps);
+    return parseFullFeatureTypeNames(await this.getCapabilities());
   }
 
   async getLayerNames() {
-    const caps = await this.capabilities;
-    return getFeatureTypesFromCapabilities(caps).map(
+    return getFeatureTypesFromCapabilities(await this.getCapabilities()).map(
       (featureType) => featureType.name.short
     );
   }
@@ -23,7 +23,7 @@ export class WFS extends Base {
   async getLayer(layerId: string): Promise<FeatureLayer> {
     this.checkLayer(layerId);
     return new FeatureLayer({
-      capabilities: this.capabilities,
+      capabilities: await this.getCapabilities(),
       id: layerId,
       fetch: this.fetch,
     });

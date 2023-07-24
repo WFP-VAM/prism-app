@@ -1,16 +1,18 @@
-version: '3'
+version: "3"
 
 services:
   api:
     build: ./
     volumes:
-      - './cache:/cache:rw'
-      - ./.flake8:/app/.flake8:ro
+      - "./cache:/cache:rw"
       - ./app:/usr/local/lib/python3.9/site-packages/app:ro
     environment:
       - WORKERS_PER_CORE=1
-      # Kobo credentials
+      # External services credentials
       - KOBO_USERNAME=${KOBO_USERNAME:-kobo_user}
       - KOBO_PW
+      - ACLED_API_KEY=${ACLED_API_KEY:-changeme}
+      - ACLED_API_EMAIL=${ACLED_API_EMAIL:-changeme}
+      - HDC_TOKEN
       # Alerts database
       - DATABASE_URL

@@ -780,7 +780,7 @@
         "color": "#d7191c"
       }
     ],
-    "legend_text": "Average price of bale of hay (20kg) for sale in the soum emergency reserve (10 Jan - 29 April 2020). Source: Mobile data monitoring system"
+    "legend_text": "Monthly average price of bale of hay (20kg) for sale in the soum markets. Source: National Statistical Office"
   },
   "DzudRiskMap": {
     "title": "Dzud risk",
@@ -822,6 +822,11 @@
     "threshold": {
       "below": -25
     },
+    "api": {
+      "url": "https://prism-api.ovio.org/stats",
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
+      "group_by": "ADM2_PCODE"
+    },
     "opacity": 0.7,
     "legend_text": "Number of herder households within a soum where the median pasture anomaly is <= -25%",
     "legend": [
@@ -855,6 +860,11 @@
     "operation": "median",
     "threshold": {
       "above": 3
+    },
+    "api": {
+      "url": "https://prism-api.ovio.org/stats",
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
+      "group_by": "ADM1_PCODE"
     },
     "opacity": 0.7,
     "legend_text": "Number of small herder households within an aimag with very high risk of dzud",
@@ -946,6 +956,11 @@
     "baseline_layer": "livestock",
     "threshold": {
       "below": -25
+    },
+    "api": {
+      "url": "https://prism-api.ovio.org/stats",
+      "zones_url": "https://prism-admin-boundaries.s3.us-east-2.amazonaws.com/mng_admin_boundaries.json",
+      "group_by": "ADM2_PCODE"
     },
     "opacity": 0.7,
     "legend_text": "Number of livestock (in thousands) within a soum with average temperatures below -25 Celsius",

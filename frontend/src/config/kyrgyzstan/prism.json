@@ -1,5 +1,6 @@
 {
   "country": "Kyrgyzstan",
+  "countryAdmin0Id": 138,
   "icons": {
     "exposure": "icon_basemap.png",
     "hazards": "icon_flood.png",
@@ -16,14 +17,9 @@
   },
   "alertFormActive": false,
   "map": {
-    "latitude": 41.256,
-    "longitude": 74.757,
-    "zoom": 6.3
+    "boundingBox": [68, 39.28, 80.26, 43.3]
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms",
@@ -139,10 +135,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -206,34 +199,18 @@
       ]
     },
     "snow": {
-      "snow_conditions": [
-        "snow_cover",
-        "modis_snow_percentage"
-      ]
+      "snow_conditions": ["snow_cover", "modis_snow_percentage"]
     },
     "floods_and_mudflows": {
-      "": [
-        "flood_mudflows"
-      ]
+      "": ["flood_mudflows"]
     },
     "vulnerability": {
-      "": [
-        "poverty"
-      ]
+      "": ["poverty"]
     },
     "exposure": {
-      "population": [
-        "population"
-      ],
-      "crops": [
-        "wheat",
-        "potato",
-        "veg",
-        "fruit"
-      ],
-      "livestock": [
-        "livestock"
-      ]
+      "population": ["population"],
+      "crops": ["wheat", "potato", "veg", "fruit"],
+      "livestock": ["livestock"]
     }
   }
 }

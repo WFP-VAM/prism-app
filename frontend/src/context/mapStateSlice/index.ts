@@ -1,8 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { LayerKey, LayerType } from '../../config/types';
-import { LayerDefinitions } from '../../config/utils';
-import { LayerData, LayerDataTypes, loadLayerData } from '../layers/layer-data';
+import { LayerKey, LayerType } from 'config/types';
+import { LayerDefinitions } from 'config/utils';
+import {
+  LayerData,
+  LayerDataTypes,
+  loadLayerData,
+} from 'context/layers/layer-data';
+import { BoundaryRelationsDict } from 'components/Common/BoundaryDropdown/utils';
+import { keepLayer } from 'utils/keep-layer-utils';
 
 interface DateRange {
   startDate?: number;
@@ -21,6 +27,7 @@ export type MapState = {
   // Note that layerData is mainly for storing vector map data.
   // Tile image loading for raster layer is tracked separately on mapTileLoadingStateSlice
   loadingLayerIds: LayerKey[];
+  boundaryRelationData: BoundaryRelationsDict;
 };
 
 // MapboxGL's map type contains some kind of cyclic dependency that causes an infinite loop in immers's change
@@ -35,15 +42,49 @@ const initialState: MapState = {
   errors: [],
   layersData: [],
   loadingLayerIds: [],
+  boundaryRelationData: {},
 };
 
-function keepLayer(layer: LayerType, payload: LayerType) {
-  // Simple function to control which layers can overlap.
-  return (
-    payload.id !== layer.id &&
-    (payload.type !== layer.type || payload.type === 'boundary')
-  );
-}
+const getTypeOrder = (layer: LayerType) => {
+  if (layer.type === 'admin_level_data' && layer.fillPattern) {
+    return 'pattern_admin_level_data';
+  }
+  if (layer.type === 'wms' && layer.geometry) {
+    return 'polygon';
+  }
+  return layer.type;
+};
+
+// Order layers to keep boundaries and point_data on top. boundaries first.
+export const layerOrdering = (a: LayerType, b: LayerType) => {
+  // Dictionary with all the available layerTypes
+  // Note: polygon is layer.type === 'wms' && layer.geometry
+  const order: {
+    [key in
+      | 'boundary'
+      | 'wms'
+      | 'admin_level_data'
+      | 'pattern_admin_level_data'
+      | 'impact'
+      | 'point_data'
+      | 'polygon'
+      | 'static_raster']: number;
+  } = {
+    point_data: 0,
+    polygon: 1,
+    boundary: 2,
+    pattern_admin_level_data: 3,
+    admin_level_data: 4,
+    impact: 5,
+    wms: 6,
+    static_raster: 7,
+  };
+
+  const typeA = getTypeOrder(a);
+  const typeB = getTypeOrder(b);
+
+  return order[typeA] - order[typeB];
+};
 
 export const mapStateSlice = createSlice({
   name: 'mapState',
@@ -98,6 +139,14 @@ export const mapStateSlice = createSlice({
     setMap: (state, { payload }: PayloadAction<MapGetter>) => ({
       ...state,
       mapboxMap: payload,
+    }),
+
+    setBoundaryRelationData: (
+      state,
+      { payload }: PayloadAction<BoundaryRelationsDict>,
+    ) => ({
+      ...state,
+      boundaryRelationData: payload,
     }),
 
     dismissError: (
@@ -164,6 +213,7 @@ export const {
   // TODO unused
   updateLayerOpacity,
   removeLayerData,
+  setBoundaryRelationData,
 } = mapStateSlice.actions;
 
 export default mapStateSlice.reducer;

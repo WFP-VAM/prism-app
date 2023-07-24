@@ -3,13 +3,13 @@ import {
   DatasetLevel,
   BoundaryLayerProps,
   WMSLayerProps,
-} from '../config/types';
+} from 'config/types';
 import {
   getBoundaryLayerSingleton,
   getDisplayBoundaryLayers,
-} from '../config/utils';
-
-import { AdminBoundaryParams } from '../context/datasetStateSlice';
+} from 'config/utils';
+import { AdminBoundaryParams } from 'context/datasetStateSlice';
+import { CHART_API_URL } from './constants';
 
 export function getAdminLevelLayer(
   adminLevel: AdminLevelType = 1,
@@ -21,14 +21,14 @@ export function getAdminLevelLayer(
   );
 }
 
-export function getAdminLayerURL(adminLevel: AdminLevelType = 1): string {
-  const adminLayer = getAdminLevelLayer(adminLevel);
-  return adminLayer.path;
-}
-
 export function getAdminNameProperty(adminLevel: AdminLevelType = 1): string {
   const { adminLevelNames } = getBoundaryLayerSingleton();
   return adminLevelNames[adminLevel - 1];
+}
+
+export function getLowestAdminLevelName(): string {
+  const { adminLevelNames } = getBoundaryLayerSingleton();
+  return adminLevelNames[adminLevelNames.length - 1];
 }
 
 // get the total number of admin levels available
@@ -50,8 +50,12 @@ export const getChartAdminBoundaryParams = (
 ): AdminBoundaryParams => {
   const { serverLayerName, chartData } = layer;
 
-  const { levels, url, fields: datasetFields } = chartData!;
+  const { levels, url: chartUrl, fields: datasetFields } = chartData!;
 
+  // Take in chart url if provided, otherwise use default CHART_API_URL
+  const url = chartUrl || CHART_API_URL;
+
+  // TODO - why not reduce this by level directly?
   const boundaryProps = levels.reduce(
     (obj, item) => ({
       ...obj,

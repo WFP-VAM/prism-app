@@ -1,11 +1,15 @@
-import { Feature, MultiPolygon, point } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
-import * as GeoTIFF from 'geotiff';
+import { Feature, MultiPolygon, point } from '@turf/helpers';
 import { buffer } from 'd3-fetch';
+import * as GeoTIFF from 'geotiff';
 import { Map as MapBoxMap } from 'mapbox-gl';
-import { createGetMapUrl, formatUrl } from 'prism-common';
-import { WcsGetCoverageVersion, WMSLayerProps } from '../../../config/types';
+import { createGetMapUrl } from 'prism-common';
+import { Dispatch } from 'redux';
+import { BACKEND_URL } from 'utils/constants';
+import { fetchWithTimeout } from 'utils/fetch-with-timeout';
+import { LocalError } from 'utils/error-utils';
+import { addNotification } from 'context/notificationStateSlice';
 
 export type TransformMatrix = [number, number, number, number, number, number];
 export type TypedArray =
@@ -61,16 +65,6 @@ export type GeoTiffImage = {
   }) => Promise<Rasters>;
 };
 
-function numberOfTiles(
-  min: number,
-  max: number,
-  resolution: number,
-  pixelsPerTile: number,
-) {
-  const range = max - min;
-  return Math.ceil((range * resolution) / pixelsPerTile);
-}
-
 export function getWMSUrl(
   baseUrl: string,
   layerName: string,
@@ -86,154 +80,6 @@ export function getWMSUrl(
     version: '1.1.1',
     ...override,
   });
-}
-export function getWCSv1Url(
-  baseUrl: string,
-  layerName: string,
-  date: string | undefined,
-  xRange: readonly [number, number],
-  yRange: readonly [number, number],
-  width: number,
-  height?: number,
-) {
-  const params = {
-    service: 'WCS',
-    request: 'GetCoverage',
-    version: '1.0.0',
-    coverage: layerName,
-    crs: 'EPSG:4326',
-    bbox: [xRange[0], yRange[0], xRange[1], yRange[1]]
-      .map(v => v.toFixed(1))
-      .join(','),
-    width: width.toString(),
-    height: (height || width).toString(),
-    format: 'GeoTIFF',
-    ...(date && {
-      time: date,
-    }),
-  };
-  return formatUrl(baseUrl, params);
-}
-
-export function getWCSv2Url(
-  layer: WMSLayerProps,
-  date: string | undefined,
-  extent: Extent,
-) {
-  const params = {
-    service: 'WCS',
-    request: 'GetCoverage',
-    version: layer.wcsConfig?.version,
-    coverageId: layer.serverLayerName,
-  };
-
-  // Subsets are used as spatial and temporal filters.
-  // For mote info: https://docs.geoserver.geo-solutions.it/edu/en/wcs/get.html
-  const spatialSubsets: string[] = [
-    `Long(${extent[0]},${extent[2]})`,
-    `Lat(${extent[1]},${extent[3]})`,
-  ];
-
-  const subsets = date
-    ? [...spatialSubsets, `time("${date}")`]
-    : spatialSubsets;
-
-  const formattedUrl = formatUrl(layer.baseUrl, params);
-
-  const formattedSubsets = subsets.map(s => `subset=${s}`).join('&');
-
-  return `${formattedUrl}&${formattedSubsets}`;
-}
-
-export function WCSRequestUrl(
-  layer: WMSLayerProps,
-  date: string | undefined,
-  extent: Extent,
-  maxPixels = 5096,
-) {
-  const { baseUrl, serverLayerName, wcsConfig } = layer;
-  const [minX, minY, maxX, maxY] = extent;
-
-  if (minX > maxX || minY > maxY) {
-    throw new Error(
-      `Could not generate WCS request for ${baseUrl}/${serverLayerName}: the extent ${extent} seems malformed or else may contain "wrapping" which is not implemented in the function 'WCSRequestUrl'`,
-    );
-  }
-
-  if (wcsConfig?.version === WcsGetCoverageVersion.twoZeroZero) {
-    return getWCSv2Url(layer, date, extent);
-  }
-
-  const resolution = wcsConfig?.pixelResolution || 256;
-
-  // Get our image width & height at either the desired resolution or a down-sampled resolution if the resulting
-  // dimensions would exceed our `maxPixels` in height or width
-  const xRange = maxX - minX;
-  const yRange = maxY - minY;
-
-  const maxDim = Math.min(maxPixels, xRange * resolution, yRange * resolution);
-  const scale = maxDim / Math.max(xRange, yRange);
-
-  const width = Math.ceil(xRange * scale);
-  const height = Math.ceil(yRange * scale);
-
-  return getWCSv1Url(
-    baseUrl,
-    serverLayerName,
-    date,
-    [minX, maxX],
-    [minY, maxY],
-    width,
-    height,
-  );
-}
-
-/**
- * Generates an array of WCS URLs to request GeoTiff tiles based on the given extent and pixel resolution.
- *
- * @param baseUrl Base resource URL
- * @param layerName ID of coverage/layer to get on the server
- * @param date
- * @param extent Full extent of the area to get coverage images for
- * @param resolution pixels per degree lat/long
- * @param pixelsPerTile
- */
-export function WCSTileUrls(
-  baseUrl: string,
-  layerName: string,
-  date: string,
-  extent: Extent,
-  resolution = 256,
-  pixelsPerTile = 512,
-): string[] {
-  // Set up tile grid in x/y.
-  const [minX, minY, maxX, maxY] = extent;
-  if (minX > maxX || minY > maxY) {
-    throw new Error(
-      `Could not generate tile grid for ${baseUrl}/${layerName}: the extent ${extent} seems malformed or else may contain "wrapping" which is not implemented in the function 'WCSTileUrls'`,
-    );
-  }
-
-  const degPerTile = pixelsPerTile / resolution;
-
-  const xTiles = numberOfTiles(minX, maxX, resolution, pixelsPerTile);
-  const yTiles = numberOfTiles(minY, maxY, resolution, pixelsPerTile);
-
-  return [...Array(xTiles)]
-    .map((_1, xIdx) => {
-      const x = [
-        xIdx * degPerTile + minX,
-        (xIdx + 1) * degPerTile + minX,
-      ] as const;
-      return [...Array(yTiles)].map((_2, yIdx) => {
-        const y = [
-          yIdx * degPerTile + minY,
-          (yIdx + 1) * degPerTile + minY,
-        ] as const;
-        return getWCSv1Url(baseUrl, layerName, date, x, y, pixelsPerTile);
-      });
-    })
-    .flat();
 }
 
 export function getTransform(geoTiffImage: GeoTiffImage): TransformMatrix {
@@ -305,22 +151,6 @@ export function featureIntersectsImage(
   );
 }
 
-export function filterPointsByFeature(
-  rasterPoints: { x: number; y: number; value: number }[],
-  feature: GeoJsonBoundary,
-) {
-  const [minX, minY, maxX, maxY] = bbox(feature);
-  return rasterPoints.filter(({ x, y }) => {
-    return (
-      x > minX &&
-      x < maxX &&
-      y > minY &&
-      y < maxY &&
-      booleanPointInPolygon(point([x, y]), feature)
-    );
-  });
-}
-
 export function pixelsInFeature(
   feature: GeoJsonBoundary,
   pixels: TypedArray,
@@ -365,4 +195,60 @@ export function getExtent(map?: MapBoxMap): Extent {
   const maxY = bounds?.getNorth();
 
   return [minX, minY, maxX, maxY].map(val => val || 0) as Extent;
+}
+
+export async function downloadGeotiff(
+  collection: string,
+  boundingBox: Extent | undefined,
+  date: string,
+  dispatch: Dispatch,
+  callback: () => void,
+) {
+  try {
+    if (!boundingBox) {
+      throw new LocalError(
+        `Missing bounding box: ${collection} Geotiff couldn't be downloaded`,
+      );
+    }
+    const body = {
+      collection,
+      lat_min: boundingBox[0],
+      long_min: boundingBox[1],
+      lat_max: boundingBox[2],
+      long_max: boundingBox[3],
+      date,
+    };
+    const response = await fetchWithTimeout(
+      `${BACKEND_URL}/raster_geotiff`,
+      dispatch,
+      {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        // body data type must match "Content-Type" header
+        body: JSON.stringify(body),
+      },
+      `Request failed for downloading Geotiff at ${BACKEND_URL}/raster_geotiff`,
+    );
+    const responseJson = await response.json();
+
+    const link = document.createElement('a');
+    link.setAttribute('href', responseJson.download_url);
+    link.click();
+  } catch (error) {
+    if (error instanceof LocalError) {
+      console.error(error);
+      dispatch(
+        addNotification({
+          message: error.message,
+          type: 'warning',
+        }),
+      );
+    }
+  } finally {
+    callback();
+  }
 }

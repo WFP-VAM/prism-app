@@ -1,17 +1,11 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "../data/jordan/jor_admbnda_adm2_jdos.json",
+    "path": "data/jordan/jor_admbnda_adm3_jdos_merged.json",
     "opacity": 0.8,
-    "admin_code": "admin2Pcod",
-    "admin_level_names": [
-      "admin1Name",
-      "admin2Name"
-    ],
-    "admin_level_local_names": [
-      "admin1Na_1",
-      "admin2Na_1"
-    ],
+    "admin_code": "admin3Pcod",
+    "admin_level_names": ["admin1Name", "admin2Name", "admin3Name"],
+    "admin_level_local_names": ["admin1Na_1", "admin2Na_1", "admin3Na_1"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -19,6 +13,24 @@
       "line": {
         "line-color": "gray",
         "line-width": 1,
+        "line-opacity": 0.8
+      }
+    }
+  },
+  "admin2_boundaries": {
+    "type": "boundary",
+    "path": "data/jordan/jor_admbnda_adm2_jdos.json",
+    "opacity": 0.8,
+    "admin_code": "admin2Pcod",
+    "admin_level_names": ["admin1Name", "admin2Name"],
+    "admin_level_local_names": ["admin1Na_1", "admin2Na_1"],
+    "styles:": {
+      "fill": {
+        "fill-opacity": 0
+      },
+      "line": {
+        "line-color": "gray",
+        "line-width": 1.5,
         "line-opacity": 0.8
       }
     }
@@ -36,7 +48,7 @@
       },
       "line": {
         "line-color": "gray",
-        "line-width": 3,
+        "line-width": 2,
         "line-opacity": 0.8
       }
     }
@@ -56,46 +68,57 @@
     "legend_text": "1-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -116,46 +139,57 @@
     "legend_text": "3-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -176,46 +210,57 @@
     "legend_text": "6-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -236,46 +281,57 @@
     "legend_text": "9-month Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
       }
@@ -296,552 +352,59 @@
     "legend_text": "1-year Standardized Precipitation Index calculated from dekadal CHIRPS data",
     "legend": [
       {
+        "value": -2.01,
         "label": "< -2",
         "color": "#730000"
       },
       {
+        "value": -2,
         "label": "-1.5 to -2",
         "color": "#e70001"
       },
       {
+        "value": -1.5,
         "label": "-1.2 to -1.5",
         "color": "#ffaa01"
       },
       {
+        "value": -1.2,
         "label": "-0.7 to -1.2",
         "color": "#ffd37b"
       },
       {
+        "value": -0.7,
         "label": "-0.5 to -0.7",
         "color": "#ffff02"
       },
       {
+        "value": -0.5,
         "label": "0.5 to -0.5 ",
         "color": "#f0f0f0"
       },
       {
+        "value": 0.5,
         "label": "0.5 to 0.7",
         "color": "#beebff"
       },
       {
+        "value": 0.7,
         "label": "0.7 to 1.2",
         "color": "#73b2ff"
       },
       {
+        "value": 1.2,
         "label": "1.2 to 1.5",
         "color": "#0271ff"
       },
       {
+        "value": 1.5,
         "label": "1.5 to 2.0",
         "color": "#004dad"
       },
       {
+        "value": 2,
         "label": "> 2.0",
         "color": "#ad03e6"
-      }
-    ]
-  },
-  "rain_anomaly_dekad": {
-    "title": "10-day rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "rfq_dekad",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 20%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 20,
-        "label": "20-40%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 40,
-        "label": "40-60%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 90,
-        "label": "90-110%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#befafa"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 150,
-        "label": "150-200%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 200,
-        "label": "200-300%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 300,
-        "label": "300-400%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 400,
-        "label": "> 400%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "rain_anomaly_1month": {
-    "title": "Monthly rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "r1q_dekad",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 20%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 20,
-        "label": "20-40%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 40,
-        "label": "40-60%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 90,
-        "label": "90-110%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#befafa"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 150,
-        "label": "150-200%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 200,
-        "label": "200-300%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 300,
-        "label": "300-400%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 400,
-        "label": "> 400%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "rain_anomaly_3month": {
-    "title": "3-month rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "r3q_dekad",
-    "additional_query_params": {
-      "styles": "rfq_14_20_400"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 20%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 20,
-        "label": "20-40%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 40,
-        "label": "40-60%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 90,
-        "label": "90-110%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#befafa"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 150,
-        "label": "150-200%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 200,
-        "label": "200-300%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 300,
-        "label": "300-400%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 400,
-        "label": "> 400%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "rain_anomaly_6month": {
-    "title": "6-month rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "r6q_dekad",
-    "additional_query_params": {
-      "styles": "ryq_14_50_200"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 50%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 50,
-        "label": "50-60%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 90,
-        "label": "90-95%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 95,
-        "label": "95-105%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 105,
-        "label": "105-110%",
-        "color": "#befafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-170%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 170,
-        "label": "170-200%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 200,
-        "label": "> 200%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "rain_anomaly_9month": {
-    "title": "9-month rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "r9q_dekad",
-    "additional_query_params": {
-      "styles": "ryq_14_50_200"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 50%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 50,
-        "label": "50-60%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 90,
-        "label": "90-95%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 95,
-        "label": "95-105%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 105,
-        "label": "105-110%",
-        "color": "#befafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-170%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 170,
-        "label": "170-200%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 200,
-        "label": "> 200%",
-        "color": "#a002fa"
-      }
-    ]
-  },
-  "rain_anomaly_1year": {
-    "title": "1-year rainfall anomaly",
-    "type": "wms",
-    "server_layer_name": "ryq_dekad",
-    "additional_query_params": {
-      "styles": "ryq_14_50_200"
-    },
-    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
-    "date_interval": "days",
-    "opacity": 0.7,
-    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
-    "legend": [
-      {
-        "value": 0,
-        "label": "< 50%",
-        "color": "#8c4800"
-      },
-      {
-        "value": 50,
-        "label": "50-60%",
-        "color": "#af6b27"
-      },
-      {
-        "value": 60,
-        "label": "60-70%",
-        "color": "#d58c3e"
-      },
-      {
-        "value": 70,
-        "label": "70-80%",
-        "color": "#eaa83d"
-      },
-      {
-        "value": 80,
-        "label": "80-90%",
-        "color": "#f5c878"
-      },
-      {
-        "value": 90,
-        "label": "90-95%",
-        "color": "#fff0c4"
-      },
-      {
-        "value": 95,
-        "label": "95-105%",
-        "color": "#fafafa"
-      },
-      {
-        "value": 105,
-        "label": "105-110%",
-        "color": "#befafa"
-      },
-      {
-        "value": 110,
-        "label": "110-120%",
-        "color": "#78e2f0"
-      },
-      {
-        "value": 120,
-        "label": "120-130%",
-        "color": "#00b9de"
-      },
-      {
-        "value": 130,
-        "label": "130-150%",
-        "color": "#0083f3"
-      },
-      {
-        "value": 150,
-        "label": "150-170%",
-        "color": "#0052cd"
-      },
-      {
-        "value": 170,
-        "label": "170-200%",
-        "color": "#0000c8"
-      },
-      {
-        "value": 200,
-        "label": "> 200%",
-        "color": "#a002fa"
       }
     ]
   },
@@ -851,6 +414,25 @@
     "server_layer_name": "rfh_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_300"
+    },
+    "chart_data": {
+      "fields": [
+        { "key": "rfh", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "rfh_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "bar"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -939,6 +521,114 @@
       }
     ]
   },
+  "rain_anomaly_dekad": {
+    "title": "10-day rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "rfq_dekad",
+    "additional_query_params": {
+      "styles": "rfq_14_20_400"
+    },
+    "chart_data": {
+      "fields": [
+        { "key": "rfq", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "line"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "10-day precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 20%",
+        "color": "#8c4800"
+      },
+      {
+        "value": 20,
+        "label": "20-40%",
+        "color": "#af6b27"
+      },
+      {
+        "value": 40,
+        "label": "40-60%",
+        "color": "#d58c3e"
+      },
+      {
+        "value": 60,
+        "label": "60-70%",
+        "color": "#eaa83d"
+      },
+      {
+        "value": 70,
+        "label": "70-80%",
+        "color": "#f5c878"
+      },
+      {
+        "value": 80,
+        "label": "80-90%",
+        "color": "#fff0c4"
+      },
+      {
+        "value": 90,
+        "label": "90-110%",
+        "color": "#fafafa"
+      },
+      {
+        "value": 110,
+        "label": "110-120%",
+        "color": "#befafa"
+      },
+      {
+        "value": 120,
+        "label": "120-130%",
+        "color": "#78e2f0"
+      },
+      {
+        "value": 130,
+        "label": "130-150%",
+        "color": "#00b9de"
+      },
+      {
+        "value": 150,
+        "label": "150-200%",
+        "color": "#0083f3"
+      },
+      {
+        "value": 200,
+        "label": "200-300%",
+        "color": "#0052cd"
+      },
+      {
+        "value": 300,
+        "label": "300-400%",
+        "color": "#0000c8"
+      },
+      {
+        "value": 400,
+        "label": "> 400%",
+        "color": "#a002fa"
+      }
+    ]
+  },
   "rainfall_agg_1month": {
     "title": "1-month rainfall aggregate (mm)",
     "type": "wms",
@@ -946,6 +636,25 @@
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "additional_query_params": {
       "styles": "rfh_16_0_400"
+    },
+    "chart_data": {
+      "fields": [
+        { "key": "r1h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r1h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "bar"
     },
     "date_interval": "days",
     "opacity": 0.7,
@@ -1033,12 +742,139 @@
       }
     ]
   },
+  "rain_anomaly_1month": {
+    "title": "Monthly rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r1q_dekad",
+    "additional_query_params": {
+      "styles": "rfq_14_20_400"
+    },
+    "chart_data": {
+      "fields": [
+        { "key": "r1q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "line"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "Monthly precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 20%",
+        "color": "#8c4800"
+      },
+      {
+        "value": 20,
+        "label": "20-40%",
+        "color": "#af6b27"
+      },
+      {
+        "value": 40,
+        "label": "40-60%",
+        "color": "#d58c3e"
+      },
+      {
+        "value": 60,
+        "label": "60-70%",
+        "color": "#eaa83d"
+      },
+      {
+        "value": 70,
+        "label": "70-80%",
+        "color": "#f5c878"
+      },
+      {
+        "value": 80,
+        "label": "80-90%",
+        "color": "#fff0c4"
+      },
+      {
+        "value": 90,
+        "label": "90-110%",
+        "color": "#fafafa"
+      },
+      {
+        "value": 110,
+        "label": "110-120%",
+        "color": "#befafa"
+      },
+      {
+        "value": 120,
+        "label": "120-130%",
+        "color": "#78e2f0"
+      },
+      {
+        "value": 130,
+        "label": "130-150%",
+        "color": "#00b9de"
+      },
+      {
+        "value": 150,
+        "label": "150-200%",
+        "color": "#0083f3"
+      },
+      {
+        "value": 200,
+        "label": "200-300%",
+        "color": "#0052cd"
+      },
+      {
+        "value": 300,
+        "label": "300-400%",
+        "color": "#0000c8"
+      },
+      {
+        "value": 400,
+        "label": "> 400%",
+        "color": "#a002fa"
+      }
+    ]
+  },
   "rainfall_agg_3month": {
     "title": "3-month rainfall aggregate (mm)",
     "type": "wms",
     "server_layer_name": "r3h_dekad",
     "additional_query_params": {
       "styles": "rfh_16_0_600"
+    },
+    "chart_data": {
+      "fields": [
+        { "key": "r3h", "label": "Rainfall", "color": "#233f5f" },
+        { "key": "r3h_avg", "label": "Average", "color": "#bdf2e6" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "bar"
     },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
@@ -1124,6 +960,114 @@
         "value": 700,
         "label": "> 700 mm",
         "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rain_anomaly_3month": {
+    "title": "3-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r3q_dekad",
+    "additional_query_params": {
+      "styles": "rfq_14_20_400"
+    },
+    "chart_data": {
+      "fields": [
+        { "key": "r3q", "label": "Rainfall anomaly", "color": "#375692" },
+        {
+          "key": "rfq_avg",
+          "label": "Normal",
+          "fallback": 100,
+          "color": "#eb3223"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "line"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "3-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 20%",
+        "color": "#8c4800"
+      },
+      {
+        "value": 20,
+        "label": "20-40%",
+        "color": "#af6b27"
+      },
+      {
+        "value": 40,
+        "label": "40-60%",
+        "color": "#d58c3e"
+      },
+      {
+        "value": 60,
+        "label": "60-70%",
+        "color": "#eaa83d"
+      },
+      {
+        "value": 70,
+        "label": "70-80%",
+        "color": "#f5c878"
+      },
+      {
+        "value": 80,
+        "label": "80-90%",
+        "color": "#fff0c4"
+      },
+      {
+        "value": 90,
+        "label": "90-110%",
+        "color": "#fafafa"
+      },
+      {
+        "value": 110,
+        "label": "110-120%",
+        "color": "#befafa"
+      },
+      {
+        "value": 120,
+        "label": "120-130%",
+        "color": "#78e2f0"
+      },
+      {
+        "value": 130,
+        "label": "130-150%",
+        "color": "#00b9de"
+      },
+      {
+        "value": 150,
+        "label": "150-200%",
+        "color": "#0083f3"
+      },
+      {
+        "value": 200,
+        "label": "200-300%",
+        "color": "#0052cd"
+      },
+      {
+        "value": 300,
+        "label": "300-400%",
+        "color": "#0000c8"
+      },
+      {
+        "value": 400,
+        "label": "> 400%",
+        "color": "#a002fa"
       }
     ]
   },
@@ -1221,6 +1165,90 @@
       }
     ]
   },
+  "rain_anomaly_6month": {
+    "title": "6-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r6q_dekad",
+    "additional_query_params": {
+      "styles": "ryq_14_50_200"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "6-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 50%",
+        "color": "#8c4800"
+      },
+      {
+        "value": 50,
+        "label": "50-60%",
+        "color": "#af6b27"
+      },
+      {
+        "value": 60,
+        "label": "60-70%",
+        "color": "#d58c3e"
+      },
+      {
+        "value": 70,
+        "label": "70-80%",
+        "color": "#eaa83d"
+      },
+      {
+        "value": 80,
+        "label": "80-90%",
+        "color": "#f5c878"
+      },
+      {
+        "value": 90,
+        "label": "90-95%",
+        "color": "#fff0c4"
+      },
+      {
+        "value": 95,
+        "label": "95-105%",
+        "color": "#fafafa"
+      },
+      {
+        "value": 105,
+        "label": "105-110%",
+        "color": "#befafa"
+      },
+      {
+        "value": 110,
+        "label": "110-120%",
+        "color": "#78e2f0"
+      },
+      {
+        "value": 120,
+        "label": "120-130%",
+        "color": "#00b9de"
+      },
+      {
+        "value": 130,
+        "label": "130-150%",
+        "color": "#0083f3"
+      },
+      {
+        "value": 150,
+        "label": "150-170%",
+        "color": "#0052cd"
+      },
+      {
+        "value": 170,
+        "label": "170-200%",
+        "color": "#0000c8"
+      },
+      {
+        "value": 200,
+        "label": "> 200%",
+        "color": "#a002fa"
+      }
+    ]
+  },
   "rainfall_agg_9month": {
     "title": "9-month rainfall aggregate (mm)",
     "type": "wms",
@@ -1315,6 +1343,90 @@
       }
     ]
   },
+  "rain_anomaly_9month": {
+    "title": "9-month rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "r9q_dekad",
+    "additional_query_params": {
+      "styles": "ryq_14_50_200"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "9-month precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 50%",
+        "color": "#8c4800"
+      },
+      {
+        "value": 50,
+        "label": "50-60%",
+        "color": "#af6b27"
+      },
+      {
+        "value": 60,
+        "label": "60-70%",
+        "color": "#d58c3e"
+      },
+      {
+        "value": 70,
+        "label": "70-80%",
+        "color": "#eaa83d"
+      },
+      {
+        "value": 80,
+        "label": "80-90%",
+        "color": "#f5c878"
+      },
+      {
+        "value": 90,
+        "label": "90-95%",
+        "color": "#fff0c4"
+      },
+      {
+        "value": 95,
+        "label": "95-105%",
+        "color": "#fafafa"
+      },
+      {
+        "value": 105,
+        "label": "105-110%",
+        "color": "#befafa"
+      },
+      {
+        "value": 110,
+        "label": "110-120%",
+        "color": "#78e2f0"
+      },
+      {
+        "value": 120,
+        "label": "120-130%",
+        "color": "#00b9de"
+      },
+      {
+        "value": 130,
+        "label": "130-150%",
+        "color": "#0083f3"
+      },
+      {
+        "value": 150,
+        "label": "150-170%",
+        "color": "#0052cd"
+      },
+      {
+        "value": 170,
+        "label": "170-200%",
+        "color": "#0000c8"
+      },
+      {
+        "value": 200,
+        "label": "> 200%",
+        "color": "#a002fa"
+      }
+    ]
+  },
   "rainfall_agg_1year": {
     "title": "1-year rainfall aggregate (mm)",
     "type": "wms",
@@ -1406,6 +1518,90 @@
         "value": 2400,
         "label": "> 2400 mm",
         "color": "#ffc4ee"
+      }
+    ]
+  },
+  "rain_anomaly_1year": {
+    "title": "1-year rainfall anomaly",
+    "type": "wms",
+    "server_layer_name": "ryq_dekad",
+    "additional_query_params": {
+      "styles": "ryq_14_50_200"
+    },
+    "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
+    "date_interval": "days",
+    "opacity": 0.7,
+    "legend_text": "1-year precipitation anomaly compared to the long term average. Derived from CHIRPS (UCSB Climate Hazards Group). https://www.chc.ucsb.edu/data/chirps",
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 50%",
+        "color": "#8c4800"
+      },
+      {
+        "value": 50,
+        "label": "50-60%",
+        "color": "#af6b27"
+      },
+      {
+        "value": 60,
+        "label": "60-70%",
+        "color": "#d58c3e"
+      },
+      {
+        "value": 70,
+        "label": "70-80%",
+        "color": "#eaa83d"
+      },
+      {
+        "value": 80,
+        "label": "80-90%",
+        "color": "#f5c878"
+      },
+      {
+        "value": 90,
+        "label": "90-95%",
+        "color": "#fff0c4"
+      },
+      {
+        "value": 95,
+        "label": "95-105%",
+        "color": "#fafafa"
+      },
+      {
+        "value": 105,
+        "label": "105-110%",
+        "color": "#befafa"
+      },
+      {
+        "value": 110,
+        "label": "110-120%",
+        "color": "#78e2f0"
+      },
+      {
+        "value": 120,
+        "label": "120-130%",
+        "color": "#00b9de"
+      },
+      {
+        "value": 130,
+        "label": "130-150%",
+        "color": "#0083f3"
+      },
+      {
+        "value": 150,
+        "label": "150-170%",
+        "color": "#0052cd"
+      },
+      {
+        "value": 170,
+        "label": "170-200%",
+        "color": "#0000c8"
+      },
+      {
+        "value": 200,
+        "label": "> 200%",
+        "color": "#a002fa"
       }
     ]
   },
@@ -2018,6 +2214,25 @@
     "additional_query_params": {
       "styles": "vim_14_01_09"
     },
+    "chart_data": {
+      "fields": [
+        { "key": "vim", "label": "NDVI", "color": "#4eac5b" },
+        { "key": "vim_avg", "label": "Average", "color": "#99ff99" }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "line"
+    },
     "base_url": "https://api.earthobservation.vam.wfp.org/ows/",
     "date_interval": "days",
     "wcsConfig": {
@@ -2108,6 +2323,30 @@
     "date_interval": "days",
     "additional_query_params": {
       "styles": "viq_13_50_150"
+    },
+    "chart_data": {
+      "fields": [
+        { "key": "viq", "label": "NDVI anomaly", "color": "#5e803f" },
+        {
+          "key": "viq_avg",
+          "label": "Normal",
+          "color": "#eb3223",
+          "fallback": 100
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "admin1Name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "admin2Name"
+        }
+      ],
+      "type": "line"
     },
     "opacity": 0.7,
     "legend_text": "NDVI Anomaly compared to LTA",
@@ -2649,5 +2888,1053 @@
         "color": "#67000d"
       }
     ]
+  },
+  "male_unemployment": {
+    "title": "Male unemployment",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "male_unemployment",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 15%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 16,
+        "label": "16 - 20%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 21,
+        "label": "21 - 25%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 26,
+        "label": "> 25%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Unemployment forecasted to 2021 (% Male)"
+  },
+  "female_unemployment": {
+    "title": "Female unemployment",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "female_unemployment",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 15%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 16,
+        "label": "16 - 20%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 21,
+        "label": "21 - 25%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 26,
+        "label": "> 25%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Unemployment forecasted to 2021 (% Female)"
+  },
+  "rainfed": {
+    "title": "Rainfed / Fallow area (ha)",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "rainfed",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1000",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 2500",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 2500,
+        "label": "2500 - 5000",
+        "color": "#6baed6"
+      },
+      {
+        "value": 5000,
+        "label": "5000 - 7500",
+        "color": "#3182bd"
+      },
+      {
+        "value": 7500,
+        "label": "> 7500",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Rainfed area (ha)"
+  },
+  "irrigated": {
+    "title": "Irrigated area",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "irrigated",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 100",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 100,
+        "label": "100 - 250",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 250,
+        "label": "250 - 500",
+        "color": "#74c476"
+      },
+      {
+        "value": 500,
+        "label": "500 - 1000",
+        "color": "#31a354"
+      },
+      {
+        "value": 1000,
+        "label": "> 1000",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Irrigated area (ha)"
+  },
+  "forest": {
+    "title": "Forested area",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "forest",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 100",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 100,
+        "label": "100 - 500",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 500,
+        "label": "500 - 1000",
+        "color": "#74c476"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 2500",
+        "color": "#31a354"
+      },
+      {
+        "value": 2500,
+        "label": "> 2500",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Forest and reserves area (ha)"
+  },
+  "rangelands": {
+    "title": "Rangeland areas",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "rangelands",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1000",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 2500",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 2500,
+        "label": "2500 - 5000",
+        "color": "#74c476"
+      },
+      {
+        "value": 5000,
+        "label": "5000 - 7500",
+        "color": "#31a354"
+      },
+      {
+        "value": 7500,
+        "label": "> 7500",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Rangelands with feed resources (ha)"
+  },
+  "livestock_per_ha": {
+    "title": "Livestock (sheep and goats)",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "livestock_per_ha",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 5",
+        "color": "#ffffd4"
+      },
+      {
+        "value": 10,
+        "label": "10 - 25",
+        "color": "#fed98e"
+      },
+      {
+        "value": 25,
+        "label": "25 - 50",
+        "color": "#fe9929"
+      },
+      {
+        "value": 50,
+        "label": "50 - 100",
+        "color": "#d95f0e"
+      },
+      {
+        "value": 100,
+        "label": "> 100",
+        "color": "#993404"
+      }
+    ],
+    "legend_text": "Number of livestock per unit of lands that have feed resources"
+  },
+  "groundwater_sens": {
+    "title": "Groundwater sensitivity",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "groundwater_sens",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 1,
+        "label": "1 - 2",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 2,
+        "label": "2 - 2.5",
+        "color": "#6baed6"
+      },
+      {
+        "value": 2.5,
+        "label": "2.5 - 3",
+        "color": "#3182bd"
+      },
+      {
+        "value": 3,
+        "label": "> 3",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "BGR-MWI index based on lithology and precipitation"
+  },
+  "groundwater_abstraction": {
+    "title": "Groundwater over-abstraction",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "groundwater_abstraction",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 1,
+        "label": "1 - 2",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 2,
+        "label": "2 - 2.5",
+        "color": "#6baed6"
+      },
+      {
+        "value": 2.5,
+        "label": "2.5 - 3",
+        "color": "#3182bd"
+      },
+      {
+        "value": 3,
+        "label": "> 3",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Groundwater abstraction / safe yield"
+  },
+  "network_age": {
+    "title": "Network age",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "network_age",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 10",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20",
+        "color": "#fcae91"
+      },
+      {
+        "value": 21,
+        "label": "20 - 30",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 31,
+        "label": "31 - 40",
+        "color": "#de2d26"
+      },
+      {
+        "value": 41,
+        "label": "> 40",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Network age"
+  },
+  "non_revenue_losses": {
+    "title": "Non-revenue losses (MCM)",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "non_revenue_losses",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 1,
+        "label": "1 - 5",
+        "color": "#fcae91"
+      },
+      {
+        "value": 5,
+        "label": "5 - 10",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20",
+        "color": "#de2d26"
+      },
+      {
+        "value": 21,
+        "label": "> 20",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Non-revenue losses (MCM)"
+  },
+  "water_network_coverage": {
+    "title": "Water network coverage",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_sensitivity_data.json",
+    "data_field": "water_network_coverage",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 1,
+        "label": "1 - 2",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 2,
+        "label": "2 - 2.5",
+        "color": "#6baed6"
+      },
+      {
+        "value": 2.5,
+        "label": "2.5 - 3",
+        "color": "#3182bd"
+      },
+      {
+        "value": 3,
+        "label": "> 3",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Water network coverage (# of subscribers / Household)"
+  },
+  "population": {
+    "title": "Population 2022",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "pop_2022",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 10,000",
+        "color": "#f2f0f7"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 50,000",
+        "color": "#cbc9e2"
+      },
+      {
+        "value": 50000,
+        "label": "50,000 - 100,000",
+        "color": "#9e9ac8"
+      },
+      {
+        "value": 100000,
+        "label": "100,000 - 500,000",
+        "color": "#756bb1"
+      },
+      {
+        "value": 500000,
+        "label": "> 500,000",
+        "color": "#54278f"
+      }
+    ],
+    "legend_text": "Total population in 2022"
+  },
+  "syrian_refugees": {
+    "title": "Syrian refugees 2021",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_in.json",
+    "data_field": "syrian_refugees",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 1000",
+        "color": "#feedde"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 5000",
+        "color": "#fdbe85"
+      },
+      {
+        "value": 5000,
+        "label": "5000 - 10,000",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 10000,
+        "label": "10,000 - 50,000",
+        "color": "#e6550d"
+      },
+      {
+        "value": 50000,
+        "label": "> 50,000",
+        "color": "#a63603"
+      }
+    ],
+    "legend_text": "Syrian refugees 2021"
+  },
+  "percent_refugees_2022": {
+    "title": "Percent of refugees / population",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "refugees_2022",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 5%",
+        "color": "#feedde"
+      },
+      {
+        "value": 5,
+        "label": "5 - 10%",
+        "color": "#fdbe85"
+      },
+      {
+        "value": 10,
+        "label": "10 - 15%",
+        "color": "#fd8d3c"
+      },
+      {
+        "value": 15,
+        "label": "15 - 20%",
+        "color": "#e6550d"
+      },
+      {
+        "value": 20,
+        "label": "> 20%",
+        "color": "#a63603"
+      }
+    ],
+    "legend_text": "Syrian refugees (% of total population)"
+  },
+  "num_droughts": {
+    "title": "Number of droughts",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_exposure_data.json",
+    "data_field": "num_droughts",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 3",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 3,
+        "label": "3 - 4",
+        "color": "#fcae91"
+      },
+      {
+        "value": 4,
+        "label": "4 - 5",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 5,
+        "label": "5 - 6",
+        "color": "#de2d26"
+      },
+      {
+        "value": 6,
+        "label": "> 6",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Drought events during 1980-2016"
+  },
+  "num_heatwaves": {
+    "title": "Number of heatwaves",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_exposure_data.json",
+    "data_field": "num_heatwaves",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 20",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 20,
+        "label": "20 - 30",
+        "color": "#fcae91"
+      },
+      {
+        "value": 30,
+        "label": "30 - 40",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 40,
+        "label": "40 - 50",
+        "color": "#de2d26"
+      },
+      {
+        "value": 50,
+        "label": "> 50",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Heat waves during 1980-2016"
+  },
+  "poverty": {
+    "title": "Poverty %",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "poverty",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "<= 10%",
+        "color": "#fee5d9"
+      },
+      {
+        "value": 11,
+        "label": "11 - 20%",
+        "color": "#fcae91"
+      },
+      {
+        "value": 21,
+        "label": "21 - 30%",
+        "color": "#fb6a4a"
+      },
+      {
+        "value": 31,
+        "label": "31 - 40%",
+        "color": "#de2d26"
+      },
+      {
+        "value": 41,
+        "label": "> 40%",
+        "color": "#a50f15"
+      }
+    ],
+    "legend_text": "Poverty (%) based on HH income and living expenses"
+  },
+  "municipal_water": {
+    "title": "Municipal water",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "municipal_water",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 25",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 25,
+        "label": "25 - 40",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 40,
+        "label": "40 - 55",
+        "color": "#6baed6"
+      },
+      {
+        "value": 55,
+        "label": "55 - 70",
+        "color": "#3182bd"
+      },
+      {
+        "value": 85,
+        "label": "> 85",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Allocated municipal water (litre / capita / day)"
+  },
+  "gw_per_irrigated": {
+    "title": "Groundwater per irrigated area",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "gw_per_irrigated",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 100",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 100,
+        "label": "100 - 250",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 250,
+        "label": "250 - 500",
+        "color": "#6baed6"
+      },
+      {
+        "value": 500,
+        "label": "500 - 1000",
+        "color": "#3182bd"
+      },
+      {
+        "value": 1000,
+        "label": "> 1000",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Groundwater per irrigated area (m3/du)"
+  },
+  "storage_capacity": {
+    "title": "Storage capacity",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "storage_capacity",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 0.04",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 0.04,
+        "label": "0.04 - 0.08",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 0.08,
+        "label": "0.08 - 0.12",
+        "color": "#6baed6"
+      },
+      {
+        "value": 0.12,
+        "label": "0.12 - 0.16",
+        "color": "#3182bd"
+      },
+      {
+        "value": 0.16,
+        "label": "> 0.16",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Storage capacity per capita"
+  },
+  "water_per_pop": {
+    "title": "Water supply per population",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "water_per_pop",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 25",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 25,
+        "label": "25 - 50",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 50,
+        "label": "50 - 75",
+        "color": "#6baed6"
+      },
+      {
+        "value": 75,
+        "label": "75 - 100",
+        "color": "#3182bd"
+      },
+      {
+        "value": 100,
+        "label": "> 100",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Water supply per population"
+  },
+  "mobile_tanks_per_10k": {
+    "title": "Number of mobile tanks per 10,000 people",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_adaptation_data.json",
+    "data_field": "mobile_tanks_per_10k",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 5",
+        "color": "#eff3ff"
+      },
+      {
+        "value": 5,
+        "label": "5 - 10",
+        "color": "#bdd7e7"
+      },
+      {
+        "value": 10,
+        "label": "10 - 15",
+        "color": "#6baed6"
+      },
+      {
+        "value": 15,
+        "label": "15 - 20",
+        "color": "#3182bd"
+      },
+      {
+        "value": 20,
+        "label": "> 20",
+        "color": "#08519c"
+      }
+    ],
+    "legend_text": "Number of mobile tanks per 10,000 people"
+  },
+  "natural_habitats": {
+    "title": "Important natural habitats",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "natural_habitats",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "< 100",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 100,
+        "label": "100 - 500",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 500,
+        "label": "500 - 1000",
+        "color": "#74c476"
+      },
+      {
+        "value": 1000,
+        "label": "1000 - 2500",
+        "color": "#31a354"
+      },
+      {
+        "value": 2500,
+        "label": "> 2500",
+        "color": "#006d2c"
+      }
+    ],
+    "legend_text": "Areas (ha) of forest and important ecosystems and reserves"
+  },
+  "exposure_scaled": {
+    "title": "Exposure-scaled",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "exposure_scaled",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low exposure",
+        "color": "#bababa"
+      },
+      {
+        "value": 0.19,
+        "label": "Moderate exposure",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 0.39,
+        "label": "High exposure",
+        "color": "#fdae61"
+      },
+      {
+        "value": 0.59,
+        "label": "Severe exposure",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Agriculture and demographic"
+  },
+  "sensitivity_scaled": {
+    "title": "Sensitivity-scaled",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "sensitivity_scaled",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low sensitivity",
+        "color": "#bababa"
+      },
+      {
+        "value": 0.19,
+        "label": "Moderate sensitivity",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 0.39,
+        "label": "High sensitivity",
+        "color": "#fdae61"
+      },
+      {
+        "value": 0.59,
+        "label": "Severe sensitivity",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Average of all sensitivity indicators"
+  },
+  "adaptation_scaled": {
+    "title": "Adaptation-scaled",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "adaptation_scaled",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low adaptation",
+        "color": "#bababa"
+      },
+      {
+        "value": 0.19,
+        "label": "Moderate adaptation",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 0.39,
+        "label": "High adaptation",
+        "color": "#fdae61"
+      },
+      {
+        "value": 0.59,
+        "label": "Very high adaptation",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Average of all adaptation indicators"
+  },
+  "vulnerability_scaled": {
+    "title": "Vulnerability-scaled",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "vulnerability_scaled",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low vulnerability",
+        "color": "#bababa"
+      },
+      {
+        "value": 0.19,
+        "label": "Moderate vulnerability",
+        "color": "#ffffbf"
+      },
+      {
+        "value": 0.39,
+        "label": "High vulnerability",
+        "color": "#fdae61"
+      },
+      {
+        "value": 0.59,
+        "label": "Severe vulnerability",
+        "color": "#d7191c"
+      }
+    ],
+    "legend_text": "Sensitivity/Adaptation"
+  },
+  "gw_irrigation": {
+    "title": "Irrigation water",
+    "type": "admin_level_data",
+    "path": "data/jordan/jor_indicators_v2.json",
+    "data_field": "gw_irrigation",
+    "admin_level": 3,
+    "admin_code": "admin3Pcod",
+    "opacity": 0.8,
+    "legend": [
+      {
+        "value": 0,
+        "label": "Low",
+        "color": "#edf8e9"
+      },
+      {
+        "value": 350000,
+        "label": "Medium",
+        "color": "#bae4b3"
+      },
+      {
+        "value": 3500000,
+        "label": "High",
+        "color": "#74c476"
+      },
+      {
+        "value": 10000000,
+        "label": "Very high",
+        "color": "#31a354"
+      }
+    ],
+    "legend_text": "Groundwater developed for irrigation (MCM) "
   }
 }

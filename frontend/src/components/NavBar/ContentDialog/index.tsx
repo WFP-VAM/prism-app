@@ -1,51 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import parse from 'html-react-parser';
 import { marked } from 'marked';
 import { Dialog, DialogContent, Typography } from '@material-ui/core';
 
 type ContentDialogProps = {
-  content?: string;
-  setContent: (value?: string) => void;
+  content: string;
+  handleClose: () => void;
+  elementId?: string;
 };
 
-export const loadLayerContent = async (
-  path: string,
-  setContent: (value?: string) => void,
-) => {
-  const resp = await fetch(path);
-  const respText = await resp.text();
+const ContentDialog = memo(
+  ({ content, handleClose, elementId }: ContentDialogProps) => {
+    const [open, setOpen] = useState(false);
 
-  setContent(respText);
-};
+    const contentRef = useRef<HTMLDivElement>(null);
 
-const ContentDialog = ({ content, setContent }: ContentDialogProps) => {
-  const [open, setOpen] = useState(false);
+    useEffect(() => {
+      if (!content) {
+        setOpen(false);
+        return;
+      }
+      setOpen(true);
+    }, [content]);
 
-  useEffect(() => {
-    if (!content) {
-      setOpen(false);
-      return;
-    }
-    setOpen(true);
-  }, [content]);
+    useEffect(() => {
+      if (!open || !elementId) {
+        return;
+      }
+      (document.querySelector(
+        `#${elementId}`,
+      ) as HTMLHeadingElement).scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, [elementId, open]);
 
-  if (!content) {
-    return null;
-  }
-
-  return (
-    <Dialog
-      maxWidth="md"
-      open={open}
-      keepMounted
-      onClose={() => setContent(undefined)}
-      aria-labelledby="dialog-preview"
-    >
-      <DialogContent>
-        <Typography color="textSecondary">{parse(marked(content))}</Typography>
-      </DialogContent>
-    </Dialog>
-  );
-};
+    return (
+      <Dialog
+        maxWidth="md"
+        open={open}
+        keepMounted
+        onClose={handleClose}
+        aria-labelledby="dialog-preview"
+      >
+        <DialogContent>
+          <Typography ref={contentRef} component="div" color="textSecondary">
+            {parse(marked(content))}
+          </Typography>
+        </DialogContent>
+      </Dialog>
+    );
+  },
+);
 
 export default ContentDialog;

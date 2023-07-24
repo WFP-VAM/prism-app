@@ -1,9 +1,9 @@
-import 'reflect-metadata';
-import { FillPaint, LinePaint } from 'mapbox-gl';
-import { map, every } from 'lodash';
 import { GeoJSON } from 'geojson';
+import { every, map } from 'lodash';
+import { FillPaint, LinePaint } from 'mapbox-gl';
+import 'reflect-metadata';
 import { rawLayers } from '.';
-import type { TableKey } from './utils';
+import type { ReportKey, TableKey } from './utils';
 
 // TODO currently unused. Could be harnessed within admin levels key typing
 export type BoundaryKey = 'CODE' | 'CODE1' | 'CODE2';
@@ -16,7 +16,8 @@ export type LayerType =
   | WMSLayerProps
   | AdminLevelDataLayerProps
   | ImpactLayerProps
-  | PointDataLayerProps;
+  | PointDataLayerProps
+  | StaticRasterLayerProps;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
   k: infer I,
@@ -156,12 +157,17 @@ export function checkRequiredKeys<T>(
   return !missingKey;
 }
 
+export type LegendLabel = {
+  text: string;
+  value: number | string;
+};
+
 export type LegendDefinitionItem = {
   value: string | number;
   color: string;
   // Optional, to create custom label like '≤50'. if label is not defined
   // then value attribute will be shown instead
-  label?: string;
+  label?: LegendLabel | string;
 };
 
 export type LegendDefinition = LegendDefinitionItem[];
@@ -198,15 +204,6 @@ export enum RasterType {
 }
 
 export type HazardDataType = GeometryType | RasterType;
-
-// not including standard deviation and sum quite yet
-// because we won't be able to re-use the WMS legend
-export enum DisplayZonalStats {
-  Max = 'Max',
-  Mean = 'Mean',
-  Median = 'Median',
-  Min = 'Min',
-}
 
 export type ZonalConfig = {
   // we're keeping snakecase here because that is what zonal uses
@@ -252,11 +249,6 @@ export interface ExposedPopulationDefinition {
   calc?: string;
 }
 
-interface FeatureInfoProps {
-  type: LabelType;
-  label: string;
-}
-
 export type FeatureInfoObject = { [key: string]: FeatureInfoProps };
 
 export class CommonLayerProps {
@@ -270,6 +262,9 @@ export class CommonLayerProps {
 
   @optional
   dateInterval?: string;
+
+  @optional
+  fillPattern?: 'left' | 'right';
 
   @optional // only optional for boundary layer
   legend?: LegendDefinition;
@@ -311,6 +306,9 @@ export class CommonLayerProps {
 
   @optional
   validity?: Validity; // Include additional dates in the calendar based on the number provided.
+
+  @optional
+  disableAnalysis?: boolean; // Hide layer in Analysis feature
 }
 
 /*
@@ -339,6 +337,9 @@ export type DatasetField = {
   label: string;
   fallback?: number; // If key does not exist in json response use fallback (rainfall anomaly).
   color: string;
+  maxValue?: number;
+  minValue?: number;
+  pointRadius?: number;
 };
 
 type DatasetProps = {
@@ -360,15 +361,17 @@ export class BoundaryLayerProps extends CommonLayerProps {
   isPrimary?: boolean | undefined;
 }
 
-export enum LabelType {
+export enum DataType {
   Date = 'date',
   Text = 'text',
   Number = 'number',
+  LabelMapping = 'labelMapping',
 }
 
 interface FeatureInfoProps {
-  type: LabelType;
-  label: string;
+  type: DataType;
+  dataTitle: string;
+  labelMap?: { [key: string]: string };
 }
 
 export enum DatesPropagation {
@@ -376,6 +379,13 @@ export enum DatesPropagation {
   BACKWARD = 'backward',
   BOTH = 'both',
 }
+
+export type ValidityPeriod = {
+  // eslint-disable-next-line camelcase
+  start_date_field: string;
+  // eslint-disable-next-line camelcase
+  end_date_field: string;
+};
 
 export type Validity = {
   days: number; // Number of days to include in the calendar.
@@ -410,6 +420,38 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
+
+  @optional
+  'areaExposedValues'?: { label: string; value: string | number }[];
+
+  @optional
+  'thresholdValues'?: { label: string; value: string | number }[];
+}
+
+export class StaticRasterLayerProps extends CommonLayerProps {
+  type: 'static_raster';
+  baseUrl: string;
+
+  @makeRequired
+  title: string;
+
+  @makeRequired
+  legend: LegendDefinition;
+
+  @makeRequired
+  legendText: string;
+
+  minZoom: number;
+
+  maxZoom: number;
+
+  @optional
+  dates?: string[];
+}
+
+export enum DataFieldType {
+  NUMBER = 'number',
+  TEXT = 'text',
 }
 
 export class AdminLevelDataLayerProps extends CommonLayerProps {
@@ -418,6 +460,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   dates?: string[];
+
+  @optional
+  validityPeriod?: ValidityPeriod;
 
   @makeRequired
   title: string;
@@ -439,6 +484,9 @@ export class AdminLevelDataLayerProps extends CommonLayerProps {
 
   @optional
   boundary?: LayerKey;
+
+  @optional
+  fallbackLayerKeys?: string[];
 }
 
 export class StatsApi {
@@ -453,6 +501,37 @@ export enum AggregationOperations {
   Median = 'median',
   Min = 'min',
   Sum = 'sum',
+  'Area exposed' = 'intersect_percentage',
+}
+
+export const units: Partial<Record<AggregationOperations | string, string>> = {
+  intersect_percentage: '%',
+  stats_intersect_area: 'km²',
+};
+
+export const aggregationOperationsToDisplay: Record<
+  AggregationOperations,
+  string
+> = {
+  [AggregationOperations.Max]: 'Max',
+  [AggregationOperations.Mean]: 'Mean',
+  [AggregationOperations.Median]: 'Median',
+  [AggregationOperations.Min]: 'Min',
+  [AggregationOperations.Sum]: 'Sum',
+  [AggregationOperations['Area exposed']]: 'Percent of area exposed',
+};
+
+export enum ExposureOperator {
+  LOWER_THAN = '<',
+  LOWER_THAN_EQUAL = '<=',
+  EQUAL = '=',
+  GREATER_THAN = '>',
+  GREATER_THAN_EQUAL = '>=',
+}
+
+export interface ExposureValue {
+  operator: ExposureOperator;
+  value: string;
 }
 
 export enum PolygonalAggregationOperations {
@@ -462,7 +541,8 @@ export enum PolygonalAggregationOperations {
 
 export type AllAggregationOperations =
   | AggregationOperations
-  | PolygonalAggregationOperations;
+  | PolygonalAggregationOperations
+  | 'stats_intersect_area';
 
 export type ThresholdDefinition = { below?: number; above?: number };
 
@@ -493,6 +573,7 @@ export class ImpactLayerProps extends CommonLayerProps {
 // Fetch and transform data to match PointDataLayer format.
 export enum PointDataLoader {
   EWS = 'ews',
+  ACLED = 'acled',
 }
 
 export class PointDataLayerProps extends CommonLayerProps {
@@ -531,6 +612,9 @@ export class PointDataLayerProps extends CommonLayerProps {
 
   @optional
   authRequired: boolean = false;
+
+  @optional
+  dataFieldType?: DataFieldType = DataFieldType.NUMBER;
 }
 
 export type RequiredKeys<T> = {
@@ -560,17 +644,11 @@ export interface MenuItemType {
   layersCategories: LayersCategoryType[];
 }
 
-export interface MenuItemMobileType {
-  title: string;
-  icon: string;
-  layersCategories: LayersCategoryType[];
-  expanded: string;
-  selectAccordion: (arg: string) => void;
-}
-
 export type DateItem = {
   displayDate: number; // Date that will be rendered in the calendar.
   queryDate: number; // Date that will be used in the WMS request.
+  isStartDate?: boolean;
+  isEndDate?: boolean;
 };
 
 export type AvailableDates = {
@@ -591,6 +669,8 @@ export interface WfsRequestParams {
 export interface ChartConfig {
   type: string;
   category: string;
+  minValue?: number;
+  maxValue?: number;
   stacked?: boolean;
   exclude?: string[];
   data?: string;
@@ -598,6 +678,42 @@ export interface ChartConfig {
   fill?: boolean;
   displayLegend?: boolean;
   colors?: string[]; // Array of hex codes.
+}
+
+export interface ReportLegendDefinitionItem {
+  title: string;
+  color: string;
+  border?: string;
+}
+
+export interface ReportLegendDefinition {
+  title: string;
+  items: ReportLegendDefinitionItem[];
+}
+
+export class ReportType {
+  id: ReportKey;
+  layerId: LayerKey;
+  title: string;
+  publicationDateLabel: string;
+
+  @optional
+  subText?: string;
+
+  areasLegendDefinition: ReportLegendDefinition;
+  typeLegendDefinition: ReportLegendDefinition;
+
+  @optional
+  mapFooterText?: string;
+
+  @optional
+  mapFooterSubText?: string;
+
+  @optional
+  tableName?: string;
+
+  @optional
+  signatureText?: string;
 }
 
 export class TableType {
@@ -616,6 +732,7 @@ export type DateRangeType = {
   label: string;
   month: string;
   isFirstDay: boolean;
+  date: string;
 };
 
 export interface FeatureInfoType {
@@ -655,13 +772,28 @@ export type PointLayerData = {
   features: PointData[];
 };
 
-export type ValidityLayer = {
+export interface BaseLayer {
   name: string;
   dates: number[];
+}
+
+export interface ValidityLayer extends BaseLayer {
   validity: Validity;
-};
+}
+
+export interface PathLayer extends BaseLayer {
+  path: string;
+  validityPeriod: ValidityPeriod;
+}
 
 export type UserAuth = {
   username: string;
   password: string;
 };
+
+export enum PanelSize {
+  folded = '0vw',
+  medium = '500px',
+  large = '1000px',
+  xlarge = '1400px',
+}

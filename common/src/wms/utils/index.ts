@@ -57,8 +57,19 @@ export function findTitle(xml: string): string | undefined {
   return findTagText(xml, "Title");
 }
 
-export function findLayer(xml: string, layerName: string): string | undefined {
-  return findLayers(xml).find((layer) => findName(layer) === layerName);
+export function findLayer(
+  xml: string,
+  layerName: string,
+  options?: { errorStrategy?: string }
+): string | undefined {
+  const result = findLayers(xml).find((layer) => {
+    const name = findName(layer);
+    return name && (name === layerName || parseName(name).short === layerName);
+  });
+  if (result === undefined && options?.errorStrategy === "throw") {
+    throw Error(`failed to find layer with name "${layerName}"`);
+  }
+  return result;
 }
 
 export function getLayerIds(xml: string): string[] {
@@ -80,7 +91,7 @@ export function getLayerNames(
 
 export function parseLayerDates(xml: string): string[] {
   if (!xml) {
-    throw new Error("can't parse nothing");
+    throw Error("called parseLayerDates with nothing");
   }
 
   const dimensions = findTagsByName(xml, "Dimension");
@@ -117,12 +128,15 @@ export function parseLayerDates(xml: string): string[] {
 export function getLayerDates(xml: string, layerName: string): string[] {
   const layer = findLayer(xml, layerName);
   if (!layer) {
-    throw new Error("can't find layer");
+    throw Error("can't find layer");
   }
   return parseLayerDates(layer);
 }
 
 export function parseLayerDays(xml: string): number[] {
+  if (!xml) {
+    throw Error("can't call parseLayerDays with nothing");
+  }
   const dateStrings = parseLayerDates(xml);
 
   // round to noon to avoid errors due to daylight saving
@@ -141,6 +155,7 @@ export function getAllLayerDays(xml: string): { [layerId: string]: number[] } {
     if (layerId) {
       const oldLayerDays = allDays[layerId] || [];
       const layerDays = parseLayerDays(layer);
+      // eslint-disable-next-line fp/no-mutation
       allDays[layerId] = union(layerDays, oldLayerDays);
     }
     return allDays;
@@ -151,6 +166,9 @@ export function getAllLayerDays(xml: string): { [layerId: string]: number[] } {
 // parses an xml representation of a layer
 // converting into into an object
 export function parseLayer(xml: string): WMSLayer | undefined {
+  if (!xml) {
+    throw new Error("can't call parseLayer with nothing!");
+  }
   const name = findName(xml);
   if (!name) {
     return undefined;

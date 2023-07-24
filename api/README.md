@@ -64,6 +64,16 @@ curl --location --request POST 'localhost:80/alerts' \
 The following endpoints are related to data retrieval from KoboToolbox. Make sure
 you have set the environment variables KOBO_USERNAME, KOBO_PW
 
+### `/acled` (GET)
+
+Returns armed conflict incidents using ACLED api. Make sure to have the defined ACLED credentials using environment variables `ACLED_API_KEY` and `ACLED_API_EMAIL`
+
+- `iso`, Country ISO code defined in Acled file. Verify documentation.
+- `limit`, Maximum number of results. 0 corresponds to all incidents.
+- `?fields`, Comma separated string which specifies the fields to be returned per incident.
+- `?event_date`, Return incidents only matching the given value with format YYYY-MM-DD
+
+
 ### `/kobo/forms` (GET)
 
 Returns all form responses using Kobo API
@@ -79,6 +89,17 @@ Returns all form responses using Kobo API
 ```
 curl -X GET 'http://localhost/kobo/forms?nameField=Test%20MMR&datetimeField=_submission_time&geomField=Location&measureField=The_number&beginDateTime=2021-09-15&endDateTime=2021-09-29'
 ```
+
+### `/raster_geotiff` (POST)
+
+Generate a geotiff for any wfp raster using the stac API and saves it in S3. It returns the pre signed S3 geotiff URL.
+
+- `collection`, the name of the collection to get. For example `r3h_dekad`.
+- `date`, date of the data to get. For example : `2020-09-01`.
+- `lat_min`, min latitude (to define the bounding box of the geotiff).
+- `long_min`, min longitude (to define the bounding box of the geotiff).
+- `lat_max`, max latitude (to define the bounding box of the geotiff).
+- `long_max`, max longitude (to define the bounding box of the geotiff).
 
 ## Development
 

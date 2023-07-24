@@ -10,6 +10,7 @@
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test,scripts}/**/*.{ts,js}\" --max-warnings 0 --fix",
+    "setup:common": "sh -c \"rimraf ./node_modules/prism-common && cd ../common && yarn install && yarn build\" && sh -c \"yarn install --check-files\"",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -31,6 +32,7 @@
     "node-fetch": "^2.6.7",
     "nodemailer": "^6.6.1",
     "pg": "^8.5.1",
+    "prism-common": "file:../common",
     "typeorm": "^0.2.25",
     "typeorm-naming-strategies": "^1.1.0",
     "xml-js": "^1.6.11"

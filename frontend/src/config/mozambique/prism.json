@@ -1,6 +1,8 @@
 {
   "country": "Mozambique",
+  "countryAdmin0Id": 170,
   "alertFormActive": false,
+  "hidePanel": false,
   "enableNavigationDropdown": true,
   "icons": {
     "rainfall": "icon_rain.png",
@@ -11,20 +13,15 @@
     "vulnerability": "icon_vulnerable.png",
     "exposure": "icon_basemap.png"
   },
-  "defaultDisplayBoundaries": [
-    "admin_boundaries",
-    "admin1_boundaries"
-  ],
+  "defaultDisplayBoundaries": ["admin_boundaries", "admin1_boundaries"],
   "serversUrls": {
     "wms": [
       "https://api.earthobservation.vam.wfp.org/ows/wms",
-      "https://geonode.wfp.org/geoserver/prism/wms"
+      "https://sparc.wfp.org/geoserver/prism/wms"
     ]
   },
   "map": {
-    "latitude": -18.6703535,
-    "longitude": 35.526067,
-    "zoom": 4.7
+    "boundingBox": [30.18, -24.74, 40.78, -10.32]
   },
   "categories": {
     "rainfall": {
@@ -183,10 +180,7 @@
           ]
         }
       ],
-      "dry_periods": [
-        "days_dry",
-        "streak_dry_days"
-      ],
+      "dry_periods": ["days_dry", "streak_dry_days"],
       "extreme_rain_events": [
         {
           "group_title": "Rainfall categories:",
@@ -233,10 +227,7 @@
       ]
     },
     "vegetation": {
-      "vegetation_conditions": [
-        "ndvi_dekad",
-        "ndvi_dekad_anomaly"
-      ]
+      "vegetation_conditions": ["ndvi_dekad", "ndvi_dekad_anomaly"]
     },
     "temperature": {
       "INAM_air_temperature": [
@@ -273,9 +264,7 @@
       ]
     },
     "vulnerability": {
-      "poverty": [
-        "mpi"
-      ],
+      "poverty": ["mpi"],
       "food_insecurity": [
         {
           "group_title": "IPC",
@@ -315,9 +304,7 @@
       ]
     },
     "exposure": {
-      "population": [
-        "census"
-      ]
+      "population": ["census"]
     }
   }
 }

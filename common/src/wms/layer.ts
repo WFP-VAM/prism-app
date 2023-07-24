@@ -14,7 +14,9 @@ export default class WMSLayer extends Layer {
     super(options);
 
     if (!this.layer) {
-      this.layer = this.capabilities.then((xml) => findLayer(xml, this.id)!);
+      this.layer = this.capabilities.then(
+        (xml) => findLayer(xml, this.id, { errorStrategy: "throw" })!
+      );
     }
 
     this.dates = this.layer.then(parseLayerDates);

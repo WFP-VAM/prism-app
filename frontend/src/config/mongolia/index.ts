@@ -1,5 +1,16 @@
-import mongoliaConfig from './prism.json';
-import mongoliaRawLayers from './layers.json';
-import mongoliaRawTables from './tables.json';
+import appConfig from './prism.json';
+import rawLayers from './layers.json';
+import rawTables from './tables.json';
+import mongoliaTranslation from './translation.json';
 
-export { mongoliaConfig, mongoliaRawLayers, mongoliaRawTables };
+const rawReports = {};
+const translation = { mn: mongoliaTranslation };
+
+export default {
+  appConfig,
+  rawLayers,
+  rawTables,
+  rawReports,
+  translation,
+  defaultBoundariesFile: 'admin_boundaries.json',
+};

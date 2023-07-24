@@ -6,6 +6,8 @@ import {
   createDescribeCoverageUrl,
   createGetCoverageUrl,
   fetchCoverageDescriptionFromCapabilities,
+  fetchCoverageLayerDays,
+  findCoverage,
   findCoverageId,
   findCoverageIdentifier,
   findLayerIds,
@@ -24,26 +26,43 @@ import {
 
 import { findAndParseCapabilityUrl } from "../../utils";
 
-const xml = findAndRead("./data/geonode-wfp-wcs-get-capabilities-2.0.1.xml", {
+const xml = findAndRead("geonode-wfp-wcs-get-capabilities-2.0.1.xml", {
   encoding: "utf-8",
 });
-
+const xmlGeoNode111 = findAndRead(
+  "geonode-wfp-wcs-get-capabilities-1.1.1.xml",
+  { encoding: "utf-8" }
+);
 const xml100 = findAndRead(
-  "./data/mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml",
-  {
-    encoding: "utf-8",
-  }
-);
-
-const xmlDescription100 = findAndRead(
-  "./data/geonode-wfp-wcs-describe-coverage-geonode__wld_cli_tp_7d_ecmwf-2.0.1.xml",
+  "mongolia-sibelius-datacube-wcs-get-capabilities-1.0.0.xml",
   { encoding: "utf-8" }
 );
-
+const xmlDescription201 = findAndRead(
+  "geonode-wfp-wcs-describe-coverage-geonode__wld_cli_tp_7d_ecmwf-2.0.1.xml",
+  { encoding: "utf-8" }
+);
 const xmlTemporalDescription100 = findAndRead(
-  "./data/mongolia-sibelius-datacube-wcs-coverage-description-10DayTrend-1.0.0.xml",
+  "mongolia-sibelius-datacube-wcs-coverage-description-10DayTrend-1.0.0.xml",
   { encoding: "utf-8" }
 );
+
+test("wcs: find coverage by id and name", ({ eq }) => {
+  const coverageByFullId = findCoverage(
+    xml,
+    "geonode:eyxao70woaa14nh_modificado"
+  )!;
+  const coverageByLegacyId = findCoverage(
+    xml,
+    "geonode__eyxao70woaa14nh_modificado"
+  )!;
+  const coverageByName = findCoverage(
+    xml,
+    "Climate Outlook across Eastern Africa"
+  )!;
+  eq(coverageByFullId.length, 2507);
+  eq(coverageByLegacyId.length, 2507);
+  eq(coverageByName.length, 2507);
+});
 
 test("wcs: find coverages", ({ eq }) => {
   const layers = findCoverages(xml);
@@ -173,16 +192,26 @@ test("parse GetCoverage url", ({ eq }) => {
 
 test("createDescribeCoverageUrl", ({ eq }) => {
   eq(
+    createDescribeCoverageUrl(
+      xmlGeoNode111,
+      "geonode:eyxao70woaa14nh_modificado"
+    ),
+    "https://geonode.wfp.org/geoserver/wcs?identifiers=geonode%3Aeyxao70woaa14nh_modificado&request=DescribeCoverage&service=WCS&version=1.1.1"
+  );
+
+  eq(
     createDescribeCoverageUrl(xml100, "10DayTrend"),
     "https://mongolia.sibelius-datacube.org:5000/wcs?coverage=10DayTrend&request=DescribeCoverage&service=WCS&version=1.0.0"
   );
 });
 
-test("createGetCoverageUrl", ({ eq }) => {
+test("wcs: createGetCoverageUrl", ({ eq }) => {
   const bbox = [87.7, 41.6, 119.9, 52.1] as const;
-  const url = createGetCoverageUrl(xml100, "ModisLST", {
+  const url = createGetCoverageUrl({
     bbox,
+    capabilities: xml100,
     height: 222,
+    layerId: "ModisLST",
     width: 677,
   });
   eq(
@@ -192,12 +221,12 @@ test("createGetCoverageUrl", ({ eq }) => {
 });
 
 test("parseSupportedFormats", ({ eq }) => {
-  eq(parseSupportedFormats(xmlDescription100), []);
+  eq(parseSupportedFormats(xmlDescription201), []);
   eq(parseSupportedFormats(xmlTemporalDescription100), ["GeoTIFF", "netCDF"]);
 });
 
 test("parseDates", ({ eq }) => {
-  eq(parseDates(xmlDescription100), []);
+  eq(parseDates(xmlDescription201), []);
   const dates = parseDates(xmlTemporalDescription100);
   eq(dates.length, 29);
   eq(
@@ -249,4 +278,13 @@ test("fetchCoverageDescriptionFromCapabilities", async ({ eq }) => {
   );
   eq(result.length > 5000, true);
   eq(result.includes("CoverageDescription"), true);
+});
+
+test("fetchCoverageLayerDays", async ({ eq }) => {
+  const url = "https://127.0.0.1:123456789";
+  const days = await fetchCoverageLayerDays(url, {
+    errorStrategy: "empty",
+    fetch,
+  });
+  eq(days, {});
 });

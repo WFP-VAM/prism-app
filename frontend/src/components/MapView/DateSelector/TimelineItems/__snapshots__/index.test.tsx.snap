@@ -10,10 +10,10 @@ exports[`renders as expected 1`] = `
     transitionprops="[object Object]"
   >
     <div
-      class="MuiGrid-root TimelineItems-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
+      class="MuiGrid-root memo-dateItem-2 MuiGrid-item MuiGrid-grid-xs-true"
     >
       <div
-        class="TimelineItems-dayItem-4"
+        class="TimelineLabel-dayItem-14"
       />
     </div>
   </mock-tooltip>

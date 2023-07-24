@@ -1,6 +1,6 @@
-import { FormControl, MenuItem, Select } from '@material-ui/core';
+import { FormControl, MenuItem, Select, Typography } from '@material-ui/core';
 import React from 'react';
-import { useSafeTranslation } from '../../../i18n';
+import { useSafeTranslation } from 'i18n';
 
 type OptionLabel = string;
 
@@ -8,11 +8,13 @@ export default function SimpleDropdown<OptionValue extends number | string>({
   options,
   value,
   onChange,
+  textClass,
   ...rest
 }: {
   options: [OptionValue, OptionLabel][];
   value: OptionValue;
   onChange: (value: OptionValue) => void;
+  textClass: string;
 }) {
   const { t } = useSafeTranslation();
   return (
@@ -25,7 +27,7 @@ export default function SimpleDropdown<OptionValue extends number | string>({
       >
         {options.map(([val, text]) => (
           <MenuItem key={val} value={val}>
-            {t(text)}
+            <Typography className={textClass}>{t(text)}</Typography>
           </MenuItem>
         ))}
       </Select>

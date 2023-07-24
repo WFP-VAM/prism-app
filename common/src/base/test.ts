@@ -1,49 +1,60 @@
 import fetch from "cross-fetch";
 import test from "flug";
-import { getCapabilities, getCapabilitiesUrl } from "./utils";
 
-test("getting capabilities url", async ({ eq }) => {
-  eq(
-    await getCapabilitiesUrl("https://geonode.wfp.org/geoserver/wfs"),
-    "https://geonode.wfp.org/geoserver/wfs?request=GetCapabilities&version=1.1.1"
-  );
-  eq(
-    await getCapabilitiesUrl(
-      "https://geonode.wfp.org/geoserver/ows/?service=WFS"
-    ),
-    "https://geonode.wfp.org/geoserver/ows/?service=WFS&request=GetCapabilities&version=1.1.1"
-  );
-  eq(
-    await getCapabilitiesUrl(
-      "https://geonode.wfp.org/geoserver/ows/?service=WFS&extra=true"
-    ),
-    "https://geonode.wfp.org/geoserver/ows/?service=WFS&extra=true&request=GetCapabilities&version=1.1.1"
-  );
-  eq(
-    await getCapabilitiesUrl("https://geonode.wfp.org/geoserver/ows", {
-      service: "WFS",
-    }),
-    "https://geonode.wfp.org/geoserver/ows?request=GetCapabilities&service=WFS&version=1.1.1"
-  );
-});
+import { Base } from "./index";
 
-test("getCapabilities", async ({ eq }) => {
-  eq(
-    (
-      await getCapabilities("https://geonode.wfp.org/geoserver/wfs", {
-        fetch,
-        wait: 3,
-      })
-    ).length > 100,
-    true
-  );
-  const capabilities = await getCapabilities(
-    "https://geonode.wfp.org/geoserver/wfs",
+test("Base.getCapabilities", async ({ eq }) => {
+  const base = new Base("https://geonode.wfp.org/geoserver/wfs", { fetch });
+  eq(base.service, "WFS");
+  const xml1 = await base.getCapabilities({ debug: true });
+  const xml2 = await base.getCapabilities({ debug: true, version: "2.0.0" });
+
+  const ows = await new Base(
+    "https://geonode.wfp.org/geoserver/ows?version=2.0.0",
     {
       fetch,
-      wait: 3,
+      service: "WFS",
     }
   );
-  eq(capabilities.includes("<wfs:WFS_Capabilities"), true);
-  eq(capabilities.includes("<ows:ServiceType>WFS</ows:ServiceType>"), true);
+  const xml3 = await ows.getCapabilities({ debug: true });
+  const xml4 = await ows.getCapabilities({ debug: true, version: "2.0.0" });
+
+  // testing all the xml variables are the same using transitive property
+  eq(xml1 === xml2, true);
+  eq(xml2 === xml3, true);
+  eq(xml3 === xml4, true);
+
+  eq(xml1.length > 10000, true);
+  eq(xml1.includes("<wfs:WFS_Capabilities"), true);
+  eq(xml1.includes("<ows:ServiceType>WFS</ows:ServiceType>"), true);
+
+  // fetch older version
+  const xml5 = await base.getCapabilities({ version: "1.1.1" });
+  const xml6 = await ows.getCapabilities({ version: "1.1.1" });
+  eq(xml5 === xml6, true);
+});
+
+test("Base.getCapabilities with bad versions", async ({ eq }) => {
+  const base = new Base("https://geonode.wfp.org/geoserver/wfs", { fetch });
+  eq(base.service, "WFS");
+
+  let msg1;
+  try {
+    await base.getCapabilities({ debug: true, version: "incorrect" });
+    // eslint-disable-next-line prettier/prettier
+  } catch (error: any) {
+    // eslint-disable-next-line fp/no-mutation
+    msg1 = error.message;
+  }
+  eq(msg1.includes("java.lang.ClassCastException"), true);
+
+  let msg2;
+  try {
+    await base.getCapabilities({ debug: true, version: "123" });
+    // eslint-disable-next-line prettier/prettier
+  } catch (error: any) {
+    // eslint-disable-next-line fp/no-mutation
+    msg2 = error.message;
+  }
+  eq(msg2.startsWith("fetch failed"), true);
 });

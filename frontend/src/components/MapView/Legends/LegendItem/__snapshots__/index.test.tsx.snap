@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders as expected 1`] = `
+<div>
+  <mock-listitem
+    dense="true"
+    disablegutters="true"
+  >
+    <div
+      class="MuiPaper-root memo-paper-1 MuiPaper-elevation1 MuiPaper-rounded"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-item"
+        style="display: flex;"
+      >
+        <mock-typography
+          style="flex-grow: 1;"
+          variant="h4"
+        >
+          Some Legend Title
+        </mock-typography>
+      </div>
+      <mock-divider />
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <img
+          alt="Some Legend Title"
+          src="Some Legend Url"
+        />
+      </div>
+      <div
+        class="MuiLinearProgress-root makeStyles-root-6 MuiLinearProgress-colorPrimary MuiLinearProgress-indeterminate"
+        role="progressbar"
+      >
+        <div
+          class="MuiLinearProgress-bar makeStyles-hide-8 MuiLinearProgress-barColorPrimary MuiLinearProgress-bar1Indeterminate"
+        />
+        <div
+          class="MuiLinearProgress-bar makeStyles-hide-8 MuiLinearProgress-bar2Indeterminate MuiLinearProgress-barColorPrimary"
+        />
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-item"
+      >
+        <mock-typography
+          variant="h5"
+        >
+          <div>
+            Test Children
+          </div>
+        </mock-typography>
+      </div>
+    </div>
+  </mock-listitem>
+</div>
+`;

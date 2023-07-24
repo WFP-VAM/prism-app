@@ -1,49 +1,46 @@
+import {
+  Button,
+  Grid,
+  Hidden,
+  Theme,
+  WithStyles,
+  createStyles,
+  withStyles,
+} from '@material-ui/core';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import { findIndex, get, isEqual } from 'lodash';
 import React, {
-  forwardRef,
-  Ref,
+  memo,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { useSelector } from 'react-redux';
-import {
-  Button,
-  createStyles,
-  Grid,
-  Hidden,
-  Theme,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
 import DatePicker from 'react-datepicker';
-import Draggable, { DraggableEvent } from 'react-draggable';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretUp } from '@fortawesome/free-solid-svg-icons';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 import 'react-datepicker/dist/react-datepicker.css';
-import { findIndex, get, isEqual } from 'lodash';
-import { useUrlHistory } from '../../../utils/url-utils';
-import { DateRangeType } from '../../../config/types';
-import { findDateIndex, TIMELINE_ITEM_WIDTH, USER_DATE_OFFSET } from './utils';
-import { dateRangeSelector } from '../../../context/mapStateSlice/selectors';
-import TimelineItems from './TimelineItems';
-import { moment, useSafeTranslation } from '../../../i18n';
+import Draggable, { DraggableEvent } from 'react-draggable';
+import { useDispatch, useSelector } from 'react-redux';
+import { DateRangeType } from 'config/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
+import { addNotification } from 'context/notificationStateSlice';
+import { moment, useSafeTranslation } from 'i18n';
+import { datesAreEqualWithoutTime } from 'utils/date-utils';
 import {
   DEFAULT_DATE_FORMAT,
   MONTH_FIRST_DATE_FORMAT,
   MONTH_ONLY_DATE_FORMAT,
-} from '../../../utils/name-utils';
+} from 'utils/name-utils';
+import { useUrlHistory } from 'utils/url-utils';
+import { ReactComponent as TickSvg } from './tick.svg';
+import DateSelectorInput from './DateSelectorInput';
+import TimelineItems from './TimelineItems';
 import {
-  DateCompatibleLayer,
-  getPossibleDatesForLayer,
-} from '../../../utils/server-utils';
-import { availableDatesSelector } from '../../../context/serverStateSlice';
-
-interface InputProps {
-  value?: string;
-  onClick?: () => void;
-}
+  DateCompatibleLayerWithDateItems,
+  TIMELINE_ITEM_WIDTH,
+  USER_DATE_OFFSET,
+  findDateIndex,
+} from './utils';
 
 type Point = {
   x: number;
@@ -53,308 +50,418 @@ type Point = {
 const TIMELINE_ID = 'dateTimelineSelector';
 const POINTER_ID = 'datePointerSelector';
 
-const Input = forwardRef(
-  ({ value, onClick }: InputProps, ref?: Ref<HTMLButtonElement>) => {
+const DateSelector = memo(
+  ({
+    availableDates = [],
+    selectedLayers = [],
+    classes,
+  }: DateSelectorProps) => {
+    const { startDate: stateStartDate } = useSelector(dateRangeSelector);
+    const [dateRange, setDateRange] = useState<DateRangeType[]>([
+      {
+        value: 0,
+        label: '',
+        month: '',
+        isFirstDay: false,
+        date: moment().toISOString(),
+      },
+    ]);
+    const [timelinePosition, setTimelinePosition] = useState<Point>({
+      x: 0,
+      y: 0,
+    });
+    const [pointerPosition, setPointerPosition] = useState<Point>({
+      x: 0,
+      y: 0,
+    });
+
+    const dateRef = useRef(availableDates);
+    const timeLine = useRef(null);
+
+    const { t } = useSafeTranslation();
+    const { updateHistory } = useUrlHistory();
+    const dispatch = useDispatch();
+
+    const maxDate = useMemo(() => {
+      return new Date(Math.max(...availableDates, new Date().getTime()));
+    }, [availableDates]);
+
+    const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
+
+    const setPointerXPosition = useCallback(() => {
+      if (
+        pointerPosition.x >=
+        dateRange.length * TIMELINE_ITEM_WIDTH - timeLineWidth
+      ) {
+        return timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH;
+      }
+      if (pointerPosition.x > timeLineWidth) {
+        return -pointerPosition.x + timeLineWidth / 2;
+      }
+      return 0;
+    }, [dateRange.length, pointerPosition.x, timeLineWidth]);
+
+    const handleTimeLinePosition = useCallback(
+      (x: number) => {
+        if (
+          -timelinePosition.x <= pointerPosition.x &&
+          -timelinePosition.x + timeLineWidth >= pointerPosition.x
+        ) {
+          return;
+        }
+        setTimelinePosition({ x, y: 0 });
+      },
+      [pointerPosition.x, timeLineWidth, timelinePosition.x],
+    );
+
+    // Move the slider automatically so that the pointer always visible
+    useEffect(() => {
+      const x = setPointerXPosition();
+      handleTimeLinePosition(x);
+    }, [handleTimeLinePosition, setPointerXPosition]);
+
+    const dateStrToUpperCase = useCallback((dateStr: string): string => {
+      return `${dateStr.slice(0, 1).toUpperCase()}${dateStr.slice(1)}`;
+    }, []);
+
+    const locale = useMemo(() => {
+      return t('date_locale') ? t('date_locale') : 'en';
+    }, [t]);
+
+    const range = useMemo(() => {
+      return Array.from(
+        moment()
+          .range(
+            moment(stateStartDate).startOf('year'),
+            moment(stateStartDate).endOf('year'),
+          )
+          .by('days'),
+      ).map(date => {
+        date.locale(locale);
+        return {
+          value: date.valueOf(),
+          label: dateStrToUpperCase(date.format(MONTH_FIRST_DATE_FORMAT)),
+          month: dateStrToUpperCase(date.format(MONTH_ONLY_DATE_FORMAT)),
+          date: date.format('yyyy-MM-DD'),
+          isFirstDay: date.date() === date.startOf('month').date(),
+        };
+      });
+    }, [dateStrToUpperCase, locale, stateStartDate]);
+
+    const dateIndex = useMemo(() => {
+      return findIndex(
+        range,
+        date =>
+          !!stateStartDate &&
+          datesAreEqualWithoutTime(date.value, stateStartDate),
+      );
+    }, [range, stateStartDate]);
+
+    // Create timeline range and set pointer position
+    useEffect(() => {
+      setDateRange(range);
+      setPointerPosition({
+        x: dateIndex * TIMELINE_ITEM_WIDTH,
+        y: 0,
+      });
+    }, [dateIndex, range]);
+
+    const updateStartDate = useCallback(
+      (date: Date, isUpdatingHistory: boolean) => {
+        if (!isUpdatingHistory) {
+          return;
+        }
+        const time = date.getTime();
+        const startDate = new Date(stateStartDate as number);
+        const dateEqualsToStartDate = datesAreEqualWithoutTime(date, startDate);
+        if (dateEqualsToStartDate) {
+          return;
+        }
+        // This updates state because a useEffect in MapView updates the redux state
+        // TODO this is convoluted coupling, we should update state here if feasible.
+        updateHistory('date', moment(time).format(DEFAULT_DATE_FORMAT));
+      },
+      [stateStartDate, updateHistory],
+    );
+
+    const addUserOffset = useCallback((dates: number[]) => {
+      return dates.map(d => {
+        return d + USER_DATE_OFFSET;
+      });
+    }, []);
+
+    const setDatePosition = useCallback(
+      (
+        date: number | undefined,
+        increment: number,
+        isUpdatingHistory: boolean,
+      ) => {
+        const dates = addUserOffset(availableDates);
+        const selectedIndex = findDateIndex(dates, date);
+        if (dates[selectedIndex + increment]) {
+          updateStartDate(
+            new Date(dates[selectedIndex + increment]),
+            isUpdatingHistory,
+          );
+        }
+      },
+      [addUserOffset, availableDates, updateStartDate],
+    );
+
+    // move pointer to closest date when change map layer
+    useEffect(() => {
+      if (isEqual(dateRef.current, availableDates)) {
+        return;
+      }
+      setDatePosition(stateStartDate, 0, false);
+      dateRef.current = availableDates;
+    });
+
+    const incrementDate = useCallback(() => {
+      setDatePosition(stateStartDate, 1, true);
+    }, [setDatePosition, stateStartDate]);
+
+    const decrementDate = useCallback(() => {
+      setDatePosition(stateStartDate, -1, true);
+    }, [setDatePosition, stateStartDate]);
+
+    const dates = useMemo(() => {
+      return addUserOffset(availableDates);
+    }, [addUserOffset, availableDates]);
+
+    const includedDates = useMemo(() => {
+      return availableDates?.map(d => new Date(d + USER_DATE_OFFSET)) ?? [];
+    }, [availableDates]);
+
+    const checkIntersectingDateAndShowPopup = useCallback(
+      (selectedDate: Date, positionY: number) => {
+        const findDateInIntersectingDates = includedDates.find(date => {
+          return datesAreEqualWithoutTime(date, selectedDate);
+        });
+        if (findDateInIntersectingDates) {
+          return;
+        }
+        // if the date is not an intersecting one default to last intersecting date
+        setPointerPosition({
+          x: dateIndex * TIMELINE_ITEM_WIDTH,
+          y: positionY,
+        });
+        dispatch(
+          addNotification({
+            message: t(
+              'The date you selected is not valid for all selected layers. To change the date, either select a date where all selected layers have data (see timeline ticks), or deselect a layer',
+            ),
+            type: 'warning',
+          }),
+        );
+      },
+      [dateIndex, dispatch, includedDates, t],
+    );
+
+    // Click on available date to move the pointer
+    const clickDate = (index: number) => {
+      const selectedIndex = findDateIndex(dates, dateRange[index].value);
+      if (selectedIndex < 0 || dates[selectedIndex] === stateStartDate) {
+        return;
+      }
+      setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
+      const updatedDate = new Date(dates[selectedIndex]);
+      checkIntersectingDateAndShowPopup(new Date(dateRange[index].value), 0);
+      updateStartDate(updatedDate, true);
+    };
+
+    // Set timeline position after being dragged
+    const onTimelineStop = useCallback((e: DraggableEvent, position: Point) => {
+      setTimelinePosition(position);
+    }, []);
+
+    const onPointerStart = useCallback((e: DraggableEvent) => {
+      e.stopPropagation();
+    }, []);
+
+    // Set pointer position after being dragged
+    const onPointerStop = useCallback(
+      (e: DraggableEvent, position: Point) => {
+        const exactX = Math.round(position.x / TIMELINE_ITEM_WIDTH);
+        if (exactX >= dateRange.length) {
+          return;
+        }
+        const selectedIndex = findDateIndex(dates, dateRange[exactX].value);
+        if (selectedIndex < 0 || dates[selectedIndex] === stateStartDate) {
+          return;
+        }
+        setPointerPosition({
+          x: exactX * TIMELINE_ITEM_WIDTH,
+          y: position.y,
+        });
+        const updatedDate = new Date(dates[selectedIndex]);
+        checkIntersectingDateAndShowPopup(
+          new Date(dateRange[exactX].value),
+          position.y,
+        );
+        updateStartDate(updatedDate, true);
+      },
+      [
+        checkIntersectingDateAndShowPopup,
+        dateRange,
+        dates,
+        stateStartDate,
+        updateStartDate,
+      ],
+    );
+
+    const handleOnDatePickerChange = useCallback(
+      (date: Date) => {
+        updateStartDate(date, true);
+      },
+      [updateStartDate],
+    );
+
     return (
-      <Button variant="outlined" onClick={onClick} ref={ref}>
-        {value}
-      </Button>
+      <div className={classes.container}>
+        <Grid
+          container
+          alignItems="center"
+          justifyContent="center"
+          className={classes.datePickerContainer}
+        >
+          {/* Mobile */}
+          <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
+            <Hidden smUp>
+              <Button onClick={decrementDate}>
+                <ChevronLeft style={{ color: '#101010' }} />
+              </Button>
+            </Hidden>
+
+            <DatePicker
+              locale={t('date_locale')}
+              dateFormat="PP"
+              className={classes.datePickerInput}
+              selected={moment(stateStartDate).toDate()}
+              onChange={handleOnDatePickerChange}
+              maxDate={maxDate}
+              todayButton={t('Today')}
+              peekNextMonth
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              customInput={<DateSelectorInput />}
+              includeDates={includedDates}
+            />
+
+            <Hidden smUp>
+              <Button onClick={incrementDate}>
+                <ChevronRight style={{ color: '#101010' }} />
+              </Button>
+            </Hidden>
+          </Grid>
+
+          {/* Desktop */}
+          <Grid item xs={12} sm className={classes.slider}>
+            <Hidden xsDown>
+              <Button onClick={decrementDate} className={classes.chevronDate}>
+                <ChevronLeft />
+              </Button>
+            </Hidden>
+            <Grid className={classes.dateContainer} ref={timeLine}>
+              <Draggable
+                axis="x"
+                handle={`#${TIMELINE_ID}`}
+                bounds={{
+                  top: 0,
+                  bottom: 0,
+                  right: 0,
+                  left: timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH,
+                }}
+                position={timelinePosition}
+                onStop={onTimelineStop}
+              >
+                <div className={classes.timeline} id={TIMELINE_ID}>
+                  <Grid
+                    container
+                    alignItems="stretch"
+                    className={classes.dateLabelContainer}
+                  >
+                    {stateStartDate && (
+                      <TimelineItems
+                        dateRange={dateRange}
+                        clickDate={clickDate}
+                        locale={locale}
+                        selectedLayers={selectedLayers}
+                      />
+                    )}
+                  </Grid>
+                  <Draggable
+                    axis="x"
+                    handle={`#${POINTER_ID}`}
+                    bounds={{
+                      top: 0,
+                      bottom: 0,
+                      left: 0,
+                      right: dateRange.length * TIMELINE_ITEM_WIDTH,
+                    }}
+                    grid={[TIMELINE_ITEM_WIDTH, 1]}
+                    position={pointerPosition}
+                    onStart={onPointerStart}
+                    onStop={onPointerStop}
+                  >
+                    <div className={classes.pointer} id={POINTER_ID}>
+                      <TickSvg />
+                    </div>
+                  </Draggable>
+                </div>
+              </Draggable>
+            </Grid>
+            <Hidden xsDown>
+              <Button onClick={incrementDate} className={classes.chevronDate}>
+                <ChevronRight />
+              </Button>
+            </Hidden>
+          </Grid>
+        </Grid>
+      </div>
     );
   },
 );
-
-function DateSelector({
-  availableDates = [],
-  selectedLayers = [],
-  classes,
-}: DateSelectorProps) {
-  const { startDate: stateStartDate } = useSelector(dateRangeSelector);
-  const serverAvailableDates = useSelector(availableDatesSelector);
-  const { t, i18n } = useSafeTranslation();
-  const [dateRange, setDateRange] = useState<DateRangeType[]>([
-    {
-      value: 0,
-      label: '',
-      month: '',
-      isFirstDay: false,
-    },
-  ]);
-
-  const [timelinePosition, setTimelinePosition] = useState<Point>({
-    x: 0,
-    y: 0,
-  });
-  const [pointerPosition, setPointerPosition] = useState<Point>({ x: 0, y: 0 });
-
-  const dateRef = useRef(availableDates);
-
-  const timeLine = useRef(null);
-  const timeLineWidth = get(timeLine.current, 'offsetWidth', 0);
-
-  const { updateHistory } = useUrlHistory();
-
-  const selectedLayerDates = useMemo(
-    () =>
-      selectedLayers.map(layer => {
-        return getPossibleDatesForLayer(layer, serverAvailableDates)
-          .filter(value => value) // null check
-          .flat();
-      }),
-    [selectedLayers, serverAvailableDates],
-  );
-  const selectedLayerTitles = useMemo(
-    () => selectedLayers.map(layer => layer.title),
-    [selectedLayers],
-  );
-
-  // Move the slider automatically so that the pointer always visible
-  useEffect(() => {
-    let x = 0;
-    if (
-      pointerPosition.x >=
-      dateRange.length * TIMELINE_ITEM_WIDTH - timeLineWidth
-    ) {
-      // eslint-disable-next-line fp/no-mutation
-      x = timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH;
-    } else if (pointerPosition.x > timeLineWidth) {
-      // eslint-disable-next-line fp/no-mutation
-      x = -pointerPosition.x + timeLineWidth / 2;
-    }
-    if (
-      -timelinePosition.x > pointerPosition.x ||
-      -timelinePosition.x + timeLineWidth < pointerPosition.x
-    ) {
-      setTimelinePosition({ x, y: 0 });
-    }
-  }, [dateRange.length, pointerPosition, timeLineWidth, timelinePosition.x]);
-
-  // Create timeline range and set pointer position
-  useEffect(() => {
-    const locale = t('date_locale') ? t('date_locale') : 'en';
-    const range = Array.from(
-      moment()
-        .range(
-          moment(stateStartDate).startOf('year'),
-          moment(stateStartDate).endOf('year'),
-        )
-        .by('days'),
-    ).map(date => {
-      date.locale(locale);
-      return {
-        value: date.valueOf(),
-        label: date.format(MONTH_FIRST_DATE_FORMAT),
-        month: date.format(MONTH_ONLY_DATE_FORMAT),
-        isFirstDay: date.date() === date.startOf('month').date(),
-      };
-    });
-    setDateRange(range);
-    const dateIndex = findIndex(range, date => {
-      return (
-        date.label ===
-        moment(stateStartDate).locale(locale).format(MONTH_FIRST_DATE_FORMAT)
-      );
-    });
-    setPointerPosition({
-      x: dateIndex * TIMELINE_ITEM_WIDTH,
-      y: 0,
-    });
-  }, [stateStartDate, t, i18n]);
-
-  function updateStartDate(date: Date) {
-    const time = date.getTime();
-    // This updates state because a useEffect in MapView updates the redux state
-    // TODO this is convoluted coupling, we should update state here if feasible.
-    updateHistory('date', moment(time).format(DEFAULT_DATE_FORMAT));
-  }
-
-  function setDatePosition(date: number | undefined, increment: number) {
-    const dates = availableDates.map(d => {
-      return d + USER_DATE_OFFSET;
-    });
-    const selectedIndex = findDateIndex(dates, date);
-    if (dates[selectedIndex + increment]) {
-      updateStartDate(new Date(dates[selectedIndex + increment]));
-    }
-  }
-
-  // move pointer to closest date when change map layer
-  useEffect(() => {
-    if (!isEqual(dateRef.current, availableDates)) {
-      setDatePosition(stateStartDate, 0);
-      dateRef.current = availableDates;
-    }
-  });
-
-  function incrementDate() {
-    setDatePosition(stateStartDate, 1);
-  }
-
-  function decrementDate() {
-    setDatePosition(stateStartDate, -1);
-  }
-
-  // Click on available date to move the pointer
-  const clickDate = (index: number) => {
-    const dates = availableDates.map(date => {
-      return date + USER_DATE_OFFSET;
-    });
-    const selectedIndex = findDateIndex(dates, dateRange[index].value);
-    if (selectedIndex >= 0 && dates[selectedIndex] !== stateStartDate) {
-      setPointerPosition({ x: index * TIMELINE_ITEM_WIDTH, y: 0 });
-      updateStartDate(new Date(dates[selectedIndex]));
-    }
-  };
-
-  // Set timeline position after being dragged
-  const onTimelineStop = (e: DraggableEvent, position: Point) => {
-    setTimelinePosition(position);
-  };
-
-  // Set pointer position after being dragged
-  const onPointerStop = (e: DraggableEvent, position: Point) => {
-    const exactX = Math.round(position.x / TIMELINE_ITEM_WIDTH);
-    if (exactX >= dateRange.length) {
-      return;
-    }
-    const dates = availableDates.map(date => {
-      return date + USER_DATE_OFFSET;
-    });
-    const selectedIndex = findDateIndex(dates, dateRange[exactX].value);
-    if (selectedIndex >= 0 && dates[selectedIndex] !== stateStartDate) {
-      setPointerPosition({ x: exactX * TIMELINE_ITEM_WIDTH, y: position.y });
-      updateStartDate(new Date(dates[selectedIndex]));
-    }
-  };
-
-  return (
-    <div className={classes.container}>
-      <Grid
-        container
-        alignItems="center"
-        justify="center"
-        className={classes.datePickerContainer}
-      >
-        <Grid item xs={12} sm={1} className={classes.datePickerGrid}>
-          <Hidden smUp>
-            <Button onClick={decrementDate}>
-              <ChevronLeft />
-            </Button>
-          </Hidden>
-
-          <DatePicker
-            locale={t('date_locale')}
-            dateFormat="PP"
-            className={classes.datePickerInput}
-            selected={moment(stateStartDate).toDate()}
-            onChange={updateStartDate}
-            maxDate={new Date()}
-            todayButton={t('Today')}
-            peekNextMonth
-            showMonthDropdown
-            showYearDropdown
-            dropdownMode="select"
-            customInput={<Input />}
-            includeDates={availableDates.map(
-              d => new Date(d + USER_DATE_OFFSET),
-            )}
-          />
-
-          <Hidden smUp>
-            <Button onClick={incrementDate}>
-              <ChevronRight />
-            </Button>
-          </Hidden>
-        </Grid>
-
-        <Grid item xs={12} sm className={classes.slider}>
-          <Hidden xsDown>
-            <Button onClick={decrementDate}>
-              <ChevronLeft />
-            </Button>
-          </Hidden>
-          <Grid className={classes.dateContainer} ref={timeLine}>
-            <Draggable
-              axis="x"
-              handle={`#${TIMELINE_ID}`}
-              bounds={{
-                top: 0,
-                bottom: 0,
-                right: 0,
-                left: timeLineWidth - dateRange.length * TIMELINE_ITEM_WIDTH,
-              }}
-              position={timelinePosition}
-              onStop={onTimelineStop}
-            >
-              <div className={classes.timeline} id={TIMELINE_ID}>
-                <Grid
-                  container
-                  alignItems="stretch"
-                  className={classes.dateLabelContainer}
-                >
-                  <TimelineItems
-                    dateRange={dateRange}
-                    intersectionDates={availableDates}
-                    selectedLayerDates={selectedLayerDates}
-                    clickDate={clickDate}
-                    selectedLayerTitles={selectedLayerTitles}
-                  />
-                </Grid>
-                <Draggable
-                  axis="x"
-                  handle={`#${POINTER_ID}`}
-                  bounds={{
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: dateRange.length * TIMELINE_ITEM_WIDTH,
-                  }}
-                  grid={[TIMELINE_ITEM_WIDTH, 1]}
-                  position={pointerPosition}
-                  onStart={(e: DraggableEvent) => e.stopPropagation()}
-                  onStop={onPointerStop}
-                >
-                  <div className={classes.pointer} id={POINTER_ID}>
-                    <FontAwesomeIcon
-                      icon={faCaretUp}
-                      style={{ fontSize: 40 }}
-                      color="white"
-                    />
-                  </div>
-                </Draggable>
-              </div>
-            </Draggable>
-          </Grid>
-          <Hidden xsDown>
-            <Button onClick={incrementDate}>
-              <ChevronRight />
-            </Button>
-          </Hidden>
-        </Grid>
-      </Grid>
-    </div>
-  );
-}
 
 const styles = (theme: Theme) =>
   createStyles({
     container: {
       position: 'absolute',
-      bottom: '8%',
-      zIndex: theme.zIndex.modal,
-      width: '100vw',
+      bottom: '40px',
+      width: '100%',
+      zIndex: 5,
+    },
+
+    chevronDate: {
+      padding: 0,
+      minWidth: '24px',
+      marginBottom: 'auto',
+      marginTop: 'auto',
+      marginRight: '10px',
+      marginLeft: '10px',
+      color: '#101010',
+      '&:hover': {
+        backgroundColor: 'rgba(211,211,211, 0.3)',
+      },
     },
 
     datePickerContainer: {
-      backgroundColor: theme.palette.primary.main,
+      border: '1px solid #D4D4D4',
+      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      backgroundColor: 'white',
+      color: '#101010',
       borderRadius: theme.shape.borderRadius,
-      padding: theme.spacing(1),
       width: '90%',
       margin: 'auto',
       textAlign: 'center',
     },
 
     datePickerInput: {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: 'white',
+      color: '#101010',
+      paddingBottom: theme.spacing(2),
+      paddingTop: theme.spacing(2),
     },
 
     datePickerGrid: {
@@ -372,7 +479,7 @@ const styles = (theme: Theme) =>
 
     dateContainer: {
       position: 'relative',
-      height: 36,
+      height: 54,
       flexGrow: 1,
       cursor: 'e-resize',
       overflow: 'hidden',
@@ -385,20 +492,22 @@ const styles = (theme: Theme) =>
 
     timeline: {
       position: 'relative',
-      top: 5,
+      top: 8,
     },
 
     pointer: {
       cursor: 'pointer',
       position: 'absolute',
-      left: -12,
-      top: -12,
+      zIndex: 5,
+      top: -20,
+      left: -9,
+      height: '16px',
     },
   });
 
 export interface DateSelectorProps extends WithStyles<typeof styles> {
   availableDates?: number[];
-  selectedLayers: DateCompatibleLayer[];
+  selectedLayers: DateCompatibleLayerWithDateItems[];
 }
 
 export default withStyles(styles)(DateSelector);

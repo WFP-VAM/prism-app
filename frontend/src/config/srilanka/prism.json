@@ -1,6 +1,8 @@
 {
   "country": "Sri Lanka",
+  "countryAdmin0Id": 231,
   "alertFormActive": false,
+  "defaultLayer": "rainfall_dekad",
   "icons": {
     "rainfall": "icon_rain.png",
     "vegetation": "icon_veg.png",
@@ -11,13 +13,12 @@
   },
   "serversUrls": {
     "wms": [
-      "https://api.earthobservation.vam.wfp.org/ows/wms"
+      "https://api.earthobservation.vam.wfp.org/ows/wms",
+      "https://sparc.wfp.org/geoserver/prism/wms"
     ]
   },
   "map": {
-    "latitude": 7.928,
-    "longitude": 80.592,
-    "zoom": 6.84
+    "boundingBox": [79.7, 5.97, 81.79, 9.82]
   },
   "defaultDisplayBoundaries": [
     "admin_boundaries",
@@ -230,6 +231,29 @@
         }
       ]
     },
+    "tropical_storms": {
+      "tropical_storms": [
+        {
+          "group_title": "Tropical Storms",
+          "activate_all": true,
+          "layers": [
+            {
+              "id": "adamts_buffers",
+              "label": "Wind buffers",
+              "main": true
+            },
+            {
+              "id": "adamts_nodes",
+              "label": "Nodes"
+            },
+            {
+              "id": "adamts_tracks",
+              "label": "Tracks"
+            }
+          ]
+        }
+      ]
+    },
     "vegetation": {
       "vegetation_conditions": [
         "ndvi_dekad",
@@ -244,10 +268,22 @@
       ]
     },
     "vulnerability": {
-      "poverty": ["poverty_hc"]
+      "poverty": [
+        "poverty_hc"
+      ],
+      "food_insecurity": [
+        "food_insecure",
+        "livelihood_coping",
+        "food_coping",
+        "food_consumption",
+        "food_expenditure"
+      ]
     },
     "exposure": {
-      "population": ["pop_21", "num_hhs"]
+      "population": [
+        "pop_21",
+        "num_hhs"
+      ]
     }
   }
 }

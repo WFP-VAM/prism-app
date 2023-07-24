@@ -1,46 +1,64 @@
-import { getCapabilities, getCapabilitiesUrl } from "./utils";
+import { getCapabilities } from "../ows/capabilities";
 
-import { hasLayerId } from "../utils";
+import { hasLayerId, parseService } from "../utils";
 
 const LAYER_DOES_NOT_EXIST = (layerId: string) =>
   `layer "${layerId}" does not exist`;
 
 export class Base {
-  capabilities: Promise<string>;
+  capabilities: { [url: string]: Promise<string> } = {};
+  debug?: boolean | undefined;
   fetch?: any;
-  loading: boolean;
-  getCapabilitiesUrl?: string;
   service?: string;
-  version?: string;
+  url?: string;
+  version?: string; // default version
 
   constructor(
     url: string,
     {
+      debug,
       fetch: customFetch,
-      version = "2.0.0",
-    }: {
-      fetch?: any;
-      version?: "2.0.0";
-    } = { fetch: undefined, version: "2.0.0" }
-  ) {
-    this.fetch = customFetch;
-    this.version = version;
-    this.getCapabilitiesUrl = getCapabilitiesUrl(url, {
-      service: this.service,
+      service,
       version,
-    });
+    }: {
+      debug?: boolean | undefined;
+      fetch?: any;
+      service?: string;
+      version?: string;
+    } = { fetch: undefined }
+  ) {
+    this.debug = debug;
+    this.fetch = customFetch || fetch;
 
-    this.loading = true;
-    if (!this.getCapabilitiesUrl) {
-      throw new Error("no get capabilities url");
+    if (service) {
+      this.service = service;
+    } else if (!this.service) {
+      this.service = parseService(url, { case: "upper" });
     }
-    this.capabilities = getCapabilities(this.getCapabilitiesUrl, {
-      fetch: this.fetch,
-      service: this.service,
-    });
-    this.capabilities.then(() => {
-      this.loading = false;
-    });
+
+    this.url = url;
+    this.version =
+      version || new URL(url).searchParams.get("version") || undefined;
+  }
+
+  async getCapabilities(options?: {
+    debug?: boolean;
+    version?: string;
+  }): Promise<string> {
+    if (!this.service) {
+      throw new Error("service not set");
+    }
+
+    const key = options?.version || this.version || "default";
+    if (!this.capabilities[key]) {
+      this.capabilities[key] = getCapabilities(this.url!, {
+        debug: options?.debug,
+        fetch: this.fetch,
+        service: this.service,
+        version: options?.version || this.version || undefined,
+      });
+    }
+    return this.capabilities[key];
   }
 
   async getLayerIds(): Promise<string[]> {

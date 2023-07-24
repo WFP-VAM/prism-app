@@ -1,0 +1,894 @@
+{
+    "DataList": [
+        {
+            "admin3Pcod": "JO11011",
+            "poverty": 18.7,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.189,
+            "water_per_pop": 0.6,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11021",
+            "poverty": 17.5,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 2903,
+            "storage_capacity": 0.189,
+            "water_per_pop": 12.7,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11031",
+            "poverty": 20.6,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 177,
+            "storage_capacity": 0.189,
+            "water_per_pop": 4,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11041",
+            "poverty": 2.4,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 108,
+            "storage_capacity": 0.189,
+            "water_per_pop": 28.9,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11051",
+            "poverty": 9.2,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 5,
+            "storage_capacity": 0.189,
+            "water_per_pop": 0.1,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11061",
+            "poverty": 28.3,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 241,
+            "storage_capacity": 0.189,
+            "water_per_pop": 143,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11071",
+            "poverty": 31,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 505,
+            "storage_capacity": 0.189,
+            "water_per_pop": 2.4,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11072",
+            "poverty": 20,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 117,
+            "storage_capacity": 0.189,
+            "water_per_pop": 49.4,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11081",
+            "poverty": 21.8,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 528,
+            "storage_capacity": 0.189,
+            "water_per_pop": 287.5,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11082",
+            "poverty": 15.7,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 186,
+            "storage_capacity": 0.189,
+            "water_per_pop": 592.2,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11091",
+            "poverty": 20.6,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 14,
+            "storage_capacity": 0.189,
+            "water_per_pop": 5.4,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11092",
+            "poverty": 27.7,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 560,
+            "storage_capacity": 0.189,
+            "water_per_pop": 113.6,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO11093",
+            "poverty": 14.1,
+            "municipal_water": 46.3,
+            "gw_per_irrigated": 251,
+            "storage_capacity": 0.189,
+            "water_per_pop": 6.9,
+            "mobile_tanks_per_pop": 0.00232,
+            "mobile_tanks_per_10k": 23.17
+        },
+        {
+            "admin3Pcod": "JO12011",
+            "poverty": 21.3,
+            "municipal_water": 81.9,
+            "gw_per_irrigated": 155,
+            "storage_capacity": 0.05,
+            "water_per_pop": 33.3,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.83
+        },
+        {
+            "admin3Pcod": "JO12012",
+            "poverty": 11.3,
+            "municipal_water": 81.9,
+            "gw_per_irrigated": 137,
+            "storage_capacity": 0.05,
+            "water_per_pop": 34.4,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.83
+        },
+        {
+            "admin3Pcod": "JO12014",
+            "poverty": 14.5,
+            "municipal_water": 81.9,
+            "gw_per_irrigated": 111,
+            "storage_capacity": 0.05,
+            "water_per_pop": 34.6,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.83
+        },
+        {
+            "admin3Pcod": "JO12021",
+            "poverty": 13.6,
+            "municipal_water": 81.9,
+            "gw_per_irrigated": 621,
+            "storage_capacity": 0.05,
+            "water_per_pop": 20.6,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.83
+        },
+        {
+            "admin3Pcod": "JO12013",
+            "poverty": 17.9,
+            "municipal_water": 81.9,
+            "gw_per_irrigated": 6,
+            "storage_capacity": 0.05,
+            "water_per_pop": 34,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.83
+        },
+        {
+            "admin3Pcod": "JO12031",
+            "poverty": 41.8,
+            "municipal_water": 81.9,
+            "gw_per_irrigated": 5,
+            "storage_capacity": 0.05,
+            "water_per_pop": 17,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.83
+        },
+        {
+            "admin3Pcod": "JO12041",
+            "poverty": 41.3,
+            "municipal_water": 81.9,
+            "gw_per_irrigated": 443,
+            "storage_capacity": 0.05,
+            "water_per_pop": 20.7,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.83
+        },
+        {
+            "admin3Pcod": "JO12051",
+            "poverty": 9.1,
+            "municipal_water": 81.9,
+            "gw_per_irrigated": 24,
+            "storage_capacity": 0.05,
+            "water_per_pop": 48.3,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.83
+        },
+        {
+            "admin3Pcod": "JO13011",
+            "poverty": 17.9,
+            "municipal_water": 44.1,
+            "gw_per_irrigated": 14,
+            "storage_capacity": 0.05,
+            "water_per_pop": 22.3,
+            "mobile_tanks_per_pop": 0.00017,
+            "mobile_tanks_per_10k": 1.72
+        },
+        {
+            "admin3Pcod": "JO13012",
+            "poverty": 5.6,
+            "municipal_water": 44.1,
+            "gw_per_irrigated": 5,
+            "storage_capacity": 0.04,
+            "water_per_pop": 37.6,
+            "mobile_tanks_per_pop": 0.00017,
+            "mobile_tanks_per_10k": 1.72
+        },
+        {
+            "admin3Pcod": "JO13013",
+            "poverty": 44.3,
+            "municipal_water": 44.1,
+            "gw_per_irrigated": 134,
+            "storage_capacity": 0.04,
+            "water_per_pop": 10.5,
+            "mobile_tanks_per_pop": 0.00017,
+            "mobile_tanks_per_10k": 1.72
+        },
+        {
+            "admin3Pcod": "JO13014",
+            "poverty": 9.7,
+            "municipal_water": 44.1,
+            "gw_per_irrigated": 793,
+            "storage_capacity": 0.04,
+            "water_per_pop": 7.8,
+            "mobile_tanks_per_pop": 0.00017,
+            "mobile_tanks_per_10k": 1.72
+        },
+        {
+            "admin3Pcod": "JO13021",
+            "poverty": 21.5,
+            "municipal_water": 44.1,
+            "gw_per_irrigated": 223,
+            "storage_capacity": 0.04,
+            "water_per_pop": 14.8,
+            "mobile_tanks_per_pop": 0.00017,
+            "mobile_tanks_per_10k": 1.72
+        },
+        {
+            "admin3Pcod": "JO13031",
+            "poverty": 12.3,
+            "municipal_water": 44.1,
+            "gw_per_irrigated": 134,
+            "storage_capacity": 0.04,
+            "water_per_pop": 18.7,
+            "mobile_tanks_per_pop": 0.00017,
+            "mobile_tanks_per_10k": 1.72
+        },
+        {
+            "admin3Pcod": "JO14011",
+            "poverty": 25,
+            "municipal_water": 48.9,
+            "gw_per_irrigated": 168,
+            "storage_capacity": 0.093,
+            "water_per_pop": 23.7,
+            "mobile_tanks_per_pop": 0.00392,
+            "mobile_tanks_per_10k": 39.25
+        },
+        {
+            "admin3Pcod": "JO14012",
+            "poverty": 9.4,
+            "municipal_water": 48.9,
+            "gw_per_irrigated": 254,
+            "storage_capacity": 0.093,
+            "water_per_pop": 25.7,
+            "mobile_tanks_per_pop": 0.00392,
+            "mobile_tanks_per_10k": 39.25
+        },
+        {
+            "admin3Pcod": "JO14013",
+            "poverty": 21.7,
+            "municipal_water": 48.9,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.093,
+            "water_per_pop": 26.2,
+            "mobile_tanks_per_pop": 0.00392,
+            "mobile_tanks_per_10k": 39.25
+        },
+        {
+            "admin3Pcod": "JO14014",
+            "poverty": 3.4,
+            "municipal_water": 48.9,
+            "gw_per_irrigated": 128,
+            "storage_capacity": 0.093,
+            "water_per_pop": 97.9,
+            "mobile_tanks_per_pop": 0.00392,
+            "mobile_tanks_per_10k": 39.25
+        },
+        {
+            "admin3Pcod": "JO14021",
+            "poverty": 20,
+            "municipal_water": 48.9,
+            "gw_per_irrigated": 380,
+            "storage_capacity": 0.093,
+            "water_per_pop": 25.5,
+            "mobile_tanks_per_pop": 0.00392,
+            "mobile_tanks_per_10k": 39.25
+        },
+        {
+            "admin3Pcod": "JO14022",
+            "poverty": 14.3,
+            "municipal_water": 48.9,
+            "gw_per_irrigated": 185,
+            "storage_capacity": 0.093,
+            "water_per_pop": 95.3,
+            "mobile_tanks_per_pop": 0.00392,
+            "mobile_tanks_per_10k": 39.25
+        },
+        {
+            "admin3Pcod": "JO14023",
+            "poverty": 10.6,
+            "municipal_water": 48.9,
+            "gw_per_irrigated": 813,
+            "storage_capacity": 0.093,
+            "water_per_pop": 25.4,
+            "mobile_tanks_per_pop": 0.00392,
+            "mobile_tanks_per_10k": 39.25
+        },
+        {
+            "admin3Pcod": "JO21011",
+            "poverty": 13.8,
+            "municipal_water": 26.9,
+            "gw_per_irrigated": 21,
+            "storage_capacity": 0.078,
+            "water_per_pop": 19.2,
+            "mobile_tanks_per_pop": 0.00103,
+            "mobile_tanks_per_10k": 10.26
+        },
+        {
+            "admin3Pcod": "JO21021",
+            "poverty": 35.1,
+            "municipal_water": 26.9,
+            "gw_per_irrigated": 129,
+            "storage_capacity": 0.078,
+            "water_per_pop": 11.4,
+            "mobile_tanks_per_pop": 0.00103,
+            "mobile_tanks_per_10k": 10.26
+        },
+        {
+            "admin3Pcod": "JO21031",
+            "poverty": 10.8,
+            "municipal_water": 26.9,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.078,
+            "water_per_pop": 15.5,
+            "mobile_tanks_per_pop": 0.00103,
+            "mobile_tanks_per_10k": 10.26
+        },
+        {
+            "admin3Pcod": "JO21041",
+            "poverty": 18.5,
+            "municipal_water": 26.9,
+            "gw_per_irrigated": 794,
+            "storage_capacity": 0.078,
+            "water_per_pop": 17.5,
+            "mobile_tanks_per_pop": 0.00103,
+            "mobile_tanks_per_10k": 10.26
+        },
+        {
+            "admin3Pcod": "JO21051",
+            "poverty": 50.3,
+            "municipal_water": 26.9,
+            "gw_per_irrigated": 21,
+            "storage_capacity": 0.078,
+            "water_per_pop": 20.9,
+            "mobile_tanks_per_pop": 0.00103,
+            "mobile_tanks_per_10k": 10.26
+        },
+        {
+            "admin3Pcod": "JO21061",
+            "poverty": 16.5,
+            "municipal_water": 26.9,
+            "gw_per_irrigated": 227,
+            "storage_capacity": 0.078,
+            "water_per_pop": 21.8,
+            "mobile_tanks_per_pop": 0.00103,
+            "mobile_tanks_per_10k": 10.26
+        },
+        {
+            "admin3Pcod": "JO21071",
+            "poverty": 23.8,
+            "municipal_water": 26.9,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.078,
+            "water_per_pop": 13.8,
+            "mobile_tanks_per_pop": 0.00103,
+            "mobile_tanks_per_10k": 10.26
+        },
+        {
+            "admin3Pcod": "JO21081",
+            "poverty": 19.7,
+            "municipal_water": 26.9,
+            "gw_per_irrigated": 102,
+            "storage_capacity": 0.078,
+            "water_per_pop": 17.4,
+            "mobile_tanks_per_pop": 0.00103,
+            "mobile_tanks_per_10k": 10.26
+        },
+        {
+            "admin3Pcod": "JO21091",
+            "poverty": 25.6,
+            "municipal_water": 26.9,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.078,
+            "water_per_pop": 19.2,
+            "mobile_tanks_per_pop": 0.00103,
+            "mobile_tanks_per_10k": 10.26
+        },
+        {
+            "admin3Pcod": "JO22011",
+            "poverty": 16.4,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 117,
+            "storage_capacity": 0.031,
+            "water_per_pop": 28.8,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22012",
+            "poverty": 20.1,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 454,
+            "storage_capacity": 0.031,
+            "water_per_pop": 24.3,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22013",
+            "poverty": 5.9,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 81,
+            "storage_capacity": 0.031,
+            "water_per_pop": 26.8,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22014",
+            "poverty": 21,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.031,
+            "water_per_pop": 22.2,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22021",
+            "poverty": 62.5,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 548,
+            "storage_capacity": 0.031,
+            "water_per_pop": 18.3,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22022",
+            "poverty": 19.9,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 613,
+            "storage_capacity": 0.031,
+            "water_per_pop": 14.8,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22023",
+            "poverty": 24.6,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 413,
+            "storage_capacity": 0.031,
+            "water_per_pop": 24.2,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22024",
+            "poverty": 59.9,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 116,
+            "storage_capacity": 0.031,
+            "water_per_pop": 15.6,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22025",
+            "poverty": 37.1,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 132,
+            "storage_capacity": 0.031,
+            "water_per_pop": 14.9,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22031",
+            "poverty": 17.2,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 544,
+            "storage_capacity": 0.031,
+            "water_per_pop": 5.4,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22032",
+            "poverty": 28.3,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 279,
+            "storage_capacity": 0.031,
+            "water_per_pop": 18.2,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22033",
+            "poverty": 8.5,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 118,
+            "storage_capacity": 0.031,
+            "water_per_pop": 18,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22034",
+            "poverty": 27.3,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 194,
+            "storage_capacity": 0.031,
+            "water_per_pop": 18.1,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO22041",
+            "poverty": 97.3,
+            "municipal_water": 47.5,
+            "gw_per_irrigated": 15,
+            "storage_capacity": 0.031,
+            "water_per_pop": 11.9,
+            "mobile_tanks_per_pop": 0.00168,
+            "mobile_tanks_per_10k": 16.83
+        },
+        {
+            "admin3Pcod": "JO23011",
+            "poverty": 28.4,
+            "municipal_water": 32,
+            "gw_per_irrigated": 127,
+            "storage_capacity": 0.067,
+            "water_per_pop": 20.8,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.84
+        },
+        {
+            "admin3Pcod": "JO23012",
+            "poverty": 28.4,
+            "municipal_water": 32,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.067,
+            "water_per_pop": 22.6,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.84
+        },
+        {
+            "admin3Pcod": "JO23013",
+            "poverty": 28,
+            "municipal_water": 32,
+            "gw_per_irrigated": 103,
+            "storage_capacity": 0.067,
+            "water_per_pop": 14.7,
+            "mobile_tanks_per_pop": 0.00068,
+            "mobile_tanks_per_10k": 6.84
+        },
+        {
+            "admin3Pcod": "JO24011",
+            "poverty": 39.2,
+            "municipal_water": 27.9,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.076,
+            "water_per_pop": 22.2,
+            "mobile_tanks_per_pop": 0.00027,
+            "mobile_tanks_per_10k": 2.69
+        },
+        {
+            "admin3Pcod": "JO24012",
+            "poverty": 31.5,
+            "municipal_water": 27.9,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.076,
+            "water_per_pop": 15.4,
+            "mobile_tanks_per_pop": 0.00027,
+            "mobile_tanks_per_10k": 2.69
+        },
+        {
+            "admin3Pcod": "JO24013",
+            "poverty": 47.4,
+            "municipal_water": 27.9,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.076,
+            "water_per_pop": 15.8,
+            "mobile_tanks_per_pop": 0.00027,
+            "mobile_tanks_per_10k": 2.69
+        },
+        {
+            "admin3Pcod": "JO24021",
+            "poverty": 26.4,
+            "municipal_water": 27.9,
+            "gw_per_irrigated": 4,
+            "storage_capacity": 0.076,
+            "water_per_pop": 18.1,
+            "mobile_tanks_per_pop": 0.00027,
+            "mobile_tanks_per_10k": 2.69
+        },
+        {
+            "admin3Pcod": "JO31011",
+            "poverty": 6.7,
+            "municipal_water": 63.2,
+            "gw_per_irrigated": 58,
+            "storage_capacity": 0.072,
+            "water_per_pop": 22.7,
+            "mobile_tanks_per_pop": 0.00046,
+            "mobile_tanks_per_10k": 4.58
+        },
+        {
+            "admin3Pcod": "JO31021",
+            "poverty": 13.7,
+            "municipal_water": 63.2,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.072,
+            "water_per_pop": 20,
+            "mobile_tanks_per_pop": 0.00046,
+            "mobile_tanks_per_10k": 4.58
+        },
+        {
+            "admin3Pcod": "JO31022",
+            "poverty": 11.5,
+            "municipal_water": 63.2,
+            "gw_per_irrigated": 50,
+            "storage_capacity": 0.072,
+            "water_per_pop": 20,
+            "mobile_tanks_per_pop": 0.00046,
+            "mobile_tanks_per_10k": 4.58
+        },
+        {
+            "admin3Pcod": "JO31031",
+            "poverty": 3.6,
+            "municipal_water": 63.2,
+            "gw_per_irrigated": 152,
+            "storage_capacity": 0.072,
+            "water_per_pop": 35.1,
+            "mobile_tanks_per_pop": 0.00046,
+            "mobile_tanks_per_10k": 4.58
+        },
+        {
+            "admin3Pcod": "JO31032",
+            "poverty": 40,
+            "municipal_water": 63.2,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.072,
+            "water_per_pop": 35.5,
+            "mobile_tanks_per_pop": 0.00046,
+            "mobile_tanks_per_10k": 4.58
+        },
+        {
+            "admin3Pcod": "JO31041",
+            "poverty": 86.6,
+            "municipal_water": 63.2,
+            "gw_per_irrigated": 24,
+            "storage_capacity": 0.072,
+            "water_per_pop": 19.4,
+            "mobile_tanks_per_pop": 0.00046,
+            "mobile_tanks_per_10k": 4.58
+        },
+        {
+            "admin3Pcod": "JO31042",
+            "poverty": 29.9,
+            "municipal_water": 63.2,
+            "gw_per_irrigated": 49,
+            "storage_capacity": 0.072,
+            "water_per_pop": 19.5,
+            "mobile_tanks_per_pop": 0.00046,
+            "mobile_tanks_per_10k": 4.58
+        },
+        {
+            "admin3Pcod": "JO31051",
+            "poverty": 5.6,
+            "municipal_water": 63.2,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.072,
+            "water_per_pop": 23.9,
+            "mobile_tanks_per_pop": 0.00046,
+            "mobile_tanks_per_10k": 4.58
+        },
+        {
+            "admin3Pcod": "JO31061",
+            "poverty": 14.3,
+            "municipal_water": 63.2,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.072,
+            "water_per_pop": 22.7,
+            "mobile_tanks_per_pop": 0.00046,
+            "mobile_tanks_per_10k": 4.58
+        },
+        {
+            "admin3Pcod": "JO31071",
+            "poverty": 32.9,
+            "municipal_water": 63.2,
+            "gw_per_irrigated": 3996,
+            "storage_capacity": 0.072,
+            "water_per_pop": 22.5,
+            "mobile_tanks_per_pop": 0.00046,
+            "mobile_tanks_per_10k": 4.58
+        },
+        {
+            "admin3Pcod": "JO32011",
+            "poverty": 18.3,
+            "municipal_water": 59.7,
+            "gw_per_irrigated": 8,
+            "storage_capacity": 0.208,
+            "water_per_pop": 26.6,
+            "mobile_tanks_per_pop": 0.0006,
+            "mobile_tanks_per_10k": 6
+        },
+        {
+            "admin3Pcod": "JO32021",
+            "poverty": 42,
+            "municipal_water": 59.7,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.208,
+            "water_per_pop": 26.8,
+            "mobile_tanks_per_pop": 0.0006,
+            "mobile_tanks_per_10k": 6
+        },
+        {
+            "admin3Pcod": "JO32031",
+            "poverty": 21,
+            "municipal_water": 59.7,
+            "gw_per_irrigated": 2187,
+            "storage_capacity": 0.208,
+            "water_per_pop": 26.4,
+            "mobile_tanks_per_pop": 0.0006,
+            "mobile_tanks_per_10k": 6
+        },
+        {
+            "admin3Pcod": "JO33011",
+            "poverty": 30.1,
+            "municipal_water": 94.7,
+            "gw_per_irrigated": 77,
+            "storage_capacity": 0.173,
+            "water_per_pop": 11.5,
+            "mobile_tanks_per_pop": 0.00261,
+            "mobile_tanks_per_10k": 26.05
+        },
+        {
+            "admin3Pcod": "JO33012",
+            "poverty": 67.6,
+            "municipal_water": 94.7,
+            "gw_per_irrigated": 44,
+            "storage_capacity": 0.173,
+            "water_per_pop": 19.3,
+            "mobile_tanks_per_pop": 0.00261,
+            "mobile_tanks_per_10k": 26.05
+        },
+        {
+            "admin3Pcod": "JO33013",
+            "poverty": 47.3,
+            "municipal_water": 94.7,
+            "gw_per_irrigated": 161,
+            "storage_capacity": 0.173,
+            "water_per_pop": 19.6,
+            "mobile_tanks_per_pop": 0.00261,
+            "mobile_tanks_per_10k": 26.05
+        },
+        {
+            "admin3Pcod": "JO33014",
+            "poverty": 70.6,
+            "municipal_water": 94.7,
+            "gw_per_irrigated": 66,
+            "storage_capacity": 0.173,
+            "water_per_pop": 18.4,
+            "mobile_tanks_per_pop": 0.00261,
+            "mobile_tanks_per_10k": 26.05
+        },
+        {
+            "admin3Pcod": "JO33015",
+            "poverty": 37.1,
+            "municipal_water": 94.7,
+            "gw_per_irrigated": 152,
+            "storage_capacity": 0.173,
+            "water_per_pop": 19.4,
+            "mobile_tanks_per_pop": 0.00261,
+            "mobile_tanks_per_10k": 26.05
+        },
+        {
+            "admin3Pcod": "JO33021",
+            "poverty": 22,
+            "municipal_water": 94.7,
+            "gw_per_irrigated": 0,
+            "storage_capacity": 0.173,
+            "water_per_pop": 81.6,
+            "mobile_tanks_per_pop": 0.00261,
+            "mobile_tanks_per_10k": 26.05
+        },
+        {
+            "admin3Pcod": "JO33031",
+            "poverty": 10.2,
+            "municipal_water": 94.7,
+            "gw_per_irrigated": 222,
+            "storage_capacity": 0.173,
+            "water_per_pop": 28.1,
+            "mobile_tanks_per_pop": 0.00261,
+            "mobile_tanks_per_10k": 26.05
+        },
+        {
+            "admin3Pcod": "JO33041",
+            "poverty": 30.1,
+            "municipal_water": 94.7,
+            "gw_per_irrigated": 397,
+            "storage_capacity": 0.173,
+            "water_per_pop": 11.5,
+            "mobile_tanks_per_pop": 0.00261,
+            "mobile_tanks_per_10k": 26.05
+        },
+        {
+            "admin3Pcod": "JO34011",
+            "poverty": 18.5,
+            "municipal_water": 70.9,
+            "gw_per_irrigated": 41,
+            "storage_capacity": 0.227,
+            "water_per_pop": 73.6,
+            "mobile_tanks_per_pop": 0.00076,
+            "mobile_tanks_per_10k": 7.56
+        },
+        {
+            "admin3Pcod": "JO34012",
+            "poverty": 100,
+            "municipal_water": 70.9,
+            "gw_per_irrigated": 977,
+            "storage_capacity": 0.227,
+            "water_per_pop": 80,
+            "mobile_tanks_per_pop": 0.00076,
+            "mobile_tanks_per_10k": 7.56
+        },
+        {
+            "admin3Pcod": "JO34021",
+            "poverty": 43.5,
+            "municipal_water": 70.9,
+            "gw_per_irrigated": 210,
+            "storage_capacity": 0.227,
+            "water_per_pop": 20.5,
+            "mobile_tanks_per_pop": 0.00076,
+            "mobile_tanks_per_10k": 7.56
+        },
+        {
+            "admin3Pcod": "JO34022",
+            "poverty": 66.4,
+            "municipal_water": 70.9,
+            "gw_per_irrigated": 693,
+            "storage_capacity": 0.227,
+            "water_per_pop": 842.5,
+            "mobile_tanks_per_pop": 0.00076,
+            "mobile_tanks_per_10k": 7.56
+        }
+    ]
+}
