@@ -100,7 +100,14 @@ function ExposureAnalysisActions({
       // Create a link element
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', 'report.pdf');
+      link.setAttribute(
+        'download',
+        window.location.href
+          .split('?hazardLayerIds=')[1]
+          .split('&date=')
+          .join('-')
+          .concat('.pdf'),
+      );
 
       // Append the link to the document body and click it to initiate download
       document.body.appendChild(link);

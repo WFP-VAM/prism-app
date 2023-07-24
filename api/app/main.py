@@ -3,6 +3,7 @@
 import functools
 import json
 import logging
+import os
 from datetime import date
 from typing import Annotated, Any, Optional
 from urllib.parse import ParseResult, urlencode, urlunparse
@@ -166,7 +167,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 @app.get("/report")
 async def get_report(url: str, language: str) -> FileResponse:
     tmp_file_path: str = await playwright_download_report(url, language)
-    return FileResponse(tmp_file_path)
+    return FileResponse(path=tmp_file_path, filename=os.path.basename(tmp_file_path))
 
 
 @app.get("/acled")

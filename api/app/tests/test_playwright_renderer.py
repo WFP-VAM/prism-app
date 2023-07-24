@@ -31,4 +31,4 @@ async def test_should_load_report_from_cache_if_present(playwright_mock):
 
     # Arrange
     assert report_path == "/cache/reports/report-flood_extent-en-2023-07-07.pdf"
-    playwright_mock.assert_called()
+    playwright_mock.assert_not_called()
