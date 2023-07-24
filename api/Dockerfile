@@ -15,7 +15,7 @@ RUN apt update
 RUN apt install -y python3-pip libpq-dev
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-RUN playwright install firefox
+RUN playwright install chromium
 RUN playwright install-deps
 
 EXPOSE 80
