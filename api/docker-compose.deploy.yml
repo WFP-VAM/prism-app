@@ -54,6 +54,6 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:?"Provide the AWS secret key for the stac api."}
     command: uvicorn app.main:app --host 0.0.0.0 --port 80
     restart: always
-    # adding a DNS to allow self lookup of the api
-    dns:
-      - 8.8.8.8
+    # adding a DNS resolution to allow self lookup of the api
+    extra_hosts:
+      - "prism-api.ovio.org:ec2-3-23-91-214.us-east-2.compute.amazonaws.com"
