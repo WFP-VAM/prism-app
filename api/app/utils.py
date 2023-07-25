@@ -20,9 +20,12 @@ def forward_http_error(resp: requests.Response, excluded_codes: list[int]) -> No
 warning_recorded = False
 
 
-def custom_warning_handler(message):
+def custom_warning_handler(message, category, filename, lineno, file=None, line=None):
     global warning_recorded
-    if not warning_recorded and "converting a masked element to nan" in str(message):
-        # Your desired action when the warning is first encountered
-        print("Warning: ", message)
+    if warning_recorded and "converting a masked element to nan" in str(message):
+        return
+
+    if "converting a masked element to nan" in str(message):
         warning_recorded = True
+
+    print(f"Warning: {message}")
