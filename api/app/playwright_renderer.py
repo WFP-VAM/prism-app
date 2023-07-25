@@ -53,7 +53,7 @@ async def playwright_download_report(url: str, language: Optional[str]) -> str:
         await page.wait_for_selector(CREATE_REPORT_BUTTON_SELECTOR, state="visible")
 
         # Change language if not english
-        await change_language_if_not_default(language, page)
+        await change_language_if_not_default(page, language)
 
         await click_create_report_button(page)
 
@@ -78,7 +78,7 @@ async def click_create_report_button(page) -> None:
     await create_report_selector.click()
 
 
-async def change_language_if_not_default(language, page) -> None:
+async def change_language_if_not_default(page, language) -> None:
     if language and language != "en":
         language_selector = await page.query_selector('p:has-text("' + language + '")')
         await language_selector.click()
