@@ -34,7 +34,7 @@ function ExposureAnalysisActions({
   columns,
 }: ExposureAnalysisActionsProps) {
   // only display local names if local language is selected, otherwise display english name
-  const { t } = useSafeTranslation();
+  const { t, i18n } = useSafeTranslation();
   const analysisDefinition = useSelector(getCurrentDefinition);
   const exposureLayerId = useSelector(exposureLayerIdSelector);
 
@@ -92,9 +92,9 @@ function ExposureAnalysisActions({
     setDownloadReportIsLoading(true);
     try {
       const response = await fetch(
-        `${API_URL}?url=${encodeURIComponent(
-          window.location.href,
-        )}&language=en`,
+        `${API_URL}?url=${encodeURIComponent(window.location.href)}&language=${
+          i18n.language
+        }&exposureLayerId=${exposureLayerId}`,
       );
       const blob = await response.blob();
       // Create a temporary URL for the blob

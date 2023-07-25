@@ -13,13 +13,14 @@ DOWNLOAD_BUTTON_SELECTOR: Final[str] = "a[download]"
 CREATE_REPORT_BUTTON_SELECTOR: Final[str] = 'button[id="create-report"]'
 
 # Timeouts
-PAGE_TIMEOUT: Final[int] = 25000
-PAGE_LANGUAGE_CHANGE_TIMEOUT: Final[int] = 5000
+PAGE_TIMEOUT: Final[int] = 60000
+PAGE_LANGUAGE_CHANGE_TIMEOUT: Final[int] = 10000
 
 
-async def playwright_download_report(url: str, language: Optional[str]) -> str:
+async def playwright_download_report(
+    url: str, layerIdParam: str, language: Optional[str]
+) -> str:
     language = "en" if language is None else language
-    layerIdParam = extract_query_param(url, "hazardLayerIds")
     dateParam = extract_query_param(url, "date")
     report_filename = f"report-{layerIdParam}-{language}-{dateParam}.pdf"
     report_file_path = os.path.join(
@@ -56,11 +57,13 @@ async def playwright_download_report(url: str, language: Optional[str]) -> str:
         # Change language if not english
         await change_language_if_not_default(page, language)
 
+        # Click on the pdf-renderer preview report button
         await click_create_report_button(page)
 
         # Wait for report to be created by pdf-renderer
         await page.wait_for_selector(DOWNLOAD_BUTTON_SELECTOR)
 
+        # Download file on disk
         async with page.expect_download() as download_info:
             download_report_selector = await page.query_selector(
                 DOWNLOAD_BUTTON_SELECTOR
