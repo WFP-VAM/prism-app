@@ -169,7 +169,9 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 
 @app.get("/report")
 async def get_report(url: str, language: str, exposureLayerId: str) -> FileResponse:
-    tmp_file_path: str = await playwright_download_report(url, exposureLayerId, language)
+    tmp_file_path: str = await playwright_download_report(
+        url, exposureLayerId, language
+    )
     return FileResponse(path=tmp_file_path, filename=os.path.basename(tmp_file_path))
 
 
