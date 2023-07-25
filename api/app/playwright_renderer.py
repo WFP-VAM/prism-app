@@ -21,15 +21,10 @@ async def playwright_download_report(url: str, language: Optional[str]) -> str:
     language = "en" if language is None else language
     layerIdParam = extract_query_param(url, "hazardLayerIds")
     dateParam = extract_query_param(url, "date")
-    report_file_path = (
-        CACHE_DIRECTORY
-        + "reports/report-"
-        + layerIdParam
-        + "-"
-        + language
-        + "-"
-        + dateParam
-        + ".pdf"
+    report_filename = f"reports/report-{layerIdParam}-{language}-{dateParam}.pdf"
+    report_file_path = os.path.join(
+        CACHE_DIRECTORY,
+        report_filename,
     )
 
     if os.path.exists(report_file_path):
