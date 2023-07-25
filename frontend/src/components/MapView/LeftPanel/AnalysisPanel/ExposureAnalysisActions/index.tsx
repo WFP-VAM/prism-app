@@ -85,6 +85,9 @@ function ExposureAnalysisActions({
     [analysisDefinition, exposureAnalysisCsvData],
   );
 
+  /**
+   * Trigger a report generation on the backend API and dowload it
+   *  */
   const handleDownloadReport = async () => {
     setDownloadReportIsLoading(true);
     try {
@@ -143,14 +146,14 @@ function ExposureAnalysisActions({
         className={bottomButton}
         onClick={handleToggleReport(true)}
       >
-        <Typography variant="body2">{t('Preview Report')}</Typography>
+        <Typography variant="body2">{t('Preview Report (slow)')}</Typography>
       </Button>
       <Button
         className={bottomButton}
         onClick={handleDownloadReport}
         disabled={downloadReportIsLoading}
       >
-        <Typography variant="body2">Download Report</Typography>
+        <Typography variant="body2">{t('Download Report')}</Typography>
         {downloadReportIsLoading && <LoadingBlinkingDots />}
       </Button>
       <ReportDialog
