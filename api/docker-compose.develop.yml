@@ -4,8 +4,6 @@ services:
   api:
     volumes:
       - ./app:/app
-    ports:
-      - "80:80"
     build:
       context: ./
       dockerfile: ./Dockerfile
