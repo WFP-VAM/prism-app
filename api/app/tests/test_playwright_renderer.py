@@ -1,3 +1,4 @@
+import os
 import shutil
 from unittest.mock import patch
 
@@ -10,7 +11,9 @@ from app.playwright_renderer import playwright_download_report
 async def test_playwright_download_report():
     """Test generate report using playwright and returns a path string"""
     # Arrange
-    shutil.rmtree(CACHE_DIRECTORY + "reports/", ignore_errors=True, onerror=None)
+    shutil.rmtree(
+        os.path.join(CACHE_DIRECTORY, "reports/"), ignore_errors=True, onerror=None
+    )
 
     # Act
     report_path: str = await playwright_download_report(
@@ -26,8 +29,12 @@ async def test_playwright_download_report():
 async def test_should_load_report_from_cache_if_present(playwright_mock):
     """Test generate report using cache directory and returns a path string"""
     # Arrange
+    if not os.path.exists(os.path.join(CACHE_DIRECTORY, "reports/")):
+        # If it doesn't exist, create the directory
+        os.makedirs(os.path.join(CACHE_DIRECTORY, "reports/"))
     with open(
-        CACHE_DIRECTORY + "reports/report-flood_extent-en-2023-07-07.pdf", "w"
+        os.path.join(CACHE_DIRECTORY, "reports/report-flood_extent-en-2023-07-07.pdf"),
+        "w",
     ) as fp:
         fp.write("Cached pdf report")
         pass
