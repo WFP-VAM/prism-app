@@ -57,4 +57,3 @@ services:
     # adding a DNS to allow self lookup of the api
     dns:
       - 8.8.8.8
-      - 1.1.1.1
