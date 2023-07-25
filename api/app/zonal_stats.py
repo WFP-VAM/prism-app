@@ -23,7 +23,6 @@ from app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
 from app.timer import timed
 from app.utils import custom_warning_handler
 from app.validation import VALID_OPERATORS
-
 from fastapi import HTTPException
 from osgeo import gdal
 from rasterio.warp import Resampling
