@@ -33,6 +33,9 @@ from .models import AlertsModel, StatsModel, UserInfoPydanticModel
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+# silence boto3 logging to avoid spamming the logs
+logging.getLogger('botocore').setLevel(logging.WARNING)
+
 app = FastAPI(
     title="PRISM Geospatial API by WFP",
     description="A geospatial API enabling aggregation and intersection calculations "
