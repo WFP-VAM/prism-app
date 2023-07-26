@@ -1,4 +1,5 @@
 from ast import literal_eval
+import logging
 
 import requests
 from fastapi import HTTPException
@@ -18,6 +19,7 @@ def forward_http_error(resp: requests.Response, excluded_codes: list[int]) -> No
 
 # Define a flag to indicate if the warning has been recorded already
 warning_recorded = False
+logger = logging.getLogger("zonal_stats")
 
 
 def custom_warning_handler(message, category, filename, lineno, file=None, line=None):
@@ -28,4 +30,4 @@ def custom_warning_handler(message, category, filename, lineno, file=None, line=
     if "converting a masked element to nan" in str(message):
         warning_recorded = True
 
-    print(f"Warning: {message}")
+    logger.warning(message)
