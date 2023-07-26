@@ -18,11 +18,11 @@ PAGE_LANGUAGE_CHANGE_TIMEOUT: Final[int] = 10000
 
 
 async def playwright_download_report(
-    url: str, layerIdParam: str, language: Optional[str]
+    url: str, layerIdParam: str, country: str, language: Optional[str]
 ) -> str:
     language = "en" if language is None else language
     dateParam = extract_query_param(url, "date")
-    report_filename = f"report-{layerIdParam}-{language}-{dateParam}.pdf"
+    report_filename = f"report-{country}-{layerIdParam}-{language}-{dateParam}.pdf"
     report_file_path = os.path.join(
         CACHE_DIRECTORY,
         "reports/",

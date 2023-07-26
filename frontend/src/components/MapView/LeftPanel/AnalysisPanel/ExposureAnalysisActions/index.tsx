@@ -25,6 +25,7 @@ import { Column } from 'utils/analysis-utils';
 import { ReportsDefinitions } from 'config/utils';
 import { getExposureAnalysisCsvData } from 'utils/csv-utils';
 import LoadingBlinkingDots from '../../../../Common/LoadingBlinkingDots';
+import { safeCountry } from '../../../../../config';
 
 function ExposureAnalysisActions({
   analysisButton,
@@ -94,7 +95,7 @@ function ExposureAnalysisActions({
       const response = await fetch(
         `${API_URL}?url=${encodeURIComponent(window.location.href)}&language=${
           i18n.language
-        }&exposureLayerId=${exposureLayerId}`,
+        }&exposureLayerId=${exposureLayerId}&country=${safeCountry}`,
       );
       const blob = await response.blob();
       // Create a temporary URL for the blob
