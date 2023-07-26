@@ -1,5 +1,5 @@
-from ast import literal_eval
 import logging
+from ast import literal_eval
 
 import requests
 from fastapi import HTTPException
