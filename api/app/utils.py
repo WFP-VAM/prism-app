@@ -17,17 +17,25 @@ def forward_http_error(resp: requests.Response, excluded_codes: list[int]) -> No
         raise HTTPException(status_code=resp.status_code, detail=detail)
 
 
-# Define a flag to indicate if the warning has been recorded already
-warning_recorded = False
-logger = logging.getLogger("zonal_stats")
+class WarningsFilter(logging.Filter):
+    """Custom logging filter for warnings."""
 
+    def __init__(self):
+        super().__init__()
+        self.max_warnings = 1
+        self.warning_count = 0
 
-def custom_warning_handler(message, category, filename, lineno, file=None, line=None):
-    global warning_recorded
-    if warning_recorded and "converting a masked element to nan" in str(message):
-        return
+    def filter(self, record):
+        if (
+            self.warning_count >= self.max_warnings
+            and record.levelno == logging.WARNING
+            and "converting a masked element to nan" in record.getMessage()
+        ):
+            return True
+        if (
+            record.levelno == logging.WARNING
+            and "converting a masked element to nan" in record.getMessage()
+        ):
+            self.warning_count += 1
 
-    if "converting a masked element to nan" in str(message):
-        warning_recorded = True
-
-    logger.warning(message)
+        return False

@@ -21,7 +21,7 @@ from app.models import (
 )
 from app.raster_utils import calculate_pixel_area, gdal_calc, reproj_match
 from app.timer import timed
-from app.utils import custom_warning_handler
+from app.utils import WarningsFilter
 from app.validation import VALID_OPERATORS
 from fastapi import HTTPException
 from osgeo import gdal
@@ -32,9 +32,8 @@ from shapely.ops import unary_union  # type: ignore
 
 logger = logging.getLogger(__name__)
 
-# Register the custom_warning_handler to handle the UserWarning
-# and silence 'converting a masked element to nan' after the first time.
-warnings.showwarning = custom_warning_handler
+# Add custom filter to silence 'converting a masked element to nan' warnings
+logger.addFilter(WarningsFilter())
 
 
 DEFAULT_STATS = ["min", "max", "mean", "median", "sum", "std", "nodata", "count"]
