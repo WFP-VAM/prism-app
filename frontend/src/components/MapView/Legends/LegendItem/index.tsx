@@ -27,7 +27,10 @@ import { LayerType, LegendDefinitionItem } from 'config/types';
 import { mapSelector, layersSelector } from 'context/mapStateSlice/selectors';
 import { clearDataset } from 'context/datasetStateSlice';
 import { useSafeTranslation } from 'i18n';
-import { setAnalysisLayerOpacity } from 'context/analysisResultStateSlice';
+import {
+  clearAnalysisResult,
+  setAnalysisLayerOpacity,
+} from 'context/analysisResultStateSlice';
 import LayerContentPreview from 'components/MapView/Legends/layerContentPreview';
 import { handleChangeOpacity } from 'components/MapView/Legends/handleChangeOpacity';
 import ColorIndicator from 'components/MapView/Legends/ColorIndicator';
@@ -35,6 +38,7 @@ import { getLegendItemLabel } from 'components/MapView/utils';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 import { getUrlKey, useUrlHistory } from 'utils/url-utils';
 import LayerDownloadOptions from 'components/MapView/LeftPanel/layersPanel/MenuSwitch/SwitchItem/LayerDownloadOptions';
+import AnalysisDownloadButton from 'components/MapView/Legends//AnalysisDownloadButton';
 import { toggleRemoveLayer } from 'components/MapView/LeftPanel/layersPanel/MenuSwitch/SwitchItem/utils';
 import LoadingBar from '../LoadingBar';
 
@@ -95,11 +99,7 @@ const LegendItem = memo(
 
     const renderedOpacitySlider = useMemo(() => {
       return (
-        <Box
-          px={isAnalysis ? 0 : 2}
-          display="flex"
-          className={classes.opacityBox}
-        >
+        <Box px={2} display="flex" className={classes.opacityBox}>
           <Typography classes={{ root: classes.opacityText }}>
             {`${Math.round((opacity as number) * 100)}%`}
           </Typography>
@@ -126,7 +126,7 @@ const LegendItem = memo(
           />
         </Box>
       );
-    }, [classes, handleChangeOpacityValue, id, map, opacity, type, isAnalysis]);
+    }, [classes, handleChangeOpacityValue, id, map, opacity, type]);
 
     const layerDownloadOptions = useMemo(() => {
       return layer ? (
@@ -140,6 +140,9 @@ const LegendItem = memo(
     }, [layer, extent]);
 
     const remove = useCallback(() => {
+      if (isAnalysis) {
+        dispatch(clearAnalysisResult());
+      }
       if (layer) {
         // reset opacity value
         setOpacityValue(initialOpacity || 0);
@@ -155,7 +158,7 @@ const LegendItem = memo(
           removeLayerFromUrl,
         );
       }
-    }, [layer, map, dispatch, removeLayerFromUrl, initialOpacity]);
+    }, [layer, map, dispatch, removeLayerFromUrl, initialOpacity, isAnalysis]);
 
     const getColorIndicatorKey = useCallback((item: LegendDefinitionItem) => {
       return (
@@ -214,36 +217,37 @@ const LegendItem = memo(
           {renderedLegend}
           <LoadingBar layerId={id} />
           {renderedChildren}
-          <Box display="flex" justifyContent="flex-end">
+          <Divider style={{ margin: '8px 0px' }} />
+          <Box display="flex" justifyContent="space-between">
             <Tooltip title="Opacity">
               <IconButton size="small" onClick={openOpacity}>
                 <Opacity fontSize="small" />
               </IconButton>
             </Tooltip>
-            {isAnalysis ? (
-              renderedOpacitySlider
-            ) : (
-              <Box>
-                <Popover
-                  id={opacityId}
-                  open={open}
-                  anchorEl={opacityEl}
-                  onClose={closeOpacity}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                >
-                  {renderedOpacitySlider}
-                </Popover>
-                {layerDownloadOptions}
-                <Tooltip title="Remove layer">
-                  <IconButton size="small" onClick={remove}>
-                    <Close fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )}
+            <>
+              <Popover
+                id={opacityId}
+                open={open}
+                anchorEl={opacityEl}
+                onClose={closeOpacity}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+              >
+                {renderedOpacitySlider}
+              </Popover>
+              {isAnalysis ? (
+                <AnalysisDownloadButton />
+              ) : (
+                { layerDownloadOptions }
+              )}
+              <Tooltip title="Remove layer">
+                <IconButton size="small" onClick={remove}>
+                  <Close fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </>
           </Box>
         </Paper>
       </ListItem>
@@ -255,14 +259,14 @@ const styles = () =>
   createStyles({
     paper: {
       padding: 8,
-      width: 172,
+      width: 180,
     },
     slider: {
       padding: '0 5px',
     },
     opacityBox: {
       backgroundColor: '#fff',
-      width: 180,
+      width: 172,
       overflow: 'hidden',
     },
     opacitySliderRoot: {

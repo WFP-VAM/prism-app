@@ -1,7 +1,6 @@
 import {
   Button,
   createStyles,
-  Divider,
   Grid,
   Hidden,
   List,
@@ -24,7 +23,6 @@ import { BaselineLayerResult } from 'utils/analysis-utils';
 import { useSafeTranslation } from 'i18n';
 import { Extent } from 'components/MapView/Layers/raster-utils';
 
-import AnalysisDownloadButton from './AnalysisDownloadButton';
 import LegendItem from './LegendItem';
 import LegendImpactResult from './LegendImpactResult';
 
@@ -119,10 +117,6 @@ const Legends = memo(({ classes, extent, layers }: LegendsProps) => {
         isAnalysis={isAnalysisLayerActive && hasData}
       >
         {renderedLegendImpactResult}
-        <Divider />
-        <Grid item>
-          <AnalysisDownloadButton />
-        </Grid>
       </LegendItem>,
     ];
   }, [
