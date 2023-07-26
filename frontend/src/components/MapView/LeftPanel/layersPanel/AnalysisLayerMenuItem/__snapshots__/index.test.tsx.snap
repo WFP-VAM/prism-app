@@ -149,6 +149,9 @@ exports[`renders as expected 1`] = `
                       open="false"
                     >
                       <mock-menuitem>
+                        Download as CSV
+                      </mock-menuitem>
+                      <mock-menuitem>
                         Download as GeoJSON
                       </mock-menuitem>
                     </mock-menu>

@@ -1,4 +1,4 @@
-import { values } from 'lodash';
+import { orderBy, values } from 'lodash';
 import { Map } from 'mapbox-gl';
 import { TFunction } from 'i18next';
 import { Dispatch } from 'redux';
@@ -16,6 +16,8 @@ import { TableData } from 'context/tableStateSlice';
 import { getUrlKey, UrlLayerKey } from 'utils/url-utils';
 import { addNotification } from 'context/notificationStateSlice';
 import { LocalError } from 'utils/error-utils';
+import { Column, quoteAndEscapeCell } from 'utils/analysis-utils';
+import { TableRow } from 'context/analysisResultStateSlice';
 import { getExtent } from './Layers/raster-utils';
 
 export const getActiveFeatureInfoLayers = (map: Map): WMSLayerProps[] => {
@@ -183,4 +185,78 @@ export const filterActiveLayers = (
     selectedLayer.id === categoryLayer.id ||
     filterActiveGroupedLayers(selectedLayer, categoryLayer)
   );
+};
+
+export const formatIntersectPercentageAttribute = (
+  /* eslint-disable camelcase */
+  data: {
+    intersect_percentage?: string | number;
+    stats_intersect_area?: string | number;
+    [key: string]: any;
+  },
+) => {
+  /* eslint-disable fp/no-mutation */
+  let transformedData = data;
+  if (parseInt((data.intersect_percentage as unknown) as string, 10) >= 0) {
+    transformedData = {
+      ...transformedData,
+      intersect_percentage: 100 * ((data.intersect_percentage as number) || 0),
+    };
+  }
+  if (data.stats_intersect_area) {
+    transformedData = {
+      ...transformedData,
+      stats_intersect_area: data.stats_intersect_area,
+    };
+  }
+  /* eslint-enable fp/no-mutation */
+  return transformedData;
+};
+
+const getExposureAnalysisTableCellValue = (
+  value: string | number,
+  column: Column,
+) => {
+  if (column.format && typeof value === 'number') {
+    return quoteAndEscapeCell(column.format(value));
+  }
+  return quoteAndEscapeCell(value);
+};
+
+export const getExposureAnalysisColumnsToRender = (columns: Column[]) => {
+  return columns.reduce(
+    (acc: { [key: string]: string | number }, column: Column) => {
+      return {
+        ...acc,
+        [column.id]: column.label,
+      };
+    },
+    {},
+  );
+};
+
+export const getExposureAnalysisTableDataRowsToRender = (
+  columns: Column[],
+  tableData: TableRow[],
+) => {
+  return tableData.map((tableRowData: TableRow) => {
+    return columns.reduce(
+      (acc: { [key: string]: string | number }, column: Column) => {
+        const value = tableRowData[column.id];
+        return {
+          ...acc,
+          [column.id]: getExposureAnalysisTableCellValue(value, column),
+        };
+      },
+      {},
+    );
+  });
+};
+
+export const getExposureAnalysisTableData = (
+  tableData: TableRow[],
+  sortColumn: Column['id'],
+  sortOrder: 'asc' | 'desc',
+) => {
+  return orderBy(tableData, sortColumn, sortOrder);
 };

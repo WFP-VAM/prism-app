@@ -420,6 +420,12 @@ export class WMSLayerProps extends CommonLayerProps {
 
   @optional
   chartData?: DatasetProps; // If included, on a click event, prism will display data from the selected boundary.
+
+  @optional
+  'areaExposedValues'?: { label: string; value: string | number }[];
+
+  @optional
+  'thresholdValues'?: { label: string; value: string | number }[];
 }
 
 export class StaticRasterLayerProps extends CommonLayerProps {
@@ -495,6 +501,37 @@ export enum AggregationOperations {
   Median = 'median',
   Min = 'min',
   Sum = 'sum',
+  'Area exposed' = 'intersect_percentage',
+}
+
+export const units: Partial<Record<AggregationOperations | string, string>> = {
+  intersect_percentage: '%',
+  stats_intersect_area: 'km²',
+};
+
+export const aggregationOperationsToDisplay: Record<
+  AggregationOperations,
+  string
+> = {
+  [AggregationOperations.Max]: 'Max',
+  [AggregationOperations.Mean]: 'Mean',
+  [AggregationOperations.Median]: 'Median',
+  [AggregationOperations.Min]: 'Min',
+  [AggregationOperations.Sum]: 'Sum',
+  [AggregationOperations['Area exposed']]: 'Percent of area exposed',
+};
+
+export enum ExposureOperator {
+  LOWER_THAN = '<',
+  LOWER_THAN_EQUAL = '<=',
+  EQUAL = '=',
+  GREATER_THAN = '>',
+  GREATER_THAN_EQUAL = '>=',
+}
+
+export interface ExposureValue {
+  operator: ExposureOperator;
+  value: string;
 }
 
 export enum PolygonalAggregationOperations {
@@ -504,7 +541,8 @@ export enum PolygonalAggregationOperations {
 
 export type AllAggregationOperations =
   | AggregationOperations
-  | PolygonalAggregationOperations;
+  | PolygonalAggregationOperations
+  | 'stats_intersect_area';
 
 export type ThresholdDefinition = { below?: number; above?: number };
 

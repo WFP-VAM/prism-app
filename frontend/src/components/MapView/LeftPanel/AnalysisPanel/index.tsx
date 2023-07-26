@@ -25,6 +25,7 @@ import {
   Theme,
   CircularProgress,
   Box,
+  MenuItem,
 } from '@material-ui/core';
 import {
   BarChartOutlined,
@@ -57,6 +58,11 @@ import {
   analysisResultSortOrderSelector,
   setAnalysisResultSortByKey,
   setAnalysisResultSortOrder,
+  exposureAnalysisResultSortByKeySelector,
+  exposureAnalysisResultSortOrderSelector,
+  setExposureAnalysisResultSortByKey,
+  setExposureAnalysisResultSortOrder,
+  TableRow,
 } from 'context/analysisResultStateSlice';
 import {
   AdminLevelType,
@@ -69,6 +75,8 @@ import {
   BoundaryLayerProps,
   GeometryType,
   PanelSize,
+  ExposureOperator,
+  ExposureValue,
 } from 'config/types';
 import { getAdminLevelCount, getAdminLevelLayer } from 'utils/admin-utils';
 import { LayerData } from 'context/layers/layer-data';
@@ -102,6 +110,7 @@ import LoadingBlinkingDots from 'components/Common/LoadingBlinkingDots';
 import AnalysisTable from './AnalysisTable';
 import ExposureAnalysisTable from './AnalysisTable/ExposureAnalysisTable';
 import ExposureAnalysisActions from './ExposureAnalysisActions';
+import { getExposureAnalysisTableData } from '../../utils';
 
 const tabIndex = 2;
 
@@ -132,6 +141,12 @@ const AnalysisPanel = memo(
     const analysisResultSortOrder = useSelector(
       analysisResultSortOrderSelector,
     );
+    const exposureAnalysisResultSortByKey = useSelector(
+      exposureAnalysisResultSortByKeySelector,
+    );
+    const exposureAnalysisResultSortOrder = useSelector(
+      exposureAnalysisResultSortOrderSelector,
+    );
     const isAnalysisLoading = useSelector(isAnalysisLoadingSelector);
     const isExposureAnalysisLoading = useSelector(
       isExposureAnalysisLoadingSelector,
@@ -142,12 +157,12 @@ const AnalysisPanel = memo(
     const [
       exposureAnalysisSortColumn,
       setExposureAnalysisSortColumn,
-    ] = useState<Column['id']>('name');
+    ] = useState<Column['id']>(exposureAnalysisResultSortByKey);
     // exposure analysis sort order
     const [
       exposureAnalysisIsAscending,
       setExposureAnalysisIsAscending,
-    ] = useState(true);
+    ] = useState(exposureAnalysisResultSortOrder === 'asc');
     // defaults the sort column of every other analysis table to 'name'
     const [analysisSortColumn, setAnalysisSortColumn] = useState<Column['id']>(
       analysisResultSortByKey,
@@ -173,6 +188,12 @@ const AnalysisPanel = memo(
     const [hazardLayerId, setHazardLayerId] = useState<LayerKey | undefined>(
       hazardLayerIdFromUrl,
     );
+
+    const [exposureValue, setExposureValue] = useState<ExposureValue>({
+      operator: ExposureOperator.EQUAL,
+      value: '',
+    });
+
     const [statistic, setStatistic] = useState(
       (selectedStatisticFromUrl as AggregationOperations) ||
         AggregationOperations.Mean,
@@ -527,6 +548,14 @@ const AnalysisPanel = memo(
       updateHistory,
     ]);
 
+    const scaleThreshold = useCallback(
+      (threshold: number) =>
+        statistic === AggregationOperations['Area exposed']
+          ? threshold / 100
+          : threshold,
+      [statistic],
+    );
+
     const runAnalyser = useCallback(async () => {
       if (preSelectedBaselineLayer) {
         setPreviousBaselineId(preSelectedBaselineLayer.id);
@@ -602,10 +631,11 @@ const AnalysisPanel = memo(
           baselineLayer: selectedBaselineLayer,
           date: selectedDate,
           statistic,
+          exposureValue,
           extent,
           threshold: {
-            above: parseFloat(aboveThreshold) || undefined,
-            below: parseFloat(belowThreshold) || undefined,
+            above: scaleThreshold(parseFloat(aboveThreshold)) || undefined,
+            below: scaleThreshold(parseFloat(belowThreshold)) || undefined,
           },
         };
 
@@ -622,27 +652,29 @@ const AnalysisPanel = memo(
         dispatch(requestAndStoreAnalysis(params));
       }
     }, [
-      aboveThreshold,
-      activateUniqueBoundary,
-      adminLevel,
+      preSelectedBaselineLayer,
+      analysisResult,
+      extent,
+      selectedHazardLayer,
+      hazardDataType,
+      removeKeyFromUrl,
+      dispatch,
+      clearAnalysis,
+      startDate,
+      endDate,
       adminLevelLayer,
       adminLevelLayerData,
-      analysisResult,
-      baselineLayerId,
-      belowThreshold,
-      clearAnalysis,
-      dispatch,
-      endDate,
-      extent,
-      hazardDataType,
-      hazardLayerId,
-      preSelectedBaselineLayer,
-      removeKeyFromUrl,
-      selectedDate,
-      selectedHazardLayer,
-      startDate,
-      statistic,
+      adminLevel,
+      activateUniqueBoundary,
       updateAnalysisParams,
+      hazardLayerId,
+      statistic,
+      selectedDate,
+      baselineLayerId,
+      exposureValue,
+      scaleThreshold,
+      aboveThreshold,
+      belowThreshold,
     ]);
 
     // handler of changing exposure analysis sort order
@@ -654,22 +686,22 @@ const AnalysisPanel = memo(
         );
         setExposureAnalysisSortColumn(newExposureAnalysisSortColumn);
         setExposureAnalysisIsAscending(newIsAsc);
+        // set the sort by key of exposure analysis data in redux
+        dispatch(
+          setExposureAnalysisResultSortByKey(newExposureAnalysisSortColumn),
+        );
+        // set the sort order of exposure analysis result data in redux
+        dispatch(setExposureAnalysisResultSortOrder(newIsAsc ? 'asc' : 'desc'));
       },
-      [exposureAnalysisIsAscending, exposureAnalysisSortColumn],
+      [dispatch, exposureAnalysisIsAscending, exposureAnalysisSortColumn],
     );
 
     // The exposure analysis table data
-    const exposureAnalysisTableData = useMemo(() => {
-      return orderBy(
-        analysisResult?.tableData,
-        exposureAnalysisSortColumn,
-        exposureAnalysisIsAscending ? 'asc' : 'desc',
-      );
-    }, [
-      analysisResult,
-      exposureAnalysisIsAscending,
+    const exposureAnalysisTableData = getExposureAnalysisTableData(
+      (analysisResult?.tableData || []) as TableRow[],
       exposureAnalysisSortColumn,
-    ]);
+      exposureAnalysisIsAscending ? 'asc' : 'desc',
+    );
 
     const renderedExposureAnalysisLoading = useMemo(() => {
       if (!isExposureAnalysisLoading) {
@@ -731,7 +763,7 @@ const AnalysisPanel = memo(
       return (
         <>
           <div className={classes.analysisPanelParamContainer}>
-            <Typography className={classes.analysisParamTitle} variant="body2">
+            <Typography className={classes.colorBlack} variant="body2">
               {t('Admin Level')}
             </Typography>
             <SimpleDropdown
@@ -741,19 +773,16 @@ const AnalysisPanel = memo(
                 `Admin ${i + 1}`,
               ])}
               onChange={setAdminLevel}
-              textClass={classes.analysisParamTitle}
+              textClass={classes.colorBlack}
             />
           </div>
 
           <div className={classes.analysisPanelParamContainer}>
-            <Typography className={classes.analysisParamTitle} variant="body2">
+            <Typography className={classes.colorBlack} variant="body2">
               {t('Date Range')}
             </Typography>
             <div className={classes.dateRangePicker}>
-              <Typography
-                className={classes.analysisParamTitle}
-                variant="body2"
-              >
+              <Typography className={classes.colorBlack} variant="body2">
                 {t('Start')}
               </Typography>
               <DatePicker
@@ -773,10 +802,7 @@ const AnalysisPanel = memo(
               />
             </div>
             <div className={classes.dateRangePicker}>
-              <Typography
-                className={classes.analysisParamTitle}
-                variant="body2"
-              >
+              <Typography className={classes.colorBlack} variant="body2">
                 {t('End')}
               </Typography>
               <DatePicker
@@ -803,7 +829,7 @@ const AnalysisPanel = memo(
       availableHazardDates,
       classes.analysisPanelParamContainer,
       classes.analysisPanelParamText,
-      classes.analysisParamTitle,
+      classes.colorBlack,
       classes.calendarPopper,
       classes.dateRangePicker,
       endDate,
@@ -829,7 +855,7 @@ const AnalysisPanel = memo(
             />
           </div>
           <div className={classes.analysisPanelParamContainer}>
-            <Typography className={classes.analysisParamTitle} variant="body2">
+            <Typography className={classes.colorBlack} variant="body2">
               {t('Statistic')}
             </Typography>
             <FormControl component="div">
@@ -841,12 +867,66 @@ const AnalysisPanel = memo(
                 {statisticOptions}
               </RadioGroup>
             </FormControl>
+            {statistic === AggregationOperations['Area exposed'] && (
+              <div className={classes.exposureValueContainer}>
+                <FormControl
+                  component="div"
+                  className={classes.exposureValueOptionsInputContainer}
+                >
+                  <TextField
+                    select
+                    variant="outlined"
+                    label={t('Operator')}
+                    className={classes.exposureValueOptionsSelect}
+                    name="exposure-value-operator"
+                    value={exposureValue.operator}
+                    onChange={e =>
+                      setExposureValue({
+                        ...exposureValue,
+                        operator: e.target.value as ExposureOperator,
+                      })
+                    }
+                  >
+                    {Object.values(ExposureOperator).map(item => (
+                      <MenuItem key={item} value={item}>
+                        {item}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </FormControl>
+                <FormControl
+                  component="div"
+                  className={classes.exposureValueOptionsInputContainer}
+                >
+                  <TextField
+                    select
+                    variant="outlined"
+                    label={t('Exposure value')}
+                    className={classes.exposureValueOptionsSelect}
+                    name="exposure-value"
+                    value={exposureValue.value}
+                    onChange={e =>
+                      setExposureValue({
+                        ...exposureValue,
+                        value: e.target.value as ExposureOperator,
+                      })
+                    }
+                  >
+                    {selectedHazardLayer?.legend?.map(item => (
+                      <MenuItem key={item.value} value={item.value}>
+                        {`${item.label} (${item.value})`}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </FormControl>
+              </div>
+            )}
           </div>
           <div className={classes.analysisPanelParamContainer}>
-            <Typography className={classes.analysisParamTitle} variant="body2">
+            <Typography className={classes.colorBlack} variant="body2">
               {t('Threshold')}
             </Typography>
-            <div style={{ display: 'flex' }}>
+            <div className={classes.rowInputContainer}>
               <TextField
                 id="outlined-number-low"
                 error={!!thresholdError}
@@ -867,10 +947,15 @@ const AnalysisPanel = memo(
                 type="number"
                 variant="outlined"
               />
+              {statistic === AggregationOperations['Area exposed'] && (
+                <Typography className={classes.colorBlack} variant="body1">
+                  %
+                </Typography>
+              )}
             </div>
           </div>
           <div className={classes.datePickerContainer}>
-            <Typography className={classes.analysisParamTitle} variant="body2">
+            <Typography className={classes.colorBlack} variant="body2">
               {`${t('Date')}: `}
             </Typography>
             <DatePicker
@@ -904,24 +989,30 @@ const AnalysisPanel = memo(
         </>
       );
     }, [
-      aboveThreshold,
-      availableHazardDates,
-      baselineLayerId,
-      belowThreshold,
+      hazardDataType,
       classes.analysisPanelParamContainer,
       classes.analysisPanelParamText,
-      classes.analysisParamTitle,
-      classes.calendarPopper,
-      classes.datePickerContainer,
+      classes.colorBlack,
+      classes.exposureValueContainer,
+      classes.exposureValueOptionsInputContainer,
+      classes.exposureValueOptionsSelect,
+      classes.rowInputContainer,
       classes.numberField,
-      hazardDataType,
-      onOptionChange,
-      onThresholdOptionChange,
-      selectedDate,
-      statistic,
-      statisticOptions,
+      classes.datePickerContainer,
+      classes.calendarPopper,
+      baselineLayerId,
       t,
+      statistic,
+      onOptionChange,
+      statisticOptions,
+      exposureValue,
+      selectedHazardLayer,
       thresholdError,
+      belowThreshold,
+      onThresholdOptionChange,
+      aboveThreshold,
+      selectedDate,
+      availableHazardDates,
     ]);
 
     const renderedAnalysisPanelInfo = useMemo(() => {
@@ -1036,7 +1127,9 @@ const AnalysisPanel = memo(
               !hazardLayerId || // or hazard layer hasn't been selected
               (hazardDataType === GeometryType.Polygon
                 ? !startDate || !endDate || !adminLevelLayerData
-                : !selectedDate || !baselineLayerId) // or date hasn't been selected // or baseline layer hasn't been selected
+                : !selectedDate || !baselineLayerId) || // or date hasn't been selected // or baseline layer hasn't been selected
+              (statistic === AggregationOperations['Area exposed'] &&
+                (!exposureValue.operator || !exposureValue.value))
             }
           >
             <Typography variant="body2">{t('Run Analysis')}</Typography>
@@ -1051,12 +1144,15 @@ const AnalysisPanel = memo(
       classes.analysisButtonContainer,
       classes.bottomButton,
       endDate,
+      exposureValue.operator,
+      exposureValue.value,
       hazardDataType,
       hazardLayerId,
       isAnalysisLoading,
       runAnalyser,
       selectedDate,
       startDate,
+      statistic,
       t,
       thresholdError,
     ]);
@@ -1154,6 +1250,29 @@ const styles = (theme: Theme) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
+    exposureValueContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      gap: '16px',
+    },
+    exposureValueOptionsInputContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      margin: '8px 0',
+    },
+    exposureValueOptionsSelect: {
+      width: '100%',
+      '& .MuiInputBase-root': {
+        color: 'black',
+      },
+      '& .MuiFormLabel-root': {
+        color: 'black',
+        '&:hover fieldset': {
+          borderColor: '#333333',
+        },
+      },
+    },
     exposureAnalysisLoadingTextContainer: {
       display: 'flex',
       justifyContent: 'center',
@@ -1166,7 +1285,7 @@ const styles = (theme: Theme) =>
       padding: '30px 10px 10px 10px',
       height: '100%',
     },
-    analysisParamTitle: {
+    colorBlack: {
       color: 'black',
     },
     analysisPanelParamText: {
@@ -1235,7 +1354,6 @@ const styles = (theme: Theme) =>
     },
     numberField: {
       paddingRight: '10px',
-      marginTop: '10px',
       maxWidth: '140px',
       '& .MuiInputBase-root': {
         color: 'black',
@@ -1243,6 +1361,11 @@ const styles = (theme: Theme) =>
       '& label': {
         color: '#333333',
       },
+    },
+    rowInputContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      marginTop: '10px',
     },
     calendarPopper: {
       zIndex: 3,
