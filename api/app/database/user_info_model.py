@@ -1,13 +1,11 @@
-"""Alert database model."""
+"""UserInfo database model."""
 import datetime
-import json
 import logging
 
 from sqlalchemy import JSON, TIMESTAMP, Column, DateTime, Identity, Integer, String
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.sql.sqltypes import Boolean
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 Base = declarative_base()
