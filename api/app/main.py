@@ -171,9 +171,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 async def get_report(
     url: str, language: str, exposureLayerId: str, country: str
 ) -> FileResponse:
-    tmp_file_path: str = await download_report(
-        url, exposureLayerId, country, language
-    )
+    tmp_file_path: str = await download_report(url, exposureLayerId, country, language)
     return FileResponse(path=tmp_file_path, filename=os.path.basename(tmp_file_path))
 
 
