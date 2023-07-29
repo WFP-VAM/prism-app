@@ -142,6 +142,7 @@ function ExposureAnalysisActions({
           <Typography variant="body2">{t('Download as CSV')}</Typography>
         </Button>
       )}
+      {/* Hide the preview report button for now. Report creation happens in the backend and is cached. */}
       {/* <Button
         id="create-report"
         className={bottomButton}
