@@ -139,7 +139,7 @@ const ReportDialog = memo(
           >
             {t('Loading document')}
           </Typography>
-          <LoadingBlinkingDots />
+          <LoadingBlinkingDots dotColor="white" />
         </Box>
       );
     }, [
