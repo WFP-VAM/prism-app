@@ -2739,6 +2739,7 @@ exports[`renders as expected 1`] = `
                                                 <button
                                                   class="MuiButtonBase-root MuiIconButton-root Mui-disabled Mui-disabled"
                                                   disabled=""
+                                                  id="adamts_buffers"
                                                   tabindex="-1"
                                                   type="button"
                                                 >

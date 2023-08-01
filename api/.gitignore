@@ -8,6 +8,8 @@ cache/
 # Cached files
 *.cache
 
+.venv
+
 # Test files
 **.json.*
 **/.hypothesis/**

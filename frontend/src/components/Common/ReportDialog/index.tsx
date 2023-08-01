@@ -139,7 +139,7 @@ const ReportDialog = memo(
           >
             {t('Loading document')}
           </Typography>
-          <LoadingBlinkingDots />
+          <LoadingBlinkingDots dotColor="white" />
         </Box>
       );
     }, [
@@ -164,29 +164,30 @@ const ReportDialog = memo(
         return null;
       }
       return (
-        <Button className={classes.actionButton} variant="outlined">
-          <PDFDownloadLink
-            document={
-              <ReportDoc
-                exposureLegendDefinition={analysisResult?.legend ?? []}
-                theme={theme}
-                reportTitle={`${t(reportConfig.title)} ${reportDate}`}
-                reportConfig={reportConfig}
-                tableShowTotal
-                mapImage={mapImage}
-                tableData={tableData}
-                columns={columns}
-              />
-            }
-            fileName={getPDFName}
-          >
-            {renderedLoadingButtonText}
-          </PDFDownloadLink>
-        </Button>
+        <>
+          <Button id="download-action">
+            <PDFDownloadLink
+              document={
+                <ReportDoc
+                  exposureLegendDefinition={analysisResult?.legend ?? []}
+                  theme={theme}
+                  reportTitle={`${t(reportConfig.title)} ${reportDate}`}
+                  reportConfig={reportConfig}
+                  tableShowTotal
+                  mapImage={mapImage}
+                  tableData={tableData}
+                  columns={columns}
+                />
+              }
+              fileName={getPDFName}
+            >
+              {renderedLoadingButtonText}
+            </PDFDownloadLink>
+          </Button>
+        </>
       );
     }, [
       analysisResult,
-      classes.actionButton,
       columns,
       getPDFName,
       mapImage,
