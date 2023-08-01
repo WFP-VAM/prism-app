@@ -1,15 +1,25 @@
 import React, { memo } from 'react';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core';
 
-const LoadingBlinkingDots = memo(({ classes }: LoadingBlinkingDotsProps) => {
-  return (
-    <>
-      <span className={classes.dot}>.</span>
-      <span className={classes.dot}>.</span>
-      <span className={classes.dot}>.</span>
-    </>
-  );
-});
+const LoadingBlinkingDots = memo(
+  ({ classes, dotColor }: LoadingBlinkingDotsProps) => {
+    const colorStyle = { color: dotColor || 'black' };
+    return (
+      <>
+        &nbsp;
+        <span className={classes.dot} style={colorStyle}>
+          .
+        </span>
+        <span className={classes.dot} style={colorStyle}>
+          .
+        </span>
+        <span className={classes.dot} style={colorStyle}>
+          .
+        </span>
+      </>
+    );
+  },
+);
 
 const styles = () =>
   createStyles({
@@ -19,7 +29,6 @@ const styles = () =>
       },
     },
     dot: {
-      color: 'black',
       animation: '1s $blink infinite',
       '&:nth-child(2)': {
         animationDelay: '250ms',
@@ -30,6 +39,8 @@ const styles = () =>
     },
   });
 
-export interface LoadingBlinkingDotsProps extends WithStyles<typeof styles> {}
+export interface LoadingBlinkingDotsProps extends WithStyles<typeof styles> {
+  dotColor?: string;
+}
 
 export default withStyles(styles)(LoadingBlinkingDots);
