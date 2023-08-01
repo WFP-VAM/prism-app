@@ -17,7 +17,7 @@ PAGE_TIMEOUT: Final[int] = 60000
 PAGE_LANGUAGE_CHANGE_TIMEOUT: Final[int] = 10000
 
 
-async def playwright_download_report(
+async def download_report(
     url: str, layerIdParam: str, country: str, language: Optional[str]
 ) -> str:
     language = "en" if language is None else language

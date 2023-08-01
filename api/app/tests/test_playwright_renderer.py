@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import pytest
 from app.caching import CACHE_DIRECTORY
-from app.playwright_renderer import playwright_download_report
+from app.report import download_report
 
 EXPECTED_REPORT_FILEPATH: Final[str] = os.path.join(
     CACHE_DIRECTORY, "reports/", "report-cambodia-flood_extent-en-2023-07-07.pdf"
@@ -13,7 +13,7 @@ EXPECTED_REPORT_FILEPATH: Final[str] = os.path.join(
 
 
 @pytest.mark.asyncio
-async def test_playwright_download_report():
+async def test_download_report():
     """Test generate report using playwright and returns a path string"""
     # Arrange
     shutil.rmtree(
@@ -21,7 +21,7 @@ async def test_playwright_download_report():
     )
 
     # Act
-    report_path: str = await playwright_download_report(
+    report_path: str = await download_report(
         "https://prism-900.surge.sh/?hazardLayerIds=flood_extent%2Cews_remote&date=2023-07-07",
         "flood_extent",
         "cambodia",
@@ -48,7 +48,7 @@ async def test_should_load_report_from_cache_if_present(playwright_mock):
         pass
 
     # Act
-    report_path: str = await playwright_download_report(
+    report_path: str = await download_report(
         "https://prism-900.surge.sh/?hazardLayerIds=flood_extent&date=2023-07-07",
         "flood_extent",
         "cambodia",

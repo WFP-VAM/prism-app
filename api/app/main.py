@@ -17,7 +17,7 @@ from app.database.user_info_model import UserInfoModel
 from app.hdc import get_hdc_stats
 from app.kobo import get_form_dates, get_form_responses, parse_datetime_params
 from app.models import AcledRequest, RasterGeotiffModel
-from app.playwright_renderer import playwright_download_report
+from app.report import download_report
 from app.timer import timed
 from app.validation import validate_intersect_parameter
 from app.zonal_stats import DEFAULT_STATS, GroupBy, calculate_stats, get_wfs_response
@@ -171,9 +171,7 @@ def stats(stats_model: StatsModel) -> list[dict[str, Any]]:
 async def get_report(
     url: str, language: str, exposureLayerId: str, country: str
 ) -> FileResponse:
-    tmp_file_path: str = await playwright_download_report(
-        url, exposureLayerId, country, language
-    )
+    tmp_file_path: str = await download_report(url, exposureLayerId, country, language)
     return FileResponse(path=tmp_file_path, filename=os.path.basename(tmp_file_path))
 
 
