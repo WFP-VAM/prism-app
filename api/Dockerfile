@@ -10,6 +10,8 @@ WORKDIR /app/
 ENV PYTHONPATH=/
 
 COPY requirements.txt .
+# copy pyproject so that black and isort use the right config
+COPY pyproject.toml /
 
 RUN apt update
 RUN apt install -y python3-pip libpq-dev
