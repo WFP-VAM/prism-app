@@ -73,7 +73,6 @@ Returns armed conflict incidents using ACLED api. Make sure to have the defined 
 - `?fields`, Comma separated string which specifies the fields to be returned per incident.
 - `?event_date`, Return incidents only matching the given value with format YYYY-MM-DD
 
-
 ### `/kobo/forms` (GET)
 
 Returns all form responses using Kobo API
@@ -112,7 +111,7 @@ make api
 To run flask api together with database within same network, run:
 
 ```
-docker-compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
+docker compose -f ./docker-compose.develop.yml -f ../alerting/docker-compose.yml up
 ```
 
 ### Tests
