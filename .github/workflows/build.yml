@@ -187,7 +187,7 @@ jobs:
         uses: snok/install-poetry@v1
         with:
           # Version of Poetry to use
-          version: 1.4.2
+          version: 1.6.1
           virtualenvs-create: true
           virtualenvs-in-project: true
       - name: Install dependencies
