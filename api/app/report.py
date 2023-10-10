@@ -3,7 +3,7 @@ from typing import Final, Optional
 from urllib.parse import parse_qs, urlparse
 
 from app.caching import CACHE_DIRECTORY
-from playwright.async_api import async_playwright
+from playwright.async_api import async_playwright, expect
 
 # Html selectors
 LAYER_ACCORDION_SELECTOR: Final[
@@ -48,19 +48,33 @@ async def download_report(
         # Toggle level two dropdowns
         await toggle_every_visible_dropdown(page)
 
+        # Enable flood extent buttons
+        flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")
+        await expect(flood_extent_checkbox).to_be_visible()
+        await expect(flood_extent_checkbox).not_to_be_checked()
+        await expect(page.get_by_role("button", name="Exposure Analysis")).to_be_disabled()
+
+        flood_extent_checkbox.click()
+        await expect(flood_extent_checkbox).to_be_checked(timeout=10_000)
+        await expect(page.get_by_role("button", name="Exposure Analysis")).not_to_be_disabled()
+
         # Click on exposure analysis toggle button
         await click_target_exposure_analysis(page, layerIdParam)
 
         # Wait for page to be loaded on exposure analysis
-        await page.wait_for_selector(CREATE_REPORT_BUTTON_SELECTOR, state="visible")
+        await page.wait_for_selector('div[id="full-width-tabpanel-2"]', state="visible")
 
-        # Change language if not english
+        await page.wait_for_selector('div[class="memo-analysisButtonContainer-140"]', state="visible")
+
+        await page.wait_for_selector(CREATE_REPORT_BUTTON_SELECTOR, state="attached")
+
+        # # Change language if not english
         await change_language_if_not_default(page, language)
-
-        # Click on the pdf-renderer preview report button
+        #
+        # # Click on the pdf-renderer preview report button
         await click_create_report_button(page)
-
-        # Wait for report to be created by pdf-renderer
+        #
+        # # Wait for report to be created by pdf-renderer
         await page.wait_for_selector(DOWNLOAD_BUTTON_SELECTOR)
 
         # Download file on disk

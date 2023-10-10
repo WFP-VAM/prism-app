@@ -22,7 +22,7 @@ async def test_download_report():
 
     # Act
     report_path: str = await download_report(
-        "https://prism-900.surge.sh/?hazardLayerIds=flood_extent%2Cews_remote&date=2023-07-07",
+        "http://frontend:3000/?hazardLayerIds=flood_extent%2Cews_remote&date=2023-07-07",
         "flood_extent",
         "cambodia",
         "en",
@@ -49,12 +49,12 @@ async def test_should_load_report_from_cache_if_present(playwright_mock):
 
     # Act
     report_path: str = await download_report(
-        "https://prism-900.surge.sh/?hazardLayerIds=flood_extent&date=2023-07-07",
+        "https://frontend:3000/?hazardLayerIds=flood_extent&date=2023-07-07",
         "flood_extent",
         "cambodia",
         "en",
     )
 
-    # Arrange
+    # Assert
     assert report_path == EXPECTED_REPORT_FILEPATH
     playwright_mock.assert_not_called()
