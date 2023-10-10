@@ -22,6 +22,7 @@ test-services:
 	docker compose -f docker-compose.yml -f docker-compose.test.yml up -d
 
 api-test: test-services
+	docker ps -a
 	docker compose -f docker-compose.yml -f docker-compose.test.yml run api bash -c "pytest -s tests"
 
 api-add-users:
