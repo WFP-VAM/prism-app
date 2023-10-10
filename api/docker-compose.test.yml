@@ -26,3 +26,21 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_PASSWORD=!ChangeMe!
+
+  frontend:
+    # small wrapper around the frontend code to make it easier to run
+    # python tests against it
+    build:
+      context: ..
+      dockerfile: ./frontend/Dockerfile
+    command: yarn start
+    environment:
+      - REACT_APP_COUNTRY=cambodia
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../common:/common
+      - ../frontend:/frontend
+
+networks:
+  testnet:

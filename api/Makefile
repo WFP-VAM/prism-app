@@ -11,8 +11,8 @@ logs:
 	docker compose -f docker-compose.yml -f docker-compose.deploy.yml logs -f
 
 api-lint:
-	docker compose run --no-deps api bash -c "black ."
-	docker compose run --no-deps api bash -c "isort ."
+	docker compose run --no-deps api bash -c "poetry run black ."
+	docker compose run --no-deps api bash -c "poetry run isort ."
 
 api-typecheck:
 	docker compose run --no-deps api bash -c "mypy ."
