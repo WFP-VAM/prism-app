@@ -1,3 +1,4 @@
+import json
 import os
 from typing import Final, Optional
 from urllib.parse import parse_qs, urlparse
@@ -32,9 +33,17 @@ async def download_report(
     if os.path.exists(report_file_path):
         return report_file_path
 
+    async def mock_prism_api_stats_call(route):
+        with open("./tests/fixtures/prism_api_stats.json") as f:
+            j = json.load(f)
+        await route.fulfill(json=j)
+
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         page = await browser.new_page()
+
+        # mock the api call to avoid network issues in CI
+        await page.route("https://prism-api.ovio.org/stats", mock_prism_api_stats_call)
 
         page.set_default_timeout(PAGE_TIMEOUT)
         await page.goto(url)
