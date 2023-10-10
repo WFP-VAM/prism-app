@@ -18,6 +18,4 @@ RUN yarn install --frozen-lockfile && yarn setup:common
 # copy the rest of the source code
 COPY ./frontend .
 
-RUN GENERATE_SOURCEMAP=true REACT_APP_COUNTRY=cambodia yarn build
-
 EXPOSE 3000
