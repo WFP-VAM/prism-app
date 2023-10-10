@@ -52,11 +52,15 @@ async def download_report(
         flood_extent_checkbox = page.get_by_role("checkbox", name="Flood extent")
         await expect(flood_extent_checkbox).to_be_visible()
         await expect(flood_extent_checkbox).not_to_be_checked()
-        await expect(page.get_by_role("button", name="Exposure Analysis")).to_be_disabled()
+        await expect(
+            page.get_by_role("button", name="Exposure Analysis")
+        ).to_be_disabled()
 
         flood_extent_checkbox.click()
         await expect(flood_extent_checkbox).to_be_checked(timeout=10_000)
-        await expect(page.get_by_role("button", name="Exposure Analysis")).not_to_be_disabled()
+        await expect(
+            page.get_by_role("button", name="Exposure Analysis")
+        ).not_to_be_disabled()
 
         # Click on exposure analysis toggle button
         await click_target_exposure_analysis(page, layerIdParam)
@@ -64,7 +68,9 @@ async def download_report(
         # Wait for page to be loaded on exposure analysis
         await page.wait_for_selector('div[id="full-width-tabpanel-2"]', state="visible")
 
-        await page.wait_for_selector('div[class="memo-analysisButtonContainer-140"]', state="visible")
+        await page.wait_for_selector(
+            'div[class="memo-analysisButtonContainer-140"]', state="visible"
+        )
 
         await page.wait_for_selector(CREATE_REPORT_BUTTON_SELECTOR, state="attached")
 
