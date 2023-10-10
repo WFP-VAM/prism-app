@@ -49,7 +49,7 @@ async def test_should_load_report_from_cache_if_present(playwright_mock):
 
     # Act
     report_path: str = await download_report(
-        "https://frontend:3000/?hazardLayerIds=flood_extent&date=2023-07-07",
+        "http://frontend:3000/?hazardLayerIds=flood_extent&date=2023-07-07",
         "flood_extent",
         "cambodia",
         "en",
